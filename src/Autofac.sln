@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac", "Autofac\Autofac.csproj", "{7D018B3E-34A3-423D-AC35-12731F4E0A2C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests", "Autofac.Tests\Autofac.Tests.csproj", "{B2E242BC-9412-43ED-8BFE-3F12199BD649}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7D018B3E-34A3-423D-AC35-12731F4E0A2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D018B3E-34A3-423D-AC35-12731F4E0A2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D018B3E-34A3-423D-AC35-12731F4E0A2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D018B3E-34A3-423D-AC35-12731F4E0A2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2E242BC-9412-43ED-8BFE-3F12199BD649}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2E242BC-9412-43ED-8BFE-3F12199BD649}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2E242BC-9412-43ED-8BFE-3F12199BD649}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2E242BC-9412-43ED-8BFE-3F12199BD649}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
