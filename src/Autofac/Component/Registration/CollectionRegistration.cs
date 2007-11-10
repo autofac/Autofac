@@ -144,9 +144,6 @@ namespace Autofac.Component.Registration
         /// <returns>True if the duplicate was created.</returns>
 		public bool TryDuplicateForNewContext(out IComponentRegistration duplicate)
 		{
-			// This will never succeed because the LockingRegistration items it
-			// holds are context-bound. Perhaps collections should always be
-			// regarded as singletons...
 			CollectionRegistration<TItemService> result = new CollectionRegistration<TItemService>();
 			foreach (IComponentRegistration item in _itemRegistrations)
 			{
