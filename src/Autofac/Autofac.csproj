@@ -93,6 +93,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EnforceResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Guard.cs" />
+    <Compile Include="GuardResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GuardResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="IActivationParameters.cs" />
     <Compile Include="IContainer.cs" />
     <Compile Include="IDisposer.cs" />
@@ -315,6 +321,11 @@
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SpecificConstructorSelectorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuardResources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>GuardResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

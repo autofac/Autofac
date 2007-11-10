@@ -247,7 +247,8 @@ namespace Autofac.Tests
         public void InnerCannotResolveOuterDependencies()
         {
             var outerBuilder = new ContainerBuilder();
-            outerBuilder.Register<B>();
+            outerBuilder.Register<B>()
+                .WithScope(InstanceScope.Singleton);
             var outer = outerBuilder.Build();
 
             var innerBuilder = new ContainerBuilder();
@@ -286,9 +287,9 @@ namespace Autofac.Tests
         {
             var builder = new ContainerBuilder();
 
-            builder.Register<A>();
-            builder.Register<CD>().As<IC, ID>();
-            builder.Register<E>();
+            builder.Register<A>().WithScope(InstanceScope.Singleton);
+            builder.Register<CD>().As<IC, ID>().WithScope(InstanceScope.Singleton);
+            builder.Register<E>().WithScope(InstanceScope.Singleton);
 			builder.Register(ctr => new B(ctr.Resolve<A>()))
 				.WithScope(InstanceScope.Factory);
 
@@ -377,7 +378,8 @@ namespace Autofac.Tests
         {
 			var builder = new ContainerBuilder();
 
-			builder.Register<A>();
+			builder.Register<A>()
+                .WithScope(InstanceScope.Singleton);
 			builder.RegisterAsCollection<B>();
 			builder.Register<B>();
 			builder.Register<B>();
@@ -390,7 +392,7 @@ namespace Autofac.Tests
             Assert.AreEqual(2, bList.Count);
             Assert.IsNotNull(bList[0].A);
             Assert.IsNotNull(bList[1].A);
-            Assert.AreEqual(bList[0].A, bList[1].A);
+            Assert.AreSame(bList[0].A, bList[1].A);
         }
 
         [Test]
@@ -418,7 +420,8 @@ namespace Autofac.Tests
 		{
 			var builder = new ContainerBuilder();
 
-			builder.Register<A>();
+			builder.Register<A>()
+                .WithScope(InstanceScope.Singleton);
 
 			var target = builder.Build();
 

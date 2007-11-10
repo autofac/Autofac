@@ -42,36 +42,28 @@ namespace Autofac.Builder
 		private InstanceOwnership _defaultInstanceOwnership = InstanceOwnership.Container;
 		private InstanceScope _defaultInstanceScope = InstanceScope.Singleton;
 
-		/// <summary>
-		/// The default <see cref="InstanceOwnership"/> for new registrations. Registrations
-		/// already made will not be affected by changes in this value.
-		/// </summary>
-		public InstanceOwnership DefaultInstanceOwnership
+        /// <summary>
+        /// Set the default <see cref="InstanceOwnership"/> for new registrations. Registrations
+        /// already made will not be affected by changes in this value.
+        /// </summary>
+        /// <param name="ownership">The new default ownership.</param>
+        /// <returns></returns>
+		public IDisposable SetDefaultOwnership(InstanceOwnership ownership)
 		{
-			get
-			{
-				return _defaultInstanceOwnership;
-			}
-			set
-			{
-				_defaultInstanceOwnership = value;
-			}
+            InstanceOwnership oldValue = _defaultInstanceOwnership;
+    		_defaultInstanceOwnership = ownership;
+            return new Guard(() => _defaultInstanceOwnership = oldValue);
 		}
 
 		/// <summary>
-		/// The default <see cref="InstanceScope"/> for new registrations. Registrations
+		/// Set the default <see cref="InstanceScope"/> for new registrations. Registrations
 		/// already made will not be affected by changes in this value.
 		/// </summary>
-		public InstanceScope DefaultInstanceScope
+        public IDisposable SetDefaultScope(InstanceScope scope)
 		{
-			get
-			{
-				return _defaultInstanceScope;
-			}
-			set
-			{
-				_defaultInstanceScope = value;
-			}
+            InstanceScope oldValue = _defaultInstanceScope;
+            _defaultInstanceScope = scope;
+            return new Guard(() => _defaultInstanceScope = oldValue);
 		}
 
         /// <summary>
@@ -105,8 +97,8 @@ namespace Autofac.Builder
         private void AddComponentRegistrar(ComponentRegistrar registrar)
         {
             Enforce.ArgumentNotNull(registrar, "registrar");
-            registrar.WithOwnership(DefaultInstanceOwnership);
-            registrar.WithScope(DefaultInstanceScope);
+            registrar.WithOwnership(_defaultInstanceOwnership);
+            registrar.WithScope(_defaultInstanceScope);
             RegisterModule(registrar);
         }
 

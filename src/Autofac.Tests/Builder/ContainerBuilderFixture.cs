@@ -157,7 +157,9 @@ namespace Autofac.Tests.Builder
 		public void RegisterThreeServices()
 		{
 			var target = new ContainerBuilder();
-			target.Register<Abc>().As<IA, IB, IC>();
+			target.Register<Abc>()
+                .As<IA, IB, IC>()
+                .WithScope(InstanceScope.Singleton);
 			var container = target.Build();
 			var a = container.Resolve<IA>();
 			var b = container.Resolve<IB>();
@@ -540,17 +542,22 @@ namespace Autofac.Tests.Builder
         [Test]
         public void DefaultScopeChanged()
         {
-            var factoryBuilder = new ContainerBuilder();
-            factoryBuilder.DefaultInstanceScope = InstanceScope.Factory;
-            factoryBuilder.Register<object>();
-            var factoryContainer = factoryBuilder.Build();
-            Assert.AreNotSame(factoryContainer.Resolve<object>(), factoryContainer.Resolve<object>());
+            var builder = new ContainerBuilder();
+            using (builder.SetDefaultScope(InstanceScope.Factory))
+            {
+                using (builder.SetDefaultScope(InstanceScope.Singleton))
+                {
+                    // Should have been changed to Singleton
+                    builder.Register<A2>();
+                }
 
-            var singletonBuilder = new ContainerBuilder();
-            singletonBuilder.DefaultInstanceScope = InstanceScope.Singleton;
-            singletonBuilder.Register<object>();
-            var singletonContainer = singletonBuilder.Build();
-            Assert.AreSame(singletonContainer.Resolve<object>(), singletonContainer.Resolve<object>());
+                // Should revert to Factory
+                builder.Register<A1>();
+            }
+            
+            var container = builder.Build();
+            Assert.AreNotSame(container.Resolve<A1>(), container.Resolve<A1>());
+            Assert.AreSame(container.Resolve<A2>(), container.Resolve<A2>());
         }
 
         [Test]
@@ -558,18 +565,22 @@ namespace Autofac.Tests.Builder
         public void DefaultOwnershipChanged()
         {
             var contextOwnerBuilder = new ContainerBuilder();
-            contextOwnerBuilder.DefaultInstanceOwnership = InstanceOwnership.Container;
-            var disposable = new DisposeTracker();
-            contextOwnerBuilder.Register(disposable);
-            contextOwnerBuilder.Build().Dispose();
-            Assert.IsTrue(disposable.IsDisposed);
+            using (contextOwnerBuilder.SetDefaultOwnership(InstanceOwnership.Container))
+            {
+                var disposable = new DisposeTracker();
+                contextOwnerBuilder.Register(disposable);
+                contextOwnerBuilder.Build().Dispose();
+                Assert.IsTrue(disposable.IsDisposed);
+            }
 
             var nonOwnedBuilder = new ContainerBuilder();
-            nonOwnedBuilder.DefaultInstanceOwnership = InstanceOwnership.External;
-            var notDisposed = new DisposeTracker();
-            nonOwnedBuilder.Register(notDisposed);
-            nonOwnedBuilder.Build().Dispose();
-            Assert.IsFalse(notDisposed.IsDisposed);
+            using (nonOwnedBuilder.SetDefaultOwnership(InstanceOwnership.External))
+            {
+                var notDisposed = new DisposeTracker();
+                nonOwnedBuilder.Register(notDisposed);
+                nonOwnedBuilder.Build().Dispose();
+                Assert.IsFalse(notDisposed.IsDisposed);
+            }
         }
 
         public class Named
