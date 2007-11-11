@@ -194,7 +194,7 @@ namespace Autofac
                 }
 
                 // Parent is non-null otherwise the registration check would have failed above
-                if (_outerContainer.ExportToNewContext(key, out registration))
+                if (_outerContainer.TryExportToNewContext(key, out registration))
                 {
                     disposer = _disposer;
                     RegisterComponent(registration);
@@ -263,7 +263,7 @@ namespace Autofac
         /// additional services provided by the component will also be exported.</param>
         /// <param name="registration">The new registration.</param>
         /// <returns>True if the new context could be supported.</returns>
-        bool ExportToNewContext(string key, out IComponentRegistration registration)
+        bool TryExportToNewContext(string key, out IComponentRegistration registration)
         {
             Enforce.ArgumentNotNullOrEmpty(key, "key");
 
@@ -276,11 +276,12 @@ namespace Autofac
                 }
                 else if (_outerContainer != null)
                 {
-                    return _outerContainer.ExportToNewContext(key, out registration);
+                    return _outerContainer.TryExportToNewContext(key, out registration);
                 }
                 else
                 {
-                    throw new ComponentNotRegisteredException(ServiceKeyGenerator.FormatForDisplay(key));
+                    registration = null;
+                    return false;
                 }
             }
         }

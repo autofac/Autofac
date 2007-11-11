@@ -57,5 +57,13 @@ namespace Autofac.Tests
                 Assert.Fail("Wrong exception type caught: " + ex.ToString());
             }
         }
+
+        [Test]
+        public void ServiceNotRegisteredExceptionOnIsRegistered()
+        {
+            var container = new Container();
+            var inner = container.CreateInnerContainer();
+            bool unused = inner.IsRegistered<string>();
+        }
     }
 }
