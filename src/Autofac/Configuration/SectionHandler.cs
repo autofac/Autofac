@@ -67,19 +67,6 @@ namespace Autofac.Configuration
 		}
 
         /// <summary>
-        /// Gets the collections to be registered.
-        /// </summary>
-        /// <value>The collections.</value>
-        [ConfigurationProperty(CollectionsPropertyName, IsRequired = false)]
-        public CollectionElementCollection Collections
-        {
-            get
-            {
-                return (CollectionElementCollection)this[CollectionsPropertyName];
-            }
-        }
-
-        /// <summary>
         /// Gets the default assembly to search for types in when not explicitly
         /// provided with the type name.
         /// </summary>

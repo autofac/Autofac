@@ -94,12 +94,6 @@ namespace Autofac.Configuration
                 defaultAssembly = Assembly.Load(_sectionHandler.DefaultAssembly);
             }
 
-            foreach (CollectionElement collection in _sectionHandler.Collections)
-            {
-                Type serviceType = LoadType(collection.Service, defaultAssembly);
-                builder.RegisterAsCollection(serviceType);
-            }
-
 			foreach (ModuleElement moduleElement in _sectionHandler.Modules)
 			{
 				Type moduleType = LoadType(moduleElement.Type, defaultAssembly);

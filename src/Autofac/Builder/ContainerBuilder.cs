@@ -147,34 +147,6 @@ namespace Autofac.Builder
             return result;
         }
 
-        /// <summary>
-        /// Register the IList&gt;T&lt;, ICollection&gt;T&lt; and IEnumerable&gt;T&lt;
-        /// interfaces for a service. Subsequent to this call, any registrations made
-        /// that expose the service will be accumulated in the collection registration.
-        /// </summary>
-        /// <remarks>
-        /// T must not already be registered as a service.
-        /// </remarks>
-        /// <typeparam name="T">The service type that the collection will accumulate.</typeparam>
-        public void RegisterAsCollection<T>()
-        {
-            RegisterAsCollection(typeof(T));
-        }
-        /// <summary>
-        /// Register the IList&gt;T&lt;, ICollection&gt;T&lt; and IEnumerable&gt;T&lt;
-        /// interfaces for a service. Subsequent to this call, any registrations made
-        /// that expose the service will be accumulated in the collection registration.
-        /// </summary>
-        /// <remarks>
-        /// T must not already be registered as a service.
-        /// </remarks>
-        /// <param name="collectedService">The service type that the collection will accumulate.</param>
-        public void RegisterAsCollection(Type collectedService)
-        {
-            Enforce.ArgumentNotNull(collectedService, "collectedService");
-            RegisterModule(new CollectionRegistrar(collectedService));
-        }
-
 		/// <summary>
 		/// Add a module to the container.
 		/// </summary>

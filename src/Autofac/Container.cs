@@ -50,11 +50,6 @@ namespace Autofac
         IDictionary<string, IComponentRegistration> _allServiceRegistrations = new Dictionary<string, IComponentRegistration>();
 
 		/// <summary>
-		/// The service types that have been registered as collections.
-		/// </summary>
-		IDictionary<Type, ICollectionRegistration> _collectionRegistrations = new Dictionary<Type, ICollectionRegistration>();
-
-		/// <summary>
 		/// Supports nested containers.
 		/// </summary>
 		Container _outerContainer;
@@ -144,26 +139,6 @@ namespace Autofac
 		}
 
         /// <summary>
-        /// Register a collection type.
-        /// </summary>
-        /// <param name="registration">A collection registration.</param>
-        public void RegisterCollection(ICollectionRegistration registration)
-        {
-            Enforce.ArgumentNotNull(registration, "registration");
-
-            lock (_synchRoot)
-            {
-                if (IsRegistered(registration.ItemType))
-                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,
-						  ContainerResources.CollectionItemTypeRegisteredAsService, registration.ItemType));
-
-                RegisterComponent(registration);
-
-                _collectionRegistrations[registration.ItemType] = registration;
-            }
-        }
-
-        /// <summary>
         /// Associate a registration with a service that it provides.
         /// </summary>
         /// <param name="registration">The registration.</param>
@@ -177,11 +152,7 @@ namespace Autofac
             {
                 CheckNotDisposed();
 
-                ICollectionRegistration collectionRegistration;
-                if (_collectionRegistrations.TryGetValue(serviceType, out collectionRegistration))
-                    collectionRegistration.Add(registration);
-                else
-                    _allServiceRegistrations[ServiceKeyGenerator.GenerateKey(serviceType)] = registration;
+                _allServiceRegistrations[ServiceKeyGenerator.GenerateKey(serviceType)] = registration;
             }
         }
 

@@ -373,48 +373,6 @@ namespace Autofac.Tests
             Assert.AreSame(a, disposeOrder.Dequeue());
         }
 
-        [Test]
-        public void ResolveDependenciesOfCollection()
-        {
-			var builder = new ContainerBuilder();
-
-			builder.Register<A>()
-                .WithScope(InstanceScope.Singleton);
-			builder.RegisterAsCollection<B>();
-			builder.Register<B>();
-			builder.Register<B>();
-
-			var target = builder.Build();
-
-            var bList = target.Resolve<IList<B>>();
-
-            Assert.IsNotNull(bList);
-            Assert.AreEqual(2, bList.Count);
-            Assert.IsNotNull(bList[0].A);
-            Assert.IsNotNull(bList[1].A);
-            Assert.AreSame(bList[0].A, bList[1].A);
-        }
-
-        [Test]
-        public void DependencyOnCollection()
-        {
-			var builder = new ContainerBuilder();
-
-			builder.RegisterAsCollection<A>();
-			builder.Register<A>();
-			builder.Register<A>();
-
-			builder.Register<F>();
-
-			var target = builder.Build();
-
-            F instance = target.Resolve<F>();
-
-            Assert.IsNotNull(instance);
-            Assert.IsNotNull(instance.AList);
-            Assert.AreEqual(2, instance.AList.Count);
-        }
-
 		[Test]
 		public void ResolveSingletonFromContext()
 		{

@@ -53,7 +53,6 @@
       <DependentUpon>ActivationParametersResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Builder\ActivationHandler.cs" />
-    <Compile Include="Builder\CollectionRegistrar.cs" />
     <Compile Include="Builder\ComponentActivator.cs" />
     <Compile Include="Builder\GenericRegistrar.cs" />
     <Compile Include="Builder\IReflectiveRegistrar.cs" />
@@ -110,12 +109,6 @@
     <Compile Include="Builder\ProvidedInstanceRegistrar.cs" />
     <Compile Include="Builder\IRegistrar.cs" />
     <Compile Include="Builder\ReflectionRegistrar.cs" />
-    <Compile Include="Component\Registration\CollectionRegistration.cs" />
-    <Compile Include="Component\Registration\CollectionRegistrationResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CollectionRegistrationResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Component\Registration\ContextBoundServiceList.cs" />
     <Compile Include="Component\Registration\ContextBoundServiceListResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -133,9 +126,7 @@
     <Compile Include="Configuration\ModuleElementCollection.cs" />
     <Compile Include="IModule.cs" />
     <Compile Include="IRegistrationSource.cs" />
-    <Compile Include="NamedValue.cs" />
-    <Compile Include="Configuration\CollectionElement.cs" />
-    <Compile Include="Configuration\CollectionElementCollection.cs" />
+    <Compile Include="Parameter.cs" />
     <Compile Include="Configuration\ComponentElement.cs" />
     <Compile Include="Configuration\ComponentElementCollection.cs" />
     <Compile Include="Configuration\ConfigurationSettingsReader.cs" />
@@ -162,7 +153,6 @@
     </Compile>
     <Compile Include="Component\IScope.cs" />
     <Compile Include="Disposable.cs" />
-    <Compile Include="ICollectionRegistration.cs" />
     <Compile Include="Component\IActivator.cs" />
     <Compile Include="Component\ComponentActivator.cs" />
     <Compile Include="IComponentRegistration.cs" />
@@ -236,11 +226,6 @@
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RegistrarResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Component\Registration\CollectionRegistrationResources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>CollectionRegistrationResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Component\Registration\ContextBoundServiceListResources.resx">
       <SubType>Designer</SubType>
