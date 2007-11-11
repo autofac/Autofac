@@ -381,7 +381,7 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public TService Resolve<TService>(params NamedValue[] parameters)
+        public TService Resolve<TService>(params Parameter[] parameters)
         {
             return CreateResolutionContext().Resolve<TService>(parameters);
         }
@@ -396,7 +396,7 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public object Resolve(Type serviceType, params NamedValue[] parameters)
+        public object Resolve(Type serviceType, params Parameter[] parameters)
         {
             return CreateResolutionContext().Resolve(serviceType, parameters);
         }
@@ -412,7 +412,7 @@ namespace Autofac
         /// false otherwise.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        public bool TryResolve<TService>(out TService instance, params NamedValue[] parameters)
+        public bool TryResolve<TService>(out TService instance, params Parameter[] parameters)
         {
             return CreateResolutionContext().TryResolve<TService>(out instance, parameters);
         }
@@ -428,7 +428,7 @@ namespace Autofac
         /// false otherwise.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        public bool TryResolve(Type serviceType, out object instance, params NamedValue[] parameters)
+        public bool TryResolve(Type serviceType, out object instance, params Parameter[] parameters)
         {
             return CreateResolutionContext().TryResolve(serviceType, out instance, parameters);
         }
@@ -446,7 +446,7 @@ namespace Autofac
         /// <example>
         /// container.Register&lt;ISomething&gt;(c =&gt; new Something(){ AProperty = c.ResolveOptional&lt;IOptional&gt;() });
         /// </example>
-        public TService ResolveOptional<TService>(params NamedValue[] parameters)
+        public TService ResolveOptional<TService>(params Parameter[] parameters)
         {
             return CreateResolutionContext().ResolveOptional<TService>(parameters);
         }
@@ -509,7 +509,7 @@ namespace Autofac
         /// false otherwise.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        public bool TryResolve(string componentName, out object instance, params NamedValue[] parameters)
+        public bool TryResolve(string componentName, out object instance, params Parameter[] parameters)
         {
             return CreateResolutionContext().TryResolve(componentName, out instance, parameters);
         }

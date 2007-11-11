@@ -91,13 +91,13 @@ namespace Autofac.Builder
             }
 		}
 
-        private NamedValue[] MakeNamedValues(IActivationParameters p)
+        private Parameter[] MakeNamedValues(IActivationParameters p)
         {
             Enforce.ArgumentNotNull(p, "p");
-            var result = new NamedValue[p.Count];
+            var result = new Parameter[p.Count];
             int next = 0;
             foreach (KeyValuePair<string, object> pval in p)
-                result[next++] = new NamedValue(pval.Key, pval.Value);
+                result[next++] = new Parameter(pval.Key, pval.Value);
             return result;
         }
 

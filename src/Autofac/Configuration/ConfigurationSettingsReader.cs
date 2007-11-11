@@ -75,14 +75,24 @@ namespace Autofac.Configuration
         public void Configure(Container container)
         {
             Enforce.ArgumentNotNull(container, "container");
+            var builder = new ContainerBuilder();
+            Configure(builder);
+            builder.Build(container);
+        }
+
+        /// <summary>
+        /// Configures the container builder with the registrations from the config file.
+        /// </summary>
+        /// <param name="container">The container builder.</param>
+        public void Configure(ContainerBuilder builder)
+        {
+            Enforce.ArgumentNotNull(builder, "builder");
 
             Assembly defaultAssembly = null;
             if (!string.IsNullOrEmpty(_sectionHandler.DefaultAssembly))
             {
                 defaultAssembly = Assembly.Load(_sectionHandler.DefaultAssembly);
             }
-
-            var builder = new ContainerBuilder();
 
             foreach (CollectionElement collection in _sectionHandler.Collections)
             {
@@ -123,8 +133,6 @@ namespace Autofac.Configuration
                 ComponentRegistration cr = new ComponentRegistration(services, activator);
                 builder.RegisterComponent(cr);
             }
-
-            builder.Build(container);
         }
 
         Type LoadType(string typeName, Assembly defaultAssembly)

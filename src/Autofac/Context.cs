@@ -42,7 +42,7 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public TService Resolve<TService>(params NamedValue[] parameters)
+        public TService Resolve<TService>(params Parameter[] parameters)
         {
             Enforce.ArgumentNotNull(parameters, "parameters");
             return (TService)Resolve(typeof(TService), parameters);
@@ -57,7 +57,7 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public object Resolve(Type serviceType, params NamedValue[] parameters)
+        public object Resolve(Type serviceType, params Parameter[] parameters)
         {
             Enforce.ArgumentNotNull(serviceType, "serviceType");
             Enforce.ArgumentNotNull(parameters, "parameters");
@@ -82,7 +82,7 @@ namespace Autofac
         /// <example>
         /// container.Register&lt;ISomething&gt;(c =&gt; new Something(){ AProperty = c.ResolveOptional&lt;IOptional&gt;() });
         /// </example>
-        public TService ResolveOptional<TService>(params NamedValue[] parameters)
+        public TService ResolveOptional<TService>(params Parameter[] parameters)
         {
             Enforce.ArgumentNotNull(parameters, "parameters");
             object result;
@@ -100,7 +100,7 @@ namespace Autofac
         /// false otherwise.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        public bool TryResolve<TService>(out TService instance, params NamedValue[] parameters)
+        public bool TryResolve<TService>(out TService instance, params Parameter[] parameters)
         {
             Enforce.ArgumentNotNull(parameters, "parameters");
             object untypedInstance = null;
@@ -119,7 +119,7 @@ namespace Autofac
         /// false otherwise.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        public bool TryResolve(Type serviceType, out object instance, params NamedValue[] parameters)
+        public bool TryResolve(Type serviceType, out object instance, params Parameter[] parameters)
         {
             Enforce.ArgumentNotNull(serviceType, "serviceType");
             return TryResolve(ServiceKeyGenerator.GenerateKey(serviceType), out instance, parameters);
@@ -135,7 +135,7 @@ namespace Autofac
         /// false otherwise.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        public bool TryResolve(string componentName, out object instance, params NamedValue[] parameters)
+        public bool TryResolve(string componentName, out object instance, params Parameter[] parameters)
         {
             Enforce.ArgumentNotNull(componentName, "componentName");
             Enforce.ArgumentNotNull(parameters, "parameters");
@@ -276,7 +276,7 @@ namespace Autofac
 
         #endregion
 
-        IActivationParameters MakeActivationParameters(NamedValue[] parameters)
+        IActivationParameters MakeActivationParameters(Parameter[] parameters)
         {
             Enforce.ArgumentNotNull(parameters, "parameters");
             if (parameters.Length == 0)

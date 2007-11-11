@@ -245,8 +245,8 @@ namespace Autofac.Tests.Builder
             var aVal = "Hello";
             var bVal = 42;
             var result = container.Resolve<Parameterised>(
-                new NamedValue("a", aVal),
-                new NamedValue("b", bVal));
+                new Parameter("a", aVal),
+                new Parameter("b", bVal));
             Assert.IsNotNull(result);
             Assert.AreEqual(aVal, result.A);
             Assert.AreEqual(bVal, result.B);
@@ -261,8 +261,8 @@ namespace Autofac.Tests.Builder
             var aVal = "Hello";
             var bVal = 42;
             var result = container.Resolve<Parameterised>(
-                new NamedValue("a", aVal),
-                new NamedValue("b", bVal));
+                new Parameter("a", aVal),
+                new Parameter("b", bVal));
             Assert.IsNotNull(result);
             Assert.AreEqual(aVal, result.A);
             Assert.AreEqual(bVal, result.B);
@@ -510,7 +510,7 @@ namespace Autofac.Tests.Builder
 
             var cb = new ContainerBuilder();
             cb.Register<WithParam>().
-                WithArguments(new NamedValue("i", ival));
+                WithArguments(new Parameter("i", ival));
 
             var c = cb.Build();
             var result = c.Resolve<WithParam>();
@@ -530,7 +530,7 @@ namespace Autofac.Tests.Builder
 
             var cb = new ContainerBuilder();
             cb.Register<WithProp>()
-                .WithProperties(new NamedValue("Prop", pval));
+                .WithProperties(new Parameter("Prop", pval));
 
             var c = cb.Build();
 

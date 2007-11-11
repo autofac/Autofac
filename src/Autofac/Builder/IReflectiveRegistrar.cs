@@ -26,7 +26,7 @@ namespace Autofac.Builder
         /// <returns>
         /// A registrar allowing registration to continue.
         /// </returns>
-        IReflectiveRegistrar WithArguments(params NamedValue[] additionalCtorArgs);
+        IReflectiveRegistrar WithArguments(params Parameter[] additionalCtorArgs);
 
         /// <summary>
         /// Provide explicit property values to be set on the new object.
@@ -35,6 +35,6 @@ namespace Autofac.Builder
         /// <returns></returns>
         /// <remarks>Note, supplying a null value will not prevent property injection if
         /// property injection is done through an OnActivating handler.</remarks>
-        IReflectiveRegistrar WithProperties(params NamedValue[] explicitProperties);
+        IReflectiveRegistrar WithProperties(params Parameter[] explicitProperties);
     }
 }

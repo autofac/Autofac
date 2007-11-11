@@ -50,7 +50,7 @@ namespace Autofac
 		/// <returns>The component instance that provides the service.</returns>
 		/// <exception cref="ComponentNotRegisteredException" />
 		/// <exception cref="DependencyResolutionException" />
-		TService Resolve<TService>(params NamedValue[] parameters);
+		TService Resolve<TService>(params Parameter[] parameters);
 
 		/// <summary>
 		/// Retrieve a service registered with the container.
@@ -59,7 +59,7 @@ namespace Autofac
 		/// <returns>The component instance that provides the service.</returns>
 		/// <exception cref="ComponentNotRegisteredException" />
 		/// <exception cref="DependencyResolutionException" />
-		object Resolve(Type serviceType, params NamedValue[] parameters);
+		object Resolve(Type serviceType, params Parameter[] parameters);
 
 		/// <summary>
 		/// Retrieve a service registered with the container.
@@ -69,7 +69,7 @@ namespace Autofac
 		/// <returns>True if the service was registered and its instance created;
 		/// false otherwise.</returns>
 		/// <exception cref="DependencyResolutionException" />
-        bool TryResolve<TService>(out TService instance, params NamedValue[] parameters);
+        bool TryResolve<TService>(out TService instance, params Parameter[] parameters);
 
 		/// <summary>
 		/// Retrieve a service registered with the container.
@@ -79,7 +79,7 @@ namespace Autofac
 		/// <returns>True if the service was registered and its instance created;
 		/// false otherwise.</returns>
 		/// <exception cref="DependencyResolutionException" />
-        bool TryResolve(Type serviceType, out object instance, params NamedValue[] parameters);
+        bool TryResolve(Type serviceType, out object instance, params Parameter[] parameters);
 
         /// <summary>
         /// Retrieve a service registered with the container.
@@ -91,7 +91,7 @@ namespace Autofac
         /// false otherwise.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        bool TryResolve(string componentName, out object instance, params NamedValue[] parameters);
+        bool TryResolve(string componentName, out object instance, params Parameter[] parameters);
         
         /// <summary>
 		/// Retrieve a service registered with the container.
@@ -103,7 +103,7 @@ namespace Autofac
 		/// <typeparam name="TService">The service to retrieve.</typeparam>
 		/// <returns>The component instance that provides the service, or null if
 		/// none is available.</returns>
-		TService ResolveOptional<TService>(params NamedValue[] parameters);
+		TService ResolveOptional<TService>(params Parameter[] parameters);
 
 		/// <summary>
 		/// Determine whether or not a service has been registered.

@@ -31,24 +31,18 @@ using System.Text;
 namespace Autofac
 {
     /// <summary>
-    /// Allows registrations to be accessed by the resolve infrastructure.
+    /// Represents a parameter than can be passed to a component activator.
     /// </summary>
-    interface IContainer
+    public class Parameter
     {
-        /// <summary>
-        /// Gets a registration from the container by key.
-        /// </summary>
-        /// <param name="key">The key for the registration (name or generated service key.)</param>
-        /// <param name="registration">The registration result.</param>
-        /// <param name="disposer">The disposer that should be used to dispose of instances activated by
-        /// the registration.</param>
-        /// <param name="context">The context that should be used when activating instances from the
-        /// registration.</param>
-        /// <returns></returns>
-        bool TryGetRegistration(
-            string key, 
-            out IComponentRegistration registration, 
-            out IDisposer disposer,
-            out IContext context);
+        public string Name { get; private set; }
+        public object Value { get; private set; }
+
+        public Parameter(string name, object value)
+        {
+            Enforce.ArgumentNotNull(name, "name");
+            Name = name;
+            Value = value;
+        }
     }
 }

@@ -93,7 +93,7 @@ namespace Autofac.Builder
         /// <returns>
         /// A registrar allowing registration to continue.
         /// </returns>
-        public IReflectiveRegistrar WithArguments(params NamedValue[] additionalCtorArgs)
+        public IReflectiveRegistrar WithArguments(params Parameter[] additionalCtorArgs)
         {
             Enforce.ArgumentNotNull(additionalCtorArgs, "additionalCtorArgs");
             
@@ -113,7 +113,7 @@ namespace Autofac.Builder
         /// <returns></returns>
         /// <remarks>Note, supplying a null value will not prevent property injection if
         /// property injection is done through an OnActivating handler.</remarks>
-        public IReflectiveRegistrar WithProperties(params NamedValue[] explicitProperties)
+        public IReflectiveRegistrar WithProperties(params Parameter[] explicitProperties)
         {
             Enforce.ArgumentNotNull(explicitProperties, "explicitProperties");
 
