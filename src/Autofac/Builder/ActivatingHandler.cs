@@ -8,7 +8,7 @@ namespace Autofac.Builder
     /// <summary>
     /// Utilities to handle common activation scenarios
     /// </summary>
-    public static class ActivationHandler
+    public static class ActivatingHandler
     {
         /// <summary>
         /// Inject properties from the context into the newly

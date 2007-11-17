@@ -179,7 +179,7 @@ namespace Autofac.Component.Registration
         /// to resolve the instance's dependencies.</param>
         /// <param name="parameters">Parameters that can be used in the resolution process.</param>
         /// <returns>A newly-resolved instance.</returns>
-        public object ResolveInstance(IContext context, IActivationParameters parameters, IDisposer disposer)
+        public object ResolveInstance(IContext context, IActivationParameters parameters, IDisposer disposer, out bool newInstance)
         {
             Enforce.ArgumentNotNull(context, "context");
             Enforce.ArgumentNotNull(parameters, "parameters");
@@ -193,6 +193,7 @@ namespace Autofac.Component.Registration
                 if (_scope.InstanceAvailable)
                 {
                     instance = _scope.GetInstance();
+                    newInstance = false;
                 }
                 else
                 {
@@ -207,9 +208,7 @@ namespace Autofac.Component.Registration
                         disposer.AddInstanceForDisposal((IDisposable)instance);
 
                     _scope.SetInstance(instance);
-
-                    var activatedArgs = new ActivatedEventArgs(context, this, instance);
-                    Activated(this, activatedArgs);
+                    newInstance = true;
                 }
 
                 return instance;
@@ -251,5 +250,15 @@ namespace Autofac.Component.Registration
 
         #endregion
 
-	}
+
+        #region IComponentRegistration Members
+
+        public void InstanceActivated(IContext context, object instance)
+        {
+            var activatedArgs = new ActivatedEventArgs(context, this, instance);
+            Activated(this, activatedArgs);
+        }
+
+        #endregion
+    }
 }

@@ -495,7 +495,8 @@ namespace Autofac.Tests
 				eventFired = true;
 			};
 
-			registration.ResolveInstance(container, ActivationParameters.Empty, new Disposer());
+            bool newInstance;
+			registration.ResolveInstance(container, ActivationParameters.Empty, new Disposer(), out newInstance);
 
 			Assert.IsTrue(eventFired);
 		}
@@ -595,5 +596,86 @@ namespace Autofac.Tests
 
             Assert.IsFalse(c.IsRegistered<object>());
         }
-	}
+
+        class DependsByCtor
+        {
+            public DependsByCtor(DependsByProp o)
+            {
+                Dep = o;
+            }
+
+            public DependsByProp Dep { get; private set; }
+        }
+
+        class DependsByProp
+        {
+            public DependsByCtor Dep { get; set; }
+        }
+
+        [Test]
+        public void CtorPropDependencyOkOrder1()
+        {
+            var cb = new ContainerBuilder();
+            cb.Register<DependsByCtor>();
+            cb.Register<DependsByProp>()
+                .OnActivated(ActivatedHandler.InjectProperties);
+
+            var c = cb.Build();
+            var dbp = c.Resolve<DependsByProp>();
+
+            Assert.IsNotNull(dbp.Dep);
+            Assert.IsNotNull(dbp.Dep.Dep);
+            Assert.AreSame(dbp, dbp.Dep.Dep);
+        }
+
+        [Test]
+        public void CtorPropDependencyOkOrder2()
+        {
+            var cb = new ContainerBuilder();
+            cb.Register<DependsByCtor>();
+            cb.Register<DependsByProp>()
+                .OnActivated(ActivatedHandler.InjectProperties);
+
+            var c = cb.Build();
+            var dbc = c.Resolve<DependsByCtor>();
+
+            Assert.IsNotNull(dbc.Dep);
+            Assert.IsNotNull(dbc.Dep.Dep);
+            Assert.AreSame(dbc, dbc.Dep.Dep);
+        }
+
+        [Test]
+        [ExpectedException(typeof(DependencyResolutionException))]
+       // [Ignore("Fails causing stack overflow.")]
+        public void CtorPropDependencyFactoriesOrder1()
+        {
+            var cb = new ContainerBuilder();
+            using (cb.SetDefaultScope(InstanceScope.Factory))
+            {
+                cb.Register<DependsByCtor>();
+                cb.Register<DependsByProp>()
+                    .OnActivated(ActivatedHandler.InjectProperties);
+            }
+
+            var c = cb.Build();
+            var dbp = c.Resolve<DependsByProp>();
+        }
+
+        [Test]
+        [ExpectedException(typeof(DependencyResolutionException))]
+       // [Ignore("Fails causing stack overflow.")]
+        public void CtorPropDependencyFactoriesOrder2()
+        {
+            var cb = new ContainerBuilder();
+            using (cb.SetDefaultScope(InstanceScope.Factory))
+            {
+                cb.Register<DependsByCtor>();
+                cb.Register<DependsByProp>()
+                    .OnActivated(ActivatedHandler.InjectProperties);
+            }
+
+            var c = cb.Build();
+            var dbc = c.Resolve<DependsByCtor>();
+        }
+    }
 }

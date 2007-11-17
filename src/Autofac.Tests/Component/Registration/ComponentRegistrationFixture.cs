@@ -97,8 +97,9 @@ namespace Autofac.Tests.Component.Registration
 
             var container = new Container();
 
-            target.ResolveInstance(container, ActivationParameters.Empty, new Disposer());
-            target.ResolveInstance(container, ActivationParameters.Empty, new Disposer());
+            bool newInstance;
+            target.ResolveInstance(container, ActivationParameters.Empty, new Disposer(), out newInstance);
+            target.ResolveInstance(container, ActivationParameters.Empty, new Disposer(), out newInstance);
         }
 
 		[Test]
@@ -121,7 +122,8 @@ namespace Autofac.Tests.Component.Registration
 				eventFired = true;
 			};
 
-            target.ResolveInstance(container, ActivationParameters.Empty, new Disposer());
+            bool newInstance;
+            target.ResolveInstance(container, ActivationParameters.Empty, new Disposer(), out newInstance);
 
 			Assert.IsTrue(eventFired);
 		}
@@ -146,7 +148,9 @@ namespace Autofac.Tests.Component.Registration
 				eventFired = true;
 			};
 
-            target.ResolveInstance(container, ActivationParameters.Empty, new Disposer());
+            bool newInstance;
+            target.ResolveInstance(container, ActivationParameters.Empty, new Disposer(), out newInstance);
+            target.InstanceActivated(container, instance);
 
 			Assert.IsTrue(eventFired);
 		}

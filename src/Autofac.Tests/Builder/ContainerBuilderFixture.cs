@@ -292,7 +292,7 @@ namespace Autofac.Tests.Builder
             var builder = new ContainerBuilder();
             builder.Register(val);
             builder.Register<HasSetter>()
-                .OnActivating(ActivationHandler.InjectProperties);
+                .OnActivating(ActivatingHandler.InjectProperties);
             
             var container = builder.Build();
 
@@ -327,7 +327,7 @@ namespace Autofac.Tests.Builder
             var builder = new ContainerBuilder();
             builder.Register(val);
             builder.Register<HasSetterWithValue>()
-                .OnActivating(ActivationHandler.InjectUnsetProperties);
+                .OnActivating(ActivatingHandler.InjectUnsetProperties);
             
             var container = builder.Build();
             
@@ -362,7 +362,7 @@ namespace Autofac.Tests.Builder
             var builder = new ContainerBuilder();
             builder.Register(val);
             builder.Register<HasPropReadOnly>()
-                .OnActivating(ActivationHandler.InjectProperties);
+                .OnActivating(ActivatingHandler.InjectProperties);
 
             var container = builder.Build();
 
@@ -380,7 +380,7 @@ namespace Autofac.Tests.Builder
             var builder = new ContainerBuilder();
             builder.Register(val);
             builder.Register<HasPropReadOnly>()
-                .OnActivating(ActivationHandler.InjectUnsetProperties);
+                .OnActivating(ActivatingHandler.InjectUnsetProperties);
 
             var container = builder.Build();
 
@@ -416,7 +416,7 @@ namespace Autofac.Tests.Builder
             var builder = new ContainerBuilder();
             builder.Register(val);
             builder.Register<HasPropWriteOnly>()
-                .OnActivating(ActivationHandler.InjectProperties);
+                .OnActivating(ActivatingHandler.InjectProperties);
 
             var container = builder.Build();
             var instance = container.Resolve<HasPropWriteOnly>();
@@ -433,7 +433,7 @@ namespace Autofac.Tests.Builder
             var builder = new ContainerBuilder();
             builder.Register(val);
             builder.Register<HasPropWriteOnly>()
-                .OnActivating(ActivationHandler.InjectUnsetProperties);
+                .OnActivating(ActivatingHandler.InjectUnsetProperties);
 
             var container = builder.Build();
             var instance = container.Resolve<HasPropWriteOnly>();

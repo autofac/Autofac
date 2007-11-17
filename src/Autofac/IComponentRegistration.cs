@@ -47,8 +47,10 @@ namespace Autofac
         /// <param name="context">The context that is to be used
         /// to resolve the instance's dependencies.</param>
         /// <param name="parameters">Parameters that can be used in the resolution process.</param>
+        /// <param name="disposer">The disposer.</param>
+        /// <param name="newInstance">if set to <c>true</c> a new instance was created.</param>
         /// <returns>A newly-resolved instance.</returns>
-        object ResolveInstance(IContext context, IActivationParameters parameters, IDisposer disposer);
+        object ResolveInstance(IContext context, IActivationParameters parameters, IDisposer disposer, out bool newInstance);
 
 		/// <summary>
 		/// Create a duplicate of this instance if it is semantically valid to
@@ -74,5 +76,7 @@ namespace Autofac
         /// A name that uniquely identifies this component.
         /// </summary>
         string Name { get; }
-	}
+
+        void InstanceActivated(IContext context, object instance);
+    }
 }

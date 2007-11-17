@@ -52,7 +52,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ActivationParametersResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Builder\ActivationHandler.cs" />
+    <Compile Include="Builder\ActivatedHandler.cs" />
+    <Compile Include="Builder\ActivatingHandler.cs" />
     <Compile Include="Builder\ComponentActivator.cs" />
     <Compile Include="Builder\GenericRegistrar.cs" />
     <Compile Include="Builder\IReflectiveRegistrar.cs" />
@@ -109,12 +110,6 @@
     <Compile Include="Builder\ProvidedInstanceRegistrar.cs" />
     <Compile Include="Builder\IRegistrar.cs" />
     <Compile Include="Builder\ReflectionRegistrar.cs" />
-    <Compile Include="Component\Registration\ContextBoundServiceList.cs" />
-    <Compile Include="Component\Registration\ContextBoundServiceListResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ContextBoundServiceListResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Builder\ComponentRegistrarResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -226,11 +221,6 @@
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RegistrarResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Component\Registration\ContextBoundServiceListResources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ContextBoundServiceListResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Builder\ComponentRegistrarResources.resx">
       <SubType>Designer</SubType>

@@ -7,22 +7,63 @@ using System.Globalization;
 
 namespace Autofac
 {
+    /// <summary>
+    /// Provides dependency resolution during a single resolve operation.
+    /// </summary>
     public class Context : IContext
     {
+        #region Inner classes
+
+        /// <summary>
+        /// Tracks activation events that need to be fired.
+        /// </summary>
+        class Activation
+        {
+            private IComponentRegistration Registration { get; set; }
+            private IContext Context { get; set; }
+            private object Instance { get; set; }
+
+            public Activation(IContext context, IComponentRegistration registration, object instance)
+            {
+                Context = Enforce.ArgumentNotNull(context, "context");
+                Registration = Enforce.ArgumentNotNull(registration, "registration");
+                Instance = Enforce.ArgumentNotNull(instance, "instance");
+            }
+
+            public void Activated()
+            {
+                Registration.InstanceActivated(Context, Instance);
+            }
+        }
+
+        #endregion
+
         #region Fields
 
         IContainer _container;
-
+        
+        IList<Activation> _activations = new List<Activation>();
+        
 		/// <summary>
 		/// For the duration of a single resolve operation, tracks the services
 		/// that have been requested.
 		/// </summary>
 		Stack<string> _componentResolutionStack = new Stack<string>();
 
+        /// <summary>
+        /// Catch circular dependencies that are triggered by post-resolve processing (e.g. 'OnActivated')
+        /// </summary>
+        const int MaxResolveDepth = 100;
+        int _resolveDepth = 0;
+
         #endregion
 
         #region Initialisation
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Context"/> class.
+        /// </summary>
+        /// <param name="container">The container from which to draw component registrations.</param>
         internal Context(IContainer container)
         {
             Enforce.ArgumentNotNull(container, "container");
@@ -141,43 +182,71 @@ namespace Autofac
             Enforce.ArgumentNotNull(parameters, "parameters");
 
             instance = null;
+            if (++_resolveDepth > MaxResolveDepth)
+                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture,
+                    ContextResources.MaxDepthExceeded,
+                    ServiceKeyGenerator.FormatForDisplay(componentName)));
 
-            IComponentRegistration registration;
-            IDisposer disposer;
-            IContext specificContext;
-            if (!_container.TryGetRegistration(componentName, out registration, out disposer, out specificContext))
+            try
+            {
+                IComponentRegistration registration;
+                IDisposer disposer;
+                IContext specificContext;
+                if (!_container.TryGetRegistration(componentName, out registration, out disposer, out specificContext))
+                    return false;
+
+                if (specificContext != null)
+                    return specificContext.TryResolve(componentName, out instance, parameters);
+
+                if (IsCircularDependency(componentName))
+                {
+                    string dependencyGraph = "";
+
+                    foreach (string requestor in _componentResolutionStack)
+                        dependencyGraph = ServiceKeyGenerator.FormatForDisplay(requestor) + " -> " + dependencyGraph;
+
+                    dependencyGraph += ServiceKeyGenerator.FormatForDisplay(componentName);
+
+                    throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture,
+                        "{0} ({1}.)", ContextResources.CircularDependency, dependencyGraph));
+                }
+                else
+                {
+                    bool newInstance;
+                    var activationParams = MakeActivationParameters(parameters);
+                    _componentResolutionStack.Push(componentName);
+                    try
+                    {
+                        instance = registration.ResolveInstance(this, activationParams, disposer, out newInstance);
+
+                        if (newInstance)
+                            _activations.Add(new Activation(this, registration, instance));
+                    }
+                    finally
+                    {
+                        _componentResolutionStack.Pop();
+                    }
+
+                    if (_componentResolutionStack.Count == 0)
+                        ActivationsComplete();
+
+                    return true;
+                }
+            }
+            finally
+            {
+                --_resolveDepth;
+            }
+        }
+
+        private bool IsCircularDependency(string componentName)
+        {
+            Enforce.ArgumentNotNullOrEmpty(componentName, "componentName");
+
+            if (!_componentResolutionStack.Contains(componentName))
                 return false;
 
-            if (specificContext != null)
-                return specificContext.TryResolve(componentName, out instance, parameters);
-
-            if (_componentResolutionStack.Contains(componentName))
-            {
-                string dependencyGraph = "";
-
-                foreach (string requestor in _componentResolutionStack)
-                    dependencyGraph = ServiceKeyGenerator.FormatForDisplay(requestor) + " -> " + dependencyGraph;
-
-                dependencyGraph += ServiceKeyGenerator.FormatForDisplay(componentName);
-
-                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture,
-                    "{0} ({1}.)", ContextResources.CircularDependency, dependencyGraph));
-            }
-            else
-            {
-                var activationParams = MakeActivationParameters(parameters);
-                _componentResolutionStack.Push(componentName);
-                try
-                {
-                    instance = registration.ResolveInstance(this, activationParams, disposer);
-                }
-                finally
-                {
-                    _componentResolutionStack.Pop();
-                }
-
-                return true;
-            }
+            return (_componentResolutionStack.Count(i => i == componentName) > 2);
         }
 
         /// <summary>
@@ -290,6 +359,14 @@ namespace Autofac
                     result.Add(namedValue.Name, namedValue.Value);
                 return result;
             }
+        }
+
+        void ActivationsComplete()
+        {
+            var activations = _activations;
+            _activations = new List<Activation>();
+            foreach (Activation activation in activations)
+                activation.Activated();
         }
     }
 }

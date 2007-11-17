@@ -68,5 +68,14 @@ namespace Autofac {
                 return ResourceManager.GetString("CircularDependency", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Probable circular dependency between factory-scoped components. Chain includes &apos;{0}&apos;.
+        /// </summary>
+        internal static string MaxDepthExceeded {
+            get {
+                return ResourceManager.GetString("MaxDepthExceeded", resourceCulture);
+            }
+        }
     }
 }
