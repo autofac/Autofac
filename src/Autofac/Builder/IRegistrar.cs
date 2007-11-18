@@ -36,14 +36,14 @@ namespace Autofac.Builder
 	/// no effect.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public interface IRegistrar
+	public interface IRegistrar<TSyntax>
 	{
         /// <summary>
         /// Change the service associated with the registration.
         /// </summary>
         /// <typeparam name="TService">The service that the registration will expose.</typeparam>
         /// <returns>A registrar allowing registration to continue.</returns>
-        IRegistrar As<TService>();
+        TSyntax As<TService>();
 
         /// <summary>
         /// Change the services associated with the registration.
@@ -51,7 +51,7 @@ namespace Autofac.Builder
         /// <typeparam name="TService1">The first service that the registration will expose.</typeparam>
         /// <typeparam name="TService2">The second service that the registration will expose.</typeparam>
         /// <returns>A registrar allowing registration to continue.</returns>
-        IRegistrar As<TService1, TService2>();
+        TSyntax As<TService1, TService2>();
 
         /// <summary>
         /// Change the services associated with the registration.
@@ -60,18 +60,32 @@ namespace Autofac.Builder
         /// <typeparam name="TService2">The second service that the registration will expose.</typeparam>
         /// <typeparam name="TService3">The third service that the registration will expose.</typeparam>
         /// <returns>A registrar allowing registration to continue.</returns>
-        IRegistrar As<TService1, TService2, TService3>();
+        TSyntax As<TService1, TService2, TService3>();
 
 		/// <summary>
 		/// Change the service associated with the registration.
 		/// </summary>
 		/// <param name="services">The services that the registration will expose.</param>
 		/// <returns>A registrar allowing registration to continue.</returns>
-		IRegistrar As(params Type[] services);
+        TSyntax As(params Type[] services);
 
-        IRegistrar ThroughFactory(Type factoryDelegate);
-        
-        IRegistrar ThroughFactory<TFactoryDelegate>();
+        /// <summary>
+        /// Expose the component throug a delegate factory rather than directly as a service.
+        /// Unless As(...) is called after this method, the default type registration will not be
+        /// made.
+        /// </summary>
+        /// <param name="factoryDelegate"></param>
+        /// <returns></returns>
+        TSyntax ThroughFactory(Type factoryDelegate);
+
+        /// <summary>
+        /// Expose the component throug a delegate factory rather than directly as a service.
+        /// Unless As(...) is called after this method, the default type registration will not be
+        /// made.
+        /// </summary>
+        /// <typeparam name="TFactoryDelegate"></typeparam>
+        /// <returns></returns>
+        TSyntax ThroughFactory<TFactoryDelegate>();
         
         /// <summary>
 		/// Change the ownership model associated with the registration.
@@ -79,7 +93,7 @@ namespace Autofac.Builder
 		/// </summary>
 		/// <param name="ownership">The ownership model to use.</param>
         /// <returns>A registrar allowing registration to continue.</returns>
-        IRegistrar WithOwnership(InstanceOwnership ownership);
+        TSyntax WithOwnership(InstanceOwnership ownership);
 
 		/// <summary>
 		/// Change the scope associated with the registration.
@@ -87,7 +101,7 @@ namespace Autofac.Builder
 		/// </summary>
 		/// <param name="scope">The scope model to use.</param>
         /// <returns>A registrar allowing registration to continue.</returns>
-        IRegistrar WithScope(InstanceScope scope);
+        TSyntax WithScope(InstanceScope scope);
 
         /// <summary>
         /// Call the provided handler when activating an instance. OnActivating
@@ -95,7 +109,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="handler">The handler.</param>
         /// <returns>A registrar allowing registration to continue.</returns>
-        IRegistrar OnActivating(EventHandler<ActivatingEventArgs> handler);
+        TSyntax OnActivating(EventHandler<ActivatingEventArgs> handler);
 
         /// <summary>
         /// Call the provided handler when an instance is activated. This is the
@@ -104,6 +118,6 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="handler">The handler.</param>
         /// <returns>A registrar allowing registration to continue.</returns>
-        IRegistrar OnActivated(EventHandler<ActivatedEventArgs> handler);
+        TSyntax OnActivated(EventHandler<ActivatedEventArgs> handler);
 	}
 }

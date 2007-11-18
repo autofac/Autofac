@@ -35,22 +35,23 @@ namespace Autofac.Builder
     /// <summary>
     /// Registers a regular component.
     /// </summary>
-	abstract class ComponentRegistrar : Registrar, IModule, IRegistrar
+    abstract class ConcreteRegistrar<TSyntax> : Registrar<TSyntax>, IModule, IConcreteRegistrar<TSyntax>
 	{
         Type _implementor;
+        string _name = Guid.NewGuid().ToString();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentRegistrar&lt;TComponent&gt;"/> class.
         /// </summary>
         /// <param name="implementor">The implementation type.</param>
-		protected ComponentRegistrar(Type implementor)
+		protected ConcreteRegistrar(Type implementor)
 		{
             Enforce.ArgumentNotNull(implementor, "implementor");
             _implementor = implementor;
             Services = new Type[] { };
 		}
 
-		#region IComponentRegistrar Members
+		#region IModule Members
 
         /// <summary>
         /// Registers the component.
@@ -68,7 +69,7 @@ namespace Autofac.Builder
             var activator = CreateActivator();
             Enforce.NotNull(activator);
 
-            var cr = new ComponentRegistration(services, activator, Scope.ToIScope(), Ownership);
+            var cr = new ComponentRegistration(services, activator, Scope.ToIScope(), Ownership, _name);
 
             foreach (var activatingHandler in ActivatingHandlers)
                 cr.Activating += activatingHandler;
@@ -91,6 +92,8 @@ namespace Autofac.Builder
             }
 		}
 
+		#endregion
+
         private Parameter[] MakeNamedValues(IActivationParameters p)
         {
             Enforce.ArgumentNotNull(p, "p");
@@ -101,8 +104,21 @@ namespace Autofac.Builder
             return result;
         }
 
-		#endregion
+        /// <summary>
+        /// Setst the name of the registration.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public TSyntax Named(string name)
+        {
+            _name = Enforce.ArgumentNotNullOrEmpty(name, "name");
+            return Syntax;
+        }
 
+        /// <summary>
+        /// The services exposed by this registration.
+        /// </summary>
+        /// <value></value>
 		protected override IEnumerable<Type> Services
 		{
 			get

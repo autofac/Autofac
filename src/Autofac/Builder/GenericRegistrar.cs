@@ -40,7 +40,7 @@ namespace Autofac.Builder
     /// C# (or the CLR) does not allow partially-constructed generic types like IList&lt;&gt;
     /// to be used as generic arguments.
     /// </remarks>
-	class GenericRegistrar : Registrar, IModule, IRegistrar
+	class GenericRegistrar : Registrar<IGenericRegistrar>, IModule, IGenericRegistrar
 	{
 		Type _implementor;
 
@@ -75,5 +75,14 @@ namespace Autofac.Builder
 		}
 
 		#endregion
-	}
+
+        /// <summary>
+        /// Returns this instance, correctly-typed.
+        /// </summary>
+        /// <value></value>
+        protected override IGenericRegistrar Syntax
+        {
+            get { return this; }
+        }
+    }
 }

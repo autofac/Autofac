@@ -84,7 +84,7 @@ namespace Autofac.Builder
         public IReflectiveRegistrar Register(Type implementor)
         {
             Enforce.ArgumentNotNull(implementor, "implementor");
-            var result = new ReflectionRegistrar(implementor);
+            var result = new ReflectiveRegistrar(implementor);
             AddComponentRegistrar(result);
             return result;
         }
@@ -94,7 +94,7 @@ namespace Autofac.Builder
         /// list of registrars.
         /// </summary>
         /// <param name="registrar"></param>
-        private void AddComponentRegistrar(ComponentRegistrar registrar)
+        private void AddComponentRegistrar<T>(ConcreteRegistrar<T> registrar)
         {
             Enforce.ArgumentNotNull(registrar, "registrar");
             registrar.WithOwnership(_defaultInstanceOwnership);
@@ -110,7 +110,7 @@ namespace Autofac.Builder
         /// <returns>
         /// A registrar allowing details of the registration to be customised.
         /// </returns>
-        public IRegistrar Register<T>(T instance)
+        public IProvidedInstanceRegistrar Register<T>(T instance)
 		{
 			var result = new ProvidedInstanceRegistrar(instance);
             AddComponentRegistrar(result);
@@ -125,7 +125,7 @@ namespace Autofac.Builder
         /// <returns>
         /// A registrar allowing details of the registration to be customised.
         /// </returns>
-        public IRegistrar Register<T>(ComponentActivator<T> creator)
+        public IDelegateRegistrar Register<T>(ComponentActivator<T> creator)
         {
             Enforce.ArgumentNotNull(creator, "creator");
             return Register<T>((c, p) => creator(c));
@@ -139,7 +139,7 @@ namespace Autofac.Builder
         /// <returns>
         /// A registrar allowing details of the registration to be customised.
         /// </returns>
-        public IRegistrar Register<T>(ComponentActivatorWithParameters<T> creator)
+        public IDelegateRegistrar Register<T>(ComponentActivatorWithParameters<T> creator)
         {
             Enforce.ArgumentNotNull(creator, "creator");
             var result = new DelegateRegistrar(typeof(T), (c, p) => creator(c, p));
@@ -161,7 +161,7 @@ namespace Autofac.Builder
 		/// Concrete types will be made as they are requested, e.g. with <code>Resolve&lt;Repository&lt;int&gt;&gt;()</code>.
 		/// </summary>
 		/// <returns></returns>
-		public IRegistrar RegisterGeneric(Type implementor)
+		public IGenericRegistrar RegisterGeneric(Type implementor)
 		{
             Enforce.ArgumentNotNull(implementor, "implementor");
 			var result = new GenericRegistrar(implementor);

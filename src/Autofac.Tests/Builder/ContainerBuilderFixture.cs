@@ -635,5 +635,24 @@ namespace Autofac.Tests.Builder
             Assert.IsNotNull(fred);
             Assert.AreEqual(name, fred.Name);
         }
+
+        [Test]
+        public void RegisterWithName()
+        {
+            var name = "object.registration";
+
+            var cb = new ContainerBuilder();
+            cb.Register<object>().Named(name);
+
+            var c = cb.Build();
+
+            object o1;
+            Assert.IsTrue(c.TryResolve(name, out o1));
+            Assert.IsNotNull(o1);
+
+            object o2;
+            Assert.IsTrue(c.TryResolve(typeof(object), out o2));
+            Assert.IsNotNull(o2);
+        }
     }
 }

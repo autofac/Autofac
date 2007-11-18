@@ -56,11 +56,15 @@
     <Compile Include="Builder\ActivatingHandler.cs" />
     <Compile Include="Builder\ComponentActivator.cs" />
     <Compile Include="Builder\GenericRegistrar.cs" />
+    <Compile Include="Builder\IConcreteRegistrar.cs" />
+    <Compile Include="Builder\IDelegateRegistrar.cs" />
+    <Compile Include="Builder\IGenericRegistrar.cs" />
+    <Compile Include="Builder\IProvidedInstanceRegistrar.cs" />
     <Compile Include="Builder\IReflectiveRegistrar.cs" />
-    <Compile Include="Builder\ReflectionRegistrarResources.Designer.cs">
+    <Compile Include="Builder\ReflectiveRegistrarResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ReflectionRegistrarResources.resx</DependentUpon>
+      <DependentUpon>ReflectiveRegistrarResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Builder\Registrar.cs" />
     <Compile Include="Builder\RegistrarResources.Designer.cs">
@@ -103,13 +107,13 @@
     <Compile Include="IContainer.cs" />
     <Compile Include="IDisposer.cs" />
     <Compile Include="InstanceOwnership.cs" />
-    <Compile Include="Builder\ComponentRegistrar.cs" />
+    <Compile Include="Builder\ConcreteRegistrar.cs" />
     <Compile Include="InstanceScope.cs" />
     <Compile Include="Builder\ContainerBuilder.cs" />
     <Compile Include="Builder\DelegateRegistrar.cs" />
     <Compile Include="Builder\ProvidedInstanceRegistrar.cs" />
     <Compile Include="Builder\IRegistrar.cs" />
-    <Compile Include="Builder\ReflectionRegistrar.cs" />
+    <Compile Include="Builder\ReflectiveRegistrar.cs" />
     <Compile Include="Builder\ComponentRegistrarResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -212,10 +216,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ActivationParametersResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Builder\ReflectionRegistrarResources.resx">
+    <EmbeddedResource Include="Builder\ReflectiveRegistrarResources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ReflectionRegistrarResources.Designer.cs</LastGenOutput>
+      <LastGenOutput>ReflectiveRegistrarResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Builder\RegistrarResources.resx">
       <SubType>Designer</SubType>

@@ -35,7 +35,7 @@ namespace Autofac.Builder
     /// <summary>
     /// Register a component to be created through reflection.
     /// </summary>
-	class ReflectionRegistrar : ComponentRegistrar, IReflectiveRegistrar
+	class ReflectiveRegistrar : ConcreteRegistrar<IReflectiveRegistrar>, IReflectiveRegistrar
 	{
         Type _implementor;
         IConstructorSelector _ctorSelector = new MostParametersConstructorSelector();
@@ -45,7 +45,7 @@ namespace Autofac.Builder
         /// <summary>
         /// Initializes a new instance of the <see cref="ReflectionRegistrar"/> class.
         /// </summary>
-		public ReflectionRegistrar(Type implementor)
+		public ReflectiveRegistrar(Type implementor)
 			: base(implementor)
 		{
             Enforce.ArgumentNotNull(implementor, "implementor");
@@ -78,7 +78,7 @@ namespace Autofac.Builder
                 }
 
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-                    ReflectionRegistrarResources.TypeDoesNotProvideCtor,
+                    ReflectiveRegistrarResources.TypeDoesNotProvideCtor,
                     _implementor, sig));
             }
             _ctorSelector = new SpecificConstructorSelector(ctorSignature);
@@ -139,6 +139,15 @@ namespace Autofac.Builder
                 _additionalCtorArgs,
                 _explicitProperties,
                 _ctorSelector);
+        }
+
+        /// <summary>
+        /// Returns this instance, correctly-typed.
+        /// </summary>
+        /// <value></value>
+        protected override IReflectiveRegistrar Syntax
+        {
+            get { return this; }
         }
     }
 }

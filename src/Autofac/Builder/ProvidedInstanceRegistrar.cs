@@ -31,7 +31,7 @@ namespace Autofac.Builder
     /// <summary>
     /// Register a component using a provided instance.
     /// </summary>
-	class ProvidedInstanceRegistrar : ComponentRegistrar
+	class ProvidedInstanceRegistrar : ConcreteRegistrar<IProvidedInstanceRegistrar>, IProvidedInstanceRegistrar
 	{
         object _instance;
 
@@ -53,5 +53,14 @@ namespace Autofac.Builder
         {
             return new ProvidedInstanceActivator(_instance);
         }
-	}
+
+        /// <summary>
+        /// Returns this instance, correctly-typed.
+        /// </summary>
+        /// <value></value>
+        protected override IProvidedInstanceRegistrar Syntax
+        {
+            get { return this; }
+        }
+    }
 }

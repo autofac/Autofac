@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Autofac.Builder
 {
@@ -9,7 +6,7 @@ namespace Autofac.Builder
     /// Adds methods to the IRegistrar interface to add additional
     /// information for components created using reflection.
     /// </summary>
-    public interface IReflectiveRegistrar : IRegistrar
+    public interface IReflectiveRegistrar : IConcreteRegistrar<IReflectiveRegistrar>
     {
         /// <summary>
         /// Enforce that the specific constructor with the provided signature is used.

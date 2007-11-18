@@ -35,7 +35,7 @@ namespace Autofac.Builder
 	/// <summary>
 	/// Base class for component registrars.
 	/// </summary>
-	abstract class Registrar : IRegistrar
+	abstract class Registrar<TSyntax> : IRegistrar<TSyntax>
 	{
 		IEnumerable<Type> _services;
 		InstanceOwnership _ownership = InstanceOwnership.Container;
@@ -44,6 +44,11 @@ namespace Autofac.Builder
         IList<EventHandler<ActivatedEventArgs>> _activatedHandlers = new List<EventHandler<ActivatedEventArgs>>();
         IList<Type> _factoryDelegates = new List<Type>();
 
+        /// <summary>
+        /// Returns this instance, correctly-typed.
+        /// </summary>
+        protected abstract TSyntax Syntax { get; }
+
 		#region IRegistrar Members
 
 		/// <summary>
@@ -51,7 +56,7 @@ namespace Autofac.Builder
 		/// </summary>
 		/// <typeparam name="TService">The service that the registration will expose.</typeparam>
 		/// <returns>A registrar allowing registration to continue.</returns>
-		public IRegistrar As<TService>()
+        public TSyntax As<TService>()
 		{
 			return As(new[] { typeof(TService) });
 		}
@@ -62,7 +67,7 @@ namespace Autofac.Builder
 		/// <typeparam name="TService1">The first service that the registration will expose.</typeparam>
 		/// <typeparam name="TService2">The second service that the registration will expose.</typeparam>
 		/// <returns>A registrar allowing registration to continue.</returns>
-		public IRegistrar As<TService1, TService2>()
+        public TSyntax As<TService1, TService2>()
 		{
             return As(new[] { typeof(TService1), typeof(TService2) });
 		}
@@ -74,7 +79,7 @@ namespace Autofac.Builder
 		/// <typeparam name="TService2">The second service that the registration will expose.</typeparam>
 		/// <typeparam name="TService3">The third service that the registration will expose.</typeparam>
 		/// <returns>A registrar allowing registration to continue.</returns>
-		public IRegistrar As<TService1, TService2, TService3>()
+        public TSyntax As<TService1, TService2, TService3>()
 		{
 			return As(new[] { typeof(TService1), typeof(TService2), typeof(TService3) });
 		}
@@ -86,14 +91,14 @@ namespace Autofac.Builder
 		/// <returns>
 		/// A registrar allowing registration to continue.
 		/// </returns>
-		public IRegistrar As(params Type[] services)
+        public TSyntax As(params Type[] services)
 		{
             Enforce.ArgumentNotNull(services, "services");
 			Services = services;
-			return this;
+            return Syntax;
 		}
 
-        public IRegistrar ThroughFactory(Type factoryDelegate)
+        public TSyntax ThroughFactory(Type factoryDelegate)
         {
             Enforce.ArgumentNotNull(factoryDelegate, "factoryDelegate");
             MethodInfo invoke = factoryDelegate.GetMethod("Invoke");
@@ -105,10 +110,10 @@ namespace Autofac.Builder
                     RegistrarResources.DelegateReturnsVoid, factoryDelegate));
 
             FactoryDelegates.Add(factoryDelegate);
-            return this;
+            return Syntax;
         }
 
-        public IRegistrar ThroughFactory<TFactoryDelegate>()
+        public TSyntax ThroughFactory<TFactoryDelegate>()
         {
             return ThroughFactory(typeof(TFactoryDelegate));
         }
@@ -121,10 +126,10 @@ namespace Autofac.Builder
 		/// <returns>
 		/// A registrar allowing registration to continue.
 		/// </returns>
-		public IRegistrar WithOwnership(InstanceOwnership ownership)
+        public TSyntax WithOwnership(InstanceOwnership ownership)
 		{
 			Ownership = ownership;
-			return this;
+            return Syntax;
 		}
 
 		/// <summary>
@@ -135,10 +140,10 @@ namespace Autofac.Builder
 		/// <returns>
 		/// A registrar allowing registration to continue.
 		/// </returns>
-		public IRegistrar WithScope(InstanceScope scope)
+        public TSyntax WithScope(InstanceScope scope)
 		{
 			Scope = scope;
-			return this;
+            return Syntax;
 		}
 
         /// <summary>
@@ -146,11 +151,11 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="handler">The handler.</param>
         /// <returns>A registrar allowing registration to continue.</returns>
-        public IRegistrar OnActivating(EventHandler<ActivatingEventArgs> handler)
+        public TSyntax OnActivating(EventHandler<ActivatingEventArgs> handler)
         {
             Enforce.ArgumentNotNull(handler, "handler");
             _activatingHandlers.Add(handler);
-            return this;
+            return Syntax;
         }
 
         /// <summary>
@@ -158,11 +163,11 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="handler">The handler.</param>
         /// <returns>A registrar allowing registration to continue.</returns>
-        public IRegistrar OnActivated(EventHandler<ActivatedEventArgs> handler)
+        public TSyntax OnActivated(EventHandler<ActivatedEventArgs> handler)
         {
             Enforce.ArgumentNotNull(handler, "handler");
             _activatedHandlers.Add(handler);
-            return this;
+            return Syntax;
         }
 
 		#endregion

@@ -23,46 +23,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using Autofac.Component.Activation;
-using Autofac.Component;
-
 namespace Autofac.Builder
 {
     /// <summary>
-    /// Register a component using a delegate.
+    /// Provides builder syntax for delegate registrations.
     /// </summary>
-	class DelegateRegistrar : ConcreteRegistrar<IDelegateRegistrar>, IDelegateRegistrar
-	{
-        ComponentActivator _creator;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DelegateRegistrar&lt;TComponent&gt;"/> class.
-        /// </summary>
-        /// <param name="creator">The creator.</param>
-        public DelegateRegistrar(Type implementor, ComponentActivator creator)
-			: base(implementor)
-		{
-            Enforce.ArgumentNotNull(creator, "creator");
-            _creator = creator;
-		}
-
-        /// <summary>
-        /// Creates the activator for the registration.
-        /// </summary>
-        /// <returns>An activator.</returns>
-        protected override IActivator CreateActivator()
-        {
-            return new DelegateActivator(_creator);
-        }
-
-        /// <summary>
-        /// Returns this instance, correctly-typed.
-        /// </summary>
-        /// <value></value>
-        protected override IDelegateRegistrar Syntax
-        {
-            get { return this; }
-        }
+    public interface IDelegateRegistrar : IConcreteRegistrar<IDelegateRegistrar>
+    {
     }
 }
