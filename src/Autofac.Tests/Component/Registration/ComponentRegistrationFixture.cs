@@ -15,18 +15,18 @@ namespace Autofac.Tests.Component.Registration
         [Test]
         public void Construct()
         {
-            var services = new[] { typeof(object), typeof(string) };
+            var services = new Service[] { new TypedService(typeof(object)), new TypedService(typeof(string)) };
 
             var target = new ComponentRegistration(
                                  services,
                                  new ProvidedInstanceActivator("Hello"),
                                  new ContainerScope());
 
-            var actualServices = new List<Type>(target.Services);
+            var actualServices = new List<Service>(target.Services);
 
             Assert.AreEqual(services.Length, actualServices.Count);
 
-            foreach (Type service in services)
+            foreach (Service service in services)
                 Assert.IsTrue(actualServices.Contains(service));
         }
 
@@ -44,7 +44,7 @@ namespace Autofac.Tests.Component.Registration
         public void ConstructNoServicesOk()
         {
             var target = new ComponentRegistration(
-                                 new Type[] { },
+                                 new Service[] { },
                                  new ProvidedInstanceActivator(new object()),
                                  new ContainerScope());
         }
@@ -54,7 +54,7 @@ namespace Autofac.Tests.Component.Registration
         public void ConstructActivatorNull()
         {
             var target = new ComponentRegistration(
-                                 new[] { typeof(object) },
+                                 new Service[] { new TypedService(typeof(object)) },
                                  null,
                                  new ContainerScope());
         }
@@ -64,7 +64,7 @@ namespace Autofac.Tests.Component.Registration
         public void ConstructScopeNull()
         {
             var target = new ComponentRegistration(
-                                 new[] { typeof(object) },
+                                 new Service[] { new TypedService(typeof(object)) },
                                  new ProvidedInstanceActivator(new object()),
                                  null);
         }
@@ -91,7 +91,7 @@ namespace Autofac.Tests.Component.Registration
         public void FactoryAndInstanceIncompatible()
         {
             var target = new ComponentRegistration(
-                             new[] { typeof(object) },
+                             new Service[] { new TypedService(typeof(object)) },
                              new ProvidedInstanceActivator(new object()),
                              new FactoryScope());
 
@@ -108,7 +108,7 @@ namespace Autofac.Tests.Component.Registration
 			var instance = new object();
 			var container = new Container();
 			var target = new ComponentRegistration(
-							new[] { typeof(object) },
+							new Service[] { new TypedService(typeof(object)) },
 							new ProvidedInstanceActivator(instance));
 
 			bool eventFired = false;
@@ -134,7 +134,7 @@ namespace Autofac.Tests.Component.Registration
 			var instance = new object();
 			var container = new Container();
 			var target = new ComponentRegistration(
-							new[] { typeof(object) },
+							new Service[] { new TypedService(typeof(object)) },
 							new ProvidedInstanceActivator(instance));
 
 			bool eventFired = false;

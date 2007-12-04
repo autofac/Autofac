@@ -37,6 +37,7 @@ namespace Autofac.Builder
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	public interface IRegistrar<TSyntax>
+        where TSyntax : IRegistrar<TSyntax>
 	{
         /// <summary>
         /// Change the service associated with the registration.
@@ -62,12 +63,19 @@ namespace Autofac.Builder
         /// <returns>A registrar allowing registration to continue.</returns>
         TSyntax As<TService1, TService2, TService3>();
 
-		/// <summary>
-		/// Change the service associated with the registration.
-		/// </summary>
-		/// <param name="services">The services that the registration will expose.</param>
-		/// <returns>A registrar allowing registration to continue.</returns>
+        /// <summary>
+        /// Change the service associated with the registration.
+        /// </summary>
+        /// <param name="services">The services that the registration will expose.</param>
+        /// <returns>A registrar allowing registration to continue.</returns>
         TSyntax As(params Type[] services);
+
+        /// <summary>
+        /// Change the service associated with the registration.
+        /// </summary>
+        /// <param name="services">The services that the registration will expose.</param>
+        /// <returns>A registrar allowing registration to continue.</returns>
+        TSyntax As(params Service[] services);
 
         /// <summary>
         /// Expose the component throug a delegate factory rather than directly as a service.
@@ -102,6 +110,14 @@ namespace Autofac.Builder
 		/// <param name="scope">The scope model to use.</param>
         /// <returns>A registrar allowing registration to continue.</returns>
         TSyntax WithScope(InstanceScope scope);
+
+        /// <summary>
+        /// Calls the provided handler when the registration is made on the
+        /// container being built.
+        /// </summary>
+        /// <param name="handler">The handler.</param>
+        /// <returns>A registrar allowing registration to continue.</returns>
+        TSyntax OnRegistered(EventHandler<RegisteredEventArgs> handler);
 
         /// <summary>
         /// Call the provided handler when activating an instance. OnActivating

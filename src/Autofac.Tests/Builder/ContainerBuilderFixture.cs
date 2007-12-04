@@ -5,6 +5,7 @@ using NUnit.Framework;
 using Autofac.Builder;
 using Autofac.Component.Activation;
 using Autofac.Component.Registration;
+using System.Linq;
 
 namespace Autofac.Tests.Builder
 {
@@ -180,7 +181,7 @@ namespace Autofac.Tests.Builder
 				if (container == null) throw new ArgumentNullException("container");
 				ConfigureCalled = true;
 				container.RegisterComponent(new ComponentRegistration(
-					new[] { typeof(object) },
+					new Service[] { new TypedService(typeof(object)) },
 					new ProvidedInstanceActivator(new object())));
 			}
 
@@ -651,8 +652,37 @@ namespace Autofac.Tests.Builder
             Assert.IsNotNull(o1);
 
             object o2;
-            Assert.IsTrue(c.TryResolve(typeof(object), out o2));
-            Assert.IsNotNull(o2);
+            Assert.IsFalse(c.TryResolve(typeof(object), out o2));
+            //Assert.IsNotNull(o2);
+        }
+
+        [Test]
+        public void RegisterCollection()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterCollection<string>()
+                .As<IEnumerable<string>>()
+                .Named("my bag of string");
+
+            var s1 = "hello";
+            var s2 = "world";
+
+            builder.Register(s1)
+                .Named("my stringy string")
+                .MemberOf(typeof(IEnumerable<string>));
+
+            builder.Register(s2)
+                .Named("my slick string")
+                .MemberOf(typeof(IEnumerable<string>));
+
+            var container = builder.Build();
+
+            var strings = container.Resolve<IEnumerable<string>>();
+
+            Assert.AreEqual(2, strings.Count());
+            Assert.IsTrue(strings.Contains(s1));
+            Assert.IsTrue(strings.Contains(s2));
         }
     }
 }

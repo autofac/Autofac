@@ -25,10 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Autofac.Component.Activation;
-using Autofac.Component;
-using Autofac.Component.Registration;
 
 namespace Autofac.Builder
 {
@@ -55,6 +51,17 @@ namespace Autofac.Builder
             return new Guard(() => _defaultInstanceOwnership = oldValue);
 		}
 
+        /// <summary>
+        /// The default <see cref="InstanceOwnership"/> for new registrations.
+        /// </summary>
+        public InstanceOwnership DefaultOwnership
+        {
+            get
+            {
+                return _defaultInstanceOwnership;
+            }
+        }
+
 		/// <summary>
 		/// Set the default <see cref="InstanceScope"/> for new registrations. Registrations
 		/// already made will not be affected by changes in this value.
@@ -67,84 +74,14 @@ namespace Autofac.Builder
 		}
 
         /// <summary>
-        /// Register a component to be created through reflection.
+        /// The default <see cref="InstanceScope"/> for new registrations.
         /// </summary>
-        /// <typeparam name="T">The type of the component.</typeparam>
-        /// <returns>A registrar allowing details of the registration to be customised.</returns>
-		public IReflectiveRegistrar Register<T>()
-		{
-			return Register(typeof(T));
-		}
-
-        /// <summary>
-        /// Register a component to be created through reflection.
-        /// </summary>
-        /// <param name="implementor">The type of the component.</param>
-        /// <returns>A registrar allowing details of the registration to be customised.</returns>
-        public IReflectiveRegistrar Register(Type implementor)
+        public InstanceScope DefaultScope
         {
-            Enforce.ArgumentNotNull(implementor, "implementor");
-            var result = new ReflectiveRegistrar(implementor);
-            AddComponentRegistrar(result);
-            return result;
-        }
-
-        /// <summary>
-        /// Set the defaults on a regular component registrar then add it to the
-        /// list of registrars.
-        /// </summary>
-        /// <param name="registrar"></param>
-        private void AddComponentRegistrar<T>(ConcreteRegistrar<T> registrar)
-        {
-            Enforce.ArgumentNotNull(registrar, "registrar");
-            registrar.WithOwnership(_defaultInstanceOwnership);
-            registrar.WithScope(_defaultInstanceScope);
-            RegisterModule(registrar);
-        }
-
-        /// <summary>
-        /// Register a component using a provided instance.
-        /// </summary>
-        /// <typeparam name="T">The type of the component.</typeparam>
-        /// <param name="instance">The instance.</param>
-        /// <returns>
-        /// A registrar allowing details of the registration to be customised.
-        /// </returns>
-        public IProvidedInstanceRegistrar Register<T>(T instance)
-		{
-			var result = new ProvidedInstanceRegistrar(instance);
-            AddComponentRegistrar(result);
-			return result;
-		}
-
-        /// <summary>
-        /// Register a component that will be created using a provided delegate.
-        /// </summary>
-        /// <typeparam name="T">The type of the component.</typeparam>
-        /// <param name="creator">The creator.</param>
-        /// <returns>
-        /// A registrar allowing details of the registration to be customised.
-        /// </returns>
-        public IDelegateRegistrar Register<T>(ComponentActivator<T> creator)
-        {
-            Enforce.ArgumentNotNull(creator, "creator");
-            return Register<T>((c, p) => creator(c));
-        }
-
-        /// <summary>
-        /// Register a component that will be created using a provided delegate.
-        /// </summary>
-        /// <typeparam name="T">The type of the component.</typeparam>
-        /// <param name="creator">The creator.</param>
-        /// <returns>
-        /// A registrar allowing details of the registration to be customised.
-        /// </returns>
-        public IDelegateRegistrar Register<T>(ComponentActivatorWithParameters<T> creator)
-        {
-            Enforce.ArgumentNotNull(creator, "creator");
-            var result = new DelegateRegistrar(typeof(T), (c, p) => creator(c, p));
-            AddComponentRegistrar(result);
-            return result;
+            get
+            {
+                return _defaultInstanceScope;
+            }
         }
 
 		/// <summary>
@@ -153,20 +90,8 @@ namespace Autofac.Builder
 		/// <param name="module">The module to add.</param>
 		public void RegisterModule(IModule module)
 		{
+            Enforce.ArgumentNotNull(module, "module");
 			_registrars.Add(module);
-		}
-
-		/// <summary>
-		/// Register an un-parameterised generic type, e.g. <code>Repository&lt;&gt</code>.
-		/// Concrete types will be made as they are requested, e.g. with <code>Resolve&lt;Repository&lt;int&gt;&gt;()</code>.
-		/// </summary>
-		/// <returns></returns>
-		public IGenericRegistrar RegisterGeneric(Type implementor)
-		{
-            Enforce.ArgumentNotNull(implementor, "implementor");
-			var result = new GenericRegistrar(implementor);
-            RegisterModule(result);
-			return result;
 		}
 
         /// <summary>
@@ -179,35 +104,6 @@ namespace Autofac.Builder
             RegisterModule(new RegistrationRegistrar(registration));
         }
 
-        /// <summary>
-        /// Register a regular component activator (with parameters)
-        /// but expose it through a delegate type. The resolved delegate's
-        /// parameters will be provided to the activator as named values.
-        /// </summary>
-        /// <typeparam name="TCreator">Delegate type that will be resolvable.</typeparam>
-        /// <param name="creator">Activator that will create the result value of
-        /// calls to the delegate.</param>
-        public void RegisterFactory<TCreator>(ComponentActivator creator)
-        {
-            RegisterFactory(typeof(TCreator), creator);
-        }
-
-        /// <summary>
-        /// Register a regular component activator (with parameters)
-        /// but expose it through a delegate type. The resolved delegate's
-        /// parameters will be provided to the activator as named values.
-        /// </summary>
-        /// <typeparam name="TCreator">Delegate type that will be resolvable.</typeparam>
-        /// <param name="creator">Activator that will create the result value of
-        /// calls to the delegate.</param>
-        public void RegisterFactory(Type factoryDelegate, ComponentActivator creator)
-        {
-            Enforce.ArgumentNotNull(creator, "creator");
-            Enforce.ArgumentNotNull(factoryDelegate, "factoryDelegate");
-
-            RegisterComponent(new ContextAwareDelegateRegistration(factoryDelegate, creator));
-        }
-        
         /// <summary>
 		/// Create a new container with the registrations that have been built so far.
 		/// </summary>

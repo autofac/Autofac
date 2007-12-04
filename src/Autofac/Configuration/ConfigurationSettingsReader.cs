@@ -117,12 +117,12 @@ namespace Autofac.Configuration
 						parameters,
 						properties);
 
-                IList<Type> services = new List<Type>();
+                IList<Service> services = new List<Service>();
                 if (!string.IsNullOrEmpty(component.Service))
-                    services.Add(LoadType(component.Service, defaultAssembly));
+                    services.Add(new TypedService(LoadType(component.Service, defaultAssembly)));
 
                 foreach (ServiceElement service in component.Services)
-                    services.Add(LoadType(service.Type, defaultAssembly));
+                    services.Add(new TypedService(LoadType(service.Type, defaultAssembly)));
 
                 ComponentRegistration cr = new ComponentRegistration(services, activator);
                 builder.RegisterComponent(cr);

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.20706</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -54,18 +54,26 @@
     </Compile>
     <Compile Include="Builder\ActivatedHandler.cs" />
     <Compile Include="Builder\ActivatingHandler.cs" />
+    <Compile Include="Builder\CollectionRegistrar.cs" />
     <Compile Include="Builder\ComponentActivator.cs" />
+    <Compile Include="Builder\DelegateRegistrationBuilder.cs" />
+    <Compile Include="Builder\FactoryRegistrationBuilder.cs" />
     <Compile Include="Builder\GenericRegistrar.cs" />
+    <Compile Include="Builder\GenericRegistrationBuilder.cs" />
+    <Compile Include="Builder\ICollectionRegistrar.cs" />
     <Compile Include="Builder\IConcreteRegistrar.cs" />
     <Compile Include="Builder\IDelegateRegistrar.cs" />
     <Compile Include="Builder\IGenericRegistrar.cs" />
     <Compile Include="Builder\IProvidedInstanceRegistrar.cs" />
     <Compile Include="Builder\IReflectiveRegistrar.cs" />
+    <Compile Include="Builder\ProvidedInstanceRegistrationBuilder.cs" />
     <Compile Include="Builder\ReflectiveRegistrarResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ReflectiveRegistrarResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Builder\ReflectiveRegistrationBuilder.cs" />
+    <Compile Include="Builder\RegisteredEventArgs.cs" />
     <Compile Include="Builder\Registrar.cs" />
     <Compile Include="Builder\RegistrarResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -73,6 +81,13 @@
       <DependentUpon>RegistrarResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Builder\RegistrationRegistrar.cs" />
+    <Compile Include="Builder\CollectionRegistrationBuilder.cs" />
+    <Compile Include="Component\Registration\ServiceListRegistration.cs" />
+    <Compile Include="Component\Registration\GenericRegistrationHandlerResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GenericRegistrationHandlerResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Component\Scope\InstanceScopeFactory.cs" />
     <Compile Include="Component\Scope\InstanceScopeFactoryResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -125,6 +140,7 @@
     <Compile Include="Configuration\ModuleElementCollection.cs" />
     <Compile Include="IModule.cs" />
     <Compile Include="IRegistrationSource.cs" />
+    <Compile Include="NamedService.cs" />
     <Compile Include="Parameter.cs" />
     <Compile Include="Configuration\ComponentElement.cs" />
     <Compile Include="Configuration\ComponentElementCollection.cs" />
@@ -188,7 +204,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ReflectionActivatorResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ServiceKeyGenerator.cs" />
+    <Compile Include="Service.cs" />
     <Compile Include="ComponentNotRegisteredException.cs" />
     <Compile Include="ComponentNotRegisteredExceptionResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -207,8 +223,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SpecificConstructorSelectorResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Component\Registration\InterceptingDelegateActivator.cs" />
+    <Compile Include="Component\Activation\InterceptingDelegateActivator.cs" />
     <Compile Include="Component\Registration\ContextAwareDelegateRegistration.cs" />
+    <Compile Include="TypedService.cs" />
+    <Compile Include="UniqueService.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ActivationParametersResources.resx">
@@ -235,6 +253,11 @@
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ComponentRegistrationResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\Registration\GenericRegistrationHandlerResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>GenericRegistrationHandlerResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Component\Scope\InstanceScopeFactoryResources.resx">
       <SubType>Designer</SubType>

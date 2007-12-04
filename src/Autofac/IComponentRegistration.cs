@@ -36,9 +36,9 @@ namespace Autofac
     public interface IComponentRegistration : IDisposable
 	{
         /// <summary>
-        /// The services exposed by the component.
+        /// The services (named and typed) exposed by the component.
         /// </summary>
-        IEnumerable<Type> Services { get; }
+        IEnumerable<Service> Services { get; }
 
         /// <summary>
         /// 	<i>Must</i> return a valid instance, or throw
@@ -73,10 +73,11 @@ namespace Autofac
 		event EventHandler<ActivatedEventArgs> Activated;
 
         /// <summary>
-        /// A name that uniquely identifies this component.
+        /// Called by the container once an instance has been fully constructed, including
+        /// any requested objects that depend on the instance.
         /// </summary>
-        string Name { get; }
-
+        /// <param name="context">The context in which the instance was activated.</param>
+        /// <param name="instance">The instance.</param>
         void InstanceActivated(IContext context, object instance);
     }
 }

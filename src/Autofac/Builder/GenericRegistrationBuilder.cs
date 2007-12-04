@@ -28,9 +28,22 @@ using System;
 namespace Autofac.Builder
 {
     /// <summary>
-    /// Provides builder syntax for generic registrations.
+    /// Extends ContainerBuilder to register generic types.
     /// </summary>
-    public interface IGenericRegistrar : IRegistrar<IGenericRegistrar>
+    public static class GenericRegistrarBuilder
     {
+        /// <summary>
+        /// Register an un-parameterised generic type, e.g. <code>Repository&lt;&gt</code>.
+        /// Concrete types will be made as they are requested, e.g. with <code>Resolve&lt;Repository&lt;int&gt;&gt;()</code>.
+        /// </summary>
+        /// <returns></returns>
+        public static IGenericRegistrar RegisterGeneric(this ContainerBuilder builder, Type implementor)
+        {
+            Enforce.ArgumentNotNull(builder, "builder");
+            Enforce.ArgumentNotNull(implementor, "implementor");
+            var result = new GenericRegistrar(implementor);
+            builder.RegisterModule(result);
+            return result;
+        }
     }
 }

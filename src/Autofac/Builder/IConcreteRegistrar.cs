@@ -26,6 +26,7 @@
 namespace Autofac.Builder
 {
     public interface IConcreteRegistrar<TSyntax> : IRegistrar<TSyntax>
+        where TSyntax : IConcreteRegistrar<TSyntax>
     {
         TSyntax Named(string name);
     }

@@ -17,7 +17,7 @@ namespace Autofac.Tests
 		{
 			var target = new Container();
 			target.RegisterComponent(new ComponentRegistration(
-				new[] { typeof(string) },
+				new[] { new TypedService(typeof(string)) },
 				new ProvidedInstanceActivator("Hello")));
 
 			var inst = target.ResolveOptional<string>();
@@ -57,11 +57,11 @@ namespace Autofac.Tests
             var instance2 = new object();
 
 			target.RegisterComponent(new ComponentRegistration(
-				new[]{typeof(object)},
+				new[] { new TypedService(typeof(object)) },
 				new ProvidedInstanceActivator(instance1)));
 
 			target.RegisterComponent(new ComponentRegistration(
-				new[]{typeof(object)},
+				new[] { new TypedService(typeof(object)) },
 				new ProvidedInstanceActivator(instance2)));
 
             Assert.AreSame(instance2, target.Resolve<object>());
@@ -73,7 +73,7 @@ namespace Autofac.Tests
         {
             var target = new Container();
 			target.RegisterComponent(new ComponentRegistration(
-				new[] { typeof(object), typeof(object) },
+				new[] { new TypedService(typeof(object)), new TypedService(typeof(object)) },
 				new ProvidedInstanceActivator(new object())));
 		}
 
@@ -81,7 +81,7 @@ namespace Autofac.Tests
         public void RegisterComponent()
         {
             var registration = new ComponentRegistration(
-                new[] { typeof(object), typeof(string) },
+                new[] { new TypedService(typeof(object)), new TypedService(typeof(string)) },
                 new ProvidedInstanceActivator("Hello"),
                 new ContainerScope());
 
@@ -107,7 +107,7 @@ namespace Autofac.Tests
         public void RegisterComponentNullService()
         {
             var registration = new ComponentRegistration(
-                new Type[] { typeof(object), null },
+                new Service[] { new TypedService(typeof(object)), null },
                 new ProvidedInstanceActivator(new object()),
                 new ContainerScope());
 
@@ -122,7 +122,7 @@ namespace Autofac.Tests
             object instance = new object();
             var target = new Container();
 			target.RegisterComponent(new ComponentRegistration(
-				new[] { typeof(object) },
+				new[] { new TypedService(typeof(object)) },
 				new DelegateActivator((c, p) => instance)));
 			Assert.AreSame(instance, target.Resolve<object>());
         }
@@ -318,11 +318,11 @@ namespace Autofac.Tests
 			var target = new Container();
 
 			target.RegisterComponent(new ComponentRegistration(
-				new[] { typeof(A) },
+				new[] { new TypedService(typeof(A)) },
 				new ReflectionActivator(typeof(A))));
 
 			target.RegisterComponent(new ComponentRegistration(
-				new[] { typeof(B) },
+				new[] { new TypedService(typeof(B)) },
 				new ReflectionActivator(typeof(B))));
 
             A a = target.Resolve<A>();
@@ -349,11 +349,11 @@ namespace Autofac.Tests
 			var target = new Container();
 
 			target.RegisterComponent(new ComponentRegistration(
-				new[] { typeof(A) },
+				new Service[] { new TypedService(typeof(A)) },
 				new ReflectionActivator(typeof(A))));
 
 			target.RegisterComponent(new ComponentRegistration(
-				new[] { typeof(B) },
+				new Service[] { new TypedService(typeof(B)) },
 				new ReflectionActivator(typeof(B))));
 
             B b = target.Resolve<B>();
@@ -408,7 +408,7 @@ namespace Autofac.Tests
 			var target = new Container();
 
 			target.RegisterComponent(new ComponentRegistration(
-				new[] { typeof(A) },
+				new Service[] { new TypedService(typeof(A)) },
 				new ReflectionActivator(typeof(A)),
 				new FactoryScope()));
 
@@ -441,7 +441,7 @@ namespace Autofac.Tests
 			var target = new Container();
 
 			target.RegisterComponent(new ComponentRegistration(
-				new[] { typeof(A) },
+				new Service[] { new TypedService(typeof(A)) },
 				new ReflectionActivator(typeof(A)),
 				new ContainerScope()));
 
@@ -480,7 +480,7 @@ namespace Autofac.Tests
 			var instance = new object();
 			var container = new Container();
 			var registration = new ComponentRegistration(
-							new[] { typeof(object) },
+							new[] { new TypedService(typeof(object)) },
 							new ProvidedInstanceActivator(instance));
 			container.RegisterComponent(registration);
 
@@ -507,7 +507,7 @@ namespace Autofac.Tests
 			var instance = new object();
 			var container = new Container();
 			var registration = new ComponentRegistration(
-							new[] { typeof(object) },
+							new[] { new TypedService(typeof(object)) },
 							new ProvidedInstanceActivator(instance));
 			container.RegisterComponent(registration);
 
@@ -551,11 +551,11 @@ namespace Autofac.Tests
 
 		class ObjectRegistrationSource : IRegistrationSource
 		{
-			public bool TryGetRegistration(Type service, out IComponentRegistration registration)
+			public bool TryGetRegistration(Service service, out IComponentRegistration registration)
 			{
-				Assert.AreEqual(typeof(object), service);
+				Assert.AreEqual(typeof(object), ((TypedService)service).ServiceType);
 				registration = new ComponentRegistration(
-					new[] { typeof(object) },
+					new[] { service },
 					new ReflectionActivator(typeof(object)));
 				return true;
 			}
@@ -579,19 +579,18 @@ namespace Autofac.Tests
         [Test]
         public void ResolveByName()
         {
-            var r = new ComponentRegistration(
-                new Type[] { },
-                new ReflectionActivator(typeof(object)));
+            string name = "name";
 
-            Assert.IsNotNull(r.Name);
-            Assert.IsNotEmpty(r.Name);
+            var r = new ComponentRegistration(
+                new Service[] { new NamedService(name) },
+                new ReflectionActivator(typeof(object)));
 
             var c = new Container();
             c.RegisterComponent(r);
 
             object o;
             
-            Assert.IsTrue(c.TryResolve(r.Name, out o));
+            Assert.IsTrue(c.TryResolve(name, out o));
             Assert.IsNotNull(o);
 
             Assert.IsFalse(c.IsRegistered<object>());
@@ -646,7 +645,6 @@ namespace Autofac.Tests
 
         [Test]
         [ExpectedException(typeof(DependencyResolutionException))]
-       // [Ignore("Fails causing stack overflow.")]
         public void CtorPropDependencyFactoriesOrder1()
         {
             var cb = new ContainerBuilder();
@@ -663,7 +661,6 @@ namespace Autofac.Tests
 
         [Test]
         [ExpectedException(typeof(DependencyResolutionException))]
-       // [Ignore("Fails causing stack overflow.")]
         public void CtorPropDependencyFactoriesOrder2()
         {
             var cb = new ContainerBuilder();

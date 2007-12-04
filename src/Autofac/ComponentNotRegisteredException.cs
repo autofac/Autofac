@@ -51,7 +51,7 @@ namespace Autofac
         /// </summary>
         /// <param name="service">The service.</param>
         /// <param name="innerException">The inner exception.</param>
-        public ComponentNotRegisteredException(string service)
+        public ComponentNotRegisteredException(Service service)
             : base(string.Format(CultureInfo.CurrentCulture,
             ComponentNotRegisteredExceptionResources.Message, 
             Enforce.ArgumentNotNull(service, "service")))
@@ -63,7 +63,7 @@ namespace Autofac
         /// </summary>
         /// <param name="service">The service.</param>
         /// <param name="innerException">The inner exception.</param>
-        public ComponentNotRegisteredException(string service, Exception innerException)
+        public ComponentNotRegisteredException(Service service, Exception innerException)
             : base(string.Format(CultureInfo.CurrentCulture,
             ComponentNotRegisteredExceptionResources.Message, 
             Enforce.ArgumentNotNull(service, "service")),

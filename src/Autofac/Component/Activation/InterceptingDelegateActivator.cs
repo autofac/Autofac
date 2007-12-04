@@ -8,7 +8,7 @@ using System.CodeDom.Compiler;
 using Microsoft.CSharp;
 using System.Text.RegularExpressions;
 
-namespace Autofac.Component.Registration
+namespace Autofac.Component.Activation
 {
 	/// <summary>
 	/// An activator that provides a delegate type that is adapted to be implemented

@@ -41,17 +41,16 @@ namespace Autofac.Component.Registration
 	/// </remarks>
     public class ComponentRegistration : Disposable, IComponentRegistration
     {
-        IEnumerable<Type> _serviceTypes;
+        IEnumerable<Service> _services;
         IActivator _activator;
         IScope _scope;
 		InstanceOwnership _ownershipModel;
-        string _name;
         object _synchRoot = new object();
 
         /// <summary>
         /// Create a new ComponentRegistration.
         /// </summary>
-        /// <param name="serviceTypes">The services provided by the component.
+        /// <param name="services">The services provided by the component.
         /// Required.</param>
         /// <param name="activator">An object with which new component instances
         /// can be created. Required.</param>
@@ -61,63 +60,39 @@ namespace Autofac.Component.Registration
 		/// <param name="ownershipModel">The ownership model that determines
 		/// whether the instances are disposed along with the scope.</param>
         public ComponentRegistration(
-            IEnumerable<Type> serviceTypes,
+            IEnumerable<Service> services,
             IActivator activator,
             IScope scope,
-			InstanceOwnership ownershipModel,
-            string name)
+			InstanceOwnership ownershipModel)
         {
-            Enforce.ArgumentNotNull(serviceTypes, "serviceTypes");
+            Enforce.ArgumentNotNull(services, "services");
             Enforce.ArgumentNotNull(activator, "activator");
             Enforce.ArgumentNotNull(scope, "scope");
-            Enforce.ArgumentNotNullOrEmpty(name, "name");
 
-			IDictionary<Type, bool> services = new Dictionary<Type, bool>();
+            IDictionary<Service, bool> seenServices = new Dictionary<Service, bool>();
 
-			foreach (Type serviceType in serviceTypes)
+			foreach (Service service in services)
 			{
-				if (serviceType == null)
+				if (service == null)
 					throw new ArgumentException(ComponentRegistrationResources.NullServiceProvided);
 
-				if (services.ContainsKey(serviceType))
+				if (seenServices.ContainsKey(service))
 					throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-						ComponentRegistrationResources.ServiceAlreadyProvided, serviceType));
+						ComponentRegistrationResources.ServiceAlreadyProvided, service));
 
-				services.Add(serviceType, true);
+				seenServices.Add(service, true);
 			}
 
-            _serviceTypes = services.Keys;
+            _services = seenServices.Keys;
             _activator = activator;
             _scope = scope;
 			_ownershipModel = ownershipModel;
-            _name = name;
         }
 
         /// <summary>
         /// Create a new ComponentRegistration.
         /// </summary>
-        /// <param name="serviceTypes">The services provided by the component.
-        /// Required.</param>
-        /// <param name="activator">An object with which new component instances
-        /// can be created. Required.</param>
-        /// <param name="scope">An object that tracks created instances with
-        /// respect to their scope of usage, i.e., per-thread, per-call etc.
-        /// Required. Will be disposed when the registration is disposed.</param>
-		/// <param name="ownershipModel">The ownership model that determines
-		/// whether the instances are disposed along with the scope.</param>
-        public ComponentRegistration(
-            IEnumerable<Type> serviceTypes,
-            IActivator activator,
-            IScope scope,
-            InstanceOwnership ownershipModel)
-            : this(serviceTypes, activator, scope, ownershipModel, Guid.NewGuid().ToString())
-        {
-        }
-
-        /// <summary>
-        /// Create a new ComponentRegistration.
-        /// </summary>
-        /// <param name="serviceTypes">The services provided by the component.
+        /// <param name="services">The services provided by the component.
         /// Required.</param>
         /// <param name="activator">An object with which new component instances
         /// can be created. Required.</param>
@@ -125,23 +100,23 @@ namespace Autofac.Component.Registration
         /// respect to their scope of usage, i.e., per-thread, per-call etc.
         /// Required. Will be disposed when the registration is disposed.</param>
 		public ComponentRegistration(
-			IEnumerable<Type> serviceTypes,
+			IEnumerable<Service> services,
 			IActivator activator,
 			IScope scope)
-			: this(serviceTypes, activator, scope, InstanceOwnership.Container)
+			: this(services, activator, scope, InstanceOwnership.Container)
 		{
 		}
         /// <summary>
         /// Create a new ComponentRegistration with singleton activation scope.
         /// </summary>
-        /// <param name="serviceTypes">The services provided by the component.
+        /// <param name="services">The services provided by the component.
         /// Required.</param>
         /// <param name="activator">An object with which new component instances
         /// can be created. Required.</param>
         public ComponentRegistration(
-            IEnumerable<Type> serviceTypes,
+            IEnumerable<Service> services,
             IActivator activator)
-            : this(serviceTypes, activator, new SingletonScope())
+            : this(services, activator, new SingletonScope())
         {
         }
 
@@ -151,23 +126,11 @@ namespace Autofac.Component.Registration
         /// The services exposed by the component.
         /// </summary>
         /// <value></value>
-        public IEnumerable<Type> Services
+        public IEnumerable<Service> Services
         {
             get
             {
-                return _serviceTypes;
-            }
-        }
-
-        /// <summary>
-        /// A name that uniquely identifies this component.
-        /// </summary>
-        /// <value></value>
-        public string Name
-        {
-            get
-            {
-                return _name;
+                return _services;
             }
         }
 

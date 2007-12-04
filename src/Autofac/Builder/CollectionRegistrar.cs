@@ -23,14 +23,50 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
+using Autofac.Component.Activation;
+using Autofac.Component;
+using Autofac.Component.Registration;
 
 namespace Autofac.Builder
 {
     /// <summary>
-    /// Provides builder syntax for generic registrations.
+    /// Register a component using a provided instance.
     /// </summary>
-    public interface IGenericRegistrar : IRegistrar<IGenericRegistrar>
+    class CollectionRegistrar<TItem> : Registrar<ICollectionRegistrar>, ICollectionRegistrar, IModule
     {
+        /// <summary>
+        /// Returns this instance, correctly-typed.
+        /// </summary>
+        /// <value></value>
+        protected override ICollectionRegistrar Syntax
+        {
+            get { return this; }
+        }
+
+        #region IConcreteRegistrar<ICollectionRegistrar> Members
+
+        /// <summary>
+        /// Nameds the specified name.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        public ICollectionRegistrar Named(string name)
+        {
+            Enforce.ArgumentNotNullOrEmpty(name, "name");
+            AddService(new NamedService(name));
+            return Syntax;
+        }
+
+        #endregion
+
+        #region IModule Members
+
+        public void Configure(Container container)
+        {
+            Enforce.ArgumentNotNull(container, "container");
+            container.RegisterComponent(new ServiceListRegistration<TItem>(Services));
+        }
+
+        #endregion
     }
 }

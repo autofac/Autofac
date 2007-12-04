@@ -24,13 +24,16 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Autofac.Builder
 {
     /// <summary>
-    /// Provides builder syntax for generic registrations.
+    /// Provides registration syntax for collection registrations
     /// </summary>
-    public interface IGenericRegistrar : IRegistrar<IGenericRegistrar>
+    public interface ICollectionRegistrar : IConcreteRegistrar<ICollectionRegistrar>
     {
     }
 }

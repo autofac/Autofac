@@ -18,7 +18,7 @@ namespace Autofac.Tests.Component.Registration
 		{
 			var c = new Container();
             c.AddRegistrationSource(new GenericRegistrationHandler(
-                new[] { typeof(I<>) },
+                new Service[] { new TypedService(typeof(I<>)) },
                 typeof(A<>),
                 InstanceOwnership.Container,
                 InstanceScope.Singleton,

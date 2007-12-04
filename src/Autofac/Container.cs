@@ -47,7 +47,7 @@ namespace Autofac
         /// <summary>
         /// Tracks all registrations by name.
         /// </summary>
-        IDictionary<string, IComponentRegistration> _allServiceRegistrations = new Dictionary<string, IComponentRegistration>();
+        IDictionary<Service, IComponentRegistration> _allServiceRegistrations = new Dictionary<Service, IComponentRegistration>();
 
 		/// <summary>
 		/// Supports nested containers.
@@ -112,49 +112,19 @@ namespace Autofac
 
             lock (_synchRoot)
             {
-                if (_allServiceRegistrations.ContainsKey(registration.Name))
-                    throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-                        ContainerResources.RegistrationNameNotUnique, registration.Name));
+                CheckNotDisposed();
 
-                _allServiceRegistrations.Add(registration.Name, registration);
+                _disposer.AddInstanceForDisposal(registration);
 
-                IList<Type> typesSeen = new List<Type>();
-                foreach (Type serviceType in registration.Services)
+                foreach (Service service in registration.Services)
                 {
-                    if (serviceType == null)
-                        throw new ArgumentException(ContainerResources.ServiceTypesCannotBeNull);
-
-                    if (typesSeen.Contains(serviceType))
-                        throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-                            ContainerResources.ComponentExposesServiceMultipleTimes, serviceType));
-
-                    typesSeen.Add(serviceType);
-
-                    AddServiceRegistration(registration, serviceType);
+                    _allServiceRegistrations[service] = registration;
                 }
 
                 registration.Activating += ComponentActivating;
                 registration.Activated += ComponentActivated;
             }
 		}
-
-        /// <summary>
-        /// Associate a registration with a service that it provides.
-        /// </summary>
-        /// <param name="registration">The registration.</param>
-        /// <param name="serviceType">Type of the service.</param>
-        void AddServiceRegistration(IComponentRegistration registration, Type serviceType)
-        {
-            Enforce.ArgumentNotNull(registration, "registration");
-            Enforce.ArgumentNotNull(serviceType, "serviceType");
-
-            lock (_synchRoot)
-            {
-                CheckNotDisposed();
-
-                _allServiceRegistrations[ServiceKeyGenerator.GenerateKey(serviceType)] = registration;
-            }
-        }
 
 		/// <summary>
 		/// Add a source from which registrations may be retrieved in the case that they
@@ -171,10 +141,56 @@ namespace Autofac
 
         #region IContainer Support
 
-        bool IContainer.TryGetRegistration(string key, out IComponentRegistration registration, out IDisposer disposer, out IContext context)
+        /// <summary>
+        /// Gets a registration from the container by key.
+        /// </summary>
+        /// <param name="key">The key for the registration (name or generated service key.)</param>
+        /// <param name="registration">The registration result.</param>
+        /// <param name="disposer">The disposer that should be used to dispose of instances activated by
+        /// the registration.</param>
+        /// <param name="context">The context that should be used when activating instances from the
+        /// registration.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// This method has gotten a bit gnarly. It might help to replace the three 'out' parameters
+        /// with a single structure, though usage in Context doesn't really point that way.
+        /// </remarks>
+        bool IContainer.TryGetRegistration(Service key, out IComponentRegistration registration, out IDisposer disposer, out IContext context)
         {
-            Enforce.ArgumentNotNullOrEmpty(key, "key");
+            Enforce.ArgumentNotNull(key, "key");
             context = null;
+
+            lock (_synchRoot)
+            {
+                CheckNotDisposed();
+
+                if (((IContainer)this).TryGetLocalRegistration(key, out registration, out disposer))
+                    return true;
+
+                if (_outerContainer != null &&
+                    ((IContainer)_outerContainer).TryGetRegistration(key, out registration, out disposer, out context))
+                {
+                    if (context == null)
+                        context = _outerContainer;
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets a registration from the specific outer container by key.
+        /// </summary>
+        /// <param name="key">The key for the registration (name or generated service key.)</param>
+        /// <param name="registration">The registration result.</param>
+        /// <param name="disposer">The disposer that should be used to dispose of instances activated by
+        /// the registration.</param>
+        /// <returns></returns>
+        bool IContainer.TryGetLocalRegistration(Service key, out IComponentRegistration registration, out IDisposer disposer)
+        {
+            Enforce.ArgumentNotNull(key, "key");
+            disposer = null;
 
             lock (_synchRoot)
             {
@@ -187,24 +203,11 @@ namespace Autofac
                     return true;
                 }
 
-                if (_outerContainer == null)
-                {
-                    disposer = null;
-                    return false;
-                }
-
-                // Parent is non-null otherwise the registration check would have failed above
-                if (_outerContainer.TryExportToNewContext(key, out registration))
+                if (_outerContainer != null &&
+                    _outerContainer.TryExportToNewContext(key, out registration))
                 {
                     disposer = _disposer;
                     RegisterComponent(registration);
-                    return true;
-                }
-
-                if (((IContainer)_outerContainer).TryGetRegistration(key, out registration, out disposer, out context))
-                {
-                    if (context == null)
-                        context = _outerContainer;
                     return true;
                 }
 
@@ -218,24 +221,20 @@ namespace Autofac
         /// </summary>
         /// <param name="service">The requested service.</param>
         /// <returns>True if a registration was provided, otherwise, false.</returns>
-        bool TryGetRegistrationFromSources(string key, out IComponentRegistration registration)
+        bool TryGetRegistrationFromSources(Service key, out IComponentRegistration registration)
         {
             Enforce.ArgumentNotNull(key, "key");
 
             registration = null;
 
-            Type service;
-            if (!ServiceKeyGenerator.TryGetService(key, out service))
-                return false;
-
             foreach (IRegistrationSource registrationSource in _registrationSources)
             {
-                if (registrationSource.TryGetRegistration(service, out registration))
+                if (registrationSource.TryGetRegistration(key, out registration))
                 {
                     bool supported = false;
-                    foreach (Type provided in registration.Services)
+                    foreach (Service provided in registration.Services)
                     {
-                        if (provided == service)
+                        if (provided == key)
                         {
                             supported = true;
                             break;
@@ -263,9 +262,9 @@ namespace Autofac
         /// additional services provided by the component will also be exported.</param>
         /// <param name="registration">The new registration.</param>
         /// <returns>True if the new context could be supported.</returns>
-        bool TryExportToNewContext(string key, out IComponentRegistration registration)
+        bool TryExportToNewContext(Service key, out IComponentRegistration registration)
         {
-            Enforce.ArgumentNotNullOrEmpty(key, "key");
+            Enforce.ArgumentNotNull(key, "key");
 
             lock (_synchRoot)
             {
@@ -327,9 +326,6 @@ namespace Autofac
             if (disposing)
                 lock (_synchRoot)
                 {
-                    foreach (IComponentRegistration registration in _allServiceRegistrations.Values.Distinct())
-                        registration.Dispose();
-
                     _disposer.Dispose();
                 }
         }
@@ -436,6 +432,30 @@ namespace Autofac
         }
 
         /// <summary>
+        /// Determines whether the specified service is registered.
+        /// </summary>
+        /// <param name="name">The service.</param>
+        /// <returns>
+        /// 	<c>true</c> if the specified service is registered; otherwise, <c>false</c>.
+        /// </returns>
+        public bool IsRegistered(string name)
+        {
+            return CreateResolutionContext().IsRegistered(name);
+        }
+
+        /// <summary>
+        /// Determines whether the specified service is registered.
+        /// </summary>
+        /// <param name="service">The service.</param>
+        /// <returns>
+        /// 	<c>true</c> if the specified service is registered; otherwise, <c>false</c>.
+        /// </returns>
+        public bool IsRegistered(Service service)
+        {
+            return CreateResolutionContext().IsRegistered(service);
+        }
+
+        /// <summary>
         /// Determine whether or not a service has been registered.
         /// </summary>
         /// <typeparam name="TService">The service to test for the registration of.</typeparam>
@@ -484,6 +504,22 @@ namespace Autofac
         public bool TryResolve(string componentName, out object instance, params Parameter[] parameters)
         {
             return CreateResolutionContext().TryResolve(componentName, out instance, parameters);
+        }
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
+        /// <param name="service">The key of the component to retrieve.</param>
+        /// <param name="instance">The component instance that provides the service.</param>
+        /// <param name="parameters"></param>
+        /// <returns>
+        /// True if the service was registered and its instance created;
+        /// false otherwise.
+        /// </returns>
+        /// <exception cref="DependencyResolutionException"/>
+        public bool TryResolve(Service service, out object instance, params Parameter[] parameters)
+        {
+            return CreateResolutionContext().TryResolve(service, out instance, parameters);
         }
 
         #endregion

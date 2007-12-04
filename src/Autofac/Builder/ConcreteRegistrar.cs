@@ -36,9 +36,9 @@ namespace Autofac.Builder
     /// Registers a regular component.
     /// </summary>
     abstract class ConcreteRegistrar<TSyntax> : Registrar<TSyntax>, IModule, IConcreteRegistrar<TSyntax>
-	{
+        where TSyntax : IConcreteRegistrar<TSyntax>
+    {
         Type _implementor;
-        string _name = Guid.NewGuid().ToString();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentRegistrar&lt;TComponent&gt;"/> class.
@@ -48,28 +48,33 @@ namespace Autofac.Builder
 		{
             Enforce.ArgumentNotNull(implementor, "implementor");
             _implementor = implementor;
-            Services = new Type[] { };
 		}
 
 		#region IModule Members
 
         /// <summary>
-        /// Registers the component.
+        /// Registers the component. If the component has not been assigned a name, explicit
+        /// services or a factory delegate, then it will be registered as providing its own type
+        /// as the default service.
         /// </summary>
         /// <param name="container">The container.</param>
 		public void Configure(Container container)
 		{
             Enforce.ArgumentNotNull(container, "container");
 
-            var services = new List<Type>(Services);
+            var services = new List<Service>(Services);
 
-            if (services.Count == 0 && FactoryDelegates.Count == 0)
-                services.Add(_implementor);
+            Service factoryId = new UniqueService();
+            if (FactoryDelegates.Count != 0)
+                services.Add(factoryId);
+
+            if (services.Count == 0)
+                services.Add(new TypedService(_implementor));
 
             var activator = CreateActivator();
             Enforce.NotNull(activator);
 
-            var cr = new ComponentRegistration(services, activator, Scope.ToIScope(), Ownership, _name);
+            var cr = new ComponentRegistration(services, activator, Scope.ToIScope(), Ownership);
 
             foreach (var activatingHandler in ActivatingHandlers)
                 cr.Activating += activatingHandler;
@@ -84,12 +89,14 @@ namespace Autofac.Builder
                 var fr = new ContextAwareDelegateRegistration(factoryDelegate, (c, p) =>
                         {
                             object instance;
-                            if (!c.TryResolve(cr.Name, out instance, MakeNamedValues(p)))
-                                throw new ComponentNotRegisteredException(cr.Name);
+                            if (!c.TryResolve(Enforce.NotNull(factoryId), out instance, MakeNamedValues(p)))
+                                throw new ComponentNotRegisteredException(factoryId);
                             return instance;
                         });
                 container.RegisterComponent(fr);
             }
+
+            FireRegistered(container);
 		}
 
 		#endregion
@@ -111,7 +118,7 @@ namespace Autofac.Builder
         /// <returns></returns>
         public TSyntax Named(string name)
         {
-            _name = Enforce.ArgumentNotNullOrEmpty(name, "name");
+            AddService(new NamedService(Enforce.ArgumentNotNullOrEmpty(name, "name")));
             return Syntax;
         }
 
@@ -119,26 +126,29 @@ namespace Autofac.Builder
         /// The services exposed by this registration.
         /// </summary>
         /// <value></value>
-		protected override IEnumerable<Type> Services
+		protected override IEnumerable<Service> Services
 		{
 			get
 			{
 				return base.Services;
 			}
-			set
-			{
-                Enforce.ArgumentNotNull(value, "value");
-
-				foreach (Type service in value)
-				{
-					if (!service.IsAssignableFrom(_implementor))
-						throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-							ComponentRegistrarResources.ComponentDoesNotSupportService, _implementor, service));
-
-				}
-				base.Services = value;
-			}
 		}
+
+        /// <summary>
+        /// Add a service to be exposed by the component.
+        /// </summary>
+        /// <param name="service"></param>
+        protected override void AddService(Service service)
+        {
+            Enforce.ArgumentNotNull(service, "service");
+
+            TypedService serviceType = service as TypedService;
+            if (serviceType != null && !serviceType.ServiceType.IsAssignableFrom(_implementor))
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
+                    ComponentRegistrarResources.ComponentDoesNotSupportService, _implementor, service));
+
+            base.AddService(service);
+        }
 
         /// <summary>
         /// Creates the activator for the registration.

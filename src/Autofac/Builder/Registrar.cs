@@ -36,12 +36,14 @@ namespace Autofac.Builder
 	/// Base class for component registrars.
 	/// </summary>
 	abstract class Registrar<TSyntax> : IRegistrar<TSyntax>
+        where TSyntax : IRegistrar<TSyntax>
 	{
-		IEnumerable<Type> _services;
+		IList<Service> _services = new List<Service>();
 		InstanceOwnership _ownership = InstanceOwnership.Container;
 		InstanceScope _scope = InstanceScope.Singleton;
         IList<EventHandler<ActivatingEventArgs>> _activatingHandlers = new List<EventHandler<ActivatingEventArgs>>();
         IList<EventHandler<ActivatedEventArgs>> _activatedHandlers = new List<EventHandler<ActivatedEventArgs>>();
+        IList<EventHandler<RegisteredEventArgs>> _registeredHandlers = new List<EventHandler<RegisteredEventArgs>>();
         IList<Type> _factoryDelegates = new List<Type>();
 
         /// <summary>
@@ -84,19 +86,33 @@ namespace Autofac.Builder
 			return As(new[] { typeof(TService1), typeof(TService2), typeof(TService3) });
 		}
 
-		/// <summary>
-		/// Change the service associated with the registration.
-		/// </summary>
-		/// <param name="services">The services that the registration will expose.</param>
-		/// <returns>
-		/// A registrar allowing registration to continue.
-		/// </returns>
+        /// <summary>
+        /// Change the service associated with the registration.
+        /// </summary>
+        /// <param name="services">The services that the registration will expose.</param>
+        /// <returns>
+        /// A registrar allowing registration to continue.
+        /// </returns>
         public TSyntax As(params Type[] services)
-		{
+        {
             Enforce.ArgumentNotNull(services, "services");
-			Services = services;
+            AddServices(services.Select<Type, Service>(s => new TypedService(s)));
             return Syntax;
-		}
+        }
+
+        /// <summary>
+        /// Change the service associated with the registration.
+        /// </summary>
+        /// <param name="services">The services that the registration will expose.</param>
+        /// <returns>
+        /// A registrar allowing registration to continue.
+        /// </returns>
+        public TSyntax As(params Service[] services)
+        {
+            Enforce.ArgumentNotNull(services, "services");
+            AddServices(services);
+            return Syntax;
+        }
 
         public TSyntax ThroughFactory(Type factoryDelegate)
         {
@@ -151,13 +167,24 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="handler">The handler.</param>
         /// <returns>A registrar allowing registration to continue.</returns>
+        public TSyntax OnRegistered(EventHandler<RegisteredEventArgs> handler)
+        {
+            Enforce.ArgumentNotNull(handler, "handler");
+            _registeredHandlers.Add(handler);
+            return Syntax;
+        }
+
+        /// <summary>
+        /// Call the provided handler when activating an instance.
+        /// </summary>
+        /// <param name="handler">The handler.</param>
+        /// <returns>A registrar allowing registration to continue.</returns>
         public TSyntax OnActivating(EventHandler<ActivatingEventArgs> handler)
         {
             Enforce.ArgumentNotNull(handler, "handler");
             _activatingHandlers.Add(handler);
             return Syntax;
         }
-
         /// <summary>
         /// Call the provided handler when an instance is activated.
         /// </summary>
@@ -175,18 +202,33 @@ namespace Autofac.Builder
 		/// <summary>
 		/// The services exposed by this registration.
 		/// </summary>
-		protected virtual IEnumerable<Type> Services
+		protected virtual IEnumerable<Service> Services
 		{
 			get
 			{
 				return _services;
 			}
-			set
-			{
-                Enforce.ArgumentNotNull(value, "value");
-				_services = value;
-			}
 		}
+
+        /// <summary>
+        /// Add a service to be exposed by the component.
+        /// </summary>
+        /// <param name="service"></param>
+        protected virtual void AddService(Service service)
+        {
+            Enforce.ArgumentNotNull(service, "service");
+            _services.Add(service);
+        }
+
+        /// <summary>
+        /// Add many services to be exposed by the component.
+        /// </summary>
+        protected void AddServices(IEnumerable<Service> services)
+        {
+            Enforce.ArgumentNotNull(services, "services");
+            foreach (var service in services)
+                AddService(service);
+        }
 
         /// <summary>
         /// The factory delegates that can create the component.
@@ -249,6 +291,19 @@ namespace Autofac.Builder
             {
                 return _activatedHandlers;
             }
+        }
+
+
+        /// <summary>
+        /// Fires the registered event.
+        /// </summary>
+        /// <param name="container">The container in which the registration was made.</param>
+        protected void FireRegistered(Container container)
+        {
+            Enforce.ArgumentNotNull(container, "container");
+            RegisteredEventArgs e = new RegisteredEventArgs() { Container = container };
+            foreach (EventHandler<RegisteredEventArgs> handler in _registeredHandlers)
+                handler(this, e);
         }
 	}
 }

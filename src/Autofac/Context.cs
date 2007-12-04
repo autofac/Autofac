@@ -48,7 +48,7 @@ namespace Autofac
 		/// For the duration of a single resolve operation, tracks the services
 		/// that have been requested.
 		/// </summary>
-		Stack<string> _componentResolutionStack = new Stack<string>();
+        Stack<Service> _componentResolutionStack = new Stack<Service>();
 
         /// <summary>
         /// Catch circular dependencies that are triggered by post-resolve processing (e.g. 'OnActivated')
@@ -106,7 +106,7 @@ namespace Autofac
             object result = null;
 
             if (!TryResolve(serviceType, out result, parameters))
-                throw new ComponentNotRegisteredException(serviceType.FullName);
+                throw new ComponentNotRegisteredException(new TypedService(serviceType));
 
             return result;
         }
@@ -163,7 +163,8 @@ namespace Autofac
         public bool TryResolve(Type serviceType, out object instance, params Parameter[] parameters)
         {
             Enforce.ArgumentNotNull(serviceType, "serviceType");
-            return TryResolve(ServiceKeyGenerator.GenerateKey(serviceType), out instance, parameters);
+            Enforce.ArgumentNotNull(parameters, "parameters");
+            return TryResolve(new TypedService(serviceType), out instance, parameters);
         }
 
         /// <summary>
@@ -180,32 +181,49 @@ namespace Autofac
         {
             Enforce.ArgumentNotNull(componentName, "componentName");
             Enforce.ArgumentNotNull(parameters, "parameters");
+            return TryResolve(new NamedService(componentName), out instance, parameters);
+        }
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
+        /// <param name="service">The key of the component to retrieve.</param>
+        /// <param name="instance">The component instance that provides the service.</param>
+        /// <returns>
+        /// True if the service was registered and its instance created;
+        /// false otherwise.
+        /// </returns>
+        /// <exception cref="DependencyResolutionException"/>
+        public bool TryResolve(Service service, out object instance, params Parameter[] parameters)
+        {
+            Enforce.ArgumentNotNull(service, "service");
+            Enforce.ArgumentNotNull(parameters, "parameters");
 
             instance = null;
             if (++_resolveDepth > MaxResolveDepth)
                 throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture,
                     ContextResources.MaxDepthExceeded,
-                    ServiceKeyGenerator.FormatForDisplay(componentName)));
+                    service));
 
             try
             {
                 IComponentRegistration registration;
                 IDisposer disposer;
                 IContext specificContext;
-                if (!_container.TryGetRegistration(componentName, out registration, out disposer, out specificContext))
+                if (!_container.TryGetRegistration(service, out registration, out disposer, out specificContext))
                     return false;
 
                 if (specificContext != null)
-                    return specificContext.TryResolve(componentName, out instance, parameters);
+                    return specificContext.TryResolve(service, out instance, parameters);
 
-                if (IsCircularDependency(componentName))
+                if (IsCircularDependency(service))
                 {
                     string dependencyGraph = "";
 
-                    foreach (string requestor in _componentResolutionStack)
-                        dependencyGraph = ServiceKeyGenerator.FormatForDisplay(requestor) + " -> " + dependencyGraph;
+                    foreach (Service requestor in _componentResolutionStack)
+                        dependencyGraph = requestor.Description + " -> " + dependencyGraph;
 
-                    dependencyGraph += ServiceKeyGenerator.FormatForDisplay(componentName);
+                    dependencyGraph += service.Description;
 
                     throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture,
                         "{0} ({1}.)", ContextResources.CircularDependency, dependencyGraph));
@@ -214,7 +232,7 @@ namespace Autofac
                 {
                     bool newInstance;
                     var activationParams = MakeActivationParameters(parameters);
-                    _componentResolutionStack.Push(componentName);
+                    _componentResolutionStack.Push(service);
                     try
                     {
                         instance = registration.ResolveInstance(this, activationParams, disposer, out newInstance);
@@ -239,14 +257,27 @@ namespace Autofac
             }
         }
 
-        private bool IsCircularDependency(string componentName)
+        private bool IsCircularDependency(Service service)
         {
-            Enforce.ArgumentNotNullOrEmpty(componentName, "componentName");
+            Enforce.ArgumentNotNull(service, "service");
 
-            if (!_componentResolutionStack.Contains(componentName))
+            if (!_componentResolutionStack.Contains(service))
                 return false;
 
-            return (_componentResolutionStack.Count(i => i == componentName) > 2);
+            return (_componentResolutionStack.Count(i => i == service) > 2);
+        }
+
+        /// <summary>
+        /// Determine whether or not a service has been registered.
+        /// </summary>
+        /// <param name="serviceType">The service to test for the registration of.</param>
+        /// <returns>True if the service is registered.</returns>
+        public bool IsRegistered(Service service)
+        {
+            IComponentRegistration unused1;
+            IDisposer unused2;
+            IContext unused3;
+            return _container.TryGetRegistration(service, out unused1, out unused2, out unused3);
         }
 
         /// <summary>
@@ -256,10 +287,19 @@ namespace Autofac
         /// <returns>True if the service is registered.</returns>
         public bool IsRegistered(Type serviceType)
         {
-            IComponentRegistration unused1;
-            IDisposer unused2;
-            IContext unused3;
-            return _container.TryGetRegistration(ServiceKeyGenerator.GenerateKey(serviceType), out unused1, out unused2, out unused3);
+            Enforce.ArgumentNotNull(serviceType, "serviceType");
+            return IsRegistered(new TypedService(serviceType));
+        }
+
+        /// <summary>
+        /// Determine whether or not a service has been registered.
+        /// </summary>
+        /// <param name="serviceType">The service to test for the registration of.</param>
+        /// <returns>True if the service is registered.</returns>
+        public bool IsRegistered(string serviceName)
+        {
+            Enforce.ArgumentNotNullOrEmpty(serviceName, "serviceName");
+            return IsRegistered(new NamedService(serviceName));
         }
 
         /// <summary>

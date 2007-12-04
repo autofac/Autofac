@@ -18,6 +18,6 @@ namespace Autofac
 		/// <param name="service">The service that was requested.</param>
 		/// <param name="registration">A registration providing the service.</param>
 		/// <returns>True if the registration could be created.</returns>
-		bool TryGetRegistration(Type service, out IComponentRegistration registration);
+		bool TryGetRegistration(Service service, out IComponentRegistration registration);
     }
 }

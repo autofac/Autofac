@@ -27,7 +27,7 @@ namespace Autofac.Component.Registration
 			Type creator,
 			ComponentActivator activator)
 			: base(
-				new[]{ creator },
+				new[]{ new TypedService(creator) },
 				new InterceptingDelegateActivator(creator, activator),
 				new ContainerScope(),
 				InstanceOwnership.Container)

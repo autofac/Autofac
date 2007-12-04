@@ -92,6 +92,18 @@ namespace Autofac
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
         bool TryResolve(string componentName, out object instance, params Parameter[] parameters);
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
+        /// <param name="service">The key of the component to retrieve.</param>
+        /// <param name="instance">The component instance that provides the service.</param>
+        /// <returns>
+        /// True if the service was registered and its instance created;
+        /// false otherwise.
+        /// </returns>
+        /// <exception cref="DependencyResolutionException"/>
+        bool TryResolve(Service service, out object instance, params Parameter[] parameters);
         
         /// <summary>
 		/// Retrieve a service registered with the container.
@@ -105,12 +117,26 @@ namespace Autofac
 		/// none is available.</returns>
 		TService ResolveOptional<TService>(params Parameter[] parameters);
 
-		/// <summary>
-		/// Determine whether or not a service has been registered.
-		/// </summary>
-		/// <param name="serviceType">The service to test for the registration of.</param>
-		/// <returns>True if the service is registered.</returns>
-		bool IsRegistered(Type serviceType);
+        /// <summary>
+        /// Determine whether or not a service has been registered.
+        /// </summary>
+        /// <param name="serviceType">The service to test for the registration of.</param>
+        /// <returns>True if the service is registered.</returns>
+        bool IsRegistered(Type serviceType);
+
+        /// <summary>
+        /// Determine whether or not a service has been registered.
+        /// </summary>
+        /// <param name="serviceName">The service to test for the registration of.</param>
+        /// <returns>True if the service is registered.</returns>
+        bool IsRegistered(string serviceName);
+
+        /// <summary>
+        /// Determine whether or not a service has been registered.
+        /// </summary>
+        /// <param name="service">The service to test for the registration of.</param>
+        /// <returns>True if the service is registered.</returns>
+        bool IsRegistered(Service service);
 
 		/// <summary>
 		/// Determine whether or not a service has been registered.

@@ -51,9 +51,7 @@ namespace Autofac.Builder
 		public GenericRegistrar(Type implementor)
 		{
             Enforce.ArgumentNotNull(implementor, "implementor");
-
 			_implementor = implementor;
-			Services = new[] { implementor };
 		}
 
 		#region IComponentRegistrar Members
@@ -64,14 +62,20 @@ namespace Autofac.Builder
         /// <param name="container">The container.</param>
 		public void Configure(Container container)
 		{
+            var services = new List<Service>(Services);
+            if (services.Count == 0)
+                services.Add(new TypedService(_implementor));
+
             Enforce.ArgumentNotNull(container, "container");
 			container.AddRegistrationSource(new GenericRegistrationHandler(
-				Services,
+				services,
 				_implementor,
 				Ownership,
 				Scope,
                 ActivatingHandlers,
                 ActivatedHandlers));
+
+            FireRegistered(container);
 		}
 
 		#endregion
