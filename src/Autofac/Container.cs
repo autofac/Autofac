@@ -271,7 +271,7 @@ namespace Autofac
                 IComponentRegistration localRegistration;
                 if (_allServiceRegistrations.TryGetValue(key, out localRegistration))
                 {
-                    return localRegistration.TryDuplicateForNewContext(out registration);
+                    return localRegistration.DuplicateForNewContext(out registration);
                 }
                 else if (_outerContainer != null)
                 {
@@ -367,6 +367,21 @@ namespace Autofac
         public object Resolve(Type serviceType, params Parameter[] parameters)
         {
             return CreateResolutionContext().Resolve(serviceType, parameters);
+        }
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
+        /// <param name="service">The service to retrieve.</param>
+        /// <param name="parameters"></param>
+        /// <returns>
+        /// The component instance that provides the service.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="DependencyResolutionException"/>
+        public object Resolve(Service service, params Parameter[] parameters)
+        {
+            return CreateResolutionContext().Resolve(service, parameters);
         }
 
         /// <summary>

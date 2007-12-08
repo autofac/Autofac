@@ -79,7 +79,7 @@ namespace Autofac.Tests.Component.Registration
 
             public void SetInstance(object instance) { }
 
-			public bool TryDuplicateForNewContext(out IScope newScope)
+			public bool DuplicateForNewContext(out IScope newScope)
 			{
 				newScope = null;
 				return false;

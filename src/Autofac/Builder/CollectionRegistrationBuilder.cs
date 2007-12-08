@@ -53,23 +53,29 @@ namespace Autofac.Builder
         {
             Enforce.ArgumentNotNull(registrar, "registrar");
             Enforce.ArgumentNotNull(serviceType, "serviceType");
+            MemberOf(registrar, new TypedService(serviceType));
+        }
+
+        public static void MemberOf<TSyntax>(this IRegistrar<TSyntax> registrar, Service service)
+            where TSyntax : IRegistrar<TSyntax>
+        {
+            Enforce.ArgumentNotNull(registrar, "registrar");
+            Enforce.ArgumentNotNull(service, "service");
 
             var key = new UniqueService();
             var next = registrar.As(key);
             registrar.OnRegistered((sender, e) =>
             {
-                var typedService = new TypedService(serviceType);
-
                 IDisposer disposer;
                 IComponentRegistration serviceListRegistration;
                 bool found = ((IContainer)e.Container)
                     .TryGetLocalRegistration(
-                        typedService,
+                        service,
                         out serviceListRegistration,
                         out disposer);
 
                 if (!found)
-                    throw new ComponentNotRegisteredException(typedService);
+                    throw new ComponentNotRegisteredException(service);
 
                 var serviceList = (IServiceListRegistration)serviceListRegistration;
                 serviceList.Add(key);

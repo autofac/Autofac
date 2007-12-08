@@ -26,6 +26,7 @@
 using Autofac.Component.Activation;
 using Autofac.Component;
 using Autofac.Component.Registration;
+using Autofac.Component.Scope;
 
 namespace Autofac.Builder
 {
@@ -46,7 +47,7 @@ namespace Autofac.Builder
         #region IConcreteRegistrar<ICollectionRegistrar> Members
 
         /// <summary>
-        /// Nameds the specified name.
+        /// Names the registration.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
@@ -61,10 +62,14 @@ namespace Autofac.Builder
 
         #region IModule Members
 
+        /// <summary>
+        /// Apply the module to the container.
+        /// </summary>
+        /// <param name="container">Container to apply configuration to.</param>
         public void Configure(Container container)
         {
             Enforce.ArgumentNotNull(container, "container");
-            container.RegisterComponent(new ServiceListRegistration<TItem>(Services));
+            container.RegisterComponent(new ServiceListRegistration<TItem>(Services, Scope.ToIScope()));
         }
 
         #endregion

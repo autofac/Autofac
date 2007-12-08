@@ -10,7 +10,7 @@ namespace Autofac
     /// <summary>
     /// Provides dependency resolution during a single resolve operation.
     /// </summary>
-    public class Context : IContext
+    class Context : IContext
     {
         #region Inner classes
 
@@ -92,6 +92,28 @@ namespace Autofac
         /// <summary>
         /// Retrieve a service registered with the container.
         /// </summary>
+        /// <param name="service">The service to retrieve.</param>
+        /// <returns>
+        /// The component instance that provides the service.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="DependencyResolutionException"/>
+        public object Resolve(Service service, params Parameter[] parameters)
+        {
+            Enforce.ArgumentNotNull(service, "service");
+            Enforce.ArgumentNotNull(parameters, "parameters");
+
+            object result = null;
+
+            if (!TryResolve(service, out result, parameters))
+                throw new ComponentNotRegisteredException(service);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
         /// <param name="serviceType">The service to retrieve.</param>
         /// <returns>
         /// The component instance that provides the service.
@@ -102,13 +124,7 @@ namespace Autofac
         {
             Enforce.ArgumentNotNull(serviceType, "serviceType");
             Enforce.ArgumentNotNull(parameters, "parameters");
-
-            object result = null;
-
-            if (!TryResolve(serviceType, out result, parameters))
-                throw new ComponentNotRegisteredException(new TypedService(serviceType));
-
-            return result;
+            return Resolve(new TypedService(serviceType), parameters);
         }
 
         /// <summary>

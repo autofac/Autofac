@@ -20,7 +20,7 @@ namespace Autofac.Tests.Component.Scope
 		{
 			var target = new SingletonScope();
 			IScope newScope;
-			Assert.IsFalse(target.TryDuplicateForNewContext(out newScope));
+			Assert.IsFalse(target.DuplicateForNewContext(out newScope));
 			Assert.IsNull(newScope);
 		}
     }

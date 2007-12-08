@@ -14,7 +14,7 @@ namespace Autofac.Component.Registration
 	/// <remarks>
 	/// Note - the objects returned from the activator will not be disposed by the context.
 	/// </remarks>
-	public class ContextAwareDelegateRegistration : ComponentRegistration
+	class ContextAwareDelegateRegistration : ComponentRegistration
 	{
 		/// <summary>
 		/// Create a new instance.

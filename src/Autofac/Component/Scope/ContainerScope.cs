@@ -96,7 +96,7 @@ namespace Autofac.Component.Scope
         /// <returns>
         /// True if the semantics of the scope model allow for new contexts.
         /// </returns>
-		public virtual bool TryDuplicateForNewContext(out IScope newScope)
+		public virtual bool DuplicateForNewContext(out IScope newScope)
 		{
 			newScope = new ContainerScope();
 			return true;

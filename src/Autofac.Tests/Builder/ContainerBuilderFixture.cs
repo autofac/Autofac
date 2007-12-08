@@ -684,5 +684,26 @@ namespace Autofac.Tests.Builder
             Assert.IsTrue(strings.Contains(s1));
             Assert.IsTrue(strings.Contains(s2));
         }
+
+        [Test]
+        public void NewCollectionInNewContext()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterCollection<string>()
+                .As<IEnumerable<string>>()
+                .WithScope(InstanceScope.Container);
+
+            var outer = builder.Build();
+
+            var coll = outer.Resolve<IEnumerable<string>>();
+
+            Assert.IsNotNull(coll);
+            Assert.AreSame(coll, outer.Resolve<IEnumerable<string>>());
+
+            var inner = outer.CreateInnerContainer();
+
+            Assert.AreNotSame(coll, inner.Resolve<IEnumerable<string>>());
+        }
     }
 }

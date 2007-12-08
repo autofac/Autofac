@@ -75,6 +75,6 @@ namespace Autofac.Component
         /// </summary>
         /// <param name="newScope">The duplicate.</param>
         /// <returns>True if the semantics of the scope model allow for new contexts.</returns>
-		bool TryDuplicateForNewContext(out IScope newScope);
+		bool DuplicateForNewContext(out IScope newScope);
 	}
 }

@@ -184,7 +184,7 @@ namespace Autofac.Component.Registration
         /// </summary>
         /// <param name="duplicate">The duplicate.</param>
         /// <returns>True if the duplicate was created.</returns>
-		public bool TryDuplicateForNewContext(out IComponentRegistration duplicate)
+		public virtual bool DuplicateForNewContext(out IComponentRegistration duplicate)
 		{
 			duplicate = null;
 
@@ -192,7 +192,7 @@ namespace Autofac.Component.Registration
 			if (!_activator.CanSupportNewContext)
 				return false;
 
-			if (!_scope.TryDuplicateForNewContext(out newScope))
+			if (!_scope.DuplicateForNewContext(out newScope))
 				return false;
 
 			duplicate = new ComponentRegistration(Services, _activator, newScope, _ownershipModel);
@@ -213,7 +213,6 @@ namespace Autofac.Component.Registration
 
         #endregion
 
-
         #region IComponentRegistration Members
 
         public void InstanceActivated(IContext context, object instance)
@@ -223,5 +222,10 @@ namespace Autofac.Component.Registration
         }
 
         #endregion
+
+        protected internal IScope Scope
+        {
+            get { return _scope; }
+        }
     }
 }

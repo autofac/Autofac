@@ -52,14 +52,23 @@ namespace Autofac
 		/// <exception cref="DependencyResolutionException" />
 		TService Resolve<TService>(params Parameter[] parameters);
 
-		/// <summary>
-		/// Retrieve a service registered with the container.
-		/// </summary>
-		/// <param name="serviceType">The service to retrieve.</param>
-		/// <returns>The component instance that provides the service.</returns>
-		/// <exception cref="ComponentNotRegisteredException" />
-		/// <exception cref="DependencyResolutionException" />
-		object Resolve(Type serviceType, params Parameter[] parameters);
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
+        /// <param name="serviceType">The service to retrieve.</param>
+        /// <returns>The component instance that provides the service.</returns>
+        /// <exception cref="ComponentNotRegisteredException" />
+        /// <exception cref="DependencyResolutionException" />
+        object Resolve(Type serviceType, params Parameter[] parameters);
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
+        /// <param name="service">The service to retrieve.</param>
+        /// <returns>The component instance that provides the service.</returns>
+        /// <exception cref="ComponentNotRegisteredException" />
+        /// <exception cref="DependencyResolutionException" />
+        object Resolve(Service service, params Parameter[] parameters);
 
 		/// <summary>
 		/// Retrieve a service registered with the container.

@@ -58,7 +58,7 @@ namespace Autofac
 		/// </summary>
 		/// <param name="duplicate">The duplicate.</param>
 		/// <returns>True if the duplicate was created.</returns>
-		bool TryDuplicateForNewContext(out IComponentRegistration duplicate);
+		bool DuplicateForNewContext(out IComponentRegistration duplicate);
 
 		/// <summary>
 		/// Fired when a new instance is being activated. The instance can be

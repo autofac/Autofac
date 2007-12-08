@@ -34,7 +34,7 @@ namespace Autofac.Component.Registration
     /// <summary>
     /// Exposed by the generic ServiceListRegistration type to expose non-generic Add().
     /// </summary>
-    public interface IServiceListRegistration
+    interface IServiceListRegistration
     {
         /// <summary>
         /// Add a service (key into another component registration) to those returned
@@ -49,45 +49,111 @@ namespace Autofac.Component.Registration
     /// in the container.
     /// </summary>
     /// <typeparam name="TItem"></typeparam>
-    public class ServiceListRegistration<TItem> : IServiceListRegistration, IComponentRegistration
+    class ServiceListRegistration<TItem> : ComponentRegistration, IServiceListRegistration
     {
-        ICollection<Service> _items = new List<Service>();
+        #region Inner classes
 
-        IEnumerable<Service> _services;
+        /// <summary>
+        /// Custom activator that maintains a service list and returns instances
+        /// of List.
+        /// </summary>
+        class ServiceListActivator : IActivator
+        {
+            IList<Service> _items = new List<Service>();
+
+            /// <summary>
+            /// Gets the services that will appear in instances of the list.
+            /// </summary>
+            /// <value>The items.</value>
+            public IList<Service> Items
+            {
+                get
+                {
+                    return _items;
+                }
+            }
+
+            #region IActivator Members
+
+            /// <summary>
+            /// Create a component instance, using container
+            /// to resolve the instance's dependencies.
+            /// </summary>
+            /// <param name="context">The context to use
+            /// for dependency resolution.</param>
+            /// <param name="parameters">Parameters that can be used in the resolution process.</param>
+            /// <returns>
+            /// A component instance. Note that while the
+            /// returned value need not be created on-the-spot, it must
+            /// not be returned more than once by consecutive calls. (Throw
+            /// an exception if this is attempted. IActivationScope should
+            /// manage singleton semantics.)
+            /// </returns>
+            public object ActivateInstance(IContext context, IActivationParameters parameters)
+            {
+                Enforce.ArgumentNotNull(context, "context");
+                Enforce.ArgumentNotNull(parameters, "parameters");
+
+                var instance = new List<TItem>();
+                foreach (var item in _items)
+                {
+                    object itemInstance = context.Resolve(item);
+                    instance.Add((TItem)itemInstance);
+                }
+
+                return instance;
+            }
+
+            /// <summary>
+            /// Not supported as the ServiceListRegistration class overrides
+            /// DuplicateForNewContext to avoid this method call.
+            /// </summary>
+            public bool CanSupportNewContext
+            {
+                get { throw new InvalidOperationException(); }
+            }
+
+            #endregion
+        }
+        
+        #endregion
+
+        ServiceListActivator _activator = new ServiceListActivator();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceListRegistration&lt;TItem&gt;"/> class.
         /// </summary>
         /// <param name="services">The services.</param>
-        public ServiceListRegistration(IEnumerable<Service> services)
+        /// <param name="scope">The scope.</param>
+        ServiceListRegistration(IEnumerable<Service> services, ServiceListActivator activator, IScope scope)
+            : base(services, activator, scope)
         {
-            Enforce.ArgumentNotNull(services, "services");
-
-            foreach (var service in services)
-            {
-                var typed = service as TypedService;
-                if (typed != null)
-                    if (typed.ServiceType != typeof(IEnumerable<TItem>) &&
-                        typed.ServiceType != typeof(ICollection<TItem>) &&
-                        typed.ServiceType != typeof(IList<TItem>))
-                        throw new NotSupportedException();
-            }
-            
-            _services = services;
+            _activator = Enforce.ArgumentNotNull(activator, "activator");
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceListRegistration&lt;TItem&gt;"/> class.
         /// </summary>
         /// <param name="services">The services.</param>
+        /// <param name="scope">The scope.</param>
+        public ServiceListRegistration(IEnumerable<Service> services, IScope scope)
+            : this(services, new ServiceListActivator(), scope)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServiceListRegistration&lt;TItem&gt;"/> class.
+        /// </summary>
+        /// <param name="services">The services.</param>
+        /// <param name="scope">The scope.</param>
         /// <param name="items">The items.</param>
-        protected ServiceListRegistration(IEnumerable<Service> services, IEnumerable<Service> items)
-            : this(services)
+        protected ServiceListRegistration(IEnumerable<Service> services, IScope scope, IEnumerable<Service> items)
+            : this(services, scope)
         {
             Enforce.ArgumentNotNull(items, "items");
 
             foreach (var item in items)
-                _items.Add(item);
+                Add(item);
         }
 
         #region ICompositeRegistration Members
@@ -100,7 +166,7 @@ namespace Autofac.Component.Registration
         public void Add(Service item)
         {
             Enforce.ArgumentNotNull(item, "item");
-            _items.Add(item);
+            _activator.Items.Add(item);
         }
 
         #endregion
@@ -108,90 +174,21 @@ namespace Autofac.Component.Registration
         #region IComponentRegistration Members
 
         /// <summary>
-        /// The services (named and typed) exposed by the component.
-        /// </summary>
-        /// <value></value>
-        public IEnumerable<Service> Services
-        {
-            get { return _services; }
-        }
-
-        /// <summary>
-        /// 	<i>Must</i> return a valid instance, or throw
-        /// an exception on failure.
-        /// </summary>
-        /// <param name="context">The context that is to be used
-        /// to resolve the instance's dependencies.</param>
-        /// <param name="parameters">Parameters that can be used in the resolution process.</param>
-        /// <param name="disposer">The disposer.</param>
-        /// <param name="newInstance">if set to <c>true</c> a new instance was created.</param>
-        /// <returns>A newly-resolved instance.</returns>
-        public object ResolveInstance(IContext context, IActivationParameters parameters, IDisposer disposer, out bool newInstance)
-        {
-            Enforce.ArgumentNotNull(context, "context");
-            Enforce.ArgumentNotNull(parameters, "parameters");
-            Enforce.ArgumentNotNull(disposer, "disposer");
-
-            var instance = new List<TItem>();
-            foreach (var item in _items)
-            {
-                object itemInstance;
-                if (!context.TryResolve(item, out itemInstance))
-                    throw new ComponentNotRegisteredException(item);
-                instance.Add((TItem)itemInstance);
-            }
-
-            var activatingArgs = new ActivatingEventArgs(context, this, instance);
-            Activating(this, activatingArgs);
-
-            newInstance = true;
-            return activatingArgs.Instance;
-        }
-
-        /// <summary>
         /// Create a duplicate of this instance if it is semantically valid to
         /// copy it to a new context.
         /// </summary>
         /// <param name="duplicate">The duplicate.</param>
         /// <returns>True if the duplicate was created.</returns>
-        public bool TryDuplicateForNewContext(out IComponentRegistration duplicate)
+        public override bool DuplicateForNewContext(out IComponentRegistration duplicate)
         {
-            duplicate = new ServiceListRegistration<TItem>(_items);
+            duplicate = null;
+
+            IScope newScope;
+            if (!Scope.DuplicateForNewContext(out newScope))
+                return false;
+
+            duplicate = new ServiceListRegistration<TItem>(_activator.Items, newScope);
             return true;
-        }
-
-        /// <summary>
-        /// Fired when a new instance is being activated. The instance can be
-        /// wrapped or switched at this time by setting the Instance property in
-        /// the provided event arguments.
-        /// </summary>
-        public event EventHandler<ActivatingEventArgs> Activating = (s, e) => { };
-
-        /// <summary>
-        /// Fired when the activation process for a new instance is complete.
-        /// </summary>
-        public event EventHandler<ActivatedEventArgs> Activated = (s, e) => { };
-
-        /// <summary>
-        /// Called by the container once an instance has been fully constructed, including
-        /// any requested objects that depend on the instance.
-        /// </summary>
-        /// <param name="context">The context in which the instance was activated.</param>
-        /// <param name="instance">The instance.</param>
-        public void InstanceActivated(IContext context, object instance)
-        {
-            Activated(this, new ActivatedEventArgs(context, this, instance));
-        }
-
-        #endregion
-
-        #region IDisposable Members
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
         }
 
         #endregion
