@@ -123,6 +123,20 @@ namespace Autofac.Builder
         }
 
         /// <summary>
+        /// Change the service associated with the registration.
+        /// </summary>
+        /// <param name="services">The services that the registration will expose.</param>
+        /// <returns>
+        /// A registrar allowing registration to continue.
+        /// </returns>
+        public TSyntax As(params Service[] services)
+        {
+            Enforce.ArgumentNotNull(services, "services");
+            AddServices(services);
+            return Syntax;
+        }
+
+        /// <summary>
         /// The services exposed by this registration.
         /// </summary>
         /// <value></value>

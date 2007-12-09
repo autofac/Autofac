@@ -58,6 +58,14 @@ namespace Autofac.Builder
             return Syntax;
         }
 
+        public ICollectionRegistrar As(params Service[] services)
+        {
+            Enforce.ArgumentNotNull(services, "services");
+            foreach (var service in services)
+                AddService(service);
+            return Syntax;
+        }
+
         #endregion
 
         #region IModule Members

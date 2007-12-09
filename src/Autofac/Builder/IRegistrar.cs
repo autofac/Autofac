@@ -71,13 +71,6 @@ namespace Autofac.Builder
         TSyntax As(params Type[] services);
 
         /// <summary>
-        /// Change the service associated with the registration.
-        /// </summary>
-        /// <param name="services">The services that the registration will expose.</param>
-        /// <returns>A registrar allowing registration to continue.</returns>
-        TSyntax As(params Service[] services);
-
-        /// <summary>
         /// Expose the component throug a delegate factory rather than directly as a service.
         /// Unless As(...) is called after this method, the default type registration will not be
         /// made.

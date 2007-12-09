@@ -48,16 +48,24 @@ namespace Autofac.Builder
                 .WithScope(builder.DefaultScope);
         }
 
-        public static void MemberOf<TSyntax>(this IRegistrar<TSyntax> registrar, Type serviceType)
-            where TSyntax : IRegistrar<TSyntax>
+        public static void MemberOf<TSyntax>(this IConcreteRegistrar<TSyntax> registrar, string serviceName)
+            where TSyntax : IConcreteRegistrar<TSyntax>
+        {
+            Enforce.ArgumentNotNull(registrar, "registrar");
+            Enforce.ArgumentNotNullOrEmpty(serviceName, "serviceName");
+            MemberOf(registrar, new NamedService(serviceName));
+        }
+
+        public static void MemberOf<TSyntax>(this IConcreteRegistrar<TSyntax> registrar, Type serviceType)
+            where TSyntax : IConcreteRegistrar<TSyntax>
         {
             Enforce.ArgumentNotNull(registrar, "registrar");
             Enforce.ArgumentNotNull(serviceType, "serviceType");
             MemberOf(registrar, new TypedService(serviceType));
         }
 
-        public static void MemberOf<TSyntax>(this IRegistrar<TSyntax> registrar, Service service)
-            where TSyntax : IRegistrar<TSyntax>
+        public static void MemberOf<TSyntax>(this IConcreteRegistrar<TSyntax> registrar, Service service)
+            where TSyntax : IConcreteRegistrar<TSyntax>
         {
             Enforce.ArgumentNotNull(registrar, "registrar");
             Enforce.ArgumentNotNull(service, "service");
