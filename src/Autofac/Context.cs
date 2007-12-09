@@ -380,16 +380,22 @@ namespace Autofac
             {
                 Type propertyType = property.PropertyType;
 
-                if (property.GetIndexParameters().Length != 0)
-                    continue;
-
                 if (propertyType.IsValueType)
                     continue;
 
-                if (property.CanRead && (property.GetValue(instance, null) != null) && !overrideSetValues)
+                if (property.GetIndexParameters().Length != 0)
                     continue;
 
                 if (!IsRegistered(propertyType))
+                    continue;
+
+                var accessors = property.GetAccessors(false);
+                if (accessors.Length == 1 && accessors[0].ReturnType != typeof(void))
+                    continue;
+
+                if (!overrideSetValues &&
+                    accessors.Length == 2 &&
+                    (property.GetValue(instance, null) != null))
                     continue;
 
                 object propertyValue = Resolve(propertyType);

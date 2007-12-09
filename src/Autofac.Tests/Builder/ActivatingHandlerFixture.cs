@@ -45,6 +45,24 @@ namespace Autofac.Tests.Builder
             Assert.AreEqual(val, instance.Val);
         }
 
+        [Test]
+        public void SetterInjectionUnset()
+        {
+            var val = "Value";
+
+            var builder = new ContainerBuilder();
+            builder.Register(val);
+            builder.Register<HasSetter>()
+                .OnActivating(ActivatingHandler.InjectUnsetProperties);
+
+            var container = builder.Build();
+
+            var instance = container.Resolve<HasSetter>();
+
+            Assert.IsNotNull(instance);
+            Assert.AreEqual(val, instance.Val);
+        }
+
         class HasSetterWithValue
         {
             string _val = "Default";
@@ -63,7 +81,7 @@ namespace Autofac.Tests.Builder
         }
 
         [Test]
-        public void SetterInjectionWithValue()
+        public void SetterInjectionUnsetWithValue()
         {
             var val = "Value";
 
@@ -78,6 +96,24 @@ namespace Autofac.Tests.Builder
 
             Assert.IsNotNull(instance);
             Assert.AreEqual("Default", instance.Val);
+        }
+
+        [Test]
+        public void SetterInjectionWithValue()
+        {
+            var val = "Value";
+
+            var builder = new ContainerBuilder();
+            builder.Register(val);
+            builder.Register<HasSetterWithValue>()
+                .OnActivating(ActivatingHandler.InjectProperties);
+
+            var container = builder.Build();
+
+            var instance = container.Resolve<HasSetterWithValue>();
+
+            Assert.IsNotNull(instance);
+            Assert.AreEqual(val, instance.Val);
         }
 
         class HasPropReadOnly
@@ -112,7 +148,7 @@ namespace Autofac.Tests.Builder
             var instance = container.Resolve<HasPropReadOnly>();
 
             Assert.IsNotNull(instance);
-            Assert.AreEqual(val, instance.Val);
+            Assert.AreEqual("Default", instance.Val);
         }
 
         [Test]
@@ -185,5 +221,51 @@ namespace Autofac.Tests.Builder
             Assert.AreEqual(val, instance.GetVal());
         }
 
+        class SplitAccess
+        {
+            public bool GetterCalled
+            {
+                get;
+                set;
+            }
+
+            public bool SetterCalled
+            {
+                get;
+                set;
+            }
+
+            public string Value
+            {
+                private get
+                {
+                    GetterCalled = true;
+                    return null;
+                }
+                set
+                {
+                    SetterCalled = true;
+                }
+            }
+
+        }
+
+        [Test]
+        public void SetterInjectionPrivateGet()
+        {
+            var val = "Value";
+
+            var builder = new ContainerBuilder();
+            builder.Register(val);
+            builder.Register<SplitAccess>()
+                .OnActivating(ActivatingHandler.InjectUnsetProperties);
+
+            var container = builder.Build();
+            var instance = container.Resolve<SplitAccess>();
+
+            Assert.IsNotNull(instance);
+            Assert.IsTrue(instance.SetterCalled);
+            Assert.IsFalse(instance.GetterCalled);
+        }
     }
 }
