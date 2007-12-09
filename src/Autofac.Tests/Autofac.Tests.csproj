@@ -48,6 +48,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builder\ActivatingHandlerFixture.cs" />
+    <Compile Include="Builder\ConcreteRegistrarFixture.cs" />
+    <Compile Include="Builder\ContainerRegistrationBuilderFixture.cs" />
+    <Compile Include="Builder\DelegateRegistrationBuilderFixture.cs" />
+    <Compile Include="Builder\FactoryRegistrationBuilderFixture.cs" />
+    <Compile Include="Builder\GenericRegistrationBuilderFixture.cs" />
+    <Compile Include="Builder\ProvidedInstanceRegistrationBuilderFixture.cs" />
+    <Compile Include="Builder\ReflectiveRegistrationBuilderFixture.cs" />
     <Compile Include="DisposerFixture.cs" />
     <Compile Include="Component\Registration\GenericRegistrationHandlerFixture.cs" />
     <Compile Include="Component\Scope\BaseContextScopeFixture.cs" />

@@ -674,5 +674,49 @@ namespace Autofac.Tests
             var c = cb.Build();
             var dbc = c.Resolve<DependsByCtor>();
         }
+
+        class Parameterised
+        {
+            public string A { get; private set; }
+            public int B { get; private set; }
+
+            public Parameterised(string a, int b)
+            {
+                A = a;
+                B = b;
+            }
+        }
+
+        [Test]
+        public void RegisterParameterisedWithDelegate()
+        {
+            var cb = new ContainerBuilder();
+            cb.Register((c, p) => new Parameterised(p.Get<string>("a"), p.Get<int>("b")));
+            var container = cb.Build();
+            var aVal = "Hello";
+            var bVal = 42;
+            var result = container.Resolve<Parameterised>(
+                new Parameter("a", aVal),
+                new Parameter("b", bVal));
+            Assert.IsNotNull(result);
+            Assert.AreEqual(aVal, result.A);
+            Assert.AreEqual(bVal, result.B);
+        }
+
+        [Test]
+        public void RegisterParameterisedWithReflection()
+        {
+            var cb = new ContainerBuilder();
+            cb.Register<Parameterised>();
+            var container = cb.Build();
+            var aVal = "Hello";
+            var bVal = 42;
+            var result = container.Resolve<Parameterised>(
+                new Parameter("a", aVal),
+                new Parameter("b", bVal));
+            Assert.IsNotNull(result);
+            Assert.AreEqual(aVal, result.A);
+            Assert.AreEqual(bVal, result.B);
+        }
     }
 }
