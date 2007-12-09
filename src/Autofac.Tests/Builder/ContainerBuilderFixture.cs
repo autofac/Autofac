@@ -174,7 +174,6 @@ namespace Autofac.Tests.Builder
         }
 
         [Test]
-        [Ignore("Investigate: Instance is never resolved thus not added to the disposer.")]
         public void DefaultOwnershipChanged()
         {
             var contextOwnerBuilder = new ContainerBuilder();
@@ -182,7 +181,9 @@ namespace Autofac.Tests.Builder
             {
                 var disposable = new DisposeTracker();
                 contextOwnerBuilder.Register(disposable);
-                contextOwnerBuilder.Build().Dispose();
+                var container = contextOwnerBuilder.Build();
+                container.Resolve<DisposeTracker>();
+                container.Dispose();
                 Assert.IsTrue(disposable.IsDisposed);
             }
 
@@ -191,7 +192,9 @@ namespace Autofac.Tests.Builder
             {
                 var notDisposed = new DisposeTracker();
                 nonOwnedBuilder.Register(notDisposed);
-                nonOwnedBuilder.Build().Dispose();
+                var container = nonOwnedBuilder.Build();
+                container.Resolve<DisposeTracker>();
+                container.Dispose();
                 Assert.IsFalse(notDisposed.IsDisposed);
             }
         }

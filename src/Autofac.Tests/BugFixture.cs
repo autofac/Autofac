@@ -65,5 +65,17 @@ namespace Autofac.Tests
             var inner = container.CreateInnerContainer();
             bool unused = inner.IsRegistered<string>();
         }
+
+        [Test]
+        [Ignore("Investigate: Instance is never resolved thus not added to the disposer.")]
+        public void UnresolvedProvidedInstancesNeverDisposed()
+        {
+            var builder = new ContainerBuilder();
+            var disposable = new DisposeTracker();
+            builder.Register(disposable);
+            var container = builder.Build();
+            container.Dispose();
+            Assert.IsTrue(disposable.IsDisposed);
+        }
     }
 }
