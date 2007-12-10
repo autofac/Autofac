@@ -71,7 +71,13 @@ namespace Autofac
         /// <summary>
 		/// Create a new container.
 		/// </summary>
-		public Container() { }
+		public Container()
+        {
+            RegisterComponent(
+                new Component.Registration.ComponentRegistration(
+                    new Service[] { new TypedService(typeof(IContext)) },
+                    new Component.Activation.ProvidedInstanceActivator(this)));
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Container"/> class.
