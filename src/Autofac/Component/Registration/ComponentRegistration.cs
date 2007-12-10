@@ -196,6 +196,9 @@ namespace Autofac.Component.Registration
 				return false;
 
 			duplicate = new ComponentRegistration(Services, _activator, newScope, _ownershipModel);
+            duplicate.Activating += (s, e) => Activating(this, e);
+            duplicate.Activated += (s, e) => Activated(this, e);
+
 			return true;
 		}
 

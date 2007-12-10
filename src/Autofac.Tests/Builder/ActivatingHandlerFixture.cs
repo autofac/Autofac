@@ -267,5 +267,29 @@ namespace Autofac.Tests.Builder
             Assert.IsTrue(instance.SetterCalled);
             Assert.IsFalse(instance.GetterCalled);
         }
+
+        class Invokee
+        {
+            public int Param { get; set; }
+
+            public void Method(int param)
+            {
+                Param = param;
+            }
+        }
+
+        [Test]
+        public void EventFiredWithContainerScope()
+        {
+            var pval = 12;
+            var builder = new ContainerBuilder();
+            builder.Register<Invokee>()
+                .WithScope(InstanceScope.Container)
+                .OnActivated((s, e) => ((Invokee)e.Instance).Method(pval));
+            var container = builder.Build();
+            var inner = container.CreateInnerContainer();
+            var invokee = inner.Resolve<Invokee>();
+            Assert.AreEqual(pval, invokee.Param);
+        }
     }
 }
