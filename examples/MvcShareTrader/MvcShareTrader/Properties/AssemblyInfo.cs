@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ShareTrader")]
+[assembly: AssemblyTitle("MvcShareTrader")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("<Not Specified>")]
-[assembly: AssemblyProduct("ShareTrader")]
-[assembly: AssemblyCopyright("Copyright © <Not Specified> 2007")]
+[assembly: AssemblyCompany("MSIT")]
+[assembly: AssemblyProduct("MvcShareTrader")]
+[assembly: AssemblyCopyright("Copyright © MSIT 2007")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

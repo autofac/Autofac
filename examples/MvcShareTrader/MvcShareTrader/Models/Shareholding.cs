@@ -1,7 +1,7 @@
-﻿
-using ShareTrader.Services;
-using System;
-namespace ShareTrader.Model
+﻿using System;
+using MvcShareTrader.Services;
+
+namespace MvcShareTrader.Models
 {
     public class Shareholding
     {

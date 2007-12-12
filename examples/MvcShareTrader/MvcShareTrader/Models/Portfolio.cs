@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace ShareTrader.Model
+namespace MvcShareTrader.Models
 {
     public class Portfolio
     {

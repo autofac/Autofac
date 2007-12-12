@@ -1,5 +1,4 @@
-﻿
-namespace ShareTrader.Services
+﻿namespace MvcShareTrader.Services
 {
     public interface IQuoteService
     {

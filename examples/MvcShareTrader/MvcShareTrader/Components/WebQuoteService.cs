@@ -1,8 +1,8 @@
-﻿using ShareTrader.Services;
+﻿using System;
+using MvcShareTrader.Services;
 using System.Diagnostics;
-using System;
 
-namespace ShareTrader.Components
+namespace MvcShareTrader.Components
 {
     public class WebQuoteService : IQuoteService, IDisposable
     {
