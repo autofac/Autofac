@@ -5,6 +5,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac", "Autofac\Autofac.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests", "Autofac.Tests\Autofac.Tests.csproj", "{B2E242BC-9412-43ED-8BFE-3F12199BD649}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.Mvc", "Autofac.Integration.Mvc\Autofac.Integration.Mvc.csproj", "{23347779-903B-49C2-9AF7-58F49D14521F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.Mvc", "Autofac.Tests.Integration.Mvc\Autofac.Tests.Integration.Mvc.csproj", "{361F2CB1-7049-4FA8-9E73-DDE237742CE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +23,14 @@ Global
 		{B2E242BC-9412-43ED-8BFE-3F12199BD649}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2E242BC-9412-43ED-8BFE-3F12199BD649}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2E242BC-9412-43ED-8BFE-3F12199BD649}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23347779-903B-49C2-9AF7-58F49D14521F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23347779-903B-49C2-9AF7-58F49D14521F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23347779-903B-49C2-9AF7-58F49D14521F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23347779-903B-49C2-9AF7-58F49D14521F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{361F2CB1-7049-4FA8-9E73-DDE237742CE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{361F2CB1-7049-4FA8-9E73-DDE237742CE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{361F2CB1-7049-4FA8-9E73-DDE237742CE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{361F2CB1-7049-4FA8-9E73-DDE237742CE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
