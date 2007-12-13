@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Data;
-using System.Configuration;
-using System.Collections;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Security;
-using System.Web.SessionState;
-using System.Xml.Linq;
-using Autofac.Builder;
-using MvcShareTrader.Models;
-using MvcShareTrader.Components;
-using MvcShareTrader.Services;
-using Autofac;
 using System.Reflection;
+using System.Web.Mvc;
+using Autofac;
+using Autofac.Builder;
+using Autofac.Integration.Mvc;
+using MvcShareTrader.Components;
+using MvcShareTrader.Models;
+using MvcShareTrader.Services;
 
 namespace MvcShareTrader
 {
@@ -54,8 +48,7 @@ namespace MvcShareTrader
             foreach (Type controllerType in Assembly.GetExecutingAssembly().GetTypes().Where(t => typeof(IController).IsAssignableFrom(t)))
                 builder.Register(controllerType).WithScope(InstanceScope.Factory);
 
-            AutofacHttpModule.Container = builder.Build();
-            ControllerBuilder.Current.SetDefaultControllerFactory(typeof(AutofacControllerFactory));
+            AutofacMvcIntegration.Install(builder.Build());
         }
     }
 }
