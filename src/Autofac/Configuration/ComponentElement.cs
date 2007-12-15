@@ -37,6 +37,7 @@ namespace Autofac.Configuration
         const string ServicesElementName = "services";
 		const string ParametersElementName = "parameters";
 		const string PropertiesElementName = "properties";
+        const string MemberOfAttributeName = "member-of";
 		internal const string Key = TypeAttributeName;
 
         /// <summary>
@@ -63,6 +64,19 @@ namespace Autofac.Configuration
             get
             {
                 return (string)this[ServiceAttributeName];
+            }
+        }
+
+        /// <summary>
+        /// Allows the component to be added to another composite component.
+        /// </summary>
+        /// <value>The name of the composite component.</value>
+        [ConfigurationProperty(MemberOfAttributeName, IsRequired = false)]
+        public string MemberOf
+        {
+            get
+            {
+                return (string)this[MemberOfAttributeName];
             }
         }
 

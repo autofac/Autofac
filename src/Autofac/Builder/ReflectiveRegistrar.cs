@@ -96,12 +96,41 @@ namespace Autofac.Builder
         public IReflectiveRegistrar WithArguments(params Parameter[] additionalCtorArgs)
         {
             Enforce.ArgumentNotNull(additionalCtorArgs, "additionalCtorArgs");
-            
-            var newArgs = new Dictionary<string, object>();
-            foreach (var nv in additionalCtorArgs)
-                newArgs.Add(nv.Name, nv.Value);
 
-            _additionalCtorArgs = newArgs;
+            var args = ParametersToDictionary(additionalCtorArgs);
+
+            return WithArguments(args);
+        }
+
+        /// <summary>
+        /// Associates constructor parameters with default values.
+        /// </summary>
+        /// <param name="additionalCtorArgs">The named values to apply to the constructor.
+        /// These may be overriden by supplying any/all values to the IContext.Resolve() method.</param>
+        /// <returns>
+        /// A registrar allowing registration to continue.
+        /// </returns>
+        public IReflectiveRegistrar WithArguments(IDictionary<string, object> additionalCtorArgs)
+        {
+            Enforce.ArgumentNotNull(additionalCtorArgs, "additionalCtorArgs");
+
+            _additionalCtorArgs = additionalCtorArgs;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Provide explicit property values to be set on the new object.
+        /// </summary>
+        /// <param name="explicitProperties"></param>
+        /// <returns></returns>
+        /// <remarks>Note, supplying a null value will not prevent property injection if
+        /// property injection is done through an OnActivating handler.</remarks>
+        public IReflectiveRegistrar WithProperties(IDictionary<string, object> explicitProperties)
+        {
+            Enforce.ArgumentNotNull(explicitProperties, "explicitProperties");
+
+            _explicitProperties = explicitProperties;
 
             return this;
         }
@@ -117,13 +146,9 @@ namespace Autofac.Builder
         {
             Enforce.ArgumentNotNull(explicitProperties, "explicitProperties");
 
-            var newProps = new Dictionary<string, object>();
-            foreach (var nv in explicitProperties)
-                newProps.Add(nv.Name, nv.Value);
+            var props = ParametersToDictionary(explicitProperties);
 
-            _explicitProperties = newProps;
-
-            return this;
+            return WithProperties(props);
         }
 
         #endregion
@@ -148,6 +173,15 @@ namespace Autofac.Builder
         protected override IReflectiveRegistrar Syntax
         {
             get { return this; }
+        }
+
+        private IDictionary<string, object> ParametersToDictionary(Parameter[] parameters)
+        {
+            Enforce.ArgumentNotNull(parameters, "parameters");
+            var result = new Dictionary<string, object>();
+            foreach (var nv in parameters)
+                result.Add(nv.Name, nv.Value);
+            return result;
         }
     }
 }

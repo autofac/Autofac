@@ -38,7 +38,7 @@ namespace Autofac.Configuration
     /// <summary>
     /// Configures containers based upon app.config settings.
     /// </summary>
-    public class ConfigurationSettingsReader
+    public class ConfigurationSettingsReader : IModule
     {
         const string AutofacSectionName = "autofac";
 
@@ -111,12 +111,6 @@ namespace Autofac.Configuration
 				foreach (PropertyElement property in component.ExplicitProperties)
 					properties.Add(property.Name, property.Value);
 
-                ReflectionActivator activator =
-                    new ReflectionActivator(
-						LoadType(component.Type, defaultAssembly),
-						parameters,
-						properties);
-
                 IList<Service> services = new List<Service>();
                 if (!string.IsNullOrEmpty(component.Service))
                     services.Add(new TypedService(LoadType(component.Service, defaultAssembly)));
@@ -124,8 +118,18 @@ namespace Autofac.Configuration
                 foreach (ServiceElement service in component.Services)
                     services.Add(new TypedService(LoadType(service.Type, defaultAssembly)));
 
-                ComponentRegistration cr = new ComponentRegistration(services, activator);
-                builder.RegisterComponent(cr);
+                var registrar = builder.Register(LoadType(component.Type, defaultAssembly));
+
+                foreach (var service in services)
+                    registrar.As(service);
+
+                registrar.WithArguments(parameters);
+
+                registrar.WithProperties(properties);
+
+                if (!string.IsNullOrEmpty(component.MemberOf))
+                    registrar.MemberOf(component.MemberOf);
+
             }
         }
 
