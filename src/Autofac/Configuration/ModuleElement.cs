@@ -33,7 +33,9 @@ namespace Autofac.Configuration
     public class ModuleElement : ConfigurationElement
 	{
 		const string TypeAttributeName = "type";
-		internal const string Key = TypeAttributeName;
+        const string ParametersElementName = "parameters";
+        const string PropertiesElementName = "properties";
+        internal const string Key = TypeAttributeName;
 
         /// <summary>
         /// Gets the type of the module. Must expose <see cref="IModule"/>.
@@ -47,5 +49,31 @@ namespace Autofac.Configuration
 				return (string)this[TypeAttributeName];
 			}
 		}
-	}
+
+        /// <summary>
+        /// Gets the parameters used to construct the component.
+        /// </summary>
+        /// <value>The parameters.</value>
+        [ConfigurationProperty(ParametersElementName, IsRequired = false)]
+        public ParameterElementCollection Parameters
+        {
+            get
+            {
+                return (ParameterElementCollection)this[ParametersElementName];
+            }
+        }
+
+        /// <summary>
+        /// Gets the properties to be explicitly set on the component.
+        /// </summary>
+        /// <value>The explicit properties.</value>
+        [ConfigurationProperty(PropertiesElementName, IsRequired = false)]
+        public PropertyElementCollection ExplicitProperties
+        {
+            get
+            {
+                return (PropertyElementCollection)this[PropertiesElementName];
+            }
+        }
+    }
 }

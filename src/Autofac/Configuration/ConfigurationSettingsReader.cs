@@ -96,21 +96,17 @@ namespace Autofac.Configuration
 
 			foreach (ModuleElement moduleElement in _sectionHandler.Modules)
 			{
-				Type moduleType = LoadType(moduleElement.Type, defaultAssembly);
-				IModule module = (IModule)Activator.CreateInstance(moduleType);
+				var moduleType = LoadType(moduleElement.Type, defaultAssembly);
+                var moduleActivator = new ReflectionActivator(
+                    moduleType,
+                    moduleElement.Parameters.ToDictionary(),
+                    moduleElement.ExplicitProperties.ToDictionary());
+				var module = (IModule)moduleActivator.ActivateInstance(Context.Empty, ActivationParameters.Empty);
                 builder.RegisterModule(module);
 			}
 
             foreach (ComponentElement component in _sectionHandler.Components)
             {
-                IDictionary<string, object> parameters = new Dictionary<string, object>();
-                foreach (ParameterElement parameter in component.Parameters)
-                    parameters.Add(parameter.Name, parameter.Value);
-
-				IDictionary<string, object> properties = new Dictionary<string, object>();
-				foreach (PropertyElement property in component.ExplicitProperties)
-					properties.Add(property.Name, property.Value);
-
                 IList<Service> services = new List<Service>();
                 if (!string.IsNullOrEmpty(component.Service))
                     services.Add(new TypedService(LoadType(component.Service, defaultAssembly)));
@@ -123,9 +119,9 @@ namespace Autofac.Configuration
                 foreach (var service in services)
                     registrar.As(service);
 
-                registrar.WithArguments(parameters);
+                registrar.WithArguments(component.Parameters.ToDictionary());
 
-                registrar.WithProperties(properties);
+                registrar.WithProperties(component.ExplicitProperties.ToDictionary());
 
                 if (!string.IsNullOrEmpty(component.MemberOf))
                     registrar.MemberOf(component.MemberOf);

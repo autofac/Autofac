@@ -64,6 +64,11 @@ namespace Autofac
         /// </summary>
         IDisposer _disposer = new Disposer();
 
+        /// <summary>
+        /// A container with no component registrations.
+        /// </summary>
+        public static readonly Container Empty = new Container();
+
         #endregion
 
         #region Initialisation

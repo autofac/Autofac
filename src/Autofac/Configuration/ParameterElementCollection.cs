@@ -41,5 +41,17 @@ namespace Autofac.Configuration
             : base("parameter", ParameterElement.Key)
         {
         }
+
+        /// <summary>
+        /// Return the collection as a dictionary.
+        /// </summary>
+        /// <returns></returns>
+        public IDictionary<string, object> ToDictionary()
+        {
+            var result = new Dictionary<string, object>();
+            foreach (ParameterElement parameter in this)
+                result.Add(parameter.Name, parameter.Value);
+            return result;
+        }
     }
 }

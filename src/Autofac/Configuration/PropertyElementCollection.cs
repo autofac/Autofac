@@ -41,5 +41,17 @@ namespace Autofac.Configuration
 			: base("property", PropertyElement.Key)
 		{
 		}
+
+        /// <summary>
+        /// Return the collection as a dictionary.
+        /// </summary>
+        /// <returns></returns>
+        public IDictionary<string, object> ToDictionary()
+        {
+            var result = new Dictionary<string, object>();
+            foreach (PropertyElement property in this)
+                result.Add(property.Name, property.Value);
+            return result;
+        }
 	}
 }

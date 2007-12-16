@@ -175,6 +175,5 @@ namespace Autofac.Configuration
 				return (PropertyElementCollection)this[PropertiesElementName];
 			}
 		}
-
     }
 }

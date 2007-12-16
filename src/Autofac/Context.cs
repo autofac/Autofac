@@ -40,6 +40,11 @@ namespace Autofac
 
         #region Fields
 
+        /// <summary>
+        /// A context with no registered components.
+        /// </summary>
+        public static readonly Context Empty = new Context(Container.Empty);
+
         IContainer _container;
         
         IList<Activation> _activations = new List<Activation>();
