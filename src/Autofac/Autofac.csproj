@@ -66,6 +66,11 @@
     <Compile Include="Builder\IGenericRegistrar.cs" />
     <Compile Include="Builder\IProvidedInstanceRegistrar.cs" />
     <Compile Include="Builder\IReflectiveRegistrar.cs" />
+    <Compile Include="Builder\ProvidedInstanceRegistrarResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ProvidedInstanceRegistrarResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Builder\ProvidedInstanceRegistrationBuilder.cs" />
     <Compile Include="Builder\ReflectiveRegistrarResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -233,6 +238,11 @@
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ActivationParametersResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Builder\ProvidedInstanceRegistrarResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ProvidedInstanceRegistrarResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Builder\ReflectiveRegistrarResources.resx">
       <SubType>Designer</SubType>

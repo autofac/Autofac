@@ -25,6 +25,7 @@
 
 using Autofac.Component.Activation;
 using Autofac.Component;
+using System;
 
 namespace Autofac.Builder
 {
@@ -61,6 +62,21 @@ namespace Autofac.Builder
         protected override IProvidedInstanceRegistrar Syntax
         {
             get { return this; }
+        }
+
+        /// <summary>
+        /// Change the scope associated with the registration.
+        /// This determines how instances are tracked and shared.
+        /// </summary>
+        /// <param name="scope">The scope model to use.</param>
+        /// <returns>
+        /// A registrar allowing registration to continue.
+        /// </returns>
+        public override IProvidedInstanceRegistrar WithScope(InstanceScope scope)
+        {
+            if (scope != InstanceScope.Singleton)
+                throw new ArgumentException(ProvidedInstanceRegistrarResources.SingletonScopeOnly);
+            return base.WithScope(scope);
         }
     }
 }

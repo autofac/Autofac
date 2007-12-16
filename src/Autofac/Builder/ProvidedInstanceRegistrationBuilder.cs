@@ -49,9 +49,11 @@ namespace Autofac.Builder
             var result = new ProvidedInstanceRegistrar(instance);
             builder.RegisterModule(result);
 
-            // Scope of instances is always singleton
+            // Scope of instances is always singleton, this will throw an exception
+            // if the default is otherwise.
             return result
-                .WithOwnership(builder.DefaultOwnership);
+                .WithOwnership(builder.DefaultOwnership)
+                .WithScope(builder.DefaultScope);
         }
     }
 }

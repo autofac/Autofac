@@ -58,7 +58,7 @@ namespace Autofac.Builder
 		/// </summary>
 		/// <typeparam name="TService">The service that the registration will expose.</typeparam>
 		/// <returns>A registrar allowing registration to continue.</returns>
-        public TSyntax As<TService>()
+        public virtual TSyntax As<TService>()
 		{
 			return As(new[] { typeof(TService) });
 		}
@@ -69,7 +69,7 @@ namespace Autofac.Builder
 		/// <typeparam name="TService1">The first service that the registration will expose.</typeparam>
 		/// <typeparam name="TService2">The second service that the registration will expose.</typeparam>
 		/// <returns>A registrar allowing registration to continue.</returns>
-        public TSyntax As<TService1, TService2>()
+        public virtual TSyntax As<TService1, TService2>()
 		{
             return As(new[] { typeof(TService1), typeof(TService2) });
 		}
@@ -81,7 +81,7 @@ namespace Autofac.Builder
 		/// <typeparam name="TService2">The second service that the registration will expose.</typeparam>
 		/// <typeparam name="TService3">The third service that the registration will expose.</typeparam>
 		/// <returns>A registrar allowing registration to continue.</returns>
-        public TSyntax As<TService1, TService2, TService3>()
+        public virtual TSyntax As<TService1, TService2, TService3>()
 		{
 			return As(new[] { typeof(TService1), typeof(TService2), typeof(TService3) });
 		}
@@ -93,14 +93,21 @@ namespace Autofac.Builder
         /// <returns>
         /// A registrar allowing registration to continue.
         /// </returns>
-        public TSyntax As(params Type[] services)
+        public virtual TSyntax As(params Type[] services)
         {
             Enforce.ArgumentNotNull(services, "services");
             AddServices(services.Select<Type, Service>(s => new TypedService(s)));
             return Syntax;
         }
 
-        public TSyntax ThroughFactory(Type factoryDelegate)
+        /// <summary>
+        /// Expose the component throug a delegate factory rather than directly as a service.
+        /// Unless As(...) is called after this method, the default type registration will not be
+        /// made.
+        /// </summary>
+        /// <param name="factoryDelegate"></param>
+        /// <returns></returns>
+        public virtual TSyntax ThroughFactory(Type factoryDelegate)
         {
             Enforce.ArgumentNotNull(factoryDelegate, "factoryDelegate");
             MethodInfo invoke = factoryDelegate.GetMethod("Invoke");
@@ -115,7 +122,12 @@ namespace Autofac.Builder
             return Syntax;
         }
 
-        public TSyntax ThroughFactory<TFactoryDelegate>()
+        /// <summary>
+        /// Throughes the factory.
+        /// </summary>
+        /// <typeparam name="TFactoryDelegate">The type of the factory delegate.</typeparam>
+        /// <returns></returns>
+        public virtual TSyntax ThroughFactory<TFactoryDelegate>()
         {
             return ThroughFactory(typeof(TFactoryDelegate));
         }
@@ -128,7 +140,7 @@ namespace Autofac.Builder
 		/// <returns>
 		/// A registrar allowing registration to continue.
 		/// </returns>
-        public TSyntax WithOwnership(InstanceOwnership ownership)
+        public virtual TSyntax WithOwnership(InstanceOwnership ownership)
 		{
 			Ownership = ownership;
             return Syntax;
@@ -142,7 +154,7 @@ namespace Autofac.Builder
 		/// <returns>
 		/// A registrar allowing registration to continue.
 		/// </returns>
-        public TSyntax WithScope(InstanceScope scope)
+        public virtual TSyntax WithScope(InstanceScope scope)
 		{
 			Scope = scope;
             return Syntax;
@@ -153,7 +165,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="handler">The handler.</param>
         /// <returns>A registrar allowing registration to continue.</returns>
-        public TSyntax OnRegistered(EventHandler<RegisteredEventArgs> handler)
+        public virtual TSyntax OnRegistered(EventHandler<RegisteredEventArgs> handler)
         {
             Enforce.ArgumentNotNull(handler, "handler");
             _registeredHandlers.Add(handler);
@@ -165,7 +177,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="handler">The handler.</param>
         /// <returns>A registrar allowing registration to continue.</returns>
-        public TSyntax OnActivating(EventHandler<ActivatingEventArgs> handler)
+        public virtual TSyntax OnActivating(EventHandler<ActivatingEventArgs> handler)
         {
             Enforce.ArgumentNotNull(handler, "handler");
             _activatingHandlers.Add(handler);
@@ -176,7 +188,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="handler">The handler.</param>
         /// <returns>A registrar allowing registration to continue.</returns>
-        public TSyntax OnActivated(EventHandler<ActivatedEventArgs> handler)
+        public virtual TSyntax OnActivated(EventHandler<ActivatedEventArgs> handler)
         {
             Enforce.ArgumentNotNull(handler, "handler");
             _activatedHandlers.Add(handler);
@@ -209,7 +221,7 @@ namespace Autofac.Builder
         /// <summary>
         /// Add many services to be exposed by the component.
         /// </summary>
-        protected void AddServices(IEnumerable<Service> services)
+        protected virtual void AddServices(IEnumerable<Service> services)
         {
             Enforce.ArgumentNotNull(services, "services");
             foreach (var service in services)
@@ -219,7 +231,7 @@ namespace Autofac.Builder
         /// <summary>
         /// The factory delegates that can create the component.
         /// </summary>
-        protected ICollection<Type> FactoryDelegates
+        protected virtual ICollection<Type> FactoryDelegates
         {
             get
             {
@@ -230,7 +242,7 @@ namespace Autofac.Builder
 		/// <summary>
 		/// The instance scope used by this registration.
 		/// </summary>
-		protected InstanceScope Scope
+        protected virtual InstanceScope Scope
 		{
 			get
 			{
@@ -245,7 +257,7 @@ namespace Autofac.Builder
 		/// <summary>
 		/// The instance ownership used by this registration.
 		/// </summary>
-		protected InstanceOwnership Ownership
+        protected virtual InstanceOwnership Ownership
 		{
 			get
 			{
@@ -260,7 +272,7 @@ namespace Autofac.Builder
         /// <summary>
         /// The handlers for the Activating event used by this registration.
         /// </summary>
-        protected IEnumerable<EventHandler<ActivatingEventArgs>> ActivatingHandlers
+        protected virtual IEnumerable<EventHandler<ActivatingEventArgs>> ActivatingHandlers
         {
             get
             {
@@ -271,7 +283,7 @@ namespace Autofac.Builder
         /// <summary>
         /// The handlers for the Activated event used by this registration.
         /// </summary>
-        protected IEnumerable<EventHandler<ActivatedEventArgs>> ActivatedHandlers
+        protected virtual IEnumerable<EventHandler<ActivatedEventArgs>> ActivatedHandlers
         {
             get
             {
@@ -284,7 +296,7 @@ namespace Autofac.Builder
         /// Fires the registered event.
         /// </summary>
         /// <param name="container">The container in which the registration was made.</param>
-        protected void FireRegistered(Container container)
+        protected virtual void FireRegistered(Container container)
         {
             Enforce.ArgumentNotNull(container, "container");
             RegisteredEventArgs e = new RegisteredEventArgs() { Container = container };
