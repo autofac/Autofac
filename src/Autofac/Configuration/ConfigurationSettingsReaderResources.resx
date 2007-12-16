@@ -123,4 +123,13 @@
   <data name="TypeNotFound" xml:space="preserve">
     <value>The type '{0}' could not be found. It may require assembly qualification, e.g. "MyType, MyAssembly".</value>
   </data>
+  <data name="UnrecognisedInjectProperties" xml:space="preserve">
+    <value>The value '{0}' is not valid for the inject-properties attribute. Valid values are 'never', 'all' and 'unset'.</value>
+  </data>
+  <data name="UnrecognisedOwnership" xml:space="preserve">
+    <value>The value '{0}' is not valid for the ownership attribute. Valid values are 'container' and 'external'.</value>
+  </data>
+  <data name="UnrecognisedScope" xml:space="preserve">
+    <value>The value '{0}' is not valid for the scope attribute. Valid values are 'singleton', 'factory' and 'container'.</value>
+  </data>
 </root>

@@ -130,6 +130,83 @@ namespace Autofac.Configuration
                 if (!string.IsNullOrEmpty(component.MemberOf))
                     registrar.MemberOf(component.MemberOf);
 
+                if (!string.IsNullOrEmpty(component.Name))
+                    registrar.Named(component.Name);
+
+                SetScope(component, registrar);
+                SetOwnership(component, registrar);
+                SetInjectProperties(component, registrar);
+            }
+        }
+
+        private void SetInjectProperties(ComponentElement component, IReflectiveRegistrar registrar)
+        {
+            Enforce.ArgumentNotNull(component, "component");
+            Enforce.ArgumentNotNull(registrar, "registrar");
+
+            if (!string.IsNullOrEmpty(component.InjectProperties))
+            {
+                switch (component.InjectProperties.ToLower())
+                {
+                    case "never":
+                        break;
+                    case "all":
+                        registrar.OnActivated(ActivatedHandler.InjectProperties);
+                        break;
+                    case "unset":
+                        registrar.OnActivated(ActivatedHandler.InjectUnsetProperties);
+                        break;
+                    default:
+                        throw new ConfigurationErrorsException(string.Format(CultureInfo.CurrentCulture,
+                            ConfigurationSettingsReaderResources.UnrecognisedInjectProperties, component.InjectProperties));
+                }
+            }
+        }
+
+        private void SetOwnership(ComponentElement component, IReflectiveRegistrar registrar)
+        {
+            Enforce.ArgumentNotNull(component, "component");
+            Enforce.ArgumentNotNull(registrar, "registrar");
+
+            if (!string.IsNullOrEmpty(component.Ownership))
+            {
+                switch (component.Ownership.ToLower())
+                {
+                    case "container":
+                        registrar.WithOwnership(InstanceOwnership.Container);
+                        break;
+                    case "external":
+                        registrar.WithOwnership(InstanceOwnership.External);
+                        break;
+                    default:
+                        throw new ConfigurationErrorsException(string.Format(CultureInfo.CurrentCulture,
+                            ConfigurationSettingsReaderResources.UnrecognisedOwnership, component.Ownership));
+                }
+            }
+        }
+
+        private void SetScope(ComponentElement component, IReflectiveRegistrar registrar)
+        {
+            Enforce.ArgumentNotNull(component, "component");
+            Enforce.ArgumentNotNull(registrar, "registrar");
+
+            if (!string.IsNullOrEmpty(component.Scope))
+            {
+                switch (component.Scope.ToLower())
+                {
+                    case "singleton":
+                        registrar.WithScope(InstanceScope.Singleton);
+                        break;
+                    case "container":
+                        registrar.WithScope(InstanceScope.Container);
+                        break;
+                    case "factory":
+                        registrar.WithScope(InstanceScope.Factory);
+                        break;
+                    default:
+                        throw new ConfigurationErrorsException(string.Format(CultureInfo.CurrentCulture,
+                            ConfigurationSettingsReaderResources.UnrecognisedScope, component.Scope));
+                }
             }
         }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 
-namespace Autofac.Tests.Component.Ownership
+namespace Autofac.Tests
 {
 	[TestFixture]
 	public class DisposerFixture
@@ -29,7 +29,7 @@ namespace Autofac.Tests.Component.Ownership
 			var refer = new WeakReference(instance);
 			Assert.IsTrue(refer.IsAlive);
 			instance = null;
-			GC.Collect();
+            GC.Collect();
 			Assert.IsFalse(refer.IsAlive);
 			target.Dispose();
 		}

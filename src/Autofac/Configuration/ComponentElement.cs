@@ -38,7 +38,11 @@ namespace Autofac.Configuration
 		const string ParametersElementName = "parameters";
 		const string PropertiesElementName = "properties";
         const string MemberOfAttributeName = "member-of";
-		internal const string Key = TypeAttributeName;
+        const string NameAttributeName = "name";
+        const string ScopeAttributeName = "scope";
+        const string OwnershipAttributeName = "ownership";
+        const string InjectPropertiesAttributeName = "inject-properties";
+        internal const string Key = TypeAttributeName;
 
         /// <summary>
         /// Gets the type of the component.
@@ -77,6 +81,59 @@ namespace Autofac.Configuration
             get
             {
                 return (string)this[MemberOfAttributeName];
+            }
+        }
+
+        /// <summary>
+        /// Allows the component to be added to another composite component.
+        /// </summary>
+        /// <value>The name of the composite component.</value>
+        [ConfigurationProperty(NameAttributeName, IsRequired = false)]
+        public string Name
+        {
+            get
+            {
+                return (string)this[NameAttributeName];
+            }
+        }
+
+        /// <summary>
+        /// Sets the scope of the component instances.
+        /// </summary>
+        /// <value>singleton (default,) factory or container.</value>
+        [ConfigurationProperty(ScopeAttributeName, IsRequired = false)]
+        public string Scope
+        {
+            get
+            {
+                return (string)this[ScopeAttributeName];
+            }
+        }
+
+        /// <summary>
+        /// Sets the ownership over the component instances.
+        /// </summary>
+        /// <value>container (default) or external.</value>
+        [ConfigurationProperty(OwnershipAttributeName, IsRequired = false)]
+        public string Ownership
+        {
+            get
+            {
+                return (string)this[OwnershipAttributeName];
+            }
+        }
+
+        /// <summary>
+        /// Sets up property injection for the component instances. This uses the
+        /// OnActivated event so that circular dependencies can be handled.
+        /// </summary>
+        /// <value>never (default,) all, unset.</value>
+        [ConfigurationProperty(InjectPropertiesAttributeName, IsRequired = false)]
+        public string InjectProperties
+        {
+            get
+            {
+                return (string)this[InjectPropertiesAttributeName];
             }
         }
 
