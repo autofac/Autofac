@@ -145,6 +145,7 @@
     <Compile Include="Configuration\ModuleElementCollection.cs" />
     <Compile Include="IModule.cs" />
     <Compile Include="IRegistrationSource.cs" />
+    <Compile Include="Builder\Module.cs" />
     <Compile Include="NamedService.cs" />
     <Compile Include="Parameter.cs" />
     <Compile Include="Configuration\ComponentElement.cs" />
