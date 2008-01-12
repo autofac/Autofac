@@ -67,7 +67,6 @@ namespace Autofac.Tests
         }
 
         [Test]
-        [Ignore("Investigate: Instance is never resolved thus not added to the disposer.")]
         public void UnresolvedProvidedInstancesNeverDisposed()
         {
             var builder = new ContainerBuilder();

@@ -78,5 +78,24 @@ namespace Autofac.Builder
                 throw new ArgumentException(ProvidedInstanceRegistrarResources.SingletonScopeOnly);
             return base.WithScope(scope);
         }
+
+        /// <summary>
+        /// Resolves issue #7 - Provided instances not disposed unless they are resolved
+        /// first. Manually attaches instance to container's disposer if Container ownership
+        /// is chosen.
+        /// </summary>
+        /// <param name="container">The container.</param>
+        public override void Configure(Container container)
+        {
+            Enforce.ArgumentNotNull(container, "container");
+
+            InstanceOwnership ownership = Ownership;
+            Ownership = InstanceOwnership.External;
+
+            base.Configure(container);
+            
+            if (ownership == InstanceOwnership.Container && _instance is IDisposable)
+                container.Disposer.AddInstanceForDisposal((IDisposable)_instance);
+        }
     }
 }

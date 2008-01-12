@@ -341,6 +341,18 @@ namespace Autofac
                 }
         }
 
+        /// <summary>
+        /// The disposer associated with this container. Instances can be associated
+        /// with it manually if required.
+        /// </summary>
+        internal IDisposer Disposer
+        {
+            get
+            {
+                return _disposer;
+            }
+        }
+
         #endregion
 
         #region IContext Support
