@@ -75,7 +75,7 @@ namespace Autofac.Builder
                 ActivatingHandlers,
                 ActivatedHandlers));
 
-            FireRegistered(container);
+            FireRegistered(new RegisteredEventArgs() { Container = container });
 		}
 
 		#endregion

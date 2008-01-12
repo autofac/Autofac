@@ -295,11 +295,10 @@ namespace Autofac.Builder
         /// <summary>
         /// Fires the registered event.
         /// </summary>
-        /// <param name="container">The container in which the registration was made.</param>
-        protected virtual void FireRegistered(Container container)
+        /// <param name="e">The <see cref="Autofac.Builder.RegisteredEventArgs"/> instance containing the event data.</param>
+        protected virtual void FireRegistered(RegisteredEventArgs e)
         {
-            Enforce.ArgumentNotNull(container, "container");
-            RegisteredEventArgs e = new RegisteredEventArgs() { Container = container };
+            Enforce.ArgumentNotNull(e, "e");
             foreach (EventHandler<RegisteredEventArgs> handler in _registeredHandlers)
                 handler(this, e);
         }

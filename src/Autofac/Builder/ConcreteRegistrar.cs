@@ -96,7 +96,7 @@ namespace Autofac.Builder
                 container.RegisterComponent(fr);
             }
 
-            FireRegistered(container);
+            FireRegistered(new RegisteredEventArgs() { Container = container, Registration = cr});
 		}
 
 		#endregion
