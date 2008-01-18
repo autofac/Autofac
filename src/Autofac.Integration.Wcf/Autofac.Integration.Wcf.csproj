@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{361F2CB1-7049-4FA8-9E73-DDE237742CE1}</ProjectGuid>
+    <ProjectGuid>{4D5C02D1-C10A-4448-9D7B-8F2A5CCA1D13}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Autofac.Tests.Integration.Mvc</RootNamespace>
-    <AssemblyName>Autofac.Tests.Integration.Mvc</AssemblyName>
+    <RootNamespace>Autofac.Integration.Wcf</RootNamespace>
+    <AssemblyName>Autofac.Integration.Wcf</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,28 +31,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.4.6.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files\NUnit 2.4.6\bin\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions, Version=3.6.0.0">
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel.Web">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutofacControllerFactoryFixture.cs" />
+    <Compile Include="AutofacDependencyInjectionServiceBehavior.cs" />
+    <Compile Include="AutofacInstanceProvider.cs" />
+    <Compile Include="AutofacServiceHost.cs" />
+    <Compile Include="AutofacServiceHostFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Autofac.Integration.Mvc\Autofac.Integration.Mvc.csproj">
-      <Project>{23347779-903B-49C2-9AF7-58F49D14521F}</Project>
-      <Name>Autofac.Integration.Mvc</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Autofac\Autofac.csproj">
       <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
       <Name>Autofac</Name>

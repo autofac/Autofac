@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Service="TestService.Service1" Factory="Autofac.Integration.Wcf.AutofacServiceHostFactory" %>
