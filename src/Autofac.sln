@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.Wcf", "Autofac.Integration.Wcf\Autofac.Integration.Wcf.csproj", "{4D5C02D1-C10A-4448-9D7B-8F2A5CCA1D13}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.Wcf", "Autofac.Tests.Integration.Wcf\Autofac.Tests.Integration.Wcf.csproj", "{E3559C55-D387-4620-AC02-6C3098D4A888}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{4D5C02D1-C10A-4448-9D7B-8F2A5CCA1D13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D5C02D1-C10A-4448-9D7B-8F2A5CCA1D13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D5C02D1-C10A-4448-9D7B-8F2A5CCA1D13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3559C55-D387-4620-AC02-6C3098D4A888}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3559C55-D387-4620-AC02-6C3098D4A888}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3559C55-D387-4620-AC02-6C3098D4A888}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3559C55-D387-4620-AC02-6C3098D4A888}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

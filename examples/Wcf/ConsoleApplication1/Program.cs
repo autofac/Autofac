@@ -15,6 +15,8 @@ namespace ConsoleApplication1
 
             Console.WriteLine(r);
 
+            ((IDisposable)s).Dispose();
+
             Console.ReadLine();
         }
     }

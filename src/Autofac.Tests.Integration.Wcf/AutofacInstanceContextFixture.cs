@@ -1,0 +1,40 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using NUnit.Framework;
+using Autofac.Integration.Wcf;
+using Autofac.Builder;
+
+namespace Autofac.Tests.Integration.Wcf
+{
+    [TestFixture]
+    public class AutofacInstanceContextFixture
+    {
+        class DisposeTracker : Disposable
+        {
+            new public bool IsDisposed
+            {
+                get
+                {
+                    return base.IsDisposed;
+                }
+            }
+        }
+
+        [Test]
+        public void InstancesDisposed()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register<DisposeTracker>()
+                .WithScope(InstanceScope.Factory);
+            var container = builder.Build();
+            var context = new AutofacInstanceContext(container);
+            var disposable = (DisposeTracker)context.Resolve(
+                new TypedService(typeof(DisposeTracker)));
+            Assert.IsFalse(disposable.IsDisposed);
+            context.Dispose();
+            Assert.IsTrue(disposable.IsDisposed);
+        }
+    }
+}

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Autofac.Integration.Wcf")]
+[assembly: AssemblyTitle("Autofac.Tests.Integration.Wcf")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Home")]
-[assembly: AssemblyProduct("Autofac.Integration.Wcf")]
-[assembly: AssemblyCopyright("Copyright © Autofac Contributors 2008")]
+[assembly: AssemblyCompany("<Not Specified>")]
+[assembly: AssemblyProduct("Autofac.Tests.Integration.Wcf")]
+[assembly: AssemblyCopyright("Copyright © <Not Specified> 2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("607b4e30-70cb-48b2-ae45-cbcaeaceef07")]
+[assembly: Guid("8753d200-2acb-4894-bbf4-78f93434d5bf")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -34,6 +34,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-
-[assembly: InternalsVisibleTo("Autofac.Tests.Integration.Wcf")]
-

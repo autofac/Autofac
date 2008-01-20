@@ -33,6 +33,7 @@ namespace Autofac.Integration.Wcf
 	public class AutofacServiceHost : ServiceHost
 	{
 		private readonly Container _container;
+        private readonly Type _implementationType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacServiceHost"/> class.
@@ -40,13 +41,20 @@ namespace Autofac.Integration.Wcf
         /// <param name="container">The container.</param>
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="baseAddresses">The base addresses.</param>
-        public AutofacServiceHost(Container container, Type serviceType, params Uri[] baseAddresses)
-			: base(serviceType, baseAddresses)
+        public AutofacServiceHost(Container container, Type implementationType, params Uri[] baseAddresses)
+            : base(implementationType, baseAddresses)
 		{
             if (container == null)
                 throw new ArgumentNullException("container");
 
-			this._container = container;
+            if (implementationType == null)
+                throw new ArgumentNullException("implementationType");
+
+            if (baseAddresses == null)
+                throw new ArgumentNullException("baseAddresses");
+
+			_container = container;
+            _implementationType = implementationType;
 		}
 
         /// <summary>
@@ -54,7 +62,7 @@ namespace Autofac.Integration.Wcf
         /// </summary>
 		protected override void OnOpening()
 		{
-			Description.Behaviors.Add(new AutofacDependencyInjectionServiceBehavior(_container));
+            Description.Behaviors.Add(new AutofacDependencyInjectionServiceBehavior(_container, _implementationType));
             // TODO: Support for injecting IServiceBehavior & IEndpointBehavior services registered with the container
 			base.OnOpening();
 		}

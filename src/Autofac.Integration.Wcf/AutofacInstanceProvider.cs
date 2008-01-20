@@ -35,23 +35,23 @@ namespace Autofac.Integration.Wcf
 	public class AutofacInstanceProvider : IInstanceProvider
 	{
 		private readonly Container _container;
-		private readonly Type _type;
+        private readonly Service _service;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacInstanceProvider"/> class.
         /// </summary>
         /// <param name="container">The container.</param>
         /// <param name="type">The type to resolve from the container.</param>
-        public AutofacInstanceProvider(Container container, Type type)
+        public AutofacInstanceProvider(Container container, Service service)
 		{
             if (container == null)
                 throw new ArgumentNullException("container");
 
-            if (type == null)
-                throw new ArgumentNullException("type");
+            if (service == null)
+                throw new ArgumentNullException("service");
 
             this._container = container;
-			this._type = type;
+            this._service = service;
 		}
 
 		#region IInstanceProvider Members
@@ -74,7 +74,9 @@ namespace Autofac.Integration.Wcf
         /// <returns>The service object.</returns>
 		public object GetInstance(InstanceContext instanceContext, Message message)
 		{
-            return _container.Resolve(_type);
+            var extension = new AutofacInstanceContext(_container);
+            instanceContext.Extensions.Add(extension);
+            return extension.Resolve(_service);
 		}
 
         /// <summary>
@@ -84,7 +86,9 @@ namespace Autofac.Integration.Wcf
         /// <param name="instance">The service object to be recycled.</param>
 		public void ReleaseInstance(InstanceContext instanceContext, object instance)
 		{
-			// TODO: This one could be used to make disposal (maybe with an inner container ??)...
+            var extension = instanceContext.Extensions.Find<AutofacInstanceContext>();
+            if (extension != null)
+                extension.Dispose();
 		}
 
 		#endregion

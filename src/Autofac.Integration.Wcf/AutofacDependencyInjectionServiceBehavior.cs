@@ -22,13 +22,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
-using System;
 
 namespace Autofac.Integration.Wcf
 {
@@ -38,17 +38,22 @@ namespace Autofac.Integration.Wcf
 	public class AutofacDependencyInjectionServiceBehavior : IServiceBehavior
 	{
 		private readonly Container _container;
+        private readonly Type _implementationType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacDependencyInjectionServiceBehavior"/> class.
         /// </summary>
         /// <param name="container">The container.</param>
-		public AutofacDependencyInjectionServiceBehavior(Container container)
+		public AutofacDependencyInjectionServiceBehavior(Container container, Type implementingType)
 		{
             if (container == null)
                 throw new ArgumentNullException("container");
 
-			this._container = container;
+            if (implementingType == null)
+                throw new ArgumentNullException("implementingType");
+
+			_container = container;
+            _implementationType = implementingType;
 		}
 
 		#region IServiceBehavior Members
@@ -88,9 +93,12 @@ namespace Autofac.Integration.Wcf
             if (serviceHostBase == null)
                 throw new ArgumentNullException("serviceHostBase");
 
-            var contractTypes = serviceDescription.Endpoints.ToDictionary(
-                ep => ep.Contract.Name,
-                ep => ep.Contract.ContractType);
+            var implementedContracts =
+                from ep in serviceDescription.Endpoints
+                where ep.Contract.ContractType.IsAssignableFrom(_implementationType)
+                select ep.Contract.Name;
+
+            var instanceProvider = new AutofacInstanceProvider(_container, new TypedService(_implementationType));
 
             foreach (ChannelDispatcherBase cdb in serviceHostBase.ChannelDispatchers)
             {
@@ -99,9 +107,8 @@ namespace Autofac.Integration.Wcf
                 {
                     foreach (EndpointDispatcher ed in cd.Endpoints)
                     {
-                        if (contractTypes.ContainsKey(ed.ContractName))
-                            ed.DispatchRuntime.InstanceProvider = 
-                                new AutofacInstanceProvider(_container, contractTypes[ed.ContractName]);
+                        if (implementedContracts.Contains(ed.ContractName))
+                            ed.DispatchRuntime.InstanceProvider = instanceProvider;
                     }
                 }
             }
