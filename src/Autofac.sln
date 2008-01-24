@@ -1,17 +1,27 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac", "Autofac\Autofac.csproj", "{7D018B3E-34A3-423D-AC35-12731F4E0A2C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{15DE9887-5721-421E-9EE0-714D8EF2104E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests", "Autofac.Tests\Autofac.Tests.csproj", "{B2E242BC-9412-43ED-8BFE-3F12199BD649}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac", "Source\Autofac\Autofac.csproj", "{7D018B3E-34A3-423D-AC35-12731F4E0A2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.Mvc", "Autofac.Integration.Mvc\Autofac.Integration.Mvc.csproj", "{23347779-903B-49C2-9AF7-58F49D14521F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.Mvc", "Source\Autofac.Integration.Mvc\Autofac.Integration.Mvc.csproj", "{23347779-903B-49C2-9AF7-58F49D14521F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.Mvc", "Autofac.Tests.Integration.Mvc\Autofac.Tests.Integration.Mvc.csproj", "{361F2CB1-7049-4FA8-9E73-DDE237742CE1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.Wcf", "Source\Autofac.Integration.Wcf\Autofac.Integration.Wcf.csproj", "{4D5C02D1-C10A-4448-9D7B-8F2A5CCA1D13}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.Wcf", "Autofac.Integration.Wcf\Autofac.Integration.Wcf.csproj", "{4D5C02D1-C10A-4448-9D7B-8F2A5CCA1D13}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{3ACB9FCB-420F-4555-BCE4-F98F9A569B70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.Wcf", "Autofac.Tests.Integration.Wcf\Autofac.Tests.Integration.Wcf.csproj", "{E3559C55-D387-4620-AC02-6C3098D4A888}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests", "Test\Autofac.Tests\Autofac.Tests.csproj", "{B2E242BC-9412-43ED-8BFE-3F12199BD649}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.Mvc", "Test\Autofac.Tests.Integration.Mvc\Autofac.Tests.Integration.Mvc.csproj", "{361F2CB1-7049-4FA8-9E73-DDE237742CE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.Wcf", "Test\Autofac.Tests.Integration.Wcf\Autofac.Tests.Integration.Wcf.csproj", "{E3559C55-D387-4620-AC02-6C3098D4A888}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F6BC8907-80FA-491E-9404-29C401A17FD7}"
+	ProjectSection(SolutionItems) = preProject
+		Source\GlobalAssemblyInfo.cs = Source\GlobalAssemblyInfo.cs
+		Source\VersionAssemblyInfo.cs = Source\VersionAssemblyInfo.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,22 +33,22 @@ Global
 		{7D018B3E-34A3-423D-AC35-12731F4E0A2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D018B3E-34A3-423D-AC35-12731F4E0A2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D018B3E-34A3-423D-AC35-12731F4E0A2C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B2E242BC-9412-43ED-8BFE-3F12199BD649}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B2E242BC-9412-43ED-8BFE-3F12199BD649}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B2E242BC-9412-43ED-8BFE-3F12199BD649}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B2E242BC-9412-43ED-8BFE-3F12199BD649}.Release|Any CPU.Build.0 = Release|Any CPU
 		{23347779-903B-49C2-9AF7-58F49D14521F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{23347779-903B-49C2-9AF7-58F49D14521F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23347779-903B-49C2-9AF7-58F49D14521F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23347779-903B-49C2-9AF7-58F49D14521F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{361F2CB1-7049-4FA8-9E73-DDE237742CE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{361F2CB1-7049-4FA8-9E73-DDE237742CE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{361F2CB1-7049-4FA8-9E73-DDE237742CE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{361F2CB1-7049-4FA8-9E73-DDE237742CE1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4D5C02D1-C10A-4448-9D7B-8F2A5CCA1D13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4D5C02D1-C10A-4448-9D7B-8F2A5CCA1D13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D5C02D1-C10A-4448-9D7B-8F2A5CCA1D13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D5C02D1-C10A-4448-9D7B-8F2A5CCA1D13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2E242BC-9412-43ED-8BFE-3F12199BD649}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2E242BC-9412-43ED-8BFE-3F12199BD649}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2E242BC-9412-43ED-8BFE-3F12199BD649}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2E242BC-9412-43ED-8BFE-3F12199BD649}.Release|Any CPU.Build.0 = Release|Any CPU
+		{361F2CB1-7049-4FA8-9E73-DDE237742CE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{361F2CB1-7049-4FA8-9E73-DDE237742CE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{361F2CB1-7049-4FA8-9E73-DDE237742CE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{361F2CB1-7049-4FA8-9E73-DDE237742CE1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E3559C55-D387-4620-AC02-6C3098D4A888}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E3559C55-D387-4620-AC02-6C3098D4A888}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3559C55-D387-4620-AC02-6C3098D4A888}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -46,5 +56,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7D018B3E-34A3-423D-AC35-12731F4E0A2C} = {15DE9887-5721-421E-9EE0-714D8EF2104E}
+		{23347779-903B-49C2-9AF7-58F49D14521F} = {15DE9887-5721-421E-9EE0-714D8EF2104E}
+		{4D5C02D1-C10A-4448-9D7B-8F2A5CCA1D13} = {15DE9887-5721-421E-9EE0-714D8EF2104E}
+		{B2E242BC-9412-43ED-8BFE-3F12199BD649} = {3ACB9FCB-420F-4555-BCE4-F98F9A569B70}
+		{361F2CB1-7049-4FA8-9E73-DDE237742CE1} = {3ACB9FCB-420F-4555-BCE4-F98F9A569B70}
+		{E3559C55-D387-4620-AC02-6C3098D4A888} = {3ACB9FCB-420F-4555-BCE4-F98F9A569B70}
 	EndGlobalSection
 EndGlobal

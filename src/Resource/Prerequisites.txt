@@ -1,0 +1,3 @@
+These prerequisites are not distributed within this folder and must be installed separately
+
+ASP.NET MVC techology preview or later
