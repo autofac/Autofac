@@ -1,0 +1,12 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Autofac.Integration.Web
+{
+    [AttributeUsage(AttributeTargets.Class)]
+    public class InjectUnsetPropertiesAttribute : Attribute
+    {
+    }
+}

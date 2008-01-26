@@ -60,8 +60,9 @@ Integration targets
 			<fileset>
 				<include name="Source/Autofac/bin/${ProjectConfig}/**"/>
 				<include name="Source/Autofac.Integration.Mvc/bin/${ProjectConfig}/**"/>
-				<include name="Source/Autofac.Integration.Wcf/bin/${ProjectConfig}/**"/>
-			</fileset>
+        <include name="Source/Autofac.Integration.Wcf/bin/${ProjectConfig}/**"/>
+        <include name="Source/Autofac.Integration.Web/bin/${ProjectConfig}/**"/>
+      </fileset>
 		</copy>
 	</target>
 	<target name="distrib">
