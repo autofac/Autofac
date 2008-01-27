@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{4BDD9D14-BACA-416C-919E-E9FF100F8F5D}</ProjectGuid>
+    <ProjectGuid>{929BAA80-5ED7-484B-81C8-A4ACC9FF2009}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Autofac.Integration.Web</RootNamespace>
-    <AssemblyName>Autofac.Integration.Web</AssemblyName>
+    <RootNamespace>Autofac.Tests.Integration.Web</RootNamespace>
+    <AssemblyName>Autofac.Tests.Integration.Web</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,49 +31,29 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.4.1.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Resource\NUnit\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AttributedInjectionModule.cs" />
-    <Compile Include="ContainerDisposalModule.cs" />
-    <Compile Include="ContainerDisposalModuleResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ContainerDisposalModuleResources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="ContainerProvider.cs" />
-    <Compile Include="DependencyInjectionAttribute.cs" />
-    <Compile Include="DependencyInjectionModule.cs" />
-    <Compile Include="IContainerProvider.cs" />
-    <Compile Include="IContainerProviderAccessor.cs" />
-    <Compile Include="IInjectionBehaviour.cs" />
-    <Compile Include="InjectPropertiesAttribute.cs" />
-    <Compile Include="InjectUnsetPropertiesAttribute.cs" />
-    <Compile Include="NoInjection.cs" />
+    <Compile Include="AttributedInjectionModuleFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyInjection.cs" />
-    <Compile Include="PropertyInjectionModule.cs" />
-    <Compile Include="UnsetPropertyInjection.cs" />
-    <Compile Include="UnsetPropertyInjectionModule.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Autofac\Autofac.csproj">
+    <ProjectReference Include="..\..\Source\Autofac.Integration.Web\Autofac.Integration.Web.csproj">
+      <Project>{4BDD9D14-BACA-416C-919E-E9FF100F8F5D}</Project>
+      <Name>Autofac.Integration.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Source\Autofac\Autofac.csproj">
       <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
       <Name>Autofac</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ContainerDisposalModuleResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ContainerDisposalModuleResources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -6,7 +6,7 @@ using System.Text;
 namespace Autofac.Integration.Web
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class InjectPropertiesAttribute : Attribute
+    public class InjectPropertiesAttribute : DependencyInjectionAttribute
     {
     }
 }

@@ -7,17 +7,15 @@ using System.Web;
 namespace Autofac.Integration.Web
 {
     /// <summary>
-    /// Injects dependencies into request handlers that have been
-    /// decorated with the [InjectProperties] or [InjectUnsetProperties]
-    /// attributes.
+    /// Base for classes that inject dependencies into HTTP Handlers.
     /// </summary>
-    public class DependencyInjectionModule : IHttpModule
+    public abstract class DependencyInjectionModule : IHttpModule
     {
         IContainerProviderAccessor _containerProviderAccessor;
         HttpApplication _httpApplication;
         IInjectionBehaviour _noInjection = new NoInjection();
-        IInjectionBehaviour _injectProperties = new PropertyInjection();
-        IInjectionBehaviour _injectUnsetProperties = new UnsetPropertyInjection();
+        IInjectionBehaviour _propertyInjection = new PropertyInjection();
+        IInjectionBehaviour _unsetPropertyInjection = new UnsetPropertyInjection();
 
         #region IHttpModule Members
 
@@ -58,31 +56,59 @@ namespace Autofac.Integration.Web
         {
             var handler = _httpApplication.Context.CurrentHandler;
             var injectionBehaviour = GetInjectionBehaviour(handler);
-            injectionBehaviour.Inject(_containerProviderAccessor.ContainerProvider.RequestContainer, handler);
+            injectionBehaviour.InjectDependencies(_containerProviderAccessor.ContainerProvider.RequestContainer, handler);
         }
 
-        private IInjectionBehaviour GetInjectionBehaviour(IHttpHandler handler)
+        /// <summary>
+        /// Internal for testability outside of a web application.
+        /// </summary>
+        /// <param name="handler"></param>
+        /// <returns></returns>
+        protected internal IInjectionBehaviour GetInjectionBehaviour(IHttpHandler handler)
         {
             if (handler == null)
                 throw new ArgumentNullException("handler");
 
-            var result = _noInjection;
-
-            if (!(handler is DefaultHttpHandler))
+            if (handler is DefaultHttpHandler)
+            {
+                return _noInjection;
+            }
+            else
             {
                 var handlerType = handler.GetType();
-
-                if (handlerType.GetCustomAttributes(typeof(InjectPropertiesAttribute), true).Length > 0)
-                {
-                    result = _injectProperties;
-                }
-                else if (handlerType.GetCustomAttributes(typeof(InjectUnsetPropertiesAttribute), true).Length > 0)
-                {
-                    result = _injectUnsetProperties;
-                }
+                return GetInjectionBehaviourForHandlerType(handlerType);
             }
-
-            return result;
         }
+
+        /// <summary>
+        /// A behaviour that does not inject dependencies.
+        /// </summary>
+        protected IInjectionBehaviour NoInjection
+        {
+            get { return _noInjection; }
+        }
+
+        /// <summary>
+        /// A behaviour that injects resolvable dependencies.
+        /// </summary>
+        protected IInjectionBehaviour PropertyInjection
+        {
+            get { return _propertyInjection; }
+        }
+
+        /// <summary>
+        /// A behaviour that injects unset, resolvable dependencies.
+        /// </summary>
+        protected IInjectionBehaviour UnsetPropertyInjection
+        {
+            get { return _unsetPropertyInjection; }
+        }
+
+        /// <summary>
+        /// Override to customise injection behaviour based on HTTP Handler type.
+        /// </summary>
+        /// <param name="handlerType">Type of the handler.</param>
+        /// <returns>The injection behaviour.</returns>
+        protected abstract IInjectionBehaviour GetInjectionBehaviourForHandlerType(Type handlerType);
     }
 }

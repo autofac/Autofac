@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.Web", "Source\Autofac.Integration.Web\Autofac.Integration.Web.csproj", "{4BDD9D14-BACA-416C-919E-E9FF100F8F5D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.Web", "Test\Autofac.Tests.Integration.Web\Autofac.Tests.Integration.Web.csproj", "{929BAA80-5ED7-484B-81C8-A4ACC9FF2009}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{4BDD9D14-BACA-416C-919E-E9FF100F8F5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BDD9D14-BACA-416C-919E-E9FF100F8F5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BDD9D14-BACA-416C-919E-E9FF100F8F5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{929BAA80-5ED7-484B-81C8-A4ACC9FF2009}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{929BAA80-5ED7-484B-81C8-A4ACC9FF2009}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{929BAA80-5ED7-484B-81C8-A4ACC9FF2009}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{929BAA80-5ED7-484B-81C8-A4ACC9FF2009}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,5 +77,6 @@ Global
 		{B2E242BC-9412-43ED-8BFE-3F12199BD649} = {3ACB9FCB-420F-4555-BCE4-F98F9A569B70}
 		{361F2CB1-7049-4FA8-9E73-DDE237742CE1} = {3ACB9FCB-420F-4555-BCE4-F98F9A569B70}
 		{E3559C55-D387-4620-AC02-6C3098D4A888} = {3ACB9FCB-420F-4555-BCE4-F98F9A569B70}
+		{929BAA80-5ED7-484B-81C8-A4ACC9FF2009} = {3ACB9FCB-420F-4555-BCE4-F98F9A569B70}
 	EndGlobalSection
 EndGlobal
