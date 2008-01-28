@@ -6,12 +6,14 @@ using System.Text;
 namespace Autofac.Integration.Web
 {
     /// <summary>
-    /// Injects dependencies into request handlers that have been
+    /// Injects dependencies into request handlers and pages that have been
     /// decorated with the [InjectProperties] or [InjectUnsetProperties]
     /// attributes.
     /// </summary>
     public class AttributedInjectionModule : DependencyInjectionModule
     {
+        private IInjectionBehaviour _attributedInjection = new AttributedInjection();
+
         /// <summary>
         /// Override to customise injection behaviour based on HTTP Handler type.
         /// </summary>
@@ -22,18 +24,7 @@ namespace Autofac.Integration.Web
             if (handlerType == null)
                 throw new ArgumentNullException("handlerType");
 
-            if (handlerType.GetCustomAttributes(typeof(InjectPropertiesAttribute), true).Length > 0)
-            {
-                return PropertyInjection;
-            }
-            else if (handlerType.GetCustomAttributes(typeof(InjectUnsetPropertiesAttribute), true).Length > 0)
-            {
-                return UnsetPropertyInjection;
-            }
-            else
-            {
-                return NoInjection;
-            }
+            return _attributedInjection;
         }
     }
 }

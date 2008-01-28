@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AttributedInjection.cs" />
     <Compile Include="AttributedInjectionModule.cs" />
     <Compile Include="ContainerDisposalModule.cs" />
     <Compile Include="ContainerDisposalModuleResources.Designer.cs">
@@ -56,6 +57,7 @@
     <Compile Include="InjectPropertiesAttribute.cs" />
     <Compile Include="InjectUnsetPropertiesAttribute.cs" />
     <Compile Include="NoInjection.cs" />
+    <Compile Include="PageInjectionBehaviour.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyInjection.cs" />
     <Compile Include="PropertyInjectionModule.cs" />
