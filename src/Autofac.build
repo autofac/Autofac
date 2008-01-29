@@ -3,13 +3,14 @@ Resource\NAnt\nant.xsd" default="integrate">
 	<!-- Common Variables -->
 	<property name="DistribDirectory" value="Build\Distrib"/>
 	<property name="ProjectConfig" value="Release" unless="${property::exists('ProjectConfig')}"/>
-	<property name="ArtifactDirectory" value="Build\Artifact"/>
+	<property name="ArtifactDirectory" value="Build\Artifact"/>  
 	<!-- Local Variables -->
 	<property name="TestDirectory" value="Build\Test"/>
 	<property name="LibDirectory" value="Build\Lib"/>
 	<property name="SolutionFile" value="Autofac.sln" readonly="true"/>
 	<property name="DistribFileName" value="${project::get-name()}"/>
-	<!--<property name="Version" value="1.0.7.0" />-->
+	<property name="Version" value="1.0.0.0" />
+	<property name="AllowPartiallyTrustedCallers" value="false"/>
 	<!-- 
 Integration targets
 -->
@@ -30,19 +31,20 @@ Integration targets
 		</delete>
 	</target>
 	<target name="main-build">
-		<!-- Create Version assembly if version is provided -->
-		<if test="${property::exists('Version')}">
-			<move file="Source/VersionAssemblyInfo.cs" tofile="Source/_VersionAssemblyInfo.cs"/>
-			<asminfo output="Source/VersionAssemblyInfo.cs" language="CSharp">
-				<imports>
-					<import namespace="System.Reflection"/>
-				</imports>
-				<attributes>
-					<attribute type="AssemblyVersionAttribute" value="${Version}"/>
-					<attribute type="AssemblyFileVersionAttribute" value="${Version}"/>
-				</attributes>
-			</asminfo>
-		</if>
+		<!-- Create Version assembly if version is provided -->		
+		<move file="Source/VersionAssemblyInfo.cs" tofile="Source/_VersionAssemblyInfo.cs"/>
+		<asminfo output="Source/VersionAssemblyInfo.cs" language="CSharp">
+			<imports>
+				<import namespace="System.Reflection"/>
+				<import namespace="System.Security" if="${AllowPartiallyTrustedCallers}" />
+			</imports>
+			<attributes>
+				<attribute type="AssemblyVersionAttribute" value="${Version}"/>
+				<attribute type="AssemblyFileVersionAttribute" value="${Version}"/>
+        <attribute asis="true" type="AllowPartiallyTrustedCallersAttribute" if="${AllowPartiallyTrustedCallers}" />
+			</attributes>
+		</asminfo>
+	
 		<msbuild project="${SolutionFile}">
 			<property name="Configuration" value="${ProjectConfig}"/>
 		</msbuild>
