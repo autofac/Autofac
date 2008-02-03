@@ -30,13 +30,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Autofac, Version=1.0.6.25508, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Autofac, Version=1.1.2955.29649, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\src\Autofac\bin\Debug\Autofac.dll</HintPath>
+      <HintPath>..\..\..\src\Source\Autofac.Integration.Wcf\bin\Debug\Autofac.dll</HintPath>
     </Reference>
-    <Reference Include="Autofac.Integration.Wcf, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Autofac.Integration.Wcf, Version=1.1.2955.29649, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\src\Autofac.Integration.Wcf\bin\Debug\Autofac.Integration.Wcf.dll</HintPath>
+      <HintPath>..\..\..\src\Source\Autofac.Integration.Wcf\bin\Debug\Autofac.Integration.Wcf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
