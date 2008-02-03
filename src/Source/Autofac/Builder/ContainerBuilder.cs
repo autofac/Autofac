@@ -112,7 +112,7 @@ namespace Autofac.Builder
 		/// issues for provided instances.
 		/// </remarks>
 		/// <returns>A new container with the registrations made.</returns>
-		public Container Build()
+		public IContainer Build()
 		{
 			var result = new Container();
 			Build(result);
@@ -127,7 +127,7 @@ namespace Autofac.Builder
 		/// issues for provided instances.
 		/// </remarks>
 		/// <param name="container">An existing container to make the registrations in.</param>
-		public void Build(Container container)
+		public void Build(IContainer container)
 		{
             Enforce.ArgumentNotNull(container, "container");
 

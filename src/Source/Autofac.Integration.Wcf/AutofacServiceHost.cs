@@ -32,7 +32,7 @@ namespace Autofac.Integration.Wcf
     /// </summary>
 	public class AutofacServiceHost : ServiceHost
 	{
-		private readonly Container _container;
+		private readonly IContainer _container;
         private readonly Type _implementationType;
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Autofac.Integration.Wcf
         /// <param name="container">The container.</param>
         /// <param name="serviceType">Type of the service.</param>
         /// <param name="baseAddresses">The base addresses.</param>
-        public AutofacServiceHost(Container container, Type implementationType, params Uri[] baseAddresses)
+        public AutofacServiceHost(IContainer container, Type implementationType, params Uri[] baseAddresses)
             : base(implementationType, baseAddresses)
 		{
             if (container == null)

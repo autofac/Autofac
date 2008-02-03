@@ -58,7 +58,7 @@ namespace Autofac.Builder
         /// as the default service.
         /// </summary>
         /// <param name="container">The container.</param>
-		public virtual void Configure(Container container)
+		public virtual void Configure(IContainer container)
 		{
             Enforce.ArgumentNotNull(container, "container");
 

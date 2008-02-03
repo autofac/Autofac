@@ -39,12 +39,12 @@ namespace Autofac.Integration.Web
         /// <summary>
         /// The global, application-wide container.
         /// </summary>
-        Container ApplicationContainer { get; }
+        IContainer ApplicationContainer { get; }
 
         /// <summary>
         /// The container used to manage components for processing the
         /// current request.
         /// </summary>
-        Container RequestContainer { get; }
+        IContainer RequestContainer { get; }
     }
 }

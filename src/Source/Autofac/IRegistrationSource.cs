@@ -9,7 +9,7 @@ namespace Autofac
     /// Allows registrations to be made on-the-fly when unregistered
 	/// services are requested (lazy registrations.)
     /// </summary>
-    internal interface IRegistrationSource
+    public interface IRegistrationSource
     {
 		/// <summary>
 		/// Retrieve a registration for an unregistered service, to be used

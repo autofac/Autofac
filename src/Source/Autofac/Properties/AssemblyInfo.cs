@@ -17,7 +17,6 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("Autofac.Tests")]
 
-
 // Copyright for the primary autofac assembly.
 [assembly: AssemblyCompany("Nicholas Blumhardt")]
 [assembly: AssemblyProduct("Autofac")]

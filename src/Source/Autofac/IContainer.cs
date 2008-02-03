@@ -24,45 +24,55 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Autofac
 {
     /// <summary>
-    /// Allows registrations to be accessed by the resolve infrastructure.
+    /// Provides the full Autofac container functionality.
     /// </summary>
-    interface IContainer
+    /// <remarks>
+    /// It is recommended that in most instances the more limited IContext interface is 
+    /// used instead, as this is easier to implement on top of a different back-end, e.g. a
+    /// customised or alternative container.
+    /// </remarks>
+    public interface IContainer : IContext, IDisposable
     {
         /// <summary>
-        /// Gets a registration from the container by key.
+        /// Begin a new sub-context. Contextual and transient instances created inside
+        /// the subcontext will be disposed along with it.
         /// </summary>
-        /// <param name="key">The key for the registration (name or generated service key.)</param>
-        /// <param name="registration">The registration result.</param>
-        /// <param name="disposer">The disposer that should be used to dispose of instances activated by
-        /// the registration.</param>
-        /// <param name="context">The context that should be used when activating
-        /// instances from the registration, or null if these instances can be
-        /// activated in the current context.</param>
-        /// <returns></returns>
-        bool TryGetRegistration(
-            Service key,
-            out IComponentRegistration registration,
-            out IDisposer disposer,
-            out IContext context);
-        
+        /// <returns>A new subcontext.</returns>
+        IContainer CreateInnerContainer();
+
         /// <summary>
-        /// Gets a registration from the specific outer container by key.
+        /// Register a component.
         /// </summary>
-        /// <param name="key">The key for the registration (name or generated service key.)</param>
-        /// <param name="registration">The registration result.</param>
-        /// <param name="disposer">The disposer that should be used to dispose of instances activated by
-        /// the registration.</param>
-        /// <returns></returns>
-        bool TryGetLocalRegistration(
-            Service key,
-            out IComponentRegistration registration,
-            out IDisposer disposer);
+        /// <param name="registration">A component registration.</param>
+        void RegisterComponent(IComponentRegistration registration);
+
+        /// <summary>
+        /// Add a source from which registrations may be retrieved in the case that they
+        /// are not available in the container.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        void AddRegistrationSource(IRegistrationSource source);
+
+        /// <summary>
+        /// The disposer associated with this container. Instances can be associated
+        /// with it manually if required.
+        /// </summary>
+        IDisposer Disposer { get; }
+
+        /// <summary>
+        /// Fired when a new instance is being activated. The instance can be
+        /// wrapped or switched at this time by setting the Instance property in
+        /// the provided event arguments.
+        /// </summary>
+        event EventHandler<ActivatingEventArgs> Activating;
+
+        /// <summary>
+        /// Fired when the activation process for a new instance is complete.
+        /// </summary>
+        event EventHandler<ActivatedEventArgs> Activated;
     }
 }

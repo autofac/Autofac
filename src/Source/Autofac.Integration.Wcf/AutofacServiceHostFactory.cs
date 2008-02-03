@@ -36,7 +36,7 @@ namespace Autofac.Integration.Wcf
         /// <summary>
         /// The container from which service instances will be retrieved.
         /// </summary>
-        public static Container Container { get; set; }
+        public static IContainer Container { get; set; }
 
         /// <summary>
         /// Creates a <see cref="T:System.ServiceModel.ServiceHost"/> for a specified type of service with a specific base address.

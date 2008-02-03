@@ -32,13 +32,13 @@ namespace Autofac.Integration.Web
     /// </summary>
     public class ContainerProvider : IContainerProvider
     {
-        Container _applicationContainer;
+        IContainer _applicationContainer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContainerProvider"/> class.
         /// </summary>
         /// <param name="applicationContainer">The application container.</param>
-        public ContainerProvider(Container applicationContainer)
+        public ContainerProvider(IContainer applicationContainer)
         {
             if (applicationContainer == null)
                 throw new ArgumentNullException("applicationContainer");
@@ -63,7 +63,7 @@ namespace Autofac.Integration.Web
         /// The global, application-wide container.
         /// </summary>
         /// <value></value>
-        public Container ApplicationContainer
+        public IContainer ApplicationContainer
         {
             get
             {
@@ -76,7 +76,7 @@ namespace Autofac.Integration.Web
         /// current request.
         /// </summary>
         /// <value></value>
-        public Container RequestContainer
+        public IContainer RequestContainer
         {
             get
             {
@@ -90,15 +90,15 @@ namespace Autofac.Integration.Web
 
         #endregion
 
-        Container NullableRequestContainer
+        IContainer NullableRequestContainer
         {
             get
             {
-                return (Container)HttpContext.Current.Items[typeof(Container)];
+                return (IContainer)HttpContext.Current.Items[typeof(IContainer)];
             }
             set
             {
-                HttpContext.Current.Items[typeof(Container)] = value;
+                HttpContext.Current.Items[typeof(IContainer)] = value;
             }
         }
     }

@@ -10,14 +10,14 @@ namespace Autofac.Integration.Mvc
     /// </summary>
     public class AutofacMvcIntegration
     {
-        private static Container _applicationContainer;
+        private static IContainer _applicationContainer;
 
         /// <summary>
         /// Gets or sets the root container that holds registrations and singleton components
         /// shared between all requests in an application.
         /// </summary>
         /// <value>The application container.</value>
-        public static Container ApplicationContainer
+        public static IContainer ApplicationContainer
         {
             get
             {
@@ -38,7 +38,7 @@ namespace Autofac.Integration.Mvc
         /// container.
         /// </summary>
         /// <value>The request container.</value>
-        public static Container RequestContainer
+        public static IContainer RequestContainer
         {
             get
             {
@@ -50,15 +50,15 @@ namespace Autofac.Integration.Mvc
             }
         }
 
-        internal static Container NullableRequestContainer
+        internal static IContainer NullableRequestContainer
         {
             get
             {
-                return (Container)HttpContext.Current.Items[typeof(Container)];
+                return (IContainer)HttpContext.Current.Items[typeof(IContainer)];
             }
             set
             {
-                HttpContext.Current.Items[typeof(Container)] = value;
+                HttpContext.Current.Items[typeof(IContainer)] = value;
             }
         }
 
@@ -66,7 +66,7 @@ namespace Autofac.Integration.Mvc
         /// Installs the specified container as the root container of the application.
         /// </summary>
         /// <param name="applicationContainer">The application container.</param>
-        public static void Install(Container applicationContainer)
+        public static void Install(IContainer applicationContainer)
         {
             if (applicationContainer == null)
                 throw new ArgumentNullException("applicationContainer");

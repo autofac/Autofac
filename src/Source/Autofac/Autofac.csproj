@@ -128,6 +128,7 @@
     </Compile>
     <Compile Include="IActivationParameters.cs" />
     <Compile Include="IContainer.cs" />
+    <Compile Include="IRegistrationContext.cs" />
     <Compile Include="IDisposer.cs" />
     <Compile Include="InstanceOwnership.cs" />
     <Compile Include="Builder\ConcreteRegistrar.cs" />

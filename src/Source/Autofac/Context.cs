@@ -69,7 +69,7 @@ namespace Autofac
         /// </summary>
         public static readonly Context Empty = new Context(Container.Empty);
 
-        IContainer _container;
+        IRegistrationContext _container;
         
         IList<Activation> _activations = new List<Activation>();
         
@@ -93,7 +93,7 @@ namespace Autofac
         /// Initializes a new instance of the <see cref="Context"/> class.
         /// </summary>
         /// <param name="container">The container from which to draw component registrations.</param>
-        internal Context(IContainer container)
+        internal Context(IRegistrationContext container)
         {
             Enforce.ArgumentNotNull(container, "container");
             _container = container;

@@ -34,7 +34,7 @@ namespace Autofac.Integration.Wcf
     /// </summary>
 	public class AutofacInstanceProvider : IInstanceProvider
 	{
-		private readonly Container _container;
+		private readonly IContainer _container;
         private readonly Service _service;
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace Autofac.Integration.Wcf
         /// </summary>
         /// <param name="container">The container.</param>
         /// <param name="type">The type to resolve from the container.</param>
-        public AutofacInstanceProvider(Container container, Service service)
+        public AutofacInstanceProvider(IContainer container, Service service)
 		{
             if (container == null)
                 throw new ArgumentNullException("container");

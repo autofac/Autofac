@@ -13,7 +13,7 @@ namespace Autofac.Builder
         /// <summary>
         /// The container.
         /// </summary>
-        public Container Container { get; set; }
+        public IContainer Container { get; set; }
 
         /// <summary>
         /// The registration being made. May be null.

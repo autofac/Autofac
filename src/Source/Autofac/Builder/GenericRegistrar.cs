@@ -54,13 +54,13 @@ namespace Autofac.Builder
 			_implementor = implementor;
 		}
 
-		#region IComponentRegistrar Members
+		#region IModule Members
 
         /// <summary>
         /// Registers the component.
         /// </summary>
         /// <param name="container">The container.</param>
-		public void Configure(Container container)
+		public void Configure(IContainer container)
 		{
             var services = new List<Service>(Services);
             if (services.Count == 0)

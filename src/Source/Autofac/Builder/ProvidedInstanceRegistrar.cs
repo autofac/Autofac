@@ -85,7 +85,7 @@ namespace Autofac.Builder
         /// is chosen.
         /// </summary>
         /// <param name="container">The container.</param>
-        public override void Configure(Container container)
+        public override void Configure(IContainer container)
         {
             Enforce.ArgumentNotNull(container, "container");
 

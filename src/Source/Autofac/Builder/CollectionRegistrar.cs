@@ -74,7 +74,7 @@ namespace Autofac.Builder
         /// Apply the module to the container.
         /// </summary>
         /// <param name="container">Container to apply configuration to.</param>
-        public void Configure(Container container)
+        public void Configure(IContainer container)
         {
             Enforce.ArgumentNotNull(container, "container");
             container.RegisterComponent(new ServiceListRegistration<TItem>(Services, Scope.ToIScope()));

@@ -35,7 +35,7 @@ namespace Autofac
     /// <summary>
     /// Standard container implementation.
     /// </summary>
-	public class Container : Disposable, IContainer, IContext
+	public class Container : Disposable, IRegistrationContext, IContext, IContainer
     {
         #region Fields
 
@@ -96,22 +96,22 @@ namespace Autofac
 			_outerContainer = outerScope;
 		}
 
+        #endregion
+
+        #region IContainer Support
+
         /// <summary>
         /// Begin a new sub-context. Contextual and transient instances created inside
         /// the subcontext will be disposed along with it.
         /// </summary>
         /// <returns>A new subcontext.</returns>
-        public Container CreateInnerContainer()
+        public IContainer CreateInnerContainer()
         {
             var result = new Container(this);
             result.Activating += ComponentActivating;
             result.Activated += ComponentActivated;
             return result;
         }
-
-		#endregion
-
-        #region Registration
 
         /// <summary>
 		/// Register a component.
@@ -142,15 +142,26 @@ namespace Autofac
 		/// are not available in the container.
 		/// </summary>
 		/// <param name="registrationSource"></param>
-		internal void AddRegistrationSource(IRegistrationSource registrationSource)
+		public void AddRegistrationSource(IRegistrationSource registrationSource)
 		{
             Enforce.ArgumentNotNull(registrationSource, "registrationSource");
 			_registrationSources.Add(registrationSource);
 		}
 
+        /// <summary>
+        /// The disposer associated with this container. Instances can be associated
+        /// with it manually if required.
+        /// </summary>
+        public IDisposer Disposer
+        {
+            get
+            {
+                return _disposer;
+            }
+        }
         #endregion
 
-        #region IContainer Support
+        #region Registration Context Support
 
         /// <summary>
         /// Gets a registration from the container by key.
@@ -166,7 +177,7 @@ namespace Autofac
         /// This method has gotten a bit gnarly. It might help to replace the three 'out' parameters
         /// with a single structure, though usage in Context doesn't really point that way.
         /// </remarks>
-        bool IContainer.TryGetRegistration(Service key, out IComponentRegistration registration, out IDisposer disposer, out IContext context)
+        bool IRegistrationContext.TryGetRegistration(Service key, out IComponentRegistration registration, out IDisposer disposer, out IContext context)
         {
             Enforce.ArgumentNotNull(key, "key");
             context = null;
@@ -175,11 +186,11 @@ namespace Autofac
             {
                 CheckNotDisposed();
 
-                if (((IContainer)this).TryGetLocalRegistration(key, out registration, out disposer))
+                if (((IRegistrationContext)this).TryGetLocalRegistration(key, out registration, out disposer))
                     return true;
 
                 if (_outerContainer != null &&
-                    ((IContainer)_outerContainer).TryGetRegistration(key, out registration, out disposer, out context))
+                    ((IRegistrationContext)_outerContainer).TryGetRegistration(key, out registration, out disposer, out context))
                 {
                     if (context == null)
                         context = _outerContainer;
@@ -198,7 +209,7 @@ namespace Autofac
         /// <param name="disposer">The disposer that should be used to dispose of instances activated by
         /// the registration.</param>
         /// <returns></returns>
-        bool IContainer.TryGetLocalRegistration(Service key, out IComponentRegistration registration, out IDisposer disposer)
+        bool IRegistrationContext.TryGetLocalRegistration(Service key, out IComponentRegistration registration, out IDisposer disposer)
         {
             Enforce.ArgumentNotNull(key, "key");
             disposer = null;
@@ -339,18 +350,6 @@ namespace Autofac
                 {
                     _disposer.Dispose();
                 }
-        }
-
-        /// <summary>
-        /// The disposer associated with this container. Instances can be associated
-        /// with it manually if required.
-        /// </summary>
-        internal IDisposer Disposer
-        {
-            get
-            {
-                return _disposer;
-            }
         }
 
         #endregion

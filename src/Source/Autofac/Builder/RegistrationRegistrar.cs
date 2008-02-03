@@ -53,7 +53,7 @@ namespace Autofac.Builder
         /// Registers the component.
         /// </summary>
         /// <param name="container">The container.</param>
-        public void Configure(Container container)
+        public void Configure(IContainer container)
         {
             Enforce.ArgumentNotNull(container, "container");
             container.RegisterComponent(_registration);

@@ -30,7 +30,7 @@ namespace Autofac.Integration.Mvc
 
         #endregion
 
-        protected virtual Container ObtainContainer()
+        protected virtual IContainer ObtainContainer()
         {
             return AutofacMvcIntegration.RequestContainer;
         }

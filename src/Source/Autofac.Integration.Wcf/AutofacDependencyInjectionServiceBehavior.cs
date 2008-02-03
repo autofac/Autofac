@@ -37,14 +37,14 @@ namespace Autofac.Integration.Wcf
     /// </summary>
 	public class AutofacDependencyInjectionServiceBehavior : IServiceBehavior
 	{
-		private readonly Container _container;
+		private readonly IContainer _container;
         private readonly Type _implementationType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacDependencyInjectionServiceBehavior"/> class.
         /// </summary>
         /// <param name="container">The container.</param>
-		public AutofacDependencyInjectionServiceBehavior(Container container, Type implementingType)
+		public AutofacDependencyInjectionServiceBehavior(IContainer container, Type implementingType)
 		{
             if (container == null)
                 throw new ArgumentNullException("container");

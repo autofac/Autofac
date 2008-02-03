@@ -39,6 +39,6 @@ namespace Autofac
 		/// Apply the module to the container.
 		/// </summary>
 		/// <param name="container">Container to apply configuration to.</param>
-		void Configure(Container container);
+		void Configure(IContainer container);
 	}
 }

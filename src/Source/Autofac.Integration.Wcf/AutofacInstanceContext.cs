@@ -35,13 +35,13 @@ namespace Autofac.Integration.Wcf
     /// </summary>
     class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable
     {
-        Container _container;
+        IContainer _container;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacInstanceContext"/> class.
         /// </summary>
         /// <param name="container">The outer container.</param>
-        public AutofacInstanceContext(Container container)
+        public AutofacInstanceContext(IContainer container)
         {
             if (container == null)
                 throw new ArgumentNullException("container");

@@ -76,7 +76,7 @@ namespace Autofac.Builder
             {
                 IDisposer disposer;
                 IComponentRegistration serviceListRegistration;
-                bool found = ((IContainer)e.Container)
+                bool found = ((IRegistrationContext)e.Container)
                     .TryGetLocalRegistration(
                         service,
                         out serviceListRegistration,
