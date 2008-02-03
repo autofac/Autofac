@@ -229,9 +229,9 @@ namespace Autofac.Tests.Integration.Mvc
 
         class ContainerProvidedAutofacControllerFactory : AutofacControllerFactory
         {
-            public Container Container { get; set; }
+            public IContainer Container { get; set; }
 
-            protected override Container ObtainContainer()
+            protected override IContainer ObtainContainer()
             {
                 return Container;
             }

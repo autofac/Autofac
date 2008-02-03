@@ -116,7 +116,7 @@ namespace Autofac.Tests.Builder
 
 			#region IModule Members
 
-			public void Configure(Container container)
+			public void Configure(IContainer container)
 			{
 				if (container == null) throw new ArgumentNullException("container");
 				ConfigureCalled = true;
