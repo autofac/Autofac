@@ -9,7 +9,7 @@ Resource\NAnt\nant.xsd" default="integrate">
 	<property name="LibDirectory" value="Build\Lib"/>
 	<property name="SolutionFile" value="Autofac.sln" readonly="true"/>
 	<property name="DistribFileName" value="${project::get-name()}"/>
-	<property name="Version" value="1.0.0.0" />
+	<property name="Version" value="1.0.0.0" readonly="false" overwrite="false"/>
 	<property name="AllowPartiallyTrustedCallers" value="false"/>
 	<!-- 
 Integration targets
