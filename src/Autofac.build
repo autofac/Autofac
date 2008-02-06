@@ -1,109 +1,141 @@
 <project name="Autofac" xmlns="http://nant.sf.net/nightly/2006-03-08-0.85/nant.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nant.sf.net/nightly/2006-03-08-0.85/nant.xsd
 Resource\NAnt\nant.xsd" default="integrate">
-	<!-- Common Variables -->
-	<property name="DistribDirectory" value="Build\Distrib"/>
-	<property name="ProjectConfig" value="Release" unless="${property::exists('ProjectConfig')}"/>
-	<property name="ArtifactDirectory" value="Build\Artifact"/>  
-	<!-- Local Variables -->
-	<property name="TestDirectory" value="Build\Test"/>
-	<property name="LibDirectory" value="Build\Lib"/>
-	<property name="SolutionFile" value="Autofac.sln" readonly="true"/>
-	<property name="DistribFileName" value="${project::get-name()}"/>
-	<property name="Version" value="1.0.0.0" readonly="false" overwrite="false"/>
-	<property name="AllowPartiallyTrustedCallers" value="false"/>
-	<!-- 
-Integration targets
--->
-	<target name="clean">
-		<msbuild project="${SolutionFile}" target="Clean">
-			<property name="Configuration" value="${ProjectConfig}"/>
-			<property name="TargetPath" value="Temp"/>
-		</msbuild>
-		<delete dir="Build"/>
-		<delete>
-			<fileset>
-				<include name="Source/**/bin/**"/>
-				<include name="Source/**/obj/**"/>
-				<include name="Test/**/bin/**"/>
-				<include name="Test/**/obj/**"/>
-				<include name="**/*.bak"/>
-			</fileset>
-		</delete>
-	</target>
-	<target name="main-build">
-		<!-- Create Version assembly if version is provided -->		
-		<move file="Source/VersionAssemblyInfo.cs" tofile="Source/_VersionAssemblyInfo.cs"/>
-		<asminfo output="Source/VersionAssemblyInfo.cs" language="CSharp">
-			<imports>
-				<import namespace="System.Reflection"/>
-				<import namespace="System.Security" if="${AllowPartiallyTrustedCallers}" />
-			</imports>
-			<attributes>
-				<attribute type="AssemblyVersionAttribute" value="${Version}"/>
-				<attribute type="AssemblyFileVersionAttribute" value="${Version}"/>
+  <!-- Common Variables -->
+  <property name="DistribDirectory" value="Build\Distrib"/>
+  <property name="ProjectConfig" value="Release" unless="${property::exists('ProjectConfig')}"/>
+  <property name="ArtifactDirectory" value="Build\Artifact"/>
+  <!-- Local Variables -->
+  <property name="TestDirectory" value="Build\Test"/>
+  <property name="LibDirectory" value="Build\Lib"/>
+  <property name="SolutionFile" value="Autofac.sln" readonly="true"/>
+  <property name="AutofacCsproj" value="Source\Autofac\Autofac.csproj" readonly="true"/>
+  <property name="DotNet2AssemblyName" value="Autofac.DotNet2" readonly="true"/>
+  <property name="NUnitDirectory" value="Resource\NUnit"/>
+  <property name="LinqBridgeDirectory" value="Resource\LinqBridge"/>
+  <property name="Version" value="1.0.0.0" readonly="false" overwrite="false" />
+  <property name="AllowPartiallyTrustedCallers" value="false"/>
+  <property name="DistribFileName" value="autofac-${Version}"/>
+  <property name="DistribDotNet2FileName" value="autofac-dotnet2-${Version}"/>
+  <!-- 
+	Integration targets
+	-->
+  <target name="clean">
+    <msbuild project="${SolutionFile}" target="Clean">
+      <property name="Configuration" value="${ProjectConfig}"/>
+      <property name="TargetPath" value="Temp"/>
+    </msbuild>
+    <delete dir="Build"/>
+    <delete>
+      <fileset>
+        <include name="Source/**/bin/**"/>
+        <include name="Source/**/obj/**"/>
+        <include name="Test/**/bin/**"/>
+        <include name="Test/**/obj/**"/>
+        <include name="**/*.bak"/>
+      </fileset>
+    </delete>
+  </target>
+  <target name="main-build">
+    <!-- Create Version assembly if version is provided -->
+    <move file="Source/VersionAssemblyInfo.cs" tofile="Source/_VersionAssemblyInfo.cs"/>
+    <asminfo output="Source/VersionAssemblyInfo.cs" language="CSharp">
+      <imports>
+        <import namespace="System.Reflection"/>
+        <import namespace="System.Security" if="${AllowPartiallyTrustedCallers}" />
+      </imports>
+      <attributes>
+        <attribute type="AssemblyVersionAttribute" value="${Version}"/>
+        <attribute type="AssemblyFileVersionAttribute" value="${Version}"/>
         <attribute asis="true" type="AllowPartiallyTrustedCallersAttribute" if="${AllowPartiallyTrustedCallers}" />
-			</attributes>
-		</asminfo>
-	
-		<msbuild project="${SolutionFile}">
-			<property name="Configuration" value="${ProjectConfig}"/>
-		</msbuild>
-	</target>
-	<target name="post-build">
-		<move file="Source/_VersionAssemblyInfo.cs" tofile="Source/VersionAssemblyInfo.cs" overwrite="true" failonerror="false" if="${file::exists('Source/_VersionAssemblyInfo.cs')}"/>
-	</target>
-	<target name="copy">
-		<copy todir="${TestDirectory}" flatten="true">
-			<fileset>
-				<include name="Test/**/bin/${ProjectConfig}/*.dll"/>
-			</fileset>
-		</copy>
-		<copy todir="${LibDirectory}" flatten="true">
-			<fileset>
-				<include name="Source/Autofac/bin/${ProjectConfig}/**"/>
-				<include name="Source/Autofac.Integration.Mvc/bin/${ProjectConfig}/**"/>
+      </attributes>
+    </asminfo>
+
+    <msbuild project="${SolutionFile}">
+      <property name="Configuration" value="${ProjectConfig}"/>
+    </msbuild>
+  </target>
+  <target name="dotnet2-build">
+    <msbuild project="${AutofacCsproj}">
+      <property name="AssemblyName" value="${DotNet2AssemblyName}"/>
+      <property name="TargetFrameworkVersion" value="v2.0"/>
+      <property name="Configuration" value="Release"/>
+    </msbuild>
+  </target>
+  <target name="post-build">
+    <move file="Source/_VersionAssemblyInfo.cs" tofile="Source/VersionAssemblyInfo.cs" overwrite="true" failonerror="false" if="${file::exists('Source/_VersionAssemblyInfo.cs')}"/>
+  </target>
+  <target name="copy">
+    <copy todir="${TestDirectory}" flatten="true">
+      <fileset>
+        <include name="Test/**/bin/${ProjectConfig}/*.dll"/>
+      </fileset>
+    </copy>
+    <copy todir="${LibDirectory}" flatten="true">
+      <fileset>
+        <include name="Source/Autofac/bin/${ProjectConfig}/**"/>
+        <include name="Source/Autofac.Integration.Mvc/bin/${ProjectConfig}/**"/>
         <include name="Source/Autofac.Integration.Wcf/bin/${ProjectConfig}/**"/>
         <include name="Source/Autofac.Integration.Web/bin/${ProjectConfig}/**"/>
       </fileset>
-		</copy>
-	</target>
-	<target name="distrib">
-		<mkdir dir="${DistribDirectory}"/>
-		<zip zipfile="${DistribDirectory}\${DistribFileName}.zip" ziplevel="9">
-			<fileset basedir="${LibDirectory}" prefix="bin">
-				<include name="Autofac.*"/>
-			</fileset>
-			<fileset basedir="${TestDirectory}" prefix="test">
-				<include name="*.*"/>
-			</fileset>
-			<fileset>
-				<include name="license.txt"/>
-			</fileset>
-		</zip>
-	</target>
-	<target name="test">
-		<nunit2>
-			<formatter type="Xml" usefile="true" extension=".xml" outputdir="${ArtifactDirectory}"/>
-			<formatter type="Plain"/>
-			<test>
-				<assemblies basedir="${TestDirectory}">
-					<include name="Autofac.Tests*.dll"/>
-				</assemblies>
-			</test>
-		</nunit2>
-	</target>
-	<!-- 
+    </copy>
+  </target>
+  <target name="distrib">
+    <mkdir dir="${DistribDirectory}"/>
+    <zip zipfile="${DistribDirectory}\${DistribFileName}.zip" ziplevel="9">
+      <fileset basedir="${LibDirectory}" prefix="bin">
+        <include name="Autofac.*"/>
+        <exclude name="Autofac.DotNet2.*"/>
+      </fileset>
+      <fileset basedir="${TestDirectory}" prefix="test">
+        <include name="*.*"/>
+      </fileset>
+      <fileset>
+        <include name="Autofac License.txt"/>
+      </fileset>
+      <fileset basedir="${NUnitDirectory}">
+        <include name="NUnit License.txt"/>
+      </fileset>
+    </zip>
+    <zip zipfile="${DistribDirectory}\${DistribDotNet2FileName}.zip" ziplevel="9">
+      <fileset basedir="${LibDirectory}" prefix="bin">
+        <include name="Autofac.DotNet2.*"/>
+        <include name="LinqBridge.*"/>
+      </fileset>
+      <fileset>
+        <include name="Autofac License.txt"/>
+      </fileset>
+      <fileset basedir="${NUnitDirectory}">
+        <include name="NUnit License.txt"/>
+      </fileset>
+      <fileset basedir="${LinqBridgeDirectory}">
+        <include name="LinqBridge License.txt"/>
+      </fileset>
+    </zip>
+  </target>
+  <target name="test">
+    <nunit2>
+      <formatter type="Xml" usefile="true" extension=".xml" outputdir="${ArtifactDirectory}"/>
+      <formatter type="Plain"/>
+      <test>
+        <assemblies basedir="${TestDirectory}">
+          <include name="Autofac.Tests*.dll"/>
+        </assemblies>
+      </test>
+    </nunit2>
+  </target>
+  <!-- 
 Composite targets 
 -->
-	<target name="build">
-		<trycatch>
-			<try>
-				<call target="main-build"/>
-			</try>
-			<finally>
-				<call target="post-build"/>
-			</finally>
-		</trycatch>
-	</target>
-	<target name="integrate" depends="clean,build,copy,test"/>
+  <target name="build">
+    <trycatch>
+      <try>
+        <call target="main-build"/>
+        <call target="dotnet2-build"/>
+      </try>
+      <finally>
+        <call target="post-build"/>
+      </finally>
+    </trycatch>
+  </target>
+  <target name="integrate" depends="clean,build,copy,test"/>
 </project>
