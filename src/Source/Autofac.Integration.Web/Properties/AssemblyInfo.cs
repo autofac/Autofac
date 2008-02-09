@@ -2,24 +2,6 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
 [assembly: AssemblyTitle("Autofac.Integration.Web")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("<Not Specified>")]
-[assembly: AssemblyProduct("Autofac.Integration.Web")]
-[assembly: AssemblyCopyright("Copyright © <Not Specified> 2008")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
-
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
-
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("286a6155-3f3c-4bf2-ba11-79c1e866143c")]
-
-[assembly: InternalsVisibleTo("Autofac.Tests.Integration.Web")]
+[assembly: AssemblyDescription("Autofac ASP.NET Integration")]
+[assembly: InternalsVisibleTo("Autofac.Tests.Integration.Web, PublicKey=00240000048000009400000006020000002400005253413100040000010001008728425885ef385e049261b18878327dfaaf0d666dea3bd2b0e4f18b33929ad4e5fbc9087e7eda3c1291d2de579206d9b4292456abffbe8be6c7060b36da0c33b883e3878eaf7c89fddf29e6e27d24588e81e86f3a22dd7b1a296b5f06fbfb500bbd7410faa7213ef4e2ce7622aefc03169b0324bcd30ccfe9ac8204e4960be6")]
