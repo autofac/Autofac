@@ -31,6 +31,16 @@ namespace Autofac.Builder
     /// some registration types (e.g. Generic) add registrations only on demand through
     /// IRegistrationSource and thus do not have unique names within the container.
     /// </summary>
+    public interface IConcreteRegistrar : IConcreteRegistrar<IConcreteRegistrar>
+    {
+    }
+
+    /// <summary>
+    /// A 'concrete' registrar creates IComponentRegistration
+    /// instances that are registered with the container. This is necessary because
+    /// some registration types (e.g. Generic) add registrations only on demand through
+    /// IRegistrationSource and thus do not have unique names within the container.
+    /// </summary>
     /// <typeparam name="TSyntax"></typeparam>
     public interface IConcreteRegistrar<TSyntax> : IRegistrar<TSyntax>
         where TSyntax : IConcreteRegistrar<TSyntax>

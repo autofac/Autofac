@@ -37,7 +37,7 @@ namespace Autofac.Builder
     /// </summary>
     public static class CollectionRegistrationBuilder
     {
-        public static ICollectionRegistrar RegisterCollection<T>(this ContainerBuilder builder)
+        public static IConcreteRegistrar RegisterCollection<T>(this ContainerBuilder builder)
         {
             Enforce.ArgumentNotNull(builder, "builder");
 

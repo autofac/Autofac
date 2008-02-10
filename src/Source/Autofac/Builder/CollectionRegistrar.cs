@@ -33,32 +33,32 @@ namespace Autofac.Builder
     /// <summary>
     /// Register a component using a provided instance.
     /// </summary>
-    class CollectionRegistrar<TItem> : Registrar<ICollectionRegistrar>, ICollectionRegistrar, IModule
+    class CollectionRegistrar<TItem> : Registrar<IConcreteRegistrar>, IConcreteRegistrar, IModule
     {
         /// <summary>
         /// Returns this instance, correctly-typed.
         /// </summary>
         /// <value></value>
-        protected override ICollectionRegistrar Syntax
+        protected override IConcreteRegistrar Syntax
         {
             get { return this; }
         }
 
-        #region IConcreteRegistrar<ICollectionRegistrar> Members
+        #region IConcreteRegistrar Members
 
         /// <summary>
         /// Names the registration.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        public ICollectionRegistrar Named(string name)
+        public IConcreteRegistrar Named(string name)
         {
             Enforce.ArgumentNotNullOrEmpty(name, "name");
             AddService(new NamedService(name));
             return Syntax;
         }
 
-        public ICollectionRegistrar As(params Service[] services)
+        public IConcreteRegistrar As(params Service[] services)
         {
             Enforce.ArgumentNotNull(services, "services");
             foreach (var service in services)

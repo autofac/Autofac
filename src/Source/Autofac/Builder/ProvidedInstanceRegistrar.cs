@@ -32,7 +32,7 @@ namespace Autofac.Builder
     /// <summary>
     /// Register a component using a provided instance.
     /// </summary>
-	class ProvidedInstanceRegistrar : ConcreteRegistrar<IProvidedInstanceRegistrar>, IProvidedInstanceRegistrar
+    class ProvidedInstanceRegistrar : ConcreteRegistrar<IConcreteRegistrar>, IConcreteRegistrar
 	{
         object _instance;
 
@@ -59,7 +59,7 @@ namespace Autofac.Builder
         /// Returns this instance, correctly-typed.
         /// </summary>
         /// <value></value>
-        protected override IProvidedInstanceRegistrar Syntax
+        protected override IConcreteRegistrar Syntax
         {
             get { return this; }
         }
@@ -72,7 +72,7 @@ namespace Autofac.Builder
         /// <returns>
         /// A registrar allowing registration to continue.
         /// </returns>
-        public override IProvidedInstanceRegistrar WithScope(InstanceScope scope)
+        public override IConcreteRegistrar WithScope(InstanceScope scope)
         {
             if (scope != InstanceScope.Singleton)
                 throw new ArgumentException(ProvidedInstanceRegistrarResources.SingletonScopeOnly);

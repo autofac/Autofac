@@ -68,11 +68,8 @@
     <Compile Include="Builder\FactoryRegistrationBuilder.cs" />
     <Compile Include="Builder\GenericRegistrar.cs" />
     <Compile Include="Builder\GenericRegistrationBuilder.cs" />
-    <Compile Include="Builder\ICollectionRegistrar.cs" />
     <Compile Include="Builder\IConcreteRegistrar.cs" />
-    <Compile Include="Builder\IDelegateRegistrar.cs" />
     <Compile Include="Builder\IGenericRegistrar.cs" />
-    <Compile Include="Builder\IProvidedInstanceRegistrar.cs" />
     <Compile Include="Builder\IReflectiveRegistrar.cs" />
     <Compile Include="Builder\ProvidedInstanceRegistrarResources.Designer.cs">
       <AutoGen>True</AutoGen>

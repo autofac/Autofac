@@ -43,7 +43,7 @@ namespace Autofac.Builder
         /// <returns>
         /// A registrar allowing details of the registration to be customised.
         /// </returns>
-        public static IDelegateRegistrar Register<T>(this ContainerBuilder builder, ComponentActivator<T> creator)
+        public static IConcreteRegistrar Register<T>(this ContainerBuilder builder, ComponentActivator<T> creator)
         {
             Enforce.ArgumentNotNull(builder, "builder");
             Enforce.ArgumentNotNull(creator, "creator");
@@ -58,7 +58,7 @@ namespace Autofac.Builder
         /// <returns>
         /// A registrar allowing details of the registration to be customised.
         /// </returns>
-        public static IDelegateRegistrar Register<T>(this ContainerBuilder builder, ComponentActivatorWithParameters<T> creator)
+        public static IConcreteRegistrar Register<T>(this ContainerBuilder builder, ComponentActivatorWithParameters<T> creator)
         {
             Enforce.ArgumentNotNull(builder, "builder");
             Enforce.ArgumentNotNull(creator, "creator");

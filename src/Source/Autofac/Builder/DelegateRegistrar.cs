@@ -32,7 +32,7 @@ namespace Autofac.Builder
     /// <summary>
     /// Register a component using a delegate.
     /// </summary>
-	class DelegateRegistrar : ConcreteRegistrar<IDelegateRegistrar>, IDelegateRegistrar
+    class DelegateRegistrar : ConcreteRegistrar<IConcreteRegistrar>, IConcreteRegistrar
 	{
         ComponentActivator _creator;
 
@@ -60,7 +60,7 @@ namespace Autofac.Builder
         /// Returns this instance, correctly-typed.
         /// </summary>
         /// <value></value>
-        protected override IDelegateRegistrar Syntax
+        protected override IConcreteRegistrar Syntax
         {
             get { return this; }
         }

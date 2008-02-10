@@ -43,7 +43,7 @@ namespace Autofac.Builder
         /// <returns>
         /// A registrar allowing details of the registration to be customised.
         /// </returns>
-        public static IProvidedInstanceRegistrar Register<T>(this ContainerBuilder builder, T instance)
+        public static IConcreteRegistrar Register<T>(this ContainerBuilder builder, T instance)
         {
             Enforce.ArgumentNotNull(builder, "builder");
             var result = new ProvidedInstanceRegistrar(instance);
