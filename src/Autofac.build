@@ -73,6 +73,7 @@ Resource\NAnt\nant.xsd" default="integrate">
     <copy todir="${LibDirectory}" flatten="true">
       <fileset>
         <include name="Source/Autofac/bin/${ProjectConfig}/**"/>
+        <include name="Source/Autofac.Extras.TaggedContexts/bin/${ProjectConfig}/**"/>
         <include name="Source/Autofac.Integration.Mvc/bin/${ProjectConfig}/**"/>
         <include name="Source/Autofac.Integration.Wcf/bin/${ProjectConfig}/**"/>
         <include name="Source/Autofac.Integration.Web/bin/${ProjectConfig}/**"/>
@@ -129,8 +130,8 @@ Composite targets
   <target name="build">
     <trycatch>
       <try>
-        <call target="main-build"/>
         <call target="dotnet2-build"/>
+        <call target="main-build"/>
       </try>
       <finally>
         <call target="post-build"/>
