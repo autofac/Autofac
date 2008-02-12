@@ -37,6 +37,16 @@ namespace Autofac.Extras.TaggedContexts
     {
         static readonly Parameter[] EmptyParameters = new Parameter[0];
 
+        /// <summary>
+        /// Extensions for ContainerBuilder that allow registrations to be targeted to
+        /// contexts with a certain tag only.
+        /// </summary>
+        /// <typeparam name="TComponent">The type of the component.</typeparam>
+        /// <typeparam name="TTag">The type of the tag.</typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="activator">The activator.</param>
+        /// <param name="targetContext">The target context.</param>
+        /// <returns></returns>
         public static IConcreteRegistrar RegisterInContext<TComponent, TTag>(
             this ContainerBuilder builder,
             ComponentActivatorWithParameters<TComponent> activator,
@@ -72,6 +82,12 @@ namespace Autofac.Extras.TaggedContexts
         /// Extensions for ContainerBuilder that allow registrations to be targeted to
         /// contexts with a certain tag only.
         /// </summary>
+        /// <typeparam name="TActivator">The type of the activator.</typeparam>
+        /// <typeparam name="TTag">The type of the tag.</typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="activator">The activator.</param>
+        /// <param name="targetContext">The target context.</param>
+        /// <returns></returns>
         public static IConcreteRegistrar RegisterInContext<TActivator, TTag>(
             this ContainerBuilder builder,
             ComponentActivator<TActivator> activator,
@@ -84,11 +100,11 @@ namespace Autofac.Extras.TaggedContexts
                 throw new ArgumentNullException("activator");
 
             return RegisterInContext<TActivator, TTag>(
-                builder, 
+                builder,
                 (c, p) => activator(c),
                 targetContext);
         }
-        
+
         /// <summary>
         /// Enables context tagging in the target container.
         /// </summary>

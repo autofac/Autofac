@@ -27,15 +27,30 @@ using System;
 
 namespace Autofac
 {
+    /// <summary>
+    /// Identifies a service according to a type to which it can be assigned.
+    /// </summary>
     public class TypedService : Service
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TypedService"/> class.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
         public TypedService(Type serviceType)
         {
             ServiceType = Enforce.ArgumentNotNull(serviceType, "serviceType");
         }
 
+        /// <summary>
+        /// Gets or sets the type of the service.
+        /// </summary>
+        /// <value>The type of the service.</value>
         public Type ServiceType { get; private set; }
 
+        /// <summary>
+        /// Gets a human-readable description of the service.
+        /// </summary>
+        /// <value>The description.</value>
         public override string Description
         {
             get
@@ -44,6 +59,14 @@ namespace Autofac
             }
         }
 
+        /// <summary>
+        /// Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
+        /// </summary>
+        /// <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>.</param>
+        /// <returns>
+        /// true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.
+        /// </returns>
+        /// <exception cref="T:System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
         public override bool Equals(object obj)
         {
             TypedService that = obj as TypedService;
@@ -54,6 +77,12 @@ namespace Autofac
             return ServiceType == that.ServiceType;
         }
 
+        /// <summary>
+        /// Serves as a hash function for a particular type.
+        /// </summary>
+        /// <returns>
+        /// A hash code for the current <see cref="T:System.Object"/>.
+        /// </returns>
         public override int GetHashCode()
         {
             return ServiceType.GetHashCode();
