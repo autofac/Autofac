@@ -122,6 +122,7 @@ namespace Autofac
         /// Retrieve a service registered with the container.
         /// </summary>
         /// <param name="service">The service to retrieve.</param>
+        /// <param name="parameters">The parameters.</param>
         /// <returns>
         /// The component instance that provides the service.
         /// </returns>
@@ -144,6 +145,7 @@ namespace Autofac
         /// Retrieve a service registered with the container.
         /// </summary>
         /// <param name="serviceType">The service to retrieve.</param>
+        /// <param name="parameters">The parameters.</param>
         /// <returns>
         /// The component instance that provides the service.
         /// </returns>
@@ -160,6 +162,7 @@ namespace Autofac
         /// Retrieve a service registered with the container.
         /// </summary>
         /// <typeparam name="TService">The service to retrieve.</typeparam>
+        /// <param name="parameters">The parameters.</param>
         /// <returns>
         /// The component instance that provides the service, or null if
         /// none is available.
@@ -181,6 +184,7 @@ namespace Autofac
         /// </summary>
         /// <typeparam name="TService">The service to retrieve.</typeparam>
         /// <param name="instance">The component instance that provides the service.</param>
+        /// <param name="parameters">The parameters.</param>
         /// <returns>
         /// True if the service was registered and its instance created;
         /// false otherwise.
@@ -200,6 +204,7 @@ namespace Autofac
         /// </summary>
         /// <param name="serviceType">The service to retrieve.</param>
         /// <param name="instance">The component instance that provides the service.</param>
+        /// <param name="parameters">The parameters.</param>
         /// <returns>
         /// True if the service was registered and its instance created;
         /// false otherwise.
@@ -217,6 +222,7 @@ namespace Autofac
         /// </summary>
         /// <param name="componentName">The name of the component to retrieve.</param>
         /// <param name="instance">The component instance that provides the service.</param>
+        /// <param name="parameters">The parameters.</param>
         /// <returns>
         /// True if the service was registered and its instance created;
         /// false otherwise.
@@ -234,6 +240,7 @@ namespace Autofac
         /// </summary>
         /// <param name="service">The key of the component to retrieve.</param>
         /// <param name="instance">The component instance that provides the service.</param>
+        /// <param name="parameters">The parameters.</param>
         /// <returns>
         /// True if the service was registered and its instance created;
         /// false otherwise.
@@ -315,7 +322,7 @@ namespace Autofac
         /// <summary>
         /// Determine whether or not a service has been registered.
         /// </summary>
-        /// <param name="serviceType">The service to test for the registration of.</param>
+        /// <param name="service">The service to test for the registration of.</param>
         /// <returns>True if the service is registered.</returns>
         public bool IsRegistered(Service service)
         {
@@ -339,7 +346,7 @@ namespace Autofac
         /// <summary>
         /// Determine whether or not a service has been registered.
         /// </summary>
-        /// <param name="serviceType">The service to test for the registration of.</param>
+        /// <param name="serviceName">The service to test for the registration of.</param>
         /// <returns>True if the service is registered.</returns>
         public bool IsRegistered(string serviceName)
         {

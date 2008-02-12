@@ -50,7 +50,6 @@ namespace Autofac
         /// Initializes a new instance of the <see cref="ComponentNotRegisteredException"/> class.
         /// </summary>
         /// <param name="service">The service.</param>
-        /// <param name="innerException">The inner exception.</param>
         public ComponentNotRegisteredException(Service service)
             : base(string.Format(CultureInfo.CurrentCulture,
             ComponentNotRegisteredExceptionResources.Message, 

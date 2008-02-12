@@ -27,8 +27,18 @@ using System.Collections.Generic;
 
 namespace Autofac
 {
+    /// <summary>
+    /// Provided to component activators to give context to the component creation
+    /// process.
+    /// </summary>
     public interface IActivationParameters : IDictionary<string, object>
     {
+        /// <summary>
+        /// Gets a parameter of the specified type with the given name.
+        /// </summary>
+        /// <typeparam name="T">The parameter type.</typeparam>
+        /// <param name="name">The parameter name.</param>
+        /// <returns></returns>
         T Get<T>(string name);
     }
 }

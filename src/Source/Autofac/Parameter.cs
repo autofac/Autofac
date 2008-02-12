@@ -35,9 +35,23 @@ namespace Autofac
     /// </summary>
     public class Parameter
     {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>The name.</value>
         public string Name { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>The value.</value>
         public object Value { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Parameter"/> class.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
         public Parameter(string name, object value)
         {
             Enforce.ArgumentNotNull(name, "name");

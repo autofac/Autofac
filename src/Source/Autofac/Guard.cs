@@ -67,7 +67,7 @@ namespace Autofac
         /// <summary>
         /// Create a guard with an initial undo action.
         /// </summary>
-        /// <param name="undoer"></param>
+        /// <param name="undoAction">The undo action.</param>
         public Guard(UndoAction undoAction)
             : this()
         {

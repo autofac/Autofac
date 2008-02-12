@@ -37,6 +37,12 @@ namespace Autofac.Builder
     /// </summary>
     public static class CollectionRegistrationBuilder
     {
+        /// <summary>
+        /// Registers the type as a collection.
+        /// </summary>
+        /// <typeparam name="T">Collection item type</typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <returns></returns>
         public static IConcreteRegistrar RegisterCollection<T>(this ContainerBuilder builder)
         {
             Enforce.ArgumentNotNull(builder, "builder");
@@ -48,6 +54,12 @@ namespace Autofac.Builder
                 .WithScope(builder.DefaultScope);
         }
 
+        /// <summary>
+        /// Adds the registration to a previously registered collection.
+        /// </summary>
+        /// <typeparam name="TSyntax">The registrar's self-type.</typeparam>
+        /// <param name="registrar">The registrar.</param>
+        /// <param name="serviceName">Name of the service.</param>
         public static void MemberOf<TSyntax>(this IConcreteRegistrar<TSyntax> registrar, string serviceName)
             where TSyntax : IConcreteRegistrar<TSyntax>
         {
@@ -56,6 +68,12 @@ namespace Autofac.Builder
             MemberOf(registrar, new NamedService(serviceName));
         }
 
+        /// <summary>
+        /// Adds the registration to a previously registered collection.
+        /// </summary>
+        /// <typeparam name="TSyntax">The registrar's self-type.</typeparam>
+        /// <param name="registrar">The registrar.</param>
+        /// <param name="serviceType">Type of the service.</param>
         public static void MemberOf<TSyntax>(this IConcreteRegistrar<TSyntax> registrar, Type serviceType)
             where TSyntax : IConcreteRegistrar<TSyntax>
         {
@@ -64,6 +82,12 @@ namespace Autofac.Builder
             MemberOf(registrar, new TypedService(serviceType));
         }
 
+        /// <summary>
+        /// Adds the registration to a previously registered collection.
+        /// </summary>
+        /// <typeparam name="TSyntax">The registrar's self-type.</typeparam>
+        /// <param name="registrar">The registrar.</param>
+        /// <param name="service">The service.</param>
         public static void MemberOf<TSyntax>(this IConcreteRegistrar<TSyntax> registrar, Service service)
             where TSyntax : IConcreteRegistrar<TSyntax>
         {

@@ -141,6 +141,8 @@ namespace Autofac.Component.Registration
         /// <param name="context">The context that is to be used
         /// to resolve the instance's dependencies.</param>
         /// <param name="parameters">Parameters that can be used in the resolution process.</param>
+        /// <param name="disposer">The disposer.</param>
+        /// <param name="newInstance">if set to <c>true</c> a new instance was created.</param>
         /// <returns>A newly-resolved instance.</returns>
         public object ResolveInstance(IContext context, IActivationParameters parameters, IDisposer disposer, out bool newInstance)
         {
@@ -218,6 +220,12 @@ namespace Autofac.Component.Registration
 
         #region IComponentRegistration Members
 
+        /// <summary>
+        /// Called by the container once an instance has been fully constructed, including
+        /// any requested objects that depend on the instance.
+        /// </summary>
+        /// <param name="context">The context in which the instance was activated.</param>
+        /// <param name="instance">The instance.</param>
         public void InstanceActivated(IContext context, object instance)
         {
             var activatedArgs = new ActivatedEventArgs(context, this, instance);
@@ -226,6 +234,10 @@ namespace Autofac.Component.Registration
 
         #endregion
 
+        /// <summary>
+        /// Gets the scope.
+        /// </summary>
+        /// <value>The scope.</value>
         protected internal IScope Scope
         {
             get { return _scope; }

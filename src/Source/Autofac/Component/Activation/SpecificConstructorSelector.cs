@@ -30,10 +30,17 @@ using System.Reflection;
 
 namespace Autofac.Component.Activation
 {
+    /// <summary>
+    /// Chooses a constructor based on an exact signature.
+    /// </summary>
     public class SpecificConstructorSelector : IConstructorSelector
     {
         IList<Type> _signature;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SpecificConstructorSelector"/> class.
+        /// </summary>
+        /// <param name="constructorSignature">The constructor signature.</param>
         public SpecificConstructorSelector(params Type[] constructorSignature)
         {
             Enforce.ArgumentNotNull(constructorSignature, "constructorSignature");
@@ -47,6 +54,11 @@ namespace Autofac.Component.Activation
 
         #region IConstructorSelector Members
 
+        /// <summary>
+        /// Returns the most suitable constructor from those provided.
+        /// </summary>
+        /// <param name="possibleConstructors">Required. Must contain at least one item.</param>
+        /// <returns>The most suitable constructor.</returns>
         public ConstructorInfo SelectConstructor(ICollection<ConstructorInfo> possibleConstructors)
         {
             Enforce.ArgumentNotNull(possibleConstructors, "possibleConstructors");

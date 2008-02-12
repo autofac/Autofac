@@ -37,8 +37,9 @@ namespace Autofac.Builder
         ComponentActivator _creator;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DelegateRegistrar&lt;TComponent&gt;"/> class.
+        /// Initializes a new instance of the DelegateRegistrar&lt;TComponent&gt; class.
         /// </summary>
+        /// <param name="implementor">The implementor.</param>
         /// <param name="creator">The creator.</param>
         public DelegateRegistrar(Type implementor, ComponentActivator creator)
 			: base(implementor)

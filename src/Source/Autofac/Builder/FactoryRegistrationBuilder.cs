@@ -43,6 +43,7 @@ namespace Autofac.Builder
         /// parameters will be provided to the activator as named values.
         /// </summary>
         /// <typeparam name="TCreator">Delegate type that will be resolvable.</typeparam>
+        /// <param name="builder">The builder.</param>
         /// <param name="creator">Activator that will create the result value of
         /// calls to the delegate.</param>
         public static void RegisterFactory<TCreator>(this ContainerBuilder builder, ComponentActivator creator)
@@ -55,7 +56,8 @@ namespace Autofac.Builder
         /// but expose it through a delegate type. The resolved delegate's
         /// parameters will be provided to the activator as named values.
         /// </summary>
-        /// <typeparam name="TCreator">Delegate type that will be resolvable.</typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="factoryDelegate">The factory delegate.</param>
         /// <param name="creator">Activator that will create the result value of
         /// calls to the delegate.</param>
         public static void RegisterFactory(this ContainerBuilder builder, Type factoryDelegate, ComponentActivator creator)

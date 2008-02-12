@@ -39,6 +39,7 @@ namespace Autofac.Builder
         /// Register a component using a provided instance.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
+        /// <param name="builder">The builder.</param>
         /// <param name="instance">The instance.</param>
         /// <returns>
         /// A registrar allowing details of the registration to be customised.

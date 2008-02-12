@@ -255,11 +255,13 @@ namespace Autofac.Component.Activation
 			return result;
 		}
 
-		/// <summary>
-		/// Dependencies must be resolvable. Check this first with AreAllParametersRegistered().
-		/// </summary>
-		/// <param name="ci"></param>
-		/// <returns></returns>
+        /// <summary>
+        /// Dependencies must be resolvable. Check this first with AreAllParametersRegistered().
+        /// </summary>
+        /// <param name="ci">The constructor to use.</param>
+        /// <param name="context">The context in which the instance is being created.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns></returns>
         /// <exception cref="DependencyResolutionException">Parameters were not resolvable.</exception>
         object ConstructInstance(ConstructorInfo ci, IContext context, IActivationParameters parameters)
 		{

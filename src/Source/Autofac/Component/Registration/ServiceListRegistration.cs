@@ -124,6 +124,7 @@ namespace Autofac.Component.Registration
         /// Initializes a new instance of the <see cref="ServiceListRegistration&lt;TItem&gt;"/> class.
         /// </summary>
         /// <param name="services">The services.</param>
+        /// <param name="activator">The activator.</param>
         /// <param name="scope">The scope.</param>
         ServiceListRegistration(IEnumerable<Service> services, ServiceListActivator activator, IScope scope)
             : base(services, activator, scope)

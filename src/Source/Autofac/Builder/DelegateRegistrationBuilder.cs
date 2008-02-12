@@ -39,6 +39,7 @@ namespace Autofac.Builder
         /// Register a component that will be created using a provided delegate.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
+        /// <param name="builder">The builder.</param>
         /// <param name="creator">The creator.</param>
         /// <returns>
         /// A registrar allowing details of the registration to be customised.
@@ -54,6 +55,7 @@ namespace Autofac.Builder
         /// Register a component that will be created using a provided delegate.
         /// </summary>
         /// <typeparam name="T">The type of the component.</typeparam>
+        /// <param name="builder">The builder.</param>
         /// <param name="creator">The creator.</param>
         /// <returns>
         /// A registrar allowing details of the registration to be customised.

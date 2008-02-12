@@ -48,8 +48,11 @@ namespace Autofac.Builder
         /// <summary>
         /// Register a component to be created through reflection.
         /// </summary>
+        /// <param name="builder">The builder.</param>
         /// <param name="implementor">The type of the component.</param>
-        /// <returns>A registrar allowing details of the registration to be customised.</returns>
+        /// <returns>
+        /// A registrar allowing details of the registration to be customised.
+        /// </returns>
         public static IReflectiveRegistrar Register(this ContainerBuilder builder, Type implementor)
         {
             Enforce.ArgumentNotNull(implementor, "implementor");

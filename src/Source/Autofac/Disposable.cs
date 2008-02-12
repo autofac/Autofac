@@ -12,6 +12,9 @@ namespace Autofac
 		bool _isDisposed;
         object _synchRoot = new object();
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
 		public void Dispose()
 		{
             lock (_synchRoot)

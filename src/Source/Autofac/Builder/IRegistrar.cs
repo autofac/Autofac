@@ -29,13 +29,13 @@ using System.Text;
 
 namespace Autofac.Builder
 {
-	/// <summary>
-	/// Provides an interface through which a component registration can
-	/// be incrementally built. Calling any of the methods on this interface
-	/// after 'Build' has been called on the parent ContainerBuilder will have
-	/// no effect.
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
+    /// <summary>
+    /// Provides an interface through which a component registration can
+    /// be incrementally built. Calling any of the methods on this interface
+    /// after 'Build' has been called on the parent ContainerBuilder will have
+    /// no effect.
+    /// </summary>
+    /// <typeparam name="TSyntax">Self-type.</typeparam>
 	public interface IRegistrar<TSyntax>
         where TSyntax : IRegistrar<TSyntax>
 	{
@@ -43,7 +43,9 @@ namespace Autofac.Builder
         /// Change the service associated with the registration.
         /// </summary>
         /// <typeparam name="TService">The service that the registration will expose.</typeparam>
-        /// <returns>A registrar allowing registration to continue.</returns>
+        /// <returns>
+        /// A registrar allowing registration to continue.
+        /// </returns>
         TSyntax As<TService>();
 
         /// <summary>

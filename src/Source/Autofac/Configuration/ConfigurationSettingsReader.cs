@@ -83,7 +83,7 @@ namespace Autofac.Configuration
         /// <summary>
         /// Configures the container builder with the registrations from the config file.
         /// </summary>
-        /// <param name="container">The container builder.</param>
+        /// <param name="builder">The builder.</param>
         public void Configure(ContainerBuilder builder)
         {
             Enforce.ArgumentNotNull(builder, "builder");

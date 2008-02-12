@@ -241,8 +241,11 @@ namespace Autofac
         /// Searches for an IRegistrationSource that can provide a registration for an
         /// unregistered service, and completes the registration process if possible.
         /// </summary>
-        /// <param name="service">The requested service.</param>
-        /// <returns>True if a registration was provided, otherwise, false.</returns>
+        /// <param name="key">The requested service.</param>
+        /// <param name="registration">The registration for that service.</param>
+        /// <returns>
+        /// True if a registration was provided, otherwise, false.
+        /// </returns>
         bool TryGetRegistrationFromSources(Service key, out IComponentRegistration registration)
         {
             Enforce.ArgumentNotNull(key, "key");

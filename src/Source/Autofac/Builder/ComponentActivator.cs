@@ -34,7 +34,7 @@ namespace Autofac.Builder
     /// create an instance of a component, using the provided container
     /// to resolve its dependencies.
     /// </summary>
-    /// <param name="container">The container from which the component's
+    /// <param name="context">The container from which the component's
     /// dependencies may be resolved.</param>
     /// <returns>An instance of the component.</returns>
     /// <remarks>
@@ -50,8 +50,9 @@ namespace Autofac.Builder
     /// create an instance of a component, using the provided container
     /// to resolve its dependencies.
     /// </summary>
-    /// <param name="container">The container from which the component's
+    /// <param name="context">The container from which the component's
     /// dependencies may be resolved.</param>
+    /// <param name="parameters">The activation parameters.</param>
     /// <returns>An instance of the component.</returns>
     /// <remarks>
     /// A creation delegate can be used when the method of initialisation

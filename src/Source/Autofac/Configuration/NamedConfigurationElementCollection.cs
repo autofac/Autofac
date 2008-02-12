@@ -100,7 +100,7 @@ namespace Autofac.Configuration
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="TElementType"/> at the specified index.
+        /// Gets or sets the TElementType at the specified index.
         /// </summary>
         /// <value></value>
         public TElementType this[int index]

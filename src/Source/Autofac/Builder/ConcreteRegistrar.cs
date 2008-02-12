@@ -41,7 +41,7 @@ namespace Autofac.Builder
         Type _implementor;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ComponentRegistrar&lt;TComponent&gt;"/> class.
+        /// Initializes a new instance of the ComponentRegistrar&lt;TComponent&gt; class.
         /// </summary>
         /// <param name="implementor">The implementation type.</param>
 		protected ConcreteRegistrar(Type implementor)

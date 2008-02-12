@@ -43,8 +43,9 @@ namespace Autofac.Builder
         IDictionary<string, object> _explicitProperties = new Dictionary<string, object>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ReflectionRegistrar"/> class.
+        /// Initializes a new instance of the <see cref="ReflectiveRegistrar"/> class.
         /// </summary>
+        /// <param name="implementor">The implementation type.</param>
 		public ReflectiveRegistrar(Type implementor)
 			: base(implementor)
 		{
