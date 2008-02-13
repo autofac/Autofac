@@ -1,41 +1,43 @@
 <project name="Autofac" xmlns="http://nant.sf.net/nightly/2006-03-08-0.85/nant.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nant.sf.net/nightly/2006-03-08-0.85/nant.xsd
 Resource\NAnt\nant.xsd" default="integrate">
-  <!-- Common Variables -->
-  <property name="DistribDirectory" value="Build\Distrib"/>
-  <property name="ProjectConfig" value="Release" unless="${property::exists('ProjectConfig')}"/>
-  <property name="ArtifactDirectory" value="Build\Artifact"/>
-  <!-- Local Variables -->
-  <property name="TestDirectory" value="Build\Test"/>
-  <property name="LibDirectory" value="Build\Lib"/>
-  <property name="SolutionFile" value="Autofac.sln" readonly="true"/>
-  <property name="AutofacCsproj" value="Source\Autofac\Autofac.csproj" readonly="true"/>
-  <property name="DotNet2AssemblyName" value="Autofac.DotNet2" readonly="true"/>
+	<!-- Common Variables -->
+	<property name="DistribDirectory" value="Build\Distrib"/>
+	<property name="ProjectConfig" value="Release" unless="${property::exists('ProjectConfig')}"/>
+	<property name="ArtifactDirectory" value="Build\Artifact"/>  
+	<!-- Local Variables -->
+	<property name="TestDirectory" value="Build\Test"/>
+	<property name="LibDirectory" value="Build\Lib"/>
+	<property name="SolutionFile" value="Autofac.sln" readonly="true"/>
   <property name="NUnitDirectory" value="Resource\NUnit"/>
   <property name="LinqBridgeDirectory" value="Resource\LinqBridge"/>
   <property name="Version" value="1.0.0.0" readonly="false" overwrite="false" />
   <property name="AllowPartiallyTrustedCallers" value="false"/>
   <property name="DistribFileName" value="autofac-${Version}"/>
   <property name="DistribDotNet2FileName" value="autofac-dotnet2-${Version}"/>
+  <property name="AutofacCsproj" value="Source\Autofac\Autofac.csproj" readonly="true"/>
+  <property name="DotNet2AssemblyName" value="Autofac.DotNet2" readonly="true"/>
+  <property name="AutofacWebCsproj" value="Source\Autofac.Integration.Web\Autofac.Integration.Web.csproj" readonly="true"/>
+  <property name="DotNet2WebAssemblyName" value="Autofac.DotNet2.Integration.Web" readonly="true"/>
   <!-- 
-	Integration targets
-	-->
-  <target name="clean">
-    <msbuild project="${SolutionFile}" target="Clean">
-      <property name="Configuration" value="${ProjectConfig}"/>
-      <property name="TargetPath" value="Temp"/>
-    </msbuild>
-    <delete dir="Build"/>
-    <delete>
-      <fileset>
-        <include name="Source/**/bin/**"/>
-        <include name="Source/**/obj/**"/>
-        <include name="Test/**/bin/**"/>
-        <include name="Test/**/obj/**"/>
-        <include name="**/*.bak"/>
-      </fileset>
-    </delete>
-  </target>
-  <target name="main-build">
+Integration targets
+-->
+	<target name="clean">
+		<msbuild project="${SolutionFile}" target="Clean">
+			<property name="Configuration" value="${ProjectConfig}"/>
+			<property name="TargetPath" value="Temp"/>
+		</msbuild>
+		<delete dir="Build"/>
+		<delete>
+			<fileset>
+				<include name="Source/**/bin/**"/>
+				<include name="Source/**/obj/**"/>
+				<include name="Test/**/bin/**"/>
+				<include name="Test/**/obj/**"/>
+				<include name="**/*.bak"/>
+			</fileset>
+		</delete>
+	</target>
+  <target name="pre-build">
     <!-- Create Version assembly if version is provided -->
     <move file="Source/VersionAssemblyInfo.cs" tofile="Source/_VersionAssemblyInfo.cs"/>
     <asminfo output="Source/VersionAssemblyInfo.cs" language="CSharp">
@@ -49,17 +51,36 @@ Resource\NAnt\nant.xsd" default="integrate">
         <attribute asis="true" type="AllowPartiallyTrustedCallersAttribute" if="${AllowPartiallyTrustedCallers}" />
       </attributes>
     </asminfo>
-
-    <msbuild project="${SolutionFile}">
-      <property name="Configuration" value="${ProjectConfig}"/>
-    </msbuild>
   </target>
+	<target name="main-build">
+		<msbuild project="${SolutionFile}">
+			<property name="Configuration" value="${ProjectConfig}"/>
+		</msbuild>
+	</target>
+  <!-- The .NET 2.0 build is somewhat procedural - needs some cleanup after more investigation. -->
   <target name="dotnet2-build">
     <msbuild project="${AutofacCsproj}">
       <property name="AssemblyName" value="${DotNet2AssemblyName}"/>
       <property name="TargetFrameworkVersion" value="v2.0"/>
       <property name="Configuration" value="Release"/>
     </msbuild>
+    <msbuild project="${AutofacWebCsproj}">
+      <property name="AssemblyName" value="${DotNet2WebAssemblyName}"/>
+      <property name="TargetFrameworkVersion" value="v2.0"/>
+      <property name="Configuration" value="Release"/>
+    </msbuild>
+    <copy todir="${LibDirectory}" flatten="true">
+      <fileset>
+        <include name="Source/Autofac/bin/${ProjectConfig}/**"/>
+        <include name="Source/Autofac.Integration.Web/bin/${ProjectConfig}/**"/>
+      </fileset>
+    </copy>
+    <delete>
+      <fileset>
+        <include name="Source/Autofac/bin/${ProjectConfig}/**"/>
+        <include name="Source/Autofac.Integration.Web/bin/${ProjectConfig}/**"/>
+      </fileset>
+    </delete>
   </target>
   <target name="post-build">
     <move file="Source/_VersionAssemblyInfo.cs" tofile="Source/VersionAssemblyInfo.cs" overwrite="true" failonerror="false" if="${file::exists('Source/_VersionAssemblyInfo.cs')}"/>
@@ -127,9 +148,10 @@ Resource\NAnt\nant.xsd" default="integrate">
   <!-- 
 Composite targets 
 -->
-  <target name="build">
-    <trycatch>
-      <try>
+	<target name="build">
+		<trycatch>
+			<try>
+        <call target="pre-build"/>
         <call target="dotnet2-build"/>
         <call target="main-build"/>
       </try>
