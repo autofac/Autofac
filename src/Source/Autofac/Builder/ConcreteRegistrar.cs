@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Autofac.Component;
 using Autofac.Component.Registration;
 using Autofac.Component.Scope;
@@ -64,10 +65,6 @@ namespace Autofac.Builder
 
             var services = new List<Service>(Services);
 
-            Service factoryId = new UniqueService();
-            if (FactoryDelegates.Count != 0)
-                services.Add(factoryId);
-
             if (services.Count == 0)
                 services.Add(new TypedService(_implementor));
 
@@ -84,32 +81,10 @@ namespace Autofac.Builder
 
             container.RegisterComponent(cr);
 
-            foreach (Type factoryDelegate in FactoryDelegates)
-            {
-                var fr = new ContextAwareDelegateRegistration(factoryDelegate, (c, p) =>
-                        {
-                            object instance;
-                            if (!c.TryResolve(Enforce.NotNull(factoryId), out instance, MakeNamedValues(p)))
-                                throw new ComponentNotRegisteredException(factoryId);
-                            return instance;
-                        });
-                container.RegisterComponent(fr);
-            }
-
             FireRegistered(new RegisteredEventArgs() { Container = container, Registration = cr});
 		}
 
 		#endregion
-
-        private Parameter[] MakeNamedValues(IActivationParameters p)
-        {
-            Enforce.ArgumentNotNull(p, "p");
-            var result = new Parameter[p.Count];
-            int next = 0;
-            foreach (KeyValuePair<string, object> pval in p)
-                result[next++] = new Parameter(pval.Key, pval.Value);
-            return result;
-        }
 
         /// <summary>
         /// Setst the name of the registration.

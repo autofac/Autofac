@@ -117,4 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DelegateReturnsVoid" xml:space="preserve">
+    <value>The delegate type '{0}' cannot be used as a factory because it returns 'void'.</value>
+  </data>
+  <data name="TypeIsNotADelegate" xml:space="preserve">
+    <value>The type '{0}' cannot be used as a factory because it is not a delegate.</value>
+  </data>
 </root>

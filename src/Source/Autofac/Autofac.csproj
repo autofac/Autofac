@@ -67,7 +67,6 @@
     <Compile Include="Builder\CollectionRegistrar.cs" />
     <Compile Include="Builder\ComponentActivator.cs" />
     <Compile Include="Builder\DelegateRegistrationBuilder.cs" />
-    <Compile Include="Builder\FactoryRegistrationBuilder.cs" />
     <Compile Include="Builder\GenericRegistrar.cs" />
     <Compile Include="Builder\GenericRegistrationBuilder.cs" />
     <Compile Include="Builder\IConcreteRegistrar.cs" />
@@ -237,8 +236,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SpecificConstructorSelectorResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Component\Activation\InterceptingDelegateActivator.cs" />
-    <Compile Include="Component\Registration\ContextAwareDelegateRegistration.cs" />
     <Compile Include="TypedService.cs" />
     <Compile Include="UniqueService.cs" />
   </ItemGroup>

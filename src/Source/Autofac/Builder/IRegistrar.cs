@@ -73,24 +73,6 @@ namespace Autofac.Builder
         TSyntax As(params Type[] services);
 
         /// <summary>
-        /// Expose the component throug a delegate factory rather than directly as a service.
-        /// Unless As(...) is called after this method, the default type registration will not be
-        /// made.
-        /// </summary>
-        /// <param name="factoryDelegate"></param>
-        /// <returns></returns>
-        TSyntax ThroughFactory(Type factoryDelegate);
-
-        /// <summary>
-        /// Expose the component throug a delegate factory rather than directly as a service.
-        /// Unless As(...) is called after this method, the default type registration will not be
-        /// made.
-        /// </summary>
-        /// <typeparam name="TFactoryDelegate"></typeparam>
-        /// <returns></returns>
-        TSyntax ThroughFactory<TFactoryDelegate>();
-        
-        /// <summary>
 		/// Change the ownership model associated with the registration.
 		/// This determines when the instances are disposed and by whom.
 		/// </summary>

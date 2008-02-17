@@ -44,7 +44,6 @@ namespace Autofac.Builder
         IList<EventHandler<ActivatingEventArgs>> _activatingHandlers = new List<EventHandler<ActivatingEventArgs>>();
         IList<EventHandler<ActivatedEventArgs>> _activatedHandlers = new List<EventHandler<ActivatedEventArgs>>();
         IList<EventHandler<RegisteredEventArgs>> _registeredHandlers = new List<EventHandler<RegisteredEventArgs>>();
-        IList<Type> _factoryDelegates = new List<Type>();
 
         /// <summary>
         /// Returns this instance, correctly-typed.
@@ -98,38 +97,6 @@ namespace Autofac.Builder
             Enforce.ArgumentNotNull(services, "services");
             AddServices(services.Select<Type, Service>(s => new TypedService(s)));
             return Syntax;
-        }
-
-        /// <summary>
-        /// Expose the component throug a delegate factory rather than directly as a service.
-        /// Unless As(...) is called after this method, the default type registration will not be
-        /// made.
-        /// </summary>
-        /// <param name="factoryDelegate"></param>
-        /// <returns></returns>
-        public virtual TSyntax ThroughFactory(Type factoryDelegate)
-        {
-            Enforce.ArgumentNotNull(factoryDelegate, "factoryDelegate");
-            MethodInfo invoke = factoryDelegate.GetMethod("Invoke");
-            if (invoke == null)
-                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-                    RegistrarResources.TypeIsNotADelegate, factoryDelegate));
-            else if (invoke.ReturnType == typeof(void))
-                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-                    RegistrarResources.DelegateReturnsVoid, factoryDelegate));
-
-            FactoryDelegates.Add(factoryDelegate);
-            return Syntax;
-        }
-
-        /// <summary>
-        /// Throughes the factory.
-        /// </summary>
-        /// <typeparam name="TFactoryDelegate">The type of the factory delegate.</typeparam>
-        /// <returns></returns>
-        public virtual TSyntax ThroughFactory<TFactoryDelegate>()
-        {
-            return ThroughFactory(typeof(TFactoryDelegate));
         }
 
 		/// <summary>
@@ -226,17 +193,6 @@ namespace Autofac.Builder
             Enforce.ArgumentNotNull(services, "services");
             foreach (var service in services)
                 AddService(service);
-        }
-
-        /// <summary>
-        /// The factory delegates that can create the component.
-        /// </summary>
-        protected virtual ICollection<Type> FactoryDelegates
-        {
-            get
-            {
-                return _factoryDelegates;
-            }
         }
 
 		/// <summary>

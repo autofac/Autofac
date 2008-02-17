@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac.Builder {
+namespace Autofac.Extras.GeneratedFactories {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Autofac.Builder {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "2.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class RegistrarResources {
+    internal class ContainerBuilderExtensionsResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal RegistrarResources() {
+        internal ContainerBuilderExtensionsResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Autofac.Builder {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Builder.RegistrarResources", typeof(RegistrarResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Extras.GeneratedFactories.ContainerBuilderExtensionsResources", typeof(ContainerBuilderExtensionsResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,24 @@ namespace Autofac.Builder {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The delegate type &apos;{0}&apos; cannot be used as a factory because it returns &apos;void&apos;..
+        /// </summary>
+        internal static string DelegateReturnsVoid {
+            get {
+                return ResourceManager.GetString("DelegateReturnsVoid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type &apos;{0}&apos; cannot be used as a factory because it is not a delegate..
+        /// </summary>
+        internal static string TypeIsNotADelegate {
+            get {
+                return ResourceManager.GetString("TypeIsNotADelegate", resourceCulture);
             }
         }
     }

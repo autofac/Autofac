@@ -1,22 +1,17 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B2E242BC-9412-43ED-8BFE-3F12199BD649}</ProjectGuid>
+    <ProjectGuid>{A14491A3-9446-4B83-891C-8414CCCF7DFF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Autofac.Tests</RootNamespace>
-    <AssemblyName>Autofac.Tests</AssemblyName>
-    <StartupObject>
-    </StartupObject>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <RootNamespace>Autofac.Tests.Extras.GeneratedFactories</RootNamespace>
+    <AssemblyName>Autofac.Tests.Extras.GeneratedFactories</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Autofac.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
@@ -46,47 +41,33 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Builder\ActivatingHandlerFixture.cs" />
-    <Compile Include="Builder\ConcreteRegistrarFixture.cs" />
-    <Compile Include="Builder\ContainerRegistrationBuilderFixture.cs" />
-    <Compile Include="Builder\DelegateRegistrationBuilderFixture.cs" />
-    <Compile Include="Builder\GenericRegistrationBuilderFixture.cs" />
-    <Compile Include="Builder\ModuleFixture.cs" />
-    <Compile Include="Builder\ProvidedInstanceRegistrationBuilderFixture.cs" />
-    <Compile Include="Builder\ReflectiveRegistrationBuilderFixture.cs" />
-    <Compile Include="DisposerFixture.cs" />
-    <Compile Include="Component\Registration\GenericRegistrationHandlerFixture.cs" />
-    <Compile Include="Component\Scope\BaseContextScopeFixture.cs" />
-    <Compile Include="Component\Registration\ComponentRegistrationFixture.cs" />
-    <Compile Include="Builder\ContainerBuilderFixture.cs" />
-    <Compile Include="Component\Scope\ContextScopeFixture.cs" />
-    <Compile Include="Component\Activation\DelegateActivatorFixture.cs" />
-    <Compile Include="DisposeTracker.cs" />
-    <Compile Include="Component\Scope\FactoryScopeFixture.cs" />
-    <Compile Include="BugFixture.cs" />
-    <Compile Include="ContainerFixture.cs" />
-    <Compile Include="Component\Activation\ProvidedInstanceActivatorFixture.cs" />
-    <Compile Include="Component\Activation\MostParametersConstructorSelectorFixture.cs" />
+    <Compile Include="ContainerBuilderExtensionsFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Component\Activation\ReflectionActivatorFixture.cs" />
-    <Compile Include="Component\Scope\SingletonScopeFixture.cs" />
-    <Compile Include="Component\Activation\SpecificConstructorSelectorFixture.cs" />
-    <Compile Include="ServiceFixture.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Autofac.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Source\Autofac.Extras.GeneratedFactories\Autofac.Extras.GeneratedFactories.csproj">
+      <Project>{F05DB528-B92E-4A8F-86BA-0DB6A74B8B3D}</Project>
+      <Name>Autofac.Extras.GeneratedFactories</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Source\Autofac\Autofac.csproj">
       <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
       <Name>Autofac</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Autofac.snk" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
