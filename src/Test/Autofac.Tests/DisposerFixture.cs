@@ -22,16 +22,22 @@ namespace Autofac.Tests
 		[Test]
 		public void ReferenceNotHeld()
 		{
-			var target = new Disposer();
-			var instance = new DisposeTracker();
-            target.AddInstanceForDisposal(instance);
-			Assert.IsFalse(instance.IsDisposed);
-			var refer = new WeakReference(instance);
+            DisposeTracker instance;
+            WeakReference refer;
+            CreateInstanceAndWeakRefInNewStackFrameForMono(out instance, out refer);
 			Assert.IsTrue(refer.IsAlive);
 			instance = null;
             GC.Collect();
 			Assert.IsFalse(refer.IsAlive);
-			target.Dispose();
 		}
+
+        private static void CreateInstanceAndWeakRefInNewStackFrameForMono(out DisposeTracker instance, out WeakReference refer)
+        {
+            var target = new Disposer();
+            instance = new DisposeTracker();
+            target.AddInstanceForDisposal(instance);
+            Assert.IsFalse(instance.IsDisposed);
+            refer = new WeakReference(instance);
+        }
 	}
 }
