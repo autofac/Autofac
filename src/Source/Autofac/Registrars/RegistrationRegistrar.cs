@@ -23,36 +23,42 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using Autofac.Registrars;
-using Autofac.Registrars.ProvidedInstance;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Autofac.Builder
+namespace Autofac.Registrars
 {
     /// <summary>
-    /// Extends ContainerBuilder to support provided instances.
+    /// Registers an already-constructed component registration with the container.
     /// </summary>
-    public static class ProvidedInstanceRegistrationBuilder
+    class RegistrationRegistrar : IModule
     {
-        /// <summary>
-        /// Register a component using a provided instance.
-        /// </summary>
-        /// <typeparam name="T">The type of the component.</typeparam>
-        /// <param name="builder">The builder.</param>
-        /// <param name="instance">The instance.</param>
-        /// <returns>
-        /// A registrar allowing details of the registration to be customised.
-        /// </returns>
-        public static IConcreteRegistrar Register<T>(this ContainerBuilder builder, T instance)
-        {
-            Enforce.ArgumentNotNull(builder, "builder");
-            var result = new ProvidedInstanceRegistrar(instance);
-            builder.RegisterModule(result);
+        IComponentRegistration _registration;
 
-            // Scope of instances is always singleton, this will throw an exception
-            // if the default is otherwise.
-            return result
-                .WithOwnership(builder.DefaultOwnership)
-                .WithScope(builder.DefaultScope);
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RegistrationRegistrar"/> class.
+        /// </summary>
+        /// <param name="registration">The registration.</param>
+        public RegistrationRegistrar(IComponentRegistration registration)
+        {
+            Enforce.ArgumentNotNull(registration, "registration");
+            _registration = registration;
         }
+
+        #region IComponentRegistrar Members
+
+        /// <summary>
+        /// Registers the component.
+        /// </summary>
+        /// <param name="container">The container.</param>
+        public void Configure(IContainer container)
+        {
+            Enforce.ArgumentNotNull(container, "container");
+            container.RegisterComponent(_registration);
+        }
+
+        #endregion
     }
 }

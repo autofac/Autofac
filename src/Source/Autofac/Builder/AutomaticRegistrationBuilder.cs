@@ -23,50 +23,61 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using Autofac.Registrars.Delegate;
+using System;
+using System.Reflection;
 using Autofac.Registrars;
+using Autofac.Registrars.Automatic;
 
 namespace Autofac.Builder
 {
     /// <summary>
-    /// Extends ContainerBuilder to register creation delegates.
+    /// 
     /// </summary>
-    public static class DelegateRegistrationBuilder
+    public static class AutomaticRegistrationBuilder
     {
         /// <summary>
-        /// Register a component that will be created using a provided delegate.
+        /// Registers the types matching.
         /// </summary>
-        /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="builder">The builder.</param>
-        /// <param name="creator">The creator.</param>
-        /// <returns>
-        /// A registrar allowing details of the registration to be customised.
-        /// </returns>
-        public static IConcreteRegistrar Register<T>(this ContainerBuilder builder, ComponentActivator<T> creator)
+        /// <param name="predicate">The predicate.</param>
+        /// <returns></returns>
+        public static IGenericRegistrar RegisterTypesMatching(
+            this ContainerBuilder builder,
+            Predicate<Type> predicate)
         {
             Enforce.ArgumentNotNull(builder, "builder");
-            Enforce.ArgumentNotNull(creator, "creator");
-            return Register<T>(builder, (c, p) => creator(c));
+            Enforce.ArgumentNotNull(predicate, "predicate");
+            var module = new AutomaticRegistrar(predicate);
+            builder.RegisterModule(module);
+            return module;
         }
 
         /// <summary>
-        /// Register a component that will be created using a provided delegate.
+        /// Registers the types from assembly.
         /// </summary>
-        /// <typeparam name="T">The type of the component.</typeparam>
         /// <param name="builder">The builder.</param>
-        /// <param name="creator">The creator.</param>
-        /// <returns>
-        /// A registrar allowing details of the registration to be customised.
-        /// </returns>
-        public static IConcreteRegistrar Register<T>(this ContainerBuilder builder, ComponentActivatorWithParameters<T> creator)
+        /// <param name="assembly">The assembly.</param>
+        /// <returns></returns>
+        public static IGenericRegistrar RegisterTypesFromAssembly(
+            this ContainerBuilder builder,
+            Assembly assembly)
         {
             Enforce.ArgumentNotNull(builder, "builder");
-            Enforce.ArgumentNotNull(creator, "creator");
-            var result = new DelegateRegistrar(typeof(T), (c, p) => creator(c, p));
-            builder.RegisterModule(result);
-            return result
-                .WithOwnership(builder.DefaultOwnership)
-                .WithScope(builder.DefaultScope);
+            Enforce.ArgumentNotNull(assembly, "assembly");
+            return RegisterTypesMatching(builder, t => t.Assembly == assembly);
+        }
+
+        /// <summary>
+        /// Registers the types assignable to.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <returns></returns>
+        public static IGenericRegistrar RegisterTypesAssignableTo<T>(
+            this ContainerBuilder builder)
+        {
+            Enforce.ArgumentNotNull(builder, "builder");
+            return RegisterTypesMatching(builder, t => typeof(T).IsAssignableFrom(t));
         }
     }
 }

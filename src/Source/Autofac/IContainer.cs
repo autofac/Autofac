@@ -74,5 +74,11 @@ namespace Autofac
         /// Fired when the activation process for a new instance is complete.
         /// </summary>
         event EventHandler<ActivatedEventArgs> Activated;
+
+        /// <summary>
+        /// If the container is an inner container, retrieves the outer container.
+        /// Otherwise, null;
+        /// </summary>
+        IContainer OuterContainer { get; }
     }
 }

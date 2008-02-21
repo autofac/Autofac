@@ -94,7 +94,6 @@ Integration targets
     <copy todir="${LibDirectory}" flatten="true">
       <fileset>
         <include name="Source/Autofac/bin/${ProjectConfig}/**"/>
-        <include name="Source/Autofac.Extras.TaggedContexts/bin/${ProjectConfig}/**"/>
         <include name="Source/Autofac.Extras.GeneratedFactories/bin/${ProjectConfig}/**"/>
         <include name="Source/Autofac.Integration.Mvc/bin/${ProjectConfig}/**"/>
         <include name="Source/Autofac.Integration.Wcf/bin/${ProjectConfig}/**"/>

@@ -25,13 +25,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Configuration;
-using System.Reflection;
 using System.Globalization;
-using Autofac.Component.Registration;
-using Autofac.Component.Activation;
+using System.Reflection;
 using Autofac.Builder;
+using Autofac.Component.Activation;
+using Autofac.Registrars;
 
 namespace Autofac.Configuration
 {

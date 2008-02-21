@@ -24,9 +24,8 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Autofac.Registrars;
+using Autofac.Registrars.Reflective;
 
 namespace Autofac.Builder
 {

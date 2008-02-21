@@ -24,12 +24,13 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Autofac.Builder;
-using System.Reflection;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Globalization;
+using System.Reflection;
+using Autofac.Builder;
 using Autofac.Component;
+using Autofac.Registrars;
 
 namespace Autofac.Extras.GeneratedFactories
 {

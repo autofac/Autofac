@@ -1,6 +1,5 @@
-﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2007 Nicholas Blumhardt
-// nicholas.blumhardt@gmail.com
+﻿// Contributed by Nicholas Blumhardt 2008-02-10
+// Copyright (c) 2008 Autofac Contributors
 //
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
@@ -24,30 +23,26 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Autofac.Registrars;
-using Autofac.Registrars.Generic;
 
-namespace Autofac.Builder
+namespace Autofac.TaggedContexts
 {
-    /// <summary>
-    /// Extends ContainerBuilder to register generic types.
-    /// </summary>
-    public static class GenericRegistrationBuilder
+    class TaggedContextsModule<TTag> : IModule
     {
-        /// <summary>
-        /// Register an un-parameterised generic type, e.g. <code>Repository&lt;&gt;</code>.
-        /// Concrete types will be made as they are requested, e.g. with <code>Resolve&lt;Repository&lt;int&gt;&gt;()</code>.
-        /// </summary>
-        /// <param name="builder">The builder.</param>
-        /// <param name="implementor">The implementor.</param>
-        /// <returns></returns>
-        public static IGenericRegistrar RegisterGeneric(this ContainerBuilder builder, Type implementor)
+        TTag RootTag { get; set; }
+
+        public TaggedContextsModule(TTag rootTag)
         {
-            Enforce.ArgumentNotNull(builder, "builder");
-            Enforce.ArgumentNotNull(implementor, "implementor");
-            var result = new GenericRegistrar(implementor);
-            builder.RegisterModule(result);
-            return result;
+            RootTag = rootTag;
+        }
+
+        public TTag DefaultTag { get; set; }
+
+        public void Configure(IContainer container)
+        {
+            if (container == null)
+                throw new ArgumentNullException("container");
+
+            container.EnableTaggedContexts<TTag>(RootTag, DefaultTag);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using Autofac.Builder;
 using NUnit.Framework;
+using Autofac.Registrars.Delegate;
 
 namespace Autofac.Tests.Builder
 {

@@ -23,36 +23,47 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using Autofac.Registrars;
-using Autofac.Registrars.ProvidedInstance;
+using System;
+using Autofac.Component.Activation;
+using Autofac.Component;
 
-namespace Autofac.Builder
+namespace Autofac.Registrars.Delegate
 {
     /// <summary>
-    /// Extends ContainerBuilder to support provided instances.
+    /// Register a component using a delegate.
     /// </summary>
-    public static class ProvidedInstanceRegistrationBuilder
-    {
-        /// <summary>
-        /// Register a component using a provided instance.
-        /// </summary>
-        /// <typeparam name="T">The type of the component.</typeparam>
-        /// <param name="builder">The builder.</param>
-        /// <param name="instance">The instance.</param>
-        /// <returns>
-        /// A registrar allowing details of the registration to be customised.
-        /// </returns>
-        public static IConcreteRegistrar Register<T>(this ContainerBuilder builder, T instance)
-        {
-            Enforce.ArgumentNotNull(builder, "builder");
-            var result = new ProvidedInstanceRegistrar(instance);
-            builder.RegisterModule(result);
+    class DelegateRegistrar : ConcreteRegistrar<IConcreteRegistrar>, IConcreteRegistrar
+	{
+        ComponentActivator _creator;
 
-            // Scope of instances is always singleton, this will throw an exception
-            // if the default is otherwise.
-            return result
-                .WithOwnership(builder.DefaultOwnership)
-                .WithScope(builder.DefaultScope);
+        /// <summary>
+        /// Initializes a new instance of the DelegateRegistrar&lt;TComponent&gt; class.
+        /// </summary>
+        /// <param name="implementor">The implementor.</param>
+        /// <param name="creator">The creator.</param>
+        public DelegateRegistrar(Type implementor, ComponentActivator creator)
+			: base(implementor)
+		{
+            Enforce.ArgumentNotNull(creator, "creator");
+            _creator = creator;
+		}
+
+        /// <summary>
+        /// Creates the activator for the registration.
+        /// </summary>
+        /// <returns>An activator.</returns>
+        protected override IActivator CreateActivator()
+        {
+            return new DelegateActivator(_creator);
+        }
+
+        /// <summary>
+        /// Returns this instance, correctly-typed.
+        /// </summary>
+        /// <value></value>
+        protected override IConcreteRegistrar Syntax
+        {
+            get { return this; }
         }
     }
 }

@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using Autofac.Registrars;
 
 namespace Autofac.Builder
 {

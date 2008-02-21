@@ -23,36 +23,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using Autofac.Registrars;
-using Autofac.Registrars.ProvidedInstance;
+using System;
 
-namespace Autofac.Builder
+namespace Autofac.Registrars
 {
     /// <summary>
-    /// Extends ContainerBuilder to support provided instances.
+    /// Provides builder syntax for generic registrations.
     /// </summary>
-    public static class ProvidedInstanceRegistrationBuilder
+    public interface IGenericRegistrar : IRegistrar<IGenericRegistrar>
     {
-        /// <summary>
-        /// Register a component using a provided instance.
-        /// </summary>
-        /// <typeparam name="T">The type of the component.</typeparam>
-        /// <param name="builder">The builder.</param>
-        /// <param name="instance">The instance.</param>
-        /// <returns>
-        /// A registrar allowing details of the registration to be customised.
-        /// </returns>
-        public static IConcreteRegistrar Register<T>(this ContainerBuilder builder, T instance)
-        {
-            Enforce.ArgumentNotNull(builder, "builder");
-            var result = new ProvidedInstanceRegistrar(instance);
-            builder.RegisterModule(result);
-
-            // Scope of instances is always singleton, this will throw an exception
-            // if the default is otherwise.
-            return result
-                .WithOwnership(builder.DefaultOwnership)
-                .WithScope(builder.DefaultScope);
-        }
     }
 }

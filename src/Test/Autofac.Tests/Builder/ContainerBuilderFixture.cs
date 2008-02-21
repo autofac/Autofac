@@ -4,7 +4,7 @@ using System.Text;
 using NUnit.Framework;
 using Autofac.Builder;
 using Autofac.Component.Activation;
-using Autofac.Component.Registration;
+using Autofac.Component;
 using System.Linq;
 
 namespace Autofac.Tests.Builder
@@ -120,7 +120,7 @@ namespace Autofac.Tests.Builder
 			{
 				if (container == null) throw new ArgumentNullException("container");
 				ConfigureCalled = true;
-				container.RegisterComponent(new ComponentRegistration(
+				container.RegisterComponent(new Registration(
 					new Service[] { new TypedService(typeof(object)) },
 					new ProvidedInstanceActivator(new object())));
 			}

@@ -79,8 +79,8 @@ namespace Autofac
 		public Container()
         {
             RegisterComponent(
-                new Component.Registration.ComponentRegistration(
-                    new Service[] { new TypedService(typeof(IContext)) },
+                new Component.Registration(
+                    new Service[] { new TypedService(typeof(IContainer)) },
                     new Component.Activation.ProvidedInstanceActivator(this)));
         }
 
@@ -159,6 +159,20 @@ namespace Autofac
                 return _disposer;
             }
         }
+
+        /// <summary>
+        /// If the container is an inner container, retrieves the outer container.
+        /// Otherwise, null;
+        /// </summary>
+        /// <value></value>
+        public IContainer OuterContainer
+        {
+            get
+            {
+                return _outerContainer;
+            }
+        }
+
         #endregion
 
         #region Registration Context Support
