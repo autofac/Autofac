@@ -239,15 +239,19 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SpecificConstructorSelectorResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="TaggedContexts\ContainerBuilderExtensions.cs" />
-    <Compile Include="TaggedContexts\ContainerBuilderExtensionsResources.Designer.cs">
+    <Compile Include="Tags\ContainerBuilderExtensions.cs" />
+    <Compile Include="Tags\ContainerBuilderExtensionsResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ContainerBuilderExtensionsResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="TaggedContexts\ContainerExtensions.cs" />
-    <Compile Include="TaggedContexts\ContextTag.cs" />
-    <Compile Include="TaggedContexts\TaggedContextsModule.cs" />
+    <Compile Include="Tags\ContainerExtensions.cs" />
+    <Compile Include="Tags\ContextTag.cs" />
+    <Compile Include="Tags\ContextTagResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ContextTagResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="TypedService.cs" />
     <Compile Include="UniqueService.cs" />
   </ItemGroup>
@@ -357,9 +361,14 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>GuardResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="TaggedContexts\ContainerBuilderExtensionsResources.resx">
+    <EmbeddedResource Include="Tags\ContainerBuilderExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ContainerBuilderExtensionsResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tags\ContextTagResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ContextTagResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

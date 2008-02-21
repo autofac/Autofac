@@ -29,7 +29,7 @@ using Autofac.Builder;
 using Autofac.Registrars;
 using Autofac.Registrars.Delegate;
 
-namespace Autofac.TaggedContexts
+namespace Autofac.Tags
 {
     /// <summary>
     /// Extensions for ContainerBuilder that allow registrations to be targeted to
@@ -67,10 +67,10 @@ namespace Autofac.TaggedContexts
             return builder.Register(new ComponentActivatorWithParameters<TComponent>((c, p) =>
             {
                 var ct = c.Resolve<ContextTag<TTag>>();
-                if (object.Equals(ct.Tag, targetContext))
+                if (ct.HasTag && object.Equals(ct.Tag, targetContext))
+                {
                     return (TComponent)activator(c, p);
-                else if (ct.Parent != null)
-                    return (TComponent)ct.Parent.Resolve(uniqueService, MakeParameters(p));
+                }
                 else
                 {
                     var container = c.Resolve<IContainer>();
@@ -111,29 +111,6 @@ namespace Autofac.TaggedContexts
                 builder,
                 (c, p) => activator(c),
                 targetContext);
-        }
-
-        /// <summary>
-        /// Enables context tagging in the target container.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="containerBuilder">The container builder.</param>
-        /// <param name="rootTag">The tag applied to this container.</param>
-        public static void EnableTaggedContexts<T>(this ContainerBuilder containerBuilder, T rootTag)
-        {
-            EnableTaggedContexts<T>(containerBuilder, rootTag, default(T));
-        }
-
-        /// <summary>
-        /// Enables context tagging in the target container.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="containerBuilder">The container builder.</param>
-        /// <param name="rootTag">The tag applied to this container.</param>
-        /// <param name="defaultTag">The default tag applied to new contexts.</param>
-        public static void EnableTaggedContexts<T>(this ContainerBuilder containerBuilder, T rootTag, T defaultTag)
-        {
-            containerBuilder.RegisterModule(new TaggedContextsModule<T>(rootTag){ DefaultTag = defaultTag });
         }
 
         private static Parameter[] MakeParameters(IActivationParameters p)

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac.TaggedContexts {
+namespace Autofac.Tags {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Autofac.TaggedContexts {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "2.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ContainerBuilderExtensionsResources {
+    internal class ContextTagResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ContainerBuilderExtensionsResources() {
+        internal ContextTagResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Autofac.TaggedContexts {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.TaggedContexts.ContainerBuilderExtensionsResources", typeof(ContainerBuilderExtensionsResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Tags.ContextTagResources", typeof(ContextTagResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,11 +61,11 @@ namespace Autofac.TaggedContexts {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No context was found with tag &apos;{0}&apos;..
+        ///   Looks up a localized string similar to The context does not have a tag value applied..
         /// </summary>
-        internal static string TaggedContextNotFound {
+        internal static string ContextNotTagged {
             get {
-                return ResourceManager.GetString("TaggedContextNotFound", resourceCulture);
+                return ResourceManager.GetString("ContextNotTagged", resourceCulture);
             }
         }
     }

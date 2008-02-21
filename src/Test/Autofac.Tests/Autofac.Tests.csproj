@@ -77,8 +77,8 @@
     <Compile Include="Component\Scope\SingletonScopeFixture.cs" />
     <Compile Include="Component\Activation\SpecificConstructorSelectorFixture.cs" />
     <Compile Include="ServiceFixture.cs" />
-    <Compile Include="TaggedContexts\ContainerBuilderExtensionsFixture.cs" />
-    <Compile Include="TaggedContexts\ContainerExtensionsFixture.cs" />
+    <Compile Include="Tags\ContainerBuilderExtensionsFixture.cs" />
+    <Compile Include="Tags\ContainerExtensionsFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\Autofac\Autofac.csproj">

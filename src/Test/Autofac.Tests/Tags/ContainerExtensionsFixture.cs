@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using Autofac.TaggedContexts;
+using Autofac.Tags;
 
-namespace Autofac.Tests.TaggedContexts
+namespace Autofac.Tests.Tags
 {
     [TestFixture]
     public class ContainerExtensionsFixture
@@ -17,7 +17,7 @@ namespace Autofac.Tests.TaggedContexts
             
             var target = new Container();
 
-            target.EnableTaggedContexts(rootTag);
+            target.TagContext(rootTag);
 
             var tag = target.Resolve<ContextTag<string>>();
 
@@ -26,38 +26,37 @@ namespace Autofac.Tests.TaggedContexts
         }
 
         [Test]
-        public void InnerContainerHasTypeDefaultTag()
+        public void AnonymousContainerHasTypeNoTag()
         {
             var rootTag = "Root Tag";
             
             var target = new Container();
 
-            target.EnableTaggedContexts(rootTag);
+            target.TagContext(rootTag);
 
             var inner = target.CreateInnerContainer();
 
             var tag = inner.Resolve<ContextTag<string>>();
 
-            Assert.IsNotNull(tag);
-            Assert.AreEqual(default(string), tag.Tag);
+            Assert.IsFalse(tag.HasTag);
         }
 
         [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
         public void EnableTaggedContextsDefaultInNewContexts()
         {
             var rootTag = "Root Tag";
-            var defaultTag = "Default Tag";
 
             var target = new Container();
-
-            target.EnableTaggedContexts(rootTag, defaultTag);
+            target.TagContext(rootTag);
 
             var inner = target.CreateInnerContainer();
 
             var tag = inner.Resolve<ContextTag<string>>();
 
             Assert.IsNotNull(tag);
-            Assert.AreEqual(defaultTag, tag.Tag);
+            Assert.IsFalse(tag.HasTag);
+            var unused = tag.Tag;
         }
 
         [Test]
@@ -68,9 +67,10 @@ namespace Autofac.Tests.TaggedContexts
 
             var target = new Container();
 
-            target.EnableTaggedContexts(rootTag);
+            target.TagContext(rootTag);
 
-            var inner = target.CreateTaggedInnerContainer(innerTag);
+            var inner = target.CreateInnerContainer();
+            inner.TagContext(innerTag);
 
             var tag = inner.Resolve<ContextTag<string>>();
 

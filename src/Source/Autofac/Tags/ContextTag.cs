@@ -22,27 +22,48 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+
 using System;
-
-namespace Autofac.TaggedContexts
+namespace Autofac.Tags
 {
-    class TaggedContextsModule<TTag> : IModule
+    /// <summary>
+    /// Registered in the container to support tagged extensions. Stores the
+    /// tag for a single container, and allows traversal of the context tree.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    class ContextTag<T>
     {
-        TTag RootTag { get; set; }
+        bool _hasTag;
+        T _tag;
 
-        public TaggedContextsModule(TTag rootTag)
+        /// <summary>
+        /// The tag for the current context. Can only be accessed when HasTag is true.
+        /// </summary>
+        public T Tag
         {
-            RootTag = rootTag;
+            get
+            {
+                if (!_hasTag)
+                    throw new InvalidOperationException(ContextTagResources.ContextNotTagged);
+                return _tag;
+            }
+            set
+            {
+                _tag = value;
+                _hasTag = true;
+            }
         }
 
-        public TTag DefaultTag { get; set; }
-
-        public void Configure(IContainer container)
+        /// <summary>
+        /// Gets a value indicating whether this instance has a tag.
+        /// </summary>
+        /// <value><c>true</c> if this instance has a tag; otherwise, <c>false</c>.</value>
+        public bool HasTag
         {
-            if (container == null)
-                throw new ArgumentNullException("container");
-
-            container.EnableTaggedContexts<TTag>(RootTag, DefaultTag);
+            get
+            {
+                return _hasTag;
+            }
         }
     }
 }
