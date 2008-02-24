@@ -35,7 +35,7 @@ namespace Autofac
     /// <summary>
     /// Standard container implementation.
     /// </summary>
-	public class Container : Disposable, IRegistrationContext, IContext, IContainer
+	public class Container : Disposable, IRegistrationContext, IContext, IContainer, IServiceProvider
     {
         #region Fields
 
@@ -396,6 +396,22 @@ namespace Autofac
         /// <summary>
         /// Retrieve a service registered with the container.
         /// </summary>
+        /// <typeparam name="TService">The type to which the result will be cast.</typeparam>
+        /// <param name="serviceName">Name of the service.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>
+        /// The component instance that provides the service.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="DependencyResolutionException"/>
+        public TService Resolve<TService>(string serviceName, params Parameter[] parameters)
+        {
+            return CreateResolutionContext().Resolve<TService>(serviceName, parameters);
+        }
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
         /// <param name="serviceType">The service to retrieve.</param>
         /// <param name="parameters"></param>
         /// <returns>
@@ -574,6 +590,25 @@ namespace Autofac
         public bool TryResolve(Service service, out object instance, params Parameter[] parameters)
         {
             return CreateResolutionContext().TryResolve(service, out instance, parameters);
+        }
+
+        #endregion
+
+        #region IServiceProvider Members
+
+        /// <summary>
+        /// Gets the service object of the specified type.
+        /// </summary>
+        /// <param name="serviceType">An object that specifies the type of service object 
+        /// to get.</param>
+        /// <returns>
+        /// A service object of type <paramref name="serviceType"/>.-or- null if there is 
+        /// no service object of type <paramref name="serviceType"/>.
+        /// </returns>
+        object IServiceProvider.GetService(Type serviceType)
+        {
+            Enforce.ArgumentNotNull(serviceType, "serviceType");
+            return IsRegistered(serviceType) ? Resolve(serviceType) : null;
         }
 
         #endregion

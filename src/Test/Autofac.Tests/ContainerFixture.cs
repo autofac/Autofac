@@ -718,5 +718,29 @@ namespace Autofac.Tests
             Assert.AreEqual(aVal, result.A);
             Assert.AreEqual(bVal, result.B);
         }
+
+        [Test]
+        public void SupportsIServiceProvider()
+        {
+            var cb = new ContainerBuilder();
+            cb.Register<object>();
+            var container = cb.Build();
+            var sp = (IServiceProvider)container;
+            var o = sp.GetService(typeof(object));
+            Assert.IsNotNull(o);
+            var s = sp.GetService(typeof(string));
+            Assert.IsNull(s);
+        }
+
+        [Test]
+        public void ResolveByNameWithServiceType()
+        {
+            var myName = "Something";
+            var cb = new ContainerBuilder();
+            cb.Register<object>().Named(myName);
+            var container = cb.Build();
+            var o = container.Resolve<object>(myName);
+            Assert.IsNotNull(o);
+        }
     }
 }

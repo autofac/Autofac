@@ -43,14 +43,27 @@ namespace Autofac
 	/// </remarks>
 	public interface IContext
 	{
-		/// <summary>
-		/// Retrieve a service registered with the container.
-		/// </summary>
-		/// <typeparam name="TService">The service to retrieve.</typeparam>
-		/// <returns>The component instance that provides the service.</returns>
-		/// <exception cref="ComponentNotRegisteredException" />
-		/// <exception cref="DependencyResolutionException" />
-		TService Resolve<TService>(params Parameter[] parameters);
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
+        /// <typeparam name="TService">The service to retrieve.</typeparam>
+        /// <returns>The component instance that provides the service.</returns>
+        /// <exception cref="ComponentNotRegisteredException" />
+        /// <exception cref="DependencyResolutionException" />
+        TService Resolve<TService>(params Parameter[] parameters);
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
+        /// <typeparam name="TService">The type to which the result will be cast.</typeparam>
+        /// <param name="serviceName">Name of the service.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>
+        /// The component instance that provides the service.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="DependencyResolutionException"/>
+        TService Resolve<TService>(string serviceName, params Parameter[] parameters);
 
         /// <summary>
         /// Retrieve a service registered with the container.
