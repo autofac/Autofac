@@ -58,12 +58,12 @@ namespace Autofac.Builder
         /// <typeparam name="TSyntax">The registrar's self-type.</typeparam>
         /// <param name="registrar">The registrar.</param>
         /// <param name="serviceName">Name of the service.</param>
-        public static void MemberOf<TSyntax>(this IConcreteRegistrar<TSyntax> registrar, string serviceName)
-            where TSyntax : IConcreteRegistrar<TSyntax>
+        public static TSyntax MemberOf<TSyntax>(this TSyntax registrar, string serviceName)
+            where TSyntax : class, IConcreteRegistrar<TSyntax>
         {
             Enforce.ArgumentNotNull(registrar, "registrar");
             Enforce.ArgumentNotNullOrEmpty(serviceName, "serviceName");
-            MemberOf(registrar, new NamedService(serviceName));
+            return MemberOf(registrar, new NamedService(serviceName));
         }
 
         /// <summary>
@@ -72,12 +72,12 @@ namespace Autofac.Builder
         /// <typeparam name="TSyntax">The registrar's self-type.</typeparam>
         /// <param name="registrar">The registrar.</param>
         /// <param name="serviceType">Type of the service.</param>
-        public static void MemberOf<TSyntax>(this IConcreteRegistrar<TSyntax> registrar, Type serviceType)
-            where TSyntax : IConcreteRegistrar<TSyntax>
+        public static TSyntax MemberOf<TSyntax>(this TSyntax registrar, Type serviceType)
+            where TSyntax : class, IConcreteRegistrar<TSyntax>
         {
             Enforce.ArgumentNotNull(registrar, "registrar");
             Enforce.ArgumentNotNull(serviceType, "serviceType");
-            MemberOf(registrar, new TypedService(serviceType));
+            return MemberOf(registrar, new TypedService(serviceType));
         }
 
         /// <summary>
@@ -86,30 +86,15 @@ namespace Autofac.Builder
         /// <typeparam name="TSyntax">The registrar's self-type.</typeparam>
         /// <param name="registrar">The registrar.</param>
         /// <param name="service">The service.</param>
-        public static void MemberOf<TSyntax>(this IConcreteRegistrar<TSyntax> registrar, Service service)
-            where TSyntax : IConcreteRegistrar<TSyntax>
+        public static TSyntax MemberOf<TSyntax>(this TSyntax registrar, Service service)
+            where TSyntax : class, IConcreteRegistrar<TSyntax>
         {
             Enforce.ArgumentNotNull(registrar, "registrar");
             Enforce.ArgumentNotNull(service, "service");
 
-            var key = new UniqueService();
-            var next = registrar.As(key);
-            registrar.OnRegistered((sender, e) =>
-            {
-                IDisposer disposer;
-                IComponentRegistration serviceListRegistration;
-                bool found = ((IRegistrationContext)e.Container)
-                    .TryGetLocalRegistration(
-                        service,
-                        out serviceListRegistration,
-                        out disposer);
-
-                if (!found)
-                    throw new ComponentNotRegisteredException(service);
-
-                var serviceList = (IServiceListRegistration)serviceListRegistration;
-                serviceList.Add(key);
-            });
+            new CollectionRegistrationAppender(service).Add(registrar);
+            
+            return registrar;
         }
     }
 }

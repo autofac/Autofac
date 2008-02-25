@@ -45,7 +45,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="ownership">The new default ownership.</param>
         /// <returns></returns>
-		public IDisposable SetDefaultOwnership(InstanceOwnership ownership)
+		public virtual IDisposable SetDefaultOwnership(InstanceOwnership ownership)
 		{
             InstanceOwnership oldValue = _defaultInstanceOwnership;
     		_defaultInstanceOwnership = ownership;
@@ -55,7 +55,7 @@ namespace Autofac.Builder
         /// <summary>
         /// The default <see cref="InstanceOwnership"/> for new registrations.
         /// </summary>
-        public InstanceOwnership DefaultOwnership
+        public virtual InstanceOwnership DefaultOwnership
         {
             get
             {
@@ -67,7 +67,7 @@ namespace Autofac.Builder
 		/// Set the default <see cref="InstanceScope"/> for new registrations. Registrations
 		/// already made will not be affected by changes in this value.
 		/// </summary>
-        public IDisposable SetDefaultScope(InstanceScope scope)
+        public virtual IDisposable SetDefaultScope(InstanceScope scope)
 		{
             InstanceScope oldValue = _defaultInstanceScope;
             _defaultInstanceScope = scope;
@@ -77,7 +77,7 @@ namespace Autofac.Builder
         /// <summary>
         /// The default <see cref="InstanceScope"/> for new registrations.
         /// </summary>
-        public InstanceScope DefaultScope
+        public virtual InstanceScope DefaultScope
         {
             get
             {
@@ -89,7 +89,7 @@ namespace Autofac.Builder
 		/// Add a module to the container.
 		/// </summary>
 		/// <param name="module">The module to add.</param>
-		public void RegisterModule(IModule module)
+		public virtual void RegisterModule(IModule module)
 		{
             Enforce.ArgumentNotNull(module, "module");
 			_registrars.Add(module);
@@ -99,7 +99,7 @@ namespace Autofac.Builder
         /// Register a component using a component registration.
         /// </summary>
         /// <param name="registration"></param>
-        public void RegisterComponent(IComponentRegistration registration)
+        public virtual void RegisterComponent(IComponentRegistration registration)
         {
             Enforce.ArgumentNotNull(registration, "registration");
             RegisterModule(new RegistrationRegistrar(registration));
@@ -113,7 +113,7 @@ namespace Autofac.Builder
 		/// issues for provided instances.
 		/// </remarks>
 		/// <returns>A new container with the registrations made.</returns>
-		public IContainer Build()
+		public virtual IContainer Build()
 		{
 			var result = new Container();
 			Build(result);
@@ -128,7 +128,7 @@ namespace Autofac.Builder
 		/// issues for provided instances.
 		/// </remarks>
 		/// <param name="container">An existing container to make the registrations in.</param>
-		public void Build(IContainer container)
+		public virtual void Build(IContainer container)
 		{
             Enforce.ArgumentNotNull(container, "container");
 
