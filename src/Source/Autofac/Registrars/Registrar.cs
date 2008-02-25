@@ -112,7 +112,29 @@ namespace Autofac.Registrars
 			Ownership = ownership;
             return Syntax;
 		}
-
+        
+        /// <summary>
+        /// The instance(s) will not be disposed when the container is disposed.
+        /// </summary>
+        public virtual TSyntax ExternallyOwned
+        {
+        	get
+        	{
+        		return WithOwnership(InstanceOwnership.External);
+        	}
+        }
+        
+        /// <summary>
+        /// The instance(s) will be disposed with the container.
+        /// </summary>
+        public virtual TSyntax OwnedByContainer
+        {
+        	get
+        	{
+        		return WithOwnership(InstanceOwnership.Container);
+        	}
+        }
+        
 		/// <summary>
 		/// Change the scope associated with the registration.
 		/// This determines how instances are tracked and shared.
@@ -126,7 +148,41 @@ namespace Autofac.Registrars
 			Scope = scope;
             return Syntax;
 		}
-
+        
+        /// <summary>
+        /// An instance will be created every time one is requested.
+        /// </summary>
+        public virtual TSyntax FactoryScoped
+        {
+        	get
+        	{
+        		return WithScope(InstanceScope.Factory);
+        	}
+        }
+        
+        /// <summary>
+        /// An instance will be created once per container.
+        /// </summary>
+        /// <seealso cref="IContainer.CreateInnerContainer" />
+        public virtual TSyntax ContainerScoped
+        {
+        	get
+        	{
+        		return WithScope(InstanceScope.Container);
+        	}
+        }
+        
+        /// <summary>
+        /// Only one instance will ever be created.
+        /// </summary>
+        public virtual TSyntax SingletonScoped
+        {
+        	get
+        	{
+        		return WithScope(InstanceScope.Singleton);
+        	}
+        }
+        
         /// <summary>
         /// Call the provided handler when activating an instance.
         /// </summary>

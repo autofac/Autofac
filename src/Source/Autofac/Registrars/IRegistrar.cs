@@ -79,6 +79,16 @@ namespace Autofac.Registrars
 		/// <param name="ownership">The ownership model to use.</param>
         /// <returns>A registrar allowing registration to continue.</returns>
         TSyntax WithOwnership(InstanceOwnership ownership);
+        
+        /// <summary>
+        /// The instance(s) will not be disposed when the container is disposed.
+        /// </summary>
+        TSyntax ExternallyOwned { get; }
+        
+        /// <summary>
+        /// The instance(s) will be disposed with the container.
+        /// </summary>
+        TSyntax OwnedByContainer { get; }
 
 		/// <summary>
 		/// Change the scope associated with the registration.
@@ -87,6 +97,22 @@ namespace Autofac.Registrars
 		/// <param name="scope">The scope model to use.</param>
         /// <returns>A registrar allowing registration to continue.</returns>
         TSyntax WithScope(InstanceScope scope);
+        
+        /// <summary>
+        /// An instance will be created every time one is requested.
+        /// </summary>
+        TSyntax FactoryScoped { get; }
+        
+        /// <summary>
+        /// An instance will be created once per container.
+        /// </summary>
+        /// <seealso cref="IContainer.CreateInnerContainer" />
+        TSyntax ContainerScoped { get; }
+        
+        /// <summary>
+        /// Only one instance will ever be created.
+        /// </summary>
+        TSyntax SingletonScoped { get; }
 
         /// <summary>
         /// Calls the provided handler when the registration is made on the
