@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using Autofac.Component.Scope;
+using System.Linq;
 
 namespace Autofac.Registrars.Collection
 {
@@ -32,6 +33,8 @@ namespace Autofac.Registrars.Collection
     /// </summary>
     class CollectionRegistrar<TItem> : Registrar<IConcreteRegistrar>, IConcreteRegistrar, IModule
     {
+        Service _id; // Default is null.
+        
         /// <summary>
         /// Returns this instance, correctly-typed.
         /// </summary>
@@ -62,7 +65,20 @@ namespace Autofac.Registrars.Collection
                 AddService(service);
             return Syntax;
         }
-
+        
+        /// <summary>
+        /// A unique service identifier that will be associated with the resulting
+        /// registration.
+        /// </summary>
+        /// <remarks>Only created if accessed.</remarks>
+        public Service Id
+        {
+        	get
+        	{
+        		return _id = _id ?? new UniqueService();
+        	}
+        }
+        
         #endregion
 
         #region IModule Members
@@ -74,7 +90,13 @@ namespace Autofac.Registrars.Collection
         public void Configure(IContainer container)
         {
             Enforce.ArgumentNotNull(container, "container");
-            container.RegisterComponent(new ServiceListRegistration<TItem>(Services, Scope.ToIScope()));
+            var services = Services;            
+            
+            if (_id != null)
+            	services = services.Concat(new[]{ _id });
+            
+            container.RegisterComponent(
+            	new ServiceListRegistration<TItem>(services, Scope.ToIScope()));
         }
 
         #endregion

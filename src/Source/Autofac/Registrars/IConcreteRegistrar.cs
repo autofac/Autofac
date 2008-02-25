@@ -58,5 +58,11 @@ namespace Autofac.Registrars
         /// <param name="services">The services that the registration will expose.</param>
         /// <returns>A registrar allowing registration to continue.</returns>
         TSyntax As(params Service[] services);
+                
+        /// <summary>
+        /// A unique service identifier that will be associated with the resulting
+        /// registration.
+        /// </summary>
+        Service Id { get; }
     }
 }

@@ -53,10 +53,9 @@ namespace Autofac.Registrars.Collection
 			where TRegistrar : IConcreteRegistrar<TRegistrar>
 		{
             Enforce.ArgumentNotNull(registrar, "registrar");
-            
-            var key = new UniqueService();
-            var next = registrar.As(key);
-            next.OnRegistered((sender, e) =>
+
+            var collectionId = registrar.Id;
+            registrar.OnRegistered((sender, e) =>
             {
                 IDisposer disposer;
                 IComponentRegistration serviceListRegistration;
@@ -70,7 +69,7 @@ namespace Autofac.Registrars.Collection
                     throw new ComponentNotRegisteredException(_collectionService);
 
                 var serviceList = (IServiceListRegistration)serviceListRegistration;
-                serviceList.Add(key);
+                serviceList.Add(collectionId);
             });
 		}
 	}

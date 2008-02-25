@@ -39,6 +39,7 @@ namespace Autofac.Registrars
         where TSyntax : IConcreteRegistrar<TSyntax>
     {
         Type _implementor;
+        Service _id; // Default is null.
 
         /// <summary>
         /// Initializes a new instance of the ComponentRegistrar&lt;TComponent&gt; class.
@@ -66,6 +67,9 @@ namespace Autofac.Registrars
 
             if (services.Count == 0)
                 services.Add(new TypedService(_implementor));
+            
+            if (_id != null)
+            	services.Add(_id);
 
             var activator = CreateActivator();
             Enforce.NotNull(activator);
@@ -160,5 +164,18 @@ namespace Autofac.Registrars
         /// </summary>
         /// <returns>An activator.</returns>
         protected abstract IActivator CreateActivator();
+        
+        /// <summary>
+        /// A unique service identifier that will be associated with the resulting
+        /// registration.
+        /// </summary>
+        /// <remarks>Only created if accessed.</remarks>
+        public Service Id
+        {
+        	get
+        	{
+        		return _id = _id ?? new UniqueService();
+        	}
+        }
 	}
 }
