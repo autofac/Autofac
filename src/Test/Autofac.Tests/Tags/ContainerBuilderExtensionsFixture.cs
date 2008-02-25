@@ -88,5 +88,23 @@ namespace Autofac.Tests.Tags
             var s = (string)outer.Resolve(new NamedService(name));
             Assert.IsNotNull(s);
         }
+        
+        [Test]
+        [Ignore("Fix by separating tag registration from actual.")]
+        public void CorrectScopeMaintainsOwnership()
+        {
+        	var tag = "Tag";
+        	var builder = new ContainerBuilder();
+        	builder.RegisterInContext(c => new DisposeTracker(), tag);
+        	var container = builder.Build();
+        	container.TagContext(tag);
+        	var inner = container.CreateInnerContainer();
+        	var dt = inner.Resolve<DisposeTracker>();
+        	Assert.IsFalse(dt.IsDisposed);
+        	inner.Dispose();
+        	Assert.IsFalse(dt.IsDisposed);
+        	container.Dispose();
+        	Assert.IsTrue(dt.IsDisposed);
+        }
     }
 }
