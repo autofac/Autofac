@@ -242,6 +242,7 @@
     </Compile>
     <Compile Include="Tags\ContainerBuilderExtensions.cs" />
     <Compile Include="Tags\TaggedDelegateRegistrar.cs" />
+    <Compile Include="Tags\TaggedReflectiveRegistrar.cs" />
     <Compile Include="Tags\TaggedRegistrationResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -135,5 +135,16 @@ namespace Autofac.Tests.Tags
         	var inner = container.CreateInnerContainer();
         	Assert.AreSame(container.Resolve<object>(), inner.Resolve<object>());
         }
+        
+        [Test]
+        public void ReflectiveRegistration()
+        {
+        	var tag = "Tag";
+        	var builder = new ContainerBuilder();
+        	builder.RegisterInContext(typeof(object), tag);
+        	var container = builder.Build();
+        	container.TagContext(tag);
+        	Assert.IsNotNull(container.Resolve<object>());
+        }
     }
 }

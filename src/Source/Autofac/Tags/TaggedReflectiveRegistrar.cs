@@ -25,7 +25,7 @@
 
 using System;
 using Autofac.Component;
-using Autofac.Registrars.Delegate;
+using Autofac.Registrars.Reflective;
 using System.Collections.Generic;
 
 namespace Autofac.Tags
@@ -33,7 +33,7 @@ namespace Autofac.Tags
 	/// <summary>
 	/// Description of TaggedDelegateRegistrar.
 	/// </summary>
-	class TaggedDelegateRegistrar<TTag> : DelegateRegistrar
+	class TaggedReflectiveRegistrar<TTag> : ReflectiveRegistrar
 	{
         TTag _tag;
 
@@ -41,10 +41,9 @@ namespace Autofac.Tags
         /// Initializes a new instance of the DelegateRegistrar&lt;TComponent&gt; class.
         /// </summary>
         /// <param name="implementor">The implementor.</param>
-        /// <param name="creator">The creator.</param>
         /// <param name="tag">The tag of the target context.</param>
-        public TaggedDelegateRegistrar(Type implementor, ComponentActivator creator, TTag tag)
-			: base(implementor, creator)
+        public TaggedReflectiveRegistrar(Type implementor, TTag tag)
+			: base(implementor)
 		{
             _tag = tag;
 		}

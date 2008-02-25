@@ -41,6 +41,31 @@ namespace Autofac.Tags
         /// Extensions for ContainerBuilder that allow registrations to be targeted to
         /// contexts with a certain tag only.
         /// </summary>
+        /// <typeparam name="TTag">The type of the tag.</typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="implementor">The implementation type.</param>
+        /// <param name="targetContext">The target context.</param>
+        /// <returns></returns>
+        public static IReflectiveRegistrar RegisterInContext<TTag>(
+            this ContainerBuilder builder,
+            Type implementor,
+            TTag targetContext)
+        {
+            if (builder == null)
+                throw new ArgumentNullException("builder");
+
+            if (implementor == null)
+                throw new ArgumentNullException("implementor");
+
+            var registrar = new TaggedReflectiveRegistrar<TTag>(implementor, targetContext);
+            builder.RegisterModule(registrar);
+            return registrar;
+        }
+
+        /// <summary>
+        /// Extensions for ContainerBuilder that allow registrations to be targeted to
+        /// contexts with a certain tag only.
+        /// </summary>
         /// <typeparam name="TComponent">The type of the component.</typeparam>
         /// <typeparam name="TTag">The type of the tag.</typeparam>
         /// <param name="builder">The builder.</param>
@@ -62,7 +87,7 @@ namespace Autofac.Tags
             builder.RegisterModule(registrar);
             return registrar;
         }
-
+        
         /// <summary>
         /// Extensions for ContainerBuilder that allow registrations to be targeted to
         /// contexts with a certain tag only.
