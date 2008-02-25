@@ -20,7 +20,8 @@ namespace Autofac.Tests.Tags
 
             int instantiations = 0;
 
-            builder.RegisterInContext(c => { instantiations++; return ""; }, Tag.Outer);
+            builder.RegisterInContext(c => { instantiations++; return ""; }, Tag.Outer)
+            	.ContainerScoped();
 
             var outer = builder.Build();
             outer.TagContext(Tag.Outer);
@@ -45,7 +46,8 @@ namespace Autofac.Tests.Tags
 
             int instantiations = 0;
 
-            builder.RegisterInContext(c => { instantiations++; return ""; }, Tag.Outer);
+            builder.RegisterInContext(c => { instantiations++; return ""; }, Tag.Outer)
+            	.ContainerScoped();
 
             var outer = builder.Build();
             outer.TagContext(Tag.Outer);
@@ -64,7 +66,8 @@ namespace Autofac.Tests.Tags
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterInContext(c => "", Tag.Middle);
+            builder.RegisterInContext(c => "", Tag.Middle)
+            	.ContainerScoped();
             
             var outer = builder.Build();
             outer.TagContext(Tag.Outer);
@@ -80,7 +83,9 @@ namespace Autofac.Tests.Tags
 
             var builder = new ContainerBuilder();
 
-            builder.RegisterInContext(c => "", Tag.Outer).Named(name);
+            builder.RegisterInContext(c => "", Tag.Outer)
+            	.Named(name)
+            	.ContainerScoped();
 
             var outer = builder.Build();
             outer.TagContext(Tag.Outer);
@@ -90,12 +95,12 @@ namespace Autofac.Tests.Tags
         }
         
         [Test]
-        [Ignore("Fix by separating tag registration from actual.")]
         public void CorrectScopeMaintainsOwnership()
         {
         	var tag = "Tag";
         	var builder = new ContainerBuilder();
-        	builder.RegisterInContext(c => new DisposeTracker(), tag);
+        	builder.RegisterInContext(c => new DisposeTracker(), tag)
+        		.ContainerScoped();
         	var container = builder.Build();
         	container.TagContext(tag);
         	var inner = container.CreateInnerContainer();
@@ -105,6 +110,30 @@ namespace Autofac.Tests.Tags
         	Assert.IsFalse(dt.IsDisposed);
         	container.Dispose();
         	Assert.IsTrue(dt.IsDisposed);
+        }
+        
+        [Test]
+        public void FactorySemanticsCorrect()
+        {
+        	var tag = "Tag";
+        	var builder = new ContainerBuilder();
+        	builder.RegisterInContext(c => new object(), tag)
+        		.FactoryScoped();
+        	var container = builder.Build();
+        	container.TagContext(tag);
+        	Assert.AreNotSame(container.Resolve<object>(), container.Resolve<object>());
+        }
+        
+        [Test]
+        public void DefaultSingletonSemanticsCorrect()
+        {
+        	var tag = "Tag";
+        	var builder = new ContainerBuilder();
+        	builder.RegisterInContext(c => new object(), tag);
+        	var container = builder.Build();
+        	container.TagContext(tag);
+        	var inner = container.CreateInnerContainer();
+        	Assert.AreSame(container.Resolve<object>(), inner.Resolve<object>());
         }
     }
 }

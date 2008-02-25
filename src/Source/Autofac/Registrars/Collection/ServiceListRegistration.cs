@@ -128,7 +128,7 @@ namespace Autofac.Registrars.Collection
         /// <param name="activator">The activator.</param>
         /// <param name="scope">The scope.</param>
         ServiceListRegistration(IEnumerable<Service> services, ServiceListActivator activator, IScope scope)
-            : base(services, activator, scope)
+            : base(services, activator, scope, InstanceOwnership.Container)
         {
             _activator = Enforce.ArgumentNotNull(activator, "activator");
         }

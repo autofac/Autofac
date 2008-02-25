@@ -116,23 +116,17 @@ namespace Autofac.Registrars
         /// <summary>
         /// The instance(s) will not be disposed when the container is disposed.
         /// </summary>
-        public virtual TSyntax ExternallyOwned
+        public virtual TSyntax ExternallyOwned()
         {
-        	get
-        	{
-        		return WithOwnership(InstanceOwnership.External);
-        	}
+      		return WithOwnership(InstanceOwnership.External);
         }
         
         /// <summary>
         /// The instance(s) will be disposed with the container.
         /// </summary>
-        public virtual TSyntax OwnedByContainer
+        public virtual TSyntax OwnedByContainer()
         {
-        	get
-        	{
-        		return WithOwnership(InstanceOwnership.Container);
-        	}
+       		return WithOwnership(InstanceOwnership.Container);
         }
         
 		/// <summary>
@@ -152,35 +146,26 @@ namespace Autofac.Registrars
         /// <summary>
         /// An instance will be created every time one is requested.
         /// </summary>
-        public virtual TSyntax FactoryScoped
+        public virtual TSyntax FactoryScoped()
         {
-        	get
-        	{
-        		return WithScope(InstanceScope.Factory);
-        	}
+       		return WithScope(InstanceScope.Factory);
         }
         
         /// <summary>
         /// An instance will be created once per container.
         /// </summary>
         /// <seealso cref="IContainer.CreateInnerContainer" />
-        public virtual TSyntax ContainerScoped
+        public virtual TSyntax ContainerScoped()
         {
-        	get
-        	{
-        		return WithScope(InstanceScope.Container);
-        	}
+       		return WithScope(InstanceScope.Container);
         }
         
         /// <summary>
         /// Only one instance will ever be created.
         /// </summary>
-        public virtual TSyntax SingletonScoped
+        public virtual TSyntax SingletonScoped()
         {
-        	get
-        	{
-        		return WithScope(InstanceScope.Singleton);
-        	}
+       		return WithScope(InstanceScope.Singleton);
         }
         
         /// <summary>

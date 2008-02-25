@@ -83,12 +83,12 @@ namespace Autofac.Registrars
         /// <summary>
         /// The instance(s) will not be disposed when the container is disposed.
         /// </summary>
-        TSyntax ExternallyOwned { get; }
+        TSyntax ExternallyOwned();
         
         /// <summary>
         /// The instance(s) will be disposed with the container.
         /// </summary>
-        TSyntax OwnedByContainer { get; }
+        TSyntax OwnedByContainer();
 
 		/// <summary>
 		/// Change the scope associated with the registration.
@@ -101,18 +101,18 @@ namespace Autofac.Registrars
         /// <summary>
         /// An instance will be created every time one is requested.
         /// </summary>
-        TSyntax FactoryScoped { get; }
+        TSyntax FactoryScoped();
         
         /// <summary>
         /// An instance will be created once per container.
         /// </summary>
         /// <seealso cref="IContainer.CreateInnerContainer" />
-        TSyntax ContainerScoped { get; }
+        TSyntax ContainerScoped();
         
         /// <summary>
         /// Only one instance will ever be created.
         /// </summary>
-        TSyntax SingletonScoped { get; }
+        TSyntax SingletonScoped();
 
         /// <summary>
         /// Calls the provided handler when the registration is made on the

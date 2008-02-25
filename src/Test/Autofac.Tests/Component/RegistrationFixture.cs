@@ -11,12 +11,22 @@ namespace Autofac.Tests.Component
     [TestFixture]
     public class RegistrationFixture
     {
-        [Test]
+	  	IComponentRegistration CreateRegistration(IEnumerable<Service> services, IActivator activator)
+    	{
+    		return new Registration(services, activator, new SingletonScope(), InstanceOwnership.Container);
+    	}
+  	
+	  	IComponentRegistration CreateRegistration(IEnumerable<Service> services, IActivator activator, IScope scope)
+    	{
+    		return new Registration(services, activator, scope, InstanceOwnership.Container);
+    	}
+  	
+  		[Test]
         public void Construct()
         {
             var services = new Service[] { new TypedService(typeof(object)), new TypedService(typeof(string)) };
 
-            var target = new Registration(
+            var target = CreateRegistration(
                                  services,
                                  new ProvidedInstanceActivator("Hello"),
                                  new ContainerScope());
@@ -33,7 +43,7 @@ namespace Autofac.Tests.Component
         [ExpectedException(typeof(ArgumentNullException))]
         public void ConstructServicesNull()
         {
-            var target = new Registration(
+            var target = CreateRegistration(
                                  null,
                                  new ProvidedInstanceActivator(new object()),
                                  new ContainerScope());
@@ -42,7 +52,7 @@ namespace Autofac.Tests.Component
         [Test]
         public void ConstructNoServicesOk()
         {
-            var target = new Registration(
+            var target = CreateRegistration(
                                  new Service[] { },
                                  new ProvidedInstanceActivator(new object()),
                                  new ContainerScope());
@@ -52,7 +62,7 @@ namespace Autofac.Tests.Component
         [ExpectedException(typeof(ArgumentNullException))]
         public void ConstructActivatorNull()
         {
-            var target = new Registration(
+            var target = CreateRegistration(
                                  new Service[] { new TypedService(typeof(object)) },
                                  null,
                                  new ContainerScope());
@@ -62,7 +72,7 @@ namespace Autofac.Tests.Component
         [ExpectedException(typeof(ArgumentNullException))]
         public void ConstructScopeNull()
         {
-            var target = new Registration(
+            var target = CreateRegistration(
                                  new Service[] { new TypedService(typeof(object)) },
                                  new ProvidedInstanceActivator(new object()),
                                  null);
@@ -89,7 +99,7 @@ namespace Autofac.Tests.Component
         [ExpectedException(typeof(InvalidOperationException))]
         public void FactoryAndInstanceIncompatible()
         {
-            var target = new Registration(
+            var target = CreateRegistration(
                              new Service[] { new TypedService(typeof(object)) },
                              new ProvidedInstanceActivator(new object()),
                              new FactoryScope());
@@ -106,7 +116,7 @@ namespace Autofac.Tests.Component
 		{
 			var instance = new object();
 			var container = new Container();
-			var target = new Registration(
+			var target = CreateRegistration(
 							new Service[] { new TypedService(typeof(object)) },
 							new ProvidedInstanceActivator(instance));
 
@@ -132,7 +142,7 @@ namespace Autofac.Tests.Component
 		{
 			var instance = new object();
 			var container = new Container();
-			var target = new Registration(
+			var target = CreateRegistration(
 							new Service[] { new TypedService(typeof(object)) },
 							new ProvidedInstanceActivator(instance));
 

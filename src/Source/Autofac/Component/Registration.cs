@@ -89,44 +89,13 @@ namespace Autofac.Component
 			_ownershipModel = ownershipModel;
         }
 
-        /// <summary>
-        /// Create a new ComponentRegistration.
-        /// </summary>
-        /// <param name="services">The services provided by the component.
-        /// Required.</param>
-        /// <param name="activator">An object with which new component instances
-        /// can be created. Required.</param>
-        /// <param name="scope">An object that tracks created instances with
-        /// respect to their scope of usage, i.e., per-thread, per-call etc.
-        /// Required. Will be disposed when the registration is disposed.</param>
-		public Registration(
-			IEnumerable<Service> services,
-			IActivator activator,
-			IScope scope)
-			: this(services, activator, scope, InstanceOwnership.Container)
-		{
-		}
-        /// <summary>
-        /// Create a new ComponentRegistration with singleton activation scope.
-        /// </summary>
-        /// <param name="services">The services provided by the component.
-        /// Required.</param>
-        /// <param name="activator">An object with which new component instances
-        /// can be created. Required.</param>
-        public Registration(
-            IEnumerable<Service> services,
-            IActivator activator)
-            : this(services, activator, new SingletonScope())
-        {
-        }
-
         #region IComponentRegistration Members
 
         /// <summary>
         /// The services exposed by the component.
         /// </summary>
         /// <value></value>
-        public IEnumerable<Service> Services
+        public virtual IEnumerable<Service> Services
         {
             get
             {
@@ -144,7 +113,7 @@ namespace Autofac.Component
         /// <param name="disposer">The disposer.</param>
         /// <param name="newInstance">if set to <c>true</c> a new instance was created.</param>
         /// <returns>A newly-resolved instance.</returns>
-        public object ResolveInstance(IContext context, IActivationParameters parameters, IDisposer disposer, out bool newInstance)
+        public virtual object ResolveInstance(IContext context, IActivationParameters parameters, IDisposer disposer, out bool newInstance)
         {
             Enforce.ArgumentNotNull(context, "context");
             Enforce.ArgumentNotNull(parameters, "parameters");
@@ -197,11 +166,27 @@ namespace Autofac.Component
 			if (!_scope.DuplicateForNewContext(out newScope))
 				return false;
 
-			duplicate = new Registration(Services, _activator, newScope, _ownershipModel);
+			duplicate = CreateDuplicate(Services, _activator, newScope, _ownershipModel);
             duplicate.Activating += (s, e) => Activating(this, e);
             duplicate.Activated += (s, e) => Activated(this, e);
 
 			return true;
+		}
+		
+		/// <summary>
+		/// Semantically equivalent to ICloneable.Clone().
+		/// </summary>
+		protected virtual IComponentRegistration CreateDuplicate(
+			IEnumerable<Service> services,
+			IActivator activator,
+			IScope newScope,
+			InstanceOwnership ownershipModel)
+		{
+			Enforce.ArgumentNotNull(services, "services");
+			Enforce.ArgumentNotNull(activator, "activator");
+			Enforce.ArgumentNotNull(newScope, "newScope");
+			
+			return new Registration(Services, _activator, newScope, _ownershipModel);
 		}
 
         /// <summary>
@@ -226,7 +211,7 @@ namespace Autofac.Component
         /// </summary>
         /// <param name="context">The context in which the instance was activated.</param>
         /// <param name="instance">The instance.</param>
-        public void InstanceActivated(IContext context, object instance)
+        public virtual void InstanceActivated(IContext context, object instance)
         {
             var activatedArgs = new ActivatedEventArgs(context, this, instance);
             Activated(this, activatedArgs);

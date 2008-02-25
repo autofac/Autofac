@@ -241,10 +241,11 @@
       <DependentUpon>SpecificConstructorSelectorResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Tags\ContainerBuilderExtensions.cs" />
-    <Compile Include="Tags\ContainerBuilderExtensionsResources.Designer.cs">
+    <Compile Include="Tags\TaggedDelegateRegistrar.cs" />
+    <Compile Include="Tags\TaggedRegistrationResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ContainerBuilderExtensionsResources.resx</DependentUpon>
+      <DependentUpon>TaggedRegistrationResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Tags\ContainerExtensions.cs" />
     <Compile Include="Tags\ContextTag.cs" />
@@ -253,6 +254,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ContextTagResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Tags\TaggedRegistration.cs" />
     <Compile Include="TypedService.cs" />
     <Compile Include="UniqueService.cs" />
   </ItemGroup>
@@ -362,7 +364,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>GuardResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tags\ContainerBuilderExtensionsResources.resx">
+    <EmbeddedResource Include="Tags\TaggedRegistrationResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ContainerBuilderExtensionsResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>

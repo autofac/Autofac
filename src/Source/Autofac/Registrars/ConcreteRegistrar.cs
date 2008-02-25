@@ -70,7 +70,7 @@ namespace Autofac.Registrars
             var activator = CreateActivator();
             Enforce.NotNull(activator);
 
-            var cr = new Registration(services, activator, Scope.ToIScope(), Ownership);
+            var cr = CreateRegistration(services, activator, Scope.ToIScope(), Ownership);
 
             foreach (var activatingHandler in ActivatingHandlers)
                 cr.Activating += activatingHandler;
@@ -82,7 +82,24 @@ namespace Autofac.Registrars
 
             FireRegistered(new RegisteredEventArgs() { Container = container, Registration = cr});
 		}
-
+		
+		/// <summary>
+		/// Create the registration.
+		/// </summary>
+		/// <param name="services">Exposed services.</param>
+		/// <param name="activator">Activator.</param>
+		/// <param name="scope">Scope.</param>
+		/// <param name="ownership">Ownership model.</param>
+		/// <returns>The registration.</returns>
+		protected virtual IComponentRegistration CreateRegistration(
+			IEnumerable<Service> services,
+			IActivator activator,
+			IScope scope,
+			InstanceOwnership ownership)
+		{
+			return new Registration(services, activator, scope, ownership);
+		}
+		
 		#endregion
 
         /// <summary>

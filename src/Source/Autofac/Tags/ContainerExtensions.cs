@@ -54,7 +54,8 @@ namespace Autofac.Tags
                     new Registration(
                         new[] { new TypedService(typeof(ContextTag<T>)) },
                         new DelegateActivator((c, p) => new ContextTag<T>()),
-                        new ContainerScope()));
+                        new ContainerScope(),
+                        InstanceOwnership.Container));
             }
 
             container.Resolve<ContextTag<T>>().Tag = tag;

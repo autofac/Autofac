@@ -5,6 +5,7 @@ using NUnit.Framework;
 using Autofac.Builder;
 using Autofac.Component.Activation;
 using Autofac.Component;
+using Autofac.Component.Scope;
 using System.Linq;
 
 namespace Autofac.Tests.Builder
@@ -122,7 +123,9 @@ namespace Autofac.Tests.Builder
 				ConfigureCalled = true;
 				container.RegisterComponent(new Registration(
 					new Service[] { new TypedService(typeof(object)) },
-					new ProvidedInstanceActivator(new object())));
+					new ProvidedInstanceActivator(new object()),
+					new SingletonScope(),
+					InstanceOwnership.Container));
 			}
 
 			#endregion

@@ -22,14 +22,14 @@ namespace Autofac.Tags {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "2.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ContainerBuilderExtensionsResources {
+    internal class TaggedRegistrationResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ContainerBuilderExtensionsResources() {
+        internal TaggedRegistrationResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Autofac.Tags {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Tags.ContainerBuilderExtensionsResources", typeof(ContainerBuilderExtensionsResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Tags.TaggedRegistrationResources", typeof(TaggedRegistrationResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

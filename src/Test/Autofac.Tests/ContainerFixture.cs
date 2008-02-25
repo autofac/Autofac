@@ -12,11 +12,21 @@ namespace Autofac.Tests
     [TestFixture]
     public class ContainerFixture
     {
+    	static IComponentRegistration CreateRegistration(IEnumerable<Service> services, IActivator activator)
+    	{
+    		return new Registration(services, activator, new SingletonScope(), InstanceOwnership.Container);
+    	}
+  	
+	  	static IComponentRegistration CreateRegistration(IEnumerable<Service> services, IActivator activator, IScope scope)
+    	{
+    		return new Registration(services, activator, scope, InstanceOwnership.Container);
+    	}
+	  	
 		[Test]
 		public void ResolveOptional()
 		{
 			var target = new Container();
-			target.RegisterComponent(new Registration(
+			target.RegisterComponent(CreateRegistration(
 				new[] { new TypedService(typeof(string)) },
 				new ProvidedInstanceActivator("Hello")));
 
@@ -56,11 +66,11 @@ namespace Autofac.Tests
             var instance1 = new object();
             var instance2 = new object();
 
-			target.RegisterComponent(new Registration(
+			target.RegisterComponent(CreateRegistration(
 				new[] { new TypedService(typeof(object)) },
 				new ProvidedInstanceActivator(instance1)));
 
-			target.RegisterComponent(new Registration(
+			target.RegisterComponent(CreateRegistration(
 				new[] { new TypedService(typeof(object)) },
 				new ProvidedInstanceActivator(instance2)));
 
@@ -72,7 +82,7 @@ namespace Autofac.Tests
         public void SameServiceMultipleTimes()
         {
             var target = new Container();
-			target.RegisterComponent(new Registration(
+			target.RegisterComponent(CreateRegistration(
 				new[] { new TypedService(typeof(object)), new TypedService(typeof(object)) },
 				new ProvidedInstanceActivator(new object())));
 		}
@@ -80,7 +90,7 @@ namespace Autofac.Tests
         [Test]
         public void RegisterComponent()
         {
-            var registration = new Registration(
+            var registration = CreateRegistration(
                 new[] { new TypedService(typeof(object)), new TypedService(typeof(string)) },
                 new ProvidedInstanceActivator("Hello"),
                 new ContainerScope());
@@ -106,7 +116,7 @@ namespace Autofac.Tests
         [ExpectedException(typeof(ArgumentException))]
         public void RegisterComponentNullService()
         {
-            var registration = new Registration(
+            var registration = CreateRegistration(
                 new Service[] { new TypedService(typeof(object)), null },
                 new ProvidedInstanceActivator(new object()),
                 new ContainerScope());
@@ -121,7 +131,7 @@ namespace Autofac.Tests
         {
             object instance = new object();
             var target = new Container();
-			target.RegisterComponent(new Registration(
+			target.RegisterComponent(CreateRegistration(
 				new[] { new TypedService(typeof(object)) },
 				new DelegateActivator((c, p) => instance)));
 			Assert.AreSame(instance, target.Resolve<object>());
@@ -317,11 +327,11 @@ namespace Autofac.Tests
         {
 			var target = new Container();
 
-			target.RegisterComponent(new Registration(
+			target.RegisterComponent(CreateRegistration(
 				new[] { new TypedService(typeof(A)) },
 				new ReflectionActivator(typeof(A))));
 
-			target.RegisterComponent(new Registration(
+			target.RegisterComponent(CreateRegistration(
 				new[] { new TypedService(typeof(B)) },
 				new ReflectionActivator(typeof(B))));
 
@@ -348,11 +358,11 @@ namespace Autofac.Tests
         {
 			var target = new Container();
 
-			target.RegisterComponent(new Registration(
+			target.RegisterComponent(CreateRegistration(
 				new Service[] { new TypedService(typeof(A)) },
 				new ReflectionActivator(typeof(A))));
 
-			target.RegisterComponent(new Registration(
+			target.RegisterComponent(CreateRegistration(
 				new Service[] { new TypedService(typeof(B)) },
 				new ReflectionActivator(typeof(B))));
 
@@ -407,7 +417,7 @@ namespace Autofac.Tests
 		{
 			var target = new Container();
 
-			target.RegisterComponent(new Registration(
+			target.RegisterComponent(CreateRegistration(
 				new Service[] { new TypedService(typeof(A)) },
 				new ReflectionActivator(typeof(A)),
 				new FactoryScope()));
@@ -440,7 +450,7 @@ namespace Autofac.Tests
 		{
 			var target = new Container();
 
-			target.RegisterComponent(new Registration(
+			target.RegisterComponent(CreateRegistration(
 				new Service[] { new TypedService(typeof(A)) },
 				new ReflectionActivator(typeof(A)),
 				new ContainerScope()));
@@ -479,7 +489,7 @@ namespace Autofac.Tests
 		{
 			var instance = new object();
 			var container = new Container();
-			var registration = new Registration(
+			var registration = CreateRegistration(
 							new[] { new TypedService(typeof(object)) },
 							new ProvidedInstanceActivator(instance));
 			container.RegisterComponent(registration);
@@ -506,7 +516,7 @@ namespace Autofac.Tests
 		{
 			var instance = new object();
 			var container = new Container();
-			var registration = new Registration(
+			var registration = CreateRegistration(
 							new[] { new TypedService(typeof(object)) },
 							new ProvidedInstanceActivator(instance));
 			container.RegisterComponent(registration);
@@ -554,7 +564,7 @@ namespace Autofac.Tests
 			public bool TryGetRegistration(Service service, out IComponentRegistration registration)
 			{
 				Assert.AreEqual(typeof(object), ((TypedService)service).ServiceType);
-				registration = new Registration(
+				registration = CreateRegistration(
 					new[] { service },
 					new ReflectionActivator(typeof(object)));
 				return true;
@@ -581,7 +591,7 @@ namespace Autofac.Tests
         {
             string name = "name";
 
-            var r = new Registration(
+            var r = CreateRegistration(
                 new Service[] { new NamedService(name) },
                 new ReflectionActivator(typeof(object)));
 

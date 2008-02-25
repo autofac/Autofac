@@ -81,7 +81,9 @@ namespace Autofac
             RegisterComponent(
                 new Component.Registration(
                     new Service[] { new TypedService(typeof(IContainer)) },
-                    new Component.Activation.ProvidedInstanceActivator(this)));
+                    new Component.Activation.ProvidedInstanceActivator(this),
+                    new Component.Scope.SingletonScope(),
+                    InstanceOwnership.Container));
         }
 
         /// <summary>
@@ -105,7 +107,7 @@ namespace Autofac
         /// the subcontext will be disposed along with it.
         /// </summary>
         /// <returns>A new subcontext.</returns>
-        public IContainer CreateInnerContainer()
+        public virtual IContainer CreateInnerContainer()
         {
             var result = new Container(this);
             result.Activating += ComponentActivating;
@@ -117,7 +119,7 @@ namespace Autofac
 		/// Register a component.
 		/// </summary>
 		/// <param name="registration">A component registration.</param>
-		public void RegisterComponent(IComponentRegistration registration)
+		public virtual void RegisterComponent(IComponentRegistration registration)
 		{
             Enforce.ArgumentNotNull(registration, "registration");
 
@@ -142,7 +144,7 @@ namespace Autofac
 		/// are not available in the container.
 		/// </summary>
 		/// <param name="registrationSource"></param>
-		public void AddRegistrationSource(IRegistrationSource registrationSource)
+		public virtual void AddRegistrationSource(IRegistrationSource registrationSource)
 		{
             Enforce.ArgumentNotNull(registrationSource, "registrationSource");
 			_registrationSources.Add(registrationSource);
@@ -152,7 +154,7 @@ namespace Autofac
         /// The disposer associated with this container. Instances can be associated
         /// with it manually if required.
         /// </summary>
-        public IDisposer Disposer
+        public virtual IDisposer Disposer
         {
             get
             {
@@ -165,7 +167,7 @@ namespace Autofac
         /// Otherwise, null;
         /// </summary>
         /// <value></value>
-        public IContainer OuterContainer
+        public virtual IContainer OuterContainer
         {
             get
             {
@@ -235,14 +237,14 @@ namespace Autofac
                 if (_allServiceRegistrations.TryGetValue(key, out registration) ||
                     TryGetRegistrationFromSources(key, out registration))
                 {
-                    disposer = _disposer;
+                    disposer = Disposer;
                     return true;
                 }
 
                 if (_outerContainer != null &&
                     _outerContainer.TryExportToNewContext(key, out registration))
                 {
-                    disposer = _disposer;
+                    disposer = Disposer;
                     RegisterComponent(registration);
                     return true;
                 }
@@ -365,7 +367,7 @@ namespace Autofac
             if (disposing)
                 lock (_synchRoot)
                 {
-                    _disposer.Dispose();
+                    Disposer.Dispose();
                 }
         }
 
@@ -388,7 +390,7 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public TService Resolve<TService>(params Parameter[] parameters)
+        public virtual TService Resolve<TService>(params Parameter[] parameters)
         {
             return CreateResolutionContext().Resolve<TService>(parameters);
         }
@@ -404,7 +406,7 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public TService Resolve<TService>(string serviceName, params Parameter[] parameters)
+        public virtual TService Resolve<TService>(string serviceName, params Parameter[] parameters)
         {
             return CreateResolutionContext().Resolve<TService>(serviceName, parameters);
         }
@@ -419,7 +421,7 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public object Resolve(Type serviceType, params Parameter[] parameters)
+        public virtual object Resolve(Type serviceType, params Parameter[] parameters)
         {
             return CreateResolutionContext().Resolve(serviceType, parameters);
         }
@@ -434,7 +436,7 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public object Resolve(Service service, params Parameter[] parameters)
+        public virtual object Resolve(Service service, params Parameter[] parameters)
         {
             return CreateResolutionContext().Resolve(service, parameters);
         }
@@ -450,7 +452,7 @@ namespace Autofac
         /// false otherwise.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        public bool TryResolve<TService>(out TService instance, params Parameter[] parameters)
+        public virtual bool TryResolve<TService>(out TService instance, params Parameter[] parameters)
         {
             return CreateResolutionContext().TryResolve<TService>(out instance, parameters);
         }
@@ -466,7 +468,7 @@ namespace Autofac
         /// false otherwise.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        public bool TryResolve(Type serviceType, out object instance, params Parameter[] parameters)
+        public virtual bool TryResolve(Type serviceType, out object instance, params Parameter[] parameters)
         {
             return CreateResolutionContext().TryResolve(serviceType, out instance, parameters);
         }
@@ -484,7 +486,7 @@ namespace Autofac
         /// <example>
         /// container.Register&lt;ISomething&gt;(c =&gt; new Something(){ AProperty = c.ResolveOptional&lt;IOptional&gt;() });
         /// </example>
-        public TService ResolveOptional<TService>(params Parameter[] parameters)
+        public virtual TService ResolveOptional<TService>(params Parameter[] parameters)
         {
             return CreateResolutionContext().ResolveOptional<TService>(parameters);
         }
@@ -496,7 +498,7 @@ namespace Autofac
         /// <returns>
         /// 	<c>true</c> if the specified service is registered; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsRegistered(Type service)
+        public virtual bool IsRegistered(Type service)
         {
             return CreateResolutionContext().IsRegistered(service);
         }
@@ -508,7 +510,7 @@ namespace Autofac
         /// <returns>
         /// 	<c>true</c> if the specified service is registered; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsRegistered(string name)
+        public virtual bool IsRegistered(string name)
         {
             return CreateResolutionContext().IsRegistered(name);
         }
@@ -520,7 +522,7 @@ namespace Autofac
         /// <returns>
         /// 	<c>true</c> if the specified service is registered; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsRegistered(Service service)
+        public virtual bool IsRegistered(Service service)
         {
             return CreateResolutionContext().IsRegistered(service);
         }
@@ -530,7 +532,7 @@ namespace Autofac
         /// </summary>
         /// <typeparam name="TService">The service to test for the registration of.</typeparam>
         /// <returns>True if the service is registered.</returns>
-        public bool IsRegistered<TService>()
+        public virtual bool IsRegistered<TService>()
         {
             return CreateResolutionContext().IsRegistered<TService>();
         }
@@ -543,7 +545,7 @@ namespace Autofac
         /// <typeparam name="T">Type of instance. Used only to provide method chaining.</typeparam>
         /// <param name="instance">The instance to inject properties into.</param>
         /// <returns><paramref name="instance"/>.</returns>
-        public T InjectProperties<T>(T instance)
+        public virtual T InjectProperties<T>(T instance)
         {
             return CreateResolutionContext().InjectProperties<T>(instance);
         }
@@ -555,7 +557,7 @@ namespace Autofac
         /// <typeparam name="T">Type of instance. Used only to provide method chaining.</typeparam>
         /// <param name="instance">The instance to inject properties into.</param>
         /// <returns><paramref name="instance"/>.</returns>
-        public T InjectUnsetProperties<T>(T instance)
+        public virtual T InjectUnsetProperties<T>(T instance)
         {
             return CreateResolutionContext().InjectUnsetProperties<T>(instance);
         }
@@ -571,7 +573,7 @@ namespace Autofac
         /// false otherwise.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        public bool TryResolve(string componentName, out object instance, params Parameter[] parameters)
+        public virtual bool TryResolve(string componentName, out object instance, params Parameter[] parameters)
         {
             return CreateResolutionContext().TryResolve(componentName, out instance, parameters);
         }
@@ -587,7 +589,7 @@ namespace Autofac
         /// false otherwise.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        public bool TryResolve(Service service, out object instance, params Parameter[] parameters)
+        public virtual bool TryResolve(Service service, out object instance, params Parameter[] parameters)
         {
             return CreateResolutionContext().TryResolve(service, out instance, parameters);
         }

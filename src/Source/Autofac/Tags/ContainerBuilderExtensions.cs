@@ -37,8 +37,6 @@ namespace Autofac.Tags
     /// </summary>
     public static class ContainerBuilderExtensions
     {
-        static readonly Parameter[] EmptyParameters = new Parameter[0];
-
         /// <summary>
         /// Extensions for ContainerBuilder that allow registrations to be targeted to
         /// contexts with a certain tag only.
@@ -60,30 +58,9 @@ namespace Autofac.Tags
             if (activator == null)
                 throw new ArgumentNullException("activator");
 
-            // Use a unique service name because the caller may change the way they
-            // identify the component.
-            var uniqueService = new UniqueService();
-
-            return builder.Register(new ComponentActivatorWithParameters<TComponent>((c, p) =>
-            {
-                var ct = c.Resolve<ContextTag<TTag>>();
-                if (ct.HasTag && object.Equals(ct.Tag, targetContext))
-                {
-                    return (TComponent)activator(c, p);
-                }
-                else
-                {
-                    var container = c.Resolve<IContainer>();
-                    if (container.OuterContainer != null)
-                        return (TComponent)container.OuterContainer.Resolve(uniqueService, MakeParameters(p));
-                    else
-                        throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture,
-                            ContainerBuilderExtensionsResources.TaggedContextNotFound,
-                            targetContext));
-                }
-            }))
-            .As(new TypedService(typeof(TComponent)), uniqueService)
-            .WithScope(InstanceScope.Container);
+            var registrar = new TaggedDelegateRegistrar<TTag>(typeof(TComponent), (c, p) => activator(c, p), targetContext);
+            builder.RegisterModule(registrar);
+            return registrar;
         }
 
         /// <summary>
@@ -111,17 +88,6 @@ namespace Autofac.Tags
                 builder,
                 (c, p) => activator(c),
                 targetContext);
-        }
-
-        private static Parameter[] MakeParameters(IActivationParameters p)
-        {
-            if (p == null)
-                throw new ArgumentNullException("p");
-
-            if (p.Count == 0)
-                return EmptyParameters;
-
-            return p.Select(kvp => new Parameter(kvp.Key, kvp.Value)).ToArray();
         }
     }
 }
