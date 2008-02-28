@@ -47,9 +47,8 @@ namespace Autofac.Builder
         {
             Enforce.ArgumentNotNull(builder, "builder");
             Enforce.ArgumentNotNull(predicate, "predicate");
-            var module = new AutomaticRegistrar(predicate);
-            builder.RegisterModule(module);
-            return module;
+            return builder.AttachRegistrar<IGenericRegistrar>(
+            	new AutomaticRegistrar(predicate));
         }
 
         /// <summary>

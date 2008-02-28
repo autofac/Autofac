@@ -146,5 +146,28 @@ namespace Autofac.Tests.Tags
         	container.TagContext(tag);
         	Assert.IsNotNull(container.Resolve<object>());
         }
+        
+                
+        [Test]
+        public void RespectsDefaults()
+        {
+        	var builder = new ContainerBuilder();
+        	builder.SetDefaultOwnership(InstanceOwnership.External);
+        	builder.SetDefaultScope(InstanceScope.Factory);
+        	builder.RegisterInContext(typeof(DisposeTracker), "tag");
+        	DisposeTracker dt1, dt2;
+        	using (var container = builder.Build())
+        	{
+        		container.TagContext("tag");
+        		dt1 = container.Resolve<DisposeTracker>();
+        		dt2 = container.Resolve<DisposeTracker>();
+        	}
+        	
+        	Assert.IsNotNull(dt1);
+        	Assert.AreNotSame(dt1, dt2);
+        	Assert.IsFalse(dt1.IsDisposed);
+        	Assert.IsFalse(dt2.IsDisposed);
+        }
+
     }
 }

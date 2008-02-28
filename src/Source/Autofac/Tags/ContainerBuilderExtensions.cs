@@ -57,9 +57,8 @@ namespace Autofac.Tags
             if (implementor == null)
                 throw new ArgumentNullException("implementor");
 
-            var registrar = new TaggedReflectiveRegistrar<TTag>(implementor, targetContext);
-            builder.RegisterModule(registrar);
-            return registrar;
+            return builder.AttachRegistrar<IReflectiveRegistrar>(
+            	new TaggedReflectiveRegistrar<TTag>(implementor, targetContext));
         }
 
         /// <summary>
@@ -83,9 +82,8 @@ namespace Autofac.Tags
             if (activator == null)
                 throw new ArgumentNullException("activator");
 
-            var registrar = new TaggedDelegateRegistrar<TTag>(typeof(TComponent), (c, p) => activator(c, p), targetContext);
-            builder.RegisterModule(registrar);
-            return registrar;
+            return builder.AttachRegistrar<IConcreteRegistrar>(
+            	new TaggedDelegateRegistrar<TTag>(typeof(TComponent), (c, p) => activator(c, p), targetContext));
         }
         
         /// <summary>

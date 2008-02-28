@@ -45,14 +45,10 @@ namespace Autofac.Builder
         public static IConcreteRegistrar Register<T>(this ContainerBuilder builder, T instance)
         {
             Enforce.ArgumentNotNull(builder, "builder");
-            var result = new ProvidedInstanceRegistrar(instance);
-            builder.RegisterModule(result);
-
             // Scope of instances is always singleton, this will throw an exception
             // if the default is otherwise.
-            return result
-                .WithOwnership(builder.DefaultOwnership)
-                .WithScope(builder.DefaultScope);
+            return builder.AttachRegistrar<IConcreteRegistrar>(
+            	new ProvidedInstanceRegistrar(instance));
         }
     }
 }

@@ -87,7 +87,7 @@ namespace Autofac.Registrars.Collection
         /// Apply the module to the container.
         /// </summary>
         /// <param name="container">Container to apply configuration to.</param>
-        public void Configure(IContainer container)
+        public override void Configure(IContainer container)
         {
             Enforce.ArgumentNotNull(container, "container");
             var services = Services;            

@@ -62,11 +62,9 @@ namespace Autofac.Builder
         {
             Enforce.ArgumentNotNull(builder, "builder");
             Enforce.ArgumentNotNull(creator, "creator");
-            var result = new DelegateRegistrar(typeof(T), (c, p) => creator(c, p));
-            builder.RegisterModule(result);
-            return result
-                .WithOwnership(builder.DefaultOwnership)
-                .WithScope(builder.DefaultScope);
+            
+            return builder.AttachRegistrar<IConcreteRegistrar>(
+            	new DelegateRegistrar(typeof(T), (c, p) => creator(c, p)));
         }
     }
 }

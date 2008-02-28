@@ -55,7 +55,7 @@ namespace Autofac.Registrars.Automatic
         /// Registers the component.
         /// </summary>
         /// <param name="container">The container.</param>
-        public void Configure(IContainer container)
+        public override void Configure(IContainer container)
         {
             Enforce.ArgumentNotNull(container, "container");
             container.AddRegistrationSource(new AutomaticRegistrationHandler(

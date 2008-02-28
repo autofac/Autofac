@@ -59,7 +59,7 @@ namespace Autofac.Registrars
         /// as the default service.
         /// </summary>
         /// <param name="container">The container.</param>
-		public virtual void Configure(IContainer container)
+		public override void Configure(IContainer container)
 		{
             Enforce.ArgumentNotNull(container, "container");
 

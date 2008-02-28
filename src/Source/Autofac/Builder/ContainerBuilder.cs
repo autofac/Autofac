@@ -140,5 +140,21 @@ namespace Autofac.Builder
 			foreach (IModule registrar in _registrars)
 				registrar.Configure(container);
 		}
+		
+		/// <summary>
+		/// Attach the registrar to the builder (register it as a module) and
+		/// set defaults as necessary.
+		/// </summary>
+		/// <param name="registrar"></param>
+		/// <returns></returns>
+		internal virtual TRegistrar AttachRegistrar<TRegistrar>(Registrar<TRegistrar> registrar)
+			where TRegistrar : IRegistrar<TRegistrar>
+		{
+			Enforce.ArgumentNotNull(registrar, "registrar");
+			RegisterModule(registrar);
+			return registrar
+				.WithOwnership(DefaultOwnership)
+				.WithScope(DefaultScope);
+		}
 	}
 }

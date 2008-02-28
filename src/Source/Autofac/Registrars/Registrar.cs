@@ -35,7 +35,7 @@ namespace Autofac.Registrars
 	/// <summary>
 	/// Base class for component registrars.
 	/// </summary>
-	abstract class Registrar<TSyntax> : IRegistrar<TSyntax>
+	abstract class Registrar<TSyntax> : IRegistrar<TSyntax>, IModule
         where TSyntax : IRegistrar<TSyntax>
 	{
 		IList<Service> _services = new List<Service>();
@@ -49,6 +49,8 @@ namespace Autofac.Registrars
         /// Returns this instance, correctly-typed.
         /// </summary>
         protected abstract TSyntax Syntax { get; }
+        
+        public abstract void Configure(IContainer container);
 
 		#region IRegistrar Members
 

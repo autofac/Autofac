@@ -55,11 +55,8 @@ namespace Autofac.Builder
         public static IReflectiveRegistrar Register(this ContainerBuilder builder, Type implementor)
         {
             Enforce.ArgumentNotNull(implementor, "implementor");
-            var result = new ReflectiveRegistrar(implementor);
-            builder.RegisterModule(result);
-            return result
-                .WithOwnership(builder.DefaultOwnership)
-                .WithScope(builder.DefaultScope);
+            return builder.AttachRegistrar<IReflectiveRegistrar>(
+            	new ReflectiveRegistrar(implementor));
         }
     }
 }

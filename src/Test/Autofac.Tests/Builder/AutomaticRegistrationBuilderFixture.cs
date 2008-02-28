@@ -64,5 +64,25 @@ namespace Autofac.Tests.Builder
             var container = builder.Build();
             Assert.IsFalse(container.IsRegistered<AbstractController>());
         }
+        
+        [Test]
+        public void RespectsDefaults()
+        {
+        	var builder = new ContainerBuilder();
+        	builder.SetDefaultOwnership(InstanceOwnership.External);
+        	builder.SetDefaultScope(InstanceScope.Factory);
+        	builder.RegisterTypesAssignableTo<DisposeTracker>();
+        	DisposeTracker dt1, dt2;
+        	using (var container = builder.Build())
+        	{
+        		dt1 = container.Resolve<DisposeTracker>();
+        		dt2 = container.Resolve<DisposeTracker>();
+        	}
+        	
+        	Assert.IsNotNull(dt1);
+        	Assert.AreNotSame(dt1, dt2);
+        	Assert.IsFalse(dt1.IsDisposed);
+        	Assert.IsFalse(dt2.IsDisposed);
+        }
     }
 }

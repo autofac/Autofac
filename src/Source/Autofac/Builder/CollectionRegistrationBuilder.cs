@@ -45,11 +45,8 @@ namespace Autofac.Builder
         {
             Enforce.ArgumentNotNull(builder, "builder");
 
-            var result = new CollectionRegistrar<T>();
-            builder.RegisterModule(result);
-            return result
-                .WithOwnership(builder.DefaultOwnership)
-                .WithScope(builder.DefaultScope);
+            return builder.AttachRegistrar<IConcreteRegistrar>(
+            	new CollectionRegistrar<T>());
         }
 
         /// <summary>
