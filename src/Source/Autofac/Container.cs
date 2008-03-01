@@ -45,9 +45,15 @@ namespace Autofac
         object _synchRoot = new object();
 
         /// <summary>
-        /// Tracks all registrations by name.
+        /// Associates each service with the default registration that
+        /// can provide that service.
         /// </summary>
-        IDictionary<Service, IComponentRegistration> _allServiceRegistrations = new Dictionary<Service, IComponentRegistration>();
+        IDictionary<Service, IComponentRegistration> _defaultRegistrations = new Dictionary<Service, IComponentRegistration>();
+        
+        /// <summary>
+        /// Tracks all registrations made in the container.
+        /// </summary>
+        ICollection<IComponentRegistration> _allRegistrations = new LinkedList<IComponentRegistration>();
 
 		/// <summary>
 		/// Supports nested containers.
@@ -128,16 +134,26 @@ namespace Autofac
                 CheckNotDisposed();
 
                 _disposer.AddInstanceForDisposal(registration);
+                _allRegistrations.Add(registration);
 
                 foreach (Service service in registration.Services)
                 {
-                    _allServiceRegistrations[service] = registration;
+                    _defaultRegistrations[service] = registration;
                 }
 
                 registration.Activating += ComponentActivating;
                 registration.Activated += ComponentActivated;
+
+                FireComponentRegistered(registration);
             }
 		}
+
+        private void FireComponentRegistered(IComponentRegistration registration)
+        {
+            Enforce.ArgumentNotNull(registration, "registration");
+            var args = new ComponentRegisteredEventArgs(this, registration);
+            ComponentRegistered(this, args);
+        }
 
 		/// <summary>
 		/// Add a source from which registrations may be retrieved in the case that they
@@ -174,7 +190,26 @@ namespace Autofac
                 return _outerContainer;
             }
         }
+        
+        /// <summary>
+        /// The registrations for all of the components registered with the container.
+        /// </summary>
+        public IEnumerable<IComponentRegistration> ComponentRegistrations
+        {
+        	get
+        	{
+        		lock (_synchRoot)
+        		{
+        			return new List<IComponentRegistration>(_allRegistrations);
+        		}
+        	}
+        }
 
+        /// <summary>
+        /// Fired whenever a component is registed into the container.
+        /// </summary>
+        public event EventHandler<ComponentRegisteredEventArgs> ComponentRegistered = (sender, e) => { };
+        
         #endregion
 
         #region Registration Context Support
@@ -234,7 +269,7 @@ namespace Autofac
             {
                 CheckNotDisposed();
 
-                if (_allServiceRegistrations.TryGetValue(key, out registration) ||
+                if (_defaultRegistrations.TryGetValue(key, out registration) ||
                     TryGetRegistrationFromSources(key, out registration))
                 {
                     disposer = Disposer;
@@ -310,7 +345,7 @@ namespace Autofac
             lock (_synchRoot)
             {
                 IComponentRegistration localRegistration;
-                if (_allServiceRegistrations.TryGetValue(key, out localRegistration))
+                if (_defaultRegistrations.TryGetValue(key, out localRegistration))
                 {
                     return localRegistration.DuplicateForNewContext(out registration);
                 }

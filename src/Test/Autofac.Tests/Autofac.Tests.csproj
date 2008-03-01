@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Builder\ActivatingHandlerFixture.cs" />
     <Compile Include="Builder\AutomaticRegistrationBuilderFixture.cs" />
+    <Compile Include="ComponentRegisteredEventArgsFixture.cs" />
     <Compile Include="Registrars\ConcreteRegistrarFixture.cs" />
     <Compile Include="Builder\CollectionRegistrationBuilderFixture.cs" />
     <Compile Include="Builder\DelegateRegistrationBuilderFixture.cs" />

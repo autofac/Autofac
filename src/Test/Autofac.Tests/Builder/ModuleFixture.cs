@@ -32,5 +32,32 @@ namespace Autofac.Tests.Builder
         {
             new ObjectModule().Configure(null);
         }
+
+        class AttachingModule : Module
+        {
+            public IList<IComponentRegistration> Registrations = new List<IComponentRegistration>();
+
+            protected override void AttachToComponentRegistration(IContainer container, IComponentRegistration registration)
+            {
+                base.AttachToComponentRegistration(container, registration);
+                Registrations.Add(registration);
+            }
+        }
+
+        [Test]
+        public void AttachesToRegistrations()
+        {
+            var attachingModule = new AttachingModule();
+            Assert.AreEqual(0, attachingModule.Registrations.Count);
+
+            var builder = new ContainerBuilder();
+            builder.Register<object>();
+            builder.RegisterModule(attachingModule);
+            builder.Register("Hello!");
+            
+            var container = builder.Build();
+
+            Assert.AreEqual(container.ComponentRegistrations.Count(), attachingModule.Registrations.Count);
+        }
     }
 }

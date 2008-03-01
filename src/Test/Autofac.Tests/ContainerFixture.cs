@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using Autofac.Component;
@@ -751,6 +752,69 @@ namespace Autofac.Tests
             var container = cb.Build();
             var o = container.Resolve<object>(myName);
             Assert.IsNotNull(o);
+        }
+        
+        [Test]
+        public void ComponentRegistrationsExposed()
+        {
+        	var builder = new ContainerBuilder();
+        	builder.Register<object>();
+        	builder.Register("hello");
+        	var container = builder.Build();
+        	var registrations = new List<IComponentRegistration>(container.ComponentRegistrations);
+        	// The container registers itself :) hence 2 + 1.
+        	Assert.AreEqual(3, registrations.Count);
+        	Assert.IsTrue(registrations[0].Services.Contains(new TypedService(typeof(IContainer))));
+        	Assert.IsTrue(registrations[1].Services.Contains(new TypedService(typeof(object))));
+        	Assert.IsTrue(registrations[2].Services.Contains(new TypedService(typeof(string))));
+        }
+
+        [Test]
+        public void ComponentRegisteredEventFired()
+        {
+            object eventSender = null;
+            ComponentRegisteredEventArgs args = null;
+            var eventCount = 0;
+
+            var container = new Container();
+            container.ComponentRegistered += (sender, e) => {
+                eventSender = sender;
+                args = e;
+                ++eventCount;
+            };
+
+            var builder = new ContainerBuilder();
+            builder.Register<object>();
+            builder.Build(container);
+
+            Assert.AreEqual(1, eventCount);
+            Assert.IsNotNull(eventSender);
+            Assert.AreSame(container, eventSender);
+            Assert.IsNotNull(args);
+            Assert.AreSame(container, args.Container);
+            Assert.IsNotNull(args.ComponentRegistration.Services.FirstOrDefault(
+                s => s == new TypedService(typeof(object))));
+        }
+
+        [Test]
+        public void ComponentRegisteredNotFiredOnNewContext()
+        {
+            var eventCount = 0;
+
+            var container = new Container();
+            container.ComponentRegistered += (sender, e) =>
+            {
+                ++eventCount;
+            };
+
+            var builder = new ContainerBuilder();
+            builder.Register<object>().ContainerScoped();
+            builder.Build(container);
+
+            var inner = container.CreateInnerContainer();
+            inner.Resolve<object>();
+
+            Assert.AreEqual(1, eventCount);
         }
     }
 }

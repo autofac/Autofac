@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 namespace Autofac
 {
@@ -80,5 +81,15 @@ namespace Autofac
         /// Otherwise, null;
         /// </summary>
         IContainer OuterContainer { get; }
+        
+        /// <summary>
+        /// The registrations for all of the components registered with the container.
+        /// </summary>
+        IEnumerable<IComponentRegistration> ComponentRegistrations { get; }
+
+        /// <summary>
+        /// Fired whenever a component is registed into the container.
+        /// </summary>
+        event EventHandler<ComponentRegisteredEventArgs> ComponentRegistered;
     }
 }

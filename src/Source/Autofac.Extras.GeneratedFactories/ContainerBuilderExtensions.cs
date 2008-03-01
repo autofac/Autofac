@@ -58,6 +58,22 @@ namespace Autofac.Extras.GeneratedFactories
 
             return builder.Register<TDelegate>((c,p) => (TDelegate)(factoryDelegate(c,p))).WithScope(InstanceScope.Container);
         }
+        /// <summary>
+        /// Registers the factory delegate.
+        /// </summary>
+        /// <typeparam name="TDelegate">The type of the delegate.</typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="service">The service that the delegate will return instances of.</param>
+        /// <returns></returns>
+        public static IConcreteRegistrar RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder)
+        {
+            if (builder == null)
+                throw new ArgumentNullException("builder");
+
+            EnforceTypeIsDelegate(typeof(TDelegate));
+            var returnType = typeof(TDelegate).GetMethod("Invoke").ReturnType;
+            return RegisterGeneratedFactory<TDelegate>(builder, new TypedService(returnType));
+        }
 
         private static ComponentActivator GenerateDelegate(Type delegateType, Service service)
         {

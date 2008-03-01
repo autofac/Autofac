@@ -43,6 +43,25 @@ namespace Autofac.Tests.Extras.GeneratedFactories
             Assert.AreEqual(s, a.P);
         }
 
+        [Test]
+        public void CreateGenericFromFactoryDelegateImpliedServiceType()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.Register<A<string>>().WithScope(InstanceScope.Factory);
+            builder.RegisterGeneratedFactory<A<string>.Factory>();
+
+            var container = builder.Build();
+
+            var factory = container.Resolve<A<string>.Factory>();
+            Assert.IsNotNull(factory);
+
+            var s = "Hello!";
+            var a = factory(s);
+            Assert.IsNotNull(a);
+            Assert.AreEqual(s, a.P);
+        }
+
         public class QuoteService
         {
             public decimal GetQuote(string symbol)

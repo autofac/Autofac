@@ -40,11 +40,33 @@ namespace Autofac.Builder
             Enforce.ArgumentNotNull(container, "container");
             Load();
             Build(container);
+            AttachToRegistrations(container);
         }
 
         /// <summary>
         /// Override to add registrations to the container.
         /// </summary>
-        protected abstract void Load();
+        protected virtual void Load() { }
+
+        /// <summary>
+        /// Attach the module to a registration either already existing in
+        /// or being registered in the container.
+        /// </summary>
+        /// <param name="container">The container.</param>
+        /// <param name="registration">The registration.</param>
+        protected virtual void AttachToComponentRegistration(
+            IContainer container,
+            IComponentRegistration registration)
+        {
+        }
+
+        void AttachToRegistrations(IContainer container)
+        {
+            Enforce.ArgumentNotNull(container, "container");
+            foreach (IComponentRegistration registration in container.ComponentRegistrations)
+                AttachToComponentRegistration(container, registration);
+            container.ComponentRegistered +=
+                (sender, e) => AttachToComponentRegistration(e.Container, e.ComponentRegistration);
+        }
     }
 }
