@@ -79,5 +79,13 @@ namespace Autofac
         /// <param name="context">The context in which the instance was activated.</param>
         /// <param name="instance">The instance.</param>
         void InstanceActivated(IContext context, object instance);
+
+        /// <summary>
+        /// Additional data associated with the component.
+        /// </summary>
+        /// <remarks>Note, component registrations are currently copied into
+        /// subcontainers: these properties are shared between all instances of the
+        /// registration in all subcontainers.</remarks>
+        IDictionary<string, object> ExtendedProperties { get; }
     }
 }

@@ -81,6 +81,9 @@ namespace Autofac.Registrars
 
             foreach (var activatedHandler in ActivatedHandlers)
                 cr.Activated += activatedHandler;
+            
+            foreach (var ep in ExtendedProperties)
+            	cr.ExtendedProperties.Add(ep.Key, ep.Value);
 
             container.RegisterComponent(cr);
 

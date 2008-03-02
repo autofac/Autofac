@@ -231,5 +231,26 @@ namespace Autofac.Tests.Builder
             object o2;
             Assert.IsFalse(c.TryResolve(typeof(object), out o2));
         }
+
+        [Test]
+        public void WithExtendedProperties()
+        {
+            var p1 = new KeyValuePair<string, object>("p1", "p1Value");
+            var p2 = new KeyValuePair<string, object>("p2", "p2Value");
+
+            var builder = new ContainerBuilder();
+            builder.Register<object>()
+                .WithExtendedProperty(p1.Key, p1.Value)
+                .WithExtendedProperty(p2.Key, p2.Value);
+
+            var container = builder.Build();
+
+            IComponentRegistration registration;
+            Assert.IsTrue(container.TryGetDefaultRegistrationFor(new TypedService(typeof(object)), out registration));
+
+            Assert.AreEqual(2, registration.ExtendedProperties.Count);
+            Assert.IsTrue(registration.ExtendedProperties.Contains(p1));
+            Assert.IsTrue(registration.ExtendedProperties.Contains(p2));
+        }
     }
 }

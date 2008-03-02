@@ -138,5 +138,13 @@ namespace Autofac.Registrars
         /// <param name="handler">The handler.</param>
         /// <returns>A registrar allowing registration to continue.</returns>
         TSyntax OnActivated(EventHandler<ActivatedEventArgs> handler);
+
+        /// <summary>
+        /// Associates an extended property with the registration.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <returns>A registrar allowing registration to continue.</returns>
+        TSyntax WithExtendedProperty(string key, object value);
 	}
 }

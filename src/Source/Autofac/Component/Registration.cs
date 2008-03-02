@@ -46,6 +46,7 @@ namespace Autofac.Component
         IScope _scope;
 		InstanceOwnership _ownershipModel;
         object _synchRoot = new object();
+        IDictionary<string, object> _extendedProperties = new Dictionary<string, object>();
 
         /// <summary>
         /// Create a new ComponentRegistration.
@@ -166,7 +167,9 @@ namespace Autofac.Component
 			if (!_scope.DuplicateForNewContext(out newScope))
 				return false;
 
-			duplicate = CreateDuplicate(Services, _activator, newScope, _ownershipModel);
+			var duplicateRegistration = CreateDuplicate(Services, _activator, newScope, _ownershipModel);
+			duplicateRegistration._extendedProperties = _extendedProperties;
+			duplicate = duplicateRegistration;
             duplicate.Activating += (s, e) => Activating(this, e);
             duplicate.Activated += (s, e) => Activated(this, e);
 
@@ -176,7 +179,7 @@ namespace Autofac.Component
 		/// <summary>
 		/// Semantically equivalent to ICloneable.Clone().
 		/// </summary>
-		protected virtual IComponentRegistration CreateDuplicate(
+		protected virtual Registration CreateDuplicate(
 			IEnumerable<Service> services,
 			IActivator activator,
 			IScope newScope,
@@ -201,10 +204,6 @@ namespace Autofac.Component
         /// </summary>
 		public event EventHandler<ActivatedEventArgs> Activated = (sender, e) => { };
 
-        #endregion
-
-        #region IComponentRegistration Members
-
         /// <summary>
         /// Called by the container once an instance has been fully constructed, including
         /// any requested objects that depend on the instance.
@@ -215,6 +214,18 @@ namespace Autofac.Component
         {
             var activatedArgs = new ActivatedEventArgs(context, this, instance);
             Activated(this, activatedArgs);
+        }
+
+        /// <summary>
+        /// Additional data associated with the component.
+        /// </summary>
+        /// <value></value>
+        /// <remarks>Note, component registrations are currently copied into
+        /// subcontainers: these properties are shared between all instances of the
+        /// registration in all subcontainers.</remarks>
+        public IDictionary<string, object> ExtendedProperties
+        {
+            get { return _extendedProperties; }
         }
 
         #endregion

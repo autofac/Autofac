@@ -816,5 +816,35 @@ namespace Autofac.Tests
 
             Assert.AreEqual(1, eventCount);
         }
+
+        [Test]
+        public void DefaultRegistrationIsForMostRecent()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register<object>().As<object>().Named("first");
+            builder.Register<object>().As<object>().Named("second");
+            var container = builder.Build();
+            
+            IComponentRegistration defaultRegistration;
+            Assert.IsTrue(container.TryGetDefaultRegistrationFor(new TypedService(typeof(object)), out defaultRegistration));
+            Assert.IsTrue(defaultRegistration.Services.Contains(new NamedService("second")));
+        }
+
+        [Test]
+        public void DefaultRegistrationFalseWhenAbsent()
+        {
+            var container = new Container();
+            IComponentRegistration unused;
+            Assert.IsFalse(container.TryGetDefaultRegistrationFor(new TypedService(typeof(object)), out unused));
+        }
+
+        [Test]
+        public void DefaultRegistrationSuppliedDynamically()
+        {
+            var container = new Container();
+            container.AddRegistrationSource(new ObjectRegistrationSource());
+            IComponentRegistration registration;
+            Assert.IsTrue(container.TryGetDefaultRegistrationFor(new TypedService(typeof(object)), out registration));
+        }
     }
 }

@@ -163,5 +163,27 @@ namespace Autofac.Tests.Component
 
 			Assert.IsTrue(eventFired);
 		}
+
+        [Test]
+        public void ExtendedPropertiesExistInSubcontext()
+        {
+            var target = CreateRegistration(
+                            new Service[] { new TypedService(typeof(object)) },
+                            new ReflectionActivator(typeof(object)),
+                            new ContainerScope());
+
+            var property = new KeyValuePair<string, object>("name", "value");
+
+            target.ExtendedProperties.Add(property);
+
+            Assert.AreEqual(1, target.ExtendedProperties.Count);
+            Assert.IsTrue(target.ExtendedProperties.Contains(property));
+
+            IComponentRegistration subcontext;
+            Assert.IsTrue(target.DuplicateForNewContext(out subcontext));
+
+            Assert.AreEqual(1, subcontext.ExtendedProperties.Count);
+            Assert.IsTrue(subcontext.ExtendedProperties.Contains(property));
+        }
 	}
 }

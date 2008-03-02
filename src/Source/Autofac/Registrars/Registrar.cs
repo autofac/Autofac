@@ -44,6 +44,7 @@ namespace Autofac.Registrars
         IList<EventHandler<ActivatingEventArgs>> _activatingHandlers = new List<EventHandler<ActivatingEventArgs>>();
         IList<EventHandler<ActivatedEventArgs>> _activatedHandlers = new List<EventHandler<ActivatedEventArgs>>();
         IList<EventHandler<RegisteredEventArgs>> _registeredHandlers = new List<EventHandler<RegisteredEventArgs>>();
+        IDictionary<string, object> _extendedProperties = new Dictionary<string, object>();
 
         /// <summary>
         /// Returns this instance, correctly-typed.
@@ -205,6 +206,22 @@ namespace Autofac.Registrars
             return Syntax;
         }
 
+        /// <summary>
+        /// Associates an extended property with the registration. The property must not
+        /// already exist.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <returns>
+        /// A registrar allowing registration to continue.
+        /// </returns>
+        public TSyntax WithExtendedProperty(string key, object value)
+        {
+            Enforce.ArgumentNotNull(key, "key");
+            _extendedProperties.Add(key, value);
+            return Syntax;
+        }
+
 		#endregion
 
 		/// <summary>
@@ -301,5 +318,17 @@ namespace Autofac.Registrars
             foreach (EventHandler<RegisteredEventArgs> handler in _registeredHandlers)
                 handler(this, e);
         }
-	}
+
+        /// <summary>
+        /// Gets the extended properties.
+        /// </summary>
+        /// <value>The extended properties.</value>
+        protected virtual IDictionary<string, object> ExtendedProperties
+        {
+            get
+            {
+                return _extendedProperties;
+            }
+        }
+    }
 }

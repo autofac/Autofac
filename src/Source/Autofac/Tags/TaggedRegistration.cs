@@ -77,7 +77,7 @@ namespace Autofac.Tags
 			_tag = tag;
 		}
 		
-		protected override IComponentRegistration CreateDuplicate(
+		protected override Registration CreateDuplicate(
 			IEnumerable<Service> services, 
 			IActivator activator, 
 			IScope newScope, 

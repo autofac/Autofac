@@ -91,5 +91,14 @@ namespace Autofac
         /// Fired whenever a component is registed into the container.
         /// </summary>
         event EventHandler<ComponentRegisteredEventArgs> ComponentRegistered;
+
+        /// <summary>
+        /// Gets the default component registration that will be used to satisfy
+        /// requests for the provided service.
+        /// </summary>
+        /// <param name="service">The service.</param>
+        /// <param name="registration">The registration.</param>
+        /// <returns>True if a default exists, false otherwise.</returns>
+        bool TryGetDefaultRegistrationFor(Service service, out IComponentRegistration registration);
     }
 }

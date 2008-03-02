@@ -210,6 +210,27 @@ namespace Autofac
         /// </summary>
         public event EventHandler<ComponentRegisteredEventArgs> ComponentRegistered = (sender, e) => { };
         
+        /// <summary>
+        /// Gets the default component registration that will be used to satisfy
+        /// requests for the provided service.
+        /// </summary>
+        /// <param name="service">The service.</param>
+        /// <param name="registration">The registration.</param>
+        /// <returns>
+        /// True if a default exists, false otherwise.
+        /// </returns>
+        public bool TryGetDefaultRegistrationFor(Service service, out IComponentRegistration registration)
+        {
+            Enforce.ArgumentNotNull(service, "service");
+
+            registration = null;
+            lock (_synchRoot)
+            	// The call to IsRegistered() ensures that external registration sources
+            	// and the parent container a queried.
+            	return IsRegistered(service) &&
+            		_defaultRegistrations.TryGetValue(service, out registration);
+        }
+        
         #endregion
 
         #region Registration Context Support
