@@ -11,6 +11,14 @@
         <namespaceSummaryItem name="Autofac.Component.Registration" isDocumented="True">Component registration implementation.</namespaceSummaryItem>
         <namespaceSummaryItem name="Autofac.Component.Scope" isDocumented="True">Component scope models.</namespaceSummaryItem>
         <namespaceSummaryItem name="Autofac.Configuration" isDocumented="True">System configuration file support.</namespaceSummaryItem>
+        <namespaceSummaryItem name="Autofac.Registrars" isDocumented="True">Builder interfaces used in builder syntax.</namespaceSummaryItem>
+        <namespaceSummaryItem name="Autofac.Registrars.Automatic" isDocumented="True" />
+        <namespaceSummaryItem name="Autofac.Registrars.Collection" isDocumented="True" />
+        <namespaceSummaryItem name="Autofac.Registrars.Delegate" isDocumented="True">Delegate registration support.</namespaceSummaryItem>
+        <namespaceSummaryItem name="Autofac.Registrars.Generic" isDocumented="True" />
+        <namespaceSummaryItem name="Autofac.Registrars.ProvidedInstance" isDocumented="True" />
+        <namespaceSummaryItem name="Autofac.Registrars.Reflective" isDocumented="True" />
+        <namespaceSummaryItem name="Autofac.Tags" isDocumented="True">Tagged container support.</namespaceSummaryItem>
     </namespaceSummaries>
     <ProjectSummary>A .NET IoC container written in C#. Focus on programmatic configuration with builder syntax. Zero intrusion into existing code. Create components using reflection or with lambda expressions for unlimited flexibility. Managed disposal of any IDisposable components created by the container within a defined scope.</ProjectSummary>
     <MissingTags>Summary, Parameter, Returns, AutoDocumentCtors, Namespace</MissingTags>
