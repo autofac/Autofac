@@ -368,7 +368,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Tags\TaggedRegistrationResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ContainerBuilderExtensionsResources.Designer.cs</LastGenOutput>
+      <LastGenOutput>TaggedRegistrationResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Tags\ContextTagResources.resx">

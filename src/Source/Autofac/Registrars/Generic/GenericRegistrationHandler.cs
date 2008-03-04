@@ -115,6 +115,7 @@ namespace Autofac.Registrars.Generic
 			var concrete = _implementor.MakeGenericType(args);
 			var services = _serviceTypes.Select<Type, Service>(abs => new TypedService(abs.MakeGenericType(args)));
 			var reg = new Registration(
+                new UniqueService(),
 				services,
 				new ReflectionActivator(concrete),
 				_scope.ToIScope(),

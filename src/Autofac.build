@@ -95,6 +95,7 @@ Integration targets
       <fileset>
         <include name="Source/Autofac/bin/${ProjectConfig}/**"/>
         <include name="Source/Autofac.Extras.GeneratedFactories/bin/${ProjectConfig}/**"/>
+        <include name="Source/Autofac.Extras.Startable/bin/${ProjectConfig}/**"/>
         <include name="Source/Autofac.Integration.Mvc/bin/${ProjectConfig}/**"/>
         <include name="Source/Autofac.Integration.Wcf/bin/${ProjectConfig}/**"/>
         <include name="Source/Autofac.Integration.Web/bin/${ProjectConfig}/**"/>
@@ -107,6 +108,7 @@ Integration targets
       <fileset basedir="${LibDirectory}" prefix="bin">
         <include name="Autofac.*"/>
         <exclude name="Autofac.DotNet2.*"/>
+        <exclude name="*.xml"/>
       </fileset>
       <fileset basedir="${TestDirectory}" prefix="test">
         <include name="*.*"/>

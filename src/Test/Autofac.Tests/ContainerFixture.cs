@@ -15,12 +15,12 @@ namespace Autofac.Tests
     {
     	static IComponentRegistration CreateRegistration(IEnumerable<Service> services, IActivator activator)
     	{
-    		return new Registration(services, activator, new SingletonScope(), InstanceOwnership.Container);
+    		return new Registration(new UniqueService(), services, activator, new SingletonScope(), InstanceOwnership.Container);
     	}
   	
 	  	static IComponentRegistration CreateRegistration(IEnumerable<Service> services, IActivator activator, IScope scope)
     	{
-    		return new Registration(services, activator, scope, InstanceOwnership.Container);
+            return new Registration(new UniqueService(), services, activator, scope, InstanceOwnership.Container);
     	}
 	  	
 		[Test]
@@ -753,20 +753,22 @@ namespace Autofac.Tests
             var o = container.Resolve<object>(myName);
             Assert.IsNotNull(o);
         }
-        
+
         [Test]
         public void ComponentRegistrationsExposed()
         {
-        	var builder = new ContainerBuilder();
-        	builder.Register<object>();
-        	builder.Register("hello");
-        	var container = builder.Build();
-        	var registrations = new List<IComponentRegistration>(container.ComponentRegistrations);
-        	// The container registers itself :) hence 2 + 1.
-        	Assert.AreEqual(3, registrations.Count);
-        	Assert.IsTrue(registrations[0].Services.Contains(new TypedService(typeof(IContainer))));
-        	Assert.IsTrue(registrations[1].Services.Contains(new TypedService(typeof(object))));
-        	Assert.IsTrue(registrations[2].Services.Contains(new TypedService(typeof(string))));
+            var builder = new ContainerBuilder();
+            builder.Register<object>();
+            builder.Register<object>();
+            builder.Register("hello");
+            var container = builder.Build();
+            var registrations = new List<IComponentRegistration>(container.ComponentRegistrations);
+            // The container registers itself :) hence 3 + 1.
+            Assert.AreEqual(4, registrations.Count);
+            Assert.IsTrue(registrations[0].Services.Contains(new TypedService(typeof(IContainer))));
+            Assert.IsTrue(registrations[1].Services.Contains(new TypedService(typeof(object))));
+            Assert.IsTrue(registrations[2].Services.Contains(new TypedService(typeof(object))));
+            Assert.IsTrue(registrations[3].Services.Contains(new TypedService(typeof(string))));
         }
 
         [Test]
@@ -845,6 +847,23 @@ namespace Autofac.Tests
             container.AddRegistrationSource(new ObjectRegistrationSource());
             IComponentRegistration registration;
             Assert.IsTrue(container.TryGetDefaultRegistrationFor(new TypedService(typeof(object)), out registration));
+        }
+        
+        [Test]
+        public void IdSameInSubcontext()
+        {
+        	var builder = new ContainerBuilder();
+        	builder.Register<object>().ContainerScoped();
+        	
+        	var container = builder.Build();
+        	IComponentRegistration r1;
+        	Assert.IsTrue(container.TryGetDefaultRegistrationFor(new TypedService(typeof(object)), out r1));
+        	
+        	var inner = container.CreateInnerContainer();
+        	IComponentRegistration r2;
+        	Assert.IsTrue(inner.TryGetDefaultRegistrationFor(new TypedService(typeof(object)), out r2));
+        	
+        	Assert.AreEqual(r1.Id, r2.Id);
         }
     }
 }

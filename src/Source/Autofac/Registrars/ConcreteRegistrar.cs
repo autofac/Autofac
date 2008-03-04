@@ -39,7 +39,7 @@ namespace Autofac.Registrars
         where TSyntax : IConcreteRegistrar<TSyntax>
     {
         Type _implementor;
-        Service _id; // Default is null.
+        Service _id = new UniqueService();
 
         /// <summary>
         /// Initializes a new instance of the ComponentRegistrar&lt;TComponent&gt; class.
@@ -68,13 +68,10 @@ namespace Autofac.Registrars
             if (services.Count == 0)
                 services.Add(new TypedService(_implementor));
             
-            if (_id != null)
-            	services.Add(_id);
-
             var activator = CreateActivator();
             Enforce.NotNull(activator);
 
-            var cr = CreateRegistration(services, activator, Scope.ToIScope(), Ownership);
+            var cr = CreateRegistration(Id, services, activator, Scope.ToIScope(), Ownership);
 
             foreach (var activatingHandler in ActivatingHandlers)
                 cr.Activating += activatingHandler;
@@ -89,22 +86,24 @@ namespace Autofac.Registrars
 
             FireRegistered(new RegisteredEventArgs() { Container = container, Registration = cr});
 		}
-		
-		/// <summary>
-		/// Create the registration.
-		/// </summary>
-		/// <param name="services">Exposed services.</param>
-		/// <param name="activator">Activator.</param>
-		/// <param name="scope">Scope.</param>
-		/// <param name="ownership">Ownership model.</param>
-		/// <returns>The registration.</returns>
+
+        /// <summary>
+        /// Create the registration.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        /// <param name="services">Exposed services.</param>
+        /// <param name="activator">Activator.</param>
+        /// <param name="scope">Scope.</param>
+        /// <param name="ownership">Ownership model.</param>
+        /// <returns>The registration.</returns>
 		protected virtual IComponentRegistration CreateRegistration(
+            Service id,
 			IEnumerable<Service> services,
 			IActivator activator,
 			IScope scope,
 			InstanceOwnership ownership)
 		{
-			return new Registration(services, activator, scope, ownership);
+			return new Registration(id, services, activator, scope, ownership);
 		}
 		
 		#endregion
@@ -177,7 +176,7 @@ namespace Autofac.Registrars
         {
         	get
         	{
-        		return _id = _id ?? new UniqueService();
+        		return _id;
         	}
         }
 	}

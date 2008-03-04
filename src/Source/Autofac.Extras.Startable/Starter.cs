@@ -1,5 +1,6 @@
-﻿// Contributed by Nicholas Blumhardt 2008-02-10
-// Copyright (c) 2008 Autofac Contributors
+﻿// This software is part of the Autofac IoC container
+// Copyright (c) 2007 Nicholas Blumhardt
+// nicholas.blumhardt@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
@@ -23,43 +24,48 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Autofac.Component.Activation;
-using Autofac.Component.Scope;
-using Autofac.Component;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Autofac.Tags
+namespace Autofac.Extras.Startable
 {
     /// <summary>
-    /// Extends the container so that it and inner containers can be tagged according to a
-    /// hierarchy, and component registrations made to resolve in one level of the hierarchy
-    /// only.
+    /// Can be used to instantiate an instance of all 'startable' services in
+    /// a container.
     /// </summary>
-    public static class ContainerExtensions
+    class Starter : IStarter
     {
+        IContainer _container;
+
         /// <summary>
-        /// Enables context tagging in the target container.
+        /// Saved as an extended property to identify a component as startable.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        public const string IsStartablePropertyName = "Autofac.Extras.Startable.Starter.IsStartable";
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Starter"/> class.
+        /// </summary>
         /// <param name="container">The container.</param>
-        /// <param name="tag">The tag applied to this container and the contexts genrated when
-        /// it resolves component dependencies.</param>
-        public static void TagContext<T>(this IContainer container, T tag)
+        public Starter(IContainer container)
         {
             if (container == null)
                 throw new ArgumentNullException("container");
+            
+            _container = container;
+        }
 
-            if (!container.IsRegistered<ContextTag<T>>())
-            {
-                container.RegisterComponent(
-                    new Registration(
-                        new UniqueService(),
-                        new[] { new TypedService(typeof(ContextTag<T>)) },
-                        new DelegateActivator((c, p) => new ContextTag<T>()),
-                        new ContainerScope(),
-                        InstanceOwnership.Container));
-            }
+        /// <summary>
+        /// Start the startable components.
+        /// </summary>
+        public void Start()
+        {
+            var startableRegistrations = _container.ComponentRegistrations.Where(cr =>
+                cr.ExtendedProperties.ContainsKey(IsStartablePropertyName) &&
+                (bool)cr.ExtendedProperties[IsStartablePropertyName] == true);
 
-            container.Resolve<ContextTag<T>>().Tag = tag;
+            foreach (var startable in startableRegistrations)
+                _container.Resolve(startable.Id);
         }
     }
 }

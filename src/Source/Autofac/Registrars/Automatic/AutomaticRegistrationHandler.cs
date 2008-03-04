@@ -87,6 +87,7 @@ namespace Autofac.Registrars.Automatic
                 return false;
 
             var reg = new Registration(
+                new UniqueService(),
                 new[] { service },
                 new ReflectionActivator(typedService.ServiceType),
                 _scope.ToIScope(),

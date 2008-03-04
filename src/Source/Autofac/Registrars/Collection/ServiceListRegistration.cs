@@ -124,11 +124,12 @@ namespace Autofac.Registrars.Collection
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceListRegistration&lt;TItem&gt;"/> class.
         /// </summary>
+        /// <param name="id">The id.</param>
         /// <param name="services">The services.</param>
         /// <param name="activator">The activator.</param>
         /// <param name="scope">The scope.</param>
-        ServiceListRegistration(IEnumerable<Service> services, ServiceListActivator activator, IScope scope)
-            : base(services, activator, scope, InstanceOwnership.Container)
+        ServiceListRegistration(Service id, IEnumerable<Service> services, ServiceListActivator activator, IScope scope)
+            : base(id, services, activator, scope, InstanceOwnership.Container)
         {
             _activator = Enforce.ArgumentNotNull(activator, "activator");
         }
@@ -136,21 +137,23 @@ namespace Autofac.Registrars.Collection
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceListRegistration&lt;TItem&gt;"/> class.
         /// </summary>
+        /// <param name="id">The id.</param>
         /// <param name="services">The services.</param>
         /// <param name="scope">The scope.</param>
-        public ServiceListRegistration(IEnumerable<Service> services, IScope scope)
-            : this(services, new ServiceListActivator(), scope)
+        public ServiceListRegistration(Service id, IEnumerable<Service> services, IScope scope)
+            : this(id, services, new ServiceListActivator(), scope)
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceListRegistration&lt;TItem&gt;"/> class.
         /// </summary>
+        /// <param name="id">The id.</param>
         /// <param name="services">The services.</param>
         /// <param name="scope">The scope.</param>
         /// <param name="items">The items.</param>
-        protected ServiceListRegistration(IEnumerable<Service> services, IScope scope, IEnumerable<Service> items)
-            : this(services, scope)
+        protected ServiceListRegistration(Service id, IEnumerable<Service> services, IScope scope, IEnumerable<Service> items)
+            : this(id, services, scope)
         {
             Enforce.ArgumentNotNull(items, "items");
 
@@ -189,7 +192,7 @@ namespace Autofac.Registrars.Collection
             if (!Scope.DuplicateForNewContext(out newScope))
                 return false;
 
-            duplicate = new ServiceListRegistration<TItem>(_activator.Items, newScope);
+            duplicate = new ServiceListRegistration<TItem>(Id, _activator.Items, newScope);
             return true;
         }
 

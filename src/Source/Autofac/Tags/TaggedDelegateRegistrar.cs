@@ -49,21 +49,23 @@ namespace Autofac.Tags
             _tag = tag;
 		}
 
-		/// <summary>
-		/// Create the registration.
-		/// </summary>
-		/// <param name="services">Exposed services.</param>
-		/// <param name="activator">Activator.</param>
-		/// <param name="scope">Scope.</param>
-		/// <param name="ownership">Ownership model.</param>
-		/// <returns>The registration.</returns>
+        /// <summary>
+        /// Create the registration.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        /// <param name="services">Exposed services.</param>
+        /// <param name="activator">Activator.</param>
+        /// <param name="scope">Scope.</param>
+        /// <param name="ownership">Ownership model.</param>
+        /// <returns>The registration.</returns>
 		protected override IComponentRegistration CreateRegistration(
+            Service id,
         	IEnumerable<Service> services, 
         	IActivator activator, 
         	IScope scope, 
         	InstanceOwnership ownership)
 		{
-			return new TaggedRegistration<TTag>(services, activator, scope, ownership, _tag);
+			return new TaggedRegistration<TTag>(id, services, activator, scope, ownership, _tag);
 		}
 	}
 }

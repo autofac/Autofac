@@ -13,12 +13,12 @@ namespace Autofac.Tests.Component
     {
 	  	IComponentRegistration CreateRegistration(IEnumerable<Service> services, IActivator activator)
     	{
-    		return new Registration(services, activator, new SingletonScope(), InstanceOwnership.Container);
+            return new Registration(new UniqueService(), services, activator, new SingletonScope(), InstanceOwnership.Container);
     	}
   	
 	  	IComponentRegistration CreateRegistration(IEnumerable<Service> services, IActivator activator, IScope scope)
     	{
-    		return new Registration(services, activator, scope, InstanceOwnership.Container);
+            return new Registration(new UniqueService(), services, activator, scope, InstanceOwnership.Container);
     	}
   	
   		[Test]
@@ -33,7 +33,8 @@ namespace Autofac.Tests.Component
 
             var actualServices = new List<Service>(target.Services);
 
-            Assert.AreEqual(services.Length, actualServices.Count);
+            // Includes Id
+            Assert.AreEqual(services.Length + 1, actualServices.Count);
 
             foreach (Service service in services)
                 Assert.IsTrue(actualServices.Contains(service));

@@ -37,12 +37,12 @@ namespace Autofac.Tags
 	class TaggedRegistration<TTag> : Registration
 	{
         static readonly Parameter[] EmptyParameters = new Parameter[0];
-		readonly Service _id;
 		readonly TTag _tag;
-		
-		/// <summary>
-		/// Create a new TaggedRegistration.
-		/// </summary>
+
+        /// <summary>
+        /// Create a new TaggedRegistration.
+        /// </summary>
+        /// <param name="id">The id.</param>
         /// <param name="services">The services provided by the component.
         /// Required.</param>
         /// <param name="activator">An object with which new component instances
@@ -50,40 +50,30 @@ namespace Autofac.Tags
         /// <param name="scope">An object that tracks created instances with
         /// respect to their scope of usage, i.e., per-thread, per-call etc.
         /// Required. Will be disposed when the registration is disposed.</param>
-		/// <param name="ownershipModel">The ownership model that determines
-		/// whether the instances are disposed along with the scope.</param>
-		/// <param name="tag">The tag corresponding to the context in which this
-		/// component may be resolved.</param>
+        /// <param name="ownershipModel">The ownership model that determines
+        /// whether the instances are disposed along with the scope.</param>
+        /// <param name="tag">The tag corresponding to the context in which this
+        /// component may be resolved.</param>
 		public TaggedRegistration(
+            Service id,
             IEnumerable<Service> services,
             IActivator activator,
             IScope scope,
 			InstanceOwnership ownershipModel,
 			TTag tag)
-			: this(services, activator, scope, ownershipModel, tag, new UniqueService())
+			: base(id, services, activator, scope, ownershipModel)
 		{
-		}
-		
-		private TaggedRegistration(
-            IEnumerable<Service> services,
-            IActivator activator,
-            IScope scope,
-			InstanceOwnership ownershipModel,
-			TTag tag,
-			Service id)
-			: base(services.Union(new []{ id }), activator, scope, ownershipModel)
-		{
-			_id = Enforce.ArgumentNotNull(id, "id");
-			_tag = tag;
-		}
+            _tag = tag;
+        }
 		
 		protected override Registration CreateDuplicate(
+            Service id,
 			IEnumerable<Service> services, 
 			IActivator activator, 
 			IScope newScope, 
 			InstanceOwnership ownershipModel)
 		{
-			return new TaggedRegistration<TTag>(services, activator, newScope, ownershipModel, _tag, _id);
+			return new TaggedRegistration<TTag>(id, services, activator, newScope, ownershipModel, _tag);
 		}
 		
         /// <summary>
@@ -117,7 +107,7 @@ namespace Autofac.Tags
             {
                 var container = context.Resolve<IContainer>();
                 if (container.OuterContainer != null)
-                    return container.OuterContainer.Resolve(_id, MakeParameters(parameters));
+                    return container.OuterContainer.Resolve(Id, MakeParameters(parameters));
                 else
                     throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture,
                         TaggedRegistrationResources.TaggedContextNotFound,

@@ -80,6 +80,18 @@ namespace Autofac
         /// <summary>
         /// Retrieve a service registered with the container.
         /// </summary>
+        /// <param name="serviceName">The service to retrieve.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>
+        /// The component instance that provides the service.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="DependencyResolutionException"/>
+        object Resolve(string serviceName, params Parameter[] parameters);
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
         /// <param name="service">The service to retrieve.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>

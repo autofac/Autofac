@@ -41,6 +41,7 @@ namespace Autofac.Component
 	/// </remarks>
     public class Registration : Disposable, IComponentRegistration
     {
+        Service _id;
         IEnumerable<Service> _services;
         IActivator _activator;
         IScope _scope;
@@ -51,6 +52,7 @@ namespace Autofac.Component
         /// <summary>
         /// Create a new ComponentRegistration.
         /// </summary>
+        /// <param name="id">The id.</param>
         /// <param name="services">The services provided by the component.
         /// Required.</param>
         /// <param name="activator">An object with which new component instances
@@ -58,32 +60,39 @@ namespace Autofac.Component
         /// <param name="scope">An object that tracks created instances with
         /// respect to their scope of usage, i.e., per-thread, per-call etc.
         /// Required. Will be disposed when the registration is disposed.</param>
-		/// <param name="ownershipModel">The ownership model that determines
-		/// whether the instances are disposed along with the scope.</param>
+        /// <param name="ownershipModel">The ownership model that determines
+        /// whether the instances are disposed along with the scope.</param>
         public Registration(
+            Service id,
             IEnumerable<Service> services,
             IActivator activator,
             IScope scope,
 			InstanceOwnership ownershipModel)
         {
+            Enforce.ArgumentNotNull(id, "id");
             Enforce.ArgumentNotNull(services, "services");
             Enforce.ArgumentNotNull(activator, "activator");
             Enforce.ArgumentNotNull(scope, "scope");
 
             IDictionary<Service, bool> seenServices = new Dictionary<Service, bool>();
+            seenServices.Add(id, true);
 
-			foreach (Service service in services)
-			{
-				if (service == null)
-					throw new ArgumentException(RegistrationResources.NullServiceProvided);
+            foreach (Service service in services)
+            {
+                if (service == null)
+                    throw new ArgumentException(RegistrationResources.NullServiceProvided);
 
-				if (seenServices.ContainsKey(service))
-					throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-						RegistrationResources.ServiceAlreadyProvided, service));
+                if (service != id)
+                {
+                    if (seenServices.ContainsKey(service))
+                        throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
+                            RegistrationResources.ServiceAlreadyProvided, service));
 
-				seenServices.Add(service, true);
-			}
+                    seenServices.Add(service, true);
+                }
+            }
 
+            _id = id;
             _services = seenServices.Keys;
             _activator = activator;
             _scope = scope;
@@ -101,6 +110,19 @@ namespace Autofac.Component
             get
             {
                 return _services;
+            }
+        }
+
+        /// <summary>
+        /// A unique identifier for this component (shared in all sub-contexts.)
+        /// This value also appears in Services.
+        /// </summary>
+        /// <value></value>
+        public virtual Service Id
+        {
+            get
+            {
+                return _id;
             }
         }
 
@@ -167,7 +189,7 @@ namespace Autofac.Component
 			if (!_scope.DuplicateForNewContext(out newScope))
 				return false;
 
-			var duplicateRegistration = CreateDuplicate(Services, _activator, newScope, _ownershipModel);
+			var duplicateRegistration = CreateDuplicate(Id, Services, _activator, newScope, _ownershipModel);
 			duplicateRegistration._extendedProperties = _extendedProperties;
 			duplicate = duplicateRegistration;
             duplicate.Activating += (s, e) => Activating(this, e);
@@ -180,6 +202,7 @@ namespace Autofac.Component
 		/// Semantically equivalent to ICloneable.Clone().
 		/// </summary>
 		protected virtual Registration CreateDuplicate(
+            Service id,
 			IEnumerable<Service> services,
 			IActivator activator,
 			IScope newScope,
@@ -189,7 +212,7 @@ namespace Autofac.Component
 			Enforce.ArgumentNotNull(activator, "activator");
 			Enforce.ArgumentNotNull(newScope, "newScope");
 			
-			return new Registration(Services, _activator, newScope, _ownershipModel);
+			return new Registration(id, services, _activator, newScope, _ownershipModel);
 		}
 
         /// <summary>

@@ -179,6 +179,23 @@ namespace Autofac
         /// <summary>
         /// Retrieve a service registered with the container.
         /// </summary>
+        /// <param name="serviceName">The service to retrieve.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>
+        /// The component instance that provides the service.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="DependencyResolutionException"/>
+        public object Resolve(string serviceName, params Parameter[] parameters)
+        {
+            Enforce.ArgumentNotNull(serviceName, "serviceName");
+            Enforce.ArgumentNotNull(parameters, "parameters");
+            return Resolve(new NamedService(serviceName), parameters);
+        }
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
         /// <typeparam name="TService">The service to retrieve.</typeparam>
         /// <param name="parameters">The parameters.</param>
         /// <returns>

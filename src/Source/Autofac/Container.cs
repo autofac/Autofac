@@ -86,6 +86,7 @@ namespace Autofac
         {
             RegisterComponent(
                 new Component.Registration(
+                    new UniqueService(),
                     new Service[] { new TypedService(typeof(IContainer)) },
                     new Component.Activation.ProvidedInstanceActivator(this),
                     new Component.Scope.SingletonScope(),
@@ -222,13 +223,9 @@ namespace Autofac
         public bool TryGetDefaultRegistrationFor(Service service, out IComponentRegistration registration)
         {
             Enforce.ArgumentNotNull(service, "service");
-
-            registration = null;
-            lock (_synchRoot)
-            	// The call to IsRegistered() ensures that external registration sources
-            	// and the parent container a queried.
-            	return IsRegistered(service) &&
-            		_defaultRegistrations.TryGetValue(service, out registration);
+            IDisposer unused;
+            IContext unused2;
+            return ((IRegistrationContext)this).TryGetRegistration(service, out registration, out unused, out unused2);
         }
         
         #endregion
@@ -471,7 +468,7 @@ namespace Autofac
         /// Retrieve a service registered with the container.
         /// </summary>
         /// <param name="serviceType">The service to retrieve.</param>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">The parameters.</param>
         /// <returns>
         /// The component instance that provides the service.
         /// </returns>
@@ -480,6 +477,21 @@ namespace Autofac
         public virtual object Resolve(Type serviceType, params Parameter[] parameters)
         {
             return CreateResolutionContext().Resolve(serviceType, parameters);
+        }
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
+        /// <param name="serviceName">The service to retrieve.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>
+        /// The component instance that provides the service.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="DependencyResolutionException"/>
+        public virtual object Resolve(string serviceName, params Parameter[] parameters)
+        {
+            return CreateResolutionContext().Resolve(serviceName, parameters);
         }
 
         /// <summary>

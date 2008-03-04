@@ -63,7 +63,8 @@ namespace Autofac.Tests
 		private IComponentRegistration CreateRegistration()
 		{
 			return new Registration(
-				new Service[]{new UniqueService()}, 
+                new UniqueService(), 
+				new Service[0], 
 				new ReflectionActivator(typeof(object)), 
 				new SingletonScope(),
 				InstanceOwnership.Container);

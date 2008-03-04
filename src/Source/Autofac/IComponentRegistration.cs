@@ -41,6 +41,12 @@ namespace Autofac
         IEnumerable<Service> Services { get; }
 
         /// <summary>
+        /// A unique identifier for this component (shared in all sub-contexts.)
+        /// This value also appears in Services.
+        /// </summary>
+        Service Id { get; }
+
+        /// <summary>
         /// 	<i>Must</i> return a valid instance, or throw
         /// an exception on failure.
         /// </summary>

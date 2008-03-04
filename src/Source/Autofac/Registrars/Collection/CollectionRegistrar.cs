@@ -92,11 +92,8 @@ namespace Autofac.Registrars.Collection
             Enforce.ArgumentNotNull(container, "container");
             var services = Services;            
             
-            if (_id != null)
-            	services = services.Concat(new[]{ _id });
-            
             container.RegisterComponent(
-            	new ServiceListRegistration<TItem>(services, Scope.ToIScope()));
+            	new ServiceListRegistration<TItem>(Id, services, Scope.ToIScope()));
         }
 
         #endregion
