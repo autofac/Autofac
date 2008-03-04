@@ -49,11 +49,6 @@ namespace Autofac
         /// can provide that service.
         /// </summary>
         IDictionary<Service, IComponentRegistration> _defaultRegistrations = new Dictionary<Service, IComponentRegistration>();
-        
-        /// <summary>
-        /// Tracks all registrations made in the container.
-        /// </summary>
-        ICollection<IComponentRegistration> _allRegistrations = new LinkedList<IComponentRegistration>();
 
 		/// <summary>
 		/// Supports nested containers.
@@ -135,7 +130,6 @@ namespace Autofac
                 CheckNotDisposed();
 
                 _disposer.AddInstanceForDisposal(registration);
-                _allRegistrations.Add(registration);
 
                 foreach (Service service in registration.Services)
                 {
@@ -201,7 +195,7 @@ namespace Autofac
         	{
         		lock (_synchRoot)
         		{
-        			return new List<IComponentRegistration>(_allRegistrations);
+        			return _defaultRegistrations.Values.Distinct().ToList();
         		}
         	}
         }

@@ -863,6 +863,7 @@ namespace Autofac.Tests
         	IComponentRegistration r2;
         	Assert.IsTrue(inner.TryGetDefaultRegistrationFor(new TypedService(typeof(object)), out r2));
         	
+        	Assert.AreNotSame(r1, r2);
         	Assert.AreEqual(r1.Id, r2.Id);
         }
     }
