@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac.Extras.GeneratedFactories {
-    using System;
-    
-    
+namespace Autofac.Extras.GeneratedFactories
+{
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>

@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Autofac.Integration.Web")]
 [assembly: AssemblyDescription("Autofac ASP.NET Integration")]

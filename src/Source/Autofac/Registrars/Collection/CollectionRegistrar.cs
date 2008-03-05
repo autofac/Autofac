@@ -24,7 +24,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using Autofac.Component.Scope;
-using System.Linq;
 
 namespace Autofac.Registrars.Collection
 {

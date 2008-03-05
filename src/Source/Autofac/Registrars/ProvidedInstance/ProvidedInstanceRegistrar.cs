@@ -23,9 +23,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using Autofac.Component.Activation;
-using Autofac.Component;
 using System;
+using Autofac.Component;
+using Autofac.Component.Activation;
 
 namespace Autofac.Registrars.ProvidedInstance
 {

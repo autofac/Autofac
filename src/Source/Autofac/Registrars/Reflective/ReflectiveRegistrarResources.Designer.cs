@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac.Registrars.Reflective {
-    using System;
-    
-    
+namespace Autofac.Registrars.Reflective
+{
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>

@@ -26,7 +26,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Autofac.Component.Scope;
 
 namespace Autofac.Component
 {

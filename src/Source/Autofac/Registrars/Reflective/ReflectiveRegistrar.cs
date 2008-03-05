@@ -23,12 +23,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using Autofac.Component.Activation;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using Autofac.Component;
-using System.Collections.Generic;
+using Autofac.Component.Activation;
 
 namespace Autofac.Registrars.Reflective
 {

@@ -24,8 +24,8 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Autofac.Component.Activation;
 using Autofac.Component;
+using Autofac.Component.Activation;
 
 namespace Autofac.Registrars.Delegate
 {

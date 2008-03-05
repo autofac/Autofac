@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Autofac.Extras.Startable")]
 [assembly: AssemblyDescription("Autofac Startable Module")]

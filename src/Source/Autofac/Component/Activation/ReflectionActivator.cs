@@ -25,9 +25,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
 using System.Globalization;
+using System.Reflection;
+using System.Text;
 
 namespace Autofac.Component.Activation
 {

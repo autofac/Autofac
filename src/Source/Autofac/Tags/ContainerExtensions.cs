@@ -23,9 +23,9 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using Autofac.Component;
 using Autofac.Component.Activation;
 using Autofac.Component.Scope;
-using Autofac.Component;
 
 namespace Autofac.Tags
 {

@@ -24,10 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Globalization;
-using System.Security.Permissions;
 using System.Runtime.Serialization;
 
 namespace Autofac

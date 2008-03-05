@@ -1,6 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using System;
 using System.Web;
-using System;
+using System.Web.Mvc;
 
 namespace Autofac.Integration.Mvc
 {

@@ -23,8 +23,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Globalization;
-using System.Linq;
 using Autofac.Builder;
 using Autofac.Registrars;
 using Autofac.Registrars.Delegate;
