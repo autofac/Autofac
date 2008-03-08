@@ -42,11 +42,11 @@ namespace Autofac.Component
     {
         Service _id;
         IEnumerable<Service> _services;
+        IDictionary<string, object> _extendedProperties = new Dictionary<string, object>();
         IActivator _activator;
         IScope _scope;
 		InstanceOwnership _ownershipModel;
         object _synchRoot = new object();
-        IDictionary<string, object> _extendedProperties = new Dictionary<string, object>();
 
         /// <summary>
         /// Create a new ComponentRegistration.

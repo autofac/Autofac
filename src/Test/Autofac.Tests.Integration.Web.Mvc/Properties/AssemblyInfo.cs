@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Autofac.Tests.Integration.Mvc")]
+[assembly: AssemblyTitle("Autofac.Tests.Integration.Web.Mvc")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("<Not Specified>")]
-[assembly: AssemblyProduct("Autofac.Tests.Integration.Mvc")]
-[assembly: AssemblyCopyright("Copyright © <Not Specified> 2007")]
+[assembly: AssemblyProduct("Autofac.Tests.Integration.Web.Mvc")]
+[assembly: AssemblyCopyright("Copyright © <Not Specified> 2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("a5423998-44cb-4670-a0b3-e14a78734527")]
+[assembly: Guid("d1559f84-710b-4fda-98d3-c17cda3367b3")]
 
 // Version information for an assembly consists of the following four values:
 //

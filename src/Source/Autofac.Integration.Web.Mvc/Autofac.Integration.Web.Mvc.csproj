@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{361F2CB1-7049-4FA8-9E73-DDE237742CE1}</ProjectGuid>
+    <ProjectGuid>{73ECC3EF-CE83-4B76-8BE0-F278CC970B6D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Autofac.Tests.Integration.Mvc</RootNamespace>
-    <AssemblyName>Autofac.Tests.Integration.Mvc</AssemblyName>
+    <RootNamespace>Autofac.Integration.Web.Mvc</RootNamespace>
+    <AssemblyName>Autofac.Integration.Web.Mvc</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -33,35 +33,37 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.4.1.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Resource\NUnit\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions, Version=3.6.0.0">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AutofacControllerFactoryFixture.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Source\Autofac.Integration.Mvc\Autofac.Integration.Mvc.csproj">
-      <Project>{23347779-903B-49C2-9AF7-58F49D14521F}</Project>
-      <Name>Autofac.Integration.Mvc</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Source\Autofac\Autofac.csproj">
-      <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
-      <Name>Autofac</Name>
-    </ProjectReference>
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Mvc" />
+    <Reference Include="System.Web.Routing" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Autofac.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\VersionAssemblyInfo.cs">
+      <Link>Properties\VersionAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="AutofacControllerFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Autofac.Integration.Web\Autofac.Integration.Web.csproj">
+      <Project>{4BDD9D14-BACA-416C-919E-E9FF100F8F5D}</Project>
+      <Name>Autofac.Integration.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Autofac\Autofac.csproj">
+      <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
+      <Name>Autofac</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
