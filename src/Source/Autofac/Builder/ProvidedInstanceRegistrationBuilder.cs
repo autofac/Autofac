@@ -48,7 +48,7 @@ namespace Autofac.Builder
             // Scope of instances is always singleton, this will throw an exception
             // if the default is otherwise.
             return builder.AttachRegistrar<IConcreteRegistrar>(
-            	new ProvidedInstanceRegistrar(instance));
+            	new ProvidedInstanceRegistrar(instance, typeof(T)));
         }
     }
 }

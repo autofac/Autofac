@@ -40,11 +40,21 @@ namespace Autofac.Registrars.ProvidedInstance
         /// Initializes a new instance of the <see cref="ProvidedInstanceRegistrar"/> class.
         /// </summary>
         /// <param name="instance">The instance.</param>
-		public ProvidedInstanceRegistrar(object instance)
-            : base(Enforce.ArgumentNotNull(instance, "instance").GetType())
-		{
-            _instance = instance;
-		}
+        public ProvidedInstanceRegistrar(object instance)
+            : this(instance, Enforce.ArgumentNotNull(instance, "instance").GetType())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProvidedInstanceRegistrar"/> class.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <param name="defaultService">The default service.</param>
+        public ProvidedInstanceRegistrar(object instance, Type defaultService)
+            : base(defaultService)
+        {
+        	_instance = Enforce.ArgumentNotNull(instance, "instance");
+        }
 
         /// <summary>
         /// Creates the activator for the registration.

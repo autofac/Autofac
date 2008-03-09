@@ -33,23 +33,44 @@ using System.Web.Mvc;
 
 namespace Autofac.Integration.Web.Mvc
 {
+    /// <summary>
+    /// Registers 
+    /// </summary>
     public class AutofacControllerModule : Autofac.Builder.Module
     {
-        public AutofacControllerModule()
+        IEnumerable<Assembly> _controllerAssemblies;
+        
+        IControllerIdentificationStrategy _identificationStrategy =
+            new DefaultControllerIdentificationStrategy();
+
+        public AutofacControllerModule(params Assembly[] controllerAssemblies)
         {
-            ControllerAssemblies = new Assembly[0];
-            IdentificationStrategy = new DefaultControllerIdentificationStrategy();
+            if (controllerAssemblies == null)
+                throw new ArgumentNullException("controllerAssemblies");
+
+            _controllerAssemblies = controllerAssemblies;
         }
 
-        public IEnumerable<Assembly> ControllerAssemblies { get; set; }
+        public IControllerIdentificationStrategy IdentificationStrategy
+        {
+            get
+            {
+                return _identificationStrategy;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
 
-        public IControllerIdentificationStrategy IdentificationStrategy { get; set; }
+                _identificationStrategy = value;
+            }
+        }
 
         protected override void Load()
         {
             base.Load();
 
-            var controllerTypes = from assembly in ControllerAssemblies
+            var controllerTypes = from assembly in _controllerAssemblies
                                   from type in assembly.GetTypes()
                                   where typeof(IController).IsAssignableFrom(type) &&
                                     !type.IsAbstract

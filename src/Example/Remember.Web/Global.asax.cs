@@ -8,6 +8,7 @@ using Autofac.Integration.Web;
 using Autofac.Integration.Web.Mvc;
 using Autofac.Builder;
 using System.Reflection;
+using Remember.Model;
 
 namespace Remember.Web
 {
@@ -27,7 +28,7 @@ namespace Remember.Web
 
             routes.Add(new Route("Default.aspx", new MvcRouteHandler())
             {
-                Defaults = new RouteValueDictionary(new { controller = "Home", action = "Index", id = "" }),
+                Defaults = new RouteValueDictionary(new { controller = "Task", action = "Index", id = "" }),
             });
         }
 
@@ -35,9 +36,10 @@ namespace Remember.Web
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterModule(new AutofacControllerModule() {
-                ControllerAssemblies = new[] { Assembly.GetExecutingAssembly() }
-            });
+            builder.RegisterModule(
+                new AutofacControllerModule(Assembly.GetExecutingAssembly()));
+
+            builder.Register(new Task[] { new Task() { Title = "Todo..." } }.AsQueryable<Task>());
 
             _containerProvider = new ContainerProvider(builder.Build());
 

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Remember.Web.Views.Home
+namespace Remember.Web.Views.Task
 {
 
 
