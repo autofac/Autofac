@@ -49,14 +49,14 @@ namespace Autofac.Tests.Integration.Web.Mvc
 			}
         }
 
-        const string ControllerName = "controller";
+        const string HomeControllerName = "Home";
 
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         public void DetectsNullContext()
         {
             var target = CreateTarget();
-            target.CreateController(null, ControllerName);
+            target.CreateController(null, HomeControllerName);
         }
 
         [Test]
@@ -90,8 +90,8 @@ namespace Autofac.Tests.Integration.Web.Mvc
         {
             var builder = new ContainerBuilder();
             builder.Register<StubController>()
-                .WithScope(InstanceScope.Factory)
-                .Named(ControllerName);
+            	.FactoryScoped()
+            	.Named("controller." + HomeControllerName.ToLowerInvariant());
             var container = builder.Build();
 
             var httpContext = new StubContext();
@@ -99,7 +99,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
 
             var provider = new StubContainerProvider(container);
             var target = new AutofacControllerFactory(provider);
-            var controller = target.CreateController(context, ControllerName);
+            var controller = target.CreateController(context, HomeControllerName);
 
             Assert.IsNotNull(controller);
             Assert.IsInstanceOfType(typeof(StubController), controller);

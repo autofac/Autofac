@@ -37,10 +37,12 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Mvc" />
     <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Autofac.snk" />
@@ -53,6 +55,9 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AutofacControllerFactory.cs" />
+    <Compile Include="AutofacControllerModule.cs" />
+    <Compile Include="DefaultControllerIdentificationStrategy.cs" />
+    <Compile Include="IControllerIdentificationStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

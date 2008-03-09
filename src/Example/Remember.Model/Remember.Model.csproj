@@ -5,15 +5,13 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{7703FA48-EA10-4B96-BEFA-DA64729E0C8A}</ProjectGuid>
+    <ProjectGuid>{225D06BB-05C9-4C2E-BE28-8E77DC0C67EE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Autofac.Tests.Integration.Web.Mvc</RootNamespace>
-    <AssemblyName>Autofac.Tests.Integration.Web.Mvc</AssemblyName>
+    <RootNamespace>Remember.Model</RootNamespace>
+    <AssemblyName>Remember.Model</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>Autofac.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,42 +31,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.4.1.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Resource\NUnit\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Abstractions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Web.Mvc, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Web.Routing, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutofacControllerFactoryFixture.cs" />
-    <Compile Include="DefaultControllerIdentificationStrategyFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Source\Autofac.Integration.Web.Mvc\Autofac.Integration.Web.Mvc.csproj">
-      <Project>{73ECC3EF-CE83-4B76-8BE0-F278CC970B6D}</Project>
-      <Name>Autofac.Integration.Web.Mvc</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Source\Autofac.Integration.Web\Autofac.Integration.Web.csproj">
-      <Project>{4BDD9D14-BACA-416C-919E-E9FF100F8F5D}</Project>
-      <Name>Autofac.Integration.Web</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Source\Autofac\Autofac.csproj">
-      <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
-      <Name>Autofac</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Autofac.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
