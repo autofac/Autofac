@@ -1,3 +1,4 @@
 These prerequisites are not distributed within this folder and must be installed separately
 
-ASP.NET MVC techology preview or later
+ASP.NET MVC Preview 2 (MIX drop) or later
+http://www.microsoft.com/downloads/details.aspx?FamilyID=38cc4cf1-773a-47e1-8125-ba3369bf54a3&displaylang=en
