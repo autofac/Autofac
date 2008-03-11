@@ -28,11 +28,22 @@ namespace Autofac.Tests.Builder
         [Test]
         public void ExplicitCtorCalled()
         {
+            var selected = new[] { typeof(A1), typeof(A2) };
+            ResolveTwoCtorsWith(selected);
+        }
+
+        [Test]
+        public void OtherExplicitCtorCalled()
+        {
+            var selected = new[] { typeof(A1) };
+            ResolveTwoCtorsWith(selected);
+        }
+
+        void ResolveTwoCtorsWith(Type[] selected)
+        {
             var cb = new ContainerBuilder();
             cb.Register<A1>();
             cb.Register<A2>();
-
-            var selected = new[] { typeof(A1), typeof(A2) };
 
             cb.Register<TwoCtors>()
                 .UsingConstructor(selected);
