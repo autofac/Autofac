@@ -249,9 +249,9 @@ namespace Autofac.Tests.Builder
             IComponentRegistration registration;
             Assert.IsTrue(container.TryGetDefaultRegistrationFor(new TypedService(typeof(object)), out registration));
 
-            Assert.AreEqual(2, registration.ExtendedProperties.Count);
-            Assert.IsTrue(registration.ExtendedProperties.Contains(p1));
-            Assert.IsTrue(registration.ExtendedProperties.Contains(p2));
+            Assert.AreEqual(2, registration.Descriptor.ExtendedProperties.Count);
+            Assert.IsTrue(registration.Descriptor.ExtendedProperties.Contains(p1));
+            Assert.IsTrue(registration.Descriptor.ExtendedProperties.Contains(p2));
         }
     }
 }

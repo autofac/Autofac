@@ -41,9 +41,7 @@ namespace Autofac.Tags
         /// <summary>
         /// Create a new TaggedRegistration.
         /// </summary>
-        /// <param name="id">The id.</param>
-        /// <param name="services">The services provided by the component.
-        /// Required.</param>
+        /// <param name="descriptor">The descriptor.</param>
         /// <param name="activator">An object with which new component instances
         /// can be created. Required.</param>
         /// <param name="scope">An object that tracks created instances with
@@ -54,25 +52,31 @@ namespace Autofac.Tags
         /// <param name="tag">The tag corresponding to the context in which this
         /// component may be resolved.</param>
 		public TaggedRegistration(
-            Service id,
-            IEnumerable<Service> services,
+            IComponentDescriptor descriptor,
             IActivator activator,
             IScope scope,
 			InstanceOwnership ownershipModel,
 			TTag tag)
-			: base(id, services, activator, scope, ownershipModel)
+			: base(descriptor, activator, scope, ownershipModel)
 		{
             _tag = tag;
         }
-		
+
+        /// <summary>
+        /// Semantically equivalent to ICloneable.Clone().
+        /// </summary>
+        /// <param name="descriptor"></param>
+        /// <param name="activator"></param>
+        /// <param name="newScope"></param>
+        /// <param name="ownershipModel"></param>
+        /// <returns></returns>
 		protected override Registration CreateDuplicate(
-            Service id,
-			IEnumerable<Service> services, 
+            IComponentDescriptor descriptor,
 			IActivator activator, 
 			IScope newScope, 
 			InstanceOwnership ownershipModel)
 		{
-			return new TaggedRegistration<TTag>(id, services, activator, newScope, ownershipModel, _tag);
+			return new TaggedRegistration<TTag>(descriptor, activator, newScope, ownershipModel, _tag);
 		}
 		
         /// <summary>
@@ -106,7 +110,7 @@ namespace Autofac.Tags
             {
                 var container = context.Resolve<IContainer>();
                 if (container.OuterContainer != null)
-                    return container.OuterContainer.Resolve(Id, MakeParameters(parameters));
+                    return container.OuterContainer.Resolve(Descriptor.Id, MakeParameters(parameters));
                 else
                     throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture,
                         TaggedRegistrationResources.TaggedContextNotFound,

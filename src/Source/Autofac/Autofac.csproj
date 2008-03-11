@@ -63,6 +63,13 @@
       <DependentUpon>ActivationParametersResources.resx</DependentUpon>
     </Compile>
     <Compile Include="ComponentRegisteredEventArgs.cs" />
+    <Compile Include="Component\Descriptor.cs" />
+    <Compile Include="Component\DescriptorResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DescriptorResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="IComponentDescriptor.cs" />
     <Compile Include="Registrars\Automatic\AutomaticRegistrar.cs" />
     <Compile Include="Builder\AutomaticRegistrationBuilder.cs" />
     <Compile Include="Builder\ActivatedHandler.cs" />
@@ -265,6 +272,11 @@
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ActivationParametersResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\DescriptorResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DescriptorResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Registrars\ProvidedInstance\ProvidedInstanceRegistrarResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

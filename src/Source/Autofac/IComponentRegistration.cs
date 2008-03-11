@@ -35,15 +35,10 @@ namespace Autofac
     public interface IComponentRegistration : IDisposable
 	{
         /// <summary>
-        /// The services (named and typed) exposed by the component.
+        /// Describes the component registration and the
+        /// services it provides.
         /// </summary>
-        IEnumerable<Service> Services { get; }
-
-        /// <summary>
-        /// A unique identifier for this component (shared in all sub-contexts.)
-        /// This value also appears in Services.
-        /// </summary>
-        Service Id { get; }
+        IComponentDescriptor Descriptor { get; }
 
         /// <summary>
         /// 	<i>Must</i> return a valid instance, or throw
@@ -84,13 +79,5 @@ namespace Autofac
         /// <param name="context">The context in which the instance was activated.</param>
         /// <param name="instance">The instance.</param>
         void InstanceActivated(IContext context, object instance);
-
-        /// <summary>
-        /// Additional data associated with the component.
-        /// </summary>
-        /// <remarks>Note, component registrations are currently copied into
-        /// subcontainers: these properties are shared between all instances of the
-        /// registration in all subcontainers.</remarks>
-        IDictionary<string, object> ExtendedProperties { get; }
     }
 }

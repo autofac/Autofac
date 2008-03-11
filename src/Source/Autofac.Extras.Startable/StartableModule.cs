@@ -81,9 +81,9 @@ namespace Autofac.Extras.Startable
             if (registration == null)
                 throw new ArgumentNullException("registration");
 
-            if (registration.Services.Contains(_myService))
+            if (registration.Descriptor.Services.Contains(_myService))
             {
-                registration.ExtendedProperties[Starter.IsStartablePropertyName] = true;
+                registration.Descriptor.ExtendedProperties[Starter.IsStartablePropertyName] = true;
                 registration.Activated += OnComponentActivated;
             }
         }

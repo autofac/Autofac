@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using Autofac.Component;
@@ -31,7 +32,7 @@ namespace Autofac.Tests.Component
                                  new ProvidedInstanceActivator("Hello"),
                                  new ContainerScope());
 
-            var actualServices = new List<Service>(target.Services);
+            var actualServices = new List<Service>(target.Descriptor.Services);
 
             // Includes Id
             Assert.AreEqual(services.Length + 1, actualServices.Count);
@@ -166,25 +167,34 @@ namespace Autofac.Tests.Component
 		}
 
         [Test]
-        public void ExtendedPropertiesExistInSubcontext()
+        public void SameDescriptorInSubcontext()
         {
             var target = CreateRegistration(
                             new Service[] { new TypedService(typeof(object)) },
                             new ReflectionActivator(typeof(object)),
                             new ContainerScope());
 
-            var property = new KeyValuePair<string, object>("name", "value");
-
-            target.ExtendedProperties.Add(property);
-
-            Assert.AreEqual(1, target.ExtendedProperties.Count);
-            Assert.IsTrue(target.ExtendedProperties.Contains(property));
-
             IComponentRegistration subcontext;
             Assert.IsTrue(target.DuplicateForNewContext(out subcontext));
 
-            Assert.AreEqual(1, subcontext.ExtendedProperties.Count);
-            Assert.IsTrue(subcontext.ExtendedProperties.Contains(property));
+            Assert.AreNotSame(target, subcontext);
+            Assert.AreSame(target.Descriptor, subcontext.Descriptor);
         }
-	}
+
+        [Test]
+        public void SameServiceMultipleTimes()
+        {
+            var target = CreateRegistration(
+                new[] { new TypedService(typeof(object)), new TypedService(typeof(object)) },
+                new ProvidedInstanceActivator(new object()));
+            Assert.AreEqual(
+                1, 
+                target
+                    .Descriptor
+                    .Services
+                    .OfType<TypedService>()
+                    .Where(t => t.ServiceType == typeof(object))
+                    .Count());
+        }
+    }
 }

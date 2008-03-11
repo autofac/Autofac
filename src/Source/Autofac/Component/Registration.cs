@@ -40,9 +40,7 @@ namespace Autofac.Component
 	/// </remarks>
     public class Registration : Disposable, IComponentRegistration
     {
-        Service _id;
-        IEnumerable<Service> _services;
-        IDictionary<string, object> _extendedProperties = new Dictionary<string, object>();
+        IComponentDescriptor _descriptor;
         IActivator _activator;
         IScope _scope;
 		InstanceOwnership _ownershipModel;
@@ -67,61 +65,53 @@ namespace Autofac.Component
             IActivator activator,
             IScope scope,
 			InstanceOwnership ownershipModel)
+        : this(
+            new Descriptor(
+                Enforce.ArgumentNotNull(id, "id"),
+                Enforce.ArgumentNotNull(services, "services"),
+                new Dictionary<string, object>()),
+            activator,
+            scope,
+            ownershipModel)
         {
-            Enforce.ArgumentNotNull(id, "id");
-            Enforce.ArgumentNotNull(services, "services");
-            Enforce.ArgumentNotNull(activator, "activator");
-            Enforce.ArgumentNotNull(scope, "scope");
+        }
 
-            IDictionary<Service, bool> seenServices = new Dictionary<Service, bool>();
-            seenServices.Add(id, true);
+        /// <summary>
+        /// Create a new ComponentRegistration.
+        /// </summary>
+        /// <param name="descriptor">The descriptor.</param>
+        /// <param name="activator">An object with which new component instances
+        /// can be created. Required.</param>
+        /// <param name="scope">An object that tracks created instances with
+        /// respect to their scope of usage, i.e., per-thread, per-call etc.
+        /// Required. Will be disposed when the registration is disposed.</param>
+        /// <param name="ownershipModel">The ownership model that determines
+        /// whether the instances are disposed along with the scope.</param>
+        public Registration(
+            IComponentDescriptor descriptor,
+            IActivator activator,
+            IScope scope,
+            InstanceOwnership ownershipModel)
+        {
+            _descriptor = Enforce.ArgumentNotNull(descriptor, "descriptor");
+            _activator = Enforce.ArgumentNotNull(activator, "activator");
+            _scope = Enforce.ArgumentNotNull(scope, "scope");
 
-            foreach (Service service in services)
-            {
-                if (service == null)
-                    throw new ArgumentException(RegistrationResources.NullServiceProvided);
-
-                if (service != id)
-                {
-                    if (seenServices.ContainsKey(service))
-                        throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-                            RegistrationResources.ServiceAlreadyProvided, service));
-
-                    seenServices.Add(service, true);
-                }
-            }
-
-            _id = id;
-            _services = seenServices.Keys;
-            _activator = activator;
-            _scope = scope;
 			_ownershipModel = ownershipModel;
         }
 
         #region IComponentRegistration Members
 
         /// <summary>
-        /// The services exposed by the component.
+        /// Describes the component registration and the
+        /// services it provides.
         /// </summary>
         /// <value></value>
-        public virtual IEnumerable<Service> Services
+        public IComponentDescriptor Descriptor
         {
             get
             {
-                return _services;
-            }
-        }
-
-        /// <summary>
-        /// A unique identifier for this component (shared in all sub-contexts.)
-        /// This value also appears in Services.
-        /// </summary>
-        /// <value></value>
-        public virtual Service Id
-        {
-            get
-            {
-                return _id;
+                return _descriptor;
             }
         }
 
@@ -188,8 +178,7 @@ namespace Autofac.Component
 			if (!_scope.DuplicateForNewContext(out newScope))
 				return false;
 
-			var duplicateRegistration = CreateDuplicate(Id, Services, _activator, newScope, _ownershipModel);
-			duplicateRegistration._extendedProperties = _extendedProperties;
+			var duplicateRegistration = CreateDuplicate(Descriptor, _activator, newScope, _ownershipModel);
 			duplicate = duplicateRegistration;
             duplicate.Activating += (s, e) => Activating(this, e);
             duplicate.Activated += (s, e) => Activated(this, e);
@@ -201,17 +190,16 @@ namespace Autofac.Component
 		/// Semantically equivalent to ICloneable.Clone().
 		/// </summary>
 		protected virtual Registration CreateDuplicate(
-            Service id,
-			IEnumerable<Service> services,
+            IComponentDescriptor descriptor,
 			IActivator activator,
 			IScope newScope,
 			InstanceOwnership ownershipModel)
 		{
-			Enforce.ArgumentNotNull(services, "services");
+            Enforce.ArgumentNotNull(descriptor, "descriptor");
 			Enforce.ArgumentNotNull(activator, "activator");
 			Enforce.ArgumentNotNull(newScope, "newScope");
 			
-			return new Registration(id, services, _activator, newScope, _ownershipModel);
+			return new Registration(descriptor, _activator, newScope, _ownershipModel);
 		}
 
         /// <summary>
@@ -236,18 +224,6 @@ namespace Autofac.Component
         {
             var activatedArgs = new ActivatedEventArgs(context, this, instance);
             Activated(this, activatedArgs);
-        }
-
-        /// <summary>
-        /// Additional data associated with the component.
-        /// </summary>
-        /// <value></value>
-        /// <remarks>Note, component registrations are currently copied into
-        /// subcontainers: these properties are shared between all instances of the
-        /// registration in all subcontainers.</remarks>
-        public IDictionary<string, object> ExtendedProperties
-        {
-            get { return _extendedProperties; }
         }
 
         #endregion

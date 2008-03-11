@@ -128,7 +128,7 @@ namespace Autofac
 
                 _disposer.AddInstanceForDisposal(registration);
 
-                foreach (Service service in registration.Services)
+                foreach (Service service in registration.Descriptor.Services)
                 {
                     _defaultRegistrations[service] = registration;
                 }
@@ -317,7 +317,7 @@ namespace Autofac
                 if (registrationSource.TryGetRegistration(key, out registration))
                 {
                     bool supported = false;
-                    foreach (Service provided in registration.Services)
+                    foreach (Service provided in registration.Descriptor.Services)
                     {
                         if (provided == key)
                         {

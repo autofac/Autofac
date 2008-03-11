@@ -79,16 +79,6 @@ namespace Autofac.Tests
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
-        public void SameServiceMultipleTimes()
-        {
-            var target = new Container();
-			target.RegisterComponent(CreateRegistration(
-				new[] { new TypedService(typeof(object)), new TypedService(typeof(object)) },
-				new ProvidedInstanceActivator(new object())));
-		}
-
-        [Test]
         public void RegisterComponent()
         {
             var registration = CreateRegistration(
@@ -765,10 +755,10 @@ namespace Autofac.Tests
             var registrations = new List<IComponentRegistration>(container.ComponentRegistrations);
             // The container registers itself :) hence 3 + 1.
             Assert.AreEqual(4, registrations.Count);
-            Assert.IsTrue(registrations[0].Services.Contains(new TypedService(typeof(IContainer))));
-            Assert.IsTrue(registrations[1].Services.Contains(new TypedService(typeof(object))));
-            Assert.IsTrue(registrations[2].Services.Contains(new TypedService(typeof(object))));
-            Assert.IsTrue(registrations[3].Services.Contains(new TypedService(typeof(string))));
+            Assert.IsTrue(registrations[0].Descriptor.Services.Contains(new TypedService(typeof(IContainer))));
+            Assert.IsTrue(registrations[1].Descriptor.Services.Contains(new TypedService(typeof(object))));
+            Assert.IsTrue(registrations[2].Descriptor.Services.Contains(new TypedService(typeof(object))));
+            Assert.IsTrue(registrations[3].Descriptor.Services.Contains(new TypedService(typeof(string))));
         }
 
         [Test]
@@ -794,7 +784,7 @@ namespace Autofac.Tests
             Assert.AreSame(container, eventSender);
             Assert.IsNotNull(args);
             Assert.AreSame(container, args.Container);
-            Assert.IsNotNull(args.ComponentRegistration.Services.FirstOrDefault(
+            Assert.IsNotNull(args.ComponentRegistration.Descriptor.Services.FirstOrDefault(
                 s => s == new TypedService(typeof(object))));
         }
 
@@ -829,7 +819,7 @@ namespace Autofac.Tests
             
             IComponentRegistration defaultRegistration;
             Assert.IsTrue(container.TryGetDefaultRegistrationFor(new TypedService(typeof(object)), out defaultRegistration));
-            Assert.IsTrue(defaultRegistration.Services.Contains(new NamedService("second")));
+            Assert.IsTrue(defaultRegistration.Descriptor.Services.Contains(new NamedService("second")));
         }
 
         [Test]
@@ -864,7 +854,7 @@ namespace Autofac.Tests
         	Assert.IsTrue(inner.TryGetDefaultRegistrationFor(new TypedService(typeof(object)), out r2));
         	
         	Assert.AreNotSame(r1, r2);
-        	Assert.AreEqual(r1.Id, r2.Id);
+            Assert.AreEqual(r1.Descriptor.Id, r2.Descriptor.Id);
         }
     }
 }

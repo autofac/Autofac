@@ -23,49 +23,33 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Linq;
+using System.Collections.Generic;
 
-namespace Autofac.Extras.Startable
+namespace Autofac
 {
     /// <summary>
-    /// Can be used to instantiate an instance of all 'startable' services in
-    /// a container.
+    /// Captures the elements of a component registration that are shared between
+    /// all contexts in which the component can be used.
     /// </summary>
-    class Starter : IStarter
+    public interface IComponentDescriptor
     {
-        IContainer _container;
+        /// <summary>
+        /// The services (named and typed) exposed by the component.
+        /// </summary>
+        IEnumerable<Service> Services { get; }
 
         /// <summary>
-        /// Saved as an extended property to identify a component as startable.
+        /// A unique identifier for this component (shared in all sub-contexts.)
+        /// This value also appears in Services.
         /// </summary>
-        public const string IsStartablePropertyName = "Autofac.Extras.Startable.Starter.IsStartable";
+        Service Id { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Starter"/> class.
+        /// Additional data associated with the component.
         /// </summary>
-        /// <param name="container">The container.</param>
-        public Starter(IContainer container)
-        {
-            if (container == null)
-                throw new ArgumentNullException("container");
-            
-            _container = container;
-        }
-
-        /// <summary>
-        /// Start the startable components.
-        /// </summary>
-        public void Start()
-        {
-            var startableRegistrations =
-                from cr in _container.ComponentRegistrations
-                where cr.Descriptor.ExtendedProperties.ContainsKey(IsStartablePropertyName) &&
-                    (bool)cr.Descriptor.ExtendedProperties[IsStartablePropertyName]
-                select cr.Descriptor.Id;
-
-            foreach (var startable in startableRegistrations)
-                _container.Resolve(startable);
-        }
+        /// <remarks>Note, component registrations are currently copied into
+        /// subcontainers: these properties are shared between all instances of the
+        /// registration in all subcontainers.</remarks>
+        IDictionary<string, object> ExtendedProperties { get; }
     }
 }
