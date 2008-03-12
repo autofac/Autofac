@@ -36,6 +36,7 @@ namespace Autofac.Configuration
 		const string ComponentsPropertyName = "components";
 		const string CollectionsPropertyName = "collections";
         const string DefaultAssemblyPropertyName="defaultAssembly";
+        const string FilesPropertyName = "files";
 
         /// <summary>
         /// Gets the modules to be registered.
@@ -54,14 +55,27 @@ namespace Autofac.Configuration
         /// Gets the components to be registered.
         /// </summary>
         /// <value>The components.</value>
-		[ConfigurationProperty(ComponentsPropertyName, IsRequired = false)]
-		public ComponentElementCollection Components
-		{
-			get
-			{
-				return (ComponentElementCollection)this[ComponentsPropertyName];
-			}
-		}
+        [ConfigurationProperty(ComponentsPropertyName, IsRequired = false)]
+        public ComponentElementCollection Components
+        {
+            get
+            {
+                return (ComponentElementCollection)this[ComponentsPropertyName];
+            }
+        }
+
+        /// <summary>
+        /// Gets additional configuration files.
+        /// </summary>
+        /// <value>The files.</value>
+        [ConfigurationProperty(FilesPropertyName, IsRequired = false)]
+        public FileElementCollection Files
+        {
+            get
+            {
+                return (FileElementCollection)this[FilesPropertyName];
+            }
+        }
 
         /// <summary>
         /// Gets the default assembly to search for types in when not explicitly

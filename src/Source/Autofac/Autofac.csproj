@@ -69,6 +69,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DescriptorResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Configuration\FileElement.cs" />
+    <Compile Include="Configuration\FileElementCollection.cs" />
     <Compile Include="IComponentDescriptor.cs" />
     <Compile Include="Registrars\Automatic\AutomaticRegistrar.cs" />
     <Compile Include="Builder\AutomaticRegistrationBuilder.cs" />

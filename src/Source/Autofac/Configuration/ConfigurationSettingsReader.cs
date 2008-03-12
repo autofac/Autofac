@@ -39,17 +39,41 @@ namespace Autofac.Configuration
     /// </summary>
     public class ConfigurationSettingsReader : IModule
     {
-        const string AutofacSectionName = "autofac";
+        /// <summary>
+        /// The default section name that will be searched for.
+        /// </summary>
+        public const string DefaultSectionName = "autofac";
 
-        SectionHandler _sectionHandler;
+        readonly SectionHandler _sectionHandler;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigurationSettingsReader"/> class.
         /// The reader will look for a 'autofac' section.
         /// </summary>
         public ConfigurationSettingsReader()
-            : this(AutofacSectionName)
+            : this(DefaultSectionName)
         {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConfigurationSettingsReader"/> class.
+        /// </summary>
+        /// <param name="sectionName">Name of the configuration section.</param>
+        /// <param name="configurationFile">The configuration file.</param>
+        public ConfigurationSettingsReader(string sectionName, string configurationFile)
+        {
+            Enforce.ArgumentNotNull(sectionName, "sectionName");
+            Enforce.ArgumentNotNull(configurationFile, "configurationFile");
+            
+            ExeConfigurationFileMap map = new ExeConfigurationFileMap();
+            map.ExeConfigFilename = configurationFile;
+
+            var configuration = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
+            _sectionHandler = (SectionHandler)configuration.GetSection(sectionName);
+
+            if (_sectionHandler == null)
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
+                          ConfigurationSettingsReaderResources.SectionNotFound, sectionName));
         }
 
         /// <summary>
@@ -131,6 +155,16 @@ namespace Autofac.Configuration
                 SetScope(component, registrar);
                 SetOwnership(component, registrar);
                 SetInjectProperties(component, registrar);
+            }
+
+            foreach (FileElement file in _sectionHandler.Files)
+            {
+                var section = DefaultSectionName;
+                if (!string.IsNullOrEmpty(file.Section))
+                    section = file.Section;
+
+                var reader = new ConfigurationSettingsReader(section, file.Name);
+                builder.RegisterModule(reader);
             }
         }
 
