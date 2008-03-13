@@ -35,7 +35,6 @@ namespace Autofac.Component.Scope
 	public class ContainerScope : IScope
 	{
         object _instance;
-        object _synchRoot = new object();
 
         #region IActivationScope Members
 
@@ -60,13 +59,10 @@ namespace Autofac.Component.Scope
         /// There is not instance available.</exception>
         public object GetInstance()
         {
-            lock (_synchRoot)
-            {
-                if (_instance == null)
-                    throw new InvalidOperationException(ContainerScopeResources.InstanceNotAvailable);
+            if (_instance == null)
+                throw new InvalidOperationException(ContainerScopeResources.InstanceNotAvailable);
 
-                return _instance;
-            }
+            return _instance;
         }
 
         /// <summary>
@@ -80,13 +76,10 @@ namespace Autofac.Component.Scope
         {
             Enforce.ArgumentNotNull(instance, "instance");
 
-            lock (_synchRoot)
-            {
-                if (_instance != null)
-                    throw new InvalidOperationException(ContainerScopeResources.ContextScopeViolated);
+            if (_instance != null)
+                throw new InvalidOperationException(ContainerScopeResources.ContextScopeViolated);
 
                 _instance = instance;
-            }
         }
 
         /// <summary>
