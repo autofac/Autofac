@@ -70,7 +70,8 @@ namespace Autofac.Registrars
             var activator = CreateActivator();
             Enforce.NotNull(activator);
 
-            var cr = CreateRegistration(Id, services, activator, Scope.ToIScope(), Ownership, ExtendedProperties);
+            var descriptor = new Descriptor(Id, services, _implementor, ExtendedProperties);
+            var cr = CreateRegistration(descriptor, activator, Scope.ToIScope(), Ownership);
 
             foreach (var activatingHandler in ActivatingHandlers)
                 cr.Activating += activatingHandler;
@@ -86,27 +87,18 @@ namespace Autofac.Registrars
         /// <summary>
         /// Create the registration.
         /// </summary>
-        /// <param name="id">The id.</param>
-        /// <param name="services">Exposed services.</param>
+        /// <param name="descriptor">The descriptor.</param>
         /// <param name="activator">Activator.</param>
         /// <param name="scope">Scope.</param>
         /// <param name="ownership">Ownership model.</param>
-        /// <param name="extendedProperties">The extended properties.</param>
         /// <returns>The registration.</returns>
 		protected virtual IComponentRegistration CreateRegistration(
-            Service id,
-			IEnumerable<Service> services,
+            IComponentDescriptor descriptor,
 			IActivator activator,
 			IScope scope,
-			InstanceOwnership ownership,
-            IDictionary<string, object> extendedProperties)
+			InstanceOwnership ownership)
 		{
-            Enforce.ArgumentNotNull(extendedProperties, "extendedProperties");
-
-			var result = new Registration(id, services, activator, scope, ownership);
-            foreach (var ep in extendedProperties)
-                result.Descriptor.ExtendedProperties.Add(ep);
-            return result;
+			return new Registration(descriptor, activator, scope, ownership);
 		}
 		
 		#endregion

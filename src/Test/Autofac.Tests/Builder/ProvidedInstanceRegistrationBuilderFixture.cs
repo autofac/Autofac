@@ -40,5 +40,18 @@ namespace Autofac.Tests.Builder
                 builder.Register(new object());
         }
 
+        [Test]
+        public void ExposesImplementationType()
+        {
+            var cb = new ContainerBuilder();
+            cb.Register("Hello").As<object>();
+            var container = cb.Build();
+            IComponentRegistration cr;
+            Assert.IsTrue(container.TryGetDefaultRegistrationFor(
+                new TypedService(typeof(object)), out cr));
+            Type implType;
+            Assert.IsTrue(cr.Descriptor.KnownImplementationType(out implType));
+            Assert.AreEqual(typeof(string), implType);
+        }
     }
 }

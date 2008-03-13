@@ -121,12 +121,15 @@ namespace Autofac.Tests.Builder
 			{
 				if (container == null) throw new ArgumentNullException("container");
 				ConfigureCalled = true;
-				container.RegisterComponent(new Registration(
-                    new UniqueService(), 
-					new Service[] { new TypedService(typeof(object)) },
-					new ProvidedInstanceActivator(new object()),
-					new SingletonScope(),
-					InstanceOwnership.Container));
+				container.RegisterComponent(
+                    new Registration(
+                        new Descriptor(
+                            new UniqueService(), 
+					        new Service[] { new TypedService(typeof(object)) },
+                            typeof(object)),
+				        new ProvidedInstanceActivator(new object()),
+				        new SingletonScope(),
+				        InstanceOwnership.Container));
 			}
 
 			#endregion

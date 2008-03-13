@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
+using System;
 
 namespace Autofac
 {
@@ -51,5 +52,18 @@ namespace Autofac
         /// subcontainers: these properties are shared between all instances of the
         /// registration in all subcontainers.</remarks>
         IDictionary<string, object> ExtendedProperties { get; }
+
+        /// <summary>
+        /// For registrations that can determine a single implementation
+        /// type (or most generic implementation type in a hierarchy) this
+        /// method will return true and provide the type through the
+        /// <paramref name="implementationType"/> parameter. For registrations
+        /// where the implementation type cannot be determined in advance, it
+        /// is recommended that the returned instances are inspected as they
+        /// are activated.
+        /// </summary>
+        /// <param name="implementationType">The implementation type.</param>
+        /// <returns>True if an implementation type is known.</returns>
+        bool KnownImplementationType(out Type implementationType);
     }
 }

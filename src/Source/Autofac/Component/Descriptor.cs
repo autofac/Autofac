@@ -35,13 +35,36 @@ namespace Autofac.Component
     /// </summary>
     public class Descriptor : IComponentDescriptor
     {
+        Type _knownImplementationType;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Descriptor"/> class.
+        /// </summary>
+        /// <param name="id">The id. Will be exposed as a service.</param>
+        /// <param name="services">The services. May or may not contain the id.</param>
+        /// <param name="bestKnownImplementationType">Most specific type that can be
+        /// determined as the implementation.</param>
+        public Descriptor(
+            Service id,
+            IEnumerable<Service> services,
+            Type bestKnownImplementationType)
+        : this(id, services, bestKnownImplementationType, new Dictionary<string, object>())
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Descriptor"/> class.
         /// </summary>
         /// <param name="id">The id. Will be exposed as a service.</param>
         /// <param name="services">The services. May or may not contain the id.</param>
         /// <param name="extendedProperties">The extended properties.</param>
-        public Descriptor(Service id, IEnumerable<Service> services, IDictionary<string, object> extendedProperties)
+        /// <param name="bestKnownImplementationType">Most specific type that can be
+        /// determined as the implementation.</param>
+        public Descriptor(
+            Service id, 
+            IEnumerable<Service> services, 
+            Type bestKnownImplementationType,
+            IDictionary<string, object> extendedProperties)
         {
             Id = Enforce.ArgumentNotNull(id, "id");
             
@@ -54,6 +77,10 @@ namespace Autofac.Component
             
             ExtendedProperties = new Dictionary<string, object>(
                 Enforce.ArgumentNotNull(extendedProperties, "extendedProperties"));
+
+            Enforce.ArgumentNotNull(bestKnownImplementationType, "bestKnownImplementationType");
+            if (!bestKnownImplementationType.IsInterface)
+                _knownImplementationType = bestKnownImplementationType;
         }
 
         /// <summary>
@@ -88,6 +115,23 @@ namespace Autofac.Component
         {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// For registrations that can determine a single implementation
+        /// type (or most generic implementation type in a hierarchy) this
+        /// method will return true and provide the type through the
+        /// <paramref name="implementationType"/> parameter. For registrations
+        /// where the implementation type cannot be determined in advance, it
+        /// is recommended that the returned instances are inspected as they
+        /// are activated.
+        /// </summary>
+        /// <param name="implementationType">The implementation type.</param>
+        /// <returns>True if an implementation type is known.</returns>
+        public bool KnownImplementationType(out Type implementationType)
+        {
+            implementationType = _knownImplementationType;
+            return _knownImplementationType != null;
         }
     }
 }

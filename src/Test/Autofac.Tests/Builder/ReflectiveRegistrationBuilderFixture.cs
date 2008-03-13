@@ -114,5 +114,19 @@ namespace Autofac.Tests.Builder
             Assert.IsNotNull(result);
             Assert.AreEqual(pval, result.Prop);
         }
+
+        [Test]
+        public void ExposesImplementationType()
+        {
+            var cb = new ContainerBuilder();
+            cb.Register(typeof(A1)).As<object>();
+            var container = cb.Build();
+            IComponentRegistration cr;
+            Assert.IsTrue(container.TryGetDefaultRegistrationFor(
+                new TypedService(typeof(object)), out cr));
+            Type implType;
+            Assert.IsTrue(cr.Descriptor.KnownImplementationType(out implType));
+            Assert.AreEqual(typeof(A1), implType);
+        }
     }
 }

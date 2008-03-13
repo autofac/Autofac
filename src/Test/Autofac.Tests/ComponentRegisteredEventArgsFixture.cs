@@ -28,6 +28,7 @@ using NUnit.Framework;
 using Autofac.Component;
 using Autofac.Component.Activation;
 using Autofac.Component.Scope;
+using System.Collections.Generic;
 
 namespace Autofac.Tests
 {
@@ -63,8 +64,10 @@ namespace Autofac.Tests
 		private IComponentRegistration CreateRegistration()
 		{
 			return new Registration(
-                new UniqueService(), 
-				new Service[0], 
+                new Descriptor(
+                    new UniqueService(), 
+	    			new Service[0],
+                    typeof(object)),
 				new ReflectionActivator(typeof(object)), 
 				new SingletonScope(),
 				InstanceOwnership.Container);

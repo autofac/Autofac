@@ -15,13 +15,20 @@ namespace Autofac.Tests
     {
     	static IComponentRegistration CreateRegistration(IEnumerable<Service> services, IActivator activator)
     	{
-    		return new Registration(new UniqueService(), services, activator, new SingletonScope(), InstanceOwnership.Container);
+            return CreateRegistration(services, activator, new SingletonScope());
     	}
   	
 	  	static IComponentRegistration CreateRegistration(IEnumerable<Service> services, IActivator activator, IScope scope)
     	{
-            return new Registration(new UniqueService(), services, activator, scope, InstanceOwnership.Container);
-    	}
+            return new Registration(
+                new Descriptor(
+                    new UniqueService(),
+                    services,
+                    typeof(object)),
+                activator,
+                scope,
+                InstanceOwnership.Container);
+        }
 	  	
 		[Test]
 		public void ResolveOptional()

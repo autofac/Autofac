@@ -60,6 +60,11 @@ namespace Autofac.Registrars.Collection
             IList<Service> _items = new List<Service>();
 
             /// <summary>
+            /// Gets the implementation type.
+            /// </summary>
+            public static readonly Type ImplementationType = typeof(List<TItem>);
+
+            /// <summary>
             /// Gets the services that will appear in instances of the list.
             /// </summary>
             /// <value>The items.</value>
@@ -138,7 +143,7 @@ namespace Autofac.Registrars.Collection
         /// <param name="scope">The scope.</param>
         public ServiceListRegistration(Service id, IEnumerable<Service> services, IScope scope)
         : this(
-            new Descriptor(id, services, new Dictionary<string,object>()),
+            new Descriptor(id, services, ServiceListActivator.ImplementationType),
             new ServiceListActivator(),
             scope)
         {

@@ -49,36 +49,6 @@ namespace Autofac.Component
         /// <summary>
         /// Create a new ComponentRegistration.
         /// </summary>
-        /// <param name="id">The id.</param>
-        /// <param name="services">The services provided by the component.
-        /// Required.</param>
-        /// <param name="activator">An object with which new component instances
-        /// can be created. Required.</param>
-        /// <param name="scope">An object that tracks created instances with
-        /// respect to their scope of usage, i.e., per-thread, per-call etc.
-        /// Required. Will be disposed when the registration is disposed.</param>
-        /// <param name="ownershipModel">The ownership model that determines
-        /// whether the instances are disposed along with the scope.</param>
-        public Registration(
-            Service id,
-            IEnumerable<Service> services,
-            IActivator activator,
-            IScope scope,
-			InstanceOwnership ownershipModel)
-        : this(
-            new Descriptor(
-                Enforce.ArgumentNotNull(id, "id"),
-                Enforce.ArgumentNotNull(services, "services"),
-                new Dictionary<string, object>()),
-            activator,
-            scope,
-            ownershipModel)
-        {
-        }
-
-        /// <summary>
-        /// Create a new ComponentRegistration.
-        /// </summary>
         /// <param name="descriptor">The descriptor.</param>
         /// <param name="activator">An object with which new component instances
         /// can be created. Required.</param>

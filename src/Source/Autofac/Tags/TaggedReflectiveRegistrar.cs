@@ -51,23 +51,19 @@ namespace Autofac.Tags
         /// <summary>
         /// Create the registration.
         /// </summary>
-        /// <param name="id">The id.</param>
-        /// <param name="services">Exposed services.</param>
+        /// <param name="descriptor">The descriptor.</param>
         /// <param name="activator">Activator.</param>
         /// <param name="scope">Scope.</param>
         /// <param name="ownership">Ownership model.</param>
-        /// <param name="extendedProperties">The extended properties.</param>
         /// <returns>The registration.</returns>
 		protected override IComponentRegistration CreateRegistration(
-            Service id,
-        	IEnumerable<Service> services, 
+            IComponentDescriptor descriptor,
         	IActivator activator, 
         	IScope scope, 
-        	InstanceOwnership ownership,
-            IDictionary<string,object> extendedProperties)
+        	InstanceOwnership ownership)
 		{
 			return new TaggedRegistration<TTag>(
-                new Descriptor(id, services, extendedProperties),
+                descriptor,
                 activator, 
                 scope, 
                 ownership,

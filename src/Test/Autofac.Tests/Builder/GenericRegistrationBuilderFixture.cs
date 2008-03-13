@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Autofac.Builder;
 using NUnit.Framework;
+using System;
 
 namespace Autofac.Tests.Builder
 {
@@ -21,6 +22,20 @@ namespace Autofac.Tests.Builder
             Assert.IsNotNull(coll2);
             Assert.AreNotSame(coll, coll2);
             Assert.IsTrue(coll.GetType().GetGenericTypeDefinition() == typeof(List<>));
+        }
+
+        [Test]
+        public void ExposesImplementationType()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(List<>)).As(typeof(IEnumerable<>));
+            var container = cb.Build();
+            IComponentRegistration cr;
+            Assert.IsTrue(container.TryGetDefaultRegistrationFor(
+                new TypedService(typeof(IEnumerable<int>)), out cr));
+            Type implType;
+            Assert.IsTrue(cr.Descriptor.KnownImplementationType(out implType));
+            Assert.AreEqual(typeof(List<int>), implType);
         }
     }
 }

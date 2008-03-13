@@ -84,5 +84,19 @@ namespace Autofac.Tests.Builder
         	Assert.IsFalse(dt1.IsDisposed);
         	Assert.IsFalse(dt2.IsDisposed);
         }
+
+        [Test]
+        public void ExposesImplementationType()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterTypesAssignableTo<IController>();
+            var container = cb.Build();
+            IComponentRegistration cr;
+            Assert.IsTrue(container.TryGetDefaultRegistrationFor(
+                new TypedService(typeof(AController)), out cr));
+            Type implType;
+            Assert.IsTrue(cr.Descriptor.KnownImplementationType(out implType));
+            Assert.AreEqual(typeof(AController), implType);
+        }
     }
 }

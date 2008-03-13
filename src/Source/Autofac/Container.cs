@@ -78,8 +78,10 @@ namespace Autofac
         {
             RegisterComponent(
                 new Component.Registration(
-                    new UniqueService(),
-                    new Service[] { new TypedService(typeof(IContainer)) },
+                    new Component.Descriptor(
+                        new UniqueService(),
+                        new Service[] { new TypedService(typeof(IContainer)) },
+                        typeof(Container)),
                     new Component.Activation.ProvidedInstanceActivator(this),
                     new Component.Scope.SingletonScope(),
                     InstanceOwnership.Container));

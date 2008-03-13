@@ -12,17 +12,24 @@ namespace Autofac.Tests.Component
     [TestFixture]
     public class RegistrationFixture
     {
-	  	IComponentRegistration CreateRegistration(IEnumerable<Service> services, IActivator activator)
-    	{
-            return new Registration(new UniqueService(), services, activator, new SingletonScope(), InstanceOwnership.Container);
-    	}
-  	
-	  	IComponentRegistration CreateRegistration(IEnumerable<Service> services, IActivator activator, IScope scope)
-    	{
-            return new Registration(new UniqueService(), services, activator, scope, InstanceOwnership.Container);
-    	}
-  	
-  		[Test]
+        static IComponentRegistration CreateRegistration(IEnumerable<Service> services, IActivator activator)
+        {
+            return CreateRegistration(services, activator, new SingletonScope());
+        }
+
+        static IComponentRegistration CreateRegistration(IEnumerable<Service> services, IActivator activator, IScope scope)
+        {
+            return new Registration(
+                new Descriptor(
+                    new UniqueService(),
+                    services,
+                    typeof(object)),
+                activator,
+                scope,
+                InstanceOwnership.Container);
+        }
+        
+        [Test]
         public void Construct()
         {
             var services = new Service[] { new TypedService(typeof(object)), new TypedService(typeof(string)) };

@@ -26,6 +26,7 @@ using System;
 using Autofac.Component;
 using Autofac.Component.Activation;
 using Autofac.Component.Scope;
+using System.Collections.Generic;
 
 namespace Autofac.Tags
 {
@@ -52,8 +53,10 @@ namespace Autofac.Tags
             {
                 container.RegisterComponent(
                     new Registration(
-                        new UniqueService(),
-                        new[] { new TypedService(typeof(ContextTag<T>)) },
+                        new Descriptor(
+                            new UniqueService(),
+                            new[] { new TypedService(typeof(ContextTag<T>)) },
+                            typeof(ContextTag<T>)),
                         new DelegateActivator((c, p) => new ContextTag<T>()),
                         new ContainerScope(),
                         InstanceOwnership.Container));

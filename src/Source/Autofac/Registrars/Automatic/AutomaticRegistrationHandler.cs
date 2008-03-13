@@ -86,9 +86,13 @@ namespace Autofac.Registrars.Automatic
                 !_predicate(typedService.ServiceType))
                 return false;
 
-            var reg = new Registration(
+            var descriptor = new Descriptor(
                 new UniqueService(),
                 new[] { service },
+                typedService.ServiceType);
+
+            var reg = new Registration(
+                descriptor,
                 new ReflectionActivator(typedService.ServiceType),
                 _scope.ToIScope(),
                 _ownership);
