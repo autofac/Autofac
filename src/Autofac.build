@@ -17,7 +17,7 @@ Resource\NAnt\nant.xsd" default="integrate">
   <property name="AutofacCsproj" value="Source\Autofac\Autofac.csproj" readonly="true"/>
   <property name="DotNet2AssemblyName" value="Autofac.DotNet2" readonly="true"/>
   <property name="AutofacWebCsproj" value="Source\Autofac.Integration.Web\Autofac.Integration.Web.csproj" readonly="true"/>
-  <property name="DotNet2WebAssemblyName" value="Autofac.DotNet2.Integration.Web" readonly="true"/>
+  <property name="DotNet2WebAssemblyName" value="Autofac.DotNet2.Integration.Web" readonly="true"/>  
   <!-- 
 Integration targets
 -->
@@ -93,12 +93,7 @@ Integration targets
     </copy>
     <copy todir="${LibDirectory}" flatten="true">
       <fileset>
-        <include name="Source/Autofac/bin/${ProjectConfig}/**"/>
-        <include name="Source/Autofac.Extras.GeneratedFactories/bin/${ProjectConfig}/**"/>
-        <include name="Source/Autofac.Extras.Startable/bin/${ProjectConfig}/**"/>
-        <include name="Source/Autofac.Integration.Web.Mvc/bin/${ProjectConfig}/**"/>
-        <include name="Source/Autofac.Integration.Wcf/bin/${ProjectConfig}/**"/>
-        <include name="Source/Autofac.Integration.Web/bin/${ProjectConfig}/**"/>
+        <include name="Source/*/bin/${ProjectConfig}/**"/>
       </fileset>
     </copy>
   </target>
