@@ -39,9 +39,9 @@ namespace NMock2
 		/// </summary>
 		public AutoMock()
 		{
-			var mockery = new Mockery();
+			Mockery = new Mockery();
 			var builder = new ContainerBuilder();
-			builder.Register(mockery).OwnedByContainer();
+			builder.Register(Mockery).OwnedByContainer();
 			Container = builder.Build();
 
 			Initialize();

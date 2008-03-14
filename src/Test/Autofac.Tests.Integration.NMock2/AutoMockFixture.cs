@@ -13,6 +13,7 @@ namespace Autofac.Tests.Integration.NMock2
 		{
 			void RunA();
 		}
+
 		public interface IServiceB
 		{
 			void RunB();
@@ -20,7 +21,6 @@ namespace Autofac.Tests.Integration.NMock2
 
 		public sealed class TestComponent
 		{
-
 			private readonly IServiceA _serviceA;
 			private readonly IServiceB _serviceB;
 
@@ -44,28 +44,59 @@ namespace Autofac.Tests.Integration.NMock2
 		{
 			using (var mock = new AutoMock())
 			{
-				var component = mock.Create<TestComponent>();
-
-				Expect.Once.On(mock.Resolve<IServiceB>()).Method("RunB");
-				Expect.Once.On(mock.Resolve<IServiceA>()).Method("RunA");
-
-				component.RunAll();
+				RunReversedTest(mock);
 			}
 		}
 
 		[Test]
-		[ExpectedException(typeof(ExpectationException))]
-		public void UnorderedThrowsException()
+		[ExpectedException(typeof (ExpectationException))]
+		public void OrderedThrowsExceptionOnReversedTest()
 		{
 			using (var mock = AutoMock.GetOrdered())
 			{
-				var component = mock.Create<TestComponent>();
-
-				Expect.Once.On(mock.Resolve<IServiceB>()).Method("RunB");
-				Expect.Once.On(mock.Resolve<IServiceA>()).Method("RunA");
-
-				component.RunAll();
+				RunTest(mock);
 			}
+		}
+
+		[Test]
+		public void UnorderedWorksWithReversedTest()
+		{
+			using (var unordered = AutoMock.GetUnordered())
+			{
+				RunTest(unordered);
+			}
+		}
+
+		[Test]
+		public void ProperInitializationIsPerformed()
+		{
+			AssertProperties(new AutoMock());
+			AssertProperties(AutoMock.GetOrdered());
+			AssertProperties(AutoMock.GetUnordered());
+		}
+
+		private static void AssertProperties(AutoMock mock)
+		{
+			Assert.IsNotNull(mock.Container);
+			Assert.IsNotNull(mock.Mockery);
+		}
+
+		private static void RunTest(AutoMock mock)
+		{
+			Expect.Once.On(mock.Resolve<IServiceB>()).Method("RunB");
+			Expect.Once.On(mock.Resolve<IServiceA>()).Method("RunA");
+
+			var component = mock.Create<TestComponent>();
+			component.RunAll();
+		}
+
+		private static void RunReversedTest(AutoMock mock)
+		{
+			Expect.Once.On(mock.Resolve<IServiceB>()).Method("RunB");
+			Expect.Once.On(mock.Resolve<IServiceA>()).Method("RunA");
+
+			var component = mock.Create<TestComponent>();
+			component.RunAll();
 		}
 	}
 }
