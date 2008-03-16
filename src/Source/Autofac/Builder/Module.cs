@@ -29,7 +29,7 @@ namespace Autofac.Builder
     /// Base class for user-defined modules. Implements IModule on top
     /// of ContainerBuilder.
     /// </summary>
-    public abstract class Module : ContainerBuilder, IModule
+    public abstract class Module : IModule
     {
         /// <summary>
         /// Apply the module to the container.
@@ -38,15 +38,17 @@ namespace Autofac.Builder
         public virtual void Configure(IContainer container)
         {
             Enforce.ArgumentNotNull(container, "container");
-            Load();
-            Build(container);
+            var builder = new ContainerBuilder();
+            Load(builder);
+            builder.Build(container);
             AttachToRegistrations(container);
         }
 
         /// <summary>
         /// Override to add registrations to the container.
         /// </summary>
-        protected virtual void Load() { }
+        /// <param name="builder">The builder.</param>
+        protected virtual void Load(ContainerBuilder builder) { }
 
         /// <summary>
         /// Attach the module to a registration either already existing in

@@ -43,6 +43,10 @@ namespace Autofac.Integration.Web.Mvc
         IControllerIdentificationStrategy _identificationStrategy =
             new DefaultControllerIdentificationStrategy();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AutofacControllerModule"/> class.
+        /// </summary>
+        /// <param name="controllerAssemblies">The controller assemblies.</param>
         public AutofacControllerModule(params Assembly[] controllerAssemblies)
         {
             if (controllerAssemblies == null)
@@ -51,6 +55,10 @@ namespace Autofac.Integration.Web.Mvc
             _controllerAssemblies = controllerAssemblies;
         }
 
+        /// <summary>
+        /// Gets or sets the identification strategy.
+        /// </summary>
+        /// <value>The identification strategy.</value>
         public IControllerIdentificationStrategy IdentificationStrategy
         {
             get
@@ -66,9 +74,16 @@ namespace Autofac.Integration.Web.Mvc
             }
         }
 
-        protected override void Load()
+        /// <summary>
+        /// Adds registrations to the container.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        protected override void Load(ContainerBuilder builder)
         {
-            base.Load();
+            base.Load(builder);
+
+            if (builder == null)
+                throw new ArgumentNullException("builder");
 
             var controllerTypes = from assembly in _controllerAssemblies
                                   from type in assembly.GetTypes()
@@ -78,7 +93,7 @@ namespace Autofac.Integration.Web.Mvc
 
             foreach (var controllerType in controllerTypes)
             {
-                this.Register(controllerType)
+                builder.Register(controllerType)
                     .FactoryScoped()
                     .As(IdentificationStrategy.ServiceForControllerType(controllerType));
             }

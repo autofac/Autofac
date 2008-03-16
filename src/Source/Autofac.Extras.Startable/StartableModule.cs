@@ -61,10 +61,14 @@ namespace Autofac.Extras.Startable
             if (container == null)
                 throw new ArgumentNullException("container");
 
-            if (!container.IsRegistered(typeof(IStarter)))
-                this.Register<Starter>().As<IStarter>().ContainerScoped();
-
             base.Configure(container);
+
+            if (!container.IsRegistered(typeof(IStarter)))
+            {
+                var builder = new ContainerBuilder();
+                builder.Register<Starter>().As<IStarter>().ContainerScoped();
+                builder.Build(container);
+            }
         }
 
         /// <summary>

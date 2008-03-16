@@ -12,9 +12,9 @@ namespace Autofac.Tests.Builder
     {
         class ObjectModule : Module
         {
-            protected override void Load()
+            protected override void Load(ContainerBuilder builder)
             {
-                this.Register(new object());
+                builder.Register(new object());
             }
         }
 
