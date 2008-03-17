@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -44,8 +44,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup Condition="$(TargetFrameworkVersion) == 'v2.0'">
-    <Reference Include="..\..\Resource\LinqBridge\LinqBridge.dll" />
-    <Reference Include="..\Autofac\bin\$(ConfigurationName)\Autofac.DotNet2.dll" />
+    <Reference Include="..\..\Resource\LinqBridge\LinqBridge.dll" />    
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">
@@ -78,7 +77,7 @@
     <Compile Include="UnsetPropertyInjection.cs" />
     <Compile Include="UnsetPropertyInjectionModule.cs" />
   </ItemGroup>
-  <ItemGroup Condition="$(TargetFrameworkVersion) != 'v2.0'">
+  <ItemGroup>
     <ProjectReference Include="..\Autofac\Autofac.csproj">
       <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
       <Name>Autofac</Name>
