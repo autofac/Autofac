@@ -43,7 +43,7 @@ namespace Autofac.Configuration
         /// <summary>
         /// Return the collection as a dictionary.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The collection as a dictionary.</returns>
         public IDictionary<string, object> ToDictionary()
         {
             var result = new Dictionary<string, object>();

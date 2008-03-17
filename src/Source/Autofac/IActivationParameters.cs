@@ -38,7 +38,7 @@ namespace Autofac
         /// </summary>
         /// <typeparam name="T">The parameter type.</typeparam>
         /// <param name="name">The parameter name.</param>
-        /// <returns></returns>
+        /// <returns>The parameter.</returns>
         T Get<T>(string name);
     }
 }

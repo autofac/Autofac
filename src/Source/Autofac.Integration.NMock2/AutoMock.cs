@@ -88,7 +88,7 @@ namespace NMock2
 		/// </summary>
 		/// <typeparam name="T">Service</typeparam>
 		/// <param name="parameters">Optional parameters</param>
-		/// <returns></returns>
+		/// <returns>The (mocked) service.</returns>
 		public T Create<T>(params Parameter[] parameters)
 		{
 			if (!Container.IsRegistered<T>())

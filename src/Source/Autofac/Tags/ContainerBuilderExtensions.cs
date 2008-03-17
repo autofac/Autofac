@@ -43,7 +43,7 @@ namespace Autofac.Tags
         /// <param name="builder">The builder.</param>
         /// <param name="implementor">The implementation type.</param>
         /// <param name="targetContext">The target context.</param>
-        /// <returns></returns>
+        /// <returns>A registrar allowing configuration to continue.</returns>
         public static IReflectiveRegistrar RegisterInContext<TTag>(
             this ContainerBuilder builder,
             Type implementor,
@@ -68,7 +68,7 @@ namespace Autofac.Tags
         /// <param name="builder">The builder.</param>
         /// <param name="activator">The activator.</param>
         /// <param name="targetContext">The target context.</param>
-        /// <returns></returns>
+        /// <returns>A registrar allowing configuration to continue.</returns>
         public static IConcreteRegistrar RegisterInContext<TComponent, TTag>(
             this ContainerBuilder builder,
             ComponentActivatorWithParameters<TComponent> activator,
@@ -93,7 +93,7 @@ namespace Autofac.Tags
         /// <param name="builder">The builder.</param>
         /// <param name="activator">The activator.</param>
         /// <param name="targetContext">The target context.</param>
-        /// <returns></returns>
+        /// <returns>A registrar allowing configuration to continue.</returns>
         public static IConcreteRegistrar RegisterInContext<TActivator, TTag>(
             this ContainerBuilder builder,
             ComponentActivator<TActivator> activator,

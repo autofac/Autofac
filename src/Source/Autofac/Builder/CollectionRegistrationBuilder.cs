@@ -40,7 +40,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <typeparam name="T">Collection item type</typeparam>
         /// <param name="builder">The builder.</param>
-        /// <returns></returns>
+        /// <returns>A registrar allowing configuration to continue.</returns>
         public static IConcreteRegistrar RegisterCollection<T>(this ContainerBuilder builder)
         {
             Enforce.ArgumentNotNull(builder, "builder");
@@ -55,6 +55,7 @@ namespace Autofac.Builder
         /// <typeparam name="TSyntax">The registrar's self-type.</typeparam>
         /// <param name="registrar">The registrar.</param>
         /// <param name="serviceName">Name of the service.</param>
+        /// <returns>A registrar allowing configuration to continue.</returns>
         public static TSyntax MemberOf<TSyntax>(this TSyntax registrar, string serviceName)
             where TSyntax : class, IConcreteRegistrar<TSyntax>
         {
@@ -69,6 +70,7 @@ namespace Autofac.Builder
         /// <typeparam name="TSyntax">The registrar's self-type.</typeparam>
         /// <param name="registrar">The registrar.</param>
         /// <param name="serviceType">Type of the service.</param>
+        /// <returns>A registrar allowing configuration to continue.</returns>
         public static TSyntax MemberOf<TSyntax>(this TSyntax registrar, Type serviceType)
             where TSyntax : class, IConcreteRegistrar<TSyntax>
         {
@@ -83,6 +85,7 @@ namespace Autofac.Builder
         /// <typeparam name="TSyntax">The registrar's self-type.</typeparam>
         /// <param name="registrar">The registrar.</param>
         /// <param name="service">The service.</param>
+        /// <returns>A registrar allowing configuration to continue.</returns>
         public static TSyntax MemberOf<TSyntax>(this TSyntax registrar, Service service)
             where TSyntax : class, IConcreteRegistrar<TSyntax>
         {

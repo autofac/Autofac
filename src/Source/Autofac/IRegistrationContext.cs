@@ -41,7 +41,7 @@ namespace Autofac
         /// <param name="context">The context that should be used when activating
         /// instances from the registration, or null if these instances can be
         /// activated in the current context.</param>
-        /// <returns></returns>
+        /// <returns>True if the registration exists.</returns>
         bool TryGetRegistration(
             Service key,
             out IComponentRegistration registration,
@@ -55,7 +55,7 @@ namespace Autofac
         /// <param name="registration">The registration result.</param>
         /// <param name="disposer">The disposer that should be used to dispose of instances activated by
         /// the registration.</param>
-        /// <returns></returns>
+        /// <returns>True if the registration exists.</returns>
         bool TryGetLocalRegistration(
             Service key,
             out IComponentRegistration registration,

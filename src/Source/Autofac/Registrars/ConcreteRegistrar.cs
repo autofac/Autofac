@@ -107,7 +107,7 @@ namespace Autofac.Registrars
         /// Setst the name of the registration.
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
+        /// <returns>A registrar allowing configuration to continue.</returns>
         public TSyntax Named(string name)
         {
             AddService(new NamedService(Enforce.ArgumentNotNullOrEmpty(name, "name")));

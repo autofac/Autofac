@@ -40,7 +40,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="predicate">The predicate.</param>
-        /// <returns></returns>
+        /// <returns>A registrar allowing configuration to continue.</returns>
         public static IGenericRegistrar RegisterTypesMatching(
             this ContainerBuilder builder,
             Predicate<Type> predicate)
@@ -56,7 +56,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="assembly">The assembly.</param>
-        /// <returns></returns>
+        /// <returns>A registrar allowing configuration to continue.</returns>
         public static IGenericRegistrar RegisterTypesFromAssembly(
             this ContainerBuilder builder,
             Assembly assembly)
@@ -71,7 +71,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="builder">The builder.</param>
-        /// <returns></returns>
+        /// <returns>A registrar allowing configuration to continue.</returns>
         public static IGenericRegistrar RegisterTypesAssignableTo<T>(
             this ContainerBuilder builder)
         {

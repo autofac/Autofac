@@ -50,7 +50,7 @@ namespace Autofac.Integration.Wcf
         /// Retrieve a service instance from the context.
         /// </summary>
         /// <param name="service"></param>
-        /// <returns></returns>
+        /// <returns>The service instance.</returns>
         public object Resolve(Service service)
         {
             if (service == null)

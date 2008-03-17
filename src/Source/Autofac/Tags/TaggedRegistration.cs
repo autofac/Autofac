@@ -69,8 +69,10 @@ namespace Autofac.Tags
         /// <param name="activator"></param>
         /// <param name="newScope"></param>
         /// <param name="ownershipModel"></param>
-        /// <returns></returns>
-		protected override Registration CreateDuplicate(
+        /// <returns>
+        /// A registrar allowing configuration to continue.
+        /// </returns>
+        protected override Registration CreateDuplicate(
             IComponentDescriptor descriptor,
 			IActivator activator, 
 			IScope newScope, 

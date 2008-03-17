@@ -49,7 +49,7 @@ namespace Autofac.Registrars.Collection
         /// Names the registration.
         /// </summary>
         /// <param name="name">The name.</param>
-        /// <returns></returns>
+        /// <returns>A registrar allowing configuration to continue.</returns>
         public IConcreteRegistrar Named(string name)
         {
             Enforce.ArgumentNotNullOrEmpty(name, "name");
@@ -57,6 +57,13 @@ namespace Autofac.Registrars.Collection
             return Syntax;
         }
 
+        /// <summary>
+        /// Associate services with the registration.
+        /// </summary>
+        /// <param name="services">The services that the registration will expose.</param>
+        /// <returns>
+        /// A registrar allowing registration to continue.
+        /// </returns>
         public IConcreteRegistrar As(params Service[] services)
         {
             Enforce.ArgumentNotNull(services, "services");

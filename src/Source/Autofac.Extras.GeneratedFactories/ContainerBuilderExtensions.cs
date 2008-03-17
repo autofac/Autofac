@@ -45,7 +45,7 @@ namespace Autofac.Extras.GeneratedFactories
         /// <typeparam name="TDelegate">The type of the delegate.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <param name="service">The service that the delegate will return instances of.</param>
-        /// <returns></returns>
+        /// <returns>A registrar allowing configuration to continue.</returns>
         public static IConcreteRegistrar RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder, Service service)
         {
             if (builder == null)
@@ -64,7 +64,7 @@ namespace Autofac.Extras.GeneratedFactories
         /// <typeparam name="TDelegate">The type of the delegate.</typeparam>
         /// <param name="builder">The builder.</param>
         /// <param name="service">The service that the delegate will return instances of.</param>
-        /// <returns></returns>
+        /// <returns>A registrar allowing configuration to continue.</returns>
         public static IConcreteRegistrar RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder)
         {
             if (builder == null)
@@ -129,7 +129,6 @@ namespace Autofac.Extras.GeneratedFactories
 
             return activator.Compile();
         }
-
 
         private static void EnforceTypeIsDelegate(Type delegateType)
         {

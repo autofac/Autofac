@@ -84,7 +84,7 @@ namespace Autofac.Integration.Web
         /// Internal for testability outside of a web application.
         /// </summary>
         /// <param name="handler"></param>
-        /// <returns></returns>
+        /// <returns>The injection behaviour.</returns>
         protected internal IInjectionBehaviour GetInjectionBehaviour(IHttpHandler handler)
         {
             if (handler == null)

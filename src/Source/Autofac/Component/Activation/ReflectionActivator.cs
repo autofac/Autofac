@@ -261,7 +261,7 @@ namespace Autofac.Component.Activation
         /// <param name="ci">The constructor to use.</param>
         /// <param name="context">The context in which the instance is being created.</param>
         /// <param name="parameters">The parameters.</param>
-        /// <returns></returns>
+        /// <returns>The new instance.</returns>
         /// <exception cref="DependencyResolutionException">Parameters were not resolvable.</exception>
         object ConstructInstance(ConstructorInfo ci, IContext context, IActivationParameters parameters)
 		{
@@ -300,9 +300,9 @@ namespace Autofac.Component.Activation
         /// type. Null in yields null out for value types and the default(T)
         /// for value types (this may change.)
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="destinationType"></param>
-        /// <returns></returns>
+        /// <param name="value">The value.</param>
+        /// <param name="destinationType">Type of the destination.</param>
+        /// <returns>An objhect of the destination type.</returns>
         object ChangeType(object value, Type destinationType)
         {
             Enforce.ArgumentNotNull(destinationType, "destinationType");

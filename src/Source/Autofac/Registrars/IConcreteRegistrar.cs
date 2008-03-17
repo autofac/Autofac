@@ -49,14 +49,14 @@ namespace Autofac.Registrars
         /// Associate a name with the registration.
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
+        /// <returns>A registrar allowing configuration to continue.</returns>
         TSyntax Named(string name);
 
         /// <summary>
         /// Associate services with the registration.
         /// </summary>
         /// <param name="services">The services that the registration will expose.</param>
-        /// <returns>A registrar allowing registration to continue.</returns>
+        /// <returns>A registrar allowing configuration to continue.</returns>
         TSyntax As(params Service[] services);
                 
         /// <summary>

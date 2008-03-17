@@ -71,7 +71,7 @@ namespace Autofac.Integration.Web.Mvc
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="controllerName">Name of the controller.</param>
-        /// <returns></returns>
+        /// <returns>The controller.</returns>
         public virtual IController CreateController(RequestContext context, string controllerName)
         {
             if (context == null)

@@ -40,7 +40,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="implementor">The implementor.</param>
-        /// <returns></returns>
+        /// <returns>A registrar allowing configuration to continue.</returns>
         public static IGenericRegistrar RegisterGeneric(this ContainerBuilder builder, Type implementor)
         {
             Enforce.ArgumentNotNull(builder, "builder");

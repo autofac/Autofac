@@ -54,7 +54,7 @@ namespace Autofac.Integration.Web
         /// Override to return a closure that injects properties into a target.
         /// </summary>
         /// <param name="context">The context.</param>
-        /// <returns></returns>
+        /// <returns>The injector.</returns>
         protected abstract Func<object, object> GetInjector(IContext context);
 
         /// <summary>

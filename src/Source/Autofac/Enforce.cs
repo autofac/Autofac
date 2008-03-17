@@ -41,7 +41,7 @@ namespace Autofac
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
         /// <param name="name"></param>
-        /// <returns></returns>
+        /// <returns><paramref name="value"/></returns>
         public static T ArgumentNotNull<T>(T value, string name)
             where T : class
 		{
@@ -59,7 +59,7 @@ namespace Autofac
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value">The value.</param>
-        /// <returns></returns>
+        /// <returns><paramref name="value"/></returns>
         public static T NotNull<T>(T value)
             where T : class
         {
@@ -77,7 +77,7 @@ namespace Autofac
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="description">The description.</param>
-        /// <returns></returns>
+        /// <returns><paramref name="value"/></returns>
         public static string ArgumentNotNullOrEmpty(string value, string description)
         {
             Enforce.ArgumentNotNull(description, "description");

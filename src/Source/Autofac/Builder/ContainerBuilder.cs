@@ -44,7 +44,7 @@ namespace Autofac.Builder
         /// already made will not be affected by changes in this value.
         /// </summary>
         /// <param name="ownership">The new default ownership.</param>
-        /// <returns></returns>
+        /// <returns>An object that when disposed, will restore the original default ownership.</returns>
 		public virtual IDisposable SetDefaultOwnership(InstanceOwnership ownership)
 		{
             InstanceOwnership oldValue = _defaultInstanceOwnership;
@@ -67,6 +67,7 @@ namespace Autofac.Builder
 		/// Set the default <see cref="InstanceScope"/> for new registrations. Registrations
 		/// already made will not be affected by changes in this value.
 		/// </summary>
+        /// <returns>An object that when disposed, will restore the original default scope.</returns>
         public virtual IDisposable SetDefaultScope(InstanceScope scope)
 		{
             InstanceScope oldValue = _defaultInstanceScope;

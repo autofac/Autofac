@@ -270,7 +270,7 @@ namespace Autofac
         /// <param name="registration">The registration result.</param>
         /// <param name="disposer">The disposer that should be used to dispose of instances activated by
         /// the registration.</param>
-        /// <returns></returns>
+        /// <returns>True if a registration is available.</returns>
         bool IRegistrationContext.TryGetLocalRegistration(Service key, out IComponentRegistration registration, out IDisposer disposer)
         {
             Enforce.ArgumentNotNull(key, "key");
