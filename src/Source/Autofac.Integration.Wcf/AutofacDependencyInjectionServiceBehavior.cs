@@ -1,5 +1,6 @@
-﻿// Contributed 2008-01-15 by Petar Andrijasevic
-// Copyright (c) 2008 Autofac Contributors
+﻿// This software is part of the Autofac IoC container
+// Copyright (c) 2007 - 2008 Autofac Contributors
+// http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation

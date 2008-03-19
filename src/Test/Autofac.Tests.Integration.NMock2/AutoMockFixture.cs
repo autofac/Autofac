@@ -1,6 +1,7 @@
 ﻿using NMock2;
 using NMock2.Internal;
 using NUnit.Framework;
+using Autofac.Integration.NMock2;
 
 namespace Autofac.Tests.Integration.NMock2
 {

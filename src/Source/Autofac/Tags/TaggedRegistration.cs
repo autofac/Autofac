@@ -1,6 +1,6 @@
 // This software is part of the Autofac IoC container
-// Copyright (c) 2007 Nicholas Blumhardt
-// nicholas.blumhardt@gmail.com
+// Copyright (c) 2007 - 2008 Autofac Contributors
+// http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
