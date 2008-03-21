@@ -542,19 +542,19 @@ namespace Autofac.Tests
 			cb.Register<object>().WithScope(InstanceScope.Factory);
 			var container = cb.Build();
 
-			bool eventFired = false;
+			int eventCount = 0;
 
 			var context = container.CreateInnerContainer();
 
 			container.Activating += (sender, e) =>
 			{
 				Assert.AreSame(container, sender);
-				eventFired = true;
+				++eventCount;
 			};
 
 			context.Resolve<object>();
 
-			Assert.IsTrue(eventFired);
+			Assert.AreEqual(1, eventCount);
 		}
 
 		class ObjectRegistrationSource : IRegistrationSource

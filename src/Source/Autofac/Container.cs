@@ -110,10 +110,7 @@ namespace Autofac
         /// <returns>A new subcontext.</returns>
         public virtual IContainer CreateInnerContainer()
         {
-            var result = new Container(this);
-            result.Activating += ComponentActivating;
-            result.Activated += ComponentActivated;
-            return result;
+            return new Container(this);
         }
 
         /// <summary>
