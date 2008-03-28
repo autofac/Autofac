@@ -3,3 +3,4 @@ These prerequisites are not distributed within this folder and must be installed
 ASP.NET MVC Preview 2 (MIX drop) or later has to be registered in the global assembly cache
 http://www.microsoft.com/downloads/details.aspx?FamilyID=38cc4cf1-773a-47e1-8125-ba3369bf54a3&displaylang=en
 
+To build the documentation, download the latest Sandcastle and Sandcastle Help File Builder releases from http://www.codeplex.com/Sandcastle and http://www.codeplex.com/SHFB.

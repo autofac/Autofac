@@ -10,12 +10,16 @@ Resource\NAnt\nant.xsd" default="integrate">
 	<property name="LibDirectory" value="Build\Lib"/>
 	<property name="SolutionFile" value="Autofac.sln" readonly="false"/>
 	<property name="LegacySolutionFile" value="Autofac.net20.sln" readonly="true"/>
-	
+  <property name="SandcastleConsoleBuilder" value="C:\Program Files\EWSoftware\Sandcastle Help File Builder\SandcastleBuilderConsole.exe"/>
+  <property name="HelpProject" value="Doc\Autofac.shfb"/>
 	<property name="Version" value="1.0.0.0" readonly="false" overwrite="false"/>
 	<property name="AllowPartiallyTrustedCallers" value="false"/>
 	<property name="TargetFrameworkVersion" value="v3.5"/>
-	<property name="DistribFileName" value="autofac-${Version}"/>	
-	<!-- 
+	<property name="DistribFileName" value="autofac-${Version}"/>
+  <property name="HelpOutputDirectory" value="Doc\Help"/>
+  <property name="HelpOutput" value="${HelpOutputDirectory}\Autofac.chm"/>
+  <property name="HelpFile" value="${DistribDirectory}\${DistribFileName}.chm"/>
+  <!-- 
 Integration targets
 -->
 	<target name="clean">
@@ -24,7 +28,8 @@ Integration targets
 			<property name="TargetPath" value="Temp"/>
 		</msbuild>
 		<delete dir="Build"/>
-		<delete>
+    <delete dir="${HelpOutputDirectory}" />
+    <delete>
 			<fileset>
 				<include name="Source/**/bin/**"/>
 				<include name="Source/**/obj/**"/>
@@ -122,5 +127,9 @@ Composite targets
 		<property name="SolutionFile" value="${LegacySolutionFile}"/>		
 		<property name="DistribFileName" value="${DistribFileName}-net20"/>
 	</target>
+  <target name="doc" depends="build">
+    <exec program="${SandcastleConsoleBuilder}" commandline="${HelpProject}" />
+    <copy file="${HelpOutput}" tofile="${HelpFile}" />
+  </target>
 	<target name="integrate" depends="clean,build,copy,test"/>
 </project>
