@@ -26,7 +26,6 @@ using System;
 using Autofac.Component;
 using Autofac.Component.Activation;
 using Autofac.Component.Scope;
-using System.Collections.Generic;
 
 namespace Autofac.Tags
 {

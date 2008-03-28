@@ -24,7 +24,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using Autofac.Component;
 using Autofac.Registrars.Reflective;
 
