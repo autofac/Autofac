@@ -81,6 +81,7 @@
     <Compile Include="ServiceFixture.cs" />
     <Compile Include="Tags\ContainerBuilderExtensionsFixture.cs" />
     <Compile Include="Tags\ContainerExtensionsFixture.cs" />
+    <Compile Include="Tags\TagsFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\Autofac\Autofac.csproj">

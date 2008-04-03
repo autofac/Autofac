@@ -69,6 +69,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DescriptorResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Component\Scope\SingletonScopeResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SingletonScopeResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Configuration\FileElement.cs" />
     <Compile Include="Configuration\FileElementCollection.cs" />
     <Compile Include="IComponentDescriptor.cs" />
@@ -278,6 +283,11 @@
     <EmbeddedResource Include="Component\DescriptorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DescriptorResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\Scope\SingletonScopeResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SingletonScopeResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Registrars\ProvidedInstance\ProvidedInstanceRegistrarResources.resx">

@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Description" xml:space="preserve">
+    <value>Provided Instance</value>
+  </data>
   <data name="InstanceDoesNotSupportService" xml:space="preserve">
     <value>The component instance '{0}' does not support the service '{1}'.</value>
   </data>

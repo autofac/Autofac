@@ -120,4 +120,10 @@
   <data name="NullServiceProvided" xml:space="preserve">
     <value>The value 'null' is cannot be registered as a valid service.</value>
   </data>
+  <data name="ToStringFormat" xml:space="preserve">
+    <value>Implementor = {0}, Services = [{1}]</value>
+  </data>
+  <data name="UnknownImplementor" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
 </root>

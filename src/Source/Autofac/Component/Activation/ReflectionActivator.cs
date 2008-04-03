@@ -352,5 +352,16 @@ namespace Autofac.Component.Activation
 				}
 			}
 		}
+
+        /// <summary>
+        /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </returns>
+        public override string ToString()
+        {
+            return ReflectionActivatorResources.Description;
+        }
 	}
 }

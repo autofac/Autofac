@@ -120,6 +120,9 @@
   <data name="ComponentDoesNotSupportService" xml:space="preserve">
     <value>The component '{0}' does not support the service '{1}'.</value>
   </data>
+  <data name="Description" xml:space="preserve">
+    <value>Reflective</value>
+  </data>
   <data name="MissingParameter" xml:space="preserve">
     <value>parameter '{0}' of type '{1}' is not resolvable</value>
   </data>

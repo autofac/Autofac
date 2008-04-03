@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac.Component {
+namespace Autofac.Component.Scope {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Autofac.Component {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "2.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class RegistrationResources {
+    internal class SingletonScopeResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal RegistrationResources() {
+        internal SingletonScopeResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Autofac.Component {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Component.RegistrationResources", typeof(RegistrationResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Component.Scope.SingletonScopeResources", typeof(SingletonScopeResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,11 +61,11 @@ namespace Autofac.Component {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}, Activator = {1}, Scope = {2}, Ownership = {3}.
+        ///   Looks up a localized string similar to Singleton.
         /// </summary>
-        internal static string ToStringFormat {
+        internal static string Description {
             get {
-                return ResourceManager.GetString("ToStringFormat", resourceCulture);
+                return ResourceManager.GetString("Description", resourceCulture);
             }
         }
     }

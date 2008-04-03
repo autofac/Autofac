@@ -203,5 +203,19 @@ namespace Autofac.Tests.Component
                     .Where(t => t.ServiceType == typeof(object))
                     .Count());
         }
+
+        [Test]
+        public void ToStringDescribesComponent()
+        {
+            var target = CreateRegistration(
+                new[] { new TypedService(typeof(object)) },
+                new ProvidedInstanceActivator(new object()));
+
+            Assert.AreEqual(
+        		"Implementor = System.Object, Services = [" + target.Descriptor.Id.ToString() +
+        		", System.Object], Activator = Provided Instance, Scope = Singleton, Ownership " +
+        		"= Container",
+                target.ToString());
+        }
     }
 }

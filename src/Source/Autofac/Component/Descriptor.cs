@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 
 namespace Autofac.Component
 {
@@ -131,6 +132,25 @@ namespace Autofac.Component
         {
             implementationType = _knownImplementationType;
             return _knownImplementationType != null;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </returns>
+        public override string ToString()
+        {
+            var implementorDescription = DescriptorResources.UnknownImplementor;
+            if (_knownImplementationType != null)
+                implementorDescription = _knownImplementationType.FullName;
+
+            var servicesDescription = string.Join(", ", Services.Select(s => s.Description).ToArray());
+
+            return string.Format(CultureInfo.CurrentCulture, DescriptorResources.ToStringFormat,
+                implementorDescription,
+                servicesDescription);
         }
     }
 }

@@ -100,5 +100,16 @@ namespace Autofac.Component.Activation
 				return false;
 			}
 		}
+
+        /// <summary>
+        /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </returns>
+        public override string ToString()
+        {
+            return ProvidedInstanceActivatorResources.Description;
+        }
 	}
 }

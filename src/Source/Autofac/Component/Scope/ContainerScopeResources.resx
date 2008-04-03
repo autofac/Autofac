@@ -120,6 +120,9 @@
   <data name="ContextScopeViolated" xml:space="preserve">
     <value>A context activation scope can only contain one instance, and the current instance has already been set.</value>
   </data>
+  <data name="Description" xml:space="preserve">
+    <value>Container</value>
+  </data>
   <data name="InstanceNotAvailable" xml:space="preserve">
     <value>The contextual instance has not been created. Check for this condition with InstanceAvailable before calling GetInstance().</value>
   </data>

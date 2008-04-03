@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Globalization;
 
 namespace Autofac.Component
 {
@@ -41,7 +42,7 @@ namespace Autofac.Component
         IComponentDescriptor _descriptor;
         IActivator _activator;
         IScope _scope;
-		InstanceOwnership _ownershipModel;
+        InstanceOwnership _ownershipModel;
         object _synchRoot = new object();
 
         /// <summary>
@@ -111,14 +112,14 @@ namespace Autofac.Component
                 }
                 else
                 {
-                    instance = _activator.ActivateInstance(context, parameters);
+                    instance = Activator.ActivateInstance(context, parameters);
 
                     var activatingArgs = new ActivatingEventArgs(context, this, instance);
                     Activating(this, activatingArgs);
 
                     instance = activatingArgs.Instance;
 
-                    if (_ownershipModel == InstanceOwnership.Container && instance is IDisposable)
+                    if (OwnershipModel == InstanceOwnership.Container && instance is IDisposable)
                         disposer.AddInstanceForDisposal((IDisposable)instance);
 
                     _scope.SetInstance(instance);
@@ -140,13 +141,13 @@ namespace Autofac.Component
 			duplicate = null;
 
 			IScope newScope;
-			if (!_activator.CanSupportNewContext)
+			if (!Activator.CanSupportNewContext)
 				return false;
 
 			if (!_scope.DuplicateForNewContext(out newScope))
 				return false;
 
-			var duplicateRegistration = CreateDuplicate(Descriptor, _activator, newScope, _ownershipModel);
+			var duplicateRegistration = CreateDuplicate(Descriptor, Activator, newScope, OwnershipModel);
 			duplicate = duplicateRegistration;
             duplicate.Activating += (s, e) => Activating(this, e);
             duplicate.Activated += (s, e) => Activated(this, e);
@@ -167,7 +168,7 @@ namespace Autofac.Component
 			Enforce.ArgumentNotNull(activator, "activator");
 			Enforce.ArgumentNotNull(newScope, "newScope");
 			
-			return new Registration(descriptor, _activator, newScope, _ownershipModel);
+			return new Registration(descriptor, Activator, newScope, OwnershipModel);
 		}
 
         /// <summary>
@@ -203,6 +204,41 @@ namespace Autofac.Component
         protected internal IScope Scope
         {
             get { return _scope; }
+        }
+
+        /// <summary>
+        /// Gets the activator.
+        /// </summary>
+        /// <value>The activator.</value>
+        IActivator Activator
+        {
+            get { return _activator; }
+        }
+
+        /// <summary>
+        /// Gets the ownership model.
+        /// </summary>
+        /// <value>The ownership model.</value>
+        InstanceOwnership OwnershipModel
+        {
+            get { return _ownershipModel; }
+        }
+
+        /// <summary>
+        /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Format(
+                CultureInfo.CurrentCulture, 
+                RegistrationResources.ToStringFormat, 
+                Descriptor,
+                Activator,
+                Scope,
+                OwnershipModel);
         }
     }
 }

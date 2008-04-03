@@ -68,5 +68,23 @@ namespace Autofac.Component {
                 return ResourceManager.GetString("NullServiceProvided", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implementor = {0}, Services = [{1}].
+        /// </summary>
+        internal static string ToStringFormat {
+            get {
+                return ResourceManager.GetString("ToStringFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown.
+        /// </summary>
+        internal static string UnknownImplementor {
+            get {
+                return ResourceManager.GetString("UnknownImplementor", resourceCulture);
+            }
+        }
     }
 }
