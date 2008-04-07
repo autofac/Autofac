@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CircularDependency" xml:space="preserve">
-    <value>Circular component dependency detected</value>
+    <value>Circular component dependency detected: {0}.</value>
   </data>
   <data name="MaxDepthExceeded" xml:space="preserve">
     <value>Probable circular dependency between factory-scoped components. Chain includes '{0}'</value>

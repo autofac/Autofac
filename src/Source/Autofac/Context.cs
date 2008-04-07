@@ -289,8 +289,7 @@ namespace Autofac
             instance = null;
             if (++_resolveDepth > MaxResolveDepth)
                 throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture,
-                    ContextResources.MaxDepthExceeded,
-                    service));
+                    ContextResources.MaxDepthExceeded, service));
 
             try
             {
@@ -304,54 +303,33 @@ namespace Autofac
                     return specificContext.TryResolve(service, out instance, parameters);
 
                 if (IsCircularDependency(service))
-                {
-                    string dependencyGraph = "";
-
-                    foreach (Service requestor in _componentResolutionStack)
-                        dependencyGraph = requestor.Description + " -> " + dependencyGraph;
-
-                    dependencyGraph += service.Description;
-
                     throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture,
-                        "{0} ({1}.)", ContextResources.CircularDependency, dependencyGraph));
-                }
-                else
+                        ContextResources.CircularDependency, CreateDependencyGraphTo(service)));
+
+                bool newInstance;
+                var activationParams = MakeActivationParameters(parameters);
+                _componentResolutionStack.Push(service);
+                try
                 {
-                    bool newInstance;
-                    var activationParams = MakeActivationParameters(parameters);
-                    _componentResolutionStack.Push(service);
-                    try
-                    {
-                        instance = registration.ResolveInstance(this, activationParams, disposer, out newInstance);
+                    instance = registration.ResolveInstance(this, activationParams, disposer, out newInstance);
 
-                        if (newInstance)
-                            _activations.Add(new Activation(this, registration, instance));
-                    }
-                    finally
-                    {
-                        _componentResolutionStack.Pop();
-                    }
-
-                    if (_componentResolutionStack.Count == 0)
-                        ActivationsComplete();
-
-                    return true;
+                    if (newInstance)
+                        _activations.Add(new Activation(this, registration, instance));
                 }
+                finally
+                {
+                    _componentResolutionStack.Pop();
+                }
+
+                if (_componentResolutionStack.Count == 0)
+                    ActivationsComplete();
+
+                return true;
             }
             finally
             {
                 --_resolveDepth;
             }
-        }
-
-        private bool IsCircularDependency(Service service)
-        {
-            Enforce.ArgumentNotNull(service, "service");
-
-            if (!_componentResolutionStack.Contains(service))
-                return false;
-
-            return (_componentResolutionStack.Count(i => i == service) > 2);
         }
 
         /// <summary>
@@ -500,6 +478,25 @@ namespace Autofac
             _activations = new List<Activation>();
             foreach (Activation activation in activations)
                 activation.Activated();
+        }
+
+        string CreateDependencyGraphTo(Service service)
+        {
+            Enforce.ArgumentNotNull(service, "service");
+
+            string dependencyGraph = service.Description;
+
+            foreach (Service requestor in _componentResolutionStack)
+                dependencyGraph = requestor.Description + " -> " + dependencyGraph;
+
+            return dependencyGraph;
+        }
+
+        bool IsCircularDependency(Service service)
+        {
+            Enforce.ArgumentNotNull(service, "service");
+
+            return _componentResolutionStack.Count(i => i == service) > 1;
         }
     }
 }
