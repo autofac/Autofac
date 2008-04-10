@@ -65,18 +65,6 @@ namespace Autofac
         IDisposer Disposer { get; }
 
         /// <summary>
-        /// Fired when a new instance is being activated. The instance can be
-        /// wrapped or switched at this time by setting the Instance property in
-        /// the provided event arguments.
-        /// </summary>
-        event EventHandler<ActivatingEventArgs> Activating;
-
-        /// <summary>
-        /// Fired when the activation process for a new instance is complete.
-        /// </summary>
-        event EventHandler<ActivatedEventArgs> Activated;
-
-        /// <summary>
         /// If the container is an inner container, retrieves the outer container.
         /// Otherwise, null;
         /// </summary>

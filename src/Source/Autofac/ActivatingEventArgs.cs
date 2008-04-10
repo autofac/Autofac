@@ -42,7 +42,7 @@ namespace Autofac
         /// <param name="context">The context.</param>
         /// <param name="component">The component.</param>
         /// <param name="instance">The instance.</param>
-		internal ActivatingEventArgs(IContext context, IComponentRegistration component, object instance)
+		public ActivatingEventArgs(IContext context, IComponentRegistration component, object instance)
 		{
 			Context = context;
 			Component = component;

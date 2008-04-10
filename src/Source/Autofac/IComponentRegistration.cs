@@ -59,6 +59,13 @@ namespace Autofac
 		/// <returns>True if the duplicate was created.</returns>
 		bool DuplicateForNewContext(out IComponentRegistration duplicate);
 
+        /// <summary>
+        /// Fired when a new instance is required. The instance can be
+        /// provided in order to skip the regular activator, by setting the Instance property in
+        /// the provided event arguments.
+        /// </summary>
+        event EventHandler<PreparingEventArgs> Preparing;
+
 		/// <summary>
 		/// Fired when a new instance is being activated. The instance can be
 		/// wrapped or switched at this time by setting the Instance property in

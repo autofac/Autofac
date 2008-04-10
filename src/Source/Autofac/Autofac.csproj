@@ -77,6 +77,7 @@
     <Compile Include="Configuration\FileElement.cs" />
     <Compile Include="Configuration\FileElementCollection.cs" />
     <Compile Include="IComponentDescriptor.cs" />
+    <Compile Include="PreparingEventArgs.cs" />
     <Compile Include="Registrars\Automatic\AutomaticRegistrar.cs" />
     <Compile Include="Builder\AutomaticRegistrationBuilder.cs" />
     <Compile Include="Builder\ActivatedHandler.cs" />

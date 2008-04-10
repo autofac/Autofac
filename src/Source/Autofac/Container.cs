@@ -132,9 +132,6 @@ namespace Autofac
                     _defaultRegistrations[service] = registration;
                 }
 
-                registration.Activating += ComponentActivating;
-                registration.Activated += ComponentActivated;
-
                 FireComponentRegistered(registration);
             }
 		}
@@ -370,34 +367,6 @@ namespace Autofac
         }
 
         #endregion
-
-        #region Event Support
-
-        /// <summary>
-		/// Fired when a new instance is being activated. The instance can be
-		/// wrapped or switched at this time by setting the Instance property in
-		/// the provided event arguments.
-		/// </summary>
-		public event EventHandler<ActivatingEventArgs> Activating = (sender, e) => { };
-
-		/// <summary>
-		/// Fired when the activation process for a new instance is complete.
-		/// </summary>
-		public event EventHandler<ActivatedEventArgs> Activated = (sender, e) => { };
-
-        void ComponentActivating(object sender, ActivatingEventArgs e)
-        {
-            // The context will always be locked at this point.
-            Activating(this, e);
-        }
-
-        void ComponentActivated(object sender, ActivatedEventArgs e)
-        {
-            // The context will always be locked at this point.
-            Activated(this, e);
-        }
-
-		#endregion
 
         #region IDisposable Support
 

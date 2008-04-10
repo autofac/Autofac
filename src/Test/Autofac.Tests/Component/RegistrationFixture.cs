@@ -188,6 +188,37 @@ namespace Autofac.Tests.Component
             Assert.AreSame(target.Descriptor, subcontext.Descriptor);
         }
 
+
+        [Test]
+        public void ActivatingFiredInSubcontext()
+        {
+            var target = CreateRegistration(
+                            new Service[] { new TypedService(typeof(object)) },
+                            new ReflectionActivator(typeof(object)),
+                            new ContainerScope());
+
+            IComponentRegistration subcontext;
+            Assert.IsTrue(target.DuplicateForNewContext(out subcontext));
+
+            int targetEventCount = 0;
+            target.Activating += (sender, e) =>
+            {
+                ++targetEventCount;
+            };
+
+            int subContextEventCount = 0;
+            subcontext.Activating += (sender, e) =>
+            {
+                ++subContextEventCount;
+            };
+
+            bool newInstance;
+            subcontext.ResolveInstance(Context.Empty, ActivationParameters.Empty, new Disposer(), out newInstance);
+
+            Assert.AreEqual(1, targetEventCount);
+            Assert.AreEqual(1, subContextEventCount);
+        }
+
         [Test]
         public void SameServiceMultipleTimes()
         {
@@ -216,6 +247,45 @@ namespace Autofac.Tests.Component
         		", System.Object], Activator = Provided Instance, Scope = Singleton, Ownership " +
         		"= Container",
                 target.ToString());
+        }
+
+        [Test]
+        public void ParameterChangesThroughPreparing()
+        {
+            var p1 = "one";
+            var p2 = "two";
+
+            var target = CreateRegistration(
+                new[] { new TypedService(typeof(object)) },
+                new DelegateActivator((c, p) => p.Get<string>("p1") + p.Get<string>("p2")));
+
+            var providedParams = new ActivationParameters();
+            providedParams.Add("p1", p1);
+
+            target.Preparing += (s, e) => e.Parameters.Add("p2", p2);
+
+            bool newInstance;
+            var result = target.ResolveInstance(Context.Empty, providedParams, new Disposer(), out newInstance);
+
+            Assert.AreEqual(p1 + p2, result);
+        }
+
+        [Test]
+        public void InstanceSuppliedThroughPreparing()
+        {
+            var activatorProvidedInstance = new object();
+            var eventProvidedInstance = new object();
+
+            var target = CreateRegistration(
+                new[] { new TypedService(typeof(object)) },
+                new ProvidedInstanceActivator(activatorProvidedInstance));
+
+            target.Preparing += (s, e) => e.Instance = eventProvidedInstance;
+
+            bool newInstance;
+            var result = target.ResolveInstance(Context.Empty, ActivationParameters.Empty, new Disposer(), out newInstance);
+
+            Assert.AreEqual(eventProvidedInstance, result);
         }
     }
 }

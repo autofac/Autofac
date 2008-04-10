@@ -112,7 +112,11 @@ namespace Autofac.Component
                 }
                 else
                 {
-                    instance = Activator.ActivateInstance(context, parameters);
+                    var preparingArgs = new PreparingEventArgs(context, this, parameters);
+                    Preparing(this, preparingArgs);
+
+                    instance = preparingArgs.Instance ??
+                        Activator.ActivateInstance(context, preparingArgs.Parameters);
 
                     var activatingArgs = new ActivatingEventArgs(context, this, instance);
                     Activating(this, activatingArgs);
@@ -149,6 +153,7 @@ namespace Autofac.Component
 
 			var duplicateRegistration = CreateDuplicate(Descriptor, Activator, newScope, OwnershipModel);
 			duplicate = duplicateRegistration;
+            duplicate.Preparing += (s, e) => Preparing(this, e);
             duplicate.Activating += (s, e) => Activating(this, e);
             duplicate.Activated += (s, e) => Activated(this, e);
 
@@ -170,6 +175,13 @@ namespace Autofac.Component
 			
 			return new Registration(descriptor, Activator, newScope, OwnershipModel);
 		}
+
+        /// <summary>
+        /// Fired when a new instance is required. The instance can be
+        /// provided in order to skip the regular activator, by setting the Instance property in
+        /// the provided event arguments.
+        /// </summary>
+		public event EventHandler<PreparingEventArgs> Preparing = (sender, e) => { };
 
         /// <summary>
         /// Fired when a new instance is being activated. The instance can be

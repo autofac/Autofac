@@ -459,17 +459,10 @@ namespace Autofac
         IActivationParameters MakeActivationParameters(Parameter[] parameters)
         {
             Enforce.ArgumentNotNull(parameters, "parameters");
-            if (parameters.Length == 0)
-            {
-                return ActivationParameters.Empty;
-            }
-            else
-            {
-                var result = new ActivationParameters();
-                foreach (var namedValue in parameters)
-                    result.Add(namedValue.Name, namedValue.Value);
-                return result;
-            }
+            var result = new ActivationParameters();
+            foreach (var namedValue in parameters)
+                result.Add(namedValue.Name, namedValue.Value);
+            return result;
         }
 
         void ActivationsComplete()
