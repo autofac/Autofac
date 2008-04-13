@@ -56,7 +56,7 @@ namespace Autofac.Extras.GeneratedFactories
 
             var factoryDelegate = GenerateDelegate(typeof(TDelegate), service);
 
-            return builder.Register<TDelegate>((c,p) => (TDelegate)(factoryDelegate(c,p))).WithScope(InstanceScope.Container);
+            return builder.Register<TDelegate>((c,p) => (TDelegate)(factoryDelegate(c.Resolve<IContainer>(), p))).WithScope(InstanceScope.Container);
         }
         /// <summary>
         /// Registers the factory delegate.
