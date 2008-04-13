@@ -257,19 +257,18 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SpecificConstructorSelectorResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Tags\TaggedRegistrationResources.Designer.cs">
+    <Compile Include="Component\TaggedRegistrationResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>TaggedRegistrationResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Tags\ContainerExtensions.cs" />
-    <Compile Include="Tags\ContextTag.cs" />
-    <Compile Include="Tags\ContextTagResources.Designer.cs">
+    <Compile Include="ContextTag.cs" />
+    <Compile Include="ContextTagResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ContextTagResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Tags\TaggedRegistration.cs" />
+    <Compile Include="Component\TaggedRegistration.cs" />
     <Compile Include="TypedService.cs" />
     <Compile Include="UniqueService.cs" />
   </ItemGroup>
@@ -389,12 +388,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>GuardResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tags\TaggedRegistrationResources.resx">
+    <EmbeddedResource Include="Component\TaggedRegistrationResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>TaggedRegistrationResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tags\ContextTagResources.resx">
+    <EmbeddedResource Include="ContextTagResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ContextTagResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>

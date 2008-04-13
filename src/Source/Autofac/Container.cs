@@ -214,6 +214,33 @@ namespace Autofac
             IContext unused2;
             return ((IRegistrationContext)this).TryGetRegistration(service, out registration, out unused, out unused2);
         }
+
+        /// <summary>
+        /// Enables context tagging in the container.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tag">The tag applied to this container and the contexts genrated when
+        /// it resolves component dependencies.</param>
+        public void TagWith<T>(T tag)
+        {
+        	lock(_synchRoot)
+        	{
+	            if (!IsRegistered<ContextTag<T>>())
+	            {
+	                RegisterComponent(
+	                    new Component.Registration(
+	                        new Component.Descriptor(
+	                            new UniqueService(),
+	                            new[] { new TypedService(typeof(ContextTag<T>)) },
+	                            typeof(ContextTag<T>)),
+	                        new Component.Activation.DelegateActivator((c, p) => new ContextTag<T>()),
+	                        new Component.Scope.ContainerScope(),
+	                        InstanceOwnership.Container));
+	            }
+	
+	            Resolve<ContextTag<T>>().Tag = tag;
+        	}
+        }
         
         #endregion
 

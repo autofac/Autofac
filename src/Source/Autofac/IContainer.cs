@@ -88,5 +88,13 @@ namespace Autofac
         /// <param name="registration">The registration.</param>
         /// <returns>True if a default exists, false otherwise.</returns>
         bool TryGetDefaultRegistrationFor(Service service, out IComponentRegistration registration);
+        
+        /// <summary>
+        /// Tags the container with the provided value.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tag">The tag applied to this container and the contexts genrated when
+        /// it resolves component dependencies.</param>
+        void TagWith<T>(T tag);
     }
 }

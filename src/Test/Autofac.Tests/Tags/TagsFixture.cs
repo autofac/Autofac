@@ -1,7 +1,6 @@
 using System;
 using NUnit.Framework;
 using Autofac.Builder;
-using Autofac.Tags;
 
 namespace Autofac.Tests.Tags
 {
@@ -23,10 +22,10 @@ namespace Autofac.Tests.Tags
             builder.Register(c => new HomeController()).InContext("request");
 
             var containerApplication = builder.Build();
-            containerApplication.TagContext("application");
+            containerApplication.TagWith("application");
 
             var containerRequest = containerApplication.CreateInnerContainer();
-            containerRequest.TagContext("request");
+            containerRequest.TagWith("request");
 
             Exception thrown = null;
             try

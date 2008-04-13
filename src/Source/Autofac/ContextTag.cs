@@ -22,9 +22,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-
 using System;
-namespace Autofac.Tags
+
+namespace Autofac
 {
     /// <summary>
     /// Registered in the container to support tagged extensions. Stores the

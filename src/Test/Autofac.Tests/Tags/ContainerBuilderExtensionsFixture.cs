@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using Autofac.Builder;
-using Autofac.Tags;
 
 namespace Autofac.Tests.Tags
 {
@@ -24,13 +23,13 @@ namespace Autofac.Tests.Tags
             	.ContainerScoped();
 
             var outer = builder.Build();
-            outer.TagContext(Tag.Outer);
+            outer.TagWith(Tag.Outer);
 
             var middle = outer.CreateInnerContainer();
-            middle.TagContext(Tag.Middle);
+            middle.TagWith(Tag.Middle);
 
             var inner = middle.CreateInnerContainer();
-            inner.TagContext(Tag.Inner);
+            inner.TagWith(Tag.Inner);
 
             middle.Resolve<string>();
             outer.Resolve<string>();
@@ -51,7 +50,7 @@ namespace Autofac.Tests.Tags
             	.ContainerScoped();
 
             var outer = builder.Build();
-            outer.TagContext(Tag.Outer);
+            outer.TagWith(Tag.Outer);
 
             var anon = outer.CreateInnerContainer();
 
@@ -72,7 +71,7 @@ namespace Autofac.Tests.Tags
             	.ContainerScoped();
             
             var outer = builder.Build();
-            outer.TagContext(Tag.Outer);
+            outer.TagWith(Tag.Outer);
 
             Assert.IsTrue(outer.IsRegistered<string>());
             outer.Resolve<string>();
@@ -91,7 +90,7 @@ namespace Autofac.Tests.Tags
             	.ContainerScoped();
 
             var outer = builder.Build();
-            outer.TagContext(Tag.Outer);
+            outer.TagWith(Tag.Outer);
 
             var s = (string)outer.Resolve(new NamedService(name));
             Assert.IsNotNull(s);
@@ -106,7 +105,7 @@ namespace Autofac.Tests.Tags
                 .InContext(tag)
         		.ContainerScoped();
         	var container = builder.Build();
-        	container.TagContext(tag);
+        	container.TagWith(tag);
         	var inner = container.CreateInnerContainer();
         	var dt = inner.Resolve<DisposeTracker>();
         	Assert.IsFalse(dt.IsDisposed);
@@ -125,7 +124,7 @@ namespace Autofac.Tests.Tags
                 .InContext(tag)
         		.FactoryScoped();
         	var container = builder.Build();
-        	container.TagContext(tag);
+        	container.TagWith(tag);
         	Assert.AreNotSame(container.Resolve<object>(), container.Resolve<object>());
         }
         
@@ -136,7 +135,7 @@ namespace Autofac.Tests.Tags
         	var builder = new ContainerBuilder();
         	builder.Register(c => new object()).InContext(tag);
         	var container = builder.Build();
-        	container.TagContext(tag);
+        	container.TagWith(tag);
         	var inner = container.CreateInnerContainer();
         	Assert.AreSame(container.Resolve<object>(), inner.Resolve<object>());
         }
@@ -148,7 +147,7 @@ namespace Autofac.Tests.Tags
         	var builder = new ContainerBuilder();
         	builder.Register(typeof(object)).InContext(tag);
         	var container = builder.Build();
-        	container.TagContext(tag);
+        	container.TagWith(tag);
         	Assert.IsNotNull(container.Resolve<object>());
         }
         
@@ -163,7 +162,7 @@ namespace Autofac.Tests.Tags
         	DisposeTracker dt1, dt2;
         	using (var container = builder.Build())
         	{
-        		container.TagContext("tag");
+        		container.TagWith("tag");
         		dt1 = container.Resolve<DisposeTracker>();
         		dt2 = container.Resolve<DisposeTracker>();
         	}
@@ -185,7 +184,7 @@ namespace Autofac.Tests.Tags
         	
         	var outer = builder.Build();
         	var inner = outer.CreateInnerContainer();
-        	inner.TagContext("tag");
+        	inner.TagWith("tag");
         	
         	var coll = inner.Resolve<IList<object>>();
         	Assert.IsNotNull(coll);
@@ -211,7 +210,7 @@ namespace Autofac.Tests.Tags
         	
         	var outer = builder.Build();
         	var inner = outer.CreateInnerContainer();
-        	inner.TagContext("tag");
+        	inner.TagWith("tag");
         	
         	var coll = inner.Resolve<IList<object>>();
         	Assert.IsNotNull(coll);
@@ -236,7 +235,7 @@ namespace Autofac.Tests.Tags
         	
         	var outer = builder.Build();
         	var inner = outer.CreateInnerContainer();
-        	inner.TagContext("tag");
+        	inner.TagWith("tag");
         	
         	var coll = inner.Resolve<List<object>>();
         	Assert.IsNotNull(coll);

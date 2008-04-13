@@ -28,7 +28,7 @@ using System.Globalization;
 using System.Linq;
 using Autofac.Component;
 
-namespace Autofac.Tags
+namespace Autofac.Component
 {
 	/// <summary>
 	/// Description of TaggedRegistration.

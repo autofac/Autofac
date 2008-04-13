@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using Autofac.Tags;
 
 namespace Autofac.Tests.Tags
 {
@@ -17,7 +16,7 @@ namespace Autofac.Tests.Tags
             
             var target = new Container();
 
-            target.TagContext(rootTag);
+            target.TagWith(rootTag);
 
             var tag = target.Resolve<ContextTag<string>>();
 
@@ -32,7 +31,7 @@ namespace Autofac.Tests.Tags
             
             var target = new Container();
 
-            target.TagContext(rootTag);
+            target.TagWith(rootTag);
 
             var inner = target.CreateInnerContainer();
 
@@ -48,7 +47,7 @@ namespace Autofac.Tests.Tags
             var rootTag = "Root Tag";
 
             var target = new Container();
-            target.TagContext(rootTag);
+            target.TagWith(rootTag);
 
             var inner = target.CreateInnerContainer();
 
@@ -67,10 +66,10 @@ namespace Autofac.Tests.Tags
 
             var target = new Container();
 
-            target.TagContext(rootTag);
+            target.TagWith(rootTag);
 
             var inner = target.CreateInnerContainer();
-            inner.TagContext(innerTag);
+            inner.TagWith(innerTag);
 
             var tag = inner.Resolve<ContextTag<string>>();
 
