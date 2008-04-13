@@ -144,5 +144,15 @@ namespace Autofac.Registrars
         /// <param name="value">The value.</param>
         /// <returns>A registrar allowing registration to continue.</returns>
         TSyntax WithExtendedProperty(string key, object value);
+
+
+        /// <summary>
+        /// Sets the component to be resolvable only in contexts tagged with the
+        /// provided tag.
+        /// </summary>
+        /// <typeparam name="T">The type of the tag.</typeparam>
+        /// <param name="tag">The tag.</param>
+        /// <returns>A registrar allowing registration to continue.</returns>
+        TSyntax InContext<T>(T tag);
 	}
 }

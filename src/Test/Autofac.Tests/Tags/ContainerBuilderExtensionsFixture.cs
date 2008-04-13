@@ -20,7 +20,7 @@ namespace Autofac.Tests.Tags
 
             int instantiations = 0;
 
-            builder.RegisterInContext(c => { instantiations++; return ""; }, Tag.Outer)
+            builder.Register(c => { instantiations++; return ""; }).InContext(Tag.Outer)
             	.ContainerScoped();
 
             var outer = builder.Build();
@@ -46,7 +46,8 @@ namespace Autofac.Tests.Tags
 
             int instantiations = 0;
 
-            builder.RegisterInContext(c => { instantiations++; return ""; }, Tag.Outer)
+            builder.Register(c => { instantiations++; return ""; })
+                .InContext(Tag.Outer)
             	.ContainerScoped();
 
             var outer = builder.Build();
@@ -66,7 +67,8 @@ namespace Autofac.Tests.Tags
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterInContext(c => "", Tag.Middle)
+            builder.Register(c => "")
+                .InContext(Tag.Middle)
             	.ContainerScoped();
             
             var outer = builder.Build();
@@ -83,7 +85,8 @@ namespace Autofac.Tests.Tags
 
             var builder = new ContainerBuilder();
 
-            builder.RegisterInContext(c => "", Tag.Outer)
+            builder.Register(c => "")
+                .InContext(Tag.Outer)
             	.Named(name)
             	.ContainerScoped();
 
@@ -99,7 +102,8 @@ namespace Autofac.Tests.Tags
         {
         	var tag = "Tag";
         	var builder = new ContainerBuilder();
-        	builder.RegisterInContext(c => new DisposeTracker(), tag)
+        	builder.Register(c => new DisposeTracker())
+                .InContext(tag)
         		.ContainerScoped();
         	var container = builder.Build();
         	container.TagContext(tag);
@@ -117,7 +121,8 @@ namespace Autofac.Tests.Tags
         {
         	var tag = "Tag";
         	var builder = new ContainerBuilder();
-        	builder.RegisterInContext(c => new object(), tag)
+        	builder.Register(c => new object())
+                .InContext(tag)
         		.FactoryScoped();
         	var container = builder.Build();
         	container.TagContext(tag);
@@ -129,7 +134,7 @@ namespace Autofac.Tests.Tags
         {
         	var tag = "Tag";
         	var builder = new ContainerBuilder();
-        	builder.RegisterInContext(c => new object(), tag);
+        	builder.Register(c => new object()).InContext(tag);
         	var container = builder.Build();
         	container.TagContext(tag);
         	var inner = container.CreateInnerContainer();
@@ -141,7 +146,7 @@ namespace Autofac.Tests.Tags
         {
         	var tag = "Tag";
         	var builder = new ContainerBuilder();
-        	builder.RegisterInContext(typeof(object), tag);
+        	builder.Register(typeof(object)).InContext(tag);
         	var container = builder.Build();
         	container.TagContext(tag);
         	Assert.IsNotNull(container.Resolve<object>());
@@ -154,7 +159,7 @@ namespace Autofac.Tests.Tags
         	var builder = new ContainerBuilder();
         	builder.SetDefaultOwnership(InstanceOwnership.External);
         	builder.SetDefaultScope(InstanceScope.Factory);
-        	builder.RegisterInContext(typeof(DisposeTracker), "tag");
+        	builder.Register(typeof(DisposeTracker)).InContext("tag");
         	DisposeTracker dt1, dt2;
         	using (var container = builder.Build())
         	{
@@ -169,5 +174,56 @@ namespace Autofac.Tests.Tags
         	Assert.IsFalse(dt2.IsDisposed);
         }
 
+        [Test]
+        public void CollectionsAreTaggable()
+        {
+        	var builder = new ContainerBuilder();
+        	builder.RegisterCollection<object>()
+        		.FactoryScoped()
+        		.InContext("tag")
+        		.As(typeof(IList<object>));
+        	
+        	var outer = builder.Build();
+        	var inner = outer.CreateInnerContainer();
+        	inner.TagContext("tag");
+        	
+        	var coll = inner.Resolve<IList<object>>();
+        	Assert.IsNotNull(coll);
+        	
+        	bool threw = false;
+        	try {
+        		outer.Resolve<IList<object>>();
+        	} catch (Exception) {
+        		threw = true;
+        	}
+        	
+        	Assert.IsTrue(threw);
+        }
+
+        [Test]
+        public void GenericsAreTaggable()
+        {
+        	var builder = new ContainerBuilder();
+        	builder.RegisterGeneric(typeof(List<>))
+        		.FactoryScoped()
+        		.InContext("tag")
+        		.As(typeof(IList<>));
+        	
+        	var outer = builder.Build();
+        	var inner = outer.CreateInnerContainer();
+        	inner.TagContext("tag");
+        	
+        	var coll = inner.Resolve<IList<object>>();
+        	Assert.IsNotNull(coll);
+        	
+        	bool threw = false;
+        	try {
+        		outer.Resolve<IList<object>>();
+        	} catch (Exception) {
+        		threw = true;
+        	}
+        	
+        	Assert.IsTrue(threw);
+        }
     }
 }

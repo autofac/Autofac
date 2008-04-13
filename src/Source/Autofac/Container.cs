@@ -354,6 +354,10 @@ namespace Autofac
                 {
                     return localRegistration.DuplicateForNewContext(out registration);
                 }
+                else if (TryGetRegistrationFromSources(key, out localRegistration))
+                {
+                	return localRegistration.DuplicateForNewContext(out registration);
+                }
                 else if (_outerContainer != null)
                 {
                     return _outerContainer.TryExportToNewContext(key, out registration);
@@ -387,7 +391,11 @@ namespace Autofac
 
         #region IContext Support
 
-        IContext CreateResolutionContext()
+        /// <summary>
+        /// Creates the context for a single resolve operation.
+        /// </summary>
+        /// <returns>The context.</returns>
+        protected virtual IContext CreateResolutionContext()
         {
             return new Context(this);
         }

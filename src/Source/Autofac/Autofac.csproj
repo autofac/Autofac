@@ -111,6 +111,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RegistrarResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Registrars\RegistrationCreator.cs" />
     <Compile Include="Registrars\RegistrationRegistrar.cs" />
     <Compile Include="Builder\CollectionRegistrationBuilder.cs" />
     <Compile Include="Registrars\Collection\ServiceListRegistration.cs" />
@@ -256,9 +257,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SpecificConstructorSelectorResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Tags\ContainerBuilderExtensions.cs" />
-    <Compile Include="Tags\TaggedDelegateRegistrar.cs" />
-    <Compile Include="Tags\TaggedReflectiveRegistrar.cs" />
     <Compile Include="Tags\TaggedRegistrationResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -84,24 +84,7 @@ namespace Autofac.Registrars
             FireRegistered(new RegisteredEventArgs() { Container = container, Registration = cr});
 		}
 
-        /// <summary>
-        /// Create the registration.
-        /// </summary>
-        /// <param name="descriptor">The descriptor.</param>
-        /// <param name="activator">Activator.</param>
-        /// <param name="scope">Scope.</param>
-        /// <param name="ownership">Ownership model.</param>
-        /// <returns>The registration.</returns>
-		protected virtual IComponentRegistration CreateRegistration(
-            IComponentDescriptor descriptor,
-			IActivator activator,
-			IScope scope,
-			InstanceOwnership ownership)
-		{
-			return new Registration(descriptor, activator, scope, ownership);
-		}
-		
-		#endregion
+ 		#endregion
 
         /// <summary>
         /// Setst the name of the registration.

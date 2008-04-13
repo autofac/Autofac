@@ -26,6 +26,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac.Component;
+using Autofac.Tags;
 
 namespace Autofac.Registrars
 {
@@ -42,6 +44,8 @@ namespace Autofac.Registrars
         IList<EventHandler<ActivatedEventArgs>> _activatedHandlers = new List<EventHandler<ActivatedEventArgs>>();
         IList<EventHandler<RegisteredEventArgs>> _registeredHandlers = new List<EventHandler<RegisteredEventArgs>>();
         IDictionary<string, object> _extendedProperties = new Dictionary<string, object>();
+        RegistrationCreator _createRegistration = (descriptor, activator, scope, ownership) =>
+            new Registration(descriptor, activator, scope, ownership);
 
         /// <summary>
         /// Returns this instance, correctly-typed.
@@ -212,14 +216,44 @@ namespace Autofac.Registrars
         /// <returns>
         /// A registrar allowing registration to continue.
         /// </returns>
-        public TSyntax WithExtendedProperty(string key, object value)
+        public virtual TSyntax WithExtendedProperty(string key, object value)
         {
             Enforce.ArgumentNotNull(key, "key");
             _extendedProperties.Add(key, value);
             return Syntax;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tag"></param>
+        /// <returns></returns>
+        public virtual TSyntax InContext<T>(T tag)
+        {
+        	var oldValue = CreateRegistration;
+            CreateRegistration = (descriptor, activator, scope, ownership) =>
+            	new TaggedRegistration<T>(tag, oldValue(descriptor, activator, scope, ownership));
+            return Syntax;
+        }
+
 		#endregion
+
+        /// <summary>
+        /// Gets or sets the registration creator.
+        /// </summary>
+        /// <value>The registration creator.</value>
+        protected RegistrationCreator CreateRegistration
+        {
+            get
+            {
+                return _createRegistration;
+            }
+            set
+            {
+                _createRegistration = Enforce.ArgumentNotNull(value, "value");
+            }
+        }
 
 		/// <summary>
 		/// The services exposed by this registration.

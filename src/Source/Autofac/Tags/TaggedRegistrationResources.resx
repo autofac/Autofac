@@ -120,4 +120,7 @@
   <data name="TaggedContextNotFound" xml:space="preserve">
     <value>No context was found with tag '{0}', or the component is registered with singleton scope.</value>
   </data>
+  <data name="ToStringFormat" xml:space="preserve">
+    <value>{0}, Tag = {1}</value>
+  </data>
 </root>

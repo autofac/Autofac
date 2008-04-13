@@ -49,6 +49,7 @@ namespace Autofac.Registrars.Generic
 		InstanceScope _scope;
         IEnumerable<EventHandler<ActivatingEventArgs>> _activatingHandlers;
         IEnumerable<EventHandler<ActivatedEventArgs>> _activatedHandlers;
+        RegistrationCreator _createRegistration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GenericRegistrationHandler"/> class.
@@ -59,19 +60,22 @@ namespace Autofac.Registrars.Generic
         /// <param name="scope">The scope.</param>
         /// <param name="activatingHandlers">The activating handlers.</param>
         /// <param name="activatedHandlers">The activated handlers.</param>
+        /// <param name="createRegistration">The registration creator.</param>
 		public GenericRegistrationHandler(
 			IEnumerable<Service> services,
 			Type implementor,
 			InstanceOwnership ownership,
 			InstanceScope scope,
             IEnumerable<EventHandler<ActivatingEventArgs>> activatingHandlers,
-            IEnumerable<EventHandler<ActivatedEventArgs>> activatedHandlers
+            IEnumerable<EventHandler<ActivatedEventArgs>> activatedHandlers,
+            RegistrationCreator createRegistration
         )
 		{
             Enforce.ArgumentNotNull(services, "services");
             Enforce.ArgumentNotNull(implementor, "implementor");
             Enforce.ArgumentNotNull(activatingHandlers, "activatingHandlers");
             Enforce.ArgumentNotNull(activatedHandlers, "activatedHandlers");
+            Enforce.ArgumentNotNull(createRegistration, "createRegistration");
 
             foreach (var service in services)
                 if (!(service is TypedService) || !(((TypedService)service).ServiceType.IsGenericType))
@@ -88,6 +92,7 @@ namespace Autofac.Registrars.Generic
 			_scope = scope;
             _activatingHandlers = activatingHandlers;
             _activatedHandlers = activatedHandlers;
+            _createRegistration = createRegistration;
 		}
 
 		/// <summary>
@@ -114,7 +119,7 @@ namespace Autofac.Registrars.Generic
             var args = typedService.ServiceType.GetGenericArguments();
 			var concrete = _implementor.MakeGenericType(args);
 			var services = _serviceTypes.Select<Type, Service>(abs => new TypedService(abs.MakeGenericType(args)));
-			var reg = new Registration(
+			var reg = _createRegistration(
                 new Descriptor(
                     new UniqueService(),
 	    			services,

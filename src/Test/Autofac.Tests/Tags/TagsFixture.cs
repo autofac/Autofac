@@ -20,7 +20,7 @@ namespace Autofac.Tests.Tags
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterInContext(c => new HomeController(), "request");
+            builder.Register(c => new HomeController()).InContext("request");
 
             var containerApplication = builder.Build();
             containerApplication.TagContext("application");

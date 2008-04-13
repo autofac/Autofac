@@ -35,6 +35,15 @@ namespace Autofac.Registrars.Collection
         Service _id; // Default is null.
         
         /// <summary>
+        /// Constructs a CollectionRegistrar.
+        /// </summary>
+        public CollectionRegistrar()
+        {
+        	CreateRegistration = (descriptor, activator, scope, ownership) =>
+        		new ServiceListRegistration<TItem>(Id, Services, scope);
+        }
+        
+        /// <summary>
         /// Returns this instance, correctly-typed.
         /// </summary>
         /// <value></value>
@@ -98,8 +107,7 @@ namespace Autofac.Registrars.Collection
             Enforce.ArgumentNotNull(container, "container");
             var services = Services;            
             
-            container.RegisterComponent(
-            	new ServiceListRegistration<TItem>(Id, services, Scope.ToIScope()));
+            container.RegisterComponent(CreateRegistration(null, null, Scope.ToIScope(), Ownership));
         }
 
         #endregion

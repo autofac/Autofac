@@ -68,5 +68,14 @@ namespace Autofac.Tags {
 				return ResourceManager.GetString("TaggedContextNotFound", resourceCulture);
 			}
 		}
+		
+		/// <summary>
+		///   Looks up a localized string similar to {0}, Tag = {1}.
+		/// </summary>
+		internal static string ToStringFormat {
+			get {
+				return ResourceManager.GetString("ToStringFormat", resourceCulture);
+			}
+		}
 	}
 }

@@ -23,6 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using System.Globalization;
 using System.Linq;
 using Autofac.Component;
@@ -32,54 +33,26 @@ namespace Autofac.Tags
 	/// <summary>
 	/// Description of TaggedRegistration.
 	/// </summary>
-	class TaggedRegistration<TTag> : Registration
+	class TaggedRegistration<TTag> : IComponentRegistration, IDisposable
 	{
         static readonly Parameter[] EmptyParameters = new Parameter[0];
 		readonly TTag _tag;
+		readonly IComponentRegistration _inner;
 
         /// <summary>
         /// Create a new TaggedRegistration.
         /// </summary>
-        /// <param name="descriptor">The descriptor.</param>
-        /// <param name="activator">An object with which new component instances
-        /// can be created. Required.</param>
-        /// <param name="scope">An object that tracks created instances with
-        /// respect to their scope of usage, i.e., per-thread, per-call etc.
-        /// Required. Will be disposed when the registration is disposed.</param>
-        /// <param name="ownershipModel">The ownership model that determines
-        /// whether the instances are disposed along with the scope.</param>
         /// <param name="tag">The tag corresponding to the context in which this
         /// component may be resolved.</param>
+        /// <param name="inner">The decorated registration.</param>
 		public TaggedRegistration(
-            IComponentDescriptor descriptor,
-            IActivator activator,
-            IScope scope,
-			InstanceOwnership ownershipModel,
-			TTag tag)
-			: base(descriptor, activator, scope, ownershipModel)
+			TTag tag,
+			IComponentRegistration inner)
 		{
+        	_inner = Enforce.ArgumentNotNull(inner, "inner");
             _tag = tag;
         }
 
-        /// <summary>
-        /// Semantically equivalent to ICloneable.Clone().
-        /// </summary>
-        /// <param name="descriptor"></param>
-        /// <param name="activator"></param>
-        /// <param name="newScope"></param>
-        /// <param name="ownershipModel"></param>
-        /// <returns>
-        /// A registrar allowing configuration to continue.
-        /// </returns>
-        protected override Registration CreateDuplicate(
-            IComponentDescriptor descriptor,
-			IActivator activator, 
-			IScope newScope, 
-			InstanceOwnership ownershipModel)
-		{
-			return new TaggedRegistration<TTag>(descriptor, activator, newScope, ownershipModel, _tag);
-		}
-		
         /// <summary>
         /// 	<i>Must</i> return a valid instance, or throw
         /// an exception on failure.
@@ -90,7 +63,7 @@ namespace Autofac.Tags
         /// <param name="disposer">The disposer.</param>
         /// <param name="newInstance">if set to <c>true</c> a new instance was created.</param>
         /// <returns>A newly-resolved instance.</returns>
-        public override object ResolveInstance(
+        public virtual object ResolveInstance(
         	IContext context, 
         	IActivationParameters parameters, 
         	IDisposer disposer, 
@@ -105,7 +78,7 @@ namespace Autofac.Tags
             var ct = context.Resolve<ContextTag<TTag>>();
             if (ct.HasTag && object.Equals(ct.Tag, _tag))
             {
-            	return base.ResolveInstance(context, parameters, disposer, out newInstance);
+            	return _inner.ResolveInstance(context, parameters, disposer, out newInstance);
             }
             else
             {
@@ -118,15 +91,123 @@ namespace Autofac.Tags
                         _tag));
             }
         }
+        /// <summary>
+        /// Describes the component registration and the
+        /// services it provides.
+        /// </summary>
+        public virtual IComponentDescriptor Descriptor
+        {
+        	get
+        	{
+        		return _inner.Descriptor;
+        	}
+        }
+
+		/// <summary>
+		/// Create a duplicate of this instance if it is semantically valid to
+		/// copy it to a new context.
+		/// </summary>
+		/// <param name="duplicate">The duplicate.</param>
+		/// <returns>True if the duplicate was created.</returns>
+		public virtual bool DuplicateForNewContext(out IComponentRegistration duplicate)
+		{
+			IComponentRegistration innerDuplicate;
+			if (_inner.DuplicateForNewContext(out innerDuplicate))
+			{
+				duplicate = new TaggedRegistration<TTag>(_tag, innerDuplicate);
+				return true;
+			}
+			else
+			{
+				duplicate = null;
+				return false;
+			}
+		}
+
+        /// <summary>
+        /// Fired when a new instance is required. The instance can be
+        /// provided in order to skip the regular activator, by setting the Instance property in
+        /// the provided event arguments.
+        /// </summary>
+        public virtual event EventHandler<PreparingEventArgs> Preparing
+        {
+        	add
+        	{
+        		_inner.Preparing += value;
+        	}
+        	remove
+        	{
+        		_inner.Preparing -= value;
+        	}
+        }
+
+		/// <summary>
+		/// Fired when a new instance is being activated. The instance can be
+		/// wrapped or switched at this time by setting the Instance property in
+		/// the provided event arguments.
+		/// </summary>
+		public virtual event EventHandler<ActivatingEventArgs> Activating
+		{
+			add
+        	{
+        		_inner.Activating += value;
+        	}
+        	remove
+        	{
+        		_inner.Activating -= value;
+        	}
+		}
+		
+		/// <summary>
+		/// Fired when the activation process for a new instance is complete.
+		/// </summary>
+		public virtual event EventHandler<ActivatedEventArgs> Activated
+		{
+			add
+        	{
+        		_inner.Activated += value;
+        	}
+        	remove
+        	{
+        		_inner.Activated -= value;
+        	}
+		}
+
+        /// <summary>
+        /// Called by the container once an instance has been fully constructed, including
+        /// any requested objects that depend on the instance.
+        /// </summary>
+        /// <param name="context">The context in which the instance was activated.</param>
+        /// <param name="instance">The instance.</param>
+        public virtual void InstanceActivated(IContext context, object instance)
+        {
+        	_inner.InstanceActivated(context, instance);
+        }
+        
+        public virtual void Dispose()
+        {
+        	_inner.Dispose();
+        }
 
         private static Parameter[] MakeParameters(IActivationParameters p)
         {
-        	Enforce.ArgumentNotNull(p, "p");
+            Enforce.ArgumentNotNull(p, "p");
 
             if (p.Count == 0)
                 return EmptyParameters;
 
             return p.Select(kvp => new Parameter(kvp.Key, kvp.Value)).ToArray();
-        }        
+        }
+
+        /// <summary>
+        /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </returns>
+        public override string ToString()
+        {
+        	return string.Format(TaggedRegistrationResources.ToStringFormat, _inner, _tag);
+        }
 	}
 }
