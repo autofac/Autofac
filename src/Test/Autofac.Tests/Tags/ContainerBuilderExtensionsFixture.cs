@@ -225,5 +225,30 @@ namespace Autofac.Tests.Tags
         	
         	Assert.IsTrue(threw);
         }
+        
+        [Test]
+        public void AutomaticsAreTaggable()
+        {
+        	var builder = new ContainerBuilder();
+        	builder.RegisterTypesAssignableTo<IList<object>>()
+        		.FactoryScoped()
+        		.InContext("tag");
+        	
+        	var outer = builder.Build();
+        	var inner = outer.CreateInnerContainer();
+        	inner.TagContext("tag");
+        	
+        	var coll = inner.Resolve<List<object>>();
+        	Assert.IsNotNull(coll);
+        	
+        	bool threw = false;
+        	try {
+        		outer.Resolve<List<object>>();
+        	} catch (Exception) {
+        		threw = true;
+        	}
+        	
+        	Assert.IsTrue(threw);
+        }
     }
 }

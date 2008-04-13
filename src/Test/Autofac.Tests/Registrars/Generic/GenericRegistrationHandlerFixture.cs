@@ -68,5 +68,15 @@ namespace Autofac.Tests.Registrars.Generic
 			Assert.AreSame(innerList, outerList);
 		}
 		
+		[Test, Ignore("Not implemented")]
+		public void GenericCircularityAvoidedWithUsingContstructor()
+		{
+			var builder = new ContainerBuilder();
+			builder.RegisterGeneric(typeof(List<>))
+				.As(typeof(IEnumerable<>));
+//				.UsingConstructor(new TypedService[] {});
+			var container = builder.Build();
+			var list = container.Resolve<IEnumerable<int>>();
+		}
 	}
 }

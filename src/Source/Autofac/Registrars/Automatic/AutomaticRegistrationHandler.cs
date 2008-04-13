@@ -41,6 +41,7 @@ namespace Autofac.Registrars.Automatic
 		InstanceScope _scope;
         IEnumerable<EventHandler<ActivatingEventArgs>> _activatingHandlers;
         IEnumerable<EventHandler<ActivatedEventArgs>> _activatedHandlers;
+        RegistrationCreator _createRegistration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutomaticRegistrationHandler"/> class.
@@ -50,12 +51,14 @@ namespace Autofac.Registrars.Automatic
         /// <param name="scope">The scope.</param>
         /// <param name="activatingHandlers">The activating handlers.</param>
         /// <param name="activatedHandlers">The activated handlers.</param>
+        /// <param name="createRegistration">Delegate for creating the registrations.</param>
         public AutomaticRegistrationHandler(
             Predicate<Type> predicate,
 			InstanceOwnership ownership,
 			InstanceScope scope,
             IEnumerable<EventHandler<ActivatingEventArgs>> activatingHandlers,
-            IEnumerable<EventHandler<ActivatedEventArgs>> activatedHandlers
+            IEnumerable<EventHandler<ActivatedEventArgs>> activatedHandlers,
+            RegistrationCreator createRegistration
         )
 		{
             _predicate = Enforce.ArgumentNotNull(predicate, "predicate");
@@ -63,6 +66,7 @@ namespace Autofac.Registrars.Automatic
             _activatedHandlers = Enforce.ArgumentNotNull(activatedHandlers, "activatedHandlers");
             _ownership = ownership;
 			_scope = scope;
+			_createRegistration = Enforce.ArgumentNotNull(createRegistration, "createRegistration");
 		}
 
 		/// <summary>
@@ -91,7 +95,7 @@ namespace Autofac.Registrars.Automatic
                 new[] { service },
                 typedService.ServiceType);
 
-            var reg = new Registration(
+            var reg = _createRegistration(
                 descriptor,
                 new ReflectionActivator(typedService.ServiceType),
                 _scope.ToIScope(),
