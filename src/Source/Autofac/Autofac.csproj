@@ -238,6 +238,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ReflectionActivatorResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Registrars\ReflectiveRegistrationSource.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="ComponentNotRegisteredException.cs" />
     <Compile Include="ComponentNotRegisteredExceptionResources.Designer.cs">

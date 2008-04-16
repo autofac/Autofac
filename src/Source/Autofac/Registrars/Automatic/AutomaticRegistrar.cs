@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using Autofac.Component.Activation;
 
 namespace Autofac.Registrars.Automatic
 {
@@ -33,6 +34,7 @@ namespace Autofac.Registrars.Automatic
     class AutomaticRegistrar : Registrar<IGenericRegistrar>, IModule, IGenericRegistrar
     {
         Predicate<Type> _predicate;
+        IConstructorSelector _constructorSelector = new MostParametersConstructorSelector();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutomaticRegistrar"/> class.
@@ -40,8 +42,7 @@ namespace Autofac.Registrars.Automatic
         /// <param name="predicate">The predicate.</param>
         public AutomaticRegistrar(Predicate<Type> predicate)
         {
-            Enforce.ArgumentNotNull(predicate, "predicate");
-            _predicate = predicate;
+            _predicate = Enforce.ArgumentNotNull(predicate, "predicate");
         }
 
         #region IModule Members
@@ -59,7 +60,8 @@ namespace Autofac.Registrars.Automatic
                 Scope,
                 ActivatingHandlers,
                 ActivatedHandlers,
-               CreateRegistration));
+               CreateRegistration,
+               _constructorSelector));
 
             FireRegistered(new RegisteredEventArgs() { Container = container });
         }
@@ -73,6 +75,18 @@ namespace Autofac.Registrars.Automatic
         protected override IGenericRegistrar Syntax
         {
             get { return this; }
+        }
+
+        /// <summary>
+        /// Enforce that the specific constructor with the provided signature is used.
+        /// </summary>
+        /// <param name="ctorSignature">The types that designate the constructor to use.</param>
+        /// <returns>A registrar allowing registration to continue.</returns>
+        public virtual IGenericRegistrar UsingConstructor(params Type[] ctorSignature)
+        {
+            Enforce.ArgumentNotNull(ctorSignature, "ctorSignature");
+            _constructorSelector = new SpecificConstructorSelector(ctorSignature);
+            return this;
         }
     }
 }

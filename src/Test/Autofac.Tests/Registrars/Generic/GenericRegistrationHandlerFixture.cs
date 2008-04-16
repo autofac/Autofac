@@ -5,6 +5,7 @@ using NUnit.Framework;
 using Autofac.Component;
 using Autofac.Registrars.Generic;
 using Autofac.Builder;
+using Autofac.Component.Activation;
 
 namespace Autofac.Tests.Registrars.Generic
 {
@@ -26,7 +27,8 @@ namespace Autofac.Tests.Registrars.Generic
                 InstanceScope.Singleton,
                 new EventHandler<ActivatingEventArgs>[] { },
                 new EventHandler<ActivatedEventArgs>[] { },
-                (d, a, s, o) => new Registration(d, a, s, o)));
+                (d, a, s, o) => new Registration(d, a, s, o),
+                new MostParametersConstructorSelector()));
 
 			var x = c.Resolve<I<int>>();
 			var x2 = c.Resolve<I<int>>();
@@ -68,13 +70,13 @@ namespace Autofac.Tests.Registrars.Generic
 			Assert.AreSame(innerList, outerList);
 		}
 		
-		[Test, Ignore("Not implemented")]
+		[Test]
 		public void GenericCircularityAvoidedWithUsingContstructor()
 		{
 			var builder = new ContainerBuilder();
 			builder.RegisterGeneric(typeof(List<>))
-				.As(typeof(IEnumerable<>));
-//				.UsingConstructor(new TypedService[] {});
+				.As(typeof(IEnumerable<>))
+				.UsingConstructor(new Type[] {});
 			var container = builder.Build();
 			var list = container.Resolve<IEnumerable<int>>();
 		}

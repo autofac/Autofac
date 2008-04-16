@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using Autofac.Component.Activation;
 
 namespace Autofac.Registrars.Generic
 {
@@ -40,6 +41,7 @@ namespace Autofac.Registrars.Generic
 	class GenericRegistrar : Registrar<IGenericRegistrar>, IModule, IGenericRegistrar
 	{
 		Type _implementor;
+        IConstructorSelector _constructorSelector = new MostParametersConstructorSelector();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GenericRegistrar"/> class.
@@ -72,7 +74,8 @@ namespace Autofac.Registrars.Generic
 				Scope,
                 ActivatingHandlers,
                 ActivatedHandlers,
-               CreateRegistration));
+               CreateRegistration,
+               _constructorSelector));
 
             FireRegistered(new RegisteredEventArgs() { Container = container });
 		}
@@ -86,6 +89,18 @@ namespace Autofac.Registrars.Generic
         protected override IGenericRegistrar Syntax
         {
             get { return this; }
+        }
+
+        /// <summary>
+        /// Enforce that the specific constructor with the provided signature is used.
+        /// </summary>
+        /// <param name="ctorSignature">The types that designate the constructor to use.</param>
+        /// <returns>A registrar allowing registration to continue.</returns>
+        public virtual IGenericRegistrar UsingConstructor(params Type[] ctorSignature)
+        {
+            Enforce.ArgumentNotNull(ctorSignature, "ctorSignature");
+            _constructorSelector = new SpecificConstructorSelector(ctorSignature);
+            return this;
         }
     }
 }

@@ -32,16 +32,11 @@ using Autofac.Component.Scope;
 namespace Autofac.Registrars.Automatic
 {
     /// <summary>
-    /// Provides registrations for any requested type.
+    /// Provides registrations based on a requested type.
     /// </summary>
-    class AutomaticRegistrationHandler : IRegistrationSource
+    class AutomaticRegistrationHandler : ReflectiveRegistrationSource
     {
         Predicate<Type> _predicate;
-		InstanceOwnership _ownership;
-		InstanceScope _scope;
-        IEnumerable<EventHandler<ActivatingEventArgs>> _activatingHandlers;
-        IEnumerable<EventHandler<ActivatedEventArgs>> _activatedHandlers;
-        RegistrationCreator _createRegistration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutomaticRegistrationHandler"/> class.
@@ -52,35 +47,34 @@ namespace Autofac.Registrars.Automatic
         /// <param name="activatingHandlers">The activating handlers.</param>
         /// <param name="activatedHandlers">The activated handlers.</param>
         /// <param name="createRegistration">Delegate for creating the registrations.</param>
+        /// <param name="constructorSelector">The constructor selector.</param>
         public AutomaticRegistrationHandler(
             Predicate<Type> predicate,
 			InstanceOwnership ownership,
 			InstanceScope scope,
             IEnumerable<EventHandler<ActivatingEventArgs>> activatingHandlers,
             IEnumerable<EventHandler<ActivatedEventArgs>> activatedHandlers,
-            RegistrationCreator createRegistration
+            RegistrationCreator createRegistration,
+            IConstructorSelector constructorSelector
         )
-		{
+        : base(ownership, scope, activatingHandlers, activatedHandlers, createRegistration, constructorSelector)
+        {
             _predicate = Enforce.ArgumentNotNull(predicate, "predicate");
-            _activatingHandlers = Enforce.ArgumentNotNull(activatingHandlers, "activatingHandlers");
-            _activatedHandlers = Enforce.ArgumentNotNull(activatedHandlers, "activatedHandlers");
-            _ownership = ownership;
-			_scope = scope;
-			_createRegistration = Enforce.ArgumentNotNull(createRegistration, "createRegistration");
 		}
 
-		/// <summary>
-		/// Retrieve a registration for an unregistered service, to be used
-		/// by the container.
-		/// </summary>
-		/// <param name="service">The service that was requested.</param>
-		/// <param name="registration">A registration providing the service.</param>
-		/// <returns>True if the registration could be created.</returns>
-		public bool TryGetRegistration(Service service, out IComponentRegistration registration)
-		{
+        /// <summary>
+        /// Determine if the service represents a type that can be registered, and if so,
+        /// retrieve that type as well as the services that the registration should expose.
+        /// </summary>
+        /// <param name="service">The service.</param>
+        /// <param name="implementor">The implementation type.</param>
+        /// <param name="services">The services.</param>
+        /// <returns>True if a registration can be made.</returns>
+        protected override bool TryGetImplementation(Service service, out Type implementor, out IEnumerable<Service> services)
+        {
             Enforce.ArgumentNotNull(service, "service");
-
-            registration = null;
+            implementor = null;
+            services = null;
 
             TypedService typedService = service as TypedService;
             if (typedService == null)
@@ -90,25 +84,10 @@ namespace Autofac.Registrars.Automatic
                 !_predicate(typedService.ServiceType))
                 return false;
 
-            var descriptor = new Descriptor(
-                new UniqueService(),
-                new[] { service },
-                typedService.ServiceType);
+            services = new[] { service };
+            implementor = typedService.ServiceType;
 
-            var reg = _createRegistration(
-                descriptor,
-                new ReflectionActivator(typedService.ServiceType),
-                _scope.ToIScope(),
-                _ownership);
-
-			foreach (var activatingHandler in _activatingHandlers)
-				reg.Activating += activatingHandler;
-
-			foreach (var activatedHandler in _activatedHandlers)
-				reg.Activated += activatedHandler;
-
-			registration = reg;
-			return true;
-		}
+            return true;
+        }
     }
 }

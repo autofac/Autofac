@@ -41,15 +41,10 @@ namespace Autofac.Registrars.Generic
 	/// event. This feels hacky but keeps the container cleaner and simpler. Will have
 	/// to see how performance goes.
 	/// </remarks>
-	class GenericRegistrationHandler : IRegistrationSource
+	class GenericRegistrationHandler : ReflectiveRegistrationSource
 	{
 		IEnumerable<Type> _serviceTypes;
 		Type _implementor;
-		InstanceOwnership _ownership;
-		InstanceScope _scope;
-        IEnumerable<EventHandler<ActivatingEventArgs>> _activatingHandlers;
-        IEnumerable<EventHandler<ActivatedEventArgs>> _activatedHandlers;
-        RegistrationCreator _createRegistration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GenericRegistrationHandler"/> class.
@@ -61,6 +56,7 @@ namespace Autofac.Registrars.Generic
         /// <param name="activatingHandlers">The activating handlers.</param>
         /// <param name="activatedHandlers">The activated handlers.</param>
         /// <param name="createRegistration">The registration creator.</param>
+        /// <param name="constructorSelector">The constructor selector.</param>
 		public GenericRegistrationHandler(
 			IEnumerable<Service> services,
 			Type implementor,
@@ -68,14 +64,13 @@ namespace Autofac.Registrars.Generic
 			InstanceScope scope,
             IEnumerable<EventHandler<ActivatingEventArgs>> activatingHandlers,
             IEnumerable<EventHandler<ActivatedEventArgs>> activatedHandlers,
-            RegistrationCreator createRegistration
+            RegistrationCreator createRegistration,
+            IConstructorSelector constructorSelector
         )
+            : base(ownership, scope, activatingHandlers, activatedHandlers, createRegistration, constructorSelector)
 		{
             Enforce.ArgumentNotNull(services, "services");
             Enforce.ArgumentNotNull(implementor, "implementor");
-            Enforce.ArgumentNotNull(activatingHandlers, "activatingHandlers");
-            Enforce.ArgumentNotNull(activatedHandlers, "activatedHandlers");
-            Enforce.ArgumentNotNull(createRegistration, "createRegistration");
 
             foreach (var service in services)
                 if (!(service is TypedService) || !(((TypedService)service).ServiceType.IsGenericType))
@@ -88,55 +83,37 @@ namespace Autofac.Registrars.Generic
 
 			_serviceTypes = services.Select(s => ((TypedService)s).ServiceType);
 			_implementor = implementor;
-			_ownership = ownership;
-			_scope = scope;
-            _activatingHandlers = activatingHandlers;
-            _activatedHandlers = activatedHandlers;
-            _createRegistration = createRegistration;
 		}
 
-		/// <summary>
-		/// Retrieve a registration for an unregistered service, to be used
-		/// by the container.
-		/// </summary>
-		/// <param name="service">The service that was requested.</param>
-		/// <param name="registration">A registration providing the service.</param>
-		/// <returns>True if the registration could be created.</returns>
-		public bool TryGetRegistration(Service service, out IComponentRegistration registration)
-		{
+        /// <summary>
+        /// Determine if the service represents a type that can be registered, and if so,
+        /// retrieve that type as well as the services that the registration should expose.
+        /// </summary>
+        /// <param name="service">The service.</param>
+        /// <param name="implementor">The implementation type.</param>
+        /// <param name="services">The services.</param>
+        /// <returns>True if a registration can be made.</returns>
+        protected override bool TryGetImplementation(Service service, out Type implementor, out IEnumerable<Service> services)
+        {
             Enforce.ArgumentNotNull(service, "service");
-
-            registration = null;
-
+            implementor = null;
+            services = null;
+            
             TypedService typedService = service as TypedService;
             if (typedService == null)
                 return false;
 
-			if (!typedService.ServiceType.IsGenericType ||
+            if (!typedService.ServiceType.IsGenericType ||
                 !_serviceTypes.Contains(typedService.ServiceType.GetGenericTypeDefinition()))
-				return false;
+                return false;
 
             var args = typedService.ServiceType.GetGenericArguments();
-			var concrete = _implementor.MakeGenericType(args);
-			var services = _serviceTypes.Select<Type, Service>(abs => new TypedService(abs.MakeGenericType(args)));
-			var reg = _createRegistration(
-                new Descriptor(
-                    new UniqueService(),
-	    			services,
-                    concrete),
-				new ReflectionActivator(concrete),
-				_scope.ToIScope(),
-				_ownership);
+            implementor = _implementor.MakeGenericType(args);
 
-			foreach (var activatingHandler in _activatingHandlers)
-				reg.Activating += activatingHandler;
-
-			foreach (var activatedHandler in _activatedHandlers)
-				reg.Activated += activatedHandler;
-
-			registration = reg;
-			return true;
-		}
-
+            services = (from abs in _serviceTypes
+                        select new TypedService(abs.MakeGenericType(args))).Cast<Service>();
+            
+            return true;
+        }
 	}
 }

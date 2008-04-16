@@ -23,6 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 
 namespace Autofac.Registrars
 {
@@ -31,5 +32,11 @@ namespace Autofac.Registrars
     /// </summary>
     public interface IGenericRegistrar : IRegistrar<IGenericRegistrar>
     {
+        /// <summary>
+        /// Enforce that the specific constructor with the provided signature is used.
+        /// </summary>
+        /// <param name="ctorSignature">The types that designate the constructor to use.</param>
+        /// <returns>A registrar allowing registration to continue.</returns>
+        IGenericRegistrar UsingConstructor(params Type[] ctorSignature);
     }
 }
