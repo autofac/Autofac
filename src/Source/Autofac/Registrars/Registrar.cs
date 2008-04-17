@@ -230,19 +230,17 @@ namespace Autofac.Registrars
         /// <returns></returns>
         public virtual TSyntax InContext<T>(T tag)
         {
-        	var oldValue = CreateRegistration;
-            CreateRegistration = (descriptor, activator, scope, ownership) =>
+        	var oldValue = RegistrationCreator;
+            RegistrationCreator = (descriptor, activator, scope, ownership) =>
             	new TaggedRegistration<T>(tag, oldValue(descriptor, activator, scope, ownership));
             return Syntax;
         }
-
-		#endregion
 
         /// <summary>
         /// Gets or sets the registration creator.
         /// </summary>
         /// <value>The registration creator.</value>
-        protected RegistrationCreator CreateRegistration
+        public virtual RegistrationCreator RegistrationCreator
         {
             get
             {
@@ -253,6 +251,9 @@ namespace Autofac.Registrars
                 _createRegistration = Enforce.ArgumentNotNull(value, "value");
             }
         }
+
+		#endregion
+
 
 		/// <summary>
 		/// The services exposed by this registration.

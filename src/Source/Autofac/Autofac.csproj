@@ -91,6 +91,7 @@
     <Compile Include="Builder\GenericRegistrationBuilder.cs" />
     <Compile Include="Registrars\IConcreteRegistrar.cs" />
     <Compile Include="Registrars\IGenericRegistrar.cs" />
+    <Compile Include="Registrars\IFluentInterface.cs" />
     <Compile Include="Registrars\IReflectiveRegistrar.cs" />
     <Compile Include="Registrars\ProvidedInstance\ProvidedInstanceRegistrarResources.Designer.cs">
       <AutoGen>True</AutoGen>

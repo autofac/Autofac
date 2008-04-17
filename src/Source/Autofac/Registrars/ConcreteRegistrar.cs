@@ -71,7 +71,7 @@ namespace Autofac.Registrars
             Enforce.NotNull(activator);
 
             var descriptor = new Descriptor(Id, services, _implementor, ExtendedProperties);
-            var cr = CreateRegistration(descriptor, activator, Scope.ToIScope(), Ownership);
+            var cr = RegistrationCreator(descriptor, activator, Scope.ToIScope(), Ownership);
 
             foreach (var activatingHandler in ActivatingHandlers)
                 cr.Activating += activatingHandler;

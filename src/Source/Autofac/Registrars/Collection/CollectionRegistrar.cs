@@ -39,7 +39,7 @@ namespace Autofac.Registrars.Collection
         /// </summary>
         public CollectionRegistrar()
         {
-        	CreateRegistration = (descriptor, activator, scope, ownership) =>
+        	RegistrationCreator = (descriptor, activator, scope, ownership) =>
         		new ServiceListRegistration<TItem>(Id, Services, scope);
         }
         
@@ -107,7 +107,7 @@ namespace Autofac.Registrars.Collection
             Enforce.ArgumentNotNull(container, "container");
             var services = Services;            
             
-            container.RegisterComponent(CreateRegistration(null, null, Scope.ToIScope(), Ownership));
+            container.RegisterComponent(RegistrationCreator(null, null, Scope.ToIScope(), Ownership));
         }
 
         #endregion

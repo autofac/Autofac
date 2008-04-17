@@ -24,48 +24,44 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Linq;
+using System.ComponentModel;
 
-namespace Autofac.Extras.Startable
+namespace Autofac.Registrars
 {
     /// <summary>
-    /// Can be used to instantiate an instance of all 'startable' services in
-    /// a container.
+    /// Hides standard Object members to make fluent interfaces
+    /// easier to read.
     /// </summary>
-    class Starter : IStarter
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public interface IFluentInterface
     {
-        IContainer _container;
+        /// <summary>
+        /// Standard System.Object member.
+        /// </summary>
+        /// <returns>Standard result.</returns>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        Type GetType();
 
         /// <summary>
-        /// Saved as an extended property to identify a component as startable.
+        /// Standard System.Object member.
         /// </summary>
-        public const string IsStartablePropertyName = "Autofac.Extras.Startable.Starter.IsStartable";
+        /// <returns>Standard result.</returns>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        int GetHashCode();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Starter"/> class.
+        /// Standard System.Object member.
         /// </summary>
-        /// <param name="container">The container.</param>
-        public Starter(IContainer container)
-        {
-            if (container == null)
-                throw new ArgumentNullException("container");
-            
-            _container = container;
-        }
+        /// <returns>Standard result.</returns>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        string ToString();
 
         /// <summary>
-        /// Start the startable components.
+        /// Standard System.Object member.
         /// </summary>
-        public void Start()
-        {
-            var startableRegistrations =
-                from cr in _container.ComponentRegistrations
-                where cr.Descriptor.ExtendedProperties.ContainsKey(IsStartablePropertyName) &&
-                    (bool)cr.Descriptor.ExtendedProperties[IsStartablePropertyName]
-                select cr.Descriptor.Id;
-
-            foreach (var startable in startableRegistrations)
-                _container.Resolve(startable);
-        }
+        /// <param name="other">The other.</param>
+        /// <returns>Standard result.</returns>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        bool Equals(object other);
     }
 }

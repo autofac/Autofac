@@ -19,8 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.Web", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example", "Example", "{01C16A53-606F-4F57-ADF0-D15974B0832D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.NMock2", "Source\Autofac.Integration.NMock2\Autofac.Integration.NMock2.csproj", "{C1C4B360-02D0-480A-A567-FD53A5D94FBA}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,10 +33,6 @@ Global
 		{4BDD9D14-BACA-416C-919E-E9FF100F8F5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BDD9D14-BACA-416C-919E-E9FF100F8F5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BDD9D14-BACA-416C-919E-E9FF100F8F5D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C1C4B360-02D0-480A-A567-FD53A5D94FBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C1C4B360-02D0-480A-A567-FD53A5D94FBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C1C4B360-02D0-480A-A567-FD53A5D94FBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C1C4B360-02D0-480A-A567-FD53A5D94FBA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +40,5 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{7D018B3E-34A3-423D-AC35-12731F4E0A2C} = {15DE9887-5721-421E-9EE0-714D8EF2104E}
 		{4BDD9D14-BACA-416C-919E-E9FF100F8F5D} = {15DE9887-5721-421E-9EE0-714D8EF2104E}
-		{C1C4B360-02D0-480A-A567-FD53A5D94FBA} = {15DE9887-5721-421E-9EE0-714D8EF2104E}
 	EndGlobalSection
 EndGlobal

@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.ComponentModel;
 
 namespace Autofac.Registrars
 {
@@ -34,7 +35,7 @@ namespace Autofac.Registrars
     /// no effect.
     /// </summary>
     /// <typeparam name="TSyntax">Self-type.</typeparam>
-	public interface IRegistrar<TSyntax>
+	public interface IRegistrar<TSyntax> : IFluentInterface
         where TSyntax : IRegistrar<TSyntax>
 	{
         /// <summary>
@@ -154,5 +155,11 @@ namespace Autofac.Registrars
         /// <param name="tag">The tag.</param>
         /// <returns>A registrar allowing registration to continue.</returns>
         TSyntax InContext<T>(T tag);
+
+        /// <summary>
+        /// Gets or sets the registration creator.
+        /// </summary>
+        /// <value>The registration creator.</value>
+        RegistrationCreator RegistrationCreator { get; set; }
 	}
 }

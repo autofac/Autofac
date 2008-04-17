@@ -60,7 +60,7 @@ namespace Autofac.Registrars.Automatic
                 Scope,
                 ActivatingHandlers,
                 ActivatedHandlers,
-               CreateRegistration,
+                RegistrationCreator,
                _constructorSelector));
 
             FireRegistered(new RegisteredEventArgs() { Container = container });
