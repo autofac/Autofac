@@ -69,7 +69,7 @@ namespace Autofac
         /// </summary>
         public static readonly Context Empty = new Context(Container.Empty);
 
-        IRegistrationContext _container;
+        IRegistrationContext _registrationContext;
         
         IList<Activation> _activations = new List<Activation>();
         
@@ -92,11 +92,11 @@ namespace Autofac
         /// <summary>
         /// Initializes a new instance of the <see cref="Context"/> class.
         /// </summary>
-        /// <param name="container">The container from which to draw component registrations.</param>
-        internal Context(IRegistrationContext container)
+        /// <param name="registrationContext">The container from which to draw component registrations.</param>
+        internal Context(IRegistrationContext registrationContext)
         {
-            Enforce.ArgumentNotNull(container, "container");
-            _container = container;
+            Enforce.ArgumentNotNull(registrationContext, "registrationContext");
+            _registrationContext = registrationContext;
         }
 
         #endregion
@@ -296,7 +296,7 @@ namespace Autofac
                 IComponentRegistration registration;
                 IDisposer disposer;
                 IContext specificContext;
-                if (!_container.TryGetRegistration(service, out registration, out disposer, out specificContext))
+                if (!_registrationContext.TryGetRegistration(service, out registration, out disposer, out specificContext))
                     return false;
 
                 if (specificContext != null)
@@ -342,7 +342,7 @@ namespace Autofac
             IComponentRegistration unused1;
             IDisposer unused2;
             IContext unused3;
-            return _container.TryGetRegistration(service, out unused1, out unused2, out unused3);
+            return _registrationContext.TryGetRegistration(service, out unused1, out unused2, out unused3);
         }
 
         /// <summary>

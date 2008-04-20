@@ -39,28 +39,41 @@ namespace Autofac
         /// <summary>
         /// Protects instance variables from concurrent access.
         /// </summary>
-        object _synchRoot = new object();
+        readonly object _synchRoot = new object();
 
         /// <summary>
         /// Associates each service with the default registration that
         /// can provide that service.
         /// </summary>
-        IDictionary<Service, IComponentRegistration> _defaultRegistrations = new Dictionary<Service, IComponentRegistration>();
+        readonly IDictionary<Service, IComponentRegistration> _defaultRegistrations = new Dictionary<Service, IComponentRegistration>();
 
 		/// <summary>
 		/// Supports nested containers.
 		/// </summary>
-		Container _outerContainer;
+		readonly Container _outerContainer;
 
 		/// <summary>
 		/// External registration sources.
 		/// </summary>
-		IList<IRegistrationSource> _registrationSources = new List<IRegistrationSource>();
+		readonly IList<IRegistrationSource> _registrationSources = new List<IRegistrationSource>();
 
         /// <summary>
         /// Disposer that handles disposal of instances attached to the container.
         /// </summary>
-        IDisposer _disposer = new Disposer();
+        readonly IDisposer _disposer = new Disposer();
+
+        // *** WARNING *** The order of declaration is significant here - SelfRegistrationDescriptor must be
+        // created before Empty.
+        
+        /// <summary>
+        /// When creating inner containers the construction of the descriptor was previously
+        /// the most expensive operation - using a shared descriptor eliminates this.
+        /// </summary>
+        static readonly IComponentDescriptor SelfRegistrationDescriptor =
+            new Component.Descriptor(
+                new UniqueService(),
+                new Service[] { new TypedService(typeof(IContainer)), new TypedService(typeof(IContext)) },
+                typeof(Container));
 
         /// <summary>
         /// A container with no component registrations.
@@ -78,13 +91,10 @@ namespace Autofac
         {
             RegisterComponent(
                 new Component.Registration(
-                    new Component.Descriptor(
-                        new UniqueService(),
-                        new Service[] { new TypedService(typeof(IContainer)) },
-                        typeof(Container)),
+                    SelfRegistrationDescriptor,
                     new Component.Activation.ProvidedInstanceActivator(this),
                     new Component.Scope.SingletonScope(),
-                    InstanceOwnership.Container));
+                    InstanceOwnership.External));
         }
 
         /// <summary>
@@ -95,7 +105,6 @@ namespace Autofac
 		: this()
 		{
             Enforce.ArgumentNotNull(outerScope, "outerScope");
-
 			_outerContainer = outerScope;
 		}
 
@@ -114,11 +123,22 @@ namespace Autofac
         }
 
         /// <summary>
-		/// Register a component.
-		/// </summary>
-		/// <param name="registration">A component registration.</param>
-		public virtual void RegisterComponent(IComponentRegistration registration)
-		{
+        /// Register a component.
+        /// </summary>
+        /// <param name="registration">A component registration.</param>
+        public virtual void RegisterComponent(IComponentRegistration registration)
+        {
+            RegisterComponentInternal(registration, null);
+        }
+
+        /// <summary>
+        /// Registers the component, restricting its provided services to 'specificService' in order
+        /// to protect pre-existing defaults if necessary.
+        /// </summary>
+        /// <param name="registration">The registration.</param>
+        /// <param name="specificService">The specific service or null.</param>
+        void RegisterComponentInternal(IComponentRegistration registration, Service specificService)
+        {
             Enforce.ArgumentNotNull(registration, "registration");
 
             lock (_synchRoot)
@@ -127,16 +147,29 @@ namespace Autofac
 
                 _disposer.AddInstanceForDisposal(registration);
 
-                foreach (Service service in registration.Descriptor.Services)
+                if (specificService != null)
                 {
-                    _defaultRegistrations[service] = registration;
+                    SetDefaultRegistrationForService(registration.Descriptor.Id, registration);
+                    SetDefaultRegistrationForService(specificService, registration);
+                }
+                else
+                {
+                    foreach (Service service in registration.Descriptor.Services)
+                        SetDefaultRegistrationForService(service, registration);
                 }
 
                 FireComponentRegistered(registration);
             }
-		}
+        }
 
-        private void FireComponentRegistered(IComponentRegistration registration)
+        void SetDefaultRegistrationForService(Service service, IComponentRegistration registration)
+        {
+            Enforce.ArgumentNotNull(service, "service");
+            Enforce.ArgumentNotNull(registration, "registration");
+            _defaultRegistrations[service] = registration;
+        }
+
+        void FireComponentRegistered(IComponentRegistration registration)
         {
             Enforce.ArgumentNotNull(registration, "registration");
             var args = new ComponentRegisteredEventArgs(this, registration);
@@ -182,7 +215,7 @@ namespace Autofac
         /// <summary>
         /// The registrations for all of the components registered with the container.
         /// </summary>
-        public IEnumerable<IComponentRegistration> ComponentRegistrations
+        public virtual IEnumerable<IComponentRegistration> ComponentRegistrations
         {
         	get
         	{
@@ -196,7 +229,7 @@ namespace Autofac
         /// <summary>
         /// Fired whenever a component is registed into the container.
         /// </summary>
-        public event EventHandler<ComponentRegisteredEventArgs> ComponentRegistered = (sender, e) => { };
+        public virtual event EventHandler<ComponentRegisteredEventArgs> ComponentRegistered = (sender, e) => { };
         
         /// <summary>
         /// Gets the default component registration that will be used to satisfy
@@ -207,7 +240,7 @@ namespace Autofac
         /// <returns>
         /// True if a default exists, false otherwise.
         /// </returns>
-        public bool TryGetDefaultRegistrationFor(Service service, out IComponentRegistration registration)
+        public virtual bool TryGetDefaultRegistrationFor(Service service, out IComponentRegistration registration)
         {
             Enforce.ArgumentNotNull(service, "service");
             IDisposer unused;
@@ -221,7 +254,7 @@ namespace Autofac
         /// <typeparam name="T"></typeparam>
         /// <param name="tag">The tag applied to this container and the contexts genrated when
         /// it resolves component dependencies.</param>
-        public void TagWith<T>(T tag)
+        public virtual void TagWith<T>(T tag)
         {
         	lock(_synchRoot)
         	{
@@ -308,12 +341,23 @@ namespace Autofac
                     return true;
                 }
 
-                if (_outerContainer != null &&
-                    _outerContainer.TryExportToNewContext(key, out registration))
+                if (_outerContainer != null)
                 {
-                    disposer = Disposer;
-                    RegisterComponent(registration);
-                    return true;
+                    Service expectedImplementer;
+                    if (_outerContainer.TryGetDefaultImplementer(key, out expectedImplementer) &&
+                        _defaultRegistrations.TryGetValue(expectedImplementer, out registration))
+                    {
+                        SetDefaultRegistrationForService(key, registration);
+                        disposer = Disposer;
+                        return true;
+                    }
+
+                    if (_outerContainer.TryExportToNewContext(key, out registration))
+                    {
+                        RegisterComponentInternal(registration, key);
+                        disposer = Disposer;
+                        return true;
+                    }
                 }
 
                 return false;
@@ -339,17 +383,7 @@ namespace Autofac
             {
                 if (registrationSource.TryGetRegistration(key, out registration))
                 {
-                    bool supported = false;
-                    foreach (Service provided in registration.Descriptor.Services)
-                    {
-                        if (provided == key)
-                        {
-                            supported = true;
-                            break;
-                        }
-                    }
-
-                    if (!supported)
+                    if (!registration.Descriptor.Services.Contains(key))
                     {
                         registration.Dispose();
                         throw new ArgumentException(ContainerResources.RequiredServiceNotSupported);
@@ -394,6 +428,21 @@ namespace Autofac
                     registration = null;
                     return false;
                 }
+            }
+        }
+
+        bool TryGetDefaultImplementer(Service key, out Service id)
+        {
+            IComponentRegistration registration;
+            if (_defaultRegistrations.TryGetValue(key, out registration))
+            {
+                id = registration.Descriptor.Id;
+                return true;
+            }
+            else
+            {
+                id = null;
+                return false;
             }
         }
 
