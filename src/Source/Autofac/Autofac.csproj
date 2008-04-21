@@ -74,6 +74,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SingletonScopeResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Component\Tagged\ITagged.cs" />
     <Compile Include="Configuration\FileElement.cs" />
     <Compile Include="Configuration\FileElementCollection.cs" />
     <Compile Include="IComponentDescriptor.cs" />
@@ -260,7 +261,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SpecificConstructorSelectorResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Component\TaggedRegistrationResources.Designer.cs">
+    <Compile Include="Component\Tagged\TaggedRegistrationResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>TaggedRegistrationResources.resx</DependentUpon>
@@ -271,7 +272,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ContextTagResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Component\TaggedRegistration.cs" />
+    <Compile Include="Component\Tagged\TaggedRegistration.cs" />
     <Compile Include="TypedService.cs" />
     <Compile Include="UniqueService.cs" />
   </ItemGroup>
@@ -391,7 +392,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>GuardResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Component\TaggedRegistrationResources.resx">
+    <EmbeddedResource Include="Component\Tagged\TaggedRegistrationResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>TaggedRegistrationResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>

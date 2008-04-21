@@ -28,12 +28,12 @@ using System.Globalization;
 using System.Linq;
 using Autofac.Component;
 
-namespace Autofac.Component
+namespace Autofac.Component.Tagged
 {
 	/// <summary>
-	/// Description of TaggedRegistration.
+	/// A TaggedRegistration decorates an IComponentRegistration to implement the Autofac tagging feature.
 	/// </summary>
-	class TaggedRegistration<TTag> : IComponentRegistration, IDisposable
+	public class TaggedRegistration<TTag> : IComponentRegistration, ITagged<TTag>, IDisposable
 	{
         static readonly Parameter[] EmptyParameters = new Parameter[0];
 		readonly TTag _tag;
@@ -51,6 +51,18 @@ namespace Autofac.Component
 		{
         	_inner = Enforce.ArgumentNotNull(inner, "inner");
             _tag = tag;
+        }
+
+        /// <summary>
+        /// Gets the tag applied to the registration.
+        /// </summary>
+        /// <value>The tag.</value>
+        public virtual TTag Tag
+        {
+            get
+            {
+                return _tag;
+            }
         }
 
         /// <summary>
@@ -184,6 +196,9 @@ namespace Autofac.Component
         	_inner.InstanceActivated(context, instance);
         }
         
+        /// <summary>
+        /// Disposes the innner registration.
+        /// </summary>
         public virtual void Dispose()
         {
         	_inner.Dispose();

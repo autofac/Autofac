@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac.Component {
+namespace Autofac.Component.Tagged {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Autofac.Component {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Component.TaggedRegistrationResources", typeof(TaggedRegistrationResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Component.Tagged.TaggedRegistrationResources", typeof(TaggedRegistrationResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
