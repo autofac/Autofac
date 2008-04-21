@@ -32,7 +32,7 @@ namespace Autofac.Registrars.Delegate
     /// <summary>
     /// Register a component using a delegate.
     /// </summary>
-    class DelegateRegistrar : ConcreteRegistrar<IConcreteRegistrar>, IConcreteRegistrar
+    public class DelegateRegistrar : ConcreteRegistrar<IConcreteRegistrar>, IConcreteRegistrar
 	{
         ComponentActivator _creator;
 

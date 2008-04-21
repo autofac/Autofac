@@ -37,5 +37,19 @@ namespace Autofac.Tests.Builder
             Assert.IsTrue(cr.Descriptor.KnownImplementationType(out implType));
             Assert.AreEqual(typeof(List<int>), implType);
         }
+
+        [Test]
+        public void FiresPreparing()
+        {
+            int preparingFired = 0;
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(List<>))
+                .As(typeof(IEnumerable<>))
+            	.UsingConstructor()
+                .OnPreparing((s, e) => ++preparingFired);
+            var container = cb.Build();
+            container.Resolve<IEnumerable<int>>();
+            Assert.AreEqual(1, preparingFired);
+        }
     }
 }

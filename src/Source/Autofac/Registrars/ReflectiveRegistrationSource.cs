@@ -36,38 +36,22 @@ namespace Autofac.Registrars
     /// This class provides a common base for registration handlers that provide
     /// reflection-based registrations.
     /// </summary>
-    abstract class ReflectiveRegistrationSource : IRegistrationSource
+    public abstract class ReflectiveRegistrationSource : IRegistrationSource
     {
-        InstanceOwnership _ownership;
-        InstanceScope _scope;
-        IEnumerable<EventHandler<ActivatingEventArgs>> _activatingHandlers;
-        IEnumerable<EventHandler<ActivatedEventArgs>> _activatedHandlers;
-        RegistrationCreator _createRegistration;
+        DeferredRegistrationParameters _deferredParams;
         IConstructorSelector _constructorSelector;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReflectiveRegistrationSource"/> class.
         /// </summary>
-        /// <param name="ownership">The ownership.</param>
-        /// <param name="scope">The scope.</param>
-        /// <param name="activatingHandlers">The activating handlers.</param>
-        /// <param name="activatedHandlers">The activated handlers.</param>
-        /// <param name="createRegistration">The registration creator.</param>
+        /// <param name="deferredParams">The deferred params.</param>
         /// <param name="constructorSelector">The constructor selector.</param>
         protected ReflectiveRegistrationSource(
-            InstanceOwnership ownership,
-            InstanceScope scope,
-            IEnumerable<EventHandler<ActivatingEventArgs>> activatingHandlers,
-            IEnumerable<EventHandler<ActivatedEventArgs>> activatedHandlers,
-            RegistrationCreator createRegistration,
+            DeferredRegistrationParameters deferredParams,
             IConstructorSelector constructorSelector
         )
         {
-            _ownership = ownership;
-            _scope = scope;
-            _activatingHandlers = Enforce.ArgumentNotNull(activatingHandlers, "activatingHandlers"); ;
-            _activatedHandlers = Enforce.ArgumentNotNull(activatedHandlers, "activatedHandlers");
-            _createRegistration = Enforce.ArgumentNotNull(createRegistration, "createRegistration"); ;
+            _deferredParams = Enforce.ArgumentNotNull(deferredParams, "deferredParams");
             _constructorSelector = Enforce.ArgumentNotNull(constructorSelector, "constructorSelector");
         }
 
@@ -118,16 +102,19 @@ namespace Autofac.Registrars
             Enforce.ArgumentNotNull(descriptor, "descriptor");
             Enforce.ArgumentNotNull(activator, "activator");
 
-            var reg = _createRegistration(
+            var reg = _deferredParams.RegistrationCreator(
                 descriptor,
                 activator,
-                _scope.ToIScope(),
-                _ownership);
+                _deferredParams.Scope.ToIScope(),
+                _deferredParams.Ownership);
 
-            foreach (var activatingHandler in _activatingHandlers)
+            foreach (var preparingHandler in _deferredParams.PreparingHandlers)
+                reg.Preparing += preparingHandler;
+
+            foreach (var activatingHandler in _deferredParams.ActivatingHandlers)
                 reg.Activating += activatingHandler;
 
-            foreach (var activatedHandler in _activatedHandlers)
+            foreach (var activatedHandler in _deferredParams.ActivatedHandlers)
                 reg.Activated += activatedHandler;
 
             return reg;

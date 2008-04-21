@@ -85,6 +85,7 @@
     <Compile Include="Registrars\Automatic\AutomaticRegistrationHandler.cs" />
     <Compile Include="Registrars\Collection\CollectionRegistrar.cs" />
     <Compile Include="Registrars\Collection\CollectionRegistrationAppender.cs" />
+    <Compile Include="Registrars\DeferredRegistrationParameters.cs" />
     <Compile Include="Registrars\Delegate\ComponentActivator.cs" />
     <Compile Include="Builder\DelegateRegistrationBuilder.cs" />
     <Compile Include="Registrars\Generic\GenericRegistrar.cs" />

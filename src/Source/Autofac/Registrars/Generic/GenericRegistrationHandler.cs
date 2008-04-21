@@ -41,7 +41,7 @@ namespace Autofac.Registrars.Generic
 	/// event. This feels hacky but keeps the container cleaner and simpler. Will have
 	/// to see how performance goes.
 	/// </remarks>
-	class GenericRegistrationHandler : ReflectiveRegistrationSource
+	public class GenericRegistrationHandler : ReflectiveRegistrationSource
 	{
 		IEnumerable<Type> _serviceTypes;
 		Type _implementor;
@@ -51,23 +51,15 @@ namespace Autofac.Registrars.Generic
         /// </summary>
         /// <param name="services">The services.</param>
         /// <param name="implementor">The implementor.</param>
-        /// <param name="ownership">The ownership.</param>
-        /// <param name="scope">The scope.</param>
-        /// <param name="activatingHandlers">The activating handlers.</param>
-        /// <param name="activatedHandlers">The activated handlers.</param>
-        /// <param name="createRegistration">The registration creator.</param>
+        /// <param name="deferredParams">The deferred params.</param>
         /// <param name="constructorSelector">The constructor selector.</param>
 		public GenericRegistrationHandler(
 			IEnumerable<Service> services,
 			Type implementor,
-			InstanceOwnership ownership,
-			InstanceScope scope,
-            IEnumerable<EventHandler<ActivatingEventArgs>> activatingHandlers,
-            IEnumerable<EventHandler<ActivatedEventArgs>> activatedHandlers,
-            RegistrationCreator createRegistration,
+            DeferredRegistrationParameters deferredParams,
             IConstructorSelector constructorSelector
         )
-            : base(ownership, scope, activatingHandlers, activatedHandlers, createRegistration, constructorSelector)
+            : base(deferredParams, constructorSelector)
 		{
             Enforce.ArgumentNotNull(services, "services");
             Enforce.ArgumentNotNull(implementor, "implementor");

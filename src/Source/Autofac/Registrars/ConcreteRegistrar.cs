@@ -34,7 +34,7 @@ namespace Autofac.Registrars
     /// <summary>
     /// Registers a regular component.
     /// </summary>
-    abstract class ConcreteRegistrar<TSyntax> : Registrar<TSyntax>, IModule, IConcreteRegistrar<TSyntax>
+    public abstract class ConcreteRegistrar<TSyntax> : Registrar<TSyntax>, IModule, IConcreteRegistrar<TSyntax>
         where TSyntax : IConcreteRegistrar<TSyntax>
     {
         Type _implementor;
@@ -73,15 +73,7 @@ namespace Autofac.Registrars
             var descriptor = new Descriptor(Id, services, _implementor, ExtendedProperties);
             var cr = RegistrationCreator(descriptor, activator, Scope.ToIScope(), Ownership);
 
-            foreach (var activatingHandler in ActivatingHandlers)
-                cr.Activating += activatingHandler;
-
-            foreach (var activatedHandler in ActivatedHandlers)
-                cr.Activated += activatedHandler;
-
-            container.RegisterComponent(cr);
-
-            FireRegistered(new RegisteredEventArgs() { Container = container, Registration = cr});
+            RegisterComponent(container, cr);
 		}
 
  		#endregion

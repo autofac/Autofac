@@ -122,6 +122,14 @@ namespace Autofac.Registrars
         TSyntax OnRegistered(EventHandler<RegisteredEventArgs> handler);
 
         /// <summary>
+        /// Call the provided handler when preparing to activate an instance. OnPreparing
+        /// is the place to interrupt of modify the parameters to the activation process.
+        /// </summary>
+        /// <param name="handler">The handler.</param>
+        /// <returns>A registrar allowing registration to continue.</returns>
+        TSyntax OnPreparing(EventHandler<PreparingEventArgs> handler);
+
+        /// <summary>
         /// Call the provided handler when activating an instance. OnActivating
         /// is the place to do work to get an instance into a usable state.
         /// </summary>

@@ -6,6 +6,7 @@ using Autofac.Component;
 using Autofac.Registrars.Generic;
 using Autofac.Builder;
 using Autofac.Component.Activation;
+using Autofac.Registrars;
 
 namespace Autofac.Tests.Registrars.Generic
 {
@@ -23,11 +24,13 @@ namespace Autofac.Tests.Registrars.Generic
             c.AddRegistrationSource(new GenericRegistrationHandler(
                 new Service[] { new TypedService(typeof(I<>)) },
                 typeof(A<>),
-                InstanceOwnership.Container,
-                InstanceScope.Singleton,
-                new EventHandler<ActivatingEventArgs>[] { },
-                new EventHandler<ActivatedEventArgs>[] { },
-                (d, a, s, o) => new Registration(d, a, s, o),
+                new DeferredRegistrationParameters(
+                    InstanceOwnership.Container,
+                    InstanceScope.Singleton,
+                    new EventHandler<PreparingEventArgs>[] { },
+                    new EventHandler<ActivatingEventArgs>[] { },
+                    new EventHandler<ActivatedEventArgs>[] { },
+                    (d, a, s, o) => new Registration(d, a, s, o)),
                 new MostParametersConstructorSelector()));
 
 			var x = c.Resolve<I<int>>();

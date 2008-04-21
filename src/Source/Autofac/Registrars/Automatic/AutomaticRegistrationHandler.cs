@@ -34,7 +34,7 @@ namespace Autofac.Registrars.Automatic
     /// <summary>
     /// Provides registrations based on a requested type.
     /// </summary>
-    class AutomaticRegistrationHandler : ReflectiveRegistrationSource
+    public class AutomaticRegistrationHandler : ReflectiveRegistrationSource
     {
         Predicate<Type> _predicate;
 
@@ -42,22 +42,14 @@ namespace Autofac.Registrars.Automatic
         /// Initializes a new instance of the <see cref="AutomaticRegistrationHandler"/> class.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
-        /// <param name="ownership">The ownership.</param>
-        /// <param name="scope">The scope.</param>
-        /// <param name="activatingHandlers">The activating handlers.</param>
-        /// <param name="activatedHandlers">The activated handlers.</param>
-        /// <param name="createRegistration">Delegate for creating the registrations.</param>
+        /// <param name="deferredParams">The deferred registration params.</param>
         /// <param name="constructorSelector">The constructor selector.</param>
         public AutomaticRegistrationHandler(
             Predicate<Type> predicate,
-			InstanceOwnership ownership,
-			InstanceScope scope,
-            IEnumerable<EventHandler<ActivatingEventArgs>> activatingHandlers,
-            IEnumerable<EventHandler<ActivatedEventArgs>> activatedHandlers,
-            RegistrationCreator createRegistration,
+            DeferredRegistrationParameters deferredParams,
             IConstructorSelector constructorSelector
         )
-        : base(ownership, scope, activatingHandlers, activatedHandlers, createRegistration, constructorSelector)
+        : base(deferredParams, constructorSelector)
         {
             _predicate = Enforce.ArgumentNotNull(predicate, "predicate");
 		}

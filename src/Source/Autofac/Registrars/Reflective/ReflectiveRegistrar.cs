@@ -35,7 +35,7 @@ namespace Autofac.Registrars.Reflective
     /// <summary>
     /// Register a component to be created through reflection.
     /// </summary>
-	class ReflectiveRegistrar : ConcreteRegistrar<IReflectiveRegistrar>, IReflectiveRegistrar
+	public class ReflectiveRegistrar : ConcreteRegistrar<IReflectiveRegistrar>, IReflectiveRegistrar
 	{
         Type _implementor;
         IConstructorSelector _ctorSelector = new MostParametersConstructorSelector();

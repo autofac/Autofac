@@ -105,9 +105,10 @@ namespace Autofac.Registrars.Collection
         public override void Configure(IContainer container)
         {
             Enforce.ArgumentNotNull(container, "container");
-            var services = Services;            
-            
-            container.RegisterComponent(RegistrationCreator(null, null, Scope.ToIScope(), Ownership));
+            var services = Services;
+
+            var cr = RegistrationCreator(null, null, Scope.ToIScope(), Ownership);
+            RegisterComponent(container, cr);
         }
 
         #endregion

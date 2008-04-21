@@ -38,7 +38,7 @@ namespace Autofac.Registrars.Generic
     /// C# (or the CLR) does not allow partially-constructed generic types like IList&lt;&gt;
     /// to be used as generic arguments.
     /// </remarks>
-	class GenericRegistrar : Registrar<IGenericRegistrar>, IModule, IGenericRegistrar
+	public class GenericRegistrar : Registrar<IGenericRegistrar>, IModule, IGenericRegistrar
 	{
 		Type _implementor;
         IConstructorSelector _constructorSelector = new MostParametersConstructorSelector();
@@ -70,11 +70,13 @@ namespace Autofac.Registrars.Generic
 			container.AddRegistrationSource(new GenericRegistrationHandler(
 				services,
 				_implementor,
-				Ownership,
-				Scope,
-                ActivatingHandlers,
-                ActivatedHandlers,
-                RegistrationCreator,
+                new DeferredRegistrationParameters(
+                    Ownership,
+                    Scope,
+                    PreparingHandlers,
+                    ActivatingHandlers,
+                    ActivatedHandlers,
+                    RegistrationCreator),
                _constructorSelector));
 
             FireRegistered(new RegisteredEventArgs() { Container = container });

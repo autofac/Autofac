@@ -32,7 +32,7 @@ namespace Autofac.Registrars.ProvidedInstance
     /// <summary>
     /// Register a component using a provided instance.
     /// </summary>
-    class ProvidedInstanceRegistrar : ConcreteRegistrar<IConcreteRegistrar>, IConcreteRegistrar
+    public class ProvidedInstanceRegistrar : ConcreteRegistrar<IConcreteRegistrar>, IConcreteRegistrar
 	{
         object _instance;
 

@@ -33,12 +33,13 @@ namespace Autofac.Registrars
 	/// <summary>
 	/// Base class for component registrars.
 	/// </summary>
-	abstract class Registrar<TSyntax> : IRegistrar<TSyntax>, IModule
+	public abstract class Registrar<TSyntax> : IRegistrar<TSyntax>, IModule
         where TSyntax : IRegistrar<TSyntax>
 	{
 		IList<Service> _services = new List<Service>();
 		InstanceOwnership _ownership = InstanceOwnership.Container;
 		InstanceScope _scope = InstanceScope.Singleton;
+        IList<EventHandler<PreparingEventArgs>> _preparingHandlers = new List<EventHandler<PreparingEventArgs>>();
         IList<EventHandler<ActivatingEventArgs>> _activatingHandlers = new List<EventHandler<ActivatingEventArgs>>();
         IList<EventHandler<ActivatedEventArgs>> _activatedHandlers = new List<EventHandler<ActivatedEventArgs>>();
         IList<EventHandler<RegisteredEventArgs>> _registeredHandlers = new List<EventHandler<RegisteredEventArgs>>();
@@ -50,7 +51,11 @@ namespace Autofac.Registrars
         /// Returns this instance, correctly-typed.
         /// </summary>
         protected abstract TSyntax Syntax { get; }
-        
+
+        /// <summary>
+        /// Apply the module to the container.
+        /// </summary>
+        /// <param name="container">Container to apply configuration to.</param>
         public abstract void Configure(IContainer container);
 
 		#region IRegistrar Members
@@ -184,6 +189,21 @@ namespace Autofac.Registrars
         }
 
         /// <summary>
+        /// Call the provided handler when preparing to activate an instance. OnPreparing
+        /// is the place to interrupt of modify the parameters to the activation process.
+        /// </summary>
+        /// <param name="handler">The handler.</param>
+        /// <returns>
+        /// A registrar allowing registration to continue.
+        /// </returns>
+        public virtual TSyntax OnPreparing(EventHandler<PreparingEventArgs> handler)
+        {
+            Enforce.ArgumentNotNull(handler, "handler");
+            _preparingHandlers.Add(handler);
+            return Syntax;
+        }
+
+        /// <summary>
         /// Call the provided handler when activating an instance.
         /// </summary>
         /// <param name="handler">The handler.</param>
@@ -194,6 +214,7 @@ namespace Autofac.Registrars
             _activatingHandlers.Add(handler);
             return Syntax;
         }
+
         /// <summary>
         /// Call the provided handler when an instance is activated.
         /// </summary>
@@ -317,6 +338,17 @@ namespace Autofac.Registrars
 		}
 
         /// <summary>
+        /// The handlers for the Preparing event used by this registration.
+        /// </summary>
+        protected virtual IEnumerable<EventHandler<PreparingEventArgs>> PreparingHandlers
+        {
+            get
+            {
+                return _preparingHandlers;
+            }
+        }
+
+        /// <summary>
         /// The handlers for the Activating event used by this registration.
         /// </summary>
         protected virtual IEnumerable<EventHandler<ActivatingEventArgs>> ActivatingHandlers
@@ -360,6 +392,31 @@ namespace Autofac.Registrars
             {
                 return _extendedProperties;
             }
+        }
+
+        /// <summary>
+        /// Sets up the registration with events, registers it in the container, and fires
+        /// the Registered event.
+        /// </summary>
+        /// <param name="container">The container.</param>
+        /// <param name="cr">The cr.</param>
+        protected virtual void RegisterComponent(IContainer container, IComponentRegistration cr)
+        {
+            Enforce.ArgumentNotNull(container, "container");
+            Enforce.ArgumentNotNull(cr, "cr");
+
+            foreach (var preparingHandler in PreparingHandlers)
+                cr.Preparing += preparingHandler;
+
+            foreach (var activatingHandler in ActivatingHandlers)
+                cr.Activating += activatingHandler;
+
+            foreach (var activatedHandler in ActivatedHandlers)
+                cr.Activated += activatedHandler;
+
+            container.RegisterComponent(cr);
+
+            FireRegistered(new RegisteredEventArgs() { Container = container, Registration = cr });
         }
     }
 }

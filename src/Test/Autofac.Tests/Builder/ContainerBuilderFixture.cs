@@ -256,5 +256,16 @@ namespace Autofac.Tests.Builder
             Assert.IsTrue(registration.Descriptor.ExtendedProperties.Contains(p1));
             Assert.IsTrue(registration.Descriptor.ExtendedProperties.Contains(p2));
         }
+
+        [Test]
+        public void FiresPreparing()
+        {
+            int preparingFired = 0;
+            var cb = new ContainerBuilder();
+            cb.Register<object>().OnPreparing((s, e) => ++preparingFired);
+            var container = cb.Build();
+            container.Resolve<object>();
+            Assert.AreEqual(1, preparingFired);
+        }
     }
 }

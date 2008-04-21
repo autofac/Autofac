@@ -31,7 +31,7 @@ namespace Autofac.Registrars.Automatic
     /// <summary>
     /// Automatically registers types that match a supplied predicate.
     /// </summary>
-    class AutomaticRegistrar : Registrar<IGenericRegistrar>, IModule, IGenericRegistrar
+    public class AutomaticRegistrar : Registrar<IGenericRegistrar>, IModule, IGenericRegistrar
     {
         Predicate<Type> _predicate;
         IConstructorSelector _constructorSelector = new MostParametersConstructorSelector();
@@ -56,11 +56,13 @@ namespace Autofac.Registrars.Automatic
             Enforce.ArgumentNotNull(container, "container");
             container.AddRegistrationSource(new AutomaticRegistrationHandler(
                 _predicate,
-                Ownership,
-                Scope,
-                ActivatingHandlers,
-                ActivatedHandlers,
-                RegistrationCreator,
+                new DeferredRegistrationParameters(
+                    Ownership,
+                    Scope,
+                    PreparingHandlers,
+                    ActivatingHandlers,
+                    ActivatedHandlers,
+                    RegistrationCreator),
                _constructorSelector));
 
             FireRegistered(new RegisteredEventArgs() { Container = container });
