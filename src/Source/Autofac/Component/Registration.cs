@@ -213,7 +213,7 @@ namespace Autofac.Component
         /// Gets the scope.
         /// </summary>
         /// <value>The scope.</value>
-        protected internal IScope Scope
+        public virtual IScope Scope
         {
             get { return _scope; }
         }
@@ -222,7 +222,7 @@ namespace Autofac.Component
         /// Gets the activator.
         /// </summary>
         /// <value>The activator.</value>
-        IActivator Activator
+        public virtual IActivator Activator
         {
             get { return _activator; }
         }
@@ -231,7 +231,7 @@ namespace Autofac.Component
         /// Gets the ownership model.
         /// </summary>
         /// <value>The ownership model.</value>
-        InstanceOwnership OwnershipModel
+        public virtual InstanceOwnership OwnershipModel
         {
             get { return _ownershipModel; }
         }

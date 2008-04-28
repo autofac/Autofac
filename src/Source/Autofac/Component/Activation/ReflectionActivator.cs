@@ -218,6 +218,27 @@ namespace Autofac.Component.Activation
 			}
 		}
 
+        /// <summary>
+        /// The type that will be used to reflectively instantiate the component instances.
+        /// </summary>
+        /// <remarks>
+        /// A setter is provided for this property so that the actual implementation type can
+        /// be substituted with a dynamically-generated subclass. Note that functionality that 
+        /// relies on this feature will obviously not be available to provided instances or
+        /// to delegate-created instances; interface-based AOP is recommended in these situations.
+        /// </remarks>
+        public Type ImplemnentationType
+        {
+            get
+            {
+                return _componentType;
+            }
+            set
+            {
+                _componentType = Enforce.ArgumentNotNull(value, "value");
+            }
+        }
+
         bool CanUseConstructor(ConstructorInfo ci, IContext context, IActivationParameters parameters, out string reason)
 		{
             Enforce.ArgumentNotNull(ci, "ci");

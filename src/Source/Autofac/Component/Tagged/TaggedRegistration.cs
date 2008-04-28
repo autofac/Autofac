@@ -224,5 +224,17 @@ namespace Autofac.Component.Tagged
         {
         	return string.Format(TaggedRegistrationResources.ToStringFormat, _inner, _tag);
         }
+
+        /// <summary>
+        /// Tags are implemented as decorators over other kinds of component registrations. The inner
+        /// registration is the decorated instance.
+        /// </summary>
+        public virtual IComponentRegistration InnerRegistration
+        {
+            get
+            {
+                return _inner;
+            }
+        }
 	}
 }

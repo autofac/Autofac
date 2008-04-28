@@ -62,27 +62,34 @@ namespace Autofac
         /// </summary>
         readonly IDisposer _disposer = new Disposer();
 
-        // *** WARNING *** The order of declaration is significant here - SelfRegistrationDescriptor must be
-        // created before Empty.
-        
         /// <summary>
         /// When creating inner containers the construction of the descriptor was previously
         /// the most expensive operation - using a shared descriptor eliminates this.
         /// </summary>
-        static readonly IComponentDescriptor SelfRegistrationDescriptor =
-            new Component.Descriptor(
-                new UniqueService(),
-                new Service[] { new TypedService(typeof(IContainer)), new TypedService(typeof(IContext)) },
-                typeof(Container));
+        static readonly IComponentDescriptor SelfRegistrationDescriptor;
 
         /// <summary>
         /// A container with no component registrations.
         /// </summary>
-        public static readonly Container Empty = new Container();
+        public static readonly Container Empty;
 
         #endregion
 
         #region Initialisation
+
+        /// <summary>
+        /// Initialises the <see cref="Container"/> class.
+        /// </summary>
+        static Container()
+        {
+            SelfRegistrationDescriptor =
+                new Component.Descriptor(
+                    new UniqueService(),
+                    new Service[] { new TypedService(typeof(IContainer)), new TypedService(typeof(IContext)) },
+                    typeof(Container));
+            
+            Empty = new Container();
+        }
 
         /// <summary>
 		/// Create a new container.
