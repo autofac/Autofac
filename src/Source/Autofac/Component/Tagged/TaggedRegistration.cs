@@ -33,7 +33,7 @@ namespace Autofac.Component.Tagged
 	/// <summary>
 	/// A TaggedRegistration decorates an IComponentRegistration to implement the Autofac tagging feature.
 	/// </summary>
-	public class TaggedRegistration<TTag> : IComponentRegistration, ITagged<TTag>, IDisposable
+	public class TaggedRegistration<TTag> : IComponentRegistration, ITagged<TTag>, IRegistrationDecorator, IDisposable
 	{
         static readonly Parameter[] EmptyParameters = new Parameter[0];
 		readonly TTag _tag;

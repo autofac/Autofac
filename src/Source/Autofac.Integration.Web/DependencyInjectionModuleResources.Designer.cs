@@ -22,14 +22,14 @@ namespace Autofac.Integration.Web {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "2.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ContainerDisposalModuleResources {
+    internal class DependencyInjectionModuleResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ContainerDisposalModuleResources() {
+        internal DependencyInjectionModuleResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Autofac.Integration.Web {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Integration.Web.ContainerDisposalModuleResources", typeof(ContainerDisposalModuleResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Integration.Web.DependencyInjectionModuleResources", typeof(DependencyInjectionModuleResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -64,6 +64,11 @@
     <Compile Include="ContainerProvider.cs" />
     <Compile Include="DependencyInjectionAttribute.cs" />
     <Compile Include="DependencyInjectionModule.cs" />
+    <Compile Include="DependencyInjectionModuleResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DependencyInjectionModuleResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="IContainerProvider.cs" />
     <Compile Include="IContainerProviderAccessor.cs" />
     <Compile Include="IInjectionBehaviour.cs" />
@@ -87,6 +92,11 @@
     <EmbeddedResource Include="ContainerDisposalModuleResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ContainerDisposalModuleResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DependencyInjectionModuleResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DependencyInjectionModuleResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

@@ -60,7 +60,7 @@ namespace Autofac.Integration.Web
             _containerProviderAccessor = context as IContainerProviderAccessor;
 
             if (_containerProviderAccessor == null)
-                throw new InvalidOperationException("App must support acc.");
+                throw new InvalidOperationException(DependencyInjectionModuleResources.ApplicationMustImplementAccessor);
 
             context.PreRequestHandlerExecute += OnPreRequestHandlerExecute;
         }
@@ -77,7 +77,10 @@ namespace Autofac.Integration.Web
         {
             var handler = _httpApplication.Context.CurrentHandler;
             var injectionBehaviour = GetInjectionBehaviour(handler);
-            injectionBehaviour.InjectDependencies(_containerProviderAccessor.ContainerProvider.RequestContainer, handler);
+            var cp = _containerProviderAccessor.ContainerProvider;
+            if (cp == null)
+                throw new InvalidOperationException(ContainerDisposalModuleResources.ContainerProviderNull);
+            injectionBehaviour.InjectDependencies(cp.RequestContainer, handler);
         }
 
         /// <summary>

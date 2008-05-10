@@ -74,6 +74,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SingletonScopeResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Component\Tagged\IRegistrationDecorator.cs" />
     <Compile Include="Component\Tagged\ITagged.cs" />
     <Compile Include="Configuration\FileElement.cs" />
     <Compile Include="Configuration\FileElementCollection.cs" />

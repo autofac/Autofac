@@ -73,7 +73,10 @@ namespace Autofac.Integration.Web
         /// <param name="e"></param>
         void OnEndRequest(object sender, EventArgs e)
         {
-            _containerProviderAccessor.ContainerProvider.DisposeRequestContainer();
+            var cp = _containerProviderAccessor.ContainerProvider;
+            if (cp == null)
+                throw new InvalidOperationException(ContainerDisposalModuleResources.ContainerProviderNull);
+            cp.DisposeRequestContainer();
         }
     }
 }
