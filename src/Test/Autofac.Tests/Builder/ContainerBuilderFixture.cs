@@ -267,5 +267,33 @@ namespace Autofac.Tests.Builder
             container.Resolve<object>();
             Assert.AreEqual(1, preparingFired);
         }
+
+        class Module1 : Module
+        {
+            protected override void Load(ContainerBuilder builder)
+            {
+                base.Load(builder);
+                builder.Register<object>();
+            }
+        }
+
+        class Module2 : Module
+        {
+            protected override void Load(ContainerBuilder builder)
+            {
+                base.Load(builder);
+                builder.RegisterModule(new Module1());
+            }
+        }
+
+        [Test]
+        public void ModuleCanRegisterModule()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterModule(new Module2());
+            var container = builder.Build();
+
+            container.AssertRegistered<object>();
+        }
     }
 }

@@ -50,10 +50,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssertionHelpers.cs" />
     <Compile Include="Builder\ActivatingHandlerFixture.cs" />
     <Compile Include="Builder\AutomaticRegistrationBuilderFixture.cs" />
     <Compile Include="ComponentRegisteredEventArgsFixture.cs" />
     <Compile Include="Component\DescriptorFixture.cs" />
+    <Compile Include="Configuration\ConfigurationSettingsReaderFixture.cs" />
     <Compile Include="Registrars\ConcreteRegistrarFixture.cs" />
     <Compile Include="Builder\CollectionRegistrationBuilderFixture.cs" />
     <Compile Include="Builder\DelegateRegistrationBuilderFixture.cs" />
@@ -93,6 +95,21 @@
   <ItemGroup>
     <None Include="..\..\Autofac.snk">
       <Link>Autofac.snk</Link>
+    </None>
+    <None Include="Configuration\BFactory.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Configuration\SingletonWithTwoServices.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Configuration\ExtendedProperties.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Configuration\Referee.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Configuration\Referrer.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

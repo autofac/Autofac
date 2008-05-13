@@ -76,6 +76,8 @@
     </Compile>
     <Compile Include="Component\Tagged\IRegistrationDecorator.cs" />
     <Compile Include="Component\Tagged\ITagged.cs" />
+    <Compile Include="Configuration\ExtendedPropertyElement.cs" />
+    <Compile Include="Configuration\ExtendedPropertyElementCollection.cs" />
     <Compile Include="Configuration\FileElement.cs" />
     <Compile Include="Configuration\FileElementCollection.cs" />
     <Compile Include="IComponentDescriptor.cs" />
@@ -276,6 +278,7 @@
     </Compile>
     <Compile Include="Component\Tagged\TaggedRegistration.cs" />
     <Compile Include="TypedService.cs" />
+    <Compile Include="TypeManipulation.cs" />
     <Compile Include="UniqueService.cs" />
   </ItemGroup>
   <ItemGroup>

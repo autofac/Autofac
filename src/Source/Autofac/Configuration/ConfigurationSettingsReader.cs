@@ -37,7 +37,7 @@ namespace Autofac.Configuration
     /// <summary>
     /// Configures containers based upon app.config settings.
     /// </summary>
-    public class ConfigurationSettingsReader : IModule
+    public class ConfigurationSettingsReader : Autofac.Builder.Module
     {
         /// <summary>
         /// The default section name that will be searched for.
@@ -92,22 +92,10 @@ namespace Autofac.Configuration
         }
 
         /// <summary>
-        /// Configures the container with the registrations from the config file.
-        /// </summary>
-        /// <param name="container">The container.</param>
-        public void Configure(IContainer container)
-        {
-            Enforce.ArgumentNotNull(container, "container");
-            var builder = new ContainerBuilder();
-            Configure(builder);
-            builder.Build(container);
-        }
-
-        /// <summary>
-        /// Configures the container builder with the registrations from the config file.
+        /// Override to add registrations to the container.
         /// </summary>
         /// <param name="builder">The builder.</param>
-        public void Configure(ContainerBuilder builder)
+        protected override void Load(ContainerBuilder builder)
         {
             Enforce.ArgumentNotNull(builder, "builder");
 
@@ -143,8 +131,11 @@ namespace Autofac.Configuration
                     registrar.As(service);
 
                 registrar.WithArguments(component.Parameters.ToDictionary());
-
                 registrar.WithProperties(component.ExplicitProperties.ToDictionary());
+
+                foreach (var ep in component.ExtendedProperties)
+                    registrar.WithExtendedProperty(
+                        ep.Name, TypeManipulation.ChangeToCompatibleType(ep.Value, Type.GetType(ep.Type)));
 
                 if (!string.IsNullOrEmpty(component.MemberOf))
                     registrar.MemberOf(component.MemberOf);
@@ -168,7 +159,7 @@ namespace Autofac.Configuration
             }
         }
 
-        private void SetInjectProperties(ComponentElement component, IReflectiveRegistrar registrar)
+        void SetInjectProperties(ComponentElement component, IReflectiveRegistrar registrar)
         {
             Enforce.ArgumentNotNull(component, "component");
             Enforce.ArgumentNotNull(registrar, "registrar");
@@ -192,7 +183,7 @@ namespace Autofac.Configuration
             }
         }
 
-        private void SetOwnership(ComponentElement component, IReflectiveRegistrar registrar)
+        void SetOwnership(ComponentElement component, IReflectiveRegistrar registrar)
         {
             Enforce.ArgumentNotNull(component, "component");
             Enforce.ArgumentNotNull(registrar, "registrar");
@@ -214,7 +205,7 @@ namespace Autofac.Configuration
             }
         }
 
-        private void SetScope(ComponentElement component, IReflectiveRegistrar registrar)
+        void SetScope(ComponentElement component, IReflectiveRegistrar registrar)
         {
             Enforce.ArgumentNotNull(component, "component");
             Enforce.ArgumentNotNull(registrar, "registrar");
@@ -241,7 +232,7 @@ namespace Autofac.Configuration
 
         Type LoadType(string typeName, Assembly defaultAssembly)
         {
-            Enforce.ArgumentNotNull(typeName, "typeName");
+            Enforce.ArgumentNotNullOrEmpty(typeName, "typeName");
 
             Type type = Type.GetType(typeName);
 

@@ -24,7 +24,10 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Linq;
 using System.Configuration;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace Autofac.Configuration
 {
@@ -32,7 +35,7 @@ namespace Autofac.Configuration
     /// Base for multi-valued configuration elements.
     /// </summary>
     /// <typeparam name="TElementType"></typeparam>
-    public class NamedConfigurationElementCollection<TElementType> : ConfigurationElementCollection
+    public class NamedConfigurationElementCollection<TElementType> : ConfigurationElementCollection, IEnumerable<TElementType>
         where TElementType : ConfigurationElement
     {
         string _elementName;
@@ -140,6 +143,18 @@ namespace Autofac.Configuration
             Enforce.ArgumentNotNull(element, "element");
 
             return (string)element.ElementInformation.Properties[_elementKey].Value;
+        }
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+        /// </returns>
+        public new IEnumerator<TElementType> GetEnumerator()
+        {
+            foreach (TElementType element in (IEnumerable)this)
+                yield return element;
         }
     }
 }

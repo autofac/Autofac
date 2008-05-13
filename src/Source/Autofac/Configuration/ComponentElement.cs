@@ -36,7 +36,8 @@ namespace Autofac.Configuration
         const string ServiceAttributeName = "service";
         const string ServicesElementName = "services";
 		const string ParametersElementName = "parameters";
-		const string PropertiesElementName = "properties";
+        const string PropertiesElementName = "properties";
+        const string ExtendedPropertiesElementName = "extendedProperties";
         const string MemberOfAttributeName = "member-of";
         const string NameAttributeName = "name";
         const string ScopeAttributeName = "scope";
@@ -167,13 +168,26 @@ namespace Autofac.Configuration
         /// Gets the properties to be explicitly set on the component.
         /// </summary>
         /// <value>The explicit properties.</value>
-		[ConfigurationProperty(PropertiesElementName, IsRequired = false)]
-		public PropertyElementCollection ExplicitProperties
-		{
-			get
-			{
-				return (PropertyElementCollection)this[PropertiesElementName];
-			}
-		}
+        [ConfigurationProperty(PropertiesElementName, IsRequired = false)]
+        public PropertyElementCollection ExplicitProperties
+        {
+            get
+            {
+                return (PropertyElementCollection)this[PropertiesElementName];
+            }
+        }
+
+        /// <summary>
+        /// Gets the extended properties associated with the registration.
+        /// </summary>
+        /// <value>The extended properties.</value>
+        [ConfigurationProperty(ExtendedPropertiesElementName, IsRequired = false)]
+        public ExtendedPropertyElementCollection ExtendedProperties
+        {
+            get
+            {
+                return (ExtendedPropertyElementCollection)this[ExtendedPropertiesElementName];
+            }
+        }
     }
 }

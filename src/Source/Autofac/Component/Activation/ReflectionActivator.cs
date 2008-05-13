@@ -298,7 +298,7 @@ namespace Autofac.Component.Activation
                     !_additionalConstructorParameters.TryGetValue(pi.Name, out parameterValue))
                     parameterValue = context.Resolve(pi.ParameterType);
 
-                parameterValues.Add(ChangeType(parameterValue, pi.ParameterType));
+                parameterValues.Add(TypeManipulation.ChangeToCompatibleType(parameterValue, pi.ParameterType));
 			}
 
 			object[] parameterValueArray = new object[parameterValues.Count];
@@ -316,33 +316,7 @@ namespace Autofac.Component.Activation
 			}
 		}
 
-        /// <summary>
-        /// Does its best to convert whatever the value is into the destination
-        /// type. Null in yields null out for value types and the default(T)
-        /// for value types (this may change.)
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="destinationType">Type of the destination.</param>
-        /// <returns>An objhect of the destination type.</returns>
-        object ChangeType(object value, Type destinationType)
-        {
-            Enforce.ArgumentNotNull(destinationType, "destinationType");
-
-            if (value == null)
-            {
-                if (destinationType.IsValueType)
-                    return Activator.CreateInstance(destinationType);
-
-                return null;
-            }
-
-            if (destinationType.IsAssignableFrom(value.GetType()))
-                return value;
-
-            return Convert.ChangeType(value, destinationType);
-        }
-
-		/// <summary>
+    	/// <summary>
 		/// Inspect all public writeable properties and inject
 		/// values from the container if available. For factory-lifecycle components
 		/// a speed improvement could be had here by caching the property-value
@@ -368,7 +342,7 @@ namespace Autofac.Component.Activation
 				object propertyValue;
 				if (_explicitPropertySetters.TryGetValue(property.Name, out propertyValue))
 				{
-					propertyValue = ChangeType(propertyValue, propertyType);
+                    propertyValue = TypeManipulation.ChangeToCompatibleType(propertyValue, propertyType);
 					property.SetValue(instance, propertyValue, null);
 				}
 			}
