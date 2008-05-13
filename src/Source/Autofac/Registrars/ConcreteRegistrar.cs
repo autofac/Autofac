@@ -191,13 +191,7 @@ namespace Autofac.Registrars
             Enforce.ArgumentNotNull(container, "container");
 
             var filteredServices = descriptor.Services.Where(s => !container.IsRegistered(s));
-
-            Type bestKnownImplementation = null;
-            descriptor.KnownImplementationType(out bestKnownImplementation);
-            if (bestKnownImplementation == null)
-                bestKnownImplementation = typeof(object);
-
-            return new Descriptor(descriptor.Id, filteredServices, bestKnownImplementation, descriptor.ExtendedProperties);
+            return new Descriptor(descriptor.Id, filteredServices, descriptor.BestKnownImplementationType, descriptor.ExtendedProperties);
         }
 	}
 }

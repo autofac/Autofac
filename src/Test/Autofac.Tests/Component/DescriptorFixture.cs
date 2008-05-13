@@ -14,18 +14,14 @@ namespace Autofac.Tests.Component
         public void AcceptsConcreteImplType()
         {
             var target = CreateWithImplementationType(typeof(object));
-            Type impl;
-            Assert.IsTrue(target.KnownImplementationType(out impl));
-            Assert.AreEqual(typeof(object), impl);
+            Assert.AreEqual(typeof(object), target.BestKnownImplementationType);
         }
 
         [Test]
-        public void DiscardsInterfaceImplType()
+        public void AllowsInterfaceImplType()
         {
             var target = CreateWithImplementationType(typeof(IDisposable));
-            Type impl;
-            Assert.IsFalse(target.KnownImplementationType(out impl));
-            Assert.IsNull(impl);
+            Assert.AreEqual(typeof(IDisposable), target.BestKnownImplementationType);
         }
 
         private Descriptor CreateWithImplementationType(Type type)

@@ -35,8 +35,6 @@ namespace Autofac.Component
     /// </summary>
     public class Descriptor : IComponentDescriptor
     {
-        Type _knownImplementationType;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Descriptor"/> class.
         /// </summary>
@@ -78,9 +76,7 @@ namespace Autofac.Component
             ExtendedProperties = new Dictionary<string, object>(
                 Enforce.ArgumentNotNull(extendedProperties, "extendedProperties"));
 
-            Enforce.ArgumentNotNull(bestKnownImplementationType, "bestKnownImplementationType");
-            if (!bestKnownImplementationType.IsInterface)
-                _knownImplementationType = bestKnownImplementationType;
+            BestKnownImplementationType = Enforce.ArgumentNotNull(bestKnownImplementationType, "bestKnownImplementationType");
         }
 
         /// <summary>
@@ -118,20 +114,19 @@ namespace Autofac.Component
         }
 
         /// <summary>
-        /// For registrations that can determine a single implementation
-        /// type (or most generic implementation type in a hierarchy) this
-        /// method will return true and provide the type through the
-        /// <paramref name="implementationType"/> parameter. For registrations
-        /// where the implementation type cannot be determined in advance, it
-        /// is recommended that the returned instances are inspected as they
-        /// are activated.
+        /// Returns the most specific type that the returned intstances are assignable to.
+        /// This may be the actual implementation type, a base class, and abstract class, or an
+        /// interface.
         /// </summary>
-        /// <param name="implementationType">The implementation type.</param>
-        /// <returns>True if an implementation type is known.</returns>
-        public bool KnownImplementationType(out Type implementationType)
+        /// <remarks>
+        /// For registrations where the type is an interface or abstract class
+        /// it is recommended that the returned instances are inspected as they are activated.
+        /// </remarks>
+        /// <returns>The best known implementation type.</returns>
+        public Type BestKnownImplementationType
         {
-            implementationType = _knownImplementationType;
-            return _knownImplementationType != null;
+            get;
+            private set;
         }
 
         /// <summary>
@@ -142,14 +137,9 @@ namespace Autofac.Component
         /// </returns>
         public override string ToString()
         {
-            var implementorDescription = DescriptorResources.UnknownImplementor;
-            if (_knownImplementationType != null)
-                implementorDescription = _knownImplementationType.FullName;
-
             var servicesDescription = string.Join(", ", Services.Select(s => s.Description).ToArray());
-
             return string.Format(CultureInfo.CurrentCulture, DescriptorResources.ToStringFormat,
-                implementorDescription,
+                BestKnownImplementationType.FullName,
                 servicesDescription);
         }
     }

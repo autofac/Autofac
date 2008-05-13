@@ -227,7 +227,7 @@ namespace Autofac.Component.Activation
         /// relies on this feature will obviously not be available to provided instances or
         /// to delegate-created instances; interface-based AOP is recommended in these situations.
         /// </remarks>
-        public Type ImplemnentationType
+        public Type ImplementationType
         {
             get
             {
@@ -329,8 +329,10 @@ namespace Autofac.Component.Activation
 		private void SetterInject(object instance, IContext context)
 		{
             Enforce.ArgumentNotNull(instance, "instance");
-
             Enforce.ArgumentNotNull(context, "context");
+
+            if (_explicitPropertySetters.Count == 0)
+                return;
 
 			Type instanceType = instance.GetType();
 

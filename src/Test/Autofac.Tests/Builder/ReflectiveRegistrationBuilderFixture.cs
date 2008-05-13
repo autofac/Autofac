@@ -124,9 +124,7 @@ namespace Autofac.Tests.Builder
             IComponentRegistration cr;
             Assert.IsTrue(container.TryGetDefaultRegistrationFor(
                 new TypedService(typeof(object)), out cr));
-            Type implType;
-            Assert.IsTrue(cr.Descriptor.KnownImplementationType(out implType));
-            Assert.AreEqual(typeof(A1), implType);
+            Assert.AreEqual(typeof(A1), cr.Descriptor.BestKnownImplementationType);
         }
     }
 }
