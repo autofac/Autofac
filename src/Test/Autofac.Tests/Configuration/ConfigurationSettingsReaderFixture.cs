@@ -5,6 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using Autofac.Configuration;
 using Autofac.Builder;
+using System.IO;
 
 namespace Autofac.Tests.Configuration
 {
@@ -66,9 +67,10 @@ namespace Autofac.Tests.Configuration
             Assert.AreNotSame(container.Resolve<B>(), container.Resolve<B>());
         }
 
-        IContainer ConfigureContainer(string filename)
+        IContainer ConfigureContainer(string configFile)
         {
-            var csr = new ConfigurationSettingsReader(ConfigurationSettingsReader.DefaultSectionName, @"Configuration\" + filename + ".config");
+            var fullFilename =  @"Configuration\" + configFile + ".config";
+            var csr = new ConfigurationSettingsReader(ConfigurationSettingsReader.DefaultSectionName, fullFilename);
             var builder = new ContainerBuilder();
             builder.RegisterModule(csr);
             return builder.Build();

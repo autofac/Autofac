@@ -64,12 +64,17 @@ Integration targets
 		<move file="Source/_VersionAssemblyInfo.cs" tofile="Source/VersionAssemblyInfo.cs" overwrite="true" failonerror="false" if="${file::exists('Source/_VersionAssemblyInfo.cs')}"/>
 	</target>
 	<target name="copy">
-		<copy todir="${TestDirectory}" flatten="true">
-			<fileset>
-				<include name="Test/**/bin/${ProjectConfig}/*.dll"/>
-			</fileset>
-		</copy>
-		<copy todir="${LibDirectory}" flatten="true">
+    <copy todir="${TestDirectory}" flatten="true">
+      <fileset>
+        <include name="Test/**/bin/${ProjectConfig}/*.dll"/>
+      </fileset>
+    </copy>
+    <copy todir="${TestDirectory}/Configuration" flatten="true">
+      <fileset>
+        <include name="Test/Autofac.Tests/Configuration/*.config"/>
+      </fileset>
+    </copy>
+    <copy todir="${LibDirectory}" flatten="true">
 			<fileset>
 				<include name="Source/*/bin/${ProjectConfig}/**"/>
 			</fileset>
