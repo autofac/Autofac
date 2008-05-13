@@ -53,7 +53,7 @@ namespace Autofac.Registrars.Collection
 		{
             Enforce.ArgumentNotNull(registrar, "registrar");
 
-            var collectionId = registrar.Id;
+            var itemId = registrar.Id;
             registrar.OnRegistered((sender, e) =>
             {
                 IDisposer disposer;
@@ -68,7 +68,7 @@ namespace Autofac.Registrars.Collection
                     throw new ComponentNotRegisteredException(_collectionService);
 
                 var serviceList = (IServiceListRegistration)serviceListRegistration;
-                serviceList.Add(collectionId);
+                serviceList.Add(itemId);
             });
 		}
 	}

@@ -57,5 +57,28 @@ namespace Autofac.Tests.Builder
 
             Assert.AreNotSame(coll, inner.Resolve<IEnumerable<string>>());
         }
+
+        [Test]
+        public void NewMembersAddedInInnerContextDoNotAffectOuter()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterCollection<string>().ContainerScoped();
+
+            var container = builder.Build();
+
+            var inner = container.CreateInnerContainer();
+
+            var innerBuilder = new ContainerBuilder();
+            innerBuilder.Register("hello").MemberOf(typeof(IEnumerable<string>));
+            innerBuilder.Build(inner);
+
+            var innerEnumerable = inner.Resolve<IEnumerable<string>>();
+            var outerEnumerable = container.Resolve<IEnumerable<string>>();
+
+            Assert.AreEqual(1, innerEnumerable.Count());
+            Assert.IsTrue(innerEnumerable.Contains("hello"));
+            Assert.IsFalse(outerEnumerable.Any());
+        }
     }
 }

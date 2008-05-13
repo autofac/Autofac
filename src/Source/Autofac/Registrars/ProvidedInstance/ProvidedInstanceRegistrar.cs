@@ -95,14 +95,14 @@ namespace Autofac.Registrars.ProvidedInstance
         /// is chosen.
         /// </summary>
         /// <param name="container">The container.</param>
-        public override void Configure(IContainer container)
+        protected override void DoConfigure(IContainer container)
         {
             Enforce.ArgumentNotNull(container, "container");
 
             InstanceOwnership ownership = Ownership;
             Ownership = InstanceOwnership.External;
 
-            base.Configure(container);
+            base.DoConfigure(container);
             
             if (ownership == InstanceOwnership.Container && _instance is IDisposable)
                 container.Disposer.AddInstanceForDisposal((IDisposable)_instance);

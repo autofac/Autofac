@@ -78,6 +78,7 @@
     <Compile Include="Component\Activation\ReflectionActivatorFixture.cs" />
     <Compile Include="Component\Scope\SingletonScopeFixture.cs" />
     <Compile Include="Component\Activation\SpecificConstructorSelectorFixture.cs" />
+    <Compile Include="Registrars\RegistrarFixture.cs" />
     <Compile Include="ServiceFixture.cs" />
     <Compile Include="Tags\ContainerBuilderExtensionsFixture.cs" />
     <Compile Include="Tags\ContainerExtensionsFixture.cs" />

@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Autofac.Component;
 using Autofac.Component.Scope;
 
@@ -38,17 +39,28 @@ namespace Autofac.Registrars
         where TSyntax : IConcreteRegistrar<TSyntax>
     {
         Type _implementor;
+        Service _defaultService;
         Service _id = new UniqueService();
 
         /// <summary>
         /// Initializes a new instance of the ComponentRegistrar&lt;TComponent&gt; class.
         /// </summary>
         /// <param name="implementor">The implementation type.</param>
-		protected ConcreteRegistrar(Type implementor)
-		{
-            Enforce.ArgumentNotNull(implementor, "implementor");
-            _implementor = implementor;
-		}
+        protected ConcreteRegistrar(Type implementor)
+            : this(implementor, new TypedService(Enforce.ArgumentNotNull(implementor, "implementor")))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the ComponentRegistrar&lt;TComponent&gt; class.
+        /// </summary>
+        /// <param name="implementor">The implementation type.</param>
+        /// <param name="defaultService">The default service.</param>
+        protected ConcreteRegistrar(Type implementor, Service defaultService)
+        {
+            _implementor = Enforce.ArgumentNotNull(implementor, "implementor");
+            _defaultService = Enforce.ArgumentNotNull(defaultService, "defaultService");
+        }
 
 		#region IModule Members
 
@@ -58,14 +70,14 @@ namespace Autofac.Registrars
         /// as the default service.
         /// </summary>
         /// <param name="container">The container.</param>
-		public override void Configure(IContainer container)
+		protected override void DoConfigure(IContainer container)
 		{
             Enforce.ArgumentNotNull(container, "container");
 
             var services = new List<Service>(Services);
 
             if (services.Count == 0)
-                services.Add(new TypedService(_implementor));
+                services.Add(_defaultService);
             
             var activator = CreateActivator();
             Enforce.NotNull(activator);
@@ -118,7 +130,7 @@ namespace Autofac.Registrars
         /// <summary>
         /// Add a service to be exposed by the component.
         /// </summary>
-        /// <param name="service"></param>
+        /// <param name="service">The service to add.</param>
         protected override void AddService(Service service)
         {
             Enforce.ArgumentNotNull(service, "service");
@@ -148,6 +160,44 @@ namespace Autofac.Registrars
         	{
         		return _id;
         	}
+        }
+
+        /// <summary>
+        /// Filters the services exposed by the registration to include only those that are
+        /// not already registered. I.e., will not override existing registrations.
+        /// </summary>
+        /// <returns>
+        /// A registrar allowing registration to continue.
+        /// </returns>
+        public virtual TSyntax DefaultOnly()
+        {
+            IContainer container = null;
+
+            // First, get a reference to the container. This will be called before
+            // the registration creator.
+            OnlyIf(c => { container = c; return true; });
+
+            // Then, filter the services when creating the registration:
+            var rc = RegistrationCreator;
+            RegistrationCreator = (descriptor, activator, scope, ownership) =>
+                rc(FilterRegisteredServices(descriptor, container), activator, scope, ownership);
+
+            return Syntax;
+        }
+
+        IComponentDescriptor FilterRegisteredServices(IComponentDescriptor descriptor, IContainer container)
+        {
+            Enforce.ArgumentNotNull(descriptor, "descriptor");
+            Enforce.ArgumentNotNull(container, "container");
+
+            var filteredServices = descriptor.Services.Where(s => !container.IsRegistered(s));
+
+            Type bestKnownImplementation = null;
+            descriptor.KnownImplementationType(out bestKnownImplementation);
+            if (bestKnownImplementation == null)
+                bestKnownImplementation = typeof(object);
+
+            return new Descriptor(descriptor.Id, filteredServices, bestKnownImplementation, descriptor.ExtendedProperties);
         }
 	}
 }

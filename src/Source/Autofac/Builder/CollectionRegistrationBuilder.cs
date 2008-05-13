@@ -36,7 +36,8 @@ namespace Autofac.Builder
     public static class CollectionRegistrationBuilder
     {
         /// <summary>
-        /// Registers the type as a collection.
+        /// Registers the type as a collection. If no services or names are specified, the
+        /// default service will be IEnumerable&lt;T&gt;();
         /// </summary>
         /// <typeparam name="T">Collection item type</typeparam>
         /// <param name="builder">The builder.</param>

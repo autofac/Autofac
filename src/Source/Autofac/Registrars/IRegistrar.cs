@@ -154,7 +154,6 @@ namespace Autofac.Registrars
         /// <returns>A registrar allowing registration to continue.</returns>
         TSyntax WithExtendedProperty(string key, object value);
 
-
         /// <summary>
         /// Sets the component to be resolvable only in contexts tagged with the
         /// provided tag.
@@ -169,5 +168,14 @@ namespace Autofac.Registrars
         /// </summary>
         /// <value>The registration creator.</value>
         RegistrationCreator RegistrationCreator { get; set; }
+
+        /// <summary>
+        /// Applies the registration only if the supplied predicate is true at the time
+        /// the container is built. If applied multiple times, predicates are composed
+        /// with the 'and' operator.
+        /// </summary>
+        /// <param name="containerPredicate">Predicate based on a container.</param>
+        /// <returns>A registrar allowing registration to continue.</returns>
+        TSyntax OnlyIf(Predicate<IContainer> containerPredicate);
 	}
 }

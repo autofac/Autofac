@@ -24,23 +24,28 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using Autofac.Component.Scope;
+using System;
+using System.Collections.Generic;
+using Autofac.Component;
 
 namespace Autofac.Registrars.Collection
 {
     /// <summary>
     /// Register a component using a provided instance.
     /// </summary>
-    class CollectionRegistrar<TItem> : Registrar<IConcreteRegistrar>, IConcreteRegistrar, IModule
+    class CollectionRegistrar<TItem> : ConcreteRegistrar<IConcreteRegistrar>, IConcreteRegistrar, IModule
     {
-        Service _id; // Default is null.
-        
         /// <summary>
         /// Constructs a CollectionRegistrar.
         /// </summary>
         public CollectionRegistrar()
+            : base(ServiceListActivator<TItem>.ImplementationType, new TypedService(typeof(IEnumerable<TItem>)))
         {
-        	RegistrationCreator = (descriptor, activator, scope, ownership) =>
-        		new ServiceListRegistration<TItem>(Id, Services, scope);
+            RegistrationCreator = (descriptor, activator, scope, ownership) =>
+                new ServiceListRegistration<TItem>(
+                    descriptor,
+                    (ServiceListActivator<TItem>)activator, // changing this to an interface dependency would make things more flexible
+                    scope);
         }
         
         /// <summary>
@@ -52,65 +57,13 @@ namespace Autofac.Registrars.Collection
             get { return this; }
         }
 
-        #region IConcreteRegistrar Members
-
         /// <summary>
-        /// Names the registration.
+        /// Creates the activator for the registration.
         /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns>A registrar allowing configuration to continue.</returns>
-        public IConcreteRegistrar Named(string name)
+        /// <returns>An activator.</returns>
+        protected override IActivator CreateActivator()
         {
-            Enforce.ArgumentNotNullOrEmpty(name, "name");
-            AddService(new NamedService(name));
-            return Syntax;
+            return new ServiceListActivator<TItem>();
         }
-
-        /// <summary>
-        /// Associate services with the registration.
-        /// </summary>
-        /// <param name="services">The services that the registration will expose.</param>
-        /// <returns>
-        /// A registrar allowing registration to continue.
-        /// </returns>
-        public IConcreteRegistrar As(params Service[] services)
-        {
-            Enforce.ArgumentNotNull(services, "services");
-            foreach (var service in services)
-                AddService(service);
-            return Syntax;
-        }
-        
-        /// <summary>
-        /// A unique service identifier that will be associated with the resulting
-        /// registration.
-        /// </summary>
-        /// <remarks>Only created if accessed.</remarks>
-        public Service Id
-        {
-        	get
-        	{
-        		return _id = _id ?? new UniqueService();
-        	}
-        }
-        
-        #endregion
-
-        #region IModule Members
-
-        /// <summary>
-        /// Apply the module to the container.
-        /// </summary>
-        /// <param name="container">Container to apply configuration to.</param>
-        public override void Configure(IContainer container)
-        {
-            Enforce.ArgumentNotNull(container, "container");
-            var services = Services;
-
-            var cr = RegistrationCreator(null, null, Scope.ToIScope(), Ownership);
-            RegisterComponent(container, cr);
-        }
-
-        #endregion
     }
 }

@@ -49,79 +49,7 @@ namespace Autofac.Registrars.Collection
     /// <typeparam name="TItem"></typeparam>
     class ServiceListRegistration<TItem> : Registration, IServiceListRegistration
     {
-        #region Inner classes
-
-        /// <summary>
-        /// Custom activator that maintains a service list and returns instances
-        /// of List.
-        /// </summary>
-        class ServiceListActivator : IActivator
-        {
-            IList<Service> _items = new List<Service>();
-
-            /// <summary>
-            /// Gets the implementation type.
-            /// </summary>
-            public static readonly Type ImplementationType = typeof(List<TItem>);
-
-            /// <summary>
-            /// Gets the services that will appear in instances of the list.
-            /// </summary>
-            /// <value>The items.</value>
-            public IList<Service> Items
-            {
-                get
-                {
-                    return _items;
-                }
-            }
-
-            #region IActivator Members
-
-            /// <summary>
-            /// Create a component instance, using container
-            /// to resolve the instance's dependencies.
-            /// </summary>
-            /// <param name="context">The context to use
-            /// for dependency resolution.</param>
-            /// <param name="parameters">Parameters that can be used in the resolution process.</param>
-            /// <returns>
-            /// A component instance. Note that while the
-            /// returned value need not be created on-the-spot, it must
-            /// not be returned more than once by consecutive calls. (Throw
-            /// an exception if this is attempted. IActivationScope should
-            /// manage singleton semantics.)
-            /// </returns>
-            public object ActivateInstance(IContext context, IActivationParameters parameters)
-            {
-                Enforce.ArgumentNotNull(context, "context");
-                Enforce.ArgumentNotNull(parameters, "parameters");
-
-                var instance = new List<TItem>();
-                foreach (var item in _items)
-                {
-                    object itemInstance = context.Resolve(item);
-                    instance.Add((TItem)itemInstance);
-                }
-
-                return instance;
-            }
-
-            /// <summary>
-            /// Not supported as the ServiceListRegistration class overrides
-            /// DuplicateForNewContext to avoid this method call.
-            /// </summary>
-            public bool CanSupportNewContext
-            {
-                get { throw new InvalidOperationException(); }
-            }
-
-            #endregion
-        }
-        
-        #endregion
-
-        ServiceListActivator _activator = new ServiceListActivator();
+        ServiceListActivator<TItem> _activator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceListRegistration&lt;TItem&gt;"/> class.
@@ -129,26 +57,11 @@ namespace Autofac.Registrars.Collection
         /// <param name="descriptor">The descriptor.</param>
         /// <param name="activator">The activator.</param>
         /// <param name="scope">The scope.</param>
-        ServiceListRegistration(IComponentDescriptor descriptor, ServiceListActivator activator, IScope scope)
+        public ServiceListRegistration(IComponentDescriptor descriptor, ServiceListActivator<TItem> activator, IScope scope)
             : base(descriptor, activator, scope, InstanceOwnership.Container)
         {
             _activator = Enforce.ArgumentNotNull(activator, "activator");
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ServiceListRegistration&lt;TItem&gt;"/> class.
-        /// </summary>
-        /// <param name="id">The id.</param>
-        /// <param name="services">The services.</param>
-        /// <param name="scope">The scope.</param>
-        public ServiceListRegistration(Service id, IEnumerable<Service> services, IScope scope)
-        : this(
-            new Descriptor(id, services, ServiceListActivator.ImplementationType),
-            new ServiceListActivator(),
-            scope)
-        {
-        }
-
 
         #region ICompositeRegistration Members
 
@@ -181,7 +94,7 @@ namespace Autofac.Registrars.Collection
             if (!Scope.DuplicateForNewContext(out newScope))
                 return false;
 
-            var newActivator = new ServiceListActivator();
+            var newActivator = new ServiceListActivator<TItem>();
             foreach (var item in _activator.Items)
                 newActivator.Items.Add(item);
 

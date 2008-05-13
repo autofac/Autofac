@@ -56,5 +56,16 @@ namespace Autofac.Tests.Registrars
             Assert.AreSame(a, b);
             Assert.AreSame(b, c);
         }
+
+        [Test]
+        public void OnlyIfNotRegisteredFiltersServices()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register("s1");
+            builder.Register("s2").Named("name").DefaultOnly();
+            var container = builder.Build();
+            Assert.AreEqual("s1", container.Resolve<string>()); // Not overridden
+            Assert.AreEqual("s2", container.Resolve("name"));
+        }
     }
 }

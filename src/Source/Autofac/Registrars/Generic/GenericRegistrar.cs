@@ -59,8 +59,8 @@ namespace Autofac.Registrars.Generic
         /// Registers the component.
         /// </summary>
         /// <param name="container">The container.</param>
-		public override void Configure(IContainer container)
-		{
+        protected override void DoConfigure(IContainer container)
+        {
             Enforce.ArgumentNotNull(container, "container");
             
             var services = new List<Service>(Services);

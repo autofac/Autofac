@@ -63,6 +63,22 @@ namespace Autofac.Registrars
         /// A unique service identifier that will be associated with the resulting
         /// registration.
         /// </summary>
+        /// <example>
+        /// var builder = new ContainerBuilder();
+        /// var id = builder.Register(c =&gt; new Foo()).FactoryScoped().Id;
+        /// var container = builder.Build();
+        /// var myFoo = container.Resolve(id);
+        /// // container.Resolve&lt;Foo&gt;() will also work, but the id guarantees the specific registration
+        /// </example>
         Service Id { get; }
+
+        /// <summary>
+        /// Filters the services exposed by the registration to include only those that are
+        /// not already registered. I.e., will not override existing registrations.
+        /// </summary>
+        /// <returns>
+        /// A registrar allowing registration to continue.
+        /// </returns>
+        TSyntax DefaultOnly();
     }
 }

@@ -47,6 +47,7 @@ namespace Autofac.Registrars
         IDictionary<string, object> _extendedProperties = new Dictionary<string, object>();
         RegistrationCreator _createRegistration = (descriptor, activator, scope, ownership) =>
             new Registration(descriptor, activator, scope, ownership);
+        Predicate<IContainer> _containerPredicate = c => true;
 
         /// <summary>
         /// Returns this instance, correctly-typed.
@@ -54,10 +55,23 @@ namespace Autofac.Registrars
         protected abstract TSyntax Syntax { get; }
 
         /// <summary>
+        /// Apply the module to the container. Subclasses should implement DoConfigure() rather than
+        /// overriding this member.
+        /// </summary>
+        /// <param name="container">Container to apply configuration to.</param>
+        public virtual void Configure(IContainer container)
+        {
+            Enforce.ArgumentNotNull(container, "container");
+
+            if (_containerPredicate(container))
+                DoConfigure(container);
+        }
+
+        /// <summary>
         /// Apply the module to the container.
         /// </summary>
         /// <param name="container">Container to apply configuration to.</param>
-        public abstract void Configure(IContainer container);
+        protected abstract void DoConfigure(IContainer container);
 
 		#region IRegistrar Members
 
@@ -245,11 +259,12 @@ namespace Autofac.Registrars
         }
 
         /// <summary>
-        /// 
+        /// Sets the component to be resolvable only in contexts tagged with the
+        /// provided tag.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="tag"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">The type of the tag.</typeparam>
+        /// <param name="tag">The tag.</param>
+        /// <returns>A registrar allowing registration to continue.</returns>
         public virtual TSyntax InContext<T>(T tag)
         {
         	var oldValue = RegistrationCreator;
@@ -274,6 +289,21 @@ namespace Autofac.Registrars
             }
         }
 
+        /// <summary>
+        /// Applies the registration only if the supplied predicate is true at the time
+        /// the container is built. If applied multiple times, predicates are composed
+        /// with the 'and' operator.
+        /// </summary>
+        /// <param name="containerPredicate">Predicate based on a container.</param>
+        /// <returns>A registrar allowing registration to continue.</returns>
+        public virtual TSyntax OnlyIf(Predicate<IContainer> containerPredicate)
+        {
+            Enforce.ArgumentNotNull(containerPredicate, "containerPredicate");
+            var oldPredicate = _containerPredicate;
+            _containerPredicate = c => oldPredicate(c) && containerPredicate(c);
+            return Syntax;
+        }
+
 		#endregion
 
 
@@ -291,7 +321,7 @@ namespace Autofac.Registrars
         /// <summary>
         /// Add a service to be exposed by the component.
         /// </summary>
-        /// <param name="service"></param>
+        /// <param name="service">The service to add.</param>
         protected virtual void AddService(Service service)
         {
             Enforce.ArgumentNotNull(service, "service");
@@ -301,6 +331,7 @@ namespace Autofac.Registrars
         /// <summary>
         /// Add many services to be exposed by the component.
         /// </summary>
+        /// <param name="services">The services to add (by calling AddService().)</param>
         protected virtual void AddServices(IEnumerable<Service> services)
         {
             Enforce.ArgumentNotNull(services, "services");
