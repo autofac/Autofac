@@ -24,11 +24,10 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using NUnit.Framework;
 using Autofac.Component;
 using Autofac.Component.Activation;
 using Autofac.Component.Scope;
-using System.Collections.Generic;
+using NUnit.Framework;
 
 namespace Autofac.Tests
 {

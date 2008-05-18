@@ -1,6 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
-using System;
 
 [assembly: AssemblyTitle("Autofac")]
 [assembly: AssemblyDescription("Autofac Delegate Factory Support")]

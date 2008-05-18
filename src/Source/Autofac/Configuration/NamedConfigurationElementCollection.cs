@@ -24,10 +24,9 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Linq;
-using System.Configuration;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
+using System.Configuration;
 
 namespace Autofac.Configuration
 {

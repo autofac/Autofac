@@ -42,6 +42,7 @@ namespace Autofac.Component.Activation
 		IDictionary<string, object> _additionalConstructorParameters = new Dictionary<string, object>();
 		IDictionary<string, object> _explicitPropertySetters = new Dictionary<string, object>();
 		IConstructorSelector _constructorSelector;
+        IConstructorInvoker _constructorInvoker = new DirectConstructorInvoker();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReflectionActivator"/> class.
@@ -222,9 +223,8 @@ namespace Autofac.Component.Activation
         /// The type that will be used to reflectively instantiate the component instances.
         /// </summary>
         /// <remarks>
-        /// A setter is provided for this property so that the actual implementation type can
-        /// be substituted with a dynamically-generated subclass. Note that functionality that 
-        /// relies on this feature will obviously not be available to provided instances or
+        /// The actual implementation type may be substituted with a dynamically-generated subclass.
+        /// Note that functionality that  relies on this feature will obviously not be available to provided instances or
         /// to delegate-created instances; interface-based AOP is recommended in these situations.
         /// </remarks>
         public Type ImplementationType
@@ -236,6 +236,22 @@ namespace Autofac.Component.Activation
             set
             {
                 _componentType = Enforce.ArgumentNotNull(value, "value");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the constructor invoker.
+        /// </summary>
+        /// <value>The constructor invoker.</value>
+        public IConstructorInvoker ConstructorInvoker
+        {
+            get
+            {
+                return _constructorInvoker;
+            }
+            set
+            {
+                _constructorInvoker = Enforce.ArgumentNotNull(value, "value");
             }
         }
 
@@ -306,7 +322,7 @@ namespace Autofac.Component.Activation
 
 			try
 			{
-				object instance = ci.Invoke(parameterValueArray);
+				object instance = ConstructorInvoker.InvokeConstructor(context, parameters, ci, parameterValueArray);
 				SetterInject(instance, context);
 				return instance;
 			}
@@ -326,7 +342,7 @@ namespace Autofac.Component.Activation
 		/// setter injection on.</param>
 		/// <param name="context">The non-null context from which dependencies
 		/// may be satisfied.</param>
-		private void SetterInject(object instance, IContext context)
+		void SetterInject(object instance, IContext context)
 		{
             Enforce.ArgumentNotNull(instance, "instance");
             Enforce.ArgumentNotNull(context, "context");

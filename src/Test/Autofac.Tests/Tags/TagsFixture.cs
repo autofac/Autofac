@@ -1,6 +1,6 @@
 using System;
-using NUnit.Framework;
 using Autofac.Builder;
+using NUnit.Framework;
 
 namespace Autofac.Tests.Tags
 {

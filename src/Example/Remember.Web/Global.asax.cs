@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Autofac.Builder;
 using Autofac.Integration.Web;
 using Autofac.Integration.Web.Mvc;
-using Autofac.Builder;
-using System.Reflection;
 using Remember.Model;
 
 namespace Remember.Web

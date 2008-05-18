@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
-using Autofac.Component.Scope;
 using Autofac.Component;
+using Autofac.Component.Scope;
+using NUnit.Framework;
 
 namespace Autofac.Tests.Component.Scope
 {

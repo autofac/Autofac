@@ -26,10 +26,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Autofac.Builder;
 using System.Reflection;
 using System.Web.Mvc;
+using Autofac.Builder;
 
 namespace Autofac.Integration.Web.Mvc
 {

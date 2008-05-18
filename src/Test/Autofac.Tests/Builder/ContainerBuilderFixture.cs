@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
 using Autofac.Builder;
-using Autofac.Component.Activation;
 using Autofac.Component;
+using Autofac.Component.Activation;
 using Autofac.Component.Scope;
-using System.Linq;
+using NUnit.Framework;
 
 namespace Autofac.Tests.Builder
 {

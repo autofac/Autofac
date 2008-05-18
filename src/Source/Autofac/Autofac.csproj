@@ -63,6 +63,8 @@
       <DependentUpon>ActivationParametersResources.resx</DependentUpon>
     </Compile>
     <Compile Include="ComponentRegisteredEventArgs.cs" />
+    <Compile Include="Component\Activation\DirectConstructorInvoker.cs" />
+    <Compile Include="Component\Activation\IConstructorInvoker.cs" />
     <Compile Include="Component\Descriptor.cs" />
     <Compile Include="Component\DescriptorResources.Designer.cs">
       <AutoGen>True</AutoGen>

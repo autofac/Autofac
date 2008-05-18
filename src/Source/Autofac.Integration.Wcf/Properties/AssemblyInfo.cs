@@ -1,6 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
-using System;
 
 [assembly: AssemblyTitle("Autofac.Integration.Wcf")]
 [assembly: AssemblyDescription("Autofac WCF Integration")]

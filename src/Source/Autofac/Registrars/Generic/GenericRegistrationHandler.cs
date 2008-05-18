@@ -26,9 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac.Component;
 using Autofac.Component.Activation;
-using Autofac.Component.Scope;
 
 namespace Autofac.Registrars.Generic
 {

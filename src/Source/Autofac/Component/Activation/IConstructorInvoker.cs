@@ -23,32 +23,24 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
+using System.Reflection;
 
-namespace Autofac.Integration.Web.Mvc
+namespace Autofac.Component.Activation
 {
     /// <summary>
-    /// Determines how components relate to controller and type
-    /// names.
+    /// Invokes the specified constructor (or an equivalent.)
     /// </summary>
-    public interface IControllerIdentificationStrategy
+    public interface IConstructorInvoker
     {
-        /// <summary>
-        /// Determines which service is resolved in order to provide the
-        /// controller identified by the MVC framework using the provided name.
-        /// </summary>
-        /// <param name="controllerName">Name of the controller.</param>
-        /// <returns>The service identifier.</returns>
-        Service ServiceForControllerName(string controllerName);
 
         /// <summary>
-        /// Determines which service is registered for the supplied
-        /// controller type. This service will correspond to the service
-        /// returned by ServiceForControllerName when the controller is
-        /// requested by the framework.
+        /// Invokes the constructor.
         /// </summary>
-        /// <param name="controllerType">Type of the controller.</param>
-        /// <returns>The service to be registered for the controller.</returns>
-        Service ServiceForControllerType(Type controllerType);
+        /// <param name="context">The context.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <param name="ci">The selected constructor.</param>
+        /// <param name="args">Arguments appropriate to the constructor.</param>
+        /// <returns>The new instance.</returns>
+        object InvokeConstructor(IContext context, IActivationParameters parameters, ConstructorInfo ci, object[] args);
     }
 }

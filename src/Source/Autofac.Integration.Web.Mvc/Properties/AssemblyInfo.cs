@@ -1,6 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
-using System;
 
 [assembly: AssemblyTitle("Autofac.Integration.Web.Mvc")]
 [assembly: AssemblyDescription("Autofac ASP.NET MVC Integration")]

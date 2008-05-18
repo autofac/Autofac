@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using Autofac.Integration.Web.Mvc;
-using System.Web.Mvc;
 using System.Web;
-using Autofac.Builder;
+using System.Web.Mvc;
 using System.Web.Routing;
+using Autofac.Builder;
 using Autofac.Integration.Web;
+using Autofac.Integration.Web.Mvc;
+using NUnit.Framework;
 
 namespace Autofac.Tests.Integration.Web.Mvc
 {

@@ -1,6 +1,6 @@
-﻿using Autofac.Builder;
+﻿using System;
+using Autofac.Builder;
 using NUnit.Framework;
-using System;
 
 namespace Autofac.Tests.Builder
 {

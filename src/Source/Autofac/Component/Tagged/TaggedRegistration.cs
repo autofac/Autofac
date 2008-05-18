@@ -26,7 +26,6 @@
 using System;
 using System.Globalization;
 using System.Linq;
-using Autofac.Component;
 
 namespace Autofac.Component.Tagged
 {

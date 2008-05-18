@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using Autofac.Integration.Web;
-using System.Web.UI;
-using Autofac.Builder;
 using System.Web;
+using Autofac.Builder;
+using Autofac.Integration.Web;
+using NUnit.Framework;
 
 namespace Autofac.Tests.Integration.Web
 {

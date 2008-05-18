@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Autofac.Builder;
 using NUnit.Framework;
-using System;
 
 namespace Autofac.Tests.Builder
 {

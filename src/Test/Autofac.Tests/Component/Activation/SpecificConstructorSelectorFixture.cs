@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Autofac.Component.Activation;
 using NUnit.Framework;
-using Autofac.Component.Activation;
 
 namespace Autofac.Tests.Component.Activation
 {
