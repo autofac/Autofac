@@ -253,5 +253,22 @@ namespace Autofac.Tests.Component.Activation
             var target = new ReflectionActivator(typeof(NoPublicConstructor));
             target.ActivateInstance(new Container(), ActivationParameters.Empty);
         }
+
+        public class WithGenericCtor<T>
+        {
+            public WithGenericCtor(T t)
+            {
+            }
+        }
+
+        [Test]
+        public void CanResolveConstructorsWithGenericParameters()
+        {
+            var activator = new ReflectionActivator(typeof(WithGenericCtor<string>));
+            var parameters = new ActivationParameters();
+            parameters["t"] = "Hello";
+            var instance = activator.ActivateInstance(new Container(), parameters);
+            Assert.IsInstanceOfType(typeof(WithGenericCtor<string>), instance);
+        }
 	}
 }
