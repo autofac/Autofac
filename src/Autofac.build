@@ -91,8 +91,8 @@ Integration targets
 		<zip zipfile="${DistribDirectory}\${DistribFileName}.zip" ziplevel="9">
 			<fileset basedir="${LibDirectory}" prefix="bin">
 				<include name="*.dll"/>
+				<include name="*.xml"/>				
 				<exclude name="*.Tests.*"/>
-				<exclude name="*.xml"/>				
 			</fileset>
 			<fileset basedir="${TestDirectory}" prefix="test">
 				<include name="*.*"/>
