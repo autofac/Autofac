@@ -18,9 +18,9 @@ namespace Remember.Web.Controllers
             _tasks = tasks;
         }
 
-        public void Index()
+        public ActionResult Index()
         {
-            RenderView("Index", new TaskList(_tasks.ToList()));
+            return View("Index", new TaskList(_tasks.ToList()));
         }
     }
 }
