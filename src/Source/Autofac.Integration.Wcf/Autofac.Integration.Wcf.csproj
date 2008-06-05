@@ -58,6 +58,11 @@
     <Compile Include="AutofacInstanceProvider.cs" />
     <Compile Include="AutofacServiceHost.cs" />
     <Compile Include="AutofacServiceHostFactory.cs" />
+    <Compile Include="AutofacServiceHostFactoryResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AutofacServiceHostFactoryResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +75,13 @@
     <None Include="..\..\Autofac.snk">
       <Link>Autofac.snk</Link>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AutofacServiceHostFactoryResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AutofacServiceHostFactoryResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
