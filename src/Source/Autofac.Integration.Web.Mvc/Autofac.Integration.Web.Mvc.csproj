@@ -39,9 +39,18 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Abstractions" />
-    <Reference Include="System.Web.Mvc" />
-    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Web.Abstractions, Version=0.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Resource\AspNetMvc\System.Web.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Resource\AspNetMvc\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Routing, Version=0.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Resource\AspNetMvc\System.Web.Routing.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
