@@ -90,8 +90,9 @@ Integration targets
 		<mkdir dir="${DistribDirectory}"/>
 		<zip zipfile="${DistribDirectory}\${DistribFileName}.zip" ziplevel="9">
 			<fileset basedir="${LibDirectory}" prefix="bin">
-				<include name="*.dll"/>
-				<include name="*.xml"/>				
+        <include name="*.dll"/>
+        <include name="*.pdb"/>
+        <include name="*.xml"/>				
 				<exclude name="*.Tests.*"/>
 			</fileset>
 			<fileset basedir="${TestDirectory}" prefix="test">
