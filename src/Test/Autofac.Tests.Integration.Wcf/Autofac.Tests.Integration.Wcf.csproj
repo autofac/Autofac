@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30428</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E3559C55-D387-4620-AC02-6C3098D4A888}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="AutofacInstanceContextFixture.cs" />
     <Compile Include="AutofacServiceHostFactoryFixture.cs" />
+    <Compile Include="AutofacWebServiceHostFactoryFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

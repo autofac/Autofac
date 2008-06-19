@@ -33,7 +33,7 @@ namespace Autofac.Integration.Wcf
     /// <summary>
     /// Creates ServiceHost instances for WCF.
     /// </summary>
-	public class AutofacServiceHostFactory : AutofacHostFactory
+	public class AutofacWebServiceHostFactory : AutofacHostFactory
 	{
         /// <summary>
         /// Creates a <see cref="T:System.ServiceModel.ServiceHost"/> for a specified type of service with a specific base address.
@@ -54,7 +54,7 @@ namespace Autofac.Integration.Wcf
             if (Container == null)
                 throw new InvalidOperationException(AutofacServiceHostFactoryResources.ContainerIsNull);
 
-			return new AutofacServiceHost(Container, serviceType, baseAddresses);
+			return new AutofacWebServiceHost(Container, serviceType, baseAddresses);
 		}
 	}
 }

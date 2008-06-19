@@ -25,11 +25,12 @@
 
 using System;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 
 namespace Autofac.Integration.Wcf
 {
     /// <summary>
-    /// ServiceHost with AutfacDependencyInjectionServiceBehaviour.
+    /// ServiceHost with AutofacDependencyInjectionServiceBehaviour.
     /// </summary>
 	public class AutofacServiceHost : ServiceHost
 	{

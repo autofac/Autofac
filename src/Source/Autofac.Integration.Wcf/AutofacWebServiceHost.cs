@@ -25,36 +25,48 @@
 
 using System;
 using System.ServiceModel;
-using System.ServiceModel.Activation;
-using System.Globalization;
+using System.ServiceModel.Web;
 
 namespace Autofac.Integration.Wcf
 {
     /// <summary>
-    /// Creates ServiceHost instances for WCF.
+    /// ServiceHost with AutofacDependencyInjectionServiceBehaviour.
     /// </summary>
-	public class AutofacServiceHostFactory : AutofacHostFactory
+	public class AutofacWebServiceHost : WebServiceHost
 	{
+		private readonly IContainer _container;
+        private readonly Type _implementationType;
+
         /// <summary>
-        /// Creates a <see cref="T:System.ServiceModel.ServiceHost"/> for a specified type of service with a specific base address.
+        /// Initializes a new instance of the <see cref="AutofacServiceHost"/> class.
         /// </summary>
-        /// <param name="serviceType">Specifies the type of service to host.</param>
-        /// <param name="baseAddresses">The <see cref="T:System.Array"/> of type <see cref="T:System.Uri"/> that contains the base addresses for the service hosted.</param>
-        /// <returns>
-        /// A <see cref="T:System.ServiceModel.ServiceHost"/> for the type of service specified with a specific base address.
-        /// </returns>
-		protected override ServiceHost CreateServiceHost(Type serviceType, Uri[] baseAddresses)
+        /// <param name="container">The container.</param>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="baseAddresses">The base addresses.</param>
+        public AutofacWebServiceHost(IContainer container, Type implementationType, params Uri[] baseAddresses)
+            : base(implementationType, baseAddresses)
 		{
-            if (serviceType == null)
-                throw new ArgumentNullException("serviceType");
+            if (container == null)
+                throw new ArgumentNullException("container");
+
+            if (implementationType == null)
+                throw new ArgumentNullException("implementationType");
 
             if (baseAddresses == null)
                 throw new ArgumentNullException("baseAddresses");
 
-            if (Container == null)
-                throw new InvalidOperationException(AutofacServiceHostFactoryResources.ContainerIsNull);
+			_container = container;
+            _implementationType = implementationType;
+		}
 
-			return new AutofacServiceHost(Container, serviceType, baseAddresses);
+        /// <summary>
+        /// Invoked during the transition of a communication object into the opening state.
+        /// </summary>
+		protected override void OnOpening()
+		{
+            Description.Behaviors.Add(new AutofacDependencyInjectionServiceBehavior(_container, _implementationType));
+            // TODO: Support for injecting IServiceBehavior & IEndpointBehavior services registered with the container
+			base.OnOpening();
 		}
 	}
 }
