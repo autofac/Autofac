@@ -32,6 +32,7 @@ namespace Autofac.Integration.Wcf
     /// <summary>
     /// ServiceHost with AutofacDependencyInjectionServiceBehaviour.
     /// </summary>
+    [CLSCompliant(false)]
 	public class AutofacWebServiceHost : WebServiceHost
 	{
 		private readonly IContainer _container;
