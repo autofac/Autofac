@@ -260,16 +260,24 @@ namespace Autofac.Registrars
 
         /// <summary>
         /// Sets the component to be resolvable only in contexts tagged with the
-        /// provided tag.
+        /// provided tag. Implies that the component is container-scoped, however factory-scoped can be
+        /// specified explicitly.
         /// </summary>
         /// <typeparam name="T">The type of the tag.</typeparam>
         /// <param name="tag">The tag.</param>
-        /// <returns>A registrar allowing registration to continue.</returns>
+        /// <returns>
+        /// A registrar allowing registration to continue.
+        /// </returns>
         public virtual TSyntax InContext<T>(T tag)
         {
         	var oldValue = RegistrationCreator;
+            
             RegistrationCreator = (descriptor, activator, scope, ownership) =>
             	new TaggedRegistration<T>(tag, oldValue(descriptor, activator, scope, ownership));
+            
+            if (_scope == InstanceScope.Singleton)
+                ContainerScoped();
+            
             return Syntax;
         }
 
