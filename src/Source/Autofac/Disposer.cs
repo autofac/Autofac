@@ -28,6 +28,10 @@ using System.Collections.Generic;
 
 namespace Autofac
 {
+    /// <summary>
+    /// Maintains a set of objects to dispose, and disposes them in the reverse order
+    /// from which they were added when the Disposer is itself disposed.
+    /// </summary>
     class Disposer : Disposable, IDisposer
     {
         /// <summary>
@@ -54,6 +58,11 @@ namespace Autofac
                     }
         }
 
+        /// <summary>
+        /// Adds an object to the disposer. When the disposer is
+        /// disposed, so will the object be.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
         public void AddInstanceForDisposal(IDisposable instance)
         {
             Enforce.ArgumentNotNull(instance, "instance");

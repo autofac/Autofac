@@ -173,6 +173,15 @@ namespace Autofac
         {
             Enforce.ArgumentNotNull(service, "service");
             Enforce.ArgumentNotNull(registration, "registration");
+
+            IComponentRegistration existing;
+            if (_defaultRegistrations.TryGetValue(service, out existing))
+            {
+                System.Diagnostics.Debug.WriteLine(string.Format(
+                    "Autofac: Overriding existing registration for: '{0}' with: '{1}' (was: '{2}')",
+                    service, registration, existing));
+            }
+
             _defaultRegistrations[service] = registration;
         }
 
