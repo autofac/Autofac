@@ -7,6 +7,8 @@ using Autofac.Builder;
 using Autofac.Integration.Web;
 using Autofac.Integration.Web.Mvc;
 using Remember.Model;
+using Remember.Persistence.NHibernate;
+using Remember.Persistence;
 
 namespace Remember.Web
 {
@@ -30,10 +32,8 @@ namespace Remember.Web
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterModule(
-                new AutofacControllerModule(Assembly.GetExecutingAssembly()));
-
-            builder.Register(new Task[] { new Task() { Title = "Todo..." } }.AsQueryable<Task>());
+            builder.RegisterModule(new AutofacControllerModule(Assembly.GetExecutingAssembly()));
+            builder.RegisterModule(new NHibernateModule());
 
             _containerProvider = new ContainerProvider(builder.Build());
 

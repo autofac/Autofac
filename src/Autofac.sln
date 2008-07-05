@@ -39,6 +39,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remember.Web", "Example\Rem
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remember.Model", "Example\Remember.Model\Remember.Model.csproj", "{225D06BB-05C9-4C2E-BE28-8E77DC0C67EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remember.Persistence", "Example\Remember.Persistence\Remember.Persistence.csproj", "{9DE8DA2E-AD61-4C49-ACEB-A790CD1E93DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remember.Persistence.NHibernate", "Example\Remember.Persistence.NHibernate\Remember.Persistence.NHibernate.csproj", "{6B8F4473-BF8C-4AF6-8D8C-1B93E628ACF3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +97,14 @@ Global
 		{225D06BB-05C9-4C2E-BE28-8E77DC0C67EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{225D06BB-05C9-4C2E-BE28-8E77DC0C67EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{225D06BB-05C9-4C2E-BE28-8E77DC0C67EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DE8DA2E-AD61-4C49-ACEB-A790CD1E93DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DE8DA2E-AD61-4C49-ACEB-A790CD1E93DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DE8DA2E-AD61-4C49-ACEB-A790CD1E93DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DE8DA2E-AD61-4C49-ACEB-A790CD1E93DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B8F4473-BF8C-4AF6-8D8C-1B93E628ACF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B8F4473-BF8C-4AF6-8D8C-1B93E628ACF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B8F4473-BF8C-4AF6-8D8C-1B93E628ACF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B8F4473-BF8C-4AF6-8D8C-1B93E628ACF3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,5 +122,7 @@ Global
 		{7703FA48-EA10-4B96-BEFA-DA64729E0C8A} = {3ACB9FCB-420F-4555-BCE4-F98F9A569B70}
 		{E7BB91D2-EAB1-4E06-AC3A-AA865EFEF12B} = {01C16A53-606F-4F57-ADF0-D15974B0832D}
 		{225D06BB-05C9-4C2E-BE28-8E77DC0C67EE} = {01C16A53-606F-4F57-ADF0-D15974B0832D}
+		{9DE8DA2E-AD61-4C49-ACEB-A790CD1E93DE} = {01C16A53-606F-4F57-ADF0-D15974B0832D}
+		{6B8F4473-BF8C-4AF6-8D8C-1B93E628ACF3} = {01C16A53-606F-4F57-ADF0-D15974B0832D}
 	EndGlobalSection
 EndGlobal

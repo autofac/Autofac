@@ -1,9 +1,9 @@
 ﻿using System.Web.Mvc;
-using Remember.Web.PresentationModel;
+using System.Collections.Generic;
 
 namespace Remember.Web.Views.Task
 {
-    public partial class Index : ViewPage<TaskList>
+    public partial class Index : ViewPage<IEnumerable<Remember.Model.Task>>
     {
     }
 }

@@ -2,15 +2,15 @@
 using System.Linq;
 using System.Web.Mvc;
 using Remember.Model;
-using Remember.Web.PresentationModel;
+using Remember.Persistence;
 
 namespace Remember.Web.Controllers
 {
     public class TaskController : Controller
     {
-        IQueryable<Task> _tasks;
+        IRepository<Task> _tasks;
 
-        public TaskController(IQueryable<Task> tasks)
+        public TaskController(IRepository<Task> tasks)
         {
             if (tasks == null)
                 throw new ArgumentNullException("tasks");
@@ -20,7 +20,8 @@ namespace Remember.Web.Controllers
 
         public ActionResult Index()
         {
-            return View("Index", new TaskList(_tasks.ToList()));
+            var outstandingTasks = _tasks.FindBySpecification(new IncompleteTaskSpecification());
+            return View("Index", outstandingTasks);
         }
     }
 }

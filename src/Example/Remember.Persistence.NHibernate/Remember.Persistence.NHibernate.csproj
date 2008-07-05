@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{225D06BB-05C9-4C2E-BE28-8E77DC0C67EE}</ProjectGuid>
+    <ProjectGuid>{6B8F4473-BF8C-4AF6-8D8C-1B93E628ACF3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Remember.Model</RootNamespace>
-    <AssemblyName>Remember.Model</AssemblyName>
+    <RootNamespace>Remember.Persistence.NHibernate</RootNamespace>
+    <AssemblyName>Remember.Persistence.NHibernate</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,10 +31,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NHibernate, Version=2.0.0.1002, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Resource\NHibernate\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate.Linq, Version=1.0.0.0, Culture=neutral, PublicKeyToken=444cf6a87fdab271, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Resource\NHibernate\NHibernate.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -45,14 +54,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IIdentifiable.cs" />
-    <Compile Include="IncompleteTaskSpecification.cs" />
+    <Compile Include="NHibernateModule.cs" />
+    <Compile Include="NHibernateRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Specification.cs" />
-    <Compile Include="Task.cs" />
+    <Compile Include="TransactionTracker.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Mapping\Task.hbm.xml" />
+    <ProjectReference Include="..\..\Source\Autofac\Autofac.csproj">
+      <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
+      <Name>Autofac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Remember.Model\Remember.Model.csproj">
+      <Project>{225D06BB-05C9-4C2E-BE28-8E77DC0C67EE}</Project>
+      <Name>Remember.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Remember.Persistence\Remember.Persistence.csproj">
+      <Project>{9DE8DA2E-AD61-4C49-ACEB-A790CD1E93DE}</Project>
+      <Name>Remember.Persistence</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -3,7 +3,7 @@
 <asp:Content ID="indexContent" ContentPlaceHolderID="MainContentPlaceHolder" runat="server">
     <h2>Tasks</h2>
     <ol>
-        <% foreach (var task in ViewData.Model.Tasks) { %>
+        <% foreach (var task in ViewData.Model) { %>
             <li><%= Server.HtmlEncode(task.Title) %></li>
         <% } %>
     </ol>

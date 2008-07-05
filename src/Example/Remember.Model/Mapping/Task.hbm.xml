@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="Remember.Model" assembly="Remember.Model">
+
+  <class name="Task" table="Task">
+    <id name="Id">
+      <column name="TaskId" />
+      <generator class="native" />
+    </id>
+    <property name="Title" />
+    <property name="IsComplete" />
+  </class>
+
+</hibernate-mapping>
