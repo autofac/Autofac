@@ -21,7 +21,8 @@ namespace Remember.Web
             routes.MapRoute(
                 "Default",
                 "{controller}/{action}/{id}",
-                new { controller = "Task", action = "Index", id = "" }
+                new { controller = "Task", action = "Index", id = "" },
+                new { controller = @"[^\.]*" }
             );
         }
 
