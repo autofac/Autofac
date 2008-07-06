@@ -7,7 +7,7 @@ namespace Remember.Model
 {
     public class IncompleteTaskSpecification : Specification<Task>
     {
-        public override IQueryable<Task> SatisfiersFrom(IQueryable<Task> candidates)
+        public override IQueryable<Task> SatisfyingElementsFrom(IQueryable<Task> candidates)
         {
             if (candidates == null)
                 throw new ArgumentNullException("candidates");

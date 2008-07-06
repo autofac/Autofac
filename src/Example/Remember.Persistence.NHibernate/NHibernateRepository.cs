@@ -55,7 +55,7 @@ namespace Remember.Persistence.NHibernate
             var items = Items;
 
             foreach (var specification in specifications)
-                items = specification.SatisfiersFrom(items);
+                items = specification.SatisfyingElementsFrom(items);
 
             return items;
         }
