@@ -167,6 +167,131 @@ namespace Autofac
 		TService ResolveOptional<TService>(params Parameter[] parameters);
 
         /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
+        /// <typeparam name="TService">The service to retrieve.</typeparam>
+        /// <returns>The component instance that provides the service.</returns>
+        /// <exception cref="ComponentNotRegisteredException" />
+        /// <exception cref="DependencyResolutionException" />
+        TService Resolve<TService>(IActivationParameters parameters);
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
+        /// <typeparam name="TService">The type to which the result will be cast.</typeparam>
+        /// <param name="serviceName">Name of the service.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>
+        /// The component instance that provides the service.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="DependencyResolutionException"/>
+        TService Resolve<TService>(string serviceName, IActivationParameters parameters);
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
+        /// <param name="serviceType">The service to retrieve.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>
+        /// The component instance that provides the service.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="DependencyResolutionException"/>
+        object Resolve(Type serviceType, IActivationParameters parameters);
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
+        /// <param name="serviceName">The service to retrieve.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>
+        /// The component instance that provides the service.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="DependencyResolutionException"/>
+        object Resolve(string serviceName, IActivationParameters parameters);
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
+        /// <param name="service">The service to retrieve.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>
+        /// The component instance that provides the service.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="DependencyResolutionException"/>
+        object Resolve(Service service, IActivationParameters parameters);
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
+        /// <typeparam name="TService">The service to retrieve.</typeparam>
+        /// <param name="instance">The component instance that provides the service.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>
+        /// True if the service was registered and its instance created;
+        /// false otherwise.
+        /// </returns>
+        /// <exception cref="DependencyResolutionException"/>
+        bool TryResolve<TService>(out TService instance, IActivationParameters parameters);
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
+        /// <param name="serviceType">The service to retrieve.</param>
+        /// <param name="instance">The component instance that provides the service.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>
+        /// True if the service was registered and its instance created;
+        /// false otherwise.
+        /// </returns>
+        /// <exception cref="DependencyResolutionException"/>
+        bool TryResolve(Type serviceType, out object instance, IActivationParameters parameters);
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
+        /// <param name="componentName">The name of the component to retrieve.</param>
+        /// <param name="instance">The component instance that provides the service.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>
+        /// True if the service was registered and its instance created;
+        /// false otherwise.
+        /// </returns>
+        /// <exception cref="DependencyResolutionException"/>
+        bool TryResolve(string componentName, out object instance, IActivationParameters parameters);
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
+        /// <param name="service">The key of the component to retrieve.</param>
+        /// <param name="instance">The component instance that provides the service.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>
+        /// True if the service was registered and its instance created;
+        /// false otherwise.
+        /// </returns>
+        /// <exception cref="DependencyResolutionException"/>
+        bool TryResolve(Service service, out object instance, IActivationParameters parameters);
+
+        /// <summary>
+        /// Retrieve a service registered with the container.
+        /// </summary>
+        /// <typeparam name="TService">The service to retrieve.</typeparam>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>
+        /// The component instance that provides the service, or null if
+        /// none is available.
+        /// </returns>
+        /// <remarks>Useful with the C#3 initialiser syntax.</remarks>
+        /// <example>
+        /// container.Register&lt;ISomething&gt;(c =&gt; new Something(){ AProperty = c.ResolveOptional&lt;IOptional&gt;() });
+        /// </example>
+        TService ResolveOptional<TService>(IActivationParameters parameters); 
+
+        /// <summary>
         /// Determine whether or not a service has been registered.
         /// </summary>
         /// <param name="serviceType">The service to test for the registration of.</param>

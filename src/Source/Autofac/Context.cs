@@ -115,7 +115,7 @@ namespace Autofac
         public TService Resolve<TService>(params Parameter[] parameters)
         {
             Enforce.ArgumentNotNull(parameters, "parameters");
-            return (TService)Resolve(typeof(TService), parameters);
+            return this.Resolve<TService>(this.MakeActivationParameters(parameters));
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace Autofac
         {
             Enforce.ArgumentNotNull(serviceName, "serviceName");
             Enforce.ArgumentNotNull(parameters, "parameters");
-            return (TService)Resolve(new NamedService(serviceName), parameters);
+            return this.Resolve<TService>(serviceName, this.MakeActivationParameters(parameters));
         }
 
         /// <summary>
@@ -150,13 +150,7 @@ namespace Autofac
         {
             Enforce.ArgumentNotNull(service, "service");
             Enforce.ArgumentNotNull(parameters, "parameters");
-
-            object result = null;
-
-            if (!TryResolve(service, out result, parameters))
-                throw new ComponentNotRegisteredException(service);
-
-            return result;
+            return this.Resolve(service, this.MakeActivationParameters(parameters));
         }
 
         /// <summary>
@@ -173,7 +167,7 @@ namespace Autofac
         {
             Enforce.ArgumentNotNull(serviceType, "serviceType");
             Enforce.ArgumentNotNull(parameters, "parameters");
-            return Resolve(new TypedService(serviceType), parameters);
+            return Resolve(new TypedService(serviceType), this.MakeActivationParameters(parameters));
         }
 
         /// <summary>
@@ -190,7 +184,7 @@ namespace Autofac
         {
             Enforce.ArgumentNotNull(serviceName, "serviceName");
             Enforce.ArgumentNotNull(parameters, "parameters");
-            return Resolve(new NamedService(serviceName), parameters);
+            return Resolve(new NamedService(serviceName), this.MakeActivationParameters(parameters));
         }
 
         /// <summary>
@@ -209,9 +203,7 @@ namespace Autofac
         public TService ResolveOptional<TService>(params Parameter[] parameters)
         {
             Enforce.ArgumentNotNull(parameters, "parameters");
-            object result;
-            TryResolve(typeof(TService), out result, parameters);
-            return (TService)result;
+            return ResolveOptional<TService>(this.MakeActivationParameters(parameters));
         }
 
         /// <summary>
@@ -228,10 +220,7 @@ namespace Autofac
         public bool TryResolve<TService>(out TService instance, params Parameter[] parameters)
         {
             Enforce.ArgumentNotNull(parameters, "parameters");
-            object untypedInstance = null;
-            bool result = TryResolve(typeof(TService), out untypedInstance, parameters);
-            instance = (TService)untypedInstance;
-            return result;
+            return this.TryResolve<TService>(out instance, this.MakeActivationParameters(parameters));
         }
 
         /// <summary>
@@ -249,7 +238,7 @@ namespace Autofac
         {
             Enforce.ArgumentNotNull(serviceType, "serviceType");
             Enforce.ArgumentNotNull(parameters, "parameters");
-            return TryResolve(new TypedService(serviceType), out instance, parameters);
+            return TryResolve(new TypedService(serviceType), out instance, this.MakeActivationParameters(parameters));
         }
 
         /// <summary>
@@ -267,7 +256,7 @@ namespace Autofac
         {
             Enforce.ArgumentNotNull(componentName, "componentName");
             Enforce.ArgumentNotNull(parameters, "parameters");
-            return TryResolve(new NamedService(componentName), out instance, parameters);
+            return TryResolve(new NamedService(componentName), out instance, this.MakeActivationParameters(parameters));
         }
 
         /// <summary>
@@ -285,51 +274,7 @@ namespace Autofac
         {
             Enforce.ArgumentNotNull(service, "service");
             Enforce.ArgumentNotNull(parameters, "parameters");
-
-            instance = null;
-            if (++_resolveDepth > MaxResolveDepth)
-                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture,
-                    ContextResources.MaxDepthExceeded, service));
-
-            try
-            {
-                IComponentRegistration registration;
-                IDisposer disposer;
-                IContext specificContext;
-                if (!_registrationContext.TryGetRegistration(service, out registration, out disposer, out specificContext))
-                    return false;
-
-                if (specificContext != null)
-                    return specificContext.TryResolve(service, out instance, parameters);
-
-                if (IsCircularDependency(service))
-                    throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture,
-                        ContextResources.CircularDependency, CreateDependencyGraphTo(service)));
-
-                bool newInstance;
-                var activationParams = MakeActivationParameters(parameters);
-                _componentResolutionStack.Push(service);
-                try
-                {
-                    instance = registration.ResolveInstance(this, activationParams, disposer, out newInstance);
-
-                    if (newInstance)
-                        _activations.Add(new Activation(this, registration, instance));
-                }
-                finally
-                {
-                    _componentResolutionStack.Pop();
-                }
-
-                if (_componentResolutionStack.Count == 0)
-                    ActivationsComplete();
-
-                return true;
-            }
-            finally
-            {
-                --_resolveDepth;
-            }
+            return this.TryResolve(service, out instance, this.MakeActivationParameters(parameters));
         }
 
         /// <summary>
@@ -491,5 +436,130 @@ namespace Autofac
 
             return _componentResolutionStack.Count(i => i == service) > 1;
         }
+
+        #region IContext Members
+
+        public TService Resolve<TService>(IActivationParameters parameters)
+        {
+            Enforce.ArgumentNotNull(parameters, "parameters");
+            return (TService)Resolve(typeof(TService), parameters);
+        }
+
+        public TService Resolve<TService>(string serviceName, IActivationParameters parameters)
+        {
+            Enforce.ArgumentNotNull(serviceName, "serviceName");
+            Enforce.ArgumentNotNull(parameters, "parameters");
+            return (TService)Resolve(new NamedService(serviceName), parameters);
+        }
+
+        public object Resolve(Type serviceType, IActivationParameters parameters)
+        {
+            Enforce.ArgumentNotNull(serviceType, "serviceType");
+            Enforce.ArgumentNotNull(parameters, "parameters");
+            return Resolve(new TypedService(serviceType), parameters);
+        }
+
+        public object Resolve(string serviceName, IActivationParameters parameters)
+        {
+            Enforce.ArgumentNotNull(serviceName, "serviceName");
+            Enforce.ArgumentNotNull(parameters, "parameters");
+            return Resolve(new NamedService(serviceName), parameters);
+        }
+
+        public object Resolve(Service service, IActivationParameters parameters)
+        {
+            Enforce.ArgumentNotNull(service, "service");
+            Enforce.ArgumentNotNull(parameters, "parameters");
+
+            object result = null;
+
+            if (!TryResolve(service, out result, parameters))
+                throw new ComponentNotRegisteredException(service);
+
+            return result;
+        }
+
+        public bool TryResolve<TService>(out TService instance, IActivationParameters parameters)
+        {
+            Enforce.ArgumentNotNull(parameters, "parameters");
+            object untypedInstance = null;
+            bool result = TryResolve(typeof(TService), out untypedInstance, parameters);
+            instance = (TService)untypedInstance;
+            return result;
+        }
+
+        public bool TryResolve(Type serviceType, out object instance, IActivationParameters parameters)
+        {
+            Enforce.ArgumentNotNull(serviceType, "serviceType");
+            Enforce.ArgumentNotNull(parameters, "parameters");
+            return TryResolve(new TypedService(serviceType), out instance, parameters);
+        }
+
+        public bool TryResolve(string componentName, out object instance, IActivationParameters parameters)
+        {
+            Enforce.ArgumentNotNull(componentName, "componentName");
+            Enforce.ArgumentNotNull(parameters, "parameters");
+            return TryResolve(new NamedService(componentName), out instance, parameters);
+        }
+
+        public bool TryResolve(Service service, out object instance, IActivationParameters parameters)
+        {
+            Enforce.ArgumentNotNull(service, "service");
+            Enforce.ArgumentNotNull(parameters, "parameters");
+
+            instance = null;
+            if (++_resolveDepth > MaxResolveDepth)
+                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture,
+                    ContextResources.MaxDepthExceeded, service));
+
+            try
+            {
+                IComponentRegistration registration;
+                IDisposer disposer;
+                IContext specificContext;
+                if (!_registrationContext.TryGetRegistration(service, out registration, out disposer, out specificContext))
+                    return false;
+
+                if (specificContext != null)
+                    return specificContext.TryResolve(service, out instance, parameters);
+
+                if (IsCircularDependency(service))
+                    throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture,
+                        ContextResources.CircularDependency, CreateDependencyGraphTo(service)));
+
+                bool newInstance;
+                _componentResolutionStack.Push(service);
+                try
+                {
+                    instance = registration.ResolveInstance(this, parameters, disposer, out newInstance);
+
+                    if (newInstance)
+                        _activations.Add(new Activation(this, registration, instance));
+                }
+                finally
+                {
+                    _componentResolutionStack.Pop();
+                }
+
+                if (_componentResolutionStack.Count == 0)
+                    ActivationsComplete();
+
+                return true;
+            }
+            finally
+            {
+                --_resolveDepth;
+            }
+        }
+
+        public TService ResolveOptional<TService>(IActivationParameters parameters)
+        {
+            Enforce.ArgumentNotNull(parameters, "parameters");
+            object result;
+            TryResolve(typeof(TService), out result, parameters);
+            return (TService)result;
+        }
+
+        #endregion
     }
 }
