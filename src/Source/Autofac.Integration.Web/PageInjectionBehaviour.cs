@@ -74,7 +74,7 @@ namespace Autofac.Integration.Web
 
             var page = target as Page;
             if (page != null)
-                page.InitComplete += (s, e) => InjectUserControls(injector, page);
+                page.PreLoad += (s, e) => InjectUserControls(injector, page);
         }
 
         void InjectUserControls(Func<object, object> injector, Control parent)
