@@ -40,7 +40,24 @@ namespace Autofac
         /// <summary>
         /// No parameters.
         /// </summary>
-        public static readonly ActivationParameters Empty = new ActivationParameters();
+        public static readonly IActivationParameters Empty = new ActivationParameters();
+
+        /// <summary>
+        /// Initializes a new instance of the ActivationParameters class.
+        /// </summary>
+        public ActivationParameters()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the ActivationParameters class, that
+        /// has the specified initial capacity.
+        /// </summary>
+        /// <param name="capacity">The initial number of elements that the dictionary can contain.</param>
+        public ActivationParameters(int capacity)
+            : base(capacity)
+        {
+        }
 
         #region IActivationParameters Members
 
