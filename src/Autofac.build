@@ -94,9 +94,11 @@ Integration targets
         <include name="*.pdb"/>
         <include name="*.xml"/>				
 				<exclude name="*.Tests.*"/>
+				<exclude name="System.*"/>
 			</fileset>
 			<fileset basedir="${TestDirectory}" prefix="test">
 				<include name="*.*"/>
+				<exclude name="System.*"/>
 			</fileset>
 			<fileset basedir="${RedistributeDirectory}" prefix="license">
 				<include name="*.*"/>
