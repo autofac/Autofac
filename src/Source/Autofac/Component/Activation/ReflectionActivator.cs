@@ -163,8 +163,8 @@ namespace Autofac.Component.Activation
             Enforce.ArgumentNotNull(context, "context");
             Enforce.ArgumentNotNull(parameters, "parameters");
 
-            ICollection<ConstructorInfo> possibleConstructors = new List<ConstructorInfo>();
-			StringBuilder reasons = new StringBuilder();
+			var possibleConstructors = new List<ConstructorInfo>();
+			StringBuilder reasons = null;
 			bool foundPublicConstructor = false;
 
 			foreach (ConstructorInfo ci in _componentType.FindMembers(
@@ -176,13 +176,13 @@ namespace Autofac.Component.Activation
 				foundPublicConstructor = true;
 				
 				string reason;
-
 				if (CanUseConstructor(ci, context, parameters, out reason))
 				{
 					possibleConstructors.Add(ci);
 				}
 				else
 				{
+    				reasons = reasons ?? new StringBuilder(reason.Length + 2);
 					reasons.AppendLine();
 					reasons.Append(reason);
 				}
@@ -195,7 +195,7 @@ namespace Autofac.Component.Activation
 
             if (possibleConstructors.Count == 0)
     			throw new DependencyResolutionException(
-                    string.Format(CultureInfo.CurrentCulture, ReflectionActivatorResources.NoResolvableConstructor, _componentType, reasons));
+						  string.Format(CultureInfo.CurrentCulture, ReflectionActivatorResources.NoResolvableConstructor, _componentType, reasons ?? new StringBuilder()));
 
             return ConstructInstance(
                 _constructorSelector.SelectConstructor(possibleConstructors),
@@ -256,41 +256,43 @@ namespace Autofac.Component.Activation
         }
 
         bool CanUseConstructor(ConstructorInfo ci, IContext context, IActivationParameters parameters, out string reason)
-		{
+        {
             Enforce.ArgumentNotNull(ci, "ci");
             Enforce.ArgumentNotNull(context, "context");
             Enforce.ArgumentNotNull(parameters, "parameters");
 
-			StringBuilder reasonBuilder = new StringBuilder();
-			reasonBuilder.Append(ci);
-			reasonBuilder.Append(": ");
+            StringBuilder reasonNotUsable = null;
 
-			bool result = true;
-
-			foreach (ParameterInfo pi in ci.GetParameters())
-			{
-				if (!context.IsRegistered(pi.ParameterType) &&
-                    ! parameters.ContainsKey(pi.Name) &&
+            foreach (ParameterInfo pi in ci.GetParameters())
+            {
+                if (!context.IsRegistered(pi.ParameterType) &&
+                    !parameters.ContainsKey(pi.Name) &&
                     !_additionalConstructorParameters.ContainsKey(pi.Name))
                 {
-					if (!result)
-						reasonBuilder.Append(", ");
-					reasonBuilder.AppendFormat(CultureInfo.CurrentCulture,
-						ReflectionActivatorResources.MissingParameter,
-						pi.Name, pi.ParameterType);
-					result = false;
-				}
-			}
+                    if (reasonNotUsable == null)
+                    {
+                        reasonNotUsable = new StringBuilder();
+                        reasonNotUsable.Append(ci).Append(": ");
+                    }
+                    else
+                    {
+                        reasonNotUsable.Append(", ");
+                    }
 
-			reasonBuilder.Append(".");
+                    reasonNotUsable.AppendFormat(CultureInfo.CurrentCulture,
+                        ReflectionActivatorResources.MissingParameter,
+                        pi.Name, pi.ParameterType);
+                }
+            }
 
-			if (result)
-				reason = "";
-			else
-				reason = reasonBuilder.ToString();
+            if (reasonNotUsable != null)
+                reason = reasonNotUsable.Append('.').ToString();
+            else
+                reason = String.Empty;
 
-			return result;
-		}
+            // Return true if there is no reason not to use it, i.e. reasonNotUsable is null
+            return reasonNotUsable == null;
+        }
 
         /// <summary>
         /// Dependencies must be resolvable. Check this first with AreAllParametersRegistered().
@@ -301,36 +303,37 @@ namespace Autofac.Component.Activation
         /// <returns>The new instance.</returns>
         /// <exception cref="DependencyResolutionException">Parameters were not resolvable.</exception>
         object ConstructInstance(ConstructorInfo ci, IContext context, IActivationParameters parameters)
-		{
+        {
             Enforce.ArgumentNotNull(ci, "ci");
             Enforce.ArgumentNotNull(context, "context");
             Enforce.ArgumentNotNull(parameters, "parameters");
 
-			IList<object> parameterValues = new List<object>();
-			foreach (ParameterInfo pi in ci.GetParameters())
-			{
-				object parameterValue;
-				if (!parameters.TryGetValue(pi.Name, out parameterValue) &&
+            ParameterInfo[] ciParameters = ci.GetParameters();
+            var parameterValues = new object[ciParameters.Length];
+            int parameterIndex = 0;
+            foreach (ParameterInfo pi in ciParameters)
+            {
+                object parameterValue;
+                if (!parameters.TryGetValue(pi.Name, out parameterValue) &&
                     !_additionalConstructorParameters.TryGetValue(pi.Name, out parameterValue))
+                {
                     parameterValue = context.Resolve(pi.ParameterType);
+                }
 
-                parameterValues.Add(TypeManipulation.ChangeToCompatibleType(parameterValue, pi.ParameterType));
-			}
+                parameterValues[parameterIndex++] = TypeManipulation.ChangeToCompatibleType(parameterValue, pi.ParameterType);
+            }
 
-			object[] parameterValueArray = new object[parameterValues.Count];
-			parameterValues.CopyTo(parameterValueArray, 0);
-
-			try
-			{
-				object instance = ConstructorInvoker.InvokeConstructor(context, parameters, ci, parameterValueArray);
-				SetterInject(instance, context);
-				return instance;
-			}
-			catch (TargetInvocationException tie)
-			{
-				throw tie.InnerException;
-			}
-		}
+            try
+            {
+                object instance = ConstructorInvoker.InvokeConstructor(context, parameters, ci, parameterValues);
+                SetterInject(instance, context);
+                return instance;
+            }
+            catch (TargetInvocationException tie)
+            {
+                throw tie.InnerException;
+            }
+        }
 
     	/// <summary>
 		/// Inspect all public writeable properties and inject
