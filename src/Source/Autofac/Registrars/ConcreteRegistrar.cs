@@ -29,6 +29,7 @@ using System.Globalization;
 using System.Linq;
 using Autofac.Component;
 using Autofac.Component.Scope;
+using Autofac.Registrars.Collection;
 
 namespace Autofac.Registrars
 {
@@ -182,6 +183,40 @@ namespace Autofac.Registrars
             RegistrationCreator = (descriptor, activator, scope, ownership) =>
                 rc(FilterRegisteredServices(descriptor, container), activator, scope, ownership);
 
+            return Syntax;
+        }
+
+        /// <summary>
+        /// Adds the registration to a previously registered collection.
+        /// </summary>
+        /// <param name="serviceName">Name of the service.</param>
+        /// <returns>A registrar allowing configuration to continue.</returns>
+        public virtual TSyntax MemberOf(string serviceName)
+        {
+            Enforce.ArgumentNotNullOrEmpty(serviceName, "serviceName");
+            return MemberOf(new NamedService(serviceName));
+        }
+
+        /// <summary>
+        /// Adds the registration to a previously registered collection.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>A registrar allowing configuration to continue.</returns>
+        public virtual TSyntax MemberOf(Type serviceType)
+        {
+            Enforce.ArgumentNotNull(serviceType, "serviceType");
+            return MemberOf(new TypedService(serviceType));
+        }
+
+        /// <summary>
+        /// Adds the registration to a previously registered collection.
+        /// </summary>
+        /// <param name="service">The service.</param>
+        /// <returns>A registrar allowing configuration to continue.</returns>
+        public virtual TSyntax MemberOf(Service service)
+        {
+            Enforce.ArgumentNotNull(service, "service");
+            new CollectionRegistrationAppender(service).Add(this);
             return Syntax;
         }
 

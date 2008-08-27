@@ -85,7 +85,6 @@
     <Compile Include="IComponentDescriptor.cs" />
     <Compile Include="PreparingEventArgs.cs" />
     <Compile Include="Registrars\Automatic\AutomaticRegistrar.cs" />
-    <Compile Include="Builder\AutomaticRegistrationBuilder.cs" />
     <Compile Include="Builder\ActivatedHandler.cs" />
     <Compile Include="Builder\ActivatingHandler.cs" />
     <Compile Include="Registrars\Automatic\AutomaticRegistrationHandler.cs" />
@@ -94,9 +93,7 @@
     <Compile Include="Registrars\Collection\ServiceListActivator.cs" />
     <Compile Include="Registrars\DeferredRegistrationParameters.cs" />
     <Compile Include="Registrars\Delegate\ComponentActivator.cs" />
-    <Compile Include="Builder\DelegateRegistrationBuilder.cs" />
     <Compile Include="Registrars\Generic\GenericRegistrar.cs" />
-    <Compile Include="Builder\GenericRegistrationBuilder.cs" />
     <Compile Include="Registrars\IConcreteRegistrar.cs" />
     <Compile Include="Registrars\IGenericRegistrar.cs" />
     <Compile Include="Registrars\IFluentInterface.cs" />
@@ -106,13 +103,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ProvidedInstanceRegistrarResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Builder\ProvidedInstanceRegistrationBuilder.cs" />
     <Compile Include="Registrars\Reflective\ReflectiveRegistrarResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ReflectiveRegistrarResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Builder\ReflectiveRegistrationBuilder.cs" />
     <Compile Include="Registrars\RegisteredEventArgs.cs" />
     <Compile Include="Registrars\Registrar.cs" />
     <Compile Include="Registrars\RegistrarResources.Designer.cs">
@@ -122,7 +117,6 @@
     </Compile>
     <Compile Include="Registrars\RegistrationCreator.cs" />
     <Compile Include="Registrars\RegistrationRegistrar.cs" />
-    <Compile Include="Builder\CollectionRegistrationBuilder.cs" />
     <Compile Include="Registrars\Collection\ServiceListRegistration.cs" />
     <Compile Include="Registrars\Generic\GenericRegistrationHandlerResources.Designer.cs">
       <AutoGen>True</AutoGen>

@@ -23,6 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 namespace Autofac.Registrars
 {
     /// <summary>
@@ -80,5 +81,26 @@ namespace Autofac.Registrars
         /// A registrar allowing registration to continue.
         /// </returns>
         TSyntax DefaultOnly();
+
+        /// <summary>
+        /// Adds the registration to a previously registered collection.
+        /// </summary>
+        /// <param name="serviceName">Name of the service.</param>
+        /// <returns>A registrar allowing configuration to continue.</returns>
+        TSyntax MemberOf(string serviceName);
+
+        /// <summary>
+        /// Adds the registration to a previously registered collection.
+        /// </summary>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns>A registrar allowing configuration to continue.</returns>
+        TSyntax MemberOf(Type serviceType);
+
+        /// <summary>
+        /// Adds the registration to a previously registered collection.
+        /// </summary>
+        /// <param name="service">The service.</param>
+        /// <returns>A registrar allowing configuration to continue.</returns>
+        TSyntax MemberOf(Service service);
     }
 }
