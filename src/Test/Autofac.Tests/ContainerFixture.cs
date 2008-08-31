@@ -182,6 +182,7 @@ namespace Autofac.Tests
             {
                 Assert.IsNull(de.InnerException);
                 Assert.IsTrue(de.Message.Contains("System.Object -> System.Object"));
+                Assert.IsFalse(de.Message.Contains("System.Object -> System.Object -> System.Object"));
                 return;
             }
             catch (Exception ex)

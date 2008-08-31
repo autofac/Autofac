@@ -137,7 +137,7 @@ namespace Autofac.Component
         /// </returns>
         public override string ToString()
         {
-            var servicesDescription = string.Join(", ", Services.Select(s => s.Description).ToArray());
+            var servicesDescription = Services.Select(s => s.Description).JoinWith(", ");
             return string.Format(CultureInfo.CurrentCulture, DescriptorResources.ToStringFormat,
                 BestKnownImplementationType.FullName,
                 servicesDescription);

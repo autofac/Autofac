@@ -53,7 +53,8 @@ namespace Autofac.Tests
             }
             catch (DependencyResolutionException de)
             {
-                Assert.IsTrue(de.Message.Contains("Autofac.Tests.BugFixture+IA -> Autofac.Tests.BugFixture+IC -> Autofac.Tests.BugFixture+IA"));
+                Assert.IsTrue(de.Message.Contains(
+                    "Autofac.Tests.BugFixture+ID -> Autofac.Tests.BugFixture+IA -> Autofac.Tests.BugFixture+IC -> Autofac.Tests.BugFixture+IA"));
             }
             catch (Exception ex)
             {

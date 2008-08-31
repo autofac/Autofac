@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using Autofac.Integration.Web.Mvc;
 using NUnit.Framework;
+using System.Web.Routing;
 
 namespace Autofac.Tests.Integration.Web.Mvc
 {
@@ -20,7 +21,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
 
         class HomeController : IController
         {
-            public void Execute(ControllerContext controllerContext)
+            public void Execute(RequestContext controllerContext)
             {
                 throw new NotImplementedException();
             }

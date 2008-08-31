@@ -426,19 +426,18 @@ namespace Autofac
         {
             Enforce.ArgumentNotNull(service, "service");
 
-            string dependencyGraph = service.Description;
-
-            foreach (Service requestor in _componentResolutionStack)
-                dependencyGraph = requestor.Description + " -> " + dependencyGraph;
-
-            return dependencyGraph;
+            return _componentResolutionStack
+                .Select(r => r.Description)
+                .Reverse()
+                .Append(service.Description)
+                .JoinWith(" -> ");
         }
 
         bool IsCircularDependency(Service service)
         {
             Enforce.ArgumentNotNull(service, "service");
 
-            return _componentResolutionStack.Count(i => i == service) > 1;
+            return _componentResolutionStack.Count(i => i == service) >= 1;
         }
 
         #region IContext Members
