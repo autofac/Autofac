@@ -92,6 +92,15 @@ namespace Autofac.Configuration
         }
 
         /// <summary>
+        /// Gets the section handler.
+        /// </summary>
+        /// <value>The section handler.</value>
+        protected virtual SectionHandler SectionHandler
+        {
+            get { return _sectionHandler; }
+        }
+
+        /// <summary>
         /// Override to add registrations to the container.
         /// </summary>
         /// <param name="builder">The builder.</param>
@@ -159,7 +168,12 @@ namespace Autofac.Configuration
             }
         }
 
-        void SetInjectProperties(ComponentElement component, IReflectiveRegistrar registrar)
+        /// <summary>
+        /// Sets the property injection mode for the component.
+        /// </summary>
+        /// <param name="component">The component.</param>
+        /// <param name="registrar">The registrar.</param>
+        protected virtual void SetInjectProperties(ComponentElement component, IReflectiveRegistrar registrar)
         {
             Enforce.ArgumentNotNull(component, "component");
             Enforce.ArgumentNotNull(registrar, "registrar");
@@ -183,7 +197,12 @@ namespace Autofac.Configuration
             }
         }
 
-        void SetOwnership(ComponentElement component, IReflectiveRegistrar registrar)
+        /// <summary>
+        /// Sets the ownership model of the component.
+        /// </summary>
+        /// <param name="component">The component.</param>
+        /// <param name="registrar">The registrar.</param>
+        protected virtual void SetOwnership(ComponentElement component, IReflectiveRegistrar registrar)
         {
             Enforce.ArgumentNotNull(component, "component");
             Enforce.ArgumentNotNull(registrar, "registrar");
@@ -205,7 +224,12 @@ namespace Autofac.Configuration
             }
         }
 
-        void SetScope(ComponentElement component, IReflectiveRegistrar registrar)
+        /// <summary>
+        /// Sets the scope model for the component.
+        /// </summary>
+        /// <param name="component">The component.</param>
+        /// <param name="registrar">The registrar.</param>
+        protected virtual void SetScope(ComponentElement component, IReflectiveRegistrar registrar)
         {
             Enforce.ArgumentNotNull(component, "component");
             Enforce.ArgumentNotNull(registrar, "registrar");
@@ -230,7 +254,13 @@ namespace Autofac.Configuration
             }
         }
 
-        Type LoadType(string typeName, Assembly defaultAssembly)
+        /// <summary>
+        /// Loads the type.
+        /// </summary>
+        /// <param name="typeName">Name of the type.</param>
+        /// <param name="defaultAssembly">The default assembly.</param>
+        /// <returns></returns>
+        protected virtual Type LoadType(string typeName, Assembly defaultAssembly)
         {
             Enforce.ArgumentNotNullOrEmpty(typeName, "typeName");
 
