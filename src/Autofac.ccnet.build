@@ -23,7 +23,7 @@ Resource\NAnt\nant.xsd" default="run">
 		<fail unless="${property::exists('CCNetLabel')}" message="CCNetLabel must be defined."/>
 		<fail unless="${property::exists('DistribBaseDirectory')}" message="DistribBaseDirectory must be defined."/>
 		<!-- Derive integration properties -->
-    <property name="Version" value="${CCnetLabel}"/>
+    <property name="Version" value="${CCNetLabel}"/>
 		<property name="DistribDirectory" value="${DistribBaseDirectory}\${CCNetLabel}"/>
 		<property name="DistribFileName" value="${DistribFileName}-${CCNetLabel}"/>
 		<!-- Do work -->
