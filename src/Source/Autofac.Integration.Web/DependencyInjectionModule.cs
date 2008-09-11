@@ -76,11 +76,14 @@ namespace Autofac.Integration.Web
         void OnPreRequestHandlerExecute(object sender, EventArgs e)
         {
             var handler = _httpApplication.Context.CurrentHandler;
-            var injectionBehaviour = GetInjectionBehaviour(handler);
-            var cp = _containerProviderAccessor.ContainerProvider;
-            if (cp == null)
-                throw new InvalidOperationException(ContainerDisposalModuleResources.ContainerProviderNull);
-            injectionBehaviour.InjectDependencies(cp.RequestContainer, handler);
+            if (handler != null)
+            {
+                var injectionBehaviour = GetInjectionBehaviour(handler);
+                var cp = _containerProviderAccessor.ContainerProvider;
+                if (cp == null)
+                    throw new InvalidOperationException(ContainerDisposalModuleResources.ContainerProviderNull);
+                injectionBehaviour.InjectDependencies(cp.RequestContainer, handler);
+            }
         }
 
         /// <summary>
