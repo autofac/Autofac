@@ -597,15 +597,18 @@ namespace Autofac.Tests
         public void CtorPropDependencyFactoriesOrder2()
         {
             var cb = new ContainerBuilder();
+            var ac = 0;
             using (cb.SetDefaultScope(InstanceScope.Factory))
             {
-                cb.Register<DependsByCtor>();
-                cb.Register<DependsByProp>()
+                cb.Register<DependsByCtor>().OnActivating((s, e) => { ++ac; });
+                cb.Register<DependsByProp>().OnActivating((s, e) => { ++ac; })
                     .OnActivated(ActivatedHandler.InjectProperties);
             }
 
             var c = cb.Build();
             var dbc = c.Resolve<DependsByCtor>();
+
+            Assert.AreEqual(2, ac);
         }
 
         class Parameterised

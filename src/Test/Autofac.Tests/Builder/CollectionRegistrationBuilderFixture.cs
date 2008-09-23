@@ -70,7 +70,7 @@ namespace Autofac.Tests.Builder
             var inner = container.CreateInnerContainer();
 
             var innerBuilder = new ContainerBuilder();
-            innerBuilder.Register("hello").MemberOf(typeof(IEnumerable<string>));
+            innerBuilder.Register("hello").MemberOf<IEnumerable<string>>();
             innerBuilder.Build(inner);
 
             var innerEnumerable = inner.Resolve<IEnumerable<string>>();

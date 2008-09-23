@@ -92,6 +92,13 @@ namespace Autofac.Registrars
         /// <summary>
         /// Adds the registration to a previously registered collection.
         /// </summary>
+        /// <typeparam name="TService">Type of the service.</typeparam>
+        /// <returns>A registrar allowing configuration to continue.</returns>
+        TSyntax MemberOf<TService>();
+
+        /// <summary>
+        /// Adds the registration to a previously registered collection.
+        /// </summary>
         /// <param name="serviceType">Type of the service.</param>
         /// <returns>A registrar allowing configuration to continue.</returns>
         TSyntax MemberOf(Type serviceType);
