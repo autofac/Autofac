@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 namespace Autofac
 {
@@ -173,7 +174,7 @@ namespace Autofac
         /// <returns>The component instance that provides the service.</returns>
         /// <exception cref="ComponentNotRegisteredException" />
         /// <exception cref="DependencyResolutionException" />
-        TService Resolve<TService>(IActivationParameters parameters);
+        TService Resolve<TService>(IEnumerable<Parameter> parameters);
 
         /// <summary>
         /// Retrieve a service registered with the container.
@@ -186,7 +187,7 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        TService Resolve<TService>(string serviceName, IActivationParameters parameters);
+        TService Resolve<TService>(string serviceName, IEnumerable<Parameter> parameters);
 
         /// <summary>
         /// Retrieve a service registered with the container.
@@ -198,7 +199,7 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        object Resolve(Type serviceType, IActivationParameters parameters);
+        object Resolve(Type serviceType, IEnumerable<Parameter> parameters);
 
         /// <summary>
         /// Retrieve a service registered with the container.
@@ -210,7 +211,7 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        object Resolve(string serviceName, IActivationParameters parameters);
+        object Resolve(string serviceName, IEnumerable<Parameter> parameters);
 
         /// <summary>
         /// Retrieve a service registered with the container.
@@ -222,7 +223,7 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        object Resolve(Service service, IActivationParameters parameters);
+        object Resolve(Service service, IEnumerable<Parameter> parameters);
 
         /// <summary>
         /// Retrieve a service registered with the container.
@@ -235,7 +236,7 @@ namespace Autofac
         /// false otherwise.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        bool TryResolve<TService>(out TService instance, IActivationParameters parameters);
+        bool TryResolve<TService>(out TService instance, IEnumerable<Parameter> parameters);
 
         /// <summary>
         /// Retrieve a service registered with the container.
@@ -248,7 +249,7 @@ namespace Autofac
         /// false otherwise.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        bool TryResolve(Type serviceType, out object instance, IActivationParameters parameters);
+        bool TryResolve(Type serviceType, out object instance, IEnumerable<Parameter> parameters);
 
         /// <summary>
         /// Retrieve a service registered with the container.
@@ -261,7 +262,7 @@ namespace Autofac
         /// false otherwise.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        bool TryResolve(string componentName, out object instance, IActivationParameters parameters);
+        bool TryResolve(string componentName, out object instance, IEnumerable<Parameter> parameters);
 
         /// <summary>
         /// Retrieve a service registered with the container.
@@ -274,7 +275,7 @@ namespace Autofac
         /// false otherwise.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        bool TryResolve(Service service, out object instance, IActivationParameters parameters);
+        bool TryResolve(Service service, out object instance, IEnumerable<Parameter> parameters);
 
         /// <summary>
         /// Retrieve a service registered with the container.
@@ -289,7 +290,7 @@ namespace Autofac
         /// <example>
         /// container.Register&lt;ISomething&gt;(c =&gt; new Something(){ AProperty = c.ResolveOptional&lt;IOptional&gt;() });
         /// </example>
-        TService ResolveOptional<TService>(IActivationParameters parameters); 
+        TService ResolveOptional<TService>(IEnumerable<Parameter> parameters); 
 
         /// <summary>
         /// Determine whether or not a service has been registered.

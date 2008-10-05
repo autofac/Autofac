@@ -115,8 +115,8 @@ namespace Autofac.Tests.Component
             var container = new Container();
 
             bool newInstance;
-            target.ResolveInstance(container, ActivationParameters.Empty, new Disposer(), out newInstance);
-            target.ResolveInstance(container, ActivationParameters.Empty, new Disposer(), out newInstance);
+            target.ResolveInstance(container, Enumerable.Empty<Parameter>(), new Disposer(), out newInstance);
+            target.ResolveInstance(container, Enumerable.Empty<Parameter>(), new Disposer(), out newInstance);
         }
 
 		[Test]
@@ -140,7 +140,7 @@ namespace Autofac.Tests.Component
 			};
 
             bool newInstance;
-            target.ResolveInstance(container, ActivationParameters.Empty, new Disposer(), out newInstance);
+            target.ResolveInstance(container, Enumerable.Empty<Parameter>(), new Disposer(), out newInstance);
 
 			Assert.IsTrue(eventFired);
 		}
@@ -166,7 +166,7 @@ namespace Autofac.Tests.Component
 			};
 
             bool newInstance;
-            target.ResolveInstance(container, ActivationParameters.Empty, new Disposer(), out newInstance);
+            target.ResolveInstance(container, Enumerable.Empty<Parameter>(), new Disposer(), out newInstance);
             target.InstanceActivated(container, instance);
 
 			Assert.IsTrue(eventFired);
@@ -212,7 +212,7 @@ namespace Autofac.Tests.Component
             };
 
             bool newInstance;
-            subcontext.ResolveInstance(Context.Empty, ActivationParameters.Empty, new Disposer(), out newInstance);
+            subcontext.ResolveInstance(Context.Empty, Enumerable.Empty<Parameter>(), new Disposer(), out newInstance);
 
             Assert.AreEqual(1, targetEventCount);
             Assert.AreEqual(1, subContextEventCount);
@@ -256,12 +256,11 @@ namespace Autofac.Tests.Component
 
             var target = CreateRegistration(
                 new[] { new TypedService(typeof(object)) },
-                new DelegateActivator((c, p) => p.Get<string>("p1") + p.Get<string>("p2")));
+                new DelegateActivator((c, p) => p.Named<string>("p1") + p.Named<string>("p2")));
 
-            var providedParams = new ActivationParameters();
-            providedParams.Add("p1", p1);
+            var providedParams = new Parameter[] { new NamedParameter("p1", p1) };
 
-            target.Preparing += (s, e) => e.Parameters.Add("p2", p2);
+            target.Preparing += (s, e) => e.Parameters = e.Parameters.Append(new NamedParameter("p2", p2));
 
             bool newInstance;
             var result = target.ResolveInstance(Context.Empty, providedParams, new Disposer(), out newInstance);
@@ -282,7 +281,7 @@ namespace Autofac.Tests.Component
             target.Preparing += (s, e) => e.Instance = eventProvidedInstance;
 
             bool newInstance;
-            var result = target.ResolveInstance(Context.Empty, ActivationParameters.Empty, new Disposer(), out newInstance);
+            var result = target.ResolveInstance(Context.Empty, Enumerable.Empty<Parameter>(), new Disposer(), out newInstance);
 
             Assert.AreEqual(eventProvidedInstance, result);
         }

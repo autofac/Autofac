@@ -24,6 +24,8 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Reflection;
+using System.Collections.Generic;
+using System;
 
 namespace Autofac.Component.Activation
 {
@@ -41,6 +43,6 @@ namespace Autofac.Component.Activation
         /// <param name="ci">The selected constructor.</param>
         /// <param name="args">Arguments appropriate to the constructor.</param>
         /// <returns>The new instance.</returns>
-        object InvokeConstructor(IContext context, IActivationParameters parameters, ConstructorInfo ci, object[] args);
+        object InvokeConstructor(IContext context, IEnumerable<Parameter> parameters, ConstructorInfo ci, Func<object>[] args);
     }
 }

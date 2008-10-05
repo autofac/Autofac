@@ -31,6 +31,7 @@ using System.Reflection;
 using Autofac.Builder;
 using Autofac.Component;
 using Autofac.Registrars;
+using System.Collections.Generic;
 
 namespace Autofac.Extras.GeneratedFactories
 {
@@ -88,7 +89,7 @@ namespace Autofac.Extras.GeneratedFactories
 
             // (c, p)
             var activatorContextParam = Expression.Parameter(typeof(IContext), "c");
-            var activatorParamsParam = Expression.Parameter(typeof(IActivationParameters), "p");
+            var activatorParamsParam = Expression.Parameter(typeof(IEnumerable<Parameter>), "p");
             var activatorParams = new[] { activatorContextParam, activatorParamsParam };
 
             var invoke = delegateType.GetMethod("Invoke");
@@ -102,10 +103,10 @@ namespace Autofac.Extras.GeneratedFactories
             // service, [new Parameter(name, (object)dps)]*
             var resolveParams = new Expression[] {
                 Expression.Constant(service),
-                Expression.NewArrayInit(typeof(Parameter),
+                Expression.NewArrayInit(typeof(NamedParameter),
                     creatorParams
                         .Select(p => Expression.New(
-                            typeof(Parameter).GetConstructor(new[] { typeof(string), typeof(object) }),
+                            typeof(NamedParameter).GetConstructor(new[] { typeof(string), typeof(object) }),
                             Expression.Constant(p.Name), Expression.Convert(p, typeof(object))))
                         .OfType<Expression>()
                         .ToArray())
@@ -114,7 +115,7 @@ namespace Autofac.Extras.GeneratedFactories
             // c.Resolve(...)
             var resolveCall = Expression.Call(
                 activatorContextParam,
-                typeof(IContext).GetMethod("Resolve", new[] { typeof(Service), typeof(Parameter[]) }),
+                typeof(IContext).GetMethod("Resolve", new[] { typeof(Service), typeof(NamedParameter[]) }),
                 resolveParams);
 
             // (drt)

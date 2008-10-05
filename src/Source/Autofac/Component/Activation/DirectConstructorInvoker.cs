@@ -23,6 +23,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Collections.Generic;
+using System.Linq;
+using System;
 
 namespace Autofac.Component.Activation
 {
@@ -39,11 +42,11 @@ namespace Autofac.Component.Activation
         /// <param name="ci">The selected constructor.</param>
         /// <param name="args">Arguments appropriate to the constructor.</param>
         /// <returns>The new instance.</returns>
-        public object InvokeConstructor(IContext context, IActivationParameters parameters, System.Reflection.ConstructorInfo ci, object[] args)
+        public object InvokeConstructor(IContext context, IEnumerable<Parameter> parameters, System.Reflection.ConstructorInfo ci, Func<object>[] args)
         {
             Enforce.ArgumentNotNull(ci, "ci");
             Enforce.ArgumentNotNull(args, "args");
-            return ci.Invoke(args);
+            return ci.Invoke(args.Select(pa => pa()).ToArray());
         }
     }
 }

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -56,13 +56,8 @@
     </Compile>
     <Compile Include="ActivatedEventArgs.cs" />
     <Compile Include="ActivatingEventArgs.cs" />
-    <Compile Include="ActivationParameters.cs" />
-    <Compile Include="ActivationParametersResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ActivationParametersResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="ComponentRegisteredEventArgs.cs" />
+    <Compile Include="Component\Activation\AutowiringParameter.cs" />
     <Compile Include="Component\Activation\DirectConstructorInvoker.cs" />
     <Compile Include="Component\Activation\IConstructorInvoker.cs" />
     <Compile Include="Component\Descriptor.cs" />
@@ -82,7 +77,13 @@
     <Compile Include="Configuration\ExtendedPropertyElementCollection.cs" />
     <Compile Include="Configuration\FileElement.cs" />
     <Compile Include="Configuration\FileElementCollection.cs" />
+    <Compile Include="NamedPropertyParameter.cs" />
+    <Compile Include="ConstantParameter.cs" />
     <Compile Include="IComponentDescriptor.cs" />
+    <Compile Include="NamedParameter.cs" />
+    <Compile Include="Parameter.cs" />
+    <Compile Include="ParameterExtensions.cs" />
+    <Compile Include="PositionalParameter.cs" />
     <Compile Include="PreparingEventArgs.cs" />
     <Compile Include="Registrars\Automatic\AutomaticRegistrar.cs" />
     <Compile Include="Builder\ActivatedHandler.cs" />
@@ -153,7 +154,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>GuardResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="IActivationParameters.cs" />
     <Compile Include="IContainer.cs" />
     <Compile Include="IRegistrationContext.cs" />
     <Compile Include="IDisposer.cs" />
@@ -178,7 +178,6 @@
     <Compile Include="IRegistrationSource.cs" />
     <Compile Include="Builder\Module.cs" />
     <Compile Include="NamedService.cs" />
-    <Compile Include="Parameter.cs" />
     <Compile Include="Configuration\ComponentElement.cs" />
     <Compile Include="Configuration\ComponentElementCollection.cs" />
     <Compile Include="Configuration\ConfigurationSettingsReader.cs" />
@@ -274,16 +273,12 @@
       <DependentUpon>ContextTagResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Component\Tagged\TaggedRegistration.cs" />
+    <Compile Include="TypedParameter.cs" />
     <Compile Include="TypedService.cs" />
     <Compile Include="TypeManipulation.cs" />
     <Compile Include="UniqueService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ActivationParametersResources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ActivationParametersResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Component\DescriptorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DescriptorResources.Designer.cs</LastGenOutput>

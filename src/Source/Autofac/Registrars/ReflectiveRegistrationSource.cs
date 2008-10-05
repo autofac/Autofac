@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using Autofac.Component;
 using Autofac.Component.Activation;
 using Autofac.Component.Scope;
+using System.Linq;
 
 namespace Autofac.Registrars
 {
@@ -78,8 +79,8 @@ namespace Autofac.Registrars
 
             var activator = new ReflectionActivator(
                     concrete,
-                    ActivationParameters.Empty,
-                    ActivationParameters.Empty,
+                    Enumerable.Empty<Parameter>(),
+                    Enumerable.Empty<Parameter>(),
                     _constructorSelector);
 
             registration = CreateRegistration(descriptor, activator);

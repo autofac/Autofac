@@ -23,6 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Collections.Generic;
 
 namespace Autofac.Component
 {
@@ -41,5 +42,5 @@ namespace Autofac.Component
 	/// that must be obtained from outside the container.
     /// The delegate should always return a unique instance.
 	/// </remarks>
-	public delegate object ComponentActivator(IContext context, IActivationParameters parameters);
+	public delegate object ComponentActivator(IContext context, IEnumerable<Parameter> parameters);
 }

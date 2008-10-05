@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 namespace Autofac.Component.Activation
 {
@@ -60,7 +61,7 @@ namespace Autofac.Component.Activation
         /// an exception if this is attempted. IActivationScope should
         /// manage singleton semantics.)
         /// </returns>
-		public object ActivateInstance(IContext context, IActivationParameters parameters)
+		public object ActivateInstance(IContext context, IEnumerable<Parameter> parameters)
 		{
             Enforce.ArgumentNotNull(context, "context");
             Enforce.ArgumentNotNull(parameters, "parameters");

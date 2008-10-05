@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 namespace Autofac
 {
@@ -35,7 +36,7 @@ namespace Autofac
     {
         IContext _context;
         IComponentRegistration _component;
-        IActivationParameters _parameters;
+        IEnumerable<Parameter> _parameters;
         object _instance;
 
         /// <summary>
@@ -44,7 +45,7 @@ namespace Autofac
         /// <param name="context">The context.</param>
         /// <param name="component">The component.</param>
         /// <param name="parameters">The parameters.</param>
-        public PreparingEventArgs(IContext context, IComponentRegistration component, IActivationParameters parameters)
+        public PreparingEventArgs(IContext context, IComponentRegistration component, IEnumerable<Parameter> parameters)
         {
             Context = context;
             Component = component;
@@ -102,7 +103,7 @@ namespace Autofac
         /// <summary>
         /// The parameters supplied to the activator.
         /// </summary>
-        public IActivationParameters Parameters
+        public IEnumerable<Parameter> Parameters
         {
             get
             {

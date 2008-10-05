@@ -31,6 +31,7 @@ using System.Reflection;
 using Autofac.Builder;
 using Autofac.Component.Activation;
 using Autofac.Registrars;
+using System.Linq;
 
 namespace Autofac.Configuration
 {
@@ -119,9 +120,9 @@ namespace Autofac.Configuration
 				var moduleType = LoadType(moduleElement.Type, defaultAssembly);
                 var moduleActivator = new ReflectionActivator(
                     moduleType,
-                    moduleElement.Parameters.ToDictionary(),
-                    moduleElement.ExplicitProperties.ToDictionary());
-				var module = (IModule)moduleActivator.ActivateInstance(Context.Empty, ActivationParameters.Empty);
+                    moduleElement.Parameters.ToParameters(),
+                    moduleElement.ExplicitProperties.ToParameters());
+				var module = (IModule)moduleActivator.ActivateInstance(Context.Empty, Enumerable.Empty<Parameter>());
                 builder.RegisterModule(module);
 			}
 
@@ -139,8 +140,8 @@ namespace Autofac.Configuration
                 foreach (var service in services)
                     registrar.As(service);
 
-                registrar.WithArguments(component.Parameters.ToDictionary());
-                registrar.WithProperties(component.ExplicitProperties.ToDictionary());
+                registrar.WithArguments(component.Parameters.ToParameters());
+                registrar.WithProperties(component.ExplicitProperties.ToParameters());
 
                 foreach (var ep in component.ExtendedProperties)
                     registrar.WithExtendedProperty(

@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
+using System.Linq;
 
 namespace Autofac.Component.Activation
 {
@@ -39,17 +40,18 @@ namespace Autofac.Component.Activation
     public class ReflectionActivator : IActivator
 	{
 		Type _componentType;
-		IDictionary<string, object> _additionalConstructorParameters = new Dictionary<string, object>();
-		IDictionary<string, object> _explicitPropertySetters = new Dictionary<string, object>();
+        IEnumerable<Parameter> _additionalConstructorParameters = Enumerable.Empty<Parameter>();
+        IEnumerable<Parameter> _explicitPropertySetters = Enumerable.Empty<Parameter>();
 		IConstructorSelector _constructorSelector;
-        IConstructorInvoker _constructorInvoker = new DirectConstructorInvoker();
-
+        static readonly IConstructorInvoker DirectInvoker = new DirectConstructorInvoker();
+        IConstructorInvoker _constructorInvoker = DirectInvoker;
+        static readonly IEnumerable<Parameter> AutowiringParameterArray = new Parameter[] { new AutowiringParameter() };
         /// <summary>
         /// Initializes a new instance of the <see cref="ReflectionActivator"/> class.
         /// </summary>
         /// <param name="componentType">Type of the component.</param>
         public ReflectionActivator(Type componentType)
-            : this(componentType, new Dictionary<string, object>())
+            : this(componentType, Enumerable.Empty<Parameter>())
         {
         }
 
@@ -60,11 +62,11 @@ namespace Autofac.Component.Activation
         /// <param name="additionalConstructorParameters">The additional constructor parameters.</param>
 		public ReflectionActivator(
 			Type componentType,
-			IDictionary<string, object> additionalConstructorParameters)
+			IEnumerable<Parameter> additionalConstructorParameters)
 			: this(
 				componentType,
 				additionalConstructorParameters,
-				new Dictionary<string, object>())
+                Enumerable.Empty<Parameter>())
 		{
 		}
 
@@ -76,8 +78,8 @@ namespace Autofac.Component.Activation
         /// <param name="explicitPropertySetters">The explicit property setters.</param>
 		public ReflectionActivator(
 			Type componentType,
-			IDictionary<string, object> additionalConstructorParameters,
-			IDictionary<string, object> explicitPropertySetters)
+            IEnumerable<Parameter> additionalConstructorParameters,
+            IEnumerable<Parameter> explicitPropertySetters)
 			: this(
 				componentType,
 				additionalConstructorParameters,
@@ -95,8 +97,8 @@ namespace Autofac.Component.Activation
         /// <param name="constructorSelector">The constructor selector.</param>
         public ReflectionActivator(
             Type componentType,
-            IDictionary<string, object> additionalConstructorParameters,
-			IDictionary<string, object> explicitPropertySetters,
+            IEnumerable<Parameter> additionalConstructorParameters,
+            IEnumerable<Parameter> explicitPropertySetters,
             IConstructorSelector constructorSelector)
         {
             Enforce.ArgumentNotNull(componentType, "componentType");
@@ -106,42 +108,8 @@ namespace Autofac.Component.Activation
 
             _componentType = componentType;
             _constructorSelector = constructorSelector;
-
-			List<string> seenParameters = new List<string>();
-			foreach (KeyValuePair<string, object> parameter in additionalConstructorParameters)
-			{
-				if (string.IsNullOrEmpty(parameter.Key))
-					throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-						ReflectionActivatorResources.ParameterNameNotNullOrEmpty, componentType));
-
-				if (seenParameters.Contains(parameter.Key))
-					throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-							ReflectionActivatorResources.ParameterSpecifiedMultipleTimes, parameter.Key, componentType));
-
-				seenParameters.Add(parameter.Key);
-
-				_additionalConstructorParameters.Add(parameter);
-			}
-
-			List<string> seenProperties = new List<string>();
-			foreach (KeyValuePair<string, object> property in explicitPropertySetters)
-			{
-				if (string.IsNullOrEmpty(property.Key))
-					throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-						ReflectionActivatorResources.PropertyNameNotNullOrEmpty, componentType));
-
-				if (seenProperties.Contains(property.Key))
-					throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-							ReflectionActivatorResources.PropertySpecifiedMultipleTimes, property.Key, componentType));
-
-				if (componentType.GetProperty(property.Key) == null)
-					throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-							ReflectionActivatorResources.PropertyNotFound, property.Key, componentType));
-
-				seenProperties.Add(property.Key);
-
-				_explicitPropertySetters.Add(property);
-			}
+            _additionalConstructorParameters = additionalConstructorParameters.Concat(AutowiringParameterArray).ToArray();
+            _explicitPropertySetters = explicitPropertySetters.ToArray();
         }
 
         /// <summary>
@@ -158,14 +126,15 @@ namespace Autofac.Component.Activation
         /// an exception if this is attempted. IActivationScope should
         /// manage singleton semantics.)
         /// </returns>
-        public object ActivateInstance(IContext context, IActivationParameters parameters)
+        public object ActivateInstance(IContext context, IEnumerable<Parameter> parameters)
         {
             Enforce.ArgumentNotNull(context, "context");
             Enforce.ArgumentNotNull(parameters, "parameters");
 
-			var possibleConstructors = new List<ConstructorInfo>();
+			var possibleConstructors = new Dictionary<ConstructorInfo, Func<object>[]>();
 			StringBuilder reasons = null;
 			bool foundPublicConstructor = false;
+            var augmentedParameters = parameters.Concat(_additionalConstructorParameters);
 
 			foreach (ConstructorInfo ci in _componentType.FindMembers(
 				MemberTypes.Constructor,
@@ -174,11 +143,12 @@ namespace Autofac.Component.Activation
 				null))
 			{
 				foundPublicConstructor = true;
-				
+
+                Func<object>[] parameterAccessors;
 				string reason;
-				if (CanUseConstructor(ci, context, parameters, out reason))
+				if (CanUseConstructor(ci, context, augmentedParameters, out parameterAccessors, out reason))
 				{
-					possibleConstructors.Add(ci);
+					possibleConstructors.Add(ci, parameterAccessors);
 				}
 				else
 				{
@@ -197,9 +167,13 @@ namespace Autofac.Component.Activation
     			throw new DependencyResolutionException(
 						  string.Format(CultureInfo.CurrentCulture, ReflectionActivatorResources.NoResolvableConstructor, _componentType, reasons ?? new StringBuilder()));
 
-            return ConstructInstance(
-                _constructorSelector.SelectConstructor(possibleConstructors),
-                context, parameters);
+            var selectedCI = _constructorSelector.SelectConstructor(possibleConstructors.Keys);
+
+            var result = ConstructInstance(selectedCI, context, augmentedParameters, possibleConstructors[selectedCI]);
+
+            SetExplicitProperties(result, context);
+
+            return result;
 		}
 
         /// <summary>
@@ -255,7 +229,7 @@ namespace Autofac.Component.Activation
             }
         }
 
-        bool CanUseConstructor(ConstructorInfo ci, IContext context, IActivationParameters parameters, out string reason)
+        bool CanUseConstructor(ConstructorInfo ci, IContext context, IEnumerable<Parameter> parameters, out Func<object>[] valueAccessors, out string reason)
         {
             Enforce.ArgumentNotNull(ci, "ci");
             Enforce.ArgumentNotNull(context, "context");
@@ -263,11 +237,24 @@ namespace Autofac.Component.Activation
 
             StringBuilder reasonNotUsable = null;
 
-            foreach (ParameterInfo pi in ci.GetParameters())
+            var ciParams = ci.GetParameters();
+            var partialValueAccessors = new Func<object>[ciParams.Length];
+
+            foreach (ParameterInfo pi in ciParams)
             {
-                if (!context.IsRegistered(pi.ParameterType) &&
-                    !parameters.ContainsKey(pi.Name) &&
-                    !_additionalConstructorParameters.ContainsKey(pi.Name))
+                Func<object> va = null;
+
+                foreach (var param in parameters)
+                {
+                    if (param.CanSupplyValue(pi, context, out va))
+                        break;
+                }
+
+                if (va != null)
+                {
+                    partialValueAccessors[pi.Position] = va;
+                }
+                else
                 {
                     if (reasonNotUsable == null)
                     {
@@ -286,47 +273,28 @@ namespace Autofac.Component.Activation
             }
 
             if (reasonNotUsable != null)
+            {
+                valueAccessors = null;
                 reason = reasonNotUsable.Append('.').ToString();
+            }
             else
+            {
+                valueAccessors = partialValueAccessors;
                 reason = String.Empty;
+            }
 
             // Return true if there is no reason not to use it, i.e. reasonNotUsable is null
             return reasonNotUsable == null;
         }
 
-        /// <summary>
-        /// Dependencies must be resolvable. Check this first with AreAllParametersRegistered().
-        /// </summary>
-        /// <param name="ci">The constructor to use.</param>
-        /// <param name="context">The context in which the instance is being created.</param>
-        /// <param name="parameters">The parameters.</param>
-        /// <returns>The new instance.</returns>
-        /// <exception cref="DependencyResolutionException">Parameters were not resolvable.</exception>
-        object ConstructInstance(ConstructorInfo ci, IContext context, IActivationParameters parameters)
+        object ConstructInstance(ConstructorInfo ci, IContext context, IEnumerable<Parameter> parameters, Func<object>[] parameterAccessors)
         {
             Enforce.ArgumentNotNull(ci, "ci");
-            Enforce.ArgumentNotNull(context, "context");
-            Enforce.ArgumentNotNull(parameters, "parameters");
-
-            ParameterInfo[] ciParameters = ci.GetParameters();
-            var parameterValues = new object[ciParameters.Length];
-            int parameterIndex = 0;
-            foreach (ParameterInfo pi in ciParameters)
-            {
-                object parameterValue;
-                if (!parameters.TryGetValue(pi.Name, out parameterValue) &&
-                    !_additionalConstructorParameters.TryGetValue(pi.Name, out parameterValue))
-                {
-                    parameterValue = context.Resolve(pi.ParameterType);
-                }
-
-                parameterValues[parameterIndex++] = TypeManipulation.ChangeToCompatibleType(parameterValue, pi.ParameterType);
-            }
+            Enforce.ArgumentNotNull(parameterAccessors, "parameterAccessors");
 
             try
             {
-                object instance = ConstructorInvoker.InvokeConstructor(context, parameters, ci, parameterValues);
-                SetterInject(instance, context);
+                object instance = ConstructorInvoker.InvokeConstructor(context, parameters, ci, parameterAccessors);
                 return instance;
             }
             catch (TargetInvocationException tie)
@@ -335,37 +303,27 @@ namespace Autofac.Component.Activation
             }
         }
 
-    	/// <summary>
-		/// Inspect all public writeable properties and inject
-		/// values from the container if available. For factory-lifecycle components
-		/// a speed improvement could be had here by caching the property-value
-		/// pairs.
-		/// </summary>
-		/// <param name="instance">The non-null object instance to perform
-		/// setter injection on.</param>
-		/// <param name="context">The non-null context from which dependencies
-		/// may be satisfied.</param>
-		void SetterInject(object instance, IContext context)
+		void SetExplicitProperties(object instance, IContext context)
 		{
             Enforce.ArgumentNotNull(instance, "instance");
             Enforce.ArgumentNotNull(context, "context");
 
-            if (_explicitPropertySetters.Count == 0)
+            if (!_explicitPropertySetters.Any())
                 return;
 
 			Type instanceType = instance.GetType();
 
-			foreach (PropertyInfo property in instanceType.GetProperties(
-				BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty))
-			{
-				Type propertyType = property.PropertyType;
-
-				object propertyValue;
-				if (_explicitPropertySetters.TryGetValue(property.Name, out propertyValue))
-				{
-                    propertyValue = TypeManipulation.ChangeToCompatibleType(propertyValue, propertyType);
-					property.SetValue(instance, propertyValue, null);
-				}
+            foreach (var param in _explicitPropertySetters)
+            {
+			    foreach (PropertyInfo property in instanceType.GetProperties(
+				    BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty))
+			    {
+                    Func<object> propertyValueAccessor;
+                    if (param.CanSupplyValue(property.GetSetMethod().GetParameters()[0], context, out propertyValueAccessor))
+                    {
+                        property.SetValue(instance, propertyValueAccessor(), null);
+                    }
+                }
 			}
 		}
 

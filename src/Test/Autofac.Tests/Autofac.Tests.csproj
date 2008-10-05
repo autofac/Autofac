@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{B2E242BC-9412-43ED-8BFE-3F12199BD649}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -56,6 +56,7 @@
     <Compile Include="ComponentRegisteredEventArgsFixture.cs" />
     <Compile Include="Component\DescriptorFixture.cs" />
     <Compile Include="Configuration\ConfigurationSettingsReaderFixture.cs" />
+    <Compile Include="NamedParameterTests.cs" />
     <Compile Include="Registrars\ConcreteRegistrarFixture.cs" />
     <Compile Include="Builder\CollectionRegistrationBuilderFixture.cs" />
     <Compile Include="Builder\DelegateRegistrationBuilderFixture.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Tags\ContainerBuilderExtensionsFixture.cs" />
     <Compile Include="Tags\ContainerExtensionsFixture.cs" />
     <Compile Include="Tags\TagsFixture.cs" />
+    <Compile Include="TypedParameterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\Autofac\Autofac.csproj">

@@ -115,7 +115,7 @@ namespace Autofac
         public TService Resolve<TService>(params Parameter[] parameters)
         {
             Enforce.ArgumentNotNull(parameters, "parameters");
-            return this.Resolve<TService>(this.MakeActivationParameters(parameters));
+            return this.Resolve<TService>((IEnumerable<Parameter>)parameters);
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace Autofac
         {
             Enforce.ArgumentNotNull(serviceName, "serviceName");
             Enforce.ArgumentNotNull(parameters, "parameters");
-            return this.Resolve<TService>(serviceName, this.MakeActivationParameters(parameters));
+            return this.Resolve<TService>(serviceName, (IEnumerable<Parameter>)parameters);
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace Autofac
         {
             Enforce.ArgumentNotNull(service, "service");
             Enforce.ArgumentNotNull(parameters, "parameters");
-            return this.Resolve(service, this.MakeActivationParameters(parameters));
+            return this.Resolve(service, (IEnumerable<Parameter>)parameters);
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace Autofac
         {
             Enforce.ArgumentNotNull(serviceType, "serviceType");
             Enforce.ArgumentNotNull(parameters, "parameters");
-            return Resolve(new TypedService(serviceType), this.MakeActivationParameters(parameters));
+            return Resolve(new TypedService(serviceType), (IEnumerable<Parameter>)parameters);
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace Autofac
         {
             Enforce.ArgumentNotNull(serviceName, "serviceName");
             Enforce.ArgumentNotNull(parameters, "parameters");
-            return Resolve(new NamedService(serviceName), this.MakeActivationParameters(parameters));
+            return Resolve(new NamedService(serviceName), (IEnumerable<Parameter>)parameters);
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace Autofac
         public TService ResolveOptional<TService>(params Parameter[] parameters)
         {
             Enforce.ArgumentNotNull(parameters, "parameters");
-            return ResolveOptional<TService>(this.MakeActivationParameters(parameters));
+            return ResolveOptional<TService>((IEnumerable<Parameter>)parameters);
         }
 
         /// <summary>
@@ -220,7 +220,7 @@ namespace Autofac
         public bool TryResolve<TService>(out TService instance, params Parameter[] parameters)
         {
             Enforce.ArgumentNotNull(parameters, "parameters");
-            return this.TryResolve<TService>(out instance, this.MakeActivationParameters(parameters));
+            return this.TryResolve<TService>(out instance, (IEnumerable<Parameter>)parameters);
         }
 
         /// <summary>
@@ -238,7 +238,7 @@ namespace Autofac
         {
             Enforce.ArgumentNotNull(serviceType, "serviceType");
             Enforce.ArgumentNotNull(parameters, "parameters");
-            return TryResolve(new TypedService(serviceType), out instance, this.MakeActivationParameters(parameters));
+            return TryResolve(new TypedService(serviceType), out instance, (IEnumerable<Parameter>)parameters);
         }
 
         /// <summary>
@@ -256,7 +256,7 @@ namespace Autofac
         {
             Enforce.ArgumentNotNull(componentName, "componentName");
             Enforce.ArgumentNotNull(parameters, "parameters");
-            return TryResolve(new NamedService(componentName), out instance, this.MakeActivationParameters(parameters));
+            return TryResolve(new NamedService(componentName), out instance, (IEnumerable<Parameter>)parameters);
         }
 
         /// <summary>
@@ -274,7 +274,7 @@ namespace Autofac
         {
             Enforce.ArgumentNotNull(service, "service");
             Enforce.ArgumentNotNull(parameters, "parameters");
-            return this.TryResolve(service, out instance, this.MakeActivationParameters(parameters));
+            return this.TryResolve(service, out instance, (IEnumerable<Parameter>)parameters);
         }
 
         /// <summary>
@@ -401,19 +401,6 @@ namespace Autofac
 
         #endregion
 
-        IActivationParameters MakeActivationParameters(Parameter[] parameters)
-        {
-            Enforce.ArgumentNotNull(parameters, "parameters");
-
-            if (parameters.Length == 0)
-                return ActivationParameters.Empty;
-
-            var result = new ActivationParameters(parameters.Length);
-            foreach (var namedValue in parameters)
-                result.Add(namedValue.Name, namedValue.Value);
-            return result;
-        }
-
         void ActivationsComplete()
         {
             var activations = _activations;
@@ -442,34 +429,34 @@ namespace Autofac
 
         #region IContext Members
 
-        public TService Resolve<TService>(IActivationParameters parameters)
+        public TService Resolve<TService>(IEnumerable<Parameter> parameters)
         {
             Enforce.ArgumentNotNull(parameters, "parameters");
             return (TService)Resolve(typeof(TService), parameters);
         }
 
-        public TService Resolve<TService>(string serviceName, IActivationParameters parameters)
+        public TService Resolve<TService>(string serviceName, IEnumerable<Parameter> parameters)
         {
             Enforce.ArgumentNotNull(serviceName, "serviceName");
             Enforce.ArgumentNotNull(parameters, "parameters");
             return (TService)Resolve(new NamedService(serviceName), parameters);
         }
 
-        public object Resolve(Type serviceType, IActivationParameters parameters)
+        public object Resolve(Type serviceType, IEnumerable<Parameter> parameters)
         {
             Enforce.ArgumentNotNull(serviceType, "serviceType");
             Enforce.ArgumentNotNull(parameters, "parameters");
             return Resolve(new TypedService(serviceType), parameters);
         }
 
-        public object Resolve(string serviceName, IActivationParameters parameters)
+        public object Resolve(string serviceName, IEnumerable<Parameter> parameters)
         {
             Enforce.ArgumentNotNull(serviceName, "serviceName");
             Enforce.ArgumentNotNull(parameters, "parameters");
             return Resolve(new NamedService(serviceName), parameters);
         }
 
-        public object Resolve(Service service, IActivationParameters parameters)
+        public object Resolve(Service service, IEnumerable<Parameter> parameters)
         {
             Enforce.ArgumentNotNull(service, "service");
             Enforce.ArgumentNotNull(parameters, "parameters");
@@ -482,7 +469,7 @@ namespace Autofac
             return result;
         }
 
-        public bool TryResolve<TService>(out TService instance, IActivationParameters parameters)
+        public bool TryResolve<TService>(out TService instance, IEnumerable<Parameter> parameters)
         {
             Enforce.ArgumentNotNull(parameters, "parameters");
             object untypedInstance = null;
@@ -491,21 +478,21 @@ namespace Autofac
             return result;
         }
 
-        public bool TryResolve(Type serviceType, out object instance, IActivationParameters parameters)
+        public bool TryResolve(Type serviceType, out object instance, IEnumerable<Parameter> parameters)
         {
             Enforce.ArgumentNotNull(serviceType, "serviceType");
             Enforce.ArgumentNotNull(parameters, "parameters");
             return TryResolve(new TypedService(serviceType), out instance, parameters);
         }
 
-        public bool TryResolve(string componentName, out object instance, IActivationParameters parameters)
+        public bool TryResolve(string componentName, out object instance, IEnumerable<Parameter> parameters)
         {
             Enforce.ArgumentNotNull(componentName, "componentName");
             Enforce.ArgumentNotNull(parameters, "parameters");
             return TryResolve(new NamedService(componentName), out instance, parameters);
         }
 
-        public bool TryResolve(Service service, out object instance, IActivationParameters parameters)
+        public bool TryResolve(Service service, out object instance, IEnumerable<Parameter> parameters)
         {
             Enforce.ArgumentNotNull(service, "service");
             Enforce.ArgumentNotNull(parameters, "parameters");
@@ -555,7 +542,7 @@ namespace Autofac
             }
         }
 
-        public TService ResolveOptional<TService>(IActivationParameters parameters)
+        public TService ResolveOptional<TService>(IEnumerable<Parameter> parameters)
         {
             Enforce.ArgumentNotNull(parameters, "parameters");
             object result;

@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 namespace Autofac
 {
@@ -49,7 +50,7 @@ namespace Autofac
         /// <param name="disposer">The disposer.</param>
         /// <param name="newInstance">if set to <c>true</c> a new instance was created.</param>
         /// <returns>A newly-resolved instance.</returns>
-        object ResolveInstance(IContext context, IActivationParameters parameters, IDisposer disposer, out bool newInstance);
+        object ResolveInstance(IContext context, IEnumerable<Parameter> parameters, IDisposer disposer, out bool newInstance);
 
 		/// <summary>
 		/// Create a duplicate of this instance if it is semantically valid to

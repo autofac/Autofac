@@ -23,31 +23,37 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Reflection;
 
-namespace Autofac.Configuration
+namespace Autofac
 {
     /// <summary>
-    /// A collection of parameter elements.
+    /// A parameter that is identified according to an integer representing its
+    /// position in an argument list.
     /// </summary>
-    public class ParameterElementCollection : NamedConfigurationElementCollection<ParameterElement>
+    public class PositionalParameter : ConstantParameter
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ParameterElementCollection"/> class.
+        /// The zero-based position of the parameter.
         /// </summary>
-        public ParameterElementCollection()
-            : base("parameter", ParameterElement.Key)
-        {
-        }
+        public int Position { get; private set; }
 
         /// <summary>
-        /// Convert to the Autofac parameter type.
+        /// Construct a positional parameter with the specified value.
         /// </summary>
-        /// <returns>The parameters represented by this collection.</returns>
-        public IEnumerable<Parameter> ToParameters()
+        /// <param name="position">The zero-based position of the parameter.</param>
+        /// <param name="value">The parameter value.</param>
+        public PositionalParameter(int position, object value)
+            : base(value, pi => pi.Position == position &&
+                                pi.Member.MemberType == MemberTypes.Constructor)
         {
-            foreach (var parameter in this)
-                yield return new NamedParameter(parameter.Name, parameter.Value);
+            if (position < 0) throw new ArgumentOutOfRangeException("position");
+
+            Position = position;
         }
     }
 }

@@ -26,6 +26,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Autofac.Component.Tagged
 {
@@ -34,7 +35,7 @@ namespace Autofac.Component.Tagged
 	/// </summary>
 	public class TaggedRegistration<TTag> : IComponentRegistration, ITagged<TTag>, IRegistrationDecorator, IDisposable
 	{
-        static readonly Parameter[] EmptyParameters = new Parameter[0];
+        static readonly NamedParameter[] EmptyParameters = new NamedParameter[0];
 		readonly TTag _tag;
 		readonly IComponentRegistration _inner;
 
@@ -76,7 +77,7 @@ namespace Autofac.Component.Tagged
         /// <returns>A newly-resolved instance.</returns>
         public virtual object ResolveInstance(
         	IContext context, 
-        	IActivationParameters parameters, 
+        	IEnumerable<Parameter> parameters, 
         	IDisposer disposer, 
         	out bool newInstance)
         {
@@ -95,7 +96,7 @@ namespace Autofac.Component.Tagged
             {
                 var container = context.Resolve<IContainer>();
                 if (container.OuterContainer != null)
-                    return container.OuterContainer.Resolve(Descriptor.Id, MakeParameters(parameters));
+                    return container.OuterContainer.Resolve(Descriptor.Id, parameters);
                 else
                     throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture,
                         TaggedRegistrationResources.TaggedContextNotFound,
@@ -201,16 +202,6 @@ namespace Autofac.Component.Tagged
         public virtual void Dispose()
         {
         	_inner.Dispose();
-        }
-
-        private static Parameter[] MakeParameters(IActivationParameters p)
-        {
-            Enforce.ArgumentNotNull(p, "p");
-
-            if (p.Count == 0)
-                return EmptyParameters;
-
-            return p.Select(kvp => new Parameter(kvp.Key, kvp.Value)).ToArray();
         }
 
         /// <summary>

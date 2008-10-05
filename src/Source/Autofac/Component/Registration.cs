@@ -25,6 +25,7 @@
 
 using System;
 using System.Globalization;
+using System.Collections.Generic;
 
 namespace Autofac.Component
 {
@@ -94,7 +95,7 @@ namespace Autofac.Component
         /// <param name="disposer">The disposer.</param>
         /// <param name="newInstance">if set to <c>true</c> a new instance was created.</param>
         /// <returns>A newly-resolved instance.</returns>
-        public virtual object ResolveInstance(IContext context, IActivationParameters parameters, IDisposer disposer, out bool newInstance)
+        public virtual object ResolveInstance(IContext context, IEnumerable<Parameter> parameters, IDisposer disposer, out bool newInstance)
         {
             Enforce.ArgumentNotNull(context, "context");
             Enforce.ArgumentNotNull(parameters, "parameters");

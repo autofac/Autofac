@@ -40,16 +40,15 @@ namespace Autofac.Configuration
 		{
 		}
 
+
         /// <summary>
-        /// Return the collection as a dictionary.
+        /// Convert to the Autofac parameter type.
         /// </summary>
-        /// <returns>The collection as a dictionary.</returns>
-        public IDictionary<string, object> ToDictionary()
+        /// <returns>The parameters represented by this collection.</returns>
+        public IEnumerable<Parameter> ToParameters()
         {
-            var result = new Dictionary<string, object>();
-            foreach (PropertyElement property in this)
-                result.Add(property.Name, property.Value);
-            return result;
+            foreach (var parameter in this)
+                yield return new NamedPropertyParameter(parameter.Name, parameter.Value);
         }
-	}
+    }
 }

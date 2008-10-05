@@ -23,36 +23,40 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Reflection;
+using System;
 
 namespace Autofac
 {
     /// <summary>
-    /// Represents a parameter than can be passed to a component activator.
+    /// Used in order to provide a value to a constructor parameter or property on an instance
+    /// being created by the container.
     /// </summary>
-    public class Parameter
+    /// <remarks>
+    /// Not all parameters can be applied to all sites.
+    /// </remarks>
+    public abstract class Parameter
     {
         /// <summary>
-        /// Gets or sets the name.
+        /// Returns true if the parameter is able to provide a value to a particular site.
         /// </summary>
-        /// <value>The name.</value>
-        public string Name { get; private set; }
+        /// <param name="pi">Constructor, method, or property-mutator parameter.</param>
+        /// <param name="context">The component context in which the value is being provided.</param>
+        /// <param name="valueProvider">If the result is true, the valueProvider parameter will
+        /// be set to a function that will lazily retrieve the parameter value. If the result is false,
+        /// will be set to null.</param>
+        /// <returns>True if a value can be supplied; otherwise, false.</returns>
+        public abstract bool CanSupplyValue(ParameterInfo pi, IContext context, out Func<object> valueProvider);
 
         /// <summary>
-        /// Gets or sets the value.
+        /// Helper method for parameters that allow type conversion.
         /// </summary>
-        /// <value>The value.</value>
-        public object Value { get; private set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Parameter"/> class.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="value">The value.</param>
-        public Parameter(string name, object value)
+        /// <param name="pi">The parameter.</param>
+        /// <param name="parameterValue">The value.</param>
+        /// <returns>A representation of the value able to be supplied for the parameter.</returns>
+        protected object MatchTypes(ParameterInfo pi, object parameterValue)
         {
-            Enforce.ArgumentNotNull(name, "name");
-            Name = name;
-            Value = value;
+            return TypeManipulation.ChangeToCompatibleType(parameterValue, pi.ParameterType);
         }
     }
 }

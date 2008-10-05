@@ -23,31 +23,33 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Reflection;
 
-namespace Autofac.Configuration
+namespace Autofac
 {
     /// <summary>
-    /// A collection of parameter elements.
+    /// A parameter identified according to its name within an argument list declaration.
     /// </summary>
-    public class ParameterElementCollection : NamedConfigurationElementCollection<ParameterElement>
+    public class NamedParameter : ConstantParameter
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ParameterElementCollection"/> class.
+        /// The name of the parameter.
         /// </summary>
-        public ParameterElementCollection()
-            : base("parameter", ParameterElement.Key)
-        {
-        }
+        public string Name { get; private set; }
 
         /// <summary>
-        /// Convert to the Autofac parameter type.
+        /// Create a named parameter with the specified value.
         /// </summary>
-        /// <returns>The parameters represented by this collection.</returns>
-        public IEnumerable<Parameter> ToParameters()
+        /// <param name="name">The name of the parameter.</param>
+        /// <param name="value">The parameter value.</param>
+        public NamedParameter(string name, object value)
+            : base(value, pi => pi.Name == name)
         {
-            foreach (var parameter in this)
-                yield return new NamedParameter(parameter.Name, parameter.Value);
+            Name = Enforce.ArgumentNotNullOrEmpty(name, "name");
         }
     }
 }

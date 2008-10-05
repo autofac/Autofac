@@ -1,6 +1,7 @@
 ﻿using System;
 using Autofac.Component.Activation;
 using NUnit.Framework;
+using System.Linq;
 
 namespace Autofac.Tests.Component.Activation
 {
@@ -23,7 +24,7 @@ namespace Autofac.Tests.Component.Activation
             ProvidedInstanceActivator target =
                 new ProvidedInstanceActivator(instance);
 
-            Assert.AreSame(instance, target.ActivateInstance(new Container(), ActivationParameters.Empty));
+            Assert.AreSame(instance, target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>()));
         }
 
         [Test]
@@ -37,8 +38,8 @@ namespace Autofac.Tests.Component.Activation
 
             IContext container = new Container();
 
-            target.ActivateInstance(container, ActivationParameters.Empty);
-            target.ActivateInstance(container, ActivationParameters.Empty);
+            target.ActivateInstance(container, Enumerable.Empty<Parameter>());
+            target.ActivateInstance(container, Enumerable.Empty<Parameter>());
         }
     }
 }

@@ -23,6 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Collections.Generic;
 
 namespace Autofac.Registrars.Delegate
 {
@@ -57,5 +58,5 @@ namespace Autofac.Registrars.Delegate
     /// that must be obtained from outside the container.
     /// The delegate should always return a unique instance.
     /// </remarks>
-    public delegate T ComponentActivatorWithParameters<T>(IContext context, IActivationParameters parameters);
+    public delegate T ComponentActivatorWithParameters<T>(IContext context, IEnumerable<Parameter> parameters);
 }

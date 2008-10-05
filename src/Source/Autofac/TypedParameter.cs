@@ -23,22 +23,34 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Reflection;
 
 namespace Autofac
 {
     /// <summary>
-    /// Provided to component activators to give context to the component creation
-    /// process.
+    /// A parameter that can supply values to sites that exactly
+    /// match a specified type.
     /// </summary>
-    public interface IActivationParameters : IDictionary<string, object>
+    public class TypedParameter : ConstantParameter
     {
         /// <summary>
-        /// Gets a parameter of the specified type with the given name.
+        /// The type against which sites are matched.
         /// </summary>
-        /// <typeparam name="T">The parameter type.</typeparam>
-        /// <param name="name">The parameter name.</param>
-        /// <returns>The parameter.</returns>
-        T Get<T>(string name);
+        public Type Type { get; private set; }
+
+        /// <summary>
+        /// Create a typed parameter for the specified type.
+        /// </summary>
+        /// <param name="type">The exact type to match.</param>
+        /// <param name="value">The parameter value.</param>
+        public TypedParameter(Type type, object value)
+            : base(value, pi => pi.ParameterType == type)
+        {
+            Type = Enforce.ArgumentNotNull(type, "type");
+        }
     }
 }

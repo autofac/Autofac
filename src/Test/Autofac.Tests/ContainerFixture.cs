@@ -627,13 +627,13 @@ namespace Autofac.Tests
         public void RegisterParameterisedWithDelegate()
         {
             var cb = new ContainerBuilder();
-            cb.Register((c, p) => new Parameterised(p.Get<string>("a"), p.Get<int>("b")));
+            cb.Register((c, p) => new Parameterised(p.Named<string>("a"), p.Named<int>("b")));
             var container = cb.Build();
             var aVal = "Hello";
             var bVal = 42;
             var result = container.Resolve<Parameterised>(
-                new Parameter("a", aVal),
-                new Parameter("b", bVal));
+                new NamedParameter("a", aVal),
+                new NamedParameter("b", bVal));
             Assert.IsNotNull(result);
             Assert.AreEqual(aVal, result.A);
             Assert.AreEqual(bVal, result.B);
@@ -648,8 +648,8 @@ namespace Autofac.Tests
             var aVal = "Hello";
             var bVal = 42;
             var result = container.Resolve<Parameterised>(
-                new Parameter("a", aVal),
-                new Parameter("b", bVal));
+                new NamedParameter("a", aVal),
+                new NamedParameter("b", bVal));
             Assert.IsNotNull(result);
             Assert.AreEqual(aVal, result.A);
             Assert.AreEqual(bVal, result.B);

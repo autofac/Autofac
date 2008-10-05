@@ -29,6 +29,7 @@ using System.Globalization;
 using System.Text;
 using Autofac.Component;
 using Autofac.Component.Activation;
+using System.Linq;
 
 namespace Autofac.Registrars.Reflective
 {
@@ -39,8 +40,8 @@ namespace Autofac.Registrars.Reflective
 	{
         Type _implementor;
         IConstructorSelector _ctorSelector = new MostParametersConstructorSelector();
-        IDictionary<string, object> _additionalCtorArgs = new Dictionary<string, object>();
-        IDictionary<string, object> _explicitProperties = new Dictionary<string, object>();
+        IEnumerable<Parameter> _additionalCtorArgs = Enumerable.Empty<Parameter>();
+        IEnumerable<Parameter> _explicitProperties = Enumerable.Empty<Parameter>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReflectiveRegistrar"/> class.
@@ -96,11 +97,7 @@ namespace Autofac.Registrars.Reflective
         /// </returns>
         public IReflectiveRegistrar WithArguments(params Parameter[] additionalCtorArgs)
         {
-            Enforce.ArgumentNotNull(additionalCtorArgs, "additionalCtorArgs");
-
-            var args = ParametersToDictionary(additionalCtorArgs);
-
-            return WithArguments(args);
+            return WithArguments((IEnumerable<Parameter>)additionalCtorArgs);
         }
 
         /// <summary>
@@ -111,7 +108,7 @@ namespace Autofac.Registrars.Reflective
         /// <returns>
         /// A registrar allowing registration to continue.
         /// </returns>
-        public IReflectiveRegistrar WithArguments(IDictionary<string, object> additionalCtorArgs)
+        public IReflectiveRegistrar WithArguments(IEnumerable<Parameter> additionalCtorArgs)
         {
             Enforce.ArgumentNotNull(additionalCtorArgs, "additionalCtorArgs");
 
@@ -127,7 +124,7 @@ namespace Autofac.Registrars.Reflective
         /// <returns></returns>
         /// <remarks>Note, supplying a null value will not prevent property injection if
         /// property injection is done through an OnActivating handler.</remarks>
-        public IReflectiveRegistrar WithProperties(IDictionary<string, object> explicitProperties)
+        public IReflectiveRegistrar WithProperties(IEnumerable<Parameter> explicitProperties)
         {
             Enforce.ArgumentNotNull(explicitProperties, "explicitProperties");
 
@@ -145,11 +142,7 @@ namespace Autofac.Registrars.Reflective
         /// property injection is done through an OnActivating handler.</remarks>
         public IReflectiveRegistrar WithProperties(params Parameter[] explicitProperties)
         {
-            Enforce.ArgumentNotNull(explicitProperties, "explicitProperties");
-
-            var props = ParametersToDictionary(explicitProperties);
-
-            return WithProperties(props);
+            return WithProperties((IEnumerable<Parameter>)explicitProperties);
         }
 
         #endregion
@@ -174,15 +167,6 @@ namespace Autofac.Registrars.Reflective
         protected override IReflectiveRegistrar Syntax
         {
             get { return this; }
-        }
-
-        private IDictionary<string, object> ParametersToDictionary(Parameter[] parameters)
-        {
-            Enforce.ArgumentNotNull(parameters, "parameters");
-            var result = new Dictionary<string, object>();
-            foreach (var nv in parameters)
-                result.Add(nv.Name, nv.Value);
-            return result;
         }
     }
 }

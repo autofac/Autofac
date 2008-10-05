@@ -23,6 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Collections.Generic;
 
 namespace Autofac.Component
 {
@@ -44,7 +45,7 @@ namespace Autofac.Component
         /// not be returned more than once by consecutive calls. (Throw
         /// an exception if this is attempted. IActivationScope should
         /// manage singleton semantics.)</returns>
-        object ActivateInstance(IContext context, IActivationParameters parameters);
+        object ActivateInstance(IContext context, IEnumerable<Parameter> parameters);
 
         /// <summary>
         /// A 'new context' is a scope that is self-contained

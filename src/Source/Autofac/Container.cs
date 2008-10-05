@@ -628,7 +628,7 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public TService Resolve<TService>(IActivationParameters parameters)
+        public TService Resolve<TService>(IEnumerable<Parameter> parameters)
         {
             return CreateResolutionContext().Resolve<TService>(parameters);
         }
@@ -644,7 +644,7 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public TService Resolve<TService>(string serviceName, IActivationParameters parameters)
+        public TService Resolve<TService>(string serviceName, IEnumerable<Parameter> parameters)
         {
             return CreateResolutionContext().Resolve<TService>(serviceName, parameters);
         }
@@ -659,7 +659,7 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public object Resolve(Type serviceType, IActivationParameters parameters)
+        public object Resolve(Type serviceType, IEnumerable<Parameter> parameters)
         {
             return CreateResolutionContext().Resolve(serviceType, parameters);
         }
@@ -674,7 +674,7 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public object Resolve(string serviceName, IActivationParameters parameters)
+        public object Resolve(string serviceName, IEnumerable<Parameter> parameters)
         {
             return CreateResolutionContext().Resolve(serviceName, parameters);
         }
@@ -689,7 +689,7 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public object Resolve(Service service, IActivationParameters parameters)
+        public object Resolve(Service service, IEnumerable<Parameter> parameters)
         {
             return CreateResolutionContext().Resolve(service, parameters);
         }
@@ -705,7 +705,7 @@ namespace Autofac
         /// false otherwise.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        public bool TryResolve<TService>(out TService instance, IActivationParameters parameters)
+        public bool TryResolve<TService>(out TService instance, IEnumerable<Parameter> parameters)
         {
             return CreateResolutionContext().TryResolve<TService>(out instance, parameters);
         }
@@ -721,7 +721,7 @@ namespace Autofac
         /// false otherwise.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        public bool TryResolve(Type serviceType, out object instance, IActivationParameters parameters)
+        public bool TryResolve(Type serviceType, out object instance, IEnumerable<Parameter> parameters)
         {
             return CreateResolutionContext().TryResolve(serviceType, out instance, parameters);
         }
@@ -737,7 +737,7 @@ namespace Autofac
         /// false otherwise.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        public bool TryResolve(string componentName, out object instance, IActivationParameters parameters)
+        public bool TryResolve(string componentName, out object instance, IEnumerable<Parameter> parameters)
         {
             return CreateResolutionContext().TryResolve(componentName, out instance, parameters);
         }
@@ -753,7 +753,7 @@ namespace Autofac
         /// false otherwise.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        public bool TryResolve(Service service, out object instance, IActivationParameters parameters)
+        public bool TryResolve(Service service, out object instance, IEnumerable<Parameter> parameters)
         {
             return CreateResolutionContext().TryResolve(service, out instance, parameters);
         }
@@ -771,7 +771,7 @@ namespace Autofac
         /// <example>
         /// container.Register&lt;ISomething&gt;(c =&gt; new Something(){ AProperty = c.ResolveOptional&lt;IOptional&gt;() });
         /// </example>
-        public TService ResolveOptional<TService>(IActivationParameters parameters)
+        public TService ResolveOptional<TService>(IEnumerable<Parameter> parameters)
         {
             return CreateResolutionContext().ResolveOptional<TService>(parameters);
         }

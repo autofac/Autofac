@@ -86,7 +86,7 @@ namespace Autofac.Tests.Builder
 
             var cb = new ContainerBuilder();
             cb.Register<WithParam>().
-                WithArguments(new Parameter("i", ival));
+                WithArguments(new NamedParameter("i", ival));
 
             var c = cb.Build();
             var result = c.Resolve<WithParam>();
@@ -106,7 +106,7 @@ namespace Autofac.Tests.Builder
 
             var cb = new ContainerBuilder();
             cb.Register<WithProp>()
-                .WithProperties(new Parameter("Prop", pval));
+                .WithProperties(new NamedPropertyParameter("Prop", pval));
 
             var c = cb.Build();
 

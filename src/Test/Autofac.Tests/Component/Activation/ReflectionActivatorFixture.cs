@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Autofac.Builder;
 using Autofac.Component.Activation;
 using NUnit.Framework;
+using System.Linq;
 
 namespace Autofac.Tests.Component.Activation
 {
@@ -20,7 +21,7 @@ namespace Autofac.Tests.Component.Activation
         public void ActivateInstance()
         {
             var target = new ReflectionActivator(typeof(object));
-            var instance = target.ActivateInstance(new Container(), ActivationParameters.Empty);
+            var instance = target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
 
             Assert.IsNotNull(instance);
             Assert.IsInstanceOfType(typeof(object), instance.GetType());
@@ -49,7 +50,7 @@ namespace Autofac.Tests.Component.Activation
 			var container = builder.Build();
 
             var target = new ReflectionActivator(typeof(Dependent));
-            var instance = target.ActivateInstance(container, ActivationParameters.Empty);
+            var instance = target.ActivateInstance(container, Enumerable.Empty<Parameter>());
 
             Assert.IsNotNull(instance);
             Assert.IsInstanceOfType(typeof(Dependent), instance);
@@ -65,7 +66,7 @@ namespace Autofac.Tests.Component.Activation
         public void DependenciesNotAvailable()
         {
             var target = new ReflectionActivator(typeof(Dependent));
-            var instance = target.ActivateInstance(new Container(), ActivationParameters.Empty);
+            var instance = target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
         }
 
         class MultipleConstructors
@@ -89,7 +90,7 @@ namespace Autofac.Tests.Component.Activation
             var container = builder.Build();
 
             var target = new ReflectionActivator(typeof(MultipleConstructors));
-            var instance = target.ActivateInstance(container, ActivationParameters.Empty);
+            var instance = target.ActivateInstance(container, Enumerable.Empty<Parameter>());
 
             Assert.IsNotNull(instance);
             Assert.IsInstanceOfType(typeof(MultipleConstructors), instance);
@@ -100,15 +101,6 @@ namespace Autofac.Tests.Component.Activation
         public void AdditionalParametersNull()
         {
             var target = new ReflectionActivator(typeof(object), null);
-        }
-
-        [Test]
-        [ExpectedException(typeof(ArgumentException))]
-        public void AdditionalParameterEmptyName()
-        {
-            var args = new Dictionary<string, object>();
-            args.Add("", new object());
-            var target = new ReflectionActivator(typeof(object), args);
         }
 
         class AcceptsObjectParameter {
@@ -126,12 +118,11 @@ namespace Autofac.Tests.Component.Activation
 			var container = builder.Build();
 
             var parameterInstance = new object();
-            var parameters = new Dictionary<string, object>();
-            parameters.Add("p", parameterInstance);
+            var parameters = new Parameter[]{ new NamedParameter("p", parameterInstance)};
 
             var target = new ReflectionActivator(typeof(AcceptsObjectParameter), parameters);
 
-            var instance = (AcceptsObjectParameter)target.ActivateInstance(container, ActivationParameters.Empty);
+            var instance = (AcceptsObjectParameter)target.ActivateInstance(container, Enumerable.Empty<Parameter>());
 
             Assert.AreSame(parameterInstance, instance.P);
             Assert.AreNotSame(containedInstance, instance.P);
@@ -141,12 +132,11 @@ namespace Autofac.Tests.Component.Activation
         public void ExplicitReferenceTypeParameter()
         {
             var p = new object();
-            var parameters = new Dictionary<string, object>();
-            parameters.Add("p", p);
+            var parameters = new Parameter[] { new NamedParameter("p", p) };
 
             var target = new ReflectionActivator(typeof(AcceptsObjectParameter), parameters);
 
-            var instance = target.ActivateInstance(new Container(), ActivationParameters.Empty);
+            var instance = target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
 
             Assert.IsNotNull(instance);
             Assert.IsInstanceOfType(typeof(AcceptsObjectParameter), instance);
@@ -159,12 +149,11 @@ namespace Autofac.Tests.Component.Activation
         [Test]
         public void ExplicitReferenceTypeParameterNull()
         {
-            var parameters = new Dictionary<string, object>();
-            parameters.Add("p", null);
+            var parameters = new Parameter[] { new NamedParameter("p", null) };
 
             var target = new ReflectionActivator(typeof(AcceptsObjectParameter), parameters);
 
-            var instance = target.ActivateInstance(new Container(), ActivationParameters.Empty);
+            var instance = target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
 
             Assert.IsNotNull(instance);
             Assert.IsInstanceOfType(typeof(AcceptsObjectParameter), instance);
@@ -183,12 +172,11 @@ namespace Autofac.Tests.Component.Activation
         public void ExplicitValueTypeParameter()
         {
             var i = 42;
-            var parameters = new Dictionary<string, object>();
-            parameters.Add("i", i);
+            var parameters = new Parameter[] { new NamedParameter("i", i) };
 
             var target = new ReflectionActivator(typeof(AcceptsIntParameter), parameters);
 
-            var instance = target.ActivateInstance(new Container(), ActivationParameters.Empty);
+            var instance = target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
 
             Assert.IsNotNull(instance);
             Assert.IsInstanceOfType(typeof(AcceptsIntParameter), instance);
@@ -201,12 +189,11 @@ namespace Autofac.Tests.Component.Activation
         [Test]
         public void ExplicitValueTypeParameterNull()
         {
-            var parameters = new Dictionary<string, object>();
-            parameters.Add("i", null);
+            var parameters = new Parameter[] { new NamedParameter("i", null) };
 
             var target = new ReflectionActivator(typeof(AcceptsIntParameter), parameters);
 
-            var instance = target.ActivateInstance(new Container(), ActivationParameters.Empty);
+            var instance = target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
 
             Assert.IsNotNull(instance);
             Assert.IsInstanceOfType(typeof(AcceptsIntParameter), instance);
@@ -226,13 +213,14 @@ namespace Autofac.Tests.Component.Activation
         [Test]
         public void DefaultChoosesMostParameterisedConstructor()
         {
-            var parameters = new Dictionary<string, object>();
-            parameters.Add("i", 1);
-            parameters.Add("s", "str");
+            var parameters = new Parameter[] {
+                new NamedParameter("i", 1),
+                new NamedParameter("s", "str")
+            };
 
             var target = new ReflectionActivator(typeof(ThreeConstructors), parameters);
 
-            var instance = target.ActivateInstance(new Container(), ActivationParameters.Empty);
+            var instance = target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
 
             Assert.IsNotNull(instance);
             Assert.IsInstanceOfType(typeof(ThreeConstructors), instance);
@@ -251,7 +239,7 @@ namespace Autofac.Tests.Component.Activation
         public void NonPublicConstructorsIgnored()
         {
             var target = new ReflectionActivator(typeof(NoPublicConstructor));
-            target.ActivateInstance(new Container(), ActivationParameters.Empty);
+            target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
         }
 
         public class WithGenericCtor<T>
@@ -265,8 +253,7 @@ namespace Autofac.Tests.Component.Activation
         public void CanResolveConstructorsWithGenericParameters()
         {
             var activator = new ReflectionActivator(typeof(WithGenericCtor<string>));
-            var parameters = new ActivationParameters();
-            parameters["t"] = "Hello";
+            var parameters = new Parameter[] { new NamedParameter("t", "Hello") };
             var instance = activator.ActivateInstance(new Container(), parameters);
             Assert.IsInstanceOfType(typeof(WithGenericCtor<string>), instance);
         }
