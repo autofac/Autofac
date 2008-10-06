@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+# Visual C# Express 2008
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{15DE9887-5721-421E-9EE0-714D8EF2104E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac", "Source\Autofac\Autofac.csproj", "{7D018B3E-34A3-423D-AC35-12731F4E0A2C}"
@@ -24,10 +24,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.Web", "Source\Autofac.Integration.Web\Autofac.Integration.Web.csproj", "{4BDD9D14-BACA-416C-919E-E9FF100F8F5D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.Web", "Test\Autofac.Tests.Integration.Web\Autofac.Tests.Integration.Web.csproj", "{929BAA80-5ED7-484B-81C8-A4ACC9FF2009}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Extras.GeneratedFactories", "Source\Autofac.Extras.GeneratedFactories\Autofac.Extras.GeneratedFactories.csproj", "{F05DB528-B92E-4A8F-86BA-0DB6A74B8B3D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Extras.GeneratedFactories", "Test\Autofac.Tests.Extras.GeneratedFactories\Autofac.Tests.Extras.GeneratedFactories.csproj", "{A14491A3-9446-4B83-891C-8414CCCF7DFF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.Web.Mvc", "Source\Autofac.Integration.Web.Mvc\Autofac.Integration.Web.Mvc.csproj", "{73ECC3EF-CE83-4B76-8BE0-F278CC970B6D}"
 EndProject
@@ -73,14 +69,6 @@ Global
 		{929BAA80-5ED7-484B-81C8-A4ACC9FF2009}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{929BAA80-5ED7-484B-81C8-A4ACC9FF2009}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{929BAA80-5ED7-484B-81C8-A4ACC9FF2009}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F05DB528-B92E-4A8F-86BA-0DB6A74B8B3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F05DB528-B92E-4A8F-86BA-0DB6A74B8B3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F05DB528-B92E-4A8F-86BA-0DB6A74B8B3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F05DB528-B92E-4A8F-86BA-0DB6A74B8B3D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A14491A3-9446-4B83-891C-8414CCCF7DFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A14491A3-9446-4B83-891C-8414CCCF7DFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A14491A3-9446-4B83-891C-8414CCCF7DFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A14491A3-9446-4B83-891C-8414CCCF7DFF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{73ECC3EF-CE83-4B76-8BE0-F278CC970B6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{73ECC3EF-CE83-4B76-8BE0-F278CC970B6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73ECC3EF-CE83-4B76-8BE0-F278CC970B6D}.Release|Any CPU.ActiveCfg = Release|Any CPU

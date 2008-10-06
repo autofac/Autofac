@@ -1,8 +1,8 @@
 ﻿using Autofac.Builder;
-using Autofac.Extras.GeneratedFactories;
 using NUnit.Framework;
+using System;
 
-namespace Autofac.Tests.Extras.GeneratedFactories
+namespace Autofac.Tests.GeneratedFactories
 {
     [TestFixture]
     public class ContainerBuilderExtensionsFixture
@@ -104,6 +104,30 @@ namespace Autofac.Tests.Extras.GeneratedFactories
             var container = builder.Build();
 
             var shareholdingFactory = container.Resolve<Shareholding.Factory>();
+
+            var shareholding = shareholdingFactory.Invoke("ABC", 1234);
+
+            Assert.AreEqual("ABC", shareholding.Symbol);
+            Assert.AreEqual(1234, shareholding.Holding);
+            Assert.AreEqual(1234m * 2, shareholding.Quote());
+        }
+
+        [Test]
+        public void ShareholdingExampleMatchingFuncParametersByType()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.Register<QuoteService>();
+
+            builder.Register<Shareholding>()
+              .FactoryScoped();
+
+            builder.RegisterGeneratedFactory<Func<string, uint, Shareholding>>(
+                new TypedService(typeof(Shareholding)));
+
+            var container = builder.Build();
+
+            var shareholdingFactory = container.Resolve<Func<string, uint, Shareholding>>();
 
             var shareholding = shareholdingFactory.Invoke("ABC", 1234);
 

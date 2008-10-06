@@ -25,6 +25,7 @@
 
 using System;
 using System.Globalization;
+using System.Reflection;
 
 namespace Autofac
 {
@@ -89,5 +90,22 @@ namespace Autofac
 
             return value;
         }
-	}
+
+        /// <summary>
+        /// Enforce that the argument is a delegate type.
+        /// </summary>
+        /// <param name="delegateType">The type to test.</param>
+        public static void ArgumentTypeIsFunction(Type delegateType)
+        {
+            Enforce.ArgumentNotNull(delegateType, "delegateType");
+
+            MethodInfo invoke = delegateType.GetMethod("Invoke");
+            if (invoke == null)
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
+                    EnforceResources.NotDelegate, delegateType));
+            else if (invoke.ReturnType == typeof(void))
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
+                    EnforceResources.DelegateReturnsVoid, delegateType));
+        }
+    }
 }

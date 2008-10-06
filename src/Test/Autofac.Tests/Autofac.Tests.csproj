@@ -56,6 +56,7 @@
     <Compile Include="ComponentRegisteredEventArgsFixture.cs" />
     <Compile Include="Component\DescriptorFixture.cs" />
     <Compile Include="Configuration\ConfigurationSettingsReaderFixture.cs" />
+    <Compile Include="GeneratedFactories\ContainerBuilderExtensionsFixture.cs" />
     <Compile Include="NamedParameterTests.cs" />
     <Compile Include="Registrars\ConcreteRegistrarFixture.cs" />
     <Compile Include="Builder\CollectionRegistrationBuilderFixture.cs" />

@@ -43,6 +43,8 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Compile Include="GeneratedFactories\FactoryGenerator.cs" />
+    <Compile Include="Builder\GeneratedFactoryExtensions.cs" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFrameworkVersion) == 'v2.0'">
     <Reference Include="..\..\Resource\LinqBridge\LinqBridge.dll" />

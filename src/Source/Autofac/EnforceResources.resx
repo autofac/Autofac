@@ -123,4 +123,10 @@
   <data name="CannotBeNull" xml:space="preserve">
     <value>The object of type '{0}' cannot be null.</value>
   </data>
+  <data name="DelegateReturnsVoid" xml:space="preserve">
+    <value>Type {0} returns void.</value>
+  </data>
+  <data name="NotDelegate" xml:space="preserve">
+    <value>Type {0} is not a delegate type.</value>
+  </data>
 </root>
