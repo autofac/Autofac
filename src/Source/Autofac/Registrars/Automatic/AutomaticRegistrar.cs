@@ -45,8 +45,6 @@ namespace Autofac.Registrars.Automatic
             _predicate = Enforce.ArgumentNotNull(predicate, "predicate");
         }
 
-        #region IModule Members
-
         /// <summary>
         /// Registers the component.
         /// </summary>
@@ -67,8 +65,6 @@ namespace Autofac.Registrars.Automatic
 
             FireRegistered(new RegisteredEventArgs() { Container = container });
         }
-
-        #endregion
 
         /// <summary>
         /// Returns this instance, correctly-typed.

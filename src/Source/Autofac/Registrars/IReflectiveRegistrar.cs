@@ -43,7 +43,7 @@ namespace Autofac.Registrars
         /// <returns>A registrar allowing configuration to continue.</returns>
         /// <remarks>Note, supplying a null value will not prevent property injection if
         /// property injection is done through an OnActivating handler.</remarks>
-        IReflectiveRegistrar WithProperties(params Parameter[] explicitProperties);
+        IReflectiveRegistrar WithProperties(params NamedPropertyParameter[] explicitProperties);
 
         /// <summary>
         /// Provide explicit property values to be set on the new object.
@@ -52,6 +52,6 @@ namespace Autofac.Registrars
         /// <returns>A registrar allowing configuration to continue.</returns>
         /// <remarks>Note, supplying a null value will not prevent property injection if
         /// property injection is done through an OnActivating handler.</remarks>
-        IReflectiveRegistrar WithProperties(IEnumerable<Parameter> explicitProperties);
+        IReflectiveRegistrar WithProperties(IEnumerable<NamedPropertyParameter> explicitProperties);
     }
 }

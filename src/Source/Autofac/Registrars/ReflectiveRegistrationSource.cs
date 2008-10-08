@@ -80,7 +80,7 @@ namespace Autofac.Registrars
             var activator = new ReflectionActivator(
                     concrete,
                     Enumerable.Empty<Parameter>(),
-                    Enumerable.Empty<Parameter>(),
+                    Enumerable.Empty<NamedPropertyParameter>(),
                     _constructorSelector);
 
             registration = CreateRegistration(descriptor, activator);

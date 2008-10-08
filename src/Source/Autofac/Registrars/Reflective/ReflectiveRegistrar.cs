@@ -41,7 +41,7 @@ namespace Autofac.Registrars.Reflective
         Type _implementor;
         IConstructorSelector _ctorSelector = new MostParametersConstructorSelector();
         IEnumerable<Parameter> _additionalCtorArgs = Enumerable.Empty<Parameter>();
-        IEnumerable<Parameter> _explicitProperties = Enumerable.Empty<Parameter>();
+        IEnumerable<NamedPropertyParameter> _explicitProperties = Enumerable.Empty<NamedPropertyParameter>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReflectiveRegistrar"/> class.
@@ -124,7 +124,7 @@ namespace Autofac.Registrars.Reflective
         /// <returns></returns>
         /// <remarks>Note, supplying a null value will not prevent property injection if
         /// property injection is done through an OnActivating handler.</remarks>
-        public IReflectiveRegistrar WithProperties(IEnumerable<Parameter> explicitProperties)
+        public IReflectiveRegistrar WithProperties(IEnumerable<NamedPropertyParameter> explicitProperties)
         {
             Enforce.ArgumentNotNull(explicitProperties, "explicitProperties");
 
@@ -140,9 +140,9 @@ namespace Autofac.Registrars.Reflective
         /// <returns>A registrar allowing configuration to continue.</returns>
         /// <remarks>Note, supplying a null value will not prevent property injection if
         /// property injection is done through an OnActivating handler.</remarks>
-        public IReflectiveRegistrar WithProperties(params Parameter[] explicitProperties)
+        public IReflectiveRegistrar WithProperties(params NamedPropertyParameter[] explicitProperties)
         {
-            return WithProperties((IEnumerable<Parameter>)explicitProperties);
+            return WithProperties((IEnumerable<NamedPropertyParameter>)explicitProperties);
         }
 
         #endregion

@@ -41,7 +41,7 @@ namespace Autofac.Component.Activation
 	{
 		Type _componentType;
         IEnumerable<Parameter> _additionalConstructorParameters = Enumerable.Empty<Parameter>();
-        IEnumerable<Parameter> _explicitPropertySetters = Enumerable.Empty<Parameter>();
+        IEnumerable<NamedPropertyParameter> _explicitPropertySetters = Enumerable.Empty<NamedPropertyParameter>();
 		IConstructorSelector _constructorSelector;
         static readonly IConstructorInvoker DirectInvoker = new DirectConstructorInvoker();
         IConstructorInvoker _constructorInvoker = DirectInvoker;
@@ -66,7 +66,7 @@ namespace Autofac.Component.Activation
 			: this(
 				componentType,
 				additionalConstructorParameters,
-                Enumerable.Empty<Parameter>())
+                Enumerable.Empty<NamedPropertyParameter>())
 		{
 		}
 
@@ -79,7 +79,7 @@ namespace Autofac.Component.Activation
 		public ReflectionActivator(
 			Type componentType,
             IEnumerable<Parameter> additionalConstructorParameters,
-            IEnumerable<Parameter> explicitPropertySetters)
+            IEnumerable<NamedPropertyParameter> explicitPropertySetters)
 			: this(
 				componentType,
 				additionalConstructorParameters,
@@ -98,7 +98,7 @@ namespace Autofac.Component.Activation
         public ReflectionActivator(
             Type componentType,
             IEnumerable<Parameter> additionalConstructorParameters,
-            IEnumerable<Parameter> explicitPropertySetters,
+            IEnumerable<NamedPropertyParameter> explicitPropertySetters,
             IConstructorSelector constructorSelector)
         {
             Enforce.ArgumentNotNull(componentType, "componentType");

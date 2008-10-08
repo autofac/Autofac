@@ -45,7 +45,7 @@ namespace Autofac.Configuration
         /// Convert to the Autofac parameter type.
         /// </summary>
         /// <returns>The parameters represented by this collection.</returns>
-        public IEnumerable<Parameter> ToParameters()
+        public IEnumerable<NamedPropertyParameter> ToParameters()
         {
             foreach (var parameter in this)
                 yield return new NamedPropertyParameter(parameter.Name, parameter.Value);
