@@ -85,10 +85,10 @@ namespace Autofac.Integration.Web.Mvc
         }
 
         /// <summary>
-        /// Disposes the controller. Unecessary in an Autofac-managed application.
+        /// Releases the controller. Unecessary in an Autofac-managed application.
         /// </summary>
         /// <param name="controller">The controller.</param>
-        public virtual void DisposeController(IController controller)
+        public void ReleaseController(IController controller)
         {
         }
     }
