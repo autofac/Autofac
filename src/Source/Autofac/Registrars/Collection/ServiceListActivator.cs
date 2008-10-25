@@ -40,7 +40,7 @@ namespace Autofac.Registrars.Collection
         /// <summary>
         /// Gets the implementation type.
         /// </summary>
-        public static readonly Type ImplementationType = typeof(List<TItem>);
+        public static readonly Type ImplementationType = typeof(TItem[]);
 
         /// <summary>
         /// Gets the services that will appear in instances of the list.
@@ -75,11 +75,10 @@ namespace Autofac.Registrars.Collection
             Enforce.ArgumentNotNull(context, "context");
             Enforce.ArgumentNotNull(parameters, "parameters");
 
-            var instance = new List<TItem>();
-            foreach (var item in _items)
+            var instance = new TItem[_items.Count];
+            for (int i = 0; i < _items.Count; ++i)
             {
-                object itemInstance = context.Resolve(item);
-                instance.Add((TItem)itemInstance);
+                instance[i] = (TItem)context.Resolve(_items[i]);
             }
 
             return instance;

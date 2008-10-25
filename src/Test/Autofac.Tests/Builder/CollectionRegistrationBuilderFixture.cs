@@ -80,5 +80,22 @@ namespace Autofac.Tests.Builder
             Assert.IsTrue(innerEnumerable.Contains("hello"));
             Assert.IsFalse(outerEnumerable.Any());
         }
+
+        [Test]
+        public void CollectionRegistrationsSupportArrays()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterCollection<string>()
+                .As<string[]>();
+
+            var s1 = "hello";
+
+            builder.Register(s1).MemberOf(typeof(string[]));
+
+            var container = builder.Build();
+
+            Assert.AreEqual(s1, container.Resolve<string[]>()[0]);
+        }
     }
 }
