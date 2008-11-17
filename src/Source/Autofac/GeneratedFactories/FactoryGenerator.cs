@@ -23,6 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+#if !NET20
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,7 @@ using System.Linq.Expressions;
 
 namespace Autofac.GeneratedFactories
 {
+
     /// <summary>
     /// Generates context-bound closures that represent factories from
     /// a set of heuristics based on delegate type signatures.
@@ -129,4 +131,6 @@ namespace Autofac.GeneratedFactories
             return _generator(context.Resolve<IContext>(), parameters);
         }
     }
+
 }
+#endif

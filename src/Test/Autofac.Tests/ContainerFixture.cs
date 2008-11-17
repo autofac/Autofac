@@ -110,7 +110,11 @@ namespace Autofac.Tests
         }
 
         [Test]
+#if NET20
+		[ExpectedException(typeof(ArgumentNullException))]
+#else
         [ExpectedException(typeof(ArgumentException))]
+#endif
         public void RegisterComponentNullService()
         {
             var registration = CreateRegistration(

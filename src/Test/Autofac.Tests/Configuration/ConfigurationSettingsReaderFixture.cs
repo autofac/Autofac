@@ -4,6 +4,7 @@ using NUnit.Framework;
 
 namespace Autofac.Tests.Configuration
 {
+	#if !SILVERLIGHT
     [TestFixture]
     public class ConfigurationSettingsReaderFixture
     {
@@ -71,4 +72,5 @@ namespace Autofac.Tests.Configuration
             return builder.Build();
         }
     }
+	#endif
 }

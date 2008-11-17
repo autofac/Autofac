@@ -27,6 +27,7 @@ using System.Configuration;
 
 namespace Autofac.Configuration
 {
+#if !SILVERLIGHT
     /// <summary>
     /// Section handler for Autofac configuration in app.config files.
     /// </summary>
@@ -91,4 +92,5 @@ namespace Autofac.Configuration
             }
         }
     }
+#endif
 }

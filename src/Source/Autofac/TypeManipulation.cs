@@ -56,7 +56,18 @@ namespace Autofac
             if (destinationType.IsAssignableFrom(value.GetType()))
                 return value;
 
-            return TypeDescriptor.GetConverter(destinationType).ConvertFrom(value);
+#if SILVERLIGHT
+            var typeConverterAttributes = destinationType.GetCustomAttributes( typeof(TypeConverterAttribute), false );
+            if ( typeConverterAttributes.Length == 1)
+            {
+                var typeConverterAttribute = (TypeConverterAttribute) typeConverterAttributes[0];
+                var typeConverter = (TypeConverter) Activator.CreateInstance( Type.GetType( typeConverterAttribute.ConverterTypeName ) );
+                return typeConverter.ConvertFrom( value );
+            }
+            return null;
+#else
+			return TypeDescriptor.GetConverter(destinationType).ConvertFrom(value);
+#endif
         }
     }
 }

@@ -30,6 +30,7 @@ using System.Configuration;
 
 namespace Autofac.Configuration
 {
+#if !SILVERLIGHT
     /// <summary>
     /// Base for multi-valued configuration elements.
     /// </summary>
@@ -156,4 +157,5 @@ namespace Autofac.Configuration
                 yield return element;
         }
     }
+#endif
 }

@@ -27,6 +27,7 @@ using System.Configuration;
 
 namespace Autofac.Configuration
 {
+#if !SILVERLIGHT
     /// <summary>
     /// Element describing a component registration.
     /// </summary>
@@ -190,4 +191,5 @@ namespace Autofac.Configuration
             }
         }
     }
+#endif
 }

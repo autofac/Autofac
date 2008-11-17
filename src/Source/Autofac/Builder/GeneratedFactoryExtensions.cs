@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if !NET20
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,6 +9,7 @@ using Autofac.Registrars;
 
 namespace Autofac.Builder
 {
+
     /// <summary>
     /// Extends ContainerBuilder with methods for registering generated factories.
     /// </summary>
@@ -49,4 +52,7 @@ namespace Autofac.Builder
             return builder.RegisterGeneratedFactory<TDelegate>(new TypedService(returnType));
         }
     }
+
 }
+
+#endif

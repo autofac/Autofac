@@ -27,6 +27,7 @@ using System.Configuration;
 
 namespace Autofac.Configuration
 {
+#if !SILVERLIGHT
     /// <summary>
     /// Element describing a component property.
     /// </summary>
@@ -76,4 +77,5 @@ namespace Autofac.Configuration
             }
         }
     }
+#endif
 }

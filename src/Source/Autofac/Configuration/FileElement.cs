@@ -27,6 +27,7 @@ using System.Configuration;
 
 namespace Autofac.Configuration
 {
+#if !SILVERLIGHT
     /// <summary>
     /// Element describing an additional configuration file.
     /// </summary>
@@ -63,4 +64,5 @@ namespace Autofac.Configuration
             }
         }
     }
+#endif
 }

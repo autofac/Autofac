@@ -260,7 +260,7 @@ namespace Autofac.Tests.Component
 
             var providedParams = new Parameter[] { new NamedParameter("p1", p1) };
 
-            target.Preparing += (s, e) => e.Parameters = e.Parameters.Append(new NamedParameter("p2", p2));
+            target.Preparing += (s, e) => e.Parameters = SequenceExtensions.Append(e.Parameters, new NamedParameter("p2", p2));
 
             bool newInstance;
             var result = target.ResolveInstance(Context.Empty, providedParams, new Disposer(), out newInstance);

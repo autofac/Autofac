@@ -27,6 +27,7 @@ using System.Configuration;
 
 namespace Autofac.Configuration
 {
+#if !SILVERLIGHT
     /// <summary>
     /// Element describing a component constructor parameter.
     /// </summary>
@@ -62,4 +63,5 @@ namespace Autofac.Configuration
             }
         }
     }
+#endif
 }

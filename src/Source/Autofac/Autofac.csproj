@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;$(BuildConstants)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -28,7 +28,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;$(BuildConstants)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Autofac.XML</DocumentationFile>
@@ -40,11 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFrameworkVersion) != 'v2.0'">
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Compile Include="GeneratedFactories\FactoryGenerator.cs" />
-    <Compile Include="Builder\GeneratedFactoryExtensions.cs" />
+    <Reference Include="System.Core" />    
   </ItemGroup>
   <ItemGroup Condition="$(TargetFrameworkVersion) == 'v2.0'">
     <Reference Include="..\..\Resource\LinqBridge\LinqBridge.dll" />
@@ -56,6 +52,8 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="GeneratedFactories\FactoryGenerator.cs" />
+    <Compile Include="Builder\GeneratedFactoryExtensions.cs" />
     <Compile Include="ActivatedEventArgs.cs" />
     <Compile Include="ActivatingEventArgs.cs" />
     <Compile Include="ComponentRegisteredEventArgs.cs" />
@@ -407,7 +405,8 @@
       <Link>Autofac.snk</Link>
     </None>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Silverlight 2.0'" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -35,6 +35,7 @@ using System.Linq;
 
 namespace Autofac.Configuration
 {
+#if !SILVERLIGHT
     /// <summary>
     /// Configures containers based upon app.config settings.
     /// </summary>
@@ -277,4 +278,5 @@ namespace Autofac.Configuration
             return type;
         }
     }
+#endif
 }

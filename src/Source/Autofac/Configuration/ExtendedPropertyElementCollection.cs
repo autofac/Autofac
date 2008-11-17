@@ -26,6 +26,7 @@
 
 namespace Autofac.Configuration
 {
+#if !SILVERLIGHT
     /// <summary>
     /// Collection of extended property elements.
     /// </summary>
@@ -39,4 +40,5 @@ namespace Autofac.Configuration
         {
         }
     }
+#endif
 }

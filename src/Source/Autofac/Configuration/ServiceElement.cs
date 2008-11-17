@@ -27,6 +27,7 @@ using System.Configuration;
 
 namespace Autofac.Configuration
 {
+#if !SILVERLIGHT
     /// <summary>
     /// Element describing a service exposed by a component.
     /// </summary>
@@ -48,4 +49,5 @@ namespace Autofac.Configuration
             }
         }
     }
+#endif
 }

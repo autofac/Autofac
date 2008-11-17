@@ -26,6 +26,7 @@
 
 namespace Autofac.Configuration
 {
+#if !SILVERLIGHT
     /// <summary>
     /// A collection of service elements.
     /// </summary>
@@ -39,4 +40,5 @@ namespace Autofac.Configuration
         {
         }
     }
+#endif
 }

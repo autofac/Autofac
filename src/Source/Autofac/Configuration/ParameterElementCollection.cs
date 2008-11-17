@@ -27,6 +27,7 @@ using System.Collections.Generic;
 
 namespace Autofac.Configuration
 {
+#if !SILVERLIGHT
     /// <summary>
     /// A collection of parameter elements.
     /// </summary>
@@ -50,4 +51,5 @@ namespace Autofac.Configuration
                 yield return new NamedParameter(parameter.Name, parameter.Value);
         }
     }
+#endif
 }

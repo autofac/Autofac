@@ -4,6 +4,7 @@ using System;
 
 namespace Autofac.Tests.GeneratedFactories
 {
+#if !NET20
     [TestFixture]
     public class ContainerBuilderExtensionsFixture
     {
@@ -162,4 +163,5 @@ namespace Autofac.Tests.GeneratedFactories
             Assert.AreEqual("Inner", innerFac().S);
         }
     }
+#endif
 }
