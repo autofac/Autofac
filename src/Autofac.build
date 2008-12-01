@@ -2,8 +2,9 @@
 Resource\NAnt\nant.xsd" default="integrate">
 	<!-- Common Variables -->
 	<property name="DistribDirectory" value="Build\Distrib"/>
-	<property name="ProjectConfig" value="Release" unless="${property::exists('ProjectConfig')}"/>
-	<property name="ArtifactDirectory" value="Build\Artifact"/>
+  <property name="ProjectConfig" value="Release"/>
+  <property name="Platform" value="Any CPU"/>
+  <property name="ArtifactDirectory" value="Build\Artifact"/>
 	<property name="RedistributeDirectory" value="Build\Redistribute"/>
 	<!-- Local Variables -->
 	<property name="TestDirectory" value="Build\Test"/>
@@ -25,8 +26,9 @@ Integration targets
 -->
 	<target name="clean">
 		<msbuild project="${SolutionFile}" target="Clean">
-			<property name="Configuration" value="${ProjectConfig}"/>
-			<property name="TargetPath" value="Temp"/>
+      <property name="Configuration" value="${ProjectConfig}"/>
+      <property name="Platform" value="${Platform}"/>
+      <property name="TargetPath" value="Temp"/>
 		</msbuild>
 		<delete dir="Build"/>
     <delete dir="${HelpOutputDirectory}" />
@@ -58,8 +60,9 @@ Integration targets
 	<target name="main-build">
 		<msbuild project="${SolutionFile}">
 			<property name="Configuration" value="${ProjectConfig}"/>
-	      <property name="TargetFrameworkVersion" value="${TargetFrameworkVersion}"/>
-        <property name="MSBuildTargets" value="${MSBuildTargets}"/>
+      <property name="Platform" value="${Platform}"/>
+      <property name="TargetFrameworkVersion" value="${TargetFrameworkVersion}"/>
+      <property name="MSBuildTargets" value="${MSBuildTargets}"/>
       <property name="BuildConstants" value="${BuildConstants}"/>
 		</msbuild>
 	</target>
