@@ -24,17 +24,13 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
 
 namespace Autofac
 {
-    /// <summary>
-    /// A parameter that can supply values to sites that exactly
-    /// match a specified type.
-    /// </summary>
+	/// <summary>
+	/// A parameter that can supply values to sites that exactly
+	/// match a specified type.
+	/// </summary>
     public class TypedParameter : ConstantParameter
     {
         /// <summary>
@@ -52,5 +48,18 @@ namespace Autofac
         {
             Type = Enforce.ArgumentNotNull(type, "type");
         }
+
+
+		/// <summary>
+		/// Shortcut for creating <see cref="TypedParameter"/> 
+		/// by using the <typeparamref name="T"/>
+		/// </summary>
+		/// <typeparam name="T">type to be used for the parameter</typeparam>
+		/// <param name="value">The parameter value.</param>
+		/// <returns>new typed parameter</returns>
+		public static TypedParameter From<T>(T value)
+		{
+			return new TypedParameter(typeof(T), value);
+		}
     }
 }

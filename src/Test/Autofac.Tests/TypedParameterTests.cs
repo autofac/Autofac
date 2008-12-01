@@ -63,5 +63,12 @@ namespace Autofac.Tests
             Func<object> vp;
             Assert.IsFalse(typedParam.CanSupplyValue(param, new Container(), out vp));
         }
+
+		[Test]
+		public void FromWorksJustLikeTheConstructor()
+		{
+			var param = TypedParameter.From(new B());
+			Assert.AreSame(typeof(B), param.Type);
+		}
     }
 }
