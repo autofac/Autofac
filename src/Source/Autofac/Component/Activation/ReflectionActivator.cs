@@ -314,7 +314,7 @@ namespace Autofac.Component.Activation
 			Type instanceType = instance.GetType();
 
 			// Rinat Abdullin: properties with signature like {private set;get;} pass the
-			// BindingFlags.SetProperty but around "GetSetMethod()", since it returns null
+			// BindingFlags.SetProperty but fail around "GetSetMethod()", since it returns null
 			// for non-public properties
 			var properties = instanceType.GetProperties(
 				BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty)
