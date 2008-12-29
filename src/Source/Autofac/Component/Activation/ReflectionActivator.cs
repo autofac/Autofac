@@ -313,18 +313,30 @@ namespace Autofac.Component.Activation
 
 			Type instanceType = instance.GetType();
 
+			// Rinat Abdullin: properties with signature like {private set;get;} pass the
+			// BindingFlags.SetProperty but around "GetSetMethod()", since it returns null
+			// for non-public properties
+			var properties = instanceType.GetProperties(
+				BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty)
+				.Select(p => new
+				{
+					Info = p,
+					SetMethod = p.GetSetMethod()
+				})
+				.Where(p => p.SetMethod != null)
+				.ToArray();
+
             foreach (var param in _explicitPropertySetters)
             {
-			    foreach (PropertyInfo property in instanceType.GetProperties(
-				    BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty))
+            	foreach (var propertyData in properties)
 			    {
                     Func<object> propertyValueAccessor;
-                    if (param.CanSupplyValue(property.GetSetMethod().GetParameters()[0], context, out propertyValueAccessor))
+                    if (param.CanSupplyValue(propertyData.SetMethod.GetParameters()[0], context, out propertyValueAccessor))
                     {
-                        property.SetValue(instance, propertyValueAccessor(), null);
+                        propertyData.Info.SetValue(instance, propertyValueAccessor(), null);
                     }
                 }
-			}
+            }
 		}
 
         /// <summary>

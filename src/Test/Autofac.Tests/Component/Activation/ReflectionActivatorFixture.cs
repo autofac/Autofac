@@ -257,5 +257,19 @@ namespace Autofac.Tests.Component.Activation
             var instance = activator.ActivateInstance(new Container(), parameters);
             Assert.IsInstanceOfType(typeof(WithGenericCtor<string>), instance);
         }
+
+		class PrivateSetProperty {
+			public int GetProperty { private set; get; }
+			public int P { get; set; }
+		}
+
+		[Test]
+		public void CanDealWithPrivateSetProperties()
+		{
+			var setters = new[]{new NamedPropertyParameter("P", 1)};
+			var activator = new ReflectionActivator(typeof(PrivateSetProperty), Enumerable.Empty<Parameter>(), setters);
+			var instance = activator.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
+			Assert.IsInstanceOfType(typeof(PrivateSetProperty), instance);
+		}
 	}
 }
