@@ -66,7 +66,7 @@ namespace Autofac
             innerException)
         {
         }
-
+#if !SILVERLIGHT
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentNotRegisteredException"/> class.
         /// </summary>
@@ -78,5 +78,6 @@ namespace Autofac
             : base(info, context)
         {
         }
+#endif
     }
 }

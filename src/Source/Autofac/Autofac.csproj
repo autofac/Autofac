@@ -23,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Debug\Autofac.XML</DocumentationFile>
+    <NoStdLib>true</NoStdLib>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,15 +33,17 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Autofac.XML</DocumentationFile>
+    <NoStdLib>true</NoStdLib>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFrameworkVersion) != 'v2.0'">
-    <Reference Include="System.Core" />    
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFrameworkVersion) == 'v2.0'">
     <Reference Include="..\..\Resource\LinqBridge\LinqBridge.dll" />
@@ -242,6 +245,8 @@
     </Compile>
     <Compile Include="Registrars\ReflectiveRegistrationSource.cs" />
     <Compile Include="SequenceExtensions.cs" />
+    <Compile Include="Silverlight\AllowPartiallyTrustedCallerAttribute.cs" />
+    <Compile Include="Silverlight\SerializableAttribute.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="ComponentNotRegisteredException.cs" />
     <Compile Include="ComponentNotRegisteredExceptionResources.Designer.cs">
