@@ -137,7 +137,7 @@ namespace Autofac.Registrars
             Enforce.ArgumentNotNull(service, "service");
 
             TypedService serviceType = service as TypedService;
-            if (serviceType != null && !serviceType.ServiceType.IsAssignableFrom(_implementor))
+            if (serviceType != null && _implementor != typeof(object) && !serviceType.ServiceType.IsAssignableFrom(_implementor))
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
                     ConcreteRegistrarResources.ComponentDoesNotSupportService, _implementor, service));
 

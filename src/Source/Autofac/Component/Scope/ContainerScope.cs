@@ -79,7 +79,7 @@ namespace Autofac.Component.Scope
             if (_instance != null)
                 throw new InvalidOperationException(ContainerScopeResources.ContextScopeViolated);
 
-                _instance = instance;
+            _instance = instance;
         }
 
         /// <summary>
