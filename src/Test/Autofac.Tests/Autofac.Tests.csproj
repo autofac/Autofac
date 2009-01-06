@@ -42,23 +42,23 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Resource\NUnit\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="System" >
+    <Reference Include="System">
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Data" >
+    <Reference Include="System.Data">
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Xml" >
+    <Reference Include="System.Xml">
       <Private>True</Private>
     </Reference>
   </ItemGroup>
-  	  <ItemGroup Condition="$(TargetFrameworkVersion) != 'v2.0'">
-    <Reference Include="System.Core" >
+  <ItemGroup Condition="$(TargetFrameworkVersion) != 'v2.0'">
+    <Reference Include="System.Core">
       <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup Condition="$(TargetFrameworkVersion) == 'v2.0'">
-    <Reference Include="..\..\Resource\LinqBridge\LinqBridge.dll" >
+    <Reference Include="..\..\Resource\LinqBridge\LinqBridge.dll">
       <Private>True</Private>
     </Reference>
   </ItemGroup>
