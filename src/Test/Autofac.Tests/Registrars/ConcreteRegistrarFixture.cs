@@ -17,28 +17,28 @@ namespace Autofac.Tests.Registrars
         [ExpectedException(typeof(ArgumentException))]
         public void RegisterTypeAsUnsupportedService()
         {
-            new ContainerBuilder().Register<object>().As<string>();
+            new ContainerBuilder().Register<string>().As<IA>();
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentException))]
         public void RegisterTypeAsSupportedAndUnsupportedService()
         {
-            new ContainerBuilder().Register<object>().As<object, string>();
+            new ContainerBuilder().Register<string>().As<IA, IB>();
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentException))]
         public void RegisterInstanceAsUnsupportedService()
         {
-            new ContainerBuilder().Register(new object()).As<string>();
+            new ContainerBuilder().Register("hello").As<IA>();
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentException))]
         public void RegisterDelegateAsUnsupportedService()
         {
-            new ContainerBuilder().Register(c => new object()).As<string>();
+            new ContainerBuilder().Register(c => "hello").As<IA>();
         }
 
         [Test]
