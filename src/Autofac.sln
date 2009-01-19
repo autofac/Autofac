@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		Autofac.build = Autofac.build
 		Autofac.ccnet.build = Autofac.ccnet.build
-		Autofac.snk = Autofac.snk
+		SharedKey.snk = SharedKey.snk
 		Source\GlobalAssemblyInfo.cs = Source\GlobalAssemblyInfo.cs
 	EndProjectSection
 EndProject
