@@ -78,7 +78,7 @@ namespace Autofac.Registrars.Collection
             var instance = new TItem[_items.Count];
             for (int i = 0; i < _items.Count; ++i)
             {
-                instance[i] = (TItem)context.Resolve(_items[i]);
+                instance[i] = (TItem)context.Resolve(_items[i], parameters);
             }
 
             return instance;
