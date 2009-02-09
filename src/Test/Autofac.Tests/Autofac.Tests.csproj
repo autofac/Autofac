@@ -67,6 +67,7 @@
     <Compile Include="Builder\ActivatingHandlerFixture.cs" />
     <Compile Include="Builder\AutomaticRegistrationBuilderFixture.cs" />
     <Compile Include="ComponentRegisteredEventArgsFixture.cs" />
+    <Compile Include="Component\Activation\ServiceListActivatorFixture.cs" />
     <Compile Include="Component\DescriptorFixture.cs" />
     <Compile Include="Configuration\ConfigurationSettingsReaderFixture.cs" />
     <Compile Include="GeneratedFactories\ContainerBuilderExtensionsFixture.cs" />
