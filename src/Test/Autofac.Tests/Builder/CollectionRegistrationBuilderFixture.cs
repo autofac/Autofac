@@ -97,5 +97,18 @@ namespace Autofac.Tests.Builder
 
             Assert.AreEqual(s1, container.Resolve<string[]>()[0]);
         }
+
+        [Test]
+        public void CanRegisterCollectionWithoutGenericMethod()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterCollection(typeof(string))
+                .As<string[]>();
+
+            var container = builder.Build();
+
+            Assert.IsTrue(container.IsRegistered<string[]>());
+        }
     }
 }

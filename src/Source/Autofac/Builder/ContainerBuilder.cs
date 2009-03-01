@@ -226,18 +226,32 @@ namespace Autofac.Builder
 			return RegisterTypesMatching(t => typeof(T).IsAssignableFrom(t));
 		}
 
-		/// <summary>
-		/// Registers the type as a collection. If no services or names are specified, the
-		/// default service will be IEnumerable&lt;T&gt;();
-		/// </summary>
-		/// <typeparam name="T">Collection item type</typeparam>
-		/// <returns>A registrar allowing configuration to continue.</returns>
-		public virtual IConcreteRegistrar RegisterCollection<T>()
-		{
-			return AttachRegistrar(new CollectionRegistrar<T>());
-		}
+        /// <summary>
+        /// Registers the type as a collection. If no services or names are specified, the
+        /// default service will be IEnumerable&lt;T&gt;();
+        /// </summary>
+        /// <typeparam name="T">Collection item type</typeparam>
+        /// <returns>A registrar allowing configuration to continue.</returns>
+        public virtual IConcreteRegistrar RegisterCollection<T>()
+        {
+            return AttachRegistrar(new CollectionRegistrar<T>());
+        }
 
-		/// <summary>
+        /// <summary>
+        /// Registers the type as a collection. If no services or names are specified, the
+        /// default service will be IEnumerable&lt;T&gt;();
+        /// </summary>
+        /// <param name="collectionType">Collection item type</param>
+        /// <returns>A registrar allowing configuration to continue.</returns>
+        public virtual IConcreteRegistrar RegisterCollection(Type collectionType)
+        {
+            Enforce.ArgumentNotNull(collectionType, "collectionType");
+            return AttachRegistrar(
+                (Registrar<IConcreteRegistrar>)
+                Activator.CreateInstance(typeof(CollectionRegistrar<>).MakeGenericType(collectionType)));
+        }
+
+        /// <summary>
 		/// Register a component that will be created using a provided delegate.
 		/// </summary>
 		/// <typeparam name="T">The type of the component.</typeparam>
