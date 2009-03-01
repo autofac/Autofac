@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace Autofac
 {
@@ -41,6 +42,7 @@ namespace Autofac
         /// <summary>
         /// Tracks activation events that need to be fired.
         /// </summary>
+        [DebuggerDisplay("{Registration}")]
         class Activation
         {
             private IComponentRegistration Registration { get; set; }
