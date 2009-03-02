@@ -80,6 +80,8 @@
     <Compile Include="Configuration\ExtendedPropertyElementCollection.cs" />
     <Compile Include="Configuration\FileElement.cs" />
     <Compile Include="Configuration\FileElementCollection.cs" />
+    <Compile Include="Modules\CollectionRegistrationSource.cs" />
+    <Compile Include="Modules\ImplicitCollectionSupportModule.cs" />
     <Compile Include="NamedPropertyParameter.cs" />
     <Compile Include="ConstantParameter.cs" />
     <Compile Include="IComponentDescriptor.cs" />
