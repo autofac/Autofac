@@ -74,7 +74,7 @@ namespace Autofac.Modules
                             items.CopyTo(result, 0);
                             return result;
                         }),
-                        new ContainerScope(),
+                        new FactoryScope(),
                         InstanceOwnership.External);
 
                     return true;
