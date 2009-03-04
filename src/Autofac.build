@@ -136,12 +136,6 @@ Composite targets
 			</finally>
 		</trycatch>
 	</target>
-	<target name="net20">
-		<property name="TargetFrameworkVersion" value="v2.0" />
-		<property name="SolutionFile" value="Autofac.Core.sln"/>
-		<property name="DistribFileName" value="${DistribFileName}-net20"/>
-    <property name="BuildConstants" value="NET20"/>
-	</target>
   <target name="silverlight">
     <property name="SolutionFile" value="Autofac.Core.sln"/>
     <property name="DistribFileName" value="${DistribFileName}-silverlight"/>

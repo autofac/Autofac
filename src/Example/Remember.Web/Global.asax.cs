@@ -47,5 +47,10 @@ namespace Remember.Web
         {
             get { return _containerProvider; }
         }
+
+        protected void Application_EndRequest(object sender, EventArgs e)
+        {
+            ContainerProvider.DisposeRequestContainer();
+        }
     }
 }

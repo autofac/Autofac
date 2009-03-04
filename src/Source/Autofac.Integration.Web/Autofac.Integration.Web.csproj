@@ -36,15 +36,10 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Core"/>
+    <Reference Include="System.Web.Routing"/>
     <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFrameworkVersion) != 'v2.0'">
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFrameworkVersion) == 'v2.0'">
-    <Reference Include="..\..\Resource\LinqBridge\LinqBridge.dll" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">
@@ -74,6 +69,10 @@
     <Compile Include="IInjectionBehaviour.cs" />
     <Compile Include="InjectPropertiesAttribute.cs" />
     <Compile Include="InjectUnsetPropertiesAttribute.cs" />
+    <Compile Include="Mvc\AutofacControllerFactory.cs" />
+    <Compile Include="Mvc\AutofacControllerModule.cs" />
+    <Compile Include="Mvc\DefaultControllerIdentificationStrategy.cs" />
+    <Compile Include="Mvc\IControllerIdentificationStrategy.cs" />
     <Compile Include="NoInjection.cs" />
     <Compile Include="PageInjectionBehaviour.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,5 +1,6 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="Remember.Web.Views.Shared.Site" %>
-
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="Remember.Web.Views.Shared.Site" %>
+<%@ Import Namespace="System.Web.Mvc" %>
+<%@ Import Namespace="System.Web.Mvc.Html" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
@@ -18,7 +19,7 @@
                     <%= Html.ActionLink("Home","Index")%>
                 </li>
                 <li>
-                    <%= Html.ActionLink("About","About")%>
+                    <%= Html.ActionLink("About", "About")%>
                 </li>
             </ul>
         </div>
