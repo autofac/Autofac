@@ -20,8 +20,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutofacContrib.Startable", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutofacContrib.DynamicProxy2", "Source\AutofacContrib.DynamicProxy2\AutofacContrib.DynamicProxy2.csproj", "{20325C68-5988-4AEE-954C-2418901AF12E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac", "Source\Autofac\Autofac.csproj", "{7D018B3E-34A3-423D-AC35-12731F4E0A2C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,10 +38,6 @@ Global
 		{20325C68-5988-4AEE-954C-2418901AF12E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20325C68-5988-4AEE-954C-2418901AF12E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20325C68-5988-4AEE-954C-2418901AF12E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7D018B3E-34A3-423D-AC35-12731F4E0A2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7D018B3E-34A3-423D-AC35-12731F4E0A2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7D018B3E-34A3-423D-AC35-12731F4E0A2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7D018B3E-34A3-423D-AC35-12731F4E0A2C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,6 +46,5 @@ Global
 		{C1C4B360-02D0-480A-A567-FD53A5D94FBA} = {15DE9887-5721-421E-9EE0-714D8EF2104E}
 		{AA451B59-0075-4CFD-A847-AF057BB2084B} = {15DE9887-5721-421E-9EE0-714D8EF2104E}
 		{20325C68-5988-4AEE-954C-2418901AF12E} = {15DE9887-5721-421E-9EE0-714D8EF2104E}
-		{7D018B3E-34A3-423D-AC35-12731F4E0A2C} = {15DE9887-5721-421E-9EE0-714D8EF2104E}
 	EndGlobalSection
 EndGlobal
