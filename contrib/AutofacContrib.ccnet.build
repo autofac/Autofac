@@ -1,0 +1,35 @@
+<project name="Autofac" xmlns="http://nant.sf.net/nightly/2006-03-08-0.85/nant.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nant.sf.net/nightly/2006-03-08-0.85/nant.xsd
+Resource\NAnt\nant.xsd" default="run">
+	
+	<include buildfile="AutofacContrib.build"/>
+	<!-- CCNET Targets -->
+	<target name="ccnet-clean" description="Clean files (keep buildlogs) and set artifacts">
+		<if test="${property::exists('CCNetArtifactDirectory')}">
+			<delete>
+				<fileset basedir="${CCNetArtifactDirectory}">
+					<include name="*"/>
+				</fileset>
+			</delete>
+			<property name="ArtifactDirectory" value="${CCNetArtifactDirectory}"/>
+		</if>
+	</target>
+	<!-- CCNET composite targets -->
+	<target name="run">
+		<property value="" name="CCNetBuildCondition" overwrite="false"/>
+		<call target="continuous" unless="${CCNetBuildCondition=='ForceBuild'}"/>
+		<call target="release" if="${CCNetBuildCondition=='ForceBuild'}"/>
+	</target>
+	<target name="continuous" depends="clean, ccnet-clean, build, copy, test"/>
+	<target name="release">
+		<fail unless="${property::exists('CCNetLabel')}" message="CCNetLabel must be defined."/>
+		<fail unless="${property::exists('DistribBaseDirectory')}" message="DistribBaseDirectory must be defined."/>
+		<!-- Derive integration properties -->
+		<property name="DistribDirectory" value="${DistribBaseDirectory}\${CCNetLabel}"/>
+		<property name="Version" value="${CCNetLabel}" overwrite="true"/>
+		<property name="DistribFileName" value="${DistribFileName}-${Version}" />
+		<!-- Do work -->
+		<call target="continuous"/>
+		<call target="distrib"/>
+		<echo file="${DistribBaseDirectory}\LastDistrib.txt" message="${CCNetLabel}"/>
+	</target>
+</project>

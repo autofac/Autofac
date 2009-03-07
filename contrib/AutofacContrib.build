@@ -1,0 +1,138 @@
+<project name="Autofac" xmlns="http://nant.sf.net/nightly/2006-03-08-0.85/nant.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nant.sf.net/nightly/2006-03-08-0.85/nant.xsd
+Resource\NAnt\nant.xsd" default="integrate">
+	<!-- Common Variables -->
+	<property name="DistribDirectory" value="Build\Distrib"/>
+	<property name="ProjectConfig" value="Release" unless="${property::exists('ProjectConfig')}"/>
+	<property name="ArtifactDirectory" value="Build\Artifact"/>
+	<property name="RedistributeDirectory" value="Build\Redistribute"/>
+	<!-- Local Variables -->
+	<property name="TestDirectory" value="Build\Test"/>
+	<property name="LibDirectory" value="Build\Lib"/>
+	<property name="SolutionFile" value="AutofacContrib.sln" readonly="false"/>
+	<property name="LegacySolutionFile" value="AutofacContrib.net20.sln" readonly="true"/>
+	<property name="Version" value="1.0.0.0" readonly="false" overwrite="false"/>
+	<property name="AllowPartiallyTrustedCallers" value="false"/>
+	<property name="TargetFrameworkVersion" value="v3.5"/>
+	<property name="DistribFileName" value="autofac-contrib-${TargetFrameworkVersion}"/>
+  <property name="BuildConstants" value="" />
+  <property name="Platform" value="Any CPU"/>
+  <!-- 
+Integration targets
+-->
+	<target name="clean">
+		<msbuild project="${SolutionFile}" target="Clean">
+      <property name="Configuration" value="${ProjectConfig}"/>
+      <property name="Platform" value="${Platform}"/>
+      <property name="TargetPath" value="Temp"/>
+		</msbuild>
+		<delete dir="Build"/>
+    <delete>
+			<fileset>
+				<include name="Source/**/bin/**"/>
+				<include name="Source/**/obj/**"/>
+				<include name="Test/**/bin/**"/>
+				<include name="Test/**/obj/**"/>
+				<include name="**/*.bak"/>
+			</fileset>
+		</delete>
+	</target>
+	<target name="pre-build">
+		<!-- Create Version assembly if version is provided -->
+		<move file="Source/VersionAssemblyInfo.cs" tofile="Source/_VersionAssemblyInfo.cs"/>
+		<asminfo output="Source/VersionAssemblyInfo.cs" language="CSharp">
+			<imports>
+				<import namespace="System.Reflection"/>
+				<import namespace="System.Security" if="${AllowPartiallyTrustedCallers}"/>
+			</imports>
+			<attributes>
+				<attribute type="AssemblyVersionAttribute" value="${Version}"/>
+				<attribute type="AssemblyFileVersionAttribute" value="${Version}"/>
+				<attribute asis="true" type="AllowPartiallyTrustedCallersAttribute" if="${AllowPartiallyTrustedCallers}"/>
+			</attributes>
+		</asminfo>
+	</target>
+	<target name="main-build">
+		<msbuild project="${SolutionFile}">
+      <property name="Configuration" value="${ProjectConfig}"/>
+      <property name="Platform" value="${Platform}"/>
+      <property name="TargetFrameworkVersion" value="${TargetFrameworkVersion}"/>
+      <property name="BuildConstants" value="${BuildConstants}"/>
+		</msbuild>
+	</target>
+	<target name="post-build">
+		<move file="Source/_VersionAssemblyInfo.cs" tofile="Source/VersionAssemblyInfo.cs" overwrite="true" failonerror="false" if="${file::exists('Source/_VersionAssemblyInfo.cs')}"/>
+	</target>
+	<target name="copy">
+		<copy todir="${TestDirectory}" flatten="true">
+			<fileset>
+				<include name="Test/**/bin/${ProjectConfig}/*.dll"/>
+			</fileset>
+		</copy>
+    <copy todir="${TestDirectory}/Configuration" flatten="true">
+      <fileset>
+        <include name="Test/Autofac.Tests/Configuration/*.config"/>
+      </fileset>
+    </copy>
+		<copy todir="${LibDirectory}" flatten="true">
+			<fileset>
+				<include name="Source/*/bin/${ProjectConfig}/**"/>
+			</fileset>
+		</copy>
+	</target>
+	<target name="distrib">
+		<mkdir dir="${RedistributeDirectory}"/>
+		<copy todir="${RedistributeDirectory}" flatten="true">
+			<fileset>
+				<include name="**/*License.txt"/>
+			</fileset>
+		</copy>
+		<mkdir dir="${DistribDirectory}"/>
+		<zip zipfile="${DistribDirectory}\${DistribFileName}.zip" ziplevel="9">
+			<fileset basedir="${LibDirectory}" prefix="bin">
+				<include name="*.dll"/>
+        <!--<exclude name="Autofac.dll"/>-->
+        <exclude name="*.Tests.*"/>
+        <exclude name="*.xml"/>
+			</fileset>
+			<fileset basedir="${TestDirectory}" prefix="test">
+				<include name="*.*"/>
+			</fileset>
+			<fileset basedir="${RedistributeDirectory}" prefix="license">
+				<include name="*.*"/>
+			</fileset>
+		</zip>
+	</target>
+	<target name="test">
+		<nunit2>
+			<formatter type="Xml" usefile="true" extension=".xml" outputdir="${ArtifactDirectory}"/>
+			<formatter type="Plain"/>
+			<test>
+				<assemblies basedir="${TestDirectory}">
+					<include name="AutofacContrib.Tests*.dll"/>
+					<include name="Autofac.Tests*.dll"/>
+				</assemblies>
+			</test>
+		</nunit2>
+	</target>
+	<!-- 
+Composite targets 
+-->
+	<target name="build">
+		<trycatch>
+			<try>
+				<call target="pre-build"/>
+				<call target="main-build"/>
+			</try>
+			<finally>
+				<call target="post-build"/>
+			</finally>
+		</trycatch>
+	</target>
+	<target name="net20">
+		<property name="TargetFrameworkVersion" value="v2.0" />
+		<property name="SolutionFile" value="${LegacySolutionFile}"/>		
+		<property name="DistribFileName" value="${DistribFileName}-net20"/>
+    <property name="BuildConstants" value="NET20"/>
+	</target>
+	<target name="integrate" depends="clean,build,copy,test"/>
+</project>

@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{15DE9887-5721-421E-9EE0-714D8EF2104E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{3ACB9FCB-420F-4555-BCE4-F98F9A569B70}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F6BC8907-80FA-491E-9404-29C401A17FD7}"
+	ProjectSection(SolutionItems) = preProject
+		AutofacContrib.build = AutofacContrib.build
+		AutofacContrib.ccnet.build = AutofacContrib.ccnet.build
+		Source\GlobalAssemblyInfo.cs = Source\GlobalAssemblyInfo.cs
+		go.cmd = go.cmd
+		SharedKey.snk = SharedKey.snk
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutofacContrib.NMock2", "Source\AutofacContrib.NMock2\AutofacContrib.NMock2.csproj", "{C1C4B360-02D0-480A-A567-FD53A5D94FBA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutofacContrib.Startable", "Source\AutofacContrib.Startable\AutofacContrib.Startable.csproj", "{AA451B59-0075-4CFD-A847-AF057BB2084B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutofacContrib.DynamicProxy2", "Source\AutofacContrib.DynamicProxy2\AutofacContrib.DynamicProxy2.csproj", "{20325C68-5988-4AEE-954C-2418901AF12E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac", "Source\Autofac\Autofac.csproj", "{7D018B3E-34A3-423D-AC35-12731F4E0A2C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C1C4B360-02D0-480A-A567-FD53A5D94FBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1C4B360-02D0-480A-A567-FD53A5D94FBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1C4B360-02D0-480A-A567-FD53A5D94FBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1C4B360-02D0-480A-A567-FD53A5D94FBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA451B59-0075-4CFD-A847-AF057BB2084B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA451B59-0075-4CFD-A847-AF057BB2084B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA451B59-0075-4CFD-A847-AF057BB2084B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA451B59-0075-4CFD-A847-AF057BB2084B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20325C68-5988-4AEE-954C-2418901AF12E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20325C68-5988-4AEE-954C-2418901AF12E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20325C68-5988-4AEE-954C-2418901AF12E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20325C68-5988-4AEE-954C-2418901AF12E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D018B3E-34A3-423D-AC35-12731F4E0A2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D018B3E-34A3-423D-AC35-12731F4E0A2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D018B3E-34A3-423D-AC35-12731F4E0A2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D018B3E-34A3-423D-AC35-12731F4E0A2C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C1C4B360-02D0-480A-A567-FD53A5D94FBA} = {15DE9887-5721-421E-9EE0-714D8EF2104E}
+		{AA451B59-0075-4CFD-A847-AF057BB2084B} = {15DE9887-5721-421E-9EE0-714D8EF2104E}
+		{20325C68-5988-4AEE-954C-2418901AF12E} = {15DE9887-5721-421E-9EE0-714D8EF2104E}
+		{7D018B3E-34A3-423D-AC35-12731F4E0A2C} = {15DE9887-5721-421E-9EE0-714D8EF2104E}
+	EndGlobalSection
+EndGlobal

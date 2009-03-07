@@ -1,0 +1,7 @@
+<Configuration>
+  <SharedSolutionTemplateManager>
+    <LiveTemplates />
+    <Surrounds />
+    <FileTemplates />
+  </SharedSolutionTemplateManager>
+</Configuration>
