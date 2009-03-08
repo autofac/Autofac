@@ -4,4 +4,4 @@ ASP.NET MVC RC 2 or later has to be registered in the global assembly cache.
 
 Download link: http://www.microsoft.com/downloads/details.aspx?displaylang=en&FamilyID=ee4b2e97-8a72-449a-82d2-2f720d421031
 
-To build the documentation, download the latest Sandcastle and Sandcastle Help File Builder releases from http://www.codeplex.com/Sandcastle and http://www.codeplex.com/SHFB.
+To build the documentation, download the latest Sandcastle release from http://www.codeplex.com/Sandcastle.
