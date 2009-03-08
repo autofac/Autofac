@@ -92,11 +92,11 @@
 	<Target Name="Test" DependsOnTargets="Build;Copy">
 		<MakeDir Directories="$(ArtifactDirectory)" />
 
-		<CreateItem Include="$(TestPath)\Autofac.Tests*.dll">
+		<CreateItem Include="$(TestPath)\Autofac.Test*dll">
 			<Output ItemName="_testFiles" TaskParameter="Include"/>
 		</CreateItem>
 
-		<CreateItem Include="$(TestPath)\Autofac.*.dll" Exclude="$(TestPath)\Autofac.Tests*.dll">
+		<CreateItem Include="$(TestPath)\Autofac*dll" Exclude="$(TestPath)\Autofac.Test*dll">
 			<Output ItemName="_coverageFiles" TaskParameter="Include"/>
 		</CreateItem>
 
