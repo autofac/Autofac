@@ -1,0 +1,61 @@
+﻿<project schemaVersion="1.6.0.2">
+    <assemblies>
+        <assembly assemblyPath="Build\Library\Autofac.dll" xmlCommentsPath="Build\Library\Autofac.xml" commentsOnly="False" />
+    </assemblies>
+    <namespaceSummaries>
+        <namespaceSummaryItem name="" isDocumented="False" />
+        <namespaceSummaryItem name="Autofac" isDocumented="True">Core container interfaces and implementation.</namespaceSummaryItem>
+        <namespaceSummaryItem name="Autofac.Builder" isDocumented="True">ContainerBuilder and related extension methods/registrars.</namespaceSummaryItem>
+        <namespaceSummaryItem name="Autofac.Component" isDocumented="True">Component implementation model.</namespaceSummaryItem>
+        <namespaceSummaryItem name="Autofac.Component.Activation" isDocumented="True">Component activators.</namespaceSummaryItem>
+        <namespaceSummaryItem name="Autofac.Component.Registration" isDocumented="True">Component registration implementation.</namespaceSummaryItem>
+        <namespaceSummaryItem name="Autofac.Component.Scope" isDocumented="True">Component scope models.</namespaceSummaryItem>
+        <namespaceSummaryItem name="Autofac.Component.Tagged" isDocumented="True">Tagged registration support.</namespaceSummaryItem>
+        <namespaceSummaryItem name="Autofac.Configuration" isDocumented="True">System configuration file support.</namespaceSummaryItem>
+        <namespaceSummaryItem name="Autofac.Registrars" isDocumented="True">Builder interfaces used in builder syntax.</namespaceSummaryItem>
+        <namespaceSummaryItem name="Autofac.Registrars.Automatic" isDocumented="True">Automatic registrar support.</namespaceSummaryItem>
+        <namespaceSummaryItem name="Autofac.Registrars.Collection" isDocumented="True">Collection registration support.</namespaceSummaryItem>
+        <namespaceSummaryItem name="Autofac.Registrars.Delegate" isDocumented="True">Delegate registration support.</namespaceSummaryItem>
+        <namespaceSummaryItem name="Autofac.Registrars.Generic" isDocumented="True">Open generic type registration support.</namespaceSummaryItem>
+        <namespaceSummaryItem name="Autofac.Registrars.ProvidedInstance" isDocumented="True">Instance registration support.</namespaceSummaryItem>
+        <namespaceSummaryItem name="Autofac.Registrars.Reflective" isDocumented="True">Type-based registration support.</namespaceSummaryItem>
+        <namespaceSummaryItem name="Autofac.Tags" isDocumented="True">Tagged container support.</namespaceSummaryItem>
+    </namespaceSummaries>
+    <ProjectSummary>A .NET IoC container written in C#. Focus on programmatic configuration with builder syntax. Zero intrusion into existing code. Create components using reflection or with lambda expressions for unlimited flexibility. Managed disposal of any IDisposable components created by the container within a defined scope.</ProjectSummary>
+    <MissingTags>Summary, Parameter, Returns, AutoDocumentCtors, Namespace</MissingTags>
+    <VisibleItems>InheritedMembers, InheritedFrameworkMembers, Protected, SealedProtected</VisibleItems>
+    <HtmlHelp1xCompilerPath path="..\..\..\..\Program Files\HTML Help Workshop\" />
+    <HtmlHelp2xCompilerPath path="" />
+		<OutputPath>Build\Help\</OutputPath>
+    <SandcastlePath path="" />
+    <WorkingPath path="" />
+    <CleanIntermediates>True</CleanIntermediates>
+    <KeepLogFile>True</KeepLogFile>
+    <HelpFileFormat>Website</HelpFileFormat>
+    <PurgeDuplicateTopics>True</PurgeDuplicateTopics>
+    <CppCommentsFixup>False</CppCommentsFixup>
+    <FrameworkVersion>3.5.20404</FrameworkVersion>
+    <BinaryTOC>True</BinaryTOC>
+    <IncludeFavorites>False</IncludeFavorites>
+    <Preliminary>False</Preliminary>
+    <RootNamespaceContainer>False</RootNamespaceContainer>
+    <RootNamespaceTitle />
+    <HelpTitle>Autofac .NET Inversion of Control Container</HelpTitle>
+    <HtmlHelpName>Autofac</HtmlHelpName>
+    <Language>en-US</Language>
+    <CopyrightHref>http://autofac.org</CopyrightHref>
+    <CopyrightText>Copyright (c) 2007-2008 Autofac Contributors</CopyrightText>
+    <FeedbackEMailAddress>autofac@googlegroups.com</FeedbackEMailAddress>
+    <HeaderText />
+    <FooterText />
+    <ProjectLinkType>Local</ProjectLinkType>
+    <SdkLinkType>Msdn</SdkLinkType>
+    <SdkLinkTarget>Blank</SdkLinkTarget>
+    <PresentationStyle>Prototype</PresentationStyle>
+    <NamingMethod>HashedMemberName</NamingMethod>
+    <SyntaxFilters>Standard</SyntaxFilters>
+    <ShowFeedbackControl>False</ShowFeedbackControl>
+    <ContentPlacement>BelowNamespaces</ContentPlacement>
+    <ContentSiteMap path="" />
+    <TopicFileTransform path="" />
+</project>

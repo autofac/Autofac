@@ -40,7 +40,7 @@
   <ItemGroup>
     <Reference Include="nunit.framework, Version=2.4.1.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Resource\NUnit\nunit.framework.dll</HintPath>
+      <HintPath>..\..\Resource\Library\NUnit\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>True</Private>
@@ -54,11 +54,6 @@
   </ItemGroup>
   <ItemGroup Condition="$(TargetFrameworkVersion) != 'v2.0'">
     <Reference Include="System.Core">
-      <Private>True</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFrameworkVersion) == 'v2.0'">
-    <Reference Include="..\..\Resource\LinqBridge\LinqBridge.dll">
       <Private>True</Private>
     </Reference>
   </ItemGroup>

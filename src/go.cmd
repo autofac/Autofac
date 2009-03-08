@@ -1,2 +1,2 @@
 @echo off
-@Resource\Nant\Nant.exe -buildfile:Autofac.build %*
+@%SystemRoot%\Microsoft.NET\Framework\v3.5\msbuild Autofac.build %*
