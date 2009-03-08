@@ -33,15 +33,15 @@
   <ItemGroup>
     <Reference Include="Autofac, Version=1.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Resource\Autofac\Autofac.dll</HintPath>
+      <HintPath>..\..\Resource\Library\Autofac\Autofac.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Resource\ServiceLocation\Microsoft.Practices.ServiceLocation.dll</HintPath>
+      <HintPath>..\..\Resource\Library\ServiceLocation\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.4.1.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Resource\NUnit\nunit.framework.dll</HintPath>
+      <HintPath>..\..\Resource\Library\NUnit\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

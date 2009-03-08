@@ -1,8 +1,0 @@
-﻿LINQBridge is free—and I don't place any restrictions on what you can do with the source code.
-The internal implementation is my own; however Microsoft came up with the idea of having a
-set of query operators with those names and functioning in that manner. So you may run into
-some restrictions if you use this outside the purpose for which it was intended.
-
-Obviously no guarantees are made, and no liability is accepted for any losses or complications.
-
-Written by Joseph Albahari, author of C# 3.0 in a Nutshell.

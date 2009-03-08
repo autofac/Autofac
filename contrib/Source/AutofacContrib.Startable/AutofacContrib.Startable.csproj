@@ -37,7 +37,7 @@
   <ItemGroup>
     <Reference Include="Autofac, Version=1.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Resource\Autofac\Autofac.dll</HintPath>
+      <HintPath>..\..\Resource\Library\Autofac\Autofac.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

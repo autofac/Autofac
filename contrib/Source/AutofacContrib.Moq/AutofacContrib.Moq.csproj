@@ -35,11 +35,11 @@
   <ItemGroup>
     <Reference Include="Autofac, Version=1.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Resource\Autofac\Autofac.dll</HintPath>
+      <HintPath>..\..\Resource\Library\Autofac\Autofac.dll</HintPath>
     </Reference>
-    <Reference Include="Moq, Version=2.5.3067.10092, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+    <Reference Include="Moq, Version=2.5.3107.32589, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Resource\Moq\Moq.dll</HintPath>
+      <HintPath>..\..\Resource\Library\Moq\Moq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

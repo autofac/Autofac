@@ -1,8 +1,0 @@
-    <project name="nant" default="go">
-      <property name="Custom" value="tasks\net" />
-      <target name="go">
-        <loadtasks assembly="${Custom}\NAnt.Contrib.Tasks.dll" />
-        <loadtasks assembly="${Custom}\NCoverExplorer.NAntTasks.dll"  />
-        <nantschema output="nant.xsd" target-ns="http://nant.sf.net/nightly/2006-03-08-0.85/nant.xsd"/>
-      </target>
-    </project>
