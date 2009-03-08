@@ -9,6 +9,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("AutofacContrib")]
 [assembly: AssemblyCopyright("Copyright © Autofac Contributors 2007-2008")]
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]

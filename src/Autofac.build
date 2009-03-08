@@ -158,7 +158,7 @@
 
 
 	<Target Name="GenerateHelp" DependsOnTargets="Build;Copy">
-		<Exec Command="Resource\Tool\SHFB\SandcastleBuilderConsole.exe $(MSBuildProjectName).shfb" />
+		<!--<Exec Command="Resource\Tool\SHFB\SandcastleBuilderConsole.exe $(MSBuildProjectName).shfb" />-->
 	</Target>
 
 	<Target Name="Distrib" DependsOnTargets="Clean;Build;Copy;Config;GenerateHelp">

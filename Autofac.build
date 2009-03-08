@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project DefaultTargets="Integrate" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<PropertyGroup>
+		<BuildPath Condition="$(BuildPath)==''">$(MSBuildProjectDirectory)\Build</BuildPath>
+		<Configuration Condition="$(Configuration)==''">Release</Configuration>
+		<ArtifactDirectory Condition="$(ArtifactDirectory)==''">$(BuildPath)\Artifact</ArtifactDirectory>
+		<PackageDirectory Condition="$(PackageDirectory)==''">$(BuildPath)\_Package</PackageDirectory>
+		<LatestDirectory Condition="$(LatestDirectory)==''">$(BuildPath)\_Latest</LatestDirectory>
+		<Version Condition="$(Version)==''">0.0.0.0</Version>
+
+
+
+		<ContribResources>contrib\Resource\Library\Autofac</ContribResources>
+	</PropertyGroup>
+
+	<Target Name="Integrate">
+		<MSBuild Projects="src/Autofac.build" Targets="Integrate" Properties="Configuration=$(Configuration);ArtifactDirectory=$(ArtifactDirectory)" />
+		<CallTarget Targets="Update" />
+		<MSBuild Projects="contrib/AutofacContrib.build" Targets="Integrate" Properties="Configuration=$(Configuration);ArtifactDirectory=$(ArtifactDirectory)" />
+	</Target>
+
+	<Target Name="Release">
+		<MSBuild Projects="src/Autofac.build" Targets="Release" Properties="Configuration=$(Configuration);PackageDirectory=$(PackageDirectory);ArtifactDirectory=$(ArtifactDirectory);Version=$(Version);LatestDirectory=$(LatestDirectory)" />
+		<CallTarget Targets="Update" />
+		<MSBuild Projects="contrib/AutofacContrib.build" Targets="Release" Properties="Configuration=$(Configuration);PackageDirectory=$(PackageDirectory);ArtifactDirectory=$(ArtifactDirectory);Version=$(Version);LatestDirectory=$(LatestDirectory)" />
+	</Target>
+
+	<Target Name="WipeResources">
+		<!--Wipe assemblies-->
+		<RemoveDir Directories="$(ContribResources)" />
+		<!--Wipe old version files-->
+		<CreateItem Include="**\VersionAssemblyInfo.cs">
+			<Output ItemName="_VersionPaths" TaskParameter="Include"/>
+		</CreateItem>
+		<Delete Files="@(_VersionPaths)" />
+	</Target>
+
+	<Target Name="Update">
+		<CreateItem Include="src\Build\Library\Autofac.*" Exclude="src\Build\Library\Autofac.Integration*">
+			<Output ItemName="coreFiles" TaskParameter="Include" />
+		</CreateItem>
+		<Copy SourceFiles="@(coreFiles)" DestinationFolder="$(ContribResources)" />
+	</Target>
+</Project>
