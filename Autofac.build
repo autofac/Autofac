@@ -6,7 +6,6 @@
 		<Configuration Condition="$(Configuration)==''">Release</Configuration>
 		<ArtifactDirectory Condition="$(ArtifactDirectory)==''">$(BuildPath)\Artifact</ArtifactDirectory>
 		<PackageDirectory Condition="$(PackageDirectory)==''">$(BuildPath)\_Package</PackageDirectory>
-		<LatestDirectory Condition="$(LatestDirectory)==''">$(BuildPath)\_Latest</LatestDirectory>
 		<Version Condition="$(Version)==''">0.0.0.0</Version>
 
 
@@ -21,9 +20,9 @@
 	</Target>
 
 	<Target Name="Release">
-		<MSBuild Projects="src/Autofac.build" Targets="Release" Properties="Configuration=$(Configuration);PackageDirectory=$(PackageDirectory);ArtifactDirectory=$(ArtifactDirectory);Version=$(Version);LatestDirectory=$(LatestDirectory)" />
+		<MSBuild Projects="src/Autofac.build" Targets="Release" Properties="Configuration=$(Configuration);PackageDirectory=$(PackageDirectory);ArtifactDirectory=$(ArtifactDirectory);Version=$(Version)" />
 		<CallTarget Targets="Update" />
-		<MSBuild Projects="contrib/AutofacContrib.build" Targets="Release" Properties="Configuration=$(Configuration);PackageDirectory=$(PackageDirectory);ArtifactDirectory=$(ArtifactDirectory);Version=$(Version);LatestDirectory=$(LatestDirectory)" />
+		<MSBuild Projects="contrib/AutofacContrib.build" Targets="Release" Properties="Configuration=$(Configuration);PackageDirectory=$(PackageDirectory);ArtifactDirectory=$(ArtifactDirectory);Version=$(Version)" />
 	</Target>
 
 	<Target Name="WipeResources">

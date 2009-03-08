@@ -13,7 +13,6 @@
 		<ArtifactDirectory Condition="$(ArtifactDirectory)==''">$(BuildPath)\Artifact</ArtifactDirectory>
 
 		<PackageDirectory Condition="$(PackageDirectory)==''">$(BuildPath)\_Package</PackageDirectory>
-		<LatestDirectory Condition="$(LatestDirectory)==''">$(BuildPath)\_Latest</LatestDirectory>
 		<Version Condition="$(Version)==''">0.0.0.0</Version>
 		<!--
 			Derived configuration properties
@@ -166,18 +165,5 @@
 			<Output ItemName="_libFiles" TaskParameter="Include" />
 		</CreateItem>
 		<Zip Files="@(_libFiles)" ZipFileName="$(PackageDirectory)\$(MSBuildProjectName)-$(Version).zip" Flatten="false" WorkingDirectory="$(BuildPath)" />
-		
-		<CallTarget Targets="CopyToLatest" Condition="$(LatestDirectory)!=''" />
-	</Target>
-
-	<Target Name="CopyToLatest" >
-		<RemoveDir Directories="$(LatestDirectory)" ContinueOnError="true" />
-		<MakeDir Directories="$(LatestDirectory)" />
-		
-		<CreateItem Include="$(PackageDirectory)\*.*;$(ReadMe)">
-			<Output ItemName="_latestFiles" TaskParameter="Include" />
-		</CreateItem>
-		
-		<Copy SourceFiles="@(_latestFiles)" DestinationFolder="$(LatestDirectory)" />
 	</Target>
 </Project>
