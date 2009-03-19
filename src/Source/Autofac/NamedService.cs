@@ -35,7 +35,7 @@ namespace Autofac
         /// Gets or sets the name of the service.
         /// </summary>
         /// <value>The name of the service.</value>
-        string ServiceName { get; set; }
+        public string ServiceName { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NamedService"/> class.

@@ -73,6 +73,14 @@ namespace Autofac.Tests.Integration.Mef
         }
     }
 
+    public class HasMultipleExportsBase { }
+
+    [Export("a"), 
+     Export("b"),
+     Export(typeof(HasMultipleExportsBase)),
+     Export(typeof(HasMultipleExports))]
+    public class HasMultipleExports : HasMultipleExportsBase { }
+
     public class DisposalTracker : Disposable
     {
         new public bool IsDisposed
@@ -365,6 +373,41 @@ namespace Autofac.Tests.Integration.Mef
             container.Dispose();
             Assert.IsTrue(instance1.IsDisposed);
             Assert.IsTrue(instance2.IsDisposed);
+        }
+
+        [Test]
+        public void RespectsExplicitInterchangeServices()
+        {
+            var builder = new ContainerBuilder();
+            var catalog = new TypeCatalog(typeof(HasMultipleExports));
+
+            var interchangeService1 = new TypedService(typeof(HasMultipleExportsBase));
+            var interchangeService2 = new NamedService("b");
+            var nonInterchangeService1 = new TypedService(typeof(HasMultipleExports));
+            var nonInterchangeService2 = new NamedService("a");
+
+            builder.RegisterCatalog(catalog,
+                interchangeService1,
+                interchangeService2);
+
+            var container = builder.Build();
+
+            Assert.IsTrue(container.IsRegistered(interchangeService1));
+            Assert.IsTrue(container.IsRegistered(interchangeService2));
+            Assert.IsFalse(container.IsRegistered(nonInterchangeService1));
+            Assert.IsFalse(container.IsRegistered(nonInterchangeService2));
+        }
+
+        [Test]
+        public void ResolvesExportsFromContext()
+        {
+            var builder = new ContainerBuilder();
+            var catalog = new TypeCatalog(typeof(Foo));
+            builder.RegisterCatalog(catalog);
+            builder.Register<Foo>().ExportedAs<IFoo>();
+            var container = builder.Build();
+            var exports = container.ResolveExports<IFoo>();
+            Assert.AreEqual(2, exports.Count());
         }
     }
 }

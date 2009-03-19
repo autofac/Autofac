@@ -29,13 +29,14 @@ using System.ComponentModel.Composition;
 namespace Autofac.Integration.Mef
 {
     /// <summary>
-    /// Identifies a service according to a ExportDefinition to which it can be assigned.
+    /// Identifies a service by the MEF contract name it supports.
     /// </summary>
     public class ContractBasedService : Service
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExportDefinitionService"/> class.
+        /// Initializes a new instance of the <see cref="ContractBasedService"/> class.
         /// </summary>
+        /// <param name="contractName">The contract name.</param>
         public ContractBasedService(string contractName)
         {
             if (string.IsNullOrEmpty(contractName))
