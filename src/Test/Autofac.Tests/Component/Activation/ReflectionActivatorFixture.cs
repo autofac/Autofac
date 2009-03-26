@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Autofac.Builder;
 using Autofac.Component.Activation;
 using NUnit.Framework;
@@ -271,5 +270,33 @@ namespace Autofac.Tests.Component.Activation
 			var instance = activator.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
 			Assert.IsInstanceOfType(typeof(PrivateSetProperty), instance);
 		}
+
+		class ThrowsExceptionInCtor
+		{
+			public ThrowsExceptionInCtor()
+			{
+				WeThrowThis();
+			}
+
+			static void WeThrowThis()
+			{
+				throw new InvalidOperationException();
+			}
+		}
+
+    	[Test]
+    	public void StackTraceIsPreserved()
+    	{
+			try
+			{
+				var target = new ReflectionActivator(typeof (ThrowsExceptionInCtor));
+				target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
+				Assert.Fail();
+			}
+			catch(InvalidOperationException ex)
+			{
+				StringAssert.Contains("WeThrowThis", ex.StackTrace);
+			}
+    	}
 	}
 }

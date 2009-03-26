@@ -40,12 +40,14 @@ namespace Autofac.Component.Activation
     public class ReflectionActivator : IActivator
 	{
 		Type _componentType;
-        IEnumerable<Parameter> _additionalConstructorParameters = Enumerable.Empty<Parameter>();
-        IEnumerable<NamedPropertyParameter> _explicitPropertySetters = Enumerable.Empty<NamedPropertyParameter>();
-		IConstructorSelector _constructorSelector;
+    	readonly IEnumerable<Parameter> _additionalConstructorParameters = Enumerable.Empty<Parameter>();
+    	readonly IEnumerable<NamedPropertyParameter> _explicitPropertySetters = Enumerable.Empty<NamedPropertyParameter>();
+    	readonly IConstructorSelector _constructorSelector;
         static readonly IConstructorInvoker DirectInvoker = new DirectConstructorInvoker();
         IConstructorInvoker _constructorInvoker = DirectInvoker;
         static readonly IEnumerable<Parameter> AutowiringParameterArray = new Parameter[] { new AutowiringParameter() };
+    	static readonly MethodInfo InternalPreserveStackTraceMethod = typeof (Exception)
+    		.GetMethod("InternalPreserveStackTrace", BindingFlags.Instance | BindingFlags.NonPublic);
         /// <summary>
         /// Initializes a new instance of the <see cref="ReflectionActivator"/> class.
         /// </summary>
@@ -287,6 +289,12 @@ namespace Autofac.Component.Activation
             return reasonNotUsable == null;
         }
 
+		static Exception KeepTargetInvocationStack(TargetInvocationException ex)
+		{
+			InternalPreserveStackTraceMethod.Invoke(ex.InnerException, null);
+			return ex.InnerException;
+		}
+
         object ConstructInstance(ConstructorInfo ci, IContext context, IEnumerable<Parameter> parameters, Func<object>[] parameterAccessors)
         {
             Enforce.ArgumentNotNull(ci, "ci");
@@ -299,7 +307,7 @@ namespace Autofac.Component.Activation
             }
             catch (TargetInvocationException tie)
             {
-                throw tie.InnerException;
+            	throw KeepTargetInvocationStack(tie);
             }
         }
 
