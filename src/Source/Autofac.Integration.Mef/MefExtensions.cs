@@ -362,7 +362,7 @@ namespace Autofac.Integration.Mef
 
         private static void SupportExportCollection(ContainerBuilder builder, ContractBasedService contractService)
         {
-            builder.RegisterCollection<Export>().As(contractService).DefaultOnly();
+            builder.RegisterCollection<Export>().As(contractService).FactoryScoped().DefaultOnly();
         }
 
         private static void SetNonPrerequisiteImports(IContext context, ComposablePart composablePart)
