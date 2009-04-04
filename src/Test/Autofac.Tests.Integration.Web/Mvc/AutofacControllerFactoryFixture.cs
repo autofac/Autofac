@@ -6,6 +6,7 @@ using Autofac.Builder;
 using Autofac.Integration.Web;
 using Autofac.Integration.Web.Mvc;
 using NUnit.Framework;
+using Moq;
 
 namespace Autofac.Tests.Integration.Web.Mvc
 {
@@ -14,7 +15,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
     {
         class StubController : Controller { }
 
-        class StubContext : HttpContextBase { }
+//        class StubContext : HttpContextBase { }
         
         class StubContainerProvider : IContainerProvider
         {
@@ -65,7 +66,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
 
         private AutofacControllerFactory CreateTarget()
         {
-            return new AutofacControllerFactory(new ContainerProvider(new Container()));
+            return new AutofacControllerFactory(new StubContainerProvider(new Container()));
         }
 
         [Test]
@@ -76,10 +77,21 @@ namespace Autofac.Tests.Integration.Web.Mvc
             target.CreateController(CreateContext(), null);
         }
 
+        [Test]
+        [ExpectedException(typeof(HttpException))]
+        public void ThrowsHttpException404WhenControllerMissing()
+        {
+            var target = CreateTarget();
+            target.CreateController(CreateContext(), "NotAController");
+        }
+
         private RequestContext CreateContext()
         {
-            HttpContextBase httpContext = new StubContext();
-            return new RequestContext(httpContext, new RouteData());
+            var request = new Mock<HttpRequestBase>(MockBehavior.Loose);
+            request.Expect(r => r.Path).Returns("Path");
+            var httpContext = new Mock<HttpContextBase>(MockBehavior.Loose);
+            httpContext.ExpectGet(c => c.Request).Returns(request.Object);
+            return new RequestContext(httpContext.Object, new RouteData());
         }
 
         [Test]
@@ -91,8 +103,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
             	.Named("controller." + HomeControllerName.ToLowerInvariant());
             var container = builder.Build();
 
-            var httpContext = new StubContext();
-            var context = new RequestContext(httpContext, new RouteData());
+            var context = CreateContext();
 
             var provider = new StubContainerProvider(container);
             var target = new AutofacControllerFactory(provider);

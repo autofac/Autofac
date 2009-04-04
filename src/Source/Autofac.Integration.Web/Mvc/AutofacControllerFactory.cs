@@ -26,6 +26,7 @@
 using System;
 using System.Web.Mvc;
 using System.Web.Routing;
+using System.Web;
 
 namespace Autofac.Integration.Web.Mvc
 {
@@ -80,8 +81,18 @@ namespace Autofac.Integration.Web.Mvc
             if (controllerName == null)
                 throw new ArgumentNullException("controllerName");
 
-            return (IController)_containerProvider.RequestContainer.Resolve(
-                _controllerIdentificationStrategy.ServiceForControllerName(controllerName));
+            var controllerService = _controllerIdentificationStrategy
+                .ServiceForControllerName(controllerName);
+
+            object controller = null;
+            if (_containerProvider.RequestContainer.TryResolve(controllerService, out controller))
+                return (IController)controller;
+            else
+                throw new HttpException(404,
+                    string.Format(AutofacControllerFactoryResources.NotFound,
+                        controllerService,
+                        controllerName,
+                        context.HttpContext.Request.Path));
         }
 
         /// <summary>

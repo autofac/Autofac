@@ -36,6 +36,9 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Web.Mvc, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
     </Reference>
@@ -72,6 +75,11 @@
     <Compile Include="InjectPropertiesAttribute.cs" />
     <Compile Include="InjectUnsetPropertiesAttribute.cs" />
     <Compile Include="Mvc\AutofacControllerFactory.cs" />
+    <Compile Include="Mvc\AutofacControllerFactoryResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AutofacControllerFactoryResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Mvc\AutofacControllerModule.cs" />
     <Compile Include="Mvc\DefaultControllerIdentificationStrategy.cs" />
     <Compile Include="Mvc\IControllerIdentificationStrategy.cs" />
@@ -100,6 +108,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DependencyInjectionModuleResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mvc\AutofacControllerFactoryResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AutofacControllerFactoryResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
