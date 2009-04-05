@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="AttributedInjectionModuleFixture.cs" />
     <Compile Include="Mvc\AutofacControllerFactoryFixture.cs" />
+    <Compile Include="Mvc\AutofacControllerModuleFixture.cs" />
     <Compile Include="Mvc\DefaultControllerIdentificationStrategyFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationExtensionsFixture.cs" />

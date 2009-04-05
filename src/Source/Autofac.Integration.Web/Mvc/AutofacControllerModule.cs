@@ -42,6 +42,13 @@ namespace Autofac.Integration.Web.Mvc
         IControllerIdentificationStrategy _identificationStrategy =
             new DefaultControllerIdentificationStrategy();
 
+        EventHandler<PreparingEventArgs> _preparingHandler;
+        EventHandler<ActivatingEventArgs> _activatingHandler;
+        EventHandler<ActivatedEventArgs> _activatedHandler;
+
+		Type _actionInvokerType;
+        UniqueService _actionInvokerService = new UniqueService();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacControllerModule"/> class.
         /// </summary>
@@ -74,6 +81,78 @@ namespace Autofac.Integration.Web.Mvc
         }
 
         /// <summary>
+        /// Sets an event handler that will be called when controller instances
+        /// are requested.
+        /// </summary>
+        public EventHandler<PreparingEventArgs> PreparingHandler
+        {
+            get
+            {
+                return _preparingHandler;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                _preparingHandler = value;
+            }
+        }
+
+        /// <summary>
+        /// Sets an event handler that will be called when controller instances
+        /// are being activated.
+        /// </summary>
+        public EventHandler<ActivatingEventArgs> ActivatingHandler
+        {
+            get
+            {
+                return _activatingHandler;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                _activatingHandler = value;
+            }
+        }
+
+        /// <summary>
+        /// Sets an event handler that will be called when controller instances
+        /// are activated.
+        /// </summary>
+        public EventHandler<ActivatedEventArgs> ActivatedHandler
+        {
+            get
+            {
+                return _activatedHandler;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                _activatedHandler = value;
+            }
+        }
+
+        public Type ActionInvokerType
+        {
+            get
+            {
+                return _actionInvokerType;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                _actionInvokerType = value;
+            }
+        }
+
+        /// <summary>
         /// Adds registrations to the container.
         /// </summary>
         /// <param name="builder">The builder.</param>
@@ -84,6 +163,9 @@ namespace Autofac.Integration.Web.Mvc
             if (builder == null)
                 throw new ArgumentNullException("builder");
 
+			if(_actionInvokerType != null)
+				builder.Register(_actionInvokerType).As(_actionInvokerService).FactoryScoped();
+
             var controllerTypes = from assembly in _controllerAssemblies
                                   from type in assembly.GetTypes()
                                   where typeof(IController).IsAssignableFrom(type) &&
@@ -92,10 +174,31 @@ namespace Autofac.Integration.Web.Mvc
 
             foreach (var controllerType in controllerTypes)
             {
-                builder.Register(controllerType)
+                var registration = builder.Register(controllerType)
                     .FactoryScoped()
                     .As(IdentificationStrategy.ServiceForControllerType(controllerType));
+
+                if (_actionInvokerType != null)
+                    registration.OnActivating(InjectActionInvoker);
+
+                if (_preparingHandler != null)
+                    registration.OnPreparing(_preparingHandler);
+
+                if (_activatingHandler != null)
+                    registration.OnActivating(_activatingHandler);
+
+                if (_activatedHandler != null)
+                    registration.OnActivated(_activatedHandler);
             }
         }
+    	
+        void InjectActionInvoker(object sender, ActivatingEventArgs e)
+    	{
+			if(e.Instance is Controller)
+			{
+				((Controller)e.Instance).ActionInvoker =
+                    (IActionInvoker)e.Context.Resolve(_actionInvokerService);
+			}
+    	}
     }
 }
