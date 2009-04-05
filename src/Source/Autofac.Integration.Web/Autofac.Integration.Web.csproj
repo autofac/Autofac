@@ -34,7 +34,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -44,7 +43,6 @@
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Web.Routing" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">
@@ -81,7 +79,13 @@
       <DependentUpon>AutofacControllerFactoryResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Mvc\AutofacControllerModule.cs" />
+    <Compile Include="Mvc\AutofacControllerModuleResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AutofacControllerModuleResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Mvc\DefaultControllerIdentificationStrategy.cs" />
+    <Compile Include="Mvc\FilterInjectionActionInvoker.cs" />
     <Compile Include="Mvc\IControllerIdentificationStrategy.cs" />
     <Compile Include="NoInjection.cs" />
     <Compile Include="PageInjectionBehaviour.cs" />
@@ -112,6 +116,10 @@
     <EmbeddedResource Include="Mvc\AutofacControllerFactoryResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AutofacControllerFactoryResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mvc\AutofacControllerModuleResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AutofacControllerModuleResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

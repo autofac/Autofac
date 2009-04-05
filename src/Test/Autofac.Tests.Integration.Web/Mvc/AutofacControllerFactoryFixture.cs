@@ -14,8 +14,6 @@ namespace Autofac.Tests.Integration.Web.Mvc
     public class AutofacControllerFactoryFixture
     {
         class StubController : Controller { }
-
-//        class StubContext : HttpContextBase { }
         
         class StubContainerProvider : IContainerProvider
         {

@@ -47,7 +47,7 @@ namespace Autofac.Integration.Web.Mvc
         EventHandler<ActivatedEventArgs> _activatedHandler;
 
 		Type _actionInvokerType;
-        UniqueService _actionInvokerService = new UniqueService();
+        Service _actionInvokerService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacControllerModule"/> class.
@@ -137,6 +137,11 @@ namespace Autofac.Integration.Web.Mvc
             }
         }
 
+        /// <summary>
+        /// Specify a type that will be used as the action invoker for discovered controllers.
+        /// The type will be registered in the container.
+        /// To control the registration of the action invoker, use <see cref="ActionInvokerService"/> instead.
+        /// </summary>
         public Type ActionInvokerType
         {
             get
@@ -153,6 +158,25 @@ namespace Autofac.Integration.Web.Mvc
         }
 
         /// <summary>
+        /// Specify a service that will be used as the action invoker for discovered controllers.
+        /// The service must already exist in the container.
+        /// </summary>
+        public Service ActionInvokerService
+        {
+            get
+            {
+                return _actionInvokerService;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                _actionInvokerService = value;
+            }
+        }
+
+        /// <summary>
         /// Adds registrations to the container.
         /// </summary>
         /// <param name="builder">The builder.</param>
@@ -163,8 +187,14 @@ namespace Autofac.Integration.Web.Mvc
             if (builder == null)
                 throw new ArgumentNullException("builder");
 
-			if(_actionInvokerType != null)
-				builder.Register(_actionInvokerType).As(_actionInvokerService).FactoryScoped();
+            if (_actionInvokerType != null && _actionInvokerService != null)
+                throw new InvalidOperationException(AutofacControllerModuleResources.SpecifyOnlyOneActionInvoker);
+
+            if (_actionInvokerType != null)
+            {
+                _actionInvokerService = new UniqueService();
+                builder.Register(_actionInvokerType).As(_actionInvokerService).FactoryScoped();
+            }
 
             var controllerTypes = from assembly in _controllerAssemblies
                                   from type in assembly.GetTypes()
@@ -178,7 +208,7 @@ namespace Autofac.Integration.Web.Mvc
                     .FactoryScoped()
                     .As(IdentificationStrategy.ServiceForControllerType(controllerType));
 
-                if (_actionInvokerType != null)
+                if (_actionInvokerService != null)
                     registration.OnActivating(InjectActionInvoker);
 
                 if (_preparingHandler != null)

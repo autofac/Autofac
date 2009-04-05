@@ -9,19 +9,18 @@ namespace Autofac.Tests.Integration.Web.Mvc
 	[TestFixture]
 	public class AutofacControllerModuleFixture
 	{
-
 		[Test]
 		public void InvokesCustomActivating()
 		{
 			var builder = new ContainerBuilder();
             var module = new AutofacControllerModule(GetType().Assembly)
             {
-                ActivatingHandler = ((sender, args) => ((TestController)args.Instance).Dependency = new object())
+                ActivatingHandler = ((sender, args) => ((ModuleTestController)args.Instance).Dependency = new object())
             };
 			builder.RegisterModule(module);
 			var container = builder.Build();
 
-			var controller = (TestController)container.Resolve(module.IdentificationStrategy.ServiceForControllerType(typeof(TestController)));
+			var controller = (ModuleTestController)container.Resolve(module.IdentificationStrategy.ServiceForControllerType(typeof(ModuleTestController)));
 			Assert.IsNotNull(controller.Dependency);
 		}
 
@@ -36,7 +35,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
 			builder.RegisterModule(module);
 			var container = builder.Build();
 
-			var controller = (TestController)container.Resolve(module.IdentificationStrategy.ServiceForControllerType(typeof(TestController)));
+			var controller = (ModuleTestController)container.Resolve(module.IdentificationStrategy.ServiceForControllerType(typeof(ModuleTestController)));
 			Assert.IsInstanceOfType(typeof(TestActionInvoker), controller.ActionInvoker);
 		}
 
@@ -48,7 +47,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
 			}
 		}
 
-		public class TestController : Controller
+		public class ModuleTestController : Controller
 		{
 			public object Dependency;
 		}
