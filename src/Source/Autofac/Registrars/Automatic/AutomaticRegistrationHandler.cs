@@ -42,12 +42,16 @@ namespace Autofac.Registrars.Automatic
         /// <param name="predicate">The predicate.</param>
         /// <param name="deferredParams">The deferred registration params.</param>
         /// <param name="constructorSelector">The constructor selector.</param>
+        /// <param name="arguments">Additional arguments to supply to the component's constructor.</param>
+        /// <param name="properties">Additional properties to set on the component.</param>
         public AutomaticRegistrationHandler(
             Predicate<Type> predicate,
             DeferredRegistrationParameters deferredParams,
-            IConstructorSelector constructorSelector
+            IConstructorSelector constructorSelector,
+            IEnumerable<Parameter> arguments,
+            IEnumerable<NamedPropertyParameter> properties
         )
-        : base(deferredParams, constructorSelector)
+        : base(deferredParams, constructorSelector, arguments, properties)
         {
             _predicate = Enforce.ArgumentNotNull(predicate, "predicate");
 		}

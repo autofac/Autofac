@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 namespace Autofac.Registrars
 {
@@ -38,5 +39,43 @@ namespace Autofac.Registrars
         /// <param name="ctorSignature">The types that designate the constructor to use.</param>
         /// <returns>A registrar allowing registration to continue.</returns>
         IGenericRegistrar UsingConstructor(params Type[] ctorSignature);
+
+        /// <summary>
+        /// Associates constructor parameters with default values.
+        /// </summary>
+        /// <param name="additionalCtorArgs">The named values to apply to the constructor.
+        /// These may be overriden by supplying any/all values to the IContext.Resolve() method.</param>
+        /// <returns>
+        /// A registrar allowing registration to continue.
+        /// </returns>
+        IGenericRegistrar WithArguments(params Parameter[] additionalCtorArgs);
+
+        /// <summary>
+        /// Associates constructor parameters with default values.
+        /// </summary>
+        /// <param name="additionalCtorArgs">The named values to apply to the constructor.
+        /// These may be overriden by supplying any/all values to the IContext.Resolve() method.</param>
+        /// <returns>
+        /// A registrar allowing registration to continue.
+        /// </returns>
+        IGenericRegistrar WithArguments(IEnumerable<Parameter> additionalCtorArgs);
+
+        /// <summary>
+        /// Provide explicit property values to be set on the new object.
+        /// </summary>
+        /// <param name="explicitProperties"></param>
+        /// <returns>A registrar allowing configuration to continue.</returns>
+        /// <remarks>Note, supplying a null value will not prevent property injection if
+        /// property injection is done through an OnActivating handler.</remarks>
+        IGenericRegistrar WithProperties(params NamedPropertyParameter[] explicitProperties);
+
+        /// <summary>
+        /// Provide explicit property values to be set on the new object.
+        /// </summary>
+        /// <param name="explicitProperties"></param>
+        /// <returns>A registrar allowing configuration to continue.</returns>
+        /// <remarks>Note, supplying a null value will not prevent property injection if
+        /// property injection is done through an OnActivating handler.</remarks>
+        IGenericRegistrar WithProperties(IEnumerable<NamedPropertyParameter> explicitProperties);
     }
 }

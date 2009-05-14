@@ -4,6 +4,18 @@ using NUnit.Framework;
 
 namespace Autofac.Tests.Builder
 {
+    public class G<T>
+    {
+        T unused;
+
+        public G(int i)
+        {
+            I = i;
+        }
+
+        public int I { get; private set; }
+    }
+
     [TestFixture]
     public class GenericRegistrationBuilderFixture
     {
@@ -47,6 +59,16 @@ namespace Autofac.Tests.Builder
             var container = cb.Build();
             container.Resolve<IEnumerable<int>>();
             Assert.AreEqual(1, preparingFired);
+        }
+
+        [Test]
+        public void SuppliesArgument()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(G<>)).WithArguments(new NamedParameter("i", 42));
+            var c = cb.Build();
+            var g = c.Resolve<G<string>>();
+            Assert.AreEqual(42, g.I);
         }
     }
 }

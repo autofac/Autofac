@@ -40,19 +40,27 @@ namespace Autofac.Registrars
     {
         DeferredRegistrationParameters _deferredParams;
         IConstructorSelector _constructorSelector;
+        IEnumerable<Parameter> _arguments;
+        IEnumerable<NamedPropertyParameter> _properties;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReflectiveRegistrationSource"/> class.
         /// </summary>
         /// <param name="deferredParams">The deferred params.</param>
         /// <param name="constructorSelector">The constructor selector.</param>
+        /// <param name="arguments">Additional arguments to supply to the component's constructor.</param>
+        /// <param name="properties">Additional properties to set on the component.</param>
         protected ReflectiveRegistrationSource(
             DeferredRegistrationParameters deferredParams,
-            IConstructorSelector constructorSelector
+            IConstructorSelector constructorSelector,
+            IEnumerable<Parameter> arguments,
+            IEnumerable<NamedPropertyParameter> properties
         )
         {
             _deferredParams = Enforce.ArgumentNotNull(deferredParams, "deferredParams");
             _constructorSelector = Enforce.ArgumentNotNull(constructorSelector, "constructorSelector");
+            _arguments = Enforce.ArgumentNotNull(arguments, "arguments");
+            _properties = Enforce.ArgumentNotNull(properties, "properties");
         }
 
         /// <summary>
@@ -79,8 +87,8 @@ namespace Autofac.Registrars
 
             var activator = new ReflectionActivator(
                     concrete,
-                    Enumerable.Empty<Parameter>(),
-                    Enumerable.Empty<NamedPropertyParameter>(),
+                    _arguments,
+                    _properties,
                     _constructorSelector);
 
             registration = CreateRegistration(descriptor, activator);

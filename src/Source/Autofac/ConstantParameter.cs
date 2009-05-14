@@ -42,6 +42,7 @@ namespace Autofac
         public override bool CanSupplyValue(ParameterInfo pi, IContext context, out Func<object> valueProvider)
         {
             Enforce.ArgumentNotNull(pi, "pi");
+            Enforce.ArgumentNotNull(context, "context");
 
             if (_predicate(pi))
             {

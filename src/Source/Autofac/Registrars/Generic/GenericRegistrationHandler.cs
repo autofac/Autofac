@@ -51,13 +51,17 @@ namespace Autofac.Registrars.Generic
         /// <param name="implementor">The implementor.</param>
         /// <param name="deferredParams">The deferred params.</param>
         /// <param name="constructorSelector">The constructor selector.</param>
-		public GenericRegistrationHandler(
+        /// <param name="arguments">Additional arguments to supply to the component's constructor.</param>
+        /// <param name="properties">Additional properties to set on the component.</param>
+        public GenericRegistrationHandler(
 			IEnumerable<Service> services,
 			Type implementor,
             DeferredRegistrationParameters deferredParams,
-            IConstructorSelector constructorSelector
+            IConstructorSelector constructorSelector,
+            IEnumerable<Parameter> arguments,
+            IEnumerable<NamedPropertyParameter> properties
         )
-            : base(deferredParams, constructorSelector)
+            : base(deferredParams, constructorSelector, arguments, properties)
 		{
             Enforce.ArgumentNotNull(services, "services");
             Enforce.ArgumentNotNull(implementor, "implementor");

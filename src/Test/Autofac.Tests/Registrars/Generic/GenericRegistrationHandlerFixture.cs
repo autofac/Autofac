@@ -6,6 +6,7 @@ using Autofac.Component.Activation;
 using Autofac.Registrars;
 using Autofac.Registrars.Generic;
 using NUnit.Framework;
+using System.Linq;
 
 namespace Autofac.Tests.Registrars.Generic
 {
@@ -30,7 +31,9 @@ namespace Autofac.Tests.Registrars.Generic
                     new EventHandler<ActivatingEventArgs>[] { },
                     new EventHandler<ActivatedEventArgs>[] { },
                     (d, a, s, o) => new Registration(d, a, s, o)),
-                new MostParametersConstructorSelector()));
+                new MostParametersConstructorSelector(),
+                Enumerable.Empty<Parameter>(),
+                Enumerable.Empty<NamedPropertyParameter>()));
 
 			var x = c.Resolve<I<int>>();
 			var x2 = c.Resolve<I<int>>();

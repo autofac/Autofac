@@ -39,6 +39,7 @@
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
   </ItemGroup>
@@ -240,6 +241,7 @@
       <DependentUpon>ReflectionActivatorResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Registrars\ReflectiveRegistrationSource.cs" />
+    <Compile Include="ResolvedParameter.cs" />
     <Compile Include="SequenceExtensions.cs" />
     <Compile Include="Silverlight\AllowPartiallyTrustedCallerAttribute.cs" />
     <Compile Include="Silverlight\SerializableAttribute.cs" />
