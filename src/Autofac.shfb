@@ -1,6 +1,6 @@
-﻿<project schemaVersion="1.6.0.2">
+﻿<project schemaVersion="1.6.0.7">
     <assemblies>
-        <assembly assemblyPath="Build\Library\Autofac.dll" xmlCommentsPath="Build\Library\Autofac.xml" commentsOnly="False" />
+        <assembly assemblyPath=".\Build\Library\Autofac.dll" xmlCommentsPath=".\Build\Library\Autofac.xml" commentsOnly="False" />
     </assemblies>
     <namespaceSummaries>
         <namespaceSummaryItem name="" isDocumented="False" />
@@ -12,6 +12,8 @@
         <namespaceSummaryItem name="Autofac.Component.Scope" isDocumented="True">Component scope models.</namespaceSummaryItem>
         <namespaceSummaryItem name="Autofac.Component.Tagged" isDocumented="True">Tagged registration support.</namespaceSummaryItem>
         <namespaceSummaryItem name="Autofac.Configuration" isDocumented="True">System configuration file support.</namespaceSummaryItem>
+        <namespaceSummaryItem name="Autofac.GeneratedFactories" isDocumented="True" />
+        <namespaceSummaryItem name="Autofac.Modules" isDocumented="True" />
         <namespaceSummaryItem name="Autofac.Registrars" isDocumented="True">Builder interfaces used in builder syntax.</namespaceSummaryItem>
         <namespaceSummaryItem name="Autofac.Registrars.Automatic" isDocumented="True">Automatic registrar support.</namespaceSummaryItem>
         <namespaceSummaryItem name="Autofac.Registrars.Collection" isDocumented="True">Collection registration support.</namespaceSummaryItem>
@@ -22,21 +24,20 @@
         <namespaceSummaryItem name="Autofac.Tags" isDocumented="True">Tagged container support.</namespaceSummaryItem>
     </namespaceSummaries>
     <ProjectSummary>A .NET IoC container written in C#. Focus on programmatic configuration with builder syntax. Zero intrusion into existing code. Create components using reflection or with lambda expressions for unlimited flexibility. Managed disposal of any IDisposable components created by the container within a defined scope.</ProjectSummary>
-    <MissingTags>Summary, Parameter, Returns, AutoDocumentCtors, Namespace</MissingTags>
+    <MissingTags>Summary, Parameter, Returns, AutoDocumentCtors, Namespace, TypeParameter</MissingTags>
     <VisibleItems>InheritedMembers, InheritedFrameworkMembers, Protected, SealedProtected</VisibleItems>
-    <HtmlHelp1xCompilerPath path="..\..\..\..\Program Files\HTML Help Workshop\" />
+    <HtmlHelp1xCompilerPath path="..\..\..\Program Files\HTML Help Workshop\" />
     <HtmlHelp2xCompilerPath path="" />
-		<OutputPath>Build\Help\</OutputPath>
+    <OutputPath>Build\Help\</OutputPath>
     <SandcastlePath path="" />
     <WorkingPath path="" />
     <CleanIntermediates>True</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
-    <HelpFileFormat>Website</HelpFileFormat>
-    <PurgeDuplicateTopics>True</PurgeDuplicateTopics>
+    <BuildLogFile path="" />
+    <HelpFileFormat>HtmlHelp1x</HelpFileFormat>
     <CppCommentsFixup>False</CppCommentsFixup>
     <FrameworkVersion>3.5.20404</FrameworkVersion>
-    <BinaryTOC>True</BinaryTOC>
-    <IncludeFavorites>False</IncludeFavorites>
+    <IndentHtml>False</IndentHtml>
     <Preliminary>False</Preliminary>
     <RootNamespaceContainer>False</RootNamespaceContainer>
     <RootNamespaceTitle />
@@ -46,6 +47,7 @@
     <CopyrightHref>http://autofac.org</CopyrightHref>
     <CopyrightText>Copyright (c) 2007-2008 Autofac Contributors</CopyrightText>
     <FeedbackEMailAddress>autofac@googlegroups.com</FeedbackEMailAddress>
+    <FeedbackEMailLinkText />
     <HeaderText />
     <FooterText />
     <ProjectLinkType>Local</ProjectLinkType>
@@ -55,7 +57,11 @@
     <NamingMethod>HashedMemberName</NamingMethod>
     <SyntaxFilters>Standard</SyntaxFilters>
     <ShowFeedbackControl>False</ShowFeedbackControl>
+    <BinaryTOC>True</BinaryTOC>
+    <IncludeFavorites>False</IncludeFavorites>
+    <CollectionTocStyle>Hierarchical</CollectionTocStyle>
+    <IncludeStopWordList>True</IncludeStopWordList>
+    <PlugInNamespaces>ms.vsipcc+, ms.vsexpresscc+</PlugInNamespaces>
+    <HelpFileVersion>1.0.0.0</HelpFileVersion>
     <ContentPlacement>BelowNamespaces</ContentPlacement>
-    <ContentSiteMap path="" />
-    <TopicFileTransform path="" />
 </project>

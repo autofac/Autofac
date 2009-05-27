@@ -38,14 +38,14 @@ namespace Autofac
     public class ResolvedParameter : Parameter
     {
         Func<ParameterInfo, IContext, bool> _predicate;
-        Func<IContext, object> _valueAccessor;
+        Func<ParameterInfo, IContext, object> _valueAccessor;
 
         /// <summary>
         /// Create an instance of the ResolvedParameter class.
         /// </summary>
         /// <param name="predicate">A predicate that determines which parameters on a constructor will be supplied by this instance.</param>
         /// <param name="valueAccessor">A function that supplies the parameter value given the context.</param>
-        public ResolvedParameter(Func<ParameterInfo, IContext, bool> predicate, Func<IContext, object> valueAccessor)
+        public ResolvedParameter(Func<ParameterInfo, IContext, bool> predicate, Func<ParameterInfo, IContext, object> valueAccessor)
         {
             _predicate = Enforce.ArgumentNotNull(predicate, "predicate");
             _valueAccessor = Enforce.ArgumentNotNull(valueAccessor, "valueAccessor");
@@ -67,7 +67,7 @@ namespace Autofac
 
             if (_predicate(pi, context))
             {
-                valueProvider = () => MatchTypes(pi, _valueAccessor(context));
+                valueProvider = () => MatchTypes(pi, _valueAccessor(pi, context));
                 return true;
             }
             else

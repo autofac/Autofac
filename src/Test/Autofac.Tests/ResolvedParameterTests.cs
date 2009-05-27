@@ -19,7 +19,7 @@ namespace Autofac.Tests
                 new TypedParameter(typeof(int), 5),
                 new ResolvedParameter(
                     (pi, ctx) => pi.ParameterType == typeof(char),
-                    (ctx) => ctx.Resolve<char>("character")));
+                    (pi, ctx) => ctx.Resolve<char>("character")));
             var c = cb.Build();
             var s = c.Resolve<string>();
             Assert.AreEqual("aaaaa", s);
