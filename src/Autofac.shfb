@@ -26,7 +26,7 @@
     <ProjectSummary>A .NET IoC container written in C#. Focus on programmatic configuration with builder syntax. Zero intrusion into existing code. Create components using reflection or with lambda expressions for unlimited flexibility. Managed disposal of any IDisposable components created by the container within a defined scope.</ProjectSummary>
     <MissingTags>Summary, Parameter, Returns, AutoDocumentCtors, Namespace, TypeParameter</MissingTags>
     <VisibleItems>InheritedMembers, InheritedFrameworkMembers, Protected, SealedProtected</VisibleItems>
-    <HtmlHelp1xCompilerPath path="..\..\..\Program Files\HTML Help Workshop\" />
+    <HtmlHelp1xCompilerPath path="%ProgramFiles%\HTML Help Workshop\" />
     <HtmlHelp2xCompilerPath path="" />
     <OutputPath>Build\Help\</OutputPath>
     <SandcastlePath path="" />
