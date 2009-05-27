@@ -1122,6 +1122,44 @@
             <param name="ctorSignature">The types that designate the constructor to use.</param>
             <returns>A registrar allowing registration to continue.</returns>
         </member>
+        <member name="M:Autofac.Registrars.IGenericRegistrar.WithArguments(Autofac.Parameter[])">
+            <summary>
+            Associates constructor parameters with default values.
+            </summary>
+            <param name="additionalCtorArgs">The named values to apply to the constructor.
+            These may be overriden by supplying any/all values to the IContext.Resolve() method.</param>
+            <returns>
+            A registrar allowing registration to continue.
+            </returns>
+        </member>
+        <member name="M:Autofac.Registrars.IGenericRegistrar.WithArguments(System.Collections.Generic.IEnumerable{Autofac.Parameter})">
+            <summary>
+            Associates constructor parameters with default values.
+            </summary>
+            <param name="additionalCtorArgs">The named values to apply to the constructor.
+            These may be overriden by supplying any/all values to the IContext.Resolve() method.</param>
+            <returns>
+            A registrar allowing registration to continue.
+            </returns>
+        </member>
+        <member name="M:Autofac.Registrars.IGenericRegistrar.WithProperties(Autofac.NamedPropertyParameter[])">
+            <summary>
+            Provide explicit property values to be set on the new object.
+            </summary>
+            <param name="explicitProperties"></param>
+            <returns>A registrar allowing configuration to continue.</returns>
+            <remarks>Note, supplying a null value will not prevent property injection if
+            property injection is done through an OnActivating handler.</remarks>
+        </member>
+        <member name="M:Autofac.Registrars.IGenericRegistrar.WithProperties(System.Collections.Generic.IEnumerable{Autofac.NamedPropertyParameter})">
+            <summary>
+            Provide explicit property values to be set on the new object.
+            </summary>
+            <param name="explicitProperties"></param>
+            <returns>A registrar allowing configuration to continue.</returns>
+            <remarks>Note, supplying a null value will not prevent property injection if
+            property injection is done through an OnActivating handler.</remarks>
+        </member>
         <member name="M:Autofac.Registrars.Automatic.AutomaticRegistrar.#ctor(System.Predicate{System.Type})">
             <summary>
             Initializes a new instance of the <see cref="T:Autofac.Registrars.Automatic.AutomaticRegistrar"/> class.
@@ -1140,6 +1178,44 @@
             </summary>
             <param name="ctorSignature">The types that designate the constructor to use.</param>
             <returns>A registrar allowing registration to continue.</returns>
+        </member>
+        <member name="M:Autofac.Registrars.Automatic.AutomaticRegistrar.WithArguments(Autofac.Parameter[])">
+            <summary>
+            Associates constructor parameters with default values.
+            </summary>
+            <param name="additionalCtorArgs">The named values to apply to the constructor.
+            These may be overriden by supplying any/all values to the IContext.Resolve() method.</param>
+            <returns>
+            A registrar allowing registration to continue.
+            </returns>
+        </member>
+        <member name="M:Autofac.Registrars.Automatic.AutomaticRegistrar.WithArguments(System.Collections.Generic.IEnumerable{Autofac.Parameter})">
+            <summary>
+            Associates constructor parameters with default values.
+            </summary>
+            <param name="additionalCtorArgs">The named values to apply to the constructor.
+            These may be overriden by supplying any/all values to the IContext.Resolve() method.</param>
+            <returns>
+            A registrar allowing registration to continue.
+            </returns>
+        </member>
+        <member name="M:Autofac.Registrars.Automatic.AutomaticRegistrar.WithProperties(Autofac.NamedPropertyParameter[])">
+            <summary>
+            Provide explicit property values to be set on the new object.
+            </summary>
+            <param name="explicitProperties"></param>
+            <returns>A registrar allowing configuration to continue.</returns>
+            <remarks>Note, supplying a null value will not prevent property injection if
+            property injection is done through an OnActivating handler.</remarks>
+        </member>
+        <member name="M:Autofac.Registrars.Automatic.AutomaticRegistrar.WithProperties(System.Collections.Generic.IEnumerable{Autofac.NamedPropertyParameter})">
+            <summary>
+            Provide explicit property values to be set on the new object.
+            </summary>
+            <param name="explicitProperties"></param>
+            <returns>A registrar allowing configuration to continue.</returns>
+            <remarks>Note, supplying a null value will not prevent property injection if
+            property injection is done through an OnActivating handler.</remarks>
         </member>
         <member name="P:Autofac.Registrars.Automatic.AutomaticRegistrar.Syntax">
             <summary>
@@ -1200,12 +1276,14 @@
             reflection-based registrations.
             </summary>
         </member>
-        <member name="M:Autofac.Registrars.ReflectiveRegistrationSource.#ctor(Autofac.Registrars.DeferredRegistrationParameters,Autofac.Component.Activation.IConstructorSelector)">
+        <member name="M:Autofac.Registrars.ReflectiveRegistrationSource.#ctor(Autofac.Registrars.DeferredRegistrationParameters,Autofac.Component.Activation.IConstructorSelector,System.Collections.Generic.IEnumerable{Autofac.Parameter},System.Collections.Generic.IEnumerable{Autofac.NamedPropertyParameter})">
             <summary>
             Initializes a new instance of the <see cref="T:Autofac.Registrars.ReflectiveRegistrationSource"/> class.
             </summary>
             <param name="deferredParams">The deferred params.</param>
             <param name="constructorSelector">The constructor selector.</param>
+            <param name="arguments">Additional arguments to supply to the component's constructor.</param>
+            <param name="properties">Additional properties to set on the component.</param>
         </member>
         <member name="M:Autofac.Registrars.ReflectiveRegistrationSource.TryGetRegistration(Autofac.Service,Autofac.IComponentRegistration@)">
             <summary>
@@ -1226,13 +1304,15 @@
             <param name="services">The services.</param>
             <returns>True if a registration can be made.</returns>
         </member>
-        <member name="M:Autofac.Registrars.Automatic.AutomaticRegistrationHandler.#ctor(System.Predicate{System.Type},Autofac.Registrars.DeferredRegistrationParameters,Autofac.Component.Activation.IConstructorSelector)">
+        <member name="M:Autofac.Registrars.Automatic.AutomaticRegistrationHandler.#ctor(System.Predicate{System.Type},Autofac.Registrars.DeferredRegistrationParameters,Autofac.Component.Activation.IConstructorSelector,System.Collections.Generic.IEnumerable{Autofac.Parameter},System.Collections.Generic.IEnumerable{Autofac.NamedPropertyParameter})">
             <summary>
             Initializes a new instance of the <see cref="T:Autofac.Registrars.Automatic.AutomaticRegistrationHandler"/> class.
             </summary>
             <param name="predicate">The predicate.</param>
             <param name="deferredParams">The deferred registration params.</param>
             <param name="constructorSelector">The constructor selector.</param>
+            <param name="arguments">Additional arguments to supply to the component's constructor.</param>
+            <param name="properties">Additional properties to set on the component.</param>
         </member>
         <member name="M:Autofac.Registrars.Automatic.AutomaticRegistrationHandler.TryGetImplementation(Autofac.Service,System.Type@,System.Collections.Generic.IEnumerable{Autofac.Service}@)">
             <summary>
@@ -1655,6 +1735,44 @@
             </summary>
             <param name="ctorSignature">The types that designate the constructor to use.</param>
             <returns>A registrar allowing registration to continue.</returns>
+        </member>
+        <member name="M:Autofac.Registrars.Generic.GenericRegistrar.WithArguments(Autofac.Parameter[])">
+            <summary>
+            Associates constructor parameters with default values.
+            </summary>
+            <param name="additionalCtorArgs">The named values to apply to the constructor.
+            These may be overriden by supplying any/all values to the IContext.Resolve() method.</param>
+            <returns>
+            A registrar allowing registration to continue.
+            </returns>
+        </member>
+        <member name="M:Autofac.Registrars.Generic.GenericRegistrar.WithArguments(System.Collections.Generic.IEnumerable{Autofac.Parameter})">
+            <summary>
+            Associates constructor parameters with default values.
+            </summary>
+            <param name="additionalCtorArgs">The named values to apply to the constructor.
+            These may be overriden by supplying any/all values to the IContext.Resolve() method.</param>
+            <returns>
+            A registrar allowing registration to continue.
+            </returns>
+        </member>
+        <member name="M:Autofac.Registrars.Generic.GenericRegistrar.WithProperties(Autofac.NamedPropertyParameter[])">
+            <summary>
+            Provide explicit property values to be set on the new object.
+            </summary>
+            <param name="explicitProperties"></param>
+            <returns>A registrar allowing configuration to continue.</returns>
+            <remarks>Note, supplying a null value will not prevent property injection if
+            property injection is done through an OnActivating handler.</remarks>
+        </member>
+        <member name="M:Autofac.Registrars.Generic.GenericRegistrar.WithProperties(System.Collections.Generic.IEnumerable{Autofac.NamedPropertyParameter})">
+            <summary>
+            Provide explicit property values to be set on the new object.
+            </summary>
+            <param name="explicitProperties"></param>
+            <returns>A registrar allowing configuration to continue.</returns>
+            <remarks>Note, supplying a null value will not prevent property injection if
+            property injection is done through an OnActivating handler.</remarks>
         </member>
         <member name="P:Autofac.Registrars.Generic.GenericRegistrar.Syntax">
             <summary>
@@ -3344,7 +3462,7 @@
             to see how performance goes.
             </remarks>
         </member>
-        <member name="M:Autofac.Registrars.Generic.GenericRegistrationHandler.#ctor(System.Collections.Generic.IEnumerable{Autofac.Service},System.Type,Autofac.Registrars.DeferredRegistrationParameters,Autofac.Component.Activation.IConstructorSelector)">
+        <member name="M:Autofac.Registrars.Generic.GenericRegistrationHandler.#ctor(System.Collections.Generic.IEnumerable{Autofac.Service},System.Type,Autofac.Registrars.DeferredRegistrationParameters,Autofac.Component.Activation.IConstructorSelector,System.Collections.Generic.IEnumerable{Autofac.Parameter},System.Collections.Generic.IEnumerable{Autofac.NamedPropertyParameter})">
             <summary>
             Initializes a new instance of the <see cref="T:Autofac.Registrars.Generic.GenericRegistrationHandler"/> class.
             </summary>
@@ -3352,6 +3470,8 @@
             <param name="implementor">The implementor.</param>
             <param name="deferredParams">The deferred params.</param>
             <param name="constructorSelector">The constructor selector.</param>
+            <param name="arguments">Additional arguments to supply to the component's constructor.</param>
+            <param name="properties">Additional properties to set on the component.</param>
         </member>
         <member name="M:Autofac.Registrars.Generic.GenericRegistrationHandler.TryGetImplementation(Autofac.Service,System.Type@,System.Collections.Generic.IEnumerable{Autofac.Service}@)">
             <summary>
@@ -4958,6 +5078,30 @@
             <summary>
               Looks up a localized string similar to The property &apos;{0}&apos; has been specified multiple times for component &apos;{1}&apos;..
             </summary>
+        </member>
+        <member name="T:Autofac.ResolvedParameter">
+            <summary>
+            Flexible parameter type allows arbitrary values to be retrieved from the context.
+            </summary>
+            <remarks>Consider moving this capability up to the base class and making it non-abstract?</remarks>
+        </member>
+        <member name="M:Autofac.ResolvedParameter.#ctor(System.Func{System.Reflection.ParameterInfo,Autofac.IContext,System.Boolean},System.Func{System.Reflection.ParameterInfo,Autofac.IContext,System.Object})">
+            <summary>
+            Create an instance of the ResolvedParameter class.
+            </summary>
+            <param name="predicate">A predicate that determines which parameters on a constructor will be supplied by this instance.</param>
+            <param name="valueAccessor">A function that supplies the parameter value given the context.</param>
+        </member>
+        <member name="M:Autofac.ResolvedParameter.CanSupplyValue(System.Reflection.ParameterInfo,Autofac.IContext,System.Func{System.Object}@)">
+            <summary>
+            Returns true if the parameter is able to provide a value to a particular site.
+            </summary>
+            <param name="pi">Constructor, method, or property-mutator parameter.</param>
+            <param name="context">The component context in which the value is being provided.</param>
+            <param name="valueProvider">If the result is true, the valueProvider parameter will
+            be set to a function that will lazily retrieve the parameter value. If the result is false,
+            will be set to null.</param>
+            <returns>True if a value can be supplied; otherwise, false.</returns>
         </member>
         <member name="M:Autofac.SequenceExtensions.JoinWith(System.Collections.Generic.IEnumerable{System.String},System.String)">
             <summary>
