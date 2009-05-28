@@ -18,3 +18,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("Release built on 2009-05-26 20:54")]
 
 
+[assembly: System.Security.AllowPartiallyTrustedCallers]
