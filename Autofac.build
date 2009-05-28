@@ -9,20 +9,19 @@
 		<Version Condition="$(Version)==''">0.0.0.0</Version>
 
 
-
 		<ContribResources>contrib\Resource\Library\Autofac</ContribResources>
 	</PropertyGroup>
 
 	<Target Name="Integrate">
-		<MSBuild Projects="src/Autofac.build" Targets="Integrate" Properties="Configuration=$(Configuration);ArtifactDirectory=$(ArtifactDirectory)" />
+		<MSBuild Projects="src/Autofac.build" Targets="Integrate" Properties="Configuration=$(Configuration);ArtifactDirectory=$(ArtifactDirectory);AllowPartiallyTrustedCallers=$(AllowPartiallyTrustedCallers)" />
 		<CallTarget Targets="Update" />
-		<MSBuild Projects="contrib/AutofacContrib.build" Targets="Integrate" Properties="Configuration=$(Configuration);ArtifactDirectory=$(ArtifactDirectory)" />
+		<MSBuild Projects="contrib/AutofacContrib.build" Targets="Integrate" Properties="Configuration=$(Configuration);ArtifactDirectory=$(ArtifactDirectory);AllowPartiallyTrustedCallers=$(AllowPartiallyTrustedCallers)" />
 	</Target>
 
 	<Target Name="Release">
-		<MSBuild Projects="src/Autofac.build" Targets="Release" Properties="Configuration=$(Configuration);PackageDirectory=$(PackageDirectory);ArtifactDirectory=$(ArtifactDirectory);Version=$(Version)" />
+		<MSBuild Projects="src/Autofac.build" Targets="Release" Properties="Configuration=$(Configuration);PackageDirectory=$(PackageDirectory);ArtifactDirectory=$(ArtifactDirectory);Version=$(Version);AllowPartiallyTrustedCallers=$(AllowPartiallyTrustedCallers)" />
 		<CallTarget Targets="Update" />
-		<MSBuild Projects="contrib/AutofacContrib.build" Targets="Release" Properties="Configuration=$(Configuration);PackageDirectory=$(PackageDirectory);ArtifactDirectory=$(ArtifactDirectory);Version=$(Version)" />
+		<MSBuild Projects="contrib/AutofacContrib.build" Targets="Release" Properties="Configuration=$(Configuration);PackageDirectory=$(PackageDirectory);ArtifactDirectory=$(ArtifactDirectory);Version=$(Version);AllowPartiallyTrustedCallers=$(AllowPartiallyTrustedCallers)" />
 	</Target>
 
 	<Target Name="WipeResources">
@@ -40,5 +39,9 @@
 			<Output ItemName="coreFiles" TaskParameter="Include" />
 		</CreateItem>
 		<Copy SourceFiles="@(coreFiles)" DestinationFolder="$(ContribResources)" />
+	</Target>
+
+	<Target Name="_Version">
+		<MSBuild Projects="src/Autofac.build;contrib/AutofacContrib.build" Targets="_Version" Properties="AllowPartiallyTrustedCallers=$(AllowPartiallyTrustedCallers)" />
 	</Target>
 </Project>

@@ -141,9 +141,14 @@
 			<Output TaskParameter="FormattedTime" PropertyName="BuildTime" />
 		</Time>
 		<AssemblyInfo OutputFile="%(_VersionFiles.FullPath)" CodeLanguage="CS"
-									AssemblyVersion="$(Version)"
-									AssemblyFileVersion="$(Version)"
-									AssemblyConfiguration="$(Configuration) built on $(BuildTime)" />
+			AssemblyVersion="$(Version)"
+			AssemblyFileVersion="$(Version)"
+			AssemblyConfiguration="$(Configuration) built on $(BuildTime)" />
+		<WriteLinesToFile
+			File="%(_VersionFiles.FullPath)"
+			Overwrite="false"
+			Lines="[assembly: System.Security.AllowPartiallyTrustedCallers]"
+			Condition="$(AllowPartiallyTrustedCallers)==true" />
 	</Target>
 
 
