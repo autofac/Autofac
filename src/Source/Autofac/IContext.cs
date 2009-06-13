@@ -286,11 +286,36 @@ namespace Autofac
         /// The component instance that provides the service, or null if
         /// none is available.
         /// </returns>
-        /// <remarks>Useful with the C#3 initialiser syntax.</remarks>
+        /// <remarks>Useful with the C#3 initializer syntax.</remarks>
         /// <example>
         /// container.Register&lt;ISomething&gt;(c =&gt; new Something(){ AProperty = c.ResolveOptional&lt;IOptional&gt;() });
         /// </example>
-        TService ResolveOptional<TService>(IEnumerable<Parameter> parameters); 
+        TService ResolveOptional<TService>(IEnumerable<Parameter> parameters);
+
+
+		/// <summary>
+		/// Retrieve a service registered with the container
+		/// </summary>
+		/// <typeparam name="TService">The type of the service to retrieve.</typeparam>
+		/// <param name="serviceName">Name of the service to retrieve.</param>
+		/// <param name="parameters">The parameters.</param>
+		/// <returns>
+		/// The component instance that provides the service, or null if
+		/// none is available
+		/// </returns>
+		TService ResolveOptional<TService>(string serviceName, IEnumerable<Parameter> parameters);
+
+		/// <summary>
+		/// Retrieve a service registered with the container
+		/// </summary>
+		/// <typeparam name="TService">The type of the service to retrieve.</typeparam>
+		/// <param name="serviceName">Name of the service to retrieve.</param>
+		/// <param name="parameters">The parameters.</param>
+		/// <returns>
+		/// The component instance that provides the service, or null if
+		/// none is available
+		/// </returns>
+		TService ResolveOptional<TService>(string serviceName, params Parameter[] parameters);
 
         /// <summary>
         /// Determine whether or not a service has been registered.

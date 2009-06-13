@@ -50,6 +50,30 @@ namespace Autofac.Tests
 			Assert.IsNull(inst);
 		}
 
+    	[Test]
+    	public void ResolveNamedOptionalWithParameters()
+    	{
+			var cb = new ContainerBuilder();
+			cb.Register<Parameterised>();
+			var container = cb.Build();
+			const string param1 = "Hello";
+			const int param2 = 42;
+			var result = container.ResolveOptional<Parameterised>(
+				new NamedParameter("a", param1),
+				new NamedParameter("b", param2));
+			Assert.IsNotNull(result);
+			Assert.AreEqual(param1, result.A);
+			Assert.AreEqual(param2, result.B);
+    	}
+
+    	[Test]
+    	public void ResolveNamedOptionalWithParametersNotPresent()
+    	{
+    		var target = new Container();
+    		var instance = target.ResolveOptional<string>(TypedParameter.From(1));
+			Assert.IsNull(instance);
+    	}
+
 		[Test]
         public void RegisterInstance()
         {

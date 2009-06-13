@@ -618,7 +618,37 @@ namespace Autofac
             return CreateResolutionContext().ResolveOptional<TService>(parameters);
         }
 
-        /// <summary>
+		/// <summary>
+		/// Retrieve a service registered with the container
+		/// </summary>
+		/// <typeparam name="TService">The type of the service to retrieve.</typeparam>
+		/// <param name="serviceName">Name of the service to retrieve.</param>
+		/// <param name="parameters">The parameters.</param>
+		/// <returns>
+		/// The component instance that provides the service, or null if
+		/// none is available
+		/// </returns>
+    	public TService ResolveOptional<TService>(string serviceName, IEnumerable<Parameter> parameters)
+    	{
+    		return CreateResolutionContext().ResolveOptional<TService>(serviceName, parameters);
+    	}
+
+		/// <summary>
+		/// Retrieve a service registered with the container
+		/// </summary>
+		/// <typeparam name="TService">The type of the service to retrieve.</typeparam>
+		/// <param name="serviceName">Name of the service to retrieve.</param>
+		/// <param name="parameters">The parameters.</param>
+		/// <returns>
+		/// The component instance that provides the service, or null if
+		/// none is available
+		/// </returns>
+    	public TService ResolveOptional<TService>(string serviceName, params Parameter[] parameters)
+    	{
+			return CreateResolutionContext().ResolveOptional<TService>(serviceName, parameters);
+    	}
+
+    	/// <summary>
         /// Retrieve a service registered with the container.
         /// </summary>
         /// <typeparam name="TService">The service to retrieve.</typeparam>

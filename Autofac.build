@@ -8,8 +8,6 @@
 		<PackageDirectory Condition="$(PackageDirectory)==''">$(BuildPath)\_Package</PackageDirectory>
 		<Version Condition="$(Version)==''">0.0.0.0</Version>
 		<AllowPartiallyTrustedCallers Condition="$(AllowPartiallyTrustedCallers)==''">true</AllowPartiallyTrustedCallers>
-
-
 		<ContribResources>contrib\Resource\Library\Autofac</ContribResources>
 	</PropertyGroup>
 

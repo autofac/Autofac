@@ -208,7 +208,43 @@ namespace Autofac
             return ResolveOptional<TService>((IEnumerable<Parameter>)parameters);
         }
 
-        /// <summary>
+		/// <summary>
+		/// Retrieve a service registered with the container
+		/// </summary>
+		/// <typeparam name="TService">The type of the service to retrieve.</typeparam>
+		/// <param name="serviceName">Name of the service to retrieve.</param>
+		/// <param name="parameters">The parameters.</param>
+		/// <returns>
+		/// The component instance that provides the service, or null if
+		/// none is available
+		/// </returns>
+		public TService ResolveOptional<TService>(string serviceName, IEnumerable<Parameter> parameters)
+		{
+			Enforce.ArgumentNotNull(serviceName, "serviceName");
+			Enforce.ArgumentNotNull(parameters, "parameters");
+			object result;
+			TryResolve(serviceName, out result, parameters);
+			return (TService)result;
+		}
+
+		/// <summary>
+		/// Retrieve a service registered with the container
+		/// </summary>
+		/// <typeparam name="TService">The type of the service to retrieve.</typeparam>
+		/// <param name="serviceName">Name of the service to retrieve.</param>
+		/// <param name="parameters">The parameters.</param>
+		/// <returns>
+		/// The component instance that provides the service, or null if
+		/// none is available
+		/// </returns>
+		public TService ResolveOptional<TService>(string serviceName, params Parameter[] parameters)
+		{
+			Enforce.ArgumentNotNull(serviceName, "serviceName");
+			Enforce.ArgumentNotNull(parameters, "parameters");
+			return ResolveOptional<TService>((IEnumerable<Parameter>) parameters);
+		}
+
+    	/// <summary>
         /// Retrieve a service registered with the container.
         /// </summary>
         /// <typeparam name="TService">The service to retrieve.</typeparam>
@@ -551,7 +587,6 @@ namespace Autofac
             TryResolve(typeof(TService), out result, parameters);
             return (TService)result;
         }
-
         #endregion
     }
 }
