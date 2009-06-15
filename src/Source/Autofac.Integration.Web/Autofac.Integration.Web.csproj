@@ -60,6 +60,7 @@
       <DependentUpon>ContainerDisposalModuleResources.resx</DependentUpon>
     </Compile>
     <Compile Include="ContainerProvider.cs" />
+    <Compile Include="ContainerProviderContainer.cs" />
     <Compile Include="DependencyInjectionAttribute.cs" />
     <Compile Include="DependencyInjectionModule.cs" />
     <Compile Include="DependencyInjectionModuleResources.Designer.cs">
