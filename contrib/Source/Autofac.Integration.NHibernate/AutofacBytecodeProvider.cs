@@ -8,12 +8,14 @@ namespace Autofac.Integration.NHibernate
 	{
 		private readonly IContainer container;
 		private readonly IProxyFactoryFactory proxyFactoryFactory;
+		private readonly ICollectionTypeFactory collectionTypeFactory;
 		private readonly AutofacObjectsFactory objectsFactory;
 
-		public AutofacBytecodeProvider(IContainer container, IProxyFactoryFactory proxyFactoryFactory)
+		public AutofacBytecodeProvider(IContainer container, IProxyFactoryFactory proxyFactoryFactory, ICollectionTypeFactory collectionTypeFactory)
 		{
 			this.container = container;
 			this.proxyFactoryFactory = proxyFactoryFactory;
+			this.collectionTypeFactory = collectionTypeFactory;
 			this.objectsFactory = new AutofacObjectsFactory(container);
 		}
 
@@ -30,6 +32,11 @@ namespace Autofac.Integration.NHibernate
 		public IProxyFactoryFactory ProxyFactoryFactory
 		{
 			get { return proxyFactoryFactory; }
+		}
+
+		public ICollectionTypeFactory CollectionTypeFactory
+		{
+			get { return collectionTypeFactory; }
 		}
 	}
 }
