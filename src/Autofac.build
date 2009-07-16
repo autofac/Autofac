@@ -11,6 +11,7 @@
 		<BuildPath Condition="$(BuildPath)==''">$(MSBuildProjectDirectory)\Build</BuildPath>
 		<Configuration Condition="$(Configuration)==''">Release</Configuration>
 		<ArtifactDirectory Condition="$(ArtifactDirectory)==''">$(BuildPath)\Artifact</ArtifactDirectory>
+		<BuildFramework></BuildFramework>
 
 		<PackageDirectory Condition="$(PackageDirectory)==''">$(BuildPath)\_Package</PackageDirectory>
 		<Version Condition="$(Version)==''">0.0.0.0</Version>
@@ -30,15 +31,27 @@
 		<SourceExclusions>**\.svn\**\*.*;**\_svn\**\*.*;**\*.user;**\*.suo;**\*.db;**\bin\**\*.*;**\obj\**\*.*;</SourceExclusions>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<!--Silverlight 2.0-->
+		<BuildTargets Condition="$(BuildFramework)=='SL2'">Silverlight 2.0</BuildTargets>
+		<BuildConstants Condition="$(BuildFramework)=='SL2'">SILVERLIGHT</BuildConstants>
+		<!--Silverlight 3.0-->
+		<BuildTargets Condition="$(BuildFramework)=='SL3'">Silverlight 3.0</BuildTargets>
+		<BuildConstants Condition="$(BuildFramework)=='SL3'">SILVERLIGHT</BuildConstants>
+		
+		
+		<BuildConstants Condition="$(BuildFramework)==''">NET35</BuildConstants>
+	</PropertyGroup>
+
 	<!-- 
 	 Solution redirects. Every VS project normally knows how to support these targets
 		-->
 	<Target Name="Build">
-		<MSBuild Projects="$(MSBuildProjectName).sln" Targets="Build" Properties="Configuration=$(Configuration);BuildConstants=NET35"/>
+		<MSBuild Projects="$(MSBuildProjectName).sln" Targets="Build" Properties="Configuration=$(Configuration)$(BuildFramework);BuildConstants=$(BuildConstants);MSBuildTargets=$(BuildTargets)"/>
 	</Target>
 
 	<Target Name="Clean">
-		<MSBuild Projects="$(MSBuildProjectName).sln" Targets="Clean" Properties="Configuration=$(Configuration)"/>
+		<MSBuild Projects="$(MSBuildProjectName).sln" Targets="Clean" Properties="Configuration=$(Configuration)$(BuildFramework);BuildConstants=$(BuildConstants);MSBuildTargets=$(BuildTargets)" />
 
 		<CreateItem Include="**/Debug/**/*.*;**/Release/**/*.*">
 			<Output ItemName="_binaryFiles" TaskParameter="Include"/>

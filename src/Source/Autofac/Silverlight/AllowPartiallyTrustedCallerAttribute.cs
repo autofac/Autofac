@@ -26,7 +26,7 @@ using System;
 
 #if SILVERLIGHT
 
-namespace System.Reflection
+namespace System.Security
 {
 	/// <summary>
 	/// Attribute marker to make code compatible with Silverlight

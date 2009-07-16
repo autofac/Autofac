@@ -410,6 +410,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Silverlight 2.0'" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Silverlight 3.0'" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
