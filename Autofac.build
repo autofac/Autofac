@@ -12,15 +12,25 @@
 	</PropertyGroup>
 
 	<Target Name="Integrate">
-		<MSBuild Projects="src/Autofac.build" Targets="Integrate" Properties="Configuration=$(Configuration);ArtifactDirectory=$(ArtifactDirectory);AllowPartiallyTrustedCallers=$(AllowPartiallyTrustedCallers)" />
+		<MSBuild Projects="src/Autofac.build" 
+						 Targets="Integrate" 
+						 Properties="Configuration=$(Configuration);ArtifactDirectory=$(ArtifactDirectory);AllowPartiallyTrustedCallers=$(AllowPartiallyTrustedCallers);BuildFramework=$(BuildFramework)" />
 		<CallTarget Targets="Update" />
-		<MSBuild Projects="contrib/AutofacContrib.build" Targets="Integrate" Properties="Configuration=$(Configuration);ArtifactDirectory=$(ArtifactDirectory);AllowPartiallyTrustedCallers=$(AllowPartiallyTrustedCallers)" />
+		<MSBuild Projects="contrib/AutofacContrib.build" 
+						 Targets="Integrate" 
+						 Properties="Configuration=$(Configuration);ArtifactDirectory=$(ArtifactDirectory);AllowPartiallyTrustedCallers=$(AllowPartiallyTrustedCallers);BuildFramework=$(BuildFramework)"
+						 Condition="$(BuildFramwork)==''" />
 	</Target>
 
 	<Target Name="Release">
-		<MSBuild Projects="src/Autofac.build" Targets="Release" Properties="Configuration=$(Configuration);PackageDirectory=$(PackageDirectory);ArtifactDirectory=$(ArtifactDirectory);Version=$(Version);AllowPartiallyTrustedCallers=$(AllowPartiallyTrustedCallers)" />
+		<MSBuild Projects="src/Autofac.build" 
+						 Targets="Release" 
+						 Properties="Configuration=$(Configuration);PackageDirectory=$(PackageDirectory);ArtifactDirectory=$(ArtifactDirectory);Version=$(Version);AllowPartiallyTrustedCallers=$(AllowPartiallyTrustedCallers);BuildFramework=$(BuildFramework)"/>
 		<CallTarget Targets="Update" />
-		<MSBuild Projects="contrib/AutofacContrib.build" Targets="Release" Properties="Configuration=$(Configuration);PackageDirectory=$(PackageDirectory);ArtifactDirectory=$(ArtifactDirectory);Version=$(Version);AllowPartiallyTrustedCallers=$(AllowPartiallyTrustedCallers)" />
+		<MSBuild Projects="contrib/AutofacContrib.build" 
+						 Targets="Release" 
+						 Properties="Configuration=$(Configuration);PackageDirectory=$(PackageDirectory);ArtifactDirectory=$(ArtifactDirectory);Version=$(Version);AllowPartiallyTrustedCallers=$(AllowPartiallyTrustedCallers);BuildFramework=$(BuildFramework)"
+						 Condition="$(BuildFramwork)==''" />
 	</Target>
 
 	<Target Name="WipeResources">
@@ -41,6 +51,8 @@
 	</Target>
 
 	<Target Name="_Version">
-		<MSBuild Projects="src/Autofac.build;contrib/AutofacContrib.build" Targets="_Version" Properties="AllowPartiallyTrustedCallers=$(AllowPartiallyTrustedCallers)" />
+		<MSBuild Projects="src/Autofac.build;contrib/AutofacContrib.build" 
+						 Targets="_Version" 
+						 Properties="AllowPartiallyTrustedCallers=$(AllowPartiallyTrustedCallers);BuildFramework=$(BuildFramework)" />
 	</Target>
 </Project>

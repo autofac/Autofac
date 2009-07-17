@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Import Project="$(MSBuildProjectName).build" />
+
 	<!--Requires "ExternalPackageDirectory"-->
 	<!--Grab the CC.NET values-->
 	<PropertyGroup>
@@ -8,5 +8,7 @@
 		<Version Condition="$(CCNetLabel)!=''">$(CCNetLabel)</Version>
 		<!--Grab external package dir, if forced, default otherwise-->
 		<PackageDirectory Condition="$(CCNetBuildCondition)=='ForceBuild'">$(ExternalPackageDirectory)/$(Version)</PackageDirectory>
-	</PropertyGroup>	
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildProjectName).build" />
 </Project>
