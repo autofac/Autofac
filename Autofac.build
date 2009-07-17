@@ -19,7 +19,7 @@
 		<MSBuild Projects="contrib/AutofacContrib.build" 
 						 Targets="Integrate" 
 						 Properties="Configuration=$(Configuration);ArtifactDirectory=$(ArtifactDirectory);AllowPartiallyTrustedCallers=$(AllowPartiallyTrustedCallers);BuildFramework=$(BuildFramework)"
-						 Condition="$(BuildFramwork)==''" />
+						 Condition="$(BuildFramework)==''" />
 	</Target>
 
 	<Target Name="Release">
@@ -30,7 +30,7 @@
 		<MSBuild Projects="contrib/AutofacContrib.build" 
 						 Targets="Release" 
 						 Properties="Configuration=$(Configuration);PackageDirectory=$(PackageDirectory);ArtifactDirectory=$(ArtifactDirectory);Version=$(Version);AllowPartiallyTrustedCallers=$(AllowPartiallyTrustedCallers);BuildFramework=$(BuildFramework)"
-						 Condition="$(BuildFramwork)==''" />
+						 Condition="$(BuildFramework)==''" />
 	</Target>
 
 	<Target Name="WipeResources">
