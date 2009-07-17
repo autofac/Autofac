@@ -45,9 +45,6 @@
     <Reference Include="System">
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Data">
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Xml">
       <Private>True</Private>
     </Reference>

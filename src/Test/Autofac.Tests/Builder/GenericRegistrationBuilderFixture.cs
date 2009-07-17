@@ -6,7 +6,9 @@ namespace Autofac.Tests.Builder
 {
     public class G<T>
     {
+#pragma warning disable 169
         T unused;
+#pragma warning restore 169
 
         public G(int i)
         {

@@ -27,31 +27,38 @@
 		<MefSource>Source\Autofac.Integration.Mef\bin\$(Configuration)</MefSource>
 		<WcfSource>Source\Autofac.Integration.Wcf\bin\$(Configuration)</WcfSource>
 		<WebSource>Source\Autofac.Integration.Web\bin\$(Configuration)</WebSource>
-
 		<SourceExclusions>**\.svn\**\*.*;**\_svn\**\*.*;**\*.user;**\*.suo;**\*.db;**\bin\**\*.*;**\obj\**\*.*;</SourceExclusions>
+		<ProjectName>$(MSBuildProjectName)</ProjectName>
 	</PropertyGroup>
 
-	<PropertyGroup>
-		<!--Silverlight 2.0-->
-		<BuildTargets Condition="$(BuildFramework)=='SL2'">Silverlight 2.0</BuildTargets>
-		<BuildConstants Condition="$(BuildFramework)=='SL2'">SILVERLIGHT</BuildConstants>
-		<!--Silverlight 3.0-->
-		<BuildTargets Condition="$(BuildFramework)=='SL3'">Silverlight 3.0</BuildTargets>
-		<BuildConstants Condition="$(BuildFramework)=='SL3'">SILVERLIGHT</BuildConstants>
-		
-		
-		<BuildConstants Condition="$(BuildFramework)==''">NET35</BuildConstants>
+	<!--Default-->
+	<PropertyGroup Condition="$(BuildFramework)==''">
+		<PackageName>$(ProjectName)-$(Version)</PackageName>
+		<BuildConstants>NET35</BuildConstants>
+	</PropertyGroup>
+	
+	<!--Silverlight 2.0 runtime-->
+	<PropertyGroup Condition="$(BuildFramework)=='SL2'">
+		<BuildTargets>Silverlight 2.0</BuildTargets>
+		<BuildConstants>SILVERLIGHT</BuildConstants>
+		<PackageName>$(ProjectName)-$(Version)-SL2</PackageName>
 	</PropertyGroup>
 
+	<!--Silverlight 3.0 runtime-->
+	<PropertyGroup Condition="$(BuildFramework)=='SL3'">
+		<BuildTargets>Silverlight 3.0</BuildTargets>
+		<BuildConstants>SILVERLIGHT</BuildConstants>
+		<PackageName>$(ProjectName)-$(Version)-SL3</PackageName>
+	</PropertyGroup>
 	<!-- 
 	 Solution redirects. Every VS project normally knows how to support these targets
 		-->
 	<Target Name="Build">
-		<MSBuild Projects="$(MSBuildProjectName).sln" Targets="Build" Properties="Configuration=$(Configuration)$(BuildFramework);BuildConstants=$(BuildConstants);MSBuildTargets=$(BuildTargets)"/>
+		<MSBuild Projects="$(ProjectName).sln" Targets="Build" Properties="Configuration=$(Configuration)$(BuildFramework);BuildConstants=$(BuildConstants);MSBuildTargets=$(BuildTargets)"/>
 	</Target>
 
 	<Target Name="Clean">
-		<MSBuild Projects="$(MSBuildProjectName).sln" Targets="Clean" Properties="Configuration=$(Configuration)$(BuildFramework);BuildConstants=$(BuildConstants);MSBuildTargets=$(BuildTargets)" />
+		<MSBuild Projects="$(ProjectName).sln" Targets="Clean" Properties="Configuration=$(Configuration)$(BuildFramework);BuildConstants=$(BuildConstants);MSBuildTargets=$(BuildTargets)" />
 
 		<CreateItem Include="**/Debug/**/*.*;**/Release/**/*.*">
 			<Output ItemName="_binaryFiles" TaskParameter="Include"/>
@@ -122,25 +129,25 @@
 		-->
 		<NCover ToolPath="Resource\Tool\NCover"
 			CommandLineExe="Resource/Tool/NUnit/nunit-console-x86.exe"
-			CommandLineArgs="@(_testFiles->'&quot;%(FullPath)&quot;', ' ') /nologo /noshadow /xml=&quot;$(ArtifactDirectory)\$(MSBuildProjectName).Tests-result.xml&quot;"
+			CommandLineArgs="@(_testFiles->'&quot;%(FullPath)&quot;', ' ') /nologo /noshadow /xml=&quot;$(ArtifactDirectory)\$(ProjectName).Tests-result.xml&quot;"
 			AssemblyList="@(_coverageFiles)"
-			CoverageFile="$(ArtifactDirectory)\$(MSBuildProjectName)-coverage.xml"
-			LogFile="$(ArtifactDirectory)\$(MSBuildProjectName)-coverage.log"
+			CoverageFile="$(ArtifactDirectory)\$(ProjectName)-coverage.xml"
+			LogFile="$(ArtifactDirectory)\$(ProjectName)-coverage.log"
 			ExcludeAttributes="System.Diagnostics.CodeAnalysis.NoCodeCoverageAttribute;System.Runtime.CompilerServices.CompilerGeneratedAttribute;System.CodeDom.Compiler.GeneratedCodeAttribute"
 			ContinueOnError="false"
 		/>
 
 		<NCoverExplorer
 			ToolPath="Resource\Tool\NCoverExplorer"
-			ProjectName="$(MSBuildProjectName)"
+			ProjectName="$(ProjectName)"
 			ReportType="ModuleClassSummary"
-			XmlReportName="$(ArtifactDirectory)\$(MSBuildProjectName).fCoverage-result.xml"
-			HtmlReportName="$(ArtifactDirectory)\$(MSBuildProjectName).fCoverage-summary.html"
+			XmlReportName="$(ArtifactDirectory)\$(ProjectName).fCoverage-result.xml"
+			HtmlReportName="$(ArtifactDirectory)\$(ProjectName).fCoverage-summary.html"
 			ShowExcluded="True"
 			SatisfactoryCoverage="75"
 			MinimumCoverage="75"
 			Sort="FunctionCoverageAscending"
-			CoverageFiles="$(ArtifactDirectory)\$(MSBuildProjectName)-coverage.xml"
+			CoverageFiles="$(ArtifactDirectory)\$(ProjectName)-coverage.xml"
 		/>
 	</Target>
 
@@ -175,8 +182,8 @@
 	</Target>
 
 
-	<Target Name="GenerateHelp" DependsOnTargets="Build;Copy">
-		<Exec Command="Resource\Tool\SHFB\SandcastleBuilderConsole.exe $(MSBuildProjectName).shfb" />
+	<Target Name="GenerateHelp" DependsOnTargets="Build;Copy" Condition="$(BuildFramework)==''">
+		<Exec Command="Resource\Tool\SHFB\SandcastleBuilderConsole.exe $(ProjectName).shfb" />
 	</Target>
 
 	<Target Name="Distrib" DependsOnTargets="Clean;Build;Copy;Config;GenerateHelp">
@@ -186,6 +193,6 @@
 		<CreateItem Include="$(LibraryPath)\Autofac*.*;$(LicensePath)\*.*">
 			<Output ItemName="_libFiles" TaskParameter="Include" />
 		</CreateItem>
-		<Zip Files="@(_libFiles)" ZipFileName="$(PackageDirectory)\$(MSBuildProjectName)-$(Version).zip" Flatten="false" WorkingDirectory="$(BuildPath)" />
+		<Zip Files="@(_libFiles)" ZipFileName="$(PackageDirectory)\$(PackageName).zip" Flatten="false" WorkingDirectory="$(BuildPath)" />
 	</Target>
 </Project>
