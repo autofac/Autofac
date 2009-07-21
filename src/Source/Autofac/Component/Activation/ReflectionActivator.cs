@@ -289,10 +289,17 @@ namespace Autofac.Component.Activation
             return reasonNotUsable == null;
         }
 
-		static Exception KeepTargetInvocationStack(TargetInvocationException ex)
+		static Exception UnwindInvocationException(TargetInvocationException ex)
 		{
-			InternalPreserveStackTraceMethod.Invoke(ex.InnerException, null);
-			return ex.InnerException;
+            Exception result = ex;
+
+            if (ex.InnerException != null && InternalPreserveStackTraceMethod != null)
+            {
+                result = ex.InnerException;
+                InternalPreserveStackTraceMethod.Invoke(result, null);
+            }
+
+			return result;
 		}
 
         object ConstructInstance(ConstructorInfo ci, IContext context, IEnumerable<Parameter> parameters, Func<object>[] parameterAccessors)
@@ -307,7 +314,7 @@ namespace Autofac.Component.Activation
             }
             catch (TargetInvocationException tie)
             {
-            	throw KeepTargetInvocationStack(tie);
+            	throw UnwindInvocationException(tie);
             }
         }
 
