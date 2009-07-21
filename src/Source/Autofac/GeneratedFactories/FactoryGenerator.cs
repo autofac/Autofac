@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
 
 namespace Autofac.GeneratedFactories
@@ -37,21 +36,19 @@ namespace Autofac.GeneratedFactories
     /// Generates context-bound closures that represent factories from
     /// a set of heuristics based on delegate type signatures.
     /// </summary>
-    /// <typeparam name="TDelegate">The factory delegate type.</typeparam>
-    public class FactoryGenerator<TDelegate>
+    public class FactoryGenerator
     {
-        Func<IContext, IEnumerable<Parameter>, TDelegate> _generator;
+    	readonly Func<IContext, IEnumerable<Parameter>, Delegate> _generator;
 
         /// <summary>
         /// Create a factory generator.
         /// </summary>
         /// <param name="service">The service that will be resolved in
         /// order to create the products of the factory.</param>
-        public FactoryGenerator(Service service)
+		/// <param name="delegateType">The factory delegate type.</param>
+        public FactoryGenerator(Type delegateType, Service service)
         {
             Enforce.ArgumentNotNull(service, "service");
-
-            var delegateType = typeof(TDelegate);
             Enforce.ArgumentTypeIsFunction(delegateType);
 
             // (c, p) => ([dps]*) => (drt)Resolve(c, service, [new NamedParameter(name, (object)dps)]*)
@@ -90,12 +87,12 @@ namespace Autofac.GeneratedFactories
             var creator = Expression.Lambda(delegateType, resolveCast, creatorParams);
 
             // (c, p) => (
-            var activator = Expression.Lambda<Func<IContext, IEnumerable<Parameter>, TDelegate>>(creator, activatorParams);
+            var activator = Expression.Lambda<Func<IContext, IEnumerable<Parameter>, Delegate>>(creator, activatorParams);
 
             _generator = activator.Compile();
         }
 
-        Expression[] MapParametersForDelegateType(Type delegateType, List<ParameterExpression> creatorParams)
+    	static Expression[] MapParametersForDelegateType(Type delegateType, List<ParameterExpression> creatorParams)
         {
             if (delegateType.Name.StartsWith("Func`"))
             {
@@ -123,13 +120,25 @@ namespace Autofac.GeneratedFactories
         /// <param name="context">The context in which the factory will be used.</param>
         /// <param name="parameters">Parameters provided to the resolve call for the factory itself.</param>
         /// <returns>A factory delegate that will work within the context.</returns>
-        public TDelegate GenerateFactory(IContext context, IEnumerable<Parameter> parameters)
+        public Delegate GenerateFactory(IContext context, IEnumerable<Parameter> parameters)
         {
             Enforce.ArgumentNotNull(context, "context");
             Enforce.ArgumentNotNull(parameters, "parameters");
 
             return _generator(context.Resolve<IContext>(), parameters);
         }
+
+		/// <summary>
+		/// Generates a factory delegate that closes over the provided context.
+		/// </summary>
+		/// <param name="context">The context in which the factory will be used.</param>
+		/// <param name="parameters">Parameters provided to the resolve call for the factory itself.</param>
+		/// <returns>A factory delegate that will work within the context.</returns>
+		public TDelegate GenerateFactory<TDelegate>(IContext context, IEnumerable<Parameter> parameters)
+            where TDelegate : class 
+		{
+			return (TDelegate)(object)GenerateFactory(context, parameters);
+		}
     }
 
 }

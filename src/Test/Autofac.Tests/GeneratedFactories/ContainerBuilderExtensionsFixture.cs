@@ -162,6 +162,46 @@ namespace Autofac.Tests.GeneratedFactories
             var innerFac = inner.Resolve<StringHolder.Factory>();
             Assert.AreEqual("Inner", innerFac().S);
         }
+
+		[Test]
+		public void CreateGenericFromNongenericFactoryDelegate()
+		{
+			var builder = new ContainerBuilder();
+
+			builder.Register<A<string>>().WithScope(InstanceScope.Factory);
+			builder.RegisterGeneratedFactory(typeof(A<string>.Factory), new TypedService(typeof(A<string>)));
+
+			var container = builder.Build();
+
+			var factory = container.Resolve<A<string>.Factory>();
+			Assert.IsNotNull(factory);
+
+			var s = "Hello!";
+			var a = factory(s);
+			Assert.IsNotNull(a);
+			Assert.AreEqual(s, a.P);
+
+		}
+
+    	[Test]
+		public void CreateGenericFromNongenericFactoryDelegateImpliedServiceType()
+    	{
+			var builder = new ContainerBuilder();
+
+			builder.Register<A<string>>().WithScope(InstanceScope.Factory);
+			builder.RegisterGeneratedFactory(typeof(A<string>.Factory));
+
+			var container = builder.Build();
+
+			var factory = container.Resolve<A<string>.Factory>();
+			Assert.IsNotNull(factory);
+
+			var s = "Hello!";
+			var a = factory(s);
+			Assert.IsNotNull(a);
+			Assert.AreEqual(s, a.P);
+    		
+    	}
     }
 #endif
 }
