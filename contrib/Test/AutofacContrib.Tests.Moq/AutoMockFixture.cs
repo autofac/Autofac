@@ -50,7 +50,7 @@ namespace AutofacContrib.Tests.Moq
         {
             using (var mock = AutoMock.GetLoose())
             {
-                RunWithSingleExpectationTest(mock);
+                RunWithSingleSetupationTest(mock);
             }
         }
 
@@ -60,7 +60,7 @@ namespace AutofacContrib.Tests.Moq
             using (var mock = AutoMock.GetLoose())
             {
                 var mockA = new Mock<IServiceA>();
-                mockA.Expect(x => x.RunA());
+                mockA.Setup(x => x.RunA());
                 mock.Provide(mockA.Object);
 
                 var component = mock.Create<TestComponent>();
@@ -93,25 +93,25 @@ namespace AutofacContrib.Tests.Moq
 
         [Test]
         [ExpectedException(typeof(MockException))]
-        public void UnmetExpectationWithStrictMocksThrowsException()
+        public void UnmetSetupationWithStrictMocksThrowsException()
         {
             using (var mock = AutoMock.GetStrict())
             {
-                RunWithSingleExpectationTest(mock);
+                RunWithSingleSetupationTest(mock);
             }
         }
 
         [Test]
-        public void LooseWorksWithUnmetExpectations()
+        public void LooseWorksWithUnmetSetupations()
         {
             using (var loose = AutoMock.GetLoose())
             {
-                RunWithSingleExpectationTest(loose);
+                RunWithSingleSetupationTest(loose);
             }
         }
 
         [Test]
-        public void StrictWorksWithAllExpectationsMet()
+        public void StrictWorksWithAllSetupationsMet()
         {
             using (var strict = AutoMock.GetStrict())
             {
@@ -120,26 +120,26 @@ namespace AutofacContrib.Tests.Moq
         }
 
         [Test]
-        public void NormalExpectationsAreNotVerifiedByDefault()
+        public void NormalSetupationsAreNotVerifiedByDefault()
         {
             using (var mock = AutoMock.GetLoose())
             {
-                SetUpExpectations(mock);
+                SetUpSetupations(mock);
             }
         }
 
         [Test]
         [ExpectedException(typeof(MockException))]
-        public void UnmetVerifiableExpectationsCauseExceptionByDefault()
+        public void UnmetVerifiableSetupationsCauseExceptionByDefault()
         {
             using (var mock = AutoMock.GetLoose())
             {
-                SetUpVerifableExpectations(mock);
+                SetUpVerifableSetupations(mock);
             }
         }
 
         [Test]
-        public void VerifyAllSetTrue_ExpectationsAreVerified()
+        public void VerifyAllSetTrue_SetupationsAreVerified()
         {
             using (var mock = AutoMock.GetLoose())
             {
@@ -150,12 +150,12 @@ namespace AutofacContrib.Tests.Moq
 
         [Test]
         [ExpectedException(typeof(MockException))]
-        public void VerifyAllSetTrue_UnmetExpectationsCauseException()
+        public void VerifyAllSetTrue_UnmetSetupationsCauseException()
         {
             using (var mock = AutoMock.GetLoose())
             {
                 mock.VerifyAll = true;
-                SetUpExpectations(mock);
+                SetUpSetupations(mock);
             }
         }
 
@@ -174,27 +174,27 @@ namespace AutofacContrib.Tests.Moq
 
         private static void RunTest(AutoMock mock)
         {
-            SetUpExpectations(mock);
+            SetUpSetupations(mock);
 
             var component = mock.Create<TestComponent>();
             component.RunAll();
         }
 
-        private static void SetUpExpectations(AutoMock mock)
+        private static void SetUpSetupations(AutoMock mock)
         {
-            mock.Mock<IServiceB>().Expect(x => x.RunB());
-            mock.Mock<IServiceA>().Expect(x => x.RunA());
+            mock.Mock<IServiceB>().Setup(x => x.RunB());
+            mock.Mock<IServiceA>().Setup(x => x.RunA());
         }
 
-        private static void SetUpVerifableExpectations(AutoMock mock)
+        private static void SetUpVerifableSetupations(AutoMock mock)
         {
-            mock.Mock<IServiceB>().Expect(x => x.RunB()).Verifiable();
-            mock.Mock<IServiceA>().Expect(x => x.RunA()).Verifiable();
+            mock.Mock<IServiceB>().Setup(x => x.RunB()).Verifiable();
+            mock.Mock<IServiceA>().Setup(x => x.RunA()).Verifiable();
         }
 
-        private static void RunWithSingleExpectationTest(AutoMock mock)
+        private static void RunWithSingleSetupationTest(AutoMock mock)
         {
-            mock.Mock<IServiceB>().Expect(x => x.RunB());
+            mock.Mock<IServiceB>().Setup(x => x.RunB());
 
             var component = mock.Create<TestComponent>();
             component.RunAll();

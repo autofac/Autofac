@@ -86,9 +86,9 @@ namespace Autofac.Tests.Integration.Web.Mvc
         private RequestContext CreateContext()
         {
             var request = new Mock<HttpRequestBase>(MockBehavior.Loose);
-            request.Expect(r => r.Path).Returns("Path");
+            request.Setup(r => r.Path).Returns("Path");
             var httpContext = new Mock<HttpContextBase>(MockBehavior.Loose);
-            httpContext.ExpectGet(c => c.Request).Returns(request.Object);
+            httpContext.SetupGet(c => c.Request).Returns(request.Object);
             return new RequestContext(httpContext.Object, new RouteData());
         }
 
