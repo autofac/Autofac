@@ -110,6 +110,9 @@
     <None Include="Configuration\BFactory.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Configuration\CWithBoolean.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Configuration\SingletonWithTwoServices.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

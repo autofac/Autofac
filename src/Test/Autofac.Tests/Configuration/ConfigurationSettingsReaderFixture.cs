@@ -63,6 +63,19 @@ namespace Autofac.Tests.Configuration
             Assert.AreNotSame(container.Resolve<B>(), container.Resolve<B>());
         }
 
+        class C
+        {
+            public bool ABool { get; set; }
+        }
+
+        [Test]
+        public void ConfiguresBooleanProperties()
+        {
+            var container = ConfigureContainer("CWithBoolean");
+            var c = container.Resolve<C>();
+            Assert.IsTrue(c.ABool);
+        }
+
         IContainer ConfigureContainer(string configFile)
         {
             var fullFilename =  @"Configuration\" + configFile + ".config";
