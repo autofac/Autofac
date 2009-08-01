@@ -26,7 +26,7 @@
 		<MoqSource>Source\AutofacContrib.Moq\bin\$(Configuration)</MoqSource>
 		<StartableSource>Source\AutofacContrib.Startable\bin\$(Configuration)</StartableSource>
 		<NMock2Source>Source\AutofacContrib.NMock2\bin\$(Configuration)</NMock2Source>
-    <NHibernateSource>Source\Autofac.Integration.NHibernate\bin\$(Configuration)</NHibernateSource>
+    <NHibernateSource>Source\AutofacContrib.NHibernate\bin\$(Configuration)</NHibernateSource>
 
 		<SourceExclusions>**\.svn\**\*.*;**\_svn\**\*.*;**\*.user;**\*.suo;**\*.db;**\bin\**\*.*;**\obj\**\*.*;</SourceExclusions>
 	</PropertyGroup>

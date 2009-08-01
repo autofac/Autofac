@@ -4,21 +4,29 @@
         <name>Autofac</name>
     </assembly>
     <members>
-        <member name="T:Autofac.GeneratedFactories.FactoryGenerator`1">
+        <member name="T:Autofac.GeneratedFactories.FactoryGenerator">
             <summary>
             Generates context-bound closures that represent factories from
             a set of heuristics based on delegate type signatures.
             </summary>
-            <typeparam name="TDelegate">The factory delegate type.</typeparam>
         </member>
-        <member name="M:Autofac.GeneratedFactories.FactoryGenerator`1.#ctor(Autofac.Service)">
+        <member name="M:Autofac.GeneratedFactories.FactoryGenerator.#ctor(System.Type,Autofac.Service)">
             <summary>
             Create a factory generator.
             </summary>
             <param name="service">The service that will be resolved in
             order to create the products of the factory.</param>
+            <param name="delegateType">The factory delegate type.</param>
         </member>
-        <member name="M:Autofac.GeneratedFactories.FactoryGenerator`1.GenerateFactory(Autofac.IContext,System.Collections.Generic.IEnumerable{Autofac.Parameter})">
+        <member name="M:Autofac.GeneratedFactories.FactoryGenerator.GenerateFactory(Autofac.IContext,System.Collections.Generic.IEnumerable{Autofac.Parameter})">
+            <summary>
+            Generates a factory delegate that closes over the provided context.
+            </summary>
+            <param name="context">The context in which the factory will be used.</param>
+            <param name="parameters">Parameters provided to the resolve call for the factory itself.</param>
+            <returns>A factory delegate that will work within the context.</returns>
+        </member>
+        <member name="M:Autofac.GeneratedFactories.FactoryGenerator.GenerateFactory``1(Autofac.IContext,System.Collections.Generic.IEnumerable{Autofac.Parameter})">
             <summary>
             Generates a factory delegate that closes over the provided context.
             </summary>
@@ -33,6 +41,23 @@
             <remarks>
             This file is excluded from the .NET 2.0 build.
             </remarks>
+        </member>
+        <member name="M:Autofac.Builder.GeneratedFactoryExtensions.RegisterGeneratedFactory(Autofac.Builder.ContainerBuilder,System.Type,Autofac.Service)">
+            <summary>
+            Registers the factory delegate.
+            </summary>
+            <param name="builder">The container builder.</param>
+            <param name="delegateType">The type of the delegate.</param>
+            <param name="service">The service that the delegate will return instances of.</param>
+            <returns>A registrar allowing configuration to continue.</returns>
+        </member>
+        <member name="M:Autofac.Builder.GeneratedFactoryExtensions.RegisterGeneratedFactory(Autofac.Builder.ContainerBuilder,System.Type)">
+            <summary>
+            Registers the factory delegate.
+            </summary>
+            <param name="builder">The container builder.</param>
+            <param name="delegateType">The type of the delegate.</param>
+            <returns>A registrar allowing configuration to continue.</returns>
         </member>
         <member name="M:Autofac.Builder.GeneratedFactoryExtensions.RegisterGeneratedFactory``1(Autofac.Builder.ContainerBuilder,Autofac.Service)">
             <summary>
@@ -2488,10 +2513,34 @@
             The component instance that provides the service, or null if
             none is available.
             </returns>
-            <remarks>Useful with the C#3 initialiser syntax.</remarks>
+            <remarks>Useful with the C#3 initializer syntax.</remarks>
             <example>
             container.Register&lt;ISomething&gt;(c =&gt; new Something(){ AProperty = c.ResolveOptional&lt;IOptional&gt;() });
             </example>
+        </member>
+        <member name="M:Autofac.IContext.ResolveOptional``1(System.String,System.Collections.Generic.IEnumerable{Autofac.Parameter})">
+            <summary>
+            Retrieve a service registered with the container
+            </summary>
+            <typeparam name="TService">The type of the service to retrieve.</typeparam>
+            <param name="serviceName">Name of the service to retrieve.</param>
+            <param name="parameters">The parameters.</param>
+            <returns>
+            The component instance that provides the service, or null if
+            none is available
+            </returns>
+        </member>
+        <member name="M:Autofac.IContext.ResolveOptional``1(System.String,Autofac.Parameter[])">
+            <summary>
+            Retrieve a service registered with the container
+            </summary>
+            <typeparam name="TService">The type of the service to retrieve.</typeparam>
+            <param name="serviceName">Name of the service to retrieve.</param>
+            <param name="parameters">The parameters.</param>
+            <returns>
+            The component instance that provides the service, or null if
+            none is available
+            </returns>
         </member>
         <member name="M:Autofac.IContext.IsRegistered(System.Type)">
             <summary>
@@ -2636,6 +2685,30 @@
             <example>
             container.Register&lt;ISomething&gt;(c =&gt; new Something(){ AProperty = c.ResolveOptional&lt;IOptional&gt;() });
             </example>
+        </member>
+        <member name="M:Autofac.Context.ResolveOptional``1(System.String,System.Collections.Generic.IEnumerable{Autofac.Parameter})">
+            <summary>
+            Retrieve a service registered with the container
+            </summary>
+            <typeparam name="TService">The type of the service to retrieve.</typeparam>
+            <param name="serviceName">Name of the service to retrieve.</param>
+            <param name="parameters">The parameters.</param>
+            <returns>
+            The component instance that provides the service, or null if
+            none is available
+            </returns>
+        </member>
+        <member name="M:Autofac.Context.ResolveOptional``1(System.String,Autofac.Parameter[])">
+            <summary>
+            Retrieve a service registered with the container
+            </summary>
+            <typeparam name="TService">The type of the service to retrieve.</typeparam>
+            <param name="serviceName">Name of the service to retrieve.</param>
+            <param name="parameters">The parameters.</param>
+            <returns>
+            The component instance that provides the service, or null if
+            none is available
+            </returns>
         </member>
         <member name="M:Autofac.Context.TryResolve``1(``0@,Autofac.Parameter[])">
             <summary>
@@ -4212,6 +4285,30 @@
             container.Register&lt;ISomething&gt;(c =&gt; new Something(){ AProperty = c.ResolveOptional&lt;IOptional&gt;() });
             </example>
         </member>
+        <member name="M:Autofac.Container.ResolveOptional``1(System.String,System.Collections.Generic.IEnumerable{Autofac.Parameter})">
+            <summary>
+            Retrieve a service registered with the container
+            </summary>
+            <typeparam name="TService">The type of the service to retrieve.</typeparam>
+            <param name="serviceName">Name of the service to retrieve.</param>
+            <param name="parameters">The parameters.</param>
+            <returns>
+            The component instance that provides the service, or null if
+            none is available
+            </returns>
+        </member>
+        <member name="M:Autofac.Container.ResolveOptional``1(System.String,Autofac.Parameter[])">
+            <summary>
+            Retrieve a service registered with the container
+            </summary>
+            <typeparam name="TService">The type of the service to retrieve.</typeparam>
+            <param name="serviceName">Name of the service to retrieve.</param>
+            <param name="parameters">The parameters.</param>
+            <returns>
+            The component instance that provides the service, or null if
+            none is available
+            </returns>
+        </member>
         <member name="M:Autofac.Container.Resolve``1(System.Collections.Generic.IEnumerable{Autofac.Parameter})">
             <summary>
             Retrieve a service registered with the container.
@@ -5081,9 +5178,8 @@
         </member>
         <member name="T:Autofac.ResolvedParameter">
             <summary>
-            Flexible parameter type allows arbitrary values to be retrieved from the context.
+            Flexible parameter type allows arbitrary values to be retrieved from the resolution context.
             </summary>
-            <remarks>Consider moving this capability up to the base class and making it non-abstract?</remarks>
         </member>
         <member name="M:Autofac.ResolvedParameter.#ctor(System.Func{System.Reflection.ParameterInfo,Autofac.IContext,System.Boolean},System.Func{System.Reflection.ParameterInfo,Autofac.IContext,System.Object})">
             <summary>

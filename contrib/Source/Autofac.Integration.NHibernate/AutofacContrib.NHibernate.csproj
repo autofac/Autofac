@@ -8,8 +8,8 @@
     <ProjectGuid>{1263412A-440E-41F1-9729-3A2B58B03124}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Autofac.Integration.NHibernate</RootNamespace>
-    <AssemblyName>Autofac.Integration.NHibernate</AssemblyName>
+    <RootNamespace>AutofacContrib.NHibernate</RootNamespace>
+    <AssemblyName>AutofacContrib.NHibernate</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

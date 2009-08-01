@@ -1,7 +1,7 @@
 ﻿using System;
 using NHibernate.Bytecode;
 
-namespace Autofac.Integration.NHibernate
+namespace AutofacContrib.NHibernate
 {
 	public class AutofacObjectsFactory : IObjectsFactory
 	{

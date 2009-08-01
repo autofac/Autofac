@@ -1,4 +1,4 @@
 ﻿using System.Reflection;
 
-[assembly: AssemblyTitle("Autofac.Integration.NHibernate")]
+[assembly: AssemblyTitle("AutofacContrib.NHibernate")]
 [assembly: AssemblyDescription("Autofac Integration for NHibernate")]
