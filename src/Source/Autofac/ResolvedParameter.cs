@@ -32,9 +32,8 @@ using System.Reflection;
 namespace Autofac
 {
     /// <summary>
-    /// Flexible parameter type allows arbitrary values to be retrieved from the context.
+    /// Flexible parameter type allows arbitrary values to be retrieved from the resolution context.
     /// </summary>
-    /// <remarks>Consider moving this capability up to the base class and making it non-abstract?</remarks>
     public class ResolvedParameter : Parameter
     {
         Func<ParameterInfo, IContext, bool> _predicate;
