@@ -1,5 +1,6 @@
 ﻿using System;
 using NHibernate.Bytecode;
+using Autofac;
 
 namespace AutofacContrib.NHibernate
 {
