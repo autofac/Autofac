@@ -46,9 +46,11 @@ namespace Autofac.Builder
 
         /// <summary>
         /// Override to add registrations to the container.
-        /// </summary>
+        /// Note that the ContainerBuilder parameter is not the same one
+	/// that the module is being registered by (i.e. it can have its own defaults.)
+	/// </summary>
         /// <param name="builder">The builder.</param>
-        protected virtual void Load(ContainerBuilder builder) { }
+        protected virtual void Load(ContainerBuilder moduleBuilder) { }
 
         /// <summary>
         /// Attach the module to a registration either already existing in
