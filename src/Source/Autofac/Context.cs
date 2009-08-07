@@ -241,7 +241,7 @@ namespace Autofac
 		{
 			Enforce.ArgumentNotNull(serviceName, "serviceName");
 			Enforce.ArgumentNotNull(parameters, "parameters");
-			return ResolveOptional<TService>((IEnumerable<Parameter>) parameters);
+			return ResolveOptional<TService>(serviceName, (IEnumerable<Parameter>) parameters);
 		}
 
     	/// <summary>
