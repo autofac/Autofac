@@ -1,0 +1,881 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Practices.Composite.Wpf</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Practices.Composite.Wpf.Regions.RegionAdapterBase`1">
+            <summary>
+            Base class to facilitate the creation of <see cref="T:Microsoft.Practices.Composite.Regions.IRegionAdapter"/> implementations.
+            </summary>
+            <typeparam name="T">Type of object to adapt.</typeparam>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.RegionAdapterBase`1.Initialize(`0)">
+            <summary>
+            Adapts an object and binds it to a new <see cref="T:Microsoft.Practices.Composite.Regions.IRegion"/>.
+            </summary>
+            <param name="regionTarget">The object to adapt.</param>
+            <returns>The new instance of <see cref="T:Microsoft.Practices.Composite.Regions.IRegion"/> that the <paramref name="regionTarget"/> is bound to.</returns>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.RegionAdapterBase`1.AttachBehaviors(Microsoft.Practices.Composite.Regions.IRegion,`0)">
+            <summary>
+            Template method to attach new behaviors.
+            </summary>
+            <param name="region">The region being used.</param>
+            <param name="regionTarget">The object to adapt.</param>
+            <remarks>By default, this implementation attaches the <see cref="T:Microsoft.Practices.Composite.Wpf.Regions.CollectionActiveAwareBehavior"/>.</remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.RegionAdapterBase`1.Adapt(Microsoft.Practices.Composite.Regions.IRegion,`0)">
+            <summary>
+            Template method to adapt the object to an <see cref="T:Microsoft.Practices.Composite.Regions.IRegion"/>.
+            </summary>
+            <param name="region">The new region being used.</param>
+            <param name="regionTarget">The object to adapt.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.RegionAdapterBase`1.CreateRegion">
+            <summary>
+            Template method to create a new instance of <see cref="T:Microsoft.Practices.Composite.Regions.IRegion"/>
+            that will be used to adapt the object.
+            </summary>
+            <returns>A new instance of <see cref="T:Microsoft.Practices.Composite.Regions.IRegion"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.RegionAdapterBase`1.Microsoft#Practices#Composite#Regions#IRegionAdapter#Initialize(System.Object)">
+            <summary>
+            Adapts an object and binds it to a new <see cref="T:Microsoft.Practices.Composite.Regions.IRegion"/>.
+            </summary>
+            <param name="regionTarget">The object to adapt.</param>
+            <returns>The new instance of <see cref="T:Microsoft.Practices.Composite.Regions.IRegion"/> that the <paramref name="regionTarget"/> is bound to.</returns>
+            <remarks>This methods performs validation to check that <paramref name="regionTarget"/>
+            is of type <typeparamref name="T"/>.</remarks>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="regionTarget"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">When <paramref name="regionTarget"/> is not of type <typeparamref name="T"/>.</exception>
+        </member>
+        <member name="T:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1">
+            <summary>
+            An <see cref="T:System.Windows.Input.ICommand"/> whose delegates can be attached for <see cref="M:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.Execute(`0)"/> and <see cref="M:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.CanExecute(`0)"/>.
+            It also implements the <see cref="T:Microsoft.Practices.Composite.IActiveAware"/> interface, which is
+            useful when registering this command in a <see cref="T:Microsoft.Practices.Composite.Wpf.Commands.CompositeCommand"/>
+            that monitors command's activity.
+            </summary>
+            <typeparam name="T">Parameter type.</typeparam>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.#ctor(System.Action{`0})">
+            <summary>
+            Initializes a new instance of <see cref="T:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1"/>.
+            </summary>
+            <param name="executeMethod">Delegate to execute when Execute is called on the command.  This can be null to just hook up a CanExecute delegate.</param>
+            <remarks><seealso cref="M:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.CanExecute(`0)"/> will always return true.</remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.#ctor(System.Action{`0},System.Func{`0,System.Boolean})">
+            <summary>
+            Initializes a new instance of <see cref="T:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1"/>.
+            </summary>
+            <param name="executeMethod">Delegate to execute when Execute is called on the command.  This can be null to just hook up a CanExecute delegate.</param>
+            <param name="canExecuteMethod">Delegate to execute when CanExecute is called on the command.  This can be null.</param>
+            <exception cref="T:System.ArgumentNullException">When both <paramref name="executeMethod"/> and <paramref name="canExecuteMethod"/> ar <see langword="null"/>.</exception>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.CanExecute(`0)">
+            <summary>
+            Defines the method that determines whether the command can execute in its current state.
+            </summary>
+            <param name="parameter">Data used by the command. If the command does not require data to be passed, this object can be set to <see langword="null" />.</param>
+            <returns>
+            <see langword="true" /> if this command can be executed; otherwise, <see langword="false" />.
+            </returns>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.Execute(`0)">
+            <summary>
+            Defines the method to be called when the command is invoked.
+            </summary>
+            <param name="parameter">Data used by the command. If the command does not require data to be passed, this object can be set to <see langword="null" />.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.System#Windows#Input#ICommand#CanExecute(System.Object)">
+            <summary>
+            Defines the method that determines whether the command can execute in its current state.
+            </summary>
+            <param name="parameter">Data used by the command.  If the command does not require data to be passed, this object can be set to null.</param>
+            <returns>
+            true if this command can be executed; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.System#Windows#Input#ICommand#Execute(System.Object)">
+            <summary>
+            Defines the method to be called when the command is invoked.
+            </summary>
+            <param name="parameter">Data used by the command.  If the command does not require data to be passed, this object can be set to null.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.RaiseCanExecuteChanged">
+            <summary>
+            Raises <see cref="E:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.CanExecuteChanged"/> on the UI thread so every command invoker
+            can requery to check if the command can execute.
+            <remarks>Note that this will trigger the execution of <see cref="M:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.CanExecute(`0)"/> once for each invoker.</remarks>
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.OnCanExecuteChanged">
+            <summary>
+            Raises <see cref="E:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.CanExecuteChanged"/> on the UI thread so every command invoker can requery to check if the command can execute.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.OnIsActiveChanged">
+            <summary>
+            This raises the <see cref="E:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.IsActiveChanged"/> event.
+            </summary>
+        </member>
+        <member name="E:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.CanExecuteChanged">
+            <summary>
+            Occurs when changes occur that affect whether or not the command should execute.
+            </summary>
+        </member>
+        <member name="E:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.IsActiveChanged">
+            <summary>
+            Fired if the <see cref="P:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.IsActive"/> property changes.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Commands.DelegateCommand`1.IsActive">
+            <summary>
+            Gets or sets a value indicating whether the object is active.
+            </summary>
+            <value><see langword="true" /> if the object is active; otherwise <see langword="false" />.</value>
+        </member>
+        <member name="T:Microsoft.Practices.Composite.Wpf.Regions.RegionManager">
+            <summary>
+            This class is responsible for maintaining a collection of regions and attaching regions to controls. 
+            </summary>
+            <remarks>
+            This class supplies the attached properties that can be used for simple region creation from XAML.
+            It finds an adapter mapped to a WPF control and associates a new region to that control by calling
+            <see cref="M:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.AttachNewRegion(System.Object,System.String)"/> automatically.
+            </remarks>
+        </member>
+        <member name="F:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.RegionNameProperty">
+            <summary>
+            Identifies the RegionName attached property.
+            </summary>
+            <remarks>
+            When a control has both the <see cref="F:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.RegionNameProperty"/> and
+            <see cref="F:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.RegionManagerProperty"/> attached properties set to
+            a value different than <see langword="null"/> and there is a
+            <see cref="T:Microsoft.Practices.Composite.Regions.IRegionAdapter"/> mapping registered for the control, it
+            will create and adapt a new region for that control, and register it
+            in the <see cref="T:Microsoft.Practices.Composite.Regions.IRegionManager"/> with the specified region name.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.SetRegionName(System.Windows.DependencyObject,System.String)">
+            <summary>
+            Sets the <see cref="F:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.RegionNameProperty"/> attached property.
+            </summary>
+            <param name="regionTarget">The object to adapt. This is typically a container (i.e a control).</param>
+            <param name="regionName">The name of the region to register.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.GetRegionName(System.Windows.DependencyObject)">
+            <summary>
+            Gets the value for the <see cref="F:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.RegionNameProperty"/> attached property.
+            </summary>
+            <param name="regionTarget">The object to adapt. This is typically a container (i.e a control).</param>
+            <returns>The name of the region that should be created when 
+            <see cref="F:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.RegionManagerProperty"/> is also set in this element.</returns>
+        </member>
+        <member name="F:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.RegionManagerProperty">
+            <summary>
+            Identifies the RegionManager attached property.
+            </summary>
+            <remarks>
+            When a control has both the <see cref="F:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.RegionNameProperty"/> and
+            <see cref="F:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.RegionManagerProperty"/> attached properties set to
+            a value different than <see langword="null"/> and there is a
+            <see cref="T:Microsoft.Practices.Composite.Regions.IRegionAdapter"/> mapping registered for the control, it
+            will create and adapt a new region for that control, and register it
+            in the <see cref="T:Microsoft.Practices.Composite.Regions.IRegionManager"/> with the specified region name.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.GetRegionManager(System.Windows.DependencyObject)">
+            <summary>
+            Gets the value of the <see cref="F:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.RegionNameProperty"/> attached property.
+            </summary>
+            <param name="target">The target element.</param>
+            <returns>The <see cref="T:Microsoft.Practices.Composite.Regions.IRegionManager"/> attached to the <paramref name="target"/> element.</returns>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.SetRegionManager(System.Windows.DependencyObject,Microsoft.Practices.Composite.Regions.IRegionManager)">
+            <summary>
+            Sets the <see cref="F:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.RegionManagerProperty"/> attached property.
+            </summary>
+            <param name="target">The target element.</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.#ctor">
+            <summary>
+            Initializes a new instance of <see cref="T:Microsoft.Practices.Composite.Wpf.Regions.RegionManager"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.#ctor(Microsoft.Practices.Composite.Wpf.Regions.RegionAdapterMappings)">
+            <summary>
+            Initializes a new instance of <see cref="T:Microsoft.Practices.Composite.Wpf.Regions.RegionManager"/>.
+            </summary>
+            <param name="mappings">The <see cref="T:Microsoft.Practices.Composite.Wpf.Regions.RegionAdapterMappings"/> that
+            will be used when calling <see cref="M:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.AttachNewRegion(System.Object,System.String)"/> explicitly
+            or by creating regions by using attached properties through XAML.
+            </param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.AttachNewRegion(System.Object,System.String)">
+            <summary>
+            Attaches a region to an object and adds it to the region manager.
+            </summary>
+            <param name="regionTarget">The object to adapt. This is typically a container (i.e a control).</param>
+            <param name="regionName">The name of the region to register.</param>
+            <exception cref="T:System.ArgumentException">When regions collection already has a region registered using <paramref name="regionName"/>.</exception>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.CreateRegionManager">
+            <summary>
+            Creates a new region manager.
+            </summary>
+            <returns>A new region manager that can be used as a different scope from the current region manager.</returns>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Regions.RegionManager.Regions">
+            <summary>
+            Gets a dictionary of <see cref="T:Microsoft.Practices.Composite.Regions.IRegion"/> that identify each region by name. 
+            You can use this dictionary to add or remove regions to the current region manager.
+            </summary>
+            <value>An <see cref="T:System.Collections.Generic.IDictionary`2"/> with all the registered regions.</value>
+        </member>
+        <member name="T:Microsoft.Practices.Composite.Wpf.Regions.AllActiveRegion">
+            <summary>
+            Region that keeps all the views in it as active. Deactivation of views is not allowed.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Composite.Wpf.Regions.Region">
+            <summary>
+            Implementation of <see cref="T:Microsoft.Practices.Composite.Regions.IRegion"/> that allows multiple active views.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.Region.Add(System.Object)">
+            <overloads>Adds a new view to the region.</overloads>
+             <summary>
+             Adds a new view to the region.
+             </summary>
+             <param name="view">The view to add.</param>
+             <returns>The <see cref="T:Microsoft.Practices.Composite.Regions.IRegionManager"/> that is set on the view if it is a <see cref="T:System.Windows.DependencyObject"/>. It will be the current region manager when using this overload.</returns>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.Region.Add(System.Object,System.String)">
+            <summary>
+            Adds a new view to the region.
+            </summary>
+            <param name="view">The view to add.</param>
+            <param name="viewName">The name of the view. This can be used to retrieve it later by calling <see cref="M:Microsoft.Practices.Composite.Regions.IRegion.GetView(System.String)"/>.</param>
+            <returns>The <see cref="T:Microsoft.Practices.Composite.Regions.IRegionManager"/> that is set on the view if it is a <see cref="T:System.Windows.DependencyObject"/>. It will be the current region manager when using this overload.</returns>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.Region.Add(System.Object,System.String,System.Boolean)">
+            <summary>
+            Adds a new view to the region.
+            </summary>
+            <param name="view">The view to add.</param>
+            <param name="viewName">The name of the view. This can be used to retrieve it later by calling <see cref="M:Microsoft.Practices.Composite.Regions.IRegion.GetView(System.String)"/>.</param>
+            <param name="createRegionManagerScope">When <see langword="true"/>, the added view will receive a new instance of <see cref="T:Microsoft.Practices.Composite.Regions.IRegionManager"/>, otherwise it will use the current region manager for this region.</param>
+            <returns>The <see cref="T:Microsoft.Practices.Composite.Regions.IRegionManager"/> that is set on the view if it is a <see cref="T:System.Windows.DependencyObject"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.Region.Remove(System.Object)">
+            <summary>
+            Removes the specified view from the region.
+            </summary>
+            <param name="view">The view to remove.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.Region.Activate(System.Object)">
+            <summary>
+            Marks the specified view as active. 
+            </summary>
+            <param name="view">The view to activate.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.Region.Deactivate(System.Object)">
+            <summary>
+            Marks the specified view as inactive. 
+            </summary>
+            <param name="view">The view to deactivate.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.Region.GetView(System.String)">
+            <summary>
+            Returns the view instance that was added to the region using a specific name.
+            </summary>
+            <param name="viewName">The name used when adding the view to the region.</param>
+            <returns>Returns the named view or <see langword="null"/> if the view with <paramref name="viewName"/> does not exist in the current region.</returns>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Regions.Region.Views">
+            <summary>
+            Gets a readonly view of the collection of views in the region.
+            </summary>
+            <value>An <see cref="T:Microsoft.Practices.Composite.Regions.IViewsCollection"/> of all the added views.</value>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Regions.Region.ActiveViews">
+            <summary>
+            Gets a readonly view of the collection of all the active views in the region.
+            </summary>
+            <value>An <see cref="T:Microsoft.Practices.Composite.Regions.IViewsCollection"/> of all the active views.</value>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Regions.Region.RegionManager">
+            <summary>
+            Gets or sets the <see cref="T:Microsoft.Practices.Composite.Regions.IRegionManager"/> that will be passed to the views when adding them to the region, unless the view is added by specifying createRegionManagerScope as <see langword="true"/>.
+            </summary>
+            <value>The <see cref="T:Microsoft.Practices.Composite.Regions.IRegionManager"/> where this <see cref="T:Microsoft.Practices.Composite.Regions.IRegion"/> is registered.</value>
+            <remarks>This is usually used by implementations of <see cref="T:Microsoft.Practices.Composite.Regions.IRegionManager"/> and should not be
+            used by the developer explicitely.</remarks>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Regions.Region.ItemMetadataCollection">
+            <summary>
+            Gets the collection with all the views along with their metadata.
+            </summary>
+            <value>An <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> of <see cref="T:Microsoft.Practices.Composite.Wpf.Regions.ItemMetadata"/> with all the added views.</value>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.AllActiveRegion.Deactivate(System.Object)">
+            <summary>
+            Deactive is not valid in this Region. This method will always throw <see cref="T:System.InvalidOperationException"/>.
+            </summary>
+            <param name="view">The view to deactivate.</param>
+            <exception cref="T:System.InvalidOperationException">Every time this method is called.</exception>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Regions.AllActiveRegion.ActiveViews">
+            <summary>
+            Gets a readonly view of the collection of all the active views in the region. These are all the added views.
+            </summary>
+            <value>An <see cref="T:Microsoft.Practices.Composite.Regions.IViewsCollection"/> of all the active views.</value>
+        </member>
+        <member name="T:Microsoft.Practices.Composite.Wpf.Regions.ContentControlRegionAdapter">
+            <summary>
+            Adapter that creates a new <see cref="T:Microsoft.Practices.Composite.Wpf.Regions.SingleActiveRegion"/> and monitors its
+            active view to set it on the adapted <see cref="T:System.Windows.Controls.ContentControl"/>. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.ContentControlRegionAdapter.Adapt(Microsoft.Practices.Composite.Regions.IRegion,System.Windows.Controls.ContentControl)">
+            <summary>
+            Adapts a <see cref="T:System.Windows.Controls.ContentControl"/> to an <see cref="T:Microsoft.Practices.Composite.Regions.IRegion"/>.
+            </summary>
+            <param name="region">The new region being used.</param>
+            <param name="regionTarget">The object to adapt.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.ContentControlRegionAdapter.CreateRegion">
+            <summary>
+            Creates a new instance of <see cref="T:Microsoft.Practices.Composite.Wpf.Regions.SingleActiveRegion"/>.
+            </summary>
+            <returns>A new instance of <see cref="T:Microsoft.Practices.Composite.Wpf.Regions.SingleActiveRegion"/>.</returns>
+        </member>
+        <member name="T:Microsoft.Practices.Composite.Wpf.Commands.CompositeCommand">
+            <summary>
+            The CompositeCommand composites one or more ICommands.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Commands.CompositeCommand.#ctor">
+            <summary>
+            Initializes a new instance of <see cref="T:Microsoft.Practices.Composite.Wpf.Commands.CompositeCommand"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Commands.CompositeCommand.#ctor(System.Boolean)">
+            <summary>
+            Initializes a new instance of <see cref="T:Microsoft.Practices.Composite.Wpf.Commands.CompositeCommand"/>.
+            </summary>
+            <param name="monitorCommandActivity">Indicates when the command activity is going to be monitored.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Commands.CompositeCommand.RegisterCommand(System.Windows.Input.ICommand)">
+            <summary>
+            Adds a command to the collection and signs up for the <see cref="E:System.Windows.Input.ICommand.CanExecuteChanged"/> event of it.
+            </summary>
+             <remarks>
+            If this command is set to monitor command activity, and <paramref name="command"/> 
+            implements the <see cref="T:Microsoft.Practices.Composite.IActiveAware"/> interface, this method will subscribe to its
+            <see cref="E:Microsoft.Practices.Composite.IActiveAware.IsActiveChanged"/> event.
+            </remarks>
+            <param name="command">The command to register.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Commands.CompositeCommand.UnregisterCommand(System.Windows.Input.ICommand)">
+            <summary>
+            Removes a command from the collection and removes itself from the <see cref="E:System.Windows.Input.ICommand.CanExecuteChanged"/> event of it.
+            </summary>
+            <param name="command">The command to unregister.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Commands.CompositeCommand.CanExecute(System.Object)">
+             <summary>
+             Forwards <see cref="M:System.Windows.Input.ICommand.CanExecute(System.Object)"/> to the registered commands and returns
+             <see langword="true"/> if all of the commands return <see langword="true"/>.
+             </summary>
+            <param name="parameter">Data used by the command.
+             If the command does not require data to be passed, this object can be set to <see langword="null"/>.
+             </param>
+             <returns><see langword="true"/> if all of the commands return <see langword="true"/>; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Commands.CompositeCommand.Execute(System.Object)">
+             <summary>
+             Forwards <see cref="M:System.Windows.Input.ICommand.Execute(System.Object)"/> to the registered commands.
+             </summary>
+            <param name="parameter">Data used by the command.
+             If the command does not require data to be passed, this object can be set to <see langword="null"/>.
+             </param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Commands.CompositeCommand.ShouldExecute(System.Windows.Input.ICommand)">
+            <summary>
+            Evaluates if a command should execute.
+            </summary>
+            <param name="command">The command to evaluate.</param>
+            <returns>A <see cref="T:System.Boolean"/> value indicating whether the command should be used 
+            when evaluating <see cref="M:Microsoft.Practices.Composite.Wpf.Commands.CompositeCommand.CanExecute(System.Object)"/> and <see cref="M:Microsoft.Practices.Composite.Wpf.Commands.CompositeCommand.Execute(System.Object)"/>.</returns>
+            <remarks>
+            If this command is set to monitor command activity, and <paramref name="command"/>
+            implements the <see cref="T:Microsoft.Practices.Composite.IActiveAware"/> interface, 
+            this method will return <see langword="false"/> if the command's <see cref="P:Microsoft.Practices.Composite.IActiveAware.IsActive"/> 
+            property is <see langword="false"/>; otherwise it always returns <see langword="true"/>.</remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Commands.CompositeCommand.OnCanExecuteChanged">
+            <summary>
+            Raises <see cref="E:System.Windows.Input.ICommand.CanExecuteChanged"/> on the UI thread so every 
+            command invoker can requery <see cref="M:System.Windows.Input.ICommand.CanExecute(System.Object)"/> to check if the
+            <see cref="T:Microsoft.Practices.Composite.Wpf.Commands.CompositeCommand"/> can execute.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Commands.CompositeCommand.Command_IsActiveChanged(System.Object,System.EventArgs)">
+            <summary>
+            Handler for IsActiveChanged events of registered commands.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">EventArgs to pass to the event.</param>
+        </member>
+        <member name="E:Microsoft.Practices.Composite.Wpf.Commands.CompositeCommand.CanExecuteChanged">
+            <summary>
+            Occurs when any of the registered commands raise <seealso cref="E:Microsoft.Practices.Composite.Wpf.Commands.CompositeCommand.CanExecuteChanged"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Commands.CompositeCommand.RegisteredCommands">
+            <summary>
+            Gets the list of all the registered commands.
+            </summary>
+            <value>A list of registered commands.</value>
+        </member>
+        <member name="T:Microsoft.Practices.Composite.Wpf.Regions.ItemMetadata">
+            <summary>
+            Defines a class that wraps an item and adds metadata for it.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Practices.Composite.Wpf.Regions.ItemMetadata.NameProperty">
+            <summary>
+            The name of the wrapped item.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Practices.Composite.Wpf.Regions.ItemMetadata.IsActiveProperty">
+            <summary>
+            Value indicating whether the wrapped item is considered active.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.ItemMetadata.#ctor(System.Object)">
+            <summary>
+            Initializes a new instance of <see cref="T:Microsoft.Practices.Composite.Wpf.Regions.ItemMetadata"/>.
+            </summary>
+            <param name="item">The item to wrap.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.ItemMetadata.InvokeMetadataChanged">
+            <summary>
+            Explicitly invokes <see cref="E:Microsoft.Practices.Composite.Wpf.Regions.ItemMetadata.MetadataChanged"/> to notify listeners.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Regions.ItemMetadata.Item">
+            <summary>
+            Gets the wrapped item.
+            </summary>
+            <value>The wrapped item.</value>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Regions.ItemMetadata.Name">
+            <summary>
+            Gets or sets a name for the wrapped item.
+            </summary>
+            <value>The name of the wrapped item.</value>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Regions.ItemMetadata.IsActive">
+            <summary>
+            Gets or sets a value indicating whether the wrapped item is considered active.
+            </summary>
+            <value><see langword="true" /> if the item should be considered active; otherwise <see langword="false" />.</value>
+        </member>
+        <member name="E:Microsoft.Practices.Composite.Wpf.Regions.ItemMetadata.MetadataChanged">
+            <summary>
+            Occurs when metadata on the item changes.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Composite.Wpf.Regions.ViewsCollection">
+            <summary>
+            Implementation of <see cref="T:Microsoft.Practices.Composite.Regions.IViewsCollection"/> that takes an <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> of <see cref="T:Microsoft.Practices.Composite.Wpf.Regions.ItemMetadata"/>
+            and filters it to display an <see cref="T:System.Collections.Specialized.INotifyCollectionChanged"/> collection of
+            <see cref="T:System.Object"/> elements (the items which the <see cref="T:Microsoft.Practices.Composite.Wpf.Regions.ItemMetadata"/> wraps).
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.ViewsCollection.#ctor(System.Collections.ObjectModel.ObservableCollection{Microsoft.Practices.Composite.Wpf.Regions.ItemMetadata},System.Predicate{Microsoft.Practices.Composite.Wpf.Regions.ItemMetadata})">
+            <summary>
+            Initializes a new instance of <see cref="T:Microsoft.Practices.Composite.Wpf.Regions.ViewsCollection"/>.
+            </summary>
+            <param name="list">The list to wrap and filter.</param>
+            <param name="filter">A predicate to filter the <paramref name="list"/> collection.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.ViewsCollection.Contains(System.Object)">
+            <summary>
+            Determines whether the collection contains a specific value.
+            </summary>
+            <param name="value">The object to locate in the collection.</param>
+            <returns><see langword="true" /> if <paramref name="value"/> is found in the collection; otherwise, <see langword="false" />.</returns>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.ViewsCollection.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the collection.
+            </summary>
+            <returns>
+            A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
+            </returns>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.ViewsCollection.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through a collection.
+            </summary>
+            <returns>
+            An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+            </returns>
+        </member>
+        <member name="E:Microsoft.Practices.Composite.Wpf.Regions.ViewsCollection.CollectionChanged">
+            <summary>
+            Occurs when the collection changes.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Composite.Wpf.Events.DispatcherEventSubscription`1">
+            <summary>
+             Extends <see cref="T:Microsoft.Practices.Composite.Events.EventSubscription`1"/> to invoke the <see cref="P:Microsoft.Practices.Composite.Events.EventSubscription`1.Action"/> delegate
+             in a specific <see cref="T:System.Windows.Threading.Dispatcher"/>.
+            </summary>
+             <typeparam name="TPayload">The type to use for the generic <see cref="T:System.Action`1"/> and <see cref="T:System.Predicate`1"/> types.</typeparam>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Events.DispatcherEventSubscription`1.#ctor(Microsoft.Practices.Composite.Events.IDelegateReference,Microsoft.Practices.Composite.Events.IDelegateReference,System.Windows.Threading.Dispatcher)">
+            <summary>
+             Creates a new instance of <see cref="T:Microsoft.Practices.Composite.Events.BackgroundEventSubscription`1"/>.
+            </summary>
+            <param name="actionReference">A reference to a delegate of type <see cref="T:System.Action`1"/>.</param>
+            <param name="filterReference">A reference to a delegate of type <see cref="T:System.Predicate`1"/>.</param>
+            <param name="dispatcher">The dispatcher to use when executing the <paramref name="actionReference"/> delegate.</param>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="actionReference"/> or <see paramref="filterReference"/> are <see langword="null"/>.</exception>
+            <exception cref="T:System.ArgumentException">When the target of <paramref name="actionReference"/> is not of type <see cref="T:System.Action`1"/>,
+            or the target of <paramref name="filterReference"/> is not of type <see cref="T:System.Predicate`1"/>.</exception>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Events.DispatcherEventSubscription`1.InvokeAction(System.Action{`0},`0)">
+            <summary>
+            Invokes the specified <see cref="T:System.Action`1"/> asynchronously in the specified <see cref="T:System.Windows.Threading.Dispatcher"/>.
+            </summary>
+            <param name="action">The action to execute.</param>
+            <param name="argument">The payload to pass <paramref name="action"/> while invoking it.</param>
+        </member>
+        <member name="T:Microsoft.Practices.Composite.Wpf.Regions.SelectorRegionAdapter">
+            <summary>
+            Adapter that creates a new <see cref="T:Microsoft.Practices.Composite.Wpf.Regions.Region"/> and binds all
+            the views to the adapted <see cref="T:System.Windows.Controls.Primitives.Selector"/>.
+            It also keeps the <see cref="P:Microsoft.Practices.Composite.Regions.IRegion.ActiveViews"/> and the selected items
+            of the <see cref="T:System.Windows.Controls.Primitives.Selector"/> in sync.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.SelectorRegionAdapter.Adapt(Microsoft.Practices.Composite.Regions.IRegion,System.Windows.Controls.Primitives.Selector)">
+            <summary>
+            Adapts an <see cref="T:System.Windows.Controls.Primitives.Selector"/> to an <see cref="T:Microsoft.Practices.Composite.Regions.IRegion"/>.
+            </summary>
+            <param name="region">The new region being used.</param>
+            <param name="regionTarget">The object to adapt.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.SelectorRegionAdapter.AttachBehaviors(Microsoft.Practices.Composite.Regions.IRegion,System.Windows.Controls.Primitives.Selector)">
+            <summary>
+            Attach new behaviors.
+            </summary>
+            <param name="region">The region being used.</param>
+            <param name="regionTarget">The object to adapt.</param>
+            <remarks>
+            This class attaches the base behaviors and also listens for changes in the
+            activity of the region or the control selection and keeps the in sync.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.SelectorRegionAdapter.CreateRegion">
+            <summary>
+            Creates a new instance of <see cref="T:Microsoft.Practices.Composite.Wpf.Regions.Region"/>.
+            </summary>
+            <returns>A new instance of <see cref="T:Microsoft.Practices.Composite.Wpf.Regions.Region"/>.</returns>
+        </member>
+        <member name="T:Microsoft.Practices.Composite.Wpf.Regions.RegionAdapterMappings">
+            <summary>
+            This class maps <see cref="T:System.Type"/> with <see cref="T:Microsoft.Practices.Composite.Regions.IRegionAdapter"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.RegionAdapterMappings.RegisterMapping(System.Type,Microsoft.Practices.Composite.Regions.IRegionAdapter)">
+            <summary>
+            Registers the mapping between a type and an adapter.
+            </summary>
+            <param name="controlType">The type of the control.</param>
+            <param name="adapter">The adapter to use with the <paramref name="controlType"/> type.</param>
+            <exception cref="T:System.ArgumentNullException">When any of <paramref name="controlType"/> or <paramref name="adapter"/> are <see langword="null"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">If a mapping for <paramref name="controlType"/> already exists.</exception>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.RegionAdapterMappings.GetMapping(System.Type)">
+            <summary>
+            Returns the adapter associated with the type provided.
+            </summary>
+            <param name="controlType">The type to obtain the <seealso cref="T:Microsoft.Practices.Composite.Regions.IRegionAdapter"/> mapped.</param>
+            <returns>The <seealso cref="T:Microsoft.Practices.Composite.Regions.IRegionAdapter"/> mapped to the <paramref name="controlType"/>.</returns>
+            <remarks>This class will look for a registered type for <paramref name="controlType"/> and if there is not any,
+            it will look for a registered type for any of its ancestors in the class hierarchy.
+            If there is no registered type for <paramref name="controlType"/> or any of its ancestors,
+            an exception will be thrown.</remarks>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">When there is no registered type for <paramref name="controlType"/> or any of its ancestors.</exception>
+        </member>
+        <member name="T:Microsoft.Practices.Composite.Wpf.Regions.CollectionActiveAwareBehavior">
+            <summary>
+            Behavior that monitors an <see cref="T:System.Collections.Specialized.INotifyCollectionChanged"/> object and 
+            changes the value for the <see cref="P:Microsoft.Practices.Composite.IActiveAware.IsActive"/> property when
+            an object that implements <see cref="T:Microsoft.Practices.Composite.IActiveAware"/> gets added or removed 
+            from the collection.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.CollectionActiveAwareBehavior.#ctor(System.Collections.Specialized.INotifyCollectionChanged)">
+            <summary>
+            Initializes a new instance of <see cref="T:Microsoft.Practices.Composite.Wpf.Regions.CollectionActiveAwareBehavior"/>.
+            </summary>
+            <param name="collection">The collection to monitor.</param>
+            <remarks>This instance will keep a <see cref="T:System.WeakReference"/> to the
+            <paramref name="collection"/>, so the collection can be garbage collected.</remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.CollectionActiveAwareBehavior.Attach">
+            <summary>
+            Attaches the behavior to the <see cref="T:System.Collections.Specialized.INotifyCollectionChanged"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.CollectionActiveAwareBehavior.Detach">
+            <summary>
+            Detaches the behavior from the <see cref="T:System.Collections.Specialized.INotifyCollectionChanged"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Composite.Wpf.Regions.ItemsControlRegionAdapter">
+            <summary>
+            Adapter that creates a new <see cref="T:Microsoft.Practices.Composite.Wpf.Regions.AllActiveRegion"/> and binds all
+            the views to the adapted <see cref="T:System.Windows.Controls.ItemsControl"/>. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.ItemsControlRegionAdapter.Adapt(Microsoft.Practices.Composite.Regions.IRegion,System.Windows.Controls.ItemsControl)">
+            <summary>
+            Adapts an <see cref="T:System.Windows.Controls.ItemsControl"/> to an <see cref="T:Microsoft.Practices.Composite.Regions.IRegion"/>.
+            </summary>
+            <param name="region">The new region being used.</param>
+            <param name="regionTarget">The object to adapt.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.ItemsControlRegionAdapter.CreateRegion">
+            <summary>
+            Creates a new instance of <see cref="T:Microsoft.Practices.Composite.Wpf.Regions.AllActiveRegion"/>.
+            </summary>
+            <returns>A new instance of <see cref="T:Microsoft.Practices.Composite.Wpf.Regions.AllActiveRegion"/>.</returns>
+        </member>
+        <member name="T:Microsoft.Practices.Composite.Wpf.Events.ThreadOption">
+            <summary>
+            Specifies on which thread a <see cref="T:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1"/> subscriber will be called.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Practices.Composite.Wpf.Events.ThreadOption.PublisherThread">
+            <summary>
+            The call is done on the same thread on which the <see cref="T:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1"/> was published.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Practices.Composite.Wpf.Events.ThreadOption.UIThread">
+            <summary>
+            The call is done on the UI thread.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Practices.Composite.Wpf.Events.ThreadOption.BackgroundThread">
+            <summary>
+            The call is done asynchronously on a background thread.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Composite.Wpf.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Properties.Resources.AdapterInvalidTypeException">
+            <summary>
+              Looks up a localized string similar to The object must be of type &apos;{0}&apos; in order to use the current region adapter..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Properties.Resources.ContentControlHasContentException">
+            <summary>
+              Looks up a localized string similar to ContentControl&apos;s Content property is not empty. 
+               This control is being associated with a region, but the control is already bound to something else. 
+               If you did not explicitly set the control&apos;s Content property, 
+               this exception may be caused by a change in the value of the inherited RegionManager attached property..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Properties.Resources.DeactiveNotPossibleException">
+            <summary>
+              Looks up a localized string similar to Deactivation is not possible in this type of region..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Properties.Resources.DelegateCommandDelegatesCannotBeNull">
+            <summary>
+              Looks up a localized string similar to Both the executeMethod and the canExecuteMethod delegates cannot be null..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Properties.Resources.ItemsControlHasItemsSourceException">
+            <summary>
+              Looks up a localized string similar to ItemsControl&apos;s ItemsSource property is not empty. 
+               This control is being associated with a region, but the control is already bound to something else. 
+               If you did not explicitly set the control&apos;s ItemSource property, 
+               this exception may be caused by a change in the value of the inherited RegionManager attached property..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Properties.Resources.MappingExistsException">
+            <summary>
+              Looks up a localized string similar to Mapping with the given type is already registered: {0}.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Properties.Resources.RegionNameExistsException">
+            <summary>
+              Looks up a localized string similar to Region with the given name is already registered: {0}.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Properties.Resources.RegionViewExistsException">
+            <summary>
+              Looks up a localized string similar to View already exists in region..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Properties.Resources.RegionViewNameExistsException">
+            <summary>
+              Looks up a localized string similar to View with name &apos;{0}&apos; already exists in the region..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Properties.Resources.StringCannotBeNullOrEmpty">
+            <summary>
+              Looks up a localized string similar to The provided String argument {0} must not be null or empty..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Properties.Resources.ValueNotFound">
+            <summary>
+              Looks up a localized string similar to {0} not found.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Properties.Resources.ViewNotInRegionException">
+            <summary>
+              Looks up a localized string similar to The region does not contain the specified view..
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1">
+            <summary>
+            Defines a class that manages publication and subscription to events.
+            </summary>
+            <typeparam name="TPayload">The type of message that will be passed to the subscribers.</typeparam>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1.Subscribe(System.Action{`0})">
+            <summary>
+            Subscribes a delegate to an event that will be published on the <see cref="F:Microsoft.Practices.Composite.Wpf.Events.ThreadOption.PublisherThread"/>.
+            <see cref="T:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1"/> will maintain a <seealso cref="T:System.WeakReference"/> to the target of the supplied <paramref name="action"/> delegate.
+            </summary>
+            <param name="action">The delegate that gets executed when the event is published.</param>
+            <returns>A <see cref="T:Microsoft.Practices.Composite.Events.SubscriptionToken"/> that uniquely identifies the added subscription.</returns>
+            <remarks>
+            The CompositeWpfEvent collection is thread-safe.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1.Subscribe(System.Action{`0},Microsoft.Practices.Composite.Wpf.Events.ThreadOption)">
+            <summary>
+            Subscribes a delegate to an event.
+            CompositeWpfEvent will maintain a <seealso cref="T:System.WeakReference"/> to the Target of the supplied <paramref name="action"/> delegate.
+            </summary>
+            <param name="action">The delegate that gets executed when the event is raised.</param>
+            <param name="threadOption">Specifies on which thread to receive the delegate callback.</param>
+            <returns>A <see cref="T:Microsoft.Practices.Composite.Events.SubscriptionToken"/> that uniquely identifies the added subscription.</returns>
+            <remarks>
+            The CompositeWpfEvent collection is thread-safe.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1.Subscribe(System.Action{`0},System.Boolean)">
+            <summary>
+            Subscribes a delegate to an event that will be published on the <see cref="F:Microsoft.Practices.Composite.Wpf.Events.ThreadOption.PublisherThread"/>.
+            </summary>
+            <param name="action">The delegate that gets executed when the event is published.</param>
+            <param name="keepSubscriberReferenceAlive">When <see langword="true"/>, the <seealso cref="T:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1"/> keeps a reference to the subscriber so it does not get garbage collected.</param>
+            <returns>A <see cref="T:Microsoft.Practices.Composite.Events.SubscriptionToken"/> that uniquely identifies the added subscription.</returns>
+            <remarks>
+            If <paramref name="keepSubscriberReferenceAlive"/> is set to <see langword="false"/>, <see cref="T:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1"/> will maintain a <seealso cref="T:System.WeakReference"/> to the Target of the supplied <paramref name="action"/> delegate.
+            If not using a WeakReference (<paramref name="keepSubscriberReferenceAlive"/> is <see langword="true"/>), the user must explicitly call Unsubscribe for the event when disposing the subscriber in order to avoid memory leaks or unexepcted behavior.
+            
+            The CompositeWpfEvent collection is thread-safe.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1.Subscribe(System.Action{`0},Microsoft.Practices.Composite.Wpf.Events.ThreadOption,System.Boolean)">
+            <summary>
+            Subscribes a delegate to an event.
+            </summary>
+            <param name="action">The delegate that gets executed when the event is published.</param>
+            <param name="threadOption">Specifies on which thread to receive the delegate callback.</param>
+            <param name="keepSubscriberReferenceAlive">When <see langword="true"/>, the <seealso cref="T:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1"/> keeps a reference to the subscriber so it does not get garbage collected.</param>
+            <returns>A <see cref="T:Microsoft.Practices.Composite.Events.SubscriptionToken"/> that uniquely identifies the added subscription.</returns>
+            <remarks>
+            If <paramref name="keepSubscriberReferenceAlive"/> is set to <see langword="false"/>, <see cref="T:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1"/> will maintain a <seealso cref="T:System.WeakReference"/> to the Target of the supplied <paramref name="action"/> delegate.
+            If not using a WeakReference (<paramref name="keepSubscriberReferenceAlive"/> is <see langword="true"/>), the user must explicitly call Unsubscribe for the event when disposing the subscriber in order to avoid memory leaks or unexepcted behavior.
+            
+            The CompositeWpfEvent collection is thread-safe.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1.Subscribe(System.Action{`0},Microsoft.Practices.Composite.Wpf.Events.ThreadOption,System.Boolean,System.Predicate{`0})">
+            <summary>
+            Subscribes a delegate to an event.
+            </summary>
+            <param name="action">The delegate that gets executed when the event is published.</param>
+            <param name="threadOption">Specifies on which thread to receive the delegate callback.</param>
+            <param name="keepSubscriberReferenceAlive">When <see langword="true"/>, the <seealso cref="T:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1"/> keeps a reference to the subscriber so it does not get garbage collected.</param>
+            <param name="filter">Filter to evaluate if the subscriber should receive the event.</param>
+            <returns>A <see cref="T:Microsoft.Practices.Composite.Events.SubscriptionToken"/> that uniquely identifies the added subscription.</returns>
+            <remarks>
+            If <paramref name="keepSubscriberReferenceAlive"/> is set to <see langword="false"/>, <see cref="T:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1"/> will maintain a <seealso cref="T:System.WeakReference"/> to the Target of the supplied <paramref name="action"/> delegate.
+            If not using a WeakReference (<paramref name="keepSubscriberReferenceAlive"/> is <see langword="true"/>), the user must explicitly call Unsubscribe for the event when disposing the subscriber in order to avoid memory leaks or unexepcted behavior.
+            
+            The CompositeWpfEvent collection is thread-safe.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1.Publish(`0)">
+            <summary>
+            Publishes the <see cref="T:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1"/>.
+            </summary>
+            <param name="payload">Message to pass to the subscribers.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1.Unsubscribe(System.Action{`0})">
+            <summary>
+            Removes the first subscriber matching <seealso cref="T:System.Action`1"/> from the subscribers' list.
+            </summary>
+            <param name="subscriber">The <see cref="T:System.Action`1"/> used when subscribing to the event.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1.Contains(System.Action{`0})">
+            <summary>
+            Returns <see langword="true"/> if there is a subscriber matching <seealso cref="T:System.Action`1"/>.
+            </summary>
+            <param name="subscriber">The <see cref="T:System.Action`1"/> used when subscribing to the event.</param>
+            <returns><see langword="true"/> if there is an <seealso cref="T:System.Action`1"/> that matches; otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="P:Microsoft.Practices.Composite.Wpf.Events.CompositeWpfEvent`1.UIDispatcher">
+            <summary>
+            Gets the <see cref="T:System.Windows.Threading.Dispatcher"/> that is bound to the UI elements. This property can be overriden for testability.
+            </summary>
+            <value>The <see cref="T:System.Windows.Threading.Dispatcher"/> to use when subscribing using <see cref="F:Microsoft.Practices.Composite.Wpf.Events.ThreadOption.UIThread"/>.</value>
+        </member>
+        <member name="T:Microsoft.Practices.Composite.Wpf.Regions.SingleActiveRegion">
+            <summary>
+            Region that allows a maximum of one active view at a time.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Composite.Wpf.Regions.SingleActiveRegion.Activate(System.Object)">
+            <summary>
+            Marks the specified view as active.
+            </summary>
+            <param name="view">The view to activate.</param>
+            <remarks>If there is an active view before calling this method,
+            that view will be deactivated automatically.</remarks>
+        </member>
+    </members>
+</doc>
