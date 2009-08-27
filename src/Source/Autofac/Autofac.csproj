@@ -49,6 +49,7 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="ContainerExtensions.cs" />
     <Compile Include="GeneratedFactories\FactoryGenerator.cs" />
     <Compile Include="Builder\GeneratedFactoryExtensions.cs" />
     <Compile Include="ActivatedEventArgs.cs" />

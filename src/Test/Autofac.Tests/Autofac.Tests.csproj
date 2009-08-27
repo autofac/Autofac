@@ -62,6 +62,7 @@
     <Compile Include="Component\Activation\ServiceListActivatorFixture.cs" />
     <Compile Include="Component\DescriptorFixture.cs" />
     <Compile Include="Configuration\ConfigurationSettingsReaderFixture.cs" />
+    <Compile Include="ContainerExtensionsFixture.cs" />
     <Compile Include="GeneratedFactories\ContainerBuilderExtensionsFixture.cs" />
     <Compile Include="Modules\ImplicitCollectionSupportModuleFixture.cs" />
     <Compile Include="NamedParameterTests.cs" />
