@@ -76,7 +76,7 @@ namespace Autofac.Tests.Builder
         class WithParam
         {
             public int I { get; private set; }
-            public WithParam(int i) { I = i; }
+            public WithParam(int i, int j) { I = i + j; }
         }
 
         [Test]
@@ -85,18 +85,20 @@ namespace Autofac.Tests.Builder
             var ival = 10;
 
             var cb = new ContainerBuilder();
-            cb.Register<WithParam>().
-                WithArguments(new NamedParameter("i", ival));
+            cb.Register<WithParam>()
+				.WithArguments(new NamedParameter("i", ival))
+				.WithArguments(new NamedParameter("j", ival));
 
             var c = cb.Build();
             var result = c.Resolve<WithParam>();
             Assert.IsNotNull(result);
-            Assert.AreEqual(ival, result.I);
+            Assert.AreEqual(ival*2, result.I);
         }
 
-        class WithProp
+		class WithProp
         {
             public string Prop { get; set; }
+			public int Prop2 { get; set; }
         }
 
         [Test]
@@ -106,13 +108,15 @@ namespace Autofac.Tests.Builder
 
             var cb = new ContainerBuilder();
             cb.Register<WithProp>()
-                .WithProperties(new NamedPropertyParameter("Prop", pval));
+                .WithProperties(new NamedPropertyParameter("Prop", pval))
+				.WithProperties(new NamedPropertyParameter("Prop2", 1));
 
             var c = cb.Build();
 
             var result = c.Resolve<WithProp>();
             Assert.IsNotNull(result);
             Assert.AreEqual(pval, result.Prop);
+			Assert.AreEqual(1, result.Prop2);
         }
 
         [Test]

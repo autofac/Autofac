@@ -38,7 +38,7 @@ namespace Autofac.Registrars.Reflective
     /// </summary>
 	public class ReflectiveRegistrar : ConcreteRegistrar<IReflectiveRegistrar>, IReflectiveRegistrar
 	{
-        Type _implementor;
+    	readonly Type _implementor;
         IConstructorSelector _ctorSelector = new MostParametersConstructorSelector();
         IEnumerable<Parameter> _additionalCtorArgs = Enumerable.Empty<Parameter>();
         IEnumerable<NamedPropertyParameter> _explicitProperties = Enumerable.Empty<NamedPropertyParameter>();
@@ -112,7 +112,7 @@ namespace Autofac.Registrars.Reflective
         {
             Enforce.ArgumentNotNull(additionalCtorArgs, "additionalCtorArgs");
 
-            _additionalCtorArgs = additionalCtorArgs;
+            _additionalCtorArgs = _additionalCtorArgs.Union(additionalCtorArgs).ToArray();
 
             return this;
         }
@@ -128,7 +128,7 @@ namespace Autofac.Registrars.Reflective
         {
             Enforce.ArgumentNotNull(explicitProperties, "explicitProperties");
 
-            _explicitProperties = explicitProperties;
+            _explicitProperties = _explicitProperties.Union(explicitProperties);
 
             return this;
         }
