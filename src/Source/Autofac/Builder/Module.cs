@@ -49,7 +49,7 @@ namespace Autofac.Builder
         /// Note that the ContainerBuilder parameter is not the same one
 	/// that the module is being registered by (i.e. it can have its own defaults.)
 	/// </summary>
-        /// <param name="builder">The builder.</param>
+		/// <param name="moduleBuilder">The builder.</param>
         protected virtual void Load(ContainerBuilder moduleBuilder) { }
 
         /// <summary>
