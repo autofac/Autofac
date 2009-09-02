@@ -26,8 +26,9 @@
 		<LibrarySource>Source\Autofac\bin\$(Configuration)</LibrarySource>
 		<MefSource>Source\Autofac.Integration.Mef\bin\$(Configuration)</MefSource>
 		<WcfSource>Source\Autofac.Integration.Wcf\bin\$(Configuration)</WcfSource>
-		<WebSource>Source\Autofac.Integration.Web\bin\$(Configuration)</WebSource>
-		<SourceExclusions>**\.svn\**\*.*;**\_svn\**\*.*;**\*.user;**\*.suo;**\*.db;**\bin\**\*.*;**\obj\**\*.*;</SourceExclusions>
+    <WebSource>Source\Autofac.Integration.Web\bin\$(Configuration)</WebSource>
+    <CompatSource>Source\Autofac.V1Compatibility\bin\$(Configuration)</CompatSource>
+    <SourceExclusions>**\.svn\**\*.*;**\_svn\**\*.*;**\*.user;**\*.suo;**\*.db;**\bin\**\*.*;**\obj\**\*.*;</SourceExclusions>
 		<ProjectName>$(MSBuildProjectName)</ProjectName>
 	</PropertyGroup>
 
@@ -84,7 +85,7 @@
 		<MakeDir Directories="$(BuildPath);"/>
 		
 		<!--Libraries-->
-		<CreateItem Include="$(LibrarySource)\*.*;$(MefSource)\*.*;$(WebSource)\*.*;$(WcfSource)\*.*">
+		<CreateItem Include="$(LibrarySource)\*.*;$(MefSource)\*.*;$(WebSource)\*.*;$(WcfSource)\*.*;$(CompatSource)\*.*">
 			<Output ItemName="unmergedFiles" TaskParameter="Include"/>
 		</CreateItem>
 		<Copy SourceFiles="@(unmergedFiles)" DestinationFolder="$(LibraryPath)" />
