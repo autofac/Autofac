@@ -33,7 +33,7 @@ namespace Autofac.Integration.Web.Mvc
     /// </summary>
 	public class FilterInjectionActionInvoker : ControllerActionInvoker
 	{
-		private IContext _context;
+		private IComponentContext _context;
 
         /// <summary>
         /// If true, only unset properties on filters will be injected.
@@ -45,7 +45,7 @@ namespace Autofac.Integration.Web.Mvc
         /// Create an instance of the action invoker.
         /// </summary>
         /// <param name="context">Context from which to inject dependencies.</param>
-		public FilterInjectionActionInvoker(IContext context)
+		public FilterInjectionActionInvoker(IComponentContext context)
 		{
 			_context = context;
 		}

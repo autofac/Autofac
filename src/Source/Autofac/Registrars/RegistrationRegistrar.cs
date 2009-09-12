@@ -52,7 +52,7 @@ namespace Autofac.Registrars
         public void Configure(IContainer container)
         {
             Enforce.ArgumentNotNull(container, "container");
-            container.RegisterComponent(_registration);
+            container.ComponentRegistry.Register(_registration);
         }
 
         #endregion

@@ -32,45 +32,45 @@ namespace Autofac.Builder
     public abstract class Module : IModule
     {
         /// <summary>
-        /// Apply the module to the container.
+        /// Apply the module to the component registry.
         /// </summary>
-        /// <param name="container">Container to apply configuration to.</param>
-        public virtual void Configure(IContainer container)
+        /// <param name="componentRegistry">Component registry to apply configuration to.</param>
+        public void Configure(IComponentRegistry componentRegistry)
         {
-            Enforce.ArgumentNotNull(container, "container");
+            Enforce.ArgumentNotNull(componentRegistry, "componentRegistry");
             var builder = new ContainerBuilder();
             Load(builder);
-            builder.Build(container);
-            AttachToRegistrations(container);
+            builder.Build(componentRegistry);
+            AttachToRegistrations(componentRegistry);
         }
 
         /// <summary>
         /// Override to add registrations to the container.
         /// Note that the ContainerBuilder parameter is not the same one
-	/// that the module is being registered by (i.e. it can have its own defaults.)
-	/// </summary>
+	    /// that the module is being registered by (i.e. it can have its own defaults.)
+	    /// </summary>
 		/// <param name="moduleBuilder">The builder.</param>
         protected virtual void Load(ContainerBuilder moduleBuilder) { }
 
         /// <summary>
         /// Attach the module to a registration either already existing in
-        /// or being registered in the container.
+        /// or being registered in the component registry.
         /// </summary>
-        /// <param name="container">The container.</param>
+        /// <param name="componentRegistry">The component registry.</param>
         /// <param name="registration">The registration.</param>
         protected virtual void AttachToComponentRegistration(
-            IContainer container,
+            IComponentRegistry componentRegistry,
             IComponentRegistration registration)
         {
         }
 
-        void AttachToRegistrations(IContainer container)
+        void AttachToRegistrations(IComponentRegistry componentRegistry)
         {
-            Enforce.ArgumentNotNull(container, "container");
-            foreach (IComponentRegistration registration in container.ComponentRegistrations)
-                AttachToComponentRegistration(container, registration);
-            container.ComponentRegistered +=
-                (sender, e) => AttachToComponentRegistration(e.Container, e.ComponentRegistration);
+            Enforce.ArgumentNotNull(componentRegistry, "componentRegistry");
+            foreach (IComponentRegistration registration in componentRegistry.Registrations)
+                AttachToComponentRegistration(componentRegistry, registration);
+            componentRegistry.Registered +=
+                (sender, e) => AttachToComponentRegistration(e.ComponentRegistry, e.ComponentRegistration);
         }
     }
 }

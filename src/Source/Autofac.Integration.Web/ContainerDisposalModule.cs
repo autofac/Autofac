@@ -76,7 +76,7 @@ namespace Autofac.Integration.Web
             var cp = _containerProviderAccessor.ContainerProvider;
             if (cp == null)
                 throw new InvalidOperationException(ContainerDisposalModuleResources.ContainerProviderNull);
-            cp.DisposeRequestContainer();
+            cp.EndRequestLifetime();
         }
     }
 }

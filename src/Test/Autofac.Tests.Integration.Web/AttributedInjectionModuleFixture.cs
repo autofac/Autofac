@@ -108,10 +108,10 @@ namespace Autofac.Tests.Integration.Web
             Assert.IsNull(page.Property);
         }
 
-        private IContext CreateContext()
+        private IComponentContext CreateContext()
         {
             var cb = new ContainerBuilder();
-            cb.Register(ContextSuppliedString);
+            cb.RegisterInstance(ContextSuppliedString);
             return cb.Build();
         }
     }

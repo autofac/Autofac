@@ -175,7 +175,7 @@ namespace Autofac.Tests.Integration.Mef
             var builder = new ContainerBuilder();
             var catalog = new TypeCatalog(typeof(Bar));
             builder.RegisterCatalog(catalog);
-            builder.Register<Foo>().ExportedAs<IFoo>();
+            builder.RegisterType<Foo>().ExportedAs(typeof(IFoo));
             var container = builder.Build();
             var bar = container.Resolve<Bar>();
             Assert.IsNotNull(bar.Foo);
@@ -276,7 +276,7 @@ namespace Autofac.Tests.Integration.Mef
                 { "Key", "Value" }
             };
             var exportedString = "Hello";
-            builder.Register(exportedString).ExportedAs<string>(metadata);
+            builder.RegisterInstance(exportedString).ExportedAs(typeof(string), metadata);
             var catalog = new TypeCatalog(typeof(RequiresMetadata));
             builder.RegisterCatalog(catalog);
             var container = builder.Build();
@@ -404,7 +404,7 @@ namespace Autofac.Tests.Integration.Mef
             var builder = new ContainerBuilder();
             var catalog = new TypeCatalog(typeof(Foo));
             builder.RegisterCatalog(catalog);
-            builder.Register<Foo>().ExportedAs<IFoo>();
+            builder.RegisterType<Foo>().ExportedAs(typeof(IFoo));
             var container = builder.Build();
             var exports = container.ResolveExports<IFoo>();
             Assert.AreEqual(2, exports.Count());

@@ -26,6 +26,8 @@
 using System;
 using System.Globalization;
 using System.Reflection;
+using System.Collections;
+using System.Linq;
 
 namespace Autofac
 {
@@ -54,6 +56,26 @@ namespace Autofac
 
             return value;
 		}
+
+        /// <summary>
+        /// Enforce that sequence does not contain null. Returns the
+        /// value if valid so that it can be used inline in
+        /// base initialiser syntax.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value">The value.</param>
+        /// <param name="name">The name.</param>
+        /// <returns><paramref name="value"/></returns>
+        public static T ArgumentElementNotNull<T>(T value, string name)
+            where T : class, IEnumerable
+        {
+            Enforce.ArgumentNotNull(value, name);
+
+            if (value.Cast<object>().Contains(null))
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, EnforceResources.ElementCannotBeNull, name));
+
+            return value;
+        }
 
         /// <summary>
         /// Enforces that the provided object is non-null.

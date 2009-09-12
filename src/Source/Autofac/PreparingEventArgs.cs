@@ -32,39 +32,34 @@ namespace Autofac
     /// Fired before the activation process to allow parameters to be changed or an alternative
     /// instance to be provided.
     /// </summary>
-    public class PreparingEventArgs : EventArgs
+    public class PreparingEventArgs<T> : EventArgs
     {
-        IContext _context;
-        IComponentRegistration _component;
+        readonly IComponentContext _context;
+        readonly IComponentRegistration _component;
+        T _instance;
         IEnumerable<Parameter> _parameters;
-        object _instance;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ActivatingEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="PreparingEventArgs{T}"/> class.
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="component">The component.</param>
         /// <param name="parameters">The parameters.</param>
-        public PreparingEventArgs(IContext context, IComponentRegistration component, IEnumerable<Parameter> parameters)
+        public PreparingEventArgs(IComponentContext context, IComponentRegistration component, IEnumerable<Parameter> parameters)
         {
-            Context = context;
-            Component = component;
-            Parameters = parameters;
+            _context = Enforce.ArgumentNotNull(context, "context");
+            _component = Enforce.ArgumentNotNull(component, "component");
+            _parameters = Enforce.ArgumentNotNull(parameters, "parameters");
         }
 
         /// <summary>
         /// The context in which the activation is occurring.
         /// </summary>
-        public IContext Context
+        public IComponentContext Context
         {
             get
             {
                 return _context;
-            }
-            private set
-            {
-                Enforce.ArgumentNotNull(value, "value");
-                _context = value;
             }
         }
 
@@ -77,17 +72,12 @@ namespace Autofac
             {
                 return _component;
             }
-            private set
-            {
-                Enforce.ArgumentNotNull(value, "value");
-                _component = value;
-            }
         }
 
         /// <summary>
         /// An instance can be supplied in order to avoid using the regular activator.
         /// </summary>
-        public object Instance
+        public T Instance
         {
             get
             {
@@ -95,7 +85,7 @@ namespace Autofac
             }
             set
             {
-                Enforce.ArgumentNotNull(value, "value");
+                Enforce.ArgumentNotNull((object)value, "value");
                 _instance = value;
             }
         }

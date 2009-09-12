@@ -68,9 +68,10 @@ namespace Autofac.Registrars
         /// by the container.
         /// </summary>
         /// <param name="service">The service that was requested.</param>
+        /// <param name="registeredServicesTest">A predicate that can be queried to determine if a service is already registered.</param>
         /// <param name="registration">A registration providing the service.</param>
         /// <returns>True if the registration could be created.</returns>
-        public virtual bool TryGetRegistration(Service service, out IComponentRegistration registration)
+        public virtual bool TryGetRegistration(Service service, Func<Service, bool> registeredServicesTest, out IComponentRegistration registration)
         {
             Enforce.ArgumentNotNull(service, "service");
             registration = null;

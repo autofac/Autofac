@@ -1,7 +1,7 @@
 ﻿using System;
-using Autofac.Component.Activation;
 using NUnit.Framework;
 using System.Linq;
+using Autofac.Activators;
 
 namespace Autofac.Tests.Component.Activation
 {
@@ -10,9 +10,16 @@ namespace Autofac.Tests.Component.Activation
     {
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ConstructNull()
+        public void DoesNotAcceptNullDelegate()
         {
-            new DelegateActivator(null);
+            new DelegateActivator(typeof(object), null);
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void DoesNotAcceptNullType()
+        {
+            new DelegateActivator(null, (c, p) => new object());
         }
 
         [Test]
@@ -21,7 +28,7 @@ namespace Autofac.Tests.Component.Activation
             object instance = new object();
 
             DelegateActivator target =
-                new DelegateActivator((c, p) => instance);
+                new DelegateActivator(typeof(object), (c, p) => instance);
 
             Assert.AreSame(instance, target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>()));
         }

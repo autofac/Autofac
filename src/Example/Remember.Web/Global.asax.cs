@@ -50,7 +50,7 @@ namespace Remember.Web
 
         protected void Application_EndRequest(object sender, EventArgs e)
         {
-            ContainerProvider.DisposeRequestContainer();
+            ContainerProvider.EndRequestLifetime();
         }
     }
 }

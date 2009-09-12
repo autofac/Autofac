@@ -35,7 +35,7 @@ namespace Autofac.Registrars
     public class DeferredRegistrationParameters
     {
         InstanceOwnership _ownership;
-        InstanceScope _scope;
+        InstanceSharing _scope;
         IEnumerable<EventHandler<PreparingEventArgs>> _preparingHandlers;
         IEnumerable<EventHandler<ActivatingEventArgs>> _activatingHandlers;
         IEnumerable<EventHandler<ActivatedEventArgs>> _activatedHandlers;
@@ -52,7 +52,7 @@ namespace Autofac.Registrars
         /// <param name="createRegistration">The create registration.</param>
         public DeferredRegistrationParameters(
             InstanceOwnership ownership,
-            InstanceScope scope,
+            InstanceSharing scope,
             IEnumerable<EventHandler<PreparingEventArgs>> preparingHandlers,
             IEnumerable<EventHandler<ActivatingEventArgs>> activatingHandlers,
             IEnumerable<EventHandler<ActivatedEventArgs>> activatedHandlers,
@@ -82,7 +82,7 @@ namespace Autofac.Registrars
         /// Gets the scope.
         /// </summary>
         /// <value>The scope.</value>
-        public InstanceScope Scope
+        public InstanceSharing Scope
         {
             get
             {

@@ -27,9 +27,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Autofac.Component;
-using Autofac.Component.Activation;
-using Autofac.Component.Scope;
 
 namespace Autofac.Modules
 {
@@ -40,13 +37,13 @@ namespace Autofac.Modules
     public class ImplicitCollectionSupportModule : IModule
     {
         /// <summary>
-        /// Configures the container.
+        /// Apply the module to the component registry.
         /// </summary>
-        /// <param name="container">Container to configure.</param>
-        public void Configure(IContainer container)
+        /// <param name="componentRegistry">Component registry to apply configuration to.</param>
+        public virtual void Configure(IComponentRegistry componentRegistry)
         {
-            Enforce.ArgumentNotNull(container, "container");
-            container.AddRegistrationSource(new CollectionRegistrationSource());
+            Enforce.ArgumentNotNull(componentRegistry, "componentRegistry");
+            componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
         }
     }
 }

@@ -36,7 +36,7 @@ namespace Autofac.Integration.Web
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns>The injector.</returns>
-        protected override Func<object, object> GetInjector(IContext context)
+        protected override Func<object, object> GetInjector(IComponentContext context)
         {
             if (context == null)
                 throw new ArgumentNullException("context");

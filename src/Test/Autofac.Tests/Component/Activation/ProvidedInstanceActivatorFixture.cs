@@ -1,7 +1,7 @@
 ﻿using System;
-using Autofac.Component.Activation;
 using NUnit.Framework;
 using System.Linq;
+using Autofac.Activators;
 
 namespace Autofac.Tests.Component.Activation
 {
@@ -36,7 +36,7 @@ namespace Autofac.Tests.Component.Activation
             ProvidedInstanceActivator target =
                 new ProvidedInstanceActivator(instance);
 
-            IContext container = new Container();
+            IComponentContext container = new Container();
 
             target.ActivateInstance(container, Enumerable.Empty<Parameter>());
             target.ActivateInstance(container, Enumerable.Empty<Parameter>());

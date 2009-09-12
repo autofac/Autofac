@@ -27,74 +27,42 @@ using System;
 
 namespace Autofac
 {
-	/// <summary>
-	/// Fired during the activation process to allow instances to be proxied or swapped.
-	/// </summary>
-	public class ActivatingEventArgs : EventArgs
-	{
-		IContext _context;
-		IComponentRegistration _component;
-		object _instance;
+    /// <summary>
+    /// Fired when the activation process for a new instance is complete.
+    /// </summary>
+    public class ActivatingEventArgs<T> : EventArgs
+    {
+        readonly IComponentContext _context;
+        readonly IComponentRegistration _component;
+        readonly T _instance;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ActivatingEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="ActivatedEventArgs{T}"/> class.
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="component">The component.</param>
         /// <param name="instance">The instance.</param>
-		public ActivatingEventArgs(IContext context, IComponentRegistration component, object instance)
-		{
-			Context = context;
-			Component = component;
-			Instance = instance;
-		}
+        public ActivatingEventArgs(IComponentContext context, IComponentRegistration component, T instance)
+        {
+            _context = Enforce.ArgumentNotNull(context, "context");
+            _component = Enforce.ArgumentNotNull(component, "component");
+            Enforce.ArgumentNotNull((object)instance, "instance");
+            _instance = instance;
+        }
 
-		/// <summary>
-		/// The context in which the activation is occurring.
-		/// </summary>
-		public IContext Context
-		{
-			get
-			{
-				return _context;
-			}
-			private set
-			{
-                Enforce.ArgumentNotNull(value, "value");
-				_context = value;
-			}
-		}
+        /// <summary>
+        /// The context in which the activation occurred.
+        /// </summary>
+        public IComponentContext Context { get { return _context; } }
 
-		/// <summary>
-		/// The component providing the instance being activated.
-		/// </summary>
-		public IComponentRegistration Component
-		{
-			get
-			{
-				return _component;
-			}
-			private set
-			{
-                Enforce.ArgumentNotNull(value, "value");
-				_component = value;
-			}
-		}
+        /// <summary>
+        /// The component providing the instance.
+        /// </summary>
+        public IComponentRegistration Component { get { return _component; } }
 
-		/// <summary>
-		/// The instance that will be used to satisfy the request (may be substituted.)
-		/// </summary>
-		public object Instance
-		{
-			get
-			{
-				return _instance;
-			}
-			set
-			{
-                Enforce.ArgumentNotNull(value, "value");
-				_instance = value;
-			}
-		}
-	}
+        /// <summary>
+        /// The instance that will be used to satisfy the request.
+        /// </summary>
+        public T Instance { get { return _instance; } }
+    }
 }

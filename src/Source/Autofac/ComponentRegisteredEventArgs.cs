@@ -33,26 +33,29 @@ namespace Autofac
 	/// </summary>
 	public class ComponentRegisteredEventArgs : EventArgs
 	{
-		/// <summary>
-		/// The container into which the registration was made.
-		/// </summary>
-		public IContainer Container { get; private set; }
-		
-		/// <summary>
-		/// The component registration.
-		/// </summary>
-		public IComponentRegistration ComponentRegistration { get; private set; }
-		
-		/// <summary>
+        readonly IComponentRegistry _componentRegistry;
+        readonly IComponentRegistration _componentRegistration;
+
+        /// <summary>
+        /// The container into which the registration was made.
+        /// </summary>
+        public IComponentRegistry ComponentRegistry { get { return _componentRegistry; } }
+
+        /// <summary>
+        /// The component registration.
+        /// </summary>
+        public IComponentRegistration ComponentRegistration { get { return _componentRegistration; } }
+
+        /// <summary>
 		/// Create a new instance with a valid container and component registration.
 		/// </summary>
-		/// <param name="container">The container into which the registration 
+		/// <param name="registry">The container into which the registration 
 		/// was made.</param>
 		/// <param name="componentRegistration">The component registration.</param>
-		public ComponentRegisteredEventArgs(IContainer container, IComponentRegistration componentRegistration)
+		public ComponentRegisteredEventArgs(IComponentRegistry registry, IComponentRegistration componentRegistration)
 		{
-			Container = Enforce.ArgumentNotNull(container, "container");
-			ComponentRegistration = Enforce.ArgumentNotNull(componentRegistration, "componentRegistration");
+            _componentRegistry = Enforce.ArgumentNotNull(registry, "registry");
+			_componentRegistration = Enforce.ArgumentNotNull(componentRegistration, "componentRegistration");
 		}
 	}
 }

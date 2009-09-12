@@ -38,6 +38,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Moq, Version=3.1.416.3, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Resource\Library\Moq\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.4.1.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Resource\Library\NUnit\nunit.framework.dll</HintPath>
@@ -45,6 +49,7 @@
     <Reference Include="System">
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Xml">
       <Private>True</Private>
     </Reference>
@@ -56,43 +61,56 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssertionHelpers.cs" />
-    <Compile Include="Builder\ActivatingHandlerFixture.cs" />
-    <Compile Include="Builder\AutomaticRegistrationBuilderFixture.cs" />
-    <Compile Include="ComponentRegisteredEventArgsFixture.cs" />
-    <Compile Include="Component\Activation\ServiceListActivatorFixture.cs" />
-    <Compile Include="Component\DescriptorFixture.cs" />
-    <Compile Include="Configuration\ConfigurationSettingsReaderFixture.cs" />
-    <Compile Include="ContainerExtensionsFixture.cs" />
+    <Compile Include="Builder\PropertyInjectionTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\AutomaticRegistrationBuilderFixture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\CollectionRegistrationBuilderFixture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\ContainerBuilderFixture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\DelegateRegistrationBuilderFixture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\GenericRegistrationBuilderFixture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\ModuleFixture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\ProvidedInstanceRegistrationBuilderFixture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Builder\ReflectiveRegistrationBuilderFixture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ComponentRegisteredEventArgsTests.cs" />
+    <Compile Include="ComponentRegistryTests.cs" />
+    <Compile Include="ContainerExtensionsTests.cs" />
+    <Compile Include="Fixture.cs" />
     <Compile Include="GeneratedFactories\ContainerBuilderExtensionsFixture.cs" />
     <Compile Include="Modules\ImplicitCollectionSupportModuleFixture.cs" />
     <Compile Include="NamedParameterTests.cs" />
     <Compile Include="Registrars\ConcreteRegistrarFixture.cs" />
-    <Compile Include="Builder\CollectionRegistrationBuilderFixture.cs" />
-    <Compile Include="Builder\DelegateRegistrationBuilderFixture.cs" />
-    <Compile Include="Builder\GenericRegistrationBuilderFixture.cs" />
-    <Compile Include="Builder\ModuleFixture.cs" />
-    <Compile Include="Builder\ProvidedInstanceRegistrationBuilderFixture.cs" />
-    <Compile Include="Builder\ReflectiveRegistrationBuilderFixture.cs" />
-    <Compile Include="DisposerFixture.cs" />
+    <Compile Include="DisposerTests.cs" />
     <Compile Include="Registrars\Generic\GenericRegistrationHandlerFixture.cs" />
-    <Compile Include="Component\Scope\BaseContextScopeFixture.cs" />
     <Compile Include="Component\RegistrationFixture.cs" />
-    <Compile Include="Builder\ContainerBuilderFixture.cs" />
-    <Compile Include="Component\Scope\ContextScopeFixture.cs" />
     <Compile Include="Component\Activation\DelegateActivatorFixture.cs" />
     <Compile Include="DisposeTracker.cs" />
-    <Compile Include="Component\Scope\FactoryScopeFixture.cs" />
     <Compile Include="BugFixture.cs" />
     <Compile Include="ContainerFixture.cs" />
     <Compile Include="Component\Activation\ProvidedInstanceActivatorFixture.cs" />
     <Compile Include="Component\Activation\MostParametersConstructorSelectorFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Component\Activation\ReflectionActivatorFixture.cs" />
-    <Compile Include="Component\Scope\SingletonScopeFixture.cs" />
-    <Compile Include="Component\Activation\SpecificConstructorSelectorFixture.cs" />
+    <Compile Include="Component\Activation\MatchingSignatureConstructorSelectorTests.cs" />
     <Compile Include="Registrars\RegistrarFixture.cs" />
     <Compile Include="ResolvedParameterTests.cs" />
-    <Compile Include="ServiceFixture.cs" />
+    <Compile Include="ServiceTests.cs" />
     <Compile Include="Tags\ContainerBuilderExtensionsFixture.cs" />
     <Compile Include="Tags\ContainerExtensionsFixture.cs" />
     <Compile Include="Tags\TagsFixture.cs" />
@@ -107,24 +125,6 @@
   <ItemGroup>
     <None Include="..\..\SharedKey.snk">
       <Link>SharedKey.snk</Link>
-    </None>
-    <None Include="Configuration\BFactory.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Configuration\CWithBoolean.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Configuration\SingletonWithTwoServices.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Configuration\ExtendedProperties.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Configuration\Referee.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Configuration\Referrer.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />

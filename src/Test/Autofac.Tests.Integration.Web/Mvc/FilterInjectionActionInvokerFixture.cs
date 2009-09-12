@@ -20,8 +20,8 @@ namespace Autofac.Tests.Integration.Web.Mvc
 		public void Setup()
 		{
 			var builder = new ContainerBuilder();
-			builder.Register(c => new TestableActionInvoker(c)).FactoryScoped();
-			builder.Register(c => new TestDependency());
+			builder.RegisterDelegate(c => new TestableActionInvoker(c));
+            builder.RegisterDelegate(c => new TestDependency());
 			_container = builder.Build();
 
 			_controller = new TestController();
@@ -51,7 +51,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
 
 		private class TestableActionInvoker : FilterInjectionActionInvoker
 		{
-			public TestableActionInvoker(IContext context) : base(context)
+			public TestableActionInvoker(IComponentContext context) : base(context)
 			{
 			}
 

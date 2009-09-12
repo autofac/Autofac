@@ -31,13 +31,13 @@ namespace Autofac
 	public enum InstanceOwnership
 	{
 		/// <summary>
-		/// The container/context does not dispose the instances.
+		/// The lifetime scope does not dispose the instances.
 		/// </summary>
-		External,
+		ExternallyOwned,
 
 		/// <summary>
-		/// The instances are disposed when the container/context is disposed.
+		/// The instances are disposed when the lifetime scope is disposed.
 		/// </summary>
-		Container
+		OwnedByLifetimeScope
 	}
 }

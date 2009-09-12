@@ -60,22 +60,22 @@ namespace Autofac.Integration.Wcf
                 throw new ArgumentOutOfRangeException("constructorString");
 
             IComponentRegistration registration = null;
-            if (!Container.TryGetDefaultRegistrationFor(new NamedService(constructorString), out registration))
+            if (!Container.ComponentRegistry.TryGetRegistration(new NamedService(constructorString), out registration))
             {
                 Type serviceType = Type.GetType(constructorString, false);
                 if (serviceType != null)
-                    Container.TryGetDefaultRegistrationFor(new TypedService(serviceType), out registration);
+                    Container.ComponentRegistry.TryGetRegistration(new TypedService(serviceType), out registration);
             }
 
             if (registration == null)
                 throw new InvalidOperationException(
                     string.Format(CultureInfo.CurrentCulture, AutofacServiceHostFactoryResources.ServiceNotRegistered, constructorString));
 
-            if (!registration.Descriptor.BestKnownImplementationType.IsClass)
+            if (!registration.Activator.LimitType.IsClass)
                 throw new InvalidOperationException(
                     string.Format(CultureInfo.CurrentCulture, AutofacServiceHostFactoryResources.ImplementationTypeUnknown, constructorString, registration));
 
-            return CreateServiceHost(registration.Descriptor.BestKnownImplementationType, baseAddresses);
+            return CreateServiceHost(registration.Activator.LimitType, baseAddresses);
         }
 
         /// <summary>

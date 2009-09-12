@@ -39,14 +39,14 @@ namespace Autofac
         /// be set to a function that will lazily retrieve the parameter value. If the result is false,
         /// will be set to null.</param>
         /// <returns>True if a value can be supplied; otherwise, false.</returns>
-        public override bool CanSupplyValue(ParameterInfo pi, IContext context, out Func<object> valueProvider)
+        public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<object> valueProvider)
         {
             Enforce.ArgumentNotNull(pi, "pi");
             Enforce.ArgumentNotNull(context, "context");
 
             if (_predicate(pi))
             {
-                valueProvider = () => MatchTypes(pi, Value);
+                valueProvider = () => Value;
                 return true;
             }
             else

@@ -39,7 +39,7 @@ namespace Autofac.Registrars
 	{
 		IList<Service> _services = new List<Service>();
 		InstanceOwnership _ownership = InstanceOwnership.Container;
-		InstanceScope _scope = InstanceScope.Singleton;
+		InstanceSharing _scope = InstanceSharing.Singleton;
         IList<EventHandler<PreparingEventArgs>> _preparingHandlers = new List<EventHandler<PreparingEventArgs>>();
         IList<EventHandler<ActivatingEventArgs>> _activatingHandlers = new List<EventHandler<ActivatingEventArgs>>();
         IList<EventHandler<ActivatedEventArgs>> _activatedHandlers = new List<EventHandler<ActivatedEventArgs>>();
@@ -160,7 +160,7 @@ namespace Autofac.Registrars
 		/// <returns>
 		/// A registrar allowing registration to continue.
 		/// </returns>
-        public virtual TSyntax WithScope(InstanceScope scope)
+        public virtual TSyntax WithScope(InstanceSharing scope)
 		{
 			Scope = scope;
             return Syntax;
@@ -171,16 +171,16 @@ namespace Autofac.Registrars
         /// </summary>
         public virtual TSyntax FactoryScoped()
         {
-       		return WithScope(InstanceScope.Factory);
+       		return WithScope(InstanceSharing.Factory);
         }
         
         /// <summary>
         /// An instance will be created once per container.
         /// </summary>
-        /// <seealso cref="IContainer.CreateInnerContainer" />
+        /// <seealso cref="ILifetimeScope.BeginLifetimeScope" />
         public virtual TSyntax ContainerScoped()
         {
-       		return WithScope(InstanceScope.Container);
+       		return WithScope(InstanceSharing.Container);
         }
         
         /// <summary>
@@ -188,7 +188,7 @@ namespace Autofac.Registrars
         /// </summary>
         public virtual TSyntax SingletonScoped()
         {
-       		return WithScope(InstanceScope.Singleton);
+       		return WithScope(InstanceSharing.Singleton);
         }
         
         /// <summary>
@@ -275,7 +275,7 @@ namespace Autofac.Registrars
             RegistrationCreator = (descriptor, activator, scope, ownership) =>
             	new TaggedRegistration<T>(tag, oldValue(descriptor, activator, scope, ownership));
             
-            if (_scope == InstanceScope.Singleton)
+            if (_scope == InstanceSharing.Singleton)
                 ContainerScoped();
             
             return Syntax;
@@ -350,7 +350,7 @@ namespace Autofac.Registrars
 		/// <summary>
 		/// The instance scope used by this registration.
 		/// </summary>
-        protected virtual InstanceScope Scope
+        protected virtual InstanceSharing Scope
 		{
 			get
 			{
@@ -454,7 +454,7 @@ namespace Autofac.Registrars
             foreach (var activatedHandler in ActivatedHandlers)
                 cr.Activated += activatedHandler;
 
-            container.RegisterComponent(cr);
+            container.ComponentRegistry.Register(cr);
 
             FireRegistered(new RegisteredEventArgs() { Container = container, Registration = cr });
         }

@@ -13,7 +13,7 @@ namespace Autofac.Tests.Builder
         {
             protected override void Load(ContainerBuilder builder)
             {
-                builder.Register(new object());
+                builder.RegisterInstance(new object());
             }
         }
 
@@ -21,7 +21,7 @@ namespace Autofac.Tests.Builder
         public void LoadsRegistrations()
         {
             var container = new Container();
-            new ObjectModule().Configure(container);
+            new ObjectModule().Configure(container.ComponentRegistry);
             Assert.IsTrue(container.IsRegistered<object>());
         }
 
@@ -36,9 +36,9 @@ namespace Autofac.Tests.Builder
         {
             public IList<IComponentRegistration> Registrations = new List<IComponentRegistration>();
 
-            protected override void AttachToComponentRegistration(IContainer container, IComponentRegistration registration)
+            protected override void AttachToComponentRegistration(IComponentRegistry componentRegistry, IComponentRegistration registration)
             {
-                base.AttachToComponentRegistration(container, registration);
+                base.AttachToComponentRegistration(componentRegistry, registration);
                 Registrations.Add(registration);
             }
         }
@@ -50,13 +50,13 @@ namespace Autofac.Tests.Builder
             Assert.AreEqual(0, attachingModule.Registrations.Count);
 
             var builder = new ContainerBuilder();
-            builder.Register<object>();
+            builder.RegisterType(typeof(object));
             builder.RegisterModule(attachingModule);
-            builder.Register("Hello!");
+            builder.RegisterInstance("Hello!");
             
             var container = builder.Build();
 
-            Assert.AreEqual(container.ComponentRegistrations.Count(), attachingModule.Registrations.Count);
+            Assert.AreEqual(container.ComponentRegistry.Registrations.Count(), attachingModule.Registrations.Count);
         }
     }
 }

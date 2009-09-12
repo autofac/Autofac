@@ -70,7 +70,7 @@ namespace Autofac.Registrars.Generic
             if (services.Count == 0)
                 services.Add(new TypedService(_implementor));
 
-			container.AddRegistrationSource(new GenericRegistrationHandler(
+			container.ComponentRegistry.AddRegistrationSource(new GenericRegistrationHandler(
 				services,
 				_implementor,
                 new DeferredRegistrationParameters(

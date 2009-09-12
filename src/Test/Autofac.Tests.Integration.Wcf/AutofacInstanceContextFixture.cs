@@ -22,8 +22,7 @@ namespace Autofac.Tests.Integration.Wcf
         public void InstancesDisposed()
         {
             var builder = new ContainerBuilder();
-            builder.Register<DisposeTracker>()
-                .WithScope(InstanceScope.Factory);
+            builder.RegisterType<DisposeTracker>();
             var container = builder.Build();
             var context = new AutofacInstanceContext(container);
             var disposable = (DisposeTracker)context.Resolve(

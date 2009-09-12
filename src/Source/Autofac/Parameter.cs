@@ -46,17 +46,6 @@ namespace Autofac
         /// be set to a function that will lazily retrieve the parameter value. If the result is false,
         /// will be set to null.</param>
         /// <returns>True if a value can be supplied; otherwise, false.</returns>
-        public abstract bool CanSupplyValue(ParameterInfo pi, IContext context, out Func<object> valueProvider);
-
-        /// <summary>
-        /// Helper method for parameters that allow type conversion.
-        /// </summary>
-        /// <param name="pi">The parameter.</param>
-        /// <param name="parameterValue">The value.</param>
-        /// <returns>A representation of the value able to be supplied for the parameter.</returns>
-        protected object MatchTypes(ParameterInfo pi, object parameterValue)
-        {
-            return TypeManipulation.ChangeToCompatibleType(parameterValue, pi.ParameterType);
-        }
+        public abstract bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<object> valueProvider);
     }
 }

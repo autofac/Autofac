@@ -82,9 +82,9 @@ namespace Autofac.Registrars.ProvidedInstance
         /// <returns>
         /// A registrar allowing registration to continue.
         /// </returns>
-        public override IConcreteRegistrar WithScope(InstanceScope scope)
+        public override IConcreteRegistrar WithScope(InstanceSharing scope)
         {
-            if (scope != InstanceScope.Singleton)
+            if (scope != InstanceSharing.Singleton)
                 throw new ArgumentException(ProvidedInstanceRegistrarResources.SingletonScopeOnly);
             return base.WithScope(scope);
         }

@@ -32,69 +32,12 @@ namespace Autofac
     /// Provides the full Autofac container functionality.
     /// </summary>
     /// <remarks>
-    /// It is recommended that in most instances the more limited IContext interface is 
+    /// It is recommended that in most instances the more limited <see cref="ILifetimeScope"/> or
+    /// <see cref="IComponentContext"/> interfaces are 
     /// used instead, as this is easier to implement on top of a different back-end, e.g. a
     /// customised or alternative container.
     /// </remarks>
-    public interface IContainer : IContext, IDisposable
+    public interface IContainer : ILifetimeScope, IDisposable
     {
-        /// <summary>
-        /// Begin a new sub-context. Contextual and transient instances created inside
-        /// the subcontext will be disposed along with it.
-        /// </summary>
-        /// <returns>A new subcontext.</returns>
-        IContainer CreateInnerContainer();
-
-        /// <summary>
-        /// Register a component.
-        /// </summary>
-        /// <param name="registration">A component registration.</param>
-        void RegisterComponent(IComponentRegistration registration);
-
-        /// <summary>
-        /// Add a source from which registrations may be retrieved in the case that they
-        /// are not available in the container.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        void AddRegistrationSource(IRegistrationSource source);
-
-        /// <summary>
-        /// The disposer associated with this container. Instances can be associated
-        /// with it manually if required.
-        /// </summary>
-        IDisposer Disposer { get; }
-
-        /// <summary>
-        /// If the container is an inner container, retrieves the outer container.
-        /// Otherwise, null;
-        /// </summary>
-        IContainer OuterContainer { get; }
-        
-        /// <summary>
-        /// The registrations for all of the components registered with the container.
-        /// </summary>
-        IEnumerable<IComponentRegistration> ComponentRegistrations { get; }
-
-        /// <summary>
-        /// Fired whenever a component is registed into the container.
-        /// </summary>
-        event EventHandler<ComponentRegisteredEventArgs> ComponentRegistered;
-
-        /// <summary>
-        /// Gets the default component registration that will be used to satisfy
-        /// requests for the provided service.
-        /// </summary>
-        /// <param name="service">The service.</param>
-        /// <param name="registration">The registration.</param>
-        /// <returns>True if a default exists, false otherwise.</returns>
-        bool TryGetDefaultRegistrationFor(Service service, out IComponentRegistration registration);
-        
-        /// <summary>
-        /// Tags the container with the provided value.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="tag">The tag applied to this container and the contexts genrated when
-        /// it resolves component dependencies.</param>
-        void TagWith<T>(T tag);
     }
 }

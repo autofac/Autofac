@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Reflection;
-using Autofac.Component.Activation;
 using NUnit.Framework;
+using Autofac.Activators;
+using Autofac.Injection;
+using System.Linq;
 
 namespace Autofac.Tests.Component.Activation
 {
@@ -10,18 +12,18 @@ namespace Autofac.Tests.Component.Activation
     {
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void PossibleConstructorsNull()
+        public void DoesNotAcceptNullBindings()
         {
             var target = new MostParametersConstructorSelector();
-            target.SelectConstructor(null);
+            target.SelectConstructorBinding(null);
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void PossibleConstructorsEmpty()
+        public void DoesNotAcceptEmptyBindings()
         {
             var target = new MostParametersConstructorSelector();
-            target.SelectConstructor(new ConstructorInfo[] { });
+            target.SelectConstructorBinding(new ConstructorParameterBinding[] { });
         }
 
         class ThreeConstructors
@@ -34,16 +36,17 @@ namespace Autofac.Tests.Component.Activation
         [Test]
         public void ChoosesCorrectConstructor()
         {
-            var constructors = typeof(ThreeConstructors).GetConstructors();
+            var constructors = typeof(ThreeConstructors).GetConstructors()
+                .Select(ci => new ConstructorParameterBinding(ci, Enumerable.Empty<Parameter>(), Container.Empty));
 
-            Assert.AreEqual(3, constructors.Length);
+            Assert.AreEqual(3, constructors.Count());
 
             var target = new MostParametersConstructorSelector();
 
-            var chosen = target.SelectConstructor(constructors);
+            var chosen = target.SelectConstructorBinding(constructors);
 
             Assert.IsNotNull(chosen);
-            Assert.AreEqual(2, chosen.GetParameters().Length);
+            Assert.AreEqual(2, chosen.TargetConstructor.GetParameters().Length);
         }
     }
 }

@@ -12,44 +12,37 @@ namespace Autofac.Tests.Builder
         public void RegisterInstanceNull()
         {
             var builder = new ContainerBuilder();
-            builder.Register((object)null);
+            builder.RegisterInstance((object)null);
         }
 
         [Test]
+        [Ignore("Not implemented.")]
         [ExpectedException(typeof(ArgumentException))]
         public void FactoryScopeNotValid()
         {
             var builder = new ContainerBuilder();
-            builder.Register(new object()).WithScope(InstanceScope.Factory);
+            builder.RegisterInstance(new object()).NonSharedInstances();
         }
 
         [Test]
+        [Ignore("Not implemented.")]
         [ExpectedException(typeof(ArgumentException))]
         public void ContainerScopeNotValid()
         {
             var builder = new ContainerBuilder();
-            builder.Register(new object()).WithScope(InstanceScope.Container);
-        }
-
-        [Test]
-        [ExpectedException(typeof(ArgumentException))]
-        public void DefaultScopeNotValid()
-        {
-            var builder = new ContainerBuilder();
-            using (builder.SetDefaultScope(InstanceScope.Factory))
-                builder.Register(new object());
+            builder.RegisterInstance(new object()).InstancePerLifetimeScope();
         }
 
         [Test]
         public void ExposesImplementationType()
         {
             var cb = new ContainerBuilder();
-            cb.Register("Hello").As<object>();
+            cb.RegisterInstance("Hello").As<object>();
             var container = cb.Build();
             IComponentRegistration cr;
-            Assert.IsTrue(container.TryGetDefaultRegistrationFor(
+            Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(
                 new TypedService(typeof(object)), out cr));
-            Assert.AreEqual(typeof(string), cr.Descriptor.BestKnownImplementationType);
+            Assert.AreEqual(typeof(string), cr.Activator.LimitType);
         }
     }
 }

@@ -94,7 +94,7 @@ namespace Autofac.Registrars
 		/// </summary>
 		/// <param name="scope">The scope model to use.</param>
         /// <returns>A registrar allowing registration to continue.</returns>
-        TSyntax WithScope(InstanceScope scope);
+        TSyntax WithScope(InstanceSharing scope);
         
         /// <summary>
         /// An instance will be created every time one is requested.
@@ -104,7 +104,7 @@ namespace Autofac.Registrars
         /// <summary>
         /// An instance will be created once per container.
         /// </summary>
-        /// <seealso cref="IContainer.CreateInnerContainer" />
+        /// <seealso cref="ILifetimeScope.BeginLifetimeScope" />
         TSyntax ContainerScoped();
         
         /// <summary>

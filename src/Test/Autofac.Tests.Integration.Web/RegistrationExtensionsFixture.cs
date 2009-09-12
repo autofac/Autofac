@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using Autofac.Builder;
-using Autofac.Component.Scope;
-using Autofac.Component;
 using Autofac.Integration.Web;
+using Autofac.Lifetime;
 
 namespace Autofac.Tests.Integration.Web
 {
@@ -14,16 +13,17 @@ namespace Autofac.Tests.Integration.Web
     public class RegistrationExtensionsFixture
     {
         [Test]
-        public void HttpRequestScopedIsASynonymForContainerScoped()
+        public void HttpRequestScopedIsASynonymForMatchingRequestLifetime()
         {
             var cb = new ContainerBuilder();
-            var regId = cb.Register<object>().HttpRequestScoped().Id;
+            var regId = cb.RegisterType<object>().HttpRequestScoped().RegistrationStyle.Id;
             var c = cb.Build();
-            var reg = (Registration)c.ComponentRegistrations
-                .Where(cr => cr.Descriptor.Id == regId)
+            var reg = (IComponentRegistration)c.ComponentRegistry.Registrations
+                .Where(cr => cr.Id == regId)
                 .Single();
 
-            Assert.IsInstanceOfType(typeof(ContainerScope), reg.Scope);
+            Assert.IsInstanceOfType(typeof(MatchingScopeLifetime), reg.Lifetime);
+            Assert.AreEqual(InstanceSharing.Shared, reg.Sharing);
         }
     }
 }

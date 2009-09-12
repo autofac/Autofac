@@ -42,9 +42,9 @@ namespace Autofac.Integration.Web.Mvc
         IControllerIdentificationStrategy _identificationStrategy =
             new DefaultControllerIdentificationStrategy();
 
-        EventHandler<PreparingEventArgs> _preparingHandler;
-        EventHandler<ActivatingEventArgs> _activatingHandler;
-        EventHandler<ActivatedEventArgs> _activatedHandler;
+        EventHandler<PreparingEventArgs<object>> _preparingHandler;
+        EventHandler<ActivatingEventArgs<object>> _activatingHandler;
+        EventHandler<ActivatedEventArgs<object>> _activatedHandler;
 
 		Type _actionInvokerType;
         Service _actionInvokerService;
@@ -84,7 +84,7 @@ namespace Autofac.Integration.Web.Mvc
         /// Sets an event handler that will be called when controller instances
         /// are requested.
         /// </summary>
-        public EventHandler<PreparingEventArgs> PreparingHandler
+        public EventHandler<PreparingEventArgs<object>> PreparingHandler
         {
             get
             {
@@ -103,7 +103,7 @@ namespace Autofac.Integration.Web.Mvc
         /// Sets an event handler that will be called when controller instances
         /// are being activated.
         /// </summary>
-        public EventHandler<ActivatingEventArgs> ActivatingHandler
+        public EventHandler<ActivatingEventArgs<object>> ActivatingHandler
         {
             get
             {
@@ -122,7 +122,7 @@ namespace Autofac.Integration.Web.Mvc
         /// Sets an event handler that will be called when controller instances
         /// are activated.
         /// </summary>
-        public EventHandler<ActivatedEventArgs> ActivatedHandler
+        public EventHandler<ActivatedEventArgs<object>> ActivatedHandler
         {
             get
             {
@@ -193,7 +193,7 @@ namespace Autofac.Integration.Web.Mvc
             if (_actionInvokerType != null)
             {
                 _actionInvokerService = new UniqueService();
-                builder.Register(_actionInvokerType).As(_actionInvokerService).FactoryScoped();
+                builder.RegisterType(_actionInvokerType).As(_actionInvokerService);
             }
 
             var controllerTypes = from assembly in _controllerAssemblies
@@ -204,30 +204,29 @@ namespace Autofac.Integration.Web.Mvc
 
             foreach (var controllerType in controllerTypes)
             {
-                var registration = builder.Register(controllerType)
-                    .FactoryScoped()
+                var registration = builder.RegisterType(controllerType)
                     .As(IdentificationStrategy.ServiceForControllerType(controllerType));
 
                 if (_actionInvokerService != null)
-                    registration.OnActivating(InjectActionInvoker);
+                    registration.OnActivating(e => InjectActionInvoker((IController)e.Instance, e.Context));
 
                 if (_preparingHandler != null)
-                    registration.OnPreparing(_preparingHandler);
+                    registration.OnPreparing(e => _preparingHandler(this, e));
 
                 if (_activatingHandler != null)
-                    registration.OnActivating(_activatingHandler);
+                    registration.OnActivating(e => _activatingHandler(this, e));
 
                 if (_activatedHandler != null)
-                    registration.OnActivated(_activatedHandler);
+                    registration.OnActivated(e => _activatedHandler(this, e));
             }
         }
-    	
-        void InjectActionInvoker(object sender, ActivatingEventArgs e)
+
+        void InjectActionInvoker(IController controller, IComponentContext context)
     	{
-			if(e.Instance is Controller)
+			if(controller is Controller)
 			{
-				((Controller)e.Instance).ActionInvoker =
-                    (IActionInvoker)e.Context.Resolve(_actionInvokerService);
+				((Controller)controller).ActionInvoker =
+                    (IActionInvoker)context.Resolve(_actionInvokerService);
 			}
     	}
     }

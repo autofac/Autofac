@@ -47,199 +47,44 @@ namespace Autofac.Integration.Web
             this.containerProvider = containerProvider;
         }
 
-        #region Decorator Implementation
-
-        public IContainer CreateInnerContainer()
+        public IComponentRegistry ComponentRegistry
         {
-            return containerProvider.RequestContainer.CreateInnerContainer();
+            get
+            {
+                return containerProvider.RequestLifetime.ComponentRegistry;
+            }
         }
 
-        public void RegisterComponent(IComponentRegistration registration)
+        public ILifetimeScope BeginLifetimeScope()
         {
-            containerProvider.RequestContainer.RegisterComponent(registration);
-        }
-
-        public void AddRegistrationSource(IRegistrationSource source)
-        {
-            containerProvider.RequestContainer.AddRegistrationSource(source);
+            return containerProvider.RequestLifetime.BeginLifetimeScope();
         }
 
         public IDisposer Disposer
         {
-            get { return containerProvider.RequestContainer.Disposer; }
+            get { return containerProvider.RequestLifetime.Disposer; }
         }
 
-        public IContainer OuterContainer
+        public object Tag
         {
-            get { return containerProvider.RequestContainer.OuterContainer; }
+            get
+            {
+                return containerProvider.RequestLifetime.Tag;
+            }
+            set
+            {
+                containerProvider.RequestLifetime.Tag = value;
+            }
         }
 
-        public IEnumerable<IComponentRegistration> ComponentRegistrations
+        public object Resolve(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
-            get { return containerProvider.RequestContainer.ComponentRegistrations; }
-        }
-
-        public event EventHandler<ComponentRegisteredEventArgs> ComponentRegistered
-        {
-            add { containerProvider.RequestContainer.ComponentRegistered += value; }
-            remove { containerProvider.RequestContainer.ComponentRegistered -= value; }
-        }
-
-        public bool TryGetDefaultRegistrationFor(Service service, out IComponentRegistration registration)
-        {
-            return containerProvider.RequestContainer.TryGetDefaultRegistrationFor(service, out registration);
-        }
-
-        public void TagWith<T>(T tag)
-        {
-            containerProvider.RequestContainer.TagWith<T>(tag);
-        }
-
-        public TService Resolve<TService>(params Parameter[] parameters)
-        {
-            return containerProvider.RequestContainer.Resolve<TService>(parameters);
-        }
-
-        public TService Resolve<TService>(string serviceName, params Parameter[] parameters)
-        {
-            return containerProvider.RequestContainer.Resolve<TService>(serviceName, parameters);
-        }
-
-        public object Resolve(Type serviceType, params Parameter[] parameters)
-        {
-            return containerProvider.RequestContainer.Resolve(serviceType, parameters);
-        }
-
-        public object Resolve(string serviceName, params Parameter[] parameters)
-        {
-            return containerProvider.RequestContainer.Resolve(serviceName, parameters);
-        }
-
-        public object Resolve(Service service, params Parameter[] parameters)
-        {
-            return containerProvider.RequestContainer.Resolve(service, parameters);
-        }
-
-        public bool TryResolve<TService>(out TService instance, params Parameter[] parameters)
-        {
-            return containerProvider.RequestContainer.TryResolve<TService>(out instance, parameters);
-        }
-
-        public bool TryResolve(Type serviceType, out object instance, params Parameter[] parameters)
-        {
-            return containerProvider.RequestContainer.TryResolve(serviceType, out instance, parameters);
-        }
-
-        public bool TryResolve(string componentName, out object instance, params Parameter[] parameters)
-        {
-            return containerProvider.RequestContainer.TryResolve(componentName, out instance, parameters);
-        }
-
-        public bool TryResolve(Service service, out object instance, params Parameter[] parameters)
-        {
-            return containerProvider.RequestContainer.TryResolve(service, out instance, parameters);
-        }
-
-        public TService ResolveOptional<TService>(params Parameter[] parameters)
-        {
-            return containerProvider.RequestContainer.ResolveOptional<TService>(parameters);
-        }
-
-        public TService Resolve<TService>(IEnumerable<Parameter> parameters)
-        {
-            return containerProvider.RequestContainer.Resolve<TService>(parameters);
-        }
-
-        public TService Resolve<TService>(string serviceName, IEnumerable<Parameter> parameters)
-        {
-            return containerProvider.RequestContainer.Resolve<TService>(serviceName, parameters);
-        }
-
-        public object Resolve(Type serviceType, IEnumerable<Parameter> parameters)
-        {
-            return containerProvider.RequestContainer.Resolve(serviceType, parameters);
-        }
-
-        public object Resolve(string serviceName, IEnumerable<Parameter> parameters)
-        {
-            return containerProvider.RequestContainer.Resolve(serviceName, parameters);
-        }
-
-        public object Resolve(Service service, IEnumerable<Parameter> parameters)
-        {
-            return containerProvider.RequestContainer.Resolve(service, parameters);
-        }
-
-        public bool TryResolve<TService>(out TService instance, IEnumerable<Parameter> parameters)
-        {
-            return containerProvider.RequestContainer.TryResolve<TService>(out instance, parameters);
-        }
-
-        public bool TryResolve(Type serviceType, out object instance, IEnumerable<Parameter> parameters)
-        {
-            return containerProvider.RequestContainer.TryResolve(serviceType, out instance, parameters);
-        }
-
-        public bool TryResolve(string componentName, out object instance, IEnumerable<Parameter> parameters)
-        {
-            return containerProvider.RequestContainer.TryResolve(componentName, out instance, parameters);
-        }
-
-        public bool TryResolve(Service service, out object instance, IEnumerable<Parameter> parameters)
-        {
-            return containerProvider.RequestContainer.TryResolve(service, out instance, parameters);
-        }
-
-        public TService ResolveOptional<TService>(IEnumerable<Parameter> parameters)
-        {
-            return containerProvider.RequestContainer.ResolveOptional<TService>(parameters);
-        }
-
-        public bool IsRegistered(Type serviceType)
-        {
-            return containerProvider.RequestContainer.IsRegistered(serviceType);
-        }
-
-        public bool IsRegistered(string serviceName)
-        {
-            return containerProvider.RequestContainer.IsRegistered(serviceName);
-        }
-
-        public bool IsRegistered(Service service)
-        {
-            return containerProvider.RequestContainer.IsRegistered(service);
-        }
-
-        public bool IsRegistered<TService>()
-        {
-            return containerProvider.RequestContainer.IsRegistered<TService>();
-        }
-
-        public T InjectProperties<T>(T instance)
-        {
-            return containerProvider.RequestContainer.InjectProperties<T>(instance);
-        }
-
-        public T InjectUnsetProperties<T>(T instance)
-        {
-            return containerProvider.RequestContainer.InjectUnsetProperties<T>(instance);
+            return containerProvider.RequestLifetime.Resolve(registration, parameters);
         }
 
         public void Dispose()
         {
-            containerProvider.RequestContainer.Dispose();
+            throw new NotImplementedException();
         }
-
-        public TService ResolveOptional<TService>(string serviceName, IEnumerable<Parameter> parameters)
-        {
-            return containerProvider.RequestContainer.ResolveOptional<TService>(serviceName, parameters);
-        }
-
-        public TService ResolveOptional<TService>(string serviceName, params Parameter[] parameters)
-        {
-            return containerProvider.RequestContainer.ResolveOptional<TService>(serviceName, parameters);
-        }
-
-        #endregion
     }
 }

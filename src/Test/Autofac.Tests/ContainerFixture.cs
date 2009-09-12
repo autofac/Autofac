@@ -2,88 +2,89 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Builder;
-using Autofac.Component;
-using Autofac.Component.Activation;
-using Autofac.Component.Scope;
 using NUnit.Framework;
+using Autofac.Activators;
+using Autofac.Lifetime;
+using Autofac.Registration;
+using System.Reflection;
 
 namespace Autofac.Tests
 {
     [TestFixture]
     public class ContainerFixture
     {
-    	static IComponentRegistration CreateRegistration(IEnumerable<Service> services, IActivator activator)
-    	{
-            return CreateRegistration(services, activator, new SingletonScope());
-    	}
-  	
-	  	static IComponentRegistration CreateRegistration(IEnumerable<Service> services, IActivator activator, IScope scope)
-    	{
-            return new Registration(
-                new Descriptor(
-                    new UniqueService(),
-                    services,
-                    typeof(object)),
-                activator,
-                scope,
-                InstanceOwnership.Container);
+        static IComponentRegistration CreateSingletonRegistration(IEnumerable<Service> services, IInstanceActivator activator)
+        {
+            return CreateRegistration(services, activator, new RootScopeLifetime(), InstanceSharing.Shared);
         }
-	  	
-		[Test]
-		public void ResolveOptional()
-		{
-			var target = new Container();
-			target.RegisterComponent(CreateRegistration(
-				new[] { new TypedService(typeof(string)) },
-				new ProvidedInstanceActivator("Hello")));
 
-			var inst = target.ResolveOptional<string>();
+        static IComponentRegistration CreateRegistration(IEnumerable<Service> services, IInstanceActivator activator, IComponentLifetime lifetime, InstanceSharing sharing)
+        {
+            return new ComponentRegistration(
+                Guid.NewGuid(),
+                activator,
+                lifetime,
+                sharing,
+                InstanceOwnership.OwnedByLifetimeScope,
+                services,
+                new Dictionary<string, object>());
+        }
 
-			Assert.AreEqual("Hello", inst);
-		}
+        [Test]
+        public void ResolveOptional()
+        {
+            var target = new Container();
+            target.ComponentRegistry.Register(CreateSingletonRegistration(
+                new[] { new TypedService(typeof(string)) },
+                new ProvidedInstanceActivator("Hello")));
 
-		[Test]
-		public void ResolveOptionalNotPresent()
-		{
-			var target = new Container();
-			var inst = target.ResolveOptional<string>();
-			Assert.IsNull(inst);
-		}
+            var inst = target.ResolveOptional<string>();
 
-    	[Test]
-    	public void ResolveNamedOptionalWithParameters()
-    	{
-			var cb = new ContainerBuilder();
-			cb.Register<Parameterised>();
-			var container = cb.Build();
-			const string param1 = "Hello";
-			const int param2 = 42;
-			var result = container.ResolveOptional<Parameterised>(
-				new NamedParameter("a", param1),
-				new NamedParameter("b", param2));
-			Assert.IsNotNull(result);
-			Assert.AreEqual(param1, result.A);
-			Assert.AreEqual(param2, result.B);
-    	}
+            Assert.AreEqual("Hello", inst);
+        }
 
-    	[Test]
-    	public void ResolveNamedOptionalWithParametersNotPresent()
-    	{
-    		var target = new Container();
-    		var instance = target.ResolveOptional<string>(TypedParameter.From(1));
-			Assert.IsNull(instance);
-    	}
+        [Test]
+        public void ResolveOptionalNotPresent()
+        {
+            var target = new Container();
+            var inst = target.ResolveOptional<string>();
+            Assert.IsNull(inst);
+        }
 
-		[Test]
+        [Test]
+        public void ResolveNamedOptionalWithParameters()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterType<Parameterised>();
+            var container = cb.Build();
+            const string param1 = "Hello";
+            const int param2 = 42;
+            var result = container.ResolveOptional<Parameterised>(
+                new NamedParameter("a", param1),
+                new NamedParameter("b", param2));
+            Assert.IsNotNull(result);
+            Assert.AreEqual(param1, result.A);
+            Assert.AreEqual(param2, result.B);
+        }
+
+        [Test]
+        public void ResolveNamedOptionalWithParametersNotPresent()
+        {
+            var target = new Container();
+            var instance = target.ResolveOptional<string>(TypedParameter.From(1));
+            Assert.IsNull(instance);
+        }
+
+        [Test]
         public void RegisterInstance()
         {
             var builder = new ContainerBuilder();
 
             var instance = new object();
 
-            builder.Register(instance);
+            builder.RegisterInstance(instance);
 
-			var target = builder.Build();
+            var target = builder.Build();
 
             Assert.AreSame(instance, target.Resolve<object>());
             Assert.IsTrue(target.IsRegistered<object>());
@@ -97,13 +98,13 @@ namespace Autofac.Tests
             var instance1 = new object();
             var instance2 = new object();
 
-			target.RegisterComponent(CreateRegistration(
-				new[] { new TypedService(typeof(object)) },
-				new ProvidedInstanceActivator(instance1)));
+            target.ComponentRegistry.Register(CreateSingletonRegistration(
+                new[] { new TypedService(typeof(object)) },
+                new ProvidedInstanceActivator(instance1)));
 
-			target.RegisterComponent(CreateRegistration(
-				new[] { new TypedService(typeof(object)) },
-				new ProvidedInstanceActivator(instance2)));
+            target.ComponentRegistry.Register(CreateSingletonRegistration(
+                new[] { new TypedService(typeof(object)) },
+                new ProvidedInstanceActivator(instance2)));
 
             Assert.AreSame(instance2, target.Resolve<object>());
         }
@@ -111,14 +112,13 @@ namespace Autofac.Tests
         [Test]
         public void RegisterComponent()
         {
-            var registration = CreateRegistration(
+            var registration = CreateSingletonRegistration(
                 new[] { new TypedService(typeof(object)), new TypedService(typeof(string)) },
-                new ProvidedInstanceActivator("Hello"),
-                new ContainerScope());
+                new ProvidedInstanceActivator("Hello"));
 
             var target = new Container();
 
-            target.RegisterComponent(registration);
+            target.ComponentRegistry.Register(registration);
 
             Assert.IsTrue(target.IsRegistered<object>());
             Assert.IsTrue(target.IsRegistered<string>());
@@ -130,25 +130,24 @@ namespace Autofac.Tests
         {
             var target = new Container();
 
-            target.RegisterComponent(null);
+            target.ComponentRegistry.Register(null);
         }
 
         [Test]
 #if NET20
-		[ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(ArgumentNullException))]
 #else
         [ExpectedException(typeof(ArgumentException))]
 #endif
         public void RegisterComponentNullService()
         {
-            var registration = CreateRegistration(
+            var registration = CreateSingletonRegistration(
                 new Service[] { new TypedService(typeof(object)), null },
-                new ProvidedInstanceActivator(new object()),
-                new ContainerScope());
+                new ProvidedInstanceActivator(new object()));
 
             var target = new Container();
 
-            target.RegisterComponent(registration);
+            target.ComponentRegistry.Register(registration);
         }
 
         [Test]
@@ -156,18 +155,18 @@ namespace Autofac.Tests
         {
             object instance = new object();
             var target = new Container();
-			target.RegisterComponent(CreateRegistration(
-				new[] { new TypedService(typeof(object)) },
-				new DelegateActivator((c, p) => instance)));
-			Assert.AreSame(instance, target.Resolve<object>());
+            target.ComponentRegistry.Register(CreateSingletonRegistration(
+                new[] { new TypedService(typeof(object)) },
+                new DelegateActivator(typeof(object), (c, p) => instance)));
+            Assert.AreSame(instance, target.Resolve<object>());
         }
 
         [Test]
         public void RegisterType()
         {
             var builder = new ContainerBuilder();
-			builder.Register<object>();
-			var target = builder.Build();
+            builder.RegisterType<object>();
+            var target = builder.Build();
             object instance = target.Resolve<object>();
             Assert.IsNotNull(instance);
             Assert.IsInstanceOfType(typeof(object), instance);
@@ -200,10 +199,10 @@ namespace Autofac.Tests
         {
             try
             {
-				var builder = new ContainerBuilder();
-				builder.Register(c => c.Resolve<object>());
+                var builder = new ContainerBuilder();
+                builder.RegisterDelegate(c => c.Resolve<object>());
 
-				var target = builder.Build();
+                var target = builder.Build();
                 target.Resolve<object>();
             }
             catch (DependencyResolutionException de)
@@ -229,109 +228,117 @@ namespace Autofac.Tests
 
         class A : DisposeTracker { }
 
-        class B : DisposeTracker {
+        class B : DisposeTracker
+        {
             public A A;
 
-            public B(A a) {
+            public B(A a)
+            {
                 A = a;
             }
         }
-        
+
         interface IC { }
 
-        class C : DisposeTracker {
+        class C : DisposeTracker
+        {
             public B B;
 
-            public C(B b) {
+            public C(B b)
+            {
                 B = b;
             }
         }
-        
+
         interface ID { }
 
-        class CD : DisposeTracker, IC, ID {
+        class CD : DisposeTracker, IC, ID
+        {
             public A A;
             public B B;
 
-            public CD(A a, B b) {
+            public CD(A a, B b)
+            {
                 A = a;
                 B = b;
             }
         }
 
-        class E : DisposeTracker {
+        class E : DisposeTracker
+        {
             public B B;
             public IC C;
 
-            public E(B b, IC c) {
+            public E(B b, IC c)
+            {
                 B = b;
                 C = c;
             }
         }
 
-        class F {
+        class F
+        {
             public IList<A> AList;
-            public F(IList<A> aList) {
+            public F(IList<A> aList)
+            {
                 AList = aList;
             }
         }
 
         #endregion
 
-        [Test]
-        [ExpectedException(typeof(DependencyResolutionException))]
-        public void InnerCannotResolveOuterDependencies()
-        {
-            var outerBuilder = new ContainerBuilder();
-            outerBuilder.Register<B>()
-                .WithScope(InstanceScope.Singleton);
-            var outer = outerBuilder.Build();
+        //[Test]
+        //[ExpectedException(typeof(DependencyResolutionException))]
+        //public void InnerCannotResolveOuterDependencies()
+        //{
+        //    var outerBuilder = new ContainerBuilder();
+        //    outerBuilder.RegisterType<B>().SingleSharedInstance();
+        //    var outer = outerBuilder.Build();
 
-            var innerBuilder = new ContainerBuilder();
-            innerBuilder.Register<C>();
-            innerBuilder.Register<A>();
-            var inner = outer.CreateInnerContainer();
-            innerBuilder.Build(inner);
+        //    var innerBuilder = new ContainerBuilder();
+        //    innerBuilder.RegisterType<C>();
+        //    innerBuilder.RegisterType<A>();
+        //    var inner = outer.BeginLifetimeScope();
+        //    innerBuilder.Build(inner);
 
-            var unused = inner.Resolve<C>();
-        }
+        //    var unused = inner.Resolve<C>();
+        //}
 
-        [Test]
-        public void OuterInstancesCannotReferenceInner()
-        {
-            var builder = new ContainerBuilder();
-            builder.Register<A>().WithScope(InstanceScope.Container);
-            builder.Register<B>().WithScope(InstanceScope.Factory);
+        //[Test]
+        //public void OuterInstancesCannotReferenceInner()
+        //{
+        //    var builder = new ContainerBuilder();
+        //    builder.RegisterType<A>().WithScope(InstanceSharing.Container);
+        //    builder.RegisterType<B>().WithScope(InstanceSharing.Factory);
 
-            var outer = builder.Build();
+        //    var outer = builder.Build();
 
-            var inner = outer.CreateInnerContainer();
+        //    var inner = outer.BeginLifetimeScope();
 
-            var outerB = outer.Resolve<B>();
-            var innerB = inner.Resolve<B>();
-            var outerA = outer.Resolve<A>();
-            var innerA = inner.Resolve<A>();
+        //    var outerB = outer.Resolve<B>();
+        //    var innerB = inner.Resolve<B>();
+        //    var outerA = outer.Resolve<A>();
+        //    var innerA = inner.Resolve<A>();
 
-            Assert.AreSame(innerA, innerB.A);
-            Assert.AreSame(outerA, outerB.A);
-            Assert.AreNotSame(innerA, outerA);
-            Assert.AreNotSame(innerB, outerB);
-        }
+        //    Assert.AreSame(innerA, innerB.A);
+        //    Assert.AreSame(outerA, outerB.A);
+        //    Assert.AreNotSame(innerA, outerA);
+        //    Assert.AreNotSame(innerB, outerB);
+        //}
 
         [Test]
         public void IntegrationTest()
         {
             var builder = new ContainerBuilder();
 
-            builder.Register<A>().WithScope(InstanceScope.Singleton);
-            builder.Register<CD>().As<IC, ID>().WithScope(InstanceScope.Singleton);
-            builder.Register<E>().WithScope(InstanceScope.Singleton);
-			builder.Register(ctr => new B(ctr.Resolve<A>()))
-				.WithScope(InstanceScope.Factory);
+            builder.RegisterType<A>().SingleSharedInstance();
+            builder.RegisterType<CD>().As<IC, ID>().SingleSharedInstance();
+            builder.RegisterType<E>().SingleSharedInstance();
+            builder.RegisterDelegate(ctr => new B(ctr.Resolve<A>()));
 
-			var target = builder.Build();
+            var target = builder.Build();
 
-			E e = target.Resolve<E>();
+            E e = target.Resolve<E>();
             A a = target.Resolve<A>();
             B b = target.Resolve<B>();
             IC c = target.Resolve<IC>();
@@ -348,18 +355,27 @@ namespace Autofac.Tests
             Assert.AreNotSame(e.B, cd.B);
         }
 
+        static ReflectionActivator CreateActivator(Type implementation)
+        {
+            return new ReflectionActivator(
+                implementation,
+                new BindingFlagsConstructorFinder(BindingFlags.Public),
+                new MostParametersConstructorSelector(),
+                Enumerable.Empty<Parameter>());
+        }
+
         [Test]
         public void DisposeOrder1()
         {
-			var target = new Container();
+            var target = new Container();
 
-			target.RegisterComponent(CreateRegistration(
-				new[] { new TypedService(typeof(A)) },
-				new ReflectionActivator(typeof(A))));
+            target.ComponentRegistry.Register(CreateSingletonRegistration(
+                new[] { new TypedService(typeof(A)) },
+                CreateActivator(typeof(A))));
 
-			target.RegisterComponent(CreateRegistration(
-				new[] { new TypedService(typeof(B)) },
-				new ReflectionActivator(typeof(B))));
+            target.ComponentRegistry.Register(CreateSingletonRegistration(
+                new[] { new TypedService(typeof(B)) },
+                CreateActivator(typeof(B))));
 
             A a = target.Resolve<A>();
             B b = target.Resolve<B>();
@@ -372,7 +388,7 @@ namespace Autofac.Tests
             target.Dispose();
 
             // B depends on A, therefore B should be disposed first
-            
+
             Assert.AreEqual(2, disposeOrder.Count);
             Assert.AreSame(b, disposeOrder.Dequeue());
             Assert.AreSame(a, disposeOrder.Dequeue());
@@ -382,15 +398,15 @@ namespace Autofac.Tests
         [Test]
         public void DisposeOrder2()
         {
-			var target = new Container();
+            var target = new Container();
 
-			target.RegisterComponent(CreateRegistration(
-				new Service[] { new TypedService(typeof(A)) },
-				new ReflectionActivator(typeof(A))));
+            target.ComponentRegistry.Register(CreateSingletonRegistration(
+                new Service[] { new TypedService(typeof(A)) },
+                CreateActivator(typeof(A))));
 
-			target.RegisterComponent(CreateRegistration(
-				new Service[] { new TypedService(typeof(B)) },
-				new ReflectionActivator(typeof(B))));
+            target.ComponentRegistry.Register(CreateSingletonRegistration(
+                new Service[] { new TypedService(typeof(B)) },
+                CreateActivator(typeof(B))));
 
             B b = target.Resolve<B>();
             A a = target.Resolve<A>();
@@ -403,154 +419,149 @@ namespace Autofac.Tests
             target.Dispose();
 
             // B depends on A, therefore B should be disposed first
-            
+
             Assert.AreEqual(2, disposeOrder.Count);
             Assert.AreSame(b, disposeOrder.Dequeue());
             Assert.AreSame(a, disposeOrder.Dequeue());
         }
 
-		[Test]
-		public void ResolveSingletonFromContext()
-		{
-			var builder = new ContainerBuilder();
+        [Test]
+        public void ResolveSingletonFromContext()
+        {
+            var builder = new ContainerBuilder();
 
-			builder.Register<A>()
-                .WithScope(InstanceScope.Singleton);
+            builder.RegisterType<A>().SingleSharedInstance();
 
-			var target = builder.Build();
+            var target = builder.Build();
 
-			var context = target.CreateInnerContainer();
+            var context = target.BeginLifetimeScope();
 
-			var ctxA = context.Resolve<A>();
-			var targetA = target.Resolve<A>();
+            var ctxA = context.Resolve<A>();
+            var targetA = target.Resolve<A>();
 
-			Assert.AreSame(ctxA, targetA);
-			Assert.IsNotNull(ctxA);
+            Assert.AreSame(ctxA, targetA);
+            Assert.IsNotNull(ctxA);
 
-			Assert.IsFalse(ctxA.IsDisposed);
+            Assert.IsFalse(ctxA.IsDisposed);
 
-			context.Dispose();
+            context.Dispose();
 
-			Assert.IsFalse(ctxA.IsDisposed);
+            Assert.IsFalse(ctxA.IsDisposed);
 
-			target.Dispose();
+            target.Dispose();
 
-			Assert.IsTrue(ctxA.IsDisposed);
-		}
+            Assert.IsTrue(ctxA.IsDisposed);
+        }
 
-		[Test]
-		public void ResolveTransientFromContext()
-		{
-			var target = new Container();
+        [Test]
+        public void ResolveTransientFromContext()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<A>();
 
-			target.RegisterComponent(CreateRegistration(
-				new Service[] { new TypedService(typeof(A)) },
-				new ReflectionActivator(typeof(A)),
-				new FactoryScope()));
+            var target = builder.Build();
 
-			var context = target.CreateInnerContainer();
+            var context = target.BeginLifetimeScope();
 
-			var ctxA = context.Resolve<A>();
-			var targetA = target.Resolve<A>();
+            var ctxA = context.Resolve<A>();
+            var targetA = target.Resolve<A>();
 
-			Assert.IsNotNull(ctxA);
-			Assert.IsNotNull(targetA);
-			Assert.AreNotSame(ctxA, targetA);
+            Assert.IsNotNull(ctxA);
+            Assert.IsNotNull(targetA);
+            Assert.AreNotSame(ctxA, targetA);
 
-			Assert.IsFalse(targetA.IsDisposed);
-			Assert.IsFalse(ctxA.IsDisposed);
+            Assert.IsFalse(targetA.IsDisposed);
+            Assert.IsFalse(ctxA.IsDisposed);
 
-			context.Dispose();
+            context.Dispose();
 
-			Assert.IsFalse(targetA.IsDisposed);
-			Assert.IsTrue(ctxA.IsDisposed);
+            Assert.IsFalse(targetA.IsDisposed);
+            Assert.IsTrue(ctxA.IsDisposed);
 
-			target.Dispose();
+            target.Dispose();
 
-			Assert.IsTrue(targetA.IsDisposed);
-			Assert.IsTrue(ctxA.IsDisposed);
-		}
+            Assert.IsTrue(targetA.IsDisposed);
+            Assert.IsTrue(ctxA.IsDisposed);
+        }
 
-		[Test]
-		public void ResolveScopedFromContext()
-		{
-			var target = new Container();
+        [Test]
+        public void ResolveScopedFromContext()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<A>().InstancePerLifetimeScope();
 
-			target.RegisterComponent(CreateRegistration(
-				new Service[] { new TypedService(typeof(A)) },
-				new ReflectionActivator(typeof(A)),
-				new ContainerScope()));
+            var target = builder.Build();
 
-			var context = target.CreateInnerContainer();
+            var context = target.BeginLifetimeScope();
 
-			var ctxA = context.Resolve<A>();
-			var ctxA2 = context.Resolve<A>();
+            var ctxA = context.Resolve<A>();
+            var ctxA2 = context.Resolve<A>();
 
-			Assert.IsNotNull(ctxA);
-			Assert.AreSame(ctxA, ctxA2);
+            Assert.IsNotNull(ctxA);
+            Assert.AreSame(ctxA, ctxA2);
 
-			var targetA = target.Resolve<A>();
-			var targetA2 = target.Resolve<A>();
+            var targetA = target.Resolve<A>();
+            var targetA2 = target.Resolve<A>();
 
-			Assert.IsNotNull(targetA);
-			Assert.AreSame(targetA, targetA2);
-			Assert.AreNotSame(ctxA, targetA);
+            Assert.IsNotNull(targetA);
+            Assert.AreSame(targetA, targetA2);
+            Assert.AreNotSame(ctxA, targetA);
 
-			Assert.IsFalse(targetA.IsDisposed);
-			Assert.IsFalse(ctxA.IsDisposed);
+            Assert.IsFalse(targetA.IsDisposed);
+            Assert.IsFalse(ctxA.IsDisposed);
 
-			context.Dispose();
+            context.Dispose();
 
-			Assert.IsFalse(targetA.IsDisposed);
-			Assert.IsTrue(ctxA.IsDisposed);
+            Assert.IsFalse(targetA.IsDisposed);
+            Assert.IsTrue(ctxA.IsDisposed);
 
-			target.Dispose();
+            target.Dispose();
 
-			Assert.IsTrue(targetA.IsDisposed);
-			Assert.IsTrue(ctxA.IsDisposed);
-		}
+            Assert.IsTrue(targetA.IsDisposed);
+            Assert.IsTrue(ctxA.IsDisposed);
+        }
 
-		class ObjectRegistrationSource : IRegistrationSource
-		{
-			public bool TryGetRegistration(Service service, out IComponentRegistration registration)
-			{
-				Assert.AreEqual(typeof(object), ((TypedService)service).ServiceType);
-				registration = CreateRegistration(
-					new[] { service },
-					new ReflectionActivator(typeof(object)));
-				return true;
-			}
-		}
+        class ObjectRegistrationSource : IRegistrationSource
+        {
+            public bool TryGetRegistration(Service service, Func<Service, bool> registeredServicesTest, out IComponentRegistration registration)
+            {
+                Assert.AreEqual(typeof(object), ((TypedService)service).ServiceType);
+                registration = CreateSingletonRegistration(
+                    new[] { service },
+                    CreateActivator(typeof(object)));
+                return true;
+            }
+        }
 
-		[Test]
-		public void AddRegistrationInServiceNotRegistered()
-		{
-			var c = new Container();
+        [Test]
+        public void AddRegistrationInServiceNotRegistered()
+        {
+            var c = new Container();
 
-			Assert.IsFalse(c.IsRegistered<object>());
+            Assert.IsFalse(c.IsRegistered<object>());
 
-			c.AddRegistrationSource(new ObjectRegistrationSource());
+            c.ComponentRegistry.AddRegistrationSource(new ObjectRegistrationSource());
 
-			Assert.IsTrue(c.IsRegistered<object>());
+            Assert.IsTrue(c.IsRegistered<object>());
 
-			var o = c.Resolve<object>();
-			Assert.IsNotNull(o);
-		}
+            var o = c.Resolve<object>();
+            Assert.IsNotNull(o);
+        }
 
         [Test]
         public void ResolveByName()
         {
             string name = "name";
 
-            var r = CreateRegistration(
+            var r = CreateSingletonRegistration(
                 new Service[] { new NamedService(name) },
-                new ReflectionActivator(typeof(object)));
+                CreateActivator(typeof(object)));
 
             var c = new Container();
-            c.RegisterComponent(r);
+            c.ComponentRegistry.Register(r);
 
             object o;
-            
+
             Assert.IsTrue(c.TryResolve(name, out o));
             Assert.IsNotNull(o);
 
@@ -576,9 +587,8 @@ namespace Autofac.Tests
         public void CtorPropDependencyOkOrder1()
         {
             var cb = new ContainerBuilder();
-            cb.Register<DependsByCtor>();
-            cb.Register<DependsByProp>()
-                .OnActivated(ActivatedHandler.InjectProperties);
+            cb.RegisterType<DependsByCtor>().SingleSharedInstance();
+            cb.RegisterType<DependsByProp>().SingleSharedInstance().PropertiesAutowired(true);
 
             var c = cb.Build();
             var dbp = c.Resolve<DependsByProp>();
@@ -592,9 +602,8 @@ namespace Autofac.Tests
         public void CtorPropDependencyOkOrder2()
         {
             var cb = new ContainerBuilder();
-            cb.Register<DependsByCtor>();
-            cb.Register<DependsByProp>()
-                .OnActivated(ActivatedHandler.InjectProperties);
+            cb.RegisterType<DependsByCtor>().SingleSharedInstance();
+            cb.RegisterType<DependsByProp>().SingleSharedInstance().PropertiesAutowired(true);
 
             var c = cb.Build();
             var dbc = c.Resolve<DependsByCtor>();
@@ -609,12 +618,8 @@ namespace Autofac.Tests
         public void CtorPropDependencyFactoriesOrder1()
         {
             var cb = new ContainerBuilder();
-            using (cb.SetDefaultScope(InstanceScope.Factory))
-            {
-                cb.Register<DependsByCtor>();
-                cb.Register<DependsByProp>()
-                    .OnActivated(ActivatedHandler.InjectProperties);
-            }
+            cb.RegisterType<DependsByCtor>();
+            cb.RegisterType<DependsByProp>().PropertiesAutowired(true);
 
             var c = cb.Build();
             var dbp = c.Resolve<DependsByProp>();
@@ -626,12 +631,9 @@ namespace Autofac.Tests
         {
             var cb = new ContainerBuilder();
             var ac = 0;
-            using (cb.SetDefaultScope(InstanceScope.Factory))
-            {
-                cb.Register<DependsByCtor>().OnActivating((s, e) => { ++ac; });
-                cb.Register<DependsByProp>().OnActivating((s, e) => { ++ac; })
-                    .OnActivated(ActivatedHandler.InjectProperties);
-            }
+            cb.RegisterType<DependsByCtor>().OnActivating(e => { ++ac; });
+            cb.RegisterType<DependsByProp>().OnActivating(e => { ++ac; })
+                .PropertiesAutowired(true);
 
             var c = cb.Build();
             var dbc = c.Resolve<DependsByCtor>();
@@ -655,7 +657,7 @@ namespace Autofac.Tests
         public void RegisterParameterisedWithDelegate()
         {
             var cb = new ContainerBuilder();
-            cb.Register((c, p) => new Parameterised(p.Named<string>("a"), p.Named<int>("b")));
+            cb.RegisterDelegate((c, p) => new Parameterised(p.Named<string>("a"), p.Named<int>("b")));
             var container = cb.Build();
             var aVal = "Hello";
             var bVal = 42;
@@ -671,7 +673,7 @@ namespace Autofac.Tests
         public void RegisterParameterisedWithReflection()
         {
             var cb = new ContainerBuilder();
-            cb.Register<Parameterised>();
+            cb.RegisterType<Parameterised>();
             var container = cb.Build();
             var aVal = "Hello";
             var bVal = 42;
@@ -687,7 +689,7 @@ namespace Autofac.Tests
         public void SupportsIServiceProvider()
         {
             var cb = new ContainerBuilder();
-            cb.Register<object>();
+            cb.RegisterType<object>();
             var container = cb.Build();
             var sp = (IServiceProvider)container;
             var o = sp.GetService(typeof(object));
@@ -701,123 +703,18 @@ namespace Autofac.Tests
         {
             var myName = "Something";
             var cb = new ContainerBuilder();
-            cb.Register<object>().Named(myName);
+            cb.RegisterType<object>().Named(myName);
             var container = cb.Build();
             var o = container.Resolve<object>(myName);
             Assert.IsNotNull(o);
         }
 
         [Test]
-        public void ComponentRegistrationsExposed()
-        {
-            var builder = new ContainerBuilder();
-            builder.Register<object>();
-            builder.Register<object>();
-            builder.Register("hello");
-            var container = builder.Build();
-            var registrations = new List<IComponentRegistration>(container.ComponentRegistrations);
-            // The container registers itself :) hence 3 + 1.
-            Assert.AreEqual(4, registrations.Count);
-            Assert.IsTrue(registrations[0].Descriptor.Services.Contains(new TypedService(typeof(IContainer))));
-            Assert.IsTrue(registrations[1].Descriptor.Services.Contains(new TypedService(typeof(object))));
-            Assert.IsTrue(registrations[2].Descriptor.Services.Contains(new TypedService(typeof(object))));
-            Assert.IsTrue(registrations[3].Descriptor.Services.Contains(new TypedService(typeof(string))));
-        }
-
-        [Test]
-        public void ComponentRegisteredEventFired()
-        {
-            object eventSender = null;
-            ComponentRegisteredEventArgs args = null;
-            var eventCount = 0;
-
-            var container = new Container();
-            container.ComponentRegistered += (sender, e) => {
-                eventSender = sender;
-                args = e;
-                ++eventCount;
-            };
-
-            var builder = new ContainerBuilder();
-            builder.Register<object>();
-            builder.Build(container);
-
-            Assert.AreEqual(1, eventCount);
-            Assert.IsNotNull(eventSender);
-            Assert.AreSame(container, eventSender);
-            Assert.IsNotNull(args);
-            Assert.AreSame(container, args.Container);
-            Assert.IsNotNull(args.ComponentRegistration.Descriptor.Services.FirstOrDefault(
-                s => s == new TypedService(typeof(object))));
-        }
-
-        [Test]
-        public void ComponentRegisteredNotFiredOnNewContext()
-        {
-            var eventCount = 0;
-
-            var container = new Container();
-            container.ComponentRegistered += (sender, e) =>
-            {
-                ++eventCount;
-            };
-
-            var builder = new ContainerBuilder();
-            builder.Register<object>().ContainerScoped();
-            builder.Build(container);
-
-            var inner = container.CreateInnerContainer();
-            inner.Resolve<object>();
-
-            Assert.AreEqual(1, eventCount);
-        }
-
-        [Test]
-        public void DefaultRegistrationIsForMostRecent()
-        {
-            var builder = new ContainerBuilder();
-            builder.Register<object>().As<object>().Named("first");
-            builder.Register<object>().As<object>().Named("second");
-            var container = builder.Build();
-            
-            IComponentRegistration defaultRegistration;
-            Assert.IsTrue(container.TryGetDefaultRegistrationFor(new TypedService(typeof(object)), out defaultRegistration));
-            Assert.IsTrue(defaultRegistration.Descriptor.Services.Contains(new NamedService("second")));
-        }
-
-        [Test]
-        public void DefaultRegistrationFalseWhenAbsent()
+        public void ContainerProvidesILifetimeScopeAndIContext()
         {
             var container = new Container();
-            IComponentRegistration unused;
-            Assert.IsFalse(container.TryGetDefaultRegistrationFor(new TypedService(typeof(object)), out unused));
-        }
-
-        [Test]
-        public void DefaultRegistrationSuppliedDynamically()
-        {
-            var container = new Container();
-            container.AddRegistrationSource(new ObjectRegistrationSource());
-            IComponentRegistration registration;
-            Assert.IsTrue(container.TryGetDefaultRegistrationFor(new TypedService(typeof(object)), out registration));
-        }
-        
-        [Test]
-        public void IdSameInSubcontext()
-        {
-        	var builder = new ContainerBuilder();
-        	builder.Register<object>().ContainerScoped();
-        	
-        	var container = builder.Build();
-        	IComponentRegistration r1;
-        	Assert.IsTrue(container.TryGetDefaultRegistrationFor(new TypedService(typeof(object)), out r1));
-        	
-        	var inner = container.CreateInnerContainer();
-        	IComponentRegistration r2;
-        	Assert.IsTrue(inner.TryGetDefaultRegistrationFor(new TypedService(typeof(object)), out r2));
-        	
-        	Assert.AreNotSame(r1, r2);
-            Assert.AreEqual(r1.Descriptor.Id, r2.Descriptor.Id);
+            Assert.IsTrue(container.IsRegistered<ILifetimeScope>());
+            Assert.IsTrue(container.IsRegistered<IComponentContext>());
         }
     }
 }

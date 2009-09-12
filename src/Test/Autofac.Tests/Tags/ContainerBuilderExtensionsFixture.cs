@@ -17,17 +17,16 @@ namespace Autofac.Tests.Tags
 
             int instantiations = 0;
 
-            builder.Register(c => { instantiations++; return ""; }).InContext(Tag.Outer)
-            	.ContainerScoped();
+            builder.RegisterDelegate(c => { instantiations++; return ""; }).InstancePer(Tag.Outer);
 
             var outer = builder.Build();
-            outer.TagWith(Tag.Outer);
+            outer.Tag = Tag.Outer;
 
-            var middle = outer.CreateInnerContainer();
-            middle.TagWith(Tag.Middle);
+            var middle = outer.BeginLifetimeScope();
+            middle.Tag = Tag.Middle;
 
-            var inner = middle.CreateInnerContainer();
-            inner.TagWith(Tag.Inner);
+            var inner = middle.BeginLifetimeScope();
+            inner.Tag = Tag.Inner;
 
             middle.Resolve<string>();
             outer.Resolve<string>();
@@ -43,14 +42,13 @@ namespace Autofac.Tests.Tags
 
             int instantiations = 0;
 
-            builder.Register(c => { instantiations++; return ""; })
-                .InContext(Tag.Outer)
-            	.ContainerScoped();
+            builder.RegisterDelegate(c => { instantiations++; return ""; })
+                .InstancePer(Tag.Outer);
 
             var outer = builder.Build();
-            outer.TagWith(Tag.Outer);
+            outer.Tag = Tag.Outer;
 
-            var anon = outer.CreateInnerContainer();
+            var anon = outer.BeginLifetimeScope();
 
             anon.Resolve<string>();
             outer.Resolve<string>();
@@ -64,12 +62,11 @@ namespace Autofac.Tests.Tags
         {
             var builder = new ContainerBuilder();
 
-            builder.Register(c => "")
-                .InContext(Tag.Middle)
-            	.ContainerScoped();
-            
+            builder.RegisterDelegate(c => "")
+                .InstancePer(Tag.Middle);
+
             var outer = builder.Build();
-            outer.TagWith(Tag.Outer);
+            outer.Tag = Tag.Outer;
 
             Assert.IsTrue(outer.IsRegistered<string>());
             outer.Resolve<string>();
@@ -82,170 +79,155 @@ namespace Autofac.Tests.Tags
 
             var builder = new ContainerBuilder();
 
-            builder.Register(c => "")
-                .InContext(Tag.Outer)
-            	.Named(name)
-            	.ContainerScoped();
+            builder.RegisterDelegate(c => "")
+                .InstancePer(Tag.Outer)
+                .Named(name);
 
             var outer = builder.Build();
-            outer.TagWith(Tag.Outer);
+            outer.Tag = Tag.Outer;
 
             var s = (string)outer.Resolve(new NamedService(name));
             Assert.IsNotNull(s);
         }
-        
+
         [Test]
         public void CorrectScopeMaintainsOwnership()
         {
-        	var tag = "Tag";
-        	var builder = new ContainerBuilder();
-        	builder.Register(c => new DisposeTracker())
-                .InContext(tag)
-        		.ContainerScoped();
-        	var container = builder.Build();
-        	container.TagWith(tag);
-        	var inner = container.CreateInnerContainer();
-        	var dt = inner.Resolve<DisposeTracker>();
-        	Assert.IsFalse(dt.IsDisposed);
-        	inner.Dispose();
-        	Assert.IsFalse(dt.IsDisposed);
-        	container.Dispose();
-        	Assert.IsTrue(dt.IsDisposed);
-        }
-        
-        [Test]
-        public void FactorySemanticsCorrect()
-        {
-        	var tag = "Tag";
-        	var builder = new ContainerBuilder();
-        	builder.Register(c => new object())
-                .InContext(tag)
-        		.FactoryScoped();
-        	var container = builder.Build();
-        	container.TagWith(tag);
-        	Assert.AreNotSame(container.Resolve<object>(), container.Resolve<object>());
-        }
-        
-        [Test]
-        public void DefaultSingletonSemanticsCorrect()
-        {
-        	var tag = "Tag";
-        	var builder = new ContainerBuilder();
-        	builder.Register(c => new object()).InContext(tag);
-        	var container = builder.Build();
-        	container.TagWith(tag);
-        	var inner = container.CreateInnerContainer();
-        	Assert.AreSame(container.Resolve<object>(), inner.Resolve<object>());
-        }
-        
-        [Test]
-        public void ReflectiveRegistration()
-        {
-        	var tag = "Tag";
-        	var builder = new ContainerBuilder();
-        	builder.Register(typeof(object)).InContext(tag);
-        	var container = builder.Build();
-        	container.TagWith(tag);
-        	Assert.IsNotNull(container.Resolve<object>());
-        }
-        
-                
-        [Test]
-        public void RespectsDefaults()
-        {
-        	var builder = new ContainerBuilder();
-        	builder.SetDefaultOwnership(InstanceOwnership.External);
-        	builder.SetDefaultScope(InstanceScope.Factory);
-        	builder.Register(typeof(DisposeTracker)).InContext("tag");
-        	DisposeTracker dt1, dt2;
-        	using (var container = builder.Build())
-        	{
-        		container.TagWith("tag");
-        		dt1 = container.Resolve<DisposeTracker>();
-        		dt2 = container.Resolve<DisposeTracker>();
-        	}
-        	
-        	Assert.IsNotNull(dt1);
-        	Assert.AreNotSame(dt1, dt2);
-        	Assert.IsFalse(dt1.IsDisposed);
-        	Assert.IsFalse(dt2.IsDisposed);
+            var tag = "Tag";
+            var builder = new ContainerBuilder();
+            builder.RegisterDelegate(c => new DisposeTracker())
+                .InstancePer(tag);
+            var container = builder.Build();
+            container.Tag = tag;
+            var inner = container.BeginLifetimeScope();
+            var dt = inner.Resolve<DisposeTracker>();
+            Assert.IsFalse(dt.IsDisposed);
+            inner.Dispose();
+            Assert.IsFalse(dt.IsDisposed);
+            container.Dispose();
+            Assert.IsTrue(dt.IsDisposed);
         }
 
         [Test]
-        public void CollectionsAreTaggable()
+        [Ignore("Can't yet specify sharing and scope independently.")]
+        public void FactorySemanticsCorrect()
         {
-        	var builder = new ContainerBuilder();
-        	builder.RegisterCollection<object>()
-        		.FactoryScoped()
-        		.InContext("tag")
-        		.As(typeof(IList<object>));
-        	
-        	var outer = builder.Build();
-        	var inner = outer.CreateInnerContainer();
-        	inner.TagWith("tag");
-        	
-        	var coll = inner.Resolve<IList<object>>();
-        	Assert.IsNotNull(coll);
-        	
-        	bool threw = false;
-        	try {
-        		outer.Resolve<IList<object>>();
-        	} catch (Exception) {
-        		threw = true;
-        	}
-        	
-        	Assert.IsTrue(threw);
+            var tag = "Tag";
+            var builder = new ContainerBuilder();
+            builder.RegisterDelegate(c => new object())
+                .InstancePer(tag);
+               // .FactoryScoped();
+            var container = builder.Build();
+            container.Tag = tag;
+            Assert.AreNotSame(container.Resolve<object>(), container.Resolve<object>());
         }
+
+        [Test]
+        public void DefaultSingletonSemanticsCorrect()
+        {
+            var tag = "Tag";
+            var builder = new ContainerBuilder();
+            builder.RegisterDelegate(c => new object()).InstancePer(tag);
+            var container = builder.Build();
+            container.Tag = tag;
+            var inner = container.BeginLifetimeScope();
+            Assert.AreSame(container.Resolve<object>(), inner.Resolve<object>());
+        }
+
+        [Test]
+        public void ReflectiveRegistration()
+        {
+            var tag = "Tag";
+            var builder = new ContainerBuilder();
+            builder.RegisterType(typeof(object)).InstancePer(tag);
+            var container = builder.Build();
+            container.Tag = tag;
+            Assert.IsNotNull(container.Resolve<object>());
+        }
+
+        //[Test]
+        //public void CollectionsAreTaggable()
+        //{
+        //    var builder = new ContainerBuilder();
+        //    builder.RegisterCollection<object>()
+        //        .FactoryScoped()
+        //        .InstancePer("tag")
+        //        .As(typeof(IList<object>));
+
+        //    var outer = builder.Build();
+        //    var inner = outer.BeginLifetimeScope();
+        //    inner.Tag = "tag";
+
+        //    var coll = inner.Resolve<IList<object>>();
+        //    Assert.IsNotNull(coll);
+
+        //    bool threw = false;
+        //    try
+        //    {
+        //        outer.Resolve<IList<object>>();
+        //    }
+        //    catch (Exception)
+        //    {
+        //        threw = true;
+        //    }
+
+        //    Assert.IsTrue(threw);
+        //}
 
         [Test]
         public void GenericsAreTaggable()
         {
-        	var builder = new ContainerBuilder();
-        	builder.RegisterGeneric(typeof(List<>))
-        		.FactoryScoped()
-        		.InContext("tag")
-        		.As(typeof(IList<>));
-        	
-        	var outer = builder.Build();
-        	var inner = outer.CreateInnerContainer();
-        	inner.TagWith("tag");
-        	
-        	var coll = inner.Resolve<IList<object>>();
-        	Assert.IsNotNull(coll);
-        	
-        	bool threw = false;
-        	try {
-        		outer.Resolve<IList<object>>();
-        	} catch (Exception) {
-        		threw = true;
-        	}
-        	
-        	Assert.IsTrue(threw);
+            var builder = new ContainerBuilder();
+            builder.RegisterGeneric(typeof(List<>))
+                .InstancePer("tag")
+                .As(typeof(IList<>));
+
+            var outer = builder.Build();
+            var inner = outer.BeginLifetimeScope();
+            inner.Tag = "tag";
+
+            var coll = inner.Resolve<IList<object>>();
+            Assert.IsNotNull(coll);
+
+            bool threw = false;
+            try
+            {
+                outer.Resolve<IList<object>>();
+            }
+            catch (Exception)
+            {
+                threw = true;
+            }
+
+            Assert.IsTrue(threw);
         }
-        
-        [Test]
-        public void AutomaticsAreTaggable()
-        {
-        	var builder = new ContainerBuilder();
-        	builder.RegisterTypesAssignableTo<IList<object>>()
-        		.FactoryScoped()
-        		.InContext("tag");
-        	
-        	var outer = builder.Build();
-        	var inner = outer.CreateInnerContainer();
-        	inner.TagWith("tag");
-        	
-        	var coll = inner.Resolve<List<object>>();
-        	Assert.IsNotNull(coll);
-        	
-        	bool threw = false;
-        	try {
-        		outer.Resolve<List<object>>();
-        	} catch (Exception) {
-        		threw = true;
-        	}
-        	
-        	Assert.IsTrue(threw);
-        }
+
+        //[Test]
+        //public void AutomaticsAreTaggable()
+        //{
+        //    var builder = new ContainerBuilder();
+        //    builder.RegisterTypesAssignableTo<IList<object>>()
+        //        .FactoryScoped()
+        //        .InstancePer("tag");
+
+        //    var outer = builder.Build();
+        //    var inner = outer.BeginLifetimeScope();
+        //    inner.Tag = "tag");
+
+        //    var coll = inner.Resolve<List<object>>();
+        //    Assert.IsNotNull(coll);
+
+        //    bool threw = false;
+        //    try
+        //    {
+        //        outer.Resolve<List<object>>();
+        //    }
+        //    catch (Exception)
+        //    {
+        //        threw = true;
+        //    }
+
+        //    Assert.IsTrue(threw);
+        //}
     }
 }

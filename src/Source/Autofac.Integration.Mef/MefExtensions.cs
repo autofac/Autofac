@@ -28,10 +28,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel.Composition;
 using System.Reflection;
-using Autofac.Builder;
-using Autofac.Registrars;
 using System.ComponentModel.Composition.Primitives;
 using System.ComponentModel.Composition.Hosting;
+using Autofac.Builder;
 
 namespace Autofac.Integration.Mef
 {
@@ -41,156 +40,87 @@ namespace Autofac.Integration.Mef
     public static class MefExtensions
     {
         static IDictionary<string, object> EmptyMetadata = new Dictionary<string, object>();
-            
+
         /// <summary>
         /// Expose the registered service to MEF parts as an export.
         /// </summary>
-        /// <param name="registrar">The component being registered.</param>
-        /// <param name="contractName">The contract name that appears in the MEF ExportDefinition.</param>
-        /// <returns>A registrar allowing registration to continue.</returns>
-        public static IConcreteRegistrar ExportedAs(this IConcreteRegistrar registrar, string contractName)
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to export.</param>
+        /// <param name="contractType">The contract name that appears in the MEF ExportDefinition.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+            ExportedAs<TLimit, TActivatorData, TSingleRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
+                Type contractType)
+            where TSingleRegistrationStyle : SingleRegistrationStyle
         {
-            return ExportedAs(registrar, contractName, EmptyMetadata);
+            return registration.ExportedAs(contractType, EmptyMetadata);
         }
 
         /// <summary>
         /// Expose the registered service to MEF parts as an export.
         /// </summary>
-        /// <param name="registrar">The component being registered.</param>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to export.</param>
+        /// <param name="contractType">The contract name that appears in the MEF ExportDefinition.</param>
+        /// <param name="metadata">The metadata values associated with the MEF ExportDefinition.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+            ExportedAs<TLimit, TActivatorData, TSingleRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
+                Type contractType,
+                IDictionary<string, object> metadata)
+            where TSingleRegistrationStyle : SingleRegistrationStyle
+        {
+            return registration.ExportedAs(CompositionServices.GetContractName(contractType), metadata);
+        }
+
+        /// <summary>
+        /// Expose the registered service to MEF parts as an export.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to export.</param>
+        /// <param name="contractName">The contract name that appears in the MEF ExportDefinition.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+            ExportedAs<TLimit, TActivatorData, TSingleRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
+                string contractName)
+            where TSingleRegistrationStyle : SingleRegistrationStyle
+        {
+            return registration.ExportedAs(contractName, EmptyMetadata);
+        }
+
+        /// <summary>
+        /// Expose the registered service to MEF parts as an export.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to export.</param>
         /// <param name="contractName">The contract name that appears in the MEF ExportDefinition.</param>
         /// <param name="metadata">The metadata values associated with the MEF ExportDefinition.</param>
-        /// <returns>A registrar allowing registration to continue.</returns>
-        public static IConcreteRegistrar ExportedAs(this IConcreteRegistrar registrar, string contractName, IDictionary<string, object> metadata)
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+            ExportedAs<TLimit, TActivatorData, TSingleRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
+                string contractName,
+                IDictionary<string, object> metadata)
+            where TSingleRegistrationStyle : SingleRegistrationStyle
         {
-            if (registrar == null) throw new ArgumentNullException("registrar");
+            if (registration == null) throw new ArgumentNullException("registration");
             if (contractName == null) throw new ArgumentNullException("contractName");
             if (metadata == null) throw new ArgumentNullException("metadata");
 
-            registrar.OnRegistered((s, e) => AttachExport(e.Container, e.Registration, contractName, metadata));
+            registration.RegistrationStyle.RegisteredHandlers.Add((s, r) => AttachExport(r.ComponentRegistry, r.ComponentRegistration, contractName, typeof(TLimit), metadata));
 
-            return registrar;
-        }
-
-        /// <summary>
-        /// Expose the registered service to MEF parts as an export.
-        /// </summary>
-        /// <param name="registrar">The component being registered.</param>
-        /// <param name="contractType">The contract type that appears in the MEF ExportDefinition.</param>
-        /// <returns>A registrar allowing registration to continue.</returns>
-        public static IConcreteRegistrar ExportedAs(this IConcreteRegistrar registrar, Type contractType)
-        {
-            return ExportedAs(registrar, contractType, EmptyMetadata);
-        }
-
-        /// <summary>
-        /// Expose the registered service to MEF parts as an export.
-        /// </summary>
-        /// <param name="registrar">The component being registered.</param>
-        /// <typeparam name="ContractType">The contract type that appears in the MEF ExportDefinition.</typeparam>
-        /// <returns>A registrar allowing registration to continue.</returns>
-        public static IConcreteRegistrar ExportedAs<ContractType>(this IConcreteRegistrar registrar)
-        {
-            return ExportedAs(registrar, typeof(ContractType), EmptyMetadata);
-        }
-
-        /// <summary>
-        /// Expose the registered service to MEF parts as an export.
-        /// </summary>
-        /// <param name="registrar">The component being registered.</param>
-        /// <param name="contractType">The contract type that appears in the MEF ExportDefinition.</param>
-        /// <param name="metadata">The metadata values associated with the MEF ExportDefinition.</param>
-        /// <returns>A registrar allowing registration to continue.</returns>
-        public static IConcreteRegistrar ExportedAs(this IConcreteRegistrar registrar, Type contractType, IDictionary<string, object> metadata)
-        {
-            return ExportedAs(registrar, CompositionServices.GetContractName(contractType), metadata);
-        }
-
-        /// <summary>
-        /// Expose the registered service to MEF parts as an export.
-        /// </summary>
-        /// <param name="registrar">The component being registered.</param>
-        /// <typeparam name="ContractType">The contract type that appears in the MEF ExportDefinition.</typeparam>
-        /// <param name="metadata">The metadata values associated with the MEF ExportDefinition.</param>
-        /// <returns>A registrar allowing registration to continue.</returns>
-        public static IConcreteRegistrar ExportedAs<ContractType>(this IConcreteRegistrar registrar, IDictionary<string, object> metadata)
-        {
-            return ExportedAs(registrar, typeof(ContractType), metadata);
-        }
-
-        /// <summary>
-        /// Expose the registered service to MEF parts as an export.
-        /// </summary>
-        /// <param name="registrar">The component being registered.</param>
-        /// <param name="contractName">The contract name that appears in the MEF ExportDefinition.</param>
-        /// <returns>A registrar allowing registration to continue.</returns>
-        public static IReflectiveRegistrar ExportedAs(this IReflectiveRegistrar registrar, string contractName)
-        {
-            return ExportedAs(registrar, contractName, EmptyMetadata);
-        }
-
-        /// <summary>
-        /// Expose the registered service to MEF parts as an export.
-        /// </summary>
-        /// <param name="registrar">The component being registered.</param>
-        /// <param name="contractName">The contract name that appears in the MEF ExportDefinition.</param>
-        /// <param name="metadata">The metadata values associated with the MEF ExportDefinition.</param>
-        /// <returns>A registrar allowing registration to continue.</returns>
-        public static IReflectiveRegistrar ExportedAs(this IReflectiveRegistrar registrar, string contractName, IDictionary<string, object> metadata)
-        {
-            if (registrar == null) throw new ArgumentNullException("registrar");
-            if (contractName == null) throw new ArgumentNullException("contractName");
-            if (metadata == null) throw new ArgumentNullException("metadata");
-
-            registrar.OnRegistered((s, e) => AttachExport(e.Container, e.Registration, contractName, metadata));
-
-            return registrar;
-        }
-
-        /// <summary>
-        /// Expose the registered service to MEF parts as an export.
-        /// </summary>
-        /// <param name="registrar">The component being registered.</param>
-        /// <param name="contractType">The contract type that appears in the MEF ExportDefinition.</param>
-        /// <returns>A registrar allowing registration to continue.</returns>
-        public static IReflectiveRegistrar ExportedAs(this IReflectiveRegistrar registrar, Type contractType)
-        {
-            return ExportedAs(registrar, contractType, EmptyMetadata);
-        }
-
-        /// <summary>
-        /// Expose the registered service to MEF parts as an export.
-        /// </summary>
-        /// <param name="registrar">The component being registered.</param>
-        /// <typeparam name="ContractType">The contract type that appears in the MEF ExportDefinition.</typeparam>
-        /// <param name="metadata">The metadata values associated with the MEF ExportDefinition.</param>
-        /// <returns>A registrar allowing registration to continue.</returns>
-        public static IReflectiveRegistrar ExportedAs<ContractType>(this IReflectiveRegistrar registrar)
-        {
-            return ExportedAs(registrar, typeof(ContractType), EmptyMetadata);
-        }
-
-        /// <summary>
-        /// Expose the registered service to MEF parts as an export.
-        /// </summary>
-        /// <param name="registrar">The component being registered.</param>
-        /// <param name="contractType">The contract type that appears in the MEF ExportDefinition.</param>
-        /// <param name="metadata">The metadata values associated with the MEF ExportDefinition.</param>
-        /// <returns>A registrar allowing registration to continue.</returns>
-        public static IReflectiveRegistrar ExportedAs(this IReflectiveRegistrar registrar, Type contractType, IDictionary<string, object> metadata)
-        {
-            return ExportedAs(registrar, CompositionServices.GetContractName(contractType), metadata);
-        }
-
-        /// <summary>
-        /// Expose the registered service to MEF parts as an export.
-        /// </summary>
-        /// <param name="registrar">The component being registered.</param>
-        /// <typeparam name="ContractType">The contract type that appears in the MEF ExportDefinition.</typeparam>
-        /// <param name="metadata">The metadata values associated with the MEF ExportDefinition.</param>
-        /// <returns>A registrar allowing registration to continue.</returns>
-        public static IReflectiveRegistrar ExportedAs<ContractType>(this IReflectiveRegistrar registrar, IDictionary<string, object> metadata)
-        {
-            return ExportedAs(registrar, typeof(ContractType), metadata);
+            return registration;
         }
 
         /// <summary>
@@ -273,14 +203,14 @@ namespace Autofac.Integration.Mef
             if (part == null) throw new ArgumentNullException("part");
             if (exposedServicesMapper == null) throw new ArgumentNullException("exposedServicesMapper");
 
-            var scope = GetInstanceScope(part);
-
             var partId = new UniqueService();
-            builder.Register(c => part.CreatePart())
-                .WithScope(scope)
-                .OnActivating((sender, e) => SetPrerequisiteImports(e.Context, (ComposablePart)e.Instance))
-                .OnActivated((sender, e) => SetNonPrerequisiteImports(e.Context, (ComposablePart)e.Instance))
+            var partReg = builder.RegisterDelegate(c => part.CreatePart())
+                .OnActivating(e => SetPrerequisiteImports(e.Context, e.Instance))
+                .OnActivated(e => SetNonPrerequisiteImports(e.Context, e.Instance))
                 .As(partId);
+
+            if (IsSingleton(part))
+                partReg.SingleSharedInstance();
 
             foreach (var exportDef in part.ExportDefinitions)
             {
@@ -288,22 +218,20 @@ namespace Autofac.Integration.Mef
                 SupportExportCollection(builder, contractService);
 
                 var exportId = new UniqueService();
-                builder.Register(c => {
+                builder.RegisterDelegate(c => {
                         var p = ((ComposablePart)c.Resolve(partId));
                         return new Export(exportDef, () => p.GetExportedObject(exportDef));
                     })
                     .MemberOf(contractService)
                     .As(exportId)
-                    .FactoryScoped()
                     .ExternallyOwned();
 
                 var additionalServices = exposedServicesMapper(exportDef).ToArray();
 
                 if (additionalServices.Length > 0)
                 {
-                    builder.Register(c => ((Export)c.Resolve(exportId)).GetExportedObject())
+                    builder.RegisterDelegate(c => ((Export)c.Resolve(exportId)).GetExportedObject())
                         .As(additionalServices)
-                        .FactoryScoped()
                         .ExternallyOwned();
                 }
             }
@@ -315,7 +243,7 @@ namespace Autofac.Integration.Mef
         /// <typeparam name="T">The contract type.</typeparam>
         /// <param name="context">The context to resolve exports from.</param>
         /// <returns>A list of exports.</returns>
-        public static IEnumerable<Export> ResolveExports<T>(this IContext context)
+        public static IEnumerable<Export> ResolveExports<T>(this IComponentContext context)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
@@ -325,58 +253,61 @@ namespace Autofac.Integration.Mef
                     CompositionServices.GetContractName(typeof(T))));
         }
 
-        private static InstanceScope GetInstanceScope(ComposablePartDefinition part)
+        private static bool IsSingleton(ComposablePartDefinition part)
         {
-            var scope = InstanceScope.Singleton;
             object pcp = CreationPolicy.Any;
-            if (part.Metadata != null &&
-                part.Metadata.TryGetValue(CompositionServices.PartCreationPolicyMetadataName, out pcp))
-            {
-                if (pcp != null && (CreationPolicy)pcp == CreationPolicy.NonShared)
-                    scope = InstanceScope.Factory;
-            }
-
-            return scope;
+            return !(part.Metadata != null &&
+                part.Metadata.TryGetValue(CompositionServices.PartCreationPolicyMetadataName, out pcp) &&
+                pcp != null &&
+                (CreationPolicy)pcp == CreationPolicy.NonShared);
         }
 
-        private static void AttachExport(IContainer container, IComponentRegistration registration, string contractName, IDictionary<string, object> metadata)
+        private static void AttachExport(IComponentRegistry registry, IComponentRegistration registration, string contractName, Type contractType, IDictionary<string, object> metadata)
         {
+            if (registry == null) throw new ArgumentNullException("registry");
+            if (registration == null) throw new ArgumentNullException("registration");
+            if (contractName == null) throw new ArgumentNullException("contractName");
+            if (contractType == null) throw new ArgumentNullException("contractType");
+            if (metadata == null) throw new ArgumentNullException("metadata");
+
             var builder = new ContainerBuilder();
             var contractService = new ContractBasedService(contractName);
 
             SupportExportCollection(builder, contractService);
 
-            builder.Register((c, p) =>
+            builder.RegisterDelegate((c, p) =>
                 {
-                    var ctx = c.Resolve<IContext>();
+                    var ctx = c.Resolve<IComponentContext>();
                     return new Export(
                         new ExportDefinition(contractName, metadata),
-                        () => ctx.Resolve(registration.Descriptor.Id));
+                        () => ctx.Resolve(registration, Enumerable.Empty<Parameter>()));
                 })
                 .MemberOf(contractService)
                 .ExternallyOwned()
-                .ContainerScoped();
+                .InstancePerLifetimeScope();
 
-            builder.Build(container);
+            builder.Build(registry);
         }
 
         private static void SupportExportCollection(ContainerBuilder builder, ContractBasedService contractService)
         {
-            builder.RegisterCollection<Export>().As(contractService).FactoryScoped().DefaultOnly();
+            builder.RegisterCollection<Export>()
+                .As(contractService);
+// TODO                .DefaultOnly();
         }
 
-        private static void SetNonPrerequisiteImports(IContext context, ComposablePart composablePart)
+        private static void SetNonPrerequisiteImports(IComponentContext context, ComposablePart composablePart)
         {
             SetImports(context, composablePart, false);
             composablePart.OnComposed();
         }
 
-        private static void SetPrerequisiteImports(IContext context, ComposablePart composablePart)
+        private static void SetPrerequisiteImports(IComponentContext context, ComposablePart composablePart)
         {
             SetImports(context, composablePart, true);
         }
 
-        private static void SetImports(IContext context, ComposablePart composablePart, bool prerequisite)
+        private static void SetImports(IComponentContext context, ComposablePart composablePart, bool prerequisite)
         {
             foreach (var import in composablePart
                 .ImportDefinitions

@@ -27,15 +27,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Autofac.Component;
-using Autofac.Component.Activation;
-using Autofac.Component.Scope;
+using Autofac.Registration;
+using Autofac.Lifetime;
+using Autofac.Activators;
 
 namespace Autofac.Modules
 {
+    // TODO - refactor to common base with RegistrationSource<>
     class CollectionRegistrationSource : IRegistrationSource
     {
-        public bool TryGetRegistration(Service service, out IComponentRegistration registration)
+        public bool TryGetRegistration(Service service, Func<Service, bool> registeredServicesTest, out IComponentRegistration registration)
         {
             var ts = service as TypedService;
             if (ts != null)
@@ -58,24 +59,34 @@ namespace Autofac.Modules
                     var elementTypeService = new TypedService(elementType);
                     var elementArrayType = elementType.MakeArrayType();
 
-                    registration = new Registration(
-                        new Descriptor(
-                            new UniqueService(),
-                            new[] { service },
-                            elementArrayType),
-                        new DelegateActivator((c, p) =>
+                    // Note, the maintenance of this item must be a lock-free algorithm.
+                    IEnumerable<IComponentRegistration> elements = null;
+
+                    registration = new ComponentRegistration(
+                        Guid.NewGuid(),
+                        new DelegateActivator(elementArrayType, (c, p) =>
                         {
-                            var ctr = c.Resolve<IContainer>();
-                            var items = AllRegistrationsInHierarchy(ctr)
-                                .Where(cr => cr.Descriptor.Services.Contains(elementTypeService))
-                                .Select(cr => ctr.Resolve(cr.Descriptor.Id, p))
-                                .ToArray();
+                            if (elements == null)
+                            {
+                                c.ComponentRegistry.Registered += (s, e) =>
+                                {
+                                    if (e.ComponentRegistration.Services.Contains(elementTypeService))
+                                        elements = c.ComponentRegistry.RegistrationsFor(elementTypeService);
+                                };
+                                elements = c.ComponentRegistry.RegistrationsFor(elementTypeService);
+                            }
+
+                            var items = elements.Select(cr => c.Resolve(cr, p)).ToArray();
+
                             var result = Array.CreateInstance(elementType, items.Length);
                             items.CopyTo(result, 0);
                             return result;
                         }),
-                        new FactoryScope(),
-                        InstanceOwnership.External);
+                        new CurrentScopeLifetime(),
+                        InstanceSharing.None,
+                        InstanceOwnership.ExternallyOwned,
+                        new[] { service },
+                        new Dictionary<string, object>());
 
                     return true;
                 }
@@ -83,17 +94,6 @@ namespace Autofac.Modules
 
             registration = null;
             return false;
-        }
-
-        IEnumerable<IComponentRegistration> AllRegistrationsInHierarchy(IContainer container)
-        {
-            var registrations = container.ComponentRegistrations;
-            while (container.OuterContainer != null)
-            {
-                container = container.OuterContainer;
-                registrations = registrations.Union(container.ComponentRegistrations);
-            }
-            return registrations;
         }
     }
 }

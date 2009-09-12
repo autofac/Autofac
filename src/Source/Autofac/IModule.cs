@@ -32,10 +32,10 @@ namespace Autofac
 	/// </summary>
 	public interface IModule
 	{
-		/// <summary>
-		/// Apply the module to the container.
-		/// </summary>
-		/// <param name="container">Container to apply configuration to.</param>
-		void Configure(IContainer container);
-	}
+        /// <summary>
+        /// Apply the module to the component registry.
+        /// </summary>
+        /// <param name="componentRegistry">Component registry to apply configuration to.</param>
+        void Configure(IComponentRegistry componentRegistry);
+    }
 }

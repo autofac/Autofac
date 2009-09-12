@@ -7,6 +7,7 @@ using NHibernate;
 using System.Data;
 using NHibernate.Cfg;
 using Remember.Model;
+using Autofac;
 
 namespace Remember.Persistence.NHibernate
 {
@@ -18,19 +19,20 @@ namespace Remember.Persistence.NHibernate
                 throw new ArgumentNullException("builder");
 
             builder.RegisterGeneric(typeof(NHibernateRepository<>)).As(typeof(IRepository<>))
-                .ContainerScoped();
+                .InstancePerLifetimeScope();
 
-            builder.Register(c => new TransactionTracker())
-                .ContainerScoped();
+            builder.RegisterDelegate(c => new TransactionTracker())
+                .InstancePerLifetimeScope();
 
-            builder.Register(c => c.Resolve<ISessionFactory>().OpenSession())
-                .ContainerScoped()
-                .OnActivated((sender, e) =>
+            builder.RegisterDelegate(c => c.Resolve<ISessionFactory>().OpenSession())
+                .InstancePerLifetimeScope()
+                .OnActivated(e =>
                 {
                     e.Context.Resolve<TransactionTracker>().CurrentTransaction = ((ISession)e.Instance).BeginTransaction();
                 });
 
-            builder.Register(c => new Configuration().Configure().BuildSessionFactory());
+            builder.RegisterDelegate(c => new Configuration().Configure().BuildSessionFactory())
+                .SingleSharedInstance();
         }
     }
 }

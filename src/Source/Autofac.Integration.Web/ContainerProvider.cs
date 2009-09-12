@@ -34,6 +34,9 @@ namespace Autofac.Integration.Web
     {
         IContainer _applicationContainer;
 
+        public const string ApplicationLifetimeTag = "application";
+        public const string RequestLifetimeTag = "request";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ContainerProvider"/> class.
         /// </summary>
@@ -43,18 +46,17 @@ namespace Autofac.Integration.Web
             if (applicationContainer == null)
                 throw new ArgumentNullException("applicationContainer");
 
+            applicationContainer.Tag = 
             _applicationContainer = applicationContainer;
         }
-
-        #region IContainerProvider Members
 
         /// <summary>
         /// Dispose of the current request's container, if it has been
         /// instantiated.
         /// </summary>
-        public void DisposeRequestContainer()
+        public void EndRequestLifetime()
         {
-            var rc = NullableRequestContainer;
+            var rc = NullableRequestLifetime;
             if (rc != null)
                 rc.Dispose();
         }
@@ -76,29 +78,30 @@ namespace Autofac.Integration.Web
         /// current request.
         /// </summary>
         /// <value></value>
-        public IContainer RequestContainer
+        public ILifetimeScope RequestLifetime
         {
             get
             {
-                var result = NullableRequestContainer;
+                var result = NullableRequestLifetime;
                 if (result == null)
-                    result = NullableRequestContainer = ApplicationContainer.CreateInnerContainer();
+                {
+                    result = NullableRequestLifetime = ApplicationContainer.BeginLifetimeScope();
+                    result.Tag = RequestLifetimeTag;
+                }
 
                 return result;
             }
         }
 
-        #endregion
-
-        IContainer NullableRequestContainer
+        ILifetimeScope NullableRequestLifetime
         {
             get
             {
-                return (IContainer)HttpContext.Current.Items[typeof(IContainer)];
+                return (ILifetimeScope)HttpContext.Current.Items[typeof(ILifetimeScope)];
             }
             set
             {
-                HttpContext.Current.Items[typeof(IContainer)] = value;
+                HttpContext.Current.Items[typeof(ILifetimeScope)] = value;
             }
         }
     }

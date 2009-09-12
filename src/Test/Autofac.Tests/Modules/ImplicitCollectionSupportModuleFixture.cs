@@ -18,8 +18,8 @@ namespace Autofac.Tests.Modules
             cb.RegisterModule(new ImplicitCollectionSupportModule());
             var s1 = "Hello";
             var s2 = "World";
-            cb.Register(s1);
-            cb.Register(s2);
+            cb.RegisterInstance(s1);
+            cb.RegisterInstance(s2);
             var c = cb.Build();
 
             var strings = c.Resolve<string[]>();
@@ -35,8 +35,8 @@ namespace Autofac.Tests.Modules
             cb.RegisterModule(new ImplicitCollectionSupportModule());
             var s1 = "Hello";
             var s2 = "World";
-            cb.Register(s1);
-            cb.Register(s2);
+            cb.RegisterInstance(s1);
+            cb.RegisterInstance(s2);
             var c = cb.Build();
 
             var strings = c.Resolve<IEnumerable<string>>();
@@ -45,25 +45,25 @@ namespace Autofac.Tests.Modules
             Assert.IsTrue(strings.Contains(s2));
         }
 
-        [Test]
-        public void ResolvesAllAvailableElementsInHierarchy()
-        {
-            var cb = new ContainerBuilder();
-            cb.RegisterModule(new ImplicitCollectionSupportModule());
-            var s1 = "Hello";
-            cb.Register(s1);
-            var c = cb.Build();
-            var inner = c.CreateInnerContainer();
+        //[Test]
+        //public void ResolvesAllAvailableElementsInHierarchy()
+        //{
+        //    var cb = new ContainerBuilder();
+        //    cb.RegisterModule(new ImplicitCollectionSupportModule());
+        //    var s1 = "Hello";
+        //    cb.RegisterInstance(s1);
+        //    var c = cb.Build();
+        //    var inner = c.BeginLifetimeScope();
 
-            var cb2 = new ContainerBuilder();
-            var s2 = "World";
-            cb2.Register(s2);
-            cb2.Build(inner);
+        //    var cb2 = new ContainerBuilder();
+        //    var s2 = "World";
+        //    cb2.RegisterInstance(s2);
+        //    cb2.Build(inner);
 
-            var strings = inner.Resolve<IEnumerable<string>>();
-            Assert.AreEqual(2, strings.Count());
-            Assert.IsTrue(strings.Contains(s1));
-            Assert.IsTrue(strings.Contains(s2));
-        }
+        //    var strings = inner.Resolve<IEnumerable<string>>();
+        //    Assert.AreEqual(2, strings.Count());
+        //    Assert.IsTrue(strings.Contains(s1));
+        //    Assert.IsTrue(strings.Contains(s2));
+        //}
     }
 }

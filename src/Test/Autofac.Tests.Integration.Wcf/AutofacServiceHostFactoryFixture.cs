@@ -17,7 +17,7 @@ namespace Autofac.Tests.Integration.Wcf
         public void HostsNamedServices()
         {
             var builder = new ContainerBuilder();
-            builder.Register<object>().Named("service");
+            builder.RegisterType<object>().Named("service");
             TestWithHostedContainer(builder.Build(), () =>
             {
                 var factory = new AutofacServiceHostFactory();
@@ -30,7 +30,7 @@ namespace Autofac.Tests.Integration.Wcf
         public void HostsTypedServices()
         {
             var builder = new ContainerBuilder();
-            builder.Register<object>();
+            builder.RegisterType<object>();
             TestWithHostedContainer(builder.Build(), () =>
             {
                 var factory = new AutofacServiceHostFactory();
@@ -44,7 +44,7 @@ namespace Autofac.Tests.Integration.Wcf
         public void DetectsUnknownImplementationTypes()
         {
             var builder = new ContainerBuilder();
-            builder.Register<IServiceProvider>(c => new Container()).Named("service");
+            builder.RegisterDelegate<IServiceProvider>(c => new Container()).Named("service");
             TestWithHostedContainer(builder.Build(), () =>
             {
                 var factory = new AutofacServiceHostFactory();

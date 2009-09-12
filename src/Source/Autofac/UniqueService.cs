@@ -32,7 +32,24 @@ namespace Autofac
     /// </summary>
     public class UniqueService : Service
     {
-        Guid _id = Guid.NewGuid();
+        Guid _id;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UniqueService"/> class.
+        /// </summary>
+        public UniqueService()
+            : this(Guid.NewGuid())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UniqueService"/> class.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        public UniqueService(Guid id)
+        {
+            _id = id;
+        }
 
         /// <summary>
         /// Provides a programmer-readable description of the identifying feature of the service.

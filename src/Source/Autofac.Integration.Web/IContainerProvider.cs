@@ -34,7 +34,7 @@ namespace Autofac.Integration.Web
         /// Dispose of the current request's container, if it has been
         /// instantiated.
         /// </summary>
-        void DisposeRequestContainer();
+        void EndRequestLifetime();
 
         /// <summary>
         /// The global, application-wide container.
@@ -42,9 +42,9 @@ namespace Autofac.Integration.Web
         IContainer ApplicationContainer { get; }
 
         /// <summary>
-        /// The container used to manage components for processing the
+        /// The lifetime used to manage components for processing the
         /// current request.
         /// </summary>
-        IContainer RequestContainer { get; }
+        ILifetimeScope RequestLifetime { get; }
     }
 }

@@ -32,7 +32,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
 				}
 			}
         	
-			public IContainer RequestContainer
+			public ILifetimeScope RequestLifetime
 			{
 				get
 				{
@@ -40,7 +40,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
 				}
 			}
         	
-			public void DisposeRequestContainer()
+			public void EndRequestLifetime()
 			{
 			}
         }
@@ -96,8 +96,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
         public void CreatesController()
         {
             var builder = new ContainerBuilder();
-            builder.Register<StubController>()
-            	.FactoryScoped()
+            builder.RegisterType<StubController>()
             	.Named("controller." + HomeControllerName.ToLowerInvariant());
             var container = builder.Build();
 

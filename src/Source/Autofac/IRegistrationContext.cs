@@ -46,7 +46,7 @@ namespace Autofac
             Service key,
             out IComponentRegistration registration,
             out IDisposer disposer,
-            out IContext context);
+            out IComponentContext context);
         
         /// <summary>
         /// Gets a registration from the specific outer container by key.

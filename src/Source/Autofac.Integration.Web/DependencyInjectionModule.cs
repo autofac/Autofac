@@ -82,7 +82,7 @@ namespace Autofac.Integration.Web
                 var cp = _containerProviderAccessor.ContainerProvider;
                 if (cp == null)
                     throw new InvalidOperationException(ContainerDisposalModuleResources.ContainerProviderNull);
-                injectionBehaviour.InjectDependencies(cp.RequestContainer, handler);
+                injectionBehaviour.InjectDependencies(cp.RequestLifetime, handler);
             }
         }
 

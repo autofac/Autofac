@@ -34,7 +34,7 @@ namespace Autofac.Integration.Web
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="target">The target.</param>
-        public void InjectDependencies(IContext context, object target)
+        public void InjectDependencies(IComponentContext context, object target)
         {
         }
     }

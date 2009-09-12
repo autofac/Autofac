@@ -56,7 +56,7 @@ namespace Autofac.Registrars.Automatic
         protected override void DoConfigure(IContainer container)
         {
             Enforce.ArgumentNotNull(container, "container");
-            container.AddRegistrationSource(new AutomaticRegistrationHandler(
+            container.ComponentRegistry.AddRegistrationSource(new AutomaticRegistrationHandler(
                 _predicate,
                 new DeferredRegistrationParameters(
                     Ownership,

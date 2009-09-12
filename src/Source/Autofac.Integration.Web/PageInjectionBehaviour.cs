@@ -37,7 +37,7 @@ namespace Autofac.Integration.Web
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="target">The target.</param>
-        public void InjectDependencies(IContext context, object target)
+        public void InjectDependencies(IComponentContext context, object target)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
@@ -55,7 +55,7 @@ namespace Autofac.Integration.Web
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns>The injector.</returns>
-        protected abstract Func<object, object> GetInjector(IContext context);
+        protected abstract Func<object, object> GetInjector(IComponentContext context);
 
         /// <summary>
         /// Does the injection using a supplied injection function.

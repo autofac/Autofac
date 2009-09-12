@@ -25,59 +25,84 @@
 
 using System;
 using System.Collections.Generic;
+using Autofac.Activators;
+using Autofac.Lifetime;
 
 namespace Autofac
 {
     /// <summary>
-    /// A component registration is used by the container
-    /// to create and manage the services it holds.
+    /// Describes a logical component within the container.
     /// </summary>
     public interface IComponentRegistration : IDisposable
 	{
         /// <summary>
-        /// Describes the component registration and the
-        /// services it provides.
+        /// A unique identifier for this component (shared in all sub-contexts.)
+        /// This value also appears in Services.
         /// </summary>
-        IComponentDescriptor Descriptor { get; }
+        Guid Id { get; }
 
         /// <summary>
-        /// 	<i>Must</i> return a valid instance, or throw
-        /// an exception on failure.
+        /// The activator used to create instances.
         /// </summary>
-        /// <param name="context">The context that is to be used
-        /// to resolve the instance's dependencies.</param>
-        /// <param name="parameters">Parameters that can be used in the resolution process.</param>
-        /// <param name="disposer">The disposer.</param>
-        /// <param name="newInstance">if set to <c>true</c> a new instance was created.</param>
-        /// <returns>A newly-resolved instance.</returns>
-        object ResolveInstance(IContext context, IEnumerable<Parameter> parameters, IDisposer disposer, out bool newInstance);
+        IInstanceActivator Activator { get; }
 
-		/// <summary>
-		/// Create a duplicate of this instance if it is semantically valid to
-		/// copy it to a new context.
-		/// </summary>
-		/// <param name="duplicate">The duplicate.</param>
-		/// <returns>True if the duplicate was created.</returns>
-		bool DuplicateForNewContext(out IComponentRegistration duplicate);
+        /// <summary>
+        /// The lifetime associated with the component.
+        /// </summary>
+        IComponentLifetime Lifetime { get; }
+
+        /// <summary>
+        /// Whether the component instances are shared or not.
+        /// </summary>
+        InstanceSharing Sharing { get; }
+
+        /// <summary>
+        /// Whether the instances of the component should be disposed by the container.
+        /// </summary>
+        InstanceOwnership Ownership { get; }
+
+        /// <summary>
+        /// The services provided by the component.
+        /// </summary>
+        IEnumerable<Service> Services { get; }
+
+        /// <summary>
+        /// Additional data associated with the component.
+        /// </summary>
+        IDictionary<string, object> ExtendedProperties { get; }
 
         /// <summary>
         /// Fired when a new instance is required. The instance can be
         /// provided in order to skip the regular activator, by setting the Instance property in
         /// the provided event arguments.
         /// </summary>
-        event EventHandler<PreparingEventArgs> Preparing;
+        event EventHandler<PreparingEventArgs<object>> Preparing;
 
-		/// <summary>
-		/// Fired when a new instance is being activated. The instance can be
-		/// wrapped or switched at this time by setting the Instance property in
-		/// the provided event arguments.
-		/// </summary>
-		event EventHandler<ActivatingEventArgs> Activating;
+        /// <summary>
+        /// Called by the container when an instance is required.
+        /// </summary>
+        /// <param name="context">The context in which the instance will be activated.</param>
+        /// <param name="parameters">Parameters for activation.</param>
+        void RaisePreparing(IComponentContext context, IEnumerable<Parameter> parameters);
 
-		/// <summary>
-		/// Fired when the activation process for a new instance is complete.
-		/// </summary>
-		event EventHandler<ActivatedEventArgs> Activated;
+        /// <summary>
+        /// Fired when a new instance is being activated. The instance can be
+        /// wrapped or switched at this time by setting the Instance property in
+        /// the provided event arguments.
+        /// </summary>
+        event EventHandler<ActivatingEventArgs<object>> Activating;
+
+        /// <summary>
+        /// Called by the container once an instance has been constructed.
+        /// </summary>
+        /// <param name="context">The context in which the instance was activated.</param>
+        /// <param name="instance">The instance.</param>
+        void RaiseActivating(IComponentContext context, object instance);
+
+        /// <summary>
+        /// Fired when the activation process for a new instance is complete.
+        /// </summary>
+        event EventHandler<ActivatedEventArgs<object>> Activated;
 
         /// <summary>
         /// Called by the container once an instance has been fully constructed, including
@@ -85,6 +110,6 @@ namespace Autofac
         /// </summary>
         /// <param name="context">The context in which the instance was activated.</param>
         /// <param name="instance">The instance.</param>
-        void InstanceActivated(IContext context, object instance);
+        void RaiseActivated(IComponentContext context, object instance);
     }
 }

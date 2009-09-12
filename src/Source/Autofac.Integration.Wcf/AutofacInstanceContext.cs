@@ -33,7 +33,7 @@ namespace Autofac.Integration.Wcf
     /// </summary>
     class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable
     {
-        IContainer _container;
+        ILifetimeScope _lifetime;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacInstanceContext"/> class.
@@ -44,7 +44,7 @@ namespace Autofac.Integration.Wcf
             if (container == null)
                 throw new ArgumentNullException("container");
 
-            _container = container.CreateInnerContainer();
+            _lifetime = container.BeginLifetimeScope();
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Autofac.Integration.Wcf
             if (service == null)
                 throw new ArgumentNullException("service");
 
-            return _container.Resolve(service);
+            return _lifetime.Resolve(service);
         }
 
         #region IExtension<InstanceContext> Members
@@ -92,7 +92,7 @@ namespace Autofac.Integration.Wcf
         /// </summary>
         public void Dispose()
         {
-            _container.Dispose();
+            _lifetime.Dispose();
         }
 
         #endregion
