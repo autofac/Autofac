@@ -33,6 +33,7 @@ using Autofac.Lifetime;
 using System.ComponentModel;
 using Autofac.OpenGenerics;
 using System.Globalization;
+using Autofac.GeneratedFactories;
 
 namespace Autofac.Builder
 {
@@ -55,12 +56,23 @@ namespace Autofac.Builder
         /// <summary>
         /// Add a component to the container.
         /// </summary>
-        /// <param name="builder">The builder to register the module with.</param>
+        /// <param name="builder">The builder to register the component with.</param>
         /// <param name="registration">The component to add.</param>
         public static void RegisterComponent(this ContainerBuilder builder, IComponentRegistration registration)
         {
             Enforce.ArgumentNotNull(registration, "registration");
             builder.RegisterCallback(cr => cr.Register(registration));
+        }
+
+        /// <summary>
+        /// Add a registration source to the container.
+        /// </summary>
+        /// <param name="builder">The builder to register the registration source via.</param>
+        /// <param name="registrationSource">The registration source to add.</param>
+        public static void RegisterSource(this ContainerBuilder builder, IRegistrationSource registrationSource)
+        {
+            Enforce.ArgumentNotNull(registrationSource, "registrationSource");
+            builder.RegisterCallback(cr => cr.AddRegistrationSource(registrationSource));
         }
 
         /// <summary>

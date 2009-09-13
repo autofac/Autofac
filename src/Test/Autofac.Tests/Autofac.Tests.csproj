@@ -92,7 +92,7 @@
     <Compile Include="ComponentRegistryTests.cs" />
     <Compile Include="ContainerExtensionsTests.cs" />
     <Compile Include="Fixture.cs" />
-    <Compile Include="GeneratedFactories\ContainerBuilderExtensionsFixture.cs" />
+    <Compile Include="GeneratedFactories\GeneratedFactoriesTests.cs" />
     <Compile Include="Modules\ImplicitCollectionSupportModuleFixture.cs" />
     <Compile Include="NamedParameterTests.cs" />
     <Compile Include="Registrars\ConcreteRegistrarFixture.cs" />
