@@ -79,7 +79,6 @@ namespace Autofac.Lifetime
             lock (_synchRoot)
             {
                 var result = new LifetimeScope(_componentRegistry, this);
-                // TODO
                 result.Resolve<IndirectReference<ILifetimeScope>>().Value = result;
                 return result;
             }

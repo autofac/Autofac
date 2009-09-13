@@ -33,7 +33,6 @@ using Autofac.Activators;
 
 namespace Autofac.Modules
 {
-    // TODO - refactor to common base with RegistrationSource<>
     class CollectionRegistrationSource : IRegistrationSource
     {
         public bool TryGetRegistration(Service service, Func<Service, bool> registeredServicesTest, out IComponentRegistration registration)

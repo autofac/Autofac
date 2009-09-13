@@ -39,7 +39,7 @@ namespace Autofac.Activators
         readonly Type _implementationType;
         readonly IConstructorSelector _constructorSelector;
         readonly IConstructorFinder _constructorFinder;
-        readonly IEnumerable<Parameter> _configuredParameters; // TODO - consider moving these up to the Registration
+        readonly IEnumerable<Parameter> _configuredParameters;
 
         /// <summary>
         /// Create an activator for the provided type.
@@ -95,7 +95,7 @@ namespace Autofac.Activators
             var availableConstructors = _constructorFinder.FindConstructors(_implementationType);
 
             if (!availableConstructors.Any())
-                throw new DependencyResolutionException("TODO- No constructors are available.");
+                throw new DependencyResolutionException(ReflectionActivatorResources.NoConstructorsAvailable);
 
             var constructorBindings = GetConstructorBindings(
                 context,
@@ -105,7 +105,7 @@ namespace Autofac.Activators
             var validBindings = constructorBindings.Where(cb => cb.CanInstantiate);
 
             if (!validBindings.Any())
-                throw new DependencyResolutionException("TODO- get reasons from bindings.");
+                throw new DependencyResolutionException(ReflectionActivatorResources.NoConstructorsBindable);
 
             var selectedBinding = _constructorSelector.SelectConstructorBinding(validBindings);
 
@@ -121,7 +121,6 @@ namespace Autofac.Activators
             Enforce.ArgumentNotNull(parameters, "parameters");
             Enforce.ArgumentNotNull(constructorInfo, "constructorInfo");
 
-            // TODO: also concat with configured parameters...
             var prioritisedParameters =
                 parameters.Concat(
                     _configuredParameters.Concat(

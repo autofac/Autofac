@@ -158,7 +158,6 @@ namespace Autofac.Registration
         /// <returns>A description of the component.</returns>
         public override string ToString()
         {
-            // TODO
             return Activator.LimitType.ToString();
         }
     }

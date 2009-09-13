@@ -54,7 +54,6 @@ namespace Autofac
         /// Register a component.
         /// </summary>
         /// <param name="registration">The component registration.</param>
-        /// TODO: consider rename to Add
         void Register(IComponentRegistration registration);
 
         /// <summary>

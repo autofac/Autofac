@@ -51,8 +51,6 @@ namespace Autofac.Resolving
 
         public IComponentRegistration Registration { get { return _registration; } }
 
-        // TODO - refactor this code into IComponentRegistration so that the events
-        // don't need to be invoked this way.
         public object Execute(IEnumerable<Parameter> parameters)
         {
             Enforce.ArgumentNotNull(parameters, "parameters");
@@ -65,8 +63,6 @@ namespace Autofac.Resolving
             if (IsSharedInstanceAvailable(out sharedInstance))
                 return sharedInstance;
 
-            // TODO - use the instance that is returned to short-circuit activation (and
-            // do not subsequently fire Activating/Activated.)
             _registration.RaisePreparing(this, parameters);
 
             _newInstance = _registration.Activator.ActivateInstance(this, parameters);

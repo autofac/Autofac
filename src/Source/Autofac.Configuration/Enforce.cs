@@ -31,8 +31,6 @@ using System.Linq;
 
 namespace Autofac.Configuration
 {
-    // TODO - this is a duplicate
-
 	/// <summary>
 	/// Helper methods used throughout the codebase.
 	/// </summary>

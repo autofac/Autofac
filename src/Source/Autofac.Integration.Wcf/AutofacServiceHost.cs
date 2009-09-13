@@ -65,7 +65,6 @@ namespace Autofac.Integration.Wcf
 		protected override void OnOpening()
 		{
             Description.Behaviors.Add(new AutofacDependencyInjectionServiceBehavior(_container, _implementationType));
-            // TODO: Support for injecting IServiceBehavior & IEndpointBehavior services registered with the container
 			base.OnOpening();
 		}
 	}

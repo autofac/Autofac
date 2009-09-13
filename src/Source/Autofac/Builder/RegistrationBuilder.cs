@@ -40,7 +40,7 @@ namespace Autofac.Builder
     /// can be cast.</typeparam>
     /// <typeparam name="TActivatorData">Activator builder type.</typeparam>
     /// <typeparam name="TRegistrationStyle">Registration style type.</typeparam>
-    public class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> // TODO : IFluentInterface
+    public class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>
     {
         readonly TActivatorData _activatorData;
         readonly TRegistrationStyle _registrationStyle;
@@ -53,9 +53,6 @@ namespace Autofac.Builder
         /// <param name="style">Registration style.</param>
         public RegistrationBuilder(TActivatorData activatorData, TRegistrationStyle style)
         {
-            // TODO - really should have class constraints on these parameter types,
-            // the tradeoff in syntactic ugliness when creating builder extensions is not
-            // great though.
             Enforce.ArgumentNotNull((object)activatorData, "activatorData");
             Enforce.ArgumentNotNull((object)style, "style");
             _activatorData = activatorData;

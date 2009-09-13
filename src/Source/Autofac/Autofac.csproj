@@ -63,7 +63,17 @@
     </Compile>
     <Compile Include="Activators\MostParametersConstructorSelector.cs" />
     <Compile Include="Activators\ProvidedInstanceActivator.cs" />
+    <Compile Include="Activators\ProvidedInstanceActivatorResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ProvidedInstanceActivatorResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Activators\ReflectionActivator.cs" />
+    <Compile Include="Activators\ReflectionActivatorResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReflectionActivatorResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Builder\CollectionRegistrationExtensions.cs" />
     <Compile Include="Builder\ContainerBuilder.cs">
       <SubType>Code</SubType>
@@ -88,7 +98,6 @@
     <Compile Include="Builder\SimpleActivatorData.cs" />
     <Compile Include="Builder\SingleRegistrationStyle.cs" />
     <Compile Include="ComponentRegistry.cs" />
-    <Compile Include="GeneratedFactories\FactoryGenerator.cs" />
     <Compile Include="ActivatedEventArgs.cs" />
     <Compile Include="ActivatingEventArgs.cs" />
     <Compile Include="ComponentRegisteredEventArgs.cs" />
@@ -169,6 +178,14 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MatchingSignatureConstructorSelectorResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Activators\ProvidedInstanceActivatorResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ProvidedInstanceActivatorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Activators\ReflectionActivatorResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ReflectionActivatorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Builder\RegistrationExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RegistrationExtensionsResources.Designer.cs</LastGenOutput>
@@ -196,6 +213,9 @@
     <None Include="..\..\SharedKey.snk">
       <Link>SharedKey.snk</Link>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="GeneratedFactories\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Silverlight 2.0'" />

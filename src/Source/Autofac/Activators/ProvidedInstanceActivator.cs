@@ -61,8 +61,8 @@ namespace Autofac.Activators
             Enforce.ArgumentNotNull(context, "context");
             Enforce.ArgumentNotNull(parameters, "parameters");
 
-            if (_activated) // TODO
-                throw new InvalidOperationException("Already activated the only provided instance");
+            if (_activated)
+                throw new InvalidOperationException(ProvidedInstanceActivatorResources.InstanceAlreadyActivated);
 
             _activated = true;
 

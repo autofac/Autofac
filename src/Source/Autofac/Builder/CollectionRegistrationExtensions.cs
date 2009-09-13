@@ -11,7 +11,7 @@ namespace Autofac.Builder
     /// </summary>
     public static class CollectionRegistrationExtensions
     {
-        // TODO - this whole approach is broken because
+        // This whole approach is broken because
         // using a service to mark items causes them to be registed under that
         // service only (their own type is ignored as a default.)
         // Including this just to get core solution building
@@ -52,8 +52,6 @@ namespace Autofac.Builder
             RegisterCollection<T>(this ContainerBuilder builder)
         {
             Enforce.ArgumentNotNull(builder, "builder");
-
-            // TODO - this pattern is shared with ImplicitCollectionSupportModule
 
             IEnumerable<IComponentRegistration> elements = null;
             IEnumerable<Service> memberServices = null;

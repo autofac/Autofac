@@ -123,7 +123,7 @@ namespace Autofac.Configuration
                     new BindingFlagsConstructorFinder(BindingFlags.Public),
                     new MostParametersConstructorSelector(),
                     moduleElement.Parameters.ToParameters());
-                    // TODO moduleElement.ExplicitProperties.ToParameters());
+                    // moduleElement.ExplicitProperties.ToParameters());
 				var module = (IModule)moduleActivator.ActivateInstance(Container.Empty, Enumerable.Empty<Parameter>());
                 builder.RegisterModule(module);
 			}
@@ -145,14 +145,12 @@ namespace Autofac.Configuration
                 foreach (var param in component.Parameters.ToParameters())
                     registrar.WithParameter(param);
 
-                // TODO
 //                registrar.WithProperties(component.ExplicitProperties.ToParameters());
 
                 foreach (var ep in component.ExtendedProperties)
                     registrar.WithExtendedProperty(
                         ep.Name, TypeManipulation.ChangeToCompatibleType(ep.Value, Type.GetType(ep.Type)));
 
-                // TODO (or drop)
                 //if (!string.IsNullOrEmpty(component.MemberOf))
                 //     registrar.MemberOf(component.MemberOf);
 
@@ -227,8 +225,6 @@ namespace Autofac.Configuration
                 }
             }
         }
-
-        // TODO -- review the allowed parameter values and line up with new names
 
         /// <summary>
         /// Sets the scope model for the component.

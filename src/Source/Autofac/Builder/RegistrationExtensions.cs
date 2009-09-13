@@ -36,9 +36,6 @@ using System.Globalization;
 
 namespace Autofac.Builder
 {
-    // TODO - split
-    // TODO - support DefaultOnly and OnlyIf or conditional registration syntax
-
     /// <summary>
     /// Adds registration syntax to the ContainerBuilder type.
     /// </summary>
@@ -185,7 +182,6 @@ namespace Autofac.Builder
         /// <summary>
         /// Register a component directly into a component registry.
         /// </summary>
-        /// <remarks>TODO Needs to be moved.</remarks>
         /// <typeparam name="TLimit"></typeparam>
         /// <typeparam name="TActivatorData"></typeparam>
         /// <typeparam name="TSingleRegistrationStyle"></typeparam>
@@ -215,14 +211,12 @@ namespace Autofac.Builder
                 rh(cr, registeredEventArgs);
         }
 
-        // TODO - put this somewhere sensible
         internal static IComponentRegistration CreateRegistration(
             Guid id,
             RegistrationData data,
             IInstanceActivator activator,
             IEnumerable<Service> services)
         {
-            // TODO, this belongs in RegistrationBuilder so that it can catch issues earlier.
             var limitType = activator.LimitType;
             if (limitType != typeof(object))
                 foreach (var ts in services.OfType<TypedService>())

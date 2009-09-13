@@ -293,7 +293,7 @@ namespace Autofac.Integration.Mef
         {
             builder.RegisterCollection<Export>()
                 .As(contractService);
-// TODO                .DefaultOnly();
+                // .DefaultOnly();
         }
 
         private static void SetNonPrerequisiteImports(IComponentContext context, ComposablePart composablePart)
