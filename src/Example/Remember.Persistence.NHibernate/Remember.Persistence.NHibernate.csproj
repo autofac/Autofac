@@ -60,6 +60,10 @@
     <Compile Include="TransactionTracker.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Source\Autofac.Integration.Web\Autofac.Integration.Web.csproj">
+      <Project>{4BDD9D14-BACA-416C-919E-E9FF100F8F5D}</Project>
+      <Name>Autofac.Integration.Web</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Source\Autofac\Autofac.csproj">
       <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
       <Name>Autofac</Name>

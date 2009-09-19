@@ -36,8 +36,9 @@ using Autofac.Features.OpenGenerics;
 using Autofac.Core.Registration;
 using Autofac.Util;
 using Autofac.Features.GeneratedFactories;
+using Autofac.Builder;
 
-namespace Autofac.Builder
+namespace Autofac
 {
     /// <summary>
     /// Adds registration syntax to the ContainerBuilder type.
@@ -535,7 +536,7 @@ namespace Autofac.Builder
                 RegistrationExtensions.RegisterSingleComponent(cr, rb, activator);
             });
 
-            return rb.InstancePerLifetimeScope();
+            return rb.ShareInstanceInLifetimeScope();
         }
     }
 }

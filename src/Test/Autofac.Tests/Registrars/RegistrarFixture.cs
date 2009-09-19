@@ -60,7 +60,7 @@ namespace Autofac.Tests.Registrars
             var contextName = "ctx";
 
             var cb = new ContainerBuilder();
-            cb.RegisterType<object>().InstancePer(contextName);
+            cb.RegisterType<object>().ShareInstanceIn(contextName);
             var container = cb.Build();
 
             var ctx1 = container.BeginLifetimeScope();
@@ -79,7 +79,7 @@ namespace Autofac.Tests.Registrars
             var contextName = "ctx";
 
             var cb = new ContainerBuilder();
-            cb.RegisterType<object>().InstancePer(contextName);
+            cb.RegisterType<object>().ShareInstanceIn(contextName);
             var container = cb.Build();
 
             var ctx1 = container.BeginLifetimeScope();

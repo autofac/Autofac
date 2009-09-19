@@ -86,7 +86,7 @@ namespace Autofac.Tests
         public void MultipleServicesResultInMultipleRegistrationsBug()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<object>().Named("a").Named("b").InstancePerLifetimeScope();
+            builder.RegisterType<object>().Named("a").Named("b").ShareInstanceInLifetimeScope();
             var container = builder.Build();
             var inner = container.BeginLifetimeScope();
             inner.Resolve("a");

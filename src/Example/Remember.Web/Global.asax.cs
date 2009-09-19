@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Routing;
-using Autofac.Builder;
 using Autofac.Integration.Web;
 using Autofac.Integration.Web.Mvc;
 using Remember.Model;
@@ -47,11 +46,6 @@ namespace Remember.Web
         public IContainerProvider ContainerProvider
         {
             get { return _containerProvider; }
-        }
-
-        protected void Application_EndRequest(object sender, EventArgs e)
-        {
-            ContainerProvider.EndRequestLifetime();
         }
     }
 }

@@ -245,10 +245,10 @@ namespace Autofac.Configuration
                         registrar.SingleSharedInstance();
                         break;
                     case "container":
-                        registrar.InstancePerLifetimeScope();
+                        registrar.ShareInstanceInLifetimeScope();
                         break;
                     case "factory":
-                        registrar.NonSharedInstances();
+                        registrar.NoInstanceSharing();
                         break;
                     default:
                         throw new ConfigurationErrorsException(string.Format(CultureInfo.CurrentCulture,

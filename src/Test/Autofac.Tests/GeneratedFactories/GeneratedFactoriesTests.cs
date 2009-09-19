@@ -148,7 +148,7 @@ namespace Autofac.Tests
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<StringHolder>()
-                .InstancePerLifetimeScope();
+                .ShareInstanceInLifetimeScope();
             builder.RegisterGeneratedFactory<StringHolder.Factory>(new TypedService(typeof(StringHolder)));
 
             var container = builder.Build();

@@ -491,7 +491,7 @@ namespace Autofac.Tests
         public void ResolveScopedFromContext()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<A>().InstancePerLifetimeScope();
+            builder.RegisterType<A>().ShareInstanceInLifetimeScope();
 
             var target = builder.Build();
 

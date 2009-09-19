@@ -34,6 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -43,6 +44,7 @@
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">
@@ -96,6 +98,7 @@
     <Compile Include="RegistrationExtensions.cs" />
     <Compile Include="UnsetPropertyInjection.cs" />
     <Compile Include="UnsetPropertyInjectionModule.cs" />
+    <Compile Include="WebLifetime.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Autofac\Autofac.csproj">

@@ -1,6 +1,5 @@
-﻿// This software is part of the Autofac IoC container
+﻿// Contributed by Nicholas Blumhardt 2008-01-28
 // Copyright (c) 2007 - 2008 Autofac Contributors
-// http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
@@ -24,16 +23,25 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Autofac.Core.Activators.Delegate;
-using Autofac.Features.GeneratedFactories;
-using Autofac.Util;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Autofac.Builder
+namespace Autofac.Integration.Web
 {
     /// <summary>
-    /// ContainerBuilder extensions for registering generated factories.
+    /// Constants used to tag liftime scopes within standard Autofac web applications.
     /// </summary>
-    public static class GeneratedFactoryRegistrationExtensions
+    public static class WebLifetime
     {
+        /// <summary>
+        /// Application lifetime
+        /// </summary>
+        public const string Application = "application";
+
+        /// <summary>
+        /// HTTP Request lifetime
+        /// </summary>
+        public const string Request = "request";
     }
 }

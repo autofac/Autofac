@@ -8,6 +8,7 @@ using System.Data;
 using NHibernate.Cfg;
 using Remember.Model;
 using Autofac;
+using Autofac.Integration.Web;
 
 namespace Remember.Persistence.NHibernate
 {
@@ -18,14 +19,15 @@ namespace Remember.Persistence.NHibernate
             if (builder == null)
                 throw new ArgumentNullException("builder");
 
-            builder.RegisterGeneric(typeof(NHibernateRepository<>)).As(typeof(IRepository<>))
-                .InstancePerLifetimeScope();
+            builder.RegisterGeneric(typeof(NHibernateRepository<>))
+                .As(typeof(IRepository<>))
+                .ShareInstanceIn(WebLifetime.Request);
 
             builder.RegisterDelegate(c => new TransactionTracker())
-                .InstancePerLifetimeScope();
+                .ShareInstanceIn(WebLifetime.Request);
 
             builder.RegisterDelegate(c => c.Resolve<ISessionFactory>().OpenSession())
-                .InstancePerLifetimeScope()
+                .ShareInstanceIn(WebLifetime.Request)
                 .OnActivated(e =>
                 {
                     e.Context.Resolve<TransactionTracker>().CurrentTransaction = ((ISession)e.Instance).BeginTransaction();

@@ -286,7 +286,7 @@ namespace Autofac.Integration.Mef
                 })
                 .MemberOf(contractService)
                 .ExternallyOwned()
-                .InstancePerLifetimeScope();
+                .ShareInstanceInLifetimeScope();
 
             builder.Build(registry);
         }

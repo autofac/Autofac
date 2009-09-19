@@ -27,7 +27,7 @@ namespace Autofac.Integration.Web
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
-            return registration.InstancePer(ContainerProvider.RequestLifetimeTag);
+            return registration.ShareInstanceIn(WebLifetime.Request);
         }
 
         /// <summary>

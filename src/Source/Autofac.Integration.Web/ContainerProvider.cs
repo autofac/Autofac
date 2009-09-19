@@ -34,9 +34,6 @@ namespace Autofac.Integration.Web
     {
         IContainer _applicationContainer;
 
-        public const string ApplicationLifetimeTag = "application";
-        public const string RequestLifetimeTag = "request";
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ContainerProvider"/> class.
         /// </summary>
@@ -46,7 +43,7 @@ namespace Autofac.Integration.Web
             if (applicationContainer == null)
                 throw new ArgumentNullException("applicationContainer");
 
-            applicationContainer.Tag = 
+            applicationContainer.Tag = WebLifetime.Application;
             _applicationContainer = applicationContainer;
         }
 
@@ -86,7 +83,7 @@ namespace Autofac.Integration.Web
                 if (result == null)
                 {
                     result = NullableRequestLifetime = ApplicationContainer.BeginLifetimeScope();
-                    result.Tag = RequestLifetimeTag;
+                    result.Tag = WebLifetime.Request;
                 }
 
                 return result;

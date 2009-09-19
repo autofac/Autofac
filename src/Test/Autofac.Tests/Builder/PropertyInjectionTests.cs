@@ -272,7 +272,7 @@ namespace Autofac.Tests.Builder
             var pval = 12;
             var builder = new ContainerBuilder();
             builder.RegisterType<Invokee>()
-                .InstancePerLifetimeScope()
+                .ShareInstanceInLifetimeScope()
                 .OnActivated(e => e.Instance.Method(pval));
             var container = builder.Build();
             var inner = container.BeginLifetimeScope();
