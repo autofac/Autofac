@@ -24,12 +24,12 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Globalization;
-using System.Reflection;
 using System.Collections;
+using System.Globalization;
 using System.Linq;
+using System.Reflection;
 
-namespace Autofac
+namespace Autofac.Util
 {
 	/// <summary>
 	/// Helper methods used throughout the codebase.

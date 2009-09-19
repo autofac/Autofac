@@ -24,12 +24,11 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.ComponentModel;
-using Autofac.Lifetime;
+using System.Linq;
 using Autofac.Injection;
+using Autofac.Lifetime;
+using Autofac.Util;
 
 namespace Autofac.Builder
 {

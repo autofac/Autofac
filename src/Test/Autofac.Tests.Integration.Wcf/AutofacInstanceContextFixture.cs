@@ -1,6 +1,7 @@
 ﻿using Autofac.Builder;
 using Autofac.Integration.Wcf;
 using NUnit.Framework;
+using Autofac.Util;
 
 namespace Autofac.Tests.Integration.Wcf
 {

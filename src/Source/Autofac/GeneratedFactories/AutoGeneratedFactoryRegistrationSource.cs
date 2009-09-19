@@ -25,12 +25,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autofac.Lifetime;
-using Autofac.Core.Activators;
-using Autofac.Registration;
 using Autofac.Core.Activators.Delegate;
+using Autofac.Lifetime;
+using Autofac.Registration;
+using Autofac.Util;
 
 namespace Autofac.GeneratedFactories
 {

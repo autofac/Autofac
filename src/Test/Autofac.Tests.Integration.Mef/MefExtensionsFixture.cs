@@ -7,6 +7,7 @@ using System.ComponentModel.Composition;
 using Autofac.Builder;
 using Autofac.Integration.Mef;
 using System.ComponentModel.Composition.Hosting;
+using Autofac.Util;
 
 namespace Autofac.Tests.Integration.Mef
 {

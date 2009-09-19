@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autofac.Core.Activators;
+﻿using System.Collections.Generic;
 using Autofac.Core;
 
 namespace Autofac.Builder

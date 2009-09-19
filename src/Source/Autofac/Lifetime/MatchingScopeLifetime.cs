@@ -24,8 +24,9 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Linq.Expressions;
 using System.Globalization;
+using System.Linq.Expressions;
+using Autofac.Util;
 
 namespace Autofac.Lifetime
 {

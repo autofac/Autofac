@@ -24,12 +24,9 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autofac.Core.Activators;
-using Autofac.GeneratedFactories;
 using Autofac.Core.Activators.Delegate;
+using Autofac.GeneratedFactories;
+using Autofac.Util;
 
 namespace Autofac.Builder
 {

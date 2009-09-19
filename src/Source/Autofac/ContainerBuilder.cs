@@ -25,7 +25,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
+using Autofac.Util;
 
 namespace Autofac
 {

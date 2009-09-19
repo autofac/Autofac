@@ -69,7 +69,6 @@
     <Compile Include="Core\IInstanceActivator.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="Builder\ReflectionActivatorData.cs" />
-    <Compile Include="Builder\ReflectiveRegistrationExtensions.cs" />
     <Compile Include="Builder\RegistrationBuilder.cs" />
     <Compile Include="Builder\RegistrationData.cs" />
     <Compile Include="RegistrationExtensions.cs" />
@@ -117,12 +116,6 @@
       <DependentUpon>DependencyResolutionExceptionResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Disposer.cs" />
-    <Compile Include="Enforce.cs" />
-    <Compile Include="EnforceResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EnforceResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="IContainer.cs" />
     <Compile Include="IDisposer.cs" />
     <Compile Include="InstanceOwnership.cs" />
@@ -131,7 +124,6 @@
     <Compile Include="IRegistrationSource.cs" />
     <Compile Include="NamedService.cs" />
     <Compile Include="Container.cs" />
-    <Compile Include="Disposable.cs" />
     <Compile Include="IComponentRegistration.cs" />
     <Compile Include="DependencyResolutionException.cs" />
     <Compile Include="IComponentContext.cs" />
@@ -147,8 +139,6 @@
     <Compile Include="Resolving\ResolveOperationResources.Designer.cs" />
     <Compile Include="SelfRegistration\IndirectReference.cs" />
     <Compile Include="SequenceExtensions.cs" />
-    <Compile Include="Silverlight\AllowPartiallyTrustedCallerAttribute.cs" />
-    <Compile Include="Silverlight\SerializableAttribute.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="ComponentNotRegisteredException.cs" />
     <Compile Include="ComponentNotRegisteredExceptionResources.Designer.cs">
@@ -159,6 +149,11 @@
     <Compile Include="TypedParameter.cs" />
     <Compile Include="TypedService.cs" />
     <Compile Include="UniqueService.cs" />
+    <Compile Include="Util\Disposable.cs" />
+    <Compile Include="Util\Enforce.cs" />
+    <Compile Include="Util\EnforceResources.Designer.cs" />
+    <Compile Include="Util\Silverlight\AllowPartiallyTrustedCallerAttribute.cs" />
+    <Compile Include="Util\Silverlight\SerializableAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorResources.resx" />
@@ -174,11 +169,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DependencyResolutionExceptionResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="EnforceResources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>EnforceResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="ComponentNotRegisteredExceptionResources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -186,6 +176,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resolving\CircularDependencyDetectorResources.resx" />
     <EmbeddedResource Include="Resolving\ResolveOperationResources.resx" />
+    <EmbeddedResource Include="Util\EnforceResources.resx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\SharedKey.snk">
@@ -194,7 +185,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Features\" />
-    <Folder Include="Util\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Silverlight 2.0'" />

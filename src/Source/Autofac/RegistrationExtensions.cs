@@ -25,20 +25,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autofac.Core.Activators;
-using Autofac.Registration;
-using Autofac.Lifetime;
-using System.ComponentModel;
-using Autofac.OpenGenerics;
 using System.Globalization;
-using Autofac.GeneratedFactories;
-using Autofac.Core.Activators.Reflection;
-using Autofac.Core;
+using System.Linq;
 using System.Reflection;
+using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Activators.ProvidedInstance;
+using Autofac.Core.Activators.Reflection;
+using Autofac.OpenGenerics;
+using Autofac.Registration;
+using Autofac.Util;
 
 namespace Autofac.Builder
 {

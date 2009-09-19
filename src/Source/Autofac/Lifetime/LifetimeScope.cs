@@ -25,8 +25,9 @@
 
 using System;
 using System.Collections.Generic;
-using Autofac.SelfRegistration;
 using Autofac.Resolving;
+using Autofac.SelfRegistration;
+using Autofac.Util;
 
 namespace Autofac.Lifetime
 {

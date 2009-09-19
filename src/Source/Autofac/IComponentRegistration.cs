@@ -25,9 +25,8 @@
 
 using System;
 using System.Collections.Generic;
-using Autofac.Core.Activators;
-using Autofac.Lifetime;
 using Autofac.Core;
+using Autofac.Lifetime;
 
 namespace Autofac
 {
