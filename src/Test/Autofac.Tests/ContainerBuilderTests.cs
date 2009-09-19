@@ -4,10 +4,10 @@ using Autofac.Builder;
 using NUnit.Framework;
 using Autofac.Core;
 
-namespace Autofac.Tests.Builder
+namespace Autofac.Tests
 {
     [TestFixture]
-    public class ContainerBuilderFixture
+    public class ContainerBuilderTests
     {
         interface IA { }
         interface IB { }
@@ -232,5 +232,167 @@ namespace Autofac.Tests.Builder
 
             container.AssertRegistered<object>();
         }
+
+        [Test]
+        [Ignore("Not currently checked until Build() is called")]
+        [ExpectedException(typeof(ArgumentException))]
+        public void RegisterTypeAsUnsupportedService()
+        {
+            new ContainerBuilder().RegisterType<string>().As<IA>();
+        }
+
+        [Test]
+        [Ignore("Not currently checked until Build() is called")]
+        [ExpectedException(typeof(ArgumentException))]
+        public void RegisterTypeAsSupportedAndUnsupportedService()
+        {
+            new ContainerBuilder().RegisterType<string>().As<IA, IB>();
+        }
+
+        [Test]
+        [Ignore("Not currently checked until Build() is called")]
+        [ExpectedException(typeof(ArgumentException))]
+        public void RegisterInstanceAsUnsupportedService()
+        {
+            new ContainerBuilder().RegisterInstance("hello").As<IA>();
+        }
+
+        [Test]
+        [Ignore("Not currently checked until Build() is called")]
+        [ExpectedException(typeof(ArgumentException))]
+        public void RegisterDelegateAsUnsupportedService()
+        {
+            new ContainerBuilder().RegisterDelegate(c => "hello").As<IA>();
+        }
+
+        [Test]
+        public void RegisterThreeServices()
+        {
+            var target = new ContainerBuilder();
+            target.RegisterType<Abc>()
+                .As<IA, IB, IC>()
+                .SingleSharedInstance();
+            var container = target.Build();
+            var a = container.Resolve<IA>();
+            var b = container.Resolve<IB>();
+            var c = container.Resolve<IC>();
+            Assert.IsNotNull(a);
+            Assert.AreSame(a, b);
+            Assert.AreSame(b, c);
+        }
+
+        //[Test]
+        //public void OnlyIfNotRegisteredFiltersServices()
+        //{
+        //    var builder = new ContainerBuilder();
+        //    builder.Register("s1");
+        //    builder.Register("s2").Named("name").DefaultOnly();
+        //    var container = builder.Build();
+        //    Assert.AreEqual("s1", container.Resolve<string>()); // Not overridden
+        //    Assert.AreEqual("s2", container.Resolve("name"));
+        //}
+
+        //[Test]
+        //public void RegistrationMadeWhenPredicateTrue()
+        //{
+        //    var cb = new ContainerBuilder();
+        //    cb.Register<object>().OnlyIf(c => true);
+        //    var container = cb.Build();
+        //    Assert.IsTrue(container.IsRegistered<object>());
+        //}
+
+        //[Test]
+        //public void RegistrationNotMadeWhenPredicateFalse()
+        //{
+        //    var cb = new ContainerBuilder();
+        //    cb.Register<object>().OnlyIf(c => false);
+        //    var container = cb.Build();
+        //    Assert.IsFalse(container.IsRegistered<object>());
+        //}
+
+        //[Test]
+        //public void ContainerPassedToPredicate()
+        //{
+        //    var cb = new ContainerBuilder();
+        //    IContainer passed = null;
+        //    cb.Register<object>().OnlyIf(c => { passed = c; return true; });
+        //    var container = cb.Build();
+        //    Assert.IsNotNull(passed);
+        //    Assert.AreSame(passed, container);
+        //}
+
+        //[Test]
+        //public void OneFalsePredicatePreventsRegistration()
+        //{
+        //    var cb = new ContainerBuilder();
+        //    cb.Register<object>().OnlyIf(c => true).OnlyIf(c => false).OnlyIf(c => true);
+        //    var container = cb.Build();
+        //    Assert.IsFalse(container.IsRegistered<object>());
+        //}
+
+        //[Test]
+        //public void AllTruePredicatesAllowsRegistration()
+        //{
+        //    var cb = new ContainerBuilder();
+        //    cb.Register<object>().OnlyIf(c => true).OnlyIf(c => true).OnlyIf(c => true);
+        //    var container = cb.Build();
+        //    Assert.IsTrue(container.IsRegistered<object>());
+        //}
+
+        [Test]
+        public void InContextSpecifiesContainerScope()
+        {
+            var contextName = "ctx";
+
+            var cb = new ContainerBuilder();
+            cb.RegisterType<object>().ShareInstanceIn(contextName);
+            var container = cb.Build();
+
+            var ctx1 = container.BeginLifetimeScope();
+            ctx1.Tag = contextName;
+
+            var ctx2 = container.BeginLifetimeScope();
+            ctx2.Tag = contextName;
+
+            AssertIsContainerScoped<object>(ctx1, ctx2);
+        }
+
+        [Test]
+        [Ignore("Builder syntax doesn't yet allow lifetime to be specified independently of sharing.")]
+        public void InContextDoesntOverrideFactoryScope()
+        {
+            var contextName = "ctx";
+
+            var cb = new ContainerBuilder();
+            cb.RegisterType<object>().ShareInstanceIn(contextName);
+            var container = cb.Build();
+
+            var ctx1 = container.BeginLifetimeScope();
+            ctx1.Tag = contextName;
+
+            var ctx2 = container.BeginLifetimeScope();
+            ctx1.Tag = contextName;
+
+            AssertIsFactoryScoped<object>(ctx1, ctx2);
+        }
+
+        void AssertIsContainerScoped<TSvc>(IComponentContext ctx1, IComponentContext ctx2)
+        {
+            Assert.AreSame(ctx1.Resolve<TSvc>(), ctx1.Resolve<TSvc>());
+            Assert.AreNotSame(ctx1.Resolve<TSvc>(), ctx2.Resolve<TSvc>());
+        }
+
+        void AssertIsFactoryScoped<TSvc>(IComponentContext ctx1, IComponentContext ctx2)
+        {
+            Assert.AreNotSame(ctx1.Resolve<TSvc>(), ctx1.Resolve<TSvc>());
+            Assert.AreNotSame(ctx1.Resolve<TSvc>(), ctx2.Resolve<TSvc>());
+        }
+
+        void AssertIsSingletonScoped<TSvc>(IComponentContext ctx1, IComponentContext ctx2)
+        {
+            Assert.AreSame(ctx1.Resolve<TSvc>(), ctx1.Resolve<TSvc>());
+            Assert.AreSame(ctx1.Resolve<TSvc>(), ctx2.Resolve<TSvc>());
+        }
+
     }
 }

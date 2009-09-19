@@ -1,14 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using Autofac.Builder;
 using NUnit.Framework;
 using Autofac.Core;
+using System.Collections.Generic;
 
 namespace Autofac.Tests.Tags
 {
     [TestFixture]
-    public class ContainerBuilderExtensionsFixture
+    public class TagsFixture
     {
+        class HomeController
+        {
+            public HomeController()
+            {
+            }
+        }
+
+        //[Test]
+        //public void ResolveSingletonInContextGivesMeaningfulError()
+        //{
+        //    var builder = new ContainerBuilder();
+
+        //    builder.RegisterDelegate(c => new HomeController()).Singleton.InContext("request");
+
+        //    var containerApplication = builder.Build();
+        //    containerApplication.TagWith("application");
+
+        //    var containerRequest = containerApplication.BeginLifetimeScope();
+        //    containerRequest.TagWith("request");
+
+        //    Exception thrown = null;
+        //    try
+        //    {
+        //        var controller = containerRequest.Resolve<HomeController>();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        thrown = ex;
+        //    }
+
+        //    Assert.IsNotNull(thrown);
+        //    Assert.IsTrue(thrown.Message.ToLower().Contains("singleton"));
+        //}
+
         enum Tag { None, Outer, Middle, Inner }
 
         [Test]
@@ -117,7 +151,7 @@ namespace Autofac.Tests.Tags
             var builder = new ContainerBuilder();
             builder.RegisterDelegate(c => new object())
                 .ShareInstanceIn(tag);
-               // .FactoryScoped();
+            // .FactoryScoped();
             var container = builder.Build();
             container.Tag = tag;
             Assert.AreNotSame(container.Resolve<object>(), container.Resolve<object>());
@@ -230,5 +264,74 @@ namespace Autofac.Tests.Tags
 
         //    Assert.IsTrue(threw);
         //}
+
+        //        [Test]
+        //        public void EnableTaggedContexts()
+        //        {
+        //            var rootTag = "Root Tag";
+
+        //            var target = new Container();
+
+        //            target.TagWith(rootTag);
+
+        //            var tag = target.Resolve<ContextTag<string>>();
+
+        //            Assert.IsNotNull(tag);
+        //            Assert.AreEqual(rootTag, tag.Tag);
+        //        }
+
+        //        [Test]
+        //        public void AnonymousContainerHasTypeNoTag()
+        //        {
+        //            var rootTag = "Root Tag";
+
+        //            var target = new Container();
+
+        //            target.TagWith(rootTag);
+
+        //            var inner = target.BeginLifetimeScope();
+
+        //            var tag = inner.Resolve<ContextTag<string>>();
+
+        //            Assert.IsFalse(tag.HasTag);
+        //        }
+
+        //        [Test]
+        //        [ExpectedException(typeof(InvalidOperationException))]
+        //        public void EnableTaggedContextsDefaultInNewContexts()
+        //        {
+        //            var rootTag = "Root Tag";
+
+        //            var target = new Container();
+        //            target.TagWith(rootTag);
+
+        //            var inner = target.BeginLifetimeScope();
+
+        //            var tag = inner.Resolve<ContextTag<string>>();
+
+        //            Assert.IsNotNull(tag);
+        //            Assert.IsFalse(tag.HasTag);
+        //            var unused = tag.Tag;
+        //        }
+
+        //        [Test]
+        //        public void CreateTaggedInnerContainer()
+        //        {
+        //            var rootTag = "Root Tag";
+        //            var innerTag = "Inner Tag";
+
+        //            var target = new Container();
+
+        //            target.TagWith(rootTag);
+
+        //            var inner = target.BeginLifetimeScope();
+        //            inner.TagWith(innerTag);
+
+        //            var tag = inner.Resolve<ContextTag<string>>();
+
+        //            Assert.IsNotNull(tag);
+        //            Assert.AreEqual(innerTag, tag.Tag);
+        //        }
+
     }
 }

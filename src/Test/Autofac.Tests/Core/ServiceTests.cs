@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using Autofac.Core;
 
-namespace Autofac.Tests
+namespace Autofac.Tests.Core
 {
     [TestFixture]
     public class ServiceTests
