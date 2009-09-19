@@ -23,14 +23,32 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
+using System.Globalization;
+using System.Linq.Expressions;
 using Autofac.Util;
-namespace Autofac.Lifetime
+
+namespace Autofac.Core.Lifetime
 {
     /// <summary>
-    /// Attaches the instance's lifetime to the current lifetime scope.
+    /// Attaches the component's lifetime to scopes matching a supplied expression.
     /// </summary>
-    public class CurrentScopeLifetime : IComponentLifetime
+    public class MatchingScopeLifetime : IComponentLifetime
     {
+        Func<ILifetimeScope, bool> _matcher;
+        string _matchExpressionCode;
+
+        /// <summary>
+        /// Match scopes based on the provided expression.
+        /// </summary>
+        /// <param name="matchExpression">Expression describing scopes that will match.</param>
+        public MatchingScopeLifetime(Expression<Func<ILifetimeScope, bool>> matchExpression)
+        {
+            Enforce.ArgumentNotNull(matchExpression, "matchExpression");
+            _matcher = matchExpression.Compile();
+            _matchExpressionCode = matchExpression.Body.ToString();
+        }
+
         /// <summary>
         /// Given the most nested scope visible within the resolve operation, find
         /// the scope for the component.
@@ -40,7 +58,18 @@ namespace Autofac.Lifetime
         public ISharingLifetimeScope FindScope(ISharingLifetimeScope mostNestedVisibleScope)
         {
             Enforce.ArgumentNotNull(mostNestedVisibleScope, "mostNestedVisibleScope");
-            return mostNestedVisibleScope;
+
+            var next = mostNestedVisibleScope;
+            while (next != null)
+            {
+                if (_matcher(next))
+                    return next;
+
+                next = next.ParentLifetimeScope;
+            }
+
+            throw new DependencyResolutionException(string.Format(
+                CultureInfo.CurrentCulture, MatchingScopeLifetimeResources.MatchingScopeNotFound, _matchExpressionCode));
         }
     }
 }

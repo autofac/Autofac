@@ -23,12 +23,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-namespace Autofac.Lifetime
+using Autofac.Util;
+
+namespace Autofac.Core.Lifetime
 {
     /// <summary>
-    /// Locates the lifetime to which instances of a component should be attached.
+    /// Attaches the instance's lifetime to the current lifetime scope.
     /// </summary>
-    public interface IComponentLifetime
+    public class CurrentScopeLifetime : IComponentLifetime
     {
         /// <summary>
         /// Given the most nested scope visible within the resolve operation, find
@@ -36,6 +38,10 @@ namespace Autofac.Lifetime
         /// </summary>
         /// <param name="mostNestedVisibleScope">The most nested visible scope.</param>
         /// <returns>The scope for the component.</returns>
-        ISharingLifetimeScope FindScope(ISharingLifetimeScope mostNestedVisibleScope);
+        public ISharingLifetimeScope FindScope(ISharingLifetimeScope mostNestedVisibleScope)
+        {
+            Enforce.ArgumentNotNull(mostNestedVisibleScope, "mostNestedVisibleScope");
+            return mostNestedVisibleScope;
+        }
     }
 }

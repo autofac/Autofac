@@ -5,7 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using Autofac.Builder;
 using Autofac.Integration.Web;
-using Autofac.Lifetime;
+using Autofac.Core.Lifetime;
 
 namespace Autofac.Tests.Integration.Web
 {

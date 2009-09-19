@@ -26,7 +26,7 @@
 using System;
 using System.Collections.Generic;
 using Autofac.Core.Activators.Delegate;
-using Autofac.Lifetime;
+using Autofac.Core.Lifetime;
 using Autofac.Registration;
 using Autofac.Util;
 

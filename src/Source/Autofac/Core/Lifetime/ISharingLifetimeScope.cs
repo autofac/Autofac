@@ -25,7 +25,7 @@
 
 using System;
 
-namespace Autofac.Lifetime
+namespace Autofac.Core.Lifetime
 {
     /// <summary>
     /// Defines a nested structure of lifetimes.

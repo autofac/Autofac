@@ -29,7 +29,7 @@ using Autofac.Resolving;
 using Autofac.SelfRegistration;
 using Autofac.Util;
 
-namespace Autofac.Lifetime
+namespace Autofac.Core.Lifetime
 {
     /// <summary>
     /// Lifetime scope implementation.

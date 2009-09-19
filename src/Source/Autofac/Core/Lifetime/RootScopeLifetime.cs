@@ -24,7 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using Autofac.Util;
-namespace Autofac.Lifetime
+namespace Autofac.Core.Lifetime
 {
     /// <summary>
     /// Attaches the component's lifetime to the root scope.

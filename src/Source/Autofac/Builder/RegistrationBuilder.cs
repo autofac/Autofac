@@ -26,7 +26,7 @@
 using System;
 using System.ComponentModel;
 using System.Linq;
-using Autofac.Lifetime;
+using Autofac.Core.Lifetime;
 using Autofac.Util;
 using Autofac.Core.Activators.Reflection;
 

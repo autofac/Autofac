@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac.Lifetime
+namespace Autofac.Core.Lifetime
 {
 
 
@@ -39,7 +39,7 @@ namespace Autofac.Lifetime
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Lifetime.MatchingScopeLifetimeResources", typeof(MatchingScopeLifetimeResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Lifetime.MatchingScopeLifetimeResources", typeof(MatchingScopeLifetimeResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
