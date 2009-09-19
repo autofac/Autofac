@@ -35,6 +35,7 @@ using Autofac.Core.Activators.Reflection;
 using Autofac.OpenGenerics;
 using Autofac.Registration;
 using Autofac.Util;
+using Autofac.Features.GeneratedFactories;
 
 namespace Autofac.Builder
 {
@@ -400,6 +401,141 @@ namespace Autofac.Builder
             Enforce.ArgumentNotNull(parameter, "parameter");
             registration.ActivatorData.ConfiguredParameters.Add(parameter);
             return registration;
+        }
+
+        /// <summary>
+        /// Registers a factory delegate.
+        /// </summary>
+        /// <param name="builder">Container builder.</param>
+        /// <param name="delegateType">Factory type to generate.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
+            RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType)
+        {
+            Enforce.ArgumentNotNull(delegateType, "delegateType");
+            Enforce.ArgumentTypeIsFunction(delegateType);
+
+            var returnType = delegateType.FunctionReturnType();
+            return builder.RegisterGeneratedFactory(delegateType, new TypedService(returnType));
+        }
+
+        /// <summary>
+        /// Registers a factory delegate.
+        /// </summary>
+        /// <param name="builder">Container builder.</param>
+        /// <param name="delegateType">Factory type to generate.</param>
+        /// <param name="service">The service that the delegate will return instances of.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
+            RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType, Service service)
+        {
+            return RegisterGeneratedFactoryInternal<Delegate>(builder, delegateType, service);
+        }
+
+        /// <summary>
+        /// Registers a factory delegate.
+        /// </summary>
+        /// <typeparam name="TDelegate">The type of the delegate.</typeparam>
+        /// <param name="builder">Container builder.</param>
+        /// <param name="service">The service that the delegate will return instances of.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<TDelegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
+            RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder, Service service)
+            where TDelegate : class
+        {
+            return RegisterGeneratedFactoryInternal<TDelegate>(builder, typeof(TDelegate), service);
+        }
+
+        /// <summary>
+        /// Registers a factory delegate.
+        /// </summary>
+        /// <typeparam name="TDelegate">The type of the delegate.</typeparam>
+        /// <param name="builder">Container builder.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<TDelegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
+            RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder)
+            where TDelegate : class
+        {
+            Enforce.ArgumentNotNull(builder, "builder");
+            Enforce.ArgumentTypeIsFunction(typeof(TDelegate));
+
+            var returnType = typeof(TDelegate).FunctionReturnType();
+            return builder.RegisterGeneratedFactory<TDelegate>(new TypedService(returnType));
+        }
+
+        /// <summary>
+        /// Changes the parameter mapping mode of the supplied delegate type to match
+        /// parameters by name.
+        /// </summary>
+        /// <typeparam name="TDelegate">Factory delegate type</typeparam>
+        /// <typeparam name="TGeneratedFactoryActivatorData">Activator data type</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
+        /// <param name="registration">Registration to change parameter mapping mode of.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>
+            NamedParameterMapping<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>(
+                this RegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle> registration)
+            where TGeneratedFactoryActivatorData : GeneratedFactoryActivatorData
+            where TSingleRegistrationStyle : SingleRegistrationStyle
+        {
+            registration.ActivatorData.ParameterMapping = ParameterMapping.ByName;
+            return registration;
+        }
+
+        /// <summary>
+        /// Changes the parameter mapping mode of the supplied delegate type to match
+        /// parameters by position.
+        /// </summary>
+        /// <typeparam name="TDelegate">Factory delegate type</typeparam>
+        /// <typeparam name="TGeneratedFactoryActivatorData">Activator data type</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
+        /// <param name="registration">Registration to change parameter mapping mode of.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>
+            PositionalParameterMapping<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>(
+                this RegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle> registration)
+            where TGeneratedFactoryActivatorData : GeneratedFactoryActivatorData
+            where TSingleRegistrationStyle : SingleRegistrationStyle
+        {
+            registration.ActivatorData.ParameterMapping = ParameterMapping.ByPosition;
+            return registration;
+        }
+
+        /// <summary>
+        /// Changes the parameter mapping mode of the supplied delegate type to match
+        /// parameters by type.
+        /// </summary>
+        /// <typeparam name="TDelegate">Factory delegate type</typeparam>
+        /// <typeparam name="TGeneratedFactoryActivatorData">Activator data type</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
+        /// <param name="registration">Registration to change parameter mapping mode of.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>
+            TypedParameterMapping<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>(
+                this RegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle> registration)
+            where TGeneratedFactoryActivatorData : GeneratedFactoryActivatorData
+            where TSingleRegistrationStyle : SingleRegistrationStyle
+        {
+            registration.ActivatorData.ParameterMapping = ParameterMapping.ByType;
+            return registration;
+        }
+
+        static RegistrationBuilder<TLimit, GeneratedFactoryActivatorData, SingleRegistrationStyle>
+            RegisterGeneratedFactoryInternal<TLimit>(ContainerBuilder builder, Type delegateType, Service service)
+        {
+            var activatorData = new GeneratedFactoryActivatorData();
+
+            var rb = new RegistrationBuilder<TLimit, GeneratedFactoryActivatorData, SingleRegistrationStyle>(
+                activatorData, new SingleRegistrationStyle());
+
+            builder.RegisterCallback(cr =>
+            {
+                var factory = new FactoryGenerator(delegateType, service, activatorData.ParameterMapping);
+                var activator = new DelegateActivator(delegateType, (c, p) => factory.GenerateFactory(c, p));
+                RegistrationExtensions.RegisterSingleComponent(cr, rb, activator);
+            });
+
+            return rb.InstancePerLifetimeScope();
         }
     }
 }

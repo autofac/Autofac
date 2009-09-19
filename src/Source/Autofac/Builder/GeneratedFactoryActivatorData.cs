@@ -24,16 +24,31 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Autofac.Core.Activators.Delegate;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Autofac.Features.GeneratedFactories;
-using Autofac.Util;
 
 namespace Autofac.Builder
 {
     /// <summary>
-    /// ContainerBuilder extensions for registering generated factories.
+    /// Data used to create factory activators.
     /// </summary>
-    public static class GeneratedFactoryRegistrationExtensions
+    public class GeneratedFactoryActivatorData
     {
+        ParameterMapping _parameterMapping = ParameterMapping.Adaptive;
+
+        /// <summary>
+        /// Determines how the parameters of the delegate type are passed on
+        /// to the generated Resolve() call as Parameter objects.
+        /// For Func-based delegates, this defaults to ByType. Otherwise, the
+        /// parameters will be mapped by name.
+        /// </summary>
+        public ParameterMapping ParameterMapping
+        {
+            get { return _parameterMapping; }
+            set { _parameterMapping = value; }
+        }
     }
+
 }

@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using NUnit.Framework;
 using System;
-using Autofac.GeneratedFactories;
+using Autofac.Features.GeneratedFactories;
 using Autofac.Builder;
 
 namespace Autofac.Tests

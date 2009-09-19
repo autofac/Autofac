@@ -29,7 +29,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Autofac.Util;
 
-namespace Autofac.GeneratedFactories
+namespace Autofac.Features.GeneratedFactories
 {
     /// <summary>
     /// Determines how the parameters of the delegate type are passed on

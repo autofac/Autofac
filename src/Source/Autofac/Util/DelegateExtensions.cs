@@ -24,16 +24,24 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Autofac.Core.Activators.Delegate;
-using Autofac.Features.GeneratedFactories;
 using Autofac.Util;
 
-namespace Autofac.Builder
+namespace Autofac.Util
 {
-    /// <summary>
-    /// ContainerBuilder extensions for registering generated factories.
-    /// </summary>
-    public static class GeneratedFactoryRegistrationExtensions
+    static class DelegateExtensions
     {
+        public static bool IsFunction(this Type type)
+        {
+            Enforce.ArgumentNotNull(type, "type");
+            return type.GetMethod("Invoke") != null;
+        }
+
+        public static Type FunctionReturnType(this Type type)
+        {
+            Enforce.ArgumentNotNull(type, "type");
+            var invoke = type.GetMethod("Invoke");
+            Enforce.NotNull(invoke);
+            return invoke.ReturnType;
+        }
     }
 }
