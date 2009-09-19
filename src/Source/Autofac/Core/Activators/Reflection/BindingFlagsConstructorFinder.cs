@@ -29,18 +29,36 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 
-namespace Autofac.Activators
+namespace Autofac.Core.Activators.Reflection
 {
     /// <summary>
-    /// Find suitable constructors from which to select.
+    /// Finds constructors based on their binding flags.
     /// </summary>
-    public interface IConstructorFinder
+    public class BindingFlagsConstructorFinder : IConstructorFinder
     {
+        readonly BindingFlags _bindingFlags;
+
+        /// <summary>
+        /// Create an instance matching constructors with the supplied binding flags.
+        /// </summary>
+        /// <param name="bindingFlags">Binding flags to match.</param>
+        public BindingFlagsConstructorFinder(BindingFlags bindingFlags)
+        {
+            _bindingFlags = bindingFlags;
+        }
+
         /// <summary>
         /// Finds suitable constructors on the target type.
         /// </summary>
         /// <param name="targetType">Type to search for constructors.</param>
         /// <returns>Suitable constructors.</returns>
-        IEnumerable<ConstructorInfo> FindConstructors(Type targetType);
+        public IEnumerable<ConstructorInfo> FindConstructors(Type targetType)
+        {
+            return targetType.FindMembers(
+                                MemberTypes.Constructor,
+                                BindingFlags.Instance | _bindingFlags,
+                                null,
+                                null).Cast<ConstructorInfo>();
+        }
     }
 }

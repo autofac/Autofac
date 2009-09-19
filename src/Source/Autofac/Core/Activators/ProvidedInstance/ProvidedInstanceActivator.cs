@@ -25,40 +25,48 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
 
-namespace Autofac.Activators
+namespace Autofac.Core.Activators.ProvidedInstance
 {
     /// <summary>
-    /// Finds constructors based on their binding flags.
+    /// Provides a pre-constructed instance.
     /// </summary>
-    public class BindingFlagsConstructorFinder : IConstructorFinder
+    public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
     {
-        readonly BindingFlags _bindingFlags;
+        readonly object _instance;
+        bool _activated;
 
         /// <summary>
-        /// Create an instance matching constructors with the supplied binding flags.
+        /// Provide the specified instance.
         /// </summary>
-        /// <param name="bindingFlags">Binding flags to match.</param>
-        public BindingFlagsConstructorFinder(BindingFlags bindingFlags)
+        /// <param name="instance">The instance to provide.</param>
+        public ProvidedInstanceActivator(object instance)
+            : base(Enforce.ArgumentNotNull(instance, "instance").GetType())
         {
-            _bindingFlags = bindingFlags;
+            _instance = instance;
         }
 
         /// <summary>
-        /// Finds suitable constructors on the target type.
+        /// Activate an instance in the provided context.
         /// </summary>
-        /// <param name="targetType">Type to search for constructors.</param>
-        /// <returns>Suitable constructors.</returns>
-        public IEnumerable<ConstructorInfo> FindConstructors(Type targetType)
+        /// <param name="context">Context in which to activate instances.</param>
+        /// <param name="parameters">Parameters to the instance.</param>
+        /// <returns>The activated instance.</returns>
+        /// <remarks>
+        /// The context parameter here should probably be ILifetimeScope in order to reveal Disposer,
+        /// but will wait until implementing a concrete use case to make the decision
+        /// </remarks>
+        public object ActivateInstance(IComponentContext context, IEnumerable<Parameter> parameters)
         {
-            return targetType.FindMembers(
-                                MemberTypes.Constructor,
-                                BindingFlags.Instance | _bindingFlags,
-                                null,
-                                null).Cast<ConstructorInfo>();
+            Enforce.ArgumentNotNull(context, "context");
+            Enforce.ArgumentNotNull(parameters, "parameters");
+
+            if (_activated)
+                throw new InvalidOperationException(ProvidedInstanceActivatorResources.InstanceAlreadyActivated);
+
+            _activated = true;
+
+            return _instance;
         }
     }
 }

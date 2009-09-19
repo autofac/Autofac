@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac.Activators {
+namespace Autofac.Core.Activators.Reflection {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Autofac.Activators {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "2.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ReflectionActivatorResources {
+    internal class MatchingSignatureConstructorSelectorResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ReflectionActivatorResources() {
+        internal MatchingSignatureConstructorSelectorResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Autofac.Activators {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Activators.ReflectionActivatorResources", typeof(ReflectionActivatorResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Activators.MatchingSignatureConstructorSelectorResources", typeof(MatchingSignatureConstructorSelectorResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,20 +61,20 @@ namespace Autofac.Activators {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No constructors matching the constructor-finding policy can be found on the target type..
+        ///   Looks up a localized string similar to The required constructor is unavailable..
         /// </summary>
-        internal static string NoConstructorsAvailable {
+        internal static string RequiredConstructorNotAvailable {
             get {
-                return ResourceManager.GetString("NoConstructorsAvailable", resourceCulture);
+                return ResourceManager.GetString("RequiredConstructorNotAvailable", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to None of the existing constructors can be satisfied using the available services and parameters..
+        ///   Looks up a localized string similar to More than one constructor matches the selection policy..
         /// </summary>
-        internal static string NoConstructorsBindable {
+        internal static string TooManyConstructorsMatch {
             get {
-                return ResourceManager.GetString("NoConstructorsBindable", resourceCulture);
+                return ResourceManager.GetString("TooManyConstructorsMatch", resourceCulture);
             }
         }
     }

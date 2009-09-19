@@ -29,31 +29,43 @@ using System.Linq;
 using System.Text;
 using Autofac.Injection;
 
-namespace Autofac.Activators
+namespace Autofac.Core.Activators.Reflection
 {
     /// <summary>
-    /// Selects the constructor with the most parameters.
+    /// Selects a constructor based on its signature.
     /// </summary>
-    public class MostParametersConstructorSelector : IConstructorSelector
+    public class MatchingSignatureConstructorSelector : IConstructorSelector
     {
+        readonly Type[] _signature;
+
+        /// <summary>
+        /// Match constructors with the provided signature.
+        /// </summary>
+        /// <param name="signature">Signature to match.</param>
+        public MatchingSignatureConstructorSelector(params Type[] signature)
+        {
+           _signature =  Enforce.ArgumentElementNotNull(signature, "signature");
+        }
+
         /// <summary>
         /// Selects the best constructor from the available constructors.
         /// </summary>
         /// <param name="constructorBindings">Available constructors.</param>
         /// <returns>The best constructor.</returns>
-        public ConstructorParameterBinding SelectConstructorBinding(
-            IEnumerable<ConstructorParameterBinding> constructorBindings)
+        public ConstructorParameterBinding SelectConstructorBinding(IEnumerable<ConstructorParameterBinding> constructorBindings)
         {
             Enforce.ArgumentNotNull(constructorBindings, "constructorBindings");
-
+            
             var result = constructorBindings
-                .OrderByDescending(cb => cb.TargetConstructor.GetParameters().Length)
-                .FirstOrDefault();
+                .Where(b => b.TargetConstructor.GetParameters().Select(p => p.ParameterType).SequenceEqual(_signature))
+                .ToArray();
 
-            if (result == null)
-                throw new ArgumentOutOfRangeException("constructorBindings");
-
-            return result;
+            if (result.Length == 0)
+                throw new DependencyResolutionException(MatchingSignatureConstructorSelectorResources.RequiredConstructorNotAvailable);
+            else if (result.Length != 1)
+                throw new DependencyResolutionException(MatchingSignatureConstructorSelectorResources.TooManyConstructorsMatch);
+            else
+                return result[0];
         }
     }
 }

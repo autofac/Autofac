@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Autofac.Activators;
+using Autofac.Core.Activators;
 using Autofac.Registration;
+using Autofac.Core;
 
 namespace Autofac.Builder
 {

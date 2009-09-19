@@ -27,36 +27,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Autofac.Core.Activators;
-using Autofac.Core;
+using System.Reflection;
 
-namespace Autofac.Builder
+namespace Autofac.Core.Activators.Reflection
 {
     /// <summary>
-    /// An activator builder with no parameters.
+    /// Find suitable constructors from which to select.
     /// </summary>
-    public class SimpleActivatorData
+    public interface IConstructorFinder
     {
-        IInstanceActivator _activator;
-
         /// <summary>
-        /// Return the provided activator.
+        /// Finds suitable constructors on the target type.
         /// </summary>
-        /// <param name="activator">The activator to return.</param>
-        public SimpleActivatorData(IInstanceActivator activator)
-        {
-            _activator = Enforce.ArgumentNotNull(activator, "activator");
-        }
-
-        /// <summary>
-        /// Gets the activator.
-        /// </summary>
-        public IInstanceActivator Activator
-        {
-            get
-            {
-                return _activator;
-            }
-        }
+        /// <param name="targetType">Type to search for constructors.</param>
+        /// <returns>Suitable constructors.</returns>
+        IEnumerable<ConstructorInfo> FindConstructors(Type targetType);
     }
 }

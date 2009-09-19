@@ -49,36 +49,24 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Activators\BindingFlagsConstructorFinder.cs" />
-    <Compile Include="Activators\DelegateActivator.cs" />
-    <Compile Include="Activators\IConstructorFinder.cs" />
-    <Compile Include="Activators\IConstructorSelector.cs" />
-    <Compile Include="Activators\IInstanceActivator.cs" />
-    <Compile Include="Activators\InstanceActivator.cs" />
-    <Compile Include="Activators\MatchingSignatureConstructorSelector.cs" />
-    <Compile Include="Activators\MatchingSignatureConstructorSelectorResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MatchingSignatureConstructorSelectorResources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Activators\MostParametersConstructorSelector.cs" />
-    <Compile Include="Activators\ProvidedInstanceActivator.cs" />
-    <Compile Include="Activators\ProvidedInstanceActivatorResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ProvidedInstanceActivatorResources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Activators\ReflectionActivator.cs" />
-    <Compile Include="Activators\ReflectionActivatorResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ReflectionActivatorResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Builder\CollectionRegistrationExtensions.cs" />
     <Compile Include="Builder\DynamicRegistrationStyle.cs" />
     <Compile Include="Builder\GeneratedFactoryRegistrationExtensions.cs" />
     <Compile Include="Builder\IActivatorGenerator.cs" />
     <Compile Include="Builder\IFluentInterface.cs" />
+    <Compile Include="Core\Activators\Delegate\DelegateActivator.cs" />
+    <Compile Include="Core\Activators\InstanceActivator.cs" />
+    <Compile Include="Core\Activators\ProvidedInstance\ProvidedInstanceActivator.cs" />
+    <Compile Include="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorResources.Designer.cs" />
+    <Compile Include="Core\Activators\Reflection\BindingFlagsConstructorFinder.cs" />
+    <Compile Include="Core\Activators\Reflection\IConstructorFinder.cs" />
+    <Compile Include="Core\Activators\Reflection\IConstructorSelector.cs" />
+    <Compile Include="Core\Activators\Reflection\MatchingSignatureConstructorSelector.cs" />
+    <Compile Include="Core\Activators\Reflection\MatchingSignatureConstructorSelectorResources.Designer.cs" />
+    <Compile Include="Core\Activators\Reflection\MostParametersConstructorSelector.cs" />
+    <Compile Include="Core\Activators\Reflection\ReflectionActivator.cs" />
+    <Compile Include="Core\Activators\Reflection\ReflectionActivatorResources.Designer.cs" />
+    <Compile Include="Core\IInstanceActivator.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="Builder\ReflectionActivatorData.cs" />
     <Compile Include="Builder\ReflectiveRegistrationExtensions.cs" />
@@ -173,18 +161,9 @@
     <Compile Include="UniqueService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Activators\MatchingSignatureConstructorSelectorResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>MatchingSignatureConstructorSelectorResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Activators\ProvidedInstanceActivatorResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ProvidedInstanceActivatorResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Activators\ReflectionActivatorResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ReflectionActivatorResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorResources.resx" />
+    <EmbeddedResource Include="Core\Activators\Reflection\MatchingSignatureConstructorSelectorResources.resx" />
+    <EmbeddedResource Include="Core\Activators\Reflection\ReflectionActivatorResources.resx" />
     <EmbeddedResource Include="RegistrationExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RegistrationExtensionsResources.Designer.cs</LastGenOutput>
@@ -212,6 +191,10 @@
     <None Include="..\..\SharedKey.snk">
       <Link>SharedKey.snk</Link>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Features\" />
+    <Folder Include="Util\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Silverlight 2.0'" />

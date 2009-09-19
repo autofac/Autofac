@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Autofac.Activators
+namespace Autofac.Core.Activators.Delegate
 {
     /// <summary>
     /// Activate instances using a delegate.

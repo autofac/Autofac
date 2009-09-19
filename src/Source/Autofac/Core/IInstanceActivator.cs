@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using Autofac.Lifetime;
 
-namespace Autofac.Activators
+namespace Autofac.Core
 {
     /// <summary>
     /// Activates component instances.

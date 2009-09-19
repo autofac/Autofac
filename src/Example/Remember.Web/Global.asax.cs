@@ -9,6 +9,7 @@ using Autofac.Integration.Web.Mvc;
 using Remember.Model;
 using Remember.Persistence.NHibernate;
 using Remember.Persistence;
+using Autofac;
 
 namespace Remember.Web
 {

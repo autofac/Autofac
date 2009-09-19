@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Reflection;
 using NUnit.Framework;
-using Autofac.Activators;
 using Autofac.Injection;
 using System.Linq;
+using Autofac.Core.Activators.Reflection;
 
 namespace Autofac.Tests.Component.Activation
 {

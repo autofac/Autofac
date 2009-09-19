@@ -29,7 +29,7 @@ using System.Reflection;
 using System.Linq;
 using Autofac.Injection;
 
-namespace Autofac.Activators
+namespace Autofac.Core.Activators.Reflection
 {
     /// <summary>
     /// Uses reflection to activate instances of a type.

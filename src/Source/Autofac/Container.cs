@@ -28,8 +28,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.SelfRegistration;
 using Autofac.Registration;
-using Autofac.Activators;
+using Autofac.Core.Activators;
 using Autofac.Lifetime;
+using Autofac.Core.Activators.Delegate;
 
 namespace Autofac
 {

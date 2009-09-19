@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Autofac.Builder
+namespace Autofac
 {
 	/// <summary>
 	/// Used to incrementally build component registrations for a container.

@@ -29,18 +29,31 @@ using System.Linq;
 using System.Text;
 using Autofac.Injection;
 
-namespace Autofac.Activators
+namespace Autofac.Core.Activators.Reflection
 {
     /// <summary>
-    /// Selects the best constructor from a set of available constructors.
+    /// Selects the constructor with the most parameters.
     /// </summary>
-    public interface IConstructorSelector
+    public class MostParametersConstructorSelector : IConstructorSelector
     {
         /// <summary>
         /// Selects the best constructor from the available constructors.
         /// </summary>
         /// <param name="constructorBindings">Available constructors.</param>
         /// <returns>The best constructor.</returns>
-        ConstructorParameterBinding SelectConstructorBinding(IEnumerable<ConstructorParameterBinding> constructorBindings);
+        public ConstructorParameterBinding SelectConstructorBinding(
+            IEnumerable<ConstructorParameterBinding> constructorBindings)
+        {
+            Enforce.ArgumentNotNull(constructorBindings, "constructorBindings");
+
+            var result = constructorBindings
+                .OrderByDescending(cb => cb.TargetConstructor.GetParameters().Length)
+                .FirstOrDefault();
+
+            if (result == null)
+                throw new ArgumentOutOfRangeException("constructorBindings");
+
+            return result;
+        }
     }
 }

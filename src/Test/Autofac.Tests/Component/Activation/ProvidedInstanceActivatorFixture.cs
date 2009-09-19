@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using System.Linq;
-using Autofac.Activators;
+using Autofac.Core.Activators.ProvidedInstance;
 
 namespace Autofac.Tests.Component.Activation
 {

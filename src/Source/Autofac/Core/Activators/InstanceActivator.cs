@@ -29,7 +29,7 @@ using System.Linq;
 using System.Text;
 using Autofac.Lifetime;
 
-namespace Autofac.Activators
+namespace Autofac.Core.Activators
 {
     /// <summary>
     /// Base class for instance activators.

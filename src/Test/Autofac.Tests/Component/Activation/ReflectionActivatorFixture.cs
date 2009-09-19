@@ -2,9 +2,9 @@
 using Autofac.Builder;
 using NUnit.Framework;
 using System.Linq;
-using Autofac.Activators;
 using Moq;
 using System.Reflection;
+using Autofac.Core.Activators.Reflection;
 
 namespace Autofac.Tests.Component.Activation
 {

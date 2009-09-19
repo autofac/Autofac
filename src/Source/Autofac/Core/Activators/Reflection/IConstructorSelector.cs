@@ -29,43 +29,18 @@ using System.Linq;
 using System.Text;
 using Autofac.Injection;
 
-namespace Autofac.Activators
+namespace Autofac.Core.Activators.Reflection
 {
     /// <summary>
-    /// Selects a constructor based on its signature.
+    /// Selects the best constructor from a set of available constructors.
     /// </summary>
-    public class MatchingSignatureConstructorSelector : IConstructorSelector
+    public interface IConstructorSelector
     {
-        readonly Type[] _signature;
-
-        /// <summary>
-        /// Match constructors with the provided signature.
-        /// </summary>
-        /// <param name="signature">Signature to match.</param>
-        public MatchingSignatureConstructorSelector(params Type[] signature)
-        {
-           _signature =  Enforce.ArgumentElementNotNull(signature, "signature");
-        }
-
         /// <summary>
         /// Selects the best constructor from the available constructors.
         /// </summary>
         /// <param name="constructorBindings">Available constructors.</param>
         /// <returns>The best constructor.</returns>
-        public ConstructorParameterBinding SelectConstructorBinding(IEnumerable<ConstructorParameterBinding> constructorBindings)
-        {
-            Enforce.ArgumentNotNull(constructorBindings, "constructorBindings");
-            
-            var result = constructorBindings
-                .Where(b => b.TargetConstructor.GetParameters().Select(p => p.ParameterType).SequenceEqual(_signature))
-                .ToArray();
-
-            if (result.Length == 0)
-                throw new DependencyResolutionException(MatchingSignatureConstructorSelectorResources.RequiredConstructorNotAvailable);
-            else if (result.Length != 1)
-                throw new DependencyResolutionException(MatchingSignatureConstructorSelectorResources.TooManyConstructorsMatch);
-            else
-                return result[0];
-        }
+        ConstructorParameterBinding SelectConstructorBinding(IEnumerable<ConstructorParameterBinding> constructorBindings);
     }
 }
