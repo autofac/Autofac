@@ -70,10 +70,10 @@
     <Compile Include="Core\Activators\Reflection\MostParametersConstructorSelector.cs" />
     <Compile Include="Core\Activators\Reflection\ReflectionActivator.cs" />
     <Compile Include="Core\Activators\Reflection\ReflectionActivatorResources.Designer.cs" />
+    <Compile Include="Core\IComponentLifetime.cs" />
     <Compile Include="Core\IInstanceActivator.cs" />
+    <Compile Include="Core\ISharingLifetimeScope.cs" />
     <Compile Include="Core\Lifetime\CurrentScopeLifetime.cs" />
-    <Compile Include="Core\Lifetime\IComponentLifetime.cs" />
-    <Compile Include="Core\Lifetime\ISharingLifetimeScope.cs" />
     <Compile Include="Core\Lifetime\LifetimeScope.cs" />
     <Compile Include="Core\Lifetime\MatchingScopeLifetime.cs" />
     <Compile Include="Core\Lifetime\MatchingScopeLifetimeResources.Designer.cs" />

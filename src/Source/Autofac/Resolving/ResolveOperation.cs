@@ -26,6 +26,7 @@
 using System.Collections.Generic;
 using Autofac.Core.Lifetime;
 using Autofac.Util;
+using Autofac.Core;
 
 namespace Autofac.Resolving
 {

@@ -23,7 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-namespace Autofac.Core.Lifetime
+namespace Autofac.Core
 {
     /// <summary>
     /// Locates the lifetime to which instances of a component should be attached.

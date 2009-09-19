@@ -24,7 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
-using Autofac.Core.Lifetime;
+using Autofac.Core;
 
 namespace Autofac.Resolving
 {
