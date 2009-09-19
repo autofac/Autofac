@@ -26,8 +26,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac.Injection;
 using Autofac.Util;
+using Autofac.Core.Activators.Reflection;
 
 namespace Autofac
 {

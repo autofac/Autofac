@@ -59,7 +59,10 @@
     <Compile Include="Core\Activators\InstanceActivator.cs" />
     <Compile Include="Core\Activators\ProvidedInstance\ProvidedInstanceActivator.cs" />
     <Compile Include="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorResources.Designer.cs" />
+    <Compile Include="Core\Activators\Reflection\AutowiringParameter.cs" />
+    <Compile Include="Core\Activators\Reflection\AutowiringPropertyInjector.cs" />
     <Compile Include="Core\Activators\Reflection\BindingFlagsConstructorFinder.cs" />
+    <Compile Include="Core\Activators\Reflection\ConstructorParameterBinding.cs" />
     <Compile Include="Core\Activators\Reflection\IConstructorFinder.cs" />
     <Compile Include="Core\Activators\Reflection\IConstructorSelector.cs" />
     <Compile Include="Core\Activators\Reflection\MatchingSignatureConstructorSelector.cs" />
@@ -93,9 +96,6 @@
     <Compile Include="ContainerBuilder.cs" />
     <Compile Include="IComponentRegistry.cs" />
     <Compile Include="ILifetimeScope.cs" />
-    <Compile Include="Injection\AutowiringParameter.cs" />
-    <Compile Include="Injection\AutowiringPropertyInjector.cs" />
-    <Compile Include="Injection\ConstructorParameterBinding.cs" />
     <Compile Include="Lifetime\CurrentScopeLifetime.cs" />
     <Compile Include="Lifetime\IComponentLifetime.cs" />
     <Compile Include="Lifetime\ISharingLifetimeScope.cs" />

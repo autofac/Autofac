@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using Autofac.Injection;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core.Activators.Reflection;

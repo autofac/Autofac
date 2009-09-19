@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using NUnit.Framework;
-using Autofac.Injection;
 using System.Linq;
 using Autofac.Core.Activators.Reflection;
 

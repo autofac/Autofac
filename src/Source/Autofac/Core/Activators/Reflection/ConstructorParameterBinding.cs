@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Autofac.Util;
 
-namespace Autofac.Injection
+namespace Autofac.Core.Activators.Reflection
 {
     /// <summary>
     /// Binds a constructor to the parameters that will be used when it is invoked.

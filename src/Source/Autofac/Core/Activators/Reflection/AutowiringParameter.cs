@@ -27,7 +27,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace Autofac.Injection
+namespace Autofac.Core.Activators.Reflection
 {
     /// <summary>
     /// Supplies values based on the target parameter type.

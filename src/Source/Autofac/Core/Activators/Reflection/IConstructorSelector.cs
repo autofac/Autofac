@@ -24,7 +24,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
-using Autofac.Injection;
 
 namespace Autofac.Core.Activators.Reflection
 {

@@ -2,7 +2,7 @@
 using System.Reflection;
 using Autofac.Util;
 
-namespace Autofac.Injection
+namespace Autofac.Core.Activators.Reflection
 {
     class AutowiringPropertyInjector
     {
