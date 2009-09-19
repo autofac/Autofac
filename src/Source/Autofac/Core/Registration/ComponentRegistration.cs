@@ -30,7 +30,7 @@ using Autofac.Core;
 using Autofac.Core.Lifetime;
 using Autofac.Util;
 
-namespace Autofac.Registration
+namespace Autofac.Core.Registration
 {
     /// <summary>
     /// Describes a logical component within the container.

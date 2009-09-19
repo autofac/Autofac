@@ -8,6 +8,7 @@ using Autofac.Builder;
 using Autofac.Integration.Mef;
 using System.ComponentModel.Composition.Hosting;
 using Autofac.Util;
+using Autofac.Core.Registration;
 
 namespace Autofac.Tests.Integration.Mef
 {

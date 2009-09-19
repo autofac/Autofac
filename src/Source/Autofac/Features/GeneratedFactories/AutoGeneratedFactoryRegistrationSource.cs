@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
-using Autofac.Registration;
+using Autofac.Core.Registration;
 using Autofac.Util;
 
 namespace Autofac.Features.GeneratedFactories

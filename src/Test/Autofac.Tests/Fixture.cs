@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Autofac.Registration;
+using Autofac.Core.Registration;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Activators.Reflection;
 

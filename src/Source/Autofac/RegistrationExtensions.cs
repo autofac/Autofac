@@ -33,7 +33,7 @@ using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Activators.ProvidedInstance;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Features.OpenGenerics;
-using Autofac.Registration;
+using Autofac.Core.Registration;
 using Autofac.Util;
 using Autofac.Features.GeneratedFactories;
 

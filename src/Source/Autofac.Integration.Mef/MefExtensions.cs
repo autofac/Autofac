@@ -31,6 +31,7 @@ using System.Reflection;
 using System.ComponentModel.Composition.Primitives;
 using System.ComponentModel.Composition.Hosting;
 using Autofac.Builder;
+using Autofac.Core.Registration;
 
 namespace Autofac.Integration.Mef
 {

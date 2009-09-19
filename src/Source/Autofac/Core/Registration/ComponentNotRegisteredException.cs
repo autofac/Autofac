@@ -28,7 +28,7 @@ using System.Globalization;
 using System.Runtime.Serialization;
 using Autofac.Util;
 
-namespace Autofac
+namespace Autofac.Core.Registration
 {
 	/// <summary>
 	/// A service was requested that cannot be provided

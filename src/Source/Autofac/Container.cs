@@ -27,8 +27,8 @@ using System;
 using System.Collections.Generic;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
-using Autofac.Registration;
-using Autofac.SelfRegistration;
+using Autofac.Core.Registration;
+using Autofac.Core.SelfRegistration;
 using Autofac.Util;
 
 namespace Autofac

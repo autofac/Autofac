@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.Util;
 
-namespace Autofac
+namespace Autofac.Core.Registration
 {
     /// <summary>
     /// Provides component registrations according to the services they provide.

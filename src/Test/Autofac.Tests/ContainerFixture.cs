@@ -4,7 +4,7 @@ using System.Linq;
 using Autofac.Builder;
 using NUnit.Framework;
 using Autofac.Core.Lifetime;
-using Autofac.Registration;
+using Autofac.Core.Registration;
 using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;

@@ -26,7 +26,7 @@
 using System;
 using System.Collections.Generic;
 using Autofac.Resolving;
-using Autofac.SelfRegistration;
+using Autofac.Core.SelfRegistration;
 using Autofac.Util;
 
 namespace Autofac.Core.Lifetime
@@ -93,7 +93,7 @@ namespace Autofac.Core.Lifetime
         /// <returns>
         /// The component instance.
         /// </returns>
-        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="Autofac.Core.Registration.ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
         public object Resolve(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {

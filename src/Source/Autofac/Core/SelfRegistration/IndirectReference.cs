@@ -24,7 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 
-namespace Autofac.SelfRegistration
+namespace Autofac.Core.SelfRegistration
 {
     class IndirectReference<T>
     {

@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
+using Autofac.Core.Registration;
 
 namespace Autofac
 {

@@ -25,6 +25,8 @@
 
 using System;
 using NUnit.Framework;
+using Autofac.Core;
+using Autofac.Core.Registration;
 
 namespace Autofac.Tests
 {

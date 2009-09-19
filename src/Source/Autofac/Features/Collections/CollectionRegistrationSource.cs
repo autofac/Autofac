@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
-using Autofac.Registration;
+using Autofac.Core.Registration;
 
 namespace Autofac.Features.Collections
 {
