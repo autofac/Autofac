@@ -30,7 +30,7 @@ using Autofac.Core.Activators.Delegate;
 using Autofac.Lifetime;
 using Autofac.Registration;
 
-namespace Autofac.Modules
+namespace Autofac.Features.Collections
 {
     class CollectionRegistrationSource : IRegistrationSource
     {

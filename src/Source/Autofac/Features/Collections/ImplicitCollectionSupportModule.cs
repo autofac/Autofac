@@ -25,7 +25,7 @@
 
 using Autofac.Util;
 
-namespace Autofac.Modules
+namespace Autofac.Features.Collections
 {
     /// <summary>
     /// Configures the container so that requests for IEnumerable{T} or T[]

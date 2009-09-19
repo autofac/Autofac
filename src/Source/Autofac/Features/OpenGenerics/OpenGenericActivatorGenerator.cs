@@ -30,7 +30,7 @@ using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 
-namespace Autofac.OpenGenerics
+namespace Autofac.Features.OpenGenerics
 {
     /// <summary>
     /// Generates activators for open generic types.

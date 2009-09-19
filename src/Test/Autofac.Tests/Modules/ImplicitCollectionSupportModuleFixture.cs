@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using Autofac.Builder;
-using Autofac.Modules;
+using Autofac.Features.Collections;
 
 namespace Autofac.Tests.Modules
 {
