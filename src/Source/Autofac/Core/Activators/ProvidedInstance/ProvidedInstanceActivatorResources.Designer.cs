@@ -39,7 +39,7 @@ namespace Autofac.Core.Activators.ProvidedInstance
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Activators.ProvidedInstanceActivatorResources", typeof(ProvidedInstanceActivatorResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Activators.ProvidedInstance.ProvidedInstanceActivatorResources", typeof(ProvidedInstanceActivatorResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

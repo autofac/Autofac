@@ -37,7 +37,7 @@ namespace Autofac.Util
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.EnforceResources", typeof(EnforceResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Util.EnforceResources", typeof(EnforceResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
