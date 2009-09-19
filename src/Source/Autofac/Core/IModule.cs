@@ -23,34 +23,19 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Collections.Generic;
-using Autofac.Core.Registration;
-using Autofac.Core;
 
-namespace Autofac
+namespace Autofac.Core
 {
 	/// <summary>
-	/// The context in which a service can be accessed or a component's
-	/// dependencies resolved. Disposal of a context will dispose any owned
-	/// components.
+	/// Represents a set of components and related functionality
+	/// packaged together.
 	/// </summary>
-	public interface IComponentContext
+	public interface IModule
 	{
         /// <summary>
-        /// Associates services with the components that provide them.
+        /// Apply the module to the component registry.
         /// </summary>
-        IComponentRegistry ComponentRegistry { get; }
-
-        /// <summary>
-        /// Resolve an instance of the provided registration within the context.
-        /// </summary>
-        /// <param name="registration">The registration.</param>
-        /// <param name="parameters">Parameters for the instance.</param>
-        /// <returns>
-        /// The component instance.
-        /// </returns>
-        /// <exception cref="ComponentNotRegisteredException"/>
-        /// <exception cref="Autofac.Core.DependencyResolutionException"/>
-        object Resolve(IComponentRegistration registration, IEnumerable<Parameter> parameters);
-	}
+        /// <param name="componentRegistry">Component registry to apply configuration to.</param>
+        void Configure(IComponentRegistry componentRegistry);
+    }
 }

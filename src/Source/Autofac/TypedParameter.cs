@@ -25,6 +25,7 @@
 
 using System;
 using Autofac.Util;
+using Autofac.Core;
 
 namespace Autofac
 {

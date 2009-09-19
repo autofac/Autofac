@@ -24,6 +24,7 @@
 
 using System;
 using System.Web.UI;
+using Autofac.Core;
 
 namespace Autofac.Integration.Web
 {

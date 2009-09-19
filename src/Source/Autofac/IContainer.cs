@@ -32,7 +32,7 @@ namespace Autofac
     /// </summary>
     /// <remarks>
     /// It is recommended that in most instances the more limited <see cref="ILifetimeScope"/> or
-    /// <see cref="IComponentContext"/> interfaces are 
+    /// <see cref="Autofac.Core.IComponentContext"/> interfaces are 
     /// used instead, as this is easier to implement on top of a different back-end, e.g. a
     /// customised or alternative container.
     /// </remarks>

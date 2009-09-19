@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using Autofac.Util;
+using Autofac.Core;
 
 namespace Autofac.Features.Collections
 {

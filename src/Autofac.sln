@@ -20,6 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Source\GlobalAssemblyInfo.cs = Source\GlobalAssemblyInfo.cs
 		go-all.cmd = go-all.cmd
 		go.cmd = go.cmd
+		Plan.txt = Plan.txt
 		SharedKey.snk = SharedKey.snk
 	EndProjectSection
 EndProject

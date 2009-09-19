@@ -23,29 +23,33 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Reflection;
+using System.Collections.Generic;
+using Autofac.Core.Registration;
 
-namespace Autofac
+namespace Autofac.Core
 {
-    /// <summary>
-    /// Used in order to provide a value to a constructor parameter or property on an instance
-    /// being created by the container.
-    /// </summary>
-    /// <remarks>
-    /// Not all parameters can be applied to all sites.
-    /// </remarks>
-    public abstract class Parameter
-    {
+	/// <summary>
+	/// The context in which a service can be accessed or a component's
+	/// dependencies resolved. Disposal of a context will dispose any owned
+	/// components.
+	/// </summary>
+	public interface IComponentContext
+	{
         /// <summary>
-        /// Returns true if the parameter is able to provide a value to a particular site.
+        /// Associates services with the components that provide them.
         /// </summary>
-        /// <param name="pi">Constructor, method, or property-mutator parameter.</param>
-        /// <param name="context">The component context in which the value is being provided.</param>
-        /// <param name="valueProvider">If the result is true, the valueProvider parameter will
-        /// be set to a function that will lazily retrieve the parameter value. If the result is false,
-        /// will be set to null.</param>
-        /// <returns>True if a value can be supplied; otherwise, false.</returns>
-        public abstract bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<object> valueProvider);
-    }
+        IComponentRegistry ComponentRegistry { get; }
+
+        /// <summary>
+        /// Resolve an instance of the provided registration within the context.
+        /// </summary>
+        /// <param name="registration">The registration.</param>
+        /// <param name="parameters">Parameters for the instance.</param>
+        /// <returns>
+        /// The component instance.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="Autofac.Core.DependencyResolutionException"/>
+        object Resolve(IComponentRegistration registration, IEnumerable<Parameter> parameters);
+	}
 }

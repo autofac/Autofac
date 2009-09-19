@@ -25,6 +25,7 @@
 
 using System.Collections;
 using System.Web.Mvc;
+using Autofac.Core;
 
 namespace Autofac.Integration.Web.Mvc
 {
