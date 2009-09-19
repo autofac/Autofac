@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using Autofac.Core;
 
 namespace Autofac.Integration.Web.Mvc
 {

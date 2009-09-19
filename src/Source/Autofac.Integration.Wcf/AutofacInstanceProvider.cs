@@ -27,6 +27,7 @@ using System;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Dispatcher;
+using Autofac.Core;
 
 namespace Autofac.Integration.Wcf
 {

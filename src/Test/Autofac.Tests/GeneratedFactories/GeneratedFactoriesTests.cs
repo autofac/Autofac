@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System;
 using Autofac.Features.GeneratedFactories;
 using Autofac.Builder;
+using Autofac.Core;
 
 namespace Autofac.Tests
 {

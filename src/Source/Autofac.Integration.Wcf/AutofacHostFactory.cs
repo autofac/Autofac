@@ -27,6 +27,7 @@ using System;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.Globalization;
+using Autofac.Core;
 
 namespace Autofac.Integration.Wcf
 {

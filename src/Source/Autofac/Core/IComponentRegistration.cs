@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
 
-namespace Autofac
+namespace Autofac.Core
 {
     /// <summary>
     /// Describes a logical component within the container.

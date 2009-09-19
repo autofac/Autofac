@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Util;
+using Autofac.Core;
 
 namespace Autofac.Builder
 {

@@ -23,30 +23,29 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
 using Autofac.Util;
 
-namespace Autofac
+namespace Autofac.Core
 {
     /// <summary>
-    /// Identifies a service according to a type to which it can be assigned.
+    /// Identifies a service using a textual name.
     /// </summary>
-    public class TypedService : Service
+    public class NamedService : Service
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TypedService"/> class.
+        /// Gets or sets the name of the service.
         /// </summary>
-        /// <param name="serviceType">Type of the service.</param>
-        public TypedService(Type serviceType)
-        {
-            ServiceType = Enforce.ArgumentNotNull(serviceType, "serviceType");
-        }
+        /// <value>The name of the service.</value>
+        public string ServiceName { get; private set; }
 
         /// <summary>
-        /// Gets or sets the type of the service.
+        /// Initializes a new instance of the <see cref="NamedService"/> class.
         /// </summary>
-        /// <value>The type of the service.</value>
-        public Type ServiceType { get; private set; }
+        /// <param name="serviceName">Name of the service.</param>
+        public NamedService(string serviceName)
+        {
+            ServiceName = Enforce.ArgumentNotNullOrEmpty(serviceName, "serviceName");
+        }
 
         /// <summary>
         /// Gets a human-readable description of the service.
@@ -55,8 +54,8 @@ namespace Autofac
         public override string Description
         {
             get
-            {    
-                return ServiceType.FullName;
+            {
+                return ServiceName;
             }
         }
 
@@ -70,12 +69,12 @@ namespace Autofac
         /// <exception cref="T:System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
         public override bool Equals(object obj)
         {
-            TypedService that = obj as TypedService;
+            NamedService that = obj as NamedService;
 
             if (that == null)
                 return false;
 
-            return ServiceType == that.ServiceType;
+            return ServiceName == that.ServiceName;
         }
 
         /// <summary>
@@ -86,7 +85,7 @@ namespace Autofac
         /// </returns>
         public override int GetHashCode()
         {
-            return ServiceType.GetHashCode();
+            return ServiceName.GetHashCode();
         }
     }
 }

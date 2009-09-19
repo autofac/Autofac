@@ -25,6 +25,7 @@
 
 using System;
 using System.ServiceModel;
+using Autofac.Core;
 
 namespace Autofac.Integration.Wcf
 {

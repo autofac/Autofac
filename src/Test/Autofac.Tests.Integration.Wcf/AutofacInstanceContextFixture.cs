@@ -2,6 +2,7 @@
 using Autofac.Integration.Wcf;
 using NUnit.Framework;
 using Autofac.Util;
+using Autofac.Core;
 
 namespace Autofac.Tests.Integration.Wcf
 {

@@ -25,7 +25,7 @@
 
 using System;
 
-namespace Autofac
+namespace Autofac.Core
 {
     /// <summary>
     /// Allows registrations to be made on-the-fly when unregistered

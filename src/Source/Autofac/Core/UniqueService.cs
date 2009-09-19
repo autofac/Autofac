@@ -25,7 +25,7 @@
 
 using System;
 
-namespace Autofac
+namespace Autofac.Core
 {
     /// <summary>
     /// A handy unique service identifier type - all instances will be regarded as unequal.

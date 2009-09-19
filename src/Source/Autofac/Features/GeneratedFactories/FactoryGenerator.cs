@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Autofac.Util;
+using Autofac.Core;
 
 namespace Autofac.Features.GeneratedFactories
 {

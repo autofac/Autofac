@@ -25,6 +25,7 @@
 
 using System;
 using System.ComponentModel.Composition;
+using Autofac.Core;
 
 namespace Autofac.Integration.Mef
 {

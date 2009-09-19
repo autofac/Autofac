@@ -23,40 +23,52 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 
-using Autofac.Util;
-namespace Autofac
+namespace Autofac.Core
 {
     /// <summary>
-    /// Identifies a service using a textual name.
+    /// Services are the lookup keys used to locate component instances.
     /// </summary>
-    public class NamedService : Service
+    public abstract class Service
     {
-        /// <summary>
-        /// Gets or sets the name of the service.
-        /// </summary>
-        /// <value>The name of the service.</value>
-        public string ServiceName { get; private set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NamedService"/> class.
-        /// </summary>
-        /// <param name="serviceName">Name of the service.</param>
-        public NamedService(string serviceName)
-        {
-            ServiceName = Enforce.ArgumentNotNullOrEmpty(serviceName, "serviceName");
-        }
-
         /// <summary>
         /// Gets a human-readable description of the service.
         /// </summary>
         /// <value>The description.</value>
-        public override string Description
+        public abstract string Description { get; }
+
+        /// <summary>
+        /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </returns>
+        public override string ToString()
         {
-            get
-            {
-                return ServiceName;
-            }
+            return Description;
+        }
+
+        /// <summary>
+        /// Implements the operator ==.
+        /// </summary>
+        /// <param name="lhs">The LHS.</param>
+        /// <param name="rhs">The RHS.</param>
+        /// <returns>The result of the operator.</returns>
+        public static bool operator==(Service lhs, Service rhs)
+        {
+            return object.Equals(lhs, rhs);
+        }
+
+        /// <summary>
+        /// Implements the operator !=.
+        /// </summary>
+        /// <param name="lhs">The LHS.</param>
+        /// <param name="rhs">The RHS.</param>
+        /// <returns>The result of the operator.</returns>
+        public static bool operator !=(Service lhs, Service rhs)
+        {
+            return !(lhs == rhs);
         }
 
         /// <summary>
@@ -69,12 +81,8 @@ namespace Autofac
         /// <exception cref="T:System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
         public override bool Equals(object obj)
         {
-            NamedService that = obj as NamedService;
-
-            if (that == null)
-                return false;
-
-            return ServiceName == that.ServiceName;
+            throw new NotImplementedException(
+                "Subclasses of Autofac.Service must override Object.Equals()");
         }
 
         /// <summary>
@@ -85,7 +93,8 @@ namespace Autofac
         /// </returns>
         public override int GetHashCode()
         {
-            return ServiceName.GetHashCode();
+            throw new NotImplementedException(
+                "Subclasses of Autofac.Service must override Object.GetHashCode()");
         }
     }
 }
