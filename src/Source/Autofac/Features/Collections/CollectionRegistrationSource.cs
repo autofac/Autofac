@@ -29,6 +29,7 @@ using System.Linq;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
+using Autofac.Core;
 
 namespace Autofac.Features.Collections
 {

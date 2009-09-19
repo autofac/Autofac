@@ -3,6 +3,7 @@ using System.Reflection;
 using NUnit.Framework;
 using System.Linq;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Core;
 
 namespace Autofac.Tests.Component.Activation
 {

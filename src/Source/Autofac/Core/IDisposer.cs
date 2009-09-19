@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Autofac
+namespace Autofac.Core
 {
     /// <summary>
     /// Provided on an object that will dispose of other objects when it is

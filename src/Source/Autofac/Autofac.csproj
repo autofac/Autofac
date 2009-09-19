@@ -55,6 +55,8 @@
     <Compile Include="Builder\GeneratedFactoryRegistrationExtensions.cs" />
     <Compile Include="Builder\IActivatorGenerator.cs" />
     <Compile Include="Builder\IFluentInterface.cs" />
+    <Compile Include="Core\ActivatedEventArgs.cs" />
+    <Compile Include="Core\ActivatingEventArgs.cs" />
     <Compile Include="Core\Activators\Delegate\DelegateActivator.cs" />
     <Compile Include="Core\Activators\InstanceActivator.cs" />
     <Compile Include="Core\Activators\ProvidedInstance\ProvidedInstanceActivator.cs" />
@@ -70,19 +72,33 @@
     <Compile Include="Core\Activators\Reflection\MostParametersConstructorSelector.cs" />
     <Compile Include="Core\Activators\Reflection\ReflectionActivator.cs" />
     <Compile Include="Core\Activators\Reflection\ReflectionActivatorResources.Designer.cs" />
+    <Compile Include="Core\Container.cs" />
+    <Compile Include="Core\DependencyResolutionException.cs" />
+    <Compile Include="Core\DependencyResolutionExceptionResources.Designer.cs" />
+    <Compile Include="Core\Disposer.cs" />
     <Compile Include="Core\IComponentLifetime.cs" />
+    <Compile Include="Core\IDisposer.cs" />
     <Compile Include="Core\IInstanceActivator.cs" />
+    <Compile Include="Core\InstanceOwnership.cs" />
+    <Compile Include="Core\InstanceSharing.cs" />
     <Compile Include="Core\ISharingLifetimeScope.cs" />
     <Compile Include="Core\Lifetime\CurrentScopeLifetime.cs" />
     <Compile Include="Core\Lifetime\LifetimeScope.cs" />
     <Compile Include="Core\Lifetime\MatchingScopeLifetime.cs" />
     <Compile Include="Core\Lifetime\MatchingScopeLifetimeResources.Designer.cs" />
     <Compile Include="Core\Lifetime\RootScopeLifetime.cs" />
+    <Compile Include="Core\PreparingEventArgs.cs" />
     <Compile Include="Core\Registration\ComponentNotRegisteredException.cs" />
     <Compile Include="Core\Registration\ComponentNotRegisteredExceptionResources.Designer.cs" />
     <Compile Include="Core\ComponentRegisteredEventArgs.cs" />
     <Compile Include="Core\Registration\ComponentRegistration.cs" />
     <Compile Include="Core\Registration\ComponentRegistry.cs" />
+    <Compile Include="Core\Resolving\CircularDependencyDetector.cs" />
+    <Compile Include="Core\Resolving\CircularDependencyDetectorResources.Designer.cs" />
+    <Compile Include="Core\Resolving\ComponentActivation.cs" />
+    <Compile Include="Core\Resolving\IResolveOperation.cs" />
+    <Compile Include="Core\Resolving\ResolveOperation.cs" />
+    <Compile Include="Core\Resolving\ResolveOperationResources.Designer.cs" />
     <Compile Include="Core\SelfRegistration\IndirectReference.cs" />
     <Compile Include="Features\Collections\CollectionRegistrationSource.cs" />
     <Compile Include="Features\Collections\ImplicitCollectionSupportModule.cs" />
@@ -102,8 +118,6 @@
     <Compile Include="Builder\RegistrationSource.cs" />
     <Compile Include="Builder\SimpleActivatorData.cs" />
     <Compile Include="Builder\SingleRegistrationStyle.cs" />
-    <Compile Include="ActivatedEventArgs.cs" />
-    <Compile Include="ActivatingEventArgs.cs" />
     <Compile Include="ContainerBuilder.cs" />
     <Compile Include="IComponentRegistry.cs" />
     <Compile Include="ILifetimeScope.cs" />
@@ -113,34 +127,15 @@
     <Compile Include="Parameter.cs" />
     <Compile Include="ParameterExtensions.cs" />
     <Compile Include="PositionalParameter.cs" />
-    <Compile Include="PreparingEventArgs.cs" />
-    <Compile Include="DependencyResolutionExceptionResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DependencyResolutionExceptionResources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Disposer.cs" />
     <Compile Include="IContainer.cs" />
-    <Compile Include="IDisposer.cs" />
-    <Compile Include="InstanceOwnership.cs" />
-    <Compile Include="InstanceSharing.cs" />
     <Compile Include="IModule.cs" />
     <Compile Include="IRegistrationSource.cs" />
     <Compile Include="NamedService.cs" />
-    <Compile Include="Container.cs" />
     <Compile Include="IComponentRegistration.cs" />
-    <Compile Include="DependencyResolutionException.cs" />
     <Compile Include="IComponentContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResolutionExtensions.cs" />
     <Compile Include="ResolvedParameter.cs" />
-    <Compile Include="Resolving\CircularDependencyDetector.cs" />
-    <Compile Include="Resolving\CircularDependencyDetectorResources.Designer.cs" />
-    <Compile Include="Resolving\ComponentActivation.cs" />
-    <Compile Include="Resolving\IResolveOperation.cs" />
-    <Compile Include="Resolving\ResolveOperation.cs" />
-    <Compile Include="Resolving\ResolveOperationResources.Designer.cs" />
-    <Compile Include="SequenceExtensions.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="TypedParameter.cs" />
     <Compile Include="TypedService.cs" />
@@ -149,6 +144,7 @@
     <Compile Include="Util\Disposable.cs" />
     <Compile Include="Util\Enforce.cs" />
     <Compile Include="Util\EnforceResources.Designer.cs" />
+    <Compile Include="Util\SequenceExtensions.cs" />
     <Compile Include="Util\Silverlight\AllowPartiallyTrustedCallerAttribute.cs" />
     <Compile Include="Util\Silverlight\SerializableAttribute.cs" />
   </ItemGroup>
@@ -156,19 +152,15 @@
     <EmbeddedResource Include="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorResources.resx" />
     <EmbeddedResource Include="Core\Activators\Reflection\MatchingSignatureConstructorSelectorResources.resx" />
     <EmbeddedResource Include="Core\Activators\Reflection\ReflectionActivatorResources.resx" />
+    <EmbeddedResource Include="Core\DependencyResolutionExceptionResources.resx" />
     <EmbeddedResource Include="Core\Lifetime\MatchingScopeLifetimeResources.resx" />
     <EmbeddedResource Include="Core\Registration\ComponentNotRegisteredExceptionResources.resx" />
+    <EmbeddedResource Include="Core\Resolving\CircularDependencyDetectorResources.resx" />
+    <EmbeddedResource Include="Core\Resolving\ResolveOperationResources.resx" />
     <EmbeddedResource Include="RegistrationExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RegistrationExtensionsResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="DependencyResolutionExceptionResources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>DependencyResolutionExceptionResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resolving\CircularDependencyDetectorResources.resx" />
-    <EmbeddedResource Include="Resolving\ResolveOperationResources.resx" />
     <EmbeddedResource Include="Util\EnforceResources.resx" />
   </ItemGroup>
   <ItemGroup>

@@ -7,6 +7,7 @@ using Autofac.Integration.Web;
 using Autofac.Integration.Web.Mvc;
 using NUnit.Framework;
 using Moq;
+using Autofac.Core;
 
 namespace Autofac.Tests.Integration.Web.Mvc
 {

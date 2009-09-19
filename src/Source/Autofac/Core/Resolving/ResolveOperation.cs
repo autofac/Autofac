@@ -28,7 +28,7 @@ using Autofac.Core.Lifetime;
 using Autofac.Util;
 using Autofac.Core;
 
-namespace Autofac.Resolving
+namespace Autofac.Core.Resolving
 {
     // Is a component context that sequences and monitors the multiple
     // activations that go into producing a single requested object graph

@@ -31,7 +31,7 @@ using Autofac.Core.Registration;
 using Autofac.Core.SelfRegistration;
 using Autofac.Util;
 
-namespace Autofac
+namespace Autofac.Core
 {
     /// <summary>
     /// Standard container implementation.

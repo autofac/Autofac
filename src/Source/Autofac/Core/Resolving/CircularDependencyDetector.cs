@@ -27,8 +27,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Autofac.Util;
+using Autofac.Core;
 
-namespace Autofac.Resolving
+namespace Autofac.Core.Resolving
 {
     class CircularDependencyDetector
     {

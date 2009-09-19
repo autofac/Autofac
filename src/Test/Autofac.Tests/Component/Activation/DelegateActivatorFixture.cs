@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using System.Linq;
 using Autofac.Core.Activators.Delegate;
+using Autofac.Core;
 
 namespace Autofac.Tests.Component.Activation
 {

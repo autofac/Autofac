@@ -25,7 +25,7 @@
 
 using System;
 using System.Collections.Generic;
-using Autofac.Resolving;
+using Autofac.Core.Resolving;
 using Autofac.Core.SelfRegistration;
 using Autofac.Util;
 

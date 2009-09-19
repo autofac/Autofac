@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac
+namespace Autofac.Core
 {
 
 

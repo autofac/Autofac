@@ -23,21 +23,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-namespace Autofac
-{
-	/// <summary>
-	/// Determines when instances supporting IDisposable are disposed.
-	/// </summary>
-	public enum InstanceOwnership
-	{
-		/// <summary>
-		/// The lifetime scope does not dispose the instances.
-		/// </summary>
-		ExternallyOwned,
+using System.Collections.Generic;
+using Autofac.Core;
 
-		/// <summary>
-		/// The instances are disposed when the lifetime scope is disposed.
-		/// </summary>
-		OwnedByLifetimeScope
-	}
+namespace Autofac.Core.Resolving
+{
+    interface IResolveOperation
+    {
+        object Resolve(ISharingLifetimeScope activationScope, IComponentRegistration registration, IEnumerable<Parameter> parameters);
+    }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.Builder;
 using NUnit.Framework;
+using Autofac.Core;
 
 namespace Autofac.Tests
 {

@@ -5,6 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using Autofac.Integration.Wcf;
 using Autofac.Builder;
+using Autofac.Core;
 
 namespace Autofac.Tests.Integration.Wcf
 {

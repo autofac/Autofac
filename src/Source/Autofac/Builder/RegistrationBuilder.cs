@@ -29,6 +29,7 @@ using System.Linq;
 using Autofac.Core.Lifetime;
 using Autofac.Util;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Core;
 
 namespace Autofac.Builder
 {

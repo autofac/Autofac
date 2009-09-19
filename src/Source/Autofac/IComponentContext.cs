@@ -49,7 +49,7 @@ namespace Autofac
         /// The component instance.
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
-        /// <exception cref="DependencyResolutionException"/>
+        /// <exception cref="Autofac.Core.DependencyResolutionException"/>
         object Resolve(IComponentRegistration registration, IEnumerable<Parameter> parameters);
 	}
 }

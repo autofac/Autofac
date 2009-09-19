@@ -29,7 +29,7 @@ using Autofac.Core.Lifetime;
 using Autofac.Util;
 using Autofac.Core;
 
-namespace Autofac.Resolving
+namespace Autofac.Core.Resolving
 {
     // Is a component context that pins resolution to a point in the context hierarchy
     class ComponentActivation : IComponentContext

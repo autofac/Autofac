@@ -29,6 +29,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 using Autofac.Builder;
+using Autofac.Core;
 
 namespace Autofac.Integration.Web.Mvc
 {

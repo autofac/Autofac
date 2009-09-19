@@ -5,6 +5,7 @@ using System.Text;
 using Autofac.Core.Registration;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Core;
 
 namespace Autofac.Tests
 {

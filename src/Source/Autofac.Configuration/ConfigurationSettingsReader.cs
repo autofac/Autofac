@@ -31,6 +31,7 @@ using System.Reflection;
 using Autofac.Builder;
 using System.Linq;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Core;
 
 namespace Autofac.Configuration
 {

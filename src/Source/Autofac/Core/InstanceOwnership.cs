@@ -23,21 +23,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-namespace Autofac
+namespace Autofac.Core
 {
 	/// <summary>
-	/// Determines whether instances are shared within a lifetime scope.
+	/// Determines when instances supporting IDisposable are disposed.
 	/// </summary>
-	public enum InstanceSharing
+	public enum InstanceOwnership
 	{
 		/// <summary>
-		/// Each request for an instance will return a new object.
+		/// The lifetime scope does not dispose the instances.
 		/// </summary>
-		None,
+		ExternallyOwned,
 
 		/// <summary>
-		/// Each request for an instance will return the same object.
+		/// The instances are disposed when the lifetime scope is disposed.
 		/// </summary>
-		Shared
+		OwnedByLifetimeScope
 	}
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Core;
 
 namespace Autofac.Tests.Component.Activation
 {

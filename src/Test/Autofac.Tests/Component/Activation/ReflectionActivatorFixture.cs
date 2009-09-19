@@ -5,6 +5,7 @@ using System.Linq;
 using Moq;
 using System.Reflection;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Core;
 
 namespace Autofac.Tests.Component.Activation
 {

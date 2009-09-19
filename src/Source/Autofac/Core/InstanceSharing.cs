@@ -23,13 +23,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Collections.Generic;
-using Autofac.Core;
-
-namespace Autofac.Resolving
+namespace Autofac.Core
 {
-    interface IResolveOperation
-    {
-        object Resolve(ISharingLifetimeScope activationScope, IComponentRegistration registration, IEnumerable<Parameter> parameters);
-    }
+	/// <summary>
+	/// Determines whether instances are shared within a lifetime scope.
+	/// </summary>
+	public enum InstanceSharing
+	{
+		/// <summary>
+		/// Each request for an instance will return a new object.
+		/// </summary>
+		None,
+
+		/// <summary>
+		/// Each request for an instance will return the same object.
+		/// </summary>
+		Shared
+	}
 }

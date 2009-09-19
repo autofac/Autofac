@@ -25,9 +25,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Autofac.Util;
 
-namespace Autofac
+namespace Autofac.Util
 {
     static class SequenceExtensions
     {

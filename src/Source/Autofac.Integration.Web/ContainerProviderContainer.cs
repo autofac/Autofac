@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using Autofac.Core;
 
 namespace Autofac.Integration.Web
 {

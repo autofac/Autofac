@@ -6,6 +6,7 @@ using NUnit.Framework;
 using Autofac.Builder;
 using Autofac.Integration.Web;
 using Autofac.Core.Lifetime;
+using Autofac.Core;
 
 namespace Autofac.Tests.Integration.Web
 {

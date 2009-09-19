@@ -26,12 +26,12 @@
 using System;
 using Autofac.Util;
 
-namespace Autofac
+namespace Autofac.Core
 {
     /// <summary>
     /// Fired when the activation process for a new instance is complete.
     /// </summary>
-    public class ActivatedEventArgs<T> : EventArgs
+    public class ActivatingEventArgs<T> : EventArgs
     {
         readonly IComponentContext _context;
         readonly IComponentRegistration _component;
@@ -43,7 +43,7 @@ namespace Autofac
         /// <param name="context">The context.</param>
         /// <param name="component">The component.</param>
         /// <param name="instance">The instance.</param>
-        public ActivatedEventArgs(IComponentContext context, IComponentRegistration component, T instance)
+        public ActivatingEventArgs(IComponentContext context, IComponentRegistration component, T instance)
         {
             _context = Enforce.ArgumentNotNull(context, "context");
             _component = Enforce.ArgumentNotNull(component, "component");

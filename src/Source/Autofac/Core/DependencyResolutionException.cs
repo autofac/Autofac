@@ -26,7 +26,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Autofac
+namespace Autofac.Core
 {
 	/// <summary>
 	/// Problem resolving dependencies, e.g. circular references, no callable constructor etc.

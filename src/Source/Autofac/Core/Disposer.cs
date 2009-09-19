@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using Autofac.Util;
 
-namespace Autofac
+namespace Autofac.Core
 {
     /// <summary>
     /// Maintains a set of objects to dispose, and disposes them in the reverse order

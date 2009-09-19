@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using Autofac.Util;
 
-namespace Autofac
+namespace Autofac.Core
 {
     /// <summary>
     /// Fired before the activation process to allow parameters to be changed or an alternative
