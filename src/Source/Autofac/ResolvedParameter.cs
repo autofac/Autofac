@@ -31,7 +31,8 @@ using Autofac.Core;
 namespace Autofac
 {
     /// <summary>
-    /// Flexible parameter type allows arbitrary values to be retrieved from the resolution context.
+    /// Flexible parameter type allows arbitrary values to be retrieved
+    /// from the resolution context.
     /// </summary>
     public class ResolvedParameter : Parameter
     {

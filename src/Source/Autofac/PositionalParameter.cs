@@ -31,8 +31,24 @@ namespace Autofac
 {
     /// <summary>
     /// A parameter that is identified according to an integer representing its
-    /// position in an argument list.
+    /// position in an argument list. When applied to a reflection-based
+    /// component, <see cref="PositionalParameter.Position"/> will be matched against
+    /// the indices of the component's constructor arguments. When applied to
+    /// a delegate-based component, the parameter can be accessed using
+    /// <see cref="ParameterExtensions.Positional"/>.
     /// </summary>
+    /// <example>
+    /// public class MyComponent
+    /// {
+    ///     public MyComponent(int amount) { ... }
+    /// }
+    /// 
+    /// var builder = new ContainerBuilder();
+    /// builder.RegisterType&lt;MyComponent&gt;();
+    /// var container = builder.Build();
+    /// var myComponent = container.Resolve&lt;MyComponent&gt;(
+    ///     new Parameter[] { new PositionalParameter(0, 123) });
+    /// </example>
     public class PositionalParameter : ConstantParameter
     {
         /// <summary>
@@ -41,7 +57,7 @@ namespace Autofac
         public int Position { get; private set; }
 
         /// <summary>
-        /// Construct a positional parameter with the specified value.
+        /// Construct a positional parameter with the specified constant value.
         /// </summary>
         /// <param name="position">The zero-based position of the parameter.</param>
         /// <param name="value">The parameter value.</param>

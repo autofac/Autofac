@@ -31,8 +31,24 @@ using Autofac.Core;
 namespace Autofac
 {
 	/// <summary>
-	/// Used to incrementally build component registrations for a container.
+	/// Used to build an <see cref="IContainer"/> from component registrations.
 	/// </summary>
+    /// <example>
+    /// var builder = new ContainerBuilder();
+    /// 
+    /// builder.RegisterType&lt;Logger&gt;()
+    ///     .As&lt;ILogger&gt;()
+    ///     .SingleSharedInstance();
+    /// 
+    /// builder.RegisterDelegate(c => new MessageHandler(c.Resolve&lt;ILogger&gt;()));
+    /// 
+    /// var container = builder.Build();
+    /// // resolve components from container...
+    /// </example>
+    /// <remarks>Most <see cref="ContainerBuilder"/> functionality is accessed
+    /// via extension methods in <see cref="RegistrationExtensions"/>.</remarks>
+    /// <seealso cref="IContainer"/>
+    /// <see cref="RegistrationExtensions"/>
 	public class ContainerBuilder
 	{
         private readonly IList<Action<IComponentRegistry>> _configurationCallbacks = new List<Action<IComponentRegistry>>();
@@ -41,6 +57,7 @@ namespace Autofac
         /// <summary>
         /// Register a callback that will be invoked when the container is configured.
         /// </summary>
+        /// <remarks>This is primarily for extending the builder syntax.</remarks>
         /// <param name="configurationCallback">Callback to execute.</param>
         public virtual void RegisterCallback(Action<IComponentRegistry> configurationCallback)
         {
@@ -48,13 +65,13 @@ namespace Autofac
         }
 
 		/// <summary>
-		/// Create a new container with the registrations that have been built so far.
+		/// Create a new container with the component registrations that have been made.
 		/// </summary>
 		/// <remarks>
-		/// Build can only be called once per ContainerBuilder - this prevents lifecycle
-		/// issues for provided instances.
+        /// Build can only be called once per <see cref="ContainerBuilder"/>
+        /// - this prevents ownership issues for provided instances.
 		/// </remarks>
-		/// <returns>A new container with the registrations made.</returns>
+		/// <returns>A new container with the configured component registrations.</returns>
 		public virtual IContainer Build()
 		{
 			var result = new Container();
@@ -63,12 +80,13 @@ namespace Autofac
 		}
 
 		/// <summary>
-		/// Configure an existing comopnent registry with the registrations that have been built so far.
+		/// Configure an existing component registry with the component registrations
+        /// that have been made.
 		/// </summary>
-		/// <remarks>
-		/// Build can only be called once per ContainerBuilder - this prevents lifecycle
-		/// issues for provided instances.
-		/// </remarks>
+        /// <remarks>
+        /// Build can only be called once per <see cref="ContainerBuilder"/>
+        /// - this prevents ownership issues for provided instances.
+        /// </remarks>
         /// <param name="componentRegistry">An existing component registry to make the registrations in.</param>
 		public virtual void Build(IComponentRegistry componentRegistry)
 		{

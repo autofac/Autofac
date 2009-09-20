@@ -34,7 +34,7 @@ using Autofac.Core.Registration;
 namespace Autofac
 {
     /// <summary>
-    /// Adds syntactic conventience methods to the <see cref="IComponentContext"/> interface.
+    /// Adds syntactic convenience methods to the <see cref="IComponentContext"/> interface.
     /// </summary>
     public static class ResolutionExtensions
     {

@@ -32,20 +32,21 @@ using Autofac.Core;
 namespace Autofac
 {
     /// <summary>
-    /// Extension methods that ease the extraction of particluar kinds of parameter values from
-    /// an enumerable sequence of the Parameter abstract type.
+    /// Extension methods that simplify extraction of parameter values from
+    /// an <see cref="IEnumerable{T}"/> where T is <see cref="Autofac.Core.Parameter"/>.
     /// Each method returns the first matching parameter value, or throws an exception if
     /// none is provided.
     /// </summary>
     public static class ParameterExtensions
     {
         /// <summary>
-        /// Retrieve a parameter value from a <see cref="NamedParameter"/> instance.
+        /// Retrieve a named parameter value from a <see cref="NamedParameter"/> instance.
         /// </summary>
         /// <typeparam name="T">The type to which the returned value will be cast.</typeparam>
         /// <param name="parameters">The available parameters to choose from.</param>
         /// <param name="name">The name of the parameter to select.</param>
         /// <returns>The value of the selected parameter.</returns>
+        /// <seealso cref="NamedParameter"/>
         public static T Named<T>(this IEnumerable<Parameter> parameters, string name)
         {
             Enforce.ArgumentNotNull(parameters, "parameters");
@@ -55,12 +56,16 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Retrieve a parameter value from a <see cref="PositionalParameter"/> instance.
+        /// Retrieve a positional parameter value from a <see cref="PositionalParameter"/> instance.
         /// </summary>
         /// <typeparam name="T">The type to which the returned value will be cast.</typeparam>
         /// <param name="parameters">The available parameters to choose from.</param>
         /// <param name="position">The zero-based position of the parameter to select.</param>
         /// <returns>The value of the selected parameter.</returns>
+        /// <remarks>The position value is the one associated with the parameter when
+        /// it was constructed, <b>not</b> its index into the <paramref name="parameters"/>
+        /// sequence.</remarks>
+        /// <seealso cref="PositionalParameter"/>
         public static T Positional<T>(this IEnumerable<Parameter> parameters, int position)
         {
             Enforce.ArgumentNotNull(parameters, "parameters");
@@ -70,11 +75,12 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Retrieve a parameter value from a <see cref="TypedParameter"/> instance.
+        /// Retrieve a typed parameter value from a <see cref="TypedParameter"/> instance.
         /// </summary>
         /// <typeparam name="T">The type to which the returned value will be cast.</typeparam>
         /// <param name="parameters">The available parameters to choose from.</param>
         /// <returns>The value of the selected parameter.</returns>
+        /// <seealso cref="TypedParameter"/>
         public static T TypedAs<T>(this IEnumerable<Parameter> parameters)
         {
             Enforce.ArgumentNotNull(parameters, "parameters");

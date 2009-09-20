@@ -41,7 +41,7 @@ using Autofac.Builder;
 namespace Autofac
 {
     /// <summary>
-    /// Adds registration syntax to the ContainerBuilder type.
+    /// Adds registration syntax to the <see cref="ContainerBuilder"/> type.
     /// </summary>
     public static class RegistrationExtensions
     {

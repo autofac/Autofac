@@ -31,17 +31,33 @@ namespace Autofac
 {
 	/// <summary>
 	/// A parameter that can supply values to sites that exactly
-	/// match a specified type.
-	/// </summary>
+    /// match a specified type. When applied to a reflection-based
+    /// component, <see cref="TypedParameter.Type"/> will be matched against
+    /// the types of the component's constructor arguments. When applied to
+    /// a delegate-based component, the parameter can be accessed using
+    /// <see cref="ParameterExtensions.TypedAs"/>.
+    /// </summary>
+    /// <example>
+    /// public class MyComponent
+    /// {
+    ///     public MyComponent(int amount) { ... }
+    /// }
+    /// 
+    /// var builder = new ContainerBuilder();
+    /// builder.RegisterType&lt;MyComponent&gt;();
+    /// var container = builder.Build();
+    /// var myComponent = container.Resolve&lt;MyComponent&gt;(
+    ///     new Parameter[] { new TypedParameter(typeof(int), 123) });
+    /// </example>
     public class TypedParameter : ConstantParameter
     {
         /// <summary>
-        /// The type against which sites are matched.
+        /// The type against which targets are matched.
         /// </summary>
         public Type Type { get; private set; }
 
         /// <summary>
-        /// Create a typed parameter for the specified type.
+        /// Create a typed parameter with the specified constant value.
         /// </summary>
         /// <param name="type">The exact type to match.</param>
         /// <param name="value">The parameter value.</param>

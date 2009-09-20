@@ -29,8 +29,24 @@ using Autofac.Core;
 namespace Autofac
 {
     /// <summary>
-    /// A parameter identified according to its name within an argument list declaration.
+    /// A parameter identified by name. When applied to a reflection-based
+    /// component, <see cref="NamedParameter.Name"/> will be matched against
+    /// the name of the component's constructor arguments. When applied to
+    /// a delegate-based component, the parameter can be accessed using
+    /// <see cref="ParameterExtensions.Named"/>.
     /// </summary>
+    /// <example>
+    /// public class MyComponent
+    /// {
+    ///     public MyComponent(int amount) { ... }
+    /// }
+    /// 
+    /// var builder = new ContainerBuilder();
+    /// builder.RegisterType&lt;MyComponent&gt;();
+    /// var container = builder.Build();
+    /// var myComponent = container.Resolve&lt;MyComponent&gt;(
+    ///     new Parameter[] { new NamedParameter("amount", 123) });
+    /// </example>
     public class NamedParameter : ConstantParameter
     {
         /// <summary>
@@ -39,7 +55,7 @@ namespace Autofac
         public string Name { get; private set; }
 
         /// <summary>
-        /// Create a named parameter with the specified value.
+        /// Create a <see cref="NamedParameter"/> with the specified constant value.
         /// </summary>
         /// <param name="name">The name of the parameter.</param>
         /// <param name="value">The parameter value.</param>

@@ -28,9 +28,40 @@ using Autofac.Core;
 namespace Autofac.Builder
 {
     /// <summary>
-    /// Base class for user-defined modules. Implements IModule on top
-    /// of ContainerBuilder.
+    /// Base class for user-defined modules. Modules can add a set of releated components
+    /// to a container (<see cref="Module.Load"/>) or attach cross-cutting functionality
+    /// to other components (<see cref="Module.AttachToComponentRegistration"/>.
+    /// Modules are given special support in the XML configuration feature - see
+    /// http://code.google.com/p/autofac/wiki/StructuringWithModules.
     /// </summary>
+    /// <remarks>Provides a user-friendly way to implement <see cref="Autofac.Core.IModule"/>
+    /// via <see cref="ContainerBuilder"/>.</remarks>
+    /// <example>
+    /// // Defining a module:
+    /// 
+    /// public class DataAccessModule : Module
+    /// {
+    ///     public string ConnectionString { get; set; }
+    ///     
+    ///     public override void Load(ContainerBuilder moduleBuilder)
+    ///     {
+    ///         moduleBuilder.RegisterGeneric(typeof(MyRepository&lt;&gt;))
+    ///             .As(typeof(IRepository&lt;&gt;))
+    ///             .ShareInstanceIn(WebLifetime.Request);
+    ///         
+    ///         moduleBuilder.RegisterDelegate(c =&gt; new MyDbConnection(ConnectionString))
+    ///             .As&lt;IDbConnection&gt;()
+    ///             .ShareInstanceIn(WebLifetime.Request);
+    ///     }
+    /// }
+    /// 
+    /// // Using the module:
+    /// 
+    /// var builder = new ContainerBuilder();
+    /// builder.RegisterModule(new DataAccessModule { ConnectionString = "..." });
+    /// var container = builder.Build();
+    /// var customers = container.Resolve&lt;IRepository&lt;Customer&gt;&gt;();
+    /// </example>
     public abstract class Module : IModule
     {
         /// <summary>
@@ -48,18 +79,23 @@ namespace Autofac.Builder
 
         /// <summary>
         /// Override to add registrations to the container.
+        /// </summary>
+        /// <remarks>
         /// Note that the ContainerBuilder parameter is not the same one
 	    /// that the module is being registered by (i.e. it can have its own defaults.)
-	    /// </summary>
-		/// <param name="moduleBuilder">The builder.</param>
+        /// </remarks>
+		/// <param name="moduleBuilder">The builder through which components can be
+        /// registered.</param>
         protected virtual void Load(ContainerBuilder moduleBuilder) { }
 
         /// <summary>
-        /// Attach the module to a registration either already existing in
-        /// or being registered in the component registry.
+        /// Override to attach module-specific functionality to a
+        /// component registration.
         /// </summary>
+        /// <remarks>This method will be called for all existing <i>and future</i> component
+        /// registrations - ordering is not important.</remarks>
         /// <param name="componentRegistry">The component registry.</param>
-        /// <param name="registration">The registration.</param>
+        /// <param name="registration">The registration to attach functionality to.</param>
         protected virtual void AttachToComponentRegistration(
             IComponentRegistry componentRegistry,
             IComponentRegistration registration)

@@ -28,14 +28,26 @@ using System;
 namespace Autofac
 {
     /// <summary>
-    /// Provides the full Autofac container functionality.
+    /// Creates, wires dependencies and manages lifetime for a set of components.
+    /// Most instances of <see cref="IContainer"/> are created 
+    /// by a <see cref="ContainerBuilder"/>.
     /// </summary>
+    /// <example>
+    /// // See ContainerBuilder for the definition of the builder variable
+    /// using (var container = builder.Build())
+    /// {
+    ///     var program = container.Resolve&lt;Program&gt;();
+    ///     program.Run();
+    /// }
+    /// </example>
     /// <remarks>
-    /// It is recommended that in most instances the more limited <see cref="ILifetimeScope"/> or
-    /// <see cref="Autofac.Core.IComponentContext"/> interfaces are 
-    /// used instead, as this is easier to implement on top of a different back-end, e.g. a
-    /// customised or alternative container.
+    /// Most <see cref="IContainer"/> functionality is provided by extension methods
+    /// on the inherited <see cref="Autofac.Core.IComponentContext"/> interface.
     /// </remarks>
+    /// <seealso cref="ILifetimeScope"/>
+    /// <seealso cref="Autofac.Core.IComponentContext"/>
+    /// <seealso cref="ResolutionExtensions"/>
+    /// <seealso cref="ContainerBuilder"/>
     public interface IContainer : ILifetimeScope, IDisposable
     {
     }
