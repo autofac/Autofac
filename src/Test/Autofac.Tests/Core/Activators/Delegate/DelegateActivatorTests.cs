@@ -7,24 +7,24 @@ using Autofac.Core;
 namespace Autofac.Tests.Component.Activation
 {
     [TestFixture]
-    public class DelegateActivatorFixture
+    public class DelegateActivatorTests
     {
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void DoesNotAcceptNullDelegate()
+        public void Constructor_DoesNotAcceptNullDelegate()
         {
             new DelegateActivator(typeof(object), null);
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void DoesNotAcceptNullType()
+        public void Constructor_DoesNotAcceptNullType()
         {
             new DelegateActivator(null, (c, p) => new object());
         }
 
         [Test]
-        public void ActivateInstance()
+        public void ActivateInstance_ReturnsResultOfInvokingSuppliedDelegate()
         {
             object instance = new object();
 

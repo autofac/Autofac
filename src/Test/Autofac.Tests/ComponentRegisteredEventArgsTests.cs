@@ -37,7 +37,7 @@ namespace Autofac.Tests
 		public void ConstructorSetsProperties()
 		{
 			var registry = new ComponentRegistry();
-			var registration = Fixture.CreateSingletonObjectRegistration();
+			var registration = Factory.CreateSingletonObjectRegistration();
 			var args = new ComponentRegisteredEventArgs(registry, registration);
 			Assert.AreSame(registry, args.ComponentRegistry);
 			Assert.AreSame(registration, args.ComponentRegistration);
@@ -47,7 +47,7 @@ namespace Autofac.Tests
 		[ExpectedException(typeof(ArgumentNullException))]
 		public void NullContainerDetected()
 		{
-			var registration = Fixture.CreateSingletonObjectRegistration();
+			var registration = Factory.CreateSingletonObjectRegistration();
 			var args = new ComponentRegisteredEventArgs(null, registration);
 		}
 		

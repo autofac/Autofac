@@ -60,7 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssertionHelpers.cs" />
+    <Compile Include="Assertions.cs" />
     <Compile Include="Builder\PropertyInjectionTests.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -89,26 +89,37 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ComponentRegisteredEventArgsTests.cs" />
-    <Compile Include="ComponentRegistryTests.cs" />
+    <Compile Include="Core\ComponentRegistrationTests.cs" />
+    <Compile Include="Core\Registration\ComponentRegistryTests.cs" />
     <Compile Include="ContainerExtensionsTests.cs" />
-    <Compile Include="Fixture.cs" />
+    <Compile Include="Core\Resolving\CircularDependencyDetectorTests.cs" />
+    <Compile Include="Core\Resolving\ResolveOperationTests.cs" />
+    <Compile Include="Core\TypedServiceTests.cs" />
+    <Compile Include="Factory.cs" />
     <Compile Include="Features\GeneratedFactories\GeneratedFactoriesTests.cs" />
     <Compile Include="Features\Collections\ImplicitCollectionSupportModuleFixture.cs" />
     <Compile Include="NamedParameterTests.cs" />
     <Compile Include="DisposerTests.cs" />
     <Compile Include="Features\OpenGenerics\GenericRegistrationHandlerFixture.cs" />
     <Compile Include="Core\Registration\RegistrationFixture.cs" />
-    <Compile Include="Core\Activators\Delegate\DelegateActivatorFixture.cs" />
+    <Compile Include="Core\Activators\Delegate\DelegateActivatorTests.cs" />
     <Compile Include="DisposeTracker.cs" />
     <Compile Include="BugFixture.cs" />
-    <Compile Include="ContainerFixture.cs" />
-    <Compile Include="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorFixture.cs" />
-    <Compile Include="Core\Activators\Reflection\MostParametersConstructorSelectorFixture.cs" />
+    <Compile Include="Core\ContainerTests.cs" />
+    <Compile Include="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorTests.cs" />
+    <Compile Include="Core\Activators\Reflection\MostParametersConstructorSelectorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Core\Activators\Reflection\ReflectionActivatorFixture.cs" />
+    <Compile Include="Core\Activators\Reflection\ReflectionActivatorTests.cs" />
     <Compile Include="Core\Activators\Reflection\MatchingSignatureConstructorSelectorTests.cs" />
+    <Compile Include="ResolutionExtensionsTests.cs" />
     <Compile Include="ResolvedParameterTests.cs" />
-    <Compile Include="Core\ServiceTests.cs" />
+    <Compile Include="Core\NamedServiceTests.cs" />
+    <Compile Include="Scenarios\ConstructorSelection\MultipleConstructors.cs" />
+    <Compile Include="Scenarios\Dependencies\Dependent.cs" />
+    <Compile Include="Scenarios\Dependencies\DependsByCtor.cs" />
+    <Compile Include="Scenarios\Dependencies\DependsByProp.cs" />
+    <Compile Include="Scenarios\Parameterisation\Parameterised.cs" />
+    <Compile Include="Scenarios\RegistrationSources\ObjectRegistrationSource.cs" />
     <Compile Include="TagsFixture.cs" />
     <Compile Include="TypedParameterTests.cs" />
   </ItemGroup>

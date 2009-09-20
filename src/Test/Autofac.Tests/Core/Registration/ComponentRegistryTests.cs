@@ -5,32 +5,25 @@ using System.Text;
 using NUnit.Framework;
 using Autofac.Core.Registration;
 using Autofac.Core;
+using Autofac.Tests.Scenarios.RegistrationSources;
 
-namespace Autofac.Tests
+namespace Autofac.Tests.Core.Registration
 {
     [TestFixture]
     public class ComponentRegistryTests
     {
-        class ObjectRegistrationSource : IRegistrationSource
+        [Test]
+        public void Register_DoesNotAcceptNull()
         {
-            public bool TryGetRegistration(Service service, Func<Service, bool> registeredServicesTest, out IComponentRegistration registration)
+            var registry = new ComponentRegistry();
+            Assertions.AssertThrows<ArgumentNullException>(delegate
             {
-                var objectService = new TypedService(typeof(object));
-                if (service == objectService)
-                {
-                    registration = Fixture.CreateSingletonObjectRegistration();
-                    return true;
-                }
-                else
-                {
-                    registration = null;
-                    return false;
-                }
-            }
+                registry.Register(null);
+            });
         }
 
         [Test]
-        public void RegistrationsForServiceIncludeDynamicSources()
+        public void RegistrationsForServiceIncludeDynamicSources_WhenNoOtherImplementationsRegistered()
         {
             var registry = new ComponentRegistry();
             registry.AddRegistrationSource(new ObjectRegistrationSource());
@@ -40,7 +33,17 @@ namespace Autofac.Tests
         }
 
         [Test]
-        public void ComponentRegisteredEventFired()
+        [Ignore("Not implemented")]
+        public void RegistrationsForServiceIncludeDynamicSources_WhenOtherImplementationRegistered()
+        {
+            var registry = new ComponentRegistry();
+            registry.Register(Factory.CreateSingletonObjectRegistration());
+            registry.AddRegistrationSource(new ObjectRegistrationSource());
+            Assert.IsTrue(registry.RegistrationsFor(new TypedService(typeof(object))).Count() == 2);
+        }
+
+        [Test]
+        public void WhenRegistrationIsMad_ComponentRegisteredEventFired()
         {
             object eventSender = null;
             ComponentRegisteredEventArgs args = null;
@@ -54,7 +57,7 @@ namespace Autofac.Tests
                 ++eventCount;
             };
 
-            var registration = Fixture.CreateSingletonObjectRegistration();
+            var registration = Factory.CreateSingletonObjectRegistration();
             registry.Register(registration);
 
             Assert.AreEqual(1, eventCount);
@@ -66,10 +69,10 @@ namespace Autofac.Tests
         }
 
         [Test]
-        public void DefaultRegistrationIsForMostRecent()
+        public void WhenMultipleProvidersOfServiceExist_DefaultRegistrationIsMostRecent()
         {
-            var r1 = Fixture.CreateSingletonObjectRegistration();
-            var r2 = Fixture.CreateSingletonObjectRegistration();
+            var r1 = Factory.CreateSingletonObjectRegistration();
+            var r2 = Factory.CreateSingletonObjectRegistration();
 
             var registry = new ComponentRegistry();
 
@@ -82,7 +85,7 @@ namespace Autofac.Tests
         }
 
         [Test]
-        public void DefaultRegistrationFalseWhenAbsent()
+        public void WhenNoImplementers_TryGetRegistrationReturnsFalse()
         {
             var registry = new ComponentRegistry();
             IComponentRegistration unused;
@@ -90,7 +93,7 @@ namespace Autofac.Tests
         }
 
         [Test]
-        public void DefaultRegistrationSuppliedDynamically()
+        public void WhenNoImplementerIsDirectlyRegistered_RegistrationCanBeProvidedDynamically()
         {
             var registry = new ComponentRegistry();
             registry.AddRegistrationSource(new ObjectRegistrationSource());

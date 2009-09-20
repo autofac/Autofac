@@ -6,51 +6,74 @@ using Moq;
 using System.Reflection;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core;
+using Autofac.Tests.Scenarios.Dependencies;
+using Autofac.Tests.Scenarios.ConstructorSelection;
 
-namespace Autofac.Tests.Component.Activation
+namespace Autofac.Tests.Core.Activators.Reflection
 {
     [TestFixture]
     public class ReflectionActivatorFixture
     {
-        ReflectionActivator CreateActivator(Type implementation)
+        [Test]
+        public void Constructor_DoesNotAcceptNullType()
         {
-            return new ReflectionActivator(
-                implementation,
-                new BindingFlagsConstructorFinder(BindingFlags.Public),
-                new MostParametersConstructorSelector(),
-                Enumerable.Empty<Parameter>());
+            Assertions.AssertThrows<ArgumentNullException>(delegate
+            {
+                new ReflectionActivator(null,
+                    new Mock<IConstructorFinder>().Object,
+                    new Mock<IConstructorSelector>().Object,
+                    Factory.NoParameters);
+            });
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void ConstructNull()
+        public void Constructor_DoesNotAcceptNullParameters()
         {
-            var target = CreateActivator(null);
+            Assertions.AssertThrows<ArgumentNullException>(delegate
+            {
+                new ReflectionActivator(typeof(object),
+                    new Mock<IConstructorFinder>().Object,
+                    new Mock<IConstructorSelector>().Object,
+                    null);
+            });
         }
 
         [Test]
-        public void ActivateInstance()
+        public void Constructor_DoesNotAcceptNullFinder()
         {
-            var target = CreateActivator(typeof(object));
-            var instance = target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
+            Assertions.AssertThrows<ArgumentNullException>(delegate
+            {
+                new ReflectionActivator(typeof(object),
+                    null,
+                    new Mock<IConstructorSelector>().Object,
+                    Factory.NoParameters);
+            });
+        }
+
+        [Test]
+        public void Constructor_DoesNotAcceptNullSelector()
+        {
+            Assertions.AssertThrows<ArgumentNullException>(delegate
+            {
+                new ReflectionActivator(typeof(object),
+                    new Mock<IConstructorFinder>().Object,
+                    null,
+                    Factory.NoParameters);
+            });
+        }
+
+        [Test]
+        public void ActivateInstance_ReturnsInstanceOfTargetType()
+        {
+            var target = Factory.CreateReflectionActivator(typeof(object));
+            var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
 
             Assert.IsNotNull(instance);
             Assert.IsInstanceOfType(typeof(object), instance.GetType());
         }
 
-        class Dependent
-        {
-            public object TheObject;
-            public string TheString;
-
-            public Dependent(object o, string s) {
-                TheObject = o;
-                TheString = s;
-            }
-        }
-
         [Test]
-        public void ResolvesDependencies()
+        public void ActivateInstance_ResolvesConstructorDependencies()
         {
             var o = new object();
             var s = "s";
@@ -60,8 +83,8 @@ namespace Autofac.Tests.Component.Activation
 			builder.RegisterInstance<string>(s);
 			var container = builder.Build();
 
-            var target = CreateActivator(typeof(Dependent));
-            var instance = target.ActivateInstance(container, Enumerable.Empty<Parameter>());
+            var target = Factory.CreateReflectionActivator(typeof(Dependent));
+            var instance = target.ActivateInstance(container, Factory.NoParameters);
 
             Assert.IsNotNull(instance);
             Assert.IsInstanceOfType(typeof(Dependent), instance);
@@ -73,22 +96,13 @@ namespace Autofac.Tests.Component.Activation
        }
 
         [Test]
-        [ExpectedException(typeof(DependencyResolutionException))]
-        public void DependenciesNotAvailable()
+        public void ActivateInstance_DependenciesNotAvailable_ThrowsException()
         {
-            var target = CreateActivator(typeof(Dependent));
-            var instance = target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
-        }
-
-        class MultipleConstructors
-        {
-            public MultipleConstructors(object o, string s)
+            var target = Factory.CreateReflectionActivator(typeof(Dependent));
+            Assertions.AssertThrows<DependencyResolutionException>(delegate
             {
-            }
-
-            public MultipleConstructors(object o)
-            {
-            }
+                target.ActivateInstance(Factory.EmptyContext, Factory.NoParameters);
+            });
         }
 
         [Test]
@@ -100,31 +114,17 @@ namespace Autofac.Tests.Component.Activation
 			builder.RegisterType(typeof(object));
             var container = builder.Build();
 
-            var target = CreateActivator(typeof(MultipleConstructors));
-            var instance = target.ActivateInstance(container, Enumerable.Empty<Parameter>());
+            var target = Factory.CreateReflectionActivator(typeof(MultipleConstructors));
+            var instance = target.ActivateInstance(container, Factory.NoParameters);
 
             Assert.IsNotNull(instance);
             Assert.IsInstanceOfType(typeof(MultipleConstructors), instance);
         }
 
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void DetectsNullConstructorFinder()
-        {
-            var target = new ReflectionActivator(typeof(object), new Mock<IConstructorFinder>().Object, null, Enumerable.Empty<Parameter>());
-        }
-
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void DetectsNullConstructorSelector()
-        {
-            var target = new ReflectionActivator(typeof(object), null, new Mock<IConstructorSelector>().Object, Enumerable.Empty<Parameter>());
-        }
-
-        class AcceptsObjectParameter {
-            public object P;
-            public AcceptsObjectParameter(object p) { P = p; }
-        }
+        //class AcceptsObjectParameter {
+        //    public object P;
+        //    public AcceptsObjectParameter(object p) { P = p; }
+        //}
 
         //[Test]
         //public void ProvidedOverridesContainer()
@@ -141,7 +141,7 @@ namespace Autofac.Tests.Component.Activation
         //    var target = CreateActivator(typeof(AcceptsObjectParameter));
         //    target., parameters);
 
-        //    var instance = (AcceptsObjectParameter)target.ActivateInstance(container, Enumerable.Empty<Parameter>());
+        //    var instance = (AcceptsObjectParameter)target.ActivateInstance(container, Factory.NoParameters);
 
         //    Assert.AreSame(parameterInstance, instance.P);
         //    Assert.AreNotSame(containedInstance, instance.P);
@@ -155,7 +155,7 @@ namespace Autofac.Tests.Component.Activation
 
         //    var target = CreateActivator(typeof(AcceptsObjectParameter), parameters);
 
-        //    var instance = target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
+        //    var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
 
         //    Assert.IsNotNull(instance);
         //    Assert.IsInstanceOfType(typeof(AcceptsObjectParameter), instance);
@@ -172,7 +172,7 @@ namespace Autofac.Tests.Component.Activation
 
         //    var target = CreateActivator(typeof(AcceptsObjectParameter), parameters);
 
-        //    var instance = target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
+        //    var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
 
         //    Assert.IsNotNull(instance);
         //    Assert.IsInstanceOfType(typeof(AcceptsObjectParameter), instance);
@@ -195,7 +195,7 @@ namespace Autofac.Tests.Component.Activation
 
         //    var target = CreateActivator(typeof(AcceptsIntParameter), parameters);
 
-        //    var instance = target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
+        //    var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
 
         //    Assert.IsNotNull(instance);
         //    Assert.IsInstanceOfType(typeof(AcceptsIntParameter), instance);
@@ -212,7 +212,7 @@ namespace Autofac.Tests.Component.Activation
 
         //    var target = CreateActivator(typeof(AcceptsIntParameter), parameters);
 
-        //    var instance = target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
+        //    var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
 
         //    Assert.IsNotNull(instance);
         //    Assert.IsInstanceOfType(typeof(AcceptsIntParameter), instance);
@@ -239,7 +239,7 @@ namespace Autofac.Tests.Component.Activation
 
         //    var target = CreateActivator(typeof(ThreeConstructors), parameters);
 
-        //    var instance = target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
+        //    var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
 
         //    Assert.IsNotNull(instance);
         //    Assert.IsInstanceOfType(typeof(ThreeConstructors), instance);
@@ -258,7 +258,7 @@ namespace Autofac.Tests.Component.Activation
         //public void NonPublicConstructorsIgnored()
         //{
         //    var target = CreateActivator(typeof(NoPublicConstructor));
-        //    target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
+        //    target.ActivateInstance(new Container(), Factory.NoParameters);
         //}
 
         //public class WithGenericCtor<T>
@@ -286,8 +286,8 @@ namespace Autofac.Tests.Component.Activation
         //public void CanDealWithPrivateSetProperties()
         //{
         //    var setters = new[]{new NamedPropertyParameter("P", 1)};
-        //    var activator = CreateActivator(typeof(PrivateSetProperty), Enumerable.Empty<Parameter>(), setters);
-        //    var instance = activator.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
+        //    var activator = CreateActivator(typeof(PrivateSetProperty), Factory.NoParameters, setters);
+        //    var instance = activator.ActivateInstance(new Container(), Factory.NoParameters);
         //    Assert.IsInstanceOfType(typeof(PrivateSetProperty), instance);
         //}
 
@@ -310,7 +310,7 @@ namespace Autofac.Tests.Component.Activation
         //    try
         //    {
         //        var target = CreateActivator(typeof (ThrowsExceptionInCtor));
-        //        target.ActivateInstance(new Container(), Enumerable.Empty<Parameter>());
+        //        target.ActivateInstance(new Container(), Factory.NoParameters);
         //        Assert.Fail();
         //    }
         //    catch(InvalidOperationException ex)
