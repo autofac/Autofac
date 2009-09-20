@@ -34,6 +34,7 @@ namespace Autofac
 	/// Used to build an <see cref="IContainer"/> from component registrations.
 	/// </summary>
     /// <example>
+    /// <code>
     /// var builder = new ContainerBuilder();
     /// 
     /// builder.RegisterType&lt;Logger&gt;()
@@ -44,6 +45,7 @@ namespace Autofac
     /// 
     /// var container = builder.Build();
     /// // resolve components from container...
+    /// </code>
     /// </example>
     /// <remarks>Most <see cref="ContainerBuilder"/> functionality is accessed
     /// via extension methods in <see cref="RegistrationExtensions"/>.</remarks>

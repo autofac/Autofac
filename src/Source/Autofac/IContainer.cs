@@ -33,12 +33,14 @@ namespace Autofac
     /// by a <see cref="ContainerBuilder"/>.
     /// </summary>
     /// <example>
+    /// <code>
     /// // See ContainerBuilder for the definition of the builder variable
     /// using (var container = builder.Build())
     /// {
     ///     var program = container.Resolve&lt;Program&gt;();
     ///     program.Run();
     /// }
+    /// </code>
     /// </example>
     /// <remarks>
     /// Most <see cref="IContainer"/> functionality is provided by extension methods

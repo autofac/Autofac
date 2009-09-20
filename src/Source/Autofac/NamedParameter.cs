@@ -36,16 +36,21 @@ namespace Autofac
     /// <see cref="ParameterExtensions.Named"/>.
     /// </summary>
     /// <example>
+    /// Component with parameter:
+    /// <code>
     /// public class MyComponent
     /// {
     ///     public MyComponent(int amount) { ... }
     /// }
-    /// 
+    /// </code>
+    /// Providing the parameter:
+    /// <code>
     /// var builder = new ContainerBuilder();
     /// builder.RegisterType&lt;MyComponent&gt;();
     /// var container = builder.Build();
     /// var myComponent = container.Resolve&lt;MyComponent&gt;(
     ///     new Parameter[] { new NamedParameter("amount", 123) });
+    /// </code>
     /// </example>
     public class NamedParameter : ConstantParameter
     {

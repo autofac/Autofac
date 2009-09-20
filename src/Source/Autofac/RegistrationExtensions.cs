@@ -262,8 +262,8 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Register an un-parameterised generic type, e.g. <code>Repository&lt;&gt;</code>.
-        /// Concrete types will be made as they are requested, e.g. with <code>Resolve&lt;Repository&lt;int&gt;&gt;()</code>.
+        /// Register an un-parameterised generic type, e.g. Repository&lt;&gt;.
+        /// Concrete types will be made as they are requested, e.g. with Resolve&lt;Repository&lt;int&gt;&gt;().
         /// </summary>
         /// <param name="builder">Container builder.</param>
         /// <param name="implementor">The open generic implementation type.</param>

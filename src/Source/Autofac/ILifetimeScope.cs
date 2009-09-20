@@ -35,6 +35,7 @@ namespace Autofac
     /// resolved through it.
     /// </summary>
     /// <example>
+    /// <code>
     /// // See IContainer for definition of the container variable
     /// using (var requestScope = container.BeginLifetimeScope())
     /// {
@@ -47,6 +48,7 @@ namespace Autofac
     ///     // When requestScope is disposed, all resources used in processing
     ///     // the request will be released.
     /// }
+    /// </code>
     /// </example>
     /// <remarks>
     /// All long-running applications should resolve components via an

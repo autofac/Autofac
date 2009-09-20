@@ -37,8 +37,8 @@ namespace Autofac.Builder
     /// <remarks>Provides a user-friendly way to implement <see cref="Autofac.Core.IModule"/>
     /// via <see cref="ContainerBuilder"/>.</remarks>
     /// <example>
-    /// // Defining a module:
-    /// 
+    /// Defining a module:
+    /// <code>
     /// public class DataAccessModule : Module
     /// {
     ///     public string ConnectionString { get; set; }
@@ -54,13 +54,14 @@ namespace Autofac.Builder
     ///             .ShareInstanceIn(WebLifetime.Request);
     ///     }
     /// }
-    /// 
-    /// // Using the module:
-    /// 
+    /// </code>
+    /// Using the module:
+    /// <code>
     /// var builder = new ContainerBuilder();
     /// builder.RegisterModule(new DataAccessModule { ConnectionString = "..." });
     /// var container = builder.Build();
     /// var customers = container.Resolve&lt;IRepository&lt;Customer&gt;&gt;();
+    /// </code>
     /// </example>
     public abstract class Module : IModule
     {
