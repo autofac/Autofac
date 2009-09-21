@@ -15,7 +15,7 @@
 //    {
 //        interface I<T> { }
 
-//        class A<T> : DisposeTracker, I<T> { }
+//        class A1<T> : DisposeTracker, I<T> { }
 
 //        [Test]
 //        public void RegistrationProvided()
@@ -23,7 +23,7 @@
 //            var c = new Container();
 //            c.ComponentRegistry.AddRegistrationSource(new GenericRegistrationHandler(
 //                new Service[] { new TypedService(typeof(I<>)) },
-//                typeof(A<>),
+//                typeof(A1<>),
 //                new DeferredRegistrationParameters(
 //                    InstanceOwnership.Container,
 //                    InstanceSharing.Singleton,
@@ -40,7 +40,7 @@
 
 //            Assert.IsNotNull(x);
 //            Assert.AreSame(x, x2);
-//            Assert.AreEqual(typeof(A<>), x.GetType().GetGenericTypeDefinition());
+//            Assert.AreEqual(typeof(A1<>), x.GetType().GetGenericTypeDefinition());
 
 //            c.Dispose();
 

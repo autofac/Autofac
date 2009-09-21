@@ -90,6 +90,7 @@
     </Compile>
     <Compile Include="ComponentRegisteredEventArgsTests.cs" />
     <Compile Include="Core\ComponentRegistrationTests.cs" />
+    <Compile Include="Core\DisposerTests.cs" />
     <Compile Include="Core\Registration\ComponentRegistryTests.cs" />
     <Compile Include="ContainerExtensionsTests.cs" />
     <Compile Include="Core\Resolving\CircularDependencyDetectorTests.cs" />
@@ -104,7 +105,7 @@
     <Compile Include="Core\Registration\RegistrationFixture.cs" />
     <Compile Include="Core\Activators\Delegate\DelegateActivatorTests.cs" />
     <Compile Include="DisposeTracker.cs" />
-    <Compile Include="BugFixture.cs" />
+    <Compile Include="IntegrationTests.cs" />
     <Compile Include="Core\ContainerTests.cs" />
     <Compile Include="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorTests.cs" />
     <Compile Include="Core\Activators\Reflection\MostParametersConstructorSelectorTests.cs" />
@@ -115,9 +116,11 @@
     <Compile Include="ResolvedParameterTests.cs" />
     <Compile Include="Core\NamedServiceTests.cs" />
     <Compile Include="Scenarios\ConstructorSelection\MultipleConstructors.cs" />
+    <Compile Include="Scenarios\Dependencies\Circularity.cs" />
     <Compile Include="Scenarios\Dependencies\Dependent.cs" />
     <Compile Include="Scenarios\Dependencies\DependsByCtor.cs" />
     <Compile Include="Scenarios\Dependencies\DependsByProp.cs" />
+    <Compile Include="Scenarios\Graph1.cs" />
     <Compile Include="Scenarios\Parameterisation\Parameterised.cs" />
     <Compile Include="Scenarios\RegistrationSources\ObjectRegistrationSource.cs" />
     <Compile Include="TagsFixture.cs" />
@@ -135,6 +138,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Scenarios\Disposal\" />
     <Folder Include="Util\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />
