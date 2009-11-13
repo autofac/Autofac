@@ -99,7 +99,7 @@
     <Compile Include="Core\TypedServiceTests.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="Features\GeneratedFactories\GeneratedFactoriesTests.cs" />
-    <Compile Include="Features\Collections\ImplicitCollectionSupportModuleFixture.cs" />
+    <Compile Include="Features\Collections\CollectionRegistrationSourceTests.cs" />
     <Compile Include="NamedParameterTests.cs" />
     <Compile Include="DisposerTests.cs" />
     <Compile Include="Features\OpenGenerics\GenericRegistrationHandlerFixture.cs" />

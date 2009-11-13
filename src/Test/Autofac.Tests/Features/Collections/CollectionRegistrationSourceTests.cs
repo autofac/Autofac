@@ -9,13 +9,12 @@ using Autofac.Features.Collections;
 namespace Autofac.Tests.Modules
 {
     [TestFixture]
-    public class ImplicitCollectionSupportModuleFixture
+    public class CollectionRegistrationSourceTests
     {
         [Test]
         public void ResolvesAllAvailableElementsWhenArrayIsRequested()
         {
             var cb = new ContainerBuilder();
-            cb.RegisterModule(new ImplicitCollectionSupportModule());
             var s1 = "Hello";
             var s2 = "World";
             cb.RegisterInstance(s1);
@@ -32,7 +31,6 @@ namespace Autofac.Tests.Modules
         public void ResolvesAllAvailableElementsWhenEnumerableIsRequested()
         {
             var cb = new ContainerBuilder();
-            cb.RegisterModule(new ImplicitCollectionSupportModule());
             var s1 = "Hello";
             var s2 = "World";
             cb.RegisterInstance(s1);
@@ -45,25 +43,16 @@ namespace Autofac.Tests.Modules
             Assert.IsTrue(strings.Contains(s2));
         }
 
-        //[Test]
-        //public void ResolvesAllAvailableElementsInHierarchy()
-        //{
-        //    var cb = new ContainerBuilder();
-        //    cb.RegisterModule(new ImplicitCollectionSupportModule());
-        //    var s1 = "Hello";
-        //    cb.RegisterInstance(s1);
-        //    var c = cb.Build();
-        //    var inner = c.BeginLifetimeScope();
+        [Test]
+        [Ignore]
+        public void ResolvesCollectionItemsFromCurrentLifetimeScope()
+        {
+        }
 
-        //    var cb2 = new ContainerBuilder();
-        //    var s2 = "World";
-        //    cb2.RegisterInstance(s2);
-        //    cb2.Build(inner);
-
-        //    var strings = inner.Resolve<IEnumerable<string>>();
-        //    Assert.AreEqual(2, strings.Count());
-        //    Assert.IsTrue(strings.Contains(s1));
-        //    Assert.IsTrue(strings.Contains(s2));
-        //}
+        [Test]
+        [Ignore]
+        public void DoesNotResolveCollectionItemsFromMoreNestedLifetimeScopes()
+        {
+        }
     }
 }
