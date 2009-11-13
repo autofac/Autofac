@@ -5,7 +5,7 @@ using Autofac.Features.GeneratedFactories;
 using Autofac.Builder;
 using Autofac.Core;
 
-namespace Autofac.Tests
+namespace Autofac.Tests.Features.GeneratedFactories
 {
     [TestFixture]
     public class GeneratedFactoriesTests

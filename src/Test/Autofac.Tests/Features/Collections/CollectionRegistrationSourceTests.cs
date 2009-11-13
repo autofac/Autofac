@@ -6,7 +6,7 @@ using NUnit.Framework;
 using Autofac.Builder;
 using Autofac.Features.Collections;
 
-namespace Autofac.Tests.Modules
+namespace Autofac.Tests.Features.Collections
 {
     [TestFixture]
     public class CollectionRegistrationSourceTests
@@ -53,6 +53,19 @@ namespace Autofac.Tests.Modules
         [Ignore]
         public void DoesNotResolveCollectionItemsFromMoreNestedLifetimeScopes()
         {
+        }
+
+        [Test]
+        public void ReflectsChangesInComponentRegistry()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterInstance("Hello");
+            var c = cb.Build();
+            Assert.AreEqual(1, c.Resolve<IEnumerable<string>>().Count());
+            var cb2 = new ContainerBuilder();
+            cb2.RegisterInstance("World");
+            cb2.Build(c.ComponentRegistry);
+            Assert.AreEqual(2, c.Resolve<IEnumerable<string>>().Count());
         }
     }
 }

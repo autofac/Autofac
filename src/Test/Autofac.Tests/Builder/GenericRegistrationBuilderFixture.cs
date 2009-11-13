@@ -2,6 +2,7 @@
 using Autofac.Builder;
 using NUnit.Framework;
 using Autofac.Core;
+using System;
 
 namespace Autofac.Tests.Builder
 {
@@ -65,14 +66,25 @@ namespace Autofac.Tests.Builder
             Assert.AreEqual(1, preparingFired);
         }
 
-        //[Test]
-        //public void SuppliesArgument()
-        //{
-        //    var cb = new ContainerBuilder();
-        //    cb.RegisterGeneric(typeof(G<>)).WithArguments(new NamedParameter("i", 42));
-        //    var c = cb.Build();
-        //    var g = c.Resolve<G<string>>();
-        //    Assert.AreEqual(42, g.I);
-        //}
+        [Test]
+        public void SuppliesParameterToConcreteComponent()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(G<>)).WithParameter(new NamedParameter("i", 42));
+            var c = cb.Build();
+            var g = c.Resolve<G<string>>();
+            Assert.AreEqual(42, g.I);
+        }
+
+        [Test]
+        public void GenericCircularityAvoidedWithUsingContstructor()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterGeneric(typeof(List<>))
+                .As(typeof(IEnumerable<>))
+                .UsingConstructor(new Type[] { });
+            var container = builder.Build();
+            var list = container.Resolve<IEnumerable<int>>();
+        }
     }
 }

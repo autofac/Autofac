@@ -102,7 +102,7 @@
     <Compile Include="Features\Collections\CollectionRegistrationSourceTests.cs" />
     <Compile Include="NamedParameterTests.cs" />
     <Compile Include="DisposerTests.cs" />
-    <Compile Include="Features\OpenGenerics\GenericRegistrationHandlerFixture.cs" />
+    <Compile Include="Features\OpenGenerics\OpenGenericActivatorGeneratorTests.cs" />
     <Compile Include="Core\Registration\RegistrationFixture.cs" />
     <Compile Include="Core\Activators\Delegate\DelegateActivatorTests.cs" />
     <Compile Include="DisposeTracker.cs" />

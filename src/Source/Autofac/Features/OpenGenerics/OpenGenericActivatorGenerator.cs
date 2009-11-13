@@ -70,6 +70,7 @@ namespace Autofac.Features.OpenGenerics
 
             if (genericTypeDefinition != null &&
                 configuredServices
+                    .DefaultIfEmpty(new TypedService(reflectionActivatorData.ImplementationType))
                     .Cast<TypedService>()
                     .Any(ts => ts.ServiceType == genericTypeDefinition))
             {
