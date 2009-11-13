@@ -34,7 +34,7 @@ namespace Autofac.Tests
                 sharing,
                 InstanceOwnership.OwnedByLifetimeScope,
                 services,
-                NoProperties);
+                NoExtendedProperties);
         }
 
         public static IComponentRegistration CreateSingletonObjectRegistration()
@@ -46,11 +46,27 @@ namespace Autofac.Tests
 
         public static ReflectionActivator CreateReflectionActivator(Type implementation)
         {
+            return CreateReflectionActivator(
+                implementation,
+                NoParameters);
+        }
+
+        public static ReflectionActivator CreateReflectionActivator(Type implementation, IEnumerable<Parameter> parameters)
+        {
+            return CreateReflectionActivator(
+                implementation,
+                parameters,
+                NoProperties);
+        }
+
+        public static ReflectionActivator CreateReflectionActivator(Type implementation, IEnumerable<Parameter> parameters, IEnumerable<Parameter> properties)
+        {
             return new ReflectionActivator(
                 implementation,
                 new BindingFlagsConstructorFinder(BindingFlags.Public),
                 new MostParametersConstructorSelector(),
-                NoParameters);
+                parameters,
+                properties);
         }
 
         public static ProvidedInstanceActivator CreateProvidedInstanceActivator(object instance)
@@ -61,6 +77,7 @@ namespace Autofac.Tests
         public static readonly IContainer EmptyContainer = new Container();
         public static readonly IComponentContext EmptyContext = new Container();
         public static readonly IEnumerable<Parameter> NoParameters = Enumerable.Empty<Parameter>();
-        public static readonly IDictionary<string, object> NoProperties = new Dictionary<string, object>();
+        public static readonly IEnumerable<Parameter> NoProperties = Enumerable.Empty<Parameter>();
+        public static readonly IDictionary<string, object> NoExtendedProperties = new Dictionary<string, object>();
     }
 }

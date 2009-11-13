@@ -23,43 +23,38 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Collections.Generic;
-using Autofac.Core;
+using System;
+using System.Globalization;
 using System.Reflection;
-using Autofac.Configuration.Util;
+using System.Collections;
+using System.Linq;
 
-namespace Autofac.Configuration
+namespace Autofac.Configuration.Util
 {
-
-    /// <summary>
-    /// Collection of property elements.
-    /// </summary>
-    public class PropertyElementCollection : NamedConfigurationElementCollection<PropertyElement>
+	/// <summary>
+	/// Helper methods used throughout the codebase.
+	/// </summary>
+	static class Enforce
 	{
         /// <summary>
-        /// Initializes a new instance of the <see cref="PropertyElementCollection"/> class.
+        /// Enforce that an argument is not null. Returns the
+        /// value if valid so that it can be used inline in
+        /// base initialiser syntax.
         /// </summary>
-		public PropertyElementCollection()
-			: base("property", PropertyElement.Key)
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="name"></param>
+        /// <returns><paramref name="value"/></returns>
+        public static T ArgumentNotNull<T>(T value, string name)
+            where T : class
 		{
+			if (name == null)
+				throw new ArgumentNullException("name");
+			
+			if (value == null)
+				throw new ArgumentNullException(name);
+
+            return value;
 		}
-
-
-        /// <summary>
-        /// Convert to the Autofac parameter type.
-        /// </summary>
-        /// <returns>The parameters represented by this collection.</returns>
-        public IEnumerable<Parameter> ToParameters()
-        {
-            foreach (var parameter in this)
-                yield return new ResolvedParameter(
-                    (pi, c) => {
-                        PropertyInfo prop;
-                        return pi.TryGetDeclaringProperty(out prop) &&
-                            prop.Name == parameter.Name;
-                    },
-                    (pi, c) => TypeManipulation.ChangeToCompatibleType(parameter.Value, pi.ParameterType));
-        }
     }
-
 }

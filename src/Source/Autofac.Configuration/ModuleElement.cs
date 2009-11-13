@@ -69,7 +69,7 @@ namespace Autofac.Configuration
         /// </summary>
         /// <value>The explicit properties.</value>
         [ConfigurationProperty(PropertiesElementName, IsRequired = false)]
-        public PropertyElementCollection ExplicitProperties
+        public new PropertyElementCollection Properties
         {
             get
             {

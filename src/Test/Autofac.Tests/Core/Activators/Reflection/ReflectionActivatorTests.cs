@@ -22,7 +22,8 @@ namespace Autofac.Tests.Core.Activators.Reflection
                 new ReflectionActivator(null,
                     new Mock<IConstructorFinder>().Object,
                     new Mock<IConstructorSelector>().Object,
-                    Factory.NoParameters);
+                    Factory.NoParameters,
+                    Factory.NoProperties);
             });
         }
 
@@ -34,6 +35,20 @@ namespace Autofac.Tests.Core.Activators.Reflection
                 new ReflectionActivator(typeof(object),
                     new Mock<IConstructorFinder>().Object,
                     new Mock<IConstructorSelector>().Object,
+                    null,
+                    Factory.NoProperties);
+            });
+        }
+
+        [Test]
+        public void Constructor_DoesNotAcceptNullProperties()
+        {
+            Assertions.AssertThrows<ArgumentNullException>(delegate
+            {
+                new ReflectionActivator(typeof(object),
+                    new Mock<IConstructorFinder>().Object,
+                    new Mock<IConstructorSelector>().Object,
+                    Factory.NoParameters,
                     null);
             });
         }
@@ -46,7 +61,8 @@ namespace Autofac.Tests.Core.Activators.Reflection
                 new ReflectionActivator(typeof(object),
                     null,
                     new Mock<IConstructorSelector>().Object,
-                    Factory.NoParameters);
+                    Factory.NoParameters,
+                    Factory.NoProperties);
             });
         }
 
@@ -58,7 +74,8 @@ namespace Autofac.Tests.Core.Activators.Reflection
                 new ReflectionActivator(typeof(object),
                     new Mock<IConstructorFinder>().Object,
                     null,
-                    Factory.NoParameters);
+                    Factory.NoParameters,
+                    Factory.NoProperties);
             });
         }
 
@@ -105,8 +122,8 @@ namespace Autofac.Tests.Core.Activators.Reflection
             });
         }
 
-        [Test]
-        public void ChoosesAppropriateConstructor()
+        [Test] // TODO, no longer belongs here
+        public void ByDefault_ChoosesConstructorWithMostResolvableParameters()
         {
             var o = new object();
 
@@ -121,202 +138,207 @@ namespace Autofac.Tests.Core.Activators.Reflection
             Assert.IsInstanceOfType(typeof(MultipleConstructors), instance);
         }
 
-        //class AcceptsObjectParameter {
-        //    public object P;
-        //    public AcceptsObjectParameter(object p) { P = p; }
-        //}
+        class AcceptsObjectParameter
+        {
+            public object P;
+            public AcceptsObjectParameter(object p) { P = p; }
+        }
 
-        //[Test]
-        //public void ProvidedOverridesContainer()
-        //{
-        //    var containedInstance = new object();
+        [Test]
+        public void ProvidedParameters_OverrideThoseInContext()
+        {
+            var containedInstance = new object();
 
-        //    var builder = new ContainerBuilder();
-        //    builder.RegisterInstance(containedInstance);
-        //    var container = builder.Build();
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(containedInstance);
+            var container = builder.Build();
 
-        //    var parameterInstance = new object();
-        //    var parameters = new Parameter[]{ new NamedParameter("p", parameterInstance)};
+            var parameterInstance = new object();
+            var parameters = new Parameter[]{ new NamedParameter("p", parameterInstance)};
 
-        //    var target = CreateActivator(typeof(AcceptsObjectParameter));
-        //    target., parameters);
+            var target = Factory.CreateReflectionActivator(typeof(AcceptsObjectParameter), parameters);
 
-        //    var instance = (AcceptsObjectParameter)target.ActivateInstance(container, Factory.NoParameters);
+            var instance = (AcceptsObjectParameter)target.ActivateInstance(container, Factory.NoParameters);
 
-        //    Assert.AreSame(parameterInstance, instance.P);
-        //    Assert.AreNotSame(containedInstance, instance.P);
-        //}
+            Assert.AreSame(parameterInstance, instance.P);
+            Assert.AreNotSame(containedInstance, instance.P);
+        }
 
-        //[Test]
-        //public void ExplicitReferenceTypeParameter()
-        //{
-        //    var p = new object();
-        //    var parameters = new Parameter[] { new NamedParameter("p", p) };
+        [Test]
+        public void WhenReferenceTypeParameterSupplied_ItIsProvidedToTheComponent()
+        {
+            var p = new object();
+            var parameters = new Parameter[] { new NamedParameter("p", p) };
 
-        //    var target = CreateActivator(typeof(AcceptsObjectParameter), parameters);
+            var target = Factory.CreateReflectionActivator(typeof(AcceptsObjectParameter), parameters);
 
-        //    var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
+            var instance = target.ActivateInstance(Container.Empty, Factory.NoParameters);
 
-        //    Assert.IsNotNull(instance);
-        //    Assert.IsInstanceOfType(typeof(AcceptsObjectParameter), instance);
+            Assert.IsNotNull(instance);
+            Assert.IsInstanceOfType(typeof(AcceptsObjectParameter), instance);
 
-        //    var typedInstance = (AcceptsObjectParameter)instance;
+            var typedInstance = (AcceptsObjectParameter)instance;
 
-        //    Assert.AreEqual(p, typedInstance.P);
-        //}
+            Assert.AreEqual(p, typedInstance.P);
+        }
 
-        //[Test]
-        //public void ExplicitReferenceTypeParameterNull()
-        //{
-        //    var parameters = new Parameter[] { new NamedParameter("p", null) };
+        [Test]
+        public void WhenNullReferenceTypeParameterSupplied_ItIsPassedToTheComponent()
+        {
+            var parameters = new Parameter[] { new NamedParameter("p", null) };
 
-        //    var target = CreateActivator(typeof(AcceptsObjectParameter), parameters);
+            var target = Factory.CreateReflectionActivator(typeof(AcceptsObjectParameter), parameters);
 
-        //    var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
+            var instance = target.ActivateInstance(Container.Empty, Factory.NoParameters);
 
-        //    Assert.IsNotNull(instance);
-        //    Assert.IsInstanceOfType(typeof(AcceptsObjectParameter), instance);
+            Assert.IsNotNull(instance);
+            Assert.IsInstanceOfType(typeof(AcceptsObjectParameter), instance);
 
-        //    var typedInstance = (AcceptsObjectParameter)instance;
+            var typedInstance = (AcceptsObjectParameter)instance;
 
-        //    Assert.IsNull(typedInstance.P);
-        //}
+            Assert.IsNull(typedInstance.P);
+        }
 
-        //class AcceptsIntParameter {
-        //    public int I;
-        //    public AcceptsIntParameter(int i) { I = i; }
-        //}
+        class AcceptsIntParameter
+        {
+            public int I;
+            public AcceptsIntParameter(int i) { I = i; }
+        }
 
-        //[Test]
-        //public void ExplicitValueTypeParameter()
-        //{
-        //    var i = 42;
-        //    var parameters = new Parameter[] { new NamedParameter("i", i) };
+        [Test]
+        public void WhenValueTypeParameterSupplied_ItIsPassedToTheComponent()
+        {
+            var i = 42;
+            var parameters = new Parameter[] { new NamedParameter("i", i) };
 
-        //    var target = CreateActivator(typeof(AcceptsIntParameter), parameters);
+            var target = Factory.CreateReflectionActivator(typeof(AcceptsIntParameter), parameters);
 
-        //    var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
+            var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
 
-        //    Assert.IsNotNull(instance);
-        //    Assert.IsInstanceOfType(typeof(AcceptsIntParameter), instance);
+            Assert.IsNotNull(instance);
+            Assert.IsInstanceOfType(typeof(AcceptsIntParameter), instance);
 
-        //    var typedInstance = (AcceptsIntParameter)instance;
+            var typedInstance = (AcceptsIntParameter)instance;
 
-        //    Assert.AreEqual(i, typedInstance.I);
-        //}
+            Assert.AreEqual(i, typedInstance.I);
+        }
 
-        //[Test]
-        //public void ExplicitValueTypeParameterNull()
-        //{
-        //    var parameters = new Parameter[] { new NamedParameter("i", null) };
+        [Test]
+        public void WhenValueTypeParameterIsSuppliedWithNull_TheDefaultForTheValueTypeIsSet()
+        {
+            var parameters = new Parameter[] { new NamedParameter("i", null) };
 
-        //    var target = CreateActivator(typeof(AcceptsIntParameter), parameters);
+            var target = Factory.CreateReflectionActivator(typeof(AcceptsIntParameter), parameters);
 
-        //    var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
+            var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
 
-        //    Assert.IsNotNull(instance);
-        //    Assert.IsInstanceOfType(typeof(AcceptsIntParameter), instance);
+            Assert.IsNotNull(instance);
+            Assert.IsInstanceOfType(typeof(AcceptsIntParameter), instance);
 
-        //    var typedInstance = (AcceptsIntParameter)instance;
+            var typedInstance = (AcceptsIntParameter)instance;
 
-        //    Assert.AreEqual(0, typedInstance.I);
-        //}
+            Assert.AreEqual(0, typedInstance.I);
+        }
 
-        //class ThreeConstructors {
-        //    public int CalledConstructorParameterCount;
-        //    public ThreeConstructors() { CalledConstructorParameterCount = 0; }
-        //    public ThreeConstructors(int i, string s) { CalledConstructorParameterCount = 2; }
-        //    public ThreeConstructors(int i) { CalledConstructorParameterCount = 1; }
-        //}
+        class ThreeConstructors
+        {
+            public int CalledConstructorParameterCount;
+            public ThreeConstructors() { CalledConstructorParameterCount = 0; }
+            public ThreeConstructors(int i, string s) { CalledConstructorParameterCount = 2; }
+            public ThreeConstructors(int i) { CalledConstructorParameterCount = 1; }
+        }
 
-        //[Test]
-        //public void DefaultChoosesMostParameterisedConstructor()
-        //{
-        //    var parameters = new Parameter[] {
-        //        new NamedParameter("i", 1),
-        //        new NamedParameter("s", "str")
-        //    };
+        [Test] // TODO, no longer belongs here
+        public void ByDefault_ChoosesMostParameterisedConstructor()
+        {
+            var parameters = new Parameter[] {
+                new NamedParameter("i", 1),
+                new NamedParameter("s", "str")
+            };
 
-        //    var target = CreateActivator(typeof(ThreeConstructors), parameters);
+            var target = Factory.CreateReflectionActivator(typeof(ThreeConstructors), parameters);
 
-        //    var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
+            var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
 
-        //    Assert.IsNotNull(instance);
-        //    Assert.IsInstanceOfType(typeof(ThreeConstructors), instance);
+            Assert.IsNotNull(instance);
+            Assert.IsInstanceOfType(typeof(ThreeConstructors), instance);
 
-        //    var typedInstance = (ThreeConstructors)instance;
+            var typedInstance = (ThreeConstructors)instance;
 
-        //    Assert.AreEqual(2, typedInstance.CalledConstructorParameterCount);
-        //}
+            Assert.AreEqual(2, typedInstance.CalledConstructorParameterCount);
+        }
 
-        //class NoPublicConstructor {
-        //    internal NoPublicConstructor() { }
-        //}
+        class NoPublicConstructor
+        {
+            internal NoPublicConstructor() { }
+        }
 
-        //[Test]
-        //[ExpectedException(typeof(DependencyResolutionException))]
-        //public void NonPublicConstructorsIgnored()
-        //{
-        //    var target = CreateActivator(typeof(NoPublicConstructor));
-        //    target.ActivateInstance(new Container(), Factory.NoParameters);
-        //}
+        [Test] // TODO, no longer belongs here
+        [ExpectedException(typeof(DependencyResolutionException))]
+        public void NonPublicConstructorsIgnored()
+        {
+            var target = Factory.CreateReflectionActivator(typeof(NoPublicConstructor));
+            target.ActivateInstance(new Container(), Factory.NoParameters);
+        }
 
-        //public class WithGenericCtor<T>
-        //{
-        //    public WithGenericCtor(T t)
-        //    {
-        //    }
-        //}
+        public class WithGenericCtor<T>
+        {
+            public WithGenericCtor(T t)
+            {
+            }
+        }
 
-        //[Test]
-        //public void CanResolveConstructorsWithGenericParameters()
-        //{
-        //    var activator = CreateActivator(typeof(WithGenericCtor<string>));
-        //    var parameters = new Parameter[] { new NamedParameter("t", "Hello") };
-        //    var instance = activator.ActivateInstance(new Container(), parameters);
-        //    Assert.IsInstanceOfType(typeof(WithGenericCtor<string>), instance);
-        //}
+        [Test]
+        public void CanResolveConstructorsWithGenericParameters()
+        {
+            var activator = Factory.CreateReflectionActivator(typeof(WithGenericCtor<string>));
+            var parameters = new Parameter[] { new NamedParameter("t", "Hello") };
+            var instance = activator.ActivateInstance(new Container(), parameters);
+            Assert.IsInstanceOfType(typeof(WithGenericCtor<string>), instance);
+        }
 
-        //class PrivateSetProperty {
-        //    public int GetProperty { private set; get; }
-        //    public int P { get; set; }
-        //}
+        class PrivateSetProperty
+        {
+            public int GetProperty { private set; get; }
+            public int P { get; set; }
+        }
 
-        //[Test]
-        //public void CanDealWithPrivateSetProperties()
-        //{
-        //    var setters = new[]{new NamedPropertyParameter("P", 1)};
-        //    var activator = CreateActivator(typeof(PrivateSetProperty), Factory.NoParameters, setters);
-        //    var instance = activator.ActivateInstance(new Container(), Factory.NoParameters);
-        //    Assert.IsInstanceOfType(typeof(PrivateSetProperty), instance);
-        //}
+        [Test]
+        public void PropertiesWithPrivateSetters_AreIgnored()
+        {
+            var setters = new Parameter[] { new NamedPropertyParameter("P", 1) };
+            var activator = Factory.CreateReflectionActivator(typeof(PrivateSetProperty), Factory.NoParameters, setters);
+            var instance = activator.ActivateInstance(new Container(), Factory.NoParameters);
+            Assert.IsInstanceOfType(typeof(PrivateSetProperty), instance);
+        }
 
-        //class ThrowsExceptionInCtor
-        //{
-        //    public ThrowsExceptionInCtor()
-        //    {
-        //        WeThrowThis();
-        //    }
+        class ThrowsExceptionInCtor
+        {
+            public ThrowsExceptionInCtor()
+            {
+                WeThrowThis();
+            }
 
-        //    static void WeThrowThis()
-        //    {
-        //        throw new InvalidOperationException();
-        //    }
-        //}
+            static void WeThrowThis()
+            {
+                throw new InvalidOperationException();
+            }
+        }
 
-        //[Test]
-        //public void StackTraceIsPreserved()
-        //{
-        //    try
-        //    {
-        //        var target = CreateActivator(typeof (ThrowsExceptionInCtor));
-        //        target.ActivateInstance(new Container(), Factory.NoParameters);
-        //        Assert.Fail();
-        //    }
-        //    catch(InvalidOperationException ex)
-        //    {
-        //        StringAssert.Contains("WeThrowThis", ex.StackTrace);
-        //    }
-        //}
+        [Test]
+        [Ignore]
+        public void WhenExceptionThrownInConstructor_StackTraceIsPreserved()
+        {
+            try
+            {
+                var target = Factory.CreateReflectionActivator(typeof(ThrowsExceptionInCtor));
+                target.ActivateInstance(new Container(), Factory.NoParameters);
+                Assert.Fail();
+            }
+            catch (InvalidOperationException ex)
+            {
+                StringAssert.Contains("WeThrowThis", ex.StackTrace);
+            }
+        }
 	}
 }

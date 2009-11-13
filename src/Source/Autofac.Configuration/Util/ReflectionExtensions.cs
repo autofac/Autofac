@@ -23,38 +23,32 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Globalization;
 using System.Reflection;
-using System.Collections;
-using System.Linq;
 
-namespace Autofac.Configuration
+namespace Autofac.Configuration.Util
 {
-	/// <summary>
-	/// Helper methods used throughout the codebase.
-	/// </summary>
-	static class Enforce
-	{
+    /// <summary>
+    /// Extension methods for reflection-related types.
+    /// </summary>
+    static class ReflectionExtensions
+    {
         /// <summary>
-        /// Enforce that an argument is not null. Returns the
-        /// value if valid so that it can be used inline in
-        /// base initialiser syntax.
+        /// Maps from a property-set-value parameter to the declaring property.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="name"></param>
-        /// <returns><paramref name="value"/></returns>
-        public static T ArgumentNotNull<T>(T value, string name)
-            where T : class
-		{
-			if (name == null)
-				throw new ArgumentNullException("name");
-			
-			if (value == null)
-				throw new ArgumentNullException(name);
+        /// <param name="pi">Parameter to the property setter.</param>
+        /// <param name="prop">The property info on which the setter is specified.</param>
+        /// <returns>True if the parameter is a property setter.</returns>
+        public static bool TryGetDeclaringProperty(this ParameterInfo pi, out PropertyInfo prop)
+        {
+            var mi = pi.Member as MethodInfo;
+            if (mi != null && mi.IsSpecialName && mi.Name.StartsWith("set_"))
+            {
+                prop = mi.DeclaringType.GetProperty(mi.Name.Substring(4));
+                return true;
+            }
 
-            return value;
-		}
+            prop = null;
+            return false;
+        }
     }
 }

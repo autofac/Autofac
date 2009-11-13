@@ -123,7 +123,8 @@ namespace Autofac
                     rb.ActivatorData.ImplementationType,
                     rb.ActivatorData.ConstructorFinder,
                     rb.ActivatorData.ConstructorSelector,
-                    rb.ActivatorData.ConfiguredParameters)));
+                    rb.ActivatorData.ConfiguredParameters,
+                    rb.ActivatorData.ConfiguredProperties)));
 
             return rb;
         }
@@ -149,7 +150,8 @@ namespace Autofac
                     rb.ActivatorData.ImplementationType,
                     rb.ActivatorData.ConstructorFinder,
                     rb.ActivatorData.ConstructorSelector,
-                    rb.ActivatorData.ConfiguredParameters)));
+                    rb.ActivatorData.ConfiguredParameters,
+                    rb.ActivatorData.ConfiguredProperties)));
 
             return rb;
         }
@@ -371,7 +373,7 @@ namespace Autofac
         /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
         /// <param name="registration">Registration to set parameter on.</param>
         /// <param name="parameterName">Name of a constructor parameter on the target type.</param>
-        /// <param name="parameterValue">Value of a </param>
+        /// <param name="parameterValue">Value to supply to the parameter.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
             WithParameter<TLimit, TReflectionActivatorData, TStyle>(
@@ -404,6 +406,47 @@ namespace Autofac
             return registration;
         }
 
+        /// <summary>
+        /// Configure an explicit value for a property.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
+        /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to set property on.</param>
+        /// <param name="propertyName">Name of a property on the target type.</param>
+        /// <param name="propertyValue">Value to supply to the property.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+            WithProperty<TLimit, TReflectionActivatorData, TStyle>(
+                this RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                string propertyName,
+                object propertyValue)
+            where TReflectionActivatorData : ReflectionActivatorData
+        {
+            return registration.WithProperty(new NamedPropertyParameter(propertyName, propertyValue));
+        }
+
+        /// <summary>
+        /// Configure an explicit value for a property.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
+        /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to set parameter on.</param>
+        /// <param name="property">The property to supply.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+            WithProperty<TLimit, TReflectionActivatorData, TStyle>(
+                this RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                Parameter property)
+            where TReflectionActivatorData : ReflectionActivatorData
+        {
+            Enforce.ArgumentNotNull(registration, "registration");
+            Enforce.ArgumentNotNull(property, "property");
+            registration.ActivatorData.ConfiguredProperties.Add(property);
+            return registration;
+        }
+        
         /// <summary>
         /// Registers a factory delegate.
         /// </summary>

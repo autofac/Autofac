@@ -32,6 +32,7 @@ using Autofac.Builder;
 using System.Linq;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core;
+using Autofac.Configuration.Util;
 
 namespace Autofac.Configuration
 {
@@ -123,8 +124,8 @@ namespace Autofac.Configuration
                     moduleType,
                     new BindingFlagsConstructorFinder(BindingFlags.Public),
                     new MostParametersConstructorSelector(),
-                    moduleElement.Parameters.ToParameters());
-                    // moduleElement.ExplicitProperties.ToParameters());
+                    moduleElement.Parameters.ToParameters(),
+                    moduleElement.Properties.ToParameters());
 				var module = (IModule)moduleActivator.ActivateInstance(Container.Empty, Enumerable.Empty<Parameter>());
                 builder.RegisterModule(module);
 			}
@@ -146,7 +147,8 @@ namespace Autofac.Configuration
                 foreach (var param in component.Parameters.ToParameters())
                     registrar.WithParameter(param);
 
-//                registrar.WithProperties(component.ExplicitProperties.ToParameters());
+                foreach (var prop in component.Properties.ToParameters())
+                    registrar.WithProperty(prop);
 
                 foreach (var ep in component.ExtendedProperties)
                     registrar.WithExtendedProperty(

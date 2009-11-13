@@ -27,6 +27,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
+using Autofac.Configuration.Util;
 
 namespace Autofac.Configuration
 {

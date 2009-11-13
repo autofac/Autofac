@@ -25,6 +25,7 @@
 
 using System;
 using System.ComponentModel;
+using Autofac.Configuration.Util;
 
 namespace Autofac.Configuration
 {

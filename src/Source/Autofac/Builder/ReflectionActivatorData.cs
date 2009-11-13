@@ -41,6 +41,7 @@ namespace Autofac.Builder
         IConstructorFinder _constructorFinder = new BindingFlagsConstructorFinder(BindingFlags.Public);
         IConstructorSelector _constructorSelector = new MostParametersConstructorSelector();
         readonly IList<Parameter> _configuredParameters = new List<Parameter>();
+        readonly IList<Parameter> _configuredProperties = new List<Parameter>();
 
         /// <summary>
         /// Specify a reflection activator for the given type.
@@ -90,6 +91,14 @@ namespace Autofac.Builder
         public IList<Parameter> ConfiguredParameters
         {
             get { return _configuredParameters; }
+        }
+
+        /// <summary>
+        /// The explicitly bound properties.
+        /// </summary>
+        public IList<Parameter> ConfiguredProperties
+        {
+            get { return _configuredProperties; }
         }
     }
 }

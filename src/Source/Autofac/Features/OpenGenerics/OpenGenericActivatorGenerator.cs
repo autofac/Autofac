@@ -77,7 +77,8 @@ namespace Autofac.Features.OpenGenerics
                     reflectionActivatorData.ImplementationType.MakeGenericType(genericParameters),
                     reflectionActivatorData.ConstructorFinder,
                     reflectionActivatorData.ConstructorSelector,
-                    reflectionActivatorData.ConfiguredParameters);
+                    reflectionActivatorData.ConfiguredParameters,
+                    reflectionActivatorData.ConfiguredProperties);
 
                 services = configuredServices
                     .Cast<TypedService>()

@@ -90,6 +90,7 @@
     </Compile>
     <Compile Include="ComponentRegisteredEventArgsTests.cs" />
     <Compile Include="Core\ComponentRegistrationTests.cs" />
+    <Compile Include="Core\NamedPropertyParameterTests.cs" />
     <Compile Include="Core\DisposerTests.cs" />
     <Compile Include="Core\Registration\ComponentRegistryTests.cs" />
     <Compile Include="ContainerExtensionsTests.cs" />

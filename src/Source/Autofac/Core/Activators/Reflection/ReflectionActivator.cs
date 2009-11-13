@@ -40,6 +40,7 @@ namespace Autofac.Core.Activators.Reflection
         readonly IConstructorSelector _constructorSelector;
         readonly IConstructorFinder _constructorFinder;
         readonly IEnumerable<Parameter> _configuredParameters;
+        readonly IEnumerable<Parameter> _configuredProperties;
 
         /// <summary>
         /// Create an activator for the provided type.
@@ -48,17 +49,20 @@ namespace Autofac.Core.Activators.Reflection
         /// <param name="constructorFinder">Constructor finder.</param>
         /// <param name="constructorSelector">Constructor selector.</param>
         /// <param name="configuredParameters">Parameters configured explicitly for this instance.</param>
+        /// <param name="configuredProperties">Properties configured explicitly for this instance.</param>
         public ReflectionActivator(
             Type implementationType,
             IConstructorFinder constructorFinder,
             IConstructorSelector constructorSelector,
-            IEnumerable<Parameter> configuredParameters)
+            IEnumerable<Parameter> configuredParameters,
+            IEnumerable<Parameter> configuredProperties)
             : base(Enforce.ArgumentNotNull(implementationType, "implementationType"))
         {
             _implementationType = implementationType;
             _constructorFinder = Enforce.ArgumentNotNull(constructorFinder, "constructorFinder");
             _constructorSelector = Enforce.ArgumentNotNull(constructorSelector, "constructorSelector");
             _configuredParameters = Enforce.ArgumentNotNull(configuredParameters, "configuredParameters");
+            _configuredProperties = Enforce.ArgumentNotNull(configuredProperties, "configuredProperties");
         }
 
         /// <summary>
@@ -109,10 +113,14 @@ namespace Autofac.Core.Activators.Reflection
 
             var selectedBinding = _constructorSelector.SelectConstructorBinding(validBindings);
 
-            return selectedBinding.Instantiate();
+            var instance = selectedBinding.Instantiate();
+
+            InjectProperties(instance, context);
+
+            return instance;
         }
 
-        private IEnumerable<ConstructorParameterBinding> GetConstructorBindings(
+        IEnumerable<ConstructorParameterBinding> GetConstructorBindings(
             IComponentContext context,
             IEnumerable<Parameter> parameters,
             IEnumerable<ConstructorInfo> constructorInfo)
@@ -128,6 +136,38 @@ namespace Autofac.Core.Activators.Reflection
 
             return constructorInfo.Select(
                 ci => new ConstructorParameterBinding(ci, prioritisedParameters, context));
+        }
+
+        void InjectProperties(object instance, IComponentContext context)
+        {
+            // Just testing out a new approach to properties - refactoring/optimisation
+            // required here.
+            if (_configuredProperties.Any())
+            {
+                var actualProps = instance
+                    .GetType()
+                    .GetProperties(BindingFlags.Public | BindingFlags.SetProperty | BindingFlags.Instance)
+                    .ToList();
+
+                foreach (var prop in _configuredProperties)
+                {
+                    Func<object> vp = null;
+                    foreach (var actual in actualProps)
+                    {
+                        var setter = actual.GetSetMethod();
+                        if (setter != null &&
+                            prop.CanSupplyValue(setter.GetParameters().First(), context, out vp))
+                        {
+                            actualProps.Remove(actual);
+                            actual.SetValue(instance, vp(), null);
+                            break;
+                        }
+                    }
+
+                    if (vp != null)
+                        break;
+                }
+            }
         }
     }
 }

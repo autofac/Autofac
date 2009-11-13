@@ -23,43 +23,36 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Collections.Generic;
+using Autofac.Util;
 using Autofac.Core;
 using System.Reflection;
-using Autofac.Configuration.Util;
 
-namespace Autofac.Configuration
+namespace Autofac
 {
-
     /// <summary>
-    /// Collection of property elements.
+    /// A property identified by name. When applied to a reflection-based
+    /// component, the name will be matched against property names.
     /// </summary>
-    public class PropertyElementCollection : NamedConfigurationElementCollection<PropertyElement>
-	{
+    public class NamedPropertyParameter : ConstantParameter
+    {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PropertyElementCollection"/> class.
+        /// The name of the property.
         /// </summary>
-		public PropertyElementCollection()
-			: base("property", PropertyElement.Key)
-		{
-		}
-
+        public string Name { get; private set; }
 
         /// <summary>
-        /// Convert to the Autofac parameter type.
+        /// Create a <see cref="NamedPropertyParameter"/> with the specified constant value.
         /// </summary>
-        /// <returns>The parameters represented by this collection.</returns>
-        public IEnumerable<Parameter> ToParameters()
+        /// <param name="name">The name of the property.</param>
+        /// <param name="value">The property value.</param>
+        public NamedPropertyParameter(string name, object value)
+            : base(value, pi => {
+                PropertyInfo prop;
+                return pi.TryGetDeclaringProperty(out prop) &&
+                    prop.Name == name;
+            })
         {
-            foreach (var parameter in this)
-                yield return new ResolvedParameter(
-                    (pi, c) => {
-                        PropertyInfo prop;
-                        return pi.TryGetDeclaringProperty(out prop) &&
-                            prop.Name == parameter.Name;
-                    },
-                    (pi, c) => TypeManipulation.ChangeToCompatibleType(parameter.Value, pi.ParameterType));
+            Name = Enforce.ArgumentNotNullOrEmpty(name, "name");
         }
     }
-
 }

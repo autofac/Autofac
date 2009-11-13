@@ -54,7 +54,6 @@ namespace Autofac.Tests.Configuration
         }
 
         [Test]
-        [Ignore("Properties not yet supported.")]
         public void PropertiesProvided()
         {
             var container = ConfigureContainer("SingletonWithTwoServices");
@@ -77,7 +76,6 @@ namespace Autofac.Tests.Configuration
         }
 
         [Test]
-        [Ignore("Properties not yet supported.")]
         public void ConfiguresBooleanProperties()
         {
             var container = ConfigureContainer("CWithBoolean");
