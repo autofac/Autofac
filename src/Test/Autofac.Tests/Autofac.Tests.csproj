@@ -114,7 +114,7 @@
     <Compile Include="Core\Activators\Reflection\ReflectionActivatorTests.cs" />
     <Compile Include="Core\Activators\Reflection\MatchingSignatureConstructorSelectorTests.cs" />
     <Compile Include="ResolutionExtensionsTests.cs" />
-    <Compile Include="ResolvedParameterTests.cs" />
+    <Compile Include="Core\ResolvedParameterTests.cs" />
     <Compile Include="Core\NamedServiceTests.cs" />
     <Compile Include="Scenarios\ConstructorSelection\MultipleConstructors.cs" />
     <Compile Include="Scenarios\Dependencies\Circularity.cs" />

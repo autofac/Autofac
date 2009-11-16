@@ -168,7 +168,7 @@
     <Compile Include="IContainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResolutionExtensions.cs" />
-    <Compile Include="ResolvedParameter.cs" />
+    <Compile Include="Core\ResolvedParameter.cs" />
     <Compile Include="TypedParameter.cs" />
     <Compile Include="Util\DelegateExtensions.cs" />
     <Compile Include="Util\Disposable.cs" />

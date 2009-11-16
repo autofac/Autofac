@@ -48,8 +48,7 @@ namespace Autofac
     /// var builder = new ContainerBuilder();
     /// builder.RegisterType&lt;MyComponent&gt;();
     /// var container = builder.Build();
-    /// var myComponent = container.Resolve&lt;MyComponent&gt;(
-    ///     new Parameter[] { new NamedParameter("amount", 123) });
+    /// var myComponent = container.Resolve&lt;MyComponent&gt;(new NamedParameter("amount", 123));
     /// </code>
     /// </example>
     public class NamedParameter : ConstantParameter

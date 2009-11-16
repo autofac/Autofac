@@ -27,7 +27,7 @@ using Autofac.Util;
 using Autofac.Core;
 using System.Reflection;
 
-namespace Autofac
+namespace Autofac.Core
 {
     /// <summary>
     /// A property identified by name. When applied to a reflection-based

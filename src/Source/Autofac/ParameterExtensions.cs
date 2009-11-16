@@ -37,6 +37,18 @@ namespace Autofac
     /// Each method returns the first matching parameter value, or throws an exception if
     /// none is provided.
     /// </summary>
+    /// <example>
+    /// At configuration time, delegate registrations can retrieve parameter values using
+    /// the methods <see cref="Named"/>, <see cref="Positional"/> and <see cref="TypedAs"/>:
+    /// <code>
+    /// builder.RegisterDelegate((c, p) => new FtpClient(p.Named&lt;string&gt;("server")));
+    /// </code>
+    /// These parameters can be provided at resolution time:
+    /// <code>
+    /// container.Resolve&lt;FtpClient&gt;(new NamedParameter("server", "ftp.example.com"));
+    /// </code>
+    /// Alternatively, the parameters can be provided via a <i>Generated Factory</i> - http://code.google.com/p/autofac/wiki/DelegateFactories.
+    /// </example>
     public static class ParameterExtensions
     {
         /// <summary>

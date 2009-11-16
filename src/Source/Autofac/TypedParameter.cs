@@ -50,8 +50,7 @@ namespace Autofac
     /// var builder = new ContainerBuilder();
     /// builder.RegisterType&lt;MyComponent&gt;();
     /// var container = builder.Build();
-    /// var myComponent = container.Resolve&lt;MyComponent&gt;(
-    ///     new Parameter[] { new TypedParameter(typeof(int), 123) });
+    /// var myComponent = container.Resolve&lt;MyComponent&gt;(new TypedParameter(typeof(int), 123));
     /// </code>
     /// </example>
     public class TypedParameter : ConstantParameter

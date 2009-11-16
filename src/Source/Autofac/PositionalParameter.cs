@@ -50,8 +50,7 @@ namespace Autofac
     /// var builder = new ContainerBuilder();
     /// builder.RegisterType&lt;MyComponent&gt;();
     /// var container = builder.Build();
-    /// var myComponent = container.Resolve&lt;MyComponent&gt;(
-    ///     new Parameter[] { new PositionalParameter(0, 123) });
+    /// var myComponent = container.Resolve&lt;MyComponent&gt;(new PositionalParameter(0, 123));
     /// </code>
     /// </example>
     public class PositionalParameter : ConstantParameter

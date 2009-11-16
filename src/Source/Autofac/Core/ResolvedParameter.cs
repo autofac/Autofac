@@ -26,9 +26,8 @@
 using System;
 using System.Reflection;
 using Autofac.Util;
-using Autofac.Core;
 
-namespace Autofac
+namespace Autofac.Core
 {
     /// <summary>
     /// Flexible parameter type allows arbitrary values to be retrieved
