@@ -100,6 +100,8 @@
     <Compile Include="Factory.cs" />
     <Compile Include="Features\GeneratedFactories\GeneratedFactoriesTests.cs" />
     <Compile Include="Features\Collections\CollectionRegistrationSourceTests.cs" />
+    <Compile Include="Features\OwnedInstances\OwnedInstanceRegistrationSourceTests.cs" />
+    <Compile Include="Features\OwnedInstances\OwnedTests.cs" />
     <Compile Include="NamedParameterTests.cs" />
     <Compile Include="DisposerTests.cs" />
     <Compile Include="Features\OpenGenerics\OpenGenericActivatorGeneratorTests.cs" />
