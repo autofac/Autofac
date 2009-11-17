@@ -118,6 +118,7 @@
     <Compile Include="ResolutionExtensionsTests.cs" />
     <Compile Include="Core\ResolvedParameterTests.cs" />
     <Compile Include="Core\NamedServiceTests.cs" />
+    <Compile Include="ScanningRegistrationTests.cs" />
     <Compile Include="Scenarios\ConstructorSelection\MultipleConstructors.cs" />
     <Compile Include="Scenarios\Dependencies\Circularity.cs" />
     <Compile Include="Scenarios\Dependencies\Dependent.cs" />
@@ -133,6 +134,10 @@
     <ProjectReference Include="..\..\Source\Autofac\Autofac.csproj">
       <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
       <Name>Autofac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Autofac.Tests.Scenarios.ScannedAssembly\Autofac.Tests.Scenarios.ScannedAssembly.csproj">
+      <Project>{DF1D239B-CDEA-4FFF-A84A-4FE0F8B3DC26}</Project>
+      <Name>Autofac.Tests.Scenarios.ScannedAssembly</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

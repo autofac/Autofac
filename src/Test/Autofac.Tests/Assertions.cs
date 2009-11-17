@@ -26,6 +26,31 @@ namespace Autofac.Tests
             Assert.IsFalse(context.IsRegistered(service));
         }
 
+        public static void AssertSharing<TComponent>(this IComponentContext context, InstanceSharing sharing)
+        {
+            var cr = context.RegistrationFor<TComponent>();
+            Assert.AreEqual(sharing, cr.Sharing);
+        }
+
+        public static void AssertLifetime<TComponent, TLifetime>(this IComponentContext context)
+        {
+            var cr = context.RegistrationFor<TComponent>();
+            Assert.IsInstanceOfType(typeof(TLifetime), cr.Lifetime);
+        }
+
+        public static void AssertOwnership<TComponent>(this IComponentContext context, InstanceOwnership ownership)
+        {
+            var cr = context.RegistrationFor<TComponent>();
+            Assert.AreEqual(ownership, cr.Ownership);
+        }
+
+        public static IComponentRegistration RegistrationFor<TComponent>(this IComponentContext context)
+        {
+            IComponentRegistration r;
+            Assert.IsTrue(context.ComponentRegistry.TryGetRegistration(new TypedService(typeof(TComponent)), out r));
+            return r;
+        }
+
         public static void AssertThrows<TException>(Action action)
             where TException : Exception
         {

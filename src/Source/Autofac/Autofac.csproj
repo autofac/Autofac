@@ -54,6 +54,7 @@
     <Compile Include="Builder\GeneratedFactoryActivatorData.cs" />
     <Compile Include="Builder\IActivatorGenerator.cs" />
     <Compile Include="Builder\IFluentInterface.cs" />
+    <Compile Include="Builder\ScanningActivatorData.cs" />
     <Compile Include="Core\ActivatedEventArgs.cs" />
     <Compile Include="Core\ActivatingEventArgs.cs" />
     <Compile Include="Core\Activators\Delegate\DelegateActivator.cs" />

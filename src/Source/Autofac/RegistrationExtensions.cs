@@ -205,7 +205,7 @@ namespace Autofac
         /// <param name="cr"></param>
         /// <param name="rb"></param>
         /// <param name="activator"></param>
-        public static void RegisterSingleComponent<TLimit, TActivatorData, TSingleRegistrationStyle>(
+        internal static void RegisterSingleComponent<TLimit, TActivatorData, TSingleRegistrationStyle>(
             IComponentRegistry cr,
             RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> rb,
             IInstanceActivator activator)
@@ -273,19 +273,176 @@ namespace Autofac
         public static RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
             RegisterGeneric(this ContainerBuilder builder, Type implementor)
         {
+            Enforce.ArgumentNotNull(builder, "builder");
             Enforce.ArgumentNotNull(implementor, "implementor");
 
             var rb = new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(
                 new ReflectionActivatorData(implementor),
                 new DynamicRegistrationStyle());
 
-            builder.RegisterCallback(cr => 
+            builder.RegisterCallback(cr =>
                 cr.AddRegistrationSource(
                     new RegistrationSource<object, ReflectionActivatorData, DynamicRegistrationStyle>(
                         rb, new OpenGenericActivatorGenerator())));
 
             return rb;
         }
+
+        /// <summary>
+        /// Register the types in an assembly.
+        /// </summary>
+        /// <param name="builder">Container builder.</param>
+        /// <param name="assembly">The assembly from which to register types.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
+            RegisterAssemblyTypes(this ContainerBuilder builder, Assembly assembly)
+        {
+            Enforce.ArgumentNotNull(builder, "builder");
+            Enforce.ArgumentNotNull(assembly, "assembly");
+
+            var rb = new RegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>(
+                new ScanningActivatorData(),
+                new DynamicRegistrationStyle());
+
+            builder.RegisterCallback(cr =>
+            {
+                var tempBuilder = new ContainerBuilder();
+                foreach (var t in assembly.GetTypes()
+                    .Where(t => rb.ActivatorData.Filters.All(p => p(t))))
+                {
+                    var activator = new ReflectionActivator(
+                        t,
+                        rb.ActivatorData.ConstructorFinder,
+                        rb.ActivatorData.ConstructorSelector,
+                        rb.ActivatorData.ConfiguredParameters,
+                        rb.ActivatorData.ConfiguredProperties);
+
+                    var services = new HashSet<Service>(rb.RegistrationData.Services);
+
+                    if (!services.Any() && !rb.ActivatorData.ServiceMappings.Any())
+                        services.Add(new TypedService(t));
+
+                    foreach (var mapping in rb.ActivatorData.ServiceMappings)
+                        foreach (var s in mapping(t))
+                            services.Add(s);
+
+                    var r = CreateRegistration(Guid.NewGuid(), rb.RegistrationData, activator, services);
+                    cr.Register(r);
+                }
+            });
+
+            return rb;
+        }
+
+        /// <summary>
+        /// Specifies a subset of types to register from a scanned assembly.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to filter types from.</param>
+        /// <param name="predicate">Predicate that returns true for types to register.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            Where<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                Func<Type, bool> predicate)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            registration.ActivatorData.Filters.Add(predicate);
+            return registration;
+        }
+
+        /// <summary>
+        /// Specifies how a type from a scanned assembly is mapped to a service.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <param name="serviceMapping">Function mapping types to services.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            As<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                Func<Type, IEnumerable<Service>> serviceMapping)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            registration.ActivatorData.ServiceMappings.Add(serviceMapping);
+            return registration;
+        }
+
+        /// <summary>
+        /// Specifies how a type from a scanned assembly is mapped to a service.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <param name="serviceMapping">Function mapping types to services.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            As<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                Func<Type, Service> serviceMapping)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            return registration.As(t => new Service[] { serviceMapping(t) });
+        }
+
+        /// <summary>
+        /// Specifies how a type from a scanned assembly is mapped to a service.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <param name="serviceMapping">Function mapping types to services.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            As<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                Func<Type, Type> serviceMapping)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            return registration.As(t => new TypedService(serviceMapping(t)));
+        }
+
+        /// <summary>
+        /// Specifies how a type from a scanned assembly is mapped to a service.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <param name="serviceMapping">Function mapping types to services.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            Named<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                Func<Type, string> serviceMapping)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            return registration.As(t => new NamedService(serviceMapping(t)));
+        }
+
+        /// <summary>
+        /// Specifies that a type from a scanned assembly is registered as providing all of its
+        /// implemented interfaces.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            AsImplementedInterfaces<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            return registration.As(t => t.GetInterfaces().Select(i => new TypedService(i)).Cast<Service>());
+        }
+
         /// <summary>
         /// Set the policy used to find candidate constructors on the implementation type.
         /// </summary>

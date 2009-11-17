@@ -49,7 +49,7 @@ namespace Autofac.Builder
         /// <param name="implementor">Type that will be activated.</param>
         public ReflectionActivatorData(Type implementor)
         {
-            _implementor = implementor;
+            ImplementationType = implementor;
         }
 
         /// <summary>
