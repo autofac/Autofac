@@ -24,7 +24,7 @@ namespace Autofac.Tests.Core
         //public void InnerCannotResolveOuterDependencies()
         //{
         //    var outerBuilder = new ContainerBuilder();
-        //    outerBuilder.RegisterType<B1>().SingleSharedInstance();
+        //    outerBuilder.RegisterType<B1>().SingleInstance();
         //    var outer = outerBuilder.Build();
 
         //    var innerBuilder = new ContainerBuilder();

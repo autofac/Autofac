@@ -143,6 +143,17 @@ namespace Autofac.Core.Registration
         /// <param name="registration">The component registration.</param>
         public void Register(IComponentRegistration registration)
         {
+            Register(registration, false);
+        }
+
+        /// <summary>
+        /// Register a component.
+        /// </summary>
+        /// <param name="registration">The component registration.</param>
+        /// <param name="preserveDefaults">If true, existing defaults for any services provided
+        /// by the component will not be changed.</param>
+        public void Register(IComponentRegistration registration, bool preserveDefaults)
+        {
             Enforce.ArgumentNotNull(registration, "registration");
 
             lock (_synchRoot)
@@ -157,7 +168,9 @@ namespace Autofac.Core.Registration
                             service, registration, existing));
                     }
 
-                    _defaultRegistrations[service] = registration;
+                    if (!(_defaultRegistrations.ContainsKey(service) && preserveDefaults))
+                        _defaultRegistrations[service] = registration;
+   
                     _unregisteredServices.Remove(service);
                 }
 

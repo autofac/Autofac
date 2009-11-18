@@ -42,8 +42,8 @@ namespace Autofac.Tests.Core.Resolving
         public void CtorPropDependencyOkOrder1()
         {
             var cb = new ContainerBuilder();
-            cb.RegisterType<DependsByCtor>().SingleSharedInstance();
-            cb.RegisterType<DependsByProp>().SingleSharedInstance().PropertiesAutowired(true);
+            cb.RegisterType<DependsByCtor>().SingleInstance();
+            cb.RegisterType<DependsByProp>().SingleInstance().PropertiesAutowired(true);
 
             var c = cb.Build();
             var dbp = c.Resolve<DependsByProp>();
@@ -57,8 +57,8 @@ namespace Autofac.Tests.Core.Resolving
         public void CtorPropDependencyOkOrder2()
         {
             var cb = new ContainerBuilder();
-            cb.RegisterType<DependsByCtor>().SingleSharedInstance();
-            cb.RegisterType<DependsByProp>().SingleSharedInstance().PropertiesAutowired(true);
+            cb.RegisterType<DependsByCtor>().SingleInstance();
+            cb.RegisterType<DependsByProp>().SingleInstance().PropertiesAutowired(true);
 
             var c = cb.Build();
             var dbc = c.Resolve<DependsByCtor>();

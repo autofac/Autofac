@@ -47,11 +47,11 @@ namespace Autofac.Builder
     ///     {
     ///         moduleBuilder.RegisterGeneric(typeof(MyRepository&lt;&gt;))
     ///             .As(typeof(IRepository&lt;&gt;))
-    ///             .ShareInstanceIn(WebLifetime.Request);
+    ///             .InstancePerMatchingLifetimeScope(WebLifetime.Request);
     ///         
     ///         moduleBuilder.RegisterDelegate(c =&gt; new MyDbConnection(ConnectionString))
     ///             .As&lt;IDbConnection&gt;()
-    ///             .ShareInstanceIn(WebLifetime.Request);
+    ///             .InstancePerMatchingLifetimeScope(WebLifetime.Request);
     ///     }
     /// }
     /// </code>

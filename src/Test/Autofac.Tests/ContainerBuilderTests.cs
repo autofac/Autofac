@@ -63,7 +63,7 @@ namespace Autofac.Tests
             cb.RegisterType<Abc>()
                 .As<IA>()
                 .OwnedByLifetimeScope()
-                .SingleSharedInstance();
+                .SingleInstance();
             var c = cb.Build();
             var a1 = c.Resolve<IA>();
             var a2 = c.Resolve<IA>();
@@ -113,7 +113,7 @@ namespace Autofac.Tests
             {
                 if (builder == null) throw new ArgumentNullException("builder");
                 ConfigureCalled = true;
-                builder.RegisterType<object>().SingleSharedInstance();
+                builder.RegisterType<object>().SingleInstance();
             }
 
             #endregion
@@ -271,7 +271,7 @@ namespace Autofac.Tests
             var target = new ContainerBuilder();
             target.RegisterType<Abc>()
                 .As<IA, IB, IC>()
-                .SingleSharedInstance();
+                .SingleInstance();
             var container = target.Build();
             var a = container.Resolve<IA>();
             var b = container.Resolve<IB>();
@@ -281,63 +281,16 @@ namespace Autofac.Tests
             Assert.AreSame(b, c);
         }
 
-        //[Test]
-        //public void OnlyIfNotRegisteredFiltersServices()
-        //{
-        //    var builder = new ContainerBuilder();
-        //    builder.Register("s1");
-        //    builder.Register("s2").Named("name").DefaultOnly();
-        //    var container = builder.Build();
-        //    Assert.AreEqual("s1", container.Resolve<string>()); // Not overridden
-        //    Assert.AreEqual("s2", container.Resolve("name"));
-        //}
-
-        //[Test]
-        //public void RegistrationMadeWhenPredicateTrue()
-        //{
-        //    var cb = new ContainerBuilder();
-        //    cb.Register<object>().OnlyIf(c => true);
-        //    var container = cb.Build();
-        //    Assert.IsTrue(container.IsRegistered<object>());
-        //}
-
-        //[Test]
-        //public void RegistrationNotMadeWhenPredicateFalse()
-        //{
-        //    var cb = new ContainerBuilder();
-        //    cb.Register<object>().OnlyIf(c => false);
-        //    var container = cb.Build();
-        //    Assert.IsFalse(container.IsRegistered<object>());
-        //}
-
-        //[Test]
-        //public void ContainerPassedToPredicate()
-        //{
-        //    var cb = new ContainerBuilder();
-        //    IContainer passed = null;
-        //    cb.Register<object>().OnlyIf(c => { passed = c; return true; });
-        //    var container = cb.Build();
-        //    Assert.IsNotNull(passed);
-        //    Assert.AreSame(passed, container);
-        //}
-
-        //[Test]
-        //public void OneFalsePredicatePreventsRegistration()
-        //{
-        //    var cb = new ContainerBuilder();
-        //    cb.Register<object>().OnlyIf(c => true).OnlyIf(c => false).OnlyIf(c => true);
-        //    var container = cb.Build();
-        //    Assert.IsFalse(container.IsRegistered<object>());
-        //}
-
-        //[Test]
-        //public void AllTruePredicatesAllowsRegistration()
-        //{
-        //    var cb = new ContainerBuilder();
-        //    cb.Register<object>().OnlyIf(c => true).OnlyIf(c => true).OnlyIf(c => true);
-        //    var container = cb.Build();
-        //    Assert.IsTrue(container.IsRegistered<object>());
-        //}
+        [Test]
+        public void DefaultsPreservedWhenSpecified()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance("s1");
+            builder.RegisterInstance("s2").Named("name").PreserveExistingDefaults();
+            var container = builder.Build();
+            Assert.AreEqual("s1", container.Resolve<string>()); // Not overridden
+            Assert.AreEqual("s2", container.Resolve("name"));
+        }
 
         [Test]
         public void InContextSpecifiesContainerScope()
@@ -345,7 +298,7 @@ namespace Autofac.Tests
             var contextName = "ctx";
 
             var cb = new ContainerBuilder();
-            cb.RegisterType<object>().ShareInstanceIn(contextName);
+            cb.RegisterType<object>().InstancePerMatchingLifetimeScope(contextName);
             var container = cb.Build();
 
             var ctx1 = container.BeginLifetimeScope();
@@ -364,7 +317,7 @@ namespace Autofac.Tests
             var contextName = "ctx";
 
             var cb = new ContainerBuilder();
-            cb.RegisterType<object>().ShareInstanceIn(contextName);
+            cb.RegisterType<object>().InstancePerMatchingLifetimeScope(contextName);
             var container = cb.Build();
 
             var ctx1 = container.BeginLifetimeScope();

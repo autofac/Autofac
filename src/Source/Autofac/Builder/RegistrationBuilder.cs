@@ -103,7 +103,7 @@ namespace Autofac.Builder
         /// gets a new, unique instance (default.)
         /// </summary>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> NoInstanceSharing()
+        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> UniqueInstances()
         {
             RegistrationData.Sharing = InstanceSharing.None;
             RegistrationData.Lifetime = new CurrentScopeLifetime();
@@ -115,7 +115,7 @@ namespace Autofac.Builder
         /// gets the same, shared instance.
         /// </summary>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> SingleSharedInstance()
+        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> SingleInstance()
         {
             RegistrationData.Sharing = InstanceSharing.Shared;
             RegistrationData.Lifetime = new RootScopeLifetime();
@@ -128,7 +128,7 @@ namespace Autofac.Builder
         /// different lifetime scopes will get different instances.
         /// </summary>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> ShareInstanceInLifetimeScope()
+        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerLifetimeScope()
         {
             RegistrationData.Sharing = InstanceSharing.Shared;
             RegistrationData.Lifetime = new CurrentScopeLifetime();
@@ -144,7 +144,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="lifetimeScopeTag">Tag applied to matching lifetime scopes.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> ShareInstanceIn(object lifetimeScopeTag)
+        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerMatchingLifetimeScope(object lifetimeScopeTag)
         {
             Enforce.ArgumentNotNull(lifetimeScopeTag, "lifetimeScopeTag");
             RegistrationData.Sharing = InstanceSharing.Shared;

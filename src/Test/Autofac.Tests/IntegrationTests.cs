@@ -17,9 +17,9 @@ namespace Autofac.Tests
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterType<A1>().SingleSharedInstance();
-            builder.RegisterType<CD1>().As<IC1, ID1>().SingleSharedInstance();
-            builder.RegisterType<E1>().SingleSharedInstance();
+            builder.RegisterType<A1>().SingleInstance();
+            builder.RegisterType<CD1>().As<IC1, ID1>().SingleInstance();
+            builder.RegisterType<E1>().SingleInstance();
             builder.RegisterDelegate(ctr => new B1(ctr.Resolve<A1>()));
 
             var target = builder.Build();
@@ -148,7 +148,7 @@ namespace Autofac.Tests
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterType<A1>().SingleSharedInstance();
+            builder.RegisterType<A1>().SingleInstance();
 
             var container = builder.Build();
 
@@ -167,7 +167,7 @@ namespace Autofac.Tests
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterType<A1>().SingleSharedInstance();
+            builder.RegisterType<A1>().SingleInstance();
 
             var container = builder.Build();
 
@@ -190,7 +190,7 @@ namespace Autofac.Tests
         public void NoInstanceSharing_ProvidesUniqueInstancesForAllRequests()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<A1>().NoInstanceSharing();
+            builder.RegisterType<A1>().UniqueInstances();
 
             var container = builder.Build();
 
@@ -208,7 +208,7 @@ namespace Autofac.Tests
         public void NoInstanceSharing_DisposesInstancesWithContainingLifetime()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<A1>().NoInstanceSharing();
+            builder.RegisterType<A1>().UniqueInstances();
 
             var container = builder.Build();
 
@@ -235,7 +235,7 @@ namespace Autofac.Tests
         public void ShareInstanceInLifetimeScope_SharesOneInstanceInEachLifetimeScope()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<A1>().ShareInstanceInLifetimeScope();
+            builder.RegisterType<A1>().InstancePerLifetimeScope();
 
             var container = builder.Build();
 
@@ -257,7 +257,7 @@ namespace Autofac.Tests
         public void ShareInstanceInLifetimeScope_DisposesInstancesWithContainingScope()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<A1>().ShareInstanceInLifetimeScope();
+            builder.RegisterType<A1>().InstancePerLifetimeScope();
 
             var container = builder.Build();
 

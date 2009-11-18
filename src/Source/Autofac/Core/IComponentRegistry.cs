@@ -55,6 +55,14 @@ namespace Autofac.Core
         void Register(IComponentRegistration registration);
 
         /// <summary>
+        /// Register a component.
+        /// </summary>
+        /// <param name="registration">The component registration.</param>
+        /// <param name="preserveDefaults">If true, existing defaults for the services provided by the
+        /// component will not be changed.</param>
+        void Register(IComponentRegistration registration, bool preserveDefaults);
+
+        /// <summary>
         /// Enumerate the registered components.
         /// </summary>
         IEnumerable<IComponentRegistration> Registrations { get; }

@@ -21,20 +21,20 @@ namespace Remember.Persistence.NHibernate
 
             builder.RegisterGeneric(typeof(NHibernateRepository<>))
                 .As(typeof(IRepository<>))
-                .ShareInstanceIn(WebLifetime.Request);
+                .InstancePerMatchingLifetimeScope(WebLifetime.Request);
 
             builder.RegisterDelegate(c => new TransactionTracker())
-                .ShareInstanceIn(WebLifetime.Request);
+                .InstancePerMatchingLifetimeScope(WebLifetime.Request);
 
             builder.RegisterDelegate(c => c.Resolve<ISessionFactory>().OpenSession())
-                .ShareInstanceIn(WebLifetime.Request)
+                .InstancePerMatchingLifetimeScope(WebLifetime.Request)
                 .OnActivated(e =>
                 {
                     e.Context.Resolve<TransactionTracker>().CurrentTransaction = ((ISession)e.Instance).BeginTransaction();
                 });
 
             builder.RegisterDelegate(c => new Configuration().Configure().BuildSessionFactory())
-                .SingleSharedInstance();
+                .SingleInstance();
         }
     }
 }

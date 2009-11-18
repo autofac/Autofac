@@ -244,13 +244,13 @@ namespace Autofac.Configuration
                 switch (component.Scope.ToLower())
                 {
                     case "singleton":
-                        registrar.SingleSharedInstance();
+                        registrar.SingleInstance();
                         break;
                     case "container":
-                        registrar.ShareInstanceInLifetimeScope();
+                        registrar.InstancePerLifetimeScope();
                         break;
                     case "factory":
-                        registrar.NoInstanceSharing();
+                        registrar.UniqueInstances();
                         break;
                     default:
                         throw new ConfigurationErrorsException(string.Format(CultureInfo.CurrentCulture,

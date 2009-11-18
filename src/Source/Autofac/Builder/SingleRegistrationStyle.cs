@@ -37,6 +37,7 @@ namespace Autofac.Builder
     {
         Guid _id = Guid.NewGuid();
         ICollection<EventHandler<ComponentRegisteredEventArgs>> _registeredHandlers = new List<EventHandler<ComponentRegisteredEventArgs>>();
+        bool _preserveDefaults;
 
         /// <summary>
         /// The id used for the registration.
@@ -57,5 +58,15 @@ namespace Autofac.Builder
         /// Handlers to notify of the component registration event.
         /// </summary>
         public ICollection<EventHandler<ComponentRegisteredEventArgs>> RegisteredHandlers { get { return _registeredHandlers; } }
+
+        /// <summary>
+        /// By default, new registrations override existing registrations as defaults.
+        /// If set to true, new registrations will not change existing defaults.
+        /// </summary>
+        public bool PreserveDefaults
+        {
+            get { return _preserveDefaults; }
+            set { _preserveDefaults = value; }
+        }
     }
 }

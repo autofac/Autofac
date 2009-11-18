@@ -42,7 +42,7 @@ namespace Autofac
     /// 
     /// builder.RegisterType&lt;Logger&gt;()
     ///     .As&lt;ILogger&gt;()
-    ///     .SingleSharedInstance();
+    ///     .SingleInstance();
     /// 
     /// builder.RegisterDelegate(c => new MessageHandler(c.Resolve&lt;ILogger&gt;()));
     /// 

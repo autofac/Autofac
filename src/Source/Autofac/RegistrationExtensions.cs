@@ -96,7 +96,7 @@ namespace Autofac
                 new SimpleActivatorData(new ProvidedInstanceActivator(instance)),
                 new SingleRegistrationStyle());
 
-            rb.SingleSharedInstance();
+            rb.SingleInstance();
 
             builder.RegisterCallback(cr => RegisterSingleComponent(cr, rb, rb.ActivatorData.Activator));
 
@@ -221,7 +221,7 @@ namespace Autofac
                 activator,
                 services);
 
-            cr.Register(registration);
+            cr.Register(registration, rb.RegistrationStyle.PreserveDefaults);
 
             var registeredEventArgs = new ComponentRegisteredEventArgs(cr, registration);
             foreach (var rh in rb.RegistrationStyle.RegisteredHandlers)
@@ -286,6 +286,24 @@ namespace Autofac
                         rb, new OpenGenericActivatorGenerator())));
 
             return rb;
+        }
+
+        /// <summary>
+        /// Specifies that the component being registered should only be made the default for services
+        /// that have not already been registered.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+            PreserveExistingDefaults<TLimit, TActivatorData, TSingleRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration)
+            where TSingleRegistrationStyle : SingleRegistrationStyle
+        {
+            registration.RegistrationStyle.PreserveDefaults = true;
+            return registration;
         }
 
         /// <summary>
@@ -736,7 +754,7 @@ namespace Autofac
                 RegistrationExtensions.RegisterSingleComponent(cr, rb, activator);
             });
 
-            return rb.ShareInstanceInLifetimeScope();
+            return rb.InstancePerLifetimeScope();
         }
     }
 }

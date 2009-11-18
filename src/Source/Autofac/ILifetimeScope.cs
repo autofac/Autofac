@@ -62,8 +62,8 @@ namespace Autofac
     /// </remarks>
     /// <seealso cref="IContainer"/>
     /// <seealso cref="Autofac.Core.IComponentContext"/>
-    /// <seealso cref="Autofac.Builder.RegistrationBuilder{L,A,S}.ShareInstanceIn"/>
-    /// <seealso cref="Autofac.Builder.RegistrationBuilder{L,A,S}.ShareInstanceInLifetimeScope"/>
+    /// <seealso cref="Autofac.Builder.RegistrationBuilder{L,A,S}.InstancePerMatchingLifetimeScope"/>
+    /// <seealso cref="Autofac.Builder.RegistrationBuilder{L,A,S}.InstancePerLifetimeScope"/>
     /// <seealso cref="Autofac.Core.InstanceSharing"/>
     /// <seealso cref="Autofac.Core.IComponentLifetime"/>
     public interface ILifetimeScope : IComponentContext, IDisposable
@@ -88,7 +88,7 @@ namespace Autofac
         /// </summary>
         /// <remarks>Tags allow a level in the lifetime hierarchy to be identified.
         /// In most applications, tags are not necessary.</remarks>
-        /// <seealso cref="Autofac.Builder.RegistrationBuilder{L,A,S}.ShareInstanceIn"/>
+        /// <seealso cref="Autofac.Builder.RegistrationBuilder{L,A,S}.InstancePerMatchingLifetimeScope"/>
         object Tag { get; set; }
     }
 }

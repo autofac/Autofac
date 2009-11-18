@@ -22,7 +22,7 @@ namespace Autofac.Tests.Builder
         public void FactoryScopeNotValid()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterInstance(new object()).NoInstanceSharing();
+            builder.RegisterInstance(new object()).UniqueInstances();
         }
 
         [Test]
@@ -31,7 +31,7 @@ namespace Autofac.Tests.Builder
         public void ContainerScopeNotValid()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterInstance(new object()).ShareInstanceInLifetimeScope();
+            builder.RegisterInstance(new object()).InstancePerLifetimeScope();
         }
 
         [Test]

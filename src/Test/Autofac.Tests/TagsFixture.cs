@@ -52,7 +52,7 @@ namespace Autofac.Tests.Tags
 
             int instantiations = 0;
 
-            builder.RegisterDelegate(c => { instantiations++; return ""; }).ShareInstanceIn(Tag.Outer);
+            builder.RegisterDelegate(c => { instantiations++; return ""; }).InstancePerMatchingLifetimeScope(Tag.Outer);
 
             var outer = builder.Build();
             outer.Tag = Tag.Outer;
@@ -78,7 +78,7 @@ namespace Autofac.Tests.Tags
             int instantiations = 0;
 
             builder.RegisterDelegate(c => { instantiations++; return ""; })
-                .ShareInstanceIn(Tag.Outer);
+                .InstancePerMatchingLifetimeScope(Tag.Outer);
 
             var outer = builder.Build();
             outer.Tag = Tag.Outer;
@@ -98,7 +98,7 @@ namespace Autofac.Tests.Tags
             var builder = new ContainerBuilder();
 
             builder.RegisterDelegate(c => "")
-                .ShareInstanceIn(Tag.Middle);
+                .InstancePerMatchingLifetimeScope(Tag.Middle);
 
             var outer = builder.Build();
             outer.Tag = Tag.Outer;
@@ -115,7 +115,7 @@ namespace Autofac.Tests.Tags
             var builder = new ContainerBuilder();
 
             builder.RegisterDelegate(c => "")
-                .ShareInstanceIn(Tag.Outer)
+                .InstancePerMatchingLifetimeScope(Tag.Outer)
                 .Named(name);
 
             var outer = builder.Build();
@@ -131,7 +131,7 @@ namespace Autofac.Tests.Tags
             var tag = "Tag";
             var builder = new ContainerBuilder();
             builder.RegisterDelegate(c => new DisposeTracker())
-                .ShareInstanceIn(tag);
+                .InstancePerMatchingLifetimeScope(tag);
             var container = builder.Build();
             container.Tag = tag;
             var inner = container.BeginLifetimeScope();
@@ -150,7 +150,7 @@ namespace Autofac.Tests.Tags
             var tag = "Tag";
             var builder = new ContainerBuilder();
             builder.RegisterDelegate(c => new object())
-                .ShareInstanceIn(tag);
+                .InstancePerMatchingLifetimeScope(tag);
             // .FactoryScoped();
             var container = builder.Build();
             container.Tag = tag;
@@ -162,7 +162,7 @@ namespace Autofac.Tests.Tags
         {
             var tag = "Tag";
             var builder = new ContainerBuilder();
-            builder.RegisterDelegate(c => new object()).ShareInstanceIn(tag);
+            builder.RegisterDelegate(c => new object()).InstancePerMatchingLifetimeScope(tag);
             var container = builder.Build();
             container.Tag = tag;
             var inner = container.BeginLifetimeScope();
@@ -174,7 +174,7 @@ namespace Autofac.Tests.Tags
         {
             var tag = "Tag";
             var builder = new ContainerBuilder();
-            builder.RegisterType(typeof(object)).ShareInstanceIn(tag);
+            builder.RegisterType(typeof(object)).InstancePerMatchingLifetimeScope(tag);
             var container = builder.Build();
             container.Tag = tag;
             Assert.IsNotNull(container.Resolve<object>());
@@ -186,7 +186,7 @@ namespace Autofac.Tests.Tags
         //    var builder = new ContainerBuilder();
         //    builder.RegisterCollection<object>()
         //        .FactoryScoped()
-        //        .ShareInstanceIn("tag")
+        //        .InstancePerMatchingLifetimeScope("tag")
         //        .As(typeof(IList<object>));
 
         //    var outer = builder.Build();
@@ -214,7 +214,7 @@ namespace Autofac.Tests.Tags
         {
             var builder = new ContainerBuilder();
             builder.RegisterGeneric(typeof(List<>))
-                .ShareInstanceIn("tag")
+                .InstancePerMatchingLifetimeScope("tag")
                 .As(typeof(IList<>));
 
             var outer = builder.Build();
@@ -243,7 +243,7 @@ namespace Autofac.Tests.Tags
         //    var builder = new ContainerBuilder();
         //    builder.RegisterTypesAssignableTo<IList<object>>()
         //        .FactoryScoped()
-        //        .ShareInstanceIn("tag");
+        //        .InstancePerMatchingLifetimeScope("tag");
 
         //    var outer = builder.Build();
         //    var inner = outer.BeginLifetimeScope();
