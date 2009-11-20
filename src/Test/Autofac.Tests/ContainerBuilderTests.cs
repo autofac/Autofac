@@ -6,6 +6,9 @@ using Autofac.Core;
 
 namespace Autofac.Tests
 {
+    // This fixture is in desperate need of some love.
+    // Ideally all of the different kinds of registration and syntax extension should be
+    // tested in their own fixtures.
     [TestFixture]
     public class ContainerBuilderTests
     {
@@ -329,6 +332,29 @@ namespace Autofac.Tests
             AssertIsFactoryScoped<object>(ctx1, ctx2);
         }
 
+        [Test]
+        public void WhenContainerIsBuilt_OnRegisteredHandlersAreInvoked()
+        {
+            var builder = new ContainerBuilder();
+
+            string marker = "marker";
+
+            IComponentRegistry registry = null;
+            IComponentRegistration cr = null;
+            builder.RegisterType<object>()
+                .WithExtendedProperty(marker, marker)
+                .OnRegistered(e =>
+                {
+                    registry = e.ComponentRegistry;
+                    cr = e.ComponentRegistration;
+                });
+
+            var container = builder.Build();
+
+            Assert.AreSame(container.ComponentRegistry, registry);
+            Assert.AreSame(marker, cr.ExtendedProperties[marker]);
+        }
+
         void AssertIsContainerScoped<TSvc>(IComponentContext ctx1, IComponentContext ctx2)
         {
             Assert.AreSame(ctx1.Resolve<TSvc>(), ctx1.Resolve<TSvc>());
@@ -346,6 +372,5 @@ namespace Autofac.Tests
             Assert.AreSame(ctx1.Resolve<TSvc>(), ctx1.Resolve<TSvc>());
             Assert.AreSame(ctx1.Resolve<TSvc>(), ctx2.Resolve<TSvc>());
         }
-
     }
 }

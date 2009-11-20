@@ -22,7 +22,7 @@ namespace Autofac.Tests.Builder
         public void FactoryScopeNotValid()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterInstance(new object()).UniqueInstances();
+            builder.RegisterInstance(new object()).InstancePerDependency();
         }
 
         [Test]

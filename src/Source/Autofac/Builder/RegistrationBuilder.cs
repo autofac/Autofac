@@ -103,7 +103,7 @@ namespace Autofac.Builder
         /// gets a new, unique instance (default.)
         /// </summary>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> UniqueInstances()
+        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerDependency()
         {
             RegistrationData.Sharing = InstanceSharing.None;
             RegistrationData.Lifetime = new CurrentScopeLifetime();

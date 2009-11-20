@@ -756,5 +756,28 @@ namespace Autofac
 
             return rb.InstancePerLifetimeScope();
         }
+
+        /// <summary>
+        /// Provide a handler to be called when the component is registred.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration add handler to.</param>
+        /// <param name="handler">The handler.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+            OnRegistered<TLimit, TActivatorData, TSingleRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
+                Action<ComponentRegisteredEventArgs> handler)
+            where TSingleRegistrationStyle : SingleRegistrationStyle
+        {
+            Enforce.ArgumentNotNull(registration, "registration");
+            Enforce.ArgumentNotNull(handler, "handler");
+
+            registration.RegistrationStyle.RegisteredHandlers.Add((s, e) => handler(e));
+
+            return registration;
+        }
     }
 }

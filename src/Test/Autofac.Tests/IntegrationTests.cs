@@ -190,7 +190,7 @@ namespace Autofac.Tests
         public void NoInstanceSharing_ProvidesUniqueInstancesForAllRequests()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<A1>().UniqueInstances();
+            builder.RegisterType<A1>().InstancePerDependency();
 
             var container = builder.Build();
 
@@ -208,7 +208,7 @@ namespace Autofac.Tests
         public void NoInstanceSharing_DisposesInstancesWithContainingLifetime()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<A1>().UniqueInstances();
+            builder.RegisterType<A1>().InstancePerDependency();
 
             var container = builder.Build();
 

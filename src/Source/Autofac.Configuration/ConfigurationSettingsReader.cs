@@ -250,7 +250,7 @@ namespace Autofac.Configuration
                         registrar.InstancePerLifetimeScope();
                         break;
                     case "factory":
-                        registrar.UniqueInstances();
+                        registrar.InstancePerDependency();
                         break;
                     default:
                         throw new ConfigurationErrorsException(string.Format(CultureInfo.CurrentCulture,
