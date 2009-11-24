@@ -372,5 +372,13 @@ namespace Autofac.Tests
             Assert.AreSame(ctx1.Resolve<TSvc>(), ctx1.Resolve<TSvc>());
             Assert.AreSame(ctx1.Resolve<TSvc>(), ctx2.Resolve<TSvc>());
         }
+
+        [Test]
+        public void ProvidedInstancesCannotSupportInstancePerDependency()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(new object()).InstancePerDependency();
+            Assert.Throws<InvalidOperationException>(() => builder.Build());
+        }
     }
 }

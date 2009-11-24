@@ -37,6 +37,7 @@ using Autofac.Core.Registration;
 using Autofac.Util;
 using Autofac.Features.GeneratedFactories;
 using Autofac.Builder;
+using Autofac.Core.Lifetime;
 
 namespace Autofac
 {
@@ -100,7 +101,15 @@ namespace Autofac
 
             rb.SingleInstance();
 
-            builder.RegisterCallback(cr => RegisterSingleComponent(cr, rb, rb.ActivatorData.Activator, typeof(T)));
+            builder.RegisterCallback(cr =>
+            {
+                if (!(rb.RegistrationData.Lifetime is RootScopeLifetime) ||
+                    rb.RegistrationData.Sharing != InstanceSharing.Shared)
+                    throw new InvalidOperationException(string.Format(
+                        RegistrationExtensionsResources.InstanceRegistrationsAreSingleInstanceOnly, instance));
+
+                RegisterSingleComponent(cr, rb, rb.ActivatorData.Activator, typeof(T));
+            });
 
             return rb;
         }

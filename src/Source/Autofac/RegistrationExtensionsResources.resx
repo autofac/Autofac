@@ -120,4 +120,7 @@
   <data name="ComponentDoesNotSupportService" xml:space="preserve">
     <value>The type '{0}' is not assignable to service '{1}'.</value>
   </data>
+  <data name="InstanceRegistrationsAreSingleInstanceOnly" xml:space="preserve">
+    <value>The instance  registration '{0}' can support SingleInstance() sharing only.</value>
+  </data>
 </root>
