@@ -85,6 +85,8 @@ namespace Autofac
         /// <param name="builder">Container builder.</param>
         /// <param name="instance">The instance to register.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
+        /// <remarks>If no services are explicitly specified for the instance, the
+        /// static type <paramref name="T"/> will be used as the default service (i.e. *not* <code>instance.GetType()</code>).</remarks>
         public static RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>
             RegisterInstance<T>(this ContainerBuilder builder, T instance)
             where T : class
@@ -98,7 +100,7 @@ namespace Autofac
 
             rb.SingleInstance();
 
-            builder.RegisterCallback(cr => RegisterSingleComponent(cr, rb, rb.ActivatorData.Activator));
+            builder.RegisterCallback(cr => RegisterSingleComponent(cr, rb, rb.ActivatorData.Activator, typeof(T)));
 
             return rb;
         }
@@ -196,24 +198,25 @@ namespace Autofac
             return rb;
         }
 
-        /// <summary>
-        /// Register a component directly into a component registry.
-        /// </summary>
-        /// <typeparam name="TLimit"></typeparam>
-        /// <typeparam name="TActivatorData"></typeparam>
-        /// <typeparam name="TSingleRegistrationStyle"></typeparam>
-        /// <param name="cr"></param>
-        /// <param name="rb"></param>
-        /// <param name="activator"></param>
         internal static void RegisterSingleComponent<TLimit, TActivatorData, TSingleRegistrationStyle>(
             IComponentRegistry cr,
             RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> rb,
             IInstanceActivator activator)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
+            RegisterSingleComponent(cr, rb, activator, activator.LimitType);
+        }
+
+        internal static void RegisterSingleComponent<TLimit, TActivatorData, TSingleRegistrationStyle>(
+            IComponentRegistry cr,
+            RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> rb,
+            IInstanceActivator activator,
+            Type defaultServiceType)
+            where TSingleRegistrationStyle : SingleRegistrationStyle
+        {
             IEnumerable<Service> services = rb.RegistrationData.Services;
             if (rb.RegistrationData.Services.Count == 0)
-                services = new Service[] { new TypedService(activator.LimitType) };
+                services = new Service[] { new TypedService(defaultServiceType) };
 
             var registration = CreateRegistration(
                 rb.RegistrationStyle.Id,
@@ -778,6 +781,68 @@ namespace Autofac
             registration.RegistrationStyle.RegisteredHandlers.Add((s, e) => handler(e));
 
             return registration;
+        }
+
+        /// <summary>
+        /// Registers the type as a collection. If no services or names are specified, the
+        /// default services will be IList&lt;T&gt;, ICollection&lt;T&gt;, and IEnumerable&lt;T&gt;        
+        /// </summary>
+        /// <param name="elementType">The type of the collection elements.</param>
+        /// <param name="builder">Container builder.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<object[], SimpleActivatorData, SingleRegistrationStyle>
+            RegisterCollection(this ContainerBuilder builder, Type elementType)
+        {
+            return CollectionRegistrationExtensions.RegisterCollection<object>(builder, elementType);
+        }
+
+        /// <summary>
+        /// Registers the type as a collection. If no services or names are specified, the
+        /// default services will be IList&lt;T&gt;, ICollection&lt;T&gt;, and IEnumerable&lt;T&gt;        
+        /// </summary>
+        /// <typeparam name="T">The type of the collection elements.</typeparam>
+        /// <param name="builder">Container builder.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<T[], SimpleActivatorData, SingleRegistrationStyle>
+            RegisterCollection<T>(this ContainerBuilder builder)
+        {
+            return CollectionRegistrationExtensions.RegisterCollection<T>(builder, typeof(T));
+        }
+
+        /// <summary>
+        /// Include the element explicitly in a collection configured using RegisterCollection.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to export.</param>
+        /// <param name="service">The collection type to include this item in.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+            MemberOf<TLimit, TActivatorData, TSingleRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
+                Service service)
+            where TSingleRegistrationStyle : SingleRegistrationStyle
+        {
+            return CollectionRegistrationExtensions.MemberOf(registration, service);
+        }
+
+        /// <summary>
+        /// Include the element explicitly in a collection configured using RegisterCollection.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to export.</param>
+        /// <param name="serviceType">The collection type to include this item in.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+            MemberOf<TLimit, TActivatorData, TSingleRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
+                Type serviceType)
+            where TSingleRegistrationStyle : SingleRegistrationStyle
+        {
+            return registration.MemberOf(new TypedService(serviceType));
         }
     }
 }

@@ -33,70 +33,37 @@ using Autofac.Core;
 namespace Autofac.Builder
 {
     /// <summary>
-    /// Support for MemberOf() style collection registrations.
+    /// Internal implementation of the RegisterCollection/MemberOf-style collection feature.
     /// </summary>
-    public static class CollectionRegistrationExtensions
+    static class CollectionRegistrationExtensions
     {
-        // This whole approach is broken because
-        // using a service to mark items causes them to be registed under that
-        // service only (their own type is ignored as a default.)
-        // Including this just to get core solution building
-        class MemberService : Service
-        {
-            Service _collectionService;
+        const string MemberOfPropertyKey = "Autofac.CollectionRegistrationExtensions.MemberOf";
 
-            public MemberService(Service collectionService)
-            {
-                _collectionService = Enforce.ArgumentNotNull(collectionService, "collectionService");
-            }
-
-            public override string Description
-            {
-                get { return "Member of " + _collectionService.Description; }
-            }
-
-            public override bool Equals(object obj)
-            {
-                var ms = obj as MemberService;
-                return ms != null && ms._collectionService == _collectionService;
-            }
-
-            public override int GetHashCode()
-            {
-                return 7 ^ _collectionService.GetHashCode();
-            }
-        }
-
-        /// <summary>
-        /// Registers the type as a collection. If no services or names are specified, the
-        /// default services will be IList&lt;T&gt;, ICollection&lt;T&gt;, and IEnumerable&lt;T&gt;        
-        /// </summary>
-        /// <typeparam name="T">The type of the collection elements.</typeparam>
-        /// <param name="builder">Container builder.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<T[], SimpleActivatorData, SingleRegistrationStyle>
-            RegisterCollection<T>(this ContainerBuilder builder)
+        internal static RegistrationBuilder<T[], SimpleActivatorData, SingleRegistrationStyle>
+            RegisterCollection<T>(this ContainerBuilder builder, Type elementType)
         {
             Enforce.ArgumentNotNull(builder, "builder");
+            Enforce.ArgumentNotNull(elementType, "elementType");
 
+            var arrayType = elementType.MakeArrayType();
             IEnumerable<IComponentRegistration> elements = null;
             IEnumerable<Service> memberServices = null;
 
-            var activator = new DelegateActivator(typeof(T[]), (c, p) =>
+            var activator = new DelegateActivator(arrayType, (c, p) =>
             {
                 if (elements == null)
                 {
                     c.ComponentRegistry.Registered += (sender, e) =>
                     {
-                        if (e.ComponentRegistration.Services.Any(sv => memberServices.Contains(sv)))
-                            elements = memberServices.SelectMany(s => c.ComponentRegistry.RegistrationsFor(s)).Distinct();
+                        if (IsElementRegistration(memberServices, e.ComponentRegistration))
+                            elements = GetElementRegistrations(memberServices, c.ComponentRegistry);
                     };
-                    elements = memberServices.SelectMany(s => c.ComponentRegistry.RegistrationsFor(s)).Distinct();
+                    elements = GetElementRegistrations(memberServices, c.ComponentRegistry);
                 }
 
                 var items = elements.Select(e => c.Resolve(e, p)).ToArray();
 
-                Array result = Array.CreateInstance(typeof(T), items.Length);
+                Array result = Array.CreateInstance(elementType, items.Length);
                 items.CopyTo(result, 0);
                 return result;
             });
@@ -107,28 +74,48 @@ namespace Autofac.Builder
 
             builder.RegisterCallback(cr => {
                 RegistrationExtensions.RegisterSingleComponent(cr, rb, activator);
-                memberServices = rb.RegistrationData.Services.Select(s => new MemberService(s)).Cast<Service>();
+                memberServices = rb.RegistrationData.Services;
             });
 
             return rb;
         }
 
-        /// <summary>
-        /// Include the element explicitly in a collection configured using RegisterCollection.
-        /// </summary>
-        /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
-        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
-        /// <param name="registration">Registration to export.</param>
-        /// <param name="service">The collection type to include this item in.</param>
-        /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+        static IEnumerable<IComponentRegistration> GetElementRegistrations(IEnumerable<Service> memberServices, IComponentRegistry registry)
+        {
+            return registry.Registrations.Where(cr => IsElementRegistration(memberServices, cr));
+        }
+
+        static bool IsElementRegistration(IEnumerable<Service> memberServices, IComponentRegistration cr)
+        {
+            object crMembershipServices;
+            return cr.ExtendedProperties.TryGetValue(MemberOfPropertyKey, out crMembershipServices) &&
+                memberServices.Any(m => ((IEnumerable<Service>)crMembershipServices).Contains(m));
+        }
+
+        internal static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             MemberOf<TLimit, TActivatorData, TSingleRegistrationStyle>(
                 this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
                 Service service)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
-            return registration.As(new MemberService(service));
+            registration.OnRegistered(e =>
+            {
+                var ep = e.ComponentRegistration.ExtendedProperties;
+                if (ep.ContainsKey(MemberOfPropertyKey))
+                {
+                    ep[MemberOfPropertyKey] =
+                        ((IEnumerable<Service>)ep[MemberOfPropertyKey])
+                        .Union(new[] { service });
+                }
+                else
+                {
+                    ep.Add(
+                        MemberOfPropertyKey,
+                        new[] { service });
+                }
+            });
+
+            return registration;
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Autofac.Tests.Builder
         }
 
         [Test]
-        public void ExposesImplementationType()
+        public void LimitType_ExposesImplementationType()
         {
             var cb = new ContainerBuilder();
             cb.RegisterInstance("Hello").As<object>();
@@ -44,6 +44,18 @@ namespace Autofac.Tests.Builder
             Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(
                 new TypedService(typeof(object)), out cr));
             Assert.AreEqual(typeof(string), cr.Activator.LimitType);
+        }
+
+        [Test]
+        public void DefaultServiceType_IsStaticTypeOfRegisteredInstance()
+        {
+            object instance = "Hello";
+
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(instance);
+            var container = builder.Build();
+            container.AssertRegistered<object>();
+            container.AssertNotRegistered<string>();
         }
     }
 }

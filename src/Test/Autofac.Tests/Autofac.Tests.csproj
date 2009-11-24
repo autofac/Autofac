@@ -67,7 +67,7 @@
     <Compile Include="Builder\AutomaticRegistrationBuilderFixture.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Builder\CollectionRegistrationBuilderFixture.cs">
+    <Compile Include="Builder\CollectionRegistrationBuilderTests.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ContainerBuilderTests.cs">
