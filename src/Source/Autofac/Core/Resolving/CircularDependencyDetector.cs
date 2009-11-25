@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2007 - 2008 Autofac Contributors
+// Copyright (c) 2007 - 2009 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -27,7 +27,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Autofac.Util;
-using Autofac.Core;
 
 namespace Autofac.Core.Resolving
 {

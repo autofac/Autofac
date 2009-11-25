@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2007 - 2008 Autofac Contributors
+// Copyright (c) 2007 - 2009 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -26,10 +26,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
-using Autofac.Core;
 
 namespace Autofac.Features.Collections
 {

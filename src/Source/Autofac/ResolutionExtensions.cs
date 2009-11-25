@@ -26,10 +26,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac.Util;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
+using Autofac.Util;
 
 namespace Autofac
 {

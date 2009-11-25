@@ -23,24 +23,31 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using Autofac.Util;
-namespace Autofac.Core.Lifetime
+using System;
+using Autofac.Builder;
+using Autofac.Core;
+using Autofac.Core.Activators.Delegate;
+
+namespace Autofac.Features.GeneratedFactories
 {
-    /// <summary>
-    /// Attaches the component's lifetime to the root scope.
-    /// </summary>
-    public class RootScopeLifetime : IComponentLifetime
+    static class GeneratedFactoryRegistrationExtensions
     {
-        /// <summary>
-        /// Given the most nested scope visible within the resolve operation, find
-        /// the scope for the component.
-        /// </summary>
-        /// <param name="mostNestedVisibleScope">The most nested visible scope.</param>
-        /// <returns>The scope for the component.</returns>
-        public ISharingLifetimeScope FindScope(ISharingLifetimeScope mostNestedVisibleScope)
+        internal static RegistrationBuilder<TLimit, GeneratedFactoryActivatorData, SingleRegistrationStyle>
+            RegisterGeneratedFactory<TLimit>(ContainerBuilder builder, Type delegateType, Service service)
         {
-            Enforce.ArgumentNotNull(mostNestedVisibleScope, "mostNestedVisibleScope");
-            return mostNestedVisibleScope.RootLifetimeScope;
+            var activatorData = new GeneratedFactoryActivatorData();
+
+            var rb = new RegistrationBuilder<TLimit, GeneratedFactoryActivatorData, SingleRegistrationStyle>(
+                activatorData, new SingleRegistrationStyle());
+
+            builder.RegisterCallback(cr =>
+            {
+                var factory = new FactoryGenerator(delegateType, service, activatorData.ParameterMapping);
+                var activator = new DelegateActivator(delegateType, (c, p) => factory.GenerateFactory(c, p));
+                RegistrationExtensions.RegisterSingleComponent(cr, rb, activator);
+            });
+
+            return rb.InstancePerLifetimeScope();
         }
     }
 }

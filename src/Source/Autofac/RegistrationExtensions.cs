@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2007 - 2008 Autofac Contributors
+// Copyright (c) 2007 - 2009 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -28,16 +28,17 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Activators.ProvidedInstance;
 using Autofac.Core.Activators.Reflection;
-using Autofac.Features.OpenGenerics;
-using Autofac.Core.Registration;
-using Autofac.Util;
-using Autofac.Features.GeneratedFactories;
-using Autofac.Builder;
 using Autofac.Core.Lifetime;
+using Autofac.Core.Registration;
+using Autofac.Features.Collections;
+using Autofac.Features.GeneratedFactories;
+using Autofac.Features.OpenGenerics;
+using Autofac.Util;
 
 namespace Autofac
 {
@@ -660,7 +661,7 @@ namespace Autofac
         public static RegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
             RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType, Service service)
         {
-            return RegisterGeneratedFactoryInternal<Delegate>(builder, delegateType, service);
+            return GeneratedFactoryRegistrationExtensions.RegisterGeneratedFactory<Delegate>(builder, delegateType, service);
         }
 
         /// <summary>
@@ -674,7 +675,7 @@ namespace Autofac
             RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder, Service service)
             where TDelegate : class
         {
-            return RegisterGeneratedFactoryInternal<TDelegate>(builder, typeof(TDelegate), service);
+            return GeneratedFactoryRegistrationExtensions.RegisterGeneratedFactory<TDelegate>(builder, typeof(TDelegate), service);
         }
 
         /// <summary>
@@ -749,24 +750,6 @@ namespace Autofac
         {
             registration.ActivatorData.ParameterMapping = ParameterMapping.ByType;
             return registration;
-        }
-
-        static RegistrationBuilder<TLimit, GeneratedFactoryActivatorData, SingleRegistrationStyle>
-            RegisterGeneratedFactoryInternal<TLimit>(ContainerBuilder builder, Type delegateType, Service service)
-        {
-            var activatorData = new GeneratedFactoryActivatorData();
-
-            var rb = new RegistrationBuilder<TLimit, GeneratedFactoryActivatorData, SingleRegistrationStyle>(
-                activatorData, new SingleRegistrationStyle());
-
-            builder.RegisterCallback(cr =>
-            {
-                var factory = new FactoryGenerator(delegateType, service, activatorData.ParameterMapping);
-                var activator = new DelegateActivator(delegateType, (c, p) => factory.GenerateFactory(c, p));
-                RegistrationExtensions.RegisterSingleComponent(cr, rb, activator);
-            });
-
-            return rb.InstancePerLifetimeScope();
         }
 
         /// <summary>

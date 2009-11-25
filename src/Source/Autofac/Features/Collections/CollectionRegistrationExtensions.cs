@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2007 - 2008 Autofac Contributors
+// Copyright (c) 2007 - 2009 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -26,11 +26,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac.Builder;
+using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Util;
-using Autofac.Core;
 
-namespace Autofac.Builder
+namespace Autofac.Features.Collections
 {
     /// <summary>
     /// Internal implementation of the RegisterCollection/MemberOf-style collection feature.
@@ -39,7 +40,7 @@ namespace Autofac.Builder
     {
         const string MemberOfPropertyKey = "Autofac.CollectionRegistrationExtensions.MemberOf";
 
-        internal static RegistrationBuilder<T[], SimpleActivatorData, SingleRegistrationStyle>
+        public static RegistrationBuilder<T[], SimpleActivatorData, SingleRegistrationStyle>
             RegisterCollection<T>(this ContainerBuilder builder, Type elementType)
         {
             Enforce.ArgumentNotNull(builder, "builder");
@@ -92,7 +93,7 @@ namespace Autofac.Builder
                 memberServices.Any(m => ((IEnumerable<Service>)crMembershipServices).Contains(m));
         }
 
-        internal static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             MemberOf<TLimit, TActivatorData, TSingleRegistrationStyle>(
                 this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
                 Service service)
