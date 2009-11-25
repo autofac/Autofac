@@ -5,39 +5,13 @@ using System.Text;
 using NUnit.Framework;
 using Autofac.Core;
 using Autofac.Tests.Scenarios.Dependencies;
+using Autofac.Core.Resolving;
 
 namespace Autofac.Tests.Core.Resolving
 {
     [TestFixture]
     public class ResolveOperationTests
     {
-        [Test]
-        public void OnCircularDependency_MessageDescribesCycle()
-        {
-            try
-            {
-                var builder = new ContainerBuilder();
-                builder.RegisterDelegate(c => c.Resolve<object>());
-
-                var target = builder.Build();
-                target.Resolve<object>();
-            }
-            catch (DependencyResolutionException de)
-            {
-                Assert.IsNull(de.InnerException);
-                Assert.IsTrue(de.Message.Contains("System.Object -> System.Object"));
-                Assert.IsFalse(de.Message.Contains("System.Object -> System.Object -> System.Object"));
-                return;
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("Expected a DependencyResolutionException, got {0}.", ex);
-                return;
-            }
-
-            Assert.Fail("Expected a DependencyResolutionException.");
-        }
-
         [Test]
         public void CtorPropDependencyOkOrder1()
         {

@@ -36,6 +36,7 @@ namespace Autofac.Core.Activators.ProvidedInstance
     {
         readonly object _instance;
         bool _activated;
+        bool _disposeInstance;
 
         /// <summary>
         /// Provide the specified instance.
@@ -68,6 +69,29 @@ namespace Autofac.Core.Activators.ProvidedInstance
             _activated = true;
 
             return _instance;
+        }
+
+        /// <summary>
+        /// Determines whether the activator disposes the instance that it holds.
+        /// Necessary because otherwise instances that are never resolved will never be
+        /// disposed.
+        /// </summary>
+        public bool DisposeInstance
+        {
+            get { return _disposeInstance; }
+            set { _disposeInstance = value; }
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && _disposeInstance && _instance is IDisposable)
+                ((IDisposable)_instance).Dispose();
+
+            base.Dispose(disposing);
         }
     }
 }

@@ -96,8 +96,10 @@ namespace Autofac
             Enforce.ArgumentNotNull(builder, "builder");
             Enforce.ArgumentNotNull(instance, "instance");
 
+            var activator = new ProvidedInstanceActivator(instance);
+
             var rb = new RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>(
-                new SimpleActivatorData(new ProvidedInstanceActivator(instance)),
+                new SimpleActivatorData(activator),
                 new SingleRegistrationStyle());
 
             rb.SingleInstance();
@@ -108,6 +110,8 @@ namespace Autofac
                     rb.RegistrationData.Sharing != InstanceSharing.Shared)
                     throw new InvalidOperationException(string.Format(
                         RegistrationExtensionsResources.InstanceRegistrationsAreSingleInstanceOnly, instance));
+
+                activator.DisposeInstance = rb.RegistrationData.Ownership == InstanceOwnership.OwnedByLifetimeScope;
 
                 RegisterSingleComponent(cr, rb, rb.ActivatorData.Activator, typeof(T));
             });
@@ -529,6 +533,14 @@ namespace Autofac
             where TReflectionActivatorData : ReflectionActivatorData
         {
             Enforce.ArgumentNotNull(signature, "signature");
+
+            // Unfortunately this could cause some false positives in rare AOP/dynamic subclassing
+            // scenarios. If it becomes a problem we'll address it then.
+
+            if (registration.ActivatorData.ImplementationType.GetConstructor(signature) == null)
+                throw new ArgumentException(
+                    string.Format(RegistrationExtensionsResources.NoMatchingConstructorExists, registration.ActivatorData.ImplementationType));
+
             return registration.UsingConstructor(new MatchingSignatureConstructorSelector(signature));
         }
 

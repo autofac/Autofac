@@ -237,35 +237,35 @@ namespace Autofac.Tests
         }
 
         [Test]
-        [Ignore("Not currently checked until Build() is called")]
-        [ExpectedException(typeof(ArgumentException))]
         public void RegisterTypeAsUnsupportedService()
         {
-            new ContainerBuilder().RegisterType<string>().As<IA>();
+            var builder = new ContainerBuilder();
+            builder.RegisterType<string>().As<IA>();
+            Assert.Throws<ArgumentException>(() => builder.Build());
         }
 
         [Test]
-        [Ignore("Not currently checked until Build() is called")]
-        [ExpectedException(typeof(ArgumentException))]
         public void RegisterTypeAsSupportedAndUnsupportedService()
         {
-            new ContainerBuilder().RegisterType<string>().As<IA, IB>();
+            var builder = new ContainerBuilder();
+            builder.RegisterType<string>().As<IA, IB>();
+            Assert.Throws<ArgumentException>(() => builder.Build());
         }
 
         [Test]
-        [Ignore("Not currently checked until Build() is called")]
-        [ExpectedException(typeof(ArgumentException))]
         public void RegisterInstanceAsUnsupportedService()
         {
-            new ContainerBuilder().RegisterInstance("hello").As<IA>();
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance("hello").As<IA>();
+            Assert.Throws<ArgumentException>(() => builder.Build());
         }
 
         [Test]
-        [Ignore("Not currently checked until Build() is called")]
-        [ExpectedException(typeof(ArgumentException))]
         public void RegisterDelegateAsUnsupportedService()
         {
-            new ContainerBuilder().RegisterDelegate(c => "hello").As<IA>();
+            var builder = new ContainerBuilder();
+            builder.RegisterDelegate(c => "hello").As<IA>();
+            Assert.Throws<ArgumentException>(() => builder.Build());
         }
 
         [Test]
@@ -311,25 +311,6 @@ namespace Autofac.Tests
             ctx2.Tag = contextName;
 
             AssertIsContainerScoped<object>(ctx1, ctx2);
-        }
-
-        [Test]
-        [Ignore("Builder syntax doesn't yet allow lifetime to be specified independently of sharing.")]
-        public void InContextDoesntOverrideFactoryScope()
-        {
-            var contextName = "ctx";
-
-            var cb = new ContainerBuilder();
-            cb.RegisterType<object>().InstancePerMatchingLifetimeScope(contextName);
-            var container = cb.Build();
-
-            var ctx1 = container.BeginLifetimeScope();
-            ctx1.Tag = contextName;
-
-            var ctx2 = container.BeginLifetimeScope();
-            ctx1.Tag = contextName;
-
-            AssertIsFactoryScoped<object>(ctx1, ctx2);
         }
 
         [Test]

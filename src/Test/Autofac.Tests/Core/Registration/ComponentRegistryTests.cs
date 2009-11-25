@@ -33,16 +33,6 @@ namespace Autofac.Tests.Core.Registration
         }
 
         [Test]
-        [Ignore("Not implemented")]
-        public void RegistrationsForServiceIncludeDynamicSources_WhenOtherImplementationRegistered()
-        {
-            var registry = new ComponentRegistry();
-            registry.Register(Factory.CreateSingletonObjectRegistration());
-            registry.AddRegistrationSource(new ObjectRegistrationSource());
-            Assert.IsTrue(registry.RegistrationsFor(new TypedService(typeof(object))).Count() == 2);
-        }
-
-        [Test]
         public void WhenRegistrationIsMad_ComponentRegisteredEventFired()
         {
             object eventSender = null;

@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac
-{
-
-
+namespace Autofac {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -75,6 +75,15 @@ namespace Autofac
         internal static string InstanceRegistrationsAreSingleInstanceOnly {
             get {
                 return ResourceManager.GetString("InstanceRegistrationsAreSingleInstanceOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No matching constructor exists on type &apos;{0}&apos;..
+        /// </summary>
+        internal static string NoMatchingConstructorExists {
+            get {
+                return ResourceManager.GetString("NoMatchingConstructorExists", resourceCulture);
             }
         }
     }

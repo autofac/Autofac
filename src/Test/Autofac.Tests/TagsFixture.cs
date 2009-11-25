@@ -4,7 +4,7 @@ using NUnit.Framework;
 using Autofac.Core;
 using System.Collections.Generic;
 
-namespace Autofac.Tests.Tags
+namespace Autofac.Tests
 {
     [TestFixture]
     public class TagsFixture
@@ -15,33 +15,6 @@ namespace Autofac.Tests.Tags
             {
             }
         }
-
-        //[Test]
-        //public void ResolveSingletonInContextGivesMeaningfulError()
-        //{
-        //    var builder = new ContainerBuilder();
-
-        //    builder.RegisterDelegate(c => new HomeController()).Singleton.InContext("request");
-
-        //    var containerApplication = builder.Build();
-        //    containerApplication.TagWith("application");
-
-        //    var containerRequest = containerApplication.BeginLifetimeScope();
-        //    containerRequest.TagWith("request");
-
-        //    Exception thrown = null;
-        //    try
-        //    {
-        //        var controller = containerRequest.Resolve<HomeController>();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        thrown = ex;
-        //    }
-
-        //    Assert.IsNotNull(thrown);
-        //    Assert.IsTrue(thrown.Message.ToLower().Contains("singleton"));
-        //}
 
         enum Tag { None, Outer, Middle, Inner }
 
@@ -144,20 +117,6 @@ namespace Autofac.Tests.Tags
         }
 
         [Test]
-        [Ignore("Can't yet specify sharing and scope independently.")]
-        public void FactorySemanticsCorrect()
-        {
-            var tag = "Tag";
-            var builder = new ContainerBuilder();
-            builder.RegisterDelegate(c => new object())
-                .InstancePerMatchingLifetimeScope(tag);
-            // .FactoryScoped();
-            var container = builder.Build();
-            container.Tag = tag;
-            Assert.AreNotSame(container.Resolve<object>(), container.Resolve<object>());
-        }
-
-        [Test]
         public void DefaultSingletonSemanticsCorrect()
         {
             var tag = "Tag";
@@ -180,34 +139,33 @@ namespace Autofac.Tests.Tags
             Assert.IsNotNull(container.Resolve<object>());
         }
 
-        //[Test]
-        //public void CollectionsAreTaggable()
-        //{
-        //    var builder = new ContainerBuilder();
-        //    builder.RegisterCollection<object>()
-        //        .FactoryScoped()
-        //        .InstancePerMatchingLifetimeScope("tag")
-        //        .As(typeof(IList<object>));
+        [Test]
+        public void CollectionsAreTaggable()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterCollection<object>()
+                .InstancePerMatchingLifetimeScope("tag")
+                .As(typeof(IList<object>));
 
-        //    var outer = builder.Build();
-        //    var inner = outer.BeginLifetimeScope();
-        //    inner.Tag = "tag";
+            var outer = builder.Build();
+            var inner = outer.BeginLifetimeScope();
+            inner.Tag = "tag";
 
-        //    var coll = inner.Resolve<IList<object>>();
-        //    Assert.IsNotNull(coll);
+            var coll = inner.Resolve<IList<object>>();
+            Assert.IsNotNull(coll);
 
-        //    bool threw = false;
-        //    try
-        //    {
-        //        outer.Resolve<IList<object>>();
-        //    }
-        //    catch (Exception)
-        //    {
-        //        threw = true;
-        //    }
+            bool threw = false;
+            try
+            {
+                outer.Resolve<IList<object>>();
+            }
+            catch (Exception)
+            {
+                threw = true;
+            }
 
-        //    Assert.IsTrue(threw);
-        //}
+            Assert.IsTrue(threw);
+        }
 
         [Test]
         public void GenericsAreTaggable()
@@ -236,102 +194,5 @@ namespace Autofac.Tests.Tags
 
             Assert.IsTrue(threw);
         }
-
-        //[Test]
-        //public void AutomaticsAreTaggable()
-        //{
-        //    var builder = new ContainerBuilder();
-        //    builder.RegisterTypesAssignableTo<IList<object>>()
-        //        .FactoryScoped()
-        //        .InstancePerMatchingLifetimeScope("tag");
-
-        //    var outer = builder.Build();
-        //    var inner = outer.BeginLifetimeScope();
-        //    inner.Tag = "tag");
-
-        //    var coll = inner.Resolve<List<object>>();
-        //    Assert.IsNotNull(coll);
-
-        //    bool threw = false;
-        //    try
-        //    {
-        //        outer.Resolve<List<object>>();
-        //    }
-        //    catch (Exception)
-        //    {
-        //        threw = true;
-        //    }
-
-        //    Assert.IsTrue(threw);
-        //}
-
-        //        [Test]
-        //        public void EnableTaggedContexts()
-        //        {
-        //            var rootTag = "Root Tag";
-
-        //            var target = new Container();
-
-        //            target.TagWith(rootTag);
-
-        //            var tag = target.Resolve<ContextTag<string>>();
-
-        //            Assert.IsNotNull(tag);
-        //            Assert.AreEqual(rootTag, tag.Tag);
-        //        }
-
-        //        [Test]
-        //        public void AnonymousContainerHasTypeNoTag()
-        //        {
-        //            var rootTag = "Root Tag";
-
-        //            var target = new Container();
-
-        //            target.TagWith(rootTag);
-
-        //            var inner = target.BeginLifetimeScope();
-
-        //            var tag = inner.Resolve<ContextTag<string>>();
-
-        //            Assert.IsFalse(tag.HasTag);
-        //        }
-
-        //        [Test]
-        //        [ExpectedException(typeof(InvalidOperationException))]
-        //        public void EnableTaggedContextsDefaultInNewContexts()
-        //        {
-        //            var rootTag = "Root Tag";
-
-        //            var target = new Container();
-        //            target.TagWith(rootTag);
-
-        //            var inner = target.BeginLifetimeScope();
-
-        //            var tag = inner.Resolve<ContextTag<string>>();
-
-        //            Assert.IsNotNull(tag);
-        //            Assert.IsFalse(tag.HasTag);
-        //            var unused = tag.Tag;
-        //        }
-
-        //        [Test]
-        //        public void CreateTaggedInnerContainer()
-        //        {
-        //            var rootTag = "Root Tag";
-        //            var innerTag = "Inner Tag";
-
-        //            var target = new Container();
-
-        //            target.TagWith(rootTag);
-
-        //            var inner = target.BeginLifetimeScope();
-        //            inner.TagWith(innerTag);
-
-        //            var tag = inner.Resolve<ContextTag<string>>();
-
-        //            Assert.IsNotNull(tag);
-        //            Assert.AreEqual(innerTag, tag.Tag);
-        //        }
-
     }
 }

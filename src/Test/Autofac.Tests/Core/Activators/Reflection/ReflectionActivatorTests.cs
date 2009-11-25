@@ -12,7 +12,7 @@ using Autofac.Tests.Scenarios.ConstructorSelection;
 namespace Autofac.Tests.Core.Activators.Reflection
 {
     [TestFixture]
-    public class ReflectionActivatorFixture
+    public class ReflectionActivatorTests
     {
         [Test]
         public void Constructor_DoesNotAcceptNullType()
@@ -322,22 +322,6 @@ namespace Autofac.Tests.Core.Activators.Reflection
             static void WeThrowThis()
             {
                 throw new InvalidOperationException();
-            }
-        }
-
-        [Test]
-        [Ignore]
-        public void WhenExceptionThrownInConstructor_StackTraceIsPreserved()
-        {
-            try
-            {
-                var target = Factory.CreateReflectionActivator(typeof(ThrowsExceptionInCtor));
-                target.ActivateInstance(new Container(), Factory.NoParameters);
-                Assert.Fail();
-            }
-            catch (InvalidOperationException ex)
-            {
-                StringAssert.Contains("WeThrowThis", ex.StackTrace);
             }
         }
 	}

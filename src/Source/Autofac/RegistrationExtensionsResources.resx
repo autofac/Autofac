@@ -123,4 +123,7 @@
   <data name="InstanceRegistrationsAreSingleInstanceOnly" xml:space="preserve">
     <value>The instance  registration '{0}' can support SingleInstance() sharing only.</value>
   </data>
+  <data name="NoMatchingConstructorExists" xml:space="preserve">
+    <value>No matching constructor exists on type '{0}'.</value>
+  </data>
 </root>

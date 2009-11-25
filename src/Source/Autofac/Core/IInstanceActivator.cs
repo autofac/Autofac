@@ -31,7 +31,7 @@ namespace Autofac.Core
     /// <summary>
     /// Activates component instances.
     /// </summary>
-    public interface IInstanceActivator
+    public interface IInstanceActivator : IDisposable
     {
         /// <summary>
         /// Activate an instance in the provided context.

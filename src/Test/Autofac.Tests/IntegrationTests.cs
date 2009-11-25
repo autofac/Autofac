@@ -68,7 +68,7 @@ namespace Autofac.Tests
             }
         }
 
-        [Test, Ignore("Needs attention")]
+        [Test]
         public void UnresolvedProvidedInstances_DisposedWithLifetimeScope()
         {
             var builder = new ContainerBuilder();
@@ -77,6 +77,17 @@ namespace Autofac.Tests
             var container = builder.Build();
             container.Dispose();
             Assert.IsTrue(disposable.IsDisposed);
+        }
+
+        [Test]
+        public void UnresolvedProvidedInstances_NotOwnedByLifetimeScope_NeverDisposed()
+        {
+            var builder = new ContainerBuilder();
+            var disposable = new DisposeTracker();
+            builder.RegisterInstance(disposable).ExternallyOwned();
+            var container = builder.Build();
+            container.Dispose();
+            Assert.IsFalse(disposable.IsDisposed);
         }
 
         [Test]

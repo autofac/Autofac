@@ -82,10 +82,10 @@
     <Compile Include="Builder\ModuleFixture.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Builder\ProvidedInstanceRegistrationBuilderFixture.cs">
+    <Compile Include="Builder\ProvidedInstanceRegistrationBuilderTests.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Builder\ReflectiveRegistrationBuilderFixture.cs">
+    <Compile Include="Builder\ReflectiveRegistrationBuilderTests.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ComponentRegisteredEventArgsTests.cs" />
