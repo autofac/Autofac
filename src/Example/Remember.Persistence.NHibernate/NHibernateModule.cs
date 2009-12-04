@@ -23,17 +23,17 @@ namespace Remember.Persistence.NHibernate
                 .As(typeof(IRepository<>))
                 .InstancePerMatchingLifetimeScope(WebLifetime.Request);
 
-            builder.RegisterDelegate(c => new TransactionTracker())
+            builder.Register(c => new TransactionTracker())
                 .InstancePerMatchingLifetimeScope(WebLifetime.Request);
 
-            builder.RegisterDelegate(c => c.Resolve<ISessionFactory>().OpenSession())
+            builder.Register(c => c.Resolve<ISessionFactory>().OpenSession())
                 .InstancePerMatchingLifetimeScope(WebLifetime.Request)
                 .OnActivated(e =>
                 {
                     e.Context.Resolve<TransactionTracker>().CurrentTransaction = ((ISession)e.Instance).BeginTransaction();
                 });
 
-            builder.RegisterDelegate(c => new Configuration().Configure().BuildSessionFactory())
+            builder.Register(c => new Configuration().Configure().BuildSessionFactory())
                 .SingleInstance();
         }
     }

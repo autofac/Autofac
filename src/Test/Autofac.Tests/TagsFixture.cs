@@ -25,7 +25,7 @@ namespace Autofac.Tests
 
             int instantiations = 0;
 
-            builder.RegisterDelegate(c => { instantiations++; return ""; }).InstancePerMatchingLifetimeScope(Tag.Outer);
+            builder.Register(c => { instantiations++; return ""; }).InstancePerMatchingLifetimeScope(Tag.Outer);
 
             var outer = builder.Build();
             outer.Tag = Tag.Outer;
@@ -50,7 +50,7 @@ namespace Autofac.Tests
 
             int instantiations = 0;
 
-            builder.RegisterDelegate(c => { instantiations++; return ""; })
+            builder.Register(c => { instantiations++; return ""; })
                 .InstancePerMatchingLifetimeScope(Tag.Outer);
 
             var outer = builder.Build();
@@ -70,7 +70,7 @@ namespace Autofac.Tests
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterDelegate(c => "")
+            builder.Register(c => "")
                 .InstancePerMatchingLifetimeScope(Tag.Middle);
 
             var outer = builder.Build();
@@ -87,7 +87,7 @@ namespace Autofac.Tests
 
             var builder = new ContainerBuilder();
 
-            builder.RegisterDelegate(c => "")
+            builder.Register(c => "")
                 .InstancePerMatchingLifetimeScope(Tag.Outer)
                 .Named(name);
 
@@ -103,7 +103,7 @@ namespace Autofac.Tests
         {
             var tag = "Tag";
             var builder = new ContainerBuilder();
-            builder.RegisterDelegate(c => new DisposeTracker())
+            builder.Register(c => new DisposeTracker())
                 .InstancePerMatchingLifetimeScope(tag);
             var container = builder.Build();
             container.Tag = tag;
@@ -121,7 +121,7 @@ namespace Autofac.Tests
         {
             var tag = "Tag";
             var builder = new ContainerBuilder();
-            builder.RegisterDelegate(c => new object()).InstancePerMatchingLifetimeScope(tag);
+            builder.Register(c => new object()).InstancePerMatchingLifetimeScope(tag);
             var container = builder.Build();
             container.Tag = tag;
             var inner = container.BeginLifetimeScope();

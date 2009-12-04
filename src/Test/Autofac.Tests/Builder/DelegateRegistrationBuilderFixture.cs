@@ -10,17 +10,17 @@ namespace Autofac.Tests.Builder
     {
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void RegisterDelegateNull()
+        public void RegisterNull()
         {
             var target = new ContainerBuilder();
-            target.RegisterDelegate((Func<IComponentContext, object>)null);
+            target.Register((Func<IComponentContext, object>)null);
         }
 
         [Test]
         public void ExposesImplementationType()
         {
             var cb = new ContainerBuilder();
-            cb.RegisterDelegate(c => "Hello").As<object>();
+            cb.Register(c => "Hello").As<object>();
             var container = cb.Build();
             IComponentRegistration cr;
             Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(

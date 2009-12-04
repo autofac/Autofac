@@ -40,7 +40,7 @@ namespace Autofac.Configuration
     /// <summary>
     /// Configures containers based upon app.config settings.
     /// </summary>
-    public class ConfigurationSettingsReader : Autofac.Builder.Module
+    public class ConfigurationSettingsReader : Autofac.Module
     {
         /// <summary>
         /// The default section name that will be searched for.

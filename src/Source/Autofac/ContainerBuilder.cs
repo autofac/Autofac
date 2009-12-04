@@ -44,7 +44,7 @@ namespace Autofac
     ///     .As&lt;ILogger&gt;()
     ///     .SingleInstance();
     /// 
-    /// builder.RegisterDelegate(c => new MessageHandler(c.Resolve&lt;ILogger&gt;()));
+    /// builder.Register(c => new MessageHandler(c.Resolve&lt;ILogger&gt;()));
     /// 
     /// var container = builder.Build();
     /// // resolve components from container...

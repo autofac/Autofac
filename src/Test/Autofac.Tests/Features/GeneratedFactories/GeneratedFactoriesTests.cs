@@ -171,7 +171,7 @@ namespace Autofac.Tests.Features.GeneratedFactories
 
             int i0 = 32, i0Actual = 0, i1 = 67, i1Actual = 0;
 
-            builder.RegisterDelegate<object>((c, p) =>
+            builder.Register<object>((c, p) =>
             {
                 i0Actual = p.Positional<int>(0);
                 i1Actual = p.Positional<int>(1);

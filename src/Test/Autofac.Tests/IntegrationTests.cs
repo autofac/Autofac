@@ -20,7 +20,7 @@ namespace Autofac.Tests
             builder.RegisterType<A1>().SingleInstance();
             builder.RegisterType<CD1>().As<IC1, ID1>().SingleInstance();
             builder.RegisterType<E1>().SingleInstance();
-            builder.RegisterDelegate(ctr => new B1(ctr.Resolve<A1>()));
+            builder.Register(ctr => new B1(ctr.Resolve<A1>()));
 
             var target = builder.Build();
 

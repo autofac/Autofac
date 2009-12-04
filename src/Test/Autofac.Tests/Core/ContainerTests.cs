@@ -83,7 +83,7 @@ namespace Autofac.Tests.Core
         public void RegisterParameterisedWithDelegate()
         {
             var cb = new ContainerBuilder();
-            cb.RegisterDelegate((c, p) => new Parameterised(p.Named<string>("a"), p.Named<int>("b")));
+            cb.Register((c, p) => new Parameterised(p.Named<string>("a"), p.Named<int>("b")));
             var container = cb.Build();
             var aVal = "Hello";
             var bVal = 42;

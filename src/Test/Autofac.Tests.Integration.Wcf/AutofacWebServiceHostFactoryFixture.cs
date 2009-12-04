@@ -45,7 +45,7 @@ namespace Autofac.Tests.Integration.Wcf
         public void DetectsUnknownImplementationTypes()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterDelegate<IServiceProvider>(c => new Container()).Named("service");
+            builder.Register<IServiceProvider>(c => new Container()).Named("service");
             TestWithHostedContainer(builder.Build(), () =>
             {
                 var factory = new AutofacWebServiceHostFactory();

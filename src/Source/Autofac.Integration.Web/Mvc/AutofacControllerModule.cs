@@ -36,7 +36,7 @@ namespace Autofac.Integration.Web.Mvc
     /// <summary>
     /// Registers 
     /// </summary>
-    public class AutofacControllerModule : Autofac.Builder.Module
+    public class AutofacControllerModule : Autofac.Module
     {
         IEnumerable<Assembly> _controllerAssemblies;
         

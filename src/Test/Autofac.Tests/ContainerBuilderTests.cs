@@ -261,10 +261,10 @@ namespace Autofac.Tests
         }
 
         [Test]
-        public void RegisterDelegateAsUnsupportedService()
+        public void RegisterAsUnsupportedService()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterDelegate(c => "hello").As<IA>();
+            builder.Register(c => "hello").As<IA>();
             Assert.Throws<ArgumentException>(() => builder.Build());
         }
 

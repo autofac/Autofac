@@ -25,7 +25,8 @@
 
 using Autofac.Core;
 using Autofac.Util;
-namespace Autofac.Builder
+
+namespace Autofac
 {
     /// <summary>
     /// Base class for user-defined modules. Modules can add a set of releated components
@@ -49,7 +50,7 @@ namespace Autofac.Builder
     ///             .As(typeof(IRepository&lt;&gt;))
     ///             .InstancePerMatchingLifetimeScope(WebLifetime.Request);
     ///         
-    ///         moduleBuilder.RegisterDelegate(c =&gt; new MyDbConnection(ConnectionString))
+    ///         moduleBuilder.Register(c =&gt; new MyDbConnection(ConnectionString))
     ///             .As&lt;IDbConnection&gt;()
     ///             .InstancePerMatchingLifetimeScope(WebLifetime.Request);
     ///     }

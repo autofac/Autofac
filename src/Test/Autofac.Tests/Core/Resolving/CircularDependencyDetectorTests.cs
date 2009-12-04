@@ -17,7 +17,7 @@ namespace Autofac.Tests.Core.Resolving
             try
             {
                 var builder = new ContainerBuilder();
-                builder.RegisterDelegate(c => c.Resolve<object>());
+                builder.Register(c => c.Resolve<object>());
 
                 var target = builder.Build();
                 target.Resolve<object>();

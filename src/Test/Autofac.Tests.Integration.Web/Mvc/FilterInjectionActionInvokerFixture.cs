@@ -21,8 +21,8 @@ namespace Autofac.Tests.Integration.Web.Mvc
 		public void Setup()
 		{
 			var builder = new ContainerBuilder();
-			builder.RegisterDelegate(c => new TestableActionInvoker(c));
-            builder.RegisterDelegate(c => new TestDependency());
+			builder.Register(c => new TestableActionInvoker(c));
+            builder.Register(c => new TestDependency());
 			_container = builder.Build();
 
 			_controller = new TestController();

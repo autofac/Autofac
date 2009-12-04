@@ -180,12 +180,12 @@ namespace Autofac
         /// <param name="delegate">The delegate to register.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>
-            RegisterDelegate<T>(
+            Register<T>(
                 this ContainerBuilder builder,
                 Func<IComponentContext, T> @delegate)
         {
             Enforce.ArgumentNotNull(@delegate, "delegate");
-            return builder.RegisterDelegate<T>((c, p) => @delegate(c));
+            return builder.Register<T>((c, p) => @delegate(c));
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace Autofac
         /// <param name="delegate">The delegate to register.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>
-            RegisterDelegate<T>(
+            Register<T>(
                 this ContainerBuilder builder,
                 Func<IComponentContext, IEnumerable<Parameter>, T> @delegate)
         {
