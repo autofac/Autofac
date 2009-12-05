@@ -115,11 +115,14 @@ namespace Autofac.Tests.Core.Activators.Reflection
         [Test]
         public void ActivateInstance_DependenciesNotAvailable_ThrowsException()
         {
-            var target = Factory.CreateReflectionActivator(typeof(Dependent));
-            Assertions.AssertThrows<DependencyResolutionException>(delegate
+            var target = Factory.CreateReflectionActivator(typeof(DependsByCtor));
+            var ex = Assert.Throws<DependencyResolutionException>(delegate
             {
                 target.ActivateInstance(Factory.EmptyContext, Factory.NoParameters);
             });
+
+            // I.e. the type of the missing dependency.
+            Assert.That(ex.Message.Contains("DependsByProp"));
         }
 
         [Test] // TODO, no longer belongs here

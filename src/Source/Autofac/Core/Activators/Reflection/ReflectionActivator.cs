@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Autofac.Util;
+using System.Text;
 
 namespace Autofac.Core.Activators.Reflection
 {
@@ -109,7 +110,7 @@ namespace Autofac.Core.Activators.Reflection
             var validBindings = constructorBindings.Where(cb => cb.CanInstantiate);
 
             if (!validBindings.Any())
-                throw new DependencyResolutionException(ReflectionActivatorResources.NoConstructorsBindable);
+                throw new DependencyResolutionException(GetBindingFailureMessage(constructorBindings));
 
             var selectedBinding = _constructorSelector.SelectConstructorBinding(validBindings);
 
@@ -118,6 +119,21 @@ namespace Autofac.Core.Activators.Reflection
             InjectProperties(instance, context);
 
             return instance;
+        }
+
+        string GetBindingFailureMessage(IEnumerable<ConstructorParameterBinding> constructorBindings)
+        {
+            var reasons = new StringBuilder();
+
+            foreach (var invalid in constructorBindings.Where(cb => !cb.CanInstantiate))
+            {
+                reasons.AppendLine();
+                reasons.Append(invalid.Description);
+            }
+
+            return string.Format(
+                ReflectionActivatorResources.NoConstructorsBindable,
+                _constructorFinder, _implementationType, reasons);
         }
 
         IEnumerable<ConstructorParameterBinding> GetConstructorBindings(
@@ -134,8 +150,9 @@ namespace Autofac.Core.Activators.Reflection
                     _configuredParameters.Concat(
                         new Parameter[] { new AutowiringParameter() }));
 
-            return constructorInfo.Select(
-                ci => new ConstructorParameterBinding(ci, prioritisedParameters, context));
+            return constructorInfo
+                .Select(ci => new ConstructorParameterBinding(ci, prioritisedParameters, context))
+                .ToArray();
         }
 
         void InjectProperties(object instance, IComponentContext context)

@@ -22,14 +22,14 @@ namespace Autofac.Core.Activators.Reflection {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "2.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ReflectionActivatorResources {
+    internal class ConstructorParameterBindingResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ReflectionActivatorResources() {
+        internal ConstructorParameterBindingResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Autofac.Core.Activators.Reflection {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Activators.Reflection.ReflectionActivatorResources", typeof(ReflectionActivatorResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Activators.Reflection.ConstructorParameterBindingResources", typeof(ConstructorParameterBindingResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,20 +61,20 @@ namespace Autofac.Core.Activators.Reflection {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No constructors matching the constructor-finding policy can be found on the target type..
+        ///   Looks up a localized string similar to Bound constructor &apos;{0}&apos;..
         /// </summary>
-        internal static string NoConstructorsAvailable {
+        internal static string BoundConstructor {
             get {
-                return ResourceManager.GetString("NoConstructorsAvailable", resourceCulture);
+                return ResourceManager.GetString("BoundConstructor", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to None of the constructors found with policy &apos;{0}&apos; on type &apos;{1}&apos; can be invoked with the available services and parameters:{2}.
+        ///   Looks up a localized string similar to Constructor &apos;{0}&apos; parameter resolution failed at parameter &apos;{1}&apos;..
         /// </summary>
-        internal static string NoConstructorsBindable {
+        internal static string NonBindableConstructor {
             get {
-                return ResourceManager.GetString("NoConstructorsBindable", resourceCulture);
+                return ResourceManager.GetString("NonBindableConstructor", resourceCulture);
             }
         }
     }

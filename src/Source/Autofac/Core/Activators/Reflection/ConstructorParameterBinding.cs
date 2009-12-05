@@ -14,6 +14,11 @@ namespace Autofac.Core.Activators.Reflection
         readonly Func<object>[] _valueRetrievers;
         readonly bool _canInstantiate;
 
+        // We really need to report all non-bindable parameters, howevers some refactoring
+        // will be necessary before this is possible. Adding this now to ease the
+        // pain of working with the preview builds.
+        readonly ParameterInfo _firstNonBindableParameter;
+
         /// <summary>
         /// The constructor on the target type. The actual constructor used
         /// might differ, e.g. if using a dynamic proxy.
@@ -61,6 +66,7 @@ namespace Autofac.Core.Activators.Reflection
                 if (!foundValue)
                 {
                     _canInstantiate = false;
+                    _firstNonBindableParameter = pi;
                     break;
                 }
             }
@@ -80,6 +86,27 @@ namespace Autofac.Core.Activators.Reflection
                 values[i] = _valueRetrievers[i].Invoke();
 
             return TargetConstructor.Invoke(values);
+        }
+
+        /// <summary>
+        /// Describes the constructor parameter binding.
+        /// </summary>
+        public string Description
+        {
+            get
+            {
+                if (CanInstantiate)
+                    return string.Format(ConstructorParameterBindingResources.BoundConstructor, _ci);
+                else
+                    return string.Format(ConstructorParameterBindingResources.NonBindableConstructor, _ci, _firstNonBindableParameter);
+            }
+        }
+
+        ///<summary>Returns a System.String that represents the current System.Object.</summary>
+        ///<returns>A System.String that represents the current System.Object.</returns>
+        public override string ToString()
+        {
+            return Description;
         }
     }
 }

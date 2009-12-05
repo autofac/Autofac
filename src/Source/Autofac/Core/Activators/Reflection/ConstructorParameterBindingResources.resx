@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="NoConstructorsAvailable" xml:space="preserve">
-    <value>No constructors matching the constructor-finding policy can be found on the target type.</value>
+  <data name="BoundConstructor" xml:space="preserve">
+    <value>Bound constructor '{0}'.</value>
   </data>
-  <data name="NoConstructorsBindable" xml:space="preserve">
-    <value>None of the constructors found with policy '{0}' on type '{1}' can be invoked with the available services and parameters:{2}</value>
+  <data name="NonBindableConstructor" xml:space="preserve">
+    <value>Constructor '{0}' parameter resolution failed at parameter '{1}'.</value>
   </data>
 </root>

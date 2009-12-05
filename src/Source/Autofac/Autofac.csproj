@@ -49,6 +49,11 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Core\Activators\Reflection\ConstructorParameterBindingResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ConstructorParameterBindingResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Features\Collections\CollectionRegistrationExtensions.cs" />
     <Compile Include="Builder\DynamicRegistrationStyle.cs" />
     <Compile Include="Builder\GeneratedFactoryActivatorData.cs" />
@@ -191,6 +196,10 @@
     <EmbeddedResource Include="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ProvidedInstanceActivatorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Activators\Reflection\ConstructorParameterBindingResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ConstructorParameterBindingResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Core\Activators\Reflection\MatchingSignatureConstructorSelectorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
