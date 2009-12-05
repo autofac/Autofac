@@ -35,7 +35,7 @@ namespace Autofac.Tests
         public static void AssertLifetime<TComponent, TLifetime>(this IComponentContext context)
         {
             var cr = context.RegistrationFor<TComponent>();
-            Assert.IsInstanceOfType(typeof(TLifetime), cr.Lifetime);
+            Assert.IsInstanceOf<TLifetime>(cr.Lifetime);
         }
 
         public static void AssertOwnership<TComponent>(this IComponentContext context, InstanceOwnership ownership)

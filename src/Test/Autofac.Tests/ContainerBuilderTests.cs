@@ -26,7 +26,7 @@ namespace Autofac.Tests
             var c = cb.Build();
             var a = c.Resolve<Abc>();
             Assert.IsNotNull(a);
-            Assert.IsInstanceOfType(typeof(Abc), a);
+            Assert.IsInstanceOf<Abc>(a);
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace Autofac.Tests
             var c = cb.Build();
             var a = c.Resolve<IA>();
             Assert.IsNotNull(a);
-            Assert.IsInstanceOfType(typeof(Abc), a);
+            Assert.IsInstanceOf<Abc>(a);
             Assert.IsFalse(c.IsRegistered<Abc>());
         }
 

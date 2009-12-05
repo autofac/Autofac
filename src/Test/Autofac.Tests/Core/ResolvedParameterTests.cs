@@ -61,8 +61,8 @@ namespace Autofac.Tests.Core
 
             var concrete = container.Resolve<ISomething<int>>();
 
-            Assert.IsInstanceOfType(typeof(SomethingDecorator<int>), concrete);
-            Assert.IsInstanceOfType(typeof(ConcreteSomething<int>), ((SomethingDecorator<int>)concrete).Decorated);
+            Assert.IsInstanceOf<SomethingDecorator<int>>(concrete);
+            Assert.IsInstanceOf<ConcreteSomething<int>>(((SomethingDecorator<int>)concrete).Decorated);
         }
     }
 }

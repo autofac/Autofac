@@ -108,7 +108,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
             var controller = target.CreateController(context, HomeControllerName);
 
             Assert.IsNotNull(controller);
-            Assert.IsInstanceOfType(typeof(StubController), controller);
+            Assert.IsInstanceOf<StubController>(controller);
         }
     }
 }

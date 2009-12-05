@@ -34,7 +34,7 @@ namespace Autofac.Tests.Features.OpenGenerics
                 services.Cast<TypedService>().Single().ServiceType);
 
             var activatedInstance = activator.ActivateInstance(Container.Empty, Factory.NoParameters);
-            Assert.IsInstanceOfType(typeof(A1<int>), activatedInstance);
+            Assert.IsInstanceOf<A1<int>>(activatedInstance);
         }
 
         //[Test]
@@ -49,7 +49,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         //    innerBuilder.Build(inner);
 
         //    var list = inner.Resolve<ICollection<int>>();
-        //    Assert.IsInstanceOfType(typeof(LinkedList<int>), list);
+        //    Assert.IsInstanceOf<LinkedList<int>), list);
         //}
 
         //[Test]

@@ -36,7 +36,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
 			var container = builder.Build();
 
 			var controller = (ModuleTestController)container.Resolve(module.IdentificationStrategy.ServiceForControllerType(typeof(ModuleTestController)));
-			Assert.IsInstanceOfType(typeof(TestActionInvoker), controller.ActionInvoker);
+            Assert.IsInstanceOf<TestActionInvoker>(controller.ActionInvoker);
 		}
 
 		public class TestActionInvoker : IActionInvoker

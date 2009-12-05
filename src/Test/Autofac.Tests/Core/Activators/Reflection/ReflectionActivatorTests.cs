@@ -86,7 +86,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
 
             Assert.IsNotNull(instance);
-            Assert.IsInstanceOfType(typeof(object), instance.GetType());
+            Assert.IsInstanceOf<object>(instance.GetType());
         }
 
         [Test]
@@ -104,7 +104,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             var instance = target.ActivateInstance(container, Factory.NoParameters);
 
             Assert.IsNotNull(instance);
-            Assert.IsInstanceOfType(typeof(Dependent), instance);
+            Assert.IsInstanceOf<Dependent>(instance);
 
             var dependent = (Dependent)instance;
 
@@ -135,7 +135,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             var instance = target.ActivateInstance(container, Factory.NoParameters);
 
             Assert.IsNotNull(instance);
-            Assert.IsInstanceOfType(typeof(MultipleConstructors), instance);
+            Assert.IsInstanceOf<MultipleConstructors>(instance);
         }
 
         class AcceptsObjectParameter
@@ -175,7 +175,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             var instance = target.ActivateInstance(Container.Empty, Factory.NoParameters);
 
             Assert.IsNotNull(instance);
-            Assert.IsInstanceOfType(typeof(AcceptsObjectParameter), instance);
+            Assert.IsInstanceOf<AcceptsObjectParameter>(instance);
 
             var typedInstance = (AcceptsObjectParameter)instance;
 
@@ -192,7 +192,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             var instance = target.ActivateInstance(Container.Empty, Factory.NoParameters);
 
             Assert.IsNotNull(instance);
-            Assert.IsInstanceOfType(typeof(AcceptsObjectParameter), instance);
+            Assert.IsInstanceOf<AcceptsObjectParameter>(instance);
 
             var typedInstance = (AcceptsObjectParameter)instance;
 
@@ -216,7 +216,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
 
             Assert.IsNotNull(instance);
-            Assert.IsInstanceOfType(typeof(AcceptsIntParameter), instance);
+            Assert.IsInstanceOf<AcceptsIntParameter>(instance);
 
             var typedInstance = (AcceptsIntParameter)instance;
 
@@ -233,7 +233,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
 
             Assert.IsNotNull(instance);
-            Assert.IsInstanceOfType(typeof(AcceptsIntParameter), instance);
+            Assert.IsInstanceOf<AcceptsIntParameter>(instance);
 
             var typedInstance = (AcceptsIntParameter)instance;
 
@@ -261,7 +261,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
 
             Assert.IsNotNull(instance);
-            Assert.IsInstanceOfType(typeof(ThreeConstructors), instance);
+            Assert.IsInstanceOf<ThreeConstructors>(instance);
 
             var typedInstance = (ThreeConstructors)instance;
 
@@ -294,7 +294,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             var activator = Factory.CreateReflectionActivator(typeof(WithGenericCtor<string>));
             var parameters = new Parameter[] { new NamedParameter("t", "Hello") };
             var instance = activator.ActivateInstance(new Container(), parameters);
-            Assert.IsInstanceOfType(typeof(WithGenericCtor<string>), instance);
+            Assert.IsInstanceOf<WithGenericCtor<string>>(instance);
         }
 
         class PrivateSetProperty
@@ -309,7 +309,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             var setters = new Parameter[] { new NamedPropertyParameter("P", 1) };
             var activator = Factory.CreateReflectionActivator(typeof(PrivateSetProperty), Factory.NoParameters, setters);
             var instance = activator.ActivateInstance(new Container(), Factory.NoParameters);
-            Assert.IsInstanceOfType(typeof(PrivateSetProperty), instance);
+            Assert.IsInstanceOf<PrivateSetProperty>(instance);
         }
 
         class ThrowsExceptionInCtor

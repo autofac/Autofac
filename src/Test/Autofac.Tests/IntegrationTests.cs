@@ -30,7 +30,7 @@ namespace Autofac.Tests
             IC1 c = target.Resolve<IC1>();
             ID1 d = target.Resolve<ID1>();
 
-            Assert.IsInstanceOfType(typeof(CD1), c);
+            Assert.IsInstanceOf<CD1>(c);
             CD1 cd = (CD1)c;
 
             Assert.AreSame(a, b.A);

@@ -23,7 +23,7 @@ namespace Autofac.Tests.Integration.Web
                 .Where(cr => cr.Id == regId)
                 .Single();
 
-            Assert.IsInstanceOfType(typeof(MatchingScopeLifetime), reg.Lifetime);
+            Assert.IsInstanceOf<MatchingScopeLifetime>(reg.Lifetime);
             Assert.AreEqual(InstanceSharing.Shared, reg.Sharing);
         }
     }
