@@ -71,7 +71,7 @@ namespace Autofac.Core.Resolving
 
             ShareNewInstance();
 
-            _registration.RaiseActivating(this, _newInstance);
+            _registration.RaiseActivating(this, parameters, _newInstance);
 
             return _newInstance;
         }

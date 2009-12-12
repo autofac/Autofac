@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using Autofac.Util;
 
 namespace Autofac.Core
@@ -36,17 +37,20 @@ namespace Autofac.Core
         readonly IComponentContext _context;
         readonly IComponentRegistration _component;
         readonly T _instance;
+        readonly IEnumerable<Parameter> _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ActivatedEventArgs{T}"/> class.
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="component">The component.</param>
-        /// <param name="instance">The instance.</param>
-        public ActivatingEventArgs(IComponentContext context, IComponentRegistration component, T instance)
+        /// <param name="parameters">The parameters.</param>
+        /// <param name="instance">The instance.</param>        
+        public ActivatingEventArgs(IComponentContext context, IComponentRegistration component, IEnumerable<Parameter> parameters, T instance)
         {
             _context = Enforce.ArgumentNotNull(context, "context");
             _component = Enforce.ArgumentNotNull(component, "component");
+            _parameters = Enforce.ArgumentNotNull(parameters, "parameters");
             Enforce.ArgumentNotNull((object)instance, "instance");
             _instance = instance;
         }
@@ -65,5 +69,10 @@ namespace Autofac.Core
         /// The instance that will be used to satisfy the request.
         /// </summary>
         public T Instance { get { return _instance; } }
+
+        /// <summary>
+        /// The parameters supplied to the activator.
+        /// </summary>
+        public IEnumerable<Parameter> Parameters { get { return _parameters; } }
     }
 }
