@@ -52,13 +52,17 @@ namespace Autofac.Configuration
         public IEnumerable<Parameter> ToParameters()
         {
             foreach (var parameter in this)
+            {
+                var localParameter = parameter;
                 yield return new ResolvedParameter(
-                    (pi, c) => {
+                    (pi, c) =>
+                    {
                         PropertyInfo prop;
                         return pi.TryGetDeclaringProperty(out prop) &&
-                            prop.Name == parameter.Name;
+                            prop.Name == localParameter.Name;
                     },
-                    (pi, c) => TypeManipulation.ChangeToCompatibleType(parameter.Value, pi.ParameterType));
+                    (pi, c) => TypeManipulation.ChangeToCompatibleType(localParameter.Value, pi.ParameterType));
+            }
         }
     }
 

@@ -180,9 +180,6 @@ namespace Autofac.Core.Activators.Reflection
                             break;
                         }
                     }
-
-                    if (vp != null)
-                        break;
                 }
             }
         }

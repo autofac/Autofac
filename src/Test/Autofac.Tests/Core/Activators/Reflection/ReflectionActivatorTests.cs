@@ -327,5 +327,22 @@ namespace Autofac.Tests.Core.Activators.Reflection
                 throw new InvalidOperationException();
             }
         }
+
+        class R { public int P1 { get; set; } public int P2 { get; set; } }
+
+        [Test]
+        public void SetsMultipleConfiguredProperties()
+        {
+            int p1 = 1, p2 = 2;
+            var properties = new [] {
+                new NamedPropertyParameter("P1", p1),
+                new NamedPropertyParameter("P2", p2)
+            };
+            var target = Factory.CreateReflectionActivator(typeof(R), Enumerable.Empty<Parameter>(), properties);
+            var instance = (R)target.ActivateInstance(Container.Empty, Enumerable.Empty<Parameter>());
+            Assert.AreEqual(1, instance.P1);
+            Assert.AreEqual(2, instance.P2);
+        }
+
 	}
 }
