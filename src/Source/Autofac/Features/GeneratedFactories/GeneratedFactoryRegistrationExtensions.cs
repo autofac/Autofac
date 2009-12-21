@@ -44,7 +44,7 @@ namespace Autofac.Features.GeneratedFactories
             {
                 var factory = new FactoryGenerator(delegateType, service, activatorData.ParameterMapping);
                 var activator = new DelegateActivator(delegateType, (c, p) => factory.GenerateFactory(c, p));
-                RegistrationExtensions.RegisterSingleComponent(cr, rb, activator);
+                RegistrationHelpers.RegisterSingleComponent(cr, rb, activator);
             });
 
             return rb.InstancePerLifetimeScope();

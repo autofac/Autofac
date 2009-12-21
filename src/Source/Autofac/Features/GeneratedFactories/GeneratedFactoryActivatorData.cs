@@ -23,36 +23,28 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using Autofac.Core;
+using Autofac.Features.GeneratedFactories;
 
-namespace Autofac.Builder
+namespace Autofac.Features.GeneratedFactories
 {
     /// <summary>
-    /// Activation data for types located by scanning assemblies.
+    /// Data used to create factory activators.
     /// </summary>
-    public class ScanningActivatorData : ReflectionActivatorData
+    public class GeneratedFactoryActivatorData
     {
-        readonly ICollection<Func<Type, bool>> _filters = new List<Func<Type, bool>>();
-        readonly ICollection<Func<Type, IEnumerable<Service>>> _serviceMappings = new List<Func<Type, IEnumerable<Service>>>();
+        ParameterMapping _parameterMapping = ParameterMapping.Adaptive;
 
         /// <summary>
-        /// Create an instance of <see cref="ScanningActivatorData"/>.
+        /// Determines how the parameters of the delegate type are passed on
+        /// to the generated Resolve() call as Parameter objects.
+        /// For Func-based delegates, this defaults to ByType. Otherwise, the
+        /// parameters will be mapped by name.
         /// </summary>
-        public ScanningActivatorData()
-            : base(typeof(object)) // TODO - refactor common base class out of RAD
+        public ParameterMapping ParameterMapping
         {
+            get { return _parameterMapping; }
+            set { _parameterMapping = value; }
         }
-
-        /// <summary>
-        /// The filters applied to the types from the scanned assembly.
-        /// </summary>
-        public ICollection<Func<Type, bool>> Filters { get { return _filters; } }
-
-        /// <summary>
-        /// The mappings that determine which services are registered for a type.
-        /// </summary>
-        public ICollection<Func<Type, IEnumerable<Service>>> ServiceMappings { get { return _serviceMappings; } }
     }
+
 }

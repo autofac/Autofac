@@ -51,7 +51,7 @@ namespace Autofac.Builder
             if (!_activatorGenerator.TryGenerateActivator(service, _registrationData.Services, _activatorData, out activator, out services))
                 return false;
 
-            registration = RegistrationExtensions.CreateRegistration(
+            registration = RegistrationHelpers.CreateRegistration(
                 Guid.NewGuid(),
                 _registrationData,
                 activator,

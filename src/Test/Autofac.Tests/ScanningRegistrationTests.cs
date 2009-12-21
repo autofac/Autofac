@@ -108,5 +108,52 @@ namespace Autofac.Tests
 
             c.AssertNotRegistered<AComponent>();
         }
+
+        [Test]
+        public void AsClosedTypesOf_NullTypeProvided_ThrowsException()
+        {
+            var cb = new ContainerBuilder();
+            Assert.Throws<ArgumentNullException>(() => cb.RegisterAssemblyTypes(typeof(ICommand<>).Assembly).
+                AsClosedTypesOf(null));
+        }
+
+        [Test]
+        public void AsClosedTypesOf_NonGenericTypeProvided_ThrowsException()
+        {
+            var cb = new ContainerBuilder();
+            Assert.Throws<ArgumentException>(() => cb.RegisterAssemblyTypes(typeof(ICommand<>).Assembly).
+                AsClosedTypesOf(typeof(SaveCommandData)));
+        }
+
+        [Test]
+        public void AsClosedTypesOf_ClosedGenericTypeProvided_ThrowsException()
+        {
+            var cb = new ContainerBuilder();
+            Assert.Throws<ArgumentException>(() => cb.RegisterAssemblyTypes(typeof(ICommand<>).Assembly).
+                AsClosedTypesOf(typeof(ICommand<SaveCommandData>)));
+        }
+
+        [Test]
+        public void AsClosedTypesOf_OpenGenericInterfaceTypeProvided_ClosingGenericTypesRegistered()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyTypes(typeof(ICommand<>).Assembly)
+                .AsClosedTypesOf(typeof(ICommand<>));
+            IContainer c = cb.Build();
+
+            Assert.That(c.Resolve<ICommand<SaveCommandData>>(), Is.TypeOf<SaveCommand>());
+            Assert.That(c.Resolve<ICommand<DeleteCommandData>>(), Is.TypeOf<DeleteCommand>());
+        }
+
+        [Test]
+        public void AsClosedTypesOf_OpenGenericAbstractClassTypeProvided_ClosingGenericTypesRegistered()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyTypes(typeof(Message<>).Assembly)
+                .AsClosedTypesOf(typeof(Message<>));
+            IContainer c = cb.Build();
+
+            Assert.That(c.Resolve<Message<string>>(), Is.TypeOf<StringMessage>());
+        }
     }
 }

@@ -74,7 +74,7 @@ namespace Autofac.Features.Collections
                 new SingleRegistrationStyle());
 
             builder.RegisterCallback(cr => {
-                RegistrationExtensions.RegisterSingleComponent(cr, rb, activator);
+                RegistrationHelpers.RegisterSingleComponent(cr, rb, activator);
                 memberServices = rb.RegistrationData.Services;
             });
 

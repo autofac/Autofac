@@ -39,6 +39,7 @@ using Autofac.Features.Collections;
 using Autofac.Features.GeneratedFactories;
 using Autofac.Features.OpenGenerics;
 using Autofac.Util;
+using Autofac.Features.Scanning;
 
 namespace Autofac
 {
@@ -113,7 +114,7 @@ namespace Autofac
 
                 activator.DisposeInstance = rb.RegistrationData.Ownership == InstanceOwnership.OwnedByLifetimeScope;
 
-                RegisterSingleComponent(cr, rb, rb.ActivatorData.Activator, typeof(T));
+                RegistrationHelpers.RegisterSingleComponent(cr, rb, rb.ActivatorData.Activator, typeof(T));
             });
 
             return rb;
@@ -134,7 +135,7 @@ namespace Autofac
                 new ReflectionActivatorData(typeof(TImplementor)),
                 new SingleRegistrationStyle());
 
-            builder.RegisterCallback(cr => RegisterSingleComponent(cr, rb, 
+            builder.RegisterCallback(cr => RegistrationHelpers.RegisterSingleComponent(cr, rb, 
                 new ReflectionActivator(
                     rb.ActivatorData.ImplementationType,
                     rb.ActivatorData.ConstructorFinder,
@@ -161,7 +162,7 @@ namespace Autofac
                 new ReflectionActivatorData(implementationType),
                 new SingleRegistrationStyle());
 
-            builder.RegisterCallback(cr => RegisterSingleComponent(cr, rb,
+            builder.RegisterCallback(cr => RegistrationHelpers.RegisterSingleComponent(cr, rb,
                 new ReflectionActivator(
                     rb.ActivatorData.ImplementationType,
                     rb.ActivatorData.ConstructorFinder,
@@ -207,77 +208,9 @@ namespace Autofac
                 new SimpleActivatorData(new DelegateActivator(typeof(T), (c, p) => @delegate(c, p))),
                 new SingleRegistrationStyle());
 
-            builder.RegisterCallback(cr => RegisterSingleComponent(cr, rb, rb.ActivatorData.Activator));
+            builder.RegisterCallback(cr => RegistrationHelpers.RegisterSingleComponent(cr, rb, rb.ActivatorData.Activator));
 
             return rb;
-        }
-
-        internal static void RegisterSingleComponent<TLimit, TActivatorData, TSingleRegistrationStyle>(
-            IComponentRegistry cr,
-            RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> rb,
-            IInstanceActivator activator)
-            where TSingleRegistrationStyle : SingleRegistrationStyle
-        {
-            RegisterSingleComponent(cr, rb, activator, activator.LimitType);
-        }
-
-        internal static void RegisterSingleComponent<TLimit, TActivatorData, TSingleRegistrationStyle>(
-            IComponentRegistry cr,
-            RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> rb,
-            IInstanceActivator activator,
-            Type defaultServiceType)
-            where TSingleRegistrationStyle : SingleRegistrationStyle
-        {
-            IEnumerable<Service> services = rb.RegistrationData.Services;
-            if (rb.RegistrationData.Services.Count == 0)
-                services = new Service[] { new TypedService(defaultServiceType) };
-
-            var registration = CreateRegistration(
-                rb.RegistrationStyle.Id,
-                rb.RegistrationData,
-                activator,
-                services);
-
-            cr.Register(registration, rb.RegistrationStyle.PreserveDefaults);
-
-            var registeredEventArgs = new ComponentRegisteredEventArgs(cr, registration);
-            foreach (var rh in rb.RegistrationStyle.RegisteredHandlers)
-                rh(cr, registeredEventArgs);
-        }
-
-        internal static IComponentRegistration CreateRegistration(
-            Guid id,
-            RegistrationData data,
-            IInstanceActivator activator,
-            IEnumerable<Service> services)
-        {
-            var limitType = activator.LimitType;
-            if (limitType != typeof(object))
-                foreach (var ts in services.OfType<TypedService>())
-                    if (!ts.ServiceType.IsAssignableFrom(limitType))
-                        throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-                            RegistrationExtensionsResources.ComponentDoesNotSupportService, limitType, ts));
-
-            var registration =
-                new ComponentRegistration(
-                    id,
-                    activator,
-                    data.Lifetime,
-                    data.Sharing,
-                    data.Ownership,
-                    services,
-                    data.ExtendedProperties);
-
-            foreach (var p in data.PreparingHandlers)
-                registration.Preparing += p;
-
-            foreach (var ac in data.ActivatingHandlers)
-                registration.Activating += ac;
-
-            foreach (var ad in data.ActivatedHandlers)
-                registration.Activated += ad;
-
-            return registration;
         }
 
         /// <summary>
@@ -332,41 +265,7 @@ namespace Autofac
         public static RegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             RegisterAssemblyTypes(this ContainerBuilder builder, Assembly assembly)
         {
-            Enforce.ArgumentNotNull(builder, "builder");
-            Enforce.ArgumentNotNull(assembly, "assembly");
-
-            var rb = new RegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>(
-                new ScanningActivatorData(),
-                new DynamicRegistrationStyle());
-
-            builder.RegisterCallback(cr =>
-            {
-                var tempBuilder = new ContainerBuilder();
-                foreach (var t in assembly.GetTypes()
-                    .Where(t => rb.ActivatorData.Filters.All(p => p(t))))
-                {
-                    var activator = new ReflectionActivator(
-                        t,
-                        rb.ActivatorData.ConstructorFinder,
-                        rb.ActivatorData.ConstructorSelector,
-                        rb.ActivatorData.ConfiguredParameters,
-                        rb.ActivatorData.ConfiguredProperties);
-
-                    var services = new HashSet<Service>(rb.RegistrationData.Services);
-
-                    if (!services.Any() && !rb.ActivatorData.ServiceMappings.Any())
-                        services.Add(new TypedService(t));
-
-                    foreach (var mapping in rb.ActivatorData.ServiceMappings)
-                        foreach (var s in mapping(t))
-                            services.Add(s);
-
-                    var r = CreateRegistration(Guid.NewGuid(), rb.RegistrationData, activator, services);
-                    cr.Register(r);
-                }
-            });
-
-            return rb;
+            return ScanningRegistrationExtensions.RegisterAssemblyTypes(builder, assembly);
         }
 
         /// <summary>
@@ -847,6 +746,24 @@ namespace Autofac
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
             return registration.MemberOf(new TypedService(serviceType));
+        }
+
+        /// <summary>
+        /// Specifies that a type from a scanned assembly is registered if it implements an interface
+        /// that closes the provided open generic interface type.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <param name="openGenericServiceType">The open generic interface or base class type for which implementations will be found.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            AsClosedTypesOf<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration, Type openGenericServiceType)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            return ScanningRegistrationExtensions.AsClosedTypesOf(registration, openGenericServiceType);
         }
     }
 }

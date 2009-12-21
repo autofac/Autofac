@@ -23,28 +23,37 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using Autofac.Features.GeneratedFactories;
+using System;
+using System.Collections.Generic;
+using Autofac.Core;
+using Autofac.Builder;
 
-namespace Autofac.Builder
+namespace Autofac.Features.Scanning
 {
     /// <summary>
-    /// Data used to create factory activators.
+    /// Activation data for types located by scanning assemblies.
     /// </summary>
-    public class GeneratedFactoryActivatorData
+    public class ScanningActivatorData : ReflectionActivatorData
     {
-        ParameterMapping _parameterMapping = ParameterMapping.Adaptive;
+        readonly ICollection<Func<Type, bool>> _filters = new List<Func<Type, bool>>();
+        readonly ICollection<Func<Type, IEnumerable<Service>>> _serviceMappings = new List<Func<Type, IEnumerable<Service>>>();
 
         /// <summary>
-        /// Determines how the parameters of the delegate type are passed on
-        /// to the generated Resolve() call as Parameter objects.
-        /// For Func-based delegates, this defaults to ByType. Otherwise, the
-        /// parameters will be mapped by name.
+        /// Create an instance of <see cref="ScanningActivatorData"/>.
         /// </summary>
-        public ParameterMapping ParameterMapping
+        public ScanningActivatorData()
+            : base(typeof(object)) // TODO - refactor common base class out of RAD
         {
-            get { return _parameterMapping; }
-            set { _parameterMapping = value; }
         }
-    }
 
+        /// <summary>
+        /// The filters applied to the types from the scanned assembly.
+        /// </summary>
+        public ICollection<Func<Type, bool>> Filters { get { return _filters; } }
+
+        /// <summary>
+        /// The mappings that determine which services are registered for a type.
+        /// </summary>
+        public ICollection<Func<Type, IEnumerable<Service>>> ServiceMappings { get { return _serviceMappings; } }
+    }
 }

@@ -50,9 +50,17 @@
     <Compile Include="AComponent.cs" />
     <Compile Include="BComponent.cs" />
     <Compile Include="A2Component.cs" />
+    <Compile Include="CommandBase.cs" />
+    <Compile Include="DeleteCommand.cs" />
+    <Compile Include="DeleteCommandData.cs" />
     <Compile Include="IAService.cs" />
     <Compile Include="IBService.cs" />
+    <Compile Include="ICommand.cs" />
+    <Compile Include="Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SaveCommand.cs" />
+    <Compile Include="SaveCommandData.cs" />
+    <Compile Include="StringMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\SharedKey.snk">

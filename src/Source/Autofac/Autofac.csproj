@@ -49,6 +49,7 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Builder\RegistrationHelpers.cs" />
     <Compile Include="Core\Activators\Reflection\ConstructorParameterBindingResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -56,10 +57,10 @@
     </Compile>
     <Compile Include="Features\Collections\CollectionRegistrationExtensions.cs" />
     <Compile Include="Builder\DynamicRegistrationStyle.cs" />
-    <Compile Include="Builder\GeneratedFactoryActivatorData.cs" />
+    <Compile Include="Features\GeneratedFactories\GeneratedFactoryActivatorData.cs" />
     <Compile Include="Builder\IActivatorGenerator.cs" />
     <Compile Include="Builder\IFluentInterface.cs" />
-    <Compile Include="Builder\ScanningActivatorData.cs" />
+    <Compile Include="Features\Scanning\ScanningActivatorData.cs" />
     <Compile Include="Core\ActivatedEventArgs.cs" />
     <Compile Include="Core\ActivatingEventArgs.cs" />
     <Compile Include="Core\Activators\Delegate\DelegateActivator.cs" />
@@ -156,6 +157,7 @@
     <Compile Include="Features\OpenGenerics\OpenGenericActivatorGenerator.cs" />
     <Compile Include="Features\OwnedInstances\Owned.cs" />
     <Compile Include="Features\OwnedInstances\OwnedInstanceRegistrationSource.cs" />
+    <Compile Include="Features\Scanning\ScanningRegistrationExtensions.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="Builder\ReflectionActivatorData.cs" />
     <Compile Include="Builder\RegistrationBuilder.cs" />

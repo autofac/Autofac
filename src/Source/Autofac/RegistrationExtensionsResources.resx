@@ -126,4 +126,7 @@
   <data name="NoMatchingConstructorExists" xml:space="preserve">
     <value>No matching constructor exists on type '{0}'.</value>
   </data>
+  <data name="NotOpenGenericInterfaceType" xml:space="preserve">
+    <value>The type '{0}' is not an open generic interface type.</value>
+  </data>
 </root>
