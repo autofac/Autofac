@@ -43,7 +43,6 @@ namespace Autofac.Integration.Web
         /// </summary>
         public void Dispose()
         {
-            _httpApplication.EndRequest -= OnEndRequest;
         }
 
         /// <summary>
