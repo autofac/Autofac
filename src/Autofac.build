@@ -12,6 +12,7 @@
 		<Configuration Condition="$(Configuration)==''">Release</Configuration>
 		<ArtifactDirectory Condition="$(ArtifactDirectory)==''">$(BuildPath)\Artifact</ArtifactDirectory>
 		<BuildFramework></BuildFramework>
+    <MonoPath Condition="$(MonoPath)==''">"C:\Program Files (x86)\Mono-2.6.1\bin\mono.exe"</MonoPath>
 
 		<PackageDirectory Condition="$(PackageDirectory)==''">$(BuildPath)\_Package</PackageDirectory>
 		<Version Condition="$(Version)==''">0.0.0.0</Version>
@@ -109,6 +110,16 @@
 	<Target Name="Config">
 		<Message Text="This sub-solution does not need configuration" />
 	</Target>
+
+  <Target Name="MonoTest" DependsOnTargets="Build;Copy">
+  
+    <CreateItem Include="$(TestPath)\Autofac.Test*dll">
+      <Output ItemName="_monoTestFiles" TaskParameter="Include"/>
+    </CreateItem>
+    
+    <Exec Command="$(MonoPath) Resource/Tool/NUnit/nunit-console-x86.exe @(_monoTestFiles->'&quot;%(FullPath)&quot;', ' ') /nologo /noshadow"></Exec>
+  
+  </Target>
 	
 	<Target Name="Test" DependsOnTargets="Build;Copy">
 		<MakeDir Directories="$(ArtifactDirectory)" />

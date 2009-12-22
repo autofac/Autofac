@@ -103,7 +103,6 @@
     <Compile Include="Features\OwnedInstances\OwnedInstanceRegistrationSourceTests.cs" />
     <Compile Include="Features\OwnedInstances\OwnedTests.cs" />
     <Compile Include="NamedParameterTests.cs" />
-    <Compile Include="DisposerTests.cs" />
     <Compile Include="Features\OpenGenerics\OpenGenericActivatorGeneratorTests.cs" />
     <Compile Include="Core\Registration\RegistrationFixture.cs" />
     <Compile Include="Core\Activators\Delegate\DelegateActivatorTests.cs" />
@@ -129,6 +128,7 @@
     <Compile Include="Scenarios\RegistrationSources\ObjectRegistrationSource.cs" />
     <Compile Include="TagsFixture.cs" />
     <Compile Include="TypedParameterTests.cs" />
+    <Compile Include="Util\EnforceTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\Autofac\Autofac.csproj">
@@ -147,7 +147,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scenarios\Disposal\" />
-    <Folder Include="Util\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Silverlight 2.0'" />

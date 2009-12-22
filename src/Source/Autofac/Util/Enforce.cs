@@ -71,7 +71,8 @@ namespace Autofac.Util
         {
             Enforce.ArgumentNotNull(value, name);
 
-            if (value.Cast<object>().Contains(null))
+            // Contains(null) does not work on Mono, must use Any(...)
+            if (value.Cast<object>().Any(v => v == null))
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, EnforceResources.ElementCannotBeNull, name));
 
             return value;

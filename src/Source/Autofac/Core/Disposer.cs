@@ -38,7 +38,7 @@ namespace Autofac.Core
         /// <summary>
         /// Contents all implement IDisposable.
         /// </summary>
-        Stack<WeakReference> _items = new Stack<WeakReference>();
+        Stack<IDisposable> _items = new Stack<IDisposable>();
 
         object _synchRoot = new object();
 
@@ -52,10 +52,8 @@ namespace Autofac.Core
                 lock (_synchRoot)
                     while (_items.Count > 0)
                     {
-                        WeakReference reference = _items.Pop();
-                        IDisposable item = (IDisposable)reference.Target;
-                        if (reference.IsAlive)
-                            item.Dispose();
+                        var item = _items.Pop();
+                        item.Dispose();
                     }
         }
 
@@ -70,7 +68,7 @@ namespace Autofac.Core
             CheckNotDisposed();
 
             lock (_synchRoot)
-                _items.Push(new WeakReference(instance));
+                _items.Push(instance);
         }
     }
 }

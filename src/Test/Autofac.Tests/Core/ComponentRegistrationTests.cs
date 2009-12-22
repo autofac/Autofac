@@ -15,9 +15,8 @@ namespace Autofac.Tests.Core
         {
             Assertions.AssertThrows<ArgumentException>(delegate
             {
-                Factory.CreateSingletonRegistration(
-                new Service[] { new TypedService(typeof(object)), null },
-                Factory.CreateProvidedInstanceActivator(new object()));
+                var services = new Service[] { new TypedService(typeof(object)), null };
+                Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator(new object()));
             });
         }
 
