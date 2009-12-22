@@ -104,7 +104,7 @@ namespace Autofac.Features.Scanning
             if (!(openGenericServiceType.IsGenericTypeDefinition || openGenericServiceType.ContainsGenericParameters))
             {
                 throw new ArgumentException(
-                    string.Format(RegistrationExtensionsResources.NotOpenGenericInterfaceType, openGenericServiceType.FullName));
+                    string.Format(ScanningRegistrationExtensionsResources.NotOpenGenericType, openGenericServiceType.FullName));
             }
 
             return registration

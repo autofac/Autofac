@@ -50,6 +50,11 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Builder\RegistrationHelpers.cs" />
+    <Compile Include="Builder\RegistrationHelpersResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RegistrationHelpersResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Core\Activators\Reflection\ConstructorParameterBindingResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -158,6 +163,11 @@
     <Compile Include="Features\OwnedInstances\Owned.cs" />
     <Compile Include="Features\OwnedInstances\OwnedInstanceRegistrationSource.cs" />
     <Compile Include="Features\Scanning\ScanningRegistrationExtensions.cs" />
+    <Compile Include="Features\Scanning\ScanningRegistrationExtensionsResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ScanningRegistrationExtensionsResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Module.cs" />
     <Compile Include="Builder\ReflectionActivatorData.cs" />
     <Compile Include="Builder\RegistrationBuilder.cs" />
@@ -195,6 +205,10 @@
     <Compile Include="Util\Silverlight\SerializableAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Builder\RegistrationHelpersResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RegistrationHelpersResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ProvidedInstanceActivatorResources.Designer.cs</LastGenOutput>
@@ -230,6 +244,10 @@
     <EmbeddedResource Include="Core\Resolving\ResolveOperationResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ResolveOperationResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Features\Scanning\ScanningRegistrationExtensionsResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ScanningRegistrationExtensionsResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="RegistrationExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

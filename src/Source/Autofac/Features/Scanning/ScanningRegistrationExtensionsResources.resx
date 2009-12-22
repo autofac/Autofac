@@ -117,10 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="InstanceRegistrationsAreSingleInstanceOnly" xml:space="preserve">
-    <value>The instance  registration '{0}' can support SingleInstance() sharing only.</value>
-  </data>
-  <data name="NoMatchingConstructorExists" xml:space="preserve">
-    <value>No matching constructor exists on type '{0}'.</value>
+  <data name="NotOpenGenericType" xml:space="preserve">
+    <value>The type '{0}' is not an open generic class or interface type.</value>
   </data>
 </root>

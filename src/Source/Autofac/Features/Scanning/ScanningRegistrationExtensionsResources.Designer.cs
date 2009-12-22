@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac {
+namespace Autofac.Features.Scanning {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Autofac {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "2.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class RegistrationExtensionsResources {
+    internal class ScanningRegistrationExtensionsResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal RegistrationExtensionsResources() {
+        internal ScanningRegistrationExtensionsResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Autofac {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.RegistrationExtensionsResources", typeof(RegistrationExtensionsResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Features.Scanning.ScanningRegistrationExtensionsResources", typeof(ScanningRegistrationExtensionsResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,20 +61,11 @@ namespace Autofac {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The instance  registration &apos;{0}&apos; can support SingleInstance() sharing only..
+        ///   Looks up a localized string similar to The type &apos;{0}&apos; is not an open generic class or interface type..
         /// </summary>
-        internal static string InstanceRegistrationsAreSingleInstanceOnly {
+        internal static string NotOpenGenericType {
             get {
-                return ResourceManager.GetString("InstanceRegistrationsAreSingleInstanceOnly", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No matching constructor exists on type &apos;{0}&apos;..
-        /// </summary>
-        internal static string NoMatchingConstructorExists {
-            get {
-                return ResourceManager.GetString("NoMatchingConstructorExists", resourceCulture);
+                return ResourceManager.GetString("NotOpenGenericType", resourceCulture);
             }
         }
     }

@@ -79,7 +79,7 @@ namespace Autofac.Builder
                 foreach (var ts in services.OfType<TypedService>())
                     if (!ts.ServiceType.IsAssignableFrom(limitType))
                         throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-                            RegistrationExtensionsResources.ComponentDoesNotSupportService, limitType, ts));
+                            RegistrationHelpersResources.ComponentDoesNotSupportService, limitType, ts));
 
             var registration =
                 new ComponentRegistration(
