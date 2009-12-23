@@ -37,23 +37,23 @@ namespace Autofac.Integration.Wcf
 	public class AutofacInstanceProvider : IInstanceProvider
 	{
 		private readonly IContainer _container;
-        private readonly Service _service;
+        private readonly IComponentRegistration _registration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacInstanceProvider"/> class.
         /// </summary>
         /// <param name="container">The container.</param>
-        /// <param name="type">The type to resolve from the container.</param>
-        public AutofacInstanceProvider(IContainer container, Service service)
+        /// <param name="registration">The component to resolve from the container.</param>
+        public AutofacInstanceProvider(IContainer container, IComponentRegistration registration)
 		{
             if (container == null)
                 throw new ArgumentNullException("container");
 
-            if (service == null)
-                throw new ArgumentNullException("service");
+            if (registration == null)
+                throw new ArgumentNullException("registration");
 
             this._container = container;
-            this._service = service;
+            this._registration = registration;
 		}
 
 		#region IInstanceProvider Members
@@ -78,7 +78,7 @@ namespace Autofac.Integration.Wcf
 		{
             var extension = new AutofacInstanceContext(_container);
             instanceContext.Extensions.Add(extension);
-            return extension.Resolve(_service);
+            return extension.Resolve(_registration);
 		}
 
         /// <summary>

@@ -23,6 +23,7 @@ namespace Autofac.Tests.Integration.Wcf
             {
                 var factory = new AutofacServiceHostFactory();
                 var host = factory.CreateServiceHost("service", DummyEndpoints);
+                Assert.AreEqual(typeof(object), host.Description.ServiceType);
                 Assert.IsNotNull(host);
             });
         }
@@ -37,6 +38,21 @@ namespace Autofac.Tests.Integration.Wcf
                 var factory = new AutofacServiceHostFactory();
                 var host = factory.CreateServiceHost(typeof(object).FullName, DummyEndpoints);
                 Assert.IsNotNull(host);
+                Assert.AreEqual(typeof(object), host.Description.ServiceType);
+            });
+        }
+
+        [Test]
+        public void HostsTypedServicesAsServices()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(c => "Test").As<object>();
+            TestWithHostedContainer(builder.Build(), () =>
+            {
+                var factory = new AutofacServiceHostFactory();
+                var host = factory.CreateServiceHost(typeof(object).FullName, DummyEndpoints);
+                Assert.IsNotNull(host);
+                Assert.AreEqual(typeof(string), host.Description.ServiceType);
             });
         }
 

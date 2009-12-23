@@ -60,6 +60,9 @@ namespace Autofac.Integration.Wcf
             if (constructorString == String.Empty)
                 throw new ArgumentOutOfRangeException("constructorString");
 
+            if (Container == null)
+                throw new InvalidOperationException(AutofacServiceHostFactoryResources.ContainerIsNull);
+
             IComponentRegistration registration = null;
             if (!Container.ComponentRegistry.TryGetRegistration(new NamedService(constructorString), out registration))
             {
@@ -76,17 +79,24 @@ namespace Autofac.Integration.Wcf
                 throw new InvalidOperationException(
                     string.Format(CultureInfo.CurrentCulture, AutofacServiceHostFactoryResources.ImplementationTypeUnknown, constructorString, registration));
 
-            return CreateServiceHost(registration.Activator.LimitType, baseAddresses);
+            return CreateServiceHost(registration, registration.Activator.LimitType, baseAddresses);
         }
-
+ 
         /// <summary>
-        /// Creates a <see cref="T:System.ServiceModel.ServiceHost"/> for a specified type of service with a specific base address.
+        /// Creates the service host and attaches a WCF Service behaviour that uses Autofac to resolve the service instance.
         /// </summary>
-        /// <param name="serviceType">Specifies the type of service to host.</param>
-        /// <param name="baseAddresses">The <see cref="T:System.Array"/> of type <see cref="T:System.Uri"/> that contains the base addresses for the service hosted.</param>
-        /// <returns>
-        /// A <see cref="T:System.ServiceModel.ServiceHost"/> for the type of service specified with a specific base address.
-        /// </returns>
-		protected override abstract ServiceHost CreateServiceHost(Type serviceType, Uri[] baseAddresses);
-	}
+        /// <param name="registration">Registration to provide the service.</param>
+        /// <param name="implementationType">Type of the implementation.</param>
+        /// <param name="baseAddresses">The base addresses.</param>
+        /// <returns>A <see cref="T:System.ServiceModel.ServiceHost"/> with specific base addresses.</returns>
+        /// <remarks>If the serviceType is null, the implementation type is used as the resolution type</remarks>
+        private ServiceHost CreateServiceHost(IComponentRegistration registration, Type implementationType, Uri[] baseAddresses)
+        {
+            var host = CreateServiceHost(implementationType, baseAddresses);
+            host.Opening += (sender, args) => host.Description.Behaviors.Add(
+                new AutofacDependencyInjectionServiceBehavior(Container, implementationType, registration));
+
+            return host;
+        }
+    }
 }

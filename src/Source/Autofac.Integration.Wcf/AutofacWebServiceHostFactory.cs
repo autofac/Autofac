@@ -27,6 +27,7 @@ using System;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.Globalization;
+using System.ServiceModel.Web;
 
 namespace Autofac.Integration.Wcf
 {
@@ -51,10 +52,7 @@ namespace Autofac.Integration.Wcf
             if (baseAddresses == null)
                 throw new ArgumentNullException("baseAddresses");
 
-            if (Container == null)
-                throw new InvalidOperationException(AutofacServiceHostFactoryResources.ContainerIsNull);
-
-			return new AutofacWebServiceHost(Container, serviceType, baseAddresses);
+			return new WebServiceHost(serviceType, baseAddresses);
 		}
 	}
 }

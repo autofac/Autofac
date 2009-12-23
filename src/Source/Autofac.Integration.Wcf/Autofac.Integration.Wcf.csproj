@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4D5C02D1-C10A-4448-9D7B-8F2A5CCA1D13}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -58,14 +58,12 @@
     <Compile Include="AutofacDependencyInjectionServiceBehavior.cs" />
     <Compile Include="AutofacInstanceContext.cs" />
     <Compile Include="AutofacInstanceProvider.cs" />
-    <Compile Include="AutofacServiceHost.cs" />
     <Compile Include="AutofacServiceHostFactory.cs" />
     <Compile Include="AutofacServiceHostFactoryResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>AutofacServiceHostFactoryResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="AutofacWebServiceHost.cs" />
     <Compile Include="AutofacWebServiceHostFactory.cs" />
     <Compile Include="AutofacHostFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

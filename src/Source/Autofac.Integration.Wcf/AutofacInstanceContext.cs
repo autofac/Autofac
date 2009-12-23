@@ -26,6 +26,7 @@
 using System;
 using System.ServiceModel;
 using Autofac.Core;
+using System.Linq;
 
 namespace Autofac.Integration.Wcf
 {
@@ -51,14 +52,14 @@ namespace Autofac.Integration.Wcf
         /// <summary>
         /// Retrieve a service instance from the context.
         /// </summary>
-        /// <param name="service"></param>
+        /// <param name="registration"></param>
         /// <returns>The service instance.</returns>
-        public object Resolve(Service service)
+        public object Resolve(IComponentRegistration registration)
         {
-            if (service == null)
-                throw new ArgumentNullException("service");
+            if (registration == null)
+                throw new ArgumentNullException("registration");
 
-            return _lifetime.Resolve(service);
+            return _lifetime.Resolve(registration, Enumerable.Empty<Parameter>());
         }
 
         #region IExtension<InstanceContext> Members

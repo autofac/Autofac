@@ -26,9 +26,10 @@ namespace Autofac.Tests.Integration.Wcf
             var builder = new ContainerBuilder();
             builder.RegisterType<DisposeTracker>();
             var container = builder.Build();
+            IComponentRegistration registration;
+            container.ComponentRegistry.TryGetRegistration(new TypedService(typeof(DisposeTracker)), out registration);
             var context = new AutofacInstanceContext(container);
-            var disposable = (DisposeTracker)context.Resolve(
-                new TypedService(typeof(DisposeTracker)));
+            var disposable = (DisposeTracker)context.Resolve(registration);
             Assert.IsFalse(disposable.IsDisposed);
             context.Dispose();
             Assert.IsTrue(disposable.IsDisposed);

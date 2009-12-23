@@ -51,10 +51,8 @@ namespace Autofac.Integration.Wcf
             if (baseAddresses == null)
                 throw new ArgumentNullException("baseAddresses");
 
-            if (Container == null)
-                throw new InvalidOperationException(AutofacServiceHostFactoryResources.ContainerIsNull);
 
-			return new AutofacServiceHost(Container, serviceType, baseAddresses);
+			return new ServiceHost(serviceType, baseAddresses);
 		}
 	}
 }

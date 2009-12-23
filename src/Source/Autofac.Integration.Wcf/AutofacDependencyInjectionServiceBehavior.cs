@@ -41,21 +41,28 @@ namespace Autofac.Integration.Wcf
 	{
 		private readonly IContainer _container;
         private readonly Type _implementationType;
+        private readonly IComponentRegistration _registration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacDependencyInjectionServiceBehavior"/> class.
         /// </summary>
         /// <param name="container">The container.</param>
-		public AutofacDependencyInjectionServiceBehavior(IContainer container, Type implementingType)
+        /// <param name="implementationType"></param>
+        /// <param name="registration"></param>
+		public AutofacDependencyInjectionServiceBehavior(IContainer container, Type implementationType, IComponentRegistration registration)
 		{
             if (container == null)
                 throw new ArgumentNullException("container");
 
-            if (implementingType == null)
-                throw new ArgumentNullException("implementingType");
+            if (implementationType == null)
+                throw new ArgumentNullException("implementationType");
 
-			_container = container;
-            _implementationType = implementingType;
+            if (registration == null)
+                throw new ArgumentNullException("registration");
+
+            _container = container;
+            _implementationType = implementationType;
+            _registration = registration;
 		}
 
 		#region IServiceBehavior Members
@@ -100,7 +107,7 @@ namespace Autofac.Integration.Wcf
                 where ep.Contract.ContractType.IsAssignableFrom(_implementationType)
                 select ep.Contract.Name;
 
-            var instanceProvider = new AutofacInstanceProvider(_container, new TypedService(_implementationType));
+            var instanceProvider = new AutofacInstanceProvider(_container, _registration);
 
             foreach (ChannelDispatcherBase cdb in serviceHostBase.ChannelDispatchers)
             {
