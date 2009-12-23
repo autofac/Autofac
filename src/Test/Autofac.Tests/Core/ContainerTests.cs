@@ -18,47 +18,6 @@ namespace Autofac.Tests.Core
     [TestFixture]
     public class ContainerTests
     {
-
-        //[Test]
-        //[ExpectedException(typeof(DependencyResolutionException))]
-        //public void InnerCannotResolveOuterDependencies()
-        //{
-        //    var outerBuilder = new ContainerBuilder();
-        //    outerBuilder.RegisterType<B1>().SingleInstance();
-        //    var outer = outerBuilder.Build();
-
-        //    var innerBuilder = new ContainerBuilder();
-        //    innerBuilder.RegisterType<C1>();
-        //    innerBuilder.RegisterType<A1>();
-        //    var inner = outer.BeginLifetimeScope();
-        //    innerBuilder.Build(inner);
-
-        //    var unused = inner.Resolve<C1>();
-        //}
-
-        //[Test]
-        //public void OuterInstancesCannotReferenceInner()
-        //{
-        //    var builder = new ContainerBuilder();
-        //    builder.RegisterType<A1>().WithScope(InstanceSharing.Container);
-        //    builder.RegisterType<B1>().WithScope(InstanceSharing.Factory);
-
-        //    var outer = builder.Build();
-
-        //    var inner = outer.BeginLifetimeScope();
-
-        //    var outerB = outer.Resolve<B1>();
-        //    var innerB = inner.Resolve<B1>();
-        //    var outerA = outer.Resolve<A1>();
-        //    var innerA = inner.Resolve<A1>();
-
-        //    Assert.AreSame(innerA, innerB.A1);
-        //    Assert.AreSame(outerA, outerB.A1);
-        //    Assert.AreNotSame(innerA, outerA);
-        //    Assert.AreNotSame(innerB, outerB);
-        //}
-
-
         [Test]
         public void ResolveByName()
         {

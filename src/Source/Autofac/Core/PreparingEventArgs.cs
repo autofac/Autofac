@@ -86,7 +86,6 @@ namespace Autofac.Core
             }
             set
             {
-                Enforce.ArgumentNotNull((object)value, "value");
                 _instance = value;
             }
         }

@@ -113,9 +113,14 @@ namespace Autofac.Core.Registration
         /// </summary>
         /// <param name="context">The context in which the instance will be activated.</param>
         /// <param name="parameters">Parameters for activation.</param>
-        public void RaisePreparing(IComponentContext context, IEnumerable<Parameter> parameters)
+        /// <param name="instance">If an instance is provided by the preparing event handler it will be
+        /// returned for use as the activation result.</param>
+        public void RaisePreparing(IComponentContext context, ref IEnumerable<Parameter> parameters, out object instance)
         {
-            Preparing(this, new PreparingEventArgs<object>(context, this, parameters));
+            var args = new PreparingEventArgs<object>(context, this, parameters);
+            Preparing(this, args);
+            parameters = args.Parameters;
+            instance = args.Instance;
         }
 
         /// <summary>

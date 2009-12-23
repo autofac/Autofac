@@ -63,7 +63,9 @@ namespace Autofac.Core.Resolving
             if (IsSharedInstanceAvailable(out sharedInstance))
                 return sharedInstance;
 
-            _registration.RaisePreparing(this, parameters);
+            _registration.RaisePreparing(this, ref parameters, out sharedInstance);
+            if (sharedInstance != null)
+                return sharedInstance;
 
             _newInstance = _registration.Activator.ActivateInstance(this, parameters);
 

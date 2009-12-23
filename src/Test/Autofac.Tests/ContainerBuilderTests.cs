@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Autofac.Builder;
 using NUnit.Framework;
 using Autofac.Core;
+using System.Linq;
 
 namespace Autofac.Tests
 {
@@ -206,6 +207,35 @@ namespace Autofac.Tests
             var container = cb.Build();
             container.Resolve<object>();
             Assert.AreEqual(1, preparingFired);
+        }
+
+        [Test]
+        public void WhenPreparingHandlerProvidesParameters_ParamsProvidedToActivator()
+        {
+            IEnumerable<Parameter> parameters = new Parameter[] { new NamedParameter("n", 1) };
+            IEnumerable<Parameter> actual = null;
+            var cb = new ContainerBuilder();
+            cb.RegisterType<object>()
+                .OnPreparing(e => e.Parameters = parameters)
+                .OnActivating(e => actual = e.Parameters);
+            var container = cb.Build();
+            container.Resolve<object>();
+            Assert.False(parameters.Except(actual).Any());
+        }
+
+        [Test]
+        public void WhenPreparingHandlerProvidesInstance_ReturnedAsInstance()
+        {
+            var inst = new object();
+            var activatingFired = false;
+            var cb = new ContainerBuilder();
+            cb.RegisterType<object>()
+                .OnPreparing(e => e.Instance = inst)
+                .OnActivating(e => activatingFired = true);
+            var container = cb.Build();
+            var actual = container.Resolve<object>();
+            Assert.False(activatingFired);
+            Assert.AreSame(inst, actual);
         }
 
         class Module1 : Module
