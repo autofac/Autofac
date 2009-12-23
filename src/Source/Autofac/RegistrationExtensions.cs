@@ -488,6 +488,29 @@ namespace Autofac
         }
 
         /// <summary>
+        /// Configure explicit values for constructor parameters.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
+        /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to set parameter on.</param>
+        /// <param name="parameters">The parameters to supply to the constructor.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+            WithParameters<TLimit, TReflectionActivatorData, TStyle>(
+                this RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                IEnumerable<Parameter> parameters)
+            where TReflectionActivatorData : ReflectionActivatorData
+        {
+            Enforce.ArgumentNotNull(parameters, "parameters");
+
+            foreach (var param in parameters)
+                registration.WithParameter(param);
+
+            return registration;
+        }
+
+        /// <summary>
         /// Configure an explicit value for a property.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
@@ -527,7 +550,31 @@ namespace Autofac
             registration.ActivatorData.ConfiguredProperties.Add(property);
             return registration;
         }
-        
+
+        /// <summary>
+        /// Configure explicit values for properties.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
+        /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to set parameter on.</param>
+        /// <param name="properties">The properties to supply.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+            WithProperty<TLimit, TReflectionActivatorData, TStyle>(
+                this RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                IEnumerable<Parameter> properties)
+            where TReflectionActivatorData : ReflectionActivatorData
+        {
+            Enforce.ArgumentNotNull(registration, "registration");
+            Enforce.ArgumentNotNull(properties, "properties");
+
+            foreach (var prop in properties)
+                registration.WithProperty(prop);
+
+            return registration;
+        }
+
         /// <summary>
         /// Registers a factory delegate.
         /// </summary>

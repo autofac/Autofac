@@ -30,6 +30,7 @@ using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
 using Autofac.Util;
+using System.Collections.Generic;
 
 namespace Autofac.Builder
 {
@@ -325,6 +326,21 @@ namespace Autofac.Builder
             Enforce.ArgumentNotNull(key, "key");
 
             RegistrationData.ExtendedProperties.Add(key, value);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Associates data with the component.
+        /// </summary>
+        /// 
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithExtendedProperty(IEnumerable<KeyValuePair<string, object>> properties)
+        {
+            Enforce.ArgumentNotNull(properties, "properties");
+
+            foreach (var prop in properties)
+                WithExtendedProperty(prop.Key, prop.Value);
 
             return this;
         }
