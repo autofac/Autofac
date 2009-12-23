@@ -85,5 +85,20 @@ namespace Autofac.Tests.Core.Resolving
             container.Resolve<object>(TypedParameter.From(provided));
             Assert.AreEqual(provided, passed);
         }
+
+        [Test]
+        public void ActivatedArgsSuppliesParameters()
+        {
+            var provided = 12;
+            var passed = 0;
+
+            var builder = new ContainerBuilder();
+            builder.RegisterType<object>()
+                .OnActivated(e => passed = e.Parameters.TypedAs<int>());
+            var container = builder.Build();
+
+            container.Resolve<object>(TypedParameter.From(provided));
+            Assert.AreEqual(provided, passed);
+        }
     }
 }

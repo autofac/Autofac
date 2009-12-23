@@ -151,10 +151,11 @@ namespace Autofac.Core.Registration
         /// any requested objects that depend on the instance.
         /// </summary>
         /// <param name="context">The context in which the instance was activated.</param>
+        /// <param name="parameters">The parameters supplied to the activator.</param>
         /// <param name="instance">The instance.</param>
-        public void RaiseActivated(IComponentContext context, object instance)
+        public void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, object instance)
         {
-            Activated(this, new ActivatedEventArgs<object>(context, this, instance));
+            Activated(this, new ActivatedEventArgs<object>(context, this, parameters, instance));
         }
 
         /// <summary>

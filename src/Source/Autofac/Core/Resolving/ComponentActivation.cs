@@ -107,11 +107,11 @@ namespace Autofac.Core.Resolving
             }
         }
 
-        public void Complete()
+        public void Complete(IEnumerable<Parameter> parameters)
         {
             if (_newInstance != null)
             {
-                _registration.RaiseActivated(this, _newInstance);
+                _registration.RaiseActivated(this, parameters, _newInstance);
             }
         }
 

@@ -73,20 +73,20 @@ namespace Autofac.Core.Resolving
             }
 
             if (_activationStack.Count == 0)
-                CompleteActivations();
+                CompleteActivations(parameters);
 
             --_callDepth;
 
             return instance;
         }
 
-        void CompleteActivations()
+        void CompleteActivations(IEnumerable<Parameter> parameters)
         {
             var completed = _successfulActivations;
             ResetSuccessfulActivations();
 
             foreach (var activation in completed)
-                activation.Complete();
+                activation.Complete(parameters);
         }
 
         void ResetSuccessfulActivations()

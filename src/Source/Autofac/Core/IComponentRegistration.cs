@@ -110,7 +110,8 @@ namespace Autofac.Core
         /// any requested objects that depend on the instance.
         /// </summary>
         /// <param name="context">The context in which the instance was activated.</param>
+        /// <param name="parameters">The parameters supplied to the activator.</param>
         /// <param name="instance">The instance.</param>
-        void RaiseActivated(IComponentContext context, object instance);
+        void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, object instance);
     }
 }
