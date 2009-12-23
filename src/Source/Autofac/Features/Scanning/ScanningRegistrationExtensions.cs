@@ -75,7 +75,7 @@ namespace Autofac.Features.Scanning
                         foreach (var s in mapping(t))
                             services.Add(s);
 
-                    var r = RegistrationHelpers.CreateRegistration(Guid.NewGuid(), rb.RegistrationData, activator, services);
+                    var r = RegistrationBuilder.CreateRegistration(Guid.NewGuid(), rb.RegistrationData, activator, services);
                     cr.Register(r);
                 }
             });

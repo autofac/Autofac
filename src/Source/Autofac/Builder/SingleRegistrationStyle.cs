@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using Autofac.Core;
+using Autofac.Util;
 
 namespace Autofac.Builder
 {
@@ -37,6 +38,17 @@ namespace Autofac.Builder
         Guid _id = Guid.NewGuid();
         ICollection<EventHandler<ComponentRegisteredEventArgs>> _registeredHandlers = new List<EventHandler<ComponentRegisteredEventArgs>>();
         bool _preserveDefaults;
+        Type _defaultServiceType;
+
+        /// <summary>
+        /// Create a new SingleRegistrationStyle.
+        /// </summary>
+        /// <param name="defaultServiceType">The type that will be used as the default service if
+        /// no other services are configured.</param>
+        public SingleRegistrationStyle(Type defaultServiceType)
+        {
+            _defaultServiceType = Enforce.ArgumentNotNull(defaultServiceType, "defaultServiceType");
+        }
 
         /// <summary>
         /// The id used for the registration.
@@ -66,6 +78,15 @@ namespace Autofac.Builder
         {
             get { return _preserveDefaults; }
             set { _preserveDefaults = value; }
+        }
+
+        /// <summary>
+        /// The type that will be used as the default service if
+        /// no other services are configured.
+        /// </summary>
+        public Type DefaultServiceType
+        {
+            get { return _defaultServiceType; }
         }
     }
 }

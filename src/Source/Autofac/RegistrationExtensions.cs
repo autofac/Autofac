@@ -101,7 +101,7 @@ namespace Autofac
 
             var rb = new RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>(
                 new SimpleActivatorData(activator),
-                new SingleRegistrationStyle());
+                new SingleRegistrationStyle(typeof(T)));
 
             rb.SingleInstance();
 
@@ -114,7 +114,7 @@ namespace Autofac
 
                 activator.DisposeInstance = rb.RegistrationData.Ownership == InstanceOwnership.OwnedByLifetimeScope;
 
-                RegistrationHelpers.RegisterSingleComponent(cr, rb, rb.ActivatorData.Activator, typeof(T));
+                RegistrationBuilder.RegisterSingleComponent(cr, rb);
             });
 
             return rb;
@@ -126,22 +126,14 @@ namespace Autofac
         /// <typeparam name="TImplementor">The type of the component implementation.</typeparam>
         /// <param name="builder">Container builder.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TImplementor, ReflectionActivatorData, SingleRegistrationStyle>
+        public static RegistrationBuilder<TImplementor, ConcreteReflectionActivatorData, SingleRegistrationStyle>
             RegisterType<TImplementor>(this ContainerBuilder builder)
         {
             Enforce.ArgumentNotNull(builder, "builder");
 
-            var rb = new RegistrationBuilder<TImplementor, ReflectionActivatorData, SingleRegistrationStyle>(
-                new ReflectionActivatorData(typeof(TImplementor)),
-                new SingleRegistrationStyle());
+            var rb = RegistrationBuilder.ForType<TImplementor>();
 
-            builder.RegisterCallback(cr => RegistrationHelpers.RegisterSingleComponent(cr, rb, 
-                new ReflectionActivator(
-                    rb.ActivatorData.ImplementationType,
-                    rb.ActivatorData.ConstructorFinder,
-                    rb.ActivatorData.ConstructorSelector,
-                    rb.ActivatorData.ConfiguredParameters,
-                    rb.ActivatorData.ConfiguredProperties)));
+            builder.RegisterCallback(cr => RegistrationBuilder.RegisterSingleComponent(cr, rb));
 
             return rb;
         }
@@ -152,23 +144,15 @@ namespace Autofac
         /// <param name="implementationType">The type of the component implementation.</param>
         /// <param name="builder">Container builder.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<object, ReflectionActivatorData, SingleRegistrationStyle>
+        public static RegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>
             RegisterType(this ContainerBuilder builder, Type implementationType)
         {
             Enforce.ArgumentNotNull(builder, "builder");
             Enforce.ArgumentNotNull(implementationType, "implementationType");
 
-            var rb = new RegistrationBuilder<object, ReflectionActivatorData, SingleRegistrationStyle>(
-                new ReflectionActivatorData(implementationType),
-                new SingleRegistrationStyle());
+            var rb = RegistrationBuilder.ForType(implementationType);
 
-            builder.RegisterCallback(cr => RegistrationHelpers.RegisterSingleComponent(cr, rb,
-                new ReflectionActivator(
-                    rb.ActivatorData.ImplementationType,
-                    rb.ActivatorData.ConstructorFinder,
-                    rb.ActivatorData.ConstructorSelector,
-                    rb.ActivatorData.ConfiguredParameters,
-                    rb.ActivatorData.ConfiguredProperties)));
+            builder.RegisterCallback(cr => RegistrationBuilder.RegisterSingleComponent(cr, rb));
 
             return rb;
         }
@@ -204,11 +188,9 @@ namespace Autofac
             Enforce.ArgumentNotNull(builder, "builder");
             Enforce.ArgumentNotNull(@delegate, "delegate");
 
-            var rb = new RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>(
-                new SimpleActivatorData(new DelegateActivator(typeof(T), (c, p) => @delegate(c, p))),
-                new SingleRegistrationStyle());
+            var rb = RegistrationBuilder.ForDelegate<T>(@delegate);
 
-            builder.RegisterCallback(cr => RegistrationHelpers.RegisterSingleComponent(cr, rb, rb.ActivatorData.Activator));
+            builder.RegisterCallback(cr => RegistrationBuilder.RegisterSingleComponent(cr, rb));
 
             return rb;
         }

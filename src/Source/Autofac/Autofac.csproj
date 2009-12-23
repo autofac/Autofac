@@ -49,11 +49,13 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Builder\RegistrationHelpers.cs" />
-    <Compile Include="Builder\RegistrationHelpersResources.Designer.cs">
+    <Compile Include="Builder\ConcreteReflectionActivatorData.cs" />
+    <Compile Include="Builder\IConcreteActivatorData.cs" />
+    <Compile Include="Builder\RegistrationBuilder.cs" />
+    <Compile Include="Builder\RegistrationBuilderResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>RegistrationHelpersResources.resx</DependentUpon>
+      <DependentUpon>RegistrationBuilderResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Core\Activators\Reflection\ConstructorParameterBindingResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -170,7 +172,7 @@
     </Compile>
     <Compile Include="Module.cs" />
     <Compile Include="Builder\ReflectionActivatorData.cs" />
-    <Compile Include="Builder\RegistrationBuilder.cs" />
+    <Compile Include="Builder\RegistrationBuilderOfTLAR.cs" />
     <Compile Include="Builder\RegistrationData.cs" />
     <Compile Include="RegistrationExtensions.cs" />
     <Compile Include="RegistrationExtensionsResources.Designer.cs">
@@ -205,9 +207,9 @@
     <Compile Include="Util\Silverlight\SerializableAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Builder\RegistrationHelpersResources.resx">
+    <EmbeddedResource Include="Builder\RegistrationBuilderResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>RegistrationHelpersResources.Designer.cs</LastGenOutput>
+      <LastGenOutput>RegistrationBuilderResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

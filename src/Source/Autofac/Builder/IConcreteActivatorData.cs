@@ -23,36 +23,22 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Autofac.Core;
-using Autofac.Util;
 
 namespace Autofac.Builder
 {
     /// <summary>
-    /// An activator builder with no parameters.
+    /// Activator data that can provide an IInstanceActivator instance.
     /// </summary>
-    public class SimpleActivatorData : IConcreteActivatorData
+    public interface IConcreteActivatorData
     {
-        IInstanceActivator _activator;
-
         /// <summary>
-        /// Return the provided activator.
+        /// The instance activator based on the provided data.
         /// </summary>
-        /// <param name="activator">The activator to return.</param>
-        public SimpleActivatorData(IInstanceActivator activator)
-        {
-            _activator = Enforce.ArgumentNotNull(activator, "activator");
-        }
-
-        /// <summary>
-        /// Gets the activator.
-        /// </summary>
-        public IInstanceActivator Activator
-        {
-            get
-            {
-                return _activator;
-            }
-        }
+        IInstanceActivator Activator { get; }
     }
 }

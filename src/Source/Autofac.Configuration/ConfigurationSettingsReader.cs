@@ -181,7 +181,9 @@ namespace Autofac.Configuration
         /// </summary>
         /// <param name="component">The component.</param>
         /// <param name="registrar">The registrar.</param>
-        protected virtual void SetInjectProperties(ComponentElement component, RegistrationBuilder<object, ReflectionActivatorData, SingleRegistrationStyle> registrar)
+        protected virtual void SetInjectProperties<TReflectionActivatorData, TSingleRegistrationStyle>(ComponentElement component, RegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar)
+            where TReflectionActivatorData : ReflectionActivatorData
+            where TSingleRegistrationStyle : SingleRegistrationStyle
         {
             Enforce.ArgumentNotNull(component, "component");
             Enforce.ArgumentNotNull(registrar, "registrar");
@@ -207,7 +209,9 @@ namespace Autofac.Configuration
         /// </summary>
         /// <param name="component">The component.</param>
         /// <param name="registrar">The registrar.</param>
-        protected virtual void SetOwnership(ComponentElement component, RegistrationBuilder<object, ReflectionActivatorData, SingleRegistrationStyle> registrar)
+        protected virtual void SetOwnership<TReflectionActivatorData, TSingleRegistrationStyle>(ComponentElement component, RegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar)
+            where TReflectionActivatorData : ReflectionActivatorData
+            where TSingleRegistrationStyle : SingleRegistrationStyle
         {
             Enforce.ArgumentNotNull(component, "component");
             Enforce.ArgumentNotNull(registrar, "registrar");
@@ -234,7 +238,9 @@ namespace Autofac.Configuration
         /// </summary>
         /// <param name="component">The component.</param>
         /// <param name="registrar">The registrar.</param>
-        protected virtual void SetScope(ComponentElement component, RegistrationBuilder<object, ReflectionActivatorData, SingleRegistrationStyle> registrar)
+        protected virtual void SetScope<TReflectionActivatorData, TSingleRegistrationStyle>(ComponentElement component, RegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar)
+            where TReflectionActivatorData : ReflectionActivatorData
+            where TSingleRegistrationStyle : SingleRegistrationStyle
         {
             Enforce.ArgumentNotNull(component, "component");
             Enforce.ArgumentNotNull(registrar, "registrar");

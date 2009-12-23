@@ -24,15 +24,33 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using Autofac.Features.GeneratedFactories;
+using System;
+using Autofac.Core;
+using Autofac.Builder;
+using Autofac.Core.Activators.Delegate;
+using Autofac.Util;
 
 namespace Autofac.Features.GeneratedFactories
 {
     /// <summary>
     /// Data used to create factory activators.
     /// </summary>
-    public class GeneratedFactoryActivatorData
+    public class GeneratedFactoryActivatorData : IConcreteActivatorData
     {
         ParameterMapping _parameterMapping = ParameterMapping.Adaptive;
+        Type _delegateType;
+        Service _productService;
+
+        /// <summary>
+        /// Create a new GeneratedFactoryActivatorData
+        /// </summary>
+        /// <param name="delegateType">The type of the factory.</param>
+        /// <param name="productService">The service used to provide the products of the factory.</param>
+        public GeneratedFactoryActivatorData(Type delegateType, Service productService)
+        {
+            _delegateType = Enforce.ArgumentNotNull(delegateType, "delegateType");
+            _productService = Enforce.ArgumentNotNull(productService, "productService");
+        }
 
         /// <summary>
         /// Determines how the parameters of the delegate type are passed on
@@ -44,6 +62,18 @@ namespace Autofac.Features.GeneratedFactories
         {
             get { return _parameterMapping; }
             set { _parameterMapping = value; }
+        }
+
+        /// <summary>
+        /// Activator data that can provide an IInstanceActivator instance.
+        /// </summary>
+        public IInstanceActivator Activator
+        {
+            get 
+            {
+                var factory = new FactoryGenerator(_delegateType, _productService, ParameterMapping);
+                return new DelegateActivator(_delegateType, (c, p) => factory.GenerateFactory(c, p));
+            }
         }
     }
 

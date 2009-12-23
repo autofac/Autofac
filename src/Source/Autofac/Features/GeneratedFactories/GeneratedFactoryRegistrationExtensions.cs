@@ -35,17 +35,12 @@ namespace Autofac.Features.GeneratedFactories
         internal static RegistrationBuilder<TLimit, GeneratedFactoryActivatorData, SingleRegistrationStyle>
             RegisterGeneratedFactory<TLimit>(ContainerBuilder builder, Type delegateType, Service service)
         {
-            var activatorData = new GeneratedFactoryActivatorData();
+            var activatorData = new GeneratedFactoryActivatorData(delegateType, service);
 
             var rb = new RegistrationBuilder<TLimit, GeneratedFactoryActivatorData, SingleRegistrationStyle>(
-                activatorData, new SingleRegistrationStyle());
+                activatorData, new SingleRegistrationStyle(delegateType));
 
-            builder.RegisterCallback(cr =>
-            {
-                var factory = new FactoryGenerator(delegateType, service, activatorData.ParameterMapping);
-                var activator = new DelegateActivator(delegateType, (c, p) => factory.GenerateFactory(c, p));
-                RegistrationHelpers.RegisterSingleComponent(cr, rb, activator);
-            });
+            builder.RegisterCallback(cr => RegistrationBuilder.RegisterSingleComponent(cr, rb));
 
             return rb.InstancePerLifetimeScope();
         }
