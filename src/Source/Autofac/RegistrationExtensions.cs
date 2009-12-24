@@ -794,5 +794,27 @@ namespace Autofac
         {
             return ScanningRegistrationExtensions.AsClosedTypesOf(registration, openGenericServiceType);
         }
+
+        /// <summary>
+        /// Add components to an existing container.
+        /// </summary>
+        /// <param name="container">The container.</param>
+        /// <param name="configureAction">Callback to add registrations to a provided <see cref="ContainerBuilder"/>.</param>
+        /// <example>
+        /// var container = new Container();
+        /// container.Configure(builder => {
+        ///     builder.RegisterType&lt;Foo&gt;();
+        ///     builder.RegisterType&lt;Bar&gt;().As&lt;IBar&gt;();
+        /// });
+        /// </example>
+        public static void Configure(this IContainer container, Action<ContainerBuilder> configureAction)
+        {
+            Enforce.ArgumentNotNull(container, "container");
+            Enforce.ArgumentNotNull(configureAction, "configureAction");
+
+            var builder = new ContainerBuilder();
+            configureAction(builder);
+            builder.Build(container.ComponentRegistry);
+        }
     }
 }

@@ -93,7 +93,7 @@ namespace Autofac
         /// - this prevents ownership issues for provided instances.
         /// </remarks>
         /// <param name="componentRegistry">An existing component registry to make the registrations in.</param>
-		public virtual void Build(IComponentRegistry componentRegistry)
+		internal virtual void Build(IComponentRegistry componentRegistry)
 		{
             Enforce.ArgumentNotNull(componentRegistry, "componentRegistry");
 
