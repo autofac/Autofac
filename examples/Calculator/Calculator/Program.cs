@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
-using Autofac.Builder;
+using Autofac;
 using Autofac.Configuration;
 using Calculator.Api;
 using System.Threading;
@@ -21,11 +20,11 @@ namespace Calculator
             {
                 var builder = new ContainerBuilder();
                 
-                builder.Register<CalculatorForm>();
-                
-                builder.Register<Calculator>();
-                
-                builder.Register<MessageBoxNotifier>()
+                builder.RegisterType<CalculatorForm>();
+
+                builder.RegisterType<Calculator>();
+
+                builder.RegisterType<MessageBoxNotifier>()
                     .As<INotifier>();
                 
                 builder.RegisterCollection<IOperation>()
@@ -33,7 +32,7 @@ namespace Calculator
                     .Named("operations");
 
                 builder.RegisterModule(new ConfigurationSettingsReader("calculator"));
-
+                
                 using (var container = builder.Build())
                 {
                     Application.ThreadException += Application_ThreadException;

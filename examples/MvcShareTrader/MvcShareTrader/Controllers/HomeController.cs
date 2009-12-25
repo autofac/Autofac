@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Web;
 using System.Web.Mvc;
 using MvcShareTrader.Models;
 
@@ -17,14 +16,13 @@ namespace MvcShareTrader.Controllers
             Portfolio = portfolio;
         }
 
-        [ControllerAction]
-        public void Index()
+        public ActionResult Index()
         {
             Portfolio.Add("GNU", 1200);
             Portfolio.Add("MONO", 300);
             Portfolio.Add("LINUX", 500);
             
-            RenderView("Index", Portfolio.Value);
+            return View("Index", Portfolio);
         }
     }
 }

@@ -1,54 +1,62 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
+using System.Web.Routing;
 using Autofac;
-using Autofac.Builder;
-using Autofac.Integration.Mvc;
+using Autofac.Core;
+using Autofac.Integration.Web;
+using Autofac.Integration.Web.Mvc;
 using MvcShareTrader.Components;
 using MvcShareTrader.Models;
 using MvcShareTrader.Services;
 
 namespace MvcShareTrader
 {
-    public class Global : System.Web.HttpApplication
+    public class Global : System.Web.HttpApplication, IContainerProviderAccessor
     {
         protected void Application_Start(object sender, EventArgs e)
         {
-            // Note: Change Url= to Url="[controller].mvc/[action]/[id]" to enable 
-            //       automatic support on IIS6 
+            RegisterRoutes(RouteTable.Routes);
+            
+            var builder = new ContainerBuilder();
 
-            RouteTable.Routes.Add(new Route
-            {
-                Url = "[controller]/[action]/[id]",
-                Defaults = new { action = "Index", id = (string)null },
-                RouteHandler = typeof(MvcRouteHandler)
-            });
+            builder.RegisterType<Portfolio>().InstancePerDependency();
 
-            RouteTable.Routes.Add(new Route
-            {
-                Url = "Default.aspx",
-                Defaults = new { controller = "Home", action = "Index", id = (string)null },
-                RouteHandler = typeof(MvcRouteHandler)
-            });
+            builder.RegisterType<Shareholding>();
+            builder.RegisterGeneratedFactory<Shareholding.Factory>();
 
-            ContainerBuilder builder = new ContainerBuilder();
-
-            builder.Register<Portfolio>()
-                .WithScope(InstanceScope.Factory);
-
-            builder.Register<Shareholding>()
-                .WithScope(InstanceScope.Factory)
-                .ThroughFactory<Shareholding.Factory>();
-
-            builder.Register<WebQuoteService>()
+            builder.RegisterType<WebQuoteService>()
                 .As<IQuoteService>()
-                .WithScope(InstanceScope.Container);
+                .InstancePerLifetimeScope();
 
-            foreach (Type controllerType in Assembly.GetExecutingAssembly().GetTypes().Where(t => typeof(IController).IsAssignableFrom(t)))
-                builder.Register(controllerType).WithScope(InstanceScope.Factory);
+            builder.RegisterModule(new AutofacControllerModule(Assembly.GetExecutingAssembly()));
 
-            AutofacMvcIntegration.Install(builder.Build());
+            _containerProvider = new ContainerProvider(builder.Build());
+            ControllerBuilder.Current.SetControllerFactory(new AutofacControllerFactory(ContainerProvider));            
         }
+
+        protected void Application_EndRequest(object sender, EventArgs e)
+        {
+            ContainerProvider.EndRequestLifetime();
+        }
+
+        protected static void RegisterRoutes(RouteCollection routes)
+        {
+            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+
+            routes.MapRoute(
+                "Default",                                              // Route name
+                "{controller}/{action}/{id}",                           // URL with parameters
+                new { controller = "Home", action = "Index", id = "" }  // Parameter defaults
+            );
+        }
+
+        private static IContainerProvider _containerProvider;
+        public IContainerProvider ContainerProvider
+        {
+            get { return _containerProvider; }
+        }
+
+
     }
 }

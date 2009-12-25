@@ -1,5 +1,7 @@
 ﻿using System;
+using Autofac;
 using Autofac.Builder;
+using Autofac.Integration.Wcf;
 using TestService;
 
 namespace InjectedService
@@ -9,12 +11,12 @@ namespace InjectedService
 
         protected void Application_Start(object sender, EventArgs e)
         {
-            ContainerBuilder builder = new ContainerBuilder();
+            var builder = new ContainerBuilder();
 
-            builder.Register<TestService.Service1>().WithScope(Autofac.InstanceScope.Factory);
-            builder.Register<Test>().As<ITest>();
+            builder.RegisterType<Service1>().InstancePerDependency();
+            builder.RegisterType<Test>().As<ITest>().InstancePerLifetimeScope();
 
-            Autofac.Integration.Wcf.AutofacServiceHostFactory.Container = builder.Build();
+            AutofacHostFactory.Container = builder.Build();
         }
     }
 }
