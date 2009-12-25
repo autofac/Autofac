@@ -154,8 +154,8 @@ namespace Autofac.Configuration
                     registrar.WithExtendedProperty(
                         ep.Name, TypeManipulation.ChangeToCompatibleType(ep.Value, Type.GetType(ep.Type)));
 
-                //if (!string.IsNullOrEmpty(component.MemberOf))
-                //     registrar.MemberOf(component.MemberOf);
+                if (!string.IsNullOrEmpty(component.MemberOf))
+                    registrar.MemberOf(component.MemberOf);
 
                 if (!string.IsNullOrEmpty(component.Name))
                     registrar.Named(component.Name);

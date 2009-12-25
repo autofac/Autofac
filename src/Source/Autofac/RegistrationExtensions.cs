@@ -778,6 +778,23 @@ namespace Autofac
         }
 
         /// <summary>
+        /// Include the element explicitly in a collection configured using RegisterCollection.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to export.</param>
+        /// <param name="serviceName">The name of the collection type to include this item in.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+            MemberOf<TLimit, TActivatorData, TSingleRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
+                string serviceName)
+            where TSingleRegistrationStyle : SingleRegistrationStyle
+        {
+            return registration.MemberOf(new NamedService(serviceName));
+        }
+        /// <summary>
         /// Specifies that a type from a scanned assembly is registered if it implements an interface
         /// that closes the provided open generic interface type.
         /// </summary>

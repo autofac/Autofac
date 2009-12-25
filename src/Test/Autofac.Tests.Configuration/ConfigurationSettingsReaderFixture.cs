@@ -1,4 +1,5 @@
-﻿using Autofac.Builder;
+﻿using System.Collections.Generic;
+using Autofac.Builder;
 using Autofac.Configuration;
 using NUnit.Framework;
 using Autofac.Core;
@@ -83,9 +84,27 @@ namespace Autofac.Tests.Configuration
             Assert.IsTrue(c.ABool);
         }
 
+        class D : IA { }
+
+        [Test]
+        public void ConfiguresMemberOf()
+        {
+            const string fullFilename = "MemberOf.config";
+            var csr = new ConfigurationSettingsReader(ConfigurationSettingsReader.DefaultSectionName, fullFilename);
+            var builder = new ContainerBuilder();
+            builder.RegisterCollection<IA>()
+                    .As<IList<IA>>()
+                    .Named("collection");
+            builder.RegisterModule(csr);
+            var container = builder.Build();
+            var collection = container.Resolve<IList<IA>>();
+            var first = collection[0];
+            Assert.IsInstanceOf(typeof(D), first);
+        }
+
         IContainer ConfigureContainer(string configFile)
         {
-            var fullFilename =  configFile + ".config";
+            var fullFilename = configFile + ".config";
             var csr = new ConfigurationSettingsReader(ConfigurationSettingsReader.DefaultSectionName, fullFilename);
             var builder = new ContainerBuilder();
             builder.RegisterModule(csr);
