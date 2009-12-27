@@ -391,5 +391,13 @@ namespace Autofac.Tests
             builder.RegisterInstance(new object()).InstancePerDependency();
             Assert.Throws<InvalidOperationException>(() => builder.Build());
         }
+
+        [Test]
+        public void WhenDefaultModulesAreExcluded_IEnumerableNotAvailable()
+        {
+            var builder = new ContainerBuilder() { ExcludeDefaultModules = true };
+            var container = builder.Build();
+            Assert.IsFalse(container.IsRegistered<IEnumerable<object>>());
+        }
     }
 }

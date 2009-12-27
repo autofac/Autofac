@@ -794,6 +794,7 @@ namespace Autofac
         {
             return registration.MemberOf(new NamedService(serviceName));
         }
+
         /// <summary>
         /// Specifies that a type from a scanned assembly is registered if it implements an interface
         /// that closes the provided open generic interface type.
@@ -813,6 +814,28 @@ namespace Autofac
         }
 
         /// <summary>
+        /// Add components to an existing component registry.
+        /// </summary>
+        /// <param name="componentRegistry">The componennt registry.</param>
+        /// <param name="configureAction">Callback to add registrations to a provided <see cref="ContainerBuilder"/>.</param>
+        /// <example>
+        /// IComponentRegistry cr = // ...
+        /// cr.Configure(builder => {
+        ///     builder.RegisterType&lt;Foo&gt;();
+        ///     builder.RegisterType&lt;Bar&gt;().As&lt;IBar&gt;();
+        /// });
+        /// </example>
+        public static void Configure(this IComponentRegistry componentRegistry, Action<ContainerBuilder> configureAction)
+        {
+            Enforce.ArgumentNotNull(componentRegistry, "componentRegistry");
+            Enforce.ArgumentNotNull(configureAction, "configureAction");
+
+            var builder = new ContainerBuilder() { ExcludeDefaultModules = true };
+            configureAction(builder);
+            builder.Build(componentRegistry);
+        }
+
+        /// <summary>
         /// Add components to an existing container.
         /// </summary>
         /// <param name="container">The container.</param>
@@ -827,11 +850,7 @@ namespace Autofac
         public static void Configure(this IContainer container, Action<ContainerBuilder> configureAction)
         {
             Enforce.ArgumentNotNull(container, "container");
-            Enforce.ArgumentNotNull(configureAction, "configureAction");
-
-            var builder = new ContainerBuilder();
-            configureAction(builder);
-            builder.Build(container.ComponentRegistry);
+            container.ComponentRegistry.Configure(configureAction);
         }
     }
 }
