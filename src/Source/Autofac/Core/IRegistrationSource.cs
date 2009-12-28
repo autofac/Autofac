@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 namespace Autofac.Core
 {
@@ -34,13 +35,12 @@ namespace Autofac.Core
     public interface IRegistrationSource
     {
         /// <summary>
-        /// Retrieve a registration for an unregistered service, to be used
+        /// Retrieve registrations for an unregistered service, to be used
         /// by the container.
         /// </summary>
         /// <param name="service">The service that was requested.</param>
-        /// <param name="registeredServicesTest">A predicate that can be queried to determine if a service is already registered.</param>
-        /// <param name="registration">A registration providing the service.</param>
-        /// <returns>True if the registration could be created.</returns>
-        bool TryGetRegistration(Service service, Func<Service, bool> registeredServicesTest, out IComponentRegistration registration);
+        /// <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
+        /// <returns>Registrations providing the service.</returns>
+        IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor);
     }
 }

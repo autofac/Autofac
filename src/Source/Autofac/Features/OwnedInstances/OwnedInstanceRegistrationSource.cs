@@ -30,6 +30,7 @@ using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
 using Autofac.Util;
+using System.Linq;
 
 namespace Autofac.Features.OwnedInstances
 {
@@ -40,17 +41,16 @@ namespace Autofac.Features.OwnedInstances
     class OwnedInstanceRegistrationSource : IRegistrationSource
     {
         /// <summary>
-        /// Retrieve a registration for an unregistered service, to be used
+        /// Retrieve registrations for an unregistered service, to be used
         /// by the container.
         /// </summary>
         /// <param name="service">The service that was requested.</param>
-        /// <param name="registeredServicesTest">A predicate that can be queried to determine if a service is already registered.</param>
-        /// <param name="registration">A registration providing the service.</param>
-        /// <returns>True if the registration could be created.</returns>
-        public bool TryGetRegistration(Service service, Func<Service, bool> registeredServicesTest, out IComponentRegistration registration)
+        /// <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
+        /// <returns>Registrations providing the service.</returns>
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             Enforce.ArgumentNotNull(service, "service");
-            Enforce.ArgumentNotNull(registeredServicesTest, "registeredServicesTest");
+            Enforce.ArgumentNotNull(registrationAccessor, "registrationAccessor");
 
             var ts = service as TypedService;
             if (ts != null &&
@@ -59,36 +59,33 @@ namespace Autofac.Features.OwnedInstances
             {
                 var ownedInstanceType = ts.ServiceType.GetGenericArguments()[0];
 
-                if (registeredServicesTest(new TypedService(ownedInstanceType)))
-                {
-                    registration = new ComponentRegistration(
-                        Guid.NewGuid(),
-                        new DelegateActivator(ts.ServiceType, (c, p) =>
-                        {
-                            var lifetime = c.Resolve<ILifetimeScope>().BeginLifetimeScope();
-                            try
+                return registrationAccessor(new TypedService(ownedInstanceType))
+                    .Select(r =>
+                        new ComponentRegistration(
+                            Guid.NewGuid(),
+                            new DelegateActivator(ts.ServiceType, (c, p) =>
                             {
-                                var value = lifetime.Resolve(ownedInstanceType, p);
-                                return Activator.CreateInstance(ts.ServiceType, new object[] { value, lifetime });
-                            }
-                            catch
-                            {
-                                lifetime.Dispose();
-                                throw;
-                            }
-                        }),
-                        new CurrentScopeLifetime(),
-                        InstanceSharing.None,
-                        InstanceOwnership.ExternallyOwned,
-                        new Service[] { new TypedService(ts.ServiceType) },
-                        new Dictionary<string, object>());
-
-                    return true;
-                }
+                                var lifetime = c.Resolve<ILifetimeScope>().BeginLifetimeScope();
+                                try
+                                {
+                                    var value = lifetime.Resolve(r, p);
+                                    return Activator.CreateInstance(ts.ServiceType, new object[] { value, lifetime });
+                                }
+                                catch
+                                {
+                                    lifetime.Dispose();
+                                    throw;
+                                }
+                            }),
+                            new CurrentScopeLifetime(),
+                            InstanceSharing.None,
+                            InstanceOwnership.ExternallyOwned,
+                            new Service[] { new TypedService(ts.ServiceType) },
+                            new Dictionary<string, object>()))
+                    .Cast<IComponentRegistration>();
             }
 
-            registration = null;
-            return false;
+            return Enumerable.Empty<IComponentRegistration>();
         }
     }
 }

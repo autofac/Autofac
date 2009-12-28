@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Autofac.Core;
 using Autofac.Util;
+using System.Linq;
 
 namespace Autofac.Builder
 {
@@ -34,30 +35,31 @@ namespace Autofac.Builder
         }
 
         /// <summary>
-        /// Retrieve a registration for an unregistered service, to be used
+        /// Retrieve registrations for an unregistered service, to be used
         /// by the container.
         /// </summary>
         /// <param name="service">The service that was requested.</param>
-        /// <param name="registeredServicesTest">A predicate that can be queried to determine if a service is already registered.</param>
-        /// <param name="registration">A registration providing the service.</param>
-        /// <returns>True if the registration could be created.</returns>
-        public bool TryGetRegistration(Service service, Func<Service, bool> registeredServicesTest, out IComponentRegistration registration)
+        /// <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
+        /// <returns>Registrations providing the service.</returns>
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             Enforce.ArgumentNotNull(service, "service");
-            registration = null;
+            var result = Enumerable.Empty<IComponentRegistration>();
 
             IInstanceActivator activator;
             IEnumerable<Service> services;
-            if (!_activatorGenerator.TryGenerateActivator(service, _registrationData.Services, _activatorData, out activator, out services))
-                return false;
+            if (_activatorGenerator.TryGenerateActivator(service, _registrationData.Services, _activatorData, out activator, out services))
+            {
+                result = new[] {
+                    RegistrationBuilder.CreateRegistration(
+                        Guid.NewGuid(),
+                        _registrationData,
+                        activator,
+                        services)
+                };
+            }
 
-            registration = RegistrationBuilder.CreateRegistration(
-                Guid.NewGuid(),
-                _registrationData,
-                activator,
-                services);
-
-            return true;
+            return result;
         }
     }
 }

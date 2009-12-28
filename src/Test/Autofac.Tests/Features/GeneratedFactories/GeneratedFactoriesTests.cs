@@ -4,6 +4,8 @@ using System;
 using Autofac.Features.GeneratedFactories;
 using Autofac.Builder;
 using Autofac.Core;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Autofac.Tests.Features.GeneratedFactories
 {
@@ -297,6 +299,23 @@ namespace Autofac.Tests.Features.GeneratedFactories
             Assert.IsNotNull(a);
             Assert.AreEqual(s, a.P);
     		
+        }
+
+        [Test]
+        public void WhenMultipleProductsAreRegistered_MultipleFactoriesCanBeResolved()
+        {
+            object o1 = new object(), o2 = new object();
+
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(o1);
+            builder.RegisterInstance(o2);
+            var container = builder.Build();
+
+            var factories = container.Resolve<IEnumerable<Func<object>>>();
+
+            Assert.AreEqual(2, factories.Count());
+            Assert.IsTrue(factories.Any(f => f() == o1));
+            Assert.IsTrue(factories.Any(f => f() == o2));
         }
     }
 }

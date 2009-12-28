@@ -30,13 +30,24 @@ using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
+using Autofac.Util;
 
 namespace Autofac.Features.Collections
 {
     class CollectionRegistrationSource : IRegistrationSource
     {
-        public bool TryGetRegistration(Service service, Func<Service, bool> registeredServicesTest, out IComponentRegistration registration)
+        /// <summary>
+        /// Retrieve registrations for an unregistered service, to be used
+        /// by the container.
+        /// </summary>
+        /// <param name="service">The service that was requested.</param>
+        /// <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
+        /// <returns>Registrations providing the service.</returns>
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
+            Enforce.ArgumentNotNull(service, "service");
+            Enforce.ArgumentNotNull(registrationAccessor, "registrationAccessor");
+
             var ts = service as TypedService;
             if (ts != null)
             {
@@ -61,7 +72,7 @@ namespace Autofac.Features.Collections
                     // Note, the maintenance of this item must be a lock-free algorithm.
                     IEnumerable<IComponentRegistration> elements = null;
 
-                    registration = new ComponentRegistration(
+                    var registration = new ComponentRegistration(
                         Guid.NewGuid(),
                         new DelegateActivator(elementArrayType, (c, p) =>
                         {
@@ -87,12 +98,11 @@ namespace Autofac.Features.Collections
                         new[] { service },
                         new Dictionary<string, object>());
 
-                    return true;
+                    return new IComponentRegistration[] { registration };
                 }
             }
 
-            registration = null;
-            return false;
+            return Enumerable.Empty<IComponentRegistration>();
         }
     }
 }

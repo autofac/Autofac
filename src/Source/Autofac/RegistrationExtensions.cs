@@ -213,9 +213,14 @@ namespace Autofac
                 new DynamicRegistrationStyle());
 
             builder.RegisterCallback(cr =>
+            {
+                if (!rb.RegistrationData.Services.Any())
+                    rb.RegistrationData.Services.Add(new TypedService(implementor));
+
                 cr.AddRegistrationSource(
                     new RegistrationSource<object, ReflectionActivatorData, DynamicRegistrationStyle>(
-                        rb, new OpenGenericActivatorGenerator())));
+                        rb, new OpenGenericActivatorGenerator()));
+            });
 
             return rb;
         }

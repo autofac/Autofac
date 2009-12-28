@@ -78,7 +78,7 @@ namespace Autofac.Features.GeneratedFactories
         /// <summary>
         /// Create a factory generator.
         /// </summary>
-        /// <param name="service">The service that will be resolved in
+        /// <param name="service">The service that will be activated in
         /// order to create the products of the factory.</param>
         /// <param name="delegateType">The delegate to provide as a factory.</param>
         /// <param name="parameterMapping">The parameter mapping mode to use.</param>
@@ -87,16 +87,65 @@ namespace Autofac.Features.GeneratedFactories
             Enforce.ArgumentNotNull(service, "service");
             Enforce.ArgumentTypeIsFunction(delegateType);
 
-            var pm = parameterMapping;
-            if (parameterMapping == ParameterMapping.Adaptive)
-                pm = delegateType.Name.StartsWith("Func`") ? ParameterMapping.ByType : ParameterMapping.ByName;
+            _generator = CreateGenerator((activatorContextParam, resolveParameterArray) =>
+                {
+                    // c, service, [new Parameter(name, (object)dps)]*
+                    var resolveParams = new Expression[] {
+                            activatorContextParam,
+                            Expression.Constant(service),
+                            Expression.NewArrayInit(typeof(Parameter), resolveParameterArray)
+                        };
 
-            _generator = CreateGenerator(service, delegateType, pm);
+                    // c.Resolve(...)
+                    return Expression.Call(
+                        typeof(ResolutionExtensions).GetMethod("Resolve", new[] { typeof(IComponentContext), typeof(Service), typeof(Parameter[]) }),
+                        resolveParams);
+                },
+                delegateType,
+                GetParameterMapping(delegateType, parameterMapping));
         }
 
-        Func<IComponentContext, IEnumerable<Parameter>, Delegate> CreateGenerator(Service service, Type delegateType, ParameterMapping pm)
+        /// <summary>
+        /// Create a factory generator.
+        /// </summary>
+        /// <param name="productRegistration">The component that will be activated in
+        /// order to create the products of the factory.</param>
+        /// <param name="delegateType">The delegate to provide as a factory.</param>
+        /// <param name="parameterMapping">The parameter mapping mode to use.</param>
+        public FactoryGenerator(Type delegateType, IComponentRegistration productRegistration, ParameterMapping parameterMapping)
         {
-            // (c, p) => ([dps]*) => (drt)Resolve(c, service, [new NamedParameter(name, (object)dps)]*)
+            Enforce.ArgumentNotNull(productRegistration, "productRegistration");
+            Enforce.ArgumentTypeIsFunction(delegateType);
+
+            _generator = CreateGenerator((activatorContextParam, resolveParameterArray) =>
+                {
+                    // productRegistration, [new Parameter(name, (object)dps)]*
+                    var resolveParams = new Expression[] {
+                        Expression.Constant(productRegistration),
+                        Expression.NewArrayInit(typeof(Parameter), resolveParameterArray)
+                    };
+
+                    // c.Resolve(...)
+                    return Expression.Call(
+                        activatorContextParam,
+                        typeof(IComponentContext).GetMethod("Resolve", new[] { typeof(IComponentRegistration), typeof(Parameter[]) }),
+                        resolveParams);
+                },
+                delegateType,
+                GetParameterMapping(delegateType, parameterMapping));
+        }
+
+        ParameterMapping GetParameterMapping(Type delegateType, ParameterMapping configuredParameterMapping)
+        {
+            if (configuredParameterMapping == ParameterMapping.Adaptive)
+                return delegateType.Name.StartsWith("Func`") ? ParameterMapping.ByType : ParameterMapping.ByName;
+            else
+                return configuredParameterMapping;
+        }
+
+        Func<IComponentContext, IEnumerable<Parameter>, Delegate> CreateGenerator(Func<Expression, Expression[], Expression> makeResolveCall, Type delegateType, ParameterMapping pm)
+        {
+            // (c, p) => ([dps]*) => (drt)Resolve(c, productRegistration, [new NamedParameter(name, (object)dps)]*)
 
             // (c, p)
             var activatorContextParam = Expression.Parameter(typeof(IComponentContext), "c");
@@ -113,17 +162,7 @@ namespace Autofac.Features.GeneratedFactories
 
             Expression[] resolveParameterArray = MapParameters(delegateType, creatorParams, pm);
 
-            // service, [new Parameter(name, (object)dps)]*
-            var resolveParams = new Expression[] {
-                activatorContextParam,
-                Expression.Constant(service),
-                Expression.NewArrayInit(typeof(Parameter), resolveParameterArray)
-            };
-
-            // c.Resolve(...)
-            var resolveCall = Expression.Call(
-                typeof(ResolutionExtensions).GetMethod("Resolve", new[] { typeof(IComponentContext), typeof(Service), typeof(Parameter[]) }),
-                resolveParams);
+            var resolveCall = makeResolveCall(activatorContextParam, resolveParameterArray);
 
             // (drt)
             var resolveCast = Expression.Convert(resolveCall, invoke.ReturnType);

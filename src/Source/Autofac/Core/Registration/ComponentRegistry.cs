@@ -123,17 +123,20 @@ namespace Autofac.Core.Registration
                 if (_unregisteredServices.Contains(service))
                     return false;
 
-                foreach (var rs in _dynamicRegistrationSources)
+                var results = _dynamicRegistrationSources
+                    .SelectMany(rs => rs.RegistrationsFor(service, s => RegistrationsFor(s)))
+                    .ToArray();
+
+                if (!results.Any())
                 {
-                    if (rs.TryGetRegistration(service, s => IsRegistered(s), out registration)) 
-                    {
-                        Register(registration);
-                        return true;
-                    }
+                    _unregisteredServices.Add(service);
+                    return false;
                 }
 
-                _unregisteredServices.Add(service);
-                return false;
+                foreach (var r in results)
+                    Register(r);
+
+                return _defaultRegistrations.TryGetValue(service, out registration);
             }
         }
 

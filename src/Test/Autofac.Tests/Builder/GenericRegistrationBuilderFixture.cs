@@ -6,11 +6,15 @@ using System;
 
 namespace Autofac.Tests.Builder
 {
-    public class G<T>
+    public interface IG<T>
     {
-#pragma warning disable 169
-        T unused;
-#pragma warning restore 169
+    }
+
+    public class G<T> : IG<T>
+    {
+        public G()
+        {
+        }
 
         public G(int i)
         {
@@ -26,30 +30,34 @@ namespace Autofac.Tests.Builder
         [Test]
         public void BuildGenericRegistration()
         {
+            var componentType = typeof(G<>);
+            var serviceType = typeof(IG<>);
+            var concreteServiceType = typeof(IG<int>);
+
             var cb = new ContainerBuilder();
-            cb.RegisterGeneric(typeof(List<>))
-                .As(typeof(ICollection<>));
+            cb.RegisterGeneric(componentType)
+                .As(serviceType);
             var c = cb.Build();
 
-            ICollection<int> coll = c.Resolve<ICollection<int>>();
-            ICollection<int> coll2 = c.Resolve<ICollection<int>>();
+            object g1 = c.Resolve(concreteServiceType);
+            object g2 = c.Resolve(concreteServiceType);
 
-            Assert.IsNotNull(coll);
-            Assert.IsNotNull(coll2);
-            Assert.AreNotSame(coll, coll2);
-            Assert.IsTrue(coll.GetType().GetGenericTypeDefinition() == typeof(List<>));
+            Assert.IsNotNull(g1);
+            Assert.IsNotNull(g2);
+            Assert.AreNotSame(g1, g2);
+            Assert.IsTrue(g1.GetType().GetGenericTypeDefinition() == componentType);
         }
 
         [Test]
         public void ExposesImplementationType()
         {
             var cb = new ContainerBuilder();
-            cb.RegisterGeneric(typeof(List<>)).As(typeof(IEnumerable<>));
+            cb.RegisterGeneric(typeof(G<>)).As(typeof(IG<>));
             var container = cb.Build();
             IComponentRegistration cr;
             Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(
-                new TypedService(typeof(IEnumerable<int>)), out cr));
-            Assert.AreEqual(typeof(List<int>), cr.Activator.LimitType);
+                new TypedService(typeof(IG<int>)), out cr));
+            Assert.AreEqual(typeof(G<int>), cr.Activator.LimitType);
         }
 
         [Test]
@@ -57,13 +65,21 @@ namespace Autofac.Tests.Builder
         {
             int preparingFired = 0;
             var cb = new ContainerBuilder();
-            cb.RegisterGeneric(typeof(List<>))
-                .As(typeof(IEnumerable<>))
-                .UsingConstructor()
+            cb.RegisterGeneric(typeof(G<>))
+                .As(typeof(IG<>))
                 .OnPreparing(e => ++preparingFired);
             var container = cb.Build();
-            container.Resolve<IEnumerable<int>>();
+            container.Resolve<IG<int>>();
             Assert.AreEqual(1, preparingFired);
+        }
+
+        [Test]
+        public void WhenNoServicesExplicitlySpecified_GenericComponentTypeIsService()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(G<>));
+            var c = cb.Build();
+            Assertions.AssertRegistered<G<int>>(c);
         }
 
         [Test]
@@ -74,17 +90,6 @@ namespace Autofac.Tests.Builder
             var c = cb.Build();
             var g = c.Resolve<G<string>>();
             Assert.AreEqual(42, g.I);
-        }
-
-        [Test]
-        public void GenericCircularityAvoidedWithUsingContstructor()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterGeneric(typeof(List<>))
-                .As(typeof(IEnumerable<>))
-                .UsingConstructor(new Type[] { });
-            var container = builder.Build();
-            var list = container.Resolve<IEnumerable<int>>();
         }
     }
 }

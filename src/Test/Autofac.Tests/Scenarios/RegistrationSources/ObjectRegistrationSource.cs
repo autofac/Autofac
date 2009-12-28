@@ -8,19 +8,13 @@ namespace Autofac.Tests.Scenarios.RegistrationSources
 {
     class ObjectRegistrationSource : IRegistrationSource
     {
-        public bool TryGetRegistration(Service service, Func<Service, bool> registeredServicesTest, out IComponentRegistration registration)
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             var objectService = new TypedService(typeof(object));
             if (service == objectService)
-            {
-                registration = Factory.CreateSingletonObjectRegistration();
-                return true;
-            }
+                return new[] { Factory.CreateSingletonObjectRegistration() };
             else
-            {
-                registration = null;
-                return false;
-            }
+                return Enumerable.Empty<IComponentRegistration>();
         }
     }
 }
