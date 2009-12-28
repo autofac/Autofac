@@ -41,8 +41,8 @@ namespace Autofac.Configuration
         const string ExtendedPropertiesElementName = "extendedProperties";
         const string MemberOfAttributeName = "member-of";
         const string NameAttributeName = "name";
-        const string ScopeAttributeName = "scope";
-        const string OwnershipAttributeName = "ownership";
+        const string InstanceScopeAttributeName = "instance-scope";
+        const string InstanceOwnershipAttributeName = "instance-ownership";
         const string InjectPropertiesAttributeName = "inject-properties";
         internal const string Key = TypeAttributeName;
 
@@ -103,12 +103,12 @@ namespace Autofac.Configuration
         /// Sets the scope of the component instances.
         /// </summary>
         /// <value>singleton (default,) factory or container.</value>
-        [ConfigurationProperty(ScopeAttributeName, IsRequired = false)]
-        public string Scope
+        [ConfigurationProperty(InstanceScopeAttributeName, IsRequired = false)]
+        public string InstanceScope
         {
             get
             {
-                return (string)this[ScopeAttributeName];
+                return (string)this[InstanceScopeAttributeName];
             }
         }
 
@@ -116,12 +116,12 @@ namespace Autofac.Configuration
         /// Sets the ownership over the component instances.
         /// </summary>
         /// <value>container (default) or external.</value>
-        [ConfigurationProperty(OwnershipAttributeName, IsRequired = false)]
+        [ConfigurationProperty(InstanceOwnershipAttributeName, IsRequired = false)]
         public string Ownership
         {
             get
             {
-                return (string)this[OwnershipAttributeName];
+                return (string)this[InstanceOwnershipAttributeName];
             }
         }
 

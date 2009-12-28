@@ -57,7 +57,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="BFactory.config">
+    <None Include="BPerDependency.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="CWithBoolean.config">
@@ -89,6 +89,12 @@
   <ItemGroup>
     <None Include="..\..\SharedKey.snk">
       <Link>SharedKey.snk</Link>
+    </None>
+    <None Include="BExternal.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="EWithPropertyInjection.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="MemberOf.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

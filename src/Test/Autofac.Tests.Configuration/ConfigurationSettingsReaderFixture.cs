@@ -67,7 +67,7 @@ namespace Autofac.Tests.Configuration
         [Test]
         public void FactoryScope()
         {
-            var container = ConfigureContainer("BFactory");
+            var container = ConfigureContainer("BPerDependency");
             Assert.AreNotSame(container.Resolve<B>(), container.Resolve<B>());
         }
 
@@ -84,31 +84,59 @@ namespace Autofac.Tests.Configuration
             Assert.IsTrue(c.ABool);
         }
 
+        [Test]
+        public void SetsExternalOwnership()
+        {
+            var container = ConfigureContainer("BExternal");
+            IComponentRegistration forB;
+            container.ComponentRegistry.TryGetRegistration(new TypedService(typeof(B)), out forB);
+            Assert.AreEqual(InstanceOwnership.ExternallyOwned, forB.Ownership);
+        }
+
+        class E
+        {
+            public B B { get; set; }
+        }
+
+        [Test]
+        public void SetsPropertyInjection()
+        {
+            var container = ConfigureContainer("EWithPropertyInjection");
+            container.Configure(b => b.RegisterType<B>());
+            var e = container.Resolve<E>();
+            Assert.IsNotNull(e.B);
+        }
+
         class D : IA { }
 
         [Test]
         public void ConfiguresMemberOf()
         {
-            const string fullFilename = "MemberOf.config";
-            var csr = new ConfigurationSettingsReader(ConfigurationSettingsReader.DefaultSectionName, fullFilename);
             var builder = new ContainerBuilder();
             builder.RegisterCollection<IA>()
                     .As<IList<IA>>()
                     .Named("collection");
-            builder.RegisterModule(csr);
             var container = builder.Build();
+            
+            ConfigureContainer(container, "MemberOf");
+
             var collection = container.Resolve<IList<IA>>();
             var first = collection[0];
             Assert.IsInstanceOf(typeof(D), first);
         }
 
-        IContainer ConfigureContainer(string configFile)
+        void ConfigureContainer(IContainer container, string configFile)
         {
             var fullFilename = configFile + ".config";
             var csr = new ConfigurationSettingsReader(ConfigurationSettingsReader.DefaultSectionName, fullFilename);
-            var builder = new ContainerBuilder();
-            builder.RegisterModule(csr);
-            return builder.Build();
+            container.Configure(builder => builder.RegisterModule(csr));
+        }
+
+        IContainer ConfigureContainer(string configFile)
+        {
+            var container = new Container();
+            ConfigureContainer(container, configFile);
+            return container;
         }
     }
 }

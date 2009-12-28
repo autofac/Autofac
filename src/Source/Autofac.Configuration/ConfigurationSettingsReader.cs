@@ -192,9 +192,9 @@ namespace Autofac.Configuration
             {
                 switch (component.InjectProperties.ToLower())
                 {
-                    case "never":
+                    case "no":
                         break;
-                    case "all":
+                    case "yes":
                         registrar.PropertiesAutowired(true);
                         break;
                     default:
@@ -220,7 +220,7 @@ namespace Autofac.Configuration
             {
                 switch (component.Ownership.ToLower())
                 {
-                    case "container":
+                    case "lifetime-scope":
                         registrar.OwnedByLifetimeScope();
                         break;
                     case "external":
@@ -245,22 +245,22 @@ namespace Autofac.Configuration
             Enforce.ArgumentNotNull(component, "component");
             Enforce.ArgumentNotNull(registrar, "registrar");
 
-            if (!string.IsNullOrEmpty(component.Scope))
+            if (!string.IsNullOrEmpty(component.InstanceScope))
             {
-                switch (component.Scope.ToLower())
+                switch (component.InstanceScope.ToLower())
                 {
-                    case "singleton":
+                    case "single-instance":
                         registrar.SingleInstance();
                         break;
-                    case "container":
+                    case "per-lifetime-scope":
                         registrar.InstancePerLifetimeScope();
                         break;
-                    case "factory":
+                    case "per-dependency":
                         registrar.InstancePerDependency();
                         break;
                     default:
                         throw new ConfigurationErrorsException(string.Format(CultureInfo.CurrentCulture,
-                            ConfigurationSettingsReaderResources.UnrecognisedScope, component.Scope));
+                            ConfigurationSettingsReaderResources.UnrecognisedScope, component.InstanceScope));
                 }
             }
         }
