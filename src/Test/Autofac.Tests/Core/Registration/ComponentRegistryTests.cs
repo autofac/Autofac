@@ -23,13 +23,13 @@ namespace Autofac.Tests.Core.Registration
         }
 
         [Test]
-        public void RegistrationsForServiceIncludeDynamicSources_WhenNoOtherImplementationsRegistered()
+        public void WhenNoImplementationsRegistered_RegistrationsForServiceIncludeDynamicSources()
         {
             var registry = new ComponentRegistry();
             registry.AddRegistrationSource(new ObjectRegistrationSource());
             Assert.IsFalse(registry.Registrations.Where(
                 r => r.Services.Contains(new TypedService(typeof(object)))).Any());
-            Assert.IsTrue(registry.RegistrationsFor(new TypedService(typeof(object))).Count() == 1);
+            Assert.AreEqual(1, registry.RegistrationsFor(new TypedService(typeof(object))).Count());
         }
 
         [Test]
@@ -89,6 +89,74 @@ namespace Autofac.Tests.Core.Registration
             registry.AddRegistrationSource(new ObjectRegistrationSource());
             IComponentRegistration registration;
             Assert.IsTrue(registry.TryGetRegistration(new TypedService(typeof(object)), out registration));
+        }
+
+        [Test]
+        public void WhenRegistrationProvidedExplicitlyAndThroughRegistrationSource_ExplicitRegistrationIsDefault()
+        {
+            var r = Factory.CreateSingletonObjectRegistration();
+
+            var registry = new ComponentRegistry();
+            registry.Register(r);
+            registry.AddRegistrationSource(new ObjectRegistrationSource());
+
+            IComponentRegistration defaultForObject = null;
+            registry.TryGetRegistration(new TypedService(typeof(object)), out defaultForObject);
+
+            Assert.AreSame(r, defaultForObject);
+        }
+
+        [Test]
+        public void WhenRegistrationProvidedExplicitlyAndThroughRegistrationSource_BothAreReturnedFromRegistrationsFor()
+        {
+            var r = Factory.CreateSingletonObjectRegistration();
+
+            var registry = new ComponentRegistry();
+            registry.Register(r);
+            registry.AddRegistrationSource(new ObjectRegistrationSource());
+
+            var forObject = registry.RegistrationsFor(new TypedService(typeof(object)));
+
+            Assert.AreEqual(2, forObject.Count());
+
+            // Just paranoia - make sure we don't regenerate
+            forObject = registry.RegistrationsFor(new TypedService(typeof(object)));
+
+            Assert.AreEqual(2, forObject.Count());
+        }
+
+        [Test]
+        public void WhenRegistrationProvidedExplicitlyAndThroughRegistrationSource_Reordered_BothAreReturnedFromRegistrationsFor()
+        {
+            var r = Factory.CreateSingletonObjectRegistration();
+
+            var registry = new ComponentRegistry();
+            registry.AddRegistrationSource(new ObjectRegistrationSource());
+            registry.Register(r);
+
+            var forObject = registry.RegistrationsFor(new TypedService(typeof(object)));
+
+            Assert.AreEqual(2, forObject.Count());
+        }
+
+        [Test]
+        public void AfterResolvingFromADynamicSource_AddingSource_AddsRegistrations()
+        {
+            var r = Factory.CreateSingletonObjectRegistration();
+
+            var registry = new ComponentRegistry();
+            registry.Register(r);
+            registry.AddRegistrationSource(new ObjectRegistrationSource());
+
+            var forObject = registry.RegistrationsFor(new TypedService(typeof(object)));
+
+            Assert.AreEqual(2, forObject.Count());
+
+            registry.AddRegistrationSource(new ObjectRegistrationSource());
+
+            forObject = registry.RegistrationsFor(new TypedService(typeof(object)));
+
+            Assert.AreEqual(3, forObject.Count());
         }
     }
 }

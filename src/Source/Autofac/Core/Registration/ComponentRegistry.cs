@@ -51,22 +51,15 @@ namespace Autofac.Core.Registration
         readonly ICollection<IRegistrationSource> _dynamicRegistrationSources = new List<IRegistrationSource>();
 
         /// <summary>
-        /// Associates each service with the default registration that
-        /// can provide that service.
+        /// Associates each service with the registrations that
+        /// can provide that service. The first item in the list is considered to be the default.
         /// </summary>
-        readonly IDictionary<Service, IComponentRegistration> _defaultRegistrations = new Dictionary<Service, IComponentRegistration>();
+        readonly IDictionary<Service, LinkedList<IComponentRegistration>> _registrationsByService = new Dictionary<Service, LinkedList<IComponentRegistration>>();
 
         /// <summary>
         /// All registrations.
         /// </summary>
         readonly ICollection<IComponentRegistration> _registrations = new List<IComponentRegistration>();
-
-        /// <summary>
-        /// Constructs a new component registry.
-        /// </summary>
-        public ComponentRegistry()
-        {
-        }
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources
@@ -117,15 +110,13 @@ namespace Autofac.Core.Registration
 
             lock (_synchRoot)
             {
-                if (_defaultRegistrations.TryGetValue(service, out registration))
+                if (TryGetExistingDefault(service, out registration))
                     return true;
 
                 if (_unregisteredServices.Contains(service))
                     return false;
 
-                var results = _dynamicRegistrationSources
-                    .SelectMany(rs => rs.RegistrationsFor(service, s => RegistrationsFor(s)))
-                    .ToArray();
+                var results = RegisterFromSources(service);
 
                 if (!results.Any())
                 {
@@ -133,11 +124,35 @@ namespace Autofac.Core.Registration
                     return false;
                 }
 
-                foreach (var r in results)
-                    Register(r);
-
-                return _defaultRegistrations.TryGetValue(service, out registration);
+                return TryGetExistingDefault(service, out registration);
             }
+        }
+
+        bool TryGetExistingDefault(Service service, out IComponentRegistration registration)
+        {
+            LinkedList<IComponentRegistration> registrations;
+            if (_registrationsByService.TryGetValue(service, out registrations))
+            {
+                registration = registrations.First.Value;
+                return true;
+            }
+            else
+            {
+                registration = null;
+                return false;
+            }
+        }
+
+        IEnumerable<IComponentRegistration> RegisterFromSources(Service service)
+        {
+            var results = _dynamicRegistrationSources
+                .SelectMany(rs => rs.RegistrationsFor(service, s => RegistrationsFor(s)))
+                .ToArray();
+
+            foreach (var r in results)
+                RegisterWithoutReTestingSources(r, true);
+
+            return results;
         }
 
         /// <summary>
@@ -161,31 +176,55 @@ namespace Autofac.Core.Registration
 
             lock (_synchRoot)
             {
+                RegisterWithoutReTestingSources(registration, preserveDefaults);
                 foreach (var service in registration.Services)
+                    RegisterFromSources(service);
+            }
+        }
+
+        void RegisterWithoutReTestingSources(IComponentRegistration registration, bool preserveDefaults)
+        {
+            foreach (var service in registration.Services)
+            {
+                LinkedList<IComponentRegistration> existing;
+                if (_registrationsByService.TryGetValue(service, out existing))
                 {
-                    IComponentRegistration existing;
-                    if (_defaultRegistrations.TryGetValue(service, out existing))
+                    if (!preserveDefaults)
                     {
                         System.Diagnostics.Debug.WriteLine(string.Format(
-                            "Autofac: Overriding existing registration for: '{0}' with: '{1}' (was: '{2}')",
+                            "[Autofac] Overriding existing registration for: '{0}' with: '{1}' (was: '{2}')",
                             service, registration, existing));
                     }
-
-                    if (!(_defaultRegistrations.ContainsKey(service) && preserveDefaults))
-                        _defaultRegistrations[service] = registration;
-   
-                    _unregisteredServices.Remove(service);
+                }
+                else
+                {
+                    existing = new LinkedList<IComponentRegistration>();
+                    _registrationsByService.Add(service, existing);
                 }
 
-                _registrations.Add(registration);
+                if (preserveDefaults)
+                    existing.AddLast(registration);
+                else
+                    existing.AddFirst(registration);
 
-                Registered(this, new ComponentRegisteredEventArgs(this, registration));
+                _unregisteredServices.Remove(service);
             }
+
+            _registrations.Add(registration);
+
+            Registered(this, new ComponentRegisteredEventArgs(this, registration));
         }
 
         /// <summary>
         /// Enumerate the registered components.
         /// </summary>
+        /// <remarks>
+        /// Component registrations are generated on-the-fly for some service types
+        /// (e.g. open generics, generated factories.) This means that the
+        /// available registrations will grow over time as instances of these service
+        /// types are resolved. To handle all registered components,
+        /// override <see cref="Module.AttachToComponentRegistration"/>.
+        /// </remarks>
         public IEnumerable<IComponentRegistration> Registrations
         {
             get
@@ -209,7 +248,7 @@ namespace Autofac.Core.Registration
             lock (_synchRoot)
             {
                 if (IsRegistered(service))
-                    return Registrations.Where(r => r.Services.Contains(service)).ToArray();
+                    return _registrationsByService[service].ToArray();
                 else
                     return Enumerable.Empty<IComponentRegistration>();
             }
@@ -221,10 +260,17 @@ namespace Autofac.Core.Registration
         /// <param name="source"></param>
         public void AddRegistrationSource(IRegistrationSource source)
         {
+            Enforce.ArgumentNotNull(source, "source");
+
             lock (_synchRoot)
             {
-                _dynamicRegistrationSources.Add(Enforce.ArgumentNotNull(source, "source"));
-                _unregisteredServices.Clear();
+                var newRegistrations = _registrationsByService.Keys.Concat(_unregisteredServices)
+                    .SelectMany(existing => source.RegistrationsFor(existing, s => RegistrationsFor(s)));
+
+                foreach (var r in newRegistrations)
+                    RegisterWithoutReTestingSources(r, true);
+
+                _dynamicRegistrationSources.Add(source);
             }
         }
     }
