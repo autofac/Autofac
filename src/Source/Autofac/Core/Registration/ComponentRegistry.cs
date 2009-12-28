@@ -191,7 +191,7 @@ namespace Autofac.Core.Registration
             get
             {
                 lock(_synchRoot)
-                    return _registrations.ToList();
+                    return _registrations.ToArray();
             }
         }
 
@@ -208,8 +208,10 @@ namespace Autofac.Core.Registration
 
             lock (_synchRoot)
             {
-                IsRegistered(service);
-                return Registrations.Where(r => r.Services.Contains(service));
+                if (IsRegistered(service))
+                    return Registrations.Where(r => r.Services.Contains(service)).ToArray();
+                else
+                    return Enumerable.Empty<IComponentRegistration>();
             }
         }
 
