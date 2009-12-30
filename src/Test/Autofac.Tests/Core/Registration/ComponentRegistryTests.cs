@@ -158,5 +158,29 @@ namespace Autofac.Tests.Core.Registration
 
             Assert.AreEqual(3, forObject.Count());
         }
+
+        [Test]
+        public void WhenRegistrationSourcePreservesOrder_DefaultsForWrappersMatchDefaultsForWrapped()
+        {
+            object a = new object(), b = new object();
+            
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(a);
+            builder.RegisterInstance(b).PreserveExistingDefaults();
+            var container = builder.Build();
+
+            Assert.AreSame(a, container.Resolve<object>());
+            Assert.AreSame(a, container.Resolve<Func<object>>().Invoke());
+
+            var allObjects = container.Resolve<IEnumerable<object>>();
+            Assert.AreEqual(2, allObjects.Count());
+            Assert.That(allObjects.Contains(a));
+            Assert.That(allObjects.Contains(b));
+
+            var allFuncs = container.Resolve<IEnumerable<Func<object>>>();
+            Assert.AreEqual(2, allFuncs.Count());
+            Assert.That(allFuncs.Any(f => f() == a));
+            Assert.That(allFuncs.Any(f => f() == b));
+        }
     }
 }
