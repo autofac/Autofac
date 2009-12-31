@@ -89,7 +89,7 @@ namespace Autofac
         /// <param name="instance">The instance to register.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         /// <remarks>If no services are explicitly specified for the instance, the
-        /// static type <paramref name="T"/> will be used as the default service (i.e. *not* <code>instance.GetType()</code>).</remarks>
+        /// static type <typeparamref name="T"/> will be used as the default service (i.e. *not* <code>instance.GetType()</code>).</remarks>
         public static RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>
             RegisterInstance<T>(this ContainerBuilder builder, T instance)
             where T : class
