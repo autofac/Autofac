@@ -39,7 +39,7 @@ namespace Autofac.Tests.Features.OwnedInstances
         {
             var cb = new ContainerBuilder();
             var containerDisposeTracker = new DisposeTracker();
-            cb.RegisterInstance(containerDisposeTracker).Named("tracker");
+            cb.RegisterInstance(containerDisposeTracker).Named<DisposeTracker>("tracker");
             cb.RegisterType<DisposeTracker>();
             var c = cb.Build();
 
@@ -53,6 +53,20 @@ namespace Autofac.Tests.Features.OwnedInstances
         {
             var c = new ContainerBuilder().Build();
             Assert.IsFalse(c.IsRegistered<Owned<Object>>());
+        }
+
+        [Test]
+        public void ResolvingOwnedInstanceByName_ReturnsValueByName()
+        {
+            object o = new object();
+
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(o).Named<object>("o");
+            var container = builder.Build();
+
+            var owned = container.Resolve<Owned<object>>("o");
+
+            Assert.AreSame(o, owned.Value);
         }
     }
 }

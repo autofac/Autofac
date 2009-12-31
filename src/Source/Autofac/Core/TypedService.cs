@@ -31,7 +31,7 @@ namespace Autofac.Core
     /// <summary>
     /// Identifies a service according to a type to which it can be assigned.
     /// </summary>
-    public class TypedService : Service
+    public sealed class TypedService : Service, IServiceWithType
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TypedService"/> class.
@@ -43,7 +43,7 @@ namespace Autofac.Core
         }
 
         /// <summary>
-        /// Gets or sets the type of the service.
+        /// Gets the type of the service.
         /// </summary>
         /// <value>The type of the service.</value>
         public Type ServiceType { get; private set; }
@@ -87,6 +87,18 @@ namespace Autofac.Core
         public override int GetHashCode()
         {
             return ServiceType.GetHashCode();
+        }
+
+        /// <summary>
+        /// Return a new service of the same kind, but carrying
+        /// <paramref name="newType"/> as the <see cref="ServiceType"/>.
+        /// </summary>
+        /// <param name="newType">The new service type.</param>
+        /// <returns>A new service with the service type.</returns>
+        public Service ChangeType(Type newType)
+        {
+            Enforce.ArgumentNotNull(newType, "newType");
+            return new TypedService(newType);
         }
     }
 }

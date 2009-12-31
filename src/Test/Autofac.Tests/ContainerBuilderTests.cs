@@ -165,12 +165,12 @@ namespace Autofac.Tests
             var name = "object.registration";
 
             var cb = new ContainerBuilder();
-            cb.RegisterType<object>().Named(name);
+            cb.RegisterType<object>().Named<object>(name);
 
             var c = cb.Build();
 
             object o1;
-            Assert.IsTrue(c.TryResolve(name, out o1));
+            Assert.IsTrue(c.TryResolve(name, typeof(object), out o1));
             Assert.IsNotNull(o1);
 
             object o2;
@@ -319,10 +319,10 @@ namespace Autofac.Tests
         {
             var builder = new ContainerBuilder();
             builder.RegisterInstance("s1");
-            builder.RegisterInstance("s2").Named("name").PreserveExistingDefaults();
+            builder.RegisterInstance("s2").Named<string>("name").PreserveExistingDefaults();
             var container = builder.Build();
             Assert.AreEqual("s1", container.Resolve<string>()); // Not overridden
-            Assert.AreEqual("s2", container.Resolve("name"));
+            Assert.AreEqual("s2", container.Resolve<string>("name"));
         }
 
         [Test]

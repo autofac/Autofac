@@ -48,11 +48,11 @@ namespace Autofac.Features.GeneratedFactories
             Enforce.ArgumentNotNull(service, "service");
             Enforce.ArgumentNotNull(registrationAccessor, "registrationAccessor");
 
-            var ts = service as TypedService;
+            var ts = service as IServiceWithType;
             if (ts != null && ts.ServiceType.IsFunction())
             {
                 var resultType = ts.ServiceType.FunctionReturnType();
-                var resultTypeService = new TypedService(resultType);
+                var resultTypeService = ts.ChangeType(resultType);
 
                 return registrationAccessor(resultTypeService)
                     .Select(r =>
@@ -65,7 +65,7 @@ namespace Autofac.Features.GeneratedFactories
                             new CurrentScopeLifetime(),
                             InstanceSharing.None,
                             InstanceOwnership.ExternallyOwned,
-                            new Service[] { new TypedService(ts.ServiceType) },
+                            new Service[] { service },
                             new Dictionary<string, object>());
                     })
                     .Cast<IComponentRegistration>();

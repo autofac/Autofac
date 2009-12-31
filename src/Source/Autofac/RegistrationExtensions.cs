@@ -336,15 +336,17 @@ namespace Autofac
         /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
-        /// <param name="serviceMapping">Function mapping types to services.</param>
+        /// <param name="serviceType">Service type provided by the component.</param>
+        /// <param name="serviceNameMapping">Function mapping types to service names.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             Named<TLimit, TScanningActivatorData, TRegistrationStyle>(
                 this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
-                Func<Type, string> serviceMapping)
+                Func<Type, string> serviceNameMapping,
+                Type serviceType)
             where TScanningActivatorData : ScanningActivatorData
         {
-            return registration.As(t => new NamedService(serviceMapping(t)));
+            return registration.As(t => new NamedService(serviceNameMapping(t), serviceType));
         }
 
         /// <summary>
@@ -790,14 +792,16 @@ namespace Autofac
         /// <typeparam name="TActivatorData">Activator data type.</typeparam>
         /// <param name="registration">Registration to export.</param>
         /// <param name="serviceName">The name of the collection type to include this item in.</param>
+        /// <param name="serviceType">The type of the collection to include the item in.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             MemberOf<TLimit, TActivatorData, TSingleRegistrationStyle>(
                 this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
-                string serviceName)
+                string serviceName,
+                Type serviceType)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
-            return registration.MemberOf(new NamedService(serviceName));
+            return registration.MemberOf(new NamedService(serviceName, serviceType));
         }
 
         /// <summary>

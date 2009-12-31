@@ -52,14 +52,15 @@ namespace Autofac.Features.OwnedInstances
             Enforce.ArgumentNotNull(service, "service");
             Enforce.ArgumentNotNull(registrationAccessor, "registrationAccessor");
 
-            var ts = service as TypedService;
+            var ts = service as IServiceWithType;
             if (ts != null &&
                 ts.ServiceType.IsGenericType &&
                 ts.ServiceType.GetGenericTypeDefinition() == typeof(Owned<>))
             {
                 var ownedInstanceType = ts.ServiceType.GetGenericArguments()[0];
+                var ownedInstanceService = ts.ChangeType(ownedInstanceType);
 
-                return registrationAccessor(new TypedService(ownedInstanceType))
+                return registrationAccessor(ownedInstanceService)
                     .Select(r =>
                         new ComponentRegistration(
                             Guid.NewGuid(),
@@ -80,7 +81,7 @@ namespace Autofac.Features.OwnedInstances
                             new CurrentScopeLifetime(),
                             InstanceSharing.None,
                             InstanceOwnership.ExternallyOwned,
-                            new Service[] { new TypedService(ts.ServiceType) },
+                            new Service[] { service },
                             new Dictionary<string, object>()))
                     .Cast<IComponentRegistration>();
             }

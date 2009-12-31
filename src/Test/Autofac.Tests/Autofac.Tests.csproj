@@ -76,9 +76,6 @@
     <Compile Include="Builder\DelegateRegistrationBuilderFixture.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Builder\GenericRegistrationBuilderFixture.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Builder\ModuleFixture.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -99,6 +96,7 @@
     <Compile Include="Factory.cs" />
     <Compile Include="Features\GeneratedFactories\GeneratedFactoriesTests.cs" />
     <Compile Include="Features\Collections\CollectionRegistrationSourceTests.cs" />
+    <Compile Include="Features\OpenGenerics\OpenGenericRegistrationExtensionsTests.cs" />
     <Compile Include="Features\OwnedInstances\OwnedInstanceRegistrationSourceTests.cs" />
     <Compile Include="Features\OwnedInstances\OwnedTests.cs" />
     <Compile Include="NamedParameterTests.cs" />

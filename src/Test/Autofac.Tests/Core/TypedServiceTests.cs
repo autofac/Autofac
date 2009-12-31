@@ -34,13 +34,22 @@ namespace Autofac.Tests.Core
         [Test]
         public void TypedServices_DoNotEqualOtherServiceTypes()
         {
-            Assert.IsFalse(new TypedService(typeof(object)).Equals(new NamedService("name")));
+            Assert.IsFalse(new TypedService(typeof(object)).Equals(new NamedService("name", typeof(object))));
         }
 
         [Test]
         public void ATypedService_IsNotEqualToNull()
         {
             Assert.IsFalse(new TypedService(typeof(object)).Equals(null));
+        }
+
+        [Test]
+        public void ChangeType_ProvidesTypedServiceWithNewType()
+        {
+            var nt = typeof(string);
+            var ts = new TypedService(typeof(object));
+            var n = ts.ChangeType(nt);
+            Assert.AreEqual(new TypedService(nt), n);
         }
     }
 }

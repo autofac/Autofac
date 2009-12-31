@@ -89,12 +89,12 @@ namespace Autofac.Tests
 
             builder.Register(c => "")
                 .InstancePerMatchingLifetimeScope(Tag.Outer)
-                .Named(name);
+                .Named<string>(name);
 
             var outer = builder.Build();
             outer.Tag = Tag.Outer;
 
-            var s = (string)outer.Resolve(new NamedService(name));
+            var s = outer.Resolve<string>(name);
             Assert.IsNotNull(s);
         }
 

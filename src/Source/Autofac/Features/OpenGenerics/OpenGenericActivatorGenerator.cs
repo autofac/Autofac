@@ -54,39 +54,31 @@ namespace Autofac.Features.OpenGenerics
             out IInstanceActivator activator,
             out IEnumerable<Service> services)
         {
-            Type[] genericParameters = null;
-            Type genericTypeDefinition = null;
-
-            var typedService = service as TypedService;
-            if (typedService != null)
+            IServiceWithType swt = service as IServiceWithType;
+            if (swt != null && swt.ServiceType.IsGenericType)
             {
-                var serviceType = typedService.ServiceType;
-                if (serviceType.IsGenericType)
-                {
-                    genericTypeDefinition = serviceType.GetGenericTypeDefinition();
-                    genericParameters = serviceType.GetGenericArguments();
-                }
-            }
+                Type genericTypeDefinition = swt.ServiceType.GetGenericTypeDefinition();
 
-            if (genericTypeDefinition != null &&
-                configuredServices
+                if (configuredServices
                     .DefaultIfEmpty(new TypedService(reflectionActivatorData.ImplementationType))
-                    .Cast<TypedService>()
-                    .Any(ts => ts.ServiceType == genericTypeDefinition))
-            {
-                activator = new ReflectionActivator(
-                    reflectionActivatorData.ImplementationType.MakeGenericType(genericParameters),
-                    reflectionActivatorData.ConstructorFinder,
-                    reflectionActivatorData.ConstructorSelector,
-                    reflectionActivatorData.ConfiguredParameters,
-                    reflectionActivatorData.ConfiguredProperties);
+                    .Cast<IServiceWithType>()
+                    .Any(s => s.ServiceType == genericTypeDefinition))
+                {
+                    Type[] genericParameters = swt.ServiceType.GetGenericArguments();
 
-                services = configuredServices
-                    .Cast<TypedService>()
-                    .Select(ts => new TypedService(ts.ServiceType.MakeGenericType(genericParameters)))
-                    .Cast<Service>();
+                    activator = new ReflectionActivator(
+                        reflectionActivatorData.ImplementationType.MakeGenericType(genericParameters),
+                        reflectionActivatorData.ConstructorFinder,
+                        reflectionActivatorData.ConstructorSelector,
+                        reflectionActivatorData.ConfiguredParameters,
+                        reflectionActivatorData.ConfiguredProperties);
 
-                return true;
+                    services = configuredServices
+                        .Cast<IServiceWithType>()
+                        .Select(s => s.ChangeType(s.ServiceType.MakeGenericType(genericParameters)));
+
+                    return true;
+                }
             }
 
             activator = null;

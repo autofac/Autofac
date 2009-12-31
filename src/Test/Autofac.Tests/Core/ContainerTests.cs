@@ -24,7 +24,7 @@ namespace Autofac.Tests.Core
             string name = "name";
 
             var r = Factory.CreateSingletonRegistration(
-                new Service[] { new NamedService(name) },
+                new Service[] { new NamedService(name, typeof(string)) },
                 Factory.CreateReflectionActivator(typeof(object)));
 
             var c = new Container();
@@ -32,7 +32,7 @@ namespace Autofac.Tests.Core
 
             object o;
 
-            Assert.IsTrue(c.TryResolve(name, out o));
+            Assert.IsTrue(c.TryResolve(name, typeof(string), out o));
             Assert.IsNotNull(o);
 
             Assert.IsFalse(c.IsRegistered<object>());
@@ -88,7 +88,7 @@ namespace Autofac.Tests.Core
         {
             var myName = "Something";
             var cb = new ContainerBuilder();
-            cb.RegisterType<object>().Named(myName);
+            cb.RegisterType<object>().Named<object>(myName);
             var container = cb.Build();
             var o = container.Resolve<object>(myName);
             Assert.IsNotNull(o);

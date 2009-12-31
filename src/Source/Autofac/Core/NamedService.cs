@@ -24,27 +24,45 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using Autofac.Util;
+using System;
 
 namespace Autofac.Core
 {
     /// <summary>
-    /// Identifies a service using a textual name.
+    /// Identifies a service using a textual name in addition to its type.
     /// </summary>
-    public class NamedService : Service
+    public sealed class NamedService : Service, IServiceWithType
     {
-        /// <summary>
-        /// Gets or sets the name of the service.
-        /// </summary>
-        /// <value>The name of the service.</value>
-        public string ServiceName { get; private set; }
+        readonly string _serviceName;
+        readonly Type _serviceType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NamedService"/> class.
         /// </summary>
         /// <param name="serviceName">Name of the service.</param>
-        public NamedService(string serviceName)
+        /// <param name="serviceType">Type of the service.</param>
+        public NamedService(string serviceName, Type serviceType)
         {
-            ServiceName = Enforce.ArgumentNotNullOrEmpty(serviceName, "serviceName");
+            _serviceName = Enforce.ArgumentNotNullOrEmpty(serviceName, "serviceName");
+            _serviceType = Enforce.ArgumentNotNull(serviceType, "serviceType");
+        }
+
+        /// <summary>
+        /// Gets or sets the name of the service.
+        /// </summary>
+        /// <value>The name of the service.</value>
+        public string ServiceName
+        {
+            get { return _serviceName; }
+        }
+
+        /// <summary>
+        /// Gets the type of the service.
+        /// </summary>
+        /// <value>The type of the service.</value>
+        public Type ServiceType
+        {
+            get { return _serviceType; }
         }
 
         /// <summary>
@@ -55,7 +73,7 @@ namespace Autofac.Core
         {
             get
             {
-                return ServiceName;
+                return ServiceName + "(" + ServiceType.FullName + ")";
             }
         }
 
@@ -74,7 +92,7 @@ namespace Autofac.Core
             if (that == null)
                 return false;
 
-            return ServiceName == that.ServiceName;
+            return ServiceName == that.ServiceName && ServiceType == that.ServiceType;
         }
 
         /// <summary>
@@ -85,7 +103,19 @@ namespace Autofac.Core
         /// </returns>
         public override int GetHashCode()
         {
-            return ServiceName.GetHashCode();
+            return ServiceName.GetHashCode() ^ ServiceType.GetHashCode();
+        }
+
+        /// <summary>
+        /// Return a new service of the same kind, but carrying
+        /// <paramref name="newType"/> as the <see cref="ServiceType"/>.
+        /// </summary>
+        /// <param name="newType">The new service type.</param>
+        /// <returns>A new service with the service type.</returns>
+        public Service ChangeType(Type newType)
+        {
+            Enforce.ArgumentNotNull(newType, "newType");
+            return new NamedService(ServiceName, newType);
         }
     }
 }

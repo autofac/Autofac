@@ -15,7 +15,7 @@ namespace Autofac.Tests.Core
         public void ResolvesParameterValueFromContext()
         {
             var cb = new ContainerBuilder();
-            cb.RegisterInstance((object)'a').Named("character");
+            cb.RegisterInstance((object)'a').Named<char>("character");
             cb.RegisterType<string>()
                 .UsingConstructor(typeof(char), typeof(int))
                 .WithParameter(new TypedParameter(typeof(int), 5))

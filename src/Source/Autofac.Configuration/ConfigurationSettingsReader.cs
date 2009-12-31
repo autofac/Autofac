@@ -132,14 +132,32 @@ namespace Autofac.Configuration
 
             foreach (ComponentElement component in _sectionHandler.Components)
             {
+                var registrar = builder.RegisterType(LoadType(component.Type, defaultAssembly));
+
                 IList<Service> services = new List<Service>();
                 if (!string.IsNullOrEmpty(component.Service))
-                    services.Add(new TypedService(LoadType(component.Service, defaultAssembly)));
+                {
+                    var serviceType = LoadType(component.Service, defaultAssembly);
+                    if (!string.IsNullOrEmpty(component.Name))
+                        services.Add(new NamedService(component.Name, serviceType));
+                    else
+                        services.Add(new TypedService(serviceType));
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(component.Name))
+                        throw new ConfigurationErrorsException(string.Format(
+                            ConfigurationSettingsReaderResources.ServiceTypeMustBeSpecified, component.Name));
+                }
 
                 foreach (ServiceElement service in component.Services)
-                    services.Add(new TypedService(LoadType(service.Type, defaultAssembly)));
-
-                var registrar = builder.RegisterType(LoadType(component.Type, defaultAssembly));
+                {
+                    var serviceType = LoadType(service.Type, defaultAssembly);
+                    if (!string.IsNullOrEmpty(service.Name))
+                        services.Add(new NamedService(service.Name, serviceType));
+                    else
+                        services.Add(new TypedService(serviceType));
+                }
 
                 foreach (var service in services)
                     registrar.As(service);
@@ -154,11 +172,8 @@ namespace Autofac.Configuration
                     registrar.WithExtendedProperty(
                         ep.Name, TypeManipulation.ChangeToCompatibleType(ep.Value, Type.GetType(ep.Type)));
 
-                if (!string.IsNullOrEmpty(component.MemberOf))
-                    registrar.MemberOf(component.MemberOf);
-
-                if (!string.IsNullOrEmpty(component.Name))
-                    registrar.Named(component.Name);
+                //if (!string.IsNullOrEmpty(component.MemberOf))
+                //    registrar.MemberOf(component.MemberOf);
 
                 SetScope(component, registrar);
                 SetOwnership(component, registrar);

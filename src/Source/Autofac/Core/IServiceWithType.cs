@@ -23,45 +23,30 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Autofac.Configuration
+namespace Autofac.Core
 {
-
     /// <summary>
-    /// Element describing a service exposed by a component.
+    /// Interface supported by services that carry type information.
     /// </summary>
-    public class ServiceElement : ConfigurationElement
+    public interface IServiceWithType
     {
-        const string TypeAttributeName = "type";
-        const string NameAttributeName = "name";
-        internal const string Key = TypeAttributeName;
+        /// <summary>
+        /// Gets the type of the service.
+        /// </summary>
+        /// <value>The type of the service.</value>
+        Type ServiceType { get; }
 
         /// <summary>
-        /// Gets the service type.
+        /// Return a new service of the same kind, but carrying
+        /// <paramref name="newType"/> as the <see cref="ServiceType"/>.
         /// </summary>
-        /// <value>The type.</value>
-        [ConfigurationProperty(TypeAttributeName, IsRequired = true)]
-        public string Type
-        {
-            get
-            {
-                return (string)this[TypeAttributeName];
-            }
-        }
-
-        /// <summary>
-        /// Gets the service name.
-        /// </summary>
-        /// <value>The name.</value>
-        [ConfigurationProperty(NameAttributeName, IsRequired = false)]
-        public string Name
-        {
-            get
-            {
-                return (string)this[NameAttributeName];
-            }
-        }
+        /// <param name="newType">The new service type.</param>
+        /// <returns>A new service with the service type.</returns>
+        Service ChangeType(Type newType);
     }
-
 }

@@ -98,7 +98,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<StubController>()
-            	.Named("controller." + HomeControllerName.ToLowerInvariant());
+            	.Named<IController>("controller." + HomeControllerName.ToLowerInvariant());
             var container = builder.Build();
 
             var context = CreateContext();

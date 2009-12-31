@@ -25,6 +25,7 @@
 
 using System;
 using Autofac.Core;
+using System.Web.Mvc;
 
 namespace Autofac.Integration.Web.Mvc
 {
@@ -55,7 +56,7 @@ namespace Autofac.Integration.Web.Mvc
             if (controllerName == "")
                 throw new ArgumentOutOfRangeException("controllerName");
 
-            return new NamedService(Prefix + controllerName.ToLowerInvariant());
+            return new NamedService(Prefix + controllerName.ToLowerInvariant(), typeof(IController));
         }
 
         /// <summary>

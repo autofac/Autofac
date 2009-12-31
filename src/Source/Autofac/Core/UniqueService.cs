@@ -30,7 +30,7 @@ namespace Autofac.Core
     /// <summary>
     /// A handy unique service identifier type - all instances will be regarded as unequal.
     /// </summary>
-    public class UniqueService : Service
+    public sealed class UniqueService : Service
     {
         Guid _id;
 

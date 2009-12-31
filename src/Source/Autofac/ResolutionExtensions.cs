@@ -148,7 +148,7 @@ namespace Autofac
         /// <exception cref="DependencyResolutionException"/>
         public static TService Resolve<TService>(this IComponentContext context, string serviceName, IEnumerable<Parameter> parameters)
         {
-            return (TService)Resolve(context, new NamedService(serviceName), parameters);
+            return (TService)Resolve(context, new NamedService(serviceName, typeof(TService)), parameters);
         }
 
         /// <summary>
@@ -265,14 +265,15 @@ namespace Autofac
         /// </summary>
         /// <param name="context">The context from which to resolve the service.</param>
         /// <param name="serviceName">The service name.</param>
+        /// <param name="serviceType">Type of the service.</param>
         /// <returns>
         /// The component instance that provides the service.
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public static object Resolve(this IComponentContext context, string serviceName)
+        public static object Resolve(this IComponentContext context, string serviceName, Type serviceType)
         {
-            return Resolve(context, serviceName, NoParameters);
+            return Resolve(context, serviceName, serviceType, NoParameters);
         }
 
         /// <summary>
@@ -281,14 +282,15 @@ namespace Autofac
         /// <param name="context">The context from which to resolve the service.</param>
         /// <param name="parameters">Parameters for the service.</param>
         /// <param name="serviceName">The service name.</param>
+        /// <param name="serviceType">Type of the service.</param>
         /// <returns>
         /// The component instance that provides the service.
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public static object Resolve(this IComponentContext context, string serviceName, IEnumerable<Parameter> parameters)
+        public static object Resolve(this IComponentContext context, string serviceName, Type serviceType, IEnumerable<Parameter> parameters)
         {
-            return Resolve(context, new NamedService(serviceName), parameters);
+            return Resolve(context, new NamedService(serviceName, serviceType), parameters);
         }
 
         /// <summary>
@@ -297,14 +299,15 @@ namespace Autofac
         /// <param name="context">The context from which to resolve the service.</param>
         /// <param name="parameters">Parameters for the service.</param>
         /// <param name="serviceName">The service name.</param>
+        /// <param name="serviceType">Type of the service.</param>
         /// <returns>
         /// The component instance that provides the service.
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public static object Resolve(this IComponentContext context, string serviceName, params Parameter[] parameters)
+        public static object Resolve(this IComponentContext context, string serviceName, Type serviceType, params Parameter[] parameters)
         {
-            return context.Resolve(serviceName, (IEnumerable<Parameter>)parameters);
+            return context.Resolve(serviceName, serviceType, (IEnumerable<Parameter>)parameters);
         }
 
         /// <summary>
@@ -444,7 +447,7 @@ namespace Autofac
         public static TService ResolveOptional<TService>(this IComponentContext context, string serviceName, IEnumerable<Parameter> parameters)
             where TService : class
         {
-            return (TService)ResolveOptional(context, new NamedService(serviceName), parameters);
+            return (TService)ResolveOptional(context, new NamedService(serviceName, typeof(TService)), parameters);
         }
 
         /// <summary>
@@ -591,11 +594,24 @@ namespace Autofac
         /// Determine whether the specified service is available in the context.
         /// </summary>
         /// <param name="context">The context from which to resolve the service.</param>
-        /// <param name="serviceName">The service to test for the registration of.</param>
+        /// <param name="serviceName">The name of the service to test for the registration of.</param>
+        /// <param name="serviceType">Type type of the service to test for the registration of.</param>
         /// <returns>True if the service is registered.</returns>
-        public static bool IsRegistered(this IComponentContext context, string serviceName)
+        public static bool IsRegistered(this IComponentContext context, string serviceName, Type serviceType)
         {
-            return IsRegistered(context, new NamedService(serviceName));
+            return IsRegistered(context, new NamedService(serviceName, serviceType));
+        }
+
+        /// <summary>
+        /// Determine whether the specified service is available in the context.
+        /// </summary>
+        /// <param name="context">The context from which to resolve the service.</param>
+        /// <param name="serviceName">The name of the service to test for the registration of.</param>
+        /// <typeparam name="TService">Type type of the service to test for the registration of.</typeparam>
+        /// <returns>True if the service is registered.</returns>
+        public static bool IsRegistered<TService>(this IComponentContext context, string serviceName)
+        {
+            return IsRegistered(context, serviceName, typeof(TService));
         }
 
         /// <summary>
@@ -673,15 +689,16 @@ namespace Autofac
         /// </summary>
         /// <param name="context">The context from which to resolve the service.</param>
         /// <param name="serviceName">The name of the service to resolve.</param>
+        /// <param name="serviceType">The type of the service to resolve.</param>
         /// <param name="instance">The resulting component instance providing the service, or null.</param>
         /// <returns>
         /// True if a component providing the service is available.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        public static bool TryResolve(this IComponentContext context, string serviceName, out object instance)
+        public static bool TryResolve(this IComponentContext context, string serviceName, Type serviceType, out object instance)
         {
             Enforce.ArgumentNotNull(context, "context");
-            return context.TryResolve(new NamedService(serviceName), NoParameters, out instance);
+            return context.TryResolve(new NamedService(serviceName, serviceType), NoParameters, out instance);
         }
     }
 }

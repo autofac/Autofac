@@ -56,11 +56,11 @@ namespace Autofac.Tests
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(AComponent).Assembly)
-                .As(t => new NamedService(t.Name));
+                .As(t => new NamedService(t.Name, typeof(object)));
             var c = cb.Build();
 
-            c.AssertRegistered("AComponent");
-            c.AssertRegistered("BComponent");
+            c.AssertRegistered<object>("AComponent");
+            c.AssertRegistered<object>("BComponent");
             c.AssertNotRegistered<AComponent>();
         }
 
@@ -69,10 +69,10 @@ namespace Autofac.Tests
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(AComponent).Assembly)
-                .Named(t => t.Name);
+                .Named(t => t.Name, typeof(object));
             var c = cb.Build();
 
-            c.AssertRegistered("AComponent");
+            c.AssertRegistered<object>("AComponent");
         }
 
         [Test]

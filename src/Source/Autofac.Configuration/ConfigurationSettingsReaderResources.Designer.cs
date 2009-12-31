@@ -70,6 +70,15 @@ namespace Autofac.Configuration {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If &apos;name&apos; is specified, &apos;service&apos; must also be specified (component name=&apos;{0}&apos;.).
+        /// </summary>
+        internal static string ServiceTypeMustBeSpecified {
+            get {
+                return ResourceManager.GetString("ServiceTypeMustBeSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The type &apos;{0}&apos; could not be found. It may require assembly qualification, e.g. &quot;MyType, MyAssembly&quot;..
         /// </summary>
         internal static string TypeNotFound {

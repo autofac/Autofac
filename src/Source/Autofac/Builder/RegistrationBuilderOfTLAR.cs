@@ -218,12 +218,25 @@ namespace Autofac.Builder
         /// Configure the services that the component will provide.
         /// </summary>
         /// <param name="serviceName">Named service to associate with the component.</param>
+        /// <param name="serviceType">The service type provided by the component.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Named(string serviceName)
+        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Named(string serviceName, Type serviceType)
         {
             Enforce.ArgumentNotNull(serviceName, "serviceName");
+            Enforce.ArgumentNotNull(serviceType, "serviceType");
 
-            return As(new NamedService(serviceName));
+            return As(new NamedService(serviceName, serviceType));
+        }
+
+        /// <summary>
+        /// Configure the services that the component will provide.
+        /// </summary>
+        /// <param name="serviceName">Named service to associate with the component.</param>
+        /// <typeparam name="TService">The service type provided by the component.</typeparam>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Named<TService>(string serviceName)
+        {
+            return Named(serviceName, typeof(TService));
         }
 
         /// <summary>
