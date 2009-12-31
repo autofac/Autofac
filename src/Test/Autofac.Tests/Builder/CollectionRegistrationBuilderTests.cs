@@ -12,18 +12,17 @@ namespace Autofac.Tests.Builder
         public void RegisterCollection_Scenario()
         {
             var builder = new ContainerBuilder();
+            var cname = "s";
 
-            builder.RegisterCollection<string>()
+            builder.RegisterCollection<string>(cname)
                 .As<IEnumerable<string>>();
 
             var s1 = "hello";
             var s2 = "world";
 
-            builder.RegisterInstance(s1)
-                .MemberOf(typeof(IEnumerable<string>));
+            builder.RegisterInstance(s1).MemberOf(cname);
 
-            builder.RegisterInstance(s2)
-                .MemberOf(typeof(IEnumerable<string>));
+            builder.RegisterInstance(s2).MemberOf(cname);
 
             var container = builder.Build();
 
@@ -38,8 +37,9 @@ namespace Autofac.Tests.Builder
         public void NewCollectionInNewContext()
         {
             var builder = new ContainerBuilder();
+            var cname = "s";
 
-            builder.RegisterCollection<string>()
+            builder.RegisterCollection<string>(cname)
                 .As<IEnumerable<string>>()
                 .InstancePerLifetimeScope();
 
@@ -59,13 +59,13 @@ namespace Autofac.Tests.Builder
         public void CollectionRegistrationsSupportArrays()
         {
             var builder = new ContainerBuilder();
+            var cname = "s";
 
-            builder.RegisterCollection<string>()
-                .As<string[]>();
+            builder.RegisterCollection<string>(cname).As<string[]>();
 
             var s1 = "hello";
 
-            builder.RegisterInstance(s1).MemberOf(typeof(string[]));
+            builder.RegisterInstance(s1).MemberOf(cname);
 
             var container = builder.Build();
 
@@ -76,8 +76,9 @@ namespace Autofac.Tests.Builder
         public void CanRegisterCollectionWithoutGenericMethod()
         {
             var builder = new ContainerBuilder();
+            var cname = "s";
 
-            builder.RegisterCollection(typeof(string))
+            builder.RegisterCollection(cname, typeof(string))
                 .As<string[]>();
 
             var container = builder.Build();
@@ -89,18 +90,19 @@ namespace Autofac.Tests.Builder
         public void ServiceCanBelongToMultipleCollections()
         {
             var builder = new ContainerBuilder();
+            string cname1 = "s", cname2 = "p";
             var element = "Hello";
 
-            builder.RegisterCollection<string>().As<IEnumerable<string>>();
-            builder.RegisterCollection<string>().As<ICollection<string>>();
+            builder.RegisterCollection<string>(cname1);
+            builder.RegisterCollection<string>(cname2);
             builder.RegisterInstance(element)
-                .MemberOf(typeof(IEnumerable<string>))
-                .MemberOf(typeof(ICollection<string>));
+                .MemberOf(cname1)
+                .MemberOf(cname2);
             
             var container = builder.Build();
 
-            var coll1 = container.Resolve<IEnumerable<string>>();
-            var coll2 = container.Resolve<ICollection<string>>();
+            var coll1 = container.Resolve<string[]>();
+            var coll2 = container.Resolve<string[]>();
 
             Assert.AreEqual(1, coll1.Count());
             Assert.AreEqual(1, coll2.Count());

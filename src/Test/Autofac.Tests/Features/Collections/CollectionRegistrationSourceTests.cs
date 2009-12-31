@@ -47,13 +47,13 @@ namespace Autofac.Tests.Features.Collections
         public void ResolvesCollectionItemsFromCurrentLifetimeScope()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterCollection<DisposeTracker>().As<IEnumerable<DisposeTracker>>();
-            builder.RegisterType<DisposeTracker>().MemberOf(typeof(IEnumerable<DisposeTracker>));
+            builder.RegisterCollection<DisposeTracker>("dt");
+            builder.RegisterType<DisposeTracker>().MemberOf("dt");
             var container = builder.Build();
 
             DisposeTracker tracker;
             using (var ls = container.BeginLifetimeScope())
-                tracker = ls.Resolve<IEnumerable<DisposeTracker>>().First();
+                tracker = ls.Resolve<DisposeTracker[]>().First();
 
             Assert.IsTrue(tracker.IsDisposed);
         }

@@ -41,14 +41,14 @@ namespace Autofac.Features.Collections
         const string MemberOfPropertyKey = "Autofac.CollectionRegistrationExtensions.MemberOf";
 
         public static RegistrationBuilder<T[], SimpleActivatorData, SingleRegistrationStyle>
-            RegisterCollection<T>(this ContainerBuilder builder, Type elementType)
+            RegisterCollection<T>(this ContainerBuilder builder, string collectionName, Type elementType)
         {
             Enforce.ArgumentNotNull(builder, "builder");
             Enforce.ArgumentNotNull(elementType, "elementType");
+            Enforce.ArgumentNotNullOrEmpty(collectionName, "collectionName");
 
             var arrayType = elementType.MakeArrayType();
             IEnumerable<IComponentRegistration> elements = null;
-            IEnumerable<Service> memberServices = null;
 
             var activator = new DelegateActivator(arrayType, (c, p) =>
             {
@@ -56,10 +56,10 @@ namespace Autofac.Features.Collections
                 {
                     c.ComponentRegistry.Registered += (sender, e) =>
                     {
-                        if (IsElementRegistration(memberServices, e.ComponentRegistration))
-                            elements = GetElementRegistrations(memberServices, c.ComponentRegistry);
+                        if (IsElementRegistration(collectionName, e.ComponentRegistration))
+                            elements = GetElementRegistrations(collectionName, c.ComponentRegistry);
                     };
-                    elements = GetElementRegistrations(memberServices, c.ComponentRegistry);
+                    elements = GetElementRegistrations(collectionName, c.ComponentRegistry);
                 }
 
                 var items = elements.Select(e => c.Resolve(e, p)).ToArray();
@@ -75,44 +75,46 @@ namespace Autofac.Features.Collections
 
             builder.RegisterCallback(cr => {
                 RegistrationBuilder.RegisterSingleComponent(cr, rb);
-                memberServices = rb.RegistrationData.Services;
             });
 
             return rb;
         }
 
-        static IEnumerable<IComponentRegistration> GetElementRegistrations(IEnumerable<Service> memberServices, IComponentRegistry registry)
+        static IEnumerable<IComponentRegistration> GetElementRegistrations(string collectionName, IComponentRegistry registry)
         {
-            return registry.Registrations.Where(cr => IsElementRegistration(memberServices, cr));
+            return registry.Registrations.Where(cr => IsElementRegistration(collectionName, cr));
         }
 
-        static bool IsElementRegistration(IEnumerable<Service> memberServices, IComponentRegistration cr)
+        static bool IsElementRegistration(string collectionName, IComponentRegistration cr)
         {
-            object crMembershipServices;
-            return cr.ExtendedProperties.TryGetValue(MemberOfPropertyKey, out crMembershipServices) &&
-                memberServices.Any(m => ((IEnumerable<Service>)crMembershipServices).Contains(m));
+            object crMembership;
+            return cr.ExtendedProperties.TryGetValue(MemberOfPropertyKey, out crMembership) &&
+                ((IEnumerable<string>)crMembership).Contains(collectionName);
         }
 
         public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             MemberOf<TLimit, TActivatorData, TSingleRegistrationStyle>(
                 this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
-                Service service)
+                string collectionName)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
+            Enforce.ArgumentNotNull(registration, "registration");
+            Enforce.ArgumentNotNullOrEmpty(collectionName, "collectionName");
+
             registration.OnRegistered(e =>
             {
                 var ep = e.ComponentRegistration.ExtendedProperties;
                 if (ep.ContainsKey(MemberOfPropertyKey))
                 {
                     ep[MemberOfPropertyKey] =
-                        ((IEnumerable<Service>)ep[MemberOfPropertyKey])
-                        .Union(new[] { service });
+                        ((IEnumerable<string>)ep[MemberOfPropertyKey])
+                        .Union(new[] { collectionName });
                 }
                 else
                 {
                     ep.Add(
                         MemberOfPropertyKey,
-                        new[] { service });
+                        new[] { collectionName });
                 }
             });
 

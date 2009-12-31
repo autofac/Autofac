@@ -143,7 +143,7 @@ namespace Autofac.Tests
         public void CollectionsAreTaggable()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterCollection<object>()
+            builder.RegisterCollection<object>("o")
                 .InstancePerMatchingLifetimeScope("tag")
                 .As(typeof(IList<object>));
 

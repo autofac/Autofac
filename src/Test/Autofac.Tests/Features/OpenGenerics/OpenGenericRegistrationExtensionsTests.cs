@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-using Autofac.Builder;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using NUnit.Framework;
 using Autofac.Core;
-using System;
 
-namespace Autofac.Tests.Builder
+namespace Autofac.Tests.Features.OpenGenerics
 {
     public interface IG<T>
     {
@@ -25,7 +26,7 @@ namespace Autofac.Tests.Builder
     }
 
     [TestFixture]
-    public class GenericRegistrationBuilderFixture
+    public class OpenGenericRegistrationExtensionsTests
     {
         [Test]
         public void BuildGenericRegistration()
@@ -90,6 +91,18 @@ namespace Autofac.Tests.Builder
             var c = cb.Build();
             var g = c.Resolve<G<string>>();
             Assert.AreEqual(42, g.I);
+        }
+
+        [Test]
+        public void WhenRegistrationNamed_GenericRegistrationsSuppliedViaName()
+        {
+            var name = "n";
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(G<>))
+                .Named(name, typeof(IG<>));
+            var c = cb.Build();
+            var gi = c.Resolve<IG<int>>(name);
+            var gs = c.Resolve<IG<string>>(name);
         }
     }
 }

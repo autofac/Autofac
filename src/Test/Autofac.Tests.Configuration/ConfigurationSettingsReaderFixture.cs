@@ -109,11 +109,11 @@ namespace Autofac.Tests.Configuration
 
         class D : IA { }
 
-        [Test, Ignore("Broken by changes to NamedService, needs new syntax that allows type to be specified.")]
+        [Test]
         public void ConfiguresMemberOf()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterCollection<IA>()
+            builder.RegisterCollection<IA>("ia")
                     .As<IList<IA>>();
             var container = builder.Build();
             
