@@ -52,5 +52,14 @@ namespace Autofac.Core.Activators
         {
             get { return _limitType; }
         }
+
+        /// <summary>
+        /// Gets a string representation of the activator.
+        /// </summary>
+        /// <returns>A string describing the activator.</returns>
+        public override string ToString()
+        {
+            return LimitType.Name + " (" + GetType().Name + ")";
+        }
     }
 }

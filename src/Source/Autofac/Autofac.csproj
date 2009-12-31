@@ -63,6 +63,11 @@
       <DependentUpon>ConstructorParameterBindingResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Core\IServiceWithType.cs" />
+    <Compile Include="Core\Registration\ComponentRegistrationResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ComponentRegistrationResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Features\Collections\CollectionRegistrationExtensions.cs" />
     <Compile Include="Builder\DynamicRegistrationStyle.cs" />
     <Compile Include="Features\GeneratedFactories\GeneratedFactoryActivatorData.cs" />
@@ -239,6 +244,10 @@
     <EmbeddedResource Include="Core\Registration\ComponentNotRegisteredExceptionResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ComponentNotRegisteredExceptionResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Registration\ComponentRegistrationResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ComponentRegistrationResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Core\Resolving\CircularDependencyDetectorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

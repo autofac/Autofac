@@ -157,8 +157,6 @@ namespace Autofac.Core.Activators.Reflection
 
         void InjectProperties(object instance, IComponentContext context)
         {
-            // Just testing out a new approach to properties - refactoring/optimisation
-            // required here.
             if (_configuredProperties.Any())
             {
                 var actualProps = instance

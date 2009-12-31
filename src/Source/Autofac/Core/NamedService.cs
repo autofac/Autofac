@@ -73,7 +73,7 @@ namespace Autofac.Core
         {
             get
             {
-                return ServiceName + "(" + ServiceType.FullName + ")";
+                return ServiceName + " (" + ServiceType.FullName + ")";
             }
         }
 

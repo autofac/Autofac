@@ -42,12 +42,17 @@ namespace Autofac.Core.Resolving
             Enforce.ArgumentNotNull(registration, "registration");
             Enforce.ArgumentNotNull(activationStack, "activationStack");
 
-            string dependencyGraph = registration.ToString();
+            string dependencyGraph = Display(registration);
 
             foreach (IComponentRegistration requestor in activationStack.Select(a => a.Registration))
-                dependencyGraph = requestor.ToString() + " -> " + dependencyGraph;
+                dependencyGraph = Display(requestor) + " -> " + dependencyGraph;
 
             return dependencyGraph;
+        }
+
+        string Display(IComponentRegistration registration)
+        {
+            return registration.Activator.LimitType.FullName.ToString();
         }
 
         public void CheckForCircularDependency(IComponentRegistration registration, Stack<ComponentActivation> activationStack, int callDepth)

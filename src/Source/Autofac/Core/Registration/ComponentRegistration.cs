@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Util;
+using System.Globalization;
 
 namespace Autofac.Core.Registration
 {
@@ -164,7 +165,14 @@ namespace Autofac.Core.Registration
         /// <returns>A description of the component.</returns>
         public override string ToString()
         {
-            return Activator.LimitType.ToString();
+            // Activator = {0}, Services = [{1}], Lifetime = {2}, Sharing = {3}, Ownership = {4}
+            return string.Format(CultureInfo.CurrentCulture,
+                ComponentRegistrationResources.ToStringFormat,
+                Activator,
+                Services.Select(s => s.Description).JoinWith(", "),
+                Lifetime,
+                Sharing,
+                Ownership);
         }
 
         /// <summary>
