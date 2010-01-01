@@ -41,13 +41,13 @@ namespace Autofac.Features.Scanning
         /// Register the types in an assembly.
         /// </summary>
         /// <param name="builder">Container builder.</param>
-        /// <param name="assembly">The assembly from which to register types.</param>
+        /// <param name="assemblies">The assemblies from which to register types.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static RegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
-            RegisterAssemblyTypes(ContainerBuilder builder, Assembly assembly)
+            RegisterAssemblyTypes(ContainerBuilder builder, params Assembly[] assemblies)
         {
             Enforce.ArgumentNotNull(builder, "builder");
-            Enforce.ArgumentNotNull(assembly, "assembly");
+            Enforce.ArgumentNotNull(assemblies, "assemblies");
 
             var rb = new RegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>(
                 new ScanningActivatorData(),
@@ -56,7 +56,7 @@ namespace Autofac.Features.Scanning
             builder.RegisterCallback(cr =>
             {
                 var tempBuilder = new ContainerBuilder();
-                foreach (var t in assembly.GetTypes()
+                foreach (var t in assemblies.SelectMany(a => a.GetTypes())
                     .Where(t => rb.ActivatorData.Filters.All(p => p(t))))
                 {
                     var activator = new ReflectionActivator(

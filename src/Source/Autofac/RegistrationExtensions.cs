@@ -247,12 +247,12 @@ namespace Autofac
         /// Register the types in an assembly.
         /// </summary>
         /// <param name="builder">Container builder.</param>
-        /// <param name="assembly">The assembly from which to register types.</param>
+        /// <param name="assemblies">The assemblies from which to register types.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static RegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
-            RegisterAssemblyTypes(this ContainerBuilder builder, Assembly assembly)
+            RegisterAssemblyTypes(this ContainerBuilder builder, params Assembly[] assemblies)
         {
-            return ScanningRegistrationExtensions.RegisterAssemblyTypes(builder, assembly);
+            return ScanningRegistrationExtensions.RegisterAssemblyTypes(builder, assemblies);
         }
 
         /// <summary>
