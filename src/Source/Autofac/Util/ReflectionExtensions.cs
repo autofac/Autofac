@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Autofac.Util
 {
@@ -24,6 +26,28 @@ namespace Autofac.Util
 
             prop = null;
             return false;
+        }
+
+        /// <summary>
+        /// Get a PropertyInfo object from an expression of the form
+        /// x =&gt; x.P.
+        /// </summary>
+        /// <typeparam name="TDeclaring">Type declaring the property.</typeparam>
+        /// <typeparam name="TProperty">The type of the property.</typeparam>
+        /// <param name="propertyAccessor">Expression mapping an instance of the
+        /// declaring type to the property value.</param>
+        /// <returns>Property info.</returns>
+        public static PropertyInfo GetProperty<TDeclaring, TProperty>(
+            Expression<Func<TDeclaring, TProperty>> propertyAccessor)
+        {
+            Enforce.ArgumentNotNull(propertyAccessor, "propertyAccessor");
+            var mex = propertyAccessor.Body as MemberExpression;
+            if (mex == null ||
+                mex.Member.MemberType != MemberTypes.Property)
+                throw new ArgumentException(string.Format(
+                    ReflectionExtensionsResources.ExpressionNotPropertyAccessor,
+                    propertyAccessor));
+            return (PropertyInfo) mex.Member;
         }
     }
 }

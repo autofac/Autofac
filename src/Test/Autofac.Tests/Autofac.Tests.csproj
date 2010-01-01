@@ -88,6 +88,7 @@
     <Compile Include="Builder\CollectionRegistrationBuilderTests.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Builder\RegistrationBuilderTests.cs" />
     <Compile Include="ContainerBuilderTests.cs">
       <SubType>Code</SubType>
     </Compile>

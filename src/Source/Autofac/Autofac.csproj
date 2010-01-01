@@ -72,6 +72,7 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Builder\ConcreteReflectionActivatorData.cs" />
+    <Compile Include="Builder\ExtendedPropertyConfiguration.cs" />
     <Compile Include="Builder\IConcreteActivatorData.cs" />
     <Compile Include="Builder\RegistrationBuilder.cs" />
     <Compile Include="Builder\RegistrationBuilderResources.Designer.cs">
@@ -230,6 +231,11 @@
       <DependentUpon>EnforceResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Util\ReflectionExtensions.cs" />
+    <Compile Include="Util\ReflectionExtensionsResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReflectionExtensionsResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Util\SequenceExtensions.cs" />
     <Compile Include="Util\Silverlight\AllowPartiallyTrustedCallerAttribute.cs" />
     <Compile Include="Util\Silverlight\SerializableAttribute.cs" />
@@ -290,6 +296,10 @@
     <EmbeddedResource Include="Util\EnforceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>EnforceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Util\ReflectionExtensionsResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ReflectionExtensionsResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

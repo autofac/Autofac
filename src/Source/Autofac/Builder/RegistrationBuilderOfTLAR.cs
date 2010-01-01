@@ -346,9 +346,9 @@ namespace Autofac.Builder
         /// <summary>
         /// Associates data with the component.
         /// </summary>
-        /// 
+        /// <param name="properties">The extended properties to associate with the component.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithExtendedProperty(IEnumerable<KeyValuePair<string, object>> properties)
+        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithExtendedProperties(IEnumerable<KeyValuePair<string, object>> properties)
         {
             Enforce.ArgumentNotNull(properties, "properties");
 
@@ -356,6 +356,21 @@ namespace Autofac.Builder
                 WithExtendedProperty(prop.Key, prop.Value);
 
             return this;
+        }
+
+        /// <summary>
+        /// Associates data with the component.
+        /// </summary>
+        /// <typeparam name="TMetadata">A type with properties whose names correspond to the
+        /// property names to configure.</typeparam>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithExtendedProperties<TMetadata>(Action<ExtendedPropertyConfiguration<TMetadata>> configurationAction)
+        {
+            Enforce.ArgumentNotNull(configurationAction, "configurationAction");
+
+            var epConfiguration = new ExtendedPropertyConfiguration<TMetadata>();
+            configurationAction(epConfiguration);
+            return WithExtendedProperties(epConfiguration.Properties);
         }
     }
 }
