@@ -57,7 +57,7 @@ namespace Autofac.Features.Scanning
             {
                 var tempBuilder = new ContainerBuilder();
                 foreach (var t in assemblies.SelectMany(a => a.GetTypes())
-                    .Where(t => rb.ActivatorData.Filters.All(p => p(t))))
+                    .Where(t => !t.IsAbstract && rb.ActivatorData.Filters.All(p => p(t))))
                 {
                     var activator = new ReflectionActivator(
                         t,

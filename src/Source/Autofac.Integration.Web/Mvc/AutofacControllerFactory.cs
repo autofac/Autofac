@@ -36,8 +36,8 @@ namespace Autofac.Integration.Web.Mvc
     /// </summary>
     public class AutofacControllerFactory : IControllerFactory
     {
-        IContainerProvider _containerProvider;
-        IControllerIdentificationStrategy _controllerIdentificationStrategy;
+        readonly IContainerProvider _containerProvider;
+        readonly IControllerIdentificationStrategy _controllerIdentificationStrategy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacControllerFactory"/> class.

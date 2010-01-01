@@ -32,7 +32,7 @@ namespace Remember.Web
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterModule(new AutofacControllerModule(Assembly.GetExecutingAssembly()));
+            builder.RegisterControllers(Assembly.GetExecutingAssembly());
             builder.RegisterModule(new NHibernateModule());
 
             _containerProvider = new ContainerProvider(builder.Build());
