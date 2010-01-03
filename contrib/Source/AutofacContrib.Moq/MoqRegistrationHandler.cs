@@ -24,11 +24,14 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Autofac;
-using Autofac.Component;
-using Autofac.Component.Activation;
-using Autofac.Component.Scope;
+using Autofac.Builder;
+using Autofac.Core;
+using Autofac.Core.Activators.Delegate;
 using Moq;
 
 namespace AutofacContrib.Moq
@@ -51,40 +54,33 @@ namespace AutofacContrib.Moq
         /// by the container.
         /// </summary>
         /// <param name="service">The service that was requested.</param>
-        /// <param name="registration">A registration providing the service.</param>
+        /// <param name="registrationAccessor"></param>
         /// <returns>
-        /// True if the registration could be created.
+        /// Registrations for the service.
         /// </returns>
-        public bool TryGetRegistration
-            (Service service, out IComponentRegistration registration)
+        public IEnumerable<IComponentRegistration> RegistrationsFor
+            (Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             if (service == null)
                 throw new ArgumentNullException("service");
 
-            registration = null;
-
             var typedService = service as TypedService;
-            if ((typedService == null) || (!typedService.ServiceType.IsInterface))
-                return false;
+            if (typedService == null ||
+                !typedService.ServiceType.IsInterface ||
+                typeof(IEnumerable).IsAssignableFrom(typedService.ServiceType))
+                return Enumerable.Empty<IComponentRegistration>();
 
-            var descriptor = new Descriptor(
-                new UniqueService(),
-                new[] { service },
-                typedService.ServiceType);
+            var rb = RegistrationBuilder.ForDelegate((c, p) =>
+                {
+                    var specificCreateMethod =
+                        _createMethod.MakeGenericMethod(new[] { typedService.ServiceType });
+                    var mock = (Mock) specificCreateMethod.Invoke(c.Resolve<MockFactory>(), null);
+                    return mock.Object;
+                })
+                .As(service)
+                .InstancePerLifetimeScope();
 
-            registration = new Registration(
-                descriptor,
-                new DelegateActivator
-                    ((c, p) =>
-                        {
-                            var specificCreateMethod = _createMethod.MakeGenericMethod(new[] { typedService.ServiceType });
-                            var mock = (Mock)specificCreateMethod.Invoke(c.Resolve<MockFactory>(), null);
-                            return mock.Object;
-                        }),
-                new ContainerScope(),
-                InstanceOwnership.Container);
-
-            return true;
+            return new[] { RegistrationBuilder.CreateRegistration(rb) };
         }
     }
 }

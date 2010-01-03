@@ -23,8 +23,8 @@ namespace AutofacContrib.NHibernate
 			}
 			else
 			{
-				return container.IsRegistered(mappedType.FullName)
-					? container.Resolve(mappedType.FullName)
+				return container.IsRegistered(mappedType.FullName, mappedType)
+					? container.Resolve(mappedType.FullName, mappedType)
 					: base.CreateInstance();
 			}
 		}

@@ -1,5 +1,7 @@
 ﻿using System;
 using Autofac;
+using Autofac.Core;
+using Castle.Core.Interceptor;
 
 namespace AutofacContrib.DynamicProxy2
 {
@@ -17,7 +19,7 @@ namespace AutofacContrib.DynamicProxy2
         }
 
         public InterceptAttribute(string interceptorServiceName)
-            : this(new NamedService(interceptorServiceName))
+            : this(new NamedService(interceptorServiceName, typeof(IInterceptor)))
         {
         }
 

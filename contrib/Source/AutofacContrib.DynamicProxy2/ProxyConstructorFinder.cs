@@ -2,27 +2,34 @@
 using System.Linq;
 using System.Reflection;
 using Autofac;
-using Autofac.Component.Activation;
+using Autofac.Core;
+using Autofac.Core.Activators.Reflection;
 using Castle.Core.Interceptor;
 using System.Collections.Generic;
 
 namespace AutofacContrib.DynamicProxy2
 {
-    class ProxyConstructorInvoker : IConstructorInvoker
+    class ProxyConstructorFinder : IConstructorFinder
     {
         Type _proxyType;
+        IConstructorFinder _decoratedFinder;
 
-        public const string InterceptorsParameterName = "AutofacContrib.DynamicProxy2.ProxyConstructorInvoker.InterceptorsParameterName";
+        public const string InterceptorsParameterName =
+            "AutofacContrib.DynamicProxy2.ProxyConstructorInvoker.InterceptorsParameterName";
 
-        public ProxyConstructorInvoker(Type proxyType)
+        public ProxyConstructorFinder(IConstructorFinder decoratedFinder, Type proxyType)
         {
             if (proxyType == null)
                 throw new ArgumentNullException("proxyType");
 
+            if (decoratedFinder == null)
+                throw new ArgumentNullException("decoratedFinder");
+
             _proxyType = proxyType;
+            _decoratedFinder = decoratedFinder;
         }
 
-        public object InvokeConstructor(IContext context, IEnumerable<Parameter> parameters, ConstructorInfo ci, Func<object>[] args)
+        public object InvokeConstructor(IComponentContext context, IEnumerable<Parameter> parameters, ConstructorInfo ci, Func<object>[] args)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
@@ -47,6 +54,11 @@ namespace AutofacContrib.DynamicProxy2
 
             var realConstructor = _proxyType.GetConstructor(new[] { typeof(IInterceptor[]) }.Concat(ci.GetParameters().Select(p => p.ParameterType)).ToArray());
             return realConstructor.Invoke(new object[] { interceptors }.Concat(argValues).ToArray());
+        }
+
+        public IEnumerable<ConstructorInfo> FindConstructors(Type targetType)
+        {
+            throw new NotImplementedException();
         }
     }
 }

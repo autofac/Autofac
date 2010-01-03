@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Autofac;
+using Autofac.Core;
 
 namespace AutofacContrib.DynamicProxy2
 {

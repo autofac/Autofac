@@ -120,7 +120,4 @@
   <data name="OnlyReflectionActivatorIsSupported" xml:space="preserve">
     <value>The implementation type interceptor attacher only supports components created using reflection, while {0} is created by {1}.</value>
   </data>
-  <data name="OnlyStandardRegistrationSupported" xml:space="preserve">
-    <value>The implementation type interceptor attacher only supports standard registrations - {0} appears to be a collection, or is customised.</value>
-  </data>
 </root>

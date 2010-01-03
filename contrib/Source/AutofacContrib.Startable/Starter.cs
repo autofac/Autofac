@@ -26,6 +26,7 @@
 using System;
 using System.Linq;
 using Autofac;
+using Autofac.Core;
 
 namespace AutofacContrib.Startable
 {
@@ -35,7 +36,7 @@ namespace AutofacContrib.Startable
     /// </summary>
     class Starter : IStarter
     {
-        IContainer _container;
+        IComponentContext _context;
 
         /// <summary>
         /// Saved as an extended property to identify a component as startable.
@@ -45,13 +46,13 @@ namespace AutofacContrib.Startable
         /// <summary>
         /// Initializes a new instance of the <see cref="Starter"/> class.
         /// </summary>
-        /// <param name="container">The container.</param>
-        public Starter(IContainer container)
+        /// <param name="context">The context.</param>
+        public Starter(IComponentContext context)
         {
-            if (container == null)
-                throw new ArgumentNullException("container");
-            
-            _container = container;
+            if (context == null)
+                throw new ArgumentNullException("context");
+
+            _context = context;
         }
 
         /// <summary>
@@ -60,13 +61,13 @@ namespace AutofacContrib.Startable
         public void Start()
         {
             var startableRegistrations =
-                from cr in _container.ComponentRegistrations
-                where cr.Descriptor.ExtendedProperties.ContainsKey(IsStartablePropertyName) &&
-                    (bool)cr.Descriptor.ExtendedProperties[IsStartablePropertyName]
-                select cr.Descriptor.Id;
+                from cr in _context.ComponentRegistry.Registrations
+                where cr.ExtendedProperties.ContainsKey(IsStartablePropertyName) &&
+                    (bool)cr.ExtendedProperties[IsStartablePropertyName]
+                select cr;
 
             foreach (var startable in startableRegistrations)
-                _container.Resolve(startable);
+                _context.Resolve(startable, Enumerable.Empty<Parameter>());
         }
     }
 }

@@ -26,6 +26,7 @@
 using System;
 using Autofac;
 using Autofac.Builder;
+using Autofac.Core;
 using Moq;
 
 namespace AutofacContrib.Moq
@@ -49,10 +50,10 @@ namespace AutofacContrib.Moq
         {
             this.MockFactory = new MockFactory(behavior);
             var builder = new ContainerBuilder();
-            builder.Register(this.MockFactory).OwnedByContainer();
+            builder.RegisterInstance(this.MockFactory);
+            builder.RegisterSource(new MoqRegistrationHandler());
             this.Container = builder.Build();
             this.VerifyAll = false;
-            this.Container.AddRegistrationSource(new MoqRegistrationHandler());
         }
 
         /// <summary>
@@ -131,10 +132,8 @@ namespace AutofacContrib.Moq
         {
             if (!this.Container.IsRegistered<T>())
             {
-                var builder = new ContainerBuilder();
-
-                builder.Register<T>().ContainerScoped();
-                builder.Build(this.Container);
+                this.Container.Configure(builder =>
+                    builder.RegisterType<T>().InstancePerLifetimeScope());
             }
 
             return this.Container.Resolve<T>(parameters);
@@ -149,10 +148,8 @@ namespace AutofacContrib.Moq
         /// <returns>The service.</returns>
         public TService Provide<TService, TImplementation>(params Parameter[] parameters)
         {
-            var builder = new ContainerBuilder();
-
-            builder.Register<TImplementation>().As<TService>().ContainerScoped();
-            builder.Build(this.Container);
+            this.Container.Configure(builder =>
+                builder.RegisterType<TImplementation>().As<TService>().InstancePerLifetimeScope());
 
             return this.Container.Resolve<TService>(parameters);
         }
@@ -163,11 +160,10 @@ namespace AutofacContrib.Moq
         /// <typeparam name="TService">Service</typeparam>
         /// <returns>The instance resolved from container.</returns>
         public TService Provide<TService>(TService instance)
+            where TService : class
         {
-            var builder = new ContainerBuilder();
-
-            builder.Register(instance).As<TService>();
-            builder.Build(this.Container);
+            this.Container.Configure(builder =>
+                builder.RegisterInstance(instance).As<TService>());
 
             return this.Container.Resolve<TService>();
         }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Autofac;
 using Autofac.Builder;
+using Autofac.Core;
 using AutofacContrib.CommonServiceLocator;
 using AutofacContrib.Tests.CommonServiceLocator.Components;
 using CommonServiceLocator.AutofacAdapter;
@@ -19,20 +20,20 @@ namespace AutofacContrib.Tests.CommonServiceLocator
 			return new AutofacServiceLocator(CreateContainer());
 		}
 
-		static IContext CreateContainer()
+		static IComponentContext CreateContainer()
 		{
 			var builder = new ContainerBuilder();
-			builder.RegisterCollection<ILogger>().As<IEnumerable<ILogger>>();
+
+		    builder
+		        .RegisterType<SimpleLogger>()
+		        .Named<ILogger>(typeof (SimpleLogger).FullName)
+                .SingleInstance()
+		        .As<ILogger>();
 
 			builder
-				.Register<SimpleLogger>()
-				.Named(typeof (SimpleLogger).FullName)
-				.MemberOf<IEnumerable<ILogger>>();
-
-			builder
-				.Register<AdvancedLogger>()
-				.Named(typeof (AdvancedLogger).FullName)
-				.MemberOf<IEnumerable<ILogger>>()
+				.RegisterType<AdvancedLogger>()
+				.Named<ILogger>(typeof (AdvancedLogger).FullName)
+                .SingleInstance()
 				.As<ILogger>();
 
 			return builder.Build();

@@ -26,6 +26,7 @@
 using System;
 using Autofac;
 using Autofac.Builder;
+using Autofac.Core;
 using NMock2;
 
 namespace AutofacContrib.NMock2
@@ -55,7 +56,7 @@ namespace AutofacContrib.NMock2
 
 		private void Initialize()
 		{
-			Container.AddRegistrationSource(new NMockRegistrationHandler());
+			Container.Configure(builder => builder.RegisterSource(new NMockRegistrationHandler()));
 		}
 
 		/// <summary>
@@ -66,7 +67,7 @@ namespace AutofacContrib.NMock2
 		{
 			Mockery = new Mockery();
 			var builder = new ContainerBuilder();
-			builder.Register(Mockery).OwnedByContainer();
+			builder.RegisterInstance(Mockery);
 			Container = builder.Build();
 
 			Initialize();
@@ -90,8 +91,8 @@ namespace AutofacContrib.NMock2
 		{
 			var mockery = new Mockery();
 			var builder = new ContainerBuilder();
-			builder.Register(mockery).ExternallyOwned();
-			builder.Register(mockery.Ordered).OwnedByContainer();
+			builder.RegisterInstance(mockery).ExternallyOwned();
+			builder.RegisterInstance(mockery.Ordered);
 			return new AutoMock(mockery, builder.Build());
 		}
 
@@ -121,14 +122,6 @@ namespace AutofacContrib.NMock2
 		/// <returns>The (mocked) service.</returns>
 		public T Create<T>(params Parameter[] parameters)
 		{
-			if (!Container.IsRegistered<T>())
-			{
-				var builder = new ContainerBuilder();
-
-				builder.Register<T>().ContainerScoped();
-				builder.Build(this.Container);
-			}
-		
 			return this.Container.Resolve<T>(parameters);
 		}
 	}

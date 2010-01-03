@@ -27,6 +27,7 @@ using System;
 using System.Linq;
 using Autofac;
 using Autofac.Builder;
+using Autofac.Core;
 
 namespace AutofacContrib.Startable
 {
@@ -56,44 +57,42 @@ namespace AutofacContrib.Startable
         /// <summary>
         /// Apply the module to the container.
         /// </summary>
-        /// <param name="container">Container to apply configuration to.</param>
-        public override void Configure(IContainer container)
+        /// <param name="moduleBuilder">Builder to apply configuration to.</param>
+        protected override void Load(ContainerBuilder moduleBuilder)
         {
-            if (container == null)
-                throw new ArgumentNullException("container");
+            if (moduleBuilder == null)
+                throw new ArgumentNullException("moduleBuilder");
 
-            base.Configure(container);
+            base.Load(moduleBuilder);
 
-            if (!container.IsRegistered(typeof(IStarter)))
-            {
-                var builder = new ContainerBuilder();
-                builder.Register<Starter>().As<IStarter>().ContainerScoped();
-                builder.Build(container);
-            }
+            moduleBuilder.RegisterType<Starter>()
+                .As<IStarter>()
+                .InstancePerLifetimeScope()
+                .PreserveExistingDefaults();
         }
 
         /// <summary>
         /// Attach the module to a registration either already existing in
         /// or being registered in the container.
         /// </summary>
-        /// <param name="container">The container.</param>
+        /// <param name="registry">The component registry.</param>
         /// <param name="registration">The registration.</param>
-        protected override void AttachToComponentRegistration(IContainer container, IComponentRegistration registration)
+        protected override void AttachToComponentRegistration(IComponentRegistry registry, IComponentRegistration registration)
         {
-            if (container == null)
-                throw new ArgumentNullException("container");
+            if (registry == null)
+                throw new ArgumentNullException("registry");
 
             if (registration == null)
                 throw new ArgumentNullException("registration");
 
-            if (registration.Descriptor.Services.Contains(_myService))
+            if (registration.Services.Contains(_myService))
             {
-                registration.Descriptor.ExtendedProperties[Starter.IsStartablePropertyName] = true;
+                registration.ExtendedProperties[Starter.IsStartablePropertyName] = true;
                 registration.Activated += OnComponentActivated;
             }
         }
 
-        void OnComponentActivated(object sender, ActivatedEventArgs e)
+        void OnComponentActivated(object sender, ActivatedEventArgs<object> e)
         {
             if (e == null)
                 throw new ArgumentNullException("e");

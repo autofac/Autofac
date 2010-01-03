@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Autofac;
 using Autofac.Builder;
+using Autofac.Core;
 using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -13,9 +14,9 @@ using Microsoft.Practices.Composite.Wpf.Regions;
 
 namespace AutofacContrib.Prism
 {
-    public class PrismModule : Autofac.Builder.Module
+    public class PrismModule : Autofac.Module
     {
-        Type _shellType;
+        readonly Type _shellType;
 
         public PrismModule(Type shellType)
         {
@@ -26,14 +27,13 @@ namespace AutofacContrib.Prism
         {
             base.Load(builder);
 
-            builder.SetDefaultOwnership(InstanceOwnership.External);
-
             ConfigureContainer(builder);
 
-            builder.Register(_shellType)
-                .OnPreparing((s, e) =>
+            builder.RegisterType(_shellType)
+                .ExternallyOwned()
+                .OnPreparing(e =>
                 {
-                    RegionAdapterMappings regionAdapterMappings = e.Context.ResolveOptional<RegionAdapterMappings>();
+                    var regionAdapterMappings = e.Context.ResolveOptional<RegionAdapterMappings>();
                     if (regionAdapterMappings != null)
                     {
                         regionAdapterMappings.RegisterMapping(typeof(Selector), new SelectorRegionAdapter());
@@ -41,30 +41,30 @@ namespace AutofacContrib.Prism
                         regionAdapterMappings.RegisterMapping(typeof(ContentControl), new ContentControlRegionAdapter());
                     }
                 })
-                .OnActivated((s, e) =>
+                .OnActivated(e =>
                 {
-                    DependencyObject shell = (DependencyObject)e.Instance;
+                    var shell = (DependencyObject)e.Instance;
                     RegionManager.SetRegionManager(shell, e.Context.Resolve<IRegionManager>());
                     InitializeModules(e.Context);
                 });
         }
 
-        void ConfigureContainer(ContainerBuilder builder)
+        static void ConfigureContainer(ContainerBuilder builder)
         {
-            builder.Register<TraceLogger>().As<ILoggerFacade>().DefaultOnly();
-            builder.Register<ConfigurationModuleEnumerator>().As<IModuleEnumerator>().DefaultOnly();
-            builder.Register<AutofacContainerAdapter>().As<IContainerFacade>().DefaultOnly();
-            builder.Register<EventAggregator>().As<IEventAggregator>().DefaultOnly();
-            builder.Register<RegionAdapterMappings>().As<RegionAdapterMappings>().DefaultOnly();
-            builder.Register<RegionManager>().As<IRegionManager>().DefaultOnly();
-            builder.Register<ModuleLoader>().As<IModuleLoader>().DefaultOnly();
+            builder.RegisterType<TraceLogger>().As<ILoggerFacade>().ExternallyOwned().PreserveExistingDefaults();
+            builder.RegisterType<ConfigurationModuleEnumerator>().As<IModuleEnumerator>().ExternallyOwned().PreserveExistingDefaults();
+            builder.RegisterType<AutofacContainerAdapter>().As<IContainerFacade>().ExternallyOwned().PreserveExistingDefaults();
+            builder.RegisterType<EventAggregator>().As<IEventAggregator>().ExternallyOwned().PreserveExistingDefaults();
+            builder.RegisterType<RegionAdapterMappings>().As<RegionAdapterMappings>().ExternallyOwned().PreserveExistingDefaults();
+            builder.RegisterType<RegionManager>().As<IRegionManager>().ExternallyOwned().PreserveExistingDefaults();
+            builder.RegisterType<ModuleLoader>().As<IModuleLoader>().ExternallyOwned().PreserveExistingDefaults();
         }
 
-        void InitializeModules(IContext c)
+        static void InitializeModules(IComponentContext c)
         {
-            IModuleEnumerator moduleEnumerator = c.Resolve<IModuleEnumerator>();
-            IModuleLoader moduleLoader = c.Resolve<IModuleLoader>();
-            ModuleInfo[] moduleInfo = moduleEnumerator.GetStartupLoadedModules();
+            var moduleEnumerator = c.Resolve<IModuleEnumerator>();
+            var moduleLoader = c.Resolve<IModuleLoader>();
+            var moduleInfo = moduleEnumerator.GetStartupLoadedModules();
             moduleLoader.Initialize(moduleInfo);
         }
     }

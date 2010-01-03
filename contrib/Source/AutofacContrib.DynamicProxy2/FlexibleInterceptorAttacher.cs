@@ -3,17 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autofac;
-using Autofac.Component.Tagged;
-using Autofac.Component;
-using Autofac.Component.Activation;
+using Autofac.Core;
+using Autofac.Core.Activators.Reflection;
 
 namespace AutofacContrib.DynamicProxy2
 {
     public class FlexibleInterceptorAttacher : IComponentInterceptorAttacher
     {
-        IComponentInterceptorAttacher _implementationTypeAttacher = new ImplementationTypeInterceptorAttacher(),
-            _typedServiceAttacher = new TypedServiceInterceptorAttacher(),
-            _dynamicInterfaceAttacher = new DynamicInterfaceInterceptorAttacher();
+        readonly IComponentInterceptorAttacher _implementationTypeAttacher = 
+            new ImplementationTypeInterceptorAttacher();
+
+        readonly IComponentInterceptorAttacher _typedServiceAttacher =
+            new TypedServiceInterceptorAttacher();
+
+        readonly IComponentInterceptorAttacher _dynamicInterfaceAttacher = 
+            new DynamicInterfaceInterceptorAttacher();
 
         public void AttachInterceptors(IComponentRegistration registration, IEnumerable<Service> interceptorServices)
         {

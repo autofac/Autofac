@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Autofac;
+using Autofac.Core;
 using Castle.Core.Interceptor;
 using Castle.DynamicProxy;
 

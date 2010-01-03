@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Autofac.Registrars;
-using Autofac;
+using Autofac.Core;
 
 namespace AutofacContrib.DynamicProxy2
 {

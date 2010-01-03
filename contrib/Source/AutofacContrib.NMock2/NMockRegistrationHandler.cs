@@ -24,10 +24,12 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Autofac;
-using Autofac.Component;
-using Autofac.Component.Activation;
-using Autofac.Component.Scope;
+using Autofac.Builder;
+using Autofac.Core;
 using NMock2;
 
 namespace AutofacContrib.NMock2
@@ -40,33 +42,28 @@ namespace AutofacContrib.NMock2
         /// by the container.
         /// </summary>
         /// <param name="service">The service that was requested.</param>
-        /// <param name="registration">A registration providing the service.</param>
+        /// <param name="registrationAccessor"></param>
         /// <returns>
-        /// True if the registration could be created.
+        /// Registrations for the service.
         /// </returns>
-		public bool TryGetRegistration(Service service, out IComponentRegistration registration)
-		{
+        public IEnumerable<IComponentRegistration> RegistrationsFor
+            (Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+        {
             if (service == null)
                 throw new ArgumentNullException("service");
 
-			registration = null;
+            var typedService = service as TypedService;
+            if (typedService == null ||
+                !typedService.ServiceType.IsInterface ||
+                typeof(IEnumerable).IsAssignableFrom(typedService.ServiceType))
+                return Enumerable.Empty<IComponentRegistration>();
 
-			var typedService = service as TypedService;
-			if ((typedService == null) || (!typedService.ServiceType.IsInterface))
-				return false;
+            var rb = RegistrationBuilder.ForDelegate((c, p) =>
+                    c.Resolve<Mockery>().NewMock(typedService.ServiceType))
+                .As(service)
+                .InstancePerLifetimeScope();
 
-			var descriptor = new Descriptor(
-				new UniqueService(),
-				new[] { service },
-				typedService.ServiceType);
-			
-			registration = new Registration(
-				descriptor,
-				new DelegateActivator((c, p) => c.Resolve<Mockery>().NewMock(typedService.ServiceType)),
-				new ContainerScope(),
-				InstanceOwnership.Container);
-
-			return true;
-		}
-	}
+            return new[] { RegistrationBuilder.CreateRegistration(rb) };
+        }
+    }
 }
