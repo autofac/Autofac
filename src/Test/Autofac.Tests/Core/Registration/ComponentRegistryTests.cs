@@ -182,5 +182,23 @@ namespace Autofac.Tests.Core.Registration
             Assert.That(allFuncs.Any(f => f() == a));
             Assert.That(allFuncs.Any(f => f() == b));
         }
+
+        class RecursiveRegistrationSource : IRegistrationSource
+        {
+            public IEnumerable<IComponentRegistration> RegistrationsFor(
+                Service service, 
+                Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+            {
+                return registrationAccessor(service);
+            }
+        }
+
+        [Test]
+        public void WhenARegistrationSourceQueriesForTheSameService_ItIsNotRecursivelyQueried()
+        {
+            var registry = new ComponentRegistry();
+            registry.AddRegistrationSource(new RecursiveRegistrationSource());
+            Assert.False(registry.IsRegistered(new UniqueService()));
+        }
     }
 }
