@@ -41,20 +41,9 @@ namespace Autofac.Core.Registration
         readonly object _synchRoot = new object();
 
         /// <summary>
-        /// Services known not to be registered.
-        /// </summary>
-        readonly ICollection<Service> _unregisteredServices = new HashSet<Service>();
-        
-        /// <summary>
         /// External registration sources.
         /// </summary>
         readonly ICollection<IRegistrationSource> _dynamicRegistrationSources = new List<IRegistrationSource>();
-
-        /// <summary>
-        /// Associates each service with the registrations that
-        /// can provide that service. The first item in the list is considered to be the default.
-        /// </summary>
-        readonly IDictionary<Service, LinkedList<IComponentRegistration>> _registrationsByService = new Dictionary<Service, LinkedList<IComponentRegistration>>();
 
         /// <summary>
         /// All registrations.
@@ -62,10 +51,108 @@ namespace Autofac.Core.Registration
         readonly ICollection<IComponentRegistration> _registrations = new List<IComponentRegistration>();
 
         /// <summary>
-        /// Filtering prevents stack overflow when sources filter for the same service that they were
-        /// queried for.
+        /// Tracks the services known to the registry.
         /// </summary>
-        static readonly Func<IRegistrationSource, Service, bool> EmptyFilter = (r, s) => true;
+        class ServiceInfo
+        {
+            readonly Service _service;
+
+            readonly LinkedList<IComponentRegistration> _implementations = new LinkedList<IComponentRegistration>();
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ServiceInfo"/> class.
+            /// </summary>
+            /// <param name="service">The tracked service.</param>
+            public ServiceInfo(Service service)
+            {
+                _service = service;
+            }
+
+            /// <summary>
+            /// The tracked service.
+            /// </summary>
+            public Service Service { get { return _service;  } }
+
+            /// <summary>
+            /// The first time a service is requested, initialization (e.g. reading from sources)
+            /// happens. This value will then be set to true. Calling many methods on this type before
+            /// initialisation is an error.
+            /// </summary>
+            public bool IsInitialized { get; set; }
+
+            /// <summary>
+            /// The known implementations.
+            /// </summary>
+            public LinkedList<IComponentRegistration> Implementations
+            { 
+                get
+                {
+                    RequiresInitialization();
+                    return _implementations; 
+                }
+            }
+
+            void RequiresInitialization()
+            {
+                if (!IsInitialized)
+                    throw new InvalidOperationException();
+            }
+
+            /// <summary>
+            /// True if any implementations are known.
+            /// </summary>
+            public bool IsRegistered
+            { 
+                get 
+                {
+                    RequiresInitialization();
+                    return Any; 
+                } 
+            }
+
+            bool Any { get { return _implementations.First != null; } }
+
+            /// <summary>
+            /// Used for bookkeeping so that the same source is not queried twice (may be null.)
+            /// </summary>
+            public Queue<IRegistrationSource> SourcesToQuery { get; set; }
+
+            public void AddImplementation(IComponentRegistration registration, bool preserveDefaults)
+            {
+                if (preserveDefaults)
+                {
+                    _implementations.AddLast(registration);
+                }
+                else
+                {
+                    if (Any)
+                        System.Diagnostics.Debug.WriteLine(string.Format(
+                                "[Autofac] Overriding default for: '{0}' with: '{1}' (was '{2}')",
+                                Service, registration, _implementations.First));
+
+                    _implementations.AddFirst(registration);
+                }
+            }
+
+            public bool TryGetRegistration(out IComponentRegistration registration)
+            {
+                RequiresInitialization();
+
+                if (Any)
+                {
+                    registration = _implementations.First.Value;
+                    return true;
+                }
+
+                registration = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Keeps track of the status of registered services.
+        /// </summary>
+        readonly IDictionary<Service, ServiceInfo> _serviceInfo = new Dictionary<Service, ServiceInfo>();
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources
@@ -80,6 +167,22 @@ namespace Autofac.Core.Registration
         }
 
         /// <summary>
+        /// Attempts to find a default registration for the specified service.
+        /// </summary>
+        /// <param name="service">The service to look up.</param>
+        /// <param name="registration">The default registration for the service.</param>
+        /// <returns>True if a registration exists.</returns>
+        public bool TryGetRegistration(Service service, out IComponentRegistration registration)
+        {
+            Enforce.ArgumentNotNull(service, "service");
+            lock (_synchRoot)
+            {
+                var info = GetInitializedServiceInfo(service);
+                return info.TryGetRegistration(out registration);
+            }
+        }
+
+        /// <summary>
         /// Determines whether the specified service is registered.
         /// </summary>
         /// <param name="service">The service to test.</param>
@@ -87,35 +190,9 @@ namespace Autofac.Core.Registration
         public bool IsRegistered(Service service)
         {
             Enforce.ArgumentNotNull(service, "service");
-
             lock (_synchRoot)
             {
-                return IsRegistered(service, EmptyFilter);
-            }
-        }
-
-        /// <summary>
-        /// Fired whenever a component is registered - either explicitly or via a
-        /// <see cref="IRegistrationSource"/>.
-        /// </summary>
-        public event EventHandler<ComponentRegisteredEventArgs> Registered = (s, e) => { };
-
-        /// <summary>
-        /// Gets the default component registration that will be used to satisfy
-        /// requests for the provided service.
-        /// </summary>
-        /// <param name="service">The service.</param>
-        /// <param name="registration">The registration.</param>
-        /// <returns>
-        /// True if a default exists, false otherwise.
-        /// </returns>
-        public bool TryGetRegistration(Service service, out IComponentRegistration registration)
-        {
-            Enforce.ArgumentNotNull(service, "service");
-
-            lock (_synchRoot)
-            {
-                return TryGetRegistration(service, EmptyFilter, out registration);
+                return GetInitializedServiceInfo(service).IsRegistered;
             }
         }
 
@@ -132,36 +209,31 @@ namespace Autofac.Core.Registration
         /// Register a component.
         /// </summary>
         /// <param name="registration">The component registration.</param>
-        /// <param name="preserveDefaults">If true, existing defaults for any services provided
-        /// by the component will not be changed.</param>
+        /// <param name="preserveDefaults">If true, existing defaults for the services provided by the
+        /// component will not be changed.</param>
         public void Register(IComponentRegistration registration, bool preserveDefaults)
         {
             Enforce.ArgumentNotNull(registration, "registration");
 
-            lock (_synchRoot)
+            foreach (var service in registration.Services)
             {
-                RegisterWithoutReTestingSources(registration, preserveDefaults);
-                foreach (var service in registration.Services)
-                    RegisterFromSources(service, EmptyFilter);
+                var info = GetServiceInfo(service);
+                info.AddImplementation(registration, preserveDefaults);
             }
+
+            _registrations.Add(registration);
+
+            Registered(this, new ComponentRegisteredEventArgs(this, registration));
         }
 
         /// <summary>
         /// Enumerate the registered components.
         /// </summary>
-        /// <remarks>
-        /// Component registrations are generated on-the-fly for some service types
-        /// (e.g. open generics.) This means that the
-        /// available registrations will grow over time as instances of these service
-        /// types are resolved. To get all registrations for a service, use
-        /// <see cref="RegistrationsFor(Service)"/>. To handle all registered components,
-        /// override <see cref="Module.AttachToComponentRegistration"/>.
-        /// </remarks>
         public IEnumerable<IComponentRegistration> Registrations
         {
             get
             {
-                lock(_synchRoot)
+                lock (_synchRoot)
                     return _registrations.ToArray();
             }
         }
@@ -176,8 +248,18 @@ namespace Autofac.Core.Registration
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service)
         {
             Enforce.ArgumentNotNull(service, "service");
-            return RegistrationsFor(service, EmptyFilter);
+            lock (_synchRoot)
+            {
+                var info = GetInitializedServiceInfo(service);
+                return info.Implementations.ToArray();
+            }
         }
+
+        /// <summary>
+        /// Fired whenever a component is registered - either explicitly or via a
+        /// <see cref="IRegistrationSource"/>.
+        /// </summary>
+        public event EventHandler<ComponentRegisteredEventArgs> Registered = (s, e) => { };
 
         /// <summary>
         /// Add a registration source that will provide registrations on-the-fly.
@@ -189,122 +271,59 @@ namespace Autofac.Core.Registration
 
             lock (_synchRoot)
             {
-                var newRegistrations = _registrationsByService.Keys.Concat(_unregisteredServices)
-                    .SelectMany(existing => InvokeSource(source, existing, EmptyFilter));
-
-                foreach (var r in newRegistrations)
-                    RegisterWithoutReTestingSources(r, true);
-
                 _dynamicRegistrationSources.Add(source);
             }
         }
 
-        IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<IRegistrationSource, Service, bool> filter)
+        ServiceInfo GetInitializedServiceInfo(Service service)
         {
-            lock (_synchRoot)
+            var info = GetServiceInfo(service);
+            if (info.IsInitialized)
+                return info;
+
+            if (info.SourcesToQuery == null)
+                info.SourcesToQuery = new Queue<IRegistrationSource>(_dynamicRegistrationSources);
+
+            IRegistrationSource next;
+            while (info.SourcesToQuery != null && info.SourcesToQuery.Count != 0)
             {
-                if (IsRegistered(service, filter))
-                    return _registrationsByService[service].ToArray();
-
-                return Enumerable.Empty<IComponentRegistration>();
-            }
-        }
-
-        IEnumerable<IComponentRegistration> InvokeSource(IRegistrationSource source, Service service, Func<IRegistrationSource, Service, bool> filter)
-        {
-            Func<IRegistrationSource, Service, bool> filterIncludingCurrent =
-                (rs, s) => !(rs == source && s == service) && filter(rs, s);
-
-            return source.RegistrationsFor(service, s =>
-            {
-                if (filterIncludingCurrent(source, s))
-                    return RegistrationsFor(s, filterIncludingCurrent);
-                
-                return Enumerable.Empty<IComponentRegistration>();
-            });
-        }
-
-        bool IsRegistered(Service service, Func<IRegistrationSource, Service, bool> filter)
-        {
-            IComponentRegistration unused;
-            return TryGetRegistration(service, filter, out unused);
-        }
-
-        bool TryGetRegistration(Service service, Func<IRegistrationSource, Service, bool> filter, out IComponentRegistration registration)
-        {
-            if (TryGetExistingDefault(service, out registration))
-                return true;
-
-            if (_unregisteredServices.Contains(service))
-                return false;
-
-            var results = RegisterFromSources(service, filter);
-
-            if (!results.Any())
-            {
-                _unregisteredServices.Add(service);
-                return false;
-            }
-
-            return TryGetExistingDefault(service, out registration);
-        }
-
-        bool TryGetExistingDefault(Service service, out IComponentRegistration registration)
-        {
-            LinkedList<IComponentRegistration> registrations;
-            if (_registrationsByService.TryGetValue(service, out registrations))
-            {
-                registration = registrations.First.Value;
-                return true;
-            }
-
-            registration = null;
-            return false;
-        }
-
-        IEnumerable<IComponentRegistration> RegisterFromSources(Service service, Func<IRegistrationSource, Service, bool> filter)
-        {
-            var results = _dynamicRegistrationSources
-                .SelectMany(rs => InvokeSource(rs, service, filter))
-                .ToArray();
-
-            foreach (var r in results)
-                RegisterWithoutReTestingSources(r, true);
-
-            return results;
-        }
-
-        void RegisterWithoutReTestingSources(IComponentRegistration registration, bool preserveDefaults)
-        {
-            foreach (var service in registration.Services)
-            {
-                LinkedList<IComponentRegistration> existing;
-                if (_registrationsByService.TryGetValue(service, out existing))
+                next = info.SourcesToQuery.Dequeue();
+                foreach (var provided in next.RegistrationsFor(service, RegistrationsFor))
                 {
-                    if (!preserveDefaults)
+                    // This ensures that multiple services provided by the same
+                    // component share a single component (we don't re-query for them)
+                    foreach (var additionalService in provided.Services)
                     {
-                        System.Diagnostics.Debug.WriteLine(string.Format(
-                            "[Autofac] Overriding existing registration for: '{0}' with: '{1}' (was: '{2}')",
-                            service, registration, existing));
+                        var additionalInfo = GetServiceInfo(additionalService);
+                        if (!additionalInfo.IsInitialized)
+                        {
+                            if (additionalInfo.SourcesToQuery == null)
+                                additionalInfo.SourcesToQuery = new Queue<IRegistrationSource>(
+                                    _dynamicRegistrationSources.Where(src => src != next));
+                            else
+                                additionalInfo.SourcesToQuery = new Queue<IRegistrationSource>(
+                                    additionalInfo.SourcesToQuery.Where(src => src != next));
+                        }
                     }
-                }
-                else
-                {
-                    existing = new LinkedList<IComponentRegistration>();
-                    _registrationsByService.Add(service, existing);
-                }
 
-                if (preserveDefaults)
-                    existing.AddLast(registration);
-                else
-                    existing.AddFirst(registration);
-
-                _unregisteredServices.Remove(service);
+                    Register(provided, true);
+                }
             }
 
-            _registrations.Add(registration);
+            info.IsInitialized = true;
+            info.SourcesToQuery = null;
+            return info;
+        }
 
-            Registered(this, new ComponentRegisteredEventArgs(this, registration));
+        ServiceInfo GetServiceInfo(Service service)
+        {
+            ServiceInfo existing;
+            if (_serviceInfo.TryGetValue(service, out existing))
+                return existing;
+
+            var info = new ServiceInfo(service);
+            _serviceInfo.Add(service, info);
+            return info;
         }
     }
 }

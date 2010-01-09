@@ -12,9 +12,8 @@ namespace Autofac.Tests.Scenarios.RegistrationSources
         {
             var objectService = new TypedService(typeof(object));
             if (service == objectService)
-                return new[] { Factory.CreateSingletonObjectRegistration() };
-            else
-                return Enumerable.Empty<IComponentRegistration>();
+                yield return Factory.CreateSingletonObjectRegistration();
+
         }
     }
 }

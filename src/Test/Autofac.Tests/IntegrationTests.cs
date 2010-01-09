@@ -90,17 +90,19 @@ namespace Autofac.Tests
             Assert.IsFalse(disposable.IsDisposed);
         }
 
+        interface I1<T> { }
+        interface I2<T> { }
+        class C<T> : I1<T>, I2<T> { }
+
         [Test]
         public void MultipleServicesOnAnOpenGenericType_ShareTheSameRegistration()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterGeneric(typeof(List<>))
-                .As(typeof(IEnumerable<>), typeof(ICollection<>))
-                .UsingConstructor(new Type[0]);
+            builder.RegisterGeneric(typeof(C<>)).As(typeof(I1<>), typeof(I2<>));
             var container = builder.Build();
-            container.Resolve<IEnumerable<int>>();
+            container.Resolve<I1<int>>();
             var count = container.ComponentRegistry.Registrations.Count();
-            container.Resolve<ICollection<int>>();
+            container.Resolve<I2<int>>();
             Assert.AreEqual(count, container.ComponentRegistry.Registrations.Count());
         }
 
@@ -115,7 +117,7 @@ namespace Autofac.Tests
             A1 a = target.Resolve<A1>();
             B1 b = target.Resolve<B1>();
 
-            Queue<object> disposeOrder = new Queue<object>();
+            var disposeOrder = new Queue<object>();
 
             a.Disposing += (s, e) => disposeOrder.Enqueue(a);
             b.Disposing += (s, e) => disposeOrder.Enqueue(b);

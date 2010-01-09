@@ -26,7 +26,6 @@
 using System;
 using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Core.Activators.Delegate;
 
 namespace Autofac.Features.GeneratedFactories
 {

@@ -118,6 +118,7 @@
     <Compile Include="Features\OpenGenerics\OpenGenericRegistrationExtensionsTests.cs" />
     <Compile Include="Features\OwnedInstances\OwnedInstanceRegistrationSourceTests.cs" />
     <Compile Include="Features\OwnedInstances\OwnedTests.cs" />
+    <Compile Include="Features\ResolveAnything\ResolveAnythingTests.cs" />
     <Compile Include="NamedParameterTests.cs" />
     <Compile Include="Features\OpenGenerics\OpenGenericActivatorGeneratorTests.cs" />
     <Compile Include="Core\Registration\RegistrationFixture.cs" />
