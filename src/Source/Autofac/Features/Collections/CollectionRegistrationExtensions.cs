@@ -73,9 +73,7 @@ namespace Autofac.Features.Collections
                 new SimpleActivatorData(activator),
                 new SingleRegistrationStyle(typeof(T[])));
 
-            builder.RegisterCallback(cr => {
-                RegistrationBuilder.RegisterSingleComponent(cr, rb);
-            });
+            builder.RegisterCallback(cr => RegistrationBuilder.RegisterSingleComponent(cr, rb));
 
             return rb;
         }

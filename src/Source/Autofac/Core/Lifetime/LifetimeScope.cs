@@ -26,7 +26,6 @@
 using System;
 using System.Collections.Generic;
 using Autofac.Core.Resolving;
-using Autofac.Core.SelfRegistration;
 using Autofac.Util;
 
 namespace Autofac.Core.Lifetime
@@ -48,6 +47,13 @@ namespace Autofac.Core.Lifetime
         readonly IDictionary<Guid, object> _sharedInstances = new Dictionary<Guid, object>();
         object _tag;
 
+        static internal Guid SelfRegistrationId = Guid.NewGuid();
+
+        private LifetimeScope()
+        {
+            _sharedInstances[SelfRegistrationId] = this;
+        }
+
         /// <summary>
         /// Create a lifetime scope for the provided components and nested beneath a parent.
         /// </summary>
@@ -65,6 +71,7 @@ namespace Autofac.Core.Lifetime
         /// </summary>
         /// <param name="componentRegistry">Components used in the scope.</param>
         public LifetimeScope(IComponentRegistry componentRegistry)
+            : this()
         {
             _componentRegistry = Enforce.ArgumentNotNull(componentRegistry, "componentRegistry");
             _root = this;
@@ -79,9 +86,7 @@ namespace Autofac.Core.Lifetime
         {
             lock (_synchRoot)
             {
-                var result = new LifetimeScope(_componentRegistry, this);
-                result.Resolve<IndirectReference<ILifetimeScope>>().Value = result;
-                return result;
+                return new LifetimeScope(_componentRegistry, this);
             }
         }
 

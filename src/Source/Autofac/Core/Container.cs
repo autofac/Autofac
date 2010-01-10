@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
-using Autofac.Core.SelfRegistration;
 using Autofac.Util;
 
 namespace Autofac.Core
@@ -54,21 +53,11 @@ namespace Autofac.Core
         {
             _componentRegistry = new ComponentRegistry();
 
-            // Lots of ugly cruft around self-registration, needs some refactoring but
-            // not sure of the right approach yet
-
             _componentRegistry.Register(new ComponentRegistration(
-                Guid.NewGuid(),
-                new DelegateActivator(typeof(IndirectReference<ILifetimeScope>), (c, p) => new IndirectReference<ILifetimeScope>()),
-                new CurrentScopeLifetime(),
-                InstanceSharing.Shared,
-                InstanceOwnership.ExternallyOwned,
-                new Service[] { new TypedService(typeof(IndirectReference<ILifetimeScope>)) },
-                new Dictionary<string, object>()));
-
-            _componentRegistry.Register(new ComponentRegistration(
-                Guid.NewGuid(),
-                new DelegateActivator(typeof(LifetimeScope), (c, p) => c.Resolve<IndirectReference<ILifetimeScope>>().Value),
+                LifetimeScope.SelfRegistrationId,
+                new DelegateActivator(typeof(LifetimeScope), (c, p) => {
+                    throw new InvalidOperationException();
+                }),
                 new CurrentScopeLifetime(),
                 InstanceSharing.Shared,
                 InstanceOwnership.ExternallyOwned,
@@ -76,7 +65,6 @@ namespace Autofac.Core
                 new Dictionary<string, object>()));
 
             _rootLifetimeScope = new LifetimeScope(_componentRegistry);
-            _rootLifetimeScope.Resolve<IndirectReference<ILifetimeScope>>().Value = _rootLifetimeScope;
         }
 
         /// <summary>

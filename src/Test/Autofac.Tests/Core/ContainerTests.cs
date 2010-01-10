@@ -101,5 +101,13 @@ namespace Autofac.Tests.Core
             Assert.IsTrue(container.IsRegistered<ILifetimeScope>());
             Assert.IsTrue(container.IsRegistered<IComponentContext>());
         }
+
+        [Test]
+        public void ResolvingLifetimeScopeProvidesCurrentScope()
+        {
+            var c = new Container();
+            var l = c.BeginLifetimeScope();
+            Assert.AreSame(l, l.Resolve<ILifetimeScope>());
+        }
     }
 }

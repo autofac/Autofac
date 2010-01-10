@@ -183,7 +183,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ResolveOperationResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Core\SelfRegistration\IndirectReference.cs" />
     <Compile Include="Core\Service.cs" />
     <Compile Include="Core\TypedService.cs" />
     <Compile Include="Core\UniqueService.cs" />

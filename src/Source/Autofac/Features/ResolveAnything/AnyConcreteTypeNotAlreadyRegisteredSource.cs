@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Core.SelfRegistration;
 using Autofac.Util;
 
 namespace Autofac.Features.ResolveAnything
@@ -75,7 +74,6 @@ namespace Autofac.Features.ResolveAnything
                 !ts.ServiceType.IsClass ||
                 ts.ServiceType.IsSubclassOf(typeof(Delegate)) ||
                 ts.ServiceType.IsAbstract ||
-                ts.ServiceType == typeof(IndirectReference<ILifetimeScope>) ||
                 !_predicate(ts.ServiceType) ||
                 registrationAccessor(service).Any())
                 yield break;
