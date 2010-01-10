@@ -95,7 +95,7 @@
     <Compile Include="Builder\DynamicRegistrationStyle.cs" />
     <Compile Include="Features\GeneratedFactories\GeneratedFactoryActivatorData.cs" />
     <Compile Include="Builder\IActivatorGenerator.cs" />
-    <Compile Include="Builder\IFluentInterface.cs" />
+    <Compile Include="Builder\IHideObjectMembers.cs" />
     <Compile Include="Features\ResolveAnything\AnyConcreteTypeNotAlreadyRegisteredSource.cs" />
     <Compile Include="Features\Scanning\ScanningActivatorData.cs" />
     <Compile Include="Core\ActivatedEventArgs.cs" />

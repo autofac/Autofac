@@ -41,7 +41,7 @@ namespace Autofac.Builder
     /// can be cast.</typeparam>
     /// <typeparam name="TActivatorData">Activator builder type.</typeparam>
     /// <typeparam name="TRegistrationStyle">Registration style type.</typeparam>
-    public class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>
+    public class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> : IHideObjectMembers
     {
         readonly TActivatorData _activatorData;
         readonly TRegistrationStyle _registrationStyle;
