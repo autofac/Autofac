@@ -32,7 +32,7 @@ namespace Autofac.Util
         public static bool IsFunction(this Type type)
         {
             Enforce.ArgumentNotNull(type, "type");
-            return type.GetMethod("Invoke") != null;
+            return type.IsSubclassOf(typeof(Delegate));
         }
 
         public static Type FunctionReturnType(this Type type)

@@ -292,6 +292,5 @@ namespace Autofac.Tests
             Assert.IsTrue(targetA.IsDisposed);
             Assert.IsTrue(ctxA.IsDisposed);
         }
-
     }
 }
