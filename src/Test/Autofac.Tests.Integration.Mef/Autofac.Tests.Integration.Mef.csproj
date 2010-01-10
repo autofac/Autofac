@@ -49,7 +49,9 @@
   <ItemGroup>
     <Compile Include="LazyRegistrationSourceTests.cs" />
     <Compile Include="LazyWithMetadataRegistrationSourceTests.cs" />
+    <Compile Include="LifetimeScenariosTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegistrationExtensionsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\SharedKey.snk">
