@@ -27,6 +27,7 @@ using System;
 using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Features.ResolveAnything;
 using NMock2;
 
 namespace AutofacContrib.NMock2
@@ -56,7 +57,10 @@ namespace AutofacContrib.NMock2
 
 		private void Initialize()
 		{
-			Container.Configure(builder => builder.RegisterSource(new NMockRegistrationHandler()));
+            Container.Configure(builder => {
+                builder.RegisterSource(new NMockRegistrationHandler());
+                builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+            });
 		}
 
 		/// <summary>

@@ -55,7 +55,7 @@ namespace AutofacContrib.Tests.NMock2
 		{
 			using (var mock = AutoMock.GetOrdered())
 			{
-				RunTest(mock);
+				RunReversedTest(mock);
 			}
 		}
 
@@ -84,8 +84,8 @@ namespace AutofacContrib.Tests.NMock2
 
 		private static void RunTest(AutoMock mock)
 		{
-			Expect.Once.On(mock.Resolve<IServiceB>()).Method("RunB");
-			Expect.Once.On(mock.Resolve<IServiceA>()).Method("RunA");
+            Expect.Once.On(mock.Resolve<IServiceA>()).Method("RunA");
+            Expect.Once.On(mock.Resolve<IServiceB>()).Method("RunB");
 
 			var component = mock.Create<TestComponent>();
 			component.RunAll();
