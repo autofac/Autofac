@@ -24,9 +24,9 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Linq;
 using System.ServiceModel;
 using Autofac.Core;
-using System.Linq;
 
 namespace Autofac.Integration.Wcf
 {

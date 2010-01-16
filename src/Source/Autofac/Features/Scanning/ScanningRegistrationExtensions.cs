@@ -26,12 +26,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Autofac.Util;
-using Autofac.Builder;
 using System.Reflection;
-using Autofac.Core.Activators.Reflection;
+using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Activators.Reflection;
+using Autofac.Util;
 
 namespace Autofac.Features.Scanning
 {

@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac.Core.Activators.ProvidedInstance {
-    using System;
-    
-    
+namespace Autofac.Core.Activators.ProvidedInstance
+{
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>

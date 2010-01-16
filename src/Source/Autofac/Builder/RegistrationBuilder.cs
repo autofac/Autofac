@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autofac.Core.Activators.Delegate;
-using Autofac.Core;
-using Autofac.Core.Registration;
 using System.Globalization;
+using System.Linq;
+using Autofac.Core;
+using Autofac.Core.Activators.Delegate;
+using Autofac.Core.Registration;
 
 namespace Autofac.Builder
 {

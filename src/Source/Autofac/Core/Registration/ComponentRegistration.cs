@@ -25,9 +25,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Autofac.Util;
-using System.Globalization;
 
 namespace Autofac.Core.Registration
 {

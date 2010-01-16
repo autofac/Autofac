@@ -24,10 +24,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Globalization;
-using System.Reflection;
-using System.Collections;
-using System.Linq;
 
 namespace Autofac.Configuration.Util
 {

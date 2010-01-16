@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Autofac.Builder;
 using NUnit.Framework;
-using Autofac.Core.Lifetime;
-using Autofac.Core.Registration;
-using System.Reflection;
 using Autofac.Core;
-using Autofac.Core.Activators.Reflection;
-using Autofac.Core.Activators.ProvidedInstance;
-using Autofac.Core.Activators.Delegate;
 using Autofac.Tests.Scenarios.Parameterisation;
-using Autofac.Tests.Scenarios.Graph1;
 
 namespace Autofac.Tests.Core
 {

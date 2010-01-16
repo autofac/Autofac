@@ -25,8 +25,6 @@
 
 using System;
 using System.ServiceModel;
-using System.ServiceModel.Activation;
-using System.Globalization;
 using System.ServiceModel.Web;
 
 namespace Autofac.Integration.Wcf

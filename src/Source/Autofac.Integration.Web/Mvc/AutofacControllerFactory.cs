@@ -24,9 +24,9 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
-using System.Web;
 
 namespace Autofac.Integration.Web.Mvc
 {

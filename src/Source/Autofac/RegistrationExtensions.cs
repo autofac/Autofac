@@ -25,21 +25,18 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Activators.ProvidedInstance;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
-using Autofac.Core.Registration;
 using Autofac.Features.Collections;
 using Autofac.Features.GeneratedFactories;
 using Autofac.Features.OpenGenerics;
-using Autofac.Util;
 using Autofac.Features.Scanning;
+using Autofac.Util;
 
 namespace Autofac
 {
@@ -55,8 +52,20 @@ namespace Autofac
         /// <param name="module">The module to add.</param>
         public static void RegisterModule(this ContainerBuilder builder, IModule module)
         {
+            Enforce.ArgumentNotNull(builder, "builder");
             Enforce.ArgumentNotNull(module, "module");
-            builder.RegisterCallback(cr => module.Configure(cr));
+            builder.RegisterCallback(module.Configure);
+        }
+
+        /// <summary>
+        /// Add a module to the container.
+        /// </summary>
+        /// <param name="builder">The builder to register the module with.</param>
+        /// <typeparam name="TModule">The module to add.</typeparam>
+        public static void RegisterModule<TModule>(this ContainerBuilder builder)
+            where TModule : IModule, new()
+        {
+            builder.RegisterModule(new TModule());
         }
 
         /// <summary>
@@ -66,6 +75,7 @@ namespace Autofac
         /// <param name="registration">The component to add.</param>
         public static void RegisterComponent(this ContainerBuilder builder, IComponentRegistration registration)
         {
+            Enforce.ArgumentNotNull(builder, "builder");
             Enforce.ArgumentNotNull(registration, "registration");
             builder.RegisterCallback(cr => cr.Register(registration));
         }
@@ -77,6 +87,7 @@ namespace Autofac
         /// <param name="registrationSource">The registration source to add.</param>
         public static void RegisterSource(this ContainerBuilder builder, IRegistrationSource registrationSource)
         {
+            Enforce.ArgumentNotNull(builder, "builder");
             Enforce.ArgumentNotNull(registrationSource, "registrationSource");
             builder.RegisterCallback(cr => cr.AddRegistrationSource(registrationSource));
         }
@@ -170,7 +181,7 @@ namespace Autofac
                 Func<IComponentContext, T> @delegate)
         {
             Enforce.ArgumentNotNull(@delegate, "delegate");
-            return builder.Register<T>((c, p) => @delegate(c));
+            return builder.Register((c, p) => @delegate(c));
         }
 
         /// <summary>
@@ -239,6 +250,7 @@ namespace Autofac
                 this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
+            Enforce.ArgumentNotNull(registration, "registration");
             registration.RegistrationStyle.PreserveDefaults = true;
             return registration;
         }
@@ -270,6 +282,7 @@ namespace Autofac
                 Func<Type, bool> predicate)
             where TScanningActivatorData : ScanningActivatorData
         {
+            Enforce.ArgumentNotNull(registration, "registration");
             registration.ActivatorData.Filters.Add(predicate);
             return registration;
         }
@@ -289,6 +302,7 @@ namespace Autofac
                 Func<Type, IEnumerable<Service>> serviceMapping)
             where TScanningActivatorData : ScanningActivatorData
         {
+            Enforce.ArgumentNotNull(registration, "registration");
             registration.ActivatorData.ServiceMappings.Add(serviceMapping);
             return registration;
         }
@@ -308,6 +322,7 @@ namespace Autofac
                 Func<Type, Service> serviceMapping)
             where TScanningActivatorData : ScanningActivatorData
         {
+            Enforce.ArgumentNotNull(registration, "registration");
             return registration.As(t => new Service[] { serviceMapping(t) });
         }
 
@@ -326,6 +341,7 @@ namespace Autofac
                 Func<Type, Type> serviceMapping)
             where TScanningActivatorData : ScanningActivatorData
         {
+            Enforce.ArgumentNotNull(registration, "registration");
             return registration.As(t => new TypedService(serviceMapping(t)));
         }
 
@@ -346,6 +362,9 @@ namespace Autofac
                 Type serviceType)
             where TScanningActivatorData : ScanningActivatorData
         {
+            Enforce.ArgumentNotNull(registration, "registration");
+            Enforce.ArgumentNotNull(serviceNameMapping, "serviceNameMapping");
+            Enforce.ArgumentNotNull(serviceType, "serviceType");
             return registration.As(t => new NamedService(serviceNameMapping(t), serviceType));
         }
 
@@ -363,6 +382,7 @@ namespace Autofac
                 this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration)
             where TScanningActivatorData : ScanningActivatorData
         {
+            Enforce.ArgumentNotNull(registration, "registration");
             return registration.As(t => t.GetInterfaces().Select(i => new TypedService(i)).Cast<Service>());
         }
 
@@ -381,6 +401,7 @@ namespace Autofac
                 BindingFlags bindingFlags)
             where TReflectionActivatorData : ReflectionActivatorData
         {
+            Enforce.ArgumentNotNull(registration, "registration");
             return registration.FindConstructorsWith(new BindingFlagsConstructorFinder(bindingFlags));
         }
 
@@ -420,6 +441,7 @@ namespace Autofac
                 params Type[] signature)
             where TReflectionActivatorData : ReflectionActivatorData
         {
+            Enforce.ArgumentNotNull(registration, "registration");
             Enforce.ArgumentNotNull(signature, "signature");
 
             // Unfortunately this could cause some false positives in rare AOP/dynamic subclassing

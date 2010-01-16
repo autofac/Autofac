@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Autofac.Core;
 using Autofac.Util;
-using System.Linq;
 
 namespace Autofac.Builder
 {

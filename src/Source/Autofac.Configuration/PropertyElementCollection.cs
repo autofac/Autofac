@@ -24,9 +24,9 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
-using Autofac.Core;
 using System.Reflection;
 using Autofac.Configuration.Util;
+using Autofac.Core;
 
 namespace Autofac.Configuration
 {

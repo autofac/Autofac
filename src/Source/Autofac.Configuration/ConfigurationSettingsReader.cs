@@ -27,12 +27,12 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
-using System.Linq;
-using Autofac.Core.Activators.Reflection;
-using Autofac.Core;
 using Autofac.Configuration.Util;
+using Autofac.Core;
+using Autofac.Core.Activators.Reflection;
 
 namespace Autofac.Configuration
 {

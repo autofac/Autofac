@@ -24,9 +24,9 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Globalization;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
-using System.Globalization;
 using Autofac.Core;
 
 namespace Autofac.Integration.Wcf

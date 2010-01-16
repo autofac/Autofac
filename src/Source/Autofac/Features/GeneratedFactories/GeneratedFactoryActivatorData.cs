@@ -23,10 +23,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using Autofac.Features.GeneratedFactories;
 using System;
-using Autofac.Core;
 using Autofac.Builder;
+using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Util;
 
