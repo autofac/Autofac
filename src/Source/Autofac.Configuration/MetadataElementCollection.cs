@@ -30,13 +30,13 @@ namespace Autofac.Configuration
     /// <summary>
     /// Collection of extended property elements.
     /// </summary>
-    public class ExtendedPropertyElementCollection : NamedConfigurationElementCollection<ExtendedPropertyElement>
+    public class MetadataElementCollection : NamedConfigurationElementCollection<MetadataElement>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyElementCollection"/> class.
         /// </summary>
-        public ExtendedPropertyElementCollection()
-            : base("extendedProperty", ExtendedPropertyElement.Key)
+        public MetadataElementCollection()
+            : base("metadata", MetadataElement.Key)
         {
         }
     }

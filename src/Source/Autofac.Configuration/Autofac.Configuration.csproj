@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Autofac.Configuration</RootNamespace>
     <AssemblyName>Autofac.Configuration</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\SharedKey.snk</AssemblyOriginatorKeyFile>
@@ -33,6 +33,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -71,8 +72,8 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Util\Enforce.cs" />
-    <Compile Include="ExtendedPropertyElement.cs" />
-    <Compile Include="ExtendedPropertyElementCollection.cs" />
+    <Compile Include="MetadataElement.cs" />
+    <Compile Include="MetadataElementCollection.cs" />
     <Compile Include="FileElement.cs" />
     <Compile Include="FileElementCollection.cs" />
     <Compile Include="ModuleElement.cs" />

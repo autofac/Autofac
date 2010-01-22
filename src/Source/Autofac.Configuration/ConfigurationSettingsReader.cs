@@ -168,8 +168,8 @@ namespace Autofac.Configuration
                 foreach (var prop in component.Properties.ToParameters())
                     registrar.WithProperty(prop);
 
-                foreach (var ep in component.ExtendedProperties)
-                    registrar.WithExtendedProperty(
+                foreach (var ep in component.Metadata)
+                    registrar.WithMetadata(
                         ep.Name, TypeManipulation.ChangeToCompatibleType(ep.Value, Type.GetType(ep.Type)));
 
                 if (!string.IsNullOrEmpty(component.MemberOf))

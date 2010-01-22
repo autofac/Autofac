@@ -20,15 +20,15 @@ namespace Autofac.Tests.Builder
         public void WhenPropetyFromStronglyTypedInterfaceConfigured_ReflectedInComponentRegistration()
         {
             var builder = RegistrationBuilder.ForType<object>();
-            builder.WithExtendedProperties<IProperties>(ep =>
+            builder.WithMetadata<IProperties>(ep =>
             {
                 ep.For(p => p.A, 42);
                 ep.For(p => p.B, "hello");
             });
             
             var reg = RegistrationBuilder.CreateRegistration(builder);
-            Assert.AreEqual(42, reg.ExtendedProperties["A"]);
-            Assert.AreEqual("hello", reg.ExtendedProperties["B"]);
+            Assert.AreEqual(42, reg.Metadata["A"]);
+            Assert.AreEqual("hello", reg.Metadata["B"]);
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace Autofac.Tests.Builder
         {
             var builder = RegistrationBuilder.ForType<object>();
             Assert.Throws<ArgumentException>(() =>
-                builder.WithExtendedProperties<IProperties>(ep => ep.For(p => 42, 42)));
+                builder.WithMetadata<IProperties>(ep => ep.For(p => 42, 42)));
         }
     }
 }

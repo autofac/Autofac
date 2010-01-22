@@ -34,6 +34,19 @@ namespace Autofac.Builder
         }
 
         /// <summary>
+        /// Creates a registration builder for the provided delegate.
+        /// </summary>
+        /// <param name="delegate">Delegate to register.</param>
+        /// <param name="limitType">Most specific type return value of delegate can be cast to.</param>
+        /// <returns>A registration builder.</returns>
+        public static RegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> ForDelegate(Type limitType, Func<IComponentContext, IEnumerable<Parameter>, object> @delegate)
+        {
+            return new RegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle>(
+                new SimpleActivatorData(new DelegateActivator(limitType, @delegate)),
+                new SingleRegistrationStyle(limitType));
+        }
+
+        /// <summary>
         /// Creates a registration builder for the provided type.
         /// </summary>
         /// <typeparam name="TImplementor">Implementation type to register.</typeparam>
@@ -78,7 +91,8 @@ namespace Autofac.Builder
                 rb.RegistrationStyle.Id,
                 rb.RegistrationData,
                 rb.ActivatorData.Activator,
-                services);
+                services,
+                rb.RegistrationStyle.Target);
         }
 
         /// <summary>
@@ -95,6 +109,25 @@ namespace Autofac.Builder
             IInstanceActivator activator,
             IEnumerable<Service> services)
         {
+            return CreateRegistration(id, data, activator, services, null);
+        }
+
+        /// <summary>
+        /// Create an IComponentRegistration from data.
+        /// </summary>
+        /// <param name="id">Id of the registration.</param>
+        /// <param name="data">Registration data.</param>
+        /// <param name="activator">Activator.</param>
+        /// <param name="services">Services provided by the registration.</param>
+        /// <param name="target">Optional; target registration.</param>
+        /// <returns>An IComponentRegistration.</returns>
+        public static IComponentRegistration CreateRegistration(
+            Guid id,
+            RegistrationData data,
+            IInstanceActivator activator,
+            IEnumerable<Service> services,
+            IComponentRegistration target)
+        {
             var limitType = activator.LimitType;
             if (limitType != typeof(object))
                 foreach (var ts in services.OfType<TypedService>())
@@ -102,15 +135,26 @@ namespace Autofac.Builder
                         throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
                             RegistrationBuilderResources.ComponentDoesNotSupportService, limitType, ts));
 
-            var registration =
-                new ComponentRegistration(
+            IComponentRegistration registration;
+            if (target == null)
+                registration = new ComponentRegistration(
                     id,
                     activator,
                     data.Lifetime,
                     data.Sharing,
                     data.Ownership,
                     services,
-                    data.ExtendedProperties);
+                    data.Metadata);
+            else
+                registration = new ComponentRegistration(
+                    id,
+                    activator,
+                    data.Lifetime,
+                    data.Sharing,
+                    data.Ownership,
+                    services,
+                    data.Metadata,
+                    target);
 
             foreach (var p in data.PreparingHandlers)
                 registration.Preparing += p;

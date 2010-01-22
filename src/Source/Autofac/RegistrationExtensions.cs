@@ -633,6 +633,28 @@ namespace Autofac
             return GeneratedFactoryRegistrationExtensions.RegisterGeneratedFactory<Delegate>(builder, delegateType, service);
         }
 
+
+        /// <summary>
+        /// Sets the target of the registration (used for metadata generation.)
+        /// </summary>
+        /// <typeparam name="TLimit">The type of the limit.</typeparam>
+        /// <typeparam name="TActivatorData">The type of the activator data.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
+        /// <param name="registration">Registration to set target for.</param>
+        /// <param name="target">The target.</param>
+        /// <returns>
+        /// Registration builder allowing the registration to be configured.
+        /// </returns>
+        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+            Targeting<TLimit, TActivatorData, TSingleRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
+                IComponentRegistration target)
+            where TSingleRegistrationStyle : SingleRegistrationStyle
+        {
+            registration.RegistrationStyle.Target = Enforce.ArgumentNotNull(target, "target");
+            return registration;
+        }
+
         /// <summary>
         /// Registers a factory delegate.
         /// </summary>

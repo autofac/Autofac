@@ -48,9 +48,6 @@
       <DependentUpon>ContractBasedServiceResources.resx</DependentUpon>
     </Compile>
     <Compile Include="ExportConfigurationBuilder.cs" />
-    <Compile Include="LazyDependencyModule.cs" />
-    <Compile Include="LazyRegistrationSource.cs" />
-    <Compile Include="LazyWithMetadataRegistrationSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>

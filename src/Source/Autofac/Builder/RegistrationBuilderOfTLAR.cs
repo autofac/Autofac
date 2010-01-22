@@ -334,11 +334,11 @@ namespace Autofac.Builder
         /// <param name="key">Key by which the data can be located.</param>
         /// <param name="value">The data value.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithExtendedProperty(string key, object value)
+        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(string key, object value)
         {
             Enforce.ArgumentNotNull(key, "key");
 
-            RegistrationData.ExtendedProperties.Add(key, value);
+            RegistrationData.Metadata.Add(key, value);
 
             return this;
         }
@@ -348,12 +348,12 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="properties">The extended properties to associate with the component.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithExtendedProperties(IEnumerable<KeyValuePair<string, object>> properties)
+        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(IEnumerable<KeyValuePair<string, object>> properties)
         {
             Enforce.ArgumentNotNull(properties, "properties");
 
             foreach (var prop in properties)
-                WithExtendedProperty(prop.Key, prop.Value);
+                WithMetadata(prop.Key, prop.Value);
 
             return this;
         }
@@ -364,13 +364,13 @@ namespace Autofac.Builder
         /// <typeparam name="TMetadata">A type with properties whose names correspond to the
         /// property names to configure.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithExtendedProperties<TMetadata>(Action<ExtendedPropertyConfiguration<TMetadata>> configurationAction)
+        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata<TMetadata>(Action<MetadataConfiguration<TMetadata>> configurationAction)
         {
             Enforce.ArgumentNotNull(configurationAction, "configurationAction");
 
-            var epConfiguration = new ExtendedPropertyConfiguration<TMetadata>();
+            var epConfiguration = new MetadataConfiguration<TMetadata>();
             configurationAction(epConfiguration);
-            return WithExtendedProperties(epConfiguration.Properties);
+            return WithMetadata(epConfiguration.Properties);
         }
     }
 }

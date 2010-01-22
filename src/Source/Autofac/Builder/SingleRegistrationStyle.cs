@@ -36,9 +36,13 @@ namespace Autofac.Builder
     public class SingleRegistrationStyle
     {
         Guid _id = Guid.NewGuid();
-        ICollection<EventHandler<ComponentRegisteredEventArgs>> _registeredHandlers = new List<EventHandler<ComponentRegisteredEventArgs>>();
+
+        readonly ICollection<EventHandler<ComponentRegisteredEventArgs>>
+            _registeredHandlers = new List<EventHandler<ComponentRegisteredEventArgs>>();
+
         bool _preserveDefaults;
-        Type _defaultServiceType;
+
+        readonly Type _defaultServiceType;
 
         /// <summary>
         /// Create a new SingleRegistrationStyle.
@@ -79,6 +83,11 @@ namespace Autofac.Builder
             get { return _preserveDefaults; }
             set { _preserveDefaults = value; }
         }
+
+        /// <summary>
+        /// The component upon which this registration is based.
+        /// </summary>
+        public IComponentRegistration Target { get; set; }
 
         /// <summary>
         /// The type that will be used as the default service if

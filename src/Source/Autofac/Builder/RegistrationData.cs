@@ -41,7 +41,7 @@ namespace Autofac.Builder
         InstanceOwnership _ownership = InstanceOwnership.OwnedByLifetimeScope;
         IComponentLifetime _lifetime = new CurrentScopeLifetime();
         InstanceSharing _sharing = InstanceSharing.None;
-        IDictionary<string, object> _extendedProperties = new Dictionary<string, object>();
+        IDictionary<string, object> _metadata = new Dictionary<string, object>();
         ICollection<EventHandler<PreparingEventArgs<object>>> _preparingHandlers = new List<EventHandler<PreparingEventArgs<object>>>();
         ICollection<EventHandler<ActivatingEventArgs<object>>> _activatingHandlers = new List<EventHandler<ActivatingEventArgs<object>>>();
         ICollection<EventHandler<ActivatedEventArgs<object>>> _activatedHandlers = new List<EventHandler<ActivatedEventArgs<object>>>();
@@ -81,7 +81,7 @@ namespace Autofac.Builder
         /// <summary>
         /// Extended properties assigned to the component.
         /// </summary>
-        public IDictionary<string, object> ExtendedProperties { get { return _extendedProperties; } }
+        public IDictionary<string, object> Metadata { get { return _metadata; } }
 
         /// <summary>
         /// Handlers for the Preparing event.

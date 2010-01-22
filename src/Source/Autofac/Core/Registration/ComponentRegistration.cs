@@ -36,6 +36,8 @@ namespace Autofac.Core.Registration
     /// </summary>
     public class ComponentRegistration : Disposable, IComponentRegistration
     {
+        readonly IComponentRegistration _target;
+
         /// <summary>
         /// Create a new component registration.
         /// </summary>
@@ -45,7 +47,7 @@ namespace Autofac.Core.Registration
         /// <param name="sharing">Whether the component is shared within its lifetime scope.</param>
         /// <param name="ownership">Whether the component instances are disposed at the end of their lifetimes.</param>
         /// <param name="services">Services the component provides.</param>
-        /// <param name="extendedProperties">Data associated with the component.</param>
+        /// <param name="metadata">Data associated with the component.</param>
         public ComponentRegistration(
             Guid id,
             IInstanceActivator activator,
@@ -53,7 +55,7 @@ namespace Autofac.Core.Registration
             InstanceSharing sharing,
             InstanceOwnership ownership,
             IEnumerable<Service> services,
-            IDictionary<string, object> extendedProperties)
+            IDictionary<string, object> metadata)
         {
             Id = id;
             Activator = Enforce.ArgumentNotNull(activator, "activator");
@@ -62,8 +64,42 @@ namespace Autofac.Core.Registration
             Ownership = ownership;
             Services = Enforce.ArgumentElementNotNull(
                 Enforce.ArgumentNotNull(services, "services"), "services").ToList();
-            ExtendedProperties = new Dictionary<string, object>(
-                Enforce.ArgumentNotNull(extendedProperties, "extendedProperties"));
+            Metadata = new Dictionary<string, object>(
+                Enforce.ArgumentNotNull(metadata, "metadata"));
+        }
+
+        /// <summary>
+        /// Create a new component registration.
+        /// </summary>
+        /// <param name="id">Unique identifier for the component.</param>
+        /// <param name="activator">Activator used to activate instances.</param>
+        /// <param name="lifetime">Determines how the component will be associated with its lifetime.</param>
+        /// <param name="sharing">Whether the component is shared within its lifetime scope.</param>
+        /// <param name="ownership">Whether the component instances are disposed at the end of their lifetimes.</param>
+        /// <param name="services">Services the component provides.</param>
+        /// <param name="metadata">Data associated with the component.</param>
+        /// <param name="target">The component registration upon which this registration is based.</param>
+        public ComponentRegistration(
+            Guid id,
+            IInstanceActivator activator,
+            IComponentLifetime lifetime,
+            InstanceSharing sharing,
+            InstanceOwnership ownership,
+            IEnumerable<Service> services,
+            IDictionary<string, object> metadata,
+            IComponentRegistration target)
+         : this(id, activator, lifetime, sharing, ownership, services, metadata)
+        {
+            _target = Enforce.ArgumentNotNull(target, "target");
+        }
+
+        /// <summary>
+        /// The component registration upon which this registration is based.
+        /// If this registration was created directly by the user, returns this.
+        /// </summary>
+        public IComponentRegistration Target
+        {
+            get { return _target ?? this; }
         }
 
         /// <summary>
@@ -100,7 +136,7 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// Additional data associated with the component.
         /// </summary>
-        public IDictionary<string, object> ExtendedProperties { get; private set; }
+        public IDictionary<string, object> Metadata { get; private set; }
 
         /// <summary>
         /// Fired when a new instance is required. The instance can be

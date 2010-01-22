@@ -218,7 +218,7 @@ namespace Autofac.Integration.Mef
                     })
                     .As(exportId, contractService)
                     .ExternallyOwned()
-                    .WithExtendedProperties(exportDef.Metadata);
+                    .WithMetadata(exportDef.Metadata);
 
                 var additionalServices = exposedServicesMapper(exportDef).ToArray();
 
@@ -227,7 +227,7 @@ namespace Autofac.Integration.Mef
                     builder.Register(c => ((Export)c.Resolve(exportId)).Value)
                         .As(additionalServices)
                         .ExternallyOwned()
-                        .WithExtendedProperties(exportDef.Metadata);
+                        .WithMetadata(exportDef.Metadata);
                 }
             }
         }
@@ -290,7 +290,7 @@ namespace Autofac.Integration.Mef
                 })
                 .As(contractService)
                 .ExternallyOwned()
-                .WithExtendedProperties(exportConfiguration.Metadata);
+                .WithMetadata(exportConfiguration.Metadata);
 
             registry.Register(RegistrationBuilder.CreateRegistration(rb));
         }
@@ -341,7 +341,7 @@ namespace Autofac.Integration.Mef
                 .RegistrationsFor(contractService)
                 .Where(cpt =>
                     !cbid.RequiredMetadata
-                        .Except(cpt.ExtendedProperties.Select(m => new KeyValuePair<string, Type>(m.Key, m.Value.GetType())))
+                        .Except(cpt.Metadata.Select(m => new KeyValuePair<string, Type>(m.Key, m.Value.GetType())))
                         .Any())
                 .ToList();
 

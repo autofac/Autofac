@@ -96,8 +96,8 @@ namespace Autofac.Tests.Core.Activators.Reflection
             var s = "s";
 
 			var builder = new ContainerBuilder();
-			builder.RegisterInstance<object>(o);
-			builder.RegisterInstance<string>(s);
+			builder.RegisterInstance(o);
+			builder.RegisterInstance(s);
 			var container = builder.Build();
 
             var target = Factory.CreateReflectionActivator(typeof(Dependent));

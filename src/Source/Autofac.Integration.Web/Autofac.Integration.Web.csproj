@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Autofac.Integration.Web</RootNamespace>
     <AssemblyName>Autofac.Integration.Web</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\SharedKey.snk</AssemblyOriginatorKeyFile>
@@ -33,6 +33,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -102,9 +103,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AutofacControllerFactoryResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Mvc\ExtensibleActionInvoker.cs" />
     <Compile Include="Mvc\RegistrationExtensions.cs" />
     <Compile Include="Mvc\DefaultControllerIdentificationStrategy.cs" />
-    <Compile Include="Mvc\FilterInjectionActionInvoker.cs" />
     <Compile Include="Mvc\IControllerIdentificationStrategy.cs" />
     <Compile Include="NoInjection.cs" />
     <Compile Include="PageInjectionBehaviour.cs" />

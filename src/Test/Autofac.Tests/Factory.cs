@@ -34,7 +34,7 @@ namespace Autofac.Tests
                 sharing,
                 InstanceOwnership.OwnedByLifetimeScope,
                 services,
-                NoExtendedProperties);
+                NoMetadata);
         }
 
         public static IComponentRegistration CreateSingletonObjectRegistration()
@@ -78,6 +78,6 @@ namespace Autofac.Tests
         public static readonly IComponentContext EmptyContext = new Container();
         public static readonly IEnumerable<Parameter> NoParameters = Enumerable.Empty<Parameter>();
         public static readonly IEnumerable<Parameter> NoProperties = Enumerable.Empty<Parameter>();
-        public static readonly IDictionary<string, object> NoExtendedProperties = new Dictionary<string, object>();
+        public static readonly IDictionary<string, object> NoMetadata = new Dictionary<string, object>();
     }
 }

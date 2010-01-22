@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
@@ -62,28 +63,26 @@ namespace Autofac.Features.OwnedInstances
 
                 return registrationAccessor(ownedInstanceService)
                     .Select(r =>
-                        new ComponentRegistration(
-                            Guid.NewGuid(),
-                            new DelegateActivator(ts.ServiceType, (c, p) =>
+                    {
+                        var rb = RegistrationBuilder.ForDelegate(ts.ServiceType, (c, p) =>
                             {
                                 var lifetime = c.Resolve<ILifetimeScope>().BeginLifetimeScope();
                                 try
                                 {
                                     var value = lifetime.Resolve(r, p);
-                                    return Activator.CreateInstance(ts.ServiceType, new object[] { value, lifetime });
+                                    return Activator.CreateInstance(ts.ServiceType, new [] { value, lifetime });
                                 }
                                 catch
                                 {
                                     lifetime.Dispose();
                                     throw;
                                 }
-                            }),
-                            new CurrentScopeLifetime(),
-                            InstanceSharing.None,
-                            InstanceOwnership.ExternallyOwned,
-                            new Service[] { service },
-                            new Dictionary<string, object>()))
-                    .Cast<IComponentRegistration>();
+                            })
+                            .As(service)
+                            .Targeting(r);
+
+                        return RegistrationBuilder.CreateRegistration(rb);
+                    });
             }
 
             return Enumerable.Empty<IComponentRegistration>();

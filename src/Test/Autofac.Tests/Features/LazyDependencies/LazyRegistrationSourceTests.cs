@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autofac.Integration.Mef;
+using Autofac.Features.LazyDependencies;
 using NUnit.Framework;
 
-namespace Autofac.Tests.Integration.Mef
+namespace Autofac.Tests.Features.LazyDependencies
 {
     [TestFixture]
     public class LazyRegistrationSourceTests
@@ -20,7 +17,6 @@ namespace Autofac.Tests.Integration.Mef
         static IContainer GetContainerWithLazyObject()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterSource(new LazyRegistrationSource());
             builder.RegisterType<object>();
             return builder.Build();
         }
@@ -29,7 +25,6 @@ namespace Autofac.Tests.Integration.Mef
         public void WhenTIsRegisteredByName_CanResolveLazyTByName()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterSource(new LazyRegistrationSource());
             builder.RegisterType<object>().Named<object>("foo");
             var container = builder.Build();
             Assert.That(container.IsRegistered<Lazy<object>>("foo"));

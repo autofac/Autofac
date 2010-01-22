@@ -10,12 +10,12 @@ namespace Autofac.Tests.Configuration
     public class ConfigurationSettingsReaderFixture
     {
         [Test]
-        public void ReadsExtendedProperties()
+        public void ReadsMetadata()
         {
-            var container = ConfigureContainer("ExtendedProperties");
+            var container = ConfigureContainer("Metadata");
             IComponentRegistration registration;
             Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(new NamedService("a", typeof(object)), out registration));
-            Assert.AreEqual(42, (int)registration.ExtendedProperties["answer"]);
+            Assert.AreEqual(42, (int)registration.Metadata["answer"]);
         }
 
         [Test]

@@ -32,13 +32,13 @@ using Autofac.Util;
 namespace Autofac.Builder
 {
     /// <summary>
-    /// Used with the WithExtendedProperties configuration method to
+    /// Used with the WithMetadata configuration method to
     /// associate key-value pairs with an <see cref="IComponentRegistration"/>.
     /// </summary>
     /// <typeparam name="TMetadata">Interface with properties whose names correspond to
     /// the property keys.</typeparam>
     /// <remarks>This feature was suggested by OJ Reeves (@TheColonial).</remarks>
-    public class ExtendedPropertyConfiguration<TMetadata>
+    public class MetadataConfiguration<TMetadata>
     {
         readonly IDictionary<string, object> _properties = new Dictionary<string, object>();
 

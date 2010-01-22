@@ -86,7 +86,7 @@ namespace Autofac.Features.Collections
         static bool IsElementRegistration(string collectionName, IComponentRegistration cr)
         {
             object crMembership;
-            return cr.ExtendedProperties.TryGetValue(MemberOfPropertyKey, out crMembership) &&
+            return cr.Metadata.TryGetValue(MemberOfPropertyKey, out crMembership) &&
                 ((IEnumerable<string>)crMembership).Contains(collectionName);
         }
 
@@ -101,7 +101,7 @@ namespace Autofac.Features.Collections
 
             registration.OnRegistered(e =>
             {
-                var ep = e.ComponentRegistration.ExtendedProperties;
+                var ep = e.ComponentRegistration.Metadata;
                 if (ep.ContainsKey(MemberOfPropertyKey))
                 {
                     ep[MemberOfPropertyKey] =

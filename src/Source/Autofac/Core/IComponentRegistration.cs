@@ -67,7 +67,12 @@ namespace Autofac.Core
         /// <summary>
         /// Additional data associated with the component.
         /// </summary>
-        IDictionary<string, object> ExtendedProperties { get; }
+        IDictionary<string, object> Metadata { get; }
+
+        /// <summary>
+        /// The component registration upon which this registration is based.
+        /// </summary>
+        IComponentRegistration Target { get; }
 
         /// <summary>
         /// Fired when a new instance is required. The instance can be

@@ -11,7 +11,7 @@ using Autofac.Core;
 namespace Autofac.Tests.Integration.Web.Mvc
 {
 	[TestFixture]
-	public class FilterInjectionActionInvokerFixture
+	public class ExtensibleActionInvokerFixture
 	{
 		IContainer _container;
 		ControllerContext _context;
@@ -21,14 +21,13 @@ namespace Autofac.Tests.Integration.Web.Mvc
 		public void Setup()
 		{
 			var builder = new ContainerBuilder();
-			builder.Register(c => new TestableActionInvoker(c));
+			builder.RegisterType<TestableActionInvoker>();
             builder.Register(c => new TestDependency());
 			_container = builder.Build();
 
 			_controller = new TestController();
-			_context = new ControllerContext();
-			_context.Controller = _controller;
-			_controller.ControllerContext = _context;
+			_context = new ControllerContext { Controller = _controller };
+		    _controller.ControllerContext = _context;
 		}
 
 		[Test]
@@ -42,7 +41,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
 			AssertFiltersInjected(filters.ResultFilters);
 		}
 
-		private void AssertFiltersInjected(IEnumerable filters)
+		private static void AssertFiltersInjected(IEnumerable filters)
 		{
 			foreach(var filter in filters.Cast<IHasDependency>())
 			{
@@ -50,9 +49,14 @@ namespace Autofac.Tests.Integration.Web.Mvc
 			}
 		}
 
-		private class TestableActionInvoker : FilterInjectionActionInvoker
+        private class TestableActionInvoker : ExtensibleActionInvoker
 		{
-			public TestableActionInvoker(IComponentContext context) : base(context)
+			public TestableActionInvoker(IComponentContext context,
+                IEnumerable<IActionFilter> actionFilters,
+                IEnumerable<IAuthorizationFilter> authorizationFilters,
+                IEnumerable<IExceptionFilter> exceptionFilters,
+                IEnumerable<IResultFilter> resultFilters)
+                : base(context, actionFilters, authorizationFilters, exceptionFilters, resultFilters)
 			{
 			}
 

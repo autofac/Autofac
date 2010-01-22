@@ -31,7 +31,7 @@ namespace Autofac.Configuration
     /// <summary>
     /// Element describing a component property.
     /// </summary>
-    public class ExtendedPropertyElement : ConfigurationElement
+    public class MetadataElement : ConfigurationElement
     {
         const string NameAttributeName = "name";
         const string ValueAttributeName = "value";

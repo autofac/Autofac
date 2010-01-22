@@ -30,8 +30,14 @@ using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
 
-namespace Autofac.Integration.Mef
+namespace Autofac.Features.LazyDependencies
 {
+    /// <summary>
+    /// Support the <see cref="System.Lazy{T}"/> 
+    /// type automatically whenever type T is registered with the container.
+    /// When a dependency of a lazy type is used, the instantiation of the underlying
+    /// component will be delayed until the Value property is first accessed.
+    /// </summary>
     class LazyRegistrationSource : IRegistrationSource
     {
         static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyRegistrationSource).GetMethod(
@@ -62,9 +68,10 @@ namespace Autofac.Integration.Mef
                 (c, p) =>
                 {
                     var context = c.Resolve<IComponentContext>();
-                    return new Lazy<T>(() => (T)c.Resolve(valueRegistration, p));
+                    return new Lazy<T>(() => (T)context.Resolve(valueRegistration, p));
                 })
-                .As(providedService);
+                .As(providedService)
+                .Targeting(valueRegistration);
 
             return RegistrationBuilder.CreateRegistration(rb);
         }

@@ -178,24 +178,24 @@ namespace Autofac.Tests
         }
 
         [Test]
-        public void WithExtendedProperties()
+        public void WithMetadata()
         {
             var p1 = new KeyValuePair<string, object>("p1", "p1Value");
             var p2 = new KeyValuePair<string, object>("p2", "p2Value");
 
             var builder = new ContainerBuilder();
             builder.RegisterType<object>()
-                .WithExtendedProperty(p1.Key, p1.Value)
-                .WithExtendedProperty(p2.Key, p2.Value);
+                .WithMetadata(p1.Key, p1.Value)
+                .WithMetadata(p2.Key, p2.Value);
 
             var container = builder.Build();
 
             IComponentRegistration registration;
             Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(new TypedService(typeof(object)), out registration));
 
-            Assert.AreEqual(2, registration.ExtendedProperties.Count);
-            Assert.IsTrue(registration.ExtendedProperties.Contains(p1));
-            Assert.IsTrue(registration.ExtendedProperties.Contains(p2));
+            Assert.AreEqual(2, registration.Metadata.Count);
+            Assert.IsTrue(registration.Metadata.Contains(p1));
+            Assert.IsTrue(registration.Metadata.Contains(p2));
         }
 
         [Test]
@@ -353,7 +353,7 @@ namespace Autofac.Tests
             IComponentRegistry registry = null;
             IComponentRegistration cr = null;
             builder.RegisterType<object>()
-                .WithExtendedProperty(marker, marker)
+                .WithMetadata(marker, marker)
                 .OnRegistered(e =>
                 {
                     registry = e.ComponentRegistry;
@@ -363,7 +363,7 @@ namespace Autofac.Tests
             var container = builder.Build();
 
             Assert.AreSame(container.ComponentRegistry, registry);
-            Assert.AreSame(marker, cr.ExtendedProperties[marker]);
+            Assert.AreSame(marker, cr.Metadata[marker]);
         }
 
         void AssertIsContainerScoped<TSvc>(IComponentContext ctx1, IComponentContext ctx2)

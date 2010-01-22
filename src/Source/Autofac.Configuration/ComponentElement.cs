@@ -38,7 +38,7 @@ namespace Autofac.Configuration
         const string ServicesElementName = "services";
 		const string ParametersElementName = "parameters";
         const string PropertiesElementName = "properties";
-        const string ExtendedPropertiesElementName = "extendedProperties";
+        const string MetadataElementName = "metadata";
         const string MemberOfAttributeName = "member-of";
         const string NameAttributeName = "name";
         const string InstanceScopeAttributeName = "instance-scope";
@@ -182,12 +182,12 @@ namespace Autofac.Configuration
         /// Gets the extended properties associated with the registration.
         /// </summary>
         /// <value>The extended properties.</value>
-        [ConfigurationProperty(ExtendedPropertiesElementName, IsRequired = false)]
-        public ExtendedPropertyElementCollection ExtendedProperties
+        [ConfigurationProperty(MetadataElementName, IsRequired = false)]
+        public MetadataElementCollection Metadata
         {
             get
             {
-                return (ExtendedPropertyElementCollection)this[ExtendedPropertiesElementName];
+                return (MetadataElementCollection)this[MetadataElementName];
             }
         }
     }
