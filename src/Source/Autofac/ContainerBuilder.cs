@@ -28,10 +28,13 @@ using System.Collections.Generic;
 using Autofac.Core;
 using Autofac.Features.Collections;
 using Autofac.Features.GeneratedFactories;
-using Autofac.Features.LazyDependencies;
-using Autofac.Features.Metadata;
 using Autofac.Features.OwnedInstances;
 using Autofac.Util;
+
+#if !(NET35)
+using Autofac.Features.LazyDependencies;
+using Autofac.Features.Metadata;
+#endif
 
 namespace Autofac
 {
@@ -118,9 +121,11 @@ namespace Autofac
                 componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
                 componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
                 componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
+#if !(NET35)
                 componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
                 componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
                 componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
+#endif
             }
         }
 	}

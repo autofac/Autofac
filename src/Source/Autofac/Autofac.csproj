@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Autofac</RootNamespace>
     <AssemblyName>Autofac</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="$(TargetFrameworkVersion)==''">v4.0</TargetFrameworkVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\SharedKey.snk</AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>
@@ -61,10 +61,18 @@
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup Condition="$(TargetFrameworkVersion)=='v4.0'">
+    <Reference Include="System.ComponentModel.Composition" />
+  </ItemGroup>
+  <ItemGroup Condition="$(TargetFrameworkVersion)=='v4.0'">
+    <Compile Include="Features\LazyDependencies\LazyRegistrationSource.cs" />
+    <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSource.cs" />
+    <Compile Include="Features\Metadata\Meta.cs" />
+    <Compile Include="Features\Metadata\MetaRegistrationSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">
@@ -98,10 +106,6 @@
     <Compile Include="Features\GeneratedFactories\GeneratedFactoryActivatorData.cs" />
     <Compile Include="Builder\IActivatorGenerator.cs" />
     <Compile Include="Builder\IHideObjectMembers.cs" />
-    <Compile Include="Features\LazyDependencies\LazyRegistrationSource.cs" />
-    <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSource.cs" />
-    <Compile Include="Features\Metadata\Meta.cs" />
-    <Compile Include="Features\Metadata\MetaRegistrationSource.cs" />
     <Compile Include="Features\ResolveAnything\AnyConcreteTypeNotAlreadyRegisteredSource.cs" />
     <Compile Include="Features\Scanning\ScanningActivatorData.cs" />
     <Compile Include="Core\ActivatedEventArgs.cs" />

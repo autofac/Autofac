@@ -8,11 +8,14 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
-[assembly: AssemblyVersion("2.1.8.721")]
-[assembly: AssemblyFileVersion("2.1.8.721")]
-[assembly: AssemblyConfiguration("Release built on 2010-01-10 14:23")]
+[assembly: AssemblyVersion("3.3.3.3")]
+[assembly: AssemblyFileVersion("3.3.3.3")]
+[assembly: AssemblyConfiguration("Release built on 2010-01-22 22:40")]
 
 
 [assembly: System.Security.AllowPartiallyTrustedCallers]

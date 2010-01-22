@@ -36,12 +36,19 @@
 	</PropertyGroup>
 
 	<!--Default-->
-	<PropertyGroup Condition="$(BuildFramework)==''">
-		<PackageName>$(ProjectName)-$(Version)</PackageName>
-		<BuildConstants>NET35</BuildConstants>
-	</PropertyGroup>
-	
-	<!--Silverlight 2.0 runtime-->
+  <PropertyGroup Condition="$(BuildFramework)==''">
+    <PackageName>$(ProjectName)-$(Version)-NET40</PackageName>
+    <BuildConstants>NET40</BuildConstants>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(BuildFramework)=='NET35'">
+    <PackageName>$(ProjectName)-$(Version)-NET35</PackageName>
+    <BuildConstants>NET35</BuildConstants>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+
+  <!--Silverlight 2.0 runtime-->
 	<PropertyGroup Condition="$(BuildFramework)=='SL2'">
 		<BuildTargets>Silverlight 2.0</BuildTargets>
 		<BuildConstants>SILVERLIGHT</BuildConstants>
@@ -58,11 +65,11 @@
 	 Solution redirects. Every VS project normally knows how to support these targets
 		-->
 	<Target Name="Build">
-		<MSBuild Projects="$(ProjectName).sln" Targets="Build" Properties="Configuration=$(Configuration)$(BuildFramework);BuildConstants=$(BuildConstants);MSBuildTargets=$(BuildTargets)"/>
+		<MSBuild Projects="$(ProjectName).sln" Targets="Build" Properties="Configuration=$(Configuration)$(BuildFramework);BuildConstants=$(BuildConstants);MSBuildTargets=$(BuildTargets);TargetFrameworkVersion=$(TargetFrameworkVersion)"/>
 	</Target>
 
 	<Target Name="Clean">
-		<MSBuild Projects="$(ProjectName).sln" Targets="Clean" Properties="Configuration=$(Configuration)$(BuildFramework);BuildConstants=$(BuildConstants);MSBuildTargets=$(BuildTargets)" />
+		<MSBuild Projects="$(ProjectName).sln" Targets="Clean" Properties="Configuration=$(Configuration)$(BuildFramework);BuildConstants=$(BuildConstants);MSBuildTargets=$(BuildTargets);TargetFrameworkVersion=$(TargetFrameworkVersion)" />
 
 		<CreateItem Include="**/Debug/**/*.*;**/Release/**/*.*">
 			<Output ItemName="_binaryFiles" TaskParameter="Include"/>
@@ -205,7 +212,7 @@
 	</Target>
 
 
-	<Target Name="GenerateHelp" DependsOnTargets="Build;Copy" Condition="$(BuildFramework)==''">
+	<Target Name="GenerateHelp" DependsOnTargets="Build;Copy" Condition="$(BuildFramework)=='NET35'">
 		<Exec Command="Resource\Tool\SHFB\SandcastleBuilderConsole.exe $(ProjectName).shfb" />
 	</Target>
 
