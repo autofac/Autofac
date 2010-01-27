@@ -73,10 +73,7 @@ namespace Autofac
         public void Configure(IComponentRegistry componentRegistry)
         {
             Enforce.ArgumentNotNull(componentRegistry, "componentRegistry");
-            componentRegistry.Configure(builder =>
-            {
-                Load(builder);
-            });
+            componentRegistry.Configure(Load);
             AttachToRegistrations(componentRegistry);
         }
 
@@ -84,12 +81,11 @@ namespace Autofac
         /// Override to add registrations to the container.
         /// </summary>
         /// <remarks>
-        /// Note that the ContainerBuilder parameter is not the same one
-	    /// that the module is being registered by (i.e. it can have its own defaults.)
+        /// Note that the ContainerBuilder parameter is unique to this module.
         /// </remarks>
-		/// <param name="moduleBuilder">The builder through which components can be
+		/// <param name="builder">The builder through which components can be
         /// registered.</param>
-        protected virtual void Load(ContainerBuilder moduleBuilder) { }
+        protected virtual void Load(ContainerBuilder builder) { }
 
         /// <summary>
         /// Override to attach module-specific functionality to a
@@ -108,7 +104,7 @@ namespace Autofac
         void AttachToRegistrations(IComponentRegistry componentRegistry)
         {
             Enforce.ArgumentNotNull(componentRegistry, "componentRegistry");
-            foreach (IComponentRegistration registration in componentRegistry.Registrations)
+            foreach (var registration in componentRegistry.Registrations)
                 AttachToComponentRegistration(componentRegistry, registration);
             componentRegistry.Registered +=
                 (sender, e) => AttachToComponentRegistration(e.ComponentRegistry, e.ComponentRegistration);

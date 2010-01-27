@@ -41,7 +41,7 @@ namespace Autofac.Features.Collections
         const string MemberOfPropertyKey = "Autofac.CollectionRegistrationExtensions.MemberOf";
 
         public static RegistrationBuilder<T[], SimpleActivatorData, SingleRegistrationStyle>
-            RegisterCollection<T>(this ContainerBuilder builder, string collectionName, Type elementType)
+            RegisterCollection<T>(ContainerBuilder builder, string collectionName, Type elementType)
         {
             Enforce.ArgumentNotNull(builder, "builder");
             Enforce.ArgumentNotNull(elementType, "elementType");
@@ -92,7 +92,7 @@ namespace Autofac.Features.Collections
 
         public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             MemberOf<TLimit, TActivatorData, TSingleRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
+                RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
                 string collectionName)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {

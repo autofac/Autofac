@@ -55,7 +55,7 @@ namespace Autofac.Core.Activators.Reflection
                 bool foundValue = false;
                 foreach (var param in availableParameters)
                 {
-                    Func<object> valueRetriever = null;
+                    Func<object> valueRetriever;
                     if (param.CanSupplyValue(pi, context, out valueRetriever))
                     {
                         _valueRetrievers[i] = valueRetriever;
@@ -97,8 +97,8 @@ namespace Autofac.Core.Activators.Reflection
             {
                 if (CanInstantiate)
                     return string.Format(ConstructorParameterBindingResources.BoundConstructor, _ci);
-                else
-                    return string.Format(ConstructorParameterBindingResources.NonBindableConstructor, _ci, _firstNonBindableParameter);
+                
+                return string.Format(ConstructorParameterBindingResources.NonBindableConstructor, _ci, _firstNonBindableParameter);
             }
         }
 
