@@ -64,8 +64,10 @@ namespace Autofac.Tests.Features.ResolveAnything
         [Test]
         public void AServiceAlreadyRegisteredWillNotBeProvided()
         {
-            var container = CreateResolveAnythingContainer();
-            container.Configure(cb => cb.RegisterType<RegisteredType>());
+            var cb = new ContainerBuilder();
+            cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+            cb.RegisterType<RegisteredType>();
+            var container = cb.Build();
             Assert.IsTrue(container.IsRegistered<RegisteredType>());
             Assert.AreEqual(1, container.Resolve<IEnumerable<object>>().Count());
         }

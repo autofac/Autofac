@@ -19,13 +19,11 @@ namespace Autofac.Tests
         [Test]
         public void RegistrationsMadeInConfigureExpressionAreAddedToContainer()
         {
-            using (var container = new Container())
-            {
-                container.Configure(b => b.RegisterType<MyComponent>().As<IMyService>());
+            var ls = new Container()
+                .BeginLifetimeScope(b => b.RegisterType<MyComponent>().As<IMyService>());
 
-                var component = container.Resolve<IMyService>();
-                Assert.IsTrue(component is MyComponent);
-            }
+            var component = ls.Resolve<IMyService>();
+            Assert.IsTrue(component is MyComponent);
         }
     }
 }

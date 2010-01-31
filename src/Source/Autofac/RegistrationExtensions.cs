@@ -829,45 +829,5 @@ namespace Autofac
         {
             return ScanningRegistrationExtensions.AsClosedTypesOf(registration, openGenericServiceType);
         }
-
-        /// <summary>
-        /// Add components to an existing component registry.
-        /// </summary>
-        /// <param name="componentRegistry">The componennt registry.</param>
-        /// <param name="configureAction">Callback to add registrations to a provided <see cref="ContainerBuilder"/>.</param>
-        /// <example>
-        /// IComponentRegistry cr = // ...
-        /// cr.Configure(builder => {
-        ///     builder.RegisterType&lt;Foo&gt;();
-        ///     builder.RegisterType&lt;Bar&gt;().As&lt;IBar&gt;();
-        /// });
-        /// </example>
-        public static void Configure(this IComponentRegistry componentRegistry, Action<ContainerBuilder> configureAction)
-        {
-            Enforce.ArgumentNotNull(componentRegistry, "componentRegistry");
-            Enforce.ArgumentNotNull(configureAction, "configureAction");
-
-            var builder = new ContainerBuilder() { ExcludeDefaultModules = true };
-            configureAction(builder);
-            builder.Build(componentRegistry);
-        }
-
-        /// <summary>
-        /// Add components to an existing container.
-        /// </summary>
-        /// <param name="container">The container.</param>
-        /// <param name="configureAction">Callback to add registrations to a provided <see cref="ContainerBuilder"/>.</param>
-        /// <example>
-        /// var container = new Container();
-        /// container.Configure(builder => {
-        ///     builder.RegisterType&lt;Foo&gt;();
-        ///     builder.RegisterType&lt;Bar&gt;().As&lt;IBar&gt;();
-        /// });
-        /// </example>
-        public static void Configure(this IContainer container, Action<ContainerBuilder> configureAction)
-        {
-            Enforce.ArgumentNotNull(container, "container");
-            container.ComponentRegistry.Configure(configureAction);
-        }
     }
 }

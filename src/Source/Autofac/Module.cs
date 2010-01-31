@@ -73,7 +73,9 @@ namespace Autofac
         public void Configure(IComponentRegistry componentRegistry)
         {
             Enforce.ArgumentNotNull(componentRegistry, "componentRegistry");
-            componentRegistry.Configure(Load);
+            var moduleBuilder = new ContainerBuilder { ExcludeDefaultModules = true };
+            Load(moduleBuilder);
+            moduleBuilder.Build(componentRegistry);
             AttachToRegistrations(componentRegistry);
         }
 

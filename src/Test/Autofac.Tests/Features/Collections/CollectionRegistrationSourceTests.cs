@@ -65,7 +65,10 @@ namespace Autofac.Tests.Features.Collections
             cb.RegisterInstance("Hello");
             var c = cb.Build();
             Assert.AreEqual(1, c.Resolve<IEnumerable<string>>().Count());
-            c.Configure(cb2 => cb2.RegisterInstance("World"));
+
+            c.ComponentRegistry.Register(
+                RegistrationBuilder.CreateRegistration(
+                    RegistrationBuilder.ForDelegate((ctx,p) => "World")));
 
             Assert.AreEqual(2, c.Resolve<IEnumerable<string>>().Count());
         }

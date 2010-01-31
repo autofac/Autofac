@@ -35,7 +35,7 @@ namespace Autofac.Core
     /// <summary>
     /// Standard container implementation.
     /// </summary>
-    public class Container : Disposable, IContainer, ILifetimeScope, IDisposable, IServiceProvider
+    public class Container : Disposable, IContainer, IServiceProvider
     {
         readonly IComponentRegistry _componentRegistry;
 
@@ -75,6 +75,19 @@ namespace Autofac.Core
         public ILifetimeScope BeginLifetimeScope()
         {
             return _rootLifetimeScope.BeginLifetimeScope();
+        }
+
+        /// <summary>
+        /// Begin a new nested scope, with additional components available to it.
+        /// Component instances created via the new scope
+        /// will be disposed along with it.
+        /// </summary>
+        /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
+        /// that adds component registations visible only in the new scope.</param>
+        /// <returns>A new lifetime scope.</returns>
+        public ILifetimeScope BeginLifetimeScope(Action<ContainerBuilder> configurationAction)
+        {
+            return _rootLifetimeScope.BeginLifetimeScope(configurationAction);
         }
 
         /// <summary>

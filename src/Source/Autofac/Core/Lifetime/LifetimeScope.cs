@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
 using Autofac.Util;
 
@@ -87,6 +88,38 @@ namespace Autofac.Core.Lifetime
             lock (_synchRoot)
             {
                 return new LifetimeScope(_componentRegistry, this);
+            }
+        }
+
+        /// <summary>
+        /// Begin a new nested scope, with additional components available to it.
+        /// Component instances created via the new scope
+        /// will be disposed along with it.
+        /// </summary>
+        /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
+        /// that adds component registations visible only in the new scope.</param>
+        /// <returns>A new lifetime scope.</returns>
+        /// <example>
+        /// IContainer cr = // ...
+        /// using (var lifetime = cr.BeginLifetimeScope(builder =&gt; {
+        ///         builder.RegisterType&lt;Foo&gt;();
+        ///         builder.RegisterType&lt;Bar&gt;().As&lt;IBar&gt;(); })
+        /// {
+        ///     var foo = lifetime.Resolve&lt;Foo&gt;();
+        /// }
+        /// </example>
+        public ILifetimeScope BeginLifetimeScope(Action<ContainerBuilder> configurationAction)
+        {
+            if (configurationAction == null) throw new ArgumentNullException("configurationAction");
+
+            lock (_synchRoot)
+            {
+                var registry = new ComponentRegistry();
+                var builder =  new ContainerBuilder();
+                configurationAction(builder);
+                builder.Build(registry);
+                registry.AddRegistrationSource(new ExternalRegistrySource(_componentRegistry));
+                return new LifetimeScope(registry, this);
             }
         }
 

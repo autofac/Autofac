@@ -34,7 +34,7 @@ namespace Autofac.Integration.Web
     /// </summary>
     public class ContainerProviderContainer : IContainer
     {
-        private readonly IContainerProvider containerProvider;
+        private readonly IContainerProvider _containerProvider;
 
         /// <summary>
         /// Initializes a new instance of <see cref="Autofac.Integration.Web.ContainerProviderContainer"/>.
@@ -45,42 +45,60 @@ namespace Autofac.Integration.Web
             if (containerProvider == null)
                 throw new ArgumentNullException("containerProvider");
 
-            this.containerProvider = containerProvider;
+            _containerProvider = containerProvider;
         }
 
         public IComponentRegistry ComponentRegistry
         {
             get
             {
-                return containerProvider.RequestLifetime.ComponentRegistry;
+                return _containerProvider.RequestLifetime.ComponentRegistry;
             }
         }
 
         public ILifetimeScope BeginLifetimeScope()
         {
-            return containerProvider.RequestLifetime.BeginLifetimeScope();
+            return _containerProvider.RequestLifetime.BeginLifetimeScope();
+        }
+
+        /// <summary>
+        /// Begin a new nested scope, with additional components available to it.
+        /// Component instances created via the new scope
+        /// will be disposed along with it.
+        /// </summary>
+        /// <remarks>
+        /// The components registered in the sub-scope will be treated as though they were
+        /// registered in the root scope, i.e., SingleInstance() components will live as long
+        /// as the root scope.
+        /// </remarks>
+        /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
+        /// that adds component registations visible only in the new scope.</param>
+        /// <returns>A new lifetime scope.</returns>
+        public ILifetimeScope BeginLifetimeScope(Action<ContainerBuilder> configurationAction)
+        {
+            return _containerProvider.RequestLifetime.BeginLifetimeScope(configurationAction);
         }
 
         public IDisposer Disposer
         {
-            get { return containerProvider.RequestLifetime.Disposer; }
+            get { return _containerProvider.RequestLifetime.Disposer; }
         }
 
         public object Tag
         {
             get
             {
-                return containerProvider.RequestLifetime.Tag;
+                return _containerProvider.RequestLifetime.Tag;
             }
             set
             {
-                containerProvider.RequestLifetime.Tag = value;
+                _containerProvider.RequestLifetime.Tag = value;
             }
         }
 
         public object Resolve(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
-            return containerProvider.RequestLifetime.Resolve(registration, parameters);
+            return _containerProvider.RequestLifetime.Resolve(registration, parameters);
         }
 
         public void Dispose()

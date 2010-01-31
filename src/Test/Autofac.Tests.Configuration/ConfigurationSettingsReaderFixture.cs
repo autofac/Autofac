@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Autofac.Builder;
 using Autofac.Configuration;
 using NUnit.Framework;
 using Autofac.Core;
@@ -12,7 +11,7 @@ namespace Autofac.Tests.Configuration
         [Test]
         public void ReadsMetadata()
         {
-            var container = ConfigureContainer("Metadata");
+            var container = ConfigureContainer("Metadata").Build();
             IComponentRegistration registration;
             Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(new NamedService("a", typeof(object)), out registration));
             Assert.AreEqual(42, (int)registration.Metadata["answer"]);
@@ -21,7 +20,7 @@ namespace Autofac.Tests.Configuration
         [Test]
         public void IncludesFileReferences()
         {
-            var container = ConfigureContainer("Referrer");
+            var container = ConfigureContainer("Referrer").Build();
             container.AssertRegistered<object>("a");
         }
 
@@ -39,7 +38,7 @@ namespace Autofac.Tests.Configuration
         [Test]
         public void SingletonWithTwoServices()
         {
-            var container = ConfigureContainer("SingletonWithTwoServices");
+            var container = ConfigureContainer("SingletonWithTwoServices").Build();
             container.AssertRegistered<IA>();
             container.AssertRegistered<object>();
             container.AssertNotRegistered<A>();
@@ -49,7 +48,7 @@ namespace Autofac.Tests.Configuration
         [Test]
         public void ParametersProvided()
         {
-            var container = ConfigureContainer("SingletonWithTwoServices");
+            var container = ConfigureContainer("SingletonWithTwoServices").Build();
             var cpt = (A)container.Resolve<IA>();
             Assert.AreEqual(1, cpt.I);
         }
@@ -57,7 +56,7 @@ namespace Autofac.Tests.Configuration
         [Test]
         public void PropertiesProvided()
         {
-            var container = ConfigureContainer("SingletonWithTwoServices");
+            var container = ConfigureContainer("SingletonWithTwoServices").Build();
             var cpt = (A)container.Resolve<IA>();
             Assert.AreEqual("hello", cpt.Message);
         }
@@ -67,7 +66,7 @@ namespace Autofac.Tests.Configuration
         [Test]
         public void FactoryScope()
         {
-            var container = ConfigureContainer("BPerDependency");
+            var container = ConfigureContainer("BPerDependency").Build();
             Assert.AreNotSame(container.Resolve<B>(), container.Resolve<B>());
         }
 
@@ -79,7 +78,7 @@ namespace Autofac.Tests.Configuration
         [Test]
         public void ConfiguresBooleanProperties()
         {
-            var container = ConfigureContainer("CWithBoolean");
+            var container = ConfigureContainer("CWithBoolean").Build();
             var c = container.Resolve<C>();
             Assert.IsTrue(c.ABool);
         }
@@ -87,7 +86,7 @@ namespace Autofac.Tests.Configuration
         [Test]
         public void SetsExternalOwnership()
         {
-            var container = ConfigureContainer("BExternal");
+            var container = ConfigureContainer("BExternal").Build();
             IComponentRegistration forB;
             container.ComponentRegistry.TryGetRegistration(new TypedService(typeof(B)), out forB);
             Assert.AreEqual(InstanceOwnership.ExternallyOwned, forB.Ownership);
@@ -101,8 +100,9 @@ namespace Autofac.Tests.Configuration
         [Test]
         public void SetsPropertyInjection()
         {
-            var container = ConfigureContainer("EWithPropertyInjection");
-            container.Configure(b => b.RegisterType<B>());
+            var builder = ConfigureContainer("EWithPropertyInjection");
+            builder.RegisterType<B>();
+            var container = builder.Build();
             var e = container.Resolve<E>();
             Assert.IsNotNull(e.B);
         }
@@ -112,30 +112,22 @@ namespace Autofac.Tests.Configuration
         [Test]
         public void ConfiguresMemberOf()
         {
-            var builder = new ContainerBuilder();
+            var builder = ConfigureContainer("MemberOf");
             builder.RegisterCollection<IA>("ia")
                     .As<IList<IA>>();
             var container = builder.Build();
-            
-            ConfigureContainer(container, "MemberOf");
-
             var collection = container.Resolve<IList<IA>>();
             var first = collection[0];
             Assert.IsInstanceOf(typeof(D), first);
         }
 
-        void ConfigureContainer(IContainer container, string configFile)
+        static ContainerBuilder ConfigureContainer(string configFile)
         {
+            var cb = new ContainerBuilder();
             var fullFilename = configFile + ".config";
             var csr = new ConfigurationSettingsReader(ConfigurationSettingsReader.DefaultSectionName, fullFilename);
-            container.Configure(builder => builder.RegisterModule(csr));
-        }
-
-        IContainer ConfigureContainer(string configFile)
-        {
-            var container = new Container();
-            ConfigureContainer(container, configFile);
-            return container;
+            cb.RegisterModule(csr);
+            return cb;
         }
     }
 }
