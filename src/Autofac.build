@@ -95,7 +95,8 @@
 		<MakeDir Directories="$(BuildPath);"/>
 		
 		<!--Libraries-->
-		<CreateItem Include="$(LibrarySource)\*.*;$(WebSource)\*.*;$(MefSource)\*.*;$(WcfSource)\*.*;$(ConfigSource)\*.*">
+		<CreateItem
+      Include="$(LibrarySource)\*.dll;$(LibrarySource)\*.xml;$(WebSource)\*.dll;$(MefSource)\*.dll;$(WcfSource)\*.dll;$(ConfigSource)\*.dll">
 			<Output ItemName="unmergedFiles" TaskParameter="Include"/>
 		</CreateItem>
 		<Copy SourceFiles="@(unmergedFiles)" DestinationFolder="$(LibraryPath)" />
