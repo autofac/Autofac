@@ -302,14 +302,14 @@ namespace Autofac.Tests.Integration.Mef
             Assert.AreEqual(2, rm.Dependencies.Count());
         }
 
-        [Test, ExpectedException(typeof(ComponentNotRegisteredException))]
+        [Test]
         public void MissingDependencyDetected()
         {
             var builder = new ContainerBuilder();
             var catalog = new TypeCatalog(typeof(HasMissingDependency));
             builder.RegisterComposablePartCatalog(catalog);
             var container = builder.Build();
-            container.Resolve<HasMissingDependency>();
+            Assert.Throws<ComponentNotRegisteredException>(() => container.Resolve<HasMissingDependency>());
         }
 
         [Test]
@@ -415,7 +415,7 @@ namespace Autofac.Tests.Integration.Mef
             Assert.AreEqual(2, exports.Count());
         }
 
-        [Test, Ignore]
+        [Test]
         public void RestrictsExportsBasedOnValueType()
         {
             var builder = new ContainerBuilder();

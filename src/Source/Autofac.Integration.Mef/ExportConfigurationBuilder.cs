@@ -37,9 +37,11 @@ namespace Autofac.Integration.Mef
     {
         string _contractName;
         readonly IDictionary<string, object> _metadata = new Dictionary<string, object>();
+        string _exportTypeIdentity;
 
         internal string ContractName { get { return _contractName; } }
         internal IDictionary<string, object> Metadata { get { return _metadata; } }
+        internal string ExportTypeIdentity { get { return _exportTypeIdentity; } }
 
         /// <summary>
         /// Export the component under typed contract <typeparamref name="TContract"/>.
@@ -77,6 +79,12 @@ namespace Autofac.Integration.Mef
         public ExportConfigurationBuilder WithMetadata(string key, object value)
         {
             _metadata.Add(key, value);
+            if (key == CompositionConstants.ExportTypeIdentityMetadataName)
+            {
+                if (value == null) throw new ArgumentNullException("value");
+                _exportTypeIdentity = (string)value;
+            }
+
             return this;
         }
 
@@ -88,7 +96,7 @@ namespace Autofac.Integration.Mef
         public ExportConfigurationBuilder WithMetadata(IEnumerable<KeyValuePair<string, object>> metadata)
         {
             foreach (var m in metadata)
-                _metadata.Add(m);
+                WithMetadata(m.Key, m.Value);
 
             return this;
         }

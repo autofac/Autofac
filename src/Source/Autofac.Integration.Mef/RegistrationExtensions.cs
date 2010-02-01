@@ -208,7 +208,7 @@ namespace Autofac.Integration.Mef
             foreach (var iterExportDef in partDefinition.ExportDefinitions)
             {
                 var exportDef = iterExportDef;
-                var contractService = new ContractBasedService(exportDef.ContractName);
+                var contractService = new ContractBasedService(exportDef.ContractName, GetTypeIdentity(exportDef));
 
                 var exportId = new UniqueService();
                 builder.Register(c =>
@@ -230,6 +230,16 @@ namespace Autofac.Integration.Mef
                         .WithMetadata(exportDef.Metadata);
                 }
             }
+        }
+
+        static string GetTypeIdentity(ExportDefinition exportDef)
+        {
+            object typeIdentity;
+
+            if (exportDef.Metadata.TryGetValue(CompositionConstants.ExportTypeIdentityMetadataName, out typeIdentity))
+                return (string)typeIdentity;
+
+            return string.Empty;
         }
 
         /// <summary>
@@ -255,7 +265,7 @@ namespace Autofac.Integration.Mef
             if (context == null)
                 throw new ArgumentNullException("context");
 
-            return context.ComponentRegistry.RegistrationsFor(new ContractBasedService(contractName))
+            return context.ComponentRegistry.RegistrationsFor(new ContractBasedService(contractName, AttributedModelServices.GetTypeIdentity(typeof(T))))
                 .Select(cpt => context.Resolve(cpt, Enumerable.Empty<Parameter>()))
                 .Cast<Export>();
         }
@@ -279,7 +289,7 @@ namespace Autofac.Integration.Mef
 
         static void AttachExport(IComponentRegistry registry, IComponentRegistration registration, ExportConfigurationBuilder exportConfiguration)
         {
-            var contractService = new ContractBasedService(exportConfiguration.ContractName);
+            var contractService = new ContractBasedService(exportConfiguration.ContractName, exportConfiguration.ExportTypeIdentity);
 
             var rb = RegistrationBuilder.ForDelegate((c, p) =>
                 {
@@ -335,7 +345,7 @@ namespace Autofac.Integration.Mef
 
         static IEnumerable<IComponentRegistration> ComponentsForContract(this IComponentContext context, ContractBasedImportDefinition cbid)
         {
-            var contractService = new ContractBasedService(cbid.ContractName);
+            var contractService = new ContractBasedService(cbid.ContractName, cbid.RequiredTypeIdentity);
             var componentsForContract = context
                 .ComponentRegistry
                 .RegistrationsFor(contractService)

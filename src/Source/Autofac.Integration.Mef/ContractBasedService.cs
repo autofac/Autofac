@@ -33,23 +33,42 @@ namespace Autofac.Integration.Mef
     /// </summary>
     public class ContractBasedService : Service
     {
+        readonly string _exportTypeIdentity;
+        readonly string _contractName;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ContractBasedService"/> class.
         /// </summary>
         /// <param name="contractName">The contract name.</param>
-        public ContractBasedService(string contractName)
+        /// <param name="exportTypeIdentity">Type identity of the objects exported under the contract.</param>
+        public ContractBasedService(string contractName, string exportTypeIdentity)
         {
+            if (exportTypeIdentity == null) throw new ArgumentNullException("exportTypeIdentity");
+
             if (string.IsNullOrEmpty(contractName))
                 throw new ArgumentOutOfRangeException("contractName");
 
-            ContractName = contractName;
+            _exportTypeIdentity = exportTypeIdentity;
+
+            _contractName = contractName;
+        }
+
+        /// <summary>
+        /// Type identity of the objects exported under the contract.
+        /// </summary>
+        public string ExportTypeIdentity
+        {
+            get { return _exportTypeIdentity; }
         }
 
         /// <summary>
         /// Gets or sets the name of the contract.
         /// </summary>
         /// <value>The name of the contract.</value>
-        public string ContractName { get; private set; }
+        public string ContractName
+        {
+            get { return _contractName; }
+        }
 
         /// <summary>
         /// Gets a human-readable description of the service.
@@ -78,7 +97,7 @@ namespace Autofac.Integration.Mef
             if (that == null)
                 return false;
 
-            return ContractName == that.ContractName;
+            return ContractName == that.ContractName && ExportTypeIdentity == that.ExportTypeIdentity;
         }
 
         /// <summary>
@@ -89,7 +108,7 @@ namespace Autofac.Integration.Mef
         /// </returns>
         public override int GetHashCode()
         {
-            return ContractName.GetHashCode();
+            return ContractName.GetHashCode() ^ ExportTypeIdentity.GetHashCode();
         }
     }
 }
