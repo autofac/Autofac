@@ -32,7 +32,8 @@ namespace Autofac.Integration.Web
     /// </summary>
     public class ContainerProvider : IContainerProvider
     {
-        IContainer _applicationContainer;
+        readonly IContainer _applicationContainer;
+        readonly Action<ContainerBuilder> _requestLifetimeConfiguration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContainerProvider"/> class.
@@ -40,11 +41,23 @@ namespace Autofac.Integration.Web
         /// <param name="applicationContainer">The application container.</param>
         public ContainerProvider(IContainer applicationContainer)
         {
-            if (applicationContainer == null)
-                throw new ArgumentNullException("applicationContainer");
-
+            if (applicationContainer == null) throw new ArgumentNullException("applicationContainer");
             applicationContainer.Tag = WebLifetime.Application;
             _applicationContainer = applicationContainer;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContainerProvider"/> class.
+        /// </summary>
+        /// <param name="applicationContainer">The application container.</param>
+        /// <param name="requestLifetimeConfiguration">An action that will be executed when building
+        /// the per-request lifetime. The components visible within the request can be
+        /// customised here.</param>
+        public ContainerProvider(IContainer applicationContainer, Action<ContainerBuilder> requestLifetimeConfiguration)
+            : this(applicationContainer)
+        {
+            if (requestLifetimeConfiguration == null) throw new ArgumentNullException("requestLifetimeConfiguration");
+            _requestLifetimeConfiguration = requestLifetimeConfiguration;
         }
 
         /// <summary>
@@ -53,7 +66,7 @@ namespace Autofac.Integration.Web
         /// </summary>
         public void EndRequestLifetime()
         {
-            var rc = NullableRequestLifetime;
+            var rc = AmbientRequestLifetime;
             if (rc != null)
                 rc.Dispose();
         }
@@ -79,10 +92,15 @@ namespace Autofac.Integration.Web
         {
             get
             {
-                var result = NullableRequestLifetime;
+                var result = AmbientRequestLifetime;
                 if (result == null)
                 {
-                    result = NullableRequestLifetime = ApplicationContainer.BeginLifetimeScope();
+                    if (_requestLifetimeConfiguration == null)
+                        result = ApplicationContainer.BeginLifetimeScope();
+                    else
+                        result = ApplicationContainer.BeginLifetimeScope(_requestLifetimeConfiguration);
+
+                    AmbientRequestLifetime = result;
                     result.Tag = WebLifetime.Request;
                 }
 
@@ -90,7 +108,7 @@ namespace Autofac.Integration.Web
             }
         }
 
-        ILifetimeScope NullableRequestLifetime
+        static ILifetimeScope AmbientRequestLifetime
         {
             get
             {
