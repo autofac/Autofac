@@ -56,8 +56,8 @@ namespace Autofac.Core.Resolving
             Enforce.ArgumentNotNull(parameters, "parameters");
             if (_executed)
                 throw new InvalidOperationException("Execute already called.");
-            else
-                _executed = true;
+            
+            _executed = true;
 
             object sharedInstance;
             if (IsSharedInstanceAvailable(out sharedInstance))

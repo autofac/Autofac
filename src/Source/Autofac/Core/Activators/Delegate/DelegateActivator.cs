@@ -62,7 +62,12 @@ namespace Autofac.Core.Activators.Delegate
             Enforce.ArgumentNotNull(context, "context");
             Enforce.ArgumentNotNull(parameters, "parameters");
 
-            return _activationFunction(context, parameters);
+            var result = _activationFunction(context, parameters);
+            if (result == null)
+                throw new DependencyResolutionException(string.Format(
+                    DelegateActivatorResources.NullFromActivationDelegateFor, LimitType));
+
+            return result;
         }
     }
 }
