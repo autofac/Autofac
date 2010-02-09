@@ -258,6 +258,7 @@
     <Compile Include="Util\SequenceExtensions.cs" />
     <Compile Include="Util\Silverlight\AllowPartiallyTrustedCallerAttribute.cs" />
     <Compile Include="Util\Silverlight\SerializableAttribute.cs" />
+    <Compile Include="Util\Traverse.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Builder\RegistrationBuilderResources.resx">

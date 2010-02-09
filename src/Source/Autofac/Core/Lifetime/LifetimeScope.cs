@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
 using Autofac.Util;
@@ -114,12 +115,19 @@ namespace Autofac.Core.Lifetime
 
             lock (_synchRoot)
             {
-                var registry = new ComponentRegistry();
+                var locals = new ComponentRegistry();
                 var builder =  new ContainerBuilder();
                 configurationAction(builder);
-                builder.Build(registry);
-                registry.AddRegistrationSource(new ExternalRegistrySource(_componentRegistry));
-                return new LifetimeScope(registry, this);
+                builder.Build(locals);
+
+                var externals = Traverse.Across<ISharingLifetimeScope>(this, s => s.ParentLifetimeScope)
+                                        .Where(s => s.ParentLifetimeScope == null || s.ComponentRegistry != s.ParentLifetimeScope.ComponentRegistry)
+                                        .Select(s => new ExternalRegistrySource(s.ComponentRegistry));
+
+                foreach (var external in externals)
+                    locals.AddRegistrationSource(external);
+
+                return new LifetimeScope(locals, this);
             }
         }
 
