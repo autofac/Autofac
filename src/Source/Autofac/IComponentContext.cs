@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2007 - 2009 Autofac Contributors
+// Copyright (c) 2010 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -23,24 +23,36 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
+using System.Collections.Generic;
+using Autofac.Core;
+using Autofac.Core.Registration;
 
-namespace Autofac.Util
+namespace Autofac
 {
-    static class DelegateExtensions
+    /// <summary>
+    /// The context in which a service can be accessed or a component's
+    /// dependencies resolved. Disposal of a context will dispose any owned
+    /// components.
+    /// </summary>
+    public interface IComponentContext
     {
-        public static bool IsFunction(this Type type)
-        {
-            Enforce.ArgumentNotNull(type, "type");
-            return type.IsSubclassOf(typeof(Delegate));
-        }
+        /// <summary>
+        /// Associates services with the components that provide them.
+        /// </summary>
+        IComponentRegistry ComponentRegistry { get; }
 
-        public static Type FunctionReturnType(this Type type)
-        {
-            Enforce.ArgumentNotNull(type, "type");
-            var invoke = type.GetMethod("Invoke");
-            Enforce.NotNull(invoke);
-            return invoke.ReturnType;
-        }
+        /// <summary>
+        /// Resolve an instance of the provided registration within the context.
+        /// </summary>
+        /// <param name="registration">The registration.</param>
+        /// <param name="parameters">Parameters for the instance.</param>
+        /// <returns>
+        /// The component instance.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="Autofac.Core.DependencyResolutionException"/>
+        object Resolve(IComponentRegistration registration, IEnumerable<Parameter> parameters);
     }
 }
+
+

@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2007 - 2009 Autofac Contributors
+// Copyright (c) 2010 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -54,20 +54,20 @@ namespace Autofac.Features.OpenGenerics
             out IInstanceActivator activator,
             out IEnumerable<Service> services)
         {
-            IServiceWithType swt = service as IServiceWithType;
+            var swt = service as IServiceWithType;
             if (swt != null && swt.ServiceType.IsGenericType)
             {
-                Type genericTypeDefinition = swt.ServiceType.GetGenericTypeDefinition();
+                var genericTypeDefinition = swt.ServiceType.GetGenericTypeDefinition();
 
                 if (configuredServices
                     .DefaultIfEmpty(new TypedService(reflectionActivatorData.ImplementationType))
                     .Cast<IServiceWithType>()
                     .Any(s => s.ServiceType == genericTypeDefinition))
                 {
-                    Type[] genericParameters = swt.ServiceType.GetGenericArguments();
+                    var genericArguments = swt.ServiceType.GetGenericArguments();
 
                     activator = new ReflectionActivator(
-                        reflectionActivatorData.ImplementationType.MakeGenericType(genericParameters),
+                        reflectionActivatorData.ImplementationType.MakeGenericType(genericArguments),
                         reflectionActivatorData.ConstructorFinder,
                         reflectionActivatorData.ConstructorSelector,
                         reflectionActivatorData.ConfiguredParameters,
@@ -75,7 +75,7 @@ namespace Autofac.Features.OpenGenerics
 
                     services = configuredServices
                         .Cast<IServiceWithType>()
-                        .Select(s => s.ChangeType(s.ServiceType.MakeGenericType(genericParameters)));
+                        .Select(s => s.ChangeType(s.ServiceType.MakeGenericType(genericArguments)));
 
                     return true;
                 }

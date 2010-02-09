@@ -30,6 +30,7 @@ using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Util;
 
 namespace Autofac.Features.LazyDependencies
 {
@@ -48,9 +49,7 @@ namespace Autofac.Features.LazyDependencies
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             var swt = service as IServiceWithType;
-            if (swt == null ||
-                !swt.ServiceType.IsGenericType ||
-                swt.ServiceType.GetGenericTypeDefinition() != typeof (Lazy<,>))
+            if (swt == null || !swt.ServiceType.IsClosingTypeOf(typeof(Lazy<,>)))
                 return Enumerable.Empty<IComponentRegistration>();
 
             var valueType = swt.ServiceType.GetGenericArguments()[0];

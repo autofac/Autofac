@@ -101,6 +101,7 @@
       <DependentUpon>ConstructorParameterBindingResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Core\IServiceWithType.cs" />
+    <Compile Include="Core\KeyedService.cs" />
     <Compile Include="Core\Registration\ComponentRegistrationResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -112,6 +113,9 @@
     <Compile Include="Features\GeneratedFactories\GeneratedFactoryActivatorData.cs" />
     <Compile Include="Builder\IActivatorGenerator.cs" />
     <Compile Include="Builder\IHideObjectMembers.cs" />
+    <Compile Include="Features\GeneratedFactories\ParameterMapping.cs" />
+    <Compile Include="Features\Indexed\IIndex.cs" />
+    <Compile Include="Features\Indexed\KeyedServiceIndex.cs" />
     <Compile Include="Features\ResolveAnything\AnyConcreteTypeNotAlreadyRegisteredSource.cs" />
     <Compile Include="Features\Scanning\ScanningActivatorData.cs" />
     <Compile Include="Core\ActivatedEventArgs.cs" />
@@ -152,7 +156,7 @@
       <DependentUpon>DependencyResolutionExceptionResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Core\Disposer.cs" />
-    <Compile Include="Core\IComponentContext.cs" />
+    <Compile Include="IComponentContext.cs" />
     <Compile Include="Core\IComponentLifetime.cs" />
     <Compile Include="Core\IComponentRegistration.cs" />
     <Compile Include="Core\IComponentRegistry.cs" />
@@ -238,7 +242,6 @@
     <Compile Include="ResolutionExtensions.cs" />
     <Compile Include="Core\ResolvedParameter.cs" />
     <Compile Include="TypedParameter.cs" />
-    <Compile Include="Util\DelegateExtensions.cs" />
     <Compile Include="Util\Disposable.cs" />
     <Compile Include="Util\Enforce.cs" />
     <Compile Include="Util\EnforceResources.Designer.cs">

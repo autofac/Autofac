@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2007 - 2009 Autofac Contributors
+// Copyright (c) 2010 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -76,9 +76,9 @@ namespace Autofac.Features.ResolveAnything
                 ts.ServiceType.IsAbstract ||
                 !_predicate(ts.ServiceType) ||
                 registrationAccessor(service).Any())
-                yield break;
+                return Enumerable.Empty<IComponentRegistration>();
 
-            yield return RegistrationBuilder.CreateRegistration(RegistrationBuilder.ForType(ts.ServiceType));
+            return new[] { RegistrationBuilder.CreateRegistration(RegistrationBuilder.ForType(ts.ServiceType)) };
         }
     }
 }

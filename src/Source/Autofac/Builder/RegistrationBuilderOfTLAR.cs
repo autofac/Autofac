@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2007 - 2009 Autofac Contributors
+// Copyright (c) 2010 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -215,7 +215,7 @@ namespace Autofac.Builder
         }
 
         /// <summary>
-        /// Configure the services that the component will provide.
+        /// Provide a textual name that can be used to retrieve the component.
         /// </summary>
         /// <param name="serviceName">Named service to associate with the component.</param>
         /// <param name="serviceType">The service type provided by the component.</param>
@@ -229,7 +229,7 @@ namespace Autofac.Builder
         }
 
         /// <summary>
-        /// Configure the services that the component will provide.
+        /// Provide a textual name that can be used to retrieve the component.
         /// </summary>
         /// <param name="serviceName">Named service to associate with the component.</param>
         /// <typeparam name="TService">The service type provided by the component.</typeparam>
@@ -237,6 +237,32 @@ namespace Autofac.Builder
         public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Named<TService>(string serviceName)
         {
             return Named(serviceName, typeof(TService));
+        }
+
+
+        /// <summary>
+        /// Provide a key that can be used to retrieve the component.
+        /// </summary>
+        /// <param name="serviceKey">Key to associate with the component.</param>
+        /// <param name="serviceType">The service type provided by the component.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Keyed(object serviceKey, Type serviceType)
+        {
+            Enforce.ArgumentNotNull(serviceKey, "serviceKey");
+            Enforce.ArgumentNotNull(serviceType, "serviceType");
+
+            return As(new KeyedService(serviceKey, serviceType));
+        }
+
+        /// <summary>
+        /// Provide a key that can be used to retrieve the component.
+        /// </summary>
+        /// <param name="serviceKey">Key to associate with the component.</param>
+        /// <typeparam name="TService">The service type provided by the component.</typeparam>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Keyed<TService>(object serviceKey)
+        {
+            return Keyed(serviceKey, typeof(TService));
         }
 
         /// <summary>

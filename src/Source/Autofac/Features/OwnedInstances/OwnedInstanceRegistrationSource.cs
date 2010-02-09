@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2007 - 2009 Autofac Contributors
+// Copyright (c) 2010 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -28,9 +28,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Core.Activators.Delegate;
-using Autofac.Core.Lifetime;
-using Autofac.Core.Registration;
 using Autofac.Util;
 
 namespace Autofac.Features.OwnedInstances
@@ -54,38 +51,34 @@ namespace Autofac.Features.OwnedInstances
             Enforce.ArgumentNotNull(registrationAccessor, "registrationAccessor");
 
             var ts = service as IServiceWithType;
-            if (ts != null &&
-                ts.ServiceType.IsGenericType &&
-                ts.ServiceType.GetGenericTypeDefinition() == typeof(Owned<>))
-            {
-                var ownedInstanceType = ts.ServiceType.GetGenericArguments()[0];
-                var ownedInstanceService = ts.ChangeType(ownedInstanceType);
+            if (ts == null || !ts.ServiceType.IsClosingTypeOf(typeof(Owned<>)))
+                return Enumerable.Empty<IComponentRegistration>();
 
-                return registrationAccessor(ownedInstanceService)
-                    .Select(r =>
-                    {
-                        var rb = RegistrationBuilder.ForDelegate(ts.ServiceType, (c, p) =>
+            var ownedInstanceType = ts.ServiceType.GetGenericArguments()[0];
+            var ownedInstanceService = ts.ChangeType(ownedInstanceType);
+
+            return registrationAccessor(ownedInstanceService)
+                .Select(r =>
+                {
+                    var rb = RegistrationBuilder.ForDelegate(ts.ServiceType, (c, p) =>
+                        {
+                            var lifetime = c.Resolve<ILifetimeScope>().BeginLifetimeScope();
+                            try
                             {
-                                var lifetime = c.Resolve<ILifetimeScope>().BeginLifetimeScope();
-                                try
-                                {
-                                    var value = lifetime.Resolve(r, p);
-                                    return Activator.CreateInstance(ts.ServiceType, new [] { value, lifetime });
-                                }
-                                catch
-                                {
-                                    lifetime.Dispose();
-                                    throw;
-                                }
-                            })
-                            .As(service)
-                            .Targeting(r);
+                                var value = lifetime.Resolve(r, p);
+                                return Activator.CreateInstance(ts.ServiceType, new [] { value, lifetime });
+                            }
+                            catch
+                            {
+                                lifetime.Dispose();
+                                throw;
+                            }
+                        })
+                        .As(service)
+                        .Targeting(r);
 
-                        return RegistrationBuilder.CreateRegistration(rb);
-                    });
-            }
-
-            return Enumerable.Empty<IComponentRegistration>();
+                    return RegistrationBuilder.CreateRegistration(rb);
+                });
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Autofac.Builder;
+using Autofac.Features.Indexed;
 using NUnit.Framework;
 using Autofac.Core;
 using System.Linq;
@@ -398,6 +399,32 @@ namespace Autofac.Tests
             var builder = new ContainerBuilder() { ExcludeDefaultModules = true };
             var container = builder.Build();
             Assert.IsFalse(container.IsRegistered<IEnumerable<object>>());
+        }
+
+        [Test]
+        public void WhenTIsRegisteredByKey_IndexCanRetrieveIt()
+        {
+            var key = 42;
+            var cpt = "Hello";
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(cpt).Keyed<string>(key);
+            var container = builder.Build();
+
+            var idx = container.Resolve<IIndex<int, string>>();
+            Assert.AreSame(cpt, idx[key]);
+        }
+
+        [Test]
+        public void WhenTIsRegisteredByKey_IndexComposesWithIEnumerableOfT()
+        {
+            var key = 42;
+            var cpt = "Hello";
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(cpt).Keyed<string>(key);
+            var container = builder.Build();
+
+            var idx = container.Resolve<IIndex<int, IEnumerable<string>>>();
+            Assert.AreSame(cpt, idx[key].Single());
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2007 - 2009 Autofac Contributors
+// Copyright (c) 2010 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -70,11 +70,6 @@ namespace Autofac.Core.Registration
             }
 
             /// <summary>
-            /// The tracked service.
-            /// </summary>
-            public Service Service { get { return _service;  } }
-
-            /// <summary>
             /// The first time a service is requested, initialization (e.g. reading from sources)
             /// happens. This value will then be set to true. Calling many methods on this type before
             /// initialisation is an error.
@@ -84,7 +79,7 @@ namespace Autofac.Core.Registration
             /// <summary>
             /// The known implementations.
             /// </summary>
-            public LinkedList<IComponentRegistration> Implementations
+            public IEnumerable<IComponentRegistration> Implementations
             { 
                 get
                 {
@@ -127,9 +122,9 @@ namespace Autofac.Core.Registration
                 else
                 {
                     if (Any)
-                        System.Diagnostics.Debug.WriteLine(string.Format(
+                        Debug.WriteLine(string.Format(
                                 "[Autofac] Overriding default for: '{0}' with: '{1}' (was '{2}')",
-                                Service, registration, _implementations.First));
+                                _service, registration, _implementations.First));
 
                     _implementations.AddFirst(registration);
                 }
@@ -285,10 +280,9 @@ namespace Autofac.Core.Registration
             if (info.SourcesToQuery == null)
                 info.SourcesToQuery = new Queue<IRegistrationSource>(_dynamicRegistrationSources);
 
-            IRegistrationSource next;
             while (info.SourcesToQuery != null && info.SourcesToQuery.Count != 0)
             {
-                next = info.SourcesToQuery.Dequeue();
+                var next = info.SourcesToQuery.Dequeue();
                 foreach (var provided in next.RegistrationsFor(service, RegistrationsFor))
                 {
                     // This ensures that multiple services provided by the same
@@ -296,15 +290,14 @@ namespace Autofac.Core.Registration
                     foreach (var additionalService in provided.Services)
                     {
                         var additionalInfo = GetServiceInfo(additionalService);
-                        if (!additionalInfo.IsInitialized)
-                        {
-                            if (additionalInfo.SourcesToQuery == null)
-                                additionalInfo.SourcesToQuery = new Queue<IRegistrationSource>(
-                                    _dynamicRegistrationSources.Where(src => src != next));
-                            else
-                                additionalInfo.SourcesToQuery = new Queue<IRegistrationSource>(
-                                    additionalInfo.SourcesToQuery.Where(src => src != next));
-                        }
+                        if (additionalInfo.IsInitialized) continue;
+
+                        if (additionalInfo.SourcesToQuery == null)
+                            additionalInfo.SourcesToQuery = new Queue<IRegistrationSource>(
+                                _dynamicRegistrationSources.Where(src => src != next));
+                        else
+                            additionalInfo.SourcesToQuery = new Queue<IRegistrationSource>(
+                                additionalInfo.SourcesToQuery.Where(src => src != next));
                     }
 
                     Register(provided, true);

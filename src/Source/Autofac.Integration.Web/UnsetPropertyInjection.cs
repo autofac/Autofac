@@ -1,5 +1,5 @@
 ﻿// Contributed by Nicholas Blumhardt 2008-01-28
-// Copyright (c) 2007 - 2009 Autofac Contributors
+// Copyright (c) 2010 Autofac Contributors
 //
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation

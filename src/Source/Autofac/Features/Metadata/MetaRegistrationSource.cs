@@ -30,6 +30,7 @@ using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Util;
 
 namespace Autofac.Features.Metadata
 {
@@ -46,9 +47,7 @@ namespace Autofac.Features.Metadata
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             var swt = service as IServiceWithType;
-            if (swt == null ||
-                !swt.ServiceType.IsGenericType ||
-                swt.ServiceType.GetGenericTypeDefinition() != typeof (Meta<,>))
+            if (swt == null || !swt.ServiceType.IsClosingTypeOf(typeof(Meta<,>)))
                 return Enumerable.Empty<IComponentRegistration>();
 
             var valueType = swt.ServiceType.GetGenericArguments()[0];

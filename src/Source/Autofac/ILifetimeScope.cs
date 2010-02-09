@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2007 - 2009 Autofac Contributors
+// Copyright (c) 2010 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -58,10 +58,10 @@ namespace Autofac
     /// ASP.NET integration will create and release an <see cref="ILifetimeScope"/> per HTTP
     /// request.
     /// Most <see cref="ILifetimeScope"/> functionality is provided by extension methods
-    /// on the inherited <see cref="Autofac.Core.IComponentContext"/> interface.
+    /// on the inherited <see cref="IComponentContext"/> interface.
     /// </remarks>
     /// <seealso cref="IContainer"/>
-    /// <seealso cref="Autofac.Core.IComponentContext"/>
+    /// <seealso cref="IComponentContext"/>
     /// <seealso cref="Autofac.Builder.RegistrationBuilder{L,A,S}.InstancePerMatchingLifetimeScope"/>
     /// <seealso cref="Autofac.Builder.RegistrationBuilder{L,A,S}.InstancePerLifetimeScope"/>
     /// <seealso cref="Autofac.Core.InstanceSharing"/>

@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2007 - 2009 Autofac Contributors
+// Copyright (c) 2010 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -32,41 +32,6 @@ using Autofac.Util;
 
 namespace Autofac.Features.GeneratedFactories
 {
-    /// <summary>
-    /// Determines how the parameters of the delegate type are passed on
-    /// to the generated Resolve() call as Parameter objects.
-    /// </summary>
-    public enum ParameterMapping
-    {
-        /// <summary>
-        /// Chooses parameter mapping based on the factory type.
-        /// For Func-based factories this is equivalent to ByType, for all
-        /// others ByName will be used.
-        /// </summary>
-        Adaptive,
-
-        /// <summary>
-        /// Pass the parameters supplied to the delegate through to the
-        /// underlying registration as NamedParameters based on the parameter
-        /// names in the delegate type's formal argument list.
-        /// </summary>
-        ByName,
-
-        /// <summary>
-        /// Pass the parameters supplied to the delegate through to the
-        /// underlying registration as TypedParameters based on the parameter
-        /// types in the delegate type's formal argument list.
-        /// </summary>
-        ByType,
-
-        /// <summary>
-        /// Pass the parameters supplied to the delegate through to the
-        /// underlying registration as PositionalParameters based on the parameter
-        /// indices in the delegate type's formal argument list.
-        /// </summary>
-        ByPosition
-    };
-
     /// <summary>
     /// Generates context-bound closures that represent factories from
     /// a set of heuristics based on delegate type signatures.

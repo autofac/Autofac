@@ -49,5 +49,26 @@ namespace Autofac.Util
                     propertyAccessor));
             return (PropertyInfo) mex.Member;
         }
+
+        public static bool IsFunction(this Type type)
+        {
+            Enforce.ArgumentNotNull(type, "type");
+            return type.IsSubclassOf(typeof(Delegate));
+        }
+
+        public static Type FunctionReturnType(this Type type)
+        {
+            Enforce.ArgumentNotNull(type, "type");
+            var invoke = type.GetMethod("Invoke");
+            Enforce.NotNull(invoke);
+            return invoke.ReturnType;
+        }
+
+        public static bool IsClosingTypeOf(this Type type, Type openGenericType)
+        {
+            Enforce.ArgumentNotNull(type, "type");
+            Enforce.ArgumentNotNull(openGenericType, "openGenericType");
+            return type.IsGenericType && type.GetGenericTypeDefinition() == openGenericType;
+        }
     }
 }

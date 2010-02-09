@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2007 - 2009 Autofac Contributors
+// Copyright (c) 2010 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -48,14 +48,13 @@ namespace Autofac.Features.Collections
             Enforce.ArgumentNotNull(service, "service");
             Enforce.ArgumentNotNull(registrationAccessor, "registrationAccessor");
 
-            var ts = service as TypedService;
-            if (ts != null)
+            var swt = service as IServiceWithType;
+            if (swt != null)
             {
-                var serviceType = ts.ServiceType;
+                var serviceType = swt.ServiceType;
                 Type elementType = null;
 
-                if (serviceType.IsGenericType &&
-                    serviceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                if (serviceType.IsClosingTypeOf(typeof(IEnumerable<>)))
                 {
                     elementType = serviceType.GetGenericArguments()[0];
                 }
@@ -66,7 +65,7 @@ namespace Autofac.Features.Collections
 
                 if (elementType != null)
                 {
-                    var elementTypeService = new TypedService(elementType);
+                    var elementTypeService = swt.ChangeType(elementType);
                     var elementArrayType = elementType.MakeArrayType();
 
                     // Note, the maintenance of this item must be a lock-free algorithm.

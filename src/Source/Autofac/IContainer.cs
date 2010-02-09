@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2007 - 2009 Autofac Contributors
+// Copyright (c) 2010 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -44,10 +44,10 @@ namespace Autofac
     /// </example>
     /// <remarks>
     /// Most <see cref="IContainer"/> functionality is provided by extension methods
-    /// on the inherited <see cref="Autofac.Core.IComponentContext"/> interface.
+    /// on the inherited <see cref="IComponentContext"/> interface.
     /// </remarks>
     /// <seealso cref="ILifetimeScope"/>
-    /// <seealso cref="Autofac.Core.IComponentContext"/>
+    /// <seealso cref="IComponentContext"/>
     /// <seealso cref="ResolutionExtensions"/>
     /// <seealso cref="ContainerBuilder"/>
     public interface IContainer : ILifetimeScope, IDisposable

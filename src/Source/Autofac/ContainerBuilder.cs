@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2007 - 2009 Autofac Contributors
+// Copyright (c) 2010 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using Autofac.Core;
 using Autofac.Features.Collections;
 using Autofac.Features.GeneratedFactories;
+using Autofac.Features.Indexed;
 using Autofac.Features.OwnedInstances;
 using Autofac.Util;
 
@@ -112,6 +113,13 @@ namespace Autofac
 				throw new InvalidOperationException();
 
 			_wasBuilt = true;
+
+            if (!ExcludeDefaultModules)
+            {
+                this.RegisterGeneric(typeof(KeyedServiceIndex<,>))
+                    .As(typeof(IIndex<,>))
+                    .InstancePerLifetimeScope();
+            }
 
 			foreach (var callback in _configurationCallbacks)
                 callback(componentRegistry);
