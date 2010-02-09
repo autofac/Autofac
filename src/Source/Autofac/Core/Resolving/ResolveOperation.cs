@@ -32,10 +32,10 @@ namespace Autofac.Core.Resolving
     // activations that go into producing a single requested object graph
     class ResolveOperation : IComponentContext, IResolveOperation
     {
-        Stack<ComponentActivation> _activationStack = new Stack<ComponentActivation>();
+        readonly Stack<ComponentActivation> _activationStack = new Stack<ComponentActivation>();
         ICollection<ComponentActivation> _successfulActivations;
-        ISharingLifetimeScope _mostNestedLifetimeScope;
-        CircularDependencyDetector _circularDependencyDetector = new CircularDependencyDetector();
+        readonly ISharingLifetimeScope _mostNestedLifetimeScope;
+        readonly CircularDependencyDetector _circularDependencyDetector = new CircularDependencyDetector();
         int _callDepth = 0;
 
         public ResolveOperation(ISharingLifetimeScope mostNestedLifetimeScope)
@@ -57,7 +57,7 @@ namespace Autofac.Core.Resolving
 
             _circularDependencyDetector.CheckForCircularDependency(registration, _activationStack, ++_callDepth);
 
-            object instance = null;
+            object instance;
 
             var activation = new ComponentActivation(registration, this, activationScope);
 

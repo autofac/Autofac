@@ -159,31 +159,23 @@ namespace Autofac.Core.Lifetime
         }
 
         /// <summary>
-        /// Try to retrieve an instance based on a GUID key.
+        /// Try to retrieve an instance based on a GUID key. If the instance
+        /// does not exist, invoke <paramref name="creator"/> to create it.
         /// </summary>
         /// <param name="id">Key to look up.</param>
-        /// <param name="result">Instance corresponding to key.</param>
-        /// <returns>True if an instance exists.</returns>
-        public bool TryGetSharedInstance(Guid id, out object result)
+        /// <param name="creator">Creation function.</param>
+        /// <returns>An instance.</returns>
+        public object GetOrCreateAndShare(Guid id, Func<object> creator)
         {
             lock (_synchRoot)
             {
-                return _sharedInstances.TryGetValue(id, out result);
-            }
-        }
-
-        /// <summary>
-        /// Add an instance associdated with a GUID key.
-        /// </summary>
-        /// <param name="id">Key to associate with the instance.</param>
-        /// <param name="newInstance">The instance.</param>
-        public void AddSharedInstance(Guid id, object newInstance)
-        {
-            Enforce.ArgumentNotNull(newInstance, "newInstance");
-
-            lock (_synchRoot)
-            {
-                _sharedInstances.Add(id, newInstance);
+                object result;
+                if (!_sharedInstances.TryGetValue(id, out result))
+                {
+                    result = creator();
+                    _sharedInstances.Add(id, result);
+                }
+                return result;
             }
         }
 

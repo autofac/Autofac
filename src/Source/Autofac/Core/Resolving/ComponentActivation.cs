@@ -32,9 +32,9 @@ namespace Autofac.Core.Resolving
     // Is a component context that pins resolution to a point in the context hierarchy
     class ComponentActivation : IComponentContext
     {
-        IComponentRegistration _registration;
-        IResolveOperation _context;
-        ISharingLifetimeScope _activationScope;
+        readonly IComponentRegistration _registration;
+        readonly IResolveOperation _context;
+        readonly ISharingLifetimeScope _activationScope;
         object _newInstance;
         bool _executed;
 
@@ -59,60 +59,37 @@ namespace Autofac.Core.Resolving
             
             _executed = true;
 
-            object sharedInstance;
-            if (IsSharedInstanceAvailable(out sharedInstance))
-                return sharedInstance;
+            if (_registration.Sharing == InstanceSharing.None)
+                return Activate(parameters);
 
-            _registration.RaisePreparing(this, ref parameters, out sharedInstance);
-            if (sharedInstance != null)
-                return sharedInstance;
+            return _activationScope.GetOrCreateAndShare(_registration.Id, () => Activate(parameters));
+        }
+
+        object Activate(IEnumerable<Parameter> parameters)
+        {
+            object precreated;
+            _registration.RaisePreparing(this, ref parameters, out precreated);
+            if (precreated != null)
+                return precreated;
 
             _newInstance = _registration.Activator.ActivateInstance(this, parameters);
 
-            AssignNewInstanceOwnership();
-
-            ShareNewInstance();
+            if (_registration.Ownership == InstanceOwnership.OwnedByLifetimeScope)
+            {
+                var instanceAsDisposable = _newInstance as IDisposable;
+                if (instanceAsDisposable != null)
+                    _activationScope.Disposer.AddInstanceForDisposal(instanceAsDisposable);
+            }
 
             _registration.RaiseActivating(this, parameters, _newInstance);
 
             return _newInstance;
         }
 
-        void ShareNewInstance()
-        {
-            if (_registration.Sharing == InstanceSharing.Shared)
-                _activationScope.AddSharedInstance(_registration.Id, _newInstance);
-        }
-
-        void AssignNewInstanceOwnership()
-        {
-            if (_registration.Ownership == InstanceOwnership.OwnedByLifetimeScope)
-            {
-                IDisposable instanceAsDisposable = _newInstance as IDisposable;
-                if (instanceAsDisposable != null)
-                    _activationScope.Disposer.AddInstanceForDisposal(instanceAsDisposable);
-            }
-        }
-
-        bool IsSharedInstanceAvailable(out object sharedInstance)
-        {
-            if (_registration.Sharing == InstanceSharing.Shared)
-            {
-                return _activationScope.TryGetSharedInstance(_registration.Id, out sharedInstance);
-            }
-            else
-            {
-                sharedInstance = null;
-                return false;
-            }
-        }
-
         public void Complete(IEnumerable<Parameter> parameters)
         {
             if (_newInstance != null)
-            {
                 _registration.RaiseActivated(this, parameters, _newInstance);
-            }
         }
 
         public IComponentRegistry ComponentRegistry
