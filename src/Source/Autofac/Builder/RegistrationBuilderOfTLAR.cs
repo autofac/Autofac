@@ -294,7 +294,9 @@ namespace Autofac.Builder
             Enforce.ArgumentNotNull(handler, "handler");
             RegistrationData.ActivatingHandlers.Add((s, e) =>
             {
-                handler(new ActivatingEventArgs<TLimit>(e.Context, e.Component, e.Parameters, (TLimit)e.Instance));
+                var args = new ActivatingEventArgs<TLimit>(e.Context, e.Component, e.Parameters, (TLimit)e.Instance);
+                handler(args);
+                e.Instance = args.Instance;
             });
             return this;
         }

@@ -71,7 +71,7 @@
   <ItemGroup Condition="$(TargetFrameworkVersion)=='v4.0'">
     <Compile Include="Features\LazyDependencies\LazyRegistrationSource.cs" />
     <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSource.cs" />
-    <Compile Include="Features\Metadata\Meta.cs" />
+    <Compile Include="Features\Metadata\StronglyTypedMeta.cs" />
     <Compile Include="Features\Metadata\StronglyTypedMetaRegistrationSource.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -117,7 +117,7 @@
     <Compile Include="Features\Indexed\IIndex.cs" />
     <Compile Include="Features\Indexed\KeyedServiceIndex.cs" />
     <Compile Include="Features\Metadata\MetaRegistrationSource.cs" />
-    <Compile Include="Features\Metadata\StronglyTypedMeta.cs" />
+    <Compile Include="Features\Metadata\Meta.cs" />
     <Compile Include="Features\ResolveAnything\AnyConcreteTypeNotAlreadyRegisteredSource.cs" />
     <Compile Include="Features\Scanning\ScanningActivatorData.cs" />
     <Compile Include="Core\ActivatedEventArgs.cs" />

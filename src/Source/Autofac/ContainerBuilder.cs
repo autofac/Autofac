@@ -31,10 +31,10 @@ using Autofac.Features.GeneratedFactories;
 using Autofac.Features.Indexed;
 using Autofac.Features.OwnedInstances;
 using Autofac.Util;
+using Autofac.Features.Metadata;
 
 #if !(NET35)
 using Autofac.Features.LazyDependencies;
-using Autofac.Features.Metadata;
 #endif
 
 namespace Autofac

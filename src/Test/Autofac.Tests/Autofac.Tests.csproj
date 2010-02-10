@@ -85,6 +85,7 @@
     <Compile Include="Features\LazyDependencies\LazyRegistrationSourceTests.cs" />
     <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSourceTests.cs" />
     <Compile Include="Features\Metadata\StronglyTypedMetaRegistrationSourceTests.cs" />
+    <Compile Include="ConcurrentTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assertions.cs" />
@@ -98,7 +99,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Builder\RegistrationBuilderTests.cs" />
-    <Compile Include="ConcurrentTests.cs" />
     <Compile Include="ContainerBuilderTests.cs">
       <SubType>Code</SubType>
     </Compile>

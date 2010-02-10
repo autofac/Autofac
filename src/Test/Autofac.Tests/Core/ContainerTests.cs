@@ -99,5 +99,19 @@ namespace Autofac.Tests.Core
             var l = c.BeginLifetimeScope();
             Assert.AreSame(l, l.Resolve<ILifetimeScope>());
         }
+
+        [Test]
+        public void ProvidingAnInstanceInActivatingHandlerSubstitutesForResult()
+        {
+            var supplied = new object();
+
+            var cb = new ContainerBuilder();
+            cb.RegisterType<object>().OnActivating(e => e.Instance = supplied);
+            var c = cb.Build();
+
+            var resolved = c.Resolve<object>();
+
+            Assert.AreSame(supplied, resolved);
+        }
     }
 }
