@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Linq;
 using Autofac;
-using Autofac.Builder;
+using Autofac.Core;
 
 namespace AutofacContrib.DynamicProxy2
 {
     public class InterceptionModule : Module
     {
-        IComponentInterceptorProvider _provider;
-        IComponentInterceptorAttacher _attacher;
+        readonly IComponentInterceptorProvider _provider;
+        readonly IComponentInterceptorAttacher _attacher;
 
         public InterceptionModule(IComponentInterceptorProvider provider, IComponentInterceptorAttacher attacher)
         {
@@ -22,11 +22,11 @@ namespace AutofacContrib.DynamicProxy2
             _attacher = attacher;
         }
 
-        protected override void AttachToComponentRegistration(IContainer container, IComponentRegistration registration)
+        protected override void AttachToComponentRegistration(IComponentRegistry componentRegistry, IComponentRegistration registration)
         {
-            base.AttachToComponentRegistration(container, registration);
+            base.AttachToComponentRegistration(componentRegistry, registration);
 
-            var interceptorServices = _provider.GetInterceptorServices(registration.Descriptor);
+            var interceptorServices = _provider.GetInterceptorServices(registration);
             if (interceptorServices.Any())
                 _attacher.AttachInterceptors(registration, interceptorServices);
         }

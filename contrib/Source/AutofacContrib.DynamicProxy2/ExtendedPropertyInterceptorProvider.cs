@@ -19,10 +19,10 @@ namespace AutofacContrib.DynamicProxy2
                 throw new ArgumentNullException("registration");
 
             object services;
-            if (registration.ExtendedProperties.TryGetValue(InterceptorsPropertyName, out services))
+            if (registration.Metadata.TryGetValue(InterceptorsPropertyName, out services))
                 return (IEnumerable<Service>)services;
-            else
-                return EmptyServices;
+
+            return EmptyServices;
         }
     }
 }

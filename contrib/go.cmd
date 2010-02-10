@@ -1,2 +1,2 @@
 @echo off
-@%SystemRoot%\Microsoft.NET\Framework\v3.5\msbuild AutofacContrib.build %*
+@%SystemRoot%\Microsoft.NET\Framework\v4.0.30128\msbuild AutofacContrib.build %*

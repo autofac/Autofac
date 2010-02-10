@@ -12,7 +12,7 @@ namespace AutofacContrib.DynamicProxy2
 {
     public class ImplementationTypeInterceptorAttacher : IComponentInterceptorAttacher
     {
-        ProxyGenerator _proxyGenerator = new ProxyGenerator();
+        readonly ProxyGenerator _proxyGenerator = new ProxyGenerator();
 
         public void AttachInterceptors(IComponentRegistration registration, IEnumerable<Service> interceptorServices)
         {
@@ -33,10 +33,10 @@ namespace AutofacContrib.DynamicProxy2
 
             registration.Preparing += (sender, e) =>
             {
-                e.Parameters = e.Parameters.Union(new Parameter[] {
-                    TypedParameter.From(
+                e.Parameters = new Parameter[] {
+                    new PositionalParameter(0,
                         interceptorServices.Select(s => e.Context.Resolve(s)).Cast<IInterceptor>().ToArray())
-                }).ToArray();
+                }.Concat(e.Parameters).ToArray();
             };
         }
 

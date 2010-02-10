@@ -87,7 +87,7 @@ namespace AutofacContrib.Startable
 
             if (registration.Services.Contains(_myService))
             {
-                registration.ExtendedProperties[Starter.IsStartablePropertyName] = true;
+                registration.Metadata[Starter.IsStartablePropertyName] = true;
                 registration.Activated += OnComponentActivated;
             }
         }

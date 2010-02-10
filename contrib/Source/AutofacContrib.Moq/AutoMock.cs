@@ -27,6 +27,7 @@ using System;
 using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Features.ResolveAnything;
 using Moq;
 
 namespace AutofacContrib.Moq
@@ -50,7 +51,8 @@ namespace AutofacContrib.Moq
         {
             this.MockFactory = new MockFactory(behavior);
             var builder = new ContainerBuilder();
-            builder.RegisterInstance(this.MockFactory);
+            builder.RegisterInstance(MockFactory);
+            builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
             builder.RegisterSource(new MoqRegistrationHandler());
             this.Container = builder.Build();
             this.VerifyAll = false;
@@ -108,18 +110,8 @@ namespace AutofacContrib.Moq
         /// <returns>Mock</returns>
         public Mock<T> Mock<T>(params object[] parameters) where T : class
         {
-            var obj = (IMocked<T>)this.Resolve<T>();
+            var obj = (IMocked<T>)Create<T>();
             return obj.Mock;
-        }
-
-        /// <summary>
-        /// Finds (creating if needed) the mocked type
-        /// </summary>
-        /// <typeparam name="T">Requested object type.</typeparam>
-        /// <returns>Registered type</returns>
-        public T Resolve<T>() where T : class
-        {
-            return this.Container.Resolve<T>();
         }
 
         /// <summary>
@@ -130,12 +122,6 @@ namespace AutofacContrib.Moq
         /// <returns>The service.</returns>
         public T Create<T>(params Parameter[] parameters)
         {
-            if (!this.Container.IsRegistered<T>())
-            {
-                this.Container.Configure(builder =>
-                    builder.RegisterType<T>().InstancePerLifetimeScope());
-            }
-
             return this.Container.Resolve<T>(parameters);
         }
 
@@ -148,8 +134,9 @@ namespace AutofacContrib.Moq
         /// <returns>The service.</returns>
         public TService Provide<TService, TImplementation>(params Parameter[] parameters)
         {
-            this.Container.Configure(builder =>
-                builder.RegisterType<TImplementation>().As<TService>().InstancePerLifetimeScope());
+            this.Container.ComponentRegistry.Register(
+                RegistrationBuilder.CreateRegistration(
+                    RegistrationBuilder.ForType<TImplementation>().As<TService>().InstancePerLifetimeScope()));
 
             return this.Container.Resolve<TService>(parameters);
         }
@@ -162,8 +149,9 @@ namespace AutofacContrib.Moq
         public TService Provide<TService>(TService instance)
             where TService : class
         {
-            this.Container.Configure(builder =>
-                builder.RegisterInstance(instance).As<TService>());
+            this.Container.ComponentRegistry.Register(
+                RegistrationBuilder.CreateRegistration(
+                    RegistrationBuilder.ForDelegate((c, p) => instance).InstancePerLifetimeScope()));
 
             return this.Container.Resolve<TService>();
         }

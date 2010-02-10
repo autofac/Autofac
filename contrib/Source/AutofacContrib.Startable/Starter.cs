@@ -62,8 +62,8 @@ namespace AutofacContrib.Startable
         {
             var startableRegistrations =
                 from cr in _context.ComponentRegistry.Registrations
-                where cr.ExtendedProperties.ContainsKey(IsStartablePropertyName) &&
-                    (bool)cr.ExtendedProperties[IsStartablePropertyName]
+                where cr.Metadata.ContainsKey(IsStartablePropertyName) &&
+                    (bool)cr.Metadata[IsStartablePropertyName]
                 select cr;
 
             foreach (var startable in startableRegistrations)

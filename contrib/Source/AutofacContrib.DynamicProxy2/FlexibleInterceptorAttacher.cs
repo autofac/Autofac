@@ -27,21 +27,12 @@ namespace AutofacContrib.DynamicProxy2
             if (interceptorServices == null)
                 throw new ArgumentNullException("interceptorServices");
 
-            var implementingRegistration = registration;
-            while (implementingRegistration is IRegistrationDecorator)
-                implementingRegistration = ((IRegistrationDecorator)implementingRegistration).InnerRegistration;
-
-            if (implementingRegistration is Registration)
+            if (registration.Activator is ReflectionActivator)
             {
-                var activator = ((Registration)registration).Activator;
-                if (activator is ReflectionActivator)
-                {
-                    _implementationTypeAttacher.AttachInterceptors(registration, interceptorServices);
-                    return;
-                }
+                _implementationTypeAttacher.AttachInterceptors(registration, interceptorServices);
             }
 
-            if (implementingRegistration.Descriptor.Services.OfType<TypedServiceInterceptorAttacher>().Any())
+            if (registration.Services.OfType<TypedServiceInterceptorAttacher>().Any())
             {
                 _typedServiceAttacher.AttachInterceptors(registration, interceptorServices);
                 return;

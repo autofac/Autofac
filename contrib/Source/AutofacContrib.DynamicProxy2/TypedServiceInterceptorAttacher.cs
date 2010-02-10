@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Autofac;
+using Autofac.Core;
 using Castle.Core.Interceptor;
 using Castle.DynamicProxy;
 
@@ -10,7 +11,7 @@ namespace AutofacContrib.DynamicProxy2
 {
     public class TypedServiceInterceptorAttacher : IComponentInterceptorAttacher
     {
-        ProxyGenerator _proxyGenerator = new ProxyGenerator();
+        readonly ProxyGenerator _proxyGenerator = new ProxyGenerator();
 
         public void AttachInterceptors(IComponentRegistration registration, IEnumerable<Service> interceptorServices)
         {
@@ -41,15 +42,14 @@ namespace AutofacContrib.DynamicProxy2
             };
         }
 
-        IEnumerable<Type> GetProxiedInterfaces(IComponentRegistration registration)
+        static IEnumerable<Type> GetProxiedInterfaces(IComponentRegistration registration)
         {
             if (registration == null)
                 throw new ArgumentNullException("registration");
 
             var proxiedInterfaces = registration
-                .Descriptor
                 .Services
-                .OfType<TypedService>()
+                .OfType<IServiceWithType>()
                 .Select(ts => ts.ServiceType);
 
             if (!proxiedInterfaces.Any())

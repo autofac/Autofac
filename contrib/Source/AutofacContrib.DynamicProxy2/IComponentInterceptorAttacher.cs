@@ -6,6 +6,6 @@ namespace AutofacContrib.DynamicProxy2
 {
     public interface IComponentInterceptorAttacher
     {
-        void AttachInterceptors(IComponentRegistration registration, IEnumerable<Service> interceptors);
+        void AttachInterceptors(IComponentRegistration componentRegistration, IEnumerable<Service> interceptors);
     }
 }

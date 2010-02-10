@@ -51,16 +51,6 @@ namespace AutofacContrib.NMock2
 		{
 			Mockery = mockery;
 			Container = container;
-
-			Initialize();
-		}
-
-		private void Initialize()
-		{
-            Container.Configure(builder => {
-                builder.RegisterSource(new NMockRegistrationHandler());
-                builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
-            });
 		}
 
 		/// <summary>
@@ -72,9 +62,9 @@ namespace AutofacContrib.NMock2
 			Mockery = new Mockery();
 			var builder = new ContainerBuilder();
 			builder.RegisterInstance(Mockery);
-			Container = builder.Build();
-
-			Initialize();
+            builder.RegisterSource(new NMockRegistrationHandler());
+            builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+            Container = builder.Build();
 		}
 
 		/// <summary>
@@ -97,7 +87,9 @@ namespace AutofacContrib.NMock2
 			var builder = new ContainerBuilder();
 			builder.RegisterInstance(mockery).ExternallyOwned();
 			builder.RegisterInstance(mockery.Ordered);
-			return new AutoMock(mockery, builder.Build());
+            builder.RegisterSource(new NMockRegistrationHandler());
+            builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+            return new AutoMock(mockery, builder.Build());
 		}
 
         /// <summary>

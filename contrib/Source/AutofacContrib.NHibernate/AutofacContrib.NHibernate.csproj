@@ -59,6 +59,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Resource\Library\Autofac\Autofac.dll</HintPath>
     </Reference>
+    <Reference Include="Autofac.Integration.Web">
+      <HintPath>..\..\Resource\Library\Autofac\Autofac.Integration.Web.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate, Version=2.1.0.1003, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Resource\Library\NHibernate\NHibernate.dll</HintPath>
@@ -68,6 +71,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -77,10 +81,10 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AutofacBytecodeProvider.cs" />
-    <Compile Include="AutofacObjectsFactory.cs" />
+    <Compile Include="Bytecode\AutofacBytecodeProvider.cs" />
+    <Compile Include="Bytecode\AutofacObjectsFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AutofacReflectionOptimizer.cs" />
+    <Compile Include="Bytecode\AutofacReflectionOptimizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

@@ -29,13 +29,22 @@
     <NHibernateSource>Source\AutofacContrib.NHibernate\bin\$(Configuration)</NHibernateSource>
 
 		<SourceExclusions>**\.svn\**\*.*;**\_svn\**\*.*;**\*.user;**\*.suo;**\*.db;**\bin\**\*.*;**\obj\**\*.*;</SourceExclusions>
-	</PropertyGroup>
 
-	<!-- 
+    <NUnitConsole>"$(MSBuildProjectDirectory)\Resource\Tool\NUnit\nunit-console.exe"</NUnitConsole>
+
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(BuildFramework)==''">
+    <BuildFramework>NET35</BuildFramework>
+    <BuildConstants>NET35</BuildConstants>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+
+  <!-- 
 	 Solution redirects. Every VS project normally knows how to support these targets
 		-->
 	<Target Name="Build">
-		<MSBuild Projects="$(MSBuildProjectName).sln" Targets="Build" Properties="Configuration=$(Configuration);BuildConstants=NET35"/>
+		<MSBuild Projects="$(MSBuildProjectName).sln" Targets="Build" Properties="Configuration=$(Configuration);BuildConstants=$(BuildConstants)"/>
 	</Target>
 
 	<Target Name="Clean">
@@ -90,13 +99,22 @@
 	<Target Name="Test" DependsOnTargets="Build;Copy">
 		<MakeDir Directories="$(ArtifactDirectory)" />
 
-		<CreateItem Include="$(TestPath)\AutofacContrib.Tests*.dll">
+    <!-- Unfortunately NCover doesn't yet support .NET 4.0.
+         When it does this can be removed and the section below it uncommmented. -->
+    <CreateItem Include="$(TestPath)\AutofacContrib.Tests*.dll">
+      <Output ItemName="_testFiles" TaskParameter="Include"/>
+    </CreateItem>
+
+    <Exec Command="$(NUnitConsole) @(_testFiles->'&quot;%(FullPath)&quot;', ' ') /nologo /noshadow"></Exec>
+
+
+    <!--<CreateItem Include="$(TestPath)\AutofacContrib.Tests*.dll">
 			<Output ItemName="_testFiles" TaskParameter="Include"/>
 		</CreateItem>
 
 		<CreateItem Include="$(TestPath)\AutofacContrib.*.dll" Exclude="$(TestPath)\AutofacContrib.Tests*.dll">
 			<Output ItemName="_coverageFiles" TaskParameter="Include"/>
-		</CreateItem>
+		</CreateItem>-->
 
 		<!--@(_testFiles->'&quot;%(FullPath)&quot;', ' ')-->
 		<!--
@@ -104,7 +122,7 @@
 		then you have to force NUnit-console and NCover to 32 bit mode
 		with CorFlags.exe from .NET SDK 2.0 (included in NCover and NUnit folders)
 		-->
-		<NCover ToolPath="Resource\Tool\NCover"
+		<!--<NCover ToolPath="Resource\Tool\NCover"
 			CommandLineExe="Resource/Tool/NUnit/nunit-console-x86.exe"
 			CommandLineArgs="@(_testFiles->'&quot;%(FullPath)&quot;', ' ') /nologo /noshadow /xml=&quot;$(ArtifactDirectory)\$(MSBuildProjectName).Tests-result.xml&quot;"
 			AssemblyList="@(_coverageFiles)"
@@ -125,7 +143,7 @@
 			MinimumCoverage="75"
 			Sort="FunctionCoverageAscending"
 			CoverageFiles="$(ArtifactDirectory)\$(MSBuildProjectName)-coverage.xml"
-		/>
+		/>-->
 	</Target>
 
 	<Target Name="_Version">
@@ -170,6 +188,6 @@
 		<CreateItem Include="$(LibraryPath)\*.*;$(LicensePath)\*.*">
 			<Output ItemName="_libFiles" TaskParameter="Include" />
 		</CreateItem>
-		<Zip Files="@(_libFiles)" ZipFileName="$(PackageDirectory)\$(MSBuildProjectName)-$(Version).zip" Flatten="false" WorkingDirectory="$(BuildPath)" />
+		<Zip Files="@(_libFiles)" ZipFileName="$(PackageDirectory)\$(MSBuildProjectName)-$(Version)-$(BuildFramework).zip" Flatten="false" WorkingDirectory="$(BuildPath)" />
 	</Target>
 </Project>
