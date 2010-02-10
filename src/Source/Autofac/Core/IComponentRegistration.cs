@@ -103,7 +103,7 @@ namespace Autofac.Core
         /// <param name="context">The context in which the instance was activated.</param>
         /// <param name="parameters">The parameters supplied to the activator.</param>
         /// <param name="instance">The instance.</param>
-        void RaiseActivating(IComponentContext context, IEnumerable<Parameter> parameters, object instance);
+        void RaiseActivating(IComponentContext context, IEnumerable<Parameter> parameters, ref object instance);
 
         /// <summary>
         /// Fired when the activation process for a new instance is complete.

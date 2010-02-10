@@ -36,7 +36,7 @@ namespace Autofac.Core
     {
         readonly IComponentContext _context;
         readonly IComponentRegistration _component;
-        readonly T _instance;
+        T _instance;
         readonly IEnumerable<Parameter> _parameters;
 
         /// <summary>
@@ -68,8 +68,21 @@ namespace Autofac.Core
         /// <summary>
         /// The instance that will be used to satisfy the request.
         /// </summary>
-        public T Instance { get { return _instance; } }
-
+        /// <remarks>
+        /// The instance can be replaced if needed, e.g. by an interface proxy.
+        /// </remarks>
+        public T Instance
+        {
+            get
+            {
+                return _instance;
+            }
+            set
+            {
+                Enforce.ArgumentNotNull((object)value, "value");
+                _instance = value;
+            }
+        }
         /// <summary>
         /// The parameters supplied to the activator.
         /// </summary>

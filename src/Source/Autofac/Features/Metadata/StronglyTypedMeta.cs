@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright (c) 2007 - 2008 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -23,22 +23,37 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-
-namespace Autofac.Configuration
+namespace Autofac.Features.Metadata
 {
-
     /// <summary>
-    /// Collection of extended property elements.
+    /// Provides a value along with metadata describing the value.
     /// </summary>
-    public class MetadataElementCollection : NamedConfigurationElementCollection<MetadataElement>
+    /// <typeparam name="T">The type of the value.</typeparam>
+    /// <typeparam name="TMetadata">An interface to which metadata values can be bound.</typeparam>
+    public class Meta<T, TMetadata>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PropertyElementCollection"/> class.
-        /// </summary>
-        public MetadataElementCollection()
-            : base("item", MetadataElement.Key)
-        {
-        }
-    }
+        readonly T _value;
+        readonly TMetadata _metadata;
 
+        /// <summary>
+        /// Create a new instance.
+        /// </summary>
+        /// <param name="value">The value described by the instance.</param>
+        /// <param name="metadata">The metadata describing the value.</param>
+        public Meta(T value, TMetadata metadata)
+        {
+            _value = value;
+            _metadata = metadata;
+        }
+
+        /// <summary>
+        /// The value described by <see cref="Metadata"/>.
+        /// </summary>
+        public T Value { get { return _value; } }
+
+        /// <summary>
+        /// Metadata describing the value.
+        /// </summary>
+        public TMetadata Metadata { get { return _metadata; } }
+    }
 }

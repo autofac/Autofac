@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Autofac.Core;
 
 namespace Autofac.Tests.Features.OpenGenerics
@@ -80,7 +76,7 @@ namespace Autofac.Tests.Features.OpenGenerics
             var cb = new ContainerBuilder();
             cb.RegisterGeneric(typeof(G<>));
             var c = cb.Build();
-            Assertions.AssertRegistered<G<int>>(c);
+            c.AssertRegistered<G<int>>();
         }
 
         [Test]

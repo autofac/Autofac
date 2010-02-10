@@ -129,10 +129,11 @@ namespace Autofac
                 componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
                 componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
                 componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
+                componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
 #if !(NET35)
                 componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
                 componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
-                componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
+                componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());
 #endif
             }
         }

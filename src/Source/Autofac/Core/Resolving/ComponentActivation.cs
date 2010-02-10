@@ -81,7 +81,7 @@ namespace Autofac.Core.Resolving
                     _activationScope.Disposer.AddInstanceForDisposal(instanceAsDisposable);
             }
 
-            _registration.RaiseActivating(this, parameters, _newInstance);
+            _registration.RaiseActivating(this, parameters, ref _newInstance);
 
             return _newInstance;
         }
