@@ -29,6 +29,7 @@ using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Util;
 
 namespace Autofac.Features.OpenGenerics
 {
@@ -58,14 +59,14 @@ namespace Autofac.Features.OpenGenerics
             if (swt != null && swt.ServiceType.IsGenericType)
             {
                 var genericTypeDefinition = swt.ServiceType.GetGenericTypeDefinition();
+                var genericArguments = swt.ServiceType.GetGenericArguments();
 
-                if (configuredServices
+                if (genericTypeDefinition.IsCompatibleWithGenericArguments(genericArguments) &&
+                    configuredServices
                     .DefaultIfEmpty(new TypedService(reflectionActivatorData.ImplementationType))
                     .Cast<IServiceWithType>()
                     .Any(s => s.ServiceType == genericTypeDefinition))
                 {
-                    var genericArguments = swt.ServiceType.GetGenericArguments();
-
                     activator = new ReflectionActivator(
                         reflectionActivatorData.ImplementationType.MakeGenericType(genericArguments),
                         reflectionActivatorData.ConstructorFinder,

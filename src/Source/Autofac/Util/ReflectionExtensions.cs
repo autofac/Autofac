@@ -70,5 +70,27 @@ namespace Autofac.Util
             Enforce.ArgumentNotNull(openGenericType, "openGenericType");
             return type.IsGenericType && type.GetGenericTypeDefinition() == openGenericType;
         }
+
+        public static bool IsCompatibleWithGenericArguments(this Type genericTypeDefinition, Type[] arguments)
+        {
+            //var genericArgumentDefinitions = genericTypeDefinition.GetGenericArguments();
+            //var matchesConstraints = true;
+            //for (var i = 0; i < genericArgumentDefinitions.Length; ++i)
+            //{
+            //    foreach (var constraint in genericArgumentDefinitions[i].GetGenericParameterConstraints())
+            //    {
+            //        if (!constraint.IsAssignableFrom(genericArguments[i]))
+            //        {
+            //            matchesConstraints = false;
+            //            break;
+            //        }
+            //    }
+
+            //    if (!matchesConstraints)
+            //        break;
+            //}
+
+            return true;
+        }
     }
 }

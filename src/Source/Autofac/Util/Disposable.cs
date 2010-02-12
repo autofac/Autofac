@@ -24,30 +24,28 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Threading;
 
 namespace Autofac.Util
 {
-	/// <summary>
-	/// Base class for disposable objects.
-	/// </summary>
+    /// <summary>
+    /// Base class for disposable objects.
+    /// </summary>
 	public class Disposable : IDisposable
 	{
-		bool _isDisposed;
-        object _synchRoot = new object();
+		int _isDisposed;
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
 		public void Dispose()
 		{
-            lock (_synchRoot)
+            var isDisposed = _isDisposed;
+            Interlocked.CompareExchange(ref _isDisposed, 1, isDisposed);
+            if (isDisposed == 0)
             {
-                if (!_isDisposed)
-                {
-                    _isDisposed = true;
-                    Dispose(true);
-                    GC.SuppressFinalize(this);
-                }
+                Dispose(true);
+                GC.SuppressFinalize(this);
             }
 		}
 
@@ -57,29 +55,6 @@ namespace Autofac.Util
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 		protected virtual void Dispose(bool disposing)
 		{
-		}
-
-        /// <summary>
-        /// Gets a value indicating whether this instance is disposed.
-        /// </summary>
-        /// <value>
-        /// 	<c>true</c> if this instance is disposed; otherwise, <c>false</c>.
-        /// </value>
-		protected bool IsDisposed
-		{
-			get
-			{
-				return _isDisposed;
-			}
-		}
-
-        /// <summary>
-        /// Checks that this instance has not been disposed.
-        /// </summary>
-		protected virtual void CheckNotDisposed()
-		{
-			if (IsDisposed)
-				throw new ObjectDisposedException(GetType().Name);
 		}
 	}
 }

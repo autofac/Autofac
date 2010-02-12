@@ -75,6 +75,13 @@ namespace Autofac.Features.Scanning
                             services.Add(s);
 
                     var r = RegistrationBuilder.CreateRegistration(Guid.NewGuid(), rb.RegistrationData, activator, services);
+
+                    foreach (var metadata in rb.ActivatorData.MetadataMappings
+                        .SelectMany(m => m(t)))
+                    {
+                        r.Metadata.Add(metadata);
+                    }
+
                     cr.Register(r);
                 }
             });

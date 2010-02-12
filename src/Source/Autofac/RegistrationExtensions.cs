@@ -346,6 +346,65 @@ namespace Autofac
         }
 
         /// <summary>
+        /// Specifies that a type from a scanned assembly provides its own concrete type as a service.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            AsSelf<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            Enforce.ArgumentNotNull(registration, "registration");
+            return registration.As(t => t);
+        }
+
+        /// <summary>
+        /// Specify how a type from a scanned assembly provides metadata.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <param name="metadataMapping">A function mapping the type to a list of metadata items.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            WithMetadata<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                Func<Type, IEnumerable<KeyValuePair<string, object>>> metadataMapping)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            Enforce.ArgumentNotNull(registration, "registration");
+            registration.ActivatorData.MetadataMappings.Add(metadataMapping);
+            return registration;
+        }
+
+        /// <summary>
+        /// Specify how a type from a scanned assembly provides metadata.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <param name="metadataKey">Key of the metadata item.</param>
+        /// <param name="metadataValueMapping">A function retrieving the value of the item from the component type.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            WithMetadata<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                string metadataKey,
+                Func<Type, object> metadataValueMapping)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            Enforce.ArgumentNotNull(registration, "registration");
+            return registration.WithMetadata(t =>
+                new[] { new KeyValuePair<string, object>(metadataKey, metadataValueMapping(t)) });
+        }
+
+        /// <summary>
         /// Specifies how a type from a scanned assembly is mapped to a service.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>

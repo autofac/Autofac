@@ -49,9 +49,12 @@ namespace Autofac.Configuration
         public IEnumerable<Parameter> ToParameters()
         {
             foreach (var parameter in this)
+            {
+                var localParameter = parameter;
                 yield return new ResolvedParameter(
-                    (pi, c) => pi.Name == parameter.Name,
-                    (pi, c) => TypeManipulation.ChangeToCompatibleType(parameter.Value, pi.ParameterType));
+                    (pi, c) => pi.Name == localParameter.Name,
+                    (pi, c) => TypeManipulation.ChangeToCompatibleType(localParameter.Value, pi.ParameterType));
+            }
         }
     }
 

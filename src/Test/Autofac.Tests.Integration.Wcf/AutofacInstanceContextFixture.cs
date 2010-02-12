@@ -11,13 +11,13 @@ namespace Autofac.Tests.Integration.Wcf
     {
         class DisposeTracker : Disposable
         {
-            new public bool IsDisposed
+            protected override void Dispose(bool disposing)
             {
-                get
-                {
-                    return base.IsDisposed;
-                }
+                IsDisposed = true;
+                base.Dispose(disposing);
             }
+
+            public bool IsDisposed { get; private set; }
         }
 
         [Test]

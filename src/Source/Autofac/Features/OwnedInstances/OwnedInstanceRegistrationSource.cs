@@ -74,6 +74,7 @@ namespace Autofac.Features.OwnedInstances
                                 throw;
                             }
                         })
+                        .ExternallyOwned()
                         .As(service)
                         .Targeting(r);
 

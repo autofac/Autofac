@@ -40,7 +40,7 @@ namespace Autofac.Core
         /// </summary>
         Stack<IDisposable> _items = new Stack<IDisposable>();
 
-        object _synchRoot = new object();
+        readonly object _synchRoot = new object();
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources
@@ -49,12 +49,17 @@ namespace Autofac.Core
         protected override void Dispose(bool disposing)
         {
             if (disposing)
+            {
                 lock (_synchRoot)
+                {
                     while (_items.Count > 0)
                     {
                         var item = _items.Pop();
                         item.Dispose();
                     }
+                    _items = null;
+                }
+            }
         }
 
         /// <summary>
@@ -65,7 +70,6 @@ namespace Autofac.Core
         public void AddInstanceForDisposal(IDisposable instance)
         {
             Enforce.ArgumentNotNull(instance, "instance");
-            CheckNotDisposed();
 
             lock (_synchRoot)
                 _items.Push(instance);

@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Threading;
 using Autofac.Util;
 
 namespace Autofac.Features.OwnedInstances
@@ -75,8 +76,8 @@ namespace Autofac.Features.OwnedInstances
     /// </example>
     public class Owned<T> : Disposable
     {
-        readonly T _value;
-        readonly IDisposable _lifetime;
+        T _value;
+        IDisposable _lifetime;
 
         /// <summary>
         /// Create an instance of <see cref="Owned{T}"/>.
@@ -96,7 +97,6 @@ namespace Autofac.Features.OwnedInstances
         {
             get
             {
-                CheckNotDisposed();
                 return _value;
             }
         }
@@ -108,7 +108,15 @@ namespace Autofac.Features.OwnedInstances
         protected override void Dispose(bool disposing)
         {
             if (disposing)
-                _lifetime.Dispose();
+            {
+                var lt = _lifetime;
+                Interlocked.CompareExchange(ref _lifetime, null, lt);
+                if (lt != null)
+                {
+                    _value = default(T);
+                    lt.Dispose();
+                }
+            }
 
             base.Dispose(disposing);
         }

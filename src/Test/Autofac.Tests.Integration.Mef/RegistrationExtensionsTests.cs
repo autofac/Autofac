@@ -84,10 +84,13 @@ namespace Autofac.Tests.Integration.Mef
 
     public class DisposalTracker : Disposable
     {
-        new public bool IsDisposed
+        protected override void Dispose(bool disposing)
         {
-            get { return base.IsDisposed; }
+            IsDisposed = true;
+            base.Dispose(disposing);
         }
+
+        public bool IsDisposed { get; private set; }
     }
 
     [Export(typeof(DisposalTracker))]

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autofac.Features.Metadata;
 using NUnit.Framework;
 using Autofac.Tests.Scenarios.ScannedAssembly;
 using Autofac.Core;
@@ -23,6 +24,44 @@ namespace Autofac.Tests
             c.AssertSharing<AComponent>(InstanceSharing.None);
             c.AssertLifetime<AComponent, CurrentScopeLifetime>();
             c.AssertOwnership<AComponent>(InstanceOwnership.OwnedByLifetimeScope);
+        }
+
+        [Test]
+        public void WhenTypesRegisteredAsSelf_ConcreteTypeIsService()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyTypes(typeof(AComponent).Assembly)
+                .AsSelf();
+            var c = cb.Build();
+
+            c.AssertRegistered<AComponent>();
+        }
+
+        [Test]
+        public void WhenNameAndMetadataMappingApplied_ValueCalculatedFromType()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyTypes(typeof(AComponent).Assembly)
+                .WithMetadata("Name", t => t.Name);
+
+            var c = cb.Build();
+
+            var a = c.Resolve<Meta<AComponent>>();
+
+            Assert.AreEqual(typeof(AComponent).Name, a.Metadata["Name"]);
+        }
+
+        [Test]
+        public void WhenMetadataMappingApplied_ValuesCalculatedFromType()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyTypes(typeof(SaveCommand).Assembly)
+                .WithMetadata(t => t.GetMethods().ToDictionary(m => m.Name, m => (object)m.ReturnType));
+
+            var c = cb.Build();
+            var s = c.Resolve<Meta<SaveCommand>>();
+
+            Assert.IsTrue(s.Metadata.ContainsKey("Execute"));
         }
 
         [Test]

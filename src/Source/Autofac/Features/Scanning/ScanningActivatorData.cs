@@ -37,6 +37,7 @@ namespace Autofac.Features.Scanning
     {
         readonly ICollection<Func<Type, bool>> _filters = new List<Func<Type, bool>>();
         readonly ICollection<Func<Type, IEnumerable<Service>>> _serviceMappings = new List<Func<Type, IEnumerable<Service>>>();
+        readonly ICollection<Func<Type, IEnumerable<KeyValuePair<string, object>>>> _metadataMappings = new List<Func<Type, IEnumerable<KeyValuePair<string, object>>>>();
 
         /// <summary>
         /// Create an instance of <see cref="ScanningActivatorData"/>.
@@ -55,5 +56,10 @@ namespace Autofac.Features.Scanning
         /// The mappings that determine which services are registered for a type.
         /// </summary>
         public ICollection<Func<Type, IEnumerable<Service>>> ServiceMappings { get { return _serviceMappings; } }
+
+        /// <summary>
+        /// Mappings from type to metadata values for the component.
+        /// </summary>
+        public ICollection<Func<Type, IEnumerable<KeyValuePair<string, object>>>> MetadataMappings { get { return _metadataMappings; } }
     }
 }
