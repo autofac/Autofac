@@ -648,6 +648,11 @@
             The mappings that determine which services are registered for a type.
             </summary>
         </member>
+        <member name="P:Autofac.Features.Scanning.ScanningActivatorData.MetadataMappings">
+            <summary>
+            Mappings from type to metadata values for the component.
+            </summary>
+        </member>
         <member name="T:Autofac.Core.ActivatedEventArgs`1">
             <summary>
             Fired when the activation process for a new instance is complete.
@@ -744,19 +749,6 @@
             Releases unmanaged and - optionally - managed resources
             </summary>
             <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        </member>
-        <member name="M:Autofac.Util.Disposable.CheckNotDisposed">
-            <summary>
-            Checks that this instance has not been disposed.
-            </summary>
-        </member>
-        <member name="P:Autofac.Util.Disposable.IsDisposed">
-            <summary>
-            Gets a value indicating whether this instance is disposed.
-            </summary>
-            <value>
-            	<c>true</c> if this instance is disposed; otherwise, <c>false</c>.
-            </value>
         </member>
         <member name="M:Autofac.Core.Activators.InstanceActivator.#ctor(System.Type)">
             <summary>
@@ -3110,6 +3102,39 @@
             <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
             <param name="registration">Registration to set service mapping on.</param>
             <param name="serviceMapping">Function mapping types to services.</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+        </member>
+        <member name="M:Autofac.RegistrationExtensions.AsSelf``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2})">
+            <summary>
+            Specifies that a type from a scanned assembly provides its own concrete type as a service.
+            </summary>
+            <typeparam name="TLimit">Registration limit type.</typeparam>
+            <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+            <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+            <param name="registration">Registration to set service mapping on.</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+        </member>
+        <member name="M:Autofac.RegistrationExtensions.WithMetadata``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.Func{System.Type,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Object}}})">
+            <summary>
+            Specify how a type from a scanned assembly provides metadata.
+            </summary>
+            <typeparam name="TLimit">Registration limit type.</typeparam>
+            <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+            <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+            <param name="registration">Registration to set service mapping on.</param>
+            <param name="metadataMapping">A function mapping the type to a list of metadata items.</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+        </member>
+        <member name="M:Autofac.RegistrationExtensions.WithMetadata``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.String,System.Func{System.Type,System.Object})">
+            <summary>
+            Specify how a type from a scanned assembly provides metadata.
+            </summary>
+            <typeparam name="TLimit">Registration limit type.</typeparam>
+            <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+            <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+            <param name="registration">Registration to set service mapping on.</param>
+            <param name="metadataKey">Key of the metadata item.</param>
+            <param name="metadataValueMapping">A function retrieving the value of the item from the component type.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
         <member name="M:Autofac.RegistrationExtensions.Named``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.Func{System.Type,System.String},System.Type)">
