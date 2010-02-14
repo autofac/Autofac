@@ -37,32 +37,83 @@ namespace Autofac.Tests.Features.OpenGenerics
             Assert.IsInstanceOf<A1<int>>(activatedInstance);
         }
 
-        //[Test]
-        //public void GenericRegistrationsInSubcontextOverrideRootContext()
-        //{
-        //    var builder = new ContainerBuilder();
-        //    builder.RegisterGeneric(typeof(List<>)).As(typeof(ICollection<>)).FactoryScoped();
-        //    var container = builder.Build();
-        //    var inner = container.BeginLifetimeScope();
-        //    var innerBuilder = new ContainerBuilder();
-        //    innerBuilder.RegisterGeneric(typeof(LinkedList<>)).As(typeof(ICollection<>)).FactoryScoped();
-        //    innerBuilder.Build(inner);
+        class AWithNew<T> : I<T>
+            where T : new()
+        {
+        }
 
-        //    var list = inner.Resolve<ICollection<int>>();
-        //    Assert.IsInstanceOf<LinkedList<int>), list);
-        //}
+        [Test]
+        public void DoesNotGenerateActivatorWhenConstructorConstraintBroken()
+        {
+            Assert.IsFalse(CanGenerateActivator<string>(typeof(AWithNew<>)));
+        }
 
-        //[Test]
-        //public void SingletonGenericComponentsResolvedInSubcontextStickToParent()
-        //{
-        //    var builder = new ContainerBuilder();
-        //    builder.RegisterGeneric(typeof(List<>)).As(typeof(ICollection<>));
-        //    var container = builder.Build();
-        //    var inner = container.BeginLifetimeScope();
+        class PWithNew { }
 
-        //    var innerList = inner.Resolve<ICollection<int>>();
-        //    var outerList = container.Resolve<ICollection<int>>();
-        //    Assert.AreSame(innerList, outerList);
-        //}
+        [Test]
+        public void GeneratesActivatorWhenConstructorConstraintMet()
+        {
+            Assert.IsTrue(CanGenerateActivator<PWithNew>(typeof(AWithNew<>)));
+        }
+
+        class AWithDisposable<T> : I<T>
+            where T : IDisposable
+        {
+        }
+
+        [Test]
+        public void DoesNotGenerateActivatorWhenTypeConstraintBroken()
+        {
+            Assert.IsFalse(CanGenerateActivator<string>(typeof(AWithDisposable<>)));
+        }
+
+        [Test]
+        public void GeneratesActivatorWhenTypeConstraintMet()
+        {
+            Assert.IsTrue(CanGenerateActivator<DisposeTracker>(typeof(AWithDisposable<>)));
+        }
+
+        class AWithClass<T> : I<T>
+            where T : class { }
+
+        [Test]
+        public void DoesNotGenerateActivatorWhenClassConstraintBroken()
+        {
+            Assert.IsFalse(CanGenerateActivator<int>(typeof(AWithClass<>)));
+        }
+
+        [Test]
+        public void GeneratesActivatorWhenClassConstraintMet()
+        {
+            Assert.IsTrue(CanGenerateActivator<string>(typeof(AWithClass<>)));
+        }
+
+        class AWithValue<T> : I<T>
+            where T : struct { }
+
+        [Test]
+        public void DoesNotGenerateActivatorWhenValueConstraintBroken()
+        {
+            Assert.IsFalse(CanGenerateActivator<string>(typeof(AWithValue<>)));
+        }
+
+        [Test]
+        public void GeneratesActivatorWhenValueConstraintMet()
+        {
+            Assert.IsTrue(CanGenerateActivator<int>(typeof(AWithValue<>)));
+        }
+
+        static bool CanGenerateActivator<TClosing>(Type implementor)
+        {
+            var g = new OpenGenericActivatorGenerator();
+
+            IInstanceActivator activator;
+            IEnumerable<Service> services;
+
+            return g.TryGenerateActivator(new TypedService(typeof(I<TClosing>)),
+                    new Service[] { new TypedService(typeof(I<>)) },
+                    new ReflectionActivatorData(implementor),
+                    out activator, out services);
+        }
     }
 }

@@ -61,11 +61,11 @@ namespace Autofac.Features.OpenGenerics
                 var genericTypeDefinition = swt.ServiceType.GetGenericTypeDefinition();
                 var genericArguments = swt.ServiceType.GetGenericArguments();
 
-                if (genericTypeDefinition.IsCompatibleWithGenericArguments(genericArguments) &&
-                    configuredServices
+                if (configuredServices
                     .DefaultIfEmpty(new TypedService(reflectionActivatorData.ImplementationType))
                     .Cast<IServiceWithType>()
-                    .Any(s => s.ServiceType == genericTypeDefinition))
+                    .Any(s => s.ServiceType == genericTypeDefinition) &&
+                    reflectionActivatorData.ImplementationType.IsCompatibleWithGenericParameters(genericArguments))
                 {
                     activator = new ReflectionActivator(
                         reflectionActivatorData.ImplementationType.MakeGenericType(genericArguments),

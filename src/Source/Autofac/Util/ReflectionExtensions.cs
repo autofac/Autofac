@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -71,24 +72,45 @@ namespace Autofac.Util
             return type.IsGenericType && type.GetGenericTypeDefinition() == openGenericType;
         }
 
-        public static bool IsCompatibleWithGenericArguments(this Type genericTypeDefinition, Type[] arguments)
+        public static bool IsCompatibleWithGenericParameters(this Type genericTypeDefinition, Type[] parameters)
         {
-            //var genericArgumentDefinitions = genericTypeDefinition.GetGenericArguments();
-            //var matchesConstraints = true;
-            //for (var i = 0; i < genericArgumentDefinitions.Length; ++i)
-            //{
-            //    foreach (var constraint in genericArgumentDefinitions[i].GetGenericParameterConstraints())
-            //    {
-            //        if (!constraint.IsAssignableFrom(genericArguments[i]))
-            //        {
-            //            matchesConstraints = false;
-            //            break;
-            //        }
-            //    }
+            var genericArgumentDefinitions = genericTypeDefinition.GetGenericArguments();
 
-            //    if (!matchesConstraints)
-            //        break;
-            //}
+            for (var i = 0; i < genericArgumentDefinitions.Length; ++i)
+            {
+                var argumentDefinition = genericArgumentDefinitions[i];
+                var parameter = parameters[i];
+
+                foreach (var constraint in argumentDefinition.GetGenericParameterConstraints())
+                {
+                    if (!constraint.IsAssignableFrom(parameter))
+                        return false;
+                }
+
+                var specialConstraints = argumentDefinition.GenericParameterAttributes;
+
+                if ((specialConstraints & GenericParameterAttributes.DefaultConstructorConstraint)
+                    != GenericParameterAttributes.None)
+                {
+                    if (!parameter.IsValueType && parameter.GetConstructor(new Type[0]) == null)
+                        return false;
+                }
+
+                if ((specialConstraints & GenericParameterAttributes.ReferenceTypeConstraint)
+                    != GenericParameterAttributes.None)
+                {
+                    if (parameter.IsValueType)
+                        return false;
+                }
+
+                if ((specialConstraints & GenericParameterAttributes.NotNullableValueTypeConstraint)
+                    != GenericParameterAttributes.None)
+                {
+                    if (!parameter.IsValueType ||
+                        (parameter.IsGenericType && parameter.IsClosingTypeOf(typeof(Nullable<>))))
+                        return false;
+                }
+            }
 
             return true;
         }
