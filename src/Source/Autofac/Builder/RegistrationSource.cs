@@ -14,9 +14,9 @@ namespace Autofac.Builder
     /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
     public class RegistrationSource<TLimit, TActivatorData, TRegistrationStyle> : IRegistrationSource
     {
-        RegistrationData _registrationData;
-        TActivatorData _activatorData;
-        IActivatorGenerator<TActivatorData> _activatorGenerator;
+        readonly RegistrationData _registrationData;
+        readonly TActivatorData _activatorData;
+        readonly IActivatorGenerator<TActivatorData> _activatorGenerator;
 
         /// <summary>
         /// Try to generate registrations using the provided activator generator, with

@@ -33,7 +33,7 @@ namespace Autofac.Builder
     /// </summary>
     public class SimpleActivatorData : IConcreteActivatorData
     {
-        IInstanceActivator _activator;
+        readonly IInstanceActivator _activator;
 
         /// <summary>
         /// Return the provided activator.

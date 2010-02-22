@@ -37,14 +37,14 @@ namespace Autofac.Builder
     /// </summary>
     public class RegistrationData
     {
-        ICollection<Service> _services = new HashSet<Service>();
+        readonly ICollection<Service> _services = new HashSet<Service>();
         InstanceOwnership _ownership = InstanceOwnership.OwnedByLifetimeScope;
         IComponentLifetime _lifetime = new CurrentScopeLifetime();
         InstanceSharing _sharing = InstanceSharing.None;
-        IDictionary<string, object> _metadata = new Dictionary<string, object>();
-        ICollection<EventHandler<PreparingEventArgs<object>>> _preparingHandlers = new List<EventHandler<PreparingEventArgs<object>>>();
-        ICollection<EventHandler<ActivatingEventArgs<object>>> _activatingHandlers = new List<EventHandler<ActivatingEventArgs<object>>>();
-        ICollection<EventHandler<ActivatedEventArgs<object>>> _activatedHandlers = new List<EventHandler<ActivatedEventArgs<object>>>();
+        readonly IDictionary<string, object> _metadata = new Dictionary<string, object>();
+        readonly ICollection<EventHandler<PreparingEventArgs<object>>> _preparingHandlers = new List<EventHandler<PreparingEventArgs<object>>>();
+        readonly ICollection<EventHandler<ActivatingEventArgs<object>>> _activatingHandlers = new List<EventHandler<ActivatingEventArgs<object>>>();
+        readonly ICollection<EventHandler<ActivatedEventArgs<object>>> _activatedHandlers = new List<EventHandler<ActivatedEventArgs<object>>>();
 
         /// <summary>
         /// The services explicitly assigned to the component.

@@ -79,9 +79,12 @@
     <Compile Include="ICommand.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RedoCommandData.cs" />
     <Compile Include="SaveCommand.cs" />
     <Compile Include="SaveCommandData.cs" />
     <Compile Include="StringMessage.cs" />
+    <Compile Include="UndoCommandData.cs" />
+    <Compile Include="UndoRedoCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\SharedKey.snk">

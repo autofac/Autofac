@@ -54,7 +54,6 @@ namespace Autofac.Features.Scanning
 
             builder.RegisterCallback(cr =>
             {
-                var tempBuilder = new ContainerBuilder();
                 foreach (var t in assemblies.SelectMany(a => a.GetTypes())
                     .Where(t => !t.IsAbstract && rb.ActivatorData.Filters.All(p => p(t))))
                 {
@@ -76,8 +75,7 @@ namespace Autofac.Features.Scanning
 
                     var r = RegistrationBuilder.CreateRegistration(Guid.NewGuid(), rb.RegistrationData, activator, services);
 
-                    foreach (var metadata in rb.ActivatorData.MetadataMappings
-                        .SelectMany(m => m(t)))
+                    foreach (var metadata in rb.ActivatorData.MetadataMappings.SelectMany(m => m(t)))
                     {
                         r.Metadata.Add(metadata);
                     }
@@ -115,7 +113,7 @@ namespace Autofac.Features.Scanning
 
             return registration
                 .Where(candidateType => IsAssignableToClosed(candidateType, openGenericServiceType))
-                .As(candidateType => GetServiceThatCloses(candidateType, openGenericServiceType));
+                .As(candidateType => GetServicesThatClose(candidateType, openGenericServiceType));
         }
 
         /// <summary>Determines whether the candidate type supports any base or interface that closes the
@@ -125,8 +123,7 @@ namespace Autofac.Features.Scanning
         /// <returns>True if an interface was found; otherwise false.</returns>
         static bool IsAssignableToClosed(Type candidateType, Type openGenericServiceType)
         {
-            Type unused;
-            return FindAssignableTypeThatCloses(candidateType, openGenericServiceType, out unused);
+            return FindAssignableTypesThatClose(candidateType, openGenericServiceType).Any();
         }
 
         /// <summary>Returns the first concrete interface supported by the candidate type that
@@ -134,11 +131,10 @@ namespace Autofac.Features.Scanning
         /// <param name="candidateType">The type that is being checked for the interface.</param>
         /// <param name="openGenericServiceType">The open generic type to locate.</param>
         /// <returns>The type of the interface.</returns>
-        static Type GetServiceThatCloses(Type candidateType, Type openGenericServiceType)
+        static IEnumerable<Service> GetServicesThatClose(Type candidateType, Type openGenericServiceType)
         {
-            Type closed;
-            FindAssignableTypeThatCloses(candidateType, openGenericServiceType, out closed);
-            return Enforce.NotNull(closed);
+            return FindAssignableTypesThatClose(candidateType, openGenericServiceType)
+                .Select(t => new TypedService(t));
         }
 
         /// <summary>
@@ -146,37 +142,22 @@ namespace Autofac.Features.Scanning
         /// </summary>
         /// <param name="candidateType">The type that is being checked for the interface.</param>
         /// <param name="openGenericServiceType">The open generic service type to locate.</param>
-        /// <param name="closedServiceType">The type of the closed service if found.</param>
         /// <returns>True if a closed implementation was found; otherwise false.</returns>
-        static bool FindAssignableTypeThatCloses(Type candidateType, Type openGenericServiceType, out Type closedServiceType)
+        static IEnumerable<Type> FindAssignableTypesThatClose(Type candidateType, Type openGenericServiceType)
         {
-            closedServiceType = null;
+            if (candidateType.IsAbstract) yield break;
 
-            if (candidateType.IsAbstract) return false;
-
-            foreach (Type interfaceType in TypesAssignableFrom(candidateType))
+            foreach (var assignableType in TypesAssignableFrom(candidateType)
+                .Where(t => t.IsClosingTypeOf(openGenericServiceType)))
             {
-                if (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == openGenericServiceType)
-                {
-                    closedServiceType = interfaceType;
-                    return true;
-                }
+                yield return assignableType;
             }
-
-            return false;
         }
 
         static IEnumerable<Type> TypesAssignableFrom(Type candidateType)
         {
-            foreach (var iface in candidateType.GetInterfaces())
-                yield return iface;
-
-            var next = candidateType;
-            while (next != typeof(object))
-            {
-                yield return next;
-                next = next.BaseType;
-            }
+            return candidateType.GetInterfaces().Concat(
+                Traverse.Across(candidateType, t => t.BaseType));
         }
     }
 }

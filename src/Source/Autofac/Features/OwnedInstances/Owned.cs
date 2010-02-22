@@ -25,21 +25,32 @@
 
 using System;
 using System.Threading;
+using Autofac.Core;
 using Autofac.Util;
 
 namespace Autofac.Features.OwnedInstances
 {
     /// <summary>
-    /// Represents a dependency that can be disposed of by the dependent component.
+    /// Represents a dependency that can be released by the dependent component.
     /// </summary>
+    /// <typeparam name="T">The service provided by the dependency.</typeparam>
     /// <remarks>
+    /// <para>
     /// Autofac automatically provides instances of <see cref="Owned{T}"/> whenever the
-    /// service T is registered.
-    /// It is not necessary for T, or the underlying component, to implement <see cref="System.IDisposable"/>.
+    /// service <typeparamref name="T"/> is registered.
+    /// </para>
+    /// <para>
+    /// It is not necessary for <typeparamref name="T"/>, or the underlying component, to implement <see cref="System.IDisposable"/>.
     /// Disposing of the <see cref="Owned{T}"/> object is the correct way to handle cleanup of the dependency,
     /// as this will dispose of any other components created indirectly as well.
+    /// </para>
+    /// <para>
+    /// When <see cref="Owned{T}"/> is resolved, a new <see cref="ILifetimeScope"/> is created for the
+    /// underlying <typeparamref name="T"/>, and tagged with the service matching <typeparamref name="T"/>,
+    /// generally a <see cref="TypedService"/>. This means that shared instances can be tied to this
+    /// scope by registering them as InstancePerMatchingLifetimeScope(new TypedService(typeof(T))).
+    /// </para>
     /// </remarks>
-    /// <typeparam name="T">The service provided by the dependency.</typeparam>
     /// <example>
     /// The component D below is disposable and implements IService:
     /// <code>

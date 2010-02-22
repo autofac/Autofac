@@ -56,6 +56,7 @@ namespace Autofac.Tests
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(SaveCommand).Assembly)
+                .Where(t => t != typeof(UndoRedoCommand))
                 .WithMetadata(t => t.GetMethods().ToDictionary(m => m.Name, m => (object)m.ReturnType));
 
             var c = cb.Build();
@@ -178,7 +179,7 @@ namespace Autofac.Tests
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(ICommand<>).Assembly)
                 .AsClosedTypesOf(typeof(ICommand<>));
-            IContainer c = cb.Build();
+            var c = cb.Build();
 
             Assert.That(c.Resolve<ICommand<SaveCommandData>>(), Is.TypeOf<SaveCommand>());
             Assert.That(c.Resolve<ICommand<DeleteCommandData>>(), Is.TypeOf<DeleteCommand>());
@@ -190,9 +191,33 @@ namespace Autofac.Tests
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(Message<>).Assembly)
                 .AsClosedTypesOf(typeof(Message<>));
-            IContainer c = cb.Build();
+            var c = cb.Build();
 
             Assert.That(c.Resolve<Message<string>>(), Is.TypeOf<StringMessage>());
+        }
+
+        [Test]
+        public void AsSelf_ExposesConcreteTypeAsService()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyTypes(typeof(A2Component).Assembly)
+                .AsImplementedInterfaces()
+                .AsSelf();
+            var c = cb.Build();
+
+            Assert.That(c.IsRegistered<A2Component>());
+        }
+
+        [Test]
+        public void AsClosedTypesOf_MultipleServicesPerClass_ExposesAllServices()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyTypes(typeof(UndoRedoCommand).Assembly)
+                .AsClosedTypesOf(typeof(ICommand<>));
+            var c = cb.Build();
+
+            var r = c.RegistrationFor<ICommand<UndoCommandData>>();
+            Assert.That(r.Services.Contains(new TypedService(typeof(ICommand<RedoCommandData>))));
         }
     }
 }

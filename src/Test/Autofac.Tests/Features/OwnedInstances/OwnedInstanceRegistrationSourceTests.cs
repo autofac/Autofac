@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autofac.Core;
 using NUnit.Framework;
 using Autofac.Features.OwnedInstances;
 
@@ -67,6 +68,29 @@ namespace Autofac.Tests.Features.OwnedInstances
             var owned = container.Resolve<Owned<object>>("o");
 
             Assert.AreSame(o, owned.Value);
+        }
+
+        public class ExposesScopeTag
+        {
+            readonly ILifetimeScope _myScope;
+
+            public ExposesScopeTag(ILifetimeScope myScope)
+            {
+                _myScope = myScope;
+            }
+
+            public object Tag { get { return _myScope.Tag; } }
+        }
+
+        [Test]
+        public void ScopesCreatedForOwnedInstances_AreTaggedWithTheServiceThatIsOwned()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterType<ExposesScopeTag>();
+            var c = cb.Build();
+
+            var est = c.Resolve<Owned<ExposesScopeTag>>();
+            Assert.AreEqual(new TypedService(typeof(ExposesScopeTag)), est.Value.Tag);
         }
     }
 }

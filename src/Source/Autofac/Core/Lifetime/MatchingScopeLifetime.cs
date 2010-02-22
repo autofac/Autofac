@@ -35,8 +35,8 @@ namespace Autofac.Core.Lifetime
     /// </summary>
     public class MatchingScopeLifetime : IComponentLifetime
     {
-        Func<ILifetimeScope, bool> _matcher;
-        string _matchExpressionCode;
+        readonly Func<ILifetimeScope, bool> _matcher;
+        readonly string _matchExpressionCode;
 
         /// <summary>
         /// Match scopes based on the provided expression.
