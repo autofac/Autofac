@@ -148,7 +148,7 @@ namespace Autofac.Core.Activators.Reflection
             var prioritisedParameters =
                 parameters.Concat(
                     _configuredParameters.Concat(
-                        new Parameter[] { new AutowiringParameter() }));
+                        new Parameter[] { new AutowiringParameter(), new DefaultValueParameter() }));
 
             return constructorInfo
                 .Select(ci => new ConstructorParameterBinding(ci, prioritisedParameters, context))
@@ -166,10 +166,10 @@ namespace Autofac.Core.Activators.Reflection
 
                 foreach (var prop in _configuredProperties)
                 {
-                    Func<object> vp = null;
                     foreach (var actual in actualProps)
                     {
                         var setter = actual.GetSetMethod();
+                        Func<object> vp;
                         if (setter != null &&
                             prop.CanSupplyValue(setter.GetParameters().First(), context, out vp))
                         {

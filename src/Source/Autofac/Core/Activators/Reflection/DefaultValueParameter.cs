@@ -24,15 +24,15 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Linq;
 using System.Reflection;
 
 namespace Autofac.Core.Activators.Reflection
 {
     /// <summary>
-    /// Supplies values based on the target parameter type.
+    /// Provides parameters that have a default value, set with an optional parameter
+    /// declaration in C# or VB.
     /// </summary>
-    public class AutowiringParameter : Parameter
+    public class DefaultValueParameter : Parameter
     {
         /// <summary>
         /// Returns true if the parameter is able to provide a value to a particular site.
@@ -45,10 +45,9 @@ namespace Autofac.Core.Activators.Reflection
         /// <returns>True if a value can be supplied; otherwise, false.</returns>
         public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<object> valueProvider)
         {
-            IComponentRegistration registration;
-            if (context.ComponentRegistry.TryGetRegistration(new TypedService(pi.ParameterType), out registration))
+            if (!(pi.DefaultValue is DBNull))
             {
-                valueProvider = () => context.Resolve(registration, Enumerable.Empty<Parameter>());
+                valueProvider = () => pi.DefaultValue;
                 return true;
             }
             valueProvider = null;

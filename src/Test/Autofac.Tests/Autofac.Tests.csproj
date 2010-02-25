@@ -82,6 +82,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup Condition="$(TargetFrameworkVersion)=='v4.0'">
+    <Compile Include="Core\Activators\Reflection\DefaultValueParameterTests.cs" />
     <Compile Include="Features\LazyDependencies\LazyRegistrationSourceTests.cs" />
     <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSourceTests.cs" />
     <Compile Include="Features\Metadata\StronglyTypedMetaRegistrationSourceTests.cs" />
@@ -89,31 +90,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assertions.cs" />
-    <Compile Include="Builder\PropertyInjectionTests.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Builder\AutomaticRegistrationBuilderFixture.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Builder\CollectionRegistrationBuilderTests.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Builder\PropertyInjectionTests.cs"/>
+    <Compile Include="Builder\AutomaticRegistrationBuilderFixture.cs"/>
+    <Compile Include="Builder\CollectionRegistrationBuilderTests.cs"/>
     <Compile Include="Builder\RegistrationBuilderTests.cs" />
-    <Compile Include="ContainerBuilderTests.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Builder\DelegateRegistrationBuilderFixture.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Builder\ModuleFixture.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Builder\ProvidedInstanceRegistrationBuilderTests.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Builder\ReflectiveRegistrationBuilderTests.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="ContainerBuilderTests.cs"/>
+    <Compile Include="Builder\DelegateRegistrationBuilderFixture.cs"/>
+    <Compile Include="Builder\ModuleFixture.cs"/>
+    <Compile Include="Builder\ProvidedInstanceRegistrationBuilderTests.cs"/>
+    <Compile Include="Builder\ReflectiveRegistrationBuilderTests.cs"/>
     <Compile Include="ComponentRegisteredEventArgsTests.cs" />
     <Compile Include="Core\ComponentRegistrationTests.cs" />
     <Compile Include="Core\Lifetime\LifetimeScopeTests.cs" />
