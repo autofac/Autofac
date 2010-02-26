@@ -888,5 +888,26 @@ namespace Autofac
         {
             return ScanningRegistrationExtensions.AsClosedTypesOf(registration, openGenericServiceType);
         }
+
+        /// <summary>
+        /// Registers the types assignable to.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to filter types from.</param>
+        /// <param name="type">The type or interface which all classes must be assignable from.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            AssignableTo<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                Type type)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            Enforce.ArgumentNotNull(registration, "registration");
+            
+            registration.ActivatorData.Filters.Add(type.IsAssignableFrom);
+            return registration;
+        }
     }
 }
