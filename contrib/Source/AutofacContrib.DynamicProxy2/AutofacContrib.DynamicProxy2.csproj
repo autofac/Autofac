@@ -85,52 +85,19 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DynamicInterfaceInterceptorAttacher.cs" />
-    <Compile Include="DynamicInterfaceInterceptorAttacherResources.Designer.cs">
+    <Compile Include="RegistrationExtensionsResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>DynamicInterfaceInterceptorAttacherResources.resx</DependentUpon>
+      <DependentUpon>RegistrationExtensionsResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ExtendedPropertyInterceptorProvider.cs" />
-    <Compile Include="FlexibleInterceptionModule.cs" />
-    <Compile Include="FlexibleInterceptorAttacher.cs" />
-    <Compile Include="FlexibleInterceptorProvider.cs" />
-    <Compile Include="ImplementationAttributeInterceptorProvider.cs" />
-    <Compile Include="IComponentInterceptorAttacher.cs" />
-    <Compile Include="IComponentInterceptorProvider.cs" />
-    <Compile Include="ImplementationTypeInterceptorAttacher.cs" />
-    <Compile Include="ImplementationTypeInterceptorAttacherResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ImplementationTypeInterceptorAttacherResources.resx</DependentUpon>
-    </Compile>
+    <Compile Include="RegistrationExtensions.cs" />
     <Compile Include="InterceptAttribute.cs" />
-    <Compile Include="InterceptionModule.cs" />
-    <Compile Include="InterceptorConfigurationHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProxyConstructorFinder.cs" />
-    <Compile Include="StandardInterceptionModule.cs" />
-    <Compile Include="TypedServiceInterceptorAttacher.cs" />
-    <Compile Include="TypedServiceInterceptorAttacherResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TypedServiceInterceptorAttacherResources.resx</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DynamicInterfaceInterceptorAttacherResources.resx">
+    <EmbeddedResource Include="RegistrationExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>DynamicInterfaceInterceptorAttacherResources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ImplementationTypeInterceptorAttacherResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ImplementationTypeInterceptorAttacherResources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TypedServiceInterceptorAttacherResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>TypedServiceInterceptorAttacherResources.Designer.cs</LastGenOutput>
+      <LastGenOutput>RegistrationExtensionsResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

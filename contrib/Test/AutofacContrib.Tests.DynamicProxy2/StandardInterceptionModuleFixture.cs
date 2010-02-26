@@ -40,25 +40,13 @@ namespace AutofacContrib.Tests.DynamicProxy2
         public void InterceptsReflectionBasedComponent()
         {
             var builder = new ContainerBuilder();
-            builder.Register<C>();
-            builder.Register<AddOneInterceptor>();
-            builder.RegisterModule(new StandardInterceptionModule());
+            builder.RegisterType<C>().EnableInterceptors();
+            builder.RegisterType<AddOneInterceptor>();
             var container = builder.Build();
             var i = 10;
-            var c = container.Resolve<C>(new NamedParameter("i", i));
+            var c = container.Resolve<C>(TypedParameter.From(i));
             var got = c.GetI();
             Assert.AreEqual(i + 1, got);
-        }
-
-        [Test]
-        [ExpectedException(typeof(ArgumentException))]
-        public void CannotInterceptNonReflectionComponents()
-        {
-            var builder = new ContainerBuilder();
-            builder.Register(c => new C(10));
-            builder.Register<AddOneInterceptor>();
-            builder.RegisterModule(new StandardInterceptionModule());
-            var container = builder.Build();
         }
     }
 }
