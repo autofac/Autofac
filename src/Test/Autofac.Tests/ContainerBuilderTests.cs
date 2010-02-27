@@ -335,11 +335,8 @@ namespace Autofac.Tests
             cb.RegisterType<object>().InstancePerMatchingLifetimeScope(contextName);
             var container = cb.Build();
 
-            var ctx1 = container.BeginLifetimeScope();
-            ctx1.Tag = contextName;
-
-            var ctx2 = container.BeginLifetimeScope();
-            ctx2.Tag = contextName;
+            var ctx1 = container.BeginLifetimeScope(contextName);
+            var ctx2 = container.BeginLifetimeScope(contextName);
 
             AssertIsContainerScoped<object>(ctx1, ctx2);
         }
@@ -349,7 +346,7 @@ namespace Autofac.Tests
         {
             var builder = new ContainerBuilder();
 
-            string marker = "marker";
+            var marker = "marker";
 
             IComponentRegistry registry = null;
             IComponentRegistration cr = null;
@@ -367,22 +364,10 @@ namespace Autofac.Tests
             Assert.AreSame(marker, cr.Metadata[marker]);
         }
 
-        void AssertIsContainerScoped<TSvc>(IComponentContext ctx1, IComponentContext ctx2)
+        static void AssertIsContainerScoped<TSvc>(IComponentContext ctx1, IComponentContext ctx2)
         {
             Assert.AreSame(ctx1.Resolve<TSvc>(), ctx1.Resolve<TSvc>());
             Assert.AreNotSame(ctx1.Resolve<TSvc>(), ctx2.Resolve<TSvc>());
-        }
-
-        void AssertIsFactoryScoped<TSvc>(IComponentContext ctx1, IComponentContext ctx2)
-        {
-            Assert.AreNotSame(ctx1.Resolve<TSvc>(), ctx1.Resolve<TSvc>());
-            Assert.AreNotSame(ctx1.Resolve<TSvc>(), ctx2.Resolve<TSvc>());
-        }
-
-        void AssertIsSingletonScoped<TSvc>(IComponentContext ctx1, IComponentContext ctx2)
-        {
-            Assert.AreSame(ctx1.Resolve<TSvc>(), ctx1.Resolve<TSvc>());
-            Assert.AreSame(ctx1.Resolve<TSvc>(), ctx2.Resolve<TSvc>());
         }
 
         [Test]

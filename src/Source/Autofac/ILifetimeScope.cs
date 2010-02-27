@@ -76,6 +76,14 @@ namespace Autofac
         ILifetimeScope BeginLifetimeScope();
 
         /// <summary>
+        /// Begin a new nested scope. Component instances created via the new scope
+        /// will be disposed along with it.
+        /// </summary>
+        /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
+        /// <returns>A new lifetime scope.</returns>
+        ILifetimeScope BeginLifetimeScope(object tag);
+
+        /// <summary>
         /// Begin a new nested scope, with additional components available to it.
         /// Component instances created via the new scope
         /// will be disposed along with it.
@@ -91,6 +99,22 @@ namespace Autofac
         ILifetimeScope BeginLifetimeScope(Action<ContainerBuilder> configurationAction);
 
         /// <summary>
+        /// Begin a new nested scope, with additional components available to it.
+        /// Component instances created via the new scope
+        /// will be disposed along with it.
+        /// </summary>
+        /// <remarks>
+        /// The components registered in the sub-scope will be treated as though they were
+        /// registered in the root scope, i.e., SingleInstance() components will live as long
+        /// as the root scope.
+        /// </remarks>
+        /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
+        /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
+        /// that adds component registations visible only in the new scope.</param>
+        /// <returns>A new lifetime scope.</returns>
+        ILifetimeScope BeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction);
+
+        /// <summary>
         /// The disposer associated with this <see cref="ILifetimeScope"/>.
         /// Component instances can be associated with it manually if required.
         /// </summary>
@@ -104,6 +128,6 @@ namespace Autofac
         /// <remarks>Tags allow a level in the lifetime hierarchy to be identified.
         /// In most applications, tags are not necessary.</remarks>
         /// <seealso cref="Autofac.Builder.RegistrationBuilder{L,A,S}.InstancePerMatchingLifetimeScope"/>
-        object Tag { get; set; }
+        object Tag { get; }
     }
 }

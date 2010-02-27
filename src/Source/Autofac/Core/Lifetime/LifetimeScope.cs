@@ -47,9 +47,19 @@ namespace Autofac.Core.Lifetime
         readonly ISharingLifetimeScope _parent;
         readonly IDisposer _disposer = new Disposer();
         readonly IDictionary<Guid, object> _sharedInstances = new Dictionary<Guid, object>();
-        object _tag;
+        readonly object _tag;
 
         static internal Guid SelfRegistrationId = Guid.NewGuid();
+
+        /// <summary>
+        /// The tag applied by default to nested scopes when no other tag is specified.
+        /// </summary>
+        public static readonly object NoTag = new object();
+
+        /// <summary>
+        /// The tag applied to root scopes when no other tag is specified.
+        /// </summary>
+        public static readonly object RootTag = "root";
 
         private LifetimeScope()
         {
@@ -59,41 +69,64 @@ namespace Autofac.Core.Lifetime
         /// <summary>
         /// Create a lifetime scope for the provided components and nested beneath a parent.
         /// </summary>
+        /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
         /// <param name="componentRegistry">Components used in the scope.</param>
         /// <param name="parent">Parent scope.</param>
-        protected LifetimeScope(IComponentRegistry componentRegistry, LifetimeScope parent)
-            : this(componentRegistry)
+        protected LifetimeScope(IComponentRegistry componentRegistry, LifetimeScope parent, object tag)
+            : this(componentRegistry, tag)
         {
             _parent = Enforce.ArgumentNotNull(parent, "parent");
             _root = _parent.RootLifetimeScope;
         }
 
         /// <summary>
-        /// Create a lifetime scope for the provided components.
+        /// Create a root lifetime scope for the provided components.
         /// </summary>
+        /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
         /// <param name="componentRegistry">Components used in the scope.</param>
-        public LifetimeScope(IComponentRegistry componentRegistry)
+        public LifetimeScope(IComponentRegistry componentRegistry, object tag)
             : this()
         {
             _componentRegistry = Enforce.ArgumentNotNull(componentRegistry, "componentRegistry");
             _root = this;
+            _tag = Enforce.ArgumentNotNull(tag, "tag");
         }
 
         /// <summary>
-        /// Begin a new sub-scope. Instances created via the sub-scope
+        /// Create a root lifetime scope for the provided components.
+        /// </summary>
+        /// <param name="componentRegistry">Components used in the scope.</param>
+        public LifetimeScope(IComponentRegistry componentRegistry)
+            : this(componentRegistry, RootTag)
+        {
+        }
+
+        /// <summary>
+        /// Begin a new anonymous sub-scope. Instances created via the sub-scope
         /// will be disposed along with it.
         /// </summary>
         /// <returns>A new lifetime scope.</returns>
         public ILifetimeScope BeginLifetimeScope()
         {
+            return BeginLifetimeScope(NoTag);
+        }
+
+        /// <summary>
+        /// Begin a new tagged sub-scope. Instances created via the sub-scope
+        /// will be disposed along with it.
+        /// </summary>
+        /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
+        /// <returns>A new lifetime scope.</returns>
+        public ILifetimeScope BeginLifetimeScope(object tag)
+        {
             lock (_synchRoot)
             {
-                return new LifetimeScope(_componentRegistry, this);
+                return new LifetimeScope(_componentRegistry, this, tag);
             }
         }
 
         /// <summary>
-        /// Begin a new nested scope, with additional components available to it.
+        /// Begin a new anonymous sub-scope, with additional components available to it.
         /// Component instances created via the new scope
         /// will be disposed along with it.
         /// </summary>
@@ -111,6 +144,29 @@ namespace Autofac.Core.Lifetime
         /// </example>
         public ILifetimeScope BeginLifetimeScope(Action<ContainerBuilder> configurationAction)
         {
+            return BeginLifetimeScope(NoTag, configurationAction);
+        }
+
+        /// <summary>
+        /// Begin a new tagged sub-scope, with additional components available to it.
+        /// Component instances created via the new scope
+        /// will be disposed along with it.
+        /// </summary>
+        /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
+        /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
+        /// that adds component registations visible only in the new scope.</param>
+        /// <returns>A new lifetime scope.</returns>
+        /// <example>
+        /// IContainer cr = // ...
+        /// using (var lifetime = cr.BeginLifetimeScope("unitOfWork", builder =&gt; {
+        ///         builder.RegisterType&lt;Foo&gt;();
+        ///         builder.RegisterType&lt;Bar&gt;().As&lt;IBar&gt;(); })
+        /// {
+        ///     var foo = lifetime.Resolve&lt;Foo&gt;();
+        /// }
+        /// </example>
+        public ILifetimeScope BeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction)
+        {
             if (configurationAction == null) throw new ArgumentNullException("configurationAction");
 
             lock (_synchRoot)
@@ -127,7 +183,7 @@ namespace Autofac.Core.Lifetime
                 foreach (var external in externals)
                     locals.AddRegistrationSource(external);
 
-                return new LifetimeScope(locals, this);
+                return new LifetimeScope(locals, this, tag);
             }
         }
 
@@ -206,11 +262,6 @@ namespace Autofac.Core.Lifetime
             get
             {
                 return _tag; 
-            }
-            set
-            { 
-                lock(_synchRoot)
-                    _tag = value;
             }
         }
 

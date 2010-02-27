@@ -42,7 +42,6 @@ namespace Autofac.Integration.Web
         public ContainerProvider(IContainer applicationContainer)
         {
             if (applicationContainer == null) throw new ArgumentNullException("applicationContainer");
-            applicationContainer.Tag = WebLifetime.Application;
             _applicationContainer = applicationContainer;
         }
 
@@ -95,13 +94,11 @@ namespace Autofac.Integration.Web
                 var result = AmbientRequestLifetime;
                 if (result == null)
                 {
-                    if (_requestLifetimeConfiguration == null)
-                        result = ApplicationContainer.BeginLifetimeScope();
-                    else
-                        result = ApplicationContainer.BeginLifetimeScope(_requestLifetimeConfiguration);
+                    result = _requestLifetimeConfiguration == null ?
+                        ApplicationContainer.BeginLifetimeScope(WebLifetime.Request) :
+                        ApplicationContainer.BeginLifetimeScope(WebLifetime.Request, _requestLifetimeConfiguration);
 
                     AmbientRequestLifetime = result;
-                    result.Tag = WebLifetime.Request;
                 }
 
                 return result;

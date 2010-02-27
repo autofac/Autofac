@@ -23,6 +23,8 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 
+using Autofac.Core.Lifetime;
+
 namespace Autofac.Integration.Web
 {
     /// <summary>
@@ -33,11 +35,11 @@ namespace Autofac.Integration.Web
         /// <summary>
         /// Application lifetime
         /// </summary>
-        public const string Application = "application";
+        public static readonly object Application = LifetimeScope.RootTag;
 
         /// <summary>
         /// HTTP Request lifetime
         /// </summary>
-        public const string Request = "request";
+        public static readonly object Request = "httpRequest";
     }
 }

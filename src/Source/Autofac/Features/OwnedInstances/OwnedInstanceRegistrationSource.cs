@@ -62,10 +62,9 @@ namespace Autofac.Features.OwnedInstances
                 {
                     var rb = RegistrationBuilder.ForDelegate(ts.ServiceType, (c, p) =>
                         {
-                            var lifetime = c.Resolve<ILifetimeScope>().BeginLifetimeScope();
+                            var lifetime = c.Resolve<ILifetimeScope>().BeginLifetimeScope(ownedInstanceService);
                             try
                             {
-                                lifetime.Tag = ownedInstanceService;
                                 var value = lifetime.Resolve(r, p);
                                 return Activator.CreateInstance(ts.ServiceType, new [] { value, lifetime });
                             }

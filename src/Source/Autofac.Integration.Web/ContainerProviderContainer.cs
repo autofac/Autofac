@@ -61,22 +61,19 @@ namespace Autofac.Integration.Web
             return _containerProvider.RequestLifetime.BeginLifetimeScope();
         }
 
-        /// <summary>
-        /// Begin a new nested scope, with additional components available to it.
-        /// Component instances created via the new scope
-        /// will be disposed along with it.
-        /// </summary>
-        /// <remarks>
-        /// The components registered in the sub-scope will be treated as though they were
-        /// registered in the root scope, i.e., SingleInstance() components will live as long
-        /// as the root scope.
-        /// </remarks>
-        /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
-        /// that adds component registations visible only in the new scope.</param>
-        /// <returns>A new lifetime scope.</returns>
+        public ILifetimeScope BeginLifetimeScope(object tag)
+        {
+            return _containerProvider.RequestLifetime.BeginLifetimeScope(tag);
+        }
+
         public ILifetimeScope BeginLifetimeScope(Action<ContainerBuilder> configurationAction)
         {
             return _containerProvider.RequestLifetime.BeginLifetimeScope(configurationAction);
+        }
+
+        public ILifetimeScope BeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction)
+        {
+            return _containerProvider.RequestLifetime.BeginLifetimeScope(tag, configurationAction);
         }
 
         public IDisposer Disposer
@@ -90,10 +87,6 @@ namespace Autofac.Integration.Web
             {
                 return _containerProvider.RequestLifetime.Tag;
             }
-            set
-            {
-                _containerProvider.RequestLifetime.Tag = value;
-            }
         }
 
         public object Resolve(IComponentRegistration registration, IEnumerable<Parameter> parameters)
@@ -103,7 +96,6 @@ namespace Autofac.Integration.Web
 
         public void Dispose()
         {
-            throw new NotImplementedException();
         }
     }
 }

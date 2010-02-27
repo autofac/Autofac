@@ -1,5 +1,6 @@
 using System;
 using Autofac.Builder;
+using Autofac.Core.Lifetime;
 using NUnit.Framework;
 using Autofac.Core;
 using System.Collections.Generic;
@@ -23,21 +24,18 @@ namespace Autofac.Tests
         {
             var builder = new ContainerBuilder();
 
-            int instantiations = 0;
+            var instantiations = 0;
 
-            builder.Register(c => { instantiations++; return ""; }).InstancePerMatchingLifetimeScope(Tag.Outer);
+            builder.Register(c => { instantiations++; return ""; }).InstancePerMatchingLifetimeScope(LifetimeScope.RootTag);
 
-            var outer = builder.Build();
-            outer.Tag = Tag.Outer;
+            var root = builder.Build();
 
-            var middle = outer.BeginLifetimeScope();
-            middle.Tag = Tag.Middle;
+            var middle = root.BeginLifetimeScope(Tag.Middle);
 
-            var inner = middle.BeginLifetimeScope();
-            inner.Tag = Tag.Inner;
+            var inner = middle.BeginLifetimeScope(Tag.Inner);
 
             middle.Resolve<string>();
-            outer.Resolve<string>();
+            root.Resolve<string>();
             inner.Resolve<string>();
 
             Assert.AreEqual(1, instantiations);
@@ -48,18 +46,17 @@ namespace Autofac.Tests
         {
             var builder = new ContainerBuilder();
 
-            int instantiations = 0;
+            var instantiations = 0;
 
             builder.Register(c => { instantiations++; return ""; })
-                .InstancePerMatchingLifetimeScope(Tag.Outer);
+                .InstancePerMatchingLifetimeScope(LifetimeScope.RootTag);
 
-            var outer = builder.Build();
-            outer.Tag = Tag.Outer;
+            var root = builder.Build();
 
-            var anon = outer.BeginLifetimeScope();
+            var anon = root.BeginLifetimeScope();
 
             anon.Resolve<string>();
-            outer.Resolve<string>();
+            root.Resolve<string>();
 
             Assert.AreEqual(1, instantiations);
         }
@@ -74,7 +71,6 @@ namespace Autofac.Tests
                 .InstancePerMatchingLifetimeScope(Tag.Middle);
 
             var outer = builder.Build();
-            outer.Tag = Tag.Outer;
 
             Assert.IsTrue(outer.IsRegistered<string>());
             outer.Resolve<string>();
@@ -88,11 +84,10 @@ namespace Autofac.Tests
             var builder = new ContainerBuilder();
 
             builder.Register(c => "")
-                .InstancePerMatchingLifetimeScope(Tag.Outer)
+                .InstancePerMatchingLifetimeScope(LifetimeScope.RootTag)
                 .Named<string>(name);
 
             var outer = builder.Build();
-            outer.Tag = Tag.Outer;
 
             var s = outer.Resolve<string>(name);
             Assert.IsNotNull(s);
@@ -101,12 +96,10 @@ namespace Autofac.Tests
         [Test]
         public void CorrectScopeMaintainsOwnership()
         {
-            var tag = "Tag";
             var builder = new ContainerBuilder();
             builder.Register(c => new DisposeTracker())
-                .InstancePerMatchingLifetimeScope(tag);
+                .InstancePerMatchingLifetimeScope(LifetimeScope.RootTag);
             var container = builder.Build();
-            container.Tag = tag;
             var inner = container.BeginLifetimeScope();
             var dt = inner.Resolve<DisposeTracker>();
             Assert.IsFalse(dt.IsDisposed);
@@ -119,11 +112,9 @@ namespace Autofac.Tests
         [Test]
         public void DefaultSingletonSemanticsCorrect()
         {
-            var tag = "Tag";
             var builder = new ContainerBuilder();
-            builder.Register(c => new object()).InstancePerMatchingLifetimeScope(tag);
+            builder.Register(c => new object()).InstancePerMatchingLifetimeScope(LifetimeScope.RootTag);
             var container = builder.Build();
-            container.Tag = tag;
             var inner = container.BeginLifetimeScope();
             Assert.AreSame(container.Resolve<object>(), inner.Resolve<object>());
         }
@@ -131,11 +122,9 @@ namespace Autofac.Tests
         [Test]
         public void ReflectiveRegistration()
         {
-            var tag = "Tag";
             var builder = new ContainerBuilder();
-            builder.RegisterType(typeof(object)).InstancePerMatchingLifetimeScope(tag);
+            builder.RegisterType(typeof(object)).InstancePerMatchingLifetimeScope(LifetimeScope.RootTag);
             var container = builder.Build();
-            container.Tag = tag;
             Assert.IsNotNull(container.Resolve<object>());
         }
 
@@ -148,13 +137,12 @@ namespace Autofac.Tests
                 .As(typeof(IList<object>));
 
             var outer = builder.Build();
-            var inner = outer.BeginLifetimeScope();
-            inner.Tag = "tag";
+            var inner = outer.BeginLifetimeScope("tag");
 
             var coll = inner.Resolve<IList<object>>();
             Assert.IsNotNull(coll);
 
-            bool threw = false;
+            var threw = false;
             try
             {
                 outer.Resolve<IList<object>>();
@@ -176,13 +164,12 @@ namespace Autofac.Tests
                 .As(typeof(IList<>));
 
             var outer = builder.Build();
-            var inner = outer.BeginLifetimeScope();
-            inner.Tag = "tag";
+            var inner = outer.BeginLifetimeScope("tag");
 
             var coll = inner.Resolve<IList<object>>();
             Assert.IsNotNull(coll);
 
-            bool threw = false;
+            var threw = false;
             try
             {
                 outer.Resolve<IList<object>>();
