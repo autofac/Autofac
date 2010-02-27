@@ -199,5 +199,23 @@ namespace Autofac.Tests.Core.Registration
 
             Assert.AreEqual(2, wrappedObjects.Count());
         }
+
+        [Test]
+        public void LastRegistrationSourceRegisteredIsTheDefault()
+        {
+            var first = new object();
+            var second = new object();
+            var registry = new ComponentRegistry();
+
+            registry.AddRegistrationSource(new ObjectRegistrationSource(first));
+            registry.AddRegistrationSource(new ObjectRegistrationSource(second));
+
+            IComponentRegistration def;
+            registry.TryGetRegistration(new TypedService(typeof(object)), out def);
+
+            var result = def.Activator.ActivateInstance(Container.Empty, Enumerable.Empty<Parameter>());
+
+            Assert.AreEqual(result, second);
+        }
     }
 }

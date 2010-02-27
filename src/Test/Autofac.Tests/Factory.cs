@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autofac.Builder;
 using Autofac.Core.Registration;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Activators.Reflection;
@@ -35,6 +36,14 @@ namespace Autofac.Tests
                 InstanceOwnership.OwnedByLifetimeScope,
                 services,
                 NoMetadata);
+        }
+
+        public static IComponentRegistration CreateSingletonObjectRegistration(object instance)
+        {
+            return RegistrationBuilder
+                .ForDelegate((c, p) => instance)
+                .SingleInstance()
+                .CreateRegistration();
         }
 
         public static IComponentRegistration CreateSingletonObjectRegistration()

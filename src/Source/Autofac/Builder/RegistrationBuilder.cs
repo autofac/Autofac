@@ -71,15 +71,27 @@ namespace Autofac.Builder
         }
 
         /// <summary>
-        /// Create an IComponentRegistration from a RegistrationBuilder.
+        /// Create an <see cref='IComponentRegistration'/> from a <see cref='RegistrationBuilder'/>.
+        /// (There is no need to call
+        /// this method when registering components through a <see cref="ContainerBuilder"/>.)
         /// </summary>
+        /// <remarks>
+        /// When called on the result of one of the <see cref='ContainerBuilder'/> methods,
+        /// the returned registration will be different from the one the builder itself registers
+        /// in the container.
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// var registration = RegistrationBuilder.ForType&lt;Foo&gt;().CreateRegistration();
+        /// </code>
+        /// </example>
         /// <typeparam name="TLimit"></typeparam>
         /// <typeparam name="TActivatorData"></typeparam>
         /// <typeparam name="TSingleRegistrationStyle"></typeparam>
         /// <param name="rb">The registration builder.</param>
         /// <returns>An IComponentRegistration.</returns>
         public static IComponentRegistration CreateRegistration<TLimit, TActivatorData, TSingleRegistrationStyle>(
-            RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> rb)
+            this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> rb)
             where TSingleRegistrationStyle : SingleRegistrationStyle
             where TActivatorData : IConcreteActivatorData
         {

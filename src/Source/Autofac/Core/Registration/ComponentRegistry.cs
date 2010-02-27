@@ -44,7 +44,7 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// External registration sources.
         /// </summary>
-        readonly ICollection<IRegistrationSource> _dynamicRegistrationSources = new List<IRegistrationSource>();
+        readonly IList<IRegistrationSource> _dynamicRegistrationSources = new List<IRegistrationSource>();
 
         /// <summary>
         /// All registrations.
@@ -267,7 +267,7 @@ namespace Autofac.Core.Registration
 
             lock (_synchRoot)
             {
-                _dynamicRegistrationSources.Add(source);
+                _dynamicRegistrationSources.Insert(0, source);
             }
         }
 

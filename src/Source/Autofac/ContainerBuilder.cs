@@ -119,13 +119,7 @@ namespace Autofac
                 this.RegisterGeneric(typeof(KeyedServiceIndex<,>))
                     .As(typeof(IIndex<,>))
                     .InstancePerLifetimeScope();
-            }
 
-			foreach (var callback in _configurationCallbacks)
-                callback(componentRegistry);
-
-            if (!ExcludeDefaultModules)
-            {
                 componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
                 componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
                 componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
@@ -136,6 +130,9 @@ namespace Autofac
                 componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());
 #endif
             }
+
+			foreach (var callback in _configurationCallbacks)
+                callback(componentRegistry);
         }
 	}
 }
