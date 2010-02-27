@@ -48,20 +48,31 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
 
-  <!--Silverlight 2.0 runtime-->
-	<PropertyGroup Condition="$(BuildFramework)=='SL2'">
-		<BuildTargets>Silverlight 2.0</BuildTargets>
-		<BuildConstants>SILVERLIGHT</BuildConstants>
-		<PackageName>$(ProjectName)-$(Version)-SL2</PackageName>
-	</PropertyGroup>
+  <PropertyGroup Condition="$(BuildFramework)=='SL2'">
+    <BuildTargets>Silverlight 2.0</BuildTargets>
+    <BuildConstants>SILVERLIGHT;SL2</BuildConstants>
+    <PackageName>$(ProjectName)-$(Version)-SL2</PackageName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+  </PropertyGroup>
 
-	<!--Silverlight 3.0 runtime-->
-	<PropertyGroup Condition="$(BuildFramework)=='SL3'">
-		<BuildTargets>Silverlight 3.0</BuildTargets>
-		<BuildConstants>SILVERLIGHT</BuildConstants>
-		<PackageName>$(ProjectName)-$(Version)-SL3</PackageName>
-	</PropertyGroup>
-	<!-- 
+  <PropertyGroup Condition="$(BuildFramework)=='SL3'">
+    <BuildTargets>Silverlight 3.0</BuildTargets>
+    <BuildConstants>SILVERLIGHT;SL3</BuildConstants>
+    <PackageName>$(ProjectName)-$(Version)-SL3</PackageName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(BuildFramework)=='SL4'">
+    <BuildTargets>Silverlight 4.0</BuildTargets>
+    <BuildConstants>SILVERLIGHT;SL4</BuildConstants>
+    <PackageName>$(ProjectName)-$(Version)-SL4</PackageName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+  </PropertyGroup>
+
+  <!-- 
 	 Solution redirects. Every VS project normally knows how to support these targets
 		-->
 	<Target Name="Build">
@@ -132,7 +143,7 @@
   
   </Target>
 	
-	<Target Name="Test" DependsOnTargets="Build;Copy">
+	<Target Name="Test" DependsOnTargets="Build;Copy" Condition="$(TargetFrameworkIdentifier) != 'Silverlight'">
 
     <!-- Unfortunately NCover doesn't yet support .NET 4.0.
          When it does this can be removed and the section below it uncommmented. -->

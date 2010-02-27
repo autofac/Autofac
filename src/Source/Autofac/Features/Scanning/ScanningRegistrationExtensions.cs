@@ -64,7 +64,11 @@ namespace Autofac.Features.Scanning
                         rb.ActivatorData.ConfiguredParameters,
                         rb.ActivatorData.ConfiguredProperties);
 
+#if !(SL2 || SL3 || NET35)
                     var services = new HashSet<Service>(rb.RegistrationData.Services);
+#else
+                    IList<Service> services = new List<Service>(rb.RegistrationData.Services);
+#endif
 
                     if (!services.Any() && !rb.ActivatorData.ServiceMappings.Any())
                         services.Add(new TypedService(t));
@@ -72,6 +76,10 @@ namespace Autofac.Features.Scanning
                     foreach (var mapping in rb.ActivatorData.ServiceMappings)
                         foreach (var s in mapping(t))
                             services.Add(s);
+
+#if (SL2 || SL3 || NET35)
+                    services = services.Distinct().ToList();
+#endif
 
                     var r = RegistrationBuilder.CreateRegistration(Guid.NewGuid(), rb.RegistrationData, activator, services);
 
@@ -134,7 +142,8 @@ namespace Autofac.Features.Scanning
         static IEnumerable<Service> GetServicesThatClose(Type candidateType, Type openGenericServiceType)
         {
             return FindAssignableTypesThatClose(candidateType, openGenericServiceType)
-                .Select(t => new TypedService(t));
+                .Select(t => new TypedService(t))
+                .Cast<Service>();
         }
 
         /// <summary>

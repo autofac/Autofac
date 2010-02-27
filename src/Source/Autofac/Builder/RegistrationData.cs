@@ -37,7 +37,12 @@ namespace Autofac.Builder
     /// </summary>
     public class RegistrationData
     {
+#if !(SL2 || SL3 || NET35)
         readonly ICollection<Service> _services = new HashSet<Service>();
+#else
+        readonly ICollection<Service> _services = new List<Service>();
+#endif
+
         InstanceOwnership _ownership = InstanceOwnership.OwnedByLifetimeScope;
         IComponentLifetime _lifetime = new CurrentScopeLifetime();
         InstanceSharing _sharing = InstanceSharing.None;
