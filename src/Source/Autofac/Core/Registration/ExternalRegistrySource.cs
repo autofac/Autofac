@@ -61,11 +61,11 @@ namespace Autofac.Core.Registration
         {
             return _registry.RegistrationsFor(service)
                 .Where(r => r.Target == r)
-                .Select(r => RegistrationBuilder.CreateRegistration(
-                    RegistrationBuilder.ForDelegate((c, p) => c.Resolve(r, p))
+                .Select(r => RegistrationBuilder.ForDelegate((c, p) => c.Resolve(r, p))
                         .Targeting(r)
                         .As(r.Services.ToArray())
-                        .ExternallyOwned()));
+                        .ExternallyOwned()
+                        .CreateRegistration());
         }
     }
 }
