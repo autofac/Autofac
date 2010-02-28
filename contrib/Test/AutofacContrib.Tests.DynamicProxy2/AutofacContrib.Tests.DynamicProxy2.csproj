@@ -84,8 +84,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InterceptorsChosenByMetadataFixture.cs" />
-    <Compile Include="FlexibleInterceptionModuleFixture.cs" />
-    <Compile Include="StandardInterceptionModuleFixture.cs" />
+    <Compile Include="AttributedInterfaceInterceptionFixture.cs" />
+    <Compile Include="ClassInterceptorsFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

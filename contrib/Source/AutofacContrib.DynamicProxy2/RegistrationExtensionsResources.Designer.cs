@@ -61,11 +61,11 @@ namespace AutofacContrib.DynamicProxy2 {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The component {0} does not provide any interfaces for interception..
+        ///   Looks up a localized string similar to The component {0} cannot use interface interception as it provides services that are not interfaces..
         /// </summary>
-        internal static string ComponentDoesNotProvideInterceptibleServices {
+        internal static string InterfaceProxyingOnlySupportsInterfaceServices {
             get {
-                return ResourceManager.GetString("ComponentDoesNotProvideInterceptibleServices", resourceCulture);
+                return ResourceManager.GetString("InterfaceProxyingOnlySupportsInterfaceServices", resourceCulture);
             }
         }
     }

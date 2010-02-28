@@ -127,8 +127,20 @@
         </member>
         <member name="M:Autofac.Builder.RegistrationBuilder.CreateRegistration``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2})">
             <summary>
-            Create an IComponentRegistration from a RegistrationBuilder.
+            Create an <see cref="T:Autofac.Core.IComponentRegistration"/> from a <see cref="T:Autofac.Builder.RegistrationBuilder"/>.
+            (There is no need to call
+            this method when registering components through a <see cref="T:Autofac.ContainerBuilder"/>.)
             </summary>
+            <remarks>
+            When called on the result of one of the <see cref="T:Autofac.ContainerBuilder"/> methods,
+            the returned registration will be different from the one the builder itself registers
+            in the container.
+            </remarks>
+            <example>
+            <code>
+            var registration = RegistrationBuilder.ForType&lt;Foo&gt;().CreateRegistration();
+            </code>
+            </example>
             <typeparam name="TLimit"></typeparam>
             <typeparam name="TActivatorData"></typeparam>
             <typeparam name="TSingleRegistrationStyle"></typeparam>
@@ -235,6 +247,43 @@
             <summary>
               Looks up a localized string similar to Constructor &apos;{0}&apos; parameter resolution failed at parameter &apos;{1}&apos;..
             </summary>
+        </member>
+        <member name="T:Autofac.Core.Activators.Reflection.DefaultValueParameter">
+            <summary>
+            Provides parameters that have a default value, set with an optional parameter
+            declaration in C# or VB.
+            </summary>
+        </member>
+        <member name="T:Autofac.Core.Parameter">
+            <summary>
+            Used in order to provide a value to a constructor parameter or property on an instance
+            being created by the container.
+            </summary>
+            <remarks>
+            Not all parameters can be applied to all sites.
+            </remarks>
+        </member>
+        <member name="M:Autofac.Core.Parameter.CanSupplyValue(System.Reflection.ParameterInfo,Autofac.IComponentContext,System.Func{System.Object}@)">
+            <summary>
+            Returns true if the parameter is able to provide a value to a particular site.
+            </summary>
+            <param name="pi">Constructor, method, or property-mutator parameter.</param>
+            <param name="context">The component context in which the value is being provided.</param>
+            <param name="valueProvider">If the result is true, the valueProvider parameter will
+            be set to a function that will lazily retrieve the parameter value. If the result is false,
+            will be set to null.</param>
+            <returns>True if a value can be supplied; otherwise, false.</returns>
+        </member>
+        <member name="M:Autofac.Core.Activators.Reflection.DefaultValueParameter.CanSupplyValue(System.Reflection.ParameterInfo,Autofac.IComponentContext,System.Func{System.Object}@)">
+            <summary>
+            Returns true if the parameter is able to provide a value to a particular site.
+            </summary>
+            <param name="pi">Constructor, method, or property-mutator parameter.</param>
+            <param name="context">The component context in which the value is being provided.</param>
+            <param name="valueProvider">If the result is true, the valueProvider parameter will
+            be set to a function that will lazily retrieve the parameter value. If the result is false,
+            will be set to null.</param>
+            <returns>True if a value can be supplied; otherwise, false.</returns>
         </member>
         <member name="T:Autofac.Core.IServiceWithType">
             <summary>
@@ -871,26 +920,6 @@
             Supplies values based on the target parameter type.
             </summary>
         </member>
-        <member name="T:Autofac.Core.Parameter">
-            <summary>
-            Used in order to provide a value to a constructor parameter or property on an instance
-            being created by the container.
-            </summary>
-            <remarks>
-            Not all parameters can be applied to all sites.
-            </remarks>
-        </member>
-        <member name="M:Autofac.Core.Parameter.CanSupplyValue(System.Reflection.ParameterInfo,Autofac.IComponentContext,System.Func{System.Object}@)">
-            <summary>
-            Returns true if the parameter is able to provide a value to a particular site.
-            </summary>
-            <param name="pi">Constructor, method, or property-mutator parameter.</param>
-            <param name="context">The component context in which the value is being provided.</param>
-            <param name="valueProvider">If the result is true, the valueProvider parameter will
-            be set to a function that will lazily retrieve the parameter value. If the result is false,
-            will be set to null.</param>
-            <returns>True if a value can be supplied; otherwise, false.</returns>
-        </member>
         <member name="M:Autofac.Core.Activators.Reflection.AutowiringParameter.CanSupplyValue(System.Reflection.ParameterInfo,Autofac.IComponentContext,System.Func{System.Object}@)">
             <summary>
             Returns true if the parameter is able to provide a value to a particular site.
@@ -1232,6 +1261,14 @@
             </summary>
             <returns>A new lifetime scope.</returns>
         </member>
+        <member name="M:Autofac.ILifetimeScope.BeginLifetimeScope(System.Object)">
+            <summary>
+            Begin a new nested scope. Component instances created via the new scope
+            will be disposed along with it.
+            </summary>
+            <param name="tag">The tag applied to the <see cref="T:Autofac.ILifetimeScope"/>.</param>
+            <returns>A new lifetime scope.</returns>
+        </member>
         <member name="M:Autofac.ILifetimeScope.BeginLifetimeScope(System.Action{Autofac.ContainerBuilder})">
             <summary>
             Begin a new nested scope, with additional components available to it.
@@ -1243,6 +1280,22 @@
             registered in the root scope, i.e., SingleInstance() components will live as long
             as the root scope.
             </remarks>
+            <param name="configurationAction">Action on a <see cref="T:Autofac.ContainerBuilder"/>
+            that adds component registations visible only in the new scope.</param>
+            <returns>A new lifetime scope.</returns>
+        </member>
+        <member name="M:Autofac.ILifetimeScope.BeginLifetimeScope(System.Object,System.Action{Autofac.ContainerBuilder})">
+            <summary>
+            Begin a new nested scope, with additional components available to it.
+            Component instances created via the new scope
+            will be disposed along with it.
+            </summary>
+            <remarks>
+            The components registered in the sub-scope will be treated as though they were
+            registered in the root scope, i.e., SingleInstance() components will live as long
+            as the root scope.
+            </remarks>
+            <param name="tag">The tag applied to the <see cref="T:Autofac.ILifetimeScope"/>.</param>
             <param name="configurationAction">Action on a <see cref="T:Autofac.ContainerBuilder"/>
             that adds component registations visible only in the new scope.</param>
             <returns>A new lifetime scope.</returns>
@@ -1280,12 +1333,31 @@
             </summary>
             <returns>A new lifetime scope.</returns>
         </member>
+        <member name="M:Autofac.Core.Container.BeginLifetimeScope(System.Object)">
+            <summary>
+            Begin a new sub-scope. Instances created via the sub-scope
+            will be disposed along with it.
+            </summary>
+            <param name="tag">The tag applied to the <see cref="T:Autofac.ILifetimeScope"/>.</param>
+            <returns>A new lifetime scope.</returns>
+        </member>
         <member name="M:Autofac.Core.Container.BeginLifetimeScope(System.Action{Autofac.ContainerBuilder})">
             <summary>
             Begin a new nested scope, with additional components available to it.
             Component instances created via the new scope
             will be disposed along with it.
             </summary>
+            <param name="configurationAction">Action on a <see cref="T:Autofac.ContainerBuilder"/>
+            that adds component registations visible only in the new scope.</param>
+            <returns>A new lifetime scope.</returns>
+        </member>
+        <member name="M:Autofac.Core.Container.BeginLifetimeScope(System.Object,System.Action{Autofac.ContainerBuilder})">
+            <summary>
+            Begin a new nested scope, with additional components available to it.
+            Component instances created via the new scope
+            will be disposed along with it.
+            </summary>
+            <param name="tag">The tag applied to the <see cref="T:Autofac.ILifetimeScope"/>.</param>
             <param name="configurationAction">Action on a <see cref="T:Autofac.ContainerBuilder"/>
             that adds component registations visible only in the new scope.</param>
             <returns>A new lifetime scope.</returns>
@@ -1680,29 +1752,55 @@
             Protects instance variables from concurrent access.
             </summary>
         </member>
-        <member name="M:Autofac.Core.Lifetime.LifetimeScope.#ctor(Autofac.Core.IComponentRegistry,Autofac.Core.Lifetime.LifetimeScope)">
+        <member name="F:Autofac.Core.Lifetime.LifetimeScope.NoTag">
+            <summary>
+            The tag applied by default to nested scopes when no other tag is specified.
+            </summary>
+        </member>
+        <member name="F:Autofac.Core.Lifetime.LifetimeScope.RootTag">
+            <summary>
+            The tag applied to root scopes when no other tag is specified.
+            </summary>
+        </member>
+        <member name="M:Autofac.Core.Lifetime.LifetimeScope.#ctor(Autofac.Core.IComponentRegistry,Autofac.Core.Lifetime.LifetimeScope,System.Object)">
             <summary>
             Create a lifetime scope for the provided components and nested beneath a parent.
             </summary>
+            <param name="tag">The tag applied to the <see cref="T:Autofac.ILifetimeScope"/>.</param>
             <param name="componentRegistry">Components used in the scope.</param>
             <param name="parent">Parent scope.</param>
         </member>
+        <member name="M:Autofac.Core.Lifetime.LifetimeScope.#ctor(Autofac.Core.IComponentRegistry,System.Object)">
+            <summary>
+            Create a root lifetime scope for the provided components.
+            </summary>
+            <param name="tag">The tag applied to the <see cref="T:Autofac.ILifetimeScope"/>.</param>
+            <param name="componentRegistry">Components used in the scope.</param>
+        </member>
         <member name="M:Autofac.Core.Lifetime.LifetimeScope.#ctor(Autofac.Core.IComponentRegistry)">
             <summary>
-            Create a lifetime scope for the provided components.
+            Create a root lifetime scope for the provided components.
             </summary>
             <param name="componentRegistry">Components used in the scope.</param>
         </member>
         <member name="M:Autofac.Core.Lifetime.LifetimeScope.BeginLifetimeScope">
             <summary>
-            Begin a new sub-scope. Instances created via the sub-scope
+            Begin a new anonymous sub-scope. Instances created via the sub-scope
             will be disposed along with it.
             </summary>
             <returns>A new lifetime scope.</returns>
         </member>
+        <member name="M:Autofac.Core.Lifetime.LifetimeScope.BeginLifetimeScope(System.Object)">
+            <summary>
+            Begin a new tagged sub-scope. Instances created via the sub-scope
+            will be disposed along with it.
+            </summary>
+            <param name="tag">The tag applied to the <see cref="T:Autofac.ILifetimeScope"/>.</param>
+            <returns>A new lifetime scope.</returns>
+        </member>
         <member name="M:Autofac.Core.Lifetime.LifetimeScope.BeginLifetimeScope(System.Action{Autofac.ContainerBuilder})">
             <summary>
-            Begin a new nested scope, with additional components available to it.
+            Begin a new anonymous sub-scope, with additional components available to it.
             Component instances created via the new scope
             will be disposed along with it.
             </summary>
@@ -1712,6 +1810,26 @@
             <example>
             IContainer cr = // ...
             using (var lifetime = cr.BeginLifetimeScope(builder =&gt; {
+                    builder.RegisterType&lt;Foo&gt;();
+                    builder.RegisterType&lt;Bar&gt;().As&lt;IBar&gt;(); })
+            {
+                var foo = lifetime.Resolve&lt;Foo&gt;();
+            }
+            </example>
+        </member>
+        <member name="M:Autofac.Core.Lifetime.LifetimeScope.BeginLifetimeScope(System.Object,System.Action{Autofac.ContainerBuilder})">
+            <summary>
+            Begin a new tagged sub-scope, with additional components available to it.
+            Component instances created via the new scope
+            will be disposed along with it.
+            </summary>
+            <param name="tag">The tag applied to the <see cref="T:Autofac.ILifetimeScope"/>.</param>
+            <param name="configurationAction">Action on a <see cref="T:Autofac.ContainerBuilder"/>
+            that adds component registations visible only in the new scope.</param>
+            <returns>A new lifetime scope.</returns>
+            <example>
+            IContainer cr = // ...
+            using (var lifetime = cr.BeginLifetimeScope("unitOfWork", builder =&gt; {
                     builder.RegisterType&lt;Foo&gt;();
                     builder.RegisterType&lt;Bar&gt;().As&lt;IBar&gt;(); })
             {
@@ -2490,16 +2608,26 @@
         </member>
         <member name="T:Autofac.Features.OwnedInstances.Owned`1">
             <summary>
-            Represents a dependency that can be disposed of by the dependent component.
+            Represents a dependency that can be released by the dependent component.
             </summary>
+            <typeparam name="T">The service provided by the dependency.</typeparam>
             <remarks>
+            <para>
             Autofac automatically provides instances of <see cref="T:Autofac.Features.OwnedInstances.Owned`1"/> whenever the
-            service T is registered.
-            It is not necessary for T, or the underlying component, to implement <see cref="T:System.IDisposable"/>.
+            service <typeparamref name="T"/> is registered.
+            </para>
+            <para>
+            It is not necessary for <typeparamref name="T"/>, or the underlying component, to implement <see cref="T:System.IDisposable"/>.
             Disposing of the <see cref="T:Autofac.Features.OwnedInstances.Owned`1"/> object is the correct way to handle cleanup of the dependency,
             as this will dispose of any other components created indirectly as well.
+            </para>
+            <para>
+            When <see cref="T:Autofac.Features.OwnedInstances.Owned`1"/> is resolved, a new <see cref="T:Autofac.ILifetimeScope"/> is created for the
+            underlying <typeparamref name="T"/>, and tagged with the service matching <typeparamref name="T"/>,
+            generally a <see cref="T:Autofac.Core.TypedService"/>. This means that shared instances can be tied to this
+            scope by registering them as InstancePerMatchingLifetimeScope(new TypedService(typeof(T))).
+            </para>
             </remarks>
-            <typeparam name="T">The service provided by the dependency.</typeparam>
             <example>
             The component D below is disposable and implements IService:
             <code>
@@ -2595,20 +2723,19 @@
             <param name="openGenericServiceType">The open generic type to locate.</param>
             <returns>True if an interface was found; otherwise false.</returns>
         </member>
-        <member name="M:Autofac.Features.Scanning.ScanningRegistrationExtensions.GetServiceThatCloses(System.Type,System.Type)">
+        <member name="M:Autofac.Features.Scanning.ScanningRegistrationExtensions.GetServicesThatClose(System.Type,System.Type)">
             <summary>Returns the first concrete interface supported by the candidate type that
             closes the provided open generic service type.</summary>
             <param name="candidateType">The type that is being checked for the interface.</param>
             <param name="openGenericServiceType">The open generic type to locate.</param>
             <returns>The type of the interface.</returns>
         </member>
-        <member name="M:Autofac.Features.Scanning.ScanningRegistrationExtensions.FindAssignableTypeThatCloses(System.Type,System.Type,System.Type@)">
+        <member name="M:Autofac.Features.Scanning.ScanningRegistrationExtensions.FindAssignableTypesThatClose(System.Type,System.Type)">
             <summary>
             Looks for an interface on the candidate type that closes the provided open generic interface type.
             </summary>
             <param name="candidateType">The type that is being checked for the interface.</param>
             <param name="openGenericServiceType">The open generic service type to locate.</param>
-            <param name="closedServiceType">The type of the closed service if found.</param>
             <returns>True if a closed implementation was found; otherwise false.</returns>
         </member>
         <member name="T:Autofac.Features.Scanning.ScanningRegistrationExtensionsResources">
@@ -3404,6 +3531,17 @@
             <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
             <param name="registration">Registration to set service mapping on.</param>
             <param name="openGenericServiceType">The open generic interface or base class type for which implementations will be found.</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+        </member>
+        <member name="M:Autofac.RegistrationExtensions.AssignableTo``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.Type)">
+            <summary>
+            Registers the types assignable to.
+            </summary>
+            <typeparam name="TLimit">Registration limit type.</typeparam>
+            <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+            <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+            <param name="registration">Registration to filter types from.</param>
+            <param name="type">The type or interface which all classes must be assignable from.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
         <member name="T:Autofac.RegistrationExtensionsResources">

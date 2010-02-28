@@ -26,7 +26,7 @@ namespace AutofacContrib.Tests.DynamicProxy2
                 VisitCount = 10;
             }
 
-            public virtual int GetVisitCount()
+            public int GetVisitCount()
             {
                 return VisitCount;
             }
@@ -48,8 +48,7 @@ namespace AutofacContrib.Tests.DynamicProxy2
             var builder = new ContainerBuilder();
             builder.RegisterType<CustomerService>()
                 .As<ICustomerService>()
-                .InstancePerLifetimeScope()
-                .EnableInterceptors()
+                .EnableInterfaceInterceptors()
                 .InterceptedBy(typeof(AddOneInterceptor));
             builder.RegisterType<AddOneInterceptor>();
             var container = builder.Build();

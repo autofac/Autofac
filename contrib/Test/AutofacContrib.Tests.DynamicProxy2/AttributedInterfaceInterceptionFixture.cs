@@ -11,14 +11,14 @@ using Autofac.Builder;
 namespace AutofacContrib.Tests.DynamicProxy2
 {
     [TestFixture]
-    public class FlexibleInterceptionModuleFixture
+    public class AttributedInterfaceInterceptionFixture
     {
+        [Intercept(typeof(AddOneInterceptor))]
         public interface IHasI
         {
             int GetI();
         }
 
-        [Intercept(typeof(AddOneInterceptor))]
         public class C : IHasI
         {
             public int I { get; private set; }
@@ -28,7 +28,7 @@ namespace AutofacContrib.Tests.DynamicProxy2
                 I = 10;
             }
 
-            public virtual int GetI()
+            public int GetI()
             {
                 return I;
             }
@@ -44,40 +44,36 @@ namespace AutofacContrib.Tests.DynamicProxy2
             }
         }
 
-        [Test]
-        public void AttachesToReflectiveComponentWithSubclassProxy()
+        [Test, ExpectedException(typeof(InvalidOperationException))]
+        public void DetectsNonInterfaceServices()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<C>().EnableInterceptors();
+            builder.RegisterType<C>().EnableInterfaceInterceptors();
             builder.RegisterType<AddOneInterceptor>();
-            var cpt = builder.Build().Resolve<C>();
-
-            Assert.AreEqual(11, cpt.GetI()); // proxied
-            Assert.IsTrue(typeof(C).IsAssignableFrom(cpt.GetType()));
+            var c = builder.Build();
+            c.Resolve<C>();
         }
 
         [Test]
-        public void AttachesToExpressionComponentWithServiceProxy()
+        public void FindsInterceptionAttributeOnReflectionComponent()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new C()).As<IHasI>().EnableInterceptors();
+            builder.RegisterType<C>().As<IHasI>().EnableInterfaceInterceptors();
             builder.RegisterType<AddOneInterceptor>();
             var cpt = builder.Build().Resolve<IHasI>();
 
             Assert.AreEqual(11, cpt.GetI()); // proxied
-            Assert.IsFalse(typeof(C).IsAssignableFrom(cpt.GetType()));
         }
 
         [Test]
-        public void DynamicallyAttachesIfNoTypedServices()
+        public void FindsInterceptionAttributeOnExpressionComponent()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new C()).Named<IHasI>("cpt").EnableInterceptors();
+            builder.Register(c => new C()).As<IHasI>().EnableInterfaceInterceptors();
             builder.RegisterType<AddOneInterceptor>();
-            var cpt = builder.Build().Resolve<IHasI>("cpt");
+            var cpt = builder.Build().Resolve<IHasI>();
 
             Assert.AreEqual(11, cpt.GetI()); // proxied
-            Assert.IsFalse(typeof(C).IsAssignableFrom(cpt.GetType()));
         }
     }
 }

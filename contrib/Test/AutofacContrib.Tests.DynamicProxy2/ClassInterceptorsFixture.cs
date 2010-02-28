@@ -8,7 +8,7 @@ using System;
 namespace AutofacContrib.Tests.DynamicProxy2
 {
     [TestFixture]
-    public class StandardInterceptionModuleFixture
+    public class ClassInterceptorsFixture
     {
         [Intercept(typeof(AddOneInterceptor))]
         public class C
@@ -40,7 +40,7 @@ namespace AutofacContrib.Tests.DynamicProxy2
         public void InterceptsReflectionBasedComponent()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<C>().EnableInterceptors();
+            builder.RegisterType<C>().EnableClassInterceptors();
             builder.RegisterType<AddOneInterceptor>();
             var container = builder.Build();
             var i = 10;

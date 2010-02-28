@@ -5,10 +5,10 @@ using Castle.Core.Interceptor;
 
 namespace AutofacContrib.DynamicProxy2
 {
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
     public class InterceptAttribute : Attribute
     {
-        Service _interceptorService;
+        readonly Service _interceptorService;
 
         public InterceptAttribute(Service interceptorService)
         {
