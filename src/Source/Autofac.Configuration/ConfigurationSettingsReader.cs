@@ -196,7 +196,7 @@ namespace Autofac.Configuration
         /// </summary>
         /// <param name="component">The component.</param>
         /// <param name="registrar">The registrar.</param>
-        protected virtual void SetInjectProperties<TReflectionActivatorData, TSingleRegistrationStyle>(ComponentElement component, RegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar)
+        protected virtual void SetInjectProperties<TReflectionActivatorData, TSingleRegistrationStyle>(ComponentElement component, IRegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar)
             where TReflectionActivatorData : ReflectionActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
@@ -224,7 +224,7 @@ namespace Autofac.Configuration
         /// </summary>
         /// <param name="component">The component.</param>
         /// <param name="registrar">The registrar.</param>
-        protected virtual void SetOwnership<TReflectionActivatorData, TSingleRegistrationStyle>(ComponentElement component, RegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar)
+        protected virtual void SetOwnership<TReflectionActivatorData, TSingleRegistrationStyle>(ComponentElement component, IRegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar)
             where TReflectionActivatorData : ReflectionActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
@@ -253,7 +253,7 @@ namespace Autofac.Configuration
         /// </summary>
         /// <param name="component">The component.</param>
         /// <param name="registrar">The registrar.</param>
-        protected virtual void SetScope<TReflectionActivatorData, TSingleRegistrationStyle>(ComponentElement component, RegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar)
+        protected virtual void SetScope<TReflectionActivatorData, TSingleRegistrationStyle>(ComponentElement component, IRegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar)
             where TReflectionActivatorData : ReflectionActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {

@@ -18,9 +18,9 @@ namespace Autofac.Integration.Web
         /// <typeparam name="TActivatorData">Activator data type.</typeparam>
         /// <param name="registration">The registration to configure.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static RegistrationBuilder<TLimit, TActivatorData, TStyle>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
             HttpRequestScoped<TLimit, TActivatorData, TStyle>(
-                this RegistrationBuilder<TLimit, TActivatorData, TStyle> registration)
+                this IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration)
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
@@ -36,9 +36,9 @@ namespace Autofac.Integration.Web
         /// <typeparam name="TActivatorData">Activator data type.</typeparam>
         /// <param name="registration">The registration to configure.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             CacheInSession<TLimit, TActivatorData, TSingleRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration)
+                this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
             if (registration == null) throw new ArgumentNullException("registration");

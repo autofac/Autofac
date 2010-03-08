@@ -9,13 +9,13 @@ using Autofac.Core.Registration;
 namespace Autofac.Builder
 {
     /// <summary>
-    /// Static factory methods to simplify the creation and handling of RegistrationBuilder{L,A,R}.
+    /// Static factory methods to simplify the creation and handling of IRegistrationBuilder{L,A,R}.
     /// </summary>
     /// <example>
     /// To create an <see cref="IComponentRegistration"/> for a specific type, use:
     /// <code>
-    /// var rb = RegistrationBuilder.ForType(t).Named("foo").ExternallyOwned();
-    /// var cr = RegistrationBuilder.CreateRegistration(rb);
+    /// var rb = IRegistrationBuilder.ForType(t).Named("foo").ExternallyOwned();
+    /// var cr = IRegistrationBuilder.CreateRegistration(rb);
     /// </code>
     /// </example>
     public static class RegistrationBuilder
@@ -26,7 +26,7 @@ namespace Autofac.Builder
         /// <typeparam name="T">Instance type returned by delegate.</typeparam>
         /// <param name="delegate">Delegate to register.</param>
         /// <returns>A registration builder.</returns>
-        public static RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> ForDelegate<T>(Func<IComponentContext, IEnumerable<Parameter>, T> @delegate)
+        public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> ForDelegate<T>(Func<IComponentContext, IEnumerable<Parameter>, T> @delegate)
         {
             return new RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>(
                 new SimpleActivatorData(new DelegateActivator(typeof(T), (c, p) => @delegate(c, p))),
@@ -39,7 +39,7 @@ namespace Autofac.Builder
         /// <param name="delegate">Delegate to register.</param>
         /// <param name="limitType">Most specific type return value of delegate can be cast to.</param>
         /// <returns>A registration builder.</returns>
-        public static RegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> ForDelegate(Type limitType, Func<IComponentContext, IEnumerable<Parameter>, object> @delegate)
+        public static IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> ForDelegate(Type limitType, Func<IComponentContext, IEnumerable<Parameter>, object> @delegate)
         {
             return new RegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle>(
                 new SimpleActivatorData(new DelegateActivator(limitType, @delegate)),
@@ -51,7 +51,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <typeparam name="TImplementor">Implementation type to register.</typeparam>
         /// <returns>A registration builder.</returns>
-        public static RegistrationBuilder<TImplementor, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType<TImplementor>()
+        public static IRegistrationBuilder<TImplementor, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType<TImplementor>()
         {
             return new RegistrationBuilder<TImplementor, ConcreteReflectionActivatorData, SingleRegistrationStyle>(
                 new ConcreteReflectionActivatorData(typeof(TImplementor)),
@@ -63,7 +63,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="implementationType">Implementation type to register.</param>
         /// <returns>A registration builder.</returns>
-        public static RegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType(Type implementationType)
+        public static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType(Type implementationType)
         {
             return new RegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>(
                 new ConcreteReflectionActivatorData(implementationType),
@@ -82,7 +82,7 @@ namespace Autofac.Builder
         /// </remarks>
         /// <example>
         /// <code>
-        /// var registration = RegistrationBuilder.ForType&lt;Foo&gt;().CreateRegistration();
+        /// var registration = IRegistrationBuilder.ForType&lt;Foo&gt;().CreateRegistration();
         /// </code>
         /// </example>
         /// <typeparam name="TLimit"></typeparam>
@@ -91,7 +91,7 @@ namespace Autofac.Builder
         /// <param name="rb">The registration builder.</param>
         /// <returns>An IComponentRegistration.</returns>
         public static IComponentRegistration CreateRegistration<TLimit, TActivatorData, TSingleRegistrationStyle>(
-            this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> rb)
+            this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> rb)
             where TSingleRegistrationStyle : SingleRegistrationStyle
             where TActivatorData : IConcreteActivatorData
         {
@@ -192,7 +192,7 @@ namespace Autofac.Builder
         /// <param name="rb">Registration builder with data for new registration.</param>
         public static void RegisterSingleComponent<TLimit, TActivatorData, TSingleRegistrationStyle>(
             IComponentRegistry cr,
-            RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> rb)
+            IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> rb)
             where TSingleRegistrationStyle : SingleRegistrationStyle
             where TActivatorData : IConcreteActivatorData
         {

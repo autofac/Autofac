@@ -26,11 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using Autofac.Core;
-using Autofac.Core.Activators.Reflection;
-using Autofac.Core.Lifetime;
-using Autofac.Util;
 
 namespace Autofac.Builder
 {
@@ -41,87 +37,52 @@ namespace Autofac.Builder
     /// can be cast.</typeparam>
     /// <typeparam name="TActivatorData">Activator builder type.</typeparam>
     /// <typeparam name="TRegistrationStyle">Registration style type.</typeparam>
-    class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> : IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>, IHideObjectMembers
+    public interface IRegistrationBuilder<TLimit, out TActivatorData, out TRegistrationStyle>
     {
-        readonly TActivatorData _activatorData;
-        readonly TRegistrationStyle _registrationStyle;
-        readonly RegistrationData _registrationData = new RegistrationData();
-
-        /// <summary>
-        /// Create a IRegistrationBuilder.
-        /// </summary>
-        /// <param name="activatorData">Activator builder.</param>
-        /// <param name="style">Registration style.</param>
-        public RegistrationBuilder(TActivatorData activatorData, TRegistrationStyle style)
-        {
-            Enforce.ArgumentNotNull((object)activatorData, "activatorData");
-            Enforce.ArgumentNotNull((object)style, "style");
-            _activatorData = activatorData;
-            _registrationStyle = style;
-        }
-
         /// <summary>
         /// The activator data.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public TActivatorData ActivatorData { get { return _activatorData; } }
+        TActivatorData ActivatorData { get; }
 
         /// <summary>
         /// The registration style.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public TRegistrationStyle RegistrationStyle { get { return _registrationStyle; } }
+        TRegistrationStyle RegistrationStyle { get; }
 
         /// <summary>
         /// The registration data.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public RegistrationData RegistrationData { get { return _registrationData; } }
+        RegistrationData RegistrationData { get; }
 
         /// <summary>
         /// Configure the component so that instances are never disposed by the container.
         /// </summary>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> ExternallyOwned()
-        {
-            RegistrationData.Ownership = InstanceOwnership.ExternallyOwned;
-            return this;
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> ExternallyOwned();
 
         /// <summary>
         /// Configure the component so that instances that support IDisposable are
         /// disposed by the container (default.)
         /// </summary>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OwnedByLifetimeScope()
-        {
-            RegistrationData.Ownership = InstanceOwnership.OwnedByLifetimeScope;
-            return this;
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OwnedByLifetimeScope();
 
         /// <summary>
         /// Configure the component so that every dependent component or call to Resolve()
         /// gets a new, unique instance (default.)
         /// </summary>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerDependency()
-        {
-            RegistrationData.Sharing = InstanceSharing.None;
-            RegistrationData.Lifetime = new CurrentScopeLifetime();
-            return this;
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerDependency();
 
         /// <summary>
         /// Configure the component so that every dependent component or call to Resolve()
         /// gets the same, shared instance.
         /// </summary>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> SingleInstance()
-        {
-            RegistrationData.Sharing = InstanceSharing.Shared;
-            RegistrationData.Lifetime = new RootScopeLifetime();
-            return this;
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> SingleInstance();
 
         /// <summary>
         /// Configure the component so that every dependent component or call to Resolve()
@@ -129,12 +90,7 @@ namespace Autofac.Builder
         /// different lifetime scopes will get different instances.
         /// </summary>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerLifetimeScope()
-        {
-            RegistrationData.Sharing = InstanceSharing.Shared;
-            RegistrationData.Lifetime = new CurrentScopeLifetime();
-            return this;
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerLifetimeScope();
 
         /// <summary>
         /// Configure the component so that every dependent component or call to Resolve()
@@ -145,13 +101,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="lifetimeScopeTag">Tag applied to matching lifetime scopes.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerMatchingLifetimeScope(object lifetimeScopeTag)
-        {
-            Enforce.ArgumentNotNull(lifetimeScopeTag, "lifetimeScopeTag");
-            RegistrationData.Sharing = InstanceSharing.Shared;
-            RegistrationData.Lifetime = new MatchingScopeLifetime(scope => lifetimeScopeTag.Equals(scope.Tag));
-            return this;
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerMatchingLifetimeScope(object lifetimeScopeTag);
 
         /// <summary>
         /// Configure the services that the component will provide. The generic parameter(s) to As()
@@ -159,10 +109,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <typeparam name="TService">Service type.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService>()
-        {
-            return As(new TypedService(typeof(TService)));
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService>();
 
         /// <summary>
         /// Configure the services that the component will provide. The generic parameter(s) to As()
@@ -171,10 +118,7 @@ namespace Autofac.Builder
         /// <typeparam name="TService1">Service type.</typeparam>
         /// <typeparam name="TService2">Service type.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService1, TService2>()
-        {
-            return As(new TypedService(typeof(TService1)), new TypedService(typeof(TService2)));
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService1, TService2>();
 
         /// <summary>
         /// Configure the services that the component will provide. The generic parameter(s) to As()
@@ -184,35 +128,21 @@ namespace Autofac.Builder
         /// <typeparam name="TService2">Service type.</typeparam>
         /// <typeparam name="TService3">Service type.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService1, TService2, TService3>()
-        {
-            return As(new TypedService(typeof(TService1)), new TypedService(typeof(TService2)), new TypedService(typeof(TService3)));
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService1, TService2, TService3>();
 
         /// <summary>
         /// Configure the services that the component will provide.
         /// </summary>
         /// <param name="services">Service types to expose.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As(params Type[] services)
-        {
-            return As(services.Select(t => new TypedService(t)).Cast<Service>().ToArray());
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As(params Type[] services);
 
         /// <summary>
         /// Configure the services that the component will provide.
         /// </summary>
         /// <param name="services">Services to expose.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As(params Service[] services)
-        {
-            Enforce.ArgumentNotNull(services, "services");
-
-            foreach (var service in services)
-                RegistrationData.Services.Add(service);
-
-            return this;
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As(params Service[] services);
 
         /// <summary>
         /// Provide a textual name that can be used to retrieve the component.
@@ -220,25 +150,15 @@ namespace Autofac.Builder
         /// <param name="serviceName">Named service to associate with the component.</param>
         /// <param name="serviceType">The service type provided by the component.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Named(string serviceName, Type serviceType)
-        {
-            Enforce.ArgumentNotNull(serviceName, "serviceName");
-            Enforce.ArgumentNotNull(serviceType, "serviceType");
-
-            return As(new NamedService(serviceName, serviceType));
-        }
-
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Named(string serviceName, Type serviceType);
+        
         /// <summary>
         /// Provide a textual name that can be used to retrieve the component.
         /// </summary>
         /// <param name="serviceName">Named service to associate with the component.</param>
         /// <typeparam name="TService">The service type provided by the component.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Named<TService>(string serviceName)
-        {
-            return Named(serviceName, typeof(TService));
-        }
-
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Named<TService>(string serviceName);
 
         /// <summary>
         /// Provide a key that can be used to retrieve the component.
@@ -246,13 +166,7 @@ namespace Autofac.Builder
         /// <param name="serviceKey">Key to associate with the component.</param>
         /// <param name="serviceType">The service type provided by the component.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Keyed(object serviceKey, Type serviceType)
-        {
-            Enforce.ArgumentNotNull(serviceKey, "serviceKey");
-            Enforce.ArgumentNotNull(serviceType, "serviceType");
-
-            return As(new KeyedService(serviceKey, serviceType));
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Keyed(object serviceKey, Type serviceType);
 
         /// <summary>
         /// Provide a key that can be used to retrieve the component.
@@ -260,10 +174,7 @@ namespace Autofac.Builder
         /// <param name="serviceKey">Key to associate with the component.</param>
         /// <typeparam name="TService">The service type provided by the component.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Keyed<TService>(object serviceKey)
-        {
-            return Keyed(serviceKey, typeof(TService));
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Keyed<TService>(object serviceKey);
 
         /// <summary>
         /// Add a handler for the Preparing event. This event allows manipulating of the parameters
@@ -271,65 +182,28 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="handler">The event handler.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnPreparing(Action<PreparingEventArgs<TLimit>> handler)
-        {
-            Enforce.ArgumentNotNull(handler, "handler");
-            RegistrationData.PreparingHandlers.Add((s, e) =>
-            {
-                var typedArgs = new PreparingEventArgs<TLimit>(e.Context, e.Component, e.Parameters);
-                handler(typedArgs);
-                e.Instance = typedArgs.Instance;
-                e.Parameters = typedArgs.Parameters;
-            });
-            return this;
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnPreparing(Action<PreparingEventArgs<TLimit>> handler);
 
         /// <summary>
         /// Add a handler for the Activating event.
         /// </summary>
         /// <param name="handler">The event handler.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivating(Action<ActivatingEventArgs<TLimit>> handler)
-        {
-            Enforce.ArgumentNotNull(handler, "handler");
-            RegistrationData.ActivatingHandlers.Add((s, e) =>
-            {
-                var args = new ActivatingEventArgs<TLimit>(e.Context, e.Component, e.Parameters, (TLimit)e.Instance);
-                handler(args);
-                e.Instance = args.Instance;
-            });
-            return this;
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivating(Action<ActivatingEventArgs<TLimit>> handler);
 
         /// <summary>
         /// Add a handler for the Activated event.
         /// </summary>
         /// <param name="handler">The event handler.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivated(Action<ActivatedEventArgs<TLimit>> handler)
-        {
-            Enforce.ArgumentNotNull(handler, "handler");
-            RegistrationData.ActivatedHandlers.Add((s, e) =>
-            {
-                handler(new ActivatedEventArgs<TLimit>(e.Context, e.Component, e.Parameters, (TLimit)e.Instance));
-            });
-            return this;
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivated(Action<ActivatedEventArgs<TLimit>> handler);
 
         /// <summary>
         /// Configure the component so that any properties whose types are registered in the
         /// container will be wired to instances of the appropriate service.
         /// </summary>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> PropertiesAutowired()
-        {
-            var injector = new AutowiringPropertyInjector();
-            RegistrationData.ActivatingHandlers.Add((s, e) =>
-            {
-                injector.InjectProperties(e.Context, e.Instance, true);
-            });
-            return this;
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> PropertiesAutowired();
 
         /// <summary>
         /// Configure the component so that any properties whose types are registered in the
@@ -339,22 +213,7 @@ namespace Autofac.Builder
         /// after the component has been activated. This allows property-property and constructor-property
         /// circularities in the dependency graph.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> PropertiesAutowired(bool allowCircularDependencies)
-        {
-            if (allowCircularDependencies)
-            {
-                var injector = new AutowiringPropertyInjector();
-                RegistrationData.ActivatedHandlers.Add((s, e) =>
-                {
-                    injector.InjectProperties(e.Context, e.Instance, true);
-                });
-                return this;
-            }
-            else
-            {
-                return PropertiesAutowired();
-            }
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> PropertiesAutowired(bool allowCircularDependencies);
 
         /// <summary>
         /// Associates data with the component.
@@ -362,29 +221,14 @@ namespace Autofac.Builder
         /// <param name="key">Key by which the data can be located.</param>
         /// <param name="value">The data value.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(string key, object value)
-        {
-            Enforce.ArgumentNotNull(key, "key");
-
-            RegistrationData.Metadata.Add(key, value);
-
-            return this;
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(string key, object value);
 
         /// <summary>
         /// Associates data with the component.
         /// </summary>
         /// <param name="properties">The extended properties to associate with the component.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(IEnumerable<KeyValuePair<string, object>> properties)
-        {
-            Enforce.ArgumentNotNull(properties, "properties");
-
-            foreach (var prop in properties)
-                WithMetadata(prop.Key, prop.Value);
-
-            return this;
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(IEnumerable<KeyValuePair<string, object>> properties);
 
         /// <summary>
         /// Associates data with the component.
@@ -392,13 +236,6 @@ namespace Autofac.Builder
         /// <typeparam name="TMetadata">A type with properties whose names correspond to the
         /// property names to configure.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata<TMetadata>(Action<MetadataConfiguration<TMetadata>> configurationAction)
-        {
-            Enforce.ArgumentNotNull(configurationAction, "configurationAction");
-
-            var epConfiguration = new MetadataConfiguration<TMetadata>();
-            configurationAction(epConfiguration);
-            return WithMetadata(epConfiguration.Properties);
-        }
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata<TMetadata>(Action<MetadataConfiguration<TMetadata>> configurationAction);
     }
 }

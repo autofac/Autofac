@@ -31,7 +31,7 @@ namespace Autofac.Features.GeneratedFactories
 {
     static class GeneratedFactoryRegistrationExtensions
     {
-        internal static RegistrationBuilder<TLimit, GeneratedFactoryActivatorData, SingleRegistrationStyle>
+        internal static IRegistrationBuilder<TLimit, GeneratedFactoryActivatorData, SingleRegistrationStyle>
             RegisterGeneratedFactory<TLimit>(ContainerBuilder builder, Type delegateType, Service service)
         {
             var activatorData = new GeneratedFactoryActivatorData(delegateType, service);

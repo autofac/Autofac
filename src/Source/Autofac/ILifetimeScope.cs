@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using Autofac.Builder;
 using Autofac.Core;
 
 namespace Autofac
@@ -62,8 +63,8 @@ namespace Autofac
     /// </remarks>
     /// <seealso cref="IContainer"/>
     /// <seealso cref="IComponentContext"/>
-    /// <seealso cref="Autofac.Builder.RegistrationBuilder{L,A,S}.InstancePerMatchingLifetimeScope"/>
-    /// <seealso cref="Autofac.Builder.RegistrationBuilder{L,A,S}.InstancePerLifetimeScope"/>
+    /// <seealso cref="IRegistrationBuilder{TLimit,TActivatorData,TRegistrationStyle}.InstancePerMatchingLifetimeScope"/>
+    /// <seealso cref="IRegistrationBuilder{TLimit,TActivatorData,TRegistrationStyle}.InstancePerLifetimeScope"/>
     /// <seealso cref="Autofac.Core.InstanceSharing"/>
     /// <seealso cref="Autofac.Core.IComponentLifetime"/>
     public interface ILifetimeScope : IComponentContext, IDisposable
@@ -127,7 +128,7 @@ namespace Autofac
         /// </summary>
         /// <remarks>Tags allow a level in the lifetime hierarchy to be identified.
         /// In most applications, tags are not necessary.</remarks>
-        /// <seealso cref="Autofac.Builder.RegistrationBuilder{L,A,S}.InstancePerMatchingLifetimeScope"/>
+        /// <seealso cref="IRegistrationBuilder{TLimit,TActivatorData,TRegistrationStyle}.InstancePerMatchingLifetimeScope"/>
         object Tag { get; }
     }
 }

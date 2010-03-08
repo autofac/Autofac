@@ -101,7 +101,7 @@ namespace Autofac
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         /// <remarks>If no services are explicitly specified for the instance, the
         /// static type <typeparamref name="T"/> will be used as the default service (i.e. *not* <code>instance.GetType()</code>).</remarks>
-        public static RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>
+        public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>
             RegisterInstance<T>(this ContainerBuilder builder, T instance)
             where T : class
         {
@@ -137,7 +137,7 @@ namespace Autofac
         /// <typeparam name="TImplementor">The type of the component implementation.</typeparam>
         /// <param name="builder">Container builder.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TImplementor, ConcreteReflectionActivatorData, SingleRegistrationStyle>
+        public static IRegistrationBuilder<TImplementor, ConcreteReflectionActivatorData, SingleRegistrationStyle>
             RegisterType<TImplementor>(this ContainerBuilder builder)
         {
             Enforce.ArgumentNotNull(builder, "builder");
@@ -155,7 +155,7 @@ namespace Autofac
         /// <param name="implementationType">The type of the component implementation.</param>
         /// <param name="builder">Container builder.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>
+        public static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>
             RegisterType(this ContainerBuilder builder, Type implementationType)
         {
             Enforce.ArgumentNotNull(builder, "builder");
@@ -175,7 +175,7 @@ namespace Autofac
         /// <param name="builder">Container builder.</param>
         /// <param name="delegate">The delegate to register.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>
+        public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>
             Register<T>(
                 this ContainerBuilder builder,
                 Func<IComponentContext, T> @delegate)
@@ -191,7 +191,7 @@ namespace Autofac
         /// <param name="builder">Container builder.</param>
         /// <param name="delegate">The delegate to register.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>
+        public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>
             Register<T>(
                 this ContainerBuilder builder,
                 Func<IComponentContext, IEnumerable<Parameter>, T> @delegate)
@@ -213,7 +213,7 @@ namespace Autofac
         /// <param name="builder">Container builder.</param>
         /// <param name="implementor">The open generic implementation type.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
+        public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
             RegisterGeneric(this ContainerBuilder builder, Type implementor)
         {
             Enforce.ArgumentNotNull(builder, "builder");
@@ -245,9 +245,9 @@ namespace Autofac
         /// <typeparam name="TActivatorData">Activator data type.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             PreserveExistingDefaults<TLimit, TActivatorData, TSingleRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration)
+                this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
             Enforce.ArgumentNotNull(registration, "registration");
@@ -261,7 +261,7 @@ namespace Autofac
         /// <param name="builder">Container builder.</param>
         /// <param name="assemblies">The assemblies from which to register types.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
+        public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             RegisterAssemblyTypes(this ContainerBuilder builder, params Assembly[] assemblies)
         {
             return ScanningRegistrationExtensions.RegisterAssemblyTypes(builder, assemblies);
@@ -276,9 +276,9 @@ namespace Autofac
         /// <param name="registration">Registration to filter types from.</param>
         /// <param name="predicate">Predicate that returns true for types to register.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             Where<TLimit, TScanningActivatorData, TRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
                 Func<Type, bool> predicate)
             where TScanningActivatorData : ScanningActivatorData
         {
@@ -296,9 +296,9 @@ namespace Autofac
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <param name="serviceMapping">Function mapping types to services.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             As<TLimit, TScanningActivatorData, TRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
                 Func<Type, IEnumerable<Service>> serviceMapping)
             where TScanningActivatorData : ScanningActivatorData
         {
@@ -316,9 +316,9 @@ namespace Autofac
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <param name="serviceMapping">Function mapping types to services.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             As<TLimit, TScanningActivatorData, TRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
                 Func<Type, Service> serviceMapping)
             where TScanningActivatorData : ScanningActivatorData
         {
@@ -335,9 +335,9 @@ namespace Autofac
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <param name="serviceMapping">Function mapping types to services.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             As<TLimit, TScanningActivatorData, TRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
                 Func<Type, Type> serviceMapping)
             where TScanningActivatorData : ScanningActivatorData
         {
@@ -353,9 +353,9 @@ namespace Autofac
         /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             AsSelf<TLimit, TScanningActivatorData, TRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration)
+                this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration)
             where TScanningActivatorData : ScanningActivatorData
         {
             Enforce.ArgumentNotNull(registration, "registration");
@@ -371,9 +371,9 @@ namespace Autofac
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <param name="metadataMapping">A function mapping the type to a list of metadata items.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             WithMetadata<TLimit, TScanningActivatorData, TRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
                 Func<Type, IEnumerable<KeyValuePair<string, object>>> metadataMapping)
             where TScanningActivatorData : ScanningActivatorData
         {
@@ -392,9 +392,9 @@ namespace Autofac
         /// <param name="metadataKey">Key of the metadata item.</param>
         /// <param name="metadataValueMapping">A function retrieving the value of the item from the component type.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             WithMetadata<TLimit, TScanningActivatorData, TRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
                 string metadataKey,
                 Func<Type, object> metadataValueMapping)
             where TScanningActivatorData : ScanningActivatorData
@@ -414,9 +414,9 @@ namespace Autofac
         /// <param name="serviceType">Service type provided by the component.</param>
         /// <param name="serviceNameMapping">Function mapping types to service names.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             Named<TLimit, TScanningActivatorData, TRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
                 Func<Type, string> serviceNameMapping,
                 Type serviceType)
             where TScanningActivatorData : ScanningActivatorData
@@ -436,9 +436,9 @@ namespace Autofac
         /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             AsImplementedInterfaces<TLimit, TScanningActivatorData, TRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration)
+                this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration)
             where TScanningActivatorData : ScanningActivatorData
         {
             Enforce.ArgumentNotNull(registration, "registration");
@@ -454,9 +454,9 @@ namespace Autofac
         /// <param name="registration">Registration to set policy on.</param>
         /// <param name="bindingFlags">Binding flags used when searching for constructors.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
             FindConstructorsWith<TLimit, TReflectionActivatorData, TStyle>(
-                this RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
                 BindingFlags bindingFlags)
             where TReflectionActivatorData : ReflectionActivatorData
         {
@@ -473,9 +473,9 @@ namespace Autofac
         /// <param name="registration">Registration to set policy on.</param>
         /// <param name="constructorFinder">Policy to be used when searching for constructors.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
             FindConstructorsWith<TLimit, TReflectionActivatorData, TStyle>(
-                this RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
                 IConstructorFinder constructorFinder)
             where TReflectionActivatorData : ReflectionActivatorData
         {
@@ -494,9 +494,9 @@ namespace Autofac
         /// <param name="registration">Registration to set policy on.</param>
         /// <param name="signature">Constructor signature to match.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
             UsingConstructor<TLimit, TReflectionActivatorData, TStyle>(
-                this RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
                 params Type[] signature)
             where TReflectionActivatorData : ReflectionActivatorData
         {
@@ -522,9 +522,9 @@ namespace Autofac
         /// <param name="registration">Registration to set policy on.</param>
         /// <param name="constructorSelector">Policy to be used when selecting a constructor.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
             UsingConstructor<TLimit, TReflectionActivatorData, TStyle>(
-                this RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
                 IConstructorSelector constructorSelector)
             where TReflectionActivatorData : ReflectionActivatorData
         {
@@ -544,9 +544,9 @@ namespace Autofac
         /// <param name="parameterName">Name of a constructor parameter on the target type.</param>
         /// <param name="parameterValue">Value to supply to the parameter.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
             WithParameter<TLimit, TReflectionActivatorData, TStyle>(
-                this RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
                 string parameterName,
                 object parameterValue)
             where TReflectionActivatorData : ReflectionActivatorData
@@ -563,9 +563,9 @@ namespace Autofac
         /// <param name="registration">Registration to set parameter on.</param>
         /// <param name="parameter">The parameter to supply to the constructor.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
             WithParameter<TLimit, TReflectionActivatorData, TStyle>(
-                this RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
                 Parameter parameter)
             where TReflectionActivatorData : ReflectionActivatorData
         {
@@ -584,9 +584,9 @@ namespace Autofac
         /// <param name="registration">Registration to set parameter on.</param>
         /// <param name="parameters">The parameters to supply to the constructor.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
             WithParameters<TLimit, TReflectionActivatorData, TStyle>(
-                this RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
                 IEnumerable<Parameter> parameters)
             where TReflectionActivatorData : ReflectionActivatorData
         {
@@ -608,9 +608,9 @@ namespace Autofac
         /// <param name="propertyName">Name of a property on the target type.</param>
         /// <param name="propertyValue">Value to supply to the property.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
             WithProperty<TLimit, TReflectionActivatorData, TStyle>(
-                this RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
                 string propertyName,
                 object propertyValue)
             where TReflectionActivatorData : ReflectionActivatorData
@@ -627,9 +627,9 @@ namespace Autofac
         /// <param name="registration">Registration to set parameter on.</param>
         /// <param name="property">The property to supply.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
             WithProperty<TLimit, TReflectionActivatorData, TStyle>(
-                this RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
                 Parameter property)
             where TReflectionActivatorData : ReflectionActivatorData
         {
@@ -648,9 +648,9 @@ namespace Autofac
         /// <param name="registration">Registration to set parameter on.</param>
         /// <param name="properties">The properties to supply.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
             WithProperty<TLimit, TReflectionActivatorData, TStyle>(
-                this RegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
                 IEnumerable<Parameter> properties)
             where TReflectionActivatorData : ReflectionActivatorData
         {
@@ -669,7 +669,7 @@ namespace Autofac
         /// <param name="builder">Container builder.</param>
         /// <param name="delegateType">Factory type to generate.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
+        public static IRegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
             RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType)
         {
             Enforce.ArgumentNotNull(delegateType, "delegateType");
@@ -686,7 +686,7 @@ namespace Autofac
         /// <param name="delegateType">Factory type to generate.</param>
         /// <param name="service">The service that the delegate will return instances of.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
+        public static IRegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
             RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType, Service service)
         {
             return GeneratedFactoryRegistrationExtensions.RegisterGeneratedFactory<Delegate>(builder, delegateType, service);
@@ -704,9 +704,9 @@ namespace Autofac
         /// <returns>
         /// Registration builder allowing the registration to be configured.
         /// </returns>
-        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             Targeting<TLimit, TActivatorData, TSingleRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
+                this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
                 IComponentRegistration target)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
@@ -721,7 +721,7 @@ namespace Autofac
         /// <param name="builder">Container builder.</param>
         /// <param name="service">The service that the delegate will return instances of.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TDelegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
+        public static IRegistrationBuilder<TDelegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
             RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder, Service service)
             where TDelegate : class
         {
@@ -734,7 +734,7 @@ namespace Autofac
         /// <typeparam name="TDelegate">The type of the delegate.</typeparam>
         /// <param name="builder">Container builder.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TDelegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
+        public static IRegistrationBuilder<TDelegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
             RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder)
             where TDelegate : class
         {
@@ -754,9 +754,9 @@ namespace Autofac
         /// <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
         /// <param name="registration">Registration to change parameter mapping mode of.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>
+        public static IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>
             NamedParameterMapping<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>(
-                this RegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle> registration)
+                this IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle> registration)
             where TGeneratedFactoryActivatorData : GeneratedFactoryActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
@@ -773,9 +773,9 @@ namespace Autofac
         /// <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
         /// <param name="registration">Registration to change parameter mapping mode of.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>
+        public static IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>
             PositionalParameterMapping<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>(
-                this RegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle> registration)
+                this IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle> registration)
             where TGeneratedFactoryActivatorData : GeneratedFactoryActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
@@ -792,9 +792,9 @@ namespace Autofac
         /// <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
         /// <param name="registration">Registration to change parameter mapping mode of.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>
+        public static IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>
             TypedParameterMapping<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>(
-                this RegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle> registration)
+                this IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle> registration)
             where TGeneratedFactoryActivatorData : GeneratedFactoryActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
@@ -811,9 +811,9 @@ namespace Autofac
         /// <param name="registration">Registration add handler to.</param>
         /// <param name="handler">The handler.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             OnRegistered<TLimit, TActivatorData, TSingleRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
+                this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
                 Action<ComponentRegisteredEventArgs> handler)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
@@ -833,7 +833,7 @@ namespace Autofac
         /// <param name="builder">Container builder.</param>
         /// <param name="collectionName">A unique name for the collection that can be passed to MemberOf().</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<object[], SimpleActivatorData, SingleRegistrationStyle>
+        public static IRegistrationBuilder<object[], SimpleActivatorData, SingleRegistrationStyle>
             RegisterCollection(this ContainerBuilder builder, string collectionName, Type elementType)
         {
             return CollectionRegistrationExtensions.RegisterCollection<object>(builder, collectionName, elementType);
@@ -847,7 +847,7 @@ namespace Autofac
         /// <param name="builder">Container builder.</param>
         /// <param name="collectionName">A unique name for the collection that can be passed to MemberOf().</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<T[], SimpleActivatorData, SingleRegistrationStyle>
+        public static IRegistrationBuilder<T[], SimpleActivatorData, SingleRegistrationStyle>
             RegisterCollection<T>(this ContainerBuilder builder, string collectionName)
         {
             return CollectionRegistrationExtensions.RegisterCollection<T>(builder, collectionName, typeof(T));
@@ -862,9 +862,9 @@ namespace Autofac
         /// <param name="registration">Registration to export.</param>
         /// <param name="collectionName">The collection name, as passed to RegisterCollection.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             MemberOf<TLimit, TActivatorData, TSingleRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
+                this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
                 string collectionName)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
@@ -881,9 +881,9 @@ namespace Autofac
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <param name="openGenericServiceType">The open generic interface or base class type for which implementations will be found.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             AsClosedTypesOf<TLimit, TScanningActivatorData, TRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration, Type openGenericServiceType)
+                this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration, Type openGenericServiceType)
             where TScanningActivatorData : ScanningActivatorData
         {
             return ScanningRegistrationExtensions.AsClosedTypesOf(registration, openGenericServiceType);
@@ -898,9 +898,9 @@ namespace Autofac
         /// <param name="registration">Registration to filter types from.</param>
         /// <param name="type">The type or interface which all classes must be assignable from.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             AssignableTo<TLimit, TScanningActivatorData, TRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
                 Type type)
             where TScanningActivatorData : ScanningActivatorData
         {

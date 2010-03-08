@@ -24,7 +24,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="builder">Registration data.</param>
         /// <param name="activatorGenerator">Activator generator.</param>
-        public RegistrationSource(RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> builder, IActivatorGenerator<TActivatorData> activatorGenerator)
+        public RegistrationSource(IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> builder, IActivatorGenerator<TActivatorData> activatorGenerator)
         {
             Enforce.ArgumentNotNull(builder, "builder");
             Enforce.ArgumentNotNull(activatorGenerator, "activatorGenerator");

@@ -69,9 +69,9 @@ namespace Autofac.Integration.Mef
         /// <param name="registration">The component being registered.</param>
         /// <param name="configurationAction">Action on an object that configures the export.</param>
         /// <returns>A registration allowing registration to continue.</returns>
-        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             Exported<TLimit, TActivatorData, TSingleRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
+                this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
                 Action<ExportConfigurationBuilder> configurationAction)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {

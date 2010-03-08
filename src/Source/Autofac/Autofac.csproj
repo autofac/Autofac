@@ -82,6 +82,7 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Builder\ConcreteReflectionActivatorData.cs" />
+    <Compile Include="Builder\IRegistrationBuilder.cs" />
     <Compile Include="Builder\MetadataConfiguration.cs" />
     <Compile Include="Builder\IConcreteActivatorData.cs" />
     <Compile Include="Builder\RegistrationBuilder.cs" />

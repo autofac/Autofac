@@ -42,7 +42,7 @@ namespace Autofac.Features.Scanning
         /// <param name="builder">Container builder.</param>
         /// <param name="assemblies">The assemblies from which to register types.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
+        public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             RegisterAssemblyTypes(ContainerBuilder builder, params Assembly[] assemblies)
         {
             Enforce.ArgumentNotNull(builder, "builder");
@@ -105,9 +105,9 @@ namespace Autofac.Features.Scanning
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <param name="openGenericServiceType">The open generic interface or base class type for which implementations will be found.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             AsClosedTypesOf<TLimit, TScanningActivatorData, TRegistrationStyle>(
-                RegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration, 
+                IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration, 
                 Type openGenericServiceType)
             where TScanningActivatorData : ScanningActivatorData
         {

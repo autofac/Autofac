@@ -18,7 +18,7 @@ namespace Autofac.Integration.Web.Mvc
         /// <param name="builder">The container builder.</param>
         /// <param name="controllerAssemblies">Assemblies to scan for controllers.</param>
         /// <returns>Registration builder allowing the controller components to be customised.</returns>
-        public static RegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
+        public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             RegisterControllers(
                 this ContainerBuilder builder,
                 params Assembly[] controllerAssemblies)
@@ -33,7 +33,7 @@ namespace Autofac.Integration.Web.Mvc
         /// <param name="identificationStrategy">Controller identification strategy.</param>
         /// <param name="controllerAssemblies">Assemblies to scan for controllers.</param>
         /// <returns>Registration builder allowing the controller components to be customised.</returns>
-        public static RegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
+        public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             RegisterControllers(
                 this ContainerBuilder builder,
                 IControllerIdentificationStrategy identificationStrategy, 
@@ -52,9 +52,9 @@ namespace Autofac.Integration.Web.Mvc
         /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <param name="registrationBuilder">The registration builder.</param>
         /// <returns>A registration builder.</returns>
-        public static RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>
             InjectActionInvoker<TLimit, TActivatorData, TRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registrationBuilder)
+                this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registrationBuilder)
         {
             return registrationBuilder.InjectActionInvoker(new TypedService(typeof (IActionInvoker)));
         }
@@ -68,9 +68,9 @@ namespace Autofac.Integration.Web.Mvc
         /// <param name="registrationBuilder">The registration builder.</param>
         /// <param name="actionInvokerService">Service used to resolve the action invoker.</param>
         /// <returns>A registration builder.</returns>
-        public static RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>
             InjectActionInvoker<TLimit, TActivatorData, TRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registrationBuilder,
+                this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registrationBuilder,
                 Service actionInvokerService)
         {
             if (registrationBuilder == null) throw new ArgumentNullException("registrationBuilder");

@@ -40,7 +40,7 @@ namespace Autofac.Features.Collections
     {
         const string MemberOfPropertyKey = "Autofac.CollectionRegistrationExtensions.MemberOf";
 
-        public static RegistrationBuilder<T[], SimpleActivatorData, SingleRegistrationStyle>
+        public static IRegistrationBuilder<T[], SimpleActivatorData, SingleRegistrationStyle>
             RegisterCollection<T>(ContainerBuilder builder, string collectionName, Type elementType)
         {
             Enforce.ArgumentNotNull(builder, "builder");
@@ -64,7 +64,7 @@ namespace Autofac.Features.Collections
 
                 var items = elements.Select(e => c.Resolve(e, p)).ToArray();
 
-                Array result = Array.CreateInstance(elementType, items.Length);
+                var result = Array.CreateInstance(elementType, items.Length);
                 items.CopyTo(result, 0);
                 return result;
             });
@@ -90,9 +90,9 @@ namespace Autofac.Features.Collections
                 ((IEnumerable<string>)crMembership).Contains(collectionName);
         }
 
-        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             MemberOf<TLimit, TActivatorData, TSingleRegistrationStyle>(
-                RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
+                IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
                 string collectionName)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
