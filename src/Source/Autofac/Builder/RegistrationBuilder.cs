@@ -96,7 +96,7 @@ namespace Autofac.Builder
             where TActivatorData : IConcreteActivatorData
         {
             IEnumerable<Service> services = rb.RegistrationData.Services;
-            if (rb.RegistrationData.Services.Count == 0)
+            if (rb.RegistrationData.Services.Count == 0 && !rb.RegistrationData.DefaultServiceOverridden)
                 services = new Service[] { new TypedService(rb.RegistrationStyle.DefaultServiceType) };
 
             return CreateRegistration(

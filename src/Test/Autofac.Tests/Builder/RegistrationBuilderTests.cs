@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autofac.Builder;
+using Autofac.Core;
 using NUnit.Framework;
 
 namespace Autofac.Tests.Builder
@@ -26,7 +27,7 @@ namespace Autofac.Tests.Builder
                 ep.For(p => p.B, "hello");
             });
             
-            var reg = RegistrationBuilder.CreateRegistration(builder);
+            var reg = builder.CreateRegistration();
             Assert.AreEqual(42, reg.Metadata["A"]);
             Assert.AreEqual("hello", reg.Metadata["B"]);
         }
@@ -37,6 +38,16 @@ namespace Autofac.Tests.Builder
             var builder = RegistrationBuilder.ForType<object>();
             Assert.Throws<ArgumentException>(() =>
                 builder.WithMetadata<IProperties>(ep => ep.For(p => 42, 42)));
+        }
+
+        [Test]
+        public void AsEmptyList_CreatesRegistrationWithNoServices()
+        {
+            var registration = RegistrationBuilder.ForType<object>()
+                .As(new Service[0])
+                .CreateRegistration();
+
+            Assert.AreEqual(0, registration.Services.Count());
         }
     }
 }

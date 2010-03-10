@@ -29,7 +29,6 @@ using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Core.Activators.Reflection;
 using Autofac.Util;
 
 namespace Autofac.Features.Scanning
@@ -57,38 +56,18 @@ namespace Autofac.Features.Scanning
                 foreach (var t in assemblies.SelectMany(a => a.GetTypes())
                     .Where(t => !t.IsAbstract && rb.ActivatorData.Filters.All(p => p(t))))
                 {
-                    var activator = new ReflectionActivator(
-                        t,
-                        rb.ActivatorData.ConstructorFinder,
-                        rb.ActivatorData.ConstructorSelector,
-                        rb.ActivatorData.ConfiguredParameters,
-                        rb.ActivatorData.ConfiguredProperties);
+                    var scanned = RegistrationBuilder.ForType(t)
+                        .FindConstructorsWith(rb.ActivatorData.ConstructorFinder)
+                        .UsingConstructor(rb.ActivatorData.ConstructorSelector)
+                        .WithParameters(rb.ActivatorData.ConfiguredParameters)
+                        .WithProperties(rb.ActivatorData.ConfiguredProperties);
 
-#if !(SL2 || SL3 || NET35)
-                    var services = new HashSet<Service>(rb.RegistrationData.Services);
-#else
-                    IList<Service> services = new List<Service>(rb.RegistrationData.Services);
-#endif
+                    scanned.RegistrationData.CopyFrom(rb.RegistrationData);
 
-                    if (!services.Any() && !rb.ActivatorData.ServiceMappings.Any())
-                        services.Add(new TypedService(t));
+                    foreach (var action in rb.ActivatorData.ConfigurationActions)
+                        action(t, scanned);
 
-                    foreach (var mapping in rb.ActivatorData.ServiceMappings)
-                        foreach (var s in mapping(t))
-                            services.Add(s);
-
-#if (SL2 || SL3 || NET35)
-                    services = services.Distinct().ToList();
-#endif
-
-                    var r = RegistrationBuilder.CreateRegistration(Guid.NewGuid(), rb.RegistrationData, activator, services);
-
-                    foreach (var metadata in rb.ActivatorData.MetadataMappings.SelectMany(m => m(t)))
-                    {
-                        r.Metadata.Add(metadata);
-                    }
-
-                    cr.Register(r);
+                    cr.Register(scanned.CreateRegistration());
                 }
             });
 

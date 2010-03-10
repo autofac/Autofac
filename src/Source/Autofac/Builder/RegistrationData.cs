@@ -57,6 +57,12 @@ namespace Autofac.Builder
         public ICollection<Service> Services { get { return _services; } }
 
         /// <summary>
+        /// If set to true, the "default" service for this registration will not
+        /// be applied.
+        /// </summary>
+        public bool DefaultServiceOverridden { get; set; }
+
+        /// <summary>
         /// The instance ownership assigned to the component.
         /// </summary>
         public InstanceOwnership Ownership
@@ -102,5 +108,28 @@ namespace Autofac.Builder
         /// Handlers for the Activated event.
         /// </summary>
         public ICollection<EventHandler<ActivatedEventArgs<object>>> ActivatedHandlers { get { return _activatedHandlers; } }
+
+        /// <summary>
+        /// Copies from.
+        /// </summary>
+        /// <param name="that">The that.</param>
+        public void CopyFrom(RegistrationData that)
+        {
+            Ownership = that.Ownership;
+            Sharing = that.Sharing;
+            Lifetime = that.Lifetime;
+            DefaultServiceOverridden = that.DefaultServiceOverridden;
+            AddAll(Metadata, that.Metadata);
+            AddAll(Services, that.Services);
+            AddAll(PreparingHandlers, that.PreparingHandlers);
+            AddAll(ActivatingHandlers, that.ActivatingHandlers);
+            AddAll(ActivatedHandlers, that.ActivatedHandlers);
+        }
+
+        static void AddAll<T>(ICollection<T> to, IEnumerable<T> from)
+        {
+            foreach (var item in from)
+                to.Add(item);
+        }
     }
 }

@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="C:\Working\Open Source\Autofac\trunk\contrib\Build\Test\AutofacContrib.Tests.CommonServiceLocator.dll" total="31" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2010-02-12" time="21:28:06">
+<test-results name="C:\Working\Open Source\Autofac\trunk\contrib\Build\Test\AutofacContrib.Tests.CommonServiceLocator.dll" total="36" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2010-03-01" time="19:36:26">
   <environment nunit-version="2.5.3.9345" clr-version="4.0.30128.1" os-version="Microsoft Windows NT 6.1.7600.0" platform="Win32NT" cwd="C:\Working\Open Source\Autofac\trunk\contrib" machine-name="NBLUMHARDT-NOTE" user="Nicholas Blumhardt" user-domain="nblumhardt-note" />
   <culture-info current-culture="en-AU" current-uiculture="en-US" />
-  <test-suite name="" executed="True" success="True" time="4.630" asserts="0">
+  <test-suite name="" executed="True" success="True" time="4.408" asserts="0">
     <results>
-      <test-suite name="C:\Working\Open Source\Autofac\trunk\contrib\Build\Test\AutofacContrib.Tests.CommonServiceLocator.dll" executed="True" success="True" time="0.455" asserts="0">
+      <test-suite name="C:\Working\Open Source\Autofac\trunk\contrib\Build\Test\AutofacContrib.Tests.CommonServiceLocator.dll" executed="True" success="True" time="0.470" asserts="0">
         <results>
-          <test-suite name="AutofacContrib" executed="True" success="True" time="0.442" asserts="0">
+          <test-suite name="AutofacContrib" executed="True" success="True" time="0.460" asserts="0">
             <results>
-              <test-suite name="Tests" executed="True" success="True" time="0.441" asserts="0">
+              <test-suite name="Tests" executed="True" success="True" time="0.458" asserts="0">
                 <results>
-                  <test-suite name="CommonServiceLocator" executed="True" success="True" time="0.434" asserts="0">
+                  <test-suite name="CommonServiceLocator" executed="True" success="True" time="0.453" asserts="0">
                     <results>
-                      <test-suite name="AutofacServiceLocatorTests" executed="True" success="True" time="0.432" asserts="0">
+                      <test-suite name="AutofacServiceLocatorTests" executed="True" success="True" time="0.450" asserts="0">
                         <results>
-                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.Constructor_Does_Not_Accept_Null" executed="True" success="True" time="0.135" asserts="0" />
-                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.AskingForInvalidComponentShouldRaiseActivationException" executed="True" success="True" time="0.141" asserts="0" />
-                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.GenericOverload_GetAllInstances" executed="True" success="True" time="0.095" asserts="1" />
-                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.GenericOverload_GetInstance" executed="True" success="True" time="0.002" asserts="1" />
-                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.GenericOverload_GetInstance_WithName" executed="True" success="True" time="0.004" asserts="1" />
-                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.GetAllInstances" executed="True" success="True" time="0.002" asserts="1" />
+                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.Constructor_Does_Not_Accept_Null" executed="True" success="True" time="0.113" asserts="0" />
+                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.AskingForInvalidComponentShouldRaiseActivationException" executed="True" success="True" time="0.178" asserts="0" />
+                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.GenericOverload_GetAllInstances" executed="True" success="True" time="0.105" asserts="1" />
+                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.GenericOverload_GetInstance" executed="True" success="True" time="0.003" asserts="1" />
+                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.GenericOverload_GetInstance_WithName" executed="True" success="True" time="0.005" asserts="1" />
+                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.GetAllInstances" executed="True" success="True" time="0.003" asserts="1" />
                           <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.GetInstance" executed="True" success="True" time="0.003" asserts="1" />
-                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.GetlAllInstance_ForUnknownType_ReturnEmptyEnumerable" executed="True" success="True" time="0.001" asserts="1" />
-                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.GetNamedInstance" executed="True" success="True" time="0.002" asserts="1" />
-                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.GetNamedInstance_WithZeroLenName" executed="True" success="True" time="0.022" asserts="0" />
-                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.GetNamedInstance2" executed="True" success="True" time="0.001" asserts="1" />
-                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.GetUnknownInstance2" executed="True" success="True" time="0.002" asserts="0" />
-                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.Overload_GetInstance_NoName_And_NullName" executed="True" success="True" time="0.002" asserts="1" />
+                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.GetlAllInstance_ForUnknownType_ReturnEmptyEnumerable" executed="True" success="True" time="0.000" asserts="1" />
+                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.GetNamedInstance" executed="True" success="True" time="0.003" asserts="1" />
+                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.GetNamedInstance_WithZeroLenName" executed="True" success="True" time="0.015" asserts="0" />
+                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.GetNamedInstance2" executed="True" success="True" time="0.000" asserts="1" />
+                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.GetUnknownInstance2" executed="True" success="True" time="0.000" asserts="0" />
+                          <test-case name="AutofacContrib.Tests.CommonServiceLocator.AutofacServiceLocatorTests.ServiceLocatorTestCase.Overload_GetInstance_NoName_And_NullName" executed="True" success="True" time="0.003" asserts="1" />
                         </results>
                       </test-suite>
                     </results>
@@ -38,28 +38,29 @@
           </test-suite>
         </results>
       </test-suite>
-      <test-suite name="C:\Working\Open Source\Autofac\trunk\contrib\Build\Test\AutofacContrib.Tests.Moq.dll" executed="True" success="True" time="1.101" asserts="0">
+      <test-suite name="C:\Working\Open Source\Autofac\trunk\contrib\Build\Test\AutofacContrib.Tests.DynamicProxy2.dll" executed="True" success="True" time="0.598" asserts="0">
         <results>
-          <test-suite name="AutofacContrib" executed="True" success="True" time="1.087" asserts="0">
+          <test-suite name="AutofacContrib" executed="True" success="True" time="0.588" asserts="0">
             <results>
-              <test-suite name="Tests" executed="True" success="True" time="1.087" asserts="0">
+              <test-suite name="Tests" executed="True" success="True" time="0.585" asserts="0">
                 <results>
-                  <test-suite name="Moq" executed="True" success="True" time="1.085" asserts="0">
+                  <test-suite name="DynamicProxy2" executed="True" success="True" time="0.585" asserts="0">
                     <results>
-                      <test-suite name="AutoMockFixture" executed="True" success="True" time="1.082" asserts="0">
+                      <test-suite name="AttributedInterfaceInterceptionFixture" executed="True" success="True" time="0.528" asserts="0">
                         <results>
-                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.DefaultConstructorIsLoose" executed="True" success="True" time="0.904" asserts="0" />
-                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.DefaultConstructorWorksWithAllTests" executed="True" success="True" time="0.007" asserts="0" />
-                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.LooseWorksWithUnmetSetupations" executed="True" success="True" time="0.001" asserts="0" />
-                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.NormalSetupationsAreNotVerifiedByDefault" executed="True" success="True" time="0.001" asserts="0" />
-                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.ProperInitializationIsPerformed" executed="True" success="True" time="0.013" asserts="4" />
-                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.ProvideImplementation" executed="True" success="True" time="0.007" asserts="2" />
-                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.ProvideInstance" executed="True" success="True" time="0.009" asserts="0" />
-                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.StrictWorksWithAllSetupationsMet" executed="True" success="True" time="0.002" asserts="0" />
-                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.UnmetSetupationWithStrictMocksThrowsException" executed="True" success="True" time="0.096" asserts="0" />
-                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.UnmetVerifiableSetupationsCauseExceptionByDefault" executed="True" success="True" time="0.012" asserts="0" />
-                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.VerifyAllSetTrue_SetupationsAreVerified" executed="True" success="True" time="0.003" asserts="0" />
-                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.VerifyAllSetTrue_UnmetSetupationsCauseException" executed="True" success="True" time="0.003" asserts="0" />
+                          <test-case name="AutofacContrib.Tests.DynamicProxy2.AttributedInterfaceInterceptionFixture.DetectsNonInterfaceServices" executed="True" success="True" time="0.243" asserts="0" />
+                          <test-case name="AutofacContrib.Tests.DynamicProxy2.AttributedInterfaceInterceptionFixture.FindsInterceptionAttributeOnExpressionComponent" executed="True" success="True" time="0.268" asserts="1" />
+                          <test-case name="AutofacContrib.Tests.DynamicProxy2.AttributedInterfaceInterceptionFixture.FindsInterceptionAttributeOnReflectionComponent" executed="True" success="True" time="0.003" asserts="1" />
+                        </results>
+                      </test-suite>
+                      <test-suite name="ClassInterceptorsFixture" executed="True" success="True" time="0.038" asserts="0">
+                        <results>
+                          <test-case name="AutofacContrib.Tests.DynamicProxy2.ClassInterceptorsFixture.InterceptsReflectionBasedComponent" executed="True" success="True" time="0.038" asserts="1" />
+                        </results>
+                      </test-suite>
+                      <test-suite name="InterceptorsChosenByMetadataFixture" executed="True" success="True" time="0.010" asserts="0">
+                        <results>
+                          <test-case name="AutofacContrib.Tests.DynamicProxy2.InterceptorsChosenByMetadataFixture.InterceptsWhenUsingExtendedPropertyAndType" executed="True" success="True" time="0.010" asserts="1" />
                         </results>
                       </test-suite>
                     </results>
@@ -70,18 +71,50 @@
           </test-suite>
         </results>
       </test-suite>
-      <test-suite name="C:\Working\Open Source\Autofac\trunk\contrib\Build\Test\AutofacContrib.Tests.NMock2.dll" executed="True" success="True" time="0.836" asserts="0">
+      <test-suite name="C:\Working\Open Source\Autofac\trunk\contrib\Build\Test\AutofacContrib.Tests.Moq.dll" executed="True" success="True" time="1.038" asserts="0">
         <results>
-          <test-suite name="AutofacContrib" executed="True" success="True" time="0.803" asserts="0">
+          <test-suite name="AutofacContrib" executed="True" success="True" time="1.028" asserts="0">
             <results>
-              <test-suite name="Tests" executed="True" success="True" time="0.802" asserts="0">
+              <test-suite name="Tests" executed="True" success="True" time="1.025" asserts="0">
                 <results>
-                  <test-suite name="NMock2" executed="True" success="True" time="0.801" asserts="0">
+                  <test-suite name="Moq" executed="True" success="True" time="1.023" asserts="0">
                     <results>
-                      <test-suite name="AutoMockFixture" executed="True" success="True" time="0.795" asserts="0">
+                      <test-suite name="AutoMockFixture" executed="True" success="True" time="1.020" asserts="0">
                         <results>
-                          <test-case name="AutofacContrib.Tests.NMock2.AutoMockFixture.DefaultConstructorIsUnordered" executed="True" success="True" time="0.657" asserts="0" />
-                          <test-case name="AutofacContrib.Tests.NMock2.AutoMockFixture.OrderedThrowsExceptionOnReversedTest" executed="True" success="True" time="0.071" asserts="0" />
+                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.DefaultConstructorIsLoose" executed="True" success="True" time="0.788" asserts="0" />
+                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.DefaultConstructorWorksWithAllTests" executed="True" success="True" time="0.010" asserts="0" />
+                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.LooseWorksWithUnmetSetupations" executed="True" success="True" time="0.000" asserts="0" />
+                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.NormalSetupationsAreNotVerifiedByDefault" executed="True" success="True" time="0.003" asserts="0" />
+                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.ProperInitializationIsPerformed" executed="True" success="True" time="0.015" asserts="4" />
+                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.ProvideImplementation" executed="True" success="True" time="0.008" asserts="2" />
+                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.ProvideInstance" executed="True" success="True" time="0.010" asserts="0" />
+                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.StrictWorksWithAllSetupationsMet" executed="True" success="True" time="0.003" asserts="0" />
+                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.UnmetSetupationWithStrictMocksThrowsException" executed="True" success="True" time="0.133" asserts="0" />
+                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.UnmetVerifiableSetupationsCauseExceptionByDefault" executed="True" success="True" time="0.023" asserts="0" />
+                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.VerifyAllSetTrue_SetupationsAreVerified" executed="True" success="True" time="0.005" asserts="0" />
+                          <test-case name="AutofacContrib.Tests.Moq.AutoMockFixture.VerifyAllSetTrue_UnmetSetupationsCauseException" executed="True" success="True" time="0.005" asserts="0" />
+                        </results>
+                      </test-suite>
+                    </results>
+                  </test-suite>
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite name="C:\Working\Open Source\Autofac\trunk\contrib\Build\Test\AutofacContrib.Tests.NMock2.dll" executed="True" success="True" time="0.578" asserts="0">
+        <results>
+          <test-suite name="AutofacContrib" executed="True" success="True" time="0.565" asserts="0">
+            <results>
+              <test-suite name="Tests" executed="True" success="True" time="0.563" asserts="0">
+                <results>
+                  <test-suite name="NMock2" executed="True" success="True" time="0.558" asserts="0">
+                    <results>
+                      <test-suite name="AutoMockFixture" executed="True" success="True" time="0.555" asserts="0">
+                        <results>
+                          <test-case name="AutofacContrib.Tests.NMock2.AutoMockFixture.DefaultConstructorIsUnordered" executed="True" success="True" time="0.408" asserts="0" />
+                          <test-case name="AutofacContrib.Tests.NMock2.AutoMockFixture.OrderedThrowsExceptionOnReversedTest" executed="True" success="True" time="0.098" asserts="0" />
                           <test-case name="AutofacContrib.Tests.NMock2.AutoMockFixture.ProperInitializationIsPerformed" executed="True" success="True" time="0.023" asserts="6" />
                           <test-case name="AutofacContrib.Tests.NMock2.AutoMockFixture.UnorderedWorksWithReversedTest" executed="True" success="True" time="0.003" asserts="0" />
                         </results>
@@ -99,18 +132,18 @@
           <message><![CDATA[Has no TestFixtures]]></message>
         </reason>
       </test-suite>
-      <test-suite name="C:\Working\Open Source\Autofac\trunk\contrib\Build\Test\AutofacContrib.Tests.Startable.dll" executed="True" success="True" time="0.337" asserts="0">
+      <test-suite name="C:\Working\Open Source\Autofac\trunk\contrib\Build\Test\AutofacContrib.Tests.Startable.dll" executed="True" success="True" time="0.235" asserts="0">
         <results>
-          <test-suite name="AutofacContrib" executed="True" success="True" time="0.322" asserts="0">
+          <test-suite name="AutofacContrib" executed="True" success="True" time="0.225" asserts="0">
             <results>
-              <test-suite name="Tests" executed="True" success="True" time="0.321" asserts="0">
+              <test-suite name="Tests" executed="True" success="True" time="0.223" asserts="0">
                 <results>
-                  <test-suite name="Startable" executed="True" success="True" time="0.314" asserts="0">
+                  <test-suite name="Startable" executed="True" success="True" time="0.223" asserts="0">
                     <results>
-                      <test-suite name="StartableModuleFixture" executed="True" success="True" time="0.311" asserts="0">
+                      <test-suite name="StartableModuleFixture" executed="True" success="True" time="0.220" asserts="0">
                         <results>
-                          <test-case name="AutofacContrib.Tests.Startable.StartableModuleFixture.NewInstancesStarted" executed="True" success="True" time="0.267" asserts="2" />
-                          <test-case name="AutofacContrib.Tests.Startable.StartableModuleFixture.StarterCreatesInstances" executed="True" success="True" time="0.023" asserts="1" />
+                          <test-case name="AutofacContrib.Tests.Startable.StartableModuleFixture.NewInstancesStarted" executed="True" success="True" time="0.185" asserts="2" />
+                          <test-case name="AutofacContrib.Tests.Startable.StartableModuleFixture.StarterCreatesInstances" executed="True" success="True" time="0.018" asserts="1" />
                         </results>
                       </test-suite>
                     </results>

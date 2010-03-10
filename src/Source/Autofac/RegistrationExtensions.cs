@@ -303,7 +303,7 @@ namespace Autofac
             where TScanningActivatorData : ScanningActivatorData
         {
             Enforce.ArgumentNotNull(registration, "registration");
-            registration.ActivatorData.ServiceMappings.Add(serviceMapping);
+            registration.ActivatorData.ConfigurationActions.Add((t, rb) => rb.As(serviceMapping(t).ToArray()));
             return registration;
         }
 
@@ -378,7 +378,7 @@ namespace Autofac
             where TScanningActivatorData : ScanningActivatorData
         {
             Enforce.ArgumentNotNull(registration, "registration");
-            registration.ActivatorData.MetadataMappings.Add(metadataMapping);
+            registration.ActivatorData.ConfigurationActions.Add((t, rb) => rb.WithMetadata(metadataMapping(t)));
             return registration;
         }
 
@@ -649,7 +649,7 @@ namespace Autofac
         /// <param name="properties">The properties to supply.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
-            WithProperty<TLimit, TReflectionActivatorData, TStyle>(
+            WithProperties<TLimit, TReflectionActivatorData, TStyle>(
                 this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
                 IEnumerable<Parameter> properties)
             where TReflectionActivatorData : ReflectionActivatorData
@@ -821,6 +821,27 @@ namespace Autofac
             Enforce.ArgumentNotNull(handler, "handler");
 
             registration.RegistrationStyle.RegisteredHandlers.Add((s, e) => handler(e));
+
+            return registration;
+        }
+
+        /// <summary>
+        /// Provide a handler to be called when the component is registred.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration add handler to.</param>
+        /// <param name="handler">The handler.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle>
+            OnRegistered<TLimit, TRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle> registration,
+                Action<ComponentRegisteredEventArgs> handler)
+        {
+            Enforce.ArgumentNotNull(registration, "registration");
+            Enforce.ArgumentNotNull(handler, "handler");
+
+            registration.ActivatorData.ConfigurationActions.Add((t, rb) => rb.OnRegistered(handler));
 
             return registration;
         }

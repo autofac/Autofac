@@ -208,6 +208,8 @@ namespace Autofac.Builder
         {
             Enforce.ArgumentNotNull(services, "services");
 
+            RegistrationData.DefaultServiceOverridden = true;
+
             foreach (var service in services)
                 RegistrationData.Services.Add(service);
 
