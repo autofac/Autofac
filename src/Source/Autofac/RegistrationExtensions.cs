@@ -32,8 +32,6 @@ using Autofac.Core;
 using Autofac.Core.Activators.ProvidedInstance;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
-using Autofac.Features.Collections;
-using Autofac.Features.GeneratedFactories;
 using Autofac.Features.OpenGenerics;
 using Autofac.Features.Scanning;
 using Autofac.Util;
@@ -199,7 +197,7 @@ namespace Autofac
             Enforce.ArgumentNotNull(builder, "builder");
             Enforce.ArgumentNotNull(@delegate, "delegate");
 
-            var rb = RegistrationBuilder.ForDelegate<T>(@delegate);
+            var rb = RegistrationBuilder.ForDelegate(@delegate);
 
             builder.RegisterCallback(cr => RegistrationBuilder.RegisterSingleComponent(cr, rb));
 
@@ -323,7 +321,7 @@ namespace Autofac
             where TScanningActivatorData : ScanningActivatorData
         {
             Enforce.ArgumentNotNull(registration, "registration");
-            return registration.As(t => new Service[] { serviceMapping(t) });
+            return registration.As(t => new [] { serviceMapping(t) });
         }
 
         /// <summary>
@@ -664,36 +662,6 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Registers a factory delegate.
-        /// </summary>
-        /// <param name="builder">Container builder.</param>
-        /// <param name="delegateType">Factory type to generate.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
-            RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType)
-        {
-            Enforce.ArgumentNotNull(delegateType, "delegateType");
-            Enforce.ArgumentTypeIsFunction(delegateType);
-
-            var returnType = delegateType.FunctionReturnType();
-            return builder.RegisterGeneratedFactory(delegateType, new TypedService(returnType));
-        }
-
-        /// <summary>
-        /// Registers a factory delegate.
-        /// </summary>
-        /// <param name="builder">Container builder.</param>
-        /// <param name="delegateType">Factory type to generate.</param>
-        /// <param name="service">The service that the delegate will return instances of.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
-            RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType, Service service)
-        {
-            return GeneratedFactoryRegistrationExtensions.RegisterGeneratedFactory<Delegate>(builder, delegateType, service);
-        }
-
-
-        /// <summary>
         /// Sets the target of the registration (used for metadata generation.)
         /// </summary>
         /// <typeparam name="TLimit">The type of the limit.</typeparam>
@@ -715,95 +683,7 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Registers a factory delegate.
-        /// </summary>
-        /// <typeparam name="TDelegate">The type of the delegate.</typeparam>
-        /// <param name="builder">Container builder.</param>
-        /// <param name="service">The service that the delegate will return instances of.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<TDelegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
-            RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder, Service service)
-            where TDelegate : class
-        {
-            return GeneratedFactoryRegistrationExtensions.RegisterGeneratedFactory<TDelegate>(builder, typeof(TDelegate), service);
-        }
-
-        /// <summary>
-        /// Registers a factory delegate.
-        /// </summary>
-        /// <typeparam name="TDelegate">The type of the delegate.</typeparam>
-        /// <param name="builder">Container builder.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<TDelegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
-            RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder)
-            where TDelegate : class
-        {
-            Enforce.ArgumentNotNull(builder, "builder");
-            Enforce.ArgumentTypeIsFunction(typeof(TDelegate));
-
-            var returnType = typeof(TDelegate).FunctionReturnType();
-            return builder.RegisterGeneratedFactory<TDelegate>(new TypedService(returnType));
-        }
-
-        /// <summary>
-        /// Changes the parameter mapping mode of the supplied delegate type to match
-        /// parameters by name.
-        /// </summary>
-        /// <typeparam name="TDelegate">Factory delegate type</typeparam>
-        /// <typeparam name="TGeneratedFactoryActivatorData">Activator data type</typeparam>
-        /// <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
-        /// <param name="registration">Registration to change parameter mapping mode of.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>
-            NamedParameterMapping<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>(
-                this IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle> registration)
-            where TGeneratedFactoryActivatorData : GeneratedFactoryActivatorData
-            where TSingleRegistrationStyle : SingleRegistrationStyle
-        {
-            registration.ActivatorData.ParameterMapping = ParameterMapping.ByName;
-            return registration;
-        }
-
-        /// <summary>
-        /// Changes the parameter mapping mode of the supplied delegate type to match
-        /// parameters by position.
-        /// </summary>
-        /// <typeparam name="TDelegate">Factory delegate type</typeparam>
-        /// <typeparam name="TGeneratedFactoryActivatorData">Activator data type</typeparam>
-        /// <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
-        /// <param name="registration">Registration to change parameter mapping mode of.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>
-            PositionalParameterMapping<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>(
-                this IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle> registration)
-            where TGeneratedFactoryActivatorData : GeneratedFactoryActivatorData
-            where TSingleRegistrationStyle : SingleRegistrationStyle
-        {
-            registration.ActivatorData.ParameterMapping = ParameterMapping.ByPosition;
-            return registration;
-        }
-
-        /// <summary>
-        /// Changes the parameter mapping mode of the supplied delegate type to match
-        /// parameters by type.
-        /// </summary>
-        /// <typeparam name="TDelegate">Factory delegate type</typeparam>
-        /// <typeparam name="TGeneratedFactoryActivatorData">Activator data type</typeparam>
-        /// <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
-        /// <param name="registration">Registration to change parameter mapping mode of.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>
-            TypedParameterMapping<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>(
-                this IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle> registration)
-            where TGeneratedFactoryActivatorData : GeneratedFactoryActivatorData
-            where TSingleRegistrationStyle : SingleRegistrationStyle
-        {
-            registration.ActivatorData.ParameterMapping = ParameterMapping.ByType;
-            return registration;
-        }
-
-        /// <summary>
-        /// Provide a handler to be called when the component is registred.
+        /// Provide a handler to be called when the component is registered.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
         /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
@@ -847,52 +727,6 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Registers the type as a collection. If no services or names are specified, the
-        /// default services will be IList&lt;T&gt;, ICollection&lt;T&gt;, and IEnumerable&lt;T&gt;        
-        /// </summary>
-        /// <param name="elementType">The type of the collection elements.</param>
-        /// <param name="builder">Container builder.</param>
-        /// <param name="collectionName">A unique name for the collection that can be passed to MemberOf().</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<object[], SimpleActivatorData, SingleRegistrationStyle>
-            RegisterCollection(this ContainerBuilder builder, string collectionName, Type elementType)
-        {
-            return CollectionRegistrationExtensions.RegisterCollection<object>(builder, collectionName, elementType);
-        }
-
-        /// <summary>
-        /// Registers the type as a collection. If no services or names are specified, the
-        /// default services will be IList&lt;T&gt;, ICollection&lt;T&gt;, and IEnumerable&lt;T&gt;        
-        /// </summary>
-        /// <typeparam name="T">The type of the collection elements.</typeparam>
-        /// <param name="builder">Container builder.</param>
-        /// <param name="collectionName">A unique name for the collection that can be passed to MemberOf().</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<T[], SimpleActivatorData, SingleRegistrationStyle>
-            RegisterCollection<T>(this ContainerBuilder builder, string collectionName)
-        {
-            return CollectionRegistrationExtensions.RegisterCollection<T>(builder, collectionName, typeof(T));
-        }
-
-        /// <summary>
-        /// Include the element explicitly in a collection configured using RegisterCollection.
-        /// </summary>
-        /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
-        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
-        /// <param name="registration">Registration to export.</param>
-        /// <param name="collectionName">The collection name, as passed to RegisterCollection.</param>
-        /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
-            MemberOf<TLimit, TActivatorData, TSingleRegistrationStyle>(
-                this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
-                string collectionName)
-            where TSingleRegistrationStyle : SingleRegistrationStyle
-        {
-            return CollectionRegistrationExtensions.MemberOf(registration, collectionName);
-        }
-
-        /// <summary>
         /// Specifies that a type from a scanned assembly is registered if it implements an interface
         /// that closes the provided open generic interface type.
         /// </summary>
@@ -911,7 +745,8 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Registers the types assignable to.
+        /// Filters the scanned types to include only those assignable to the provided
+        /// type.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
         /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
@@ -925,10 +760,67 @@ namespace Autofac
                 Type type)
             where TScanningActivatorData : ScanningActivatorData
         {
-            Enforce.ArgumentNotNull(registration, "registration");
-            
-            registration.ActivatorData.Filters.Add(type.IsAssignableFrom);
-            return registration;
+            return ScanningRegistrationExtensions.AssignableTo(registration, type);
+        }
+
+        /// <summary>
+        /// Filters the scanned types to include only those assignable to the provided
+        /// type.
+        /// </summary>
+        /// <param name="registration">Registration to filter types from.</param>
+        /// <typeparam name="T">The type or interface which all classes must be assignable from.</typeparam>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
+            AssignableTo<T>(this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> registration)
+        {
+            return registration.AssignableTo(typeof(T));
+        }
+
+        /// <summary>
+        /// Filters the scanned types to exclude the provided type.
+        /// </summary>
+        /// <param name="registration">Registration to filter types from.</param>
+        /// <typeparam name="T">The concrete type to exclude.</typeparam>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
+            Except<T>(this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> registration)
+        {
+            return registration.Where(t => t != typeof(T));
+        }
+
+        /// <summary>
+        /// Filters the scanned types to include only those in the same namespace as the
+        /// provided type.
+        /// </summary>
+        /// <param name="registration">Registration to filter types from.</param>
+        /// <typeparam name="T">A type in the target namespace.</typeparam>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
+            InNamespaceOf<T>(this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> registration)
+        {
+            return registration.Where(t => t.Namespace == typeof(T).Namespace);
+        }
+
+        /// <summary>
+        /// Filters the scanned types to include only those in the provided namespace
+        /// or one of its sub-namespaces.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to filter types from.</param>
+        /// <param name="ns">The namespace from which types will be selected.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            InNamespace<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                string ns)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            Enforce.ArgumentNotNullOrEmpty(ns, "ns");
+            return registration.Where(t =>
+                t.Namespace == ns ||
+                t.Namespace.StartsWith(ns + "."));
         }
     }
 }

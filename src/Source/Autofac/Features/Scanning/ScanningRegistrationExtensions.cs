@@ -35,12 +35,6 @@ namespace Autofac.Features.Scanning
 {
     static class ScanningRegistrationExtensions
     {
-        /// <summary>
-        /// Register the types in an assembly.
-        /// </summary>
-        /// <param name="builder">Container builder.</param>
-        /// <param name="assemblies">The assemblies from which to register types.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             RegisterAssemblyTypes(ContainerBuilder builder, params Assembly[] assemblies)
         {
@@ -74,16 +68,6 @@ namespace Autofac.Features.Scanning
             return rb;
         }
 
-        /// <summary>
-        /// Specifies that a type from a scanned assembly is registered if it implements an interface
-        /// that closes the provided open generic interface type.
-        /// </summary>
-        /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
-        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
-        /// <param name="registration">Registration to set service mapping on.</param>
-        /// <param name="openGenericServiceType">The open generic interface or base class type for which implementations will be found.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             AsClosedTypesOf<TLimit, TScanningActivatorData, TRegistrationStyle>(
                 IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration, 
@@ -146,6 +130,18 @@ namespace Autofac.Features.Scanning
         {
             return candidateType.GetInterfaces().Concat(
                 Traverse.Across(candidateType, t => t.BaseType));
+        }
+
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            AssignableTo<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                Type type)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            Enforce.ArgumentNotNull(registration, "registration");
+
+            registration.ActivatorData.Filters.Add(type.IsAssignableFrom);
+            return registration;
         }
     }
 }

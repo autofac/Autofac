@@ -259,19 +259,19 @@ namespace Autofac.Integration.Mef
         /// <param name="contractName">The contract name.</param>
         /// <param name="context">The context to resolve exports from.</param>
         /// <returns>A list of exports.</returns>
-        /// TODO does not restrict by type.
         public static IEnumerable<Export> ResolveExports<T>(this IComponentContext context, string contractName)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
 
-            return context.ComponentRegistry.RegistrationsFor(new ContractBasedService(contractName, AttributedModelServices.GetTypeIdentity(typeof(T))))
+            return context.ComponentRegistry
+                .RegistrationsFor(new ContractBasedService(contractName, AttributedModelServices.GetTypeIdentity(typeof(T))))
                 .Select(cpt => context.Resolve(cpt, Enumerable.Empty<Parameter>()))
                 .Cast<Export>();
         }
 
         // Here we use the MEF default of Shared, but using the Autofac default may make more sense.
-        private static bool IsSharedInstance(ComposablePartDefinition part)
+        static bool IsSharedInstance(ComposablePartDefinition part)
         {
             if (part.Metadata != null)
             {
@@ -331,7 +331,7 @@ namespace Autofac.Integration.Mef
             }
         }
 
-        private static IEnumerable<Export> ResolveExports(this IComponentContext context, ContractBasedImportDefinition cbid)
+        static IEnumerable<Export> ResolveExports(this IComponentContext context, ContractBasedImportDefinition cbid)
         {
             var componentsForContract = context.ComponentsForContract(cbid);
 

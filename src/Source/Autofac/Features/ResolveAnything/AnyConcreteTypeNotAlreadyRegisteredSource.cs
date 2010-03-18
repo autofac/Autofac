@@ -78,7 +78,7 @@ namespace Autofac.Features.ResolveAnything
                 registrationAccessor(service).Any())
                 return Enumerable.Empty<IComponentRegistration>();
 
-            return new[] { RegistrationBuilder.CreateRegistration(RegistrationBuilder.ForType(ts.ServiceType)) };
+            return new[] { RegistrationBuilder.ForType(ts.ServiceType).CreateRegistration() };
         }
     }
 }

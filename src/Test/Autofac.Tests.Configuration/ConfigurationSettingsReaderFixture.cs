@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Autofac.Builder;
 using Autofac.Configuration;
 using NUnit.Framework;
 using Autofac.Core;
