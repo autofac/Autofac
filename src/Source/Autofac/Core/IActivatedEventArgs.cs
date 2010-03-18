@@ -1,4 +1,4 @@
-﻿// This software is part of the Autofac IoC container
+// This software is part of the Autofac IoC container
 // Copyright (c) 2010 Autofac Contributors
 // http://autofac.org
 //
@@ -23,56 +23,33 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
 using System.Collections.Generic;
-using Autofac.Util;
 
 namespace Autofac.Core
 {
     /// <summary>
     /// Fired when the activation process for a new instance is complete.
     /// </summary>
-    public class ActivatedEventArgs<T> : EventArgs, IActivatedEventArgs<T>
+    public interface IActivatedEventArgs<out T>
     {
-        readonly IComponentContext _context;
-        readonly IComponentRegistration _component;
-        readonly IEnumerable<Parameter> _parameters;
-        readonly T _instance;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ActivatedEventArgs{T}"/> class.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        /// <param name="component">The component.</param>
-        /// <param name="parameters">The parameters.</param>
-        /// <param name="instance">The instance.</param>
-        public ActivatedEventArgs(IComponentContext context, IComponentRegistration component, IEnumerable<Parameter> parameters, T instance)
-        {
-            _context = Enforce.ArgumentNotNull(context, "context");
-            _component = Enforce.ArgumentNotNull(component, "component");
-            _parameters = Enforce.ArgumentNotNull(parameters, "parameters");
-            Enforce.ArgumentNotNull((object)instance, "instance");
-            _instance = instance;
-        }
-
         /// <summary>
         /// The context in which the activation occurred.
         /// </summary>
-        public IComponentContext Context { get { return _context; } }
+        IComponentContext Context { get; }
 
         /// <summary>
         /// The component providing the instance.
         /// </summary>
-        public IComponentRegistration Component { get { return _component; } }
+        IComponentRegistration Component { get; }
 
         /// <summary>
         /// The paramters provided when resolved.
         /// </summary>
-        public IEnumerable<Parameter> Parameters { get { return _parameters; } }
+        IEnumerable<Parameter> Parameters { get; }
 
         /// <summary>
         /// The instance that will be used to satisfy the request.
         /// </summary>
-        public T Instance { get { return _instance; } }
+        T Instance { get; }
     }
 }

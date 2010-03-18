@@ -67,10 +67,7 @@ namespace Autofac.Core.Resolving
 
         object Activate(IEnumerable<Parameter> parameters)
         {
-            object precreated;
-            _registration.RaisePreparing(this, ref parameters, out precreated);
-            if (precreated != null)
-                return precreated;
+            _registration.RaisePreparing(this, ref parameters);
 
             _newInstance = _registration.Activator.ActivateInstance(this, parameters);
 

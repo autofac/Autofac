@@ -273,16 +273,10 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="handler">The event handler.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnPreparing(Action<PreparingEventArgs<TLimit>> handler)
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnPreparing(Action<PreparingEventArgs> handler)
         {
             Enforce.ArgumentNotNull(handler, "handler");
-            RegistrationData.PreparingHandlers.Add((s, e) =>
-            {
-                var typedArgs = new PreparingEventArgs<TLimit>(e.Context, e.Component, e.Parameters);
-                handler(typedArgs);
-                e.Instance = typedArgs.Instance;
-                e.Parameters = typedArgs.Parameters;
-            });
+            RegistrationData.PreparingHandlers.Add((s, e) => handler(e));
             return this;
         }
 
@@ -291,7 +285,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="handler">The event handler.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivating(Action<ActivatingEventArgs<TLimit>> handler)
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivating(Action<IActivatingEventArgs<TLimit>> handler)
         {
             Enforce.ArgumentNotNull(handler, "handler");
             RegistrationData.ActivatingHandlers.Add((s, e) =>
@@ -308,13 +302,11 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="handler">The event handler.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivated(Action<ActivatedEventArgs<TLimit>> handler)
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivated(Action<IActivatedEventArgs<TLimit>> handler)
         {
             Enforce.ArgumentNotNull(handler, "handler");
-            RegistrationData.ActivatedHandlers.Add((s, e) =>
-            {
-                handler(new ActivatedEventArgs<TLimit>(e.Context, e.Component, e.Parameters, (TLimit)e.Instance));
-            });
+            RegistrationData.ActivatedHandlers.Add(
+                (s, e) => handler(new ActivatedEventArgs<TLimit>(e.Context, e.Component, e.Parameters, (TLimit)e.Instance)));
             return this;
         }
 

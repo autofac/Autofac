@@ -103,6 +103,8 @@
       <DependentUpon>ConstructorParameterBindingResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Core\Activators\Reflection\DefaultValueParameter.cs" />
+    <Compile Include="Core\IActivatedEventArgs.cs" />
+    <Compile Include="Core\IActivatingEventArgs.cs" />
     <Compile Include="Core\IServiceWithType.cs" />
     <Compile Include="Core\KeyedService.cs" />
     <Compile Include="Core\Registration\ComponentRegistrationResources.Designer.cs">

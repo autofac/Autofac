@@ -224,21 +224,6 @@ namespace Autofac.Tests
             Assert.False(parameters.Except(actual).Any());
         }
 
-        [Test]
-        public void WhenPreparingHandlerProvidesInstance_ReturnedAsInstance()
-        {
-            var inst = new object();
-            var activatingFired = false;
-            var cb = new ContainerBuilder();
-            cb.RegisterType<object>()
-                .OnPreparing(e => e.Instance = inst)
-                .OnActivating(e => activatingFired = true);
-            var container = cb.Build();
-            var actual = container.Resolve<object>();
-            Assert.False(activatingFired);
-            Assert.AreSame(inst, actual);
-        }
-
         class Module1 : Module
         {
             protected override void Load(ContainerBuilder builder)

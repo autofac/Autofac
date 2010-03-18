@@ -79,16 +79,14 @@ namespace Autofac.Core
         /// provided in order to skip the regular activator, by setting the Instance property in
         /// the provided event arguments.
         /// </summary>
-        event EventHandler<PreparingEventArgs<object>> Preparing;
+        event EventHandler<PreparingEventArgs> Preparing;
 
         /// <summary>
         /// Called by the container when an instance is required.
         /// </summary>
         /// <param name="context">The context in which the instance will be activated.</param>
         /// <param name="parameters">Parameters for activation. These may be modified by the event handler.</param>
-        /// <param name="instance">If an instance is provided by the preparing event handler it will be
-        /// returned for use as the activation result.</param>
-        void RaisePreparing(IComponentContext context, ref IEnumerable<Parameter> parameters, out object instance);
+        void RaisePreparing(IComponentContext context, ref IEnumerable<Parameter> parameters);
 
         /// <summary>
         /// Fired when a new instance is being activated. The instance can be

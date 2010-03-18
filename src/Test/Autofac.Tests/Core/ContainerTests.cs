@@ -101,12 +101,12 @@ namespace Autofac.Tests.Core
         }
 
         [Test]
-        public void ProvidingAnInstanceInActivatingHandlerSubstitutesForResult()
+        public void ReplacingAnInstanceInActivatingHandlerSubstitutesForResult()
         {
             var supplied = new object();
 
             var cb = new ContainerBuilder();
-            cb.RegisterType<object>().OnActivating(e => e.Instance = supplied);
+            cb.RegisterType<object>().OnActivating(e => e.ReplaceInstance(supplied));
             var c = cb.Build();
 
             var resolved = c.Resolve<object>();

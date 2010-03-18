@@ -47,7 +47,7 @@ namespace Autofac.Builder
         IComponentLifetime _lifetime = new CurrentScopeLifetime();
         InstanceSharing _sharing = InstanceSharing.None;
         readonly IDictionary<string, object> _metadata = new Dictionary<string, object>();
-        readonly ICollection<EventHandler<PreparingEventArgs<object>>> _preparingHandlers = new List<EventHandler<PreparingEventArgs<object>>>();
+        readonly ICollection<EventHandler<PreparingEventArgs>> _preparingHandlers = new List<EventHandler<PreparingEventArgs>>();
         readonly ICollection<EventHandler<ActivatingEventArgs<object>>> _activatingHandlers = new List<EventHandler<ActivatingEventArgs<object>>>();
         readonly ICollection<EventHandler<ActivatedEventArgs<object>>> _activatedHandlers = new List<EventHandler<ActivatedEventArgs<object>>>();
 
@@ -97,7 +97,7 @@ namespace Autofac.Builder
         /// <summary>
         /// Handlers for the Preparing event.
         /// </summary>
-        public ICollection<EventHandler<PreparingEventArgs<object>>> PreparingHandlers { get { return _preparingHandlers; } }
+        public ICollection<EventHandler<PreparingEventArgs>> PreparingHandlers { get { return _preparingHandlers; } }
 
         /// <summary>
         /// Handlers for the Activating event.

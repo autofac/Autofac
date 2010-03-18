@@ -33,15 +33,14 @@ namespace Autofac.Core
     /// Fired before the activation process to allow parameters to be changed or an alternative
     /// instance to be provided.
     /// </summary>
-    public class PreparingEventArgs<T> : EventArgs
+    public class PreparingEventArgs : EventArgs
     {
         readonly IComponentContext _context;
         readonly IComponentRegistration _component;
-        T _instance;
         IEnumerable<Parameter> _parameters;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PreparingEventArgs{T}"/> class.
+        /// Initializes a new instance of the <see cref="PreparingEventArgs"/> class.
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="component">The component.</param>
@@ -72,21 +71,6 @@ namespace Autofac.Core
             get
             {
                 return _component;
-            }
-        }
-
-        /// <summary>
-        /// An instance can be supplied in order to avoid using the regular activator.
-        /// </summary>
-        public T Instance
-        {
-            get
-            {
-                return _instance;
-            }
-            set
-            {
-                _instance = value;
             }
         }
 

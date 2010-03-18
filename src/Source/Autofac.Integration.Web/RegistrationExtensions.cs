@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Web;
 using Autofac.Builder;
 
@@ -31,28 +32,46 @@ namespace Autofac.Integration.Web
         /// Cache instances in the web session. This implies external ownership (disposal is not
         /// available.) All dependencies must also have external ownership.
         /// </summary>
+        /// <remarks>
+        /// It is strongly recommended that components cached per-session do not take dependencies on
+        /// other services.
+        /// </remarks>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TStyle">Registration style.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
         /// <typeparam name="TActivatorData">Activator data type.</typeparam>
         /// <param name="registration">The registration to configure.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+        public static void
             CacheInSession<TLimit, TActivatorData, TSingleRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration)
+            where TActivatorData : IConcreteActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
-            var id = registration.RegistrationStyle.Id.ToString();
+            registration.RegistrationData.Services.Clear();
 
-            // Short-circuit activation if there is already an instance available
-            registration.OnPreparing(e => e.Instance = (TLimit)HttpContext.Current.Session[id]);
-
-            registration.OnActivated(e => HttpContext.Current.Session[id] = e.Instance);
-
-            // The session-specific instances will be 'shared' in the per-request container
-            // (optimisation.)
-            return registration.HttpRequestScoped().ExternallyOwned();
+            registration
+                .ExternallyOwned()
+                .OnRegistered(e => e.ComponentRegistry.Register(RegistrationBuilder
+                    .ForDelegate((c, p) => {
+                        var session = HttpContext.Current.Session;
+                        object result;
+                        lock (session.SyncRoot)
+                        {
+                            result = session[e.ComponentRegistration.Id.ToString()];
+                            if (result == null)
+                            {
+                                result = c.Resolve(e.ComponentRegistration, p);
+                                session[e.ComponentRegistration.Id.ToString()] = result;
+                            }
+                        }
+                        return result;
+                    })
+                    .As(e.ComponentRegistration.Services.ToArray())
+                    .InstancePerLifetimeScope()
+                    .ExternallyOwned()
+                    .CreateRegistration()));
         }
     }
 }

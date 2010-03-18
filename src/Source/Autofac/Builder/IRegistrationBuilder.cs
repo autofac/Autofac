@@ -37,7 +37,7 @@ namespace Autofac.Builder
     /// can be cast.</typeparam>
     /// <typeparam name="TActivatorData">Activator builder type.</typeparam>
     /// <typeparam name="TRegistrationStyle">Registration style type.</typeparam>
-    public interface IRegistrationBuilder<TLimit, out TActivatorData, out TRegistrationStyle>
+    public interface IRegistrationBuilder<out TLimit, out TActivatorData, out TRegistrationStyle>
     {
         /// <summary>
         /// The activator data.
@@ -182,21 +182,21 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="handler">The event handler.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnPreparing(Action<PreparingEventArgs<TLimit>> handler);
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnPreparing(Action<PreparingEventArgs> handler);
 
         /// <summary>
         /// Add a handler for the Activating event.
         /// </summary>
         /// <param name="handler">The event handler.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivating(Action<ActivatingEventArgs<TLimit>> handler);
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivating(Action<IActivatingEventArgs<TLimit>> handler);
 
         /// <summary>
         /// Add a handler for the Activated event.
         /// </summary>
         /// <param name="handler">The event handler.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivated(Action<ActivatedEventArgs<TLimit>> handler);
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivated(Action<IActivatedEventArgs<TLimit>> handler);
 
         /// <summary>
         /// Configure the component so that any properties whose types are registered in the
