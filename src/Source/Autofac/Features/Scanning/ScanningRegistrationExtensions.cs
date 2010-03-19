@@ -47,8 +47,13 @@ namespace Autofac.Features.Scanning
 
             builder.RegisterCallback(cr =>
             {
-                foreach (var t in assemblies.SelectMany(a => a.GetTypes())
-                    .Where(t => !t.IsAbstract && rb.ActivatorData.Filters.All(p => p(t))))
+                foreach (var t in assemblies
+                    .SelectMany(a => a.GetTypes())
+                    .Where(t =>
+                        t.IsClass &&
+                        !t.IsAbstract &&
+                        !t.IsGenericTypeDefinition &&
+                        rb.ActivatorData.Filters.All(p => p(t))))
                 {
                     var scanned = RegistrationBuilder.ForType(t)
                         .FindConstructorsWith(rb.ActivatorData.ConstructorFinder)

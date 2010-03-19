@@ -49,6 +49,7 @@ namespace Autofac.Integration.Web
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
+            var services = registration.RegistrationData.Services.ToArray();
             registration.RegistrationData.Services.Clear();
 
             registration
@@ -68,7 +69,7 @@ namespace Autofac.Integration.Web
                         }
                         return result;
                     })
-                    .As(e.ComponentRegistration.Services.ToArray())
+                    .As(services)
                     .InstancePerLifetimeScope()
                     .ExternallyOwned()
                     .CreateRegistration()));

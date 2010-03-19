@@ -56,17 +56,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Abstractions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Web.Mvc, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="System.Web.Routing" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">
@@ -75,8 +66,8 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AttributedInjection.cs" />
-    <Compile Include="AttributedInjectionModule.cs" />
+    <Compile Include="Forms\AttributedInjection.cs" />
+    <Compile Include="Forms\AttributedInjectionModule.cs" />
     <Compile Include="ContainerDisposalModule.cs" />
     <Compile Include="ContainerDisposalModuleResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -85,36 +76,26 @@
     </Compile>
     <Compile Include="ContainerProvider.cs" />
     <Compile Include="ContainerProviderContainer.cs" />
-    <Compile Include="DependencyInjectionAttribute.cs" />
-    <Compile Include="DependencyInjectionModule.cs" />
-    <Compile Include="DependencyInjectionModuleResources.Designer.cs">
+    <Compile Include="Forms\DependencyInjectionAttribute.cs" />
+    <Compile Include="Forms\DependencyInjectionModule.cs" />
+    <Compile Include="Forms\DependencyInjectionModuleResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>DependencyInjectionModuleResources.resx</DependentUpon>
     </Compile>
     <Compile Include="IContainerProvider.cs" />
     <Compile Include="IContainerProviderAccessor.cs" />
-    <Compile Include="IInjectionBehaviour.cs" />
-    <Compile Include="InjectPropertiesAttribute.cs" />
-    <Compile Include="InjectUnsetPropertiesAttribute.cs" />
-    <Compile Include="Mvc\AutofacControllerFactory.cs" />
-    <Compile Include="Mvc\AutofacControllerFactoryResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AutofacControllerFactoryResources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Mvc\ExtensibleActionInvoker.cs" />
-    <Compile Include="Mvc\RegistrationExtensions.cs" />
-    <Compile Include="Mvc\DefaultControllerIdentificationStrategy.cs" />
-    <Compile Include="Mvc\IControllerIdentificationStrategy.cs" />
-    <Compile Include="NoInjection.cs" />
-    <Compile Include="PageInjectionBehaviour.cs" />
+    <Compile Include="Forms\IInjectionBehaviour.cs" />
+    <Compile Include="Forms\InjectPropertiesAttribute.cs" />
+    <Compile Include="Forms\InjectUnsetPropertiesAttribute.cs" />
+    <Compile Include="Forms\NoInjection.cs" />
+    <Compile Include="Forms\PageInjectionBehaviour.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyInjection.cs" />
-    <Compile Include="PropertyInjectionModule.cs" />
+    <Compile Include="Forms\PropertyInjection.cs" />
+    <Compile Include="Forms\PropertyInjectionModule.cs" />
     <Compile Include="RegistrationExtensions.cs" />
-    <Compile Include="UnsetPropertyInjection.cs" />
-    <Compile Include="UnsetPropertyInjectionModule.cs" />
+    <Compile Include="Forms\UnsetPropertyInjection.cs" />
+    <Compile Include="Forms\UnsetPropertyInjectionModule.cs" />
     <Compile Include="WebLifetime.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -129,14 +110,10 @@
       <LastGenOutput>ContainerDisposalModuleResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="DependencyInjectionModuleResources.resx">
+    <EmbeddedResource Include="Forms\DependencyInjectionModuleResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DependencyInjectionModuleResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Mvc\AutofacControllerFactoryResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>AutofacControllerFactoryResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +138,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

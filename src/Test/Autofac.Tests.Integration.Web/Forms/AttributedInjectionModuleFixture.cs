@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Web;
-using Autofac.Builder;
-using Autofac.Integration.Web;
+using Autofac.Integration.Web.Forms;
 using NUnit.Framework;
-using Autofac.Core;
 
-namespace Autofac.Tests.Integration.Web
+namespace Autofac.Tests.Integration.Web.Forms
 {
     [TestFixture]
     public class AttributedInjectionModuleFixture
@@ -117,3 +115,5 @@ namespace Autofac.Tests.Integration.Web
         }
     }
 }
+
+

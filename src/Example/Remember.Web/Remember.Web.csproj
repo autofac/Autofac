@@ -100,6 +100,10 @@
     <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Source\Autofac.Integration.Web.Mvc\Autofac.Integration.Web.Mvc.csproj">
+      <Project>{AA2C21C3-E332-404E-BC65-D75204F9E4B8}</Project>
+      <Name>Autofac.Integration.Web.Mvc</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Source\Autofac.Integration.Web\Autofac.Integration.Web.csproj">
       <Project>{4BDD9D14-BACA-416C-919E-E9FF100F8F5D}</Project>
       <Name>Autofac.Integration.Web</Name>
