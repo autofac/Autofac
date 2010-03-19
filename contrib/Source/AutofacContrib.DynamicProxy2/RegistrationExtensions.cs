@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Threading;
 using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Features.Scanning;
 using Castle.Core.Interceptor;
 using Castle.DynamicProxy;
 
@@ -24,12 +23,31 @@ namespace AutofacContrib.DynamicProxy2
         /// </summary>
         /// <typeparam name="TLimit"></typeparam>
         /// <typeparam name="TRegistrationStyle"></typeparam>
+        /// <param name="registration"></param>
+        /// <returns></returns>
+        public static IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle>
+            EnableClassInterceptors<TLimit, TRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle> registration)
+        {
+            if (registration == null) throw new ArgumentNullException("registration");
+            registration.ActivatorData.ConfigurationActions.Add(
+                (t, rb) => rb.EnableClassInterceptors());
+            return registration;
+        }
+
+        /// <summary>
+        /// Enable class interception on the target type. Interceptors will be determined
+        /// via Intercept attributes on the class or added with InterceptedBy().
+        /// Only virtual methods can be intercepted this way.
+        /// </summary>
+        /// <typeparam name="TLimit"></typeparam>
+        /// <typeparam name="TRegistrationStyle"></typeparam>
         /// <typeparam name="TConcreteReflectionActivatorData"></typeparam>
         /// <param name="registration"></param>
         /// <returns></returns>
-        public static RegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle>
             EnableClassInterceptors<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle> registration)
+                this IRegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle> registration)
             where TConcreteReflectionActivatorData : ConcreteReflectionActivatorData
         {
             registration.ActivatorData.ImplementationType =
@@ -58,9 +76,9 @@ namespace AutofacContrib.DynamicProxy2
         /// <typeparam name="TSingleRegistrationStyle"></typeparam>
         /// <param name="registration"></param>
         /// <returns></returns>
-        public static RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             EnableInterfaceInterceptors<TLimit, TActivatorData, TSingleRegistrationStyle>(
-                this RegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration)
+                this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration)
         {
             registration.RegistrationData.ActivatingHandlers.Add((sender, e) =>
             {
@@ -120,9 +138,9 @@ namespace AutofacContrib.DynamicProxy2
             return result.ToArray();
         }
 
-        public static RegistrationBuilder<TLimit, TActivatorData, TStyle>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
             InterceptedBy<TLimit, TActivatorData, TStyle>(
-                this RegistrationBuilder<TLimit, TActivatorData, TStyle> builder,
+                this IRegistrationBuilder<TLimit, TActivatorData, TStyle> builder,
                 params Service[] interceptorServices)
         {
             if (builder == null)
@@ -141,9 +159,9 @@ namespace AutofacContrib.DynamicProxy2
             return builder;
         }
 
-        public static RegistrationBuilder<TLimit, TActivatorData, TStyle>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
             InterceptedBy<TLimit, TActivatorData, TStyle>(
-                this RegistrationBuilder<TLimit, TActivatorData, TStyle> builder,
+                this IRegistrationBuilder<TLimit, TActivatorData, TStyle> builder,
                 params string[] interceptorServiceNames)
         {
             if (interceptorServiceNames == null || interceptorServiceNames.Any(n => n == null))
@@ -152,9 +170,9 @@ namespace AutofacContrib.DynamicProxy2
             return InterceptedBy(builder, interceptorServiceNames.Select(n => new NamedService(n, typeof(IInterceptor))).ToArray());
         }
 
-        public static RegistrationBuilder<TLimit, TActivatorData, TStyle>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
             InterceptedBy<TLimit, TActivatorData, TStyle>(
-                this RegistrationBuilder<TLimit, TActivatorData, TStyle> builder,
+                this IRegistrationBuilder<TLimit, TActivatorData, TStyle> builder,
                 params Type[] interceptorServiceTypes)
         {
             if (interceptorServiceTypes == null || interceptorServiceTypes.Any(t => t == null))

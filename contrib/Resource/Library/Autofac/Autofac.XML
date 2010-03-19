@@ -66,6 +66,211 @@
             The instance activator based on the provided data.
             </summary>
         </member>
+        <member name="T:Autofac.Builder.IRegistrationBuilder`3">
+            <summary>
+            Data structure used to construct registrations.
+            </summary>
+            <typeparam name="TLimit">The most specific type to which instances of the registration
+            can be cast.</typeparam>
+            <typeparam name="TActivatorData">Activator builder type.</typeparam>
+            <typeparam name="TRegistrationStyle">Registration style type.</typeparam>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.ExternallyOwned">
+            <summary>
+            Configure the component so that instances are never disposed by the container.
+            </summary>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.OwnedByLifetimeScope">
+            <summary>
+            Configure the component so that instances that support IDisposable are
+            disposed by the container (default.)
+            </summary>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.InstancePerDependency">
+            <summary>
+            Configure the component so that every dependent component or call to Resolve()
+            gets a new, unique instance (default.)
+            </summary>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.SingleInstance">
+            <summary>
+            Configure the component so that every dependent component or call to Resolve()
+            gets the same, shared instance.
+            </summary>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.InstancePerLifetimeScope">
+            <summary>
+            Configure the component so that every dependent component or call to Resolve()
+            within a single ILifetimeScope gets the same, shared instance. Dependent components in
+            different lifetime scopes will get different instances.
+            </summary>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.InstancePerMatchingLifetimeScope(System.Object)">
+            <summary>
+            Configure the component so that every dependent component or call to Resolve()
+            within a ILifetimeScope tagged with the provided tag value gets the same, shared instance.
+            Dependent components in lifetime scopes that are children of the tagged scope will
+            share the parent's instance. If no appropriately tagged scope can be found in the
+            hierarchy an <see cref="T:Autofac.Core.DependencyResolutionException"/> is thrown.
+            </summary>
+            <param name="lifetimeScopeTag">Tag applied to matching lifetime scopes.</param>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.As``1">
+            <summary>
+            Configure the services that the component will provide. The generic parameter(s) to As()
+            will be exposed as TypedService instances.
+            </summary>
+            <typeparam name="TService">Service type.</typeparam>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.As``2">
+            <summary>
+            Configure the services that the component will provide. The generic parameter(s) to As()
+            will be exposed as TypedService instances.
+            </summary>
+            <typeparam name="TService1">Service type.</typeparam>
+            <typeparam name="TService2">Service type.</typeparam>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.As``3">
+            <summary>
+            Configure the services that the component will provide. The generic parameter(s) to As()
+            will be exposed as TypedService instances.
+            </summary>
+            <typeparam name="TService1">Service type.</typeparam>
+            <typeparam name="TService2">Service type.</typeparam>
+            <typeparam name="TService3">Service type.</typeparam>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.As(System.Type[])">
+            <summary>
+            Configure the services that the component will provide.
+            </summary>
+            <param name="services">Service types to expose.</param>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.As(Autofac.Core.Service[])">
+            <summary>
+            Configure the services that the component will provide.
+            </summary>
+            <param name="services">Services to expose.</param>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.Named(System.String,System.Type)">
+            <summary>
+            Provide a textual name that can be used to retrieve the component.
+            </summary>
+            <param name="serviceName">Named service to associate with the component.</param>
+            <param name="serviceType">The service type provided by the component.</param>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.Named``1(System.String)">
+            <summary>
+            Provide a textual name that can be used to retrieve the component.
+            </summary>
+            <param name="serviceName">Named service to associate with the component.</param>
+            <typeparam name="TService">The service type provided by the component.</typeparam>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.Keyed(System.Object,System.Type)">
+            <summary>
+            Provide a key that can be used to retrieve the component.
+            </summary>
+            <param name="serviceKey">Key to associate with the component.</param>
+            <param name="serviceType">The service type provided by the component.</param>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.Keyed``1(System.Object)">
+            <summary>
+            Provide a key that can be used to retrieve the component.
+            </summary>
+            <param name="serviceKey">Key to associate with the component.</param>
+            <typeparam name="TService">The service type provided by the component.</typeparam>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.OnPreparing(System.Action{Autofac.Core.PreparingEventArgs})">
+            <summary>
+            Add a handler for the Preparing event. This event allows manipulating of the parameters
+            that will be provided to the component.
+            </summary>
+            <param name="handler">The event handler.</param>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.OnActivating(System.Action{Autofac.Core.IActivatingEventArgs{`0}})">
+            <summary>
+            Add a handler for the Activating event.
+            </summary>
+            <param name="handler">The event handler.</param>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.OnActivated(System.Action{Autofac.Core.IActivatedEventArgs{`0}})">
+            <summary>
+            Add a handler for the Activated event.
+            </summary>
+            <param name="handler">The event handler.</param>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.PropertiesAutowired">
+            <summary>
+            Configure the component so that any properties whose types are registered in the
+            container will be wired to instances of the appropriate service.
+            </summary>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.PropertiesAutowired(System.Boolean)">
+            <summary>
+            Configure the component so that any properties whose types are registered in the
+            container will be wired to instances of the appropriate service.
+            </summary>
+            <param name="allowCircularDependencies">If set to true, the properties won't be wired until
+            after the component has been activated. This allows property-property and constructor-property
+            circularities in the dependency graph.</param>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.WithMetadata(System.String,System.Object)">
+            <summary>
+            Associates data with the component.
+            </summary>
+            <param name="key">Key by which the data can be located.</param>
+            <param name="value">The data value.</param>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.WithMetadata(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Object}})">
+            <summary>
+            Associates data with the component.
+            </summary>
+            <param name="properties">The extended properties to associate with the component.</param>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="M:Autofac.Builder.IRegistrationBuilder`3.WithMetadata``1(System.Action{Autofac.Builder.MetadataConfiguration{``0}})">
+            <summary>
+            Associates data with the component.
+            </summary>
+            <typeparam name="TMetadata">A type with properties whose names correspond to the
+            property names to configure.</typeparam>
+            <returns>A registration builder allowing further configuration of the component.</returns>
+        </member>
+        <member name="P:Autofac.Builder.IRegistrationBuilder`3.ActivatorData">
+            <summary>
+            The activator data.
+            </summary>
+        </member>
+        <member name="P:Autofac.Builder.IRegistrationBuilder`3.RegistrationStyle">
+            <summary>
+            The registration style.
+            </summary>
+        </member>
+        <member name="P:Autofac.Builder.IRegistrationBuilder`3.RegistrationData">
+            <summary>
+            The registration data.
+            </summary>
+        </member>
         <member name="T:Autofac.Builder.MetadataConfiguration`1">
             <summary>
             Used with the WithMetadata configuration method to
@@ -85,13 +290,13 @@
         </member>
         <member name="T:Autofac.Builder.RegistrationBuilder">
             <summary>
-            Static factory methods to simplify the creation and handling of RegistrationBuilder{L,A,R}.
+            Static factory methods to simplify the creation and handling of IRegistrationBuilder{L,A,R}.
             </summary>
             <example>
             To create an <see cref="T:Autofac.Core.IComponentRegistration"/> for a specific type, use:
             <code>
-            var rb = RegistrationBuilder.ForType(t).Named("foo").ExternallyOwned();
-            var cr = RegistrationBuilder.CreateRegistration(rb);
+            var rb = IRegistrationBuilder.ForType(t).Named("foo").ExternallyOwned();
+            var cr = IRegistrationBuilder.CreateRegistration(rb);
             </code>
             </example>
         </member>
@@ -125,7 +330,7 @@
             <param name="implementationType">Implementation type to register.</param>
             <returns>A registration builder.</returns>
         </member>
-        <member name="M:Autofac.Builder.RegistrationBuilder.CreateRegistration``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2})">
+        <member name="M:Autofac.Builder.RegistrationBuilder.CreateRegistration``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2})">
             <summary>
             Create an <see cref="T:Autofac.Core.IComponentRegistration"/> from a <see cref="T:Autofac.Builder.RegistrationBuilder"/>.
             (There is no need to call
@@ -138,7 +343,7 @@
             </remarks>
             <example>
             <code>
-            var registration = RegistrationBuilder.ForType&lt;Foo&gt;().CreateRegistration();
+            var registration = IRegistrationBuilder.ForType&lt;Foo&gt;().CreateRegistration();
             </code>
             </example>
             <typeparam name="TLimit"></typeparam>
@@ -168,7 +373,7 @@
             <param name="target">Optional; target registration.</param>
             <returns>An IComponentRegistration.</returns>
         </member>
-        <member name="M:Autofac.Builder.RegistrationBuilder.RegisterSingleComponent``3(Autofac.Core.IComponentRegistry,Autofac.Builder.RegistrationBuilder{``0,``1,``2})">
+        <member name="M:Autofac.Builder.RegistrationBuilder.RegisterSingleComponent``3(Autofac.Core.IComponentRegistry,Autofac.Builder.IRegistrationBuilder{``0,``1,``2})">
             <summary>
             Register a component in the component registry. This helper method is necessary
             in order to execute OnRegistered hooks and respect PreserveDefaults. 
@@ -200,6 +405,126 @@
             <summary>
               Looks up a localized string similar to The type &apos;{0}&apos; is not assignable to service &apos;{1}&apos;..
             </summary>
+        </member>
+        <member name="T:Autofac.Builder.RegistrationExtensions">
+            <summary>
+            Adds registration syntax for less commonly-used features.
+            </summary>
+            <remarks>
+            These features are in this namespace because they will remain accessible to
+            applications originally written against Autofac 1.4. In Autofac 2, this functionality
+            is implicitly provided and thus making explicit registrations is rarely necessary.
+            </remarks>
+        </member>
+        <member name="M:Autofac.Builder.RegistrationExtensions.RegisterGeneratedFactory(Autofac.ContainerBuilder,System.Type)">
+            <summary>
+            Registers a factory delegate.
+            </summary>
+            <param name="builder">Container builder.</param>
+            <param name="delegateType">Factory type to generate.</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+            <remarks>Factory delegates are provided automatically in Autofac 2,
+            and this method is generally not required.</remarks>
+        </member>
+        <member name="M:Autofac.Builder.RegistrationExtensions.RegisterGeneratedFactory(Autofac.ContainerBuilder,System.Type,Autofac.Core.Service)">
+            <summary>
+            Registers a factory delegate.
+            </summary>
+            <param name="builder">Container builder.</param>
+            <param name="delegateType">Factory type to generate.</param>
+            <param name="service">The service that the delegate will return instances of.</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+            <remarks>Factory delegates are provided automatically in Autofac 2, and
+            this method is generally not required.</remarks>
+        </member>
+        <member name="M:Autofac.Builder.RegistrationExtensions.RegisterGeneratedFactory``1(Autofac.ContainerBuilder,Autofac.Core.Service)">
+            <summary>
+            Registers a factory delegate.
+            </summary>
+            <typeparam name="TDelegate">The type of the delegate.</typeparam>
+            <param name="builder">Container builder.</param>
+            <param name="service">The service that the delegate will return instances of.</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+            <remarks>Factory delegates are provided automatically in Autofac 2,
+            and this method is generally not required.</remarks>
+        </member>
+        <member name="M:Autofac.Builder.RegistrationExtensions.RegisterGeneratedFactory``1(Autofac.ContainerBuilder)">
+            <summary>
+            Registers a factory delegate.
+            </summary>
+            <typeparam name="TDelegate">The type of the delegate.</typeparam>
+            <param name="builder">Container builder.</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+            <remarks>Factory delegates are provided automatically in Autofac 2,
+            and this method is generally not required.</remarks>
+        </member>
+        <member name="M:Autofac.Builder.RegistrationExtensions.NamedParameterMapping``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2})">
+            <summary>
+            Changes the parameter mapping mode of the supplied delegate type to match
+            parameters by name.
+            </summary>
+            <typeparam name="TDelegate">Factory delegate type</typeparam>
+            <typeparam name="TGeneratedFactoryActivatorData">Activator data type</typeparam>
+            <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
+            <param name="registration">Registration to change parameter mapping mode of.</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+        </member>
+        <member name="M:Autofac.Builder.RegistrationExtensions.PositionalParameterMapping``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2})">
+            <summary>
+            Changes the parameter mapping mode of the supplied delegate type to match
+            parameters by position.
+            </summary>
+            <typeparam name="TDelegate">Factory delegate type</typeparam>
+            <typeparam name="TGeneratedFactoryActivatorData">Activator data type</typeparam>
+            <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
+            <param name="registration">Registration to change parameter mapping mode of.</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+        </member>
+        <member name="M:Autofac.Builder.RegistrationExtensions.TypedParameterMapping``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2})">
+            <summary>
+            Changes the parameter mapping mode of the supplied delegate type to match
+            parameters by type.
+            </summary>
+            <typeparam name="TDelegate">Factory delegate type</typeparam>
+            <typeparam name="TGeneratedFactoryActivatorData">Activator data type</typeparam>
+            <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
+            <param name="registration">Registration to change parameter mapping mode of.</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+        </member>
+        <member name="M:Autofac.Builder.RegistrationExtensions.RegisterCollection(Autofac.ContainerBuilder,System.String,System.Type)">
+            <summary>
+            Registers the type as a collection. If no services or names are specified, the
+            default services will be IList&lt;T&gt;, ICollection&lt;T&gt;, and IEnumerable&lt;T&gt;        
+            </summary>
+            <param name="elementType">The type of the collection elements.</param>
+            <param name="builder">Container builder.</param>
+            <param name="collectionName">A unique name for the collection that can be passed to MemberOf().</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+            <remarks>Collections are provided automatically in Autofac 2,
+            and this method is generally not required.</remarks>
+        </member>
+        <member name="M:Autofac.Builder.RegistrationExtensions.RegisterCollection``1(Autofac.ContainerBuilder,System.String)">
+            <summary>
+            Registers the type as a collection. If no services or names are specified, the
+            default services will be IList&lt;T&gt;, ICollection&lt;T&gt;, and IEnumerable&lt;T&gt;        
+            </summary>
+            <typeparam name="T">The type of the collection elements.</typeparam>
+            <param name="builder">Container builder.</param>
+            <param name="collectionName">A unique name for the collection that can be passed to MemberOf().</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+            <remarks>Collections are provided automatically in Autofac 2,
+            and this method is generally not required.</remarks>
+        </member>
+        <member name="M:Autofac.Builder.RegistrationExtensions.MemberOf``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.String)">
+            <summary>
+            Include the element explicitly in a collection configured using RegisterCollection.
+            </summary>
+            <typeparam name="TLimit">Registration limit type.</typeparam>
+            <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
+            <typeparam name="TActivatorData">Activator data type.</typeparam>
+            <param name="registration">Registration to export.</param>
+            <param name="collectionName">The collection name, as passed to RegisterCollection.</param>
+            <returns>A registration builder allowing further configuration of the component.</returns>
         </member>
         <member name="T:Autofac.Core.Activators.Delegate.DelegateActivatorResources">
             <summary>
@@ -284,6 +609,63 @@
             be set to a function that will lazily retrieve the parameter value. If the result is false,
             will be set to null.</param>
             <returns>True if a value can be supplied; otherwise, false.</returns>
+        </member>
+        <member name="T:Autofac.Core.IActivatedEventArgs`1">
+            <summary>
+            Fired when the activation process for a new instance is complete.
+            </summary>
+        </member>
+        <member name="P:Autofac.Core.IActivatedEventArgs`1.Context">
+            <summary>
+            The context in which the activation occurred.
+            </summary>
+        </member>
+        <member name="P:Autofac.Core.IActivatedEventArgs`1.Component">
+            <summary>
+            The component providing the instance.
+            </summary>
+        </member>
+        <member name="P:Autofac.Core.IActivatedEventArgs`1.Parameters">
+            <summary>
+            The paramters provided when resolved.
+            </summary>
+        </member>
+        <member name="P:Autofac.Core.IActivatedEventArgs`1.Instance">
+            <summary>
+            The instance that will be used to satisfy the request.
+            </summary>
+        </member>
+        <member name="T:Autofac.Core.IActivatingEventArgs`1">
+            <summary>
+            Fired after the construction of an instance but before that instance
+            is shared with any other or any members are invoked on it.
+            </summary>
+        </member>
+        <member name="M:Autofac.Core.IActivatingEventArgs`1.ReplaceInstance(System.Object)">
+            <summary>
+            The instance can be replaced if needed, e.g. by an interface proxy.
+            </summary>
+            <param name="instance">The object to use instead of the activated instance.</param>
+        </member>
+        <member name="P:Autofac.Core.IActivatingEventArgs`1.Context">
+            <summary>
+            The context in which the activation occurred.
+            </summary>
+        </member>
+        <member name="P:Autofac.Core.IActivatingEventArgs`1.Component">
+            <summary>
+            The component providing the instance.
+            </summary>
+        </member>
+        <member name="P:Autofac.Core.IActivatingEventArgs`1.Instance">
+            <summary>
+            The instance that will be used to satisfy the request.
+            </summary>
+        </member>
+        <member name="P:Autofac.Core.IActivatingEventArgs`1.Parameters">
+            <summary>
+            The parameters supplied to the activator.
+            </summary>
         </member>
         <member name="T:Autofac.Core.IServiceWithType">
             <summary>
@@ -692,14 +1074,9 @@
             The filters applied to the types from the scanned assembly.
             </summary>
         </member>
-        <member name="P:Autofac.Features.Scanning.ScanningActivatorData.ServiceMappings">
+        <member name="P:Autofac.Features.Scanning.ScanningActivatorData.ConfigurationActions">
             <summary>
-            The mappings that determine which services are registered for a type.
-            </summary>
-        </member>
-        <member name="P:Autofac.Features.Scanning.ScanningActivatorData.MetadataMappings">
-            <summary>
-            Mappings from type to metadata values for the component.
+            Additional actions to be performed on the concrete type registrations.
             </summary>
         </member>
         <member name="T:Autofac.Core.ActivatedEventArgs`1">
@@ -738,7 +1115,8 @@
         </member>
         <member name="T:Autofac.Core.ActivatingEventArgs`1">
             <summary>
-            Fired when the activation process for a new instance is complete.
+            Fired after the construction of an instance but before that instance
+            is shared with any other or any members are invoked on it.
             </summary>
         </member>
         <member name="M:Autofac.Core.ActivatingEventArgs`1.#ctor(Autofac.IComponentContext,Autofac.Core.IComponentRegistration,System.Collections.Generic.IEnumerable{Autofac.Core.Parameter},`0)">
@@ -749,6 +1127,12 @@
             <param name="component">The component.</param>
             <param name="parameters">The parameters.</param>
             <param name="instance">The instance.</param>        
+        </member>
+        <member name="M:Autofac.Core.ActivatingEventArgs`1.Autofac#Core#IActivatingEventArgs{T}#ReplaceInstance(System.Object)">
+            <summary>
+            The instance can be replaced if needed, e.g. by an interface proxy.
+            </summary>
+            <param name="instance">The object to use instead of the activated instance.</param>
         </member>
         <member name="P:Autofac.Core.ActivatingEventArgs`1.Context">
             <summary>
@@ -1225,8 +1609,8 @@
             </remarks>
             <seealso cref="T:Autofac.IContainer"/>
             <seealso cref="T:Autofac.IComponentContext"/>
-            <seealso cref="M:Autofac.Builder.RegistrationBuilder`3.InstancePerMatchingLifetimeScope(System.Object)"/>
-            <seealso cref="M:Autofac.Builder.RegistrationBuilder`3.InstancePerLifetimeScope"/>
+            <seealso cref="M:Autofac.Builder.IRegistrationBuilder`3.InstancePerMatchingLifetimeScope(System.Object)"/>
+            <seealso cref="M:Autofac.Builder.IRegistrationBuilder`3.InstancePerLifetimeScope"/>
             <seealso cref="T:Autofac.Core.InstanceSharing"/>
             <seealso cref="T:Autofac.Core.IComponentLifetime"/>
         </member>
@@ -1314,7 +1698,7 @@
             </summary>
             <remarks>Tags allow a level in the lifetime hierarchy to be identified.
             In most applications, tags are not necessary.</remarks>
-            <seealso cref="M:Autofac.Builder.RegistrationBuilder`3.InstancePerMatchingLifetimeScope(System.Object)"/>
+            <seealso cref="M:Autofac.Builder.IRegistrationBuilder`3.InstancePerMatchingLifetimeScope(System.Object)"/>
         </member>
         <member name="F:Autofac.Core.Container.Empty">
             <summary>
@@ -1517,14 +1901,12 @@
             Describes a logical component within the container.
             </summary>
         </member>
-        <member name="M:Autofac.Core.IComponentRegistration.RaisePreparing(Autofac.IComponentContext,System.Collections.Generic.IEnumerable{Autofac.Core.Parameter}@,System.Object@)">
+        <member name="M:Autofac.Core.IComponentRegistration.RaisePreparing(Autofac.IComponentContext,System.Collections.Generic.IEnumerable{Autofac.Core.Parameter}@)">
             <summary>
             Called by the container when an instance is required.
             </summary>
             <param name="context">The context in which the instance will be activated.</param>
             <param name="parameters">Parameters for activation. These may be modified by the event handler.</param>
-            <param name="instance">If an instance is provided by the preparing event handler it will be
-            returned for use as the activation result.</param>
         </member>
         <member name="M:Autofac.Core.IComponentRegistration.RaiseActivating(Autofac.IComponentContext,System.Collections.Generic.IEnumerable{Autofac.Core.Parameter},System.Object@)">
             <summary>
@@ -2030,36 +2412,31 @@
             </summary>
             <value>The description.</value>
         </member>
-        <member name="T:Autofac.Core.PreparingEventArgs`1">
+        <member name="T:Autofac.Core.PreparingEventArgs">
             <summary>
             Fired before the activation process to allow parameters to be changed or an alternative
             instance to be provided.
             </summary>
         </member>
-        <member name="M:Autofac.Core.PreparingEventArgs`1.#ctor(Autofac.IComponentContext,Autofac.Core.IComponentRegistration,System.Collections.Generic.IEnumerable{Autofac.Core.Parameter})">
+        <member name="M:Autofac.Core.PreparingEventArgs.#ctor(Autofac.IComponentContext,Autofac.Core.IComponentRegistration,System.Collections.Generic.IEnumerable{Autofac.Core.Parameter})">
             <summary>
-            Initializes a new instance of the <see cref="T:Autofac.Core.PreparingEventArgs`1"/> class.
+            Initializes a new instance of the <see cref="T:Autofac.Core.PreparingEventArgs"/> class.
             </summary>
             <param name="context">The context.</param>
             <param name="component">The component.</param>
             <param name="parameters">The parameters.</param>
         </member>
-        <member name="P:Autofac.Core.PreparingEventArgs`1.Context">
+        <member name="P:Autofac.Core.PreparingEventArgs.Context">
             <summary>
             The context in which the activation is occurring.
             </summary>
         </member>
-        <member name="P:Autofac.Core.PreparingEventArgs`1.Component">
+        <member name="P:Autofac.Core.PreparingEventArgs.Component">
             <summary>
             The component providing the instance being activated.
             </summary>
         </member>
-        <member name="P:Autofac.Core.PreparingEventArgs`1.Instance">
-            <summary>
-            An instance can be supplied in order to avoid using the regular activator.
-            </summary>
-        </member>
-        <member name="P:Autofac.Core.PreparingEventArgs`1.Parameters">
+        <member name="P:Autofac.Core.PreparingEventArgs.Parameters">
             <summary>
             The parameters supplied to the activator.
             </summary>
@@ -2172,14 +2549,12 @@
             <param name="metadata">Data associated with the component.</param>
             <param name="target">The component registration upon which this registration is based.</param>
         </member>
-        <member name="M:Autofac.Core.Registration.ComponentRegistration.RaisePreparing(Autofac.IComponentContext,System.Collections.Generic.IEnumerable{Autofac.Core.Parameter}@,System.Object@)">
+        <member name="M:Autofac.Core.Registration.ComponentRegistration.RaisePreparing(Autofac.IComponentContext,System.Collections.Generic.IEnumerable{Autofac.Core.Parameter}@)">
             <summary>
             Called by the container when an instance is required.
             </summary>
             <param name="context">The context in which the instance will be activated.</param>
             <param name="parameters">Parameters for activation.</param>
-            <param name="instance">If an instance is provided by the preparing event handler it will be
-            returned for use as the activation result.</param>
         </member>
         <member name="M:Autofac.Core.Registration.ComponentRegistration.RaiseActivating(Autofac.IComponentContext,System.Collections.Generic.IEnumerable{Autofac.Core.Parameter},System.Object@)">
             <summary>
@@ -2696,26 +3071,6 @@
             <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
             <returns>Registrations providing the service.</returns>
         </member>
-        <member name="M:Autofac.Features.Scanning.ScanningRegistrationExtensions.RegisterAssemblyTypes(Autofac.ContainerBuilder,System.Reflection.Assembly[])">
-            <summary>
-            Register the types in an assembly.
-            </summary>
-            <param name="builder">Container builder.</param>
-            <param name="assemblies">The assemblies from which to register types.</param>
-            <returns>Registration builder allowing the registration to be configured.</returns>
-        </member>
-        <member name="M:Autofac.Features.Scanning.ScanningRegistrationExtensions.AsClosedTypesOf``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.Type)">
-            <summary>
-            Specifies that a type from a scanned assembly is registered if it implements an interface
-            that closes the provided open generic interface type.
-            </summary>
-            <typeparam name="TLimit">Registration limit type.</typeparam>
-            <typeparam name="TRegistrationStyle">Registration style.</typeparam>
-            <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
-            <param name="registration">Registration to set service mapping on.</param>
-            <param name="openGenericServiceType">The open generic interface or base class type for which implementations will be found.</param>
-            <returns>Registration builder allowing the registration to be configured.</returns>
-        </member>
         <member name="M:Autofac.Features.Scanning.ScanningRegistrationExtensions.IsAssignableToClosed(System.Type,System.Type)">
             <summary>Determines whether the candidate type supports any base or interface that closes the
             provided generic service type.</summary>
@@ -2834,7 +3189,7 @@
         </member>
         <member name="M:Autofac.Builder.RegistrationBuilder`3.#ctor(`1,`2)">
             <summary>
-            Create a RegistrationBuilder.
+            Create a IRegistrationBuilder.
             </summary>
             <param name="activatorData">Activator builder.</param>
             <param name="style">Registration style.</param>
@@ -2958,7 +3313,7 @@
             <typeparam name="TService">The service type provided by the component.</typeparam>
             <returns>A registration builder allowing further configuration of the component.</returns>
         </member>
-        <member name="M:Autofac.Builder.RegistrationBuilder`3.OnPreparing(System.Action{Autofac.Core.PreparingEventArgs{`0}})">
+        <member name="M:Autofac.Builder.RegistrationBuilder`3.OnPreparing(System.Action{Autofac.Core.PreparingEventArgs})">
             <summary>
             Add a handler for the Preparing event. This event allows manipulating of the parameters
             that will be provided to the component.
@@ -2966,14 +3321,14 @@
             <param name="handler">The event handler.</param>
             <returns>A registration builder allowing further configuration of the component.</returns>
         </member>
-        <member name="M:Autofac.Builder.RegistrationBuilder`3.OnActivating(System.Action{Autofac.Core.ActivatingEventArgs{`0}})">
+        <member name="M:Autofac.Builder.RegistrationBuilder`3.OnActivating(System.Action{Autofac.Core.IActivatingEventArgs{`0}})">
             <summary>
             Add a handler for the Activating event.
             </summary>
             <param name="handler">The event handler.</param>
             <returns>A registration builder allowing further configuration of the component.</returns>
         </member>
-        <member name="M:Autofac.Builder.RegistrationBuilder`3.OnActivated(System.Action{Autofac.Core.ActivatedEventArgs{`0}})">
+        <member name="M:Autofac.Builder.RegistrationBuilder`3.OnActivated(System.Action{Autofac.Core.IActivatedEventArgs{`0}})">
             <summary>
             Add a handler for the Activated event.
             </summary>
@@ -3041,9 +3396,21 @@
             and dynamic (IRegistrationSource.)
             </summary>
         </member>
+        <member name="M:Autofac.Builder.RegistrationData.CopyFrom(Autofac.Builder.RegistrationData)">
+            <summary>
+            Copies from.
+            </summary>
+            <param name="that">The that.</param>
+        </member>
         <member name="P:Autofac.Builder.RegistrationData.Services">
             <summary>
             The services explicitly assigned to the component.
+            </summary>
+        </member>
+        <member name="P:Autofac.Builder.RegistrationData.DefaultServiceOverridden">
+            <summary>
+            If set to true, the "default" service for this registration will not
+            be applied.
             </summary>
         </member>
         <member name="P:Autofac.Builder.RegistrationData.Ownership">
@@ -3168,7 +3535,7 @@
             <param name="implementor">The open generic implementation type.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.PreserveExistingDefaults``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2})">
+        <member name="M:Autofac.RegistrationExtensions.PreserveExistingDefaults``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2})">
             <summary>
             Specifies that the component being registered should only be made the default for services
             that have not already been registered.
@@ -3187,7 +3554,7 @@
             <param name="assemblies">The assemblies from which to register types.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.Where``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.Func{System.Type,System.Boolean})">
+        <member name="M:Autofac.RegistrationExtensions.Where``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.Func{System.Type,System.Boolean})">
             <summary>
             Specifies a subset of types to register from a scanned assembly.
             </summary>
@@ -3198,7 +3565,7 @@
             <param name="predicate">Predicate that returns true for types to register.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.As``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.Func{System.Type,System.Collections.Generic.IEnumerable{Autofac.Core.Service}})">
+        <member name="M:Autofac.RegistrationExtensions.As``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.Func{System.Type,System.Collections.Generic.IEnumerable{Autofac.Core.Service}})">
             <summary>
             Specifies how a type from a scanned assembly is mapped to a service.
             </summary>
@@ -3209,7 +3576,7 @@
             <param name="serviceMapping">Function mapping types to services.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.As``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.Func{System.Type,Autofac.Core.Service})">
+        <member name="M:Autofac.RegistrationExtensions.As``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.Func{System.Type,Autofac.Core.Service})">
             <summary>
             Specifies how a type from a scanned assembly is mapped to a service.
             </summary>
@@ -3220,7 +3587,7 @@
             <param name="serviceMapping">Function mapping types to services.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.As``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.Func{System.Type,System.Type})">
+        <member name="M:Autofac.RegistrationExtensions.As``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.Func{System.Type,System.Type})">
             <summary>
             Specifies how a type from a scanned assembly is mapped to a service.
             </summary>
@@ -3231,7 +3598,7 @@
             <param name="serviceMapping">Function mapping types to services.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.AsSelf``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2})">
+        <member name="M:Autofac.RegistrationExtensions.AsSelf``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2})">
             <summary>
             Specifies that a type from a scanned assembly provides its own concrete type as a service.
             </summary>
@@ -3241,7 +3608,7 @@
             <param name="registration">Registration to set service mapping on.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.WithMetadata``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.Func{System.Type,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Object}}})">
+        <member name="M:Autofac.RegistrationExtensions.WithMetadata``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.Func{System.Type,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.Object}}})">
             <summary>
             Specify how a type from a scanned assembly provides metadata.
             </summary>
@@ -3252,7 +3619,7 @@
             <param name="metadataMapping">A function mapping the type to a list of metadata items.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.WithMetadata``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.String,System.Func{System.Type,System.Object})">
+        <member name="M:Autofac.RegistrationExtensions.WithMetadata``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.String,System.Func{System.Type,System.Object})">
             <summary>
             Specify how a type from a scanned assembly provides metadata.
             </summary>
@@ -3264,7 +3631,7 @@
             <param name="metadataValueMapping">A function retrieving the value of the item from the component type.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.Named``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.Func{System.Type,System.String},System.Type)">
+        <member name="M:Autofac.RegistrationExtensions.Named``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.Func{System.Type,System.String},System.Type)">
             <summary>
             Specifies how a type from a scanned assembly is mapped to a service.
             </summary>
@@ -3276,7 +3643,7 @@
             <param name="serviceNameMapping">Function mapping types to service names.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.AsImplementedInterfaces``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2})">
+        <member name="M:Autofac.RegistrationExtensions.AsImplementedInterfaces``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2})">
             <summary>
             Specifies that a type from a scanned assembly is registered as providing all of its
             implemented interfaces.
@@ -3287,7 +3654,7 @@
             <param name="registration">Registration to set service mapping on.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.FindConstructorsWith``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.Reflection.BindingFlags)">
+        <member name="M:Autofac.RegistrationExtensions.FindConstructorsWith``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.Reflection.BindingFlags)">
             <summary>
             Set the policy used to find candidate constructors on the implementation type.
             </summary>
@@ -3298,7 +3665,7 @@
             <param name="bindingFlags">Binding flags used when searching for constructors.</param>
             <returns>A registration builder allowing further configuration of the component.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.FindConstructorsWith``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},Autofac.Core.Activators.Reflection.IConstructorFinder)">
+        <member name="M:Autofac.RegistrationExtensions.FindConstructorsWith``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},Autofac.Core.Activators.Reflection.IConstructorFinder)">
             <summary>
             Set the policy used to find candidate constructors on the implementation type.
             </summary>
@@ -3309,7 +3676,7 @@
             <param name="constructorFinder">Policy to be used when searching for constructors.</param>
             <returns>A registration builder allowing further configuration of the component.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.UsingConstructor``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.Type[])">
+        <member name="M:Autofac.RegistrationExtensions.UsingConstructor``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.Type[])">
             <summary>
             Set the policy used to select from available constructors on the implementation type.
             </summary>
@@ -3320,7 +3687,7 @@
             <param name="signature">Constructor signature to match.</param>
             <returns>A registration builder allowing further configuration of the component.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.UsingConstructor``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},Autofac.Core.Activators.Reflection.IConstructorSelector)">
+        <member name="M:Autofac.RegistrationExtensions.UsingConstructor``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},Autofac.Core.Activators.Reflection.IConstructorSelector)">
             <summary>
             Set the policy used to select from available constructors on the implementation type.
             </summary>
@@ -3331,7 +3698,7 @@
             <param name="constructorSelector">Policy to be used when selecting a constructor.</param>
             <returns>A registration builder allowing further configuration of the component.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.WithParameter``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.String,System.Object)">
+        <member name="M:Autofac.RegistrationExtensions.WithParameter``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.String,System.Object)">
             <summary>
             Configure an explicit value for a constructor parameter.
             </summary>
@@ -3343,7 +3710,7 @@
             <param name="parameterValue">Value to supply to the parameter.</param>
             <returns>A registration builder allowing further configuration of the component.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.WithParameter``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},Autofac.Core.Parameter)">
+        <member name="M:Autofac.RegistrationExtensions.WithParameter``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},Autofac.Core.Parameter)">
             <summary>
             Configure an explicit value for a constructor parameter.
             </summary>
@@ -3354,7 +3721,7 @@
             <param name="parameter">The parameter to supply to the constructor.</param>
             <returns>A registration builder allowing further configuration of the component.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.WithParameters``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.Collections.Generic.IEnumerable{Autofac.Core.Parameter})">
+        <member name="M:Autofac.RegistrationExtensions.WithParameters``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.Collections.Generic.IEnumerable{Autofac.Core.Parameter})">
             <summary>
             Configure explicit values for constructor parameters.
             </summary>
@@ -3365,7 +3732,7 @@
             <param name="parameters">The parameters to supply to the constructor.</param>
             <returns>A registration builder allowing further configuration of the component.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.WithProperty``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.String,System.Object)">
+        <member name="M:Autofac.RegistrationExtensions.WithProperty``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.String,System.Object)">
             <summary>
             Configure an explicit value for a property.
             </summary>
@@ -3377,7 +3744,7 @@
             <param name="propertyValue">Value to supply to the property.</param>
             <returns>A registration builder allowing further configuration of the component.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.WithProperty``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},Autofac.Core.Parameter)">
+        <member name="M:Autofac.RegistrationExtensions.WithProperty``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},Autofac.Core.Parameter)">
             <summary>
             Configure an explicit value for a property.
             </summary>
@@ -3388,7 +3755,7 @@
             <param name="property">The property to supply.</param>
             <returns>A registration builder allowing further configuration of the component.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.WithProperty``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.Collections.Generic.IEnumerable{Autofac.Core.Parameter})">
+        <member name="M:Autofac.RegistrationExtensions.WithProperties``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.Collections.Generic.IEnumerable{Autofac.Core.Parameter})">
             <summary>
             Configure explicit values for properties.
             </summary>
@@ -3399,24 +3766,7 @@
             <param name="properties">The properties to supply.</param>
             <returns>A registration builder allowing further configuration of the component.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.RegisterGeneratedFactory(Autofac.ContainerBuilder,System.Type)">
-            <summary>
-            Registers a factory delegate.
-            </summary>
-            <param name="builder">Container builder.</param>
-            <param name="delegateType">Factory type to generate.</param>
-            <returns>Registration builder allowing the registration to be configured.</returns>
-        </member>
-        <member name="M:Autofac.RegistrationExtensions.RegisterGeneratedFactory(Autofac.ContainerBuilder,System.Type,Autofac.Core.Service)">
-            <summary>
-            Registers a factory delegate.
-            </summary>
-            <param name="builder">Container builder.</param>
-            <param name="delegateType">Factory type to generate.</param>
-            <param name="service">The service that the delegate will return instances of.</param>
-            <returns>Registration builder allowing the registration to be configured.</returns>
-        </member>
-        <member name="M:Autofac.RegistrationExtensions.Targeting``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},Autofac.Core.IComponentRegistration)">
+        <member name="M:Autofac.RegistrationExtensions.Targeting``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},Autofac.Core.IComponentRegistration)">
             <summary>
             Sets the target of the registration (used for metadata generation.)
             </summary>
@@ -3429,59 +3779,9 @@
             Registration builder allowing the registration to be configured.
             </returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.RegisterGeneratedFactory``1(Autofac.ContainerBuilder,Autofac.Core.Service)">
+        <member name="M:Autofac.RegistrationExtensions.OnRegistered``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.Action{Autofac.Core.ComponentRegisteredEventArgs})">
             <summary>
-            Registers a factory delegate.
-            </summary>
-            <typeparam name="TDelegate">The type of the delegate.</typeparam>
-            <param name="builder">Container builder.</param>
-            <param name="service">The service that the delegate will return instances of.</param>
-            <returns>Registration builder allowing the registration to be configured.</returns>
-        </member>
-        <member name="M:Autofac.RegistrationExtensions.RegisterGeneratedFactory``1(Autofac.ContainerBuilder)">
-            <summary>
-            Registers a factory delegate.
-            </summary>
-            <typeparam name="TDelegate">The type of the delegate.</typeparam>
-            <param name="builder">Container builder.</param>
-            <returns>Registration builder allowing the registration to be configured.</returns>
-        </member>
-        <member name="M:Autofac.RegistrationExtensions.NamedParameterMapping``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2})">
-            <summary>
-            Changes the parameter mapping mode of the supplied delegate type to match
-            parameters by name.
-            </summary>
-            <typeparam name="TDelegate">Factory delegate type</typeparam>
-            <typeparam name="TGeneratedFactoryActivatorData">Activator data type</typeparam>
-            <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
-            <param name="registration">Registration to change parameter mapping mode of.</param>
-            <returns>Registration builder allowing the registration to be configured.</returns>
-        </member>
-        <member name="M:Autofac.RegistrationExtensions.PositionalParameterMapping``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2})">
-            <summary>
-            Changes the parameter mapping mode of the supplied delegate type to match
-            parameters by position.
-            </summary>
-            <typeparam name="TDelegate">Factory delegate type</typeparam>
-            <typeparam name="TGeneratedFactoryActivatorData">Activator data type</typeparam>
-            <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
-            <param name="registration">Registration to change parameter mapping mode of.</param>
-            <returns>Registration builder allowing the registration to be configured.</returns>
-        </member>
-        <member name="M:Autofac.RegistrationExtensions.TypedParameterMapping``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2})">
-            <summary>
-            Changes the parameter mapping mode of the supplied delegate type to match
-            parameters by type.
-            </summary>
-            <typeparam name="TDelegate">Factory delegate type</typeparam>
-            <typeparam name="TGeneratedFactoryActivatorData">Activator data type</typeparam>
-            <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
-            <param name="registration">Registration to change parameter mapping mode of.</param>
-            <returns>Registration builder allowing the registration to be configured.</returns>
-        </member>
-        <member name="M:Autofac.RegistrationExtensions.OnRegistered``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.Action{Autofac.Core.ComponentRegisteredEventArgs})">
-            <summary>
-            Provide a handler to be called when the component is registred.
+            Provide a handler to be called when the component is registered.
             </summary>
             <typeparam name="TLimit">Registration limit type.</typeparam>
             <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
@@ -3490,38 +3790,17 @@
             <param name="handler">The handler.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.RegisterCollection(Autofac.ContainerBuilder,System.String,System.Type)">
+        <member name="M:Autofac.RegistrationExtensions.OnRegistered``2(Autofac.Builder.IRegistrationBuilder{``0,Autofac.Features.Scanning.ScanningActivatorData,``1},System.Action{Autofac.Core.ComponentRegisteredEventArgs})">
             <summary>
-            Registers the type as a collection. If no services or names are specified, the
-            default services will be IList&lt;T&gt;, ICollection&lt;T&gt;, and IEnumerable&lt;T&gt;        
-            </summary>
-            <param name="elementType">The type of the collection elements.</param>
-            <param name="builder">Container builder.</param>
-            <param name="collectionName">A unique name for the collection that can be passed to MemberOf().</param>
-            <returns>Registration builder allowing the registration to be configured.</returns>
-        </member>
-        <member name="M:Autofac.RegistrationExtensions.RegisterCollection``1(Autofac.ContainerBuilder,System.String)">
-            <summary>
-            Registers the type as a collection. If no services or names are specified, the
-            default services will be IList&lt;T&gt;, ICollection&lt;T&gt;, and IEnumerable&lt;T&gt;        
-            </summary>
-            <typeparam name="T">The type of the collection elements.</typeparam>
-            <param name="builder">Container builder.</param>
-            <param name="collectionName">A unique name for the collection that can be passed to MemberOf().</param>
-            <returns>Registration builder allowing the registration to be configured.</returns>
-        </member>
-        <member name="M:Autofac.RegistrationExtensions.MemberOf``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.String)">
-            <summary>
-            Include the element explicitly in a collection configured using RegisterCollection.
+            Provide a handler to be called when the component is registred.
             </summary>
             <typeparam name="TLimit">Registration limit type.</typeparam>
-            <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
-            <typeparam name="TActivatorData">Activator data type.</typeparam>
-            <param name="registration">Registration to export.</param>
-            <param name="collectionName">The collection name, as passed to RegisterCollection.</param>
-            <returns>A registration builder allowing further configuration of the component.</returns>
+            <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+            <param name="registration">Registration add handler to.</param>
+            <param name="handler">The handler.</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.AsClosedTypesOf``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.Type)">
+        <member name="M:Autofac.RegistrationExtensions.AsClosedTypesOf``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.Type)">
             <summary>
             Specifies that a type from a scanned assembly is registered if it implements an interface
             that closes the provided open generic interface type.
@@ -3533,15 +3812,54 @@
             <param name="openGenericServiceType">The open generic interface or base class type for which implementations will be found.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.AssignableTo``3(Autofac.Builder.RegistrationBuilder{``0,``1,``2},System.Type)">
+        <member name="M:Autofac.RegistrationExtensions.AssignableTo``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.Type)">
             <summary>
-            Registers the types assignable to.
+            Filters the scanned types to include only those assignable to the provided
+            type.
             </summary>
             <typeparam name="TLimit">Registration limit type.</typeparam>
             <typeparam name="TRegistrationStyle">Registration style.</typeparam>
             <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
             <param name="registration">Registration to filter types from.</param>
             <param name="type">The type or interface which all classes must be assignable from.</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+        </member>
+        <member name="M:Autofac.RegistrationExtensions.AssignableTo``1(Autofac.Builder.IRegistrationBuilder{System.Object,Autofac.Features.Scanning.ScanningActivatorData,Autofac.Builder.DynamicRegistrationStyle})">
+            <summary>
+            Filters the scanned types to include only those assignable to the provided
+            type.
+            </summary>
+            <param name="registration">Registration to filter types from.</param>
+            <typeparam name="T">The type or interface which all classes must be assignable from.</typeparam>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+        </member>
+        <member name="M:Autofac.RegistrationExtensions.Except``1(Autofac.Builder.IRegistrationBuilder{System.Object,Autofac.Features.Scanning.ScanningActivatorData,Autofac.Builder.DynamicRegistrationStyle})">
+            <summary>
+            Filters the scanned types to exclude the provided type.
+            </summary>
+            <param name="registration">Registration to filter types from.</param>
+            <typeparam name="T">The concrete type to exclude.</typeparam>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+        </member>
+        <member name="M:Autofac.RegistrationExtensions.InNamespaceOf``1(Autofac.Builder.IRegistrationBuilder{System.Object,Autofac.Features.Scanning.ScanningActivatorData,Autofac.Builder.DynamicRegistrationStyle})">
+            <summary>
+            Filters the scanned types to include only those in the namespace of the provided type
+            or one of its sub-namespaces.
+            </summary>
+            <param name="registration">Registration to filter types from.</param>
+            <typeparam name="T">A type in the target namespace.</typeparam>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+        </member>
+        <member name="M:Autofac.RegistrationExtensions.InNamespace``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.String)">
+            <summary>
+            Filters the scanned types to include only those in the provided namespace
+            or one of its sub-namespaces.
+            </summary>
+            <typeparam name="TLimit">Registration limit type.</typeparam>
+            <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+            <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+            <param name="registration">Registration to filter types from.</param>
+            <param name="ns">The namespace from which types will be selected.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
         <member name="T:Autofac.RegistrationExtensionsResources">
@@ -3578,7 +3896,7 @@
             <typeparam name="TActivatorData">Type of activator data.</typeparam>
             <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         </member>
-        <member name="M:Autofac.Builder.RegistrationSource`3.#ctor(Autofac.Builder.RegistrationBuilder{`0,`1,`2},Autofac.Builder.IActivatorGenerator{`1})">
+        <member name="M:Autofac.Builder.RegistrationSource`3.#ctor(Autofac.Builder.IRegistrationBuilder{`0,`1,`2},Autofac.Builder.IActivatorGenerator{`1})">
             <summary>
             Try to generate registrations using the provided activator generator, with
             the data from the provided registration.
