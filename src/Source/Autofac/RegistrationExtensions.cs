@@ -789,8 +789,8 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Filters the scanned types to include only those in the same namespace as the
-        /// provided type.
+        /// Filters the scanned types to include only those in the namespace of the provided type
+        /// or one of its sub-namespaces.
         /// </summary>
         /// <param name="registration">Registration to filter types from.</param>
         /// <typeparam name="T">A type in the target namespace.</typeparam>
