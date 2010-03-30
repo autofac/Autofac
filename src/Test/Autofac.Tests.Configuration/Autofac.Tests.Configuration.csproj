@@ -94,6 +94,7 @@
     </None>
     <None Include="Referrer.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="SingletonWithTwoServices.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

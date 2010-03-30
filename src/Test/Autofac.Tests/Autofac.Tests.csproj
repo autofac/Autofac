@@ -90,15 +90,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assertions.cs" />
-    <Compile Include="Builder\PropertyInjectionTests.cs"/>
-    <Compile Include="Builder\AutomaticRegistrationBuilderFixture.cs"/>
-    <Compile Include="Builder\CollectionRegistrationBuilderTests.cs"/>
+    <Compile Include="Builder\PropertyInjectionTests.cs" />
+    <Compile Include="Builder\AutomaticRegistrationBuilderFixture.cs" />
+    <Compile Include="Builder\CollectionRegistrationBuilderTests.cs" />
     <Compile Include="Builder\RegistrationBuilderTests.cs" />
-    <Compile Include="ContainerBuilderTests.cs"/>
-    <Compile Include="Builder\DelegateRegistrationBuilderFixture.cs"/>
-    <Compile Include="Builder\ModuleFixture.cs"/>
-    <Compile Include="Builder\ProvidedInstanceRegistrationBuilderTests.cs"/>
-    <Compile Include="Builder\ReflectiveRegistrationBuilderTests.cs"/>
+    <Compile Include="ContainerBuilderTests.cs" />
+    <Compile Include="Builder\DelegateRegistrationBuilderFixture.cs" />
+    <Compile Include="Builder\ModuleFixture.cs" />
+    <Compile Include="Builder\ProvidedInstanceRegistrationBuilderTests.cs" />
+    <Compile Include="Builder\ReflectiveRegistrationBuilderTests.cs" />
     <Compile Include="ComponentRegisteredEventArgsTests.cs" />
     <Compile Include="Core\ComponentRegistrationTests.cs" />
     <Compile Include="Core\Lifetime\LifetimeScopeTests.cs" />
@@ -109,6 +109,8 @@
     <Compile Include="Core\Resolving\ResolveOperationTests.cs" />
     <Compile Include="Core\TypedServiceTests.cs" />
     <Compile Include="Factory.cs" />
+    <Compile Include="Features\Adapters\LightweightAdapterRegistrationExtensionsTests.cs" />
+    <Compile Include="Features\Adapters\LightweightAdapterRegistrationSourceTests.cs" />
     <Compile Include="Features\GeneratedFactories\GeneratedFactoriesTests.cs" />
     <Compile Include="Features\Collections\CollectionRegistrationSourceTests.cs" />
     <Compile Include="Features\Indexed\KeyedServiceIndexTests.cs" />
@@ -118,7 +120,7 @@
     <Compile Include="Features\OwnedInstances\OwnedTests.cs" />
     <Compile Include="Features\ResolveAnything\ResolveAnythingTests.cs" />
     <Compile Include="NamedParameterTests.cs" />
-    <Compile Include="Features\OpenGenerics\OpenGenericActivatorGeneratorTests.cs" />
+    <Compile Include="Features\OpenGenerics\OpenGenericRegistrationSourceTests.cs" />
     <Compile Include="Core\Registration\RegistrationFixture.cs" />
     <Compile Include="Core\Activators\Delegate\DelegateActivatorTests.cs" />
     <Compile Include="DisposeTracker.cs" />
@@ -134,6 +136,9 @@
     <Compile Include="Core\ResolvedParameterTests.cs" />
     <Compile Include="Core\NamedServiceTests.cs" />
     <Compile Include="ScanningRegistrationTests.cs" />
+    <Compile Include="Scenarios\Adapters\Command.cs" />
+    <Compile Include="Scenarios\Adapters\IToolbarButton.cs" />
+    <Compile Include="Scenarios\Adapters\ToolbarButton.cs" />
     <Compile Include="Scenarios\ConstructorSelection\MultipleConstructors.cs" />
     <Compile Include="Scenarios\Dependencies\Circularity.cs" />
     <Compile Include="Scenarios\Dependencies\Dependent.cs" />

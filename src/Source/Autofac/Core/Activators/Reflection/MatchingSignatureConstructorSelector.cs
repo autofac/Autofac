@@ -26,7 +26,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac.Util;
 
 namespace Autofac.Core.Activators.Reflection
 {
@@ -43,7 +42,8 @@ namespace Autofac.Core.Activators.Reflection
         /// <param name="signature">Signature to match.</param>
         public MatchingSignatureConstructorSelector(params Type[] signature)
         {
-           _signature =  Enforce.ArgumentElementNotNull(signature, "signature");
+            if (signature == null) throw new ArgumentNullException("signature");
+            _signature = signature;
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Autofac.Core.Activators.Reflection
         /// <returns>The best constructor.</returns>
         public ConstructorParameterBinding SelectConstructorBinding(IEnumerable<ConstructorParameterBinding> constructorBindings)
         {
-            Enforce.ArgumentNotNull(constructorBindings, "constructorBindings");
+            if (constructorBindings == null) throw new ArgumentNullException("constructorBindings");
             
             var result = constructorBindings
                 .Where(b => b.TargetConstructor.GetParameters().Select(p => p.ParameterType).SequenceEqual(_signature))
@@ -61,10 +61,11 @@ namespace Autofac.Core.Activators.Reflection
 
             if (result.Length == 0)
                 throw new DependencyResolutionException(MatchingSignatureConstructorSelectorResources.RequiredConstructorNotAvailable);
-            else if (result.Length != 1)
+            
+            if (result.Length != 1)
                 throw new DependencyResolutionException(MatchingSignatureConstructorSelectorResources.TooManyConstructorsMatch);
-            else
-                return result[0];
+            
+            return result[0];
         }
     }
 }

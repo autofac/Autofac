@@ -67,8 +67,7 @@ namespace Autofac.Tests.Features.Collections
             Assert.AreEqual(1, c.Resolve<IEnumerable<string>>().Count());
 
             c.ComponentRegistry.Register(
-                RegistrationBuilder.CreateRegistration(
-                    RegistrationBuilder.ForDelegate((ctx,p) => "World")));
+                RegistrationBuilder.ForDelegate((ctx,p) => "World").CreateRegistration());
 
             Assert.AreEqual(2, c.Resolve<IEnumerable<string>>().Count());
         }

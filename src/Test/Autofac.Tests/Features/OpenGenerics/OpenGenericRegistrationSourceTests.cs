@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using System.Linq;
 using Autofac.Core;
 using Autofac.Features.OpenGenerics;
 using Autofac.Builder;
-using Autofac.Core.Activators.Reflection;
 
 namespace Autofac.Tests.Features.OpenGenerics
 {
     [TestFixture]
-    public class OpenGenericActivatorGeneratorTests
+    public class OpenGenericRegistrationSourceTests
     {
         interface I<T> { }
 
@@ -19,21 +17,18 @@ namespace Autofac.Tests.Features.OpenGenerics
         [Test]
         public void GeneratesActivatorAndCorrectServices()
         {
-            var g = new OpenGenericActivatorGenerator();
+            var g = new OpenGenericRegistrationSource(
+                new RegistrationData(new TypedService(typeof(I<>))),
+                new ReflectionActivatorData(typeof(A1<>)));
 
-            IInstanceActivator activator;
-            IEnumerable<Service> services;
-
-            Assert.IsTrue(
-                g.TryGenerateActivator(new TypedService(typeof(I<int>)),
-                    new Service[] { new TypedService(typeof(I<>)) },
-                    new ReflectionActivatorData(typeof(A1<>)),
-                    out activator, out services));
+            var r = g
+                .RegistrationsFor(new TypedService(typeof(I<int>)), s => null)
+                .Single();
 
             Assert.AreEqual(typeof(I<int>),
-                services.Cast<TypedService>().Single().ServiceType);
+                r.Services.Cast<TypedService>().Single().ServiceType);
 
-            var activatedInstance = activator.ActivateInstance(Container.Empty, Factory.NoParameters);
+            var activatedInstance = r.Activator.ActivateInstance(Container.Empty, Factory.NoParameters);
             Assert.IsInstanceOf<A1<int>>(activatedInstance);
         }
 
@@ -105,15 +100,13 @@ namespace Autofac.Tests.Features.OpenGenerics
 
         static bool CanGenerateActivator<TClosing>(Type implementor)
         {
-            var g = new OpenGenericActivatorGenerator();
+            var g = new OpenGenericRegistrationSource(
+                new RegistrationData(new TypedService(typeof(I<>))),
+                new ReflectionActivatorData(implementor));
 
-            IInstanceActivator activator;
-            IEnumerable<Service> services;
+            var rs = g.RegistrationsFor(new TypedService(typeof(I<TClosing>)), s => null);
 
-            return g.TryGenerateActivator(new TypedService(typeof(I<TClosing>)),
-                    new Service[] { new TypedService(typeof(I<>)) },
-                    new ReflectionActivatorData(implementor),
-                    out activator, out services);
+            return rs.Count() == 1;
         }
     }
 }

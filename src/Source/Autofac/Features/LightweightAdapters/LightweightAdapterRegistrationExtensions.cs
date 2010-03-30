@@ -24,26 +24,28 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using Autofac.Builder;
 using Autofac.Core;
 
-namespace Autofac.Features.GeneratedFactories
+namespace Autofac.Features.LightweightAdapters
 {
-    static class GeneratedFactoryRegistrationExtensions
+    static class LightweightAdapterRegistrationExtensions
     {
-        internal static IRegistrationBuilder<TLimit, GeneratedFactoryActivatorData, SingleRegistrationStyle>
-            RegisterGeneratedFactory<TLimit>(ContainerBuilder builder, Type delegateType, Service service)
+        public static IRegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
+            RegisterAdapter<TFrom, TTo>(
+                ContainerBuilder builder,
+                Func<IComponentContext, IEnumerable<Parameter>, TFrom, TTo> adapter)
         {
-            var activatorData = new GeneratedFactoryActivatorData(delegateType, service);
+            var rb = new RegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>(
+                new TypedService(typeof(TTo)),
+                new LightweightAdapterActivatorData(new TypedService(typeof(TFrom)), (c, p, f) => adapter(c, p, (TFrom)f)),
+                new DynamicRegistrationStyle());
 
-            var rb = new RegistrationBuilder<TLimit, GeneratedFactoryActivatorData, SingleRegistrationStyle>(
-                new TypedService(delegateType),
-                activatorData,
-                new SingleRegistrationStyle());
+            builder.RegisterCallback(cr => cr.AddRegistrationSource(
+                new LightweightAdapterRegistrationSource(rb.RegistrationData, rb.ActivatorData)));
 
-            builder.RegisterCallback(cr => RegistrationBuilder.RegisterSingleComponent(cr, rb));
-
-            return rb.InstancePerLifetimeScope();
+            return rb;
         }
     }
 }

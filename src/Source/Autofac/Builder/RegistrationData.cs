@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
 using Autofac.Util;
@@ -37,6 +38,9 @@ namespace Autofac.Builder
     /// </summary>
     public class RegistrationData
     {
+        bool _defaultServiceOverridden;
+        Service _defaultService;
+
 #if !(SL2 || SL3 || NET35)
         readonly ICollection<Service> _services = new HashSet<Service>();
 #else
@@ -52,15 +56,54 @@ namespace Autofac.Builder
         readonly ICollection<EventHandler<ActivatedEventArgs<object>>> _activatedHandlers = new List<EventHandler<ActivatedEventArgs<object>>>();
 
         /// <summary>
-        /// The services explicitly assigned to the component.
+        /// Construct a RegistrationData instance.
         /// </summary>
-        public ICollection<Service> Services { get { return _services; } }
+        /// <param name="defaultService">The default service that will be used if no others
+        /// are added.</param>
+        public RegistrationData(Service defaultService)
+        {
+            if (defaultService == null) throw new ArgumentNullException("defaultService");
+            _defaultService = defaultService;
+        }
 
         /// <summary>
-        /// If set to true, the "default" service for this registration will not
-        /// be applied.
+        /// The services explicitly assigned to the component.
         /// </summary>
-        public bool DefaultServiceOverridden { get; set; }
+        public IEnumerable<Service> Services
+        {
+            get
+            { 
+                if (_defaultServiceOverridden)
+                    return _services;
+
+                return _services.DefaultIfEmpty(_defaultService);
+            }
+        }
+
+        /// <summary>
+        /// Add multiple services for the registration, overriding the default.
+        /// </summary>
+        /// <param name="services">The services to add.</param>
+        /// <remarks>If an empty collection is specified, this will still
+        /// clear the default service.</remarks>
+        public void AddServices(IEnumerable<Service> services)
+        {
+            if (services == null) throw new ArgumentNullException("services");
+            _defaultServiceOverridden = true; // important even when services is empty
+            foreach (var service in services)
+                AddService(service);
+        }
+
+        /// <summary>
+        /// Add a service to the registration, overriding the default.
+        /// </summary>
+        /// <param name="service">The service to add.</param>
+        public void AddService(Service service)
+        {
+            if (service == null) throw new ArgumentNullException("service");
+            _defaultServiceOverridden = true;
+            _services.Add(service);
+        }
 
         /// <summary>
         /// The instance ownership assigned to the component.
@@ -110,17 +153,23 @@ namespace Autofac.Builder
         public ICollection<EventHandler<ActivatedEventArgs<object>>> ActivatedHandlers { get { return _activatedHandlers; } }
 
         /// <summary>
-        /// Copies from.
+        /// Copies the contents of another RegistrationData object into this one.
         /// </summary>
-        /// <param name="that">The that.</param>
-        public void CopyFrom(RegistrationData that)
+        /// <param name="that">The data to copy.</param>
+        /// <param name="includeDefaultService">When true, the default service
+        /// will be changed to that of the other.</param>
+        public void CopyFrom(RegistrationData that, bool includeDefaultService)
         {
             Ownership = that.Ownership;
             Sharing = that.Sharing;
             Lifetime = that.Lifetime;
-            DefaultServiceOverridden = that.DefaultServiceOverridden;
+
+            _defaultServiceOverridden |= that._defaultServiceOverridden;
+            if (includeDefaultService)
+                _defaultService = that._defaultService;
+
+            AddAll(_services, that._services);            
             AddAll(Metadata, that.Metadata);
-            AddAll(Services, that.Services);
             AddAll(PreparingHandlers, that.PreparingHandlers);
             AddAll(ActivatingHandlers, that.ActivatingHandlers);
             AddAll(ActivatedHandlers, that.ActivatedHandlers);
@@ -130,6 +179,15 @@ namespace Autofac.Builder
         {
             foreach (var item in from)
                 to.Add(item);
+        }
+
+        /// <summary>
+        /// Empties the configured services.
+        /// </summary>
+        public void ClearServices()
+        {
+            _services.Clear();
+            _defaultServiceOverridden = true;
         }
     }
 }

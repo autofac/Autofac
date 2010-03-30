@@ -29,8 +29,9 @@ namespace Autofac.Builder
         public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> ForDelegate<T>(Func<IComponentContext, IEnumerable<Parameter>, T> @delegate)
         {
             return new RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>(
+                new TypedService(typeof(T)),
                 new SimpleActivatorData(new DelegateActivator(typeof(T), (c, p) => @delegate(c, p))),
-                new SingleRegistrationStyle(typeof(T)));
+                new SingleRegistrationStyle());
         }
 
         /// <summary>
@@ -42,8 +43,9 @@ namespace Autofac.Builder
         public static IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> ForDelegate(Type limitType, Func<IComponentContext, IEnumerable<Parameter>, object> @delegate)
         {
             return new RegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle>(
+                new TypedService(limitType),
                 new SimpleActivatorData(new DelegateActivator(limitType, @delegate)),
-                new SingleRegistrationStyle(limitType));
+                new SingleRegistrationStyle());
         }
 
         /// <summary>
@@ -54,8 +56,9 @@ namespace Autofac.Builder
         public static IRegistrationBuilder<TImplementor, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType<TImplementor>()
         {
             return new RegistrationBuilder<TImplementor, ConcreteReflectionActivatorData, SingleRegistrationStyle>(
+                new TypedService(typeof(TImplementor)),
                 new ConcreteReflectionActivatorData(typeof(TImplementor)),
-                new SingleRegistrationStyle(typeof(TImplementor)));
+                new SingleRegistrationStyle());
         }
 
         /// <summary>
@@ -66,8 +69,9 @@ namespace Autofac.Builder
         public static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType(Type implementationType)
         {
             return new RegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>(
+                new TypedService(implementationType),
                 new ConcreteReflectionActivatorData(implementationType),
-                new SingleRegistrationStyle(implementationType));
+                new SingleRegistrationStyle());
         }
 
         /// <summary>
@@ -95,15 +99,11 @@ namespace Autofac.Builder
             where TSingleRegistrationStyle : SingleRegistrationStyle
             where TActivatorData : IConcreteActivatorData
         {
-            IEnumerable<Service> services = rb.RegistrationData.Services;
-            if (rb.RegistrationData.Services.Count == 0 && !rb.RegistrationData.DefaultServiceOverridden)
-                services = new Service[] { new TypedService(rb.RegistrationStyle.DefaultServiceType) };
-
             return CreateRegistration(
                 rb.RegistrationStyle.Id,
                 rb.RegistrationData,
                 rb.ActivatorData.Activator,
-                services,
+                rb.RegistrationData.Services,
                 rb.RegistrationStyle.Target);
         }
 

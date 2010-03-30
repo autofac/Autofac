@@ -66,7 +66,7 @@ namespace Autofac.Features.GeneratedFactories
                             .As(service)
                             .Targeting(r.Target);
 
-                        return RegistrationBuilder.CreateRegistration(rb);
+                        return rb.CreateRegistration();
                     });
             }
 

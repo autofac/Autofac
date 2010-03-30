@@ -36,19 +36,44 @@ namespace Autofac.Features.OpenGenerics
     /// <summary>
     /// Generates activators for open generic types.
     /// </summary>
-    public class OpenGenericActivatorGenerator : IActivatorGenerator<ReflectionActivatorData>
+    class OpenGenericRegistrationSource : IRegistrationSource
     {
-        /// <summary>
-        /// Given a requested service and registration data, attempt to generate an
-        /// activator for the service.
-        /// </summary>
-        /// <param name="service">Service that was requested.</param>
-        /// <param name="configuredServices">Services associated with the activator generator.</param>
-        /// <param name="reflectionActivatorData">Data specific to this kind of activator.</param>
-        /// <param name="activator">Resulting activator.</param>
-        /// <param name="services">Services provided by the activator.</param>
-        /// <returns>True if an activator could be generated.</returns>
-        public bool TryGenerateActivator(
+        readonly RegistrationData _registrationData;
+        readonly ReflectionActivatorData _activatorData;
+
+        public OpenGenericRegistrationSource(
+            RegistrationData registrationData,
+            ReflectionActivatorData activatorData)
+        {
+            if (registrationData == null) throw new ArgumentNullException("registrationData");
+            if (activatorData == null) throw new ArgumentNullException("activatorData");
+
+            _registrationData = registrationData;
+            _activatorData = activatorData;
+        }
+
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+        {
+            Enforce.ArgumentNotNull(service, "service");
+            var result = Enumerable.Empty<IComponentRegistration>();
+
+            IInstanceActivator activator;
+            IEnumerable<Service> services;
+            if (TryGenerateActivator(service, _registrationData.Services, _activatorData, out activator, out services))
+            {
+                result = new[] {
+                    RegistrationBuilder.CreateRegistration(
+                        Guid.NewGuid(),
+                        _registrationData,
+                        activator,
+                        services)
+                };
+            }
+
+            return result;
+        }
+
+        static bool TryGenerateActivator(
             Service service,
             IEnumerable<Service> configuredServices,
             ReflectionActivatorData reflectionActivatorData,
@@ -62,7 +87,6 @@ namespace Autofac.Features.OpenGenerics
                 var genericArguments = swt.ServiceType.GetGenericArguments();
 
                 if (configuredServices
-                    .DefaultIfEmpty(new TypedService(reflectionActivatorData.ImplementationType))
                     .Cast<IServiceWithType>()
                     .Any(s => s.ServiceType == genericTypeDefinition) &&
                     reflectionActivatorData.ImplementationType.IsCompatibleWithGenericParameters(genericArguments))

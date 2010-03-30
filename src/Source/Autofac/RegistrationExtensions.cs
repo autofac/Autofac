@@ -32,6 +32,7 @@ using Autofac.Core;
 using Autofac.Core.Activators.ProvidedInstance;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
+using Autofac.Features.LightweightAdapters;
 using Autofac.Features.OpenGenerics;
 using Autofac.Features.Scanning;
 using Autofac.Util;
@@ -109,8 +110,9 @@ namespace Autofac
             var activator = new ProvidedInstanceActivator(instance);
 
             var rb = new RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>(
+                new TypedService(typeof(T)),
                 new SimpleActivatorData(activator),
-                new SingleRegistrationStyle(typeof(T)));
+                new SingleRegistrationStyle());
 
             rb.SingleInstance();
 
@@ -214,24 +216,7 @@ namespace Autofac
         public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
             RegisterGeneric(this ContainerBuilder builder, Type implementor)
         {
-            Enforce.ArgumentNotNull(builder, "builder");
-            Enforce.ArgumentNotNull(implementor, "implementor");
-
-            var rb = new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(
-                new ReflectionActivatorData(implementor),
-                new DynamicRegistrationStyle());
-
-            builder.RegisterCallback(cr =>
-            {
-                if (!rb.RegistrationData.Services.Any())
-                    rb.RegistrationData.Services.Add(new TypedService(implementor));
-
-                cr.AddRegistrationSource(
-                    new RegistrationSource<object, ReflectionActivatorData, DynamicRegistrationStyle>(
-                        rb, new OpenGenericActivatorGenerator()));
-            });
-
-            return rb;
+            return OpenGenericRegistrationExtensions.RegisterGeneric(builder, implementor);
         }
 
         /// <summary>
@@ -678,7 +663,8 @@ namespace Autofac
                 IComponentRegistration target)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
-            registration.RegistrationStyle.Target = Enforce.ArgumentNotNull(target, "target");
+            Enforce.ArgumentNotNull(target, "target");
+            registration.RegistrationStyle.Target = target;
             return registration;
         }
 
@@ -821,6 +807,72 @@ namespace Autofac
             return registration.Where(t =>
                 t.Namespace != null &&
                 (t.Namespace == ns || t.Namespace.StartsWith(ns + ".")));
+        }
+
+        /// <summary>
+        /// Adapt all components implementing service <typeparamref name="TFrom"/>
+        /// to provide <typeparamref name="TTo"/> using the provided <paramref name="adapter"/>
+        /// function.
+        /// </summary>
+        /// <typeparam name="TFrom">Service type to adapt from.</typeparam>
+        /// <typeparam name="TTo">Service type to adapt to. Must not be the
+        /// same as <typeparamref name="TFrom"/>.</typeparam>
+        /// <param name="builder">Container builder.</param>
+        /// <param name="adapter">Function adapting <typeparamref name="TFrom"/> to
+        /// service <typeparamref name="TTo"/>, given the context and parameters.</param>
+        public static IRegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
+            RegisterAdapter<TFrom, TTo>(
+                this ContainerBuilder builder,
+                Func<IComponentContext, IEnumerable<Parameter>, TFrom, TTo> adapter)
+        {
+            if (builder == null) throw new ArgumentNullException("builder");
+            if (adapter == null) throw new ArgumentNullException("adapter");
+
+            return LightweightAdapterRegistrationExtensions.RegisterAdapter(builder, adapter);
+        }
+
+        /// <summary>
+        /// Adapt all components implementing service <typeparamref name="TFrom"/>
+        /// to provide <typeparamref name="TTo"/> using the provided <paramref name="adapter"/>
+        /// function.
+        /// </summary>
+        /// <typeparam name="TFrom">Service type to adapt from.</typeparam>
+        /// <typeparam name="TTo">Service type to adapt to. Must not be the
+        /// same as <typeparamref name="TFrom"/>.</typeparam>
+        /// <param name="builder">Container builder.</param>
+        /// <param name="adapter">Function adapting <typeparamref name="TFrom"/> to
+        /// service <typeparamref name="TTo"/>, given the context.</param>
+        public static IRegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
+            RegisterAdapter<TFrom, TTo>(
+                this ContainerBuilder builder,
+                Func<IComponentContext, TFrom, TTo> adapter)
+        {
+            if (builder == null) throw new ArgumentNullException("builder");
+            if (adapter == null) throw new ArgumentNullException("adapter");
+
+            return builder.RegisterAdapter<TFrom, TTo>((c, p, f) => adapter(c, f));
+        }
+
+        /// <summary>
+        /// Adapt all components implementing service <typeparamref name="TFrom"/>
+        /// to provide <typeparamref name="TTo"/> using the provided <paramref name="adapter"/>
+        /// function.
+        /// </summary>
+        /// <typeparam name="TFrom">Service type to adapt from.</typeparam>
+        /// <typeparam name="TTo">Service type to adapt to. Must not be the
+        /// same as <typeparamref name="TFrom"/>.</typeparam>
+        /// <param name="builder">Container builder.</param>
+        /// <param name="adapter">Function adapting <typeparamref name="TFrom"/> to
+        /// service <typeparamref name="TTo"/>.</param>
+        public static IRegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
+            RegisterAdapter<TFrom, TTo>(
+                this ContainerBuilder builder,
+                Func<TFrom, TTo> adapter)
+        {
+            if (builder == null) throw new ArgumentNullException("builder");
+            if (adapter == null) throw new ArgumentNullException("adapter");
+
+            return builder.RegisterAdapter<TFrom, TTo>((c, p, f) => adapter(f));
         }
     }
 }

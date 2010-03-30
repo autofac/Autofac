@@ -23,32 +23,30 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Collections.Generic;
+using System;
+using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Util;
 
-namespace Autofac.Builder
+namespace Autofac.Features.OpenGenerics
 {
-    /// <summary>
-    /// Generates activators in an IRegistrationSource.
-    /// </summary>
-    /// <typeparam name="TActivatorData">Data associated with the specific kind of activator.</typeparam>
-    public interface IActivatorGenerator<in TActivatorData>
+    static class OpenGenericRegistrationExtensions
     {
-        /// <summary>
-        /// Given a requested service and registration data, attempt to generate an
-        /// activator for the service.
-        /// </summary>
-        /// <param name="service">Service that was requested.</param>
-        /// <param name="configuredServices">Services associated with the activator generator.</param>
-        /// <param name="reflectionActivatorData">Data specific to this kind of activator.</param>
-        /// <param name="activator">Resulting activator.</param>
-        /// <param name="services">Services provided by the activator.</param>
-        /// <returns>True if an activator could be generated.</returns>
-        bool TryGenerateActivator(
-            Service service,
-            IEnumerable<Service> configuredServices,
-            TActivatorData reflectionActivatorData,
-            out IInstanceActivator activator,
-            out IEnumerable<Service> services);
+        public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
+            RegisterGeneric(ContainerBuilder builder, Type implementor)
+        {
+            if (builder == null) throw new ArgumentNullException("builder");
+            if (implementor == null) throw new ArgumentNullException("implementor");
+
+            var rb = new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(
+                new TypedService(implementor),
+                new ReflectionActivatorData(implementor),
+                new DynamicRegistrationStyle());
+
+            builder.RegisterCallback(cr => cr.AddRegistrationSource(
+                new OpenGenericRegistrationSource(rb.RegistrationData, rb.ActivatorData)));
+
+            return rb;
+        }
     }
 }

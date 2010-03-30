@@ -34,30 +34,21 @@ using Autofac.Util;
 
 namespace Autofac.Builder
 {
-    /// <summary>
-    /// Data structure used to construct registrations.
-    /// </summary>
-    /// <typeparam name="TLimit">The most specific type to which instances of the registration
-    /// can be cast.</typeparam>
-    /// <typeparam name="TActivatorData">Activator builder type.</typeparam>
-    /// <typeparam name="TRegistrationStyle">Registration style type.</typeparam>
     class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> : IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>, IHideObjectMembers
     {
         readonly TActivatorData _activatorData;
         readonly TRegistrationStyle _registrationStyle;
-        readonly RegistrationData _registrationData = new RegistrationData();
+        readonly RegistrationData _registrationData;
 
-        /// <summary>
-        /// Create a IRegistrationBuilder.
-        /// </summary>
-        /// <param name="activatorData">Activator builder.</param>
-        /// <param name="style">Registration style.</param>
-        public RegistrationBuilder(TActivatorData activatorData, TRegistrationStyle style)
+        public RegistrationBuilder(Service defaultService, TActivatorData activatorData, TRegistrationStyle style)
         {
+            if (defaultService == null) throw new ArgumentNullException("defaultService");
             Enforce.ArgumentNotNull((object)activatorData, "activatorData");
             Enforce.ArgumentNotNull((object)style, "style");
+
             _activatorData = activatorData;
             _registrationStyle = style;
+            _registrationData = new RegistrationData(defaultService);
         }
 
         /// <summary>
@@ -208,10 +199,7 @@ namespace Autofac.Builder
         {
             Enforce.ArgumentNotNull(services, "services");
 
-            RegistrationData.DefaultServiceOverridden = true;
-
-            foreach (var service in services)
-                RegistrationData.Services.Add(service);
+            RegistrationData.AddServices(services);
 
             return this;
         }

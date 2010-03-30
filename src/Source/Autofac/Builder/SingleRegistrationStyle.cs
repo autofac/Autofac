@@ -26,7 +26,6 @@
 using System;
 using System.Collections.Generic;
 using Autofac.Core;
-using Autofac.Util;
 
 namespace Autofac.Builder
 {
@@ -41,18 +40,6 @@ namespace Autofac.Builder
             _registeredHandlers = new List<EventHandler<ComponentRegisteredEventArgs>>();
 
         bool _preserveDefaults;
-
-        readonly Type _defaultServiceType;
-
-        /// <summary>
-        /// Create a new SingleRegistrationStyle.
-        /// </summary>
-        /// <param name="defaultServiceType">The type that will be used as the default service if
-        /// no other services are configured.</param>
-        public SingleRegistrationStyle(Type defaultServiceType)
-        {
-            _defaultServiceType = Enforce.ArgumentNotNull(defaultServiceType, "defaultServiceType");
-        }
 
         /// <summary>
         /// The id used for the registration.
@@ -88,14 +75,5 @@ namespace Autofac.Builder
         /// The component upon which this registration is based.
         /// </summary>
         public IComponentRegistration Target { get; set; }
-
-        /// <summary>
-        /// The type that will be used as the default service if
-        /// no other services are configured.
-        /// </summary>
-        public Type DefaultServiceType
-        {
-            get { return _defaultServiceType; }
-        }
     }
 }

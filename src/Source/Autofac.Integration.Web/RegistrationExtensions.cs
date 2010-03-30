@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web;
 using Autofac.Builder;
+using Autofac.Core;
 
 namespace Autofac.Integration.Web
 {
@@ -50,7 +51,7 @@ namespace Autofac.Integration.Web
             if (registration == null) throw new ArgumentNullException("registration");
 
             var services = registration.RegistrationData.Services.ToArray();
-            registration.RegistrationData.Services.Clear();
+            registration.RegistrationData.ClearServices();
 
             registration
                 .ExternallyOwned()

@@ -42,6 +42,7 @@ namespace Autofac.Features.Scanning
             Enforce.ArgumentNotNull(assemblies, "assemblies");
 
             var rb = new RegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>(
+                new TypedService(typeof(object)),
                 new ScanningActivatorData(),
                 new DynamicRegistrationStyle());
 
@@ -61,7 +62,7 @@ namespace Autofac.Features.Scanning
                         .WithParameters(rb.ActivatorData.ConfiguredParameters)
                         .WithProperties(rb.ActivatorData.ConfiguredProperties);
 
-                    scanned.RegistrationData.CopyFrom(rb.RegistrationData);
+                    scanned.RegistrationData.CopyFrom(rb.RegistrationData, false);
 
                     foreach (var action in rb.ActivatorData.ConfigurationActions)
                         action(t, scanned);
