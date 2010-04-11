@@ -35,14 +35,6 @@ namespace Autofac.Integration.Web.Mvc
     public interface IControllerIdentificationStrategy
     {
         /// <summary>
-        /// Determines which service is resolved in order to provide the
-        /// controller identified by the MVC framework using the provided name.
-        /// </summary>
-        /// <param name="controllerName">Name of the controller.</param>
-        /// <returns>The service identifier.</returns>
-        Service ServiceForControllerName(string controllerName);
-
-        /// <summary>
         /// Determines which service is registered for the supplied
         /// controller type. This service will correspond to the service
         /// returned by ServiceForControllerName when the controller is

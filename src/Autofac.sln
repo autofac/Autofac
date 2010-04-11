@@ -49,6 +49,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.Web.Mvc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.Web.Mvc", "Test\Autofac.Tests.Integration.Web.Mvc\Autofac.Tests.Integration.Web.Mvc.csproj", "{AAD5332F-B83B-4469-97BA-138BDF3C60F4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remember.Service", "Example\Remember.Service\Remember.Service.csproj", "{C02A73FD-8F99-4127-878F-01F929C67BAD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -205,6 +207,18 @@ Global
 		{AAD5332F-B83B-4469-97BA-138BDF3C60F4}.ReleaseSL2|Any CPU.ActiveCfg = Release|Any CPU
 		{AAD5332F-B83B-4469-97BA-138BDF3C60F4}.ReleaseSL3|Any CPU.ActiveCfg = Release|Any CPU
 		{AAD5332F-B83B-4469-97BA-138BDF3C60F4}.ReleaseSL4|Any CPU.ActiveCfg = Release|Any CPU
+		{C02A73FD-8F99-4127-878F-01F929C67BAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C02A73FD-8F99-4127-878F-01F929C67BAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C02A73FD-8F99-4127-878F-01F929C67BAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C02A73FD-8F99-4127-878F-01F929C67BAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C02A73FD-8F99-4127-878F-01F929C67BAD}.ReleaseNET35|Any CPU.ActiveCfg = Release|Any CPU
+		{C02A73FD-8F99-4127-878F-01F929C67BAD}.ReleaseNET35|Any CPU.Build.0 = Release|Any CPU
+		{C02A73FD-8F99-4127-878F-01F929C67BAD}.ReleaseSL2|Any CPU.ActiveCfg = Release|Any CPU
+		{C02A73FD-8F99-4127-878F-01F929C67BAD}.ReleaseSL2|Any CPU.Build.0 = Release|Any CPU
+		{C02A73FD-8F99-4127-878F-01F929C67BAD}.ReleaseSL3|Any CPU.ActiveCfg = Release|Any CPU
+		{C02A73FD-8F99-4127-878F-01F929C67BAD}.ReleaseSL3|Any CPU.Build.0 = Release|Any CPU
+		{C02A73FD-8F99-4127-878F-01F929C67BAD}.ReleaseSL4|Any CPU.ActiveCfg = Release|Any CPU
+		{C02A73FD-8F99-4127-878F-01F929C67BAD}.ReleaseSL4|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -227,5 +241,6 @@ Global
 		{225D06BB-05C9-4C2E-BE28-8E77DC0C67EE} = {01C16A53-606F-4F57-ADF0-D15974B0832D}
 		{9DE8DA2E-AD61-4C49-ACEB-A790CD1E93DE} = {01C16A53-606F-4F57-ADF0-D15974B0832D}
 		{6B8F4473-BF8C-4AF6-8D8C-1B93E628ACF3} = {01C16A53-606F-4F57-ADF0-D15974B0832D}
+		{C02A73FD-8F99-4127-878F-01F929C67BAD} = {01C16A53-606F-4F57-ADF0-D15974B0832D}
 	EndGlobalSection
 EndGlobal

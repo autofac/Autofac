@@ -30,41 +30,16 @@ using Autofac.Core;
 namespace Autofac.Integration.Web.Mvc
 {
     /// <summary>
-    /// Identifies controllers as 'controller.[name]'. This is
-    /// tied to the router's controller names by lowercasing them,
-    /// and to the controller type names by stripping off the
-    /// 'Controller' and doing the same.
+    /// Identifies controllers as TypedService(controllerType). 
+    /// The type will include the namespace and therefore supports identical controller names
+    /// from different MVC Areas
     /// </summary>
     public class DefaultControllerIdentificationStrategy
         : IControllerIdentificationStrategy
     {
-        const string Prefix = "controller.";
-        const string TypeNameSuffix = "Controller";
-
-        /// <summary>
-        /// Determines which service is resolved in order to provide the
-        /// controller identified by the MVC framework using the provided name.
-        /// E.g.: Home (Route) -&gt; controller.home
-        /// </summary>
-        /// <param name="controllerName">Name of the controller.</param>
-        /// <returns>The service identifier.</returns>
-        public Service ServiceForControllerName(string controllerName)
-        {
-            if (controllerName == null)
-                throw new ArgumentNullException("controllerName");
-
-            if (controllerName == "")
-                throw new ArgumentOutOfRangeException("controllerName");
-
-            return new NamedService(Prefix + controllerName.ToLowerInvariant(), typeof(IController));
-        }
-
         /// <summary>
         /// Determines which service is registered for the supplied
-        /// controller type. This service will correspond to the service
-        /// returned by ServiceForControllerName when the controller is
-        /// requested by the framework. E.g.:
-        /// HomeController -&gt; controller.home
+        /// controller type.
         /// </summary>
         /// <param name="controllerType">Type of the controller.</param>
         /// <returns>
@@ -75,7 +50,8 @@ namespace Autofac.Integration.Web.Mvc
             if (controllerType == null)
                 throw new ArgumentNullException("controllerType");
 
-            return ServiceForControllerName(controllerType.Name.Replace(TypeNameSuffix, ""));
+
+            return new TypedService(controllerType);
         }
     }
 }

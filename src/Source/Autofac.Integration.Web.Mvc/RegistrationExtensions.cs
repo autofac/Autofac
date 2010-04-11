@@ -12,6 +12,43 @@ namespace Autofac.Integration.Web.Mvc
     /// </summary>
     public static class RegistrationExtensions
     {
+        private static string ModelBinderComponentRegistrationKey = "ModelBinderType";
+
+        /// <summary>
+        /// Register types that implement IModelBinder in the provided assemblies.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        /// <param name="controllerAssemblies">Assemblies to scan for model binders.</param>
+        /// <returns>Registration builder allowing the controller components to be customised.</returns>
+        public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
+            RegisterModelBinders(
+                this ContainerBuilder builder,
+                params Assembly[] modelBinderAssemblies)
+        {
+            //builder.RegisterCallback(LoadModelBindersFromComponentRegistry);
+
+            return builder.RegisterAssemblyTypes(modelBinderAssemblies)
+                .Where(t =>
+                {
+                    return typeof(IModelBinder).IsAssignableFrom(t);
+                })
+                .As<IModelBinder>()
+                .AsSelf()
+                .WithMetadata(ModelBinderComponentRegistrationKey, t =>
+                {
+
+                    //all of this could be neatly moved to a place if 
+                    // there were an Onregistration hook in the assembly scanning feature
+                    foreach (ModelBinderTypeAttribute item in t.GetCustomAttributes(typeof(ModelBinderTypeAttribute), true))
+                    {
+                        ModelBinders.Binders.Add(item.TargetType, new AutofacModelBinder(t));
+                    }
+                    return t;
+                });
+
+        }
+
+
         /// <summary>
         /// Register types that implement IController in the provided assemblies.
         /// </summary>
@@ -36,11 +73,12 @@ namespace Autofac.Integration.Web.Mvc
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             RegisterControllers(
                 this ContainerBuilder builder,
-                IControllerIdentificationStrategy identificationStrategy, 
+                IControllerIdentificationStrategy identificationStrategy,
                 params Assembly[] controllerAssemblies)
         {
             return builder.RegisterAssemblyTypes(controllerAssemblies)
                 .Where(t => typeof(IController).IsAssignableFrom(t))
+                .Where(t => t.Name.EndsWith("Controller"))
                 .As(t => identificationStrategy.ServiceForControllerType(t));
         }
 
@@ -56,7 +94,8 @@ namespace Autofac.Integration.Web.Mvc
             InjectActionInvoker<TLimit, TActivatorData, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registrationBuilder)
         {
-            return registrationBuilder.InjectActionInvoker(new TypedService(typeof (IActionInvoker)));
+            
+            return registrationBuilder.InjectActionInvoker(new TypedService(typeof(IActionInvoker)));
         }
 
         /// <summary>
@@ -75,6 +114,7 @@ namespace Autofac.Integration.Web.Mvc
         {
             if (registrationBuilder == null) throw new ArgumentNullException("registrationBuilder");
             if (actionInvokerService == null) throw new ArgumentNullException("actionInvokerService");
+
 
             return registrationBuilder.OnActivating(e =>
             {

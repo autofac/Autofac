@@ -32,6 +32,7 @@ namespace Autofac.Integration.Web.Mvc
 {
     /// <summary>
     /// Injects services from the container into the ASP.NET MVC invocation pipeline.
+    /// This is a Async Controller Action Invoker which can be used for both async and non-async scenarios
     /// </summary>
     /// <remarks>
     /// <para>
@@ -51,7 +52,7 @@ namespace Autofac.Integration.Web.Mvc
     /// container, along with regular parameters.
     /// </para>
     /// </remarks>
-    public class ExtensibleActionInvoker : ControllerActionInvoker
+    public class ExtensibleActionInvoker : System.Web.Mvc.Async.AsyncControllerActionInvoker
     {
         readonly IComponentContext _context;
         readonly IEnumerable<IActionFilter> _actionFilters;

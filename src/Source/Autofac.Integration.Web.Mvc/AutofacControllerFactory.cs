@@ -30,11 +30,12 @@ using System.Web.Routing;
 
 namespace Autofac.Integration.Web.Mvc
 {
+
     /// <summary>
     /// An MS-MVC controller factory that returns controllers built by an
     /// Autofac IoC container scoped according to the current request.
     /// </summary>
-    public class AutofacControllerFactory : IControllerFactory
+    public class AutofacControllerFactory : DefaultControllerFactory
     {
         readonly IContainerProvider _containerProvider;
         readonly IControllerIdentificationStrategy _controllerIdentificationStrategy;
@@ -54,7 +55,7 @@ namespace Autofac.Integration.Web.Mvc
         /// <param name="containerProvider">The container provider.</param>
         /// <param name="controllerIdentificationStrategy">The controller identification strategy.</param>
         public AutofacControllerFactory(
-            IContainerProvider containerProvider, 
+            IContainerProvider containerProvider,
             IControllerIdentificationStrategy controllerIdentificationStrategy)
         {
             if (containerProvider == null)
@@ -67,22 +68,34 @@ namespace Autofac.Integration.Web.Mvc
             _controllerIdentificationStrategy = controllerIdentificationStrategy;
         }
 
+        public override IController CreateController(RequestContext requestContext, string controllerName)
+        {
+            return base.CreateController(requestContext, controllerName);
+        }
+
         /// <summary>
         /// Creates the controller.
         /// </summary>
         /// <param name="context">The context.</param>
-        /// <param name="controllerName">Name of the controller.</param>
+        /// <param name="controllerType">Type of the controller.</param>
         /// <returns>The controller.</returns>
-        public virtual IController CreateController(RequestContext context, string controllerName)
+        protected override IController GetControllerInstance(RequestContext context, Type controllerType)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
 
-            if (controllerName == null)
-                throw new ArgumentNullException("controllerName");
+            //
+            // a null controller type is a 404, because the base class couldn't resolve the controller name back to a type
+            // a common example of this case would be a non-existant favicon.ico
+            if (controllerType == null)
+            {
+                throw new HttpException(404,
+                    string.Format("controller type was not found for path {0}",
+                        context.HttpContext.Request.Path));
+            }
 
             var controllerService = _controllerIdentificationStrategy
-                .ServiceForControllerName(controllerName);
+                .ServiceForControllerType(controllerType);
 
             object controller = null;
             if (_containerProvider.RequestLifetime.TryResolve(controllerService, out controller))
@@ -91,15 +104,16 @@ namespace Autofac.Integration.Web.Mvc
                 throw new HttpException(404,
                     string.Format(AutofacControllerFactoryResources.NotFound,
                         controllerService,
-                        controllerName,
+                        controllerType.FullName,
                         context.HttpContext.Request.Path));
         }
 
+
         /// <summary>
-        /// Releases the controller. Unecessary in an Autofac-managed application.
+        /// Releases the controller. Unecessary in an Autofac-managed application
         /// </summary>
         /// <param name="controller">The controller.</param>
-        public void ReleaseController(IController controller)
+        public override void ReleaseController(IController controller)
         {
         }
     }

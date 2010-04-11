@@ -9,6 +9,7 @@ using Remember.Model;
 using Remember.Persistence.NHibernate;
 using Remember.Persistence;
 using Autofac;
+using Remember.Service;
 
 namespace Remember.Web
 {
@@ -21,10 +22,9 @@ namespace Remember.Web
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
-                "Default",
-                "{controller}/{action}/{id}",
-                new { controller = "Task", action = "Index", id = "" },
-                new { controller = @"[^\.]*" }
+                "Default",                                                               // Route name
+                "{controller}/{action}/{id}",                                            // URL with parameters
+                new { controller = "Home", action = "Index", id=UrlParameter.Optional }     // Parameter defaults
             );
         }
 
@@ -32,7 +32,9 @@ namespace Remember.Web
         {
             var builder = new ContainerBuilder();
 
+            builder.RegisterModelBinders(Assembly.GetExecutingAssembly());
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
+            builder.RegisterType<AuthenticationService>().As<IAuthenticationService>();
             builder.RegisterModule(new NHibernateModule());
 
             _containerProvider = new ContainerProvider(builder.Build());

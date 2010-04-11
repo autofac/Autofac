@@ -4,20 +4,33 @@ using Autofac.Integration.Web.Mvc;
 using NUnit.Framework;
 using System.Web.Routing;
 
+namespace Autofac.Tests.Integration.Web.Mvc.Area1
+{
+    class HomeController : IController
+    {
+        public void Execute(RequestContext controllerContext)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
+
+namespace Autofac.Tests.Integration.Web.Mvc.Area2
+{
+    class HomeController : IController
+    {
+        public void Execute(RequestContext controllerContext)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
+
 namespace Autofac.Tests.Integration.Web.Mvc
 {
     [TestFixture]
     public class DefaultControllerIdentificationStrategyFixture
     {
-        [Test]
-        public void CaseInsensitiveRouteNames()
-        {
-            var target = new DefaultControllerIdentificationStrategy();
-            var route1 = target.ServiceForControllerName("Home");
-            var route2 = target.ServiceForControllerName("home");
-            Assert.IsNotNull(route1);
-            Assert.AreEqual(route1, route2);
-        }
 
         class HomeController : IController
         {
@@ -28,12 +41,13 @@ namespace Autofac.Tests.Integration.Web.Mvc
         }
 
         [Test]
-        public void TypeNameMatchesRoute()
+        public void ControllerTypeServicesInDifferentAreasDoNotMatch()
         {
             var target = new DefaultControllerIdentificationStrategy();
-            var route1 = target.ServiceForControllerType(typeof(HomeController));
-            var route2 = target.ServiceForControllerName("home");
-            Assert.AreEqual(route1, route2);
+            var route1 = target.ServiceForControllerType(typeof(Area1.HomeController));
+            var route2 = target.ServiceForControllerType(typeof(Area2.HomeController));
+            Assert.AreNotEqual(route1, route2);
         }
+
     }
 }

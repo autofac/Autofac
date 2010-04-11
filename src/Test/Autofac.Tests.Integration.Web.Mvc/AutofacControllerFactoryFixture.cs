@@ -15,35 +15,35 @@ namespace Autofac.Tests.Integration.Web.Mvc
     public class AutofacControllerFactoryFixture
     {
         class StubController : Controller { }
-        
+
         class StubContainerProvider : IContainerProvider
         {
-        	IContainer _container;
-        	
-        	public StubContainerProvider(IContainer container)
-        	{
-        		_container = container;
-        	}
-        	
-        	public IContainer ApplicationContainer
-			{
-				get
-				{
-					return _container;
-				}
-			}
-        	
-			public ILifetimeScope RequestLifetime
-			{
-				get
-				{
-					return _container;
-				}
-			}
-        	
-			public void EndRequestLifetime()
-			{
-			}
+            IContainer _container;
+
+            public StubContainerProvider(IContainer container)
+            {
+                _container = container;
+            }
+
+            public IContainer ApplicationContainer
+            {
+                get
+                {
+                    return _container;
+                }
+            }
+
+            public ILifetimeScope RequestLifetime
+            {
+                get
+                {
+                    return _container;
+                }
+            }
+
+            public void EndRequestLifetime()
+            {
+            }
         }
 
         const string HomeControllerName = "Home";
@@ -60,7 +60,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
         [ExpectedException(typeof(ArgumentNullException))]
         public void DetectsNullProvider()
         {
-        	var target = new AutofacControllerFactory(null);
+            var target = new AutofacControllerFactory(null);
         }
 
         private AutofacControllerFactory CreateTarget()
@@ -68,21 +68,8 @@ namespace Autofac.Tests.Integration.Web.Mvc
             return new AutofacControllerFactory(new StubContainerProvider(new Container()));
         }
 
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void DetectsNullControllerName()
-        {
-            var target = CreateTarget();
-            target.CreateController(CreateContext(), null);
-        }
 
-        [Test]
-        [ExpectedException(typeof(HttpException))]
-        public void ThrowsHttpException404WhenControllerMissing()
-        {
-            var target = CreateTarget();
-            target.CreateController(CreateContext(), "NotAController");
-        }
+
 
         private RequestContext CreateContext()
         {
@@ -93,22 +80,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
             return new RequestContext(httpContext.Object, new RouteData());
         }
 
-        [Test]
-        public void CreatesController()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<StubController>()
-            	.Named<IController>("controller." + HomeControllerName.ToLowerInvariant());
-            var container = builder.Build();
 
-            var context = CreateContext();
 
-            var provider = new StubContainerProvider(container);
-            var target = new AutofacControllerFactory(provider);
-            var controller = target.CreateController(context, HomeControllerName);
-
-            Assert.IsNotNull(controller);
-            Assert.IsInstanceOf<StubController>(controller);
-        }
     }
 }

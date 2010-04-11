@@ -1,9 +1,9 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/Views/Shared/Site.Master" AutoEventWireup="true" CodeBehind="Index.aspx.cs" Inherits="Remember.Web.Views.Task.Index" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Views/Shared/Site.Master"  Inherits="System.Web.Mvc.ViewPage<IEnumerable<Remember.Model.Task>>" %>
 
-<asp:Content ID="indexContent" ContentPlaceHolderID="MainContentPlaceHolder" runat="server">
+<asp:Content ContentPlaceHolderID="MainContentPlaceHolder" runat="server">
     <h2>Tasks</h2>
     <ol>
-        <% foreach (var task in ViewData.Model) { %>
+        <% foreach (var task in Model) { %>
             <li><%= Server.HtmlEncode(task.Title) %></li>
         <% } %>
     </ol>

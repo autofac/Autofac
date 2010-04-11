@@ -1,11 +1,13 @@
-<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="Remember.Web.Views.Shared.Site" %>
+<%@ Master Language="C#" Inherits="System.Web.Mvc.ViewMasterPage" %>
+
 <%@ Import Namespace="System.Web.Mvc" %>
 <%@ Import Namespace="System.Web.Mvc.Html" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-    <title>My Sample MVC Application</title>
+    <title>Remember - Sample MVC App</title>
     <link href="../../Content/Site.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -13,14 +15,13 @@
 
         <div id="header">
             <p id="logo">
-                <a href="">My Sample MVC Application</a></p>
+                <a href="">Remember - Sample MVC App</a></p>
             <ul id="mainMenu">
                 <li>
-                    <%= Html.ActionLink("Home","Index")%>
+                
+                    <%= Html.ActionLink("Home","Index","Home")%>
                 </li>
-                <li>
-                    <%= Html.ActionLink("About", "About")%>
-                </li>
+                
             </ul>
         </div>
 
@@ -30,13 +31,14 @@
 
                 <div class="leftColumn">
                     <h2>
-                        MVC Help Topics</h2>
+                        Links</h2>
                     <ul>
-                        <li><a href="http://msdn2.microsoft.com/en-us/asp.net/default.aspx">ASP.NET Dev Center</a></li>
+                        <li><a href="http://autofac.org">Autofac </a></li>
+                        <li><a href="http://groups.google.com/group/autofac">Discuss Autofac </a></li>
                         <li><a href="http://www.asp.net/">ASP.NET Official Site</a></li>
+                        <li><a href="http://www.asp.net/mvc">ASP.NET MVC Official Site</a></li>
                         <li><a href="http://asp.net/downloads/">MVC Framework Download</a></li>
                         <li><a href="http://forums.asp.net/1146.aspx">MVC Framework Forums</a></li>
-                        <li><a href="http://quickstarts.asp.net/3-5-extensions/mvc/default.aspx">MVC Framework Documentation</a></li>
                     </ul>
                 </div><!--/leftColumn-->
 
