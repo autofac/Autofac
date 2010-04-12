@@ -14,8 +14,11 @@ namespace Autofac.Builder
     /// <example>
     /// To create an <see cref="IComponentRegistration"/> for a specific type, use:
     /// <code>
-    /// var rb = IRegistrationBuilder.ForType(t).Named("foo").ExternallyOwned();
-    /// var cr = IRegistrationBuilder.CreateRegistration(rb);
+    /// var cr = RegistrationBuilder.ForType(t).CreateRegistration();
+    /// </code>
+    /// The full builder syntax is supported:
+    /// <code>
+    /// var cr = RegistrationBuilder.ForType(t).Named("foo").ExternallyOwned().CreateRegistration();
     /// </code>
     /// </example>
     public static class RegistrationBuilder
@@ -86,7 +89,7 @@ namespace Autofac.Builder
         /// </remarks>
         /// <example>
         /// <code>
-        /// var registration = IRegistrationBuilder.ForType&lt;Foo&gt;().CreateRegistration();
+        /// var registration = RegistrationBuilder.ForType&lt;Foo&gt;().CreateRegistration();
         /// </code>
         /// </example>
         /// <typeparam name="TLimit"></typeparam>
