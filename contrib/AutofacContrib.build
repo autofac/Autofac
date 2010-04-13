@@ -27,6 +27,7 @@
 		<StartableSource>Source\AutofacContrib.Startable\bin\$(Configuration)</StartableSource>
 		<NMock2Source>Source\AutofacContrib.NMock2\bin\$(Configuration)</NMock2Source>
     <NHibernateSource>Source\AutofacContrib.NHibernate\bin\$(Configuration)</NHibernateSource>
+    <AggregateServiceSource>Source\AutofacContrib.AggregateService\bin\$(Configuration)</AggregateServiceSource>
 
 		<SourceExclusions>**\.svn\**\*.*;**\_svn\**\*.*;**\*.user;**\*.suo;**\*.db;**\bin\**\*.*;**\obj\**\*.*;</SourceExclusions>
 
@@ -74,7 +75,7 @@
 		<MakeDir Directories="$(BuildPath);"/>
 		
 		<!--Libraries-->
-		<CreateItem Include="$(CslSource)\*.*;$(DP2Source)\*.*;$(MoqSource)\*.*;$(StartableSource)\*.*;$(NMock2Source)\*.*;$(NHibernateSource)\*.*">
+		<CreateItem Include="$(CslSource)\*.*;$(DP2Source)\*.*;$(MoqSource)\*.*;$(StartableSource)\*.*;$(NMock2Source)\*.*;$(NHibernateSource)\*.*;$(AggregateServiceSource)\*.*">
 			<Output ItemName="unmergedFiles" TaskParameter="Include"/>
 		</CreateItem>
 		<Copy SourceFiles="@(unmergedFiles)" DestinationFolder="$(LibraryPath)" />
