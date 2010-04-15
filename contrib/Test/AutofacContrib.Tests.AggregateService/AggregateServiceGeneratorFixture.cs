@@ -1,3 +1,4 @@
+using System;
 using Autofac;
 using AutofacContrib.AggregateService;
 using NUnit.Framework;
@@ -22,6 +23,12 @@ namespace AutofacContrib.Tests.AggregateService
             var instance = AggregateServiceGenerator.CreateInstance(typeof(IMyContext), null);
 
             Assert.That(instance, Is.InstanceOfType(typeof(IMyContext)));
+        }
+
+        [Test, ExpectedException(typeof(ArgumentException))]
+        public void CreateInstance_ExpectsInterfaceType()
+        {
+            AggregateServiceGenerator.CreateInstance<String>(null);           
         }
     }
 }

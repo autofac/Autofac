@@ -12,53 +12,63 @@ namespace AutofacContrib.Tests.AggregateService
     {
         private IContainer _container;
         private ISomeDependency _someDependencyMock;
+        private IMyContext _aggregateService;
 
         [SetUp]
         public void Setup()
         {
+            _someDependencyMock = new Mock<ISomeDependency>().Object;
+
             var builder = new ContainerBuilder();
             builder.RegisterAggregateService<IMyContext>();
-            builder.RegisterType<MyServiceImpl>().As<IMyService>();
-            _someDependencyMock = new Mock<ISomeDependency>().Object;
+            builder.RegisterType<MyServiceImpl>()
+                .As<IMyService>()
+                .InstancePerDependency();
             builder.RegisterInstance(_someDependencyMock);
             _container = builder.Build();
+
+            _aggregateService = _container.Resolve<IMyContext>();
         }
 
         [Test]
         public void Property_ResolvesService()
         {
-            var dep = _container.Resolve<IMyContext>();
+            Assert.That(_aggregateService.MyService, 
+                Is.Not.Null & Is.InstanceOfType(typeof(IMyService)));
+        }
 
-            Assert.That(dep.MyService, Is.Not.Null & Is.InstanceOfType(typeof(IMyService)));
+        [Test]
+        public void Property_Getter_AlwaysReturnSameInstance()
+        {
+            var firstInstance = _aggregateService.MyService;
+            var secondInstance = _aggregateService.MyService;
+
+            Assert.That(firstInstance, Is.SameAs(secondInstance));
         }
 
         [Test, ExpectedException(typeof(InvalidOperationException))]
-        public void Property_WithSetter_Throws()
+        public void Property_Setter_Throws()
         {
-            var dep = _container.Resolve<IMyContext>();
-            dep.PropertyWithSetter = null;
+            _aggregateService.PropertyWithSetter = null;
         }
 
         [Test, ExpectedException(typeof(InvalidOperationException))]
         public void Method_WithVoid_Throws()
         {
-            var dep = _container.Resolve<IMyContext>();
-            dep.MethodWithoutReturnValue();
+            _aggregateService.MethodWithoutReturnValue();
         }
 
         [Test]
         public void Method_ResolvesService()
         {
-            var dep = _container.Resolve<IMyContext>();
-            
-            Assert.That(dep.GetMyService(), Is.Not.Null & Is.InstanceOfType(typeof(IMyService)));
+            Assert.That(_aggregateService.GetMyService(), 
+                Is.Not.Null & Is.InstanceOfType(typeof(IMyService)));
         }
 
         [Test]
         public void Method_WithParameter_PassesParameterToService()
         {
-            var dep = _container.Resolve<IMyContext>();
-            var myService = dep.GetMyService(10);
+            var myService = _aggregateService.GetMyService(10);
 
             Assert.That(myService.SomeIntValue, Is.EqualTo(10));
         }
@@ -67,8 +77,7 @@ namespace AutofacContrib.Tests.AggregateService
         public void Method_WithParameters_PassesParametersToService()
         {
             var someDate = DateTime.Now;
-            var dep = _container.Resolve<IMyContext>();
-            var myService = dep.GetMyService(someDate, 20);
+            var myService = _aggregateService.GetMyService(someDate, 20);
 
             Assert.That(myService.SomeDateValue, Is.EqualTo(someDate));
             Assert.That(myService.SomeIntValue, Is.EqualTo(20));
@@ -77,8 +86,7 @@ namespace AutofacContrib.Tests.AggregateService
         [Test]
         public void Method_WithNullParameters_PassesParametersToService()
         {
-            var dep = _container.Resolve<IMyContext>();
-            var myService = dep.GetMyService((string)null);
+            var myService = _aggregateService.GetMyService(null);
 
             Assert.That(myService.SomeStringValue, Is.Null);
         }
@@ -86,13 +94,10 @@ namespace AutofacContrib.Tests.AggregateService
         [Test]
         public void Method_WithParameter_PassesParameterAndOtherDependenciesToService()
         {
-            var dep = _container.Resolve<IMyContext>();
-            var myService = dep.GetMyService("text");
+            var myService = _aggregateService.GetMyService("text");
 
             Assert.That(myService.SomeStringValue, Is.EqualTo("text"));
             Assert.That(myService.SomeDependency, Is.EqualTo(_someDependencyMock));
         }
-
-        
     }
 }

@@ -14,7 +14,7 @@ namespace AutofacContrib.AggregateService
         {
             builder.Register(c => AggregateServiceGenerator.CreateInstance(aggregateServiceInterfaceType, c.Resolve<IComponentContext>()))
                 .As(aggregateServiceInterfaceType)
-                .InstancePerLifetimeScope();
+                .InstancePerDependency();
         }
     }
 }

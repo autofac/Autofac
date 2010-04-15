@@ -43,5 +43,18 @@ namespace AutofacContrib.Tests.AggregateService
 
             Assert.That(rootScope.MyService, Is.Not.SameAs(subScope.MyService));
         }
+
+        [Test]
+        public void RegisterAggregateService_IsPerDependencyScoped()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterAggregateService<IMyContext>();
+            var container = builder.Build();
+
+            var firstInstance = container.Resolve<IMyContext>();
+            var secondInstance = container.Resolve<IMyContext>();
+
+            Assert.That(firstInstance, Is.Not.SameAs(secondInstance));
+        }
     }
 }

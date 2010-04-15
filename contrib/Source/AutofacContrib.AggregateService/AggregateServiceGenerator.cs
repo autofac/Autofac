@@ -21,7 +21,7 @@ namespace AutofacContrib.AggregateService
 
         public static object CreateInstance(Type interfaceType, IComponentContext context)
         {
-            var resolverInterceptor = new ResolvingInterceptor(context);
+            var resolverInterceptor = new ResolvingInterceptor(interfaceType, context);
             return Generator.CreateInterfaceProxyWithoutTarget(interfaceType, resolverInterceptor);
         }
     }
