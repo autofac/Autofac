@@ -1,5 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using Autofac.Core;
+using System.Collections.Generic;
 
 namespace Autofac.Tests.Features.OpenGenerics
 {
@@ -97,8 +99,15 @@ namespace Autofac.Tests.Features.OpenGenerics
             cb.RegisterGeneric(typeof(G<>))
                 .Named(name, typeof(IG<>));
             var c = cb.Build();
-            var gi = c.Resolve<IG<int>>(name);
-            var gs = c.Resolve<IG<string>>(name);
+            Assert.That(c.IsRegistered<IG<int>>(name));
+            Assert.That(c.IsRegistered<IG<string>>(name));
+        }
+
+        [Test]
+        public void RegisterGenericRejectsNonOpenGenericTypes()
+        {
+            var cb = new ContainerBuilder();
+            Assert.Throws<ArgumentException>(() => cb.RegisterGeneric(typeof(List<int>)));
         }
     }
 }

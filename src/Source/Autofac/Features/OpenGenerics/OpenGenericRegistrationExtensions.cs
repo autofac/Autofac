@@ -26,7 +26,6 @@
 using System;
 using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Util;
 
 namespace Autofac.Features.OpenGenerics
 {
@@ -37,6 +36,10 @@ namespace Autofac.Features.OpenGenerics
         {
             if (builder == null) throw new ArgumentNullException("builder");
             if (implementor == null) throw new ArgumentNullException("implementor");
+
+            if (!implementor.IsGenericTypeDefinition)
+                throw new ArgumentException(string.Format(
+                    OpenGenericRegistrationExtensionsResources.ImplementorMustBeOpenGenericType, implementor));
 
             var rb = new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(
                 new TypedService(implementor),
