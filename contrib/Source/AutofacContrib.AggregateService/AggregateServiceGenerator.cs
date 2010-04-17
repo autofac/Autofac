@@ -21,6 +21,9 @@ namespace AutofacContrib.AggregateService
 
         public static object CreateInstance(Type interfaceType, IComponentContext context)
         {
+            if (interfaceType == null) throw new ArgumentNullException("interfaceType");
+            if (!interfaceType.IsInterface) throw new ArgumentException("Type must be an interface", "interfaceType");
+
             var resolverInterceptor = new ResolvingInterceptor(interfaceType, context);
             return Generator.CreateInterfaceProxyWithoutTarget(interfaceType, resolverInterceptor);
         }

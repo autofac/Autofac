@@ -14,18 +14,20 @@ namespace AutofacContrib.AggregateService
     public class ResolvingInterceptor : IInterceptor
     {
         private readonly IComponentContext _context;
-        private readonly Dictionary<MethodInfo, object> _services = new Dictionary<MethodInfo, object>();
-        private readonly Dictionary<MethodInfo, Action<IInvocation>> _methodMap;
+        private readonly Dictionary<MethodInfo, Action<IInvocation>> _invocationMap;
 
+        ///<summary>
+        /// Initialize <see cref="ResolvingInterceptor"/> with an interface type and a component context.
+        ///</summary>
         public ResolvingInterceptor(Type interfaceType, IComponentContext context)
         {
             _context = context;
-            _methodMap = SetupInvocationMap(interfaceType);
+            _invocationMap = SetupInvocationMap(interfaceType);
         }
 
-        public void Intercept(IInvocation invocation)
+        void IInterceptor.Intercept(IInvocation invocation)
         {
-            var invocationHandler = _methodMap[invocation.Method];
+            var invocationHandler = _invocationMap[invocation.Method];
             invocationHandler(invocation);
         }
 
@@ -35,17 +37,22 @@ namespace AutofacContrib.AggregateService
             var methodMap = new Dictionary<MethodInfo, Action<IInvocation>>(methods.Length);
             foreach (var method in methods)
             {
-                if (method.ReturnType == typeof(void))
+                var returnType = method.ReturnType;
+
+                if (returnType == typeof(void))
                 {
+                    // Any method with 'void' return type (includes property setters) should throw an exception
                     methodMap.Add(method, InvalidReturnTypeInvocation);
                 }
                 else if (GetProperty(method) != null)
                 {
-                    methodMap.Add(method, PropertyInvocation);
+                    // All properties should be resolved at proxy instantiation 
+                    var propertyValue = _context.Resolve(returnType);
+                    methodMap.Add(method, invocation => invocation.ReturnValue = propertyValue);
                 }
                 else
                 {
-                    var returnType = method.ReturnType;
+                    // For methods with parameters, cache parameter info for use at invocation time
                     var parameters = method.GetParameters()
                         .OrderBy(parameterInfo => parameterInfo.Position)
                         .Select(parameterInfo => new { parameterInfo.Position, parameterInfo.ParameterType })
@@ -70,19 +77,6 @@ namespace AutofacContrib.AggregateService
             }
 
             return methodMap;
-        }
-
-        private void PropertyInvocation(IInvocation invocation)
-        {
-            object service;
-            if (!_services.TryGetValue(invocation.Method, out service))
-            {
-                var returnType = invocation.Method.ReturnType;
-                service = _context.Resolve(returnType);
-                _services.Add(invocation.Method, service);
-            }
-
-            invocation.ReturnValue = service;
         }
 
         private static void InvalidReturnTypeInvocation(IInvocation invocation)

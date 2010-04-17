@@ -1,5 +1,6 @@
 using Autofac;
 using AutofacContrib.AggregateService;
+using Moq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 
@@ -49,6 +50,7 @@ namespace AutofacContrib.Tests.AggregateService
         {
             var builder = new ContainerBuilder();
             builder.RegisterAggregateService<IMyContext>();
+            builder.RegisterInstance(new Mock<IMyService>().Object);
             var container = builder.Build();
 
             var firstInstance = container.Resolve<IMyContext>();
