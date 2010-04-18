@@ -71,12 +71,22 @@ namespace AutofacContrib.AggregateService
                     }
                     else
                     {
-                        methodMap.Add(method, invocation => invocation.ReturnValue = _context.Resolve(returnType));
+                        var methodWithoutParams = GetType()
+                            .GetMethod("MethodWithoutParams", BindingFlags.Instance|BindingFlags.NonPublic)
+                            .MakeGenericMethod(new[]{ returnType });
+
+                        var methodWithoutParamsDelegate = (Action<IInvocation>)Delegate.CreateDelegate(typeof (Action<IInvocation>), this, methodWithoutParams);
+                        methodMap.Add(method, methodWithoutParamsDelegate);
                     }
                 }
             }
 
             return methodMap;
+        }
+
+        private void MethodWithoutParams<TReturnType>(IInvocation invocation)
+        {
+            invocation.ReturnValue = _context.Resolve<TReturnType>();
         }
 
         private static void InvalidReturnTypeInvocation(IInvocation invocation)
