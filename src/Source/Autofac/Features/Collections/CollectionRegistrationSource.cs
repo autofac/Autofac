@@ -68,25 +68,12 @@ namespace Autofac.Features.Collections
                     var elementTypeService = swt.ChangeType(elementType);
                     var elementArrayType = elementType.MakeArrayType();
 
-                    // Note, the maintenance of this item must be a lock-free algorithm.
-                    IEnumerable<IComponentRegistration> elements = null;
-
                     var registration = new ComponentRegistration(
                         Guid.NewGuid(),
                         new DelegateActivator(elementArrayType, (c, p) =>
                         {
-                            if (elements == null)
-                            {
-                                c.ComponentRegistry.Registered += (s, e) =>
-                                {
-                                    if (e.ComponentRegistration.Services.Contains(elementTypeService))
-                                        elements = c.ComponentRegistry.RegistrationsFor(elementTypeService);
-                                };
-                                elements = c.ComponentRegistry.RegistrationsFor(elementTypeService);
-                            }
-
+                            var elements = c.ComponentRegistry.RegistrationsFor(elementTypeService);
                             var items = elements.Select(cr => c.Resolve(cr, p)).ToArray();
-
                             var result = Array.CreateInstance(elementType, items.Length);
                             items.CopyTo(result, 0);
                             return result;

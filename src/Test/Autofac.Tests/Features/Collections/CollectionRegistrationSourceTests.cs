@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using Autofac.Builder;
-using Autofac.Features.Collections;
 
 namespace Autofac.Tests.Features.Collections
 {
@@ -70,6 +67,35 @@ namespace Autofac.Tests.Features.Collections
                 RegistrationBuilder.ForDelegate((ctx,p) => "World").CreateRegistration());
 
             Assert.AreEqual(2, c.Resolve<IEnumerable<string>>().Count());
+        }
+
+        public interface IFoo { }
+        public class Foo1 : IFoo { }
+        public class Foo2 : IFoo { }
+        public class Foo3 : IFoo { }
+
+        [Test]
+        public void EnumerablesFromDifferentLifetimeScopesShouldReturnDifferentCollections()
+        {
+            var rootBuilder = new ContainerBuilder();
+            rootBuilder.RegisterType<Foo1>().As<IFoo>();
+            var rootContainer = rootBuilder.Build();
+
+            var scopeA = rootContainer.BeginLifetimeScope(
+                scopeBuilder => scopeBuilder.RegisterType<Foo2>().As<IFoo>());
+            var arrayA = scopeA.Resolve<IEnumerable<IFoo>>().ToArray();
+
+            var scopeB = rootContainer.BeginLifetimeScope(
+                scopeBuilder => scopeBuilder.RegisterType<Foo3>().As<IFoo>());
+            var arrayB = scopeB.Resolve<IEnumerable<IFoo>>().ToArray();
+
+            Assert.That(arrayA.Count(), Is.EqualTo(2));
+            Assert.That(arrayA, Has.Some.TypeOf<Foo1>());
+            Assert.That(arrayA, Has.Some.TypeOf<Foo2>());
+
+            Assert.That(arrayB.Count(), Is.EqualTo(2));
+            Assert.That(arrayB, Has.Some.TypeOf<Foo1>());
+            Assert.That(arrayB, Has.Some.TypeOf<Foo3>());
         }
     }
 }
