@@ -24,7 +24,11 @@ namespace Autofac.Tests.Features.Adapters
                 var builder = new ContainerBuilder();
                 foreach (var command in _commands)
                     builder.RegisterInstance(command);
-                builder.RegisterAdapter<Command, ToolbarButton>(cmd => new ToolbarButton(cmd))
+#if !(SL2 || SL3 || NET35)
+                builder.RegisterAdapter<Command, ToolbarButton>(cmd => new ToolbarButton(cmd)) 
+#else
+                builder.RegisterAdapter<Command, ToolbarButton>(cmd => new ToolbarButton(cmd, "")) 
+#endif
                     .As<IToolbarButton>();
                 var container = builder.Build();
                 _toolbarButtons = container.Resolve<IEnumerable<IToolbarButton>>();

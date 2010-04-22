@@ -30,7 +30,11 @@ namespace Autofac.Core
     /// <summary>
     /// Fired when the activation process for a new instance is complete.
     /// </summary>
+#if !(SL2 || SL3 || NET35) 
     public interface IActivatedEventArgs<out T>
+#else
+    public interface IActivatedEventArgs<T>
+#endif
     {
         /// <summary>
         /// The context in which the activation occurred.

@@ -31,7 +31,11 @@ namespace Autofac.Core
     /// Fired after the construction of an instance but before that instance
     /// is shared with any other or any members are invoked on it.
     /// </summary>
+#if !(SL2 || SL3 || NET35) 
     public interface IActivatingEventArgs<out T>
+#else
+    public interface IActivatingEventArgs<T>
+#endif
     {
         /// <summary>
         /// The context in which the activation occurred.
