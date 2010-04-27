@@ -219,5 +219,14 @@ namespace Autofac.Tests
             var r = c.RegistrationFor<ICommand<UndoCommandData>>();
             Assert.That(r.Services.Contains(new TypedService(typeof(ICommand<RedoCommandData>))));
         }
+
+        [Test]
+        public void DoesNotIncludeDelegateTypes_ThusNotOverridingGeneratedFactories()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyTypes(typeof(HasNestedFactoryDelegate).Assembly);
+            var c = cb.Build();
+            var hnfd = c.Resolve<HasNestedFactoryDelegate.Factory>();
+        }
     }
 }

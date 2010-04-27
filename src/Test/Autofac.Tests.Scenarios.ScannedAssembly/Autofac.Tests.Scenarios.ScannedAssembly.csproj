@@ -74,6 +74,7 @@
     <Compile Include="CommandBase.cs" />
     <Compile Include="DeleteCommand.cs" />
     <Compile Include="DeleteCommandData.cs" />
+    <Compile Include="HasNestedFactoryDelegate.cs" />
     <Compile Include="IAService.cs" />
     <Compile Include="IBService.cs" />
     <Compile Include="ICommand.cs" />

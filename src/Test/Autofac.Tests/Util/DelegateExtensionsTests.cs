@@ -20,7 +20,7 @@ namespace Autofac.Tests.Util
         [Test]
         public void TypeWithTwoInvokeMethodsIsNotADelegate()
         {
-            Assert.IsFalse(typeof(WithTwoInvokes).IsFunction());
+            Assert.IsFalse(typeof(WithTwoInvokes).IsDelegate());
         }
     }
 }

@@ -51,7 +51,7 @@ namespace Autofac.Util
             return (PropertyInfo) mex.Member;
         }
 
-        public static bool IsFunction(this Type type)
+        public static bool IsDelegate(this Type type)
         {
             Enforce.ArgumentNotNull(type, "type");
             return type.IsSubclassOf(typeof(Delegate));

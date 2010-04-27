@@ -50,7 +50,7 @@ namespace Autofac.Features.GeneratedFactories
             Enforce.ArgumentNotNull(registrationAccessor, "registrationAccessor");
 
             var ts = service as IServiceWithType;
-            if (ts != null && ts.ServiceType.IsFunction())
+            if (ts != null && ts.ServiceType.IsDelegate())
             {
                 var resultType = ts.ServiceType.FunctionReturnType();
                 var resultTypeService = ts.ChangeType(resultType);

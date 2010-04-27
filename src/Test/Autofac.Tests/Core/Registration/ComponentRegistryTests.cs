@@ -8,6 +8,7 @@ using NUnit.Framework;
 using Autofac.Core.Registration;
 using Autofac.Core;
 using Autofac.Tests.Scenarios.RegistrationSources;
+using Autofac.Features.Metadata;
 
 namespace Autofac.Tests.Core.Registration
 {
@@ -216,6 +217,29 @@ namespace Autofac.Tests.Core.Registration
             var result = def.Activator.ActivateInstance(Container.Empty, Enumerable.Empty<Parameter>());
 
             Assert.AreEqual(result, second);
+        }
+
+        [Test, Ignore("Demonstrates limitation.")]
+        public void AfterResolvingAdapter_AddingMoreAdaptees_AddsMoreAdapters()
+        {
+            var registry = new ComponentRegistry();
+            registry.AddRegistrationSource(new MetaRegistrationSource());
+            var metaService = new TypedService(typeof(Meta<object>));
+
+            var first = RegistrationBuilder.ForType<object>().CreateRegistration();
+            registry.Register(first);
+
+            var meta1 = registry.RegistrationsFor(metaService);
+            var firstMeta = meta1.First();
+
+            var second = RegistrationBuilder.ForType<object>().CreateRegistration();
+            registry.Register(second);
+
+            var meta2 = registry.RegistrationsFor(metaService);
+
+            Assert.That(meta2.Count(), Is.EqualTo(2));
+            Assert.That(meta2.Contains(firstMeta));
+            Assert.That(meta2.Select(m => m.Target), Is.EquivalentTo(new[] { first, second }));
         }
     }
 }
