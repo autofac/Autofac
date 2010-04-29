@@ -88,6 +88,7 @@ namespace Autofac.Tests.Core.Lifetime
         }
 
         [Test]
+        [Ignore("In Progress")]
         public void IntermediateRegistrationOverridesParentAsDefault()
         {
             var o1 = new object();
@@ -181,6 +182,40 @@ namespace Autofac.Tests.Core.Lifetime
 
             var addressBook = level3Scope.Resolve<AddressBook>();
             addressBook.AddNew("Robert");
+        }
+
+        [Test]
+        public void InstancesRegisteredInNestedScopeAreSingletonsInThatScope()
+        {
+            var builder = new ContainerBuilder();
+            var rootScope = builder.Build();
+
+            var dt = new DisposeTracker();
+
+            var nestedScope = rootScope.BeginLifetimeScope(cb =>
+                 cb.RegisterInstance(dt));
+
+            var dt1 = nestedScope.Resolve<DisposeTracker>();
+            Assert.AreSame(dt, dt1);
+        }
+
+
+        [Test]
+        public void SingletonsRegisteredInNestedScopeAreTiedToThatScope()
+        {
+            var builder = new ContainerBuilder();
+            var rootScope = builder.Build();
+
+            var nestedScope = rootScope.BeginLifetimeScope(cb => 
+                cb.RegisterType<DisposeTracker>().SingleInstance());
+
+            var dt = nestedScope.Resolve<DisposeTracker>();
+            var dt1 = nestedScope.Resolve<DisposeTracker>();
+            Assert.AreSame(dt, dt1);
+
+            nestedScope.Dispose();
+
+            Assert.That(dt.IsDisposed);
         }
     }
 }

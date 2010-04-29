@@ -52,14 +52,11 @@ namespace Autofac.Core.Lifetime
         static internal Guid SelfRegistrationId = Guid.NewGuid();
 
         /// <summary>
-        /// The tag applied by default to nested scopes when no other tag is specified.
-        /// </summary>
-        public static readonly object NoTag = new object();
-
-        /// <summary>
         /// The tag applied to root scopes when no other tag is specified.
         /// </summary>
         public static readonly object RootTag = "root";
+
+        static object MakeAnonymousTag() { return new object(); }
 
         private LifetimeScope()
         {
@@ -108,7 +105,7 @@ namespace Autofac.Core.Lifetime
         /// <returns>A new lifetime scope.</returns>
         public ILifetimeScope BeginLifetimeScope()
         {
-            return BeginLifetimeScope(NoTag);
+            return BeginLifetimeScope(MakeAnonymousTag());
         }
 
         /// <summary>
@@ -144,7 +141,7 @@ namespace Autofac.Core.Lifetime
         /// </example>
         public ILifetimeScope BeginLifetimeScope(Action<ContainerBuilder> configurationAction)
         {
-            return BeginLifetimeScope(NoTag, configurationAction);
+            return BeginLifetimeScope(MakeAnonymousTag(), configurationAction);
         }
 
         /// <summary>
@@ -171,7 +168,7 @@ namespace Autofac.Core.Lifetime
 
             lock (_synchRoot)
             {
-                var locals = new ComponentRegistry();
+                var locals = new ScopeRestrictedRegistry(tag);
                 var builder =  new ContainerBuilder();
                 configurationAction(builder);
                 builder.Build(locals);

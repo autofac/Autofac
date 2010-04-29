@@ -101,12 +101,14 @@
     <Compile Include="Core\IActivatingEventArgs.cs" />
     <Compile Include="Core\IServiceWithType.cs" />
     <Compile Include="Core\KeyedService.cs" />
+    <Compile Include="Core\Registration\ComponentRegistrationLifetimeDecorator.cs" />
     <Compile Include="Core\Registration\ComponentRegistrationResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ComponentRegistrationResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Core\Registration\ExternalRegistrySource.cs" />
+    <Compile Include="Core\Registration\ScopeRestrictedRegistry.cs" />
     <Compile Include="Features\LightweightAdapters\LightweightAdapterActivatorData.cs" />
     <Compile Include="Features\LightweightAdapters\LightweightAdapterRegistrationExtensions.cs" />
     <Compile Include="Features\LightweightAdapters\LightweightAdapterRegistrationSource.cs" />

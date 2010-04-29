@@ -207,7 +207,7 @@ namespace Autofac.Core.Registration
         /// <param name="registration">The component registration.</param>
         /// <param name="preserveDefaults">If true, existing defaults for the services provided by the
         /// component will not be changed.</param>
-        public void Register(IComponentRegistration registration, bool preserveDefaults)
+        public virtual void Register(IComponentRegistration registration, bool preserveDefaults)
         {
             Enforce.ArgumentNotNull(registration, "registration");
 
