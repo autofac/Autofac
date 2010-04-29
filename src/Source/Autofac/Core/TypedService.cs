@@ -75,7 +75,11 @@ namespace Autofac.Core
             if (that == null)
                 return false;
 
+#if !(SL2 || SL3 || NET35)
             return ServiceType.IsEquivalentTo(that.ServiceType);
+#else
+            return ServiceType == that.ServiceType;
+#endif
         }
 
         /// <summary>
