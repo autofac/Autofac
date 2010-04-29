@@ -114,5 +114,23 @@ namespace Autofac.Util
 
             return true;
         }
+
+        public static bool IsCompatibleWith(this Type type, Type that)
+        {
+
+#if !(SL2 || SL3 || NET35)
+            return type.IsEquivalentTo(that);
+#else
+            return type.Equals(that);
+#endif
+        }
+
+        public static int GetCompatibleHashCode(this Type type)
+        {
+            if (type.IsCOMObject)
+                return type.GUID.GetHashCode();
+
+            return type.GetHashCode();
+        }
     }
 }

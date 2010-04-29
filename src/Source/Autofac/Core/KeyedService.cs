@@ -92,7 +92,7 @@ namespace Autofac.Core
             if (that == null)
                 return false;
 
-            return ServiceKey.Equals(that.ServiceKey) && ServiceType == that.ServiceType;
+            return ServiceKey.Equals(that.ServiceKey) && ServiceType.IsEquivalentTo(that.ServiceType);
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace Autofac.Core
         /// </returns>
         public override int GetHashCode()
         {
-            return ServiceKey.GetHashCode() ^ ServiceType.GetHashCode();
+            return ServiceKey.GetHashCode() ^ ServiceType.GetCompatibleHashCode();
         }
 
         /// <summary>

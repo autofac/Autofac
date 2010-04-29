@@ -75,11 +75,7 @@ namespace Autofac.Core
             if (that == null)
                 return false;
 
-#if !(SL2 || SL3 || NET35)
-            return ServiceType.IsEquivalentTo(that.ServiceType);
-#else
-            return ServiceType == that.ServiceType;
-#endif
+            return ServiceType.IsCompatibleWith(that.ServiceType);
         }
 
         /// <summary>
@@ -90,10 +86,7 @@ namespace Autofac.Core
         /// </returns>
         public override int GetHashCode()
         {
-            if (ServiceType.IsCOMObject)
-                return ServiceType.GUID.GetHashCode();
-
-            return ServiceType.GetHashCode();
+            return ServiceType.GetCompatibleHashCode();
         }
 
         /// <summary>

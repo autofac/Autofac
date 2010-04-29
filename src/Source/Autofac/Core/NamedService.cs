@@ -87,12 +87,12 @@ namespace Autofac.Core
         /// <exception cref="T:System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
         public override bool Equals(object obj)
         {
-            NamedService that = obj as NamedService;
+            var that = obj as NamedService;
 
             if (that == null)
                 return false;
 
-            return ServiceName == that.ServiceName && ServiceType == that.ServiceType;
+            return ServiceName == that.ServiceName && ServiceType.IsCompatibleWith(that.ServiceType);
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace Autofac.Core
         /// </returns>
         public override int GetHashCode()
         {
-            return ServiceName.GetHashCode() ^ ServiceType.GetHashCode();
+            return ServiceName.GetHashCode() ^ ServiceType.GetCompatibleHashCode();
         }
 
         /// <summary>
