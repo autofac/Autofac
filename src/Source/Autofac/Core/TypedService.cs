@@ -70,12 +70,12 @@ namespace Autofac.Core
         /// <exception cref="T:System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
         public override bool Equals(object obj)
         {
-            TypedService that = obj as TypedService;
+            var that = obj as TypedService;
 
             if (that == null)
                 return false;
 
-            return ServiceType == that.ServiceType;
+            return ServiceType.IsEquivalentTo(that.ServiceType);
         }
 
         /// <summary>
@@ -86,6 +86,9 @@ namespace Autofac.Core
         /// </returns>
         public override int GetHashCode()
         {
+            if (ServiceType.IsCOMObject)
+                return ServiceType.GUID.GetHashCode();
+
             return ServiceType.GetHashCode();
         }
 
