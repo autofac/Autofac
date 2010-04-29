@@ -88,7 +88,6 @@ namespace Autofac.Tests.Core.Lifetime
         }
 
         [Test]
-        [Ignore("In Progress")]
         public void IntermediateRegistrationOverridesParentAsDefault()
         {
             var o1 = new object();
@@ -103,7 +102,6 @@ namespace Autofac.Tests.Core.Lifetime
             // T.S: What's strange is that if you don't specify any new (unrelated) registrations
             // in the local (3rd) scope, the test passes.
             var scope3 = scope2.BeginLifetimeScope( b => b.Register( c => "s3" ) ); // <- Fails with this.
-            //var scope3 = scope2.BeginLifetimeScope(); // <- Passes with this.
 
             Assert.AreSame( o2, scope3.Resolve<object>() );
         }

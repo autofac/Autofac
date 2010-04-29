@@ -175,7 +175,8 @@ namespace Autofac.Core.Lifetime
 
                 var externals = Traverse.Across<ISharingLifetimeScope>(this, s => s.ParentLifetimeScope)
                                         .Where(s => s.ParentLifetimeScope == null || s.ComponentRegistry != s.ParentLifetimeScope.ComponentRegistry)
-                                        .Select(s => new ExternalRegistrySource(s.ComponentRegistry));
+                                        .Select(s => new ExternalRegistrySource(s.ComponentRegistry))
+                                        .Reverse();
 
                 foreach (var external in externals)
                     locals.AddRegistrationSource(external);
