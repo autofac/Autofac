@@ -92,7 +92,7 @@ namespace Autofac.Core
             if (that == null)
                 return false;
 
-            return ServiceKey.Equals(that.ServiceKey) && ServiceType.IsEquivalentTo(that.ServiceType);
+            return ServiceKey.Equals(that.ServiceKey) && ServiceType.IsCompatibleWith(that.ServiceType);
         }
 
         /// <summary>
