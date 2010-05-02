@@ -179,7 +179,7 @@ namespace Autofac.Core.Lifetime
                                         .Reverse();
 
                 foreach (var external in externals)
-                    locals.AddRegistrationSource(external);
+                    locals.AddRegistrationSource(external, true);
 
                 return new LifetimeScope(locals, this, tag);
             }

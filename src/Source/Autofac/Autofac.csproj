@@ -101,6 +101,8 @@
     <Compile Include="Core\IActivatingEventArgs.cs" />
     <Compile Include="Core\IServiceWithType.cs" />
     <Compile Include="Core\KeyedService.cs" />
+    <Compile Include="Core\Registration\AdaptationSandbox.cs" />
+    <Compile Include="Core\Registration\ComponentRegistrationExtensions.cs" />
     <Compile Include="Core\Registration\ComponentRegistrationLifetimeDecorator.cs" />
     <Compile Include="Core\Registration\ComponentRegistrationResources.Designer.cs">
       <AutoGen>True</AutoGen>

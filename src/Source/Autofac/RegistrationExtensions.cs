@@ -84,11 +84,13 @@ namespace Autofac
         /// </summary>
         /// <param name="builder">The builder to register the registration source via.</param>
         /// <param name="registrationSource">The registration source to add.</param>
-        public static void RegisterSource(this ContainerBuilder builder, IRegistrationSource registrationSource)
+        /// <param name="isAdapter">Whether the registration source creates new
+        /// components with a 1:1 relationship to other components.</param>
+        public static void RegisterSource(this ContainerBuilder builder, IRegistrationSource registrationSource, bool isAdapter)
         {
             Enforce.ArgumentNotNull(builder, "builder");
             Enforce.ArgumentNotNull(registrationSource, "registrationSource");
-            builder.RegisterCallback(cr => cr.AddRegistrationSource(registrationSource));
+            builder.RegisterCallback(cr => cr.AddRegistrationSource(registrationSource, isAdapter));
         }
 
         /// <summary>
@@ -425,7 +427,9 @@ namespace Autofac
             where TScanningActivatorData : ScanningActivatorData
         {
             Enforce.ArgumentNotNull(registration, "registration");
+// ReSharper disable RedundantEnumerableCastCall
             return registration.As(t => t.GetInterfaces().Select(i => new TypedService(i)).Cast<Service>());
+// ReSharper restore RedundantEnumerableCastCall
         }
 
         /// <summary>

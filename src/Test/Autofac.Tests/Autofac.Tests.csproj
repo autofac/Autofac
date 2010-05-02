@@ -109,8 +109,8 @@
     <Compile Include="Core\Resolving\ResolveOperationTests.cs" />
     <Compile Include="Core\TypedServiceTests.cs" />
     <Compile Include="Factory.cs" />
-    <Compile Include="Features\Adapters\LightweightAdapterRegistrationExtensionsTests.cs" />
-    <Compile Include="Features\Adapters\LightweightAdapterRegistrationSourceTests.cs" />
+    <Compile Include="Features\LightweightAdapters\LightweightAdapterRegistrationExtensionsTests.cs" />
+    <Compile Include="Features\LightweightAdapters\LightweightAdapterRegistrationSourceTests.cs" />
     <Compile Include="Features\GeneratedFactories\GeneratedFactoriesTests.cs" />
     <Compile Include="Features\Collections\CollectionRegistrationSourceTests.cs" />
     <Compile Include="Features\Indexed\KeyedServiceIndexTests.cs" />

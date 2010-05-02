@@ -60,10 +60,10 @@ namespace Autofac.Core.Registration
         {
             get
             {
-                if (_inner.Target == _inner)
-                    return this;
+                if (_inner.IsAdapting())
+                    return _inner.Target;
 
-                return _inner.Target;
+                return this;
             }
         }
 

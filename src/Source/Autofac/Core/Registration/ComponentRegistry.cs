@@ -44,7 +44,7 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// External registration sources.
         /// </summary>
-        readonly IList<IRegistrationSource> _dynamicRegistrationSources = new List<IRegistrationSource>();
+        readonly IList<KeyValuePair<IRegistrationSource, bool>> _dynamicRegistrationSources = new List<KeyValuePair<IRegistrationSource, bool>>();
 
         /// <summary>
         /// All registrations.
@@ -211,6 +211,40 @@ namespace Autofac.Core.Registration
         {
             Enforce.ArgumentNotNull(registration, "registration");
 
+            AddRegistration(registration, preserveDefaults);
+
+            UpdateInitialisedAdapters(registration);
+        }
+
+        void UpdateInitialisedAdapters(IComponentRegistration registration)
+        {
+            if (!registration.IsAdapting())
+            {
+                var adapterServices = _serviceInfo
+                    .Where(si =>
+                           si.Value.IsInitialized &&
+                           si.Value.Implementations.Any(i => i.IsAdapting() &&
+                                                             i.Target.Services.Intersect(registration.Services).Any()))
+                    .Select(si => si.Key)
+                    .ToArray();
+
+                // In these cases, a source must exist that adapts one of the newly-provided services
+                if (adapterServices.Length != 0)
+                {
+                    var adaptationSandbox = new AdaptationSandbox(
+                        _dynamicRegistrationSources.Where(rs => rs.Value).Select(rs => rs.Key),
+                        registration,
+                        adapterServices);
+
+                    var adapters = adaptationSandbox.GetAdapters();
+                    foreach (var adapter in adapters)
+                        AddRegistration(adapter, true);
+                }
+            }
+        }
+
+        void AddRegistration(IComponentRegistration registration, bool preserveDefaults)
+        {
             foreach (var service in registration.Services)
             {
                 var info = GetServiceInfo(service);
@@ -260,14 +294,19 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// Add a registration source that will provide registrations on-the-fly.
         /// </summary>
-        /// <param name="source"></param>
-        public void AddRegistrationSource(IRegistrationSource source)
+        /// <param name="source">The source to register.</param>
+        /// <param name="isAdapter">Whether the registration source creates new
+        /// components with a 1:1 relationship to other components.</param>
+        public void AddRegistrationSource(IRegistrationSource source, bool isAdapter)
         {
             Enforce.ArgumentNotNull(source, "source");
 
             lock (_synchRoot)
             {
-                _dynamicRegistrationSources.Insert(0, source);
+                _dynamicRegistrationSources.Insert(0, new KeyValuePair<IRegistrationSource, bool>(source, isAdapter));
+
+                // Foreach service info that is initialised - set to non-initialised and
+                // add source to 'sourcesToQuery' ?
             }
         }
 
@@ -278,9 +317,12 @@ namespace Autofac.Core.Registration
                 return info;
 
             if (info.SourcesToQuery == null)
-                info.SourcesToQuery = new Queue<IRegistrationSource>(_dynamicRegistrationSources);
+                info.SourcesToQuery = new Queue<IRegistrationSource>(
+                    _dynamicRegistrationSources.Select(rs => rs.Key));
 
+// ReSharper disable ConditionIsAlwaysTrueOrFalse
             while (info.SourcesToQuery != null && info.SourcesToQuery.Count != 0)
+// ReSharper restore ConditionIsAlwaysTrueOrFalse
             {
                 var next = info.SourcesToQuery.Dequeue();
                 foreach (var provided in next.RegistrationsFor(service, RegistrationsFor))
@@ -294,7 +336,7 @@ namespace Autofac.Core.Registration
 
                         if (additionalInfo.SourcesToQuery == null)
                             additionalInfo.SourcesToQuery = new Queue<IRegistrationSource>(
-                                _dynamicRegistrationSources.Where(src => src != next));
+                                _dynamicRegistrationSources.Select(rs => rs.Key).Where(src => src != next));
                         else
                             additionalInfo.SourcesToQuery = new Queue<IRegistrationSource>(
                                 additionalInfo.SourcesToQuery.Where(src => src != next));

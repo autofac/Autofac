@@ -43,7 +43,7 @@ namespace Autofac.Features.LightweightAdapters
                 new DynamicRegistrationStyle());
 
             builder.RegisterCallback(cr => cr.AddRegistrationSource(
-                new LightweightAdapterRegistrationSource(rb.RegistrationData, rb.ActivatorData)));
+                new LightweightAdapterRegistrationSource(rb.RegistrationData, rb.ActivatorData), true));
 
             return rb;
         }

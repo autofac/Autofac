@@ -4,7 +4,7 @@ using Autofac.Features.Metadata;
 using Autofac.Tests.Scenarios.Adapters;
 using NUnit.Framework;
 
-namespace Autofac.Tests.Features.Adapters
+namespace Autofac.Tests.Features.LightweightAdapters
 {
     public class LightweightAdapterRegistrationExtensionsTests
     {

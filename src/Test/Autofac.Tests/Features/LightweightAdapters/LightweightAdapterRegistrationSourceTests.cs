@@ -6,7 +6,7 @@ using Autofac.Core;
 using Autofac.Features.LightweightAdapters;
 using NUnit.Framework;
 
-namespace Autofac.Tests.Features.Adapters
+namespace Autofac.Tests.Features.LightweightAdapters
 {
     public class LightweightAdapterRegistrationSourceTests
     {

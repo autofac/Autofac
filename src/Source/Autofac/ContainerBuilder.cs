@@ -92,42 +92,49 @@ namespace Autofac
 		public virtual IContainer Build()
 		{
 			var result = new Container();
-			Build(result.ComponentRegistry);
+			Build(result.ComponentRegistry, ExcludeDefaultModules);
 			return result;
 		}
 
-		/// <summary>
-		/// Configure an existing component registry with the component registrations
+        /// <summary>
+        /// Configure an existing container with the component registrations
         /// that have been made.
-		/// </summary>
+        /// </summary>
         /// <remarks>
-        /// Build can only be called once per <see cref="ContainerBuilder"/>
+        /// Update can only be called once per <see cref="ContainerBuilder"/>
         /// - this prevents ownership issues for provided instances.
         /// </remarks>
-        /// <param name="componentRegistry">An existing component registry to make the registrations in.</param>
-		internal virtual void Build(IComponentRegistry componentRegistry)
-		{
-            Enforce.ArgumentNotNull(componentRegistry, "componentRegistry");
+        /// <param name="container">An existing container to make the registrations in.</param>
+        public void Update(IContainer container)
+        {
+            if (container == null) throw new ArgumentNullException("container");
 
-			if (_wasBuilt)
+            Build(container.ComponentRegistry, true);
+        }
+
+	    void Build(IComponentRegistry componentRegistry, bool excludeDefaultModules)
+		{
+	        if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
+
+	        if (_wasBuilt)
 				throw new InvalidOperationException();
 
 			_wasBuilt = true;
 
-            if (!ExcludeDefaultModules)
+            if (!excludeDefaultModules)
             {
                 this.RegisterGeneric(typeof(KeyedServiceIndex<,>))
                     .As(typeof(IIndex<,>))
                     .InstancePerLifetimeScope();
 
-                componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
-                componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
-                componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
-                componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
+                componentRegistry.AddRegistrationSource(new CollectionRegistrationSource(), false);
+                componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource(), true);
+                componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource(), true);
+                componentRegistry.AddRegistrationSource(new MetaRegistrationSource(), true);
 #if !(SL2 || SL3 || NET35)
-                componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
-                componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
-                componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());
+                componentRegistry.AddRegistrationSource(new LazyRegistrationSource(), true);
+                componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource(), true);
+                componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource(), true);
 #endif
             }
 

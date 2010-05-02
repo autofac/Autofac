@@ -60,7 +60,7 @@ namespace Autofac.Core.Registration
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             return _registry.RegistrationsFor(service)
-                .Where(r => r.Target == r)
+                .Where(r => !r.IsAdapting())
                 .Select(r => RegistrationBuilder.ForDelegate((c, p) => c.Resolve(r, p))
                         .Targeting(r)
                         .As(r.Services.ToArray())

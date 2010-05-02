@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Autofac.Core;
 using Autofac.Features.ResolveAnything;
 using Autofac.Tests.Scenarios.RegistrationSources;
 using NUnit.Framework;
@@ -52,8 +50,8 @@ namespace Autofac.Tests.Features.ResolveAnything
         public void AServiceProvideByAnotherRegistrationSourceWillNotBeProvided()
         {
             var cb = new ContainerBuilder();
-            cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
-            cb.RegisterSource(new ObjectRegistrationSource());
+            cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource(), false);
+            cb.RegisterSource(new ObjectRegistrationSource(), false);
             var container = cb.Build();
             Assert.IsTrue(container.IsRegistered<object>());
             Assert.AreEqual(1, container.Resolve<IEnumerable<object>>().Count());
@@ -65,7 +63,7 @@ namespace Autofac.Tests.Features.ResolveAnything
         public void AServiceAlreadyRegisteredWillNotBeProvided()
         {
             var cb = new ContainerBuilder();
-            cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+            cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource(), false);
             cb.RegisterType<RegisteredType>();
             var container = cb.Build();
             Assert.IsTrue(container.IsRegistered<RegisteredType>());
@@ -77,7 +75,7 @@ namespace Autofac.Tests.Features.ResolveAnything
         {
             var cb = new ContainerBuilder();
             cb.RegisterType<RegisteredType>();
-            cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+            cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource(), false);
             var container = cb.Build();
 
             Assert.IsTrue(container.IsRegistered<RegisteredType>());
@@ -87,7 +85,7 @@ namespace Autofac.Tests.Features.ResolveAnything
         static IContainer CreateResolveAnythingContainer()
         {
             var cb = new ContainerBuilder();
-            cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+            cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource(), false);
             return cb.Build();
         }
 
