@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Project DefaultTargets="integrate" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Release" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<Import Project="Resource\Build\MSBuild.Community.Tasks.targets" />
 	<Import Project="Resource\Build\NCoverExplorer.MSBuildTasks.targets"/>
 	<!-- Main build entry file (extends development builds)-->
