@@ -111,6 +111,7 @@
     </Compile>
     <Compile Include="Core\Registration\ExternalRegistrySource.cs" />
     <Compile Include="Core\Registration\ScopeRestrictedRegistry.cs" />
+    <Compile Include="Core\Registration\ServiceRegistrationInfo.cs" />
     <Compile Include="Features\LightweightAdapters\LightweightAdapterActivatorData.cs" />
     <Compile Include="Features\LightweightAdapters\LightweightAdapterRegistrationExtensions.cs" />
     <Compile Include="Features\LightweightAdapters\LightweightAdapterRegistrationSource.cs" />

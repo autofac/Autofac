@@ -112,6 +112,13 @@ namespace Autofac
             Build(container.ComponentRegistry, true);
         }
 
+        internal void Build(IComponentRegistry componentRegistry)
+        {
+            if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
+
+            Build(componentRegistry, true);
+        }
+
 	    void Build(IComponentRegistry componentRegistry, bool excludeDefaultModules)
 		{
 	        if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");

@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Autofac.Util;
 
@@ -52,103 +51,9 @@ namespace Autofac.Core.Registration
         readonly ICollection<IComponentRegistration> _registrations = new List<IComponentRegistration>();
 
         /// <summary>
-        /// Tracks the services known to the registry.
-        /// </summary>
-        class ServiceInfo
-        {
-            readonly Service _service;
-
-            readonly LinkedList<IComponentRegistration> _implementations = new LinkedList<IComponentRegistration>();
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="ServiceInfo"/> class.
-            /// </summary>
-            /// <param name="service">The tracked service.</param>
-            public ServiceInfo(Service service)
-            {
-                _service = service;
-            }
-
-            /// <summary>
-            /// The first time a service is requested, initialization (e.g. reading from sources)
-            /// happens. This value will then be set to true. Calling many methods on this type before
-            /// initialisation is an error.
-            /// </summary>
-            public bool IsInitialized { get; set; }
-
-            /// <summary>
-            /// The known implementations.
-            /// </summary>
-            public IEnumerable<IComponentRegistration> Implementations
-            { 
-                get
-                {
-                    RequiresInitialization();
-                    return _implementations; 
-                }
-            }
-
-            void RequiresInitialization()
-            {
-                if (!IsInitialized)
-                    throw new InvalidOperationException();
-            }
-
-            /// <summary>
-            /// True if any implementations are known.
-            /// </summary>
-            public bool IsRegistered
-            { 
-                get 
-                {
-                    RequiresInitialization();
-                    return Any; 
-                } 
-            }
-
-            bool Any { get { return _implementations.First != null; } }
-
-            /// <summary>
-            /// Used for bookkeeping so that the same source is not queried twice (may be null.)
-            /// </summary>
-            public Queue<IRegistrationSource> SourcesToQuery { get; set; }
-
-            public void AddImplementation(IComponentRegistration registration, bool preserveDefaults)
-            {
-                if (preserveDefaults)
-                {
-                    _implementations.AddLast(registration);
-                }
-                else
-                {
-                    if (Any)
-                        Debug.WriteLine(string.Format(
-                                "[Autofac] Overriding default for: '{0}' with: '{1}' (was '{2}')",
-                                _service, registration, _implementations.First));
-
-                    _implementations.AddFirst(registration);
-                }
-            }
-
-            public bool TryGetRegistration(out IComponentRegistration registration)
-            {
-                RequiresInitialization();
-
-                if (Any)
-                {
-                    registration = _implementations.First.Value;
-                    return true;
-                }
-
-                registration = null;
-                return false;
-            }
-        }
-
-        /// <summary>
         /// Keeps track of the status of registered services.
         /// </summary>
-        readonly IDictionary<Service, ServiceInfo> _serviceInfo = new Dictionary<Service, ServiceInfo>();
+        readonly IDictionary<Service, ServiceRegistrationInfo> _serviceInfo = new Dictionary<Service, ServiceRegistrationInfo>();
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources
@@ -310,7 +215,7 @@ namespace Autofac.Core.Registration
             }
         }
 
-        ServiceInfo GetInitializedServiceInfo(Service service)
+        ServiceRegistrationInfo GetInitializedServiceInfo(Service service)
         {
             var info = GetServiceInfo(service);
             if (info.IsInitialized)
@@ -351,13 +256,13 @@ namespace Autofac.Core.Registration
             return info;
         }
 
-        ServiceInfo GetServiceInfo(Service service)
+        ServiceRegistrationInfo GetServiceInfo(Service service)
         {
-            ServiceInfo existing;
+            ServiceRegistrationInfo existing;
             if (_serviceInfo.TryGetValue(service, out existing))
                 return existing;
 
-            var info = new ServiceInfo(service);
+            var info = new ServiceRegistrationInfo(service);
             _serviceInfo.Add(service, info);
             return info;
         }
