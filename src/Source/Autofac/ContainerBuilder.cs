@@ -112,8 +112,12 @@ namespace Autofac
             Build(container.ComponentRegistry, true);
         }
 
+#if !(SL2 || SL3 || NET35)
 	    internal void Build(IComponentRegistry componentRegistry, bool excludeDefaultModules = true, bool exceptAdapters = false)
-		{
+#else
+	    internal void Build(IComponentRegistry componentRegistry, bool excludeDefaultModules, bool exceptAdapters)
+#endif
+        {
 	        if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
 
 	        if (_wasBuilt)
@@ -152,5 +156,17 @@ namespace Autofac
 	        foreach (var callback in _configurationCallbacks)
                 callback(componentRegistry);
         }
+
+#if (SL2 || SL3 || NET35)
+	    internal void Build(IComponentRegistry componentRegistry)
+	    {
+	        Build( componentRegistry, true, false );
+	    }
+
+        internal void Build(IComponentRegistry componentRegistry, bool excludeDefaultModules)
+	    {
+	        Build( componentRegistry, excludeDefaultModules, false );
+	    }
+#endif
 	}
 }
