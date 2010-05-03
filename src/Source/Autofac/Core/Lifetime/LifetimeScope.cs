@@ -171,7 +171,7 @@ namespace Autofac.Core.Lifetime
                 var locals = new ScopeRestrictedRegistry(tag);
                 var builder =  new ContainerBuilder();
                 configurationAction(builder);
-                builder.Build(locals);
+                builder.Build(locals, true, true);
 
                 var externals = Traverse.Across<ISharingLifetimeScope>(this, s => s.ParentLifetimeScope)
                                         .Where(s => s.ParentLifetimeScope == null || s.ComponentRegistry != s.ParentLifetimeScope.ComponentRegistry)

@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Autofac.Util;
 
@@ -123,28 +124,25 @@ namespace Autofac.Core.Registration
 
         void UpdateInitialisedAdapters(IComponentRegistration registration)
         {
-            if (!registration.IsAdapting())
+            var adapterServices = _serviceInfo
+                .Where(si => si.Value.AdaptsAnyServicesOf(registration))
+                .Select(si => si.Key)
+                .ToArray();
+
+            if (adapterServices.Length != 0)
             {
-                var adapterServices = _serviceInfo
-                    .Where(si =>
-                           si.Value.IsInitialized &&
-                           si.Value.Implementations.Any(i => i.IsAdapting() &&
-                                                             i.Target.Services.Intersect(registration.Services).Any()))
-                    .Select(si => si.Key)
-                    .ToArray();
+                Debug.WriteLine(String.Format(
+                    "[Autofac] Component '{0}' provides services that have already been adapted. Consider refactoring to ContainerBuilder.Build() rather than Update().",
+                    registration));
 
-                // In these cases, a source must exist that adapts one of the newly-provided services
-                if (adapterServices.Length != 0)
-                {
-                    var adaptationSandbox = new AdaptationSandbox(
-                        _dynamicRegistrationSources.Where(rs => rs.Value).Select(rs => rs.Key),
-                        registration,
-                        adapterServices);
+                var adaptationSandbox = new AdaptationSandbox(
+                    _dynamicRegistrationSources.Where(rs => rs.Value).Select(rs => rs.Key),
+                    registration,
+                    adapterServices);
 
-                    var adapters = adaptationSandbox.GetAdapters();
-                    foreach (var adapter in adapters)
-                        AddRegistration(adapter, true);
-                }
+                var adapters = adaptationSandbox.GetAdapters();
+                foreach (var adapter in adapters)
+                    AddRegistration(adapter, true);
             }
         }
 
@@ -209,9 +207,8 @@ namespace Autofac.Core.Registration
             lock (_synchRoot)
             {
                 _dynamicRegistrationSources.Insert(0, new KeyValuePair<IRegistrationSource, bool>(source, isAdapter));
-
-                // Foreach service info that is initialised - set to non-initialised and
-                // add source to 'sourcesToQuery' ?
+                foreach (var serviceRegistrationInfo in _serviceInfo)
+                    serviceRegistrationInfo.Value.Include(source);
             }
         }
 
@@ -221,15 +218,12 @@ namespace Autofac.Core.Registration
             if (info.IsInitialized)
                 return info;
 
-            if (info.SourcesToQuery == null)
-                info.SourcesToQuery = new Queue<IRegistrationSource>(
-                    _dynamicRegistrationSources.Select(rs => rs.Key));
+            if (!info.IsInitializing)
+                info.BeginInitialization(_dynamicRegistrationSources.Select(rs => rs.Key));
 
-// ReSharper disable ConditionIsAlwaysTrueOrFalse
-            while (info.SourcesToQuery != null && info.SourcesToQuery.Count != 0)
-// ReSharper restore ConditionIsAlwaysTrueOrFalse
+            while (info.HasSourcesToQuery)
             {
-                var next = info.SourcesToQuery.Dequeue();
+                var next = info.DequeueNextSource();
                 foreach (var provided in next.RegistrationsFor(service, RegistrationsFor))
                 {
                     // This ensures that multiple services provided by the same
@@ -239,20 +233,18 @@ namespace Autofac.Core.Registration
                         var additionalInfo = GetServiceInfo(additionalService);
                         if (additionalInfo.IsInitialized) continue;
 
-                        if (additionalInfo.SourcesToQuery == null)
-                            additionalInfo.SourcesToQuery = new Queue<IRegistrationSource>(
-                                _dynamicRegistrationSources.Select(rs => rs.Key).Where(src => src != next));
+                        if (!additionalInfo.IsInitializing)
+                            additionalInfo.BeginInitialization(_dynamicRegistrationSources
+                                .Select(rs => rs.Key).Where(src => src != next));
                         else
-                            additionalInfo.SourcesToQuery = new Queue<IRegistrationSource>(
-                                additionalInfo.SourcesToQuery.Where(src => src != next));
+                            additionalInfo.SkipSource(next);
                     }
 
-                    Register(provided, true);
+                    AddRegistration(provided, true);
                 }
             }
 
-            info.IsInitialized = true;
-            info.SourcesToQuery = null;
+            info.CompleteInitialization();
             return info;
         }
 

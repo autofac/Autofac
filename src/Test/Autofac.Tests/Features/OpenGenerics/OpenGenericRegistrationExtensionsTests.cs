@@ -94,7 +94,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         [Test]
         public void WhenRegistrationNamed_GenericRegistrationsSuppliedViaName()
         {
-            var name = "n";
+            const string name = "n";
             var cb = new ContainerBuilder();
             cb.RegisterGeneric(typeof(G<>))
                 .Named(name, typeof(IG<>));

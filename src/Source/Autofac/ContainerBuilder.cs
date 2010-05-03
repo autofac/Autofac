@@ -112,14 +112,7 @@ namespace Autofac
             Build(container.ComponentRegistry, true);
         }
 
-        internal void Build(IComponentRegistry componentRegistry)
-        {
-            if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
-
-            Build(componentRegistry, true);
-        }
-
-	    void Build(IComponentRegistry componentRegistry, bool excludeDefaultModules)
+	    internal void Build(IComponentRegistry componentRegistry, bool excludeDefaultModules = true, bool exceptAdapters = false)
 		{
 	        if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
 
@@ -144,8 +137,19 @@ namespace Autofac
                 componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource(), true);
 #endif
             }
+            else if (exceptAdapters)
+            {
+                componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource(), true);
+                componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource(), true);
+                componentRegistry.AddRegistrationSource(new MetaRegistrationSource(), true);
+#if !(SL2 || SL3 || NET35)
+                componentRegistry.AddRegistrationSource(new LazyRegistrationSource(), true);
+                componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource(), true);
+                componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource(), true);
+#endif
+            }
 
-			foreach (var callback in _configurationCallbacks)
+	        foreach (var callback in _configurationCallbacks)
                 callback(componentRegistry);
         }
 	}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Autofac.Core.Registration
 {
@@ -12,6 +13,11 @@ namespace Autofac.Core.Registration
         readonly Service _service;
 
         readonly LinkedList<IComponentRegistration> _implementations = new LinkedList<IComponentRegistration>();
+
+        /// <summary>
+        /// Used for bookkeeping so that the same source is not queried twice (may be null.)
+        /// </summary>
+        Queue<IRegistrationSource> _sourcesToQuery;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceRegistrationInfo"/> class.
@@ -27,7 +33,7 @@ namespace Autofac.Core.Registration
         /// happens. This value will then be set to true. Calling many methods on this type before
         /// initialisation is an error.
         /// </summary>
-        public bool IsInitialized { get; set; }
+        public bool IsInitialized { get; private set; }
 
         /// <summary>
         /// The known implementations.
@@ -61,11 +67,6 @@ namespace Autofac.Core.Registration
 
         bool Any { get { return _implementations.First != null; } }
 
-        /// <summary>
-        /// Used for bookkeeping so that the same source is not queried twice (may be null.)
-        /// </summary>
-        public Queue<IRegistrationSource> SourcesToQuery { get; set; }
-
         public void AddImplementation(IComponentRegistration registration, bool preserveDefaults)
         {
             if (preserveDefaults)
@@ -95,6 +96,66 @@ namespace Autofac.Core.Registration
 
             registration = null;
             return false;
+        }
+
+        public void Include(IRegistrationSource source)
+        {
+            if (IsInitialized)
+                BeginInitialization(new[] { source });            
+            else if (IsInitializing)
+                _sourcesToQuery.Enqueue(source);
+        }
+
+        public bool IsInitializing
+        {
+            get { return !IsInitialized && _sourcesToQuery != null; }
+        }
+
+        public bool HasSourcesToQuery
+        {
+            get { return IsInitializing && _sourcesToQuery.Count != 0; }
+        }
+
+        public void BeginInitialization(IEnumerable<IRegistrationSource> sources)
+        {
+            IsInitialized = false;
+            _sourcesToQuery = new Queue<IRegistrationSource>(sources);
+        }
+
+        public void SkipSource(IRegistrationSource source)
+        {
+            EnforceDuringInitialization();
+
+            _sourcesToQuery = new Queue<IRegistrationSource>(_sourcesToQuery.Where(rs => rs != source));
+        }
+
+        void EnforceDuringInitialization()
+        {
+            if (!IsInitializing)
+                throw new InvalidOperationException();
+        }
+
+        public IRegistrationSource DequeueNextSource()
+        {
+            EnforceDuringInitialization();
+
+            return _sourcesToQuery.Dequeue();
+        }
+
+        public void CompleteInitialization()
+        {
+            // Does not EnforceDuringInitialization() because the recursive algorithm
+            // sometimes completes initialisation at a deeper level than that which
+            // began it.
+
+            IsInitialized = true;
+            _sourcesToQuery = null;
+        }
+
+        public bool AdaptsAnyServicesOf(IComponentRegistration registration)
+        {
+            return IsInitialized && Implementations.Any(i => i.IsAdapting() &&
+                i.Target.Services.Intersect(registration.Services).Any());
         }
     }
 }

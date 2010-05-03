@@ -33,7 +33,7 @@ namespace Autofac.Tests.Core.Registration
         }
 
         [Test]
-        public void WhenRegistrationIsMad_ComponentRegisteredEventFired()
+        public void WhenRegistrationIsMade_ComponentRegisteredEventFired()
         {
             object eventSender = null;
             ComponentRegisteredEventArgs args = null;
@@ -248,6 +248,31 @@ namespace Autofac.Tests.Core.Registration
             var metaCollections = registry.RegistrationsFor(
                 new TypedService(typeof(Meta<IEnumerable<object>>)));
             Assert.AreEqual(1, metaCollections.Count());
+        }
+
+        [Test]
+        public void AdaptingAnAdapterYieldsASingleAdapter()
+        {
+            var registry = new ComponentRegistry();
+            registry.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
+            registry.AddRegistrationSource(new MetaRegistrationSource(), true);
+            registry.AddRegistrationSource(new GeneratedFactoryRegistrationSource(), true);
+            var metaCollections = registry.RegistrationsFor(
+                new TypedService(typeof(Meta<Func<object>>)));
+            Assert.AreEqual(1, metaCollections.Count());
+        }
+
+        [Test]
+        public void AfterResolvingAdapterType_AddingAnAdapter_AddsAdaptingComponents()
+        {
+            var registry = new ComponentRegistry();
+            registry.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
+            var adapterService = new TypedService(typeof(Func<object>));
+            var pre = registry.RegistrationsFor(adapterService);
+            Assert.AreEqual(0, pre.Count());
+            registry.AddRegistrationSource(new GeneratedFactoryRegistrationSource(), true);
+            var post = registry.RegistrationsFor(adapterService);
+            Assert.AreEqual(1, post.Count());
         }
     }
 }
