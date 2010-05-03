@@ -48,20 +48,10 @@ namespace Autofac.Features.Collections
             Enforce.ArgumentNotNullOrEmpty(collectionName, "collectionName");
 
             var arrayType = elementType.MakeArrayType();
-            IEnumerable<IComponentRegistration> elements = null;
 
             var activator = new DelegateActivator(arrayType, (c, p) =>
             {
-                if (elements == null)
-                {
-                    c.ComponentRegistry.Registered += (sender, e) =>
-                    {
-                        if (IsElementRegistration(collectionName, e.ComponentRegistration))
-                            elements = GetElementRegistrations(collectionName, c.ComponentRegistry);
-                    };
-                    elements = GetElementRegistrations(collectionName, c.ComponentRegistry);
-                }
-
+                var elements = GetElementRegistrations(collectionName, c.ComponentRegistry);
                 var items = elements.Select(e => c.Resolve(e, p)).ToArray();
 
                 var result = Array.CreateInstance(elementType, items.Length);

@@ -274,5 +274,25 @@ namespace Autofac.Tests.Core.Registration
             var post = registry.RegistrationsFor(adapterService);
             Assert.AreEqual(1, post.Count());
         }
+
+        [Test, Ignore("Limitation")]
+        public void AddingConcreteImplementationWhenAdapterImplementationsExist_AddsChainedAdapters()
+        {
+            var registry = new ComponentRegistry();
+            registry.AddRegistrationSource(new GeneratedFactoryRegistrationSource(), true);
+            registry.AddRegistrationSource(new MetaRegistrationSource(), true);
+            registry.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
+
+            var chainedService = new TypedService(typeof(Meta<Func<object>>));
+
+            var pre = registry.RegistrationsFor(chainedService);
+            Assert.AreEqual(1, pre.Count());
+
+            Func<object> func = () => new object();
+            registry.Register(RegistrationBuilder.ForDelegate((c, p) => func).CreateRegistration());
+
+            var post = registry.RegistrationsFor(chainedService);
+            Assert.AreEqual(2, pre.Count());
+        }
     }
 }

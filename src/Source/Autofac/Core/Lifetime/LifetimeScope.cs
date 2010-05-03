@@ -168,19 +168,23 @@ namespace Autofac.Core.Lifetime
 
             lock (_synchRoot)
             {
-                var locals = new ScopeRestrictedRegistry(tag);
                 var builder =  new ContainerBuilder();
-                configurationAction(builder);
-                builder.Build(locals, true, true);
 
-                var externals = Traverse.Across<ISharingLifetimeScope>(this, s => s.ParentLifetimeScope)
+                // Instead, should pull adapters from parent
+                builder.RegisterCallback(ContainerBuilder.RegisterDefaultAdapters);
+
+                var parents = Traverse.Across<ISharingLifetimeScope>(this, s => s.ParentLifetimeScope)
                                         .Where(s => s.ParentLifetimeScope == null || s.ComponentRegistry != s.ParentLifetimeScope.ComponentRegistry)
                                         .Select(s => new ExternalRegistrySource(s.ComponentRegistry))
                                         .Reverse();
 
-                foreach (var external in externals)
-                    locals.AddRegistrationSource(external, true);
+                foreach (var external in parents)
+                    builder.RegisterSource(external, true);
+                
+                configurationAction(builder);
 
+                var locals = new ScopeRestrictedRegistry(tag);
+                builder.Update(locals);
                 return new LifetimeScope(locals, this, tag);
             }
         }

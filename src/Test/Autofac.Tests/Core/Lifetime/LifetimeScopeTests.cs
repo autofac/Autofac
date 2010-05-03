@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac.Core;
+using Autofac.Tests.Scenarios.RegistrationSources;
 using NUnit.Framework;
 
 namespace Autofac.Tests.Core.Lifetime
@@ -119,7 +121,6 @@ namespace Autofac.Tests.Core.Lifetime
         }
 
         [Test]
-        [Ignore("Limitation")]
         public void ExplicitCollectionRegistrationsMadeInParentArePreservedInChildScope()
         {
             var obs = new object[5];
@@ -142,20 +143,20 @@ namespace Autofac.Tests.Core.Lifetime
 
         public class AddressBook
         {
-            private readonly IList<IParty> contacts = new List<IParty>();
-            private Func<IParty> partyFactory;
+            private readonly IList<IParty> _contacts = new List<IParty>();
+            private readonly Func<IParty> _partyFactory;
 
             public AddressBook(Func<IParty> partyFactory)
             {
-                this.partyFactory = partyFactory;
+                this._partyFactory = partyFactory;
             }
 
             public IParty AddNew(string name)
             {
-                IParty newContact = partyFactory();
+                IParty newContact = _partyFactory();
                 newContact.Name = name;
 
-                contacts.Add(newContact);
+                _contacts.Add(newContact);
 
                 return newContact;
             }
@@ -214,6 +215,19 @@ namespace Autofac.Tests.Core.Lifetime
             nestedScope.Dispose();
 
             Assert.That(dt.IsDisposed);
+        }
+
+        [Test, Ignore("Limitation")]
+        public void AdaptersInNestedScopeOverrideAdaptersInParent()
+        {
+            const string parentInstance = "p";
+            const string childInstance = "c";
+            var parent = new Container();
+            parent.ComponentRegistry.AddRegistrationSource(new ObjectRegistrationSource(parentInstance), false);
+            var child = parent.BeginLifetimeScope(builder =>
+                    builder.RegisterSource(new ObjectRegistrationSource(childInstance), false));
+            var fromChild = child.Resolve<object>();
+            Assert.AreSame(childInstance, fromChild);
         }
     }
 }

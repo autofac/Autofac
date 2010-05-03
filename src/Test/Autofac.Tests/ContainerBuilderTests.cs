@@ -382,10 +382,11 @@ namespace Autofac.Tests
         }
 
         [Test]
-        public void WhenDefaultModulesAreExcluded_IEnumerableNotAvailable()
+        public void WhenUpdating_DefaultModulesAreExcluded()
         {
-            var builder = new ContainerBuilder() { ExcludeDefaultModules = true };
-            var container = builder.Build();
+            var builder = new ContainerBuilder();
+            var container = new Container();
+            builder.Update(container);
             Assert.IsFalse(container.IsRegistered<IEnumerable<object>>());
         }
 

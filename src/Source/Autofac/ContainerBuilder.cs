@@ -66,12 +66,6 @@ namespace Autofac
 		private bool _wasBuilt;
 
         /// <summary>
-        /// If set to true, standard container functionality like resolve-all, auto-generated
-        /// factories and owned-instances will not be registered by this builder.
-        /// </summary>
-        public bool ExcludeDefaultModules { get; set; }
-
-        /// <summary>
         /// Register a callback that will be invoked when the container is configured.
         /// </summary>
         /// <remarks>This is primarily for extending the builder syntax.</remarks>
@@ -87,12 +81,15 @@ namespace Autofac
 		/// <remarks>
         /// Build can only be called once per <see cref="ContainerBuilder"/>
         /// - this prevents ownership issues for provided instances.
+        /// Build enables support for the relationship types that come with Autofac (e.g.
+        /// Func, Owned, Meta, Lazy, IEnumerable.) To exclude support for these types,
+        /// first create the container, then call Update() on the builder.
 		/// </remarks>
 		/// <returns>A new container with the configured component registrations.</returns>
-		public virtual IContainer Build()
+		public IContainer Build()
 		{
 			var result = new Container();
-			Build(result.ComponentRegistry, ExcludeDefaultModules);
+			Build(result.ComponentRegistry, false);
 			return result;
 		}
 
@@ -108,16 +105,26 @@ namespace Autofac
         public void Update(IContainer container)
         {
             if (container == null) throw new ArgumentNullException("container");
-
-            Build(container.ComponentRegistry, true);
+            Update(container.ComponentRegistry);
         }
 
-#if !(SL2 || SL3 || NET35)
-	    internal void Build(IComponentRegistry componentRegistry, bool excludeDefaultModules = true, bool exceptAdapters = false)
-#else
-	    internal void Build(IComponentRegistry componentRegistry, bool excludeDefaultModules, bool exceptAdapters)
-#endif
+        /// <summary>
+        /// Configure an existing registry with the component registrations
+        /// that have been made.
+        /// </summary>
+        /// <remarks>
+        /// Update can only be called once per <see cref="ContainerBuilder"/>
+        /// - this prevents ownership issues for provided instances.
+        /// </remarks>
+        /// <param name="componentRegistry">An existing registry to make the registrations in.</param>
+        public void Update(IComponentRegistry componentRegistry)
         {
+            if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
+            Build(componentRegistry, true);
+        }
+
+	    void Build(IComponentRegistry componentRegistry, bool excludeDefaultModules)
+		{
 	        if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
 
 	        if (_wasBuilt)
@@ -132,41 +139,24 @@ namespace Autofac
                     .InstancePerLifetimeScope();
 
                 componentRegistry.AddRegistrationSource(new CollectionRegistrationSource(), false);
-                componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource(), true);
-                componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource(), true);
-                componentRegistry.AddRegistrationSource(new MetaRegistrationSource(), true);
-#if !(SL2 || SL3 || NET35)
-                componentRegistry.AddRegistrationSource(new LazyRegistrationSource(), true);
-                componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource(), true);
-                componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource(), true);
-#endif
-            }
-            else if (exceptAdapters)
-            {
-                componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource(), true);
-                componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource(), true);
-                componentRegistry.AddRegistrationSource(new MetaRegistrationSource(), true);
-#if !(SL2 || SL3 || NET35)
-                componentRegistry.AddRegistrationSource(new LazyRegistrationSource(), true);
-                componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource(), true);
-                componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource(), true);
-#endif
+
+                RegisterDefaultAdapters(componentRegistry);
             }
 
 	        foreach (var callback in _configurationCallbacks)
                 callback(componentRegistry);
         }
 
-#if (SL2 || SL3 || NET35)
-	    internal void Build(IComponentRegistry componentRegistry)
+	    internal static void RegisterDefaultAdapters(IComponentRegistry componentRegistry)
 	    {
-	        Build( componentRegistry, true, false );
-	    }
-
-        internal void Build(IComponentRegistry componentRegistry, bool excludeDefaultModules)
-	    {
-	        Build( componentRegistry, excludeDefaultModules, false );
-	    }
+            componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource(), true);
+            componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource(), true);
+            componentRegistry.AddRegistrationSource(new MetaRegistrationSource(), true);
+#if !(SL2 || SL3 || NET35)
+            componentRegistry.AddRegistrationSource(new LazyRegistrationSource(), true);
+            componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource(), true);
+            componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource(), true);
 #endif
+        }
 	}
 }
