@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -81,10 +82,10 @@ namespace Autofac.Util
                 var argumentDefinition = genericArgumentDefinitions[i];
                 var parameter = parameters[i];
 
-                foreach (var constraint in argumentDefinition.GetGenericParameterConstraints())
+                if (argumentDefinition.GetGenericParameterConstraints()
+                    .Any(constraint => !constraint.IsAssignableFrom(parameter)))
                 {
-                    if (!constraint.IsAssignableFrom(parameter))
-                        return false;
+                    return false;
                 }
 
                 var specialConstraints = argumentDefinition.GenericParameterAttributes;
@@ -118,7 +119,7 @@ namespace Autofac.Util
         public static bool IsCompatibleWith(this Type type, Type that)
         {
 
-#if !(SL2 || SL3 || NET35)
+#if !(SILVERLIGHT || NET35)
             return type.IsEquivalentTo(that);
 #else
             return type.Equals(that);

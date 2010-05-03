@@ -37,10 +37,11 @@ namespace Autofac.Builder
     /// can be cast.</typeparam>
     /// <typeparam name="TActivatorData">Activator builder type.</typeparam>
     /// <typeparam name="TRegistrationStyle">Registration style type.</typeparam>
-#if !(SL2 || SL3 || NET35)
-    public interface IRegistrationBuilder<out TLimit, out TActivatorData, out TRegistrationStyle>
+    public interface IRegistrationBuilder
+#if !(SILVERLIGHT || NET35)
+    <out TLimit, out TActivatorData, out TRegistrationStyle>
 #else
-    public interface IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>
+    <TLimit, TActivatorData, TRegistrationStyle>
 #endif
     {
         /// <summary>
