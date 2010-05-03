@@ -737,6 +737,27 @@ namespace Autofac
         /// <summary>
         /// Try to retrieve a service from the context.
         /// </summary>
+        /// <typeparam name="T">The service type to resolve.</typeparam>
+        /// <param name="context">The context from which to resolve the service.</param>
+        /// <param name="instance">The resulting component instance providing the service, or default(T).</param>
+        /// <returns>
+        /// True if a component providing the service is available.
+        /// </returns>
+        /// <exception cref="DependencyResolutionException"/>
+        public static bool TryResolve<T>(this IComponentContext context, out T instance)
+        {
+            Enforce.ArgumentNotNull(context, "context");
+
+            object component;
+            bool success = context.TryResolve(typeof(T), out component);
+
+            instance = success ? (T)component : default(T);
+            return success;
+        }
+
+        /// <summary>
+        /// Try to retrieve a service from the context.
+        /// </summary>
         /// <param name="context">The context from which to resolve the service.</param>
         /// <param name="serviceName">The name of the service to resolve.</param>
         /// <param name="serviceType">The type of the service to resolve.</param>
