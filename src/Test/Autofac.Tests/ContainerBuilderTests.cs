@@ -179,6 +179,24 @@ namespace Autofac.Tests
         }
 
         [Test]
+        public void RegisterWithKey()
+        {
+            var key = new object();
+
+            var cb = new ContainerBuilder();
+            cb.RegisterType<object>().Keyed<object>( key );
+
+            var c = cb.Build();
+
+            object o1;
+            Assert.IsTrue(c.TryResolve(key, typeof(object), out o1));
+            Assert.IsNotNull(o1);
+
+            object o2;
+            Assert.IsFalse(c.TryResolve(typeof(object), out o2));
+        }
+
+        [Test]
         public void WithMetadata()
         {
             var p1 = new KeyValuePair<string, object>("p1", "p1Value");

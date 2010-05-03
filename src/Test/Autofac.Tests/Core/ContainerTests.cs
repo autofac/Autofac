@@ -85,6 +85,20 @@ namespace Autofac.Tests.Core
         }
 
         [Test]
+        public void ResolveByKeyWithServiceType()
+        {
+            var myKey = new object();
+            var component = new object();
+
+            var cb = new ContainerBuilder();
+            cb.Register( c => component ).Keyed<object>( myKey );
+            var container = cb.Build();
+
+            var o = container.Resolve<object>( myKey );
+            Assert.AreSame( component, o );
+        }
+
+        [Test]
         public void ContainerProvidesILifetimeScopeAndIContext()
         {
             var container = new Container();

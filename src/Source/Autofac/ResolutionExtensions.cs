@@ -171,6 +171,56 @@ namespace Autofac
         /// <summary>
         /// Retrieve a service from the context.
         /// </summary>
+        /// <typeparam name="TService">The type to which the result will be cast.</typeparam>
+        /// <param name="context">The context from which to resolve the service.</param>
+        /// <param name="serviceKey">Key of the service.</param>
+        /// <returns>
+        /// The component instance that provides the service.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="DependencyResolutionException"/>
+        public static TService Resolve<TService>(this IComponentContext context, object serviceKey)
+        {
+            return Resolve<TService>(context, serviceKey, NoParameters);
+        }
+
+        /// <summary>
+        /// Retrieve a service from the context.
+        /// </summary>
+        /// <typeparam name="TService">The type to which the result will be cast.</typeparam>
+        /// <param name="context">The context from which to resolve the service.</param>
+        /// <param name="serviceKey">Key of the service.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>
+        /// The component instance that provides the service.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="DependencyResolutionException"/>
+        public static TService Resolve<TService>(this IComponentContext context, object serviceKey, IEnumerable<Parameter> parameters)
+        {
+            return (TService)Resolve(context, new KeyedService(serviceKey, typeof(TService)), parameters);
+        }
+
+        /// <summary>
+        /// Retrieve a service from the context.
+        /// </summary>
+        /// <typeparam name="TService">The type to which the result will be cast.</typeparam>
+        /// <param name="context">The context from which to resolve the service.</param>
+        /// <param name="serviceKey">Key of the service.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>
+        /// The component instance that provides the service.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="DependencyResolutionException"/>
+        public static TService Resolve<TService>(this IComponentContext context, object serviceKey, params Parameter[] parameters)
+        {
+            return context.Resolve<TService>(serviceKey, (IEnumerable<Parameter>)parameters);
+        }
+
+        /// <summary>
+        /// Retrieve a service from the context.
+        /// </summary>
         /// <typeparam name="TService">The service to retrieve.</typeparam>
         /// <param name="context">The context from which to resolve the service.</param>
         /// <returns>The component instance that provides the service.</returns>
@@ -699,6 +749,23 @@ namespace Autofac
         {
             Enforce.ArgumentNotNull(context, "context");
             return context.TryResolve(new NamedService(serviceName, serviceType), NoParameters, out instance);
+        }
+
+        /// <summary>
+        /// Try to retrieve a service from the context.
+        /// </summary>
+        /// <param name="context">The context from which to resolve the service.</param>
+        /// <param name="serviceKey">The key of the service to resolve.</param>
+        /// <param name="serviceType">The type of the service to resolve.</param>
+        /// <param name="instance">The resulting component instance providing the service, or null.</param>
+        /// <returns>
+        /// True if a component providing the service is available.
+        /// </returns>
+        /// <exception cref="DependencyResolutionException"/>
+        public static bool TryResolve(this IComponentContext context, object serviceKey, Type serviceType, out object instance)
+        {
+            Enforce.ArgumentNotNull(context, "context");
+            return context.TryResolve(new KeyedService(serviceKey, serviceType), NoParameters, out instance);
         }
     }
 }
