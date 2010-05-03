@@ -306,10 +306,8 @@ namespace Autofac.Builder
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> PropertiesAutowired()
         {
             var injector = new AutowiringPropertyInjector();
-            RegistrationData.ActivatingHandlers.Add((s, e) =>
-            {
-                injector.InjectProperties(e.Context, e.Instance, true);
-            });
+            RegistrationData.ActivatingHandlers.Add((s, e) => 
+                injector.InjectProperties(e.Context, e.Instance, true));
             return this;
         }
 
@@ -327,15 +325,11 @@ namespace Autofac.Builder
             {
                 var injector = new AutowiringPropertyInjector();
                 RegistrationData.ActivatedHandlers.Add((s, e) =>
-                {
-                    injector.InjectProperties(e.Context, e.Instance, true);
-                });
+                    injector.InjectProperties(e.Context, e.Instance, true));
                 return this;
             }
-            else
-            {
-                return PropertiesAutowired();
-            }
+
+            return PropertiesAutowired();
         }
 
         /// <summary>
