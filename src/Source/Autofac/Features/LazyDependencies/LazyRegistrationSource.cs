@@ -60,6 +60,11 @@ namespace Autofac.Features.LazyDependencies
                 .Cast<IComponentRegistration>();
         }
 
+        public bool IsAdapterForIndividualComponents
+        {
+            get { return true; }
+        }
+
         static IComponentRegistration CreateLazyRegistration<T>(Service providedService, IComponentRegistration valueRegistration)
         {
             var rb = RegistrationBuilder.ForDelegate(

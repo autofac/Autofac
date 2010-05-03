@@ -73,6 +73,11 @@ namespace Autofac.Features.OpenGenerics
             return result;
         }
 
+        public bool IsAdapterForIndividualComponents
+        {
+            get { return false; }
+        }
+
         static bool TryGenerateActivator(
             Service service,
             IEnumerable<Service> configuredServices,

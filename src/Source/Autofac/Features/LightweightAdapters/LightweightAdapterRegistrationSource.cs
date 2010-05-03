@@ -70,5 +70,10 @@ namespace Autofac.Features.LightweightAdapters
 
             return new IComponentRegistration[0];
         }
+
+        public bool IsAdapterForIndividualComponents
+        {
+            get { return true; }
+        }
     }
 }

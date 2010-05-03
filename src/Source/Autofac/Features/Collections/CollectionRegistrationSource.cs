@@ -90,5 +90,10 @@ namespace Autofac.Features.Collections
 
             return Enumerable.Empty<IComponentRegistration>();
         }
+
+        public bool IsAdapterForIndividualComponents
+        {
+            get { return false; }
+        }
     }
 }

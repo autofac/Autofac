@@ -67,5 +67,14 @@ namespace Autofac.Core.Registration
                         .ExternallyOwned()
                         .CreateRegistration());
         }
+
+        /// <summary>
+        /// In this case because the components that are adapted do not come from the same
+        /// logical scope, we must return false to avoid duplicating them.
+        /// </summary>
+        public bool IsAdapterForIndividualComponents
+        {
+            get { return false; }
+        }
     }
 }

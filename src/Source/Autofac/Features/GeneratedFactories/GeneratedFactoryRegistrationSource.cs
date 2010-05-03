@@ -28,9 +28,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Core.Activators.Delegate;
-using Autofac.Core.Lifetime;
-using Autofac.Core.Registration;
 using Autofac.Util;
 
 namespace Autofac.Features.GeneratedFactories
@@ -71,6 +68,11 @@ namespace Autofac.Features.GeneratedFactories
             }
 
             return Enumerable.Empty<IComponentRegistration>();
+        }
+
+        public bool IsAdapterForIndividualComponents
+        {
+            get { return true; }
         }
     }
 }

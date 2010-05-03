@@ -47,7 +47,7 @@ namespace Autofac.Features.OpenGenerics
                 new DynamicRegistrationStyle());
 
             builder.RegisterCallback(cr => cr.AddRegistrationSource(
-                new OpenGenericRegistrationSource(rb.RegistrationData, rb.ActivatorData), false));
+                new OpenGenericRegistrationSource(rb.RegistrationData, rb.ActivatorData)));
 
             return rb;
         }

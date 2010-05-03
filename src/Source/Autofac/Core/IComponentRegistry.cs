@@ -86,8 +86,11 @@ namespace Autofac.Core
         /// Add a registration source that will provide registrations on-the-fly.
         /// </summary>
         /// <param name="source">The source to register.</param>
-        /// <param name="isAdapter">Whether the registration source creates new
-        /// components with a 1:1 relationship to other components.</param>
-        void AddRegistrationSource(IRegistrationSource source, bool isAdapter);
+        void AddRegistrationSource(IRegistrationSource source);
+
+        /// <summary>
+        /// Gets the registration sources that are used by the registry.
+        /// </summary>
+        IEnumerable<IRegistrationSource> Sources { get; }
     }
 }

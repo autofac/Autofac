@@ -44,7 +44,7 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// External registration sources.
         /// </summary>
-        readonly IList<KeyValuePair<IRegistrationSource, bool>> _dynamicRegistrationSources = new List<KeyValuePair<IRegistrationSource, bool>>();
+        readonly IList<IRegistrationSource> _dynamicRegistrationSources = new List<IRegistrationSource>();
 
         /// <summary>
         /// All registrations.
@@ -136,7 +136,7 @@ namespace Autofac.Core.Registration
                     registration));
 
                 var adaptationSandbox = new AdaptationSandbox(
-                    _dynamicRegistrationSources.Where(rs => rs.Value).Select(rs => rs.Key),
+                    _dynamicRegistrationSources.Where(rs => rs.IsAdapterForIndividualComponents),
                     registration,
                     adapterServices);
 
@@ -198,17 +198,29 @@ namespace Autofac.Core.Registration
         /// Add a registration source that will provide registrations on-the-fly.
         /// </summary>
         /// <param name="source">The source to register.</param>
-        /// <param name="isAdapter">Whether the registration source creates new
-        /// components with a 1:1 relationship to other components.</param>
-        public void AddRegistrationSource(IRegistrationSource source, bool isAdapter)
+        public void AddRegistrationSource(IRegistrationSource source)
         {
             Enforce.ArgumentNotNull(source, "source");
 
             lock (_synchRoot)
             {
-                _dynamicRegistrationSources.Insert(0, new KeyValuePair<IRegistrationSource, bool>(source, isAdapter));
+                _dynamicRegistrationSources.Insert(0, source);
                 foreach (var serviceRegistrationInfo in _serviceInfo)
                     serviceRegistrationInfo.Value.Include(source);
+            }
+        }
+
+        /// <summary>
+        /// Gets the registration sources that are used by the registry.
+        /// </summary>
+        public IEnumerable<IRegistrationSource> Sources
+        {
+            get
+            {
+                lock (_synchRoot)
+                {
+                    return _dynamicRegistrationSources.ToArray();                    
+                }
             }
         }
 
@@ -219,7 +231,7 @@ namespace Autofac.Core.Registration
                 return info;
 
             if (!info.IsInitializing)
-                info.BeginInitialization(_dynamicRegistrationSources.Select(rs => rs.Key));
+                info.BeginInitialization(_dynamicRegistrationSources);
 
             while (info.HasSourcesToQuery)
             {
@@ -234,8 +246,7 @@ namespace Autofac.Core.Registration
                         if (additionalInfo.IsInitialized) continue;
 
                         if (!additionalInfo.IsInitializing)
-                            additionalInfo.BeginInitialization(_dynamicRegistrationSources
-                                .Select(rs => rs.Key).Where(src => src != next));
+                            additionalInfo.BeginInitialization(_dynamicRegistrationSources.Where(src => src != next));
                         else
                             additionalInfo.SkipSource(next);
                     }

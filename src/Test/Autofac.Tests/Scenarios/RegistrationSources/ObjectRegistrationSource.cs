@@ -27,5 +27,10 @@ namespace Autofac.Tests.Scenarios.RegistrationSources
                 yield return Factory.CreateSingletonObjectRegistration(_instance);
 
         }
+
+        public bool IsAdapterForIndividualComponents
+        {
+            get { return false; }
+        }
     }
 }

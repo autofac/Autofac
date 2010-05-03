@@ -138,7 +138,7 @@ namespace Autofac
                     .As(typeof(IIndex<,>))
                     .InstancePerLifetimeScope();
 
-                componentRegistry.AddRegistrationSource(new CollectionRegistrationSource(), false);
+                componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
 
                 RegisterDefaultAdapters(componentRegistry);
             }
@@ -149,13 +149,13 @@ namespace Autofac
 
 	    internal static void RegisterDefaultAdapters(IComponentRegistry componentRegistry)
 	    {
-            componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource(), true);
-            componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource(), true);
-            componentRegistry.AddRegistrationSource(new MetaRegistrationSource(), true);
+            componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
+            componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
+            componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
 #if !(SL2 || SL3 || NET35)
-            componentRegistry.AddRegistrationSource(new LazyRegistrationSource(), true);
-            componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource(), true);
-            componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource(), true);
+            componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
+            componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
+            componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());
 #endif
         }
 	}

@@ -148,7 +148,7 @@ namespace Autofac.Tests.Core.Lifetime
 
             public AddressBook(Func<IParty> partyFactory)
             {
-                this._partyFactory = partyFactory;
+                _partyFactory = partyFactory;
             }
 
             public IParty AddNew(string name)
@@ -217,15 +217,15 @@ namespace Autofac.Tests.Core.Lifetime
             Assert.That(dt.IsDisposed);
         }
 
-        [Test, Ignore("Limitation")]
+        [Test]
         public void AdaptersInNestedScopeOverrideAdaptersInParent()
         {
             const string parentInstance = "p";
             const string childInstance = "c";
             var parent = new Container();
-            parent.ComponentRegistry.AddRegistrationSource(new ObjectRegistrationSource(parentInstance), false);
+            parent.ComponentRegistry.AddRegistrationSource(new ObjectRegistrationSource(parentInstance));
             var child = parent.BeginLifetimeScope(builder =>
-                    builder.RegisterSource(new ObjectRegistrationSource(childInstance), false));
+                    builder.RegisterSource(new ObjectRegistrationSource(childInstance)));
             var fromChild = child.Resolve<object>();
             Assert.AreSame(childInstance, fromChild);
         }

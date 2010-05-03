@@ -81,5 +81,10 @@ namespace Autofac.Features.OwnedInstances
                     return RegistrationBuilder.CreateRegistration(rb);
                 });
         }
+
+        public bool IsAdapterForIndividualComponents
+        {
+            get { return true; }
+        }
     }
 }

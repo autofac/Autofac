@@ -170,8 +170,9 @@ namespace Autofac.Core.Lifetime
             {
                 var builder =  new ContainerBuilder();
 
-                // Instead, should pull adapters from parent
-                builder.RegisterCallback(ContainerBuilder.RegisterDefaultAdapters);
+                foreach (var source in ComponentRegistry.Sources
+                        .Where(src => src.IsAdapterForIndividualComponents))
+                    builder.RegisterSource(source);
 
                 var parents = Traverse.Across<ISharingLifetimeScope>(this, s => s.ParentLifetimeScope)
                                         .Where(s => s.ParentLifetimeScope == null || s.ComponentRegistry != s.ParentLifetimeScope.ComponentRegistry)
@@ -179,7 +180,7 @@ namespace Autofac.Core.Lifetime
                                         .Reverse();
 
                 foreach (var external in parents)
-                    builder.RegisterSource(external, true);
+                    builder.RegisterSource(external);
                 
                 configurationAction(builder);
 

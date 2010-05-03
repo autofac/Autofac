@@ -62,6 +62,11 @@ namespace Autofac.Features.Metadata
                 .Cast<IComponentRegistration>();
         }
 
+        public bool IsAdapterForIndividualComponents
+        {
+            get { return true; }
+        }
+
         static IComponentRegistration CreateMetaRegistration<T, TMetadata>(Service providedService, IComponentRegistration valueRegistration)
         {
             var rb = RegistrationBuilder.ForDelegate(

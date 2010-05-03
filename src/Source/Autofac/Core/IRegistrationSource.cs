@@ -42,5 +42,11 @@ namespace Autofac.Core
         /// <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
         /// <returns>Registrations providing the service.</returns>
         IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor);
+
+        /// <summary>
+        /// Gets whether the registrations provided by this source are 1:1 adapters on top
+        /// of other components (I.e. like Meta, Func or Owned.)
+        /// </summary>
+        bool IsAdapterForIndividualComponents { get; }
     }
 }
