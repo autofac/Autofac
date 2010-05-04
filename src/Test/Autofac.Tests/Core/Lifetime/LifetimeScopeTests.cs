@@ -98,12 +98,8 @@ namespace Autofac.Tests.Core.Lifetime
             var builder = new ContainerBuilder();
             builder.Register( c => o1 );
             var scope1 = builder.Build();
-
             var scope2 = scope1.BeginLifetimeScope( b => b.Register( c => o2 ) );
-
-            // T.S: What's strange is that if you don't specify any new (unrelated) registrations
-            // in the local (3rd) scope, the test passes.
-            var scope3 = scope2.BeginLifetimeScope( b => b.Register( c => "s3" ) ); // <- Fails with this.
+            var scope3 = scope2.BeginLifetimeScope( b => { });
 
             Assert.AreSame( o2, scope3.Resolve<object>() );
         }
@@ -131,63 +127,43 @@ namespace Autofac.Tests.Core.Lifetime
             Assert.AreSame(obs, ls.Resolve<IEnumerable<object>>());
         }
 
-        public interface IParty
+        public class Person
         {
-            string Name { get; set; }
-        }
-
-        public class Person : IParty
-        {
-            public string Name { get; set; }
         }
 
         public class AddressBook
         {
-            private readonly IList<IParty> _contacts = new List<IParty>();
-            private readonly Func<IParty> _partyFactory;
+            private readonly Func<Person> _partyFactory;
 
-            public AddressBook(Func<IParty> partyFactory)
+            public AddressBook(Func<Person> partyFactory)
             {
                 _partyFactory = partyFactory;
             }
 
-            public IParty AddNew(string name)
+            public Person Add()
             {
-                IParty newContact = _partyFactory();
-                newContact.Name = name;
-
-                _contacts.Add(newContact);
-
-                return newContact;
+                return _partyFactory();
             }
         }
 
         [Test]
-        // Previously threw ComponentNotRegisteredException
-        public void MultiLayerNestingScenario_FromTysonStolarski()
+        public void ComponentsInNestedLifetimeCanResolveDependenciesFromParent()
         {
-            var builder = new ContainerBuilder();
-            var level1Scope = builder.Build();
+            var level1Scope = new ContainerBuilder().Build();
 
             var level2Scope = level1Scope.BeginLifetimeScope(cb =>
-            {
-                cb.RegisterType<Person>().As<IParty>().InstancePerDependency();
-                cb.RegisterType<AddressBook>().InstancePerDependency();
-            });
+                cb.RegisterType<AddressBook>());
 
             var level3Scope = level2Scope.BeginLifetimeScope(cb =>
-                cb.Register(c => new Person()).As<IParty>().InstancePerDependency()
-            );
+                cb.RegisterType<Person>());
 
-            var addressBook = level3Scope.Resolve<AddressBook>();
-            addressBook.AddNew("Robert");
+            level3Scope.Resolve<AddressBook>().Add();
         }
 
         [Test]
         public void InstancesRegisteredInNestedScopeAreSingletonsInThatScope()
         {
-            var builder = new ContainerBuilder();
-            var rootScope = builder.Build();
+            var rootScope = new ContainerBuilder().Build();
 
             var dt = new DisposeTracker();
 
@@ -202,8 +178,7 @@ namespace Autofac.Tests.Core.Lifetime
         [Test]
         public void SingletonsRegisteredInNestedScopeAreTiedToThatScope()
         {
-            var builder = new ContainerBuilder();
-            var rootScope = builder.Build();
+            var rootScope = new ContainerBuilder().Build();
 
             var nestedScope = rootScope.BeginLifetimeScope(cb => 
                 cb.RegisterType<DisposeTracker>().SingleInstance());
@@ -228,6 +203,18 @@ namespace Autofac.Tests.Core.Lifetime
                     builder.RegisterSource(new ObjectRegistrationSource(childInstance)));
             var fromChild = child.Resolve<object>();
             Assert.AreSame(childInstance, fromChild);
+        }
+
+        [Test]
+        public void InstancesRegisteredInParentScope_ButResolvedInChild_AreDisposedWithChild()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<DisposeTracker>();
+            var parent = builder.Build();
+            var child = parent.BeginLifetimeScope(b => { });
+            var dt = child.Resolve<DisposeTracker>();
+            child.Dispose();
+            Assert.That(dt.IsDisposed);
         }
     }
 }

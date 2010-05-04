@@ -35,7 +35,7 @@ namespace Autofac.Tests.Integration.Mef
         }
 
         [Test]
-        public void IsClassRegistredInAutofacAsFactoryScopedResolvedByMefAsFactoryScoped()
+        public void ClassRegisteredInAutofacAsFactoryScopedIsResolvedByMefAsFactoryScoped()
         {
             var containerBuilder = new ContainerBuilder();
 

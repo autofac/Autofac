@@ -78,7 +78,7 @@ namespace Autofac.Core.Registration
                 if (Any)
                     Debug.WriteLine(String.Format(
                         "[Autofac] Overriding default for: '{0}' with: '{1}' (was '{2}')",
-                        _service, registration, _implementations.First));
+                        _service, registration, _implementations.First.Value));
 
                 _implementations.AddFirst(registration);
             }
