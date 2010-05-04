@@ -152,10 +152,16 @@ namespace Autofac.Core.Registration
             _sourcesToQuery = null;
         }
 
-        public bool AdaptsAnyServicesOf(IComponentRegistration registration)
+        public bool ShouldRecalculateAdaptersOn(IComponentRegistration registration)
         {
-            return IsInitialized && Implementations.Any(i => i.IsAdapting() &&
-                i.Target.Services.Intersect(registration.Services).Any());
+            // The whole calculation here could be avoided if an adapter
+            // could tell the container not just whether any components could
+            // be adapted, but whether a queried service could *potentially* be
+            // an adapter.
+            return IsInitialized &&
+                (!Any ||
+                 Implementations.Any(i => i.IsAdapting() &&
+                      i.Target.Services.Intersect(registration.Services).Any()));
         }
     }
 }

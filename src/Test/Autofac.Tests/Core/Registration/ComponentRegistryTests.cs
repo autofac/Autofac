@@ -299,5 +299,17 @@ namespace Autofac.Tests.Core.Registration
             var post = registry.RegistrationsFor(chainedService);
             Assert.AreEqual(2, post.Count());
         }
+
+        [Test]
+        public void WhenAdaptersAreAppliedButNoRegistrationsCreated_AddingAdapteesAddsAdapters()
+        {
+            var registry = new ComponentRegistry();
+            registry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
+            var adapterService = new TypedService(typeof(Func<object>));
+            registry.RegistrationsFor(adapterService);
+            registry.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
+            var adapters = registry.RegistrationsFor(adapterService);
+            Assert.AreEqual(1, adapters.Count());
+        }
     }
 }

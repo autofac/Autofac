@@ -32,8 +32,15 @@ using Autofac.Util;
 namespace Autofac.Core.Registration
 {
     /// <summary>
-    /// Provides component registrations according to the services they provide.
+    /// Maps services onto the components that provide them.
     /// </summary>
+    /// <remarks>
+    /// The component registry provides services directly from components,
+    /// and also uses <see cref="IRegistrationSource"/> to generate components
+    /// on-the-fly or as adapters for other components. A component registry
+    /// is normally used through a <see cref="ContainerBuilder"/>, and not
+    /// directly by application code.
+    /// </remarks>
     public class ComponentRegistry : Disposable, IComponentRegistry
     {
         /// <summary>
@@ -125,25 +132,25 @@ namespace Autofac.Core.Registration
         void UpdateInitialisedAdapters(IComponentRegistration registration)
         {
             var adapterServices = _serviceInfo
-                .Where(si => si.Value.AdaptsAnyServicesOf(registration))
+                .Where(si => si.Value.ShouldRecalculateAdaptersOn(registration))
                 .Select(si => si.Key)
                 .ToArray();
 
-            if (adapterServices.Length != 0)
-            {
-                Debug.WriteLine(String.Format(
-                    "[Autofac] Component '{0}' provides services that have already been adapted. Consider refactoring to ContainerBuilder.Build() rather than Update().",
-                    registration));
+            if (adapterServices.Length == 0)
+                return;
 
-                var adaptationSandbox = new AdaptationSandbox(
-                    _dynamicRegistrationSources.Where(rs => rs.IsAdapterForIndividualComponents),
-                    registration,
-                    adapterServices);
+            Debug.WriteLine(String.Format(
+                "[Autofac] Component '{0}' provides services that have already been adapted. Consider refactoring to ContainerBuilder.Build() rather than Update().",
+                registration));
 
-                var adapters = adaptationSandbox.GetAdapters();
-                foreach (var adapter in adapters)
-                    AddRegistration(adapter, true);
-            }
+            var adaptationSandbox = new AdaptationSandbox(
+                _dynamicRegistrationSources.Where(rs => rs.IsAdapterForIndividualComponents),
+                registration,
+                adapterServices);
+
+            var adapters = adaptationSandbox.GetAdapters();
+            foreach (var adapter in adapters)
+                AddRegistration(adapter, true);
         }
 
         void AddRegistration(IComponentRegistration registration, bool preserveDefaults)
