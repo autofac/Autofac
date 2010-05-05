@@ -62,8 +62,8 @@ namespace AutofacContrib.NMock2
 			Mockery = new Mockery();
 			var builder = new ContainerBuilder();
 			builder.RegisterInstance(Mockery);
-            builder.RegisterSource(new NMockRegistrationHandler());
-            builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+            builder.RegisterSource(new NMockRegistrationHandler(), false);
+            builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource(), false);
             Container = builder.Build();
 		}
 
@@ -87,8 +87,8 @@ namespace AutofacContrib.NMock2
 			var builder = new ContainerBuilder();
 			builder.RegisterInstance(mockery).ExternallyOwned();
 			builder.RegisterInstance(mockery.Ordered);
-            builder.RegisterSource(new NMockRegistrationHandler());
-            builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+            builder.RegisterSource(new NMockRegistrationHandler(), false);
+            builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource(), false);
             return new AutoMock(mockery, builder.Build());
 		}
 

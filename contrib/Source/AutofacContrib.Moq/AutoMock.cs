@@ -52,8 +52,8 @@ namespace AutofacContrib.Moq
             this.MockFactory = new MockFactory(behavior);
             var builder = new ContainerBuilder();
             builder.RegisterInstance(MockFactory);
-            builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
-            builder.RegisterSource(new MoqRegistrationHandler());
+            builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource(), false);
+            builder.RegisterSource(new MoqRegistrationHandler(), false);
             this.Container = builder.Build();
             this.VerifyAll = false;
         }

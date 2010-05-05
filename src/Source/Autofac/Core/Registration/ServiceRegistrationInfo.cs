@@ -154,14 +154,13 @@ namespace Autofac.Core.Registration
 
         public bool ShouldRecalculateAdaptersOn(IComponentRegistration registration)
         {
-            // The whole calculation here could be avoided if an adapter
-            // could tell the container not just whether any components could
-            // be adapted, but whether a queried service could *potentially* be
-            // an adapter.
-            return IsInitialized &&
-                (!Any ||
-                 Implementations.Any(i => i.IsAdapting() &&
-                      i.Target.Services.Intersect(registration.Services).Any()));
+            // The best optimisation we could make here is to track which services
+            // have been queried by and adapter - i.e. instead of giving the
+            // adapter the ComponentRegistry.RegistrationsFor method, add some
+            // logic that performs the query then marks the service info as
+            // an adapted on. Then only when registration supports services that
+            // have been adapted do we need to do any querying at all.
+            return IsInitialized;
         }
     }
 }
