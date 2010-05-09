@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web;
+﻿using System.Web;
 
 namespace Autofac.Integration.Web.Mvc
 {
@@ -10,7 +6,7 @@ namespace Autofac.Integration.Web.Mvc
     /// Registers http context abstraction classes including <see cref="HttpContextBase"/> and <see cref="HttpSessionStateBase "/>
     /// for use by components that live in the Request lifetime
     /// </summary>
-    public class HttpModule : Module
+    public class AutofacWebTypesModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {

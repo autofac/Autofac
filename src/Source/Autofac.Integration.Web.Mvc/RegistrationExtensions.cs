@@ -12,26 +12,21 @@ namespace Autofac.Integration.Web.Mvc
     /// </summary>
     public static class RegistrationExtensions
     {
-        private static string ModelBinderComponentRegistrationKey = "ModelBinderType";
+        private const string ModelBinderComponentRegistrationKey = "ModelBinderType";
 
         /// <summary>
         /// Register types that implement IModelBinder in the provided assemblies.
         /// </summary>
         /// <param name="builder">The container builder.</param>
-        /// <param name="controllerAssemblies">Assemblies to scan for model binders.</param>
+        /// <param name="modelBinderAssemblies">Assemblies to scan for model binders.</param>
         /// <returns>Registration builder allowing the controller components to be customised.</returns>
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             RegisterModelBinders(
                 this ContainerBuilder builder,
                 params Assembly[] modelBinderAssemblies)
         {
-            //builder.RegisterCallback(LoadModelBindersFromComponentRegistry);
-
             return builder.RegisterAssemblyTypes(modelBinderAssemblies)
-                .Where(t =>
-                {
-                    return typeof(IModelBinder).IsAssignableFrom(t);
-                })
+                .Where(t => typeof(IModelBinder).IsAssignableFrom(t))
                 .As<IModelBinder>()
                 .AsSelf()
                 .WithMetadata(ModelBinderComponentRegistrationKey, t =>
@@ -48,7 +43,6 @@ namespace Autofac.Integration.Web.Mvc
 
         }
 
-
         /// <summary>
         /// Register types that implement IController in the provided assemblies.
         /// </summary>
@@ -58,28 +52,11 @@ namespace Autofac.Integration.Web.Mvc
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             RegisterControllers(
                 this ContainerBuilder builder,
-                params Assembly[] controllerAssemblies)
-        {
-            return RegisterControllers(builder, new DefaultControllerIdentificationStrategy(), controllerAssemblies);
-        }
-
-        /// <summary>
-        /// Register types that implement IController in the provided assemblies.
-        /// </summary>
-        /// <param name="builder">The container builder.</param>
-        /// <param name="identificationStrategy">Controller identification strategy.</param>
-        /// <param name="controllerAssemblies">Assemblies to scan for controllers.</param>
-        /// <returns>Registration builder allowing the controller components to be customised.</returns>
-        public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
-            RegisterControllers(
-                this ContainerBuilder builder,
-                IControllerIdentificationStrategy identificationStrategy,
                 params Assembly[] controllerAssemblies)
         {
             return builder.RegisterAssemblyTypes(controllerAssemblies)
-                .Where(t => typeof(IController).IsAssignableFrom(t))
-                .Where(t => t.Name.EndsWith("Controller"))
-                .As(t => identificationStrategy.ServiceForControllerType(t));
+                .Where(t => typeof(IController).IsAssignableFrom(t) &&
+                    t.Name.EndsWith("Controller"));
         }
 
         /// <summary>

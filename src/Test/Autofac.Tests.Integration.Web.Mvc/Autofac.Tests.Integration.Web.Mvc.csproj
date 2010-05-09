@@ -64,7 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutofacControllerFactoryFixture.cs" />
-    <Compile Include="DefaultControllerIdentificationStrategyFixture.cs" />
     <Compile Include="FilterInjectionActionInvokerFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationExtensionsFixture.cs" />

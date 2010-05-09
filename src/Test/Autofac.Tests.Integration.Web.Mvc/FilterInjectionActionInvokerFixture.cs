@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using Autofac.Builder;
 using Autofac.Integration.Web.Mvc;
 using NUnit.Framework;
-using Autofac.Core;
 
 namespace Autofac.Tests.Integration.Web.Mvc
 {
@@ -49,7 +46,9 @@ namespace Autofac.Tests.Integration.Web.Mvc
             }
         }
 
+// ReSharper disable ClassNeverInstantiated.Local
         private class TestableActionInvoker : ExtensibleActionInvoker
+// ReSharper restore ClassNeverInstantiated.Local
         {
             public TestableActionInvoker(IComponentContext context,
                 IEnumerable<IActionFilter> actionFilters,
@@ -79,7 +78,9 @@ namespace Autofac.Tests.Integration.Web.Mvc
 
         private class TestActionFilter : ActionFilterAttribute, IHasDependency
         {
+// ReSharper disable UnusedAutoPropertyAccessor.Local
             public TestDependency Dependency { get; set; }
+// ReSharper restore UnusedAutoPropertyAccessor.Local
 
             public override void OnActionExecuting(ActionExecutingContext filterContext)
             {
@@ -88,7 +89,9 @@ namespace Autofac.Tests.Integration.Web.Mvc
 
         private class TestAuthFilter : FilterAttribute, IAuthorizationFilter, IHasDependency
         {
+// ReSharper disable UnusedAutoPropertyAccessor.Local
             public TestDependency Dependency { get; set; }
+// ReSharper restore UnusedAutoPropertyAccessor.Local
 
             public void OnAuthorization(AuthorizationContext filterContext)
             {
@@ -97,7 +100,9 @@ namespace Autofac.Tests.Integration.Web.Mvc
 
         private class TestResultFilter : FilterAttribute, IResultFilter, IHasDependency
         {
+// ReSharper disable UnusedAutoPropertyAccessor.Local
             public TestDependency Dependency { get; set; }
+// ReSharper restore UnusedAutoPropertyAccessor.Local
 
             public void OnResultExecuting(ResultExecutingContext filterContext)
             {
@@ -110,7 +115,9 @@ namespace Autofac.Tests.Integration.Web.Mvc
 
         private class TestExceptionFilter : FilterAttribute, IExceptionFilter, IHasDependency
         {
+// ReSharper disable UnusedAutoPropertyAccessor.Local
             public TestDependency Dependency { get; set; }
+// ReSharper restore UnusedAutoPropertyAccessor.Local
 
             public void OnException(ExceptionContext filterContext)
             {

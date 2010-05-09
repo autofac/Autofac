@@ -84,6 +84,7 @@
     <Content Include="App_Data\Remember_log.ldf">
       <DependentUpon>Remember.mdf</DependentUpon>
     </Content>
+    <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Views\Account\Login.aspx" />
     <Content Include="Views\Account\LoginSuccess.aspx" />

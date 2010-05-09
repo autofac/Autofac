@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autofac.Builder;
 using NHibernate;
-using System.Data;
 using NHibernate.Cfg;
-using Remember.Model;
 using Autofac;
 using Autofac.Integration.Web;
 
@@ -28,10 +22,8 @@ namespace Remember.Persistence.NHibernate
 
             builder.Register(c => c.Resolve<ISessionFactory>().OpenSession())
                 .InstancePerMatchingLifetimeScope(WebLifetime.Request)
-                .OnActivated(e =>
-                {
-                    e.Context.Resolve<TransactionTracker>().CurrentTransaction = ((ISession)e.Instance).BeginTransaction();
-                });
+                .OnActivated(e => e.Context.Resolve<TransactionTracker>().CurrentTransaction =
+                    e.Instance.BeginTransaction());
 
             builder.Register(c => new Configuration().Configure().BuildSessionFactory())
                 .SingleInstance();

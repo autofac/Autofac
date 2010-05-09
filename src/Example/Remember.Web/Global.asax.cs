@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Autofac.Integration.Web;
 using Autofac.Integration.Web.Mvc;
-using Remember.Model;
 using Remember.Persistence.NHibernate;
-using Remember.Persistence;
 using Autofac;
 using Remember.Service;
 
@@ -20,11 +17,12 @@ namespace Remember.Web
         static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+            routes.IgnoreRoute("favicon.ico");
 
             routes.MapRoute(
-                "Default",                                                               // Route name
-                "{controller}/{action}/{id}",                                            // URL with parameters
-                new { controller = "Home", action = "Index", id=UrlParameter.Optional }     // Parameter defaults
+                "Default",
+                "{controller}/{action}/{id}",
+                new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
         }
 

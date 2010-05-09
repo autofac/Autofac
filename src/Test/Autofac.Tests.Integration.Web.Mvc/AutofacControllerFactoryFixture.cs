@@ -2,7 +2,6 @@
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
-using Autofac.Builder;
 using Autofac.Integration.Web;
 using Autofac.Integration.Web.Mvc;
 using NUnit.Framework;
@@ -18,7 +17,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
 
         class StubContainerProvider : IContainerProvider
         {
-            IContainer _container;
+            readonly IContainer _container;
 
             public StubContainerProvider(IContainer container)
             {
@@ -60,18 +59,33 @@ namespace Autofac.Tests.Integration.Web.Mvc
         [ExpectedException(typeof(ArgumentNullException))]
         public void DetectsNullProvider()
         {
-            var target = new AutofacControllerFactory(null);
+            new AutofacControllerFactory(null);
         }
 
-        private AutofacControllerFactory CreateTarget()
+        private static AutofacControllerFactory CreateTarget()
         {
             return new AutofacControllerFactory(new StubContainerProvider(new Container()));
         }
 
+        [Test]
+        public void ThrowsHttpException404WhenControllerIsNull()
+        {
+            var target = CreateTarget();
+            var hx = Assert.Throws<HttpException>(() => 
+                target.CreateControllerInternal(CreateContext(), null));
+            Assert.That(hx.GetHttpCode(), Is.EqualTo(404));
+        }
 
+        [Test]
+        public void ThrowsHttpException404WhenControllerMissing()
+        {
+            var target = CreateTarget();
+            var hx = Assert.Throws<HttpException>(() =>
+                target.CreateControllerInternal(CreateContext(), typeof(object)));
+            Assert.That(hx.GetHttpCode(), Is.EqualTo(404));
+        }
 
-
-        private RequestContext CreateContext()
+        private static RequestContext CreateContext()
         {
             var request = new Mock<HttpRequestBase>(MockBehavior.Loose);
             request.Setup(r => r.Path).Returns("Path");
@@ -80,7 +94,21 @@ namespace Autofac.Tests.Integration.Web.Mvc
             return new RequestContext(httpContext.Object, new RouteData());
         }
 
+        [Test]
+        public void CreatesController()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<StubController>();
+            var container = builder.Build();
 
+            var context = CreateContext();
 
+            var provider = new StubContainerProvider(container);
+            var target = new AutofacControllerFactory(provider);
+            var controller = target.CreateControllerInternal(context, typeof(StubController));
+
+            Assert.IsNotNull(controller);
+            Assert.IsInstanceOf<StubController>(controller);
+        }
     }
 }

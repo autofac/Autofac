@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Web.Mvc;
 using Remember.Model;
 using Remember.Persistence;
@@ -8,7 +7,7 @@ namespace Remember.Web.Controllers
 {
     public class TaskController : Controller
     {
-        IRepository<Task> _tasks;
+        readonly IRepository<Task> _tasks;
 
         public TaskController(IRepository<Task> tasks)
         {

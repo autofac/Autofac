@@ -63,10 +63,8 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="AutofacModelBinder.cs" />
-    <Compile Include="DefaultControllerIdentificationStrategy.cs" />
     <Compile Include="ExtensibleActionInvoker.cs" />
-    <Compile Include="HttpModule.cs" />
-    <Compile Include="IControllerIdentificationStrategy.cs" />
+    <Compile Include="AutofacWebTypesModule.cs" />
     <Compile Include="ModelBinderTypeAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationExtensions.cs" />
