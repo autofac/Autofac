@@ -108,5 +108,34 @@ namespace Autofac.Tests.Features.OpenGenerics
 
             return rs.Count() == 1;
         }
+
+        public interface ITwoParams<T, U> { }
+        public class TwoParams<T, U> : ITwoParams<T, U> { }
+
+        [Test]
+        public void SupportsMultipleGenericParameters()
+        {
+            var tp = typeof(TwoParams<,>);
+
+            var g = new OpenGenericRegistrationSource(
+                new RegistrationData(new TypedService(tp)),
+                new ReflectionActivatorData(tp));
+
+            var rs = g.RegistrationsFor(new TypedService(typeof(TwoParams<int, string>)), s => null);
+
+            Assert.AreEqual(1, rs.Count());
+        }
+
+        [Test]
+        public void SupportsMultipleGenericParametersMappedFromService()
+        {
+            var g = new OpenGenericRegistrationSource(
+                new RegistrationData(new TypedService(typeof(ITwoParams<,>))),
+                new ReflectionActivatorData(typeof(TwoParams<,>)));
+
+            var rs = g.RegistrationsFor(new TypedService(typeof(ITwoParams<int, string>)), s => null);
+
+            Assert.AreEqual(1, rs.Count());
+        }
     }
 }

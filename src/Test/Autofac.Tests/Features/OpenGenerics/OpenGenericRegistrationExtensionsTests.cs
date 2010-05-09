@@ -109,5 +109,17 @@ namespace Autofac.Tests.Features.OpenGenerics
             var cb = new ContainerBuilder();
             Assert.Throws<ArgumentException>(() => cb.RegisterGeneric(typeof(List<int>)));
         }
+
+        public interface ITwoParams<T, U> { }
+        public class TwoParams<T, U> : ITwoParams<T, U> { }
+
+        [Test]
+        public void MultipleTypeParametersAreMatched()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(TwoParams<,>)).As(typeof(ITwoParams<,>));
+            var c = cb.Build();
+            c.Resolve<ITwoParams<int, string>>();
+        }
     }
 }
