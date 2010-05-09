@@ -951,6 +951,12 @@
             <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
             <returns>Registrations providing the service.</returns>
         </member>
+        <member name="P:Autofac.Core.IRegistrationSource.IsAdapterForIndividualComponents">
+            <summary>
+            Gets whether the registrations provided by this source are 1:1 adapters on top
+            of other components (I.e. like Meta, Func or Owned.)
+            </summary>
+        </member>
         <member name="M:Autofac.Core.Registration.ExternalRegistrySource.#ctor(Autofac.Core.IComponentRegistry)">
             <summary>
             Create an external registry source that draws components from
@@ -967,6 +973,12 @@
             <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
             <returns>Registrations providing the service.</returns>
         </member>
+        <member name="P:Autofac.Core.Registration.ExternalRegistrySource.IsAdapterForIndividualComponents">
+            <summary>
+            In this case because the components that are adapted do not come from the same
+            logical scope, we must return false to avoid duplicating them.
+            </summary>
+        </member>
         <member name="T:Autofac.Core.Registration.ScopeRestrictedRegistry">
             <summary>
             Switches components with a RootScopeLifetime (singletons) with
@@ -975,8 +987,15 @@
         </member>
         <member name="T:Autofac.Core.Registration.ComponentRegistry">
             <summary>
-            Provides component registrations according to the services they provide.
+            Maps services onto the components that provide them.
             </summary>
+            <remarks>
+            The component registry provides services directly from components,
+            and also uses <see cref="T:Autofac.Core.IRegistrationSource"/> to generate components
+            on-the-fly or as adapters for other components. A component registry
+            is normally used through a <see cref="T:Autofac.ContainerBuilder"/>, and not
+            directly by application code.
+            </remarks>
         </member>
         <member name="T:Autofac.Core.IComponentRegistry">
             <summary>
@@ -1021,13 +1040,11 @@
             <param name="service">The service for which registrations are sought.</param>
             <returns>Registrations supporting <paramref name="service"/>.</returns>
         </member>
-        <member name="M:Autofac.Core.IComponentRegistry.AddRegistrationSource(Autofac.Core.IRegistrationSource,System.Boolean)">
+        <member name="M:Autofac.Core.IComponentRegistry.AddRegistrationSource(Autofac.Core.IRegistrationSource)">
             <summary>
             Add a registration source that will provide registrations on-the-fly.
             </summary>
             <param name="source">The source to register.</param>
-            <param name="isAdapter">Whether the registration source creates new
-            components with a 1:1 relationship to other components.</param>
         </member>
         <member name="P:Autofac.Core.IComponentRegistry.Registrations">
             <summary>
@@ -1038,6 +1055,11 @@
             <summary>
             Fired whenever a component is registered - either explicitly or via a
             <see cref="T:Autofac.Core.IRegistrationSource"/>.
+            </summary>
+        </member>
+        <member name="P:Autofac.Core.IComponentRegistry.Sources">
+            <summary>
+            Gets the registration sources that are used by the registry.
             </summary>
         </member>
         <member name="F:Autofac.Core.Registration.ComponentRegistry._synchRoot">
@@ -1104,13 +1126,11 @@
             <param name="service">The service for which registrations are sought.</param>
             <returns>Registrations supporting <paramref name="service"/>.</returns>
         </member>
-        <member name="M:Autofac.Core.Registration.ComponentRegistry.AddRegistrationSource(Autofac.Core.IRegistrationSource,System.Boolean)">
+        <member name="M:Autofac.Core.Registration.ComponentRegistry.AddRegistrationSource(Autofac.Core.IRegistrationSource)">
             <summary>
             Add a registration source that will provide registrations on-the-fly.
             </summary>
             <param name="source">The source to register.</param>
-            <param name="isAdapter">Whether the registration source creates new
-            components with a 1:1 relationship to other components.</param>
         </member>
         <member name="P:Autofac.Core.Registration.ComponentRegistry.Registrations">
             <summary>
@@ -1121,6 +1141,11 @@
             <summary>
             Fired whenever a component is registered - either explicitly or via a
             <see cref="T:Autofac.Core.IRegistrationSource"/>.
+            </summary>
+        </member>
+        <member name="P:Autofac.Core.Registration.ComponentRegistry.Sources">
+            <summary>
+            Gets the registration sources that are used by the registry.
             </summary>
         </member>
         <member name="T:Autofac.Core.Registration.ServiceRegistrationInfo">
@@ -1406,6 +1431,12 @@
             <param name="service">The service that was requested.</param>
             <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
             <returns>Registrations providing the service.</returns>
+        </member>
+        <member name="P:Autofac.Features.ResolveAnything.AnyConcreteTypeNotAlreadyRegisteredSource.IsAdapterForIndividualComponents">
+            <summary>
+            Gets whether the registrations provided by this source are 1:1 adapters on top
+            of other components (I.e. like Meta, Func or Owned.)
+            </summary>
         </member>
         <member name="T:Autofac.Features.Scanning.ScanningActivatorData">
             <summary>
@@ -3527,14 +3558,12 @@
             <param name="builder">The builder to register the component with.</param>
             <param name="registration">The component to add.</param>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.RegisterSource(Autofac.ContainerBuilder,Autofac.Core.IRegistrationSource,System.Boolean)">
+        <member name="M:Autofac.RegistrationExtensions.RegisterSource(Autofac.ContainerBuilder,Autofac.Core.IRegistrationSource)">
             <summary>
             Add a registration source to the container.
             </summary>
             <param name="builder">The builder to register the registration source via.</param>
             <param name="registrationSource">The registration source to add.</param>
-            <param name="isAdapter">Whether the registration source creates new
-            components with a 1:1 relationship to other components.</param>
         </member>
         <member name="M:Autofac.RegistrationExtensions.RegisterInstance``1(Autofac.ContainerBuilder,``0)">
             <summary>

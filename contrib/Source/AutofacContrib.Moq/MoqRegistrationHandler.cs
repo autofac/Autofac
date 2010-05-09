@@ -80,7 +80,12 @@ namespace AutofacContrib.Moq
                 .As(service)
                 .InstancePerLifetimeScope();
 
-            return new[] { RegistrationBuilder.CreateRegistration(rb) };
+            return new[] { rb.CreateRegistration() };
+        }
+
+        public bool IsAdapterForIndividualComponents
+        {
+            get { return false; }
         }
     }
 }

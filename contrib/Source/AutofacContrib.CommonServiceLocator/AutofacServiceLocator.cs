@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
-using Autofac.Core;
 using Microsoft.Practices.ServiceLocation;
 
 namespace AutofacContrib.CommonServiceLocator

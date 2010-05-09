@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
 using Autofac;
-using Autofac.Builder;
-using Autofac.Core;
 using AutofacContrib.CommonServiceLocator;
 using AutofacContrib.Tests.CommonServiceLocator.Components;
 using CommonServiceLocator.AutofacAdapter;

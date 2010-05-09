@@ -25,7 +25,6 @@
 
 using System;
 using Autofac;
-using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.ResolveAnything;
 using NMock2;
@@ -62,8 +61,8 @@ namespace AutofacContrib.NMock2
 			Mockery = new Mockery();
 			var builder = new ContainerBuilder();
 			builder.RegisterInstance(Mockery);
-            builder.RegisterSource(new NMockRegistrationHandler(), false);
-            builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource(), false);
+            builder.RegisterSource(new NMockRegistrationHandler());
+            builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
             Container = builder.Build();
 		}
 
@@ -87,8 +86,8 @@ namespace AutofacContrib.NMock2
 			var builder = new ContainerBuilder();
 			builder.RegisterInstance(mockery).ExternallyOwned();
 			builder.RegisterInstance(mockery.Ordered);
-            builder.RegisterSource(new NMockRegistrationHandler(), false);
-            builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource(), false);
+            builder.RegisterSource(new NMockRegistrationHandler());
+            builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
             return new AutoMock(mockery, builder.Build());
 		}
 
@@ -118,7 +117,7 @@ namespace AutofacContrib.NMock2
 		/// <returns>The (mocked) service.</returns>
 		public T Create<T>(params Parameter[] parameters)
 		{
-			return this.Container.Resolve<T>(parameters);
+			return Container.Resolve<T>(parameters);
 		}
 	}
 }
