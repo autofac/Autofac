@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using Autofac.Integration.Web.Mvc;
+using Moq;
 using NUnit.Framework;
 
 namespace Autofac.Tests.Integration.Web.Mvc
@@ -20,10 +22,15 @@ namespace Autofac.Tests.Integration.Web.Mvc
             var builder = new ContainerBuilder();
             builder.RegisterType<TestableActionInvoker>();
             builder.Register(c => new TestDependency());
+        	builder.Register(c => new ActionDependency()).As<IActionDependency>();
             _container = builder.Build();
 
+			var request = new Mock<HttpRequestBase>();
+			var httpContext = new Mock<HttpContextBase>();
+			httpContext.Setup(mock => mock.Request).Returns(request.Object);
+
             _controller = new TestController();
-            _context = new ControllerContext { Controller = _controller };
+            _context = new ControllerContext {Controller = _controller, HttpContext = httpContext.Object};
             _controller.ControllerContext = _context;
         }
 
@@ -37,6 +44,15 @@ namespace Autofac.Tests.Integration.Web.Mvc
             AssertFiltersInjected(filters.ExceptionFilters);
             AssertFiltersInjected(filters.ResultFilters);
         }
+
+    	[Test]
+    	public void ActionInjection_DependencyRegistered_ServiceResolved()
+    	{
+			var invoker = _container.Resolve<TestableActionInvoker>();
+    		invoker.InvokeAction(_context, "Index");
+
+			Assert.That(_controller.Dependency, Is.InstanceOf<IActionDependency>());
+    	}
 
         private static void AssertFiltersInjected(IEnumerable filters)
         {
@@ -66,6 +82,14 @@ namespace Autofac.Tests.Integration.Web.Mvc
                 return base.GetFilters(new ControllerContext(), actionDescriptor);
             }
         }
+
+		private interface IActionDependency
+		{
+		}
+
+		private class ActionDependency : IActionDependency
+		{
+		}
 
         private class TestDependency
         {
@@ -126,12 +150,16 @@ namespace Autofac.Tests.Integration.Web.Mvc
 
         private class TestController : Controller
         {
-            [TestResultFilter, TestActionFilter, TestExceptionFilter, TestAuthFilter]
-            public ActionResult Index()
+        	public IActionDependency Dependency { get; private set; }
+
+        	[TestResultFilter, TestActionFilter, TestExceptionFilter, TestAuthFilter]
+// ReSharper disable UnusedMember.Local
+            public ActionResult Index(IActionDependency dependency)
+// ReSharper restore UnusedMember.Local
             {
+            	Dependency = dependency;
                 return null;
             }
         }
-
     }
 }
