@@ -137,7 +137,7 @@ namespace Autofac.Util
 
         public static int GetCompatibleHashCode(this Type type)
         {
-            if (type.IsCOMObject)
+            if (type.IsImport)
                 return type.GUID.GetHashCode();
 
             return type.GetHashCode();
