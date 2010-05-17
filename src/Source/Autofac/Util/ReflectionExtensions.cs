@@ -83,7 +83,7 @@ namespace Autofac.Util
                 var parameter = parameters[i];
 
                 if (argumentDefinition.GetGenericParameterConstraints()
-                    .Any(constraint => !constraint.IsAssignableFrom(parameter)))
+                    .Any(constraint => !ParameterCompatibleWithTypeConstraint(parameter, constraint)))
                 {
                     return false;
                 }
@@ -114,6 +114,15 @@ namespace Autofac.Util
             }
 
             return true;
+        }
+
+        static bool ParameterCompatibleWithTypeConstraint(Type parameter, Type constraint)
+        {
+            return constraint.IsAssignableFrom(parameter) ||
+                (parameter.IsClass &&
+                   Traverse.Across(parameter, p => p.BaseType)
+                       .Concat(parameter.GetInterfaces())
+                       .Any(p => p.GUID == constraint.GUID));
         }
 
         public static bool IsCompatibleWith(this Type type, Type that)

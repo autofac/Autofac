@@ -137,5 +137,23 @@ namespace Autofac.Tests.Features.OpenGenerics
 
             Assert.AreEqual(1, rs.Count());
         }
+
+        public interface IEntity<TId> { }
+
+        public class EntityOfInt : IEntity<int> { }
+
+        public class Repository<T, TId> where T : IEntity<TId> { }
+
+        [Test]
+        public void SupportsCodependentTypeConstraints()
+        {
+            var g = new OpenGenericRegistrationSource(
+                new RegistrationData(new TypedService(typeof(Repository<,>))),
+                new ReflectionActivatorData(typeof(Repository<,>)));
+
+            var rs = g.RegistrationsFor(new TypedService(typeof(Repository<EntityOfInt, int>)), s => null);
+
+            Assert.AreEqual(1, rs.Count());
+        }
     }
 }
