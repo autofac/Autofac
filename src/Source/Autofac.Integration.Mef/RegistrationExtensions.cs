@@ -178,6 +178,9 @@ namespace Autofac.Integration.Mef
             if (catalog == null) throw new ArgumentNullException("catalog");
             if (exposedServicesMapper == null) throw new ArgumentNullException("exposedServicesMapper");
 
+            // Support disposal of the catalog.
+            builder.RegisterInstance(catalog).As(new UniqueService());
+
             foreach (var part in catalog.Parts)
             {
                 RegisterComposablePartDefinition(builder, part, exposedServicesMapper);
