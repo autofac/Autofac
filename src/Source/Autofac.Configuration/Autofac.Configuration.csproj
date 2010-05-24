@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="ComponentElement.cs" />
     <Compile Include="ComponentElementCollection.cs" />
+    <Compile Include="ConfigurationElementCollection.cs" />
     <Compile Include="ConfigurationSettingsReader.cs" />
     <Compile Include="ConfigurationSettingsReaderResources.Designer.cs">
       <DependentUpon>ConfigurationSettingsReaderResources.resx</DependentUpon>

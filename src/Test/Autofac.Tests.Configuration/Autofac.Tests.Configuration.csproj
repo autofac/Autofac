@@ -99,6 +99,9 @@
     <None Include="SingletonWithTwoServices.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="TypeMultipleTimes.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\Autofac.Configuration\Autofac.Configuration.csproj">

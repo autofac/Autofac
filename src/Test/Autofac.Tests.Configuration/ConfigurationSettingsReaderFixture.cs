@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Autofac.Builder;
 using Autofac.Configuration;
 using NUnit.Framework;
@@ -120,6 +121,23 @@ namespace Autofac.Tests.Configuration
             var collection = container.Resolve<IList<IA>>();
             var first = collection[0];
             Assert.IsInstanceOf(typeof(D), first);
+        }
+
+        class X 
+        {
+            public string Name { get; set; }
+            public X(string name) { Name = name; } 
+        }
+
+        [Test]
+        public void AllowsMultipleRegistrationsOfSameType()
+        {
+            var builder = ConfigureContainer("TypeMultipleTimes");
+            var container = builder.Build();
+            var collection = container.Resolve<IEnumerable<X>>();
+            Assert.AreEqual(2, collection.Count());
+            Assert.AreEqual("Bar", collection.ElementAt(0).Name);
+            Assert.AreEqual("Foo", collection.ElementAt(1).Name);
         }
 
         static ContainerBuilder ConfigureContainer(string configFile)

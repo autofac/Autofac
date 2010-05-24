@@ -30,13 +30,13 @@ namespace Autofac.Configuration
     /// <summary>
     /// A collection of component elements.
     /// </summary>
-    public class ComponentElementCollection : NamedConfigurationElementCollection<ComponentElement>
+    public class ComponentElementCollection : ConfigurationElementCollection<ComponentElement>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentElementCollection"/> class.
         /// </summary>
         public ComponentElementCollection()
-            : base("component", ComponentElement.Key)
+            : base("component")
         {
         }
     }
