@@ -46,33 +46,39 @@ namespace Autofac.Features.Scanning
                 new ScanningActivatorData(),
                 new DynamicRegistrationStyle());
 
-            builder.RegisterCallback(cr =>
-            {
-                foreach (var t in assemblies
-                    .SelectMany(a => a.GetTypes())
-                    .Where(t =>
-                        t.IsClass &&
-                        !t.IsAbstract &&
-                        !t.IsGenericTypeDefinition &&
-                        !t.IsDelegate() &&
-                        rb.ActivatorData.Filters.All(p => p(t))))
-                {
-                    var scanned = RegistrationBuilder.ForType(t)
-                        .FindConstructorsWith(rb.ActivatorData.ConstructorFinder)
-                        .UsingConstructor(rb.ActivatorData.ConstructorSelector)
-                        .WithParameters(rb.ActivatorData.ConfiguredParameters)
-                        .WithProperties(rb.ActivatorData.ConfiguredProperties);
-
-                    scanned.RegistrationData.CopyFrom(rb.RegistrationData, false);
-
-                    foreach (var action in rb.ActivatorData.ConfigurationActions)
-                        action(t, scanned);
-
-                    RegistrationBuilder.RegisterSingleComponent(cr, scanned);
-                }
-            });
+            builder.RegisterCallback(cr => ScanAssemblies(assemblies, cr, rb));
 
             return rb;
+        }
+
+        static void ScanAssemblies(IEnumerable<Assembly> assemblies, IComponentRegistry cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
+        {
+            rb.ActivatorData.Filters.Add(t =>
+                rb.RegistrationData.Services.OfType<IServiceWithType>().All(swt =>
+                    swt.ServiceType.IsAssignableFrom(t)));
+
+            foreach (var t in assemblies
+                .SelectMany(a => a.GetTypes())
+                .Where(t =>
+                    t.IsClass &&
+                    !t.IsAbstract &&
+                    !t.IsGenericTypeDefinition &&
+                    !t.IsDelegate() &&
+                    rb.ActivatorData.Filters.All(p => p(t))))
+            {
+                var scanned = RegistrationBuilder.ForType(t)
+                    .FindConstructorsWith(rb.ActivatorData.ConstructorFinder)
+                    .UsingConstructor(rb.ActivatorData.ConstructorSelector)
+                    .WithParameters(rb.ActivatorData.ConfiguredParameters)
+                    .WithProperties(rb.ActivatorData.ConfiguredProperties);
+
+                scanned.RegistrationData.CopyFrom(rb.RegistrationData, false);
+
+                foreach (var action in rb.ActivatorData.ConfigurationActions)
+                    action(t, scanned);
+
+                RegistrationBuilder.RegisterSingleComponent(cr, scanned);
+            }
         }
 
         public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
@@ -113,7 +119,9 @@ namespace Autofac.Features.Scanning
         {
             return FindAssignableTypesThatClose(candidateType, openGenericServiceType)
                 .Select(t => new TypedService(t))
+// ReSharper disable RedundantEnumerableCastCall
                 .Cast<Service>();
+// ReSharper restore RedundantEnumerableCastCall
         }
 
         /// <summary>

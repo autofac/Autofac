@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Autofac.Features.Metadata;
 using NUnit.Framework;
@@ -238,6 +239,18 @@ namespace Autofac.Tests.Features.Scanning
             cb.Build();
 
             Assert.That(onRegisteredCalled);
+        }
+
+        [Test]
+        public void WhenTypedServicesAreSpecified_ImplicitFilterApplied()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyTypes(typeof(A2Component).Assembly)
+                .As<IAService>();
+            var c = cb.Build();
+            // Without the filter this line would throw anyway
+            var a = c.Resolve<IEnumerable<IAService>>();
+            Assert.AreEqual(1, a.Count());
         }
     }
 }
