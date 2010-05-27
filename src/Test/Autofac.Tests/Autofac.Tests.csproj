@@ -136,7 +136,7 @@
     <Compile Include="ResolutionExtensionsTests.cs" />
     <Compile Include="Core\ResolvedParameterTests.cs" />
     <Compile Include="Core\NamedServiceTests.cs" />
-    <Compile Include="ScanningRegistrationTests.cs" />
+    <Compile Include="Features\Scanning\ScanningRegistrationTests.cs" />
     <Compile Include="Scenarios\Adapters\Command.cs" />
     <Compile Include="Scenarios\Adapters\IToolbarButton.cs" />
     <Compile Include="Scenarios\Adapters\ToolbarButton.cs" />

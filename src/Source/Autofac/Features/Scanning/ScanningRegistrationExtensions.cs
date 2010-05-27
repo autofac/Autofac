@@ -68,7 +68,7 @@ namespace Autofac.Features.Scanning
                     foreach (var action in rb.ActivatorData.ConfigurationActions)
                         action(t, scanned);
 
-                    cr.Register(scanned.CreateRegistration());
+                    RegistrationBuilder.RegisterSingleComponent(cr, scanned);
                 }
             });
 

@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Autofac.Features.Metadata;
 using NUnit.Framework;
 using Autofac.Tests.Scenarios.ScannedAssembly;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
 
-namespace Autofac.Tests
+namespace Autofac.Tests.Features.Scanning
 {
     [TestFixture]
     public class ScanningRegistrationTests
@@ -227,6 +225,19 @@ namespace Autofac.Tests
             cb.RegisterAssemblyTypes(typeof(HasNestedFactoryDelegate).Assembly);
             var c = cb.Build();
             var hnfd = c.Resolve<HasNestedFactoryDelegate.Factory>();
+        }
+
+        [Test]
+        public void WhenScannedTypesAreRegistered_OnRegisteredHandlersAreCalled()
+        {
+            var onRegisteredCalled = false;
+
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyTypes(typeof(AComponent).Assembly)
+                .OnRegistered(e => onRegisteredCalled = true);
+            cb.Build();
+
+            Assert.That(onRegisteredCalled);
         }
     }
 }

@@ -145,7 +145,7 @@ namespace Autofac.Builder
         {
             var limitType = activator.LimitType;
             if (limitType != typeof(object))
-                foreach (var ts in services.OfType<TypedService>())
+                foreach (var ts in services.OfType<IServiceWithType>())
                     if (!ts.ServiceType.IsAssignableFrom(limitType))
                         throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
                             RegistrationBuilderResources.ComponentDoesNotSupportService, limitType, ts));
