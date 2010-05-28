@@ -1458,6 +1458,11 @@
             Additional actions to be performed on the concrete type registrations.
             </summary>
         </member>
+        <member name="P:Autofac.Features.Scanning.ScanningActivatorData.PostScanningCallbacks">
+            <summary>
+            Actions to be called once the scanning operation is complete.
+            </summary>
+        </member>
         <member name="T:Autofac.Core.ActivatedEventArgs`1">
             <summary>
             Fired when the activation process for a new instance is complete.
@@ -3922,6 +3927,16 @@
             Filters the scanned types to exclude the provided type.
             </summary>
             <param name="registration">Registration to filter types from.</param>
+            <typeparam name="T">The concrete type to exclude.</typeparam>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+        </member>
+        <member name="M:Autofac.RegistrationExtensions.Except``1(Autofac.Builder.IRegistrationBuilder{System.Object,Autofac.Features.Scanning.ScanningActivatorData,Autofac.Builder.DynamicRegistrationStyle},System.Action{Autofac.Builder.IRegistrationBuilder{``0,Autofac.Builder.ConcreteReflectionActivatorData,Autofac.Builder.SingleRegistrationStyle}})">
+            <summary>
+            Filters the scanned types to exclude the provided type, providing specific configuration for
+            the excluded type.
+            </summary>
+            <param name="registration">Registration to filter types from.</param>
+            <param name="customisedRegistration">Registration for the excepted type.</param>
             <typeparam name="T">The concrete type to exclude.</typeparam>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
