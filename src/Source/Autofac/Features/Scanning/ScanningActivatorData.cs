@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using Autofac.Builder;
+using Autofac.Core;
 
 namespace Autofac.Features.Scanning
 {
@@ -36,6 +37,7 @@ namespace Autofac.Features.Scanning
     {
         readonly ICollection<Func<Type, bool>> _filters = new List<Func<Type, bool>>();
         readonly ICollection<Action<Type, IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>>> _configurationActions = new List<Action<Type, IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>>>();
+        readonly ICollection<Action<IComponentRegistry>> _postScanningCallbacks = new List<Action<IComponentRegistry>>();
 
         /// <summary>
         /// Create an instance of <see cref="ScanningActivatorData"/>.
@@ -54,5 +56,13 @@ namespace Autofac.Features.Scanning
         /// Additional actions to be performed on the concrete type registrations.
         /// </summary>
         public ICollection<Action<Type, IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>>> ConfigurationActions { get { return _configurationActions; } }
+
+        /// <summary>
+        /// Actions to be called once the scanning operation is complete.
+        /// </summary>
+        public ICollection<Action<IComponentRegistry>> PostScanningCallbacks
+        {
+            get { return _postScanningCallbacks; }
+        }
     }
 }

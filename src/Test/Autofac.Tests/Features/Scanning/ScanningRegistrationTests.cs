@@ -252,5 +252,17 @@ namespace Autofac.Tests.Features.Scanning
             var a = c.Resolve<IEnumerable<IAService>>();
             Assert.AreEqual(1, a.Count());
         }
+
+        [Test]
+        public void WhenExceptionsProvideConfiguration_ComponentConfiguredAppropriately()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyTypes(typeof(AComponent).Assembly)
+                .Except<AComponent>(ac => ac.SingleInstance());
+            var c = cb.Build();
+            var a1 = c.Resolve<AComponent>();
+            var a2 = c.Resolve<AComponent>();
+            Assert.AreSame(a1, a2);
+        }
     }
 }

@@ -777,6 +777,30 @@ namespace Autofac
         }
 
         /// <summary>
+        /// Filters the scanned types to exclude the provided type, providing specific configuration for
+        /// the excluded type.
+        /// </summary>
+        /// <param name="registration">Registration to filter types from.</param>
+        /// <param name="customisedRegistration">Registration for the excepted type.</param>
+        /// <typeparam name="T">The concrete type to exclude.</typeparam>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
+            Except<T>(
+                this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> registration,
+                Action<IRegistrationBuilder<T, ConcreteReflectionActivatorData, SingleRegistrationStyle>> customisedRegistration)
+        {
+            var result = registration.Except<T>();
+
+            result.ActivatorData.PostScanningCallbacks.Add(cr => {
+                var rb = RegistrationBuilder.ForType<T>();
+                customisedRegistration(rb);
+                RegistrationBuilder.RegisterSingleComponent(cr, rb);
+            });
+
+            return result;
+        }
+
+        /// <summary>
         /// Filters the scanned types to include only those in the namespace of the provided type
         /// or one of its sub-namespaces.
         /// </summary>

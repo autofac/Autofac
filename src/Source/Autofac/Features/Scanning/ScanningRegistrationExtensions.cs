@@ -79,6 +79,9 @@ namespace Autofac.Features.Scanning
 
                 RegistrationBuilder.RegisterSingleComponent(cr, scanned);
             }
+
+            foreach (var postScanningCallback in rb.ActivatorData.PostScanningCallbacks)
+                postScanningCallback(cr);
         }
 
         public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
