@@ -1,3 +1,4 @@
+using System;
 using Autofac;
 using AutofacContrib.AggregateService;
 using Moq;
@@ -27,6 +28,27 @@ namespace AutofacContrib.Tests.AggregateService
             var container = builder.Build();
             
             Assert.That(container.IsRegistered<IMyContext>());
+        }
+
+        [Test, ExpectedException(typeof(ArgumentNullException))]
+        public void RegisterAggregateService_WithNullInterfaceType_ThrowsArgumentNullException()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterAggregateService(null);
+        }
+
+        [Test, ExpectedException(typeof(ArgumentException))]
+        public void RegisterAggregateService_WithNonInterfaceType_ThrowsArgumentException()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterAggregateService(typeof(MyServiceImpl));
+        }
+
+        [Test, ExpectedException(typeof(ArgumentException))]
+        public void RegisterAggregateService_WithGenericNonInterfaceType_ThrowsArgumentException()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterAggregateService<MyServiceImpl>();
         }
 
         [Test]

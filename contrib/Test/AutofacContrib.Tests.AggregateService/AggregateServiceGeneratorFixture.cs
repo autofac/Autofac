@@ -42,6 +42,12 @@ namespace AutofacContrib.Tests.AggregateService
             AggregateServiceGenerator.CreateInstance(null, _container);
         }
 
+        [Test, ExpectedException(typeof(ArgumentNullException))]
+        public void CreateInstance_ExpectsComponentInstance()
+        {
+            AggregateServiceGenerator.CreateInstance(typeof(IMyContext), null);
+        }
+
         [Test, ExpectedException(typeof(ArgumentException))]
         public void CreateInstance_ExpectsInterfaceType()
         {
