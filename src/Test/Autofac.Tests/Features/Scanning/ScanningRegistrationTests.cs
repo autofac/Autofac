@@ -6,12 +6,15 @@ using NUnit.Framework;
 using Autofac.Tests.Scenarios.ScannedAssembly;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
+using System.Reflection;
 
 namespace Autofac.Tests.Features.Scanning
 {
     [TestFixture]
     public class ScanningRegistrationTests
     {
+        static readonly Assembly ScenarioAssembly = typeof(AComponent).Assembly;
+
         [Test]
         public void WhenAssemblyIsScanned_TypesRegisteredByDefault()
         {
@@ -225,7 +228,7 @@ namespace Autofac.Tests.Features.Scanning
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(HasNestedFactoryDelegate).Assembly);
             var c = cb.Build();
-            var hnfd = c.Resolve<HasNestedFactoryDelegate.Factory>();
+            c.Resolve<HasNestedFactoryDelegate.Factory>();
         }
 
         [Test]
@@ -257,12 +260,24 @@ namespace Autofac.Tests.Features.Scanning
         public void WhenExceptionsProvideConfiguration_ComponentConfiguredAppropriately()
         {
             var cb = new ContainerBuilder();
-            cb.RegisterAssemblyTypes(typeof(AComponent).Assembly)
+            cb.RegisterAssemblyTypes(ScenarioAssembly)
                 .Except<AComponent>(ac => ac.SingleInstance());
             var c = cb.Build();
             var a1 = c.Resolve<AComponent>();
             var a2 = c.Resolve<AComponent>();
             Assert.AreSame(a1, a2);
+        }
+
+        [Test, Ignore("These cases might be better off failing fast.")]
+        public void WhenMultipleServicesAreSpecified_NonMatchingFunctionOfType_ExcludesType()
+        {
+            var cb = new ContainerBuilder();
+
+            cb.RegisterAssemblyTypes(ScenarioAssembly)
+                .AsSelf()
+                .As(t => new KeyedService("foo", typeof(ScanningRegistrationTests)));
+
+            cb.Build().AssertNotRegistered<AComponent>();
         }
     }
 }

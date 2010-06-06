@@ -90,6 +90,10 @@
     <Compile Include="Forms\InjectUnsetPropertiesAttribute.cs" />
     <Compile Include="Forms\NoInjection.cs" />
     <Compile Include="Forms\PageInjectionBehaviour.cs" />
+    <Compile Include="MultiTenant\HostNameTenantIdentificationStrategy.cs" />
+    <Compile Include="MultiTenant\ITenantIdentificationPolicy.cs" />
+    <Compile Include="MultiTenant\MultiTenantContainerProvider.cs" />
+    <Compile Include="MultiTenant\RequestParameterTenantIdentificationStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Forms\PropertyInjection.cs" />
     <Compile Include="Forms\PropertyInjectionModule.cs" />

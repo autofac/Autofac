@@ -411,6 +411,29 @@ namespace Autofac
         }
 
         /// <summary>
+        /// Specifies how a type from a scanned assembly is mapped to a service.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <param name="serviceType">Service type provided by the component.</param>
+        /// <param name="serviceKeyMapping">Function mapping types to service keys.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            Keyed<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                Func<Type, string> serviceKeyMapping,
+                Type serviceType)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            Enforce.ArgumentNotNull(registration, "registration");
+            Enforce.ArgumentNotNull(serviceKeyMapping, "serviceKeyMapping");
+            Enforce.ArgumentNotNull(serviceType, "serviceType");
+            return registration.As(t => new KeyedService(serviceKeyMapping(t), serviceType));
+        }
+
+        /// <summary>
         /// Specifies that a type from a scanned assembly is registered as providing all of its
         /// implemented interfaces.
         /// </summary>
