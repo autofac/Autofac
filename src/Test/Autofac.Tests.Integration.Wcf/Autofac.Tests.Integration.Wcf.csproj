@@ -83,6 +83,7 @@
     <Compile Include="DefaultServiceImplementationDataProviderFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AutofacServiceHostBehaviorRegistrationExtensionsFixture.cs" />
+    <Compile Include="RegistrationExtensionsFixture.cs" />
     <Compile Include="ServiceHostExtensionsFixture.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -119,7 +119,7 @@ namespace Autofac.Integration.Wcf
         /// </remarks>
         protected virtual ILifetimeScope CreateRequestLifetime()
         {
-            return this.ApplicationContainer.BeginLifetimeScope();
+            return this.ApplicationContainer.BeginLifetimeScope(WcfLifetime.Request);
         }
     }
 }

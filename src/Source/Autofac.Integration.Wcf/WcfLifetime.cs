@@ -38,7 +38,7 @@ namespace Autofac.Integration.Wcf
         public static readonly object Application = LifetimeScope.RootTag;
 
         /// <summary>
-        /// WCF Request lifetime
+        /// WCF Request lifetime (equivalent to one "operation").
         /// </summary>
         public static readonly object Request = "wcfRequest";
     }
