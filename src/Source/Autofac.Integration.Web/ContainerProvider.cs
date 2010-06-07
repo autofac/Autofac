@@ -32,9 +32,6 @@ namespace Autofac.Integration.Web
     /// </summary>
     public class ContainerProvider : IContainerProvider
     {
-        readonly IContainer _applicationContainer;
-        readonly Action<ContainerBuilder> _requestLifetimeConfiguration;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ContainerProvider"/> class.
         /// </summary>
@@ -42,21 +39,22 @@ namespace Autofac.Integration.Web
         public ContainerProvider(IContainer applicationContainer)
         {
             if (applicationContainer == null) throw new ArgumentNullException("applicationContainer");
-            _applicationContainer = applicationContainer;
+            this.ApplicationContainer = applicationContainer;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContainerProvider"/> class.
         /// </summary>
         /// <param name="applicationContainer">The application container.</param>
-        /// <param name="requestLifetimeConfiguration">An action that will be executed when building
+        /// <param name="requestLifetimeConfiguration">
+        /// An action that will be executed when building
         /// the per-request lifetime. The components visible within the request can be
-        /// customised here.</param>
+        /// customized here.
+        /// </param>
         public ContainerProvider(IContainer applicationContainer, Action<ContainerBuilder> requestLifetimeConfiguration)
             : this(applicationContainer)
         {
-            if (requestLifetimeConfiguration == null) throw new ArgumentNullException("requestLifetimeConfiguration");
-            _requestLifetimeConfiguration = requestLifetimeConfiguration;
+            this.RequestLifetimeConfiguration = requestLifetimeConfiguration;
         }
 
         /// <summary>
@@ -71,33 +69,45 @@ namespace Autofac.Integration.Web
         }
 
         /// <summary>
-        /// The global, application-wide container.
+        /// Gets the application container.
         /// </summary>
-        /// <value></value>
-        public IContainer ApplicationContainer
-        {
-            get
-            {
-                return _applicationContainer;
-            }
-        }
+        /// <value>
+        /// The application container from which request lifetimes will be spawned.
+        /// </value>
+        public virtual IContainer ApplicationContainer { get; private set; }
 
         /// <summary>
-        /// The container used to manage components for processing the
-        /// current request.
+        /// Gets the configuration for each request lifetime.
         /// </summary>
-        /// <value></value>
-        public ILifetimeScope RequestLifetime
+        /// <value>
+        /// An <see cref="System.Action{ContainerBuilder}"/> that will be run
+        /// for each request lifetime when it is created. If the value is <see langword="null" />,
+        /// then no request lifetime configuration will be applied.
+        /// </value>
+        public virtual Action<ContainerBuilder> RequestLifetimeConfiguration { get; private set; }
+
+        /// <summary>
+        /// Gets the request lifetime from the request context.
+        /// </summary>
+        /// <value>
+        /// An <see cref="Autofac.ILifetimeScope"/> from which individual requests
+        /// can be resolved.
+        /// </value>
+        /// <remarks>
+        /// <para>
+        /// This property uses the current <see cref="System.Web.HttpContext.Items"/>
+        /// collection and stores the request lifetime in as a named item.
+        /// If there is no request lifetime found in the context, one is created.
+        /// </para>
+        /// </remarks>
+        public virtual ILifetimeScope RequestLifetime
         {
             get
             {
                 var result = AmbientRequestLifetime;
                 if (result == null)
                 {
-                    result = _requestLifetimeConfiguration == null ?
-                        ApplicationContainer.BeginLifetimeScope(WebLifetime.Request) :
-                        ApplicationContainer.BeginLifetimeScope(WebLifetime.Request, _requestLifetimeConfiguration);
-
+                    result = this.CreateRequestLifetime();
                     AmbientRequestLifetime = result;
                 }
 
@@ -105,7 +115,37 @@ namespace Autofac.Integration.Web
             }
         }
 
-        static ILifetimeScope AmbientRequestLifetime
+        /// <summary>
+        /// Factory method for creating the request lifetime scope.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="Autofac.ILifetimeScope"/> for resolving request-level dependencies.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This method is used by the <see cref="Autofac.Integration.Web.ContainerProvider.RequestLifetime"/>
+        /// to generate the request lifetime from the application container.
+        /// </para>
+        /// <para>
+        /// This implementation returns a lifetime scope nested in the application container.
+        /// </para>
+        /// </remarks>
+        protected virtual ILifetimeScope CreateRequestLifetime()
+        {
+            return this.RequestLifetimeConfiguration == null ?
+                        this.ApplicationContainer.BeginLifetimeScope(WebLifetime.Request) :
+                        this.ApplicationContainer.BeginLifetimeScope(WebLifetime.Request, this.RequestLifetimeConfiguration);
+        }
+
+        /// <summary>
+        /// Gets or sets the ambient request lifetime in the current web context.
+        /// </summary>
+        /// <value>
+        /// An <see cref="Autofac.ILifetimeScope"/> that is stored in the current
+        /// <see cref="System.Web.HttpContext.Items"/> collection at a known
+        /// location.
+        /// </value>
+        protected static ILifetimeScope AmbientRequestLifetime
         {
             get
             {
