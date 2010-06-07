@@ -73,10 +73,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutofacInstanceContextFixture.cs" />
+    <Compile Include="AutofacDependencyInjectionServiceBehaviorFixture.cs" />
+    <Compile Include="AutofacHostFactoryFixture.cs" />
+    <Compile Include="AutofacInstanceProviderFixture.cs" />
+    <Compile Include="AutofacRequestLifetimeScopeExtensionFixture.cs" />
     <Compile Include="AutofacServiceHostFactoryFixture.cs" />
+    <Compile Include="ContainerProviderFixture.cs" />
     <Compile Include="AutofacWebServiceHostFactoryFixture.cs" />
+    <Compile Include="DefaultServiceImplementationDataProviderFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AutofacServiceHostBehaviorRegistrationExtensionsFixture.cs" />
     <Compile Include="ServiceHostExtensionsFixture.cs" />
   </ItemGroup>
   <ItemGroup>

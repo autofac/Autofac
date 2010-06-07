@@ -37,44 +37,36 @@ namespace Autofac.Integration.Wcf
     /// <summary>
     /// Sets the instance provider to an AutofacInstanceProvider.
     /// </summary>
-	public class AutofacDependencyInjectionServiceBehavior : IServiceBehavior
-	{
-		private readonly IContainer _container;
-        private readonly Type _implementationType;
-        private readonly IComponentRegistration _registration;
+    public class AutofacDependencyInjectionServiceBehavior : IServiceBehavior
+    {
+        private readonly ServiceImplementationData _serviceImplementationData;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacDependencyInjectionServiceBehavior"/> class.
         /// </summary>
-        /// <param name="container">The container.</param>
-        /// <param name="implementationType"></param>
-        /// <param name="registration"></param>
-		public AutofacDependencyInjectionServiceBehavior(IContainer container, Type implementationType, IComponentRegistration registration)
-		{
-            if (container == null)
-                throw new ArgumentNullException("container");
+        /// <param name="serviceImplementationData">
+        /// Data about which service type should be hosted and how to resolve
+        /// the type to use for the service implementation.
+        /// </param>
+        public AutofacDependencyInjectionServiceBehavior(ServiceImplementationData serviceImplementationData)
+        {
+            if (serviceImplementationData == null)
+            {
+                throw new ArgumentNullException("serviceImplementationData");
+            }
+            this._serviceImplementationData = serviceImplementationData;
+        }
 
-            if (implementationType == null)
-                throw new ArgumentNullException("implementationType");
-
-            if (registration == null)
-                throw new ArgumentNullException("registration");
-
-            _container = container;
-            _implementationType = implementationType;
-            _registration = registration;
-		}
-
-		#region IServiceBehavior Members
+        #region IServiceBehavior Members
 
         /// <summary>
         /// Provides the ability to inspect the service host and the service description to confirm that the service can run successfully.
         /// </summary>
         /// <param name="serviceDescription">The service description.</param>
         /// <param name="serviceHostBase">The service host that is currently being constructed.</param>
-		public void Validate(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase)
-		{
-		}
+        public virtual void Validate(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase)
+        {
+        }
 
         /// <summary>
         /// Provides the ability to pass custom data to binding elements to support the contract implementation.
@@ -83,19 +75,19 @@ namespace Autofac.Integration.Wcf
         /// <param name="serviceHostBase">The host of the service.</param>
         /// <param name="endpoints">The service endpoints.</param>
         /// <param name="bindingParameters">Custom objects to which binding elements have access.</param>
-		public void AddBindingParameters(
-			ServiceDescription serviceDescription, ServiceHostBase serviceHostBase,
-			Collection<ServiceEndpoint> endpoints, BindingParameterCollection bindingParameters)
-		{
-		}
+        public virtual void AddBindingParameters(
+            ServiceDescription serviceDescription, ServiceHostBase serviceHostBase,
+            Collection<ServiceEndpoint> endpoints, BindingParameterCollection bindingParameters)
+        {
+        }
 
         /// <summary>
         /// Provides the ability to change run-time property values or insert custom extension objects such as error handlers, message or parameter interceptors, security extensions, and other custom extension objects.
         /// </summary>
         /// <param name="serviceDescription">The service description.</param>
         /// <param name="serviceHostBase">The host that is currently being built.</param>
-		public void ApplyDispatchBehavior(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase)
-		{
+        public virtual void ApplyDispatchBehavior(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase)
+        {
             if (serviceDescription == null)
                 throw new ArgumentNullException("serviceDescription");
 
@@ -104,10 +96,10 @@ namespace Autofac.Integration.Wcf
 
             var implementedContracts =
                 from ep in serviceDescription.Endpoints
-                where ep.Contract.ContractType.IsAssignableFrom(_implementationType)
+                where ep.Contract.ContractType.IsAssignableFrom(this._serviceImplementationData.ServiceTypeToHost)
                 select ep.Contract.Name;
 
-            var instanceProvider = new AutofacInstanceProvider(_container, _registration);
+            var instanceProvider = new AutofacInstanceProvider(this._serviceImplementationData);
 
             foreach (ChannelDispatcherBase cdb in serviceHostBase.ChannelDispatchers)
             {
@@ -121,8 +113,8 @@ namespace Autofac.Integration.Wcf
                     }
                 }
             }
-		}
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }
