@@ -28,7 +28,7 @@ using Autofac.Integration.Wcf;
 using NUnit.Framework;
 using Autofac;
 
-namespace UnitTests.Autofac.Integration.Wcf
+namespace Autofac.Tests.Integration.Wcf
 {
     [TestFixture]
     public class AutofacRequestLifetimeScopeExtensionFixture

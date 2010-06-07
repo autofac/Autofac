@@ -31,7 +31,7 @@ using System.ServiceModel.Dispatcher;
 using Autofac.Integration.Wcf;
 using NUnit.Framework;
 
-namespace UnitTests.Autofac.Integration.Wcf
+namespace Autofac.Tests.Integration.Wcf
 {
     [TestFixture]
     public class AutofacDependencyInjectionServiceBehaviorFixture
