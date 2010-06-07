@@ -61,7 +61,7 @@ namespace Autofac.Integration.Web
         /// Dispose of the current request's container, if it has been
         /// instantiated.
         /// </summary>
-        public void EndRequestLifetime()
+        public virtual void EndRequestLifetime()
         {
             var rc = AmbientRequestLifetime;
             if (rc != null)
