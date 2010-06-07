@@ -103,6 +103,7 @@
       <DependentUpon>ServiceHostExtensionsResources.resx</DependentUpon>
     </Compile>
     <Compile Include="ServiceImplementationData.cs" />
+    <Compile Include="WcfLifetime.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Autofac\Autofac.csproj">
