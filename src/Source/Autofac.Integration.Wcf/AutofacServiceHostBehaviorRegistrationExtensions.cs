@@ -58,14 +58,14 @@ namespace Autofac.Integration.Wcf
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="builder" /> is <see langword="null" />.
         /// </exception>
-        public static void RegisterServiceBehaviorForHost<TBehavior>(this ContainerBuilder builder) where TBehavior : IServiceBehavior
+        public static IRegistrationBuilder<TBehavior, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterServiceBehaviorForHost<TBehavior>(this ContainerBuilder builder) where TBehavior : IServiceBehavior
         {
             if (builder == null)
             {
                 throw new ArgumentNullException("builder");
             }
             builder.RegisterCollection<IServiceBehavior>(WcfServiceBehaviorForHostCollectionTag).Named<IEnumerable<IServiceBehavior>>(WcfServiceBehaviorForHostCollectionTag);
-            builder.RegisterType<TBehavior>().MemberOf(WcfServiceBehaviorForHostCollectionTag);
+            return builder.RegisterType<TBehavior>().MemberOf(WcfServiceBehaviorForHostCollectionTag);
         }
 
         /// <summary>
