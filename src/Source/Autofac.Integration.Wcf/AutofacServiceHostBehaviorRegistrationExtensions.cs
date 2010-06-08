@@ -58,6 +58,7 @@ namespace Autofac.Integration.Wcf
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="builder" /> is <see langword="null" />.
         /// </exception>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TBehavior, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterServiceBehaviorForHost<TBehavior>(this ContainerBuilder builder) where TBehavior : IServiceBehavior
         {
             if (builder == null)
