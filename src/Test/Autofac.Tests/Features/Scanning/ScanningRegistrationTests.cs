@@ -281,7 +281,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void SingelRegistration_CanBeRegistred_AsSelf()
+        public void SingleRegistration_CanBeRegistered_AsSelf()
         {
             var cb = new ContainerBuilder();
 
@@ -295,7 +295,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void SingelRegistration_CanBeRegistred_As()
+        public void SingleRegistration_CanBeRegistered_AsImpementedInterfaces()
         {
             var cb = new ContainerBuilder();
 
