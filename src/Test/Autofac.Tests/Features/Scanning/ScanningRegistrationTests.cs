@@ -279,5 +279,32 @@ namespace Autofac.Tests.Features.Scanning
 
             cb.Build().AssertNotRegistered<AComponent>();
         }
+
+        [Test]
+        public void SingelRegistration_CanBeRegistred_AsSelf()
+        {
+            var cb = new ContainerBuilder();
+
+            cb.RegisterType<A2Component>()
+                .As<IAService>()
+                .AsSelf();
+
+            var c = cb.Build();
+            c.AssertRegistered<A2Component>();
+            c.AssertRegistered<IAService>();
+        }
+
+        [Test]
+        public void SingelRegistration_CanBeRegistred_As()
+        {
+            var cb = new ContainerBuilder();
+
+            cb.RegisterType<A2Component>()
+                .AsImplementedInterfaces();
+
+            var c = cb.Build();
+            c.AssertRegistered<IAService>();
+            c.AssertRegistered<IBService>();
+        }
     }
 }
