@@ -76,7 +76,7 @@ namespace Autofac.Features.LazyDependencies
                 .As(providedService)
                 .Targeting(valueRegistration);
 
-            return RegistrationBuilder.CreateRegistration(rb);
+            return rb.CreateRegistration();
         }
     }
 }

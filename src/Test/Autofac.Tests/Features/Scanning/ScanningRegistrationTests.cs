@@ -118,6 +118,17 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
+        public void NameMappingRegistersNamedServicesWithGenericSyntax()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyTypes(typeof(AComponent).Assembly)
+                .Named<object>(t => t.Name);
+            var c = cb.Build();
+
+            c.AssertRegistered<object>("AComponent");
+        }
+
+        [Test]
         public void TypeMappingRegistersTypedServices()
         {
             var cb = new ContainerBuilder();

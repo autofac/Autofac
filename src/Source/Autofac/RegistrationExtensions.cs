@@ -388,7 +388,22 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Specifies how a type from a scanned assembly is mapped to a service.
+        /// Specifies how a type from a scanned assembly is mapped to a named service.
+        /// </summary>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <typeparam name="TService">Service type provided by the component.</typeparam>
+        /// <param name="serviceNameMapping">Function mapping types to service names.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
+            Named<TService>(
+                this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> registration,
+                Func<Type, string> serviceNameMapping)
+        {
+            return registration.Named(serviceNameMapping, typeof(TService));
+        }
+
+        /// <summary>
+        /// Specifies how a type from a scanned assembly is mapped to a named service.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
         /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
@@ -411,7 +426,22 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Specifies how a type from a scanned assembly is mapped to a service.
+        /// Specifies how a type from a scanned assembly is mapped to a keyed service.
+        /// </summary>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <typeparam name="TService">Service type provided by the component.</typeparam>
+        /// <param name="serviceKeyMapping">Function mapping types to service keys.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
+            Keyed<TService>(
+                this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> registration,
+                Func<Type, string> serviceKeyMapping)
+        {
+            return registration.Keyed(serviceKeyMapping, typeof (TService));
+        }
+
+        /// <summary>
+        /// Specifies how a type from a scanned assembly is mapped to a keyed service.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
         /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
