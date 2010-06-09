@@ -1,4 +1,4 @@
-﻿// Contributed by Nicholas Blumhardt 2008-01-28
+// Contributed by Nicholas Blumhardt 2008-01-28
 // Copyright (c) 2010 Autofac Contributors
 //
 // Permission is hereby granted, free of charge, to any person
@@ -26,7 +26,7 @@ namespace Autofac
 {
     /// <summary>
     /// Provides global and per-request Autofac containers in an
-    /// ASP.NET application.
+    /// ASP.NET or WCF application.
     /// </summary>
     public interface IContainerProvider
     {
@@ -43,7 +43,7 @@ namespace Autofac
 
         /// <summary>
         /// The lifetime used to manage components for processing the
-        /// current request.
+        /// current request or operation.
         /// </summary>
         ILifetimeScope RequestLifetime { get; }
     }
