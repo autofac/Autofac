@@ -295,7 +295,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void SingleRegistration_CanBeRegistered_AsImpementedInterfaces()
+        public void SingleRegistration_CanBeRegistered_AsImplementedInterfaces()
         {
             var cb = new ContainerBuilder();
 
