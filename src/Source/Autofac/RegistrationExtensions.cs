@@ -306,7 +306,7 @@ namespace Autofac
             where TScanningActivatorData : ScanningActivatorData
         {
             Enforce.ArgumentNotNull(registration, "registration");
-            return registration.As(t => new[] { serviceMapping(t) });
+            return registration.As(t => new [] { serviceMapping(t) });
         }
 
         /// <summary>
@@ -332,26 +332,17 @@ namespace Autofac
         /// Specifies that a type from a scanned assembly provides its own concrete type as a service.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<TLimit, ScanningActivatorData, DynamicRegistrationStyle>
-            AsSelf<TLimit>(this IRegistrationBuilder<TLimit, ScanningActivatorData, DynamicRegistrationStyle> registration)
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            AsSelf<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration)
+            where TScanningActivatorData : ScanningActivatorData
         {
             Enforce.ArgumentNotNull(registration, "registration");
             return registration.As(t => t);
-        }
-
-        /// <summary>
-        /// Specifies that a type provides its own concrete type as a service.
-        /// </summary>
-        /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <param name="registration">Registration to set service mapping on.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<TLimit, ReflectionActivatorData, SingleRegistrationStyle>
-            AsSelf<TLimit>(this IRegistrationBuilder<TLimit, ReflectionActivatorData, SingleRegistrationStyle> registration)
-        {
-            Enforce.ArgumentNotNull(registration, "registration");
-            return registration.As<TLimit>();
         }
 
         /// <summary>
@@ -447,30 +438,19 @@ namespace Autofac
         /// implemented interfaces.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<TLimit, ScanningActivatorData, DynamicRegistrationStyle>
-            AsImplementedInterfaces<TLimit>(this IRegistrationBuilder<TLimit, ScanningActivatorData, DynamicRegistrationStyle> registration)
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            AsImplementedInterfaces<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration)
+            where TScanningActivatorData : ScanningActivatorData
         {
             Enforce.ArgumentNotNull(registration, "registration");
-            // ReSharper disable RedundantEnumerableCastCall
+// ReSharper disable RedundantEnumerableCastCall
             return registration.As(t => t.GetInterfaces().Select(i => new TypedService(i)).Cast<Service>());
-            // ReSharper restore RedundantEnumerableCastCall
-        }
-
-        /// <summary>
-        /// Specifies that a type is registered as providing all of its implemented interfaces.
-        /// </summary>
-        /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <param name="registration">Registration to set service mapping on.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<TLimit, ReflectionActivatorData, SingleRegistrationStyle>
-            AsImplementedInterfaces<TLimit>(this IRegistrationBuilder<TLimit, ReflectionActivatorData, SingleRegistrationStyle> registration)
-        {
-            Enforce.ArgumentNotNull(registration, "registration");
-            // ReSharper disable RedundantEnumerableCastCall
-            return registration.As(typeof(TLimit).GetInterfaces().Select(i => new TypedService(i)).Cast<Service>().ToArray());
-            // ReSharper restore RedundantEnumerableCastCall
+// ReSharper restore RedundantEnumerableCastCall
         }
 
         /// <summary>
@@ -834,8 +814,7 @@ namespace Autofac
         {
             var result = registration.Except<T>();
 
-            result.ActivatorData.PostScanningCallbacks.Add(cr =>
-            {
+            result.ActivatorData.PostScanningCallbacks.Add(cr => {
                 var rb = RegistrationBuilder.ForType<T>();
                 customisedRegistration(rb);
                 RegistrationBuilder.RegisterSingleComponent(cr, rb);
