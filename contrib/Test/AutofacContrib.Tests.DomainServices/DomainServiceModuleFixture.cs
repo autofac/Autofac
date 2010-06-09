@@ -1,4 +1,5 @@
 using System.ServiceModel.DomainServices.Server;
+using Moq;
 using NUnit.Framework;
 using AutofacContrib.DomainServices;
 using Autofac;
@@ -11,30 +12,17 @@ namespace AutofacContrib.Tests.DomainServices
     {
 
         [Test]
-        public void ModuleRegistersDomainServicesInSuppliedAssemblies()
+        public void ModuleInitalizeDomainServices()
         {
             var builder = new ContainerBuilder();
-
-            var module = new AutofacDomainServiceModule(Assembly.GetExecutingAssembly());
-            builder.RegisterModule(module);
+            var domainServiceMock = new Mock<DomainService>();
+            builder.RegisterInstance(domainServiceMock.Object).As<DomainService>();
+            builder.RegisterModule<AutofacDomainServiceModule>();
             using (var container = builder.Build())
             {
-                var service = container.Resolve<FakeDomainService>(TypedParameter.From(domainServiceContext));
+                var service = container.Resolve<DomainService>(TypedParameter.From(domainServiceContext));
                 Assert.IsNotNull(service);
-            }
-        }
-
-        [Test]
-        public void ModuleRegistersDomainServicesInCurrentAssembly()
-        {
-            var builder = new ContainerBuilder();
-
-            var module = new AutofacDomainServiceModule();
-            builder.RegisterModule(module);
-            using (var container = builder.Build())
-            {
-                var service = container.Resolve<FakeDomainService>(TypedParameter.From(domainServiceContext));
-                Assert.IsNotNull(service);
+                domainServiceMock.Verify(ds => ds.Initialize(domainServiceContext));
             }
         }
 

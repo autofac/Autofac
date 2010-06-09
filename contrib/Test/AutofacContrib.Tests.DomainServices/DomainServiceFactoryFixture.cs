@@ -1,5 +1,4 @@
 using Autofac;
-using Autofac.Builder;
 using AutofacContrib.DomainServices;
 using NUnit.Framework;
 
