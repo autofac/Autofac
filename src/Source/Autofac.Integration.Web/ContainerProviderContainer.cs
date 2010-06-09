@@ -30,7 +30,7 @@ namespace Autofac.Integration.Web
 {
     /// <summary>
     /// Provides an implementation of <see cref="Autofac.IContainer"/> which uses the configured
-    /// <see cref="Autofac.Integration.Web.IContainerProvider"/> to route calls to the current request container.
+    /// <see cref="IContainerProvider"/> to route calls to the current request container.
     /// </summary>
     public class ContainerProviderContainer : IContainer
     {
@@ -39,7 +39,7 @@ namespace Autofac.Integration.Web
         /// <summary>
         /// Initializes a new instance of <see cref="Autofac.Integration.Web.ContainerProviderContainer"/>.
         /// </summary>
-        /// <param name="containerProvider">The <see cref="Autofac.Integration.Web.IContainerProvider"/> to use to retrieve the current request container.</param>
+        /// <param name="containerProvider">The <see cref="IContainerProvider"/> to use to retrieve the current request container.</param>
         public ContainerProviderContainer(IContainerProvider containerProvider)
         {
             if (containerProvider == null)
