@@ -81,30 +81,23 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AutofacDependencyInjectionServiceBehavior.cs" />
+    <Compile Include="AutofacInstanceContext.cs" />
     <Compile Include="AutofacInstanceProvider.cs" />
-    <Compile Include="AutofacRequestLifetimeScopeExtension.cs" />
     <Compile Include="AutofacServiceHostFactory.cs" />
     <Compile Include="AutofacServiceHostFactoryResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>AutofacServiceHostFactoryResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ContainerProvider.cs" />
     <Compile Include="AutofacWebServiceHostFactory.cs" />
     <Compile Include="AutofacHostFactory.cs" />
-    <Compile Include="DefaultServiceImplementationDataProvider.cs" />
-    <Compile Include="IServiceImplementationDataProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AutofacServiceHostBehaviorRegistrationExtensions.cs" />
-    <Compile Include="RegistrationExtensions.cs" />
     <Compile Include="ServiceHostExtensions.cs" />
     <Compile Include="ServiceHostExtensionsResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ServiceHostExtensionsResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ServiceImplementationData.cs" />
-    <Compile Include="WcfLifetime.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Autofac\Autofac.csproj">

@@ -83,6 +83,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DependencyInjectionModuleResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="IContainerProvider.cs" />
     <Compile Include="IContainerProviderAccessor.cs" />
     <Compile Include="Forms\IInjectionBehaviour.cs" />
     <Compile Include="Forms\InjectPropertiesAttribute.cs" />

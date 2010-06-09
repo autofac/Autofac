@@ -24,62 +24,79 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Linq;
 using System.ServiceModel;
-using Autofac;
+using Autofac.Core;
 
 namespace Autofac.Integration.Wcf
 {
     /// <summary>
-    /// Extension for passing around the request lifetime scope.
+    /// Manages instance lifecycle using an Autofac inner container.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// This extension is on the <see cref="System.ServiceModel.OperationContext"/>
-    /// rather than the <see cref="System.ServiceModel.InstanceContext"/>
-    /// because a request lifetime is on a per-operation (per 'request') basis
-    /// not a per-service-implementation-instance basis.
-    /// </para>
-    /// </remarks>
-    public class AutofacRequestLifetimeScopeExtension : IExtension<OperationContext>
+    class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable
     {
-        /// <summary>
-        /// Gets the request lifetime scope.
-        /// </summary>
-        /// <value>
-        /// An <see cref="Autofac.ILifetimeScope"/> with the request lifetime.
-        /// </value>
-        public virtual ILifetimeScope RequestLifetime { get; private set; }
+        ILifetimeScope _lifetime;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AutofacRequestLifetimeScopeExtension"/> class.
+        /// Initializes a new instance of the <see cref="AutofacInstanceContext"/> class.
         /// </summary>
-        /// <param name="requestLifetime">The request lifetime.</param>
-        /// <exception cref="System.ArgumentNullException">
-        /// Thrown if <paramref name="requestLifetime" /> is <see langword="null" />.
-        /// </exception>
-        public AutofacRequestLifetimeScopeExtension(ILifetimeScope requestLifetime)
+        /// <param name="container">The outer container.</param>
+        public AutofacInstanceContext(IContainer container)
         {
-            if (requestLifetime == null)
-            {
-                throw new ArgumentNullException("requestLifetime");
-            }
-            this.RequestLifetime = requestLifetime;
+            if (container == null)
+                throw new ArgumentNullException("container");
+
+            _lifetime = container.BeginLifetimeScope();
         }
 
         /// <summary>
+        /// Retrieve a service instance from the context.
+        /// </summary>
+        /// <param name="registration"></param>
+        /// <returns>The service instance.</returns>
+        public object Resolve(IComponentRegistration registration)
+        {
+            if (registration == null)
+                throw new ArgumentNullException("registration");
+
+            return _lifetime.Resolve(registration, Enumerable.Empty<Parameter>());
+        }
+
+        #region IExtension<InstanceContext> Members
+
+        /// <summary>
         /// Enables an extension object to find out when it has been aggregated.
+        /// Called when the extension is added to the
+        /// <see cref="P:System.ServiceModel.IExtensibleObject`1.Extensions"/> property.
         /// </summary>
         /// <param name="owner">The extensible object that aggregates this extension.</param>
-        public virtual void Attach(OperationContext owner)
+        public void Attach(InstanceContext owner)
         {
         }
 
         /// <summary>
         /// Enables an object to find out when it is no longer aggregated.
+        /// Called when an extension is removed from the
+        /// <see cref="P:System.ServiceModel.IExtensibleObject`1.Extensions"/> property.
         /// </summary>
         /// <param name="owner">The extensible object that aggregates this extension.</param>
-        public virtual void Detach(OperationContext owner)
+        public void Detach(InstanceContext owner)
         {
         }
+
+        #endregion
+
+        #region IDisposable Members
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or
+        /// resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            _lifetime.Dispose();
+        }
+
+        #endregion
     }
 }

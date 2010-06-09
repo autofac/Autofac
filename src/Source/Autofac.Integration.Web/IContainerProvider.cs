@@ -1,6 +1,5 @@
-﻿// This software is part of the Autofac IoC container
+﻿// Contributed by Nicholas Blumhardt 2008-01-28
 // Copyright (c) 2010 Autofac Contributors
-// http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
@@ -16,35 +15,36 @@
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A1 PARTICULAR PURPOSE AND
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
 // NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
 // HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using Autofac;
-using Autofac.Integration.Wcf;
-using NUnit.Framework;
-
-namespace Autofac.Tests.Integration.Wcf
+namespace Autofac.Integration.Web
 {
-    [TestFixture]
-    public class ContainerProviderFixture
+    /// <summary>
+    /// Provides global and per-request Autofac containers in an
+    /// ASP.NET application.
+    /// </summary>
+    public interface IContainerProvider
     {
-        [Test(Description = "Ensures the application container can't be null.")]
-        public void Ctor_NullApplicationContainer()
-        {
-            Assert.Throws<ArgumentNullException>(() => new ContainerProvider(null));
-        }
+        /// <summary>
+        /// Dispose of the current request's container, if it has been
+        /// instantiated.
+        /// </summary>
+        void EndRequestLifetime();
 
-        [Test(Description = "Checks that the constructor sets the application container property.")]
-        public void Ctor_SetsApplicationContainer()
-        {
-            var container = new ContainerBuilder().Build();
-            var cp = new ContainerProvider(container);
-            Assert.AreSame(container, cp.ApplicationContainer, "The application container was not set by the constructor.");
-        }
+        /// <summary>
+        /// The global, application-wide container.
+        /// </summary>
+        IContainer ApplicationContainer { get; }
+
+        /// <summary>
+        /// The lifetime used to manage components for processing the
+        /// current request.
+        /// </summary>
+        ILifetimeScope RequestLifetime { get; }
     }
 }

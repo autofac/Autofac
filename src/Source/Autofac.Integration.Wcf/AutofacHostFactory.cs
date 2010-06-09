@@ -27,18 +27,19 @@ using System;
 using System.Globalization;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
+using Autofac.Core;
 
 namespace Autofac.Integration.Wcf
 {
     /// <summary>
     /// Creates ServiceHost instances for WCF.
     /// </summary>
-    public abstract class AutofacHostFactory : ServiceHostFactory
-    {
+	public abstract class AutofacHostFactory : ServiceHostFactory
+	{
         /// <summary>
-        /// The container provider from which service instances will be retrieved.
+        /// The container from which service instances will be retrieved.
         /// </summary>
-        public static IContainerProvider ContainerProvider { get; set; }
+        public static IContainer Container { get; set; }
 
         /// <summary>
         /// Creates a <see cref="T:System.ServiceModel.ServiceHost"/> with specific base addresses and initializes it with specified data.
@@ -49,89 +50,51 @@ namespace Autofac.Integration.Wcf
         /// A <see cref="T:System.ServiceModel.ServiceHost"/> with specific base addresses.
         /// </returns>
         /// <exception cref="T:System.ArgumentNullException">
-        /// <paramref name="constructorString" /> or <paramref name="baseAddresses"/> is <see langword="null" />.
-        /// </exception>
-        /// <exception cref="System.ArgumentException">
-        /// Thrown if <paramref name="constructorString" /> is empty.
-        /// </exception>
-        /// <exception cref="T:System.InvalidOperationException">
-        /// <see cref="Autofac.Integration.Wcf.AutofacHostFactory.ContainerProvider"/>
-        /// is <see langword="null" />; the application container is <see langword="null" />;
-        /// or the <see cref="ServiceImplementationData.ServiceTypeToHost"/>
-        /// resolved by the registered <see cref="IServiceImplementationDataProvider"/>
-        /// is <see langword="null" /> or not a class.
-        /// </exception>
+        /// 	<paramref name="baseAddress"/> is null.</exception>
+        /// <exception cref="T:System.InvalidOperationException">There is no hosting context provided or <paramref name="constructorString"/> is null or empty.</exception>
         public override ServiceHostBase CreateServiceHost(string constructorString, Uri[] baseAddresses)
         {
             if (constructorString == null)
-            {
                 throw new ArgumentNullException("constructorString");
-            }
-            if (baseAddresses == null)
-            {
-                throw new ArgumentNullException("baseAddresses");
-            }
-            if (constructorString.Length == 0)
-            {
-                throw new ArgumentException(AutofacServiceHostFactoryResources.ConstructorStringEmpty, "constructorString");
-            }
-            if (ContainerProvider == null)
-            {
-                throw new InvalidOperationException(AutofacServiceHostFactoryResources.ContainerProviderIsNull);
-            }
-            if (ContainerProvider.ApplicationContainer == null)
-            {
+
+            if (constructorString == String.Empty)
+                throw new ArgumentOutOfRangeException("constructorString");
+
+            if (Container == null)
                 throw new InvalidOperationException(AutofacServiceHostFactoryResources.ContainerIsNull);
-            }
 
-            IServiceImplementationDataProvider dataProvider = null;
-            if (!ContainerProvider.ApplicationContainer.TryResolve<IServiceImplementationDataProvider>(out dataProvider))
+            IComponentRegistration registration = null;
+            if (!Container.ComponentRegistry.TryGetRegistration(new NamedService(constructorString, typeof(object)), out registration))
             {
-                dataProvider = new DefaultServiceImplementationDataProvider();
+                Type serviceType = Type.GetType(constructorString, false);
+                if (serviceType != null)
+                    Container.ComponentRegistry.TryGetRegistration(new TypedService(serviceType), out registration);
             }
 
-            var data = dataProvider.GetServiceImplementationData(constructorString);
+            if (registration == null)
+                throw new InvalidOperationException(
+                    string.Format(CultureInfo.CurrentCulture, AutofacServiceHostFactoryResources.ServiceNotRegistered, constructorString));
 
-            if (data.ServiceTypeToHost == null)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, AutofacServiceHostFactoryResources.NoServiceHostType, dataProvider.GetType(), constructorString));
-            }
-            if (!data.ServiceTypeToHost.IsClass)
-            {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, AutofacServiceHostFactoryResources.ServiceHostTypeNotClass, dataProvider.GetType(), constructorString, data.ServiceTypeToHost));
-            }
+            if (!registration.Activator.LimitType.IsClass)
+                throw new InvalidOperationException(
+                    string.Format(CultureInfo.CurrentCulture, AutofacServiceHostFactoryResources.ImplementationTypeUnknown, constructorString, registration));
 
-            return CreateServiceHost(data, baseAddresses);
+            return CreateServiceHost(registration, registration.Activator.LimitType, baseAddresses);
         }
-
+ 
         /// <summary>
         /// Creates the service host and attaches a WCF Service behaviour that uses Autofac to resolve the service instance.
         /// </summary>
-        /// <param name="implementationData">Data about which service type to host and how to resolve the implementation type.</param>
+        /// <param name="registration">Registration to provide the service.</param>
+        /// <param name="implementationType">Type of the implementation.</param>
         /// <param name="baseAddresses">The base addresses.</param>
         /// <returns>A <see cref="T:System.ServiceModel.ServiceHost"/> with specific base addresses.</returns>
-        /// <remarks>
-        /// <para>
-        /// You can add behaviors to the service host by using the
-        /// <see cref="AutofacServiceHostBehaviorRegistrationExtensions.RegisterServiceBehaviorForHost"/>
-        /// method. For example, if a behavior for processing incoming messages
-        /// to determine the tenant is required, that can be added to the
-        /// list of behaviors that will be applied during the
-        /// <see cref="System.ServiceModel.ICommunicationObject.Opening"/> event.
-        /// </para>
-        /// </remarks>
-        protected virtual ServiceHost CreateServiceHost(ServiceImplementationData implementationData, Uri[] baseAddresses)
+        /// <remarks>If the serviceType is null, the implementation type is used as the resolution type</remarks>
+        private ServiceHost CreateServiceHost(IComponentRegistration registration, Type implementationType, Uri[] baseAddresses)
         {
-            var host = CreateServiceHost(implementationData.ServiceTypeToHost, baseAddresses);
-            var behaviors = ContainerProvider.ApplicationContainer.ResolveServiceBehaviorsForHost();
-            host.Opening += (sender, args) =>
-                {
-                    host.Description.Behaviors.Add(new AutofacDependencyInjectionServiceBehavior(implementationData));
-                    foreach (var b in behaviors)
-                    {
-                        host.Description.Behaviors.Add(b);
-                    }
-                };
+            var host = CreateServiceHost(implementationType, baseAddresses);
+            host.Opening += (sender, args) => host.Description.Behaviors.Add(
+                new AutofacDependencyInjectionServiceBehavior(Container, implementationType, registration));
 
             return host;
         }

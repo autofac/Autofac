@@ -117,26 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ConstructorStringEmpty" xml:space="preserve">
-    <value>Unable to create a service host with an empty constructor string.</value>
-  </data>
   <data name="ContainerIsNull" xml:space="preserve">
-    <value>The AutofacServiceHost.ContainerProvider must have an application container set before services can be instantiated.</value>
-  </data>
-  <data name="ContainerProviderIsNull" xml:space="preserve">
-    <value>The AutofacServiceHost.ContainerProvider static property must be set before services can be instantiated.</value>
-  </data>
-  <data name="ImplementationTypeResolverIsNull" xml:space="preserve">
-    <value>The function to resolve the implementation type for service '{0}' was null. Check the registered IServiceImplementationDataProvider to ensure it properly sets the ImplementationTypeResolver function.</value>
+    <value>The AutofacServiceHost.Container static property must be set before services can be instantiated.</value>
   </data>
   <data name="ImplementationTypeUnknown" xml:space="preserve">
     <value>Service '{0}' is registered in such a way that its implementation type could not be derived. This is required for WCF integration. Consider using a reflection-based registration or an expression-based registration where the return value is a class type. The current default registration is '{1}'.</value>
-  </data>
-  <data name="NoServiceHostType" xml:space="preserve">
-    <value>No type to host was provided by the '{0}' for the service '{1}'.</value>
-  </data>
-  <data name="ServiceHostTypeNotClass" xml:space="preserve">
-    <value>The '{0}' did not provide a type to be hosted by WCF that was a concrete implementation type. WCF requires a service host to host a class, not an interface. Consider using a reflection-based registration or an expression-based registration where the return value is a class type. The current service type being returned by '{0}' for constructor string '{1}' is '{2}'.</value>
   </data>
   <data name="ServiceNotRegistered" xml:space="preserve">
     <value>The service '{0}' configured for WCF is not registered with the Autofac container.</value>
