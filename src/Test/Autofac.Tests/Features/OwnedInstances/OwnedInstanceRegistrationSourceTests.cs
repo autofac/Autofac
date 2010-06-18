@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autofac.Builder;
 using Autofac.Core;
 using NUnit.Framework;
 using Autofac.Features.OwnedInstances;
@@ -91,6 +92,28 @@ namespace Autofac.Tests.Features.OwnedInstances
 
             var est = c.Resolve<Owned<ExposesScopeTag>>();
             Assert.AreEqual(new TypedService(typeof(ExposesScopeTag)), est.Value.Tag);
+        }
+
+        public class ClassWithFactory
+        {
+            public delegate Owned<ClassWithFactory> OwnedFactory();
+        }
+
+        [Test]
+        public void CanResolveAndUse_OwnedGeneratedFactory()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterType<ClassWithFactory>();
+            cb.RegisterGeneratedFactory<ClassWithFactory.OwnedFactory>();
+            var c = cb.Build();
+            var factory = c.Resolve<ClassWithFactory.OwnedFactory>();
+            bool isAccessed;
+            using(var owner = factory())
+            {
+                Assert.IsInstanceOf<ClassWithFactory>(owner.Value);
+                isAccessed = true;
+            }
+            Assert.IsTrue(isAccessed);
         }
     }
 }
