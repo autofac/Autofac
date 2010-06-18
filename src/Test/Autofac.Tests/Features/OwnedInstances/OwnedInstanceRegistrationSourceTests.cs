@@ -96,21 +96,28 @@ namespace Autofac.Tests.Features.OwnedInstances
 
         public class ClassWithFactory
         {
-            public delegate Owned<ClassWithFactory> OwnedFactory();
+            public string Name { get; set; }
+
+            public delegate Owned<ClassWithFactory> OwnedFactory(string name);
+
+            public ClassWithFactory(string name)
+            {
+                Name = name;
+            }
         }
 
         [Test]
         public void CanResolveAndUse_OwnedGeneratedFactory()
         {
             var cb = new ContainerBuilder();
-            cb.RegisterType<ClassWithFactory>();
+            cb.Register((c,p) => new ClassWithFactory(p.Named<string>("name")));
             cb.RegisterGeneratedFactory<ClassWithFactory.OwnedFactory>();
-            var c = cb.Build();
-            var factory = c.Resolve<ClassWithFactory.OwnedFactory>();
+            var container = cb.Build();
+            var factory = container.Resolve<ClassWithFactory.OwnedFactory>();
             bool isAccessed;
-            using(var owner = factory())
+            using(var owner = factory("test"))
             {
-                Assert.IsInstanceOf<ClassWithFactory>(owner.Value);
+                Assert.AreEqual("test", owner.Value.Name); 
                 isAccessed = true;
             }
             Assert.IsTrue(isAccessed);
