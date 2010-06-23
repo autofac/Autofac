@@ -42,15 +42,15 @@ namespace Remember.Web.Multitenant
                                           c.Resolve<string>("greeting") + ", " +
                                           c.Resolve<string>("audience"));
 
+            var tenancyRegistry = new TenancyRegistry(baseContainerBuilder.Build());
+            tenancyRegistry.ConfigureDefaultTenant(dt => dt.RegisterInstance("World").Named<string>("audience"));
+            tenancyRegistry.ConfigureTenant("nick", n => n.RegisterInstance("Nicholas").Named<string>("audience"));
+
             _containerProvider = new MultiTenantContainerProvider(
                 new RequestParameterTenantIdentificationStrategy("tenantId"),
-                baseContainerBuilder.Build());
+                tenancyRegistry);
 
-            _containerProvider.ConfigureDefaultTenant(dt => dt.RegisterInstance("World").Named<string>("audience"));
-            _containerProvider.ConfigureTenant("nick", n => n.RegisterInstance("Nicholas").Named<string>("audience"));
-
-            ControllerBuilder.Current.SetControllerFactory(
-                new AutofacControllerFactory(_containerProvider));
+            ControllerBuilder.Current.SetControllerFactory(new AutofacControllerFactory(_containerProvider));
         }
 
         protected void Application_End()

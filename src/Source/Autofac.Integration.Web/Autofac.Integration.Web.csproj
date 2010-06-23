@@ -94,6 +94,7 @@
     <Compile Include="MultiTenant\ITenantIdentificationPolicy.cs" />
     <Compile Include="MultiTenant\MultiTenantContainerProvider.cs" />
     <Compile Include="MultiTenant\RequestParameterTenantIdentificationStrategy.cs" />
+    <Compile Include="MultiTenant\TenancyRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Forms\PropertyInjection.cs" />
     <Compile Include="Forms\PropertyInjectionModule.cs" />

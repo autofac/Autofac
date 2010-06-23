@@ -61,11 +61,11 @@ namespace Autofac.Integration.Wcf
 			IComponentRegistration registration;
 			if (!container.ComponentRegistry.TryGetRegistration(new TypedService(contractType), out registration))
 			{
-				string message = string.Format(ServiceHostExtensionsResources.ContractTypeNotRegistered, contractType.FullName);
+				var message = string.Format(ServiceHostExtensionsResources.ContractTypeNotRegistered, contractType.FullName);
 				throw new ArgumentException(message, "contractType");
 			}
 
-			AutofacDependencyInjectionServiceBehavior behavior = new AutofacDependencyInjectionServiceBehavior(
+			var behavior = new AutofacDependencyInjectionServiceBehavior(
 				container, serviceHost.Description.ServiceType, registration);
 			serviceHost.Description.Behaviors.Add(behavior);
 		}

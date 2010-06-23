@@ -35,7 +35,7 @@ namespace Autofac.Integration.Web.MultiTenant
         /// </summary>
         /// <param name="tenantId">The tenant identifier, if any is available.</param>
         /// <returns>True if the current tenant could be identified; otherwise, false.</returns>
-        public bool TryIdentifyTenant(out string tenantId)
+        public bool TryIdentifyTenant(out object tenantId)
         {
             tenantId = HttpContext.Current.Request.Url.Host;
             return true;
