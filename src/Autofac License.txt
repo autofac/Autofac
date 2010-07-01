@@ -1,5 +1,5 @@
 Autofac IoC Container
-Copyright (c) 2007-2008 Autofac Contributors
+Copyright (c) 2007-2010 Autofac Contributors
 http://code.google.com/p/autofac/wiki/Contributing
 
 Other software included in this distribution is owned and
