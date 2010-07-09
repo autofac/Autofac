@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
@@ -48,6 +49,7 @@ namespace Autofac.Configuration
         public const string DefaultSectionName = "autofac";
 
         readonly SectionHandler _sectionHandler;
+        readonly string _configurationDirectory = Path.GetDirectoryName(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigurationSettingsReader"/> class.
@@ -67,7 +69,10 @@ namespace Autofac.Configuration
         {
             Enforce.ArgumentNotNull(sectionName, "sectionName");
             Enforce.ArgumentNotNull(configurationFile, "configurationFile");
-            
+
+            if (!Path.IsPathRooted(configurationFile))
+                configurationFile = Path.Combine(_configurationDirectory, configurationFile);
+
             ExeConfigurationFileMap map = new ExeConfigurationFileMap();
             map.ExeConfigFilename = configurationFile;
 
