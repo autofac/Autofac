@@ -58,8 +58,12 @@ namespace AutofacContrib.AggregateService
 
         private Dictionary<MethodInfo, Action<IInvocation>> SetupInvocationMap(Type interfaceType)
         {
-            var methods = interfaceType.GetMethods();
-            var methodMap = new Dictionary<MethodInfo, Action<IInvocation>>(methods.Length);
+            var methods = interfaceType
+                .GetUniqueInterfaces()
+                .SelectMany(x => x.GetMethods())
+                .ToArray();
+
+            var methodMap = new Dictionary<MethodInfo, Action<IInvocation>>(methods.Count());
             foreach (var method in methods)
             {
                 var returnType = method.ReturnType;
@@ -109,7 +113,9 @@ namespace AutofacContrib.AggregateService
             return methodMap;
         }
 
+// ReSharper disable UnusedMember.Local
         private void MethodWithoutParams<TReturnType>(IInvocation invocation)
+// ReSharper restore UnusedMember.Local
         {
             invocation.ReturnValue = _context.Resolve<TReturnType>();
         }
