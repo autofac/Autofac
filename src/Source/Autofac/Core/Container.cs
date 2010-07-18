@@ -49,7 +49,7 @@ namespace Autofac.Core
         /// <summary>
         /// Create a new container.
         /// </summary>
-        public Container()
+        internal Container()
         {
             _componentRegistry = new ComponentRegistry();
 

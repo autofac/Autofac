@@ -6,7 +6,6 @@ using Autofac.Integration.Web;
 using Autofac.Integration.Web.Mvc;
 using NUnit.Framework;
 using Moq;
-using Autofac.Core;
 
 namespace Autofac.Tests.Integration.Web.Mvc
 {
@@ -64,7 +63,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
 
         private static AutofacControllerFactory CreateTarget()
         {
-            return new AutofacControllerFactory(new StubContainerProvider(new Container()));
+            return new AutofacControllerFactory(new StubContainerProvider(new ContainerBuilder().Build()));
         }
 
         [Test]

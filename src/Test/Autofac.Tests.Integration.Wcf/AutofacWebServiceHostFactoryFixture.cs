@@ -45,24 +45,24 @@ namespace Autofac.Tests.Integration.Wcf
         public void DetectsUnknownImplementationTypes()
         {
             var builder = new ContainerBuilder();
-            builder.Register<IServiceProvider>(c => new Container()).Named<object>("service");
+            builder.Register<ITestService>(c => new TestService()).Named<object>("service");
             TestWithHostedContainer(builder.Build(), () =>
             {
                 var factory = new AutofacWebServiceHostFactory();
-                var host = factory.CreateServiceHost("service", DummyEndpoints);
+                factory.CreateServiceHost("service", DummyEndpoints);
             });
         }
 
-        void TestWithHostedContainer(IContainer container, Action test)
+        static void TestWithHostedContainer(IContainer container, Action test)
         {
-            AutofacServiceHostFactory.Container = container;
+            AutofacHostFactory.Container = container;
             try
             {
                 test();
             }
             finally
             {
-                AutofacServiceHostFactory.Container = null;
+                AutofacHostFactory.Container = null;
             }
         }
     }

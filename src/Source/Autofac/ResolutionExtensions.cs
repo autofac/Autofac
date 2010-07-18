@@ -73,56 +73,6 @@ namespace Autofac
         /// </summary>
         /// <typeparam name="TService">The type to which the result will be cast.</typeparam>
         /// <param name="context">The context from which to resolve the service.</param>
-        /// <param name="registrationId">Identity of the registration providing the service.</param>
-        /// <returns>
-        /// The component instance that provides the service.
-        /// </returns>
-        /// <exception cref="ComponentNotRegisteredException"/>
-        /// <exception cref="DependencyResolutionException"/>
-        public static TService Resolve<TService>(this IComponentContext context, Guid registrationId)
-        {
-            return Resolve<TService>(context, registrationId, NoParameters);
-        }
-
-        /// <summary>
-        /// Retrieve a service from the context.
-        /// </summary>
-        /// <typeparam name="TService">The type to which the result will be cast.</typeparam>
-        /// <param name="context">The context from which to resolve the service.</param>
-        /// <param name="registrationId">Identity of the registration providing the service.</param>
-        /// <param name="parameters">The parameters.</param>
-        /// <returns>
-        /// The component instance that provides the service.
-        /// </returns>
-        /// <exception cref="ComponentNotRegisteredException"/>
-        /// <exception cref="DependencyResolutionException"/>
-        public static TService Resolve<TService>(this IComponentContext context, Guid registrationId, IEnumerable<Parameter> parameters)
-        {
-            return (TService)Resolve(context, new UniqueService(registrationId), parameters);
-        }
-
-        /// <summary>
-        /// Retrieve a service from the context.
-        /// </summary>
-        /// <typeparam name="TService">The type to which the result will be cast.</typeparam>
-        /// <param name="context">The context from which to resolve the service.</param>
-        /// <param name="registrationId">Identity of the registration providing the service.</param>
-        /// <param name="parameters">The parameters.</param>
-        /// <returns>
-        /// The component instance that provides the service.
-        /// </returns>
-        /// <exception cref="ComponentNotRegisteredException"/>
-        /// <exception cref="DependencyResolutionException"/>
-        public static TService Resolve<TService>(this IComponentContext context, Guid registrationId, params Parameter[] parameters)
-        {
-            return context.Resolve<TService>(registrationId, (IEnumerable<Parameter>)parameters);
-        }
-
-        /// <summary>
-        /// Retrieve a service from the context.
-        /// </summary>
-        /// <typeparam name="TService">The type to which the result will be cast.</typeparam>
-        /// <param name="context">The context from which to resolve the service.</param>
         /// <param name="serviceName">Name of the service.</param>
         /// <returns>
         /// The component instance that provides the service.
