@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComponentRegistrationInfo.cs" />
     <Compile Include="ContainerProfile.cs" />
     <Compile Include="IContainerProfile.cs" />
     <Compile Include="ProfilingModule.cs" />

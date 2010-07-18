@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Autofac;
+using Autofac.Core;
 
 namespace AutofacContrib.Profiling
 {
     public class ProfilingModule : Module
     {
-        ContainerProfile _profile = new ContainerProfile();
+        [ThreadStatic]
+        static readonly Stack<IComponentRegistration> ActivationStack = new Stack<IComponentRegistration>();
+
+        readonly ContainerProfile _profile = new ContainerProfile();
 
         protected override void Load(ContainerBuilder moduleBuilder)
         {
@@ -16,13 +18,21 @@ namespace AutofacContrib.Profiling
             moduleBuilder.RegisterInstance(_profile).As<IContainerProfile>();
         }
 
-        protected override void AttachToComponentRegistration(Autofac.Core.IComponentRegistry componentRegistry, Autofac.Core.IComponentRegistration registration)
+        protected override void AttachToComponentRegistration(IComponentRegistry componentRegistry, Autofac.Core.IComponentRegistration registration)
         {
             base.AttachToComponentRegistration(componentRegistry, registration);
-            registration.Activated += (s, e) =>
+
+            registration.Activated += (s, e) => _profile.RecordActivation(e.Component);
+            
+            registration.Preparing += (s, e) =>
             {
-                _profile.RecordActivation(e.Component, e.Parameters);
+                if (ActivationStack.Count != 0)
+                    _profile.RecordDependency(ActivationStack.Peek(), e.Component);
+
+                ActivationStack.Push(e.Component);
             };
+
+            registration.Activating += (s, e) => ActivationStack.Pop();
         }
     }
 }

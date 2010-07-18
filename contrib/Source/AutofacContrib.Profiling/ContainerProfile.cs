@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Autofac.Core;
 
 namespace AutofacContrib.Profiling
@@ -9,29 +8,47 @@ namespace AutofacContrib.Profiling
     class ContainerProfile : IContainerProfile
     {
         readonly object _synchRoot = new object();
-        readonly IDictionary<IComponentRegistration, int> _activationCounts = 
-            new Dictionary<IComponentRegistration, int>();
+        readonly IDictionary<Guid, ComponentRegistrationInfo> _componentRegistrationInfo =
+            new Dictionary<Guid, ComponentRegistrationInfo>();
 
-        public void RecordActivation(
-            IComponentRegistration component, 
-            IEnumerable<Parameter> parameters)
+        public void RecordActivation(IComponentRegistration component)
         {
             lock (_synchRoot)
             {
-                int count;
-                if (!_activationCounts.TryGetValue(component, out count))
-                    count = 0;
-                _activationCounts[component] = count + 1;
+                ComponentRegistrationInfo componentInfo = GetComponentInfo(component);
+                componentInfo.RecordActivation();
             }
         }
 
-        public IEnumerable<KeyValuePair<IComponentRegistration, int>> ActivationCounts
+        ComponentRegistrationInfo GetComponentInfo(IComponentRegistration component)
+        {
+            ComponentRegistrationInfo componentInfo;
+            if (!_componentRegistrationInfo.TryGetValue(component.Id, out componentInfo))
+            {
+                componentInfo = new ComponentRegistrationInfo(component);
+                _componentRegistrationInfo.Add(component.Id, componentInfo);
+            }
+            return componentInfo;
+        }
+
+        public ComponentRegistrationInfo GetComponent(Guid id)
+        {
+            lock (_synchRoot)
+                return _componentRegistrationInfo[id];
+        }
+
+        public IEnumerable<ComponentRegistrationInfo> Components
         {
             get
             {
                 lock (_synchRoot)
-                    return _activationCounts.ToArray();
+                    return _componentRegistrationInfo.Select(cri => cri.Value).ToArray();
             }
+        }
+
+        public void RecordDependency(IComponentRegistration from, IComponentRegistration to)
+        {
+            GetComponentInfo(from).RecordDependency(to.Id);
         }
     }
 }
