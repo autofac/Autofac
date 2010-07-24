@@ -45,7 +45,9 @@
   <ItemGroup>
     <Compile Include="ComponentRegistrationInfo.cs" />
     <Compile Include="ContainerProfile.cs" />
+    <Compile Include="DependencyTrackingContext.cs" />
     <Compile Include="IContainerProfile.cs" />
+    <Compile Include="ProfilingActivator.cs" />
     <Compile Include="ProfilingModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
