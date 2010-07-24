@@ -48,7 +48,7 @@ namespace AutofacContrib.Tests.Profiling
             CollectionAssert.AreEquivalent(new[] { registrationTo.Id }, info.Dependencies);
         }
 
-        [Test, Ignore("Not yet implemented, requires core support.")]
+        [Test]
         public void WhenAComponentDependsOnAnActivatedSingleton_TheDependencyIsRecorded()
         {
             var builder = new ContainerBuilder();

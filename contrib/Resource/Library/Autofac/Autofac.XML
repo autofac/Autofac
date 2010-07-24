@@ -550,6 +550,27 @@
               Looks up a localized string similar to A delegate registered to create instances of &apos;{0}&apos; returned null..
             </summary>
         </member>
+        <member name="T:Autofac.Core.Activators.Reflection.BindingFlagsConstructorFinderResources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Autofac.Core.Activators.Reflection.BindingFlagsConstructorFinderResources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Autofac.Core.Activators.Reflection.BindingFlagsConstructorFinderResources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Autofac.Core.Activators.Reflection.BindingFlagsConstructorFinderResources.HasBindingFlags">
+            <summary>
+              Looks up a localized string similar to {0} binding flags.
+            </summary>
+        </member>
         <member name="T:Autofac.Core.Activators.Reflection.ConstructorParameterBindingResources">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
@@ -571,9 +592,14 @@
               Looks up a localized string similar to Bound constructor &apos;{0}&apos;..
             </summary>
         </member>
+        <member name="P:Autofac.Core.Activators.Reflection.ConstructorParameterBindingResources.ExceptionDuringInstantiation">
+            <summary>
+              Looks up a localized string similar to An exception was thrown while invoking the constructor &apos;{0}&apos; on type &apos;{1}&apos;..
+            </summary>
+        </member>
         <member name="P:Autofac.Core.Activators.Reflection.ConstructorParameterBindingResources.NonBindableConstructor">
             <summary>
-              Looks up a localized string similar to Constructor &apos;{0}&apos; parameter resolution failed at parameter &apos;{1}&apos;..
+              Looks up a localized string similar to Cannot resolve parameter &apos;{1}&apos; of constructor &apos;{0}&apos;..
             </summary>
         </member>
         <member name="T:Autofac.Core.Activators.Reflection.DefaultValueParameter">
@@ -1713,6 +1739,15 @@
             <param name="targetType">Type to search for constructors.</param>
             <returns>Suitable constructors.</returns>
         </member>
+        <member name="M:Autofac.Core.Activators.Reflection.BindingFlagsConstructorFinder.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
         <member name="T:Autofac.Core.Activators.Reflection.ConstructorParameterBinding">
             <summary>
             Binds a constructor to the parameters that will be used when it is invoked.
@@ -1798,14 +1833,19 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:Autofac.Core.Activators.Reflection.MatchingSignatureConstructorSelectorResources.AtLeastOneBindingRequired">
+            <summary>
+              Looks up a localized string similar to At least one binding must be provided in order to select a constructor..
+            </summary>
+        </member>
         <member name="P:Autofac.Core.Activators.Reflection.MatchingSignatureConstructorSelectorResources.RequiredConstructorNotAvailable">
             <summary>
-              Looks up a localized string similar to The required constructor is unavailable..
+              Looks up a localized string similar to The required constructor on type &apos;{0}&apos;  with signature &apos;{1}&apos; is unavailable..
             </summary>
         </member>
         <member name="P:Autofac.Core.Activators.Reflection.MatchingSignatureConstructorSelectorResources.TooManyConstructorsMatch">
             <summary>
-              Looks up a localized string similar to More than one constructor matches the selection policy..
+              Looks up a localized string similar to More than one constructor matches the signature &apos;{0}&apos;..
             </summary>
         </member>
         <member name="T:Autofac.Core.Activators.Reflection.MostParametersConstructorSelector">
@@ -1875,12 +1915,12 @@
         </member>
         <member name="P:Autofac.Core.Activators.Reflection.ReflectionActivatorResources.NoConstructorsAvailable">
             <summary>
-              Looks up a localized string similar to No constructors matching the constructor-finding policy can be found on the target type..
+              Looks up a localized string similar to No constructors on type &apos;{0}&apos; can be found with &apos;{1}&apos;..
             </summary>
         </member>
         <member name="P:Autofac.Core.Activators.Reflection.ReflectionActivatorResources.NoConstructorsBindable">
             <summary>
-              Looks up a localized string similar to None of the constructors found with policy &apos;{0}&apos; on type &apos;{1}&apos; can be invoked with the available services and parameters:{2}.
+              Looks up a localized string similar to None of the constructors found with &apos;{0}&apos; on type &apos;{1}&apos; can be invoked with the available services and parameters:{2}.
             </summary>
         </member>
         <member name="T:Autofac.Core.ConstantParameter">
@@ -3687,12 +3727,20 @@
             <param name="serviceMapping">Function mapping types to services.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.AsSelf``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2})">
+        <member name="M:Autofac.RegistrationExtensions.AsSelf``2(Autofac.Builder.IRegistrationBuilder{``0,``1,Autofac.Builder.DynamicRegistrationStyle})">
             <summary>
             Specifies that a type from a scanned assembly provides its own concrete type as a service.
             </summary>
             <typeparam name="TLimit">Registration limit type.</typeparam>
-            <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+            <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+            <param name="registration">Registration to set service mapping on.</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+        </member>
+        <member name="M:Autofac.RegistrationExtensions.AsSelf``2(Autofac.Builder.IRegistrationBuilder{``0,``1,Autofac.Builder.SingleRegistrationStyle})">
+            <summary>
+            Specifies that a type provides its own concrete type as a service.
+            </summary>
+            <typeparam name="TLimit">Registration limit type.</typeparam>
             <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
             <param name="registration">Registration to set service mapping on.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
@@ -3720,9 +3768,18 @@
             <param name="metadataValueMapping">A function retrieving the value of the item from the component type.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
+        <member name="M:Autofac.RegistrationExtensions.Named``1(Autofac.Builder.IRegistrationBuilder{System.Object,Autofac.Features.Scanning.ScanningActivatorData,Autofac.Builder.DynamicRegistrationStyle},System.Func{System.Type,System.String})">
+            <summary>
+            Specifies how a type from a scanned assembly is mapped to a named service.
+            </summary>
+            <param name="registration">Registration to set service mapping on.</param>
+            <typeparam name="TService">Service type provided by the component.</typeparam>
+            <param name="serviceNameMapping">Function mapping types to service names.</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+        </member>
         <member name="M:Autofac.RegistrationExtensions.Named``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.Func{System.Type,System.String},System.Type)">
             <summary>
-            Specifies how a type from a scanned assembly is mapped to a service.
+            Specifies how a type from a scanned assembly is mapped to a named service.
             </summary>
             <typeparam name="TLimit">Registration limit type.</typeparam>
             <typeparam name="TRegistrationStyle">Registration style.</typeparam>
@@ -3732,13 +3789,42 @@
             <param name="serviceNameMapping">Function mapping types to service names.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
-        <member name="M:Autofac.RegistrationExtensions.AsImplementedInterfaces``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2})">
+        <member name="M:Autofac.RegistrationExtensions.Keyed``1(Autofac.Builder.IRegistrationBuilder{System.Object,Autofac.Features.Scanning.ScanningActivatorData,Autofac.Builder.DynamicRegistrationStyle},System.Func{System.Type,System.String})">
+            <summary>
+            Specifies how a type from a scanned assembly is mapped to a keyed service.
+            </summary>
+            <param name="registration">Registration to set service mapping on.</param>
+            <typeparam name="TService">Service type provided by the component.</typeparam>
+            <param name="serviceKeyMapping">Function mapping types to service keys.</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+        </member>
+        <member name="M:Autofac.RegistrationExtensions.Keyed``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.Func{System.Type,System.String},System.Type)">
+            <summary>
+            Specifies how a type from a scanned assembly is mapped to a keyed service.
+            </summary>
+            <typeparam name="TLimit">Registration limit type.</typeparam>
+            <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+            <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+            <param name="registration">Registration to set service mapping on.</param>
+            <param name="serviceType">Service type provided by the component.</param>
+            <param name="serviceKeyMapping">Function mapping types to service keys.</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+        </member>
+        <member name="M:Autofac.RegistrationExtensions.AsImplementedInterfaces``2(Autofac.Builder.IRegistrationBuilder{``0,``1,Autofac.Builder.DynamicRegistrationStyle})">
             <summary>
             Specifies that a type from a scanned assembly is registered as providing all of its
             implemented interfaces.
             </summary>
             <typeparam name="TLimit">Registration limit type.</typeparam>
-            <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+            <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+            <param name="registration">Registration to set service mapping on.</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+        </member>
+        <member name="M:Autofac.RegistrationExtensions.AsImplementedInterfaces``2(Autofac.Builder.IRegistrationBuilder{``0,``1,Autofac.Builder.SingleRegistrationStyle})">
+            <summary>
+            Specifies that a type is registered as providing all of its implemented interfaces.
+            </summary>
+            <typeparam name="TLimit">Registration limit type.</typeparam>
             <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
             <param name="registration">Registration to set service mapping on.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
@@ -4284,47 +4370,6 @@
             <param name="context">The context from which to resolve the service.</param>
             <param name="instance">The instance to inject properties into.</param>
             <returns><paramref name="instance"/>.</returns>
-        </member>
-        <member name="M:Autofac.ResolutionExtensions.Resolve``1(Autofac.IComponentContext,System.Guid)">
-            <summary>
-            Retrieve a service from the context.
-            </summary>
-            <typeparam name="TService">The type to which the result will be cast.</typeparam>
-            <param name="context">The context from which to resolve the service.</param>
-            <param name="registrationId">Identity of the registration providing the service.</param>
-            <returns>
-            The component instance that provides the service.
-            </returns>
-            <exception cref="T:Autofac.Core.Registration.ComponentNotRegisteredException"/>
-            <exception cref="T:Autofac.Core.DependencyResolutionException"/>
-        </member>
-        <member name="M:Autofac.ResolutionExtensions.Resolve``1(Autofac.IComponentContext,System.Guid,System.Collections.Generic.IEnumerable{Autofac.Core.Parameter})">
-            <summary>
-            Retrieve a service from the context.
-            </summary>
-            <typeparam name="TService">The type to which the result will be cast.</typeparam>
-            <param name="context">The context from which to resolve the service.</param>
-            <param name="registrationId">Identity of the registration providing the service.</param>
-            <param name="parameters">The parameters.</param>
-            <returns>
-            The component instance that provides the service.
-            </returns>
-            <exception cref="T:Autofac.Core.Registration.ComponentNotRegisteredException"/>
-            <exception cref="T:Autofac.Core.DependencyResolutionException"/>
-        </member>
-        <member name="M:Autofac.ResolutionExtensions.Resolve``1(Autofac.IComponentContext,System.Guid,Autofac.Core.Parameter[])">
-            <summary>
-            Retrieve a service from the context.
-            </summary>
-            <typeparam name="TService">The type to which the result will be cast.</typeparam>
-            <param name="context">The context from which to resolve the service.</param>
-            <param name="registrationId">Identity of the registration providing the service.</param>
-            <param name="parameters">The parameters.</param>
-            <returns>
-            The component instance that provides the service.
-            </returns>
-            <exception cref="T:Autofac.Core.Registration.ComponentNotRegisteredException"/>
-            <exception cref="T:Autofac.Core.DependencyResolutionException"/>
         </member>
         <member name="M:Autofac.ResolutionExtensions.Resolve``1(Autofac.IComponentContext,System.String)">
             <summary>
