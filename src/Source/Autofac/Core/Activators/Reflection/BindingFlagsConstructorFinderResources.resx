@@ -117,10 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="NoConstructorsAvailable" xml:space="preserve">
-    <value>No constructors on type '{0}' can be found with '{1}'.</value>
-  </data>
-  <data name="NoConstructorsBindable" xml:space="preserve">
-    <value>None of the constructors found with '{0}' on type '{1}' can be invoked with the available services and parameters:{2}</value>
+  <data name="HasBindingFlags" xml:space="preserve">
+    <value>{0} binding flags</value>
   </data>
 </root>

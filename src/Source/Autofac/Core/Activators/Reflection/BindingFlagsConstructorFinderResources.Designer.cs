@@ -22,14 +22,14 @@ namespace Autofac.Core.Activators.Reflection {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ConstructorParameterBindingResources {
+    internal class BindingFlagsConstructorFinderResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ConstructorParameterBindingResources() {
+        internal BindingFlagsConstructorFinderResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Autofac.Core.Activators.Reflection {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Activators.Reflection.ConstructorParameterBindingResources", typeof(ConstructorParameterBindingResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Activators.Reflection.BindingFlagsConstructorFinderResources", typeof(BindingFlagsConstructorFinderResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,29 +61,11 @@ namespace Autofac.Core.Activators.Reflection {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bound constructor &apos;{0}&apos;..
+        ///   Looks up a localized string similar to {0} binding flags.
         /// </summary>
-        internal static string BoundConstructor {
+        internal static string HasBindingFlags {
             get {
-                return ResourceManager.GetString("BoundConstructor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An exception was thrown while invoking the constructor &apos;{0}&apos; on type &apos;{1}&apos;..
-        /// </summary>
-        internal static string ExceptionDuringInstantiation {
-            get {
-                return ResourceManager.GetString("ExceptionDuringInstantiation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot resolve parameter &apos;{1}&apos; of constructor &apos;{0}&apos;..
-        /// </summary>
-        internal static string NonBindableConstructor {
-            get {
-                return ResourceManager.GetString("NonBindableConstructor", resourceCulture);
+                return ResourceManager.GetString("HasBindingFlags", resourceCulture);
             }
         }
     }

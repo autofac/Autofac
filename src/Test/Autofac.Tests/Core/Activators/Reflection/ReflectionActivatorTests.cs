@@ -275,11 +275,13 @@ namespace Autofac.Tests.Core.Activators.Reflection
         }
 
         [Test]
-        [ExpectedException(typeof(DependencyResolutionException))]
         public void NonPublicConstructorsIgnored()
         {
             var target = Factory.CreateReflectionActivator(typeof(NoPublicConstructor));
-            target.ActivateInstance(new Container(), Factory.NoParameters);
+            var dx = Assert.Throws<DependencyResolutionException>(() =>
+                target.ActivateInstance(new Container(), Factory.NoParameters));
+
+            Assert.That(dx.Message.Contains("Public binding flags"));
         }
 
         public class WithGenericCtor<T>

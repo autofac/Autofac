@@ -91,6 +91,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DelegateActivatorResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Core\Activators\Reflection\BindingFlagsConstructorFinderResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BindingFlagsConstructorFinderResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Core\Activators\Reflection\ConstructorParameterBindingResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -290,6 +295,10 @@
     <EmbeddedResource Include="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ProvidedInstanceActivatorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Activators\Reflection\BindingFlagsConstructorFinderResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BindingFlagsConstructorFinderResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Core\Activators\Reflection\ConstructorParameterBindingResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

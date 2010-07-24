@@ -59,5 +59,17 @@ namespace Autofac.Core.Activators.Reflection
                                 null,
                                 null).Cast<ConstructorInfo>();
         }
+
+        /// <summary>
+        /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </returns>
+        /// <filterpriority>2</filterpriority>
+        public override string ToString()
+        {
+            return string.Format(BindingFlagsConstructorFinderResources.HasBindingFlags, _bindingFlags);
+        }
     }
 }

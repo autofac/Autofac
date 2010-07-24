@@ -61,7 +61,7 @@ namespace Autofac.Core.Activators.Reflection {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No constructors matching the constructor-finding policy can be found on target type &apos;{0}&apos;..
+        ///   Looks up a localized string similar to No constructors on type &apos;{0}&apos; can be found with &apos;{1}&apos;..
         /// </summary>
         internal static string NoConstructorsAvailable {
             get {
@@ -70,7 +70,7 @@ namespace Autofac.Core.Activators.Reflection {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to None of the constructors found with policy &apos;{0}&apos; on type &apos;{1}&apos; can be invoked with the available services and parameters:{2}.
+        ///   Looks up a localized string similar to None of the constructors found with &apos;{0}&apos; on type &apos;{1}&apos; can be invoked with the available services and parameters:{2}.
         /// </summary>
         internal static string NoConstructorsBindable {
             get {

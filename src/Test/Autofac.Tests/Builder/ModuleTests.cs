@@ -9,7 +9,7 @@ using Autofac.Core.Registration;
 namespace Autofac.Tests.Builder
 {
     [TestFixture]
-    public class ModuleFixture
+    public class ModuleTests
     {
         class ObjectModule : Module
         {

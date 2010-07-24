@@ -91,12 +91,11 @@
   <ItemGroup>
     <Compile Include="Assertions.cs" />
     <Compile Include="Builder\PropertyInjectionTests.cs" />
-    <Compile Include="Builder\AutomaticRegistrationBuilderFixture.cs" />
     <Compile Include="Builder\CollectionRegistrationBuilderTests.cs" />
     <Compile Include="Builder\RegistrationBuilderTests.cs" />
     <Compile Include="ContainerBuilderTests.cs" />
-    <Compile Include="Builder\DelegateRegistrationBuilderFixture.cs" />
-    <Compile Include="Builder\ModuleFixture.cs" />
+    <Compile Include="Builder\DelegateRegistrationBuilderTests.cs" />
+    <Compile Include="Builder\ModuleTests.cs" />
     <Compile Include="Builder\ProvidedInstanceRegistrationBuilderTests.cs" />
     <Compile Include="Builder\ReflectiveRegistrationBuilderTests.cs" />
     <Compile Include="ComponentRegisteredEventArgsTests.cs" />

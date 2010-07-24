@@ -124,6 +124,6 @@
     <value>An exception was thrown while invoking the constructor '{0}' on type '{1}'.</value>
   </data>
   <data name="NonBindableConstructor" xml:space="preserve">
-    <value>Constructor '{0}' parameter resolution failed at parameter '{1}'.</value>
+    <value>Cannot resolve parameter '{1}' of constructor '{0}'.</value>
   </data>
 </root>

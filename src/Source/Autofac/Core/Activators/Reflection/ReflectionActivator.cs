@@ -100,7 +100,7 @@ namespace Autofac.Core.Activators.Reflection
             var availableConstructors = _constructorFinder.FindConstructors(_implementationType);
 
             if (!availableConstructors.Any())
-                throw new DependencyResolutionException(string.Format(ReflectionActivatorResources.NoConstructorsAvailable, _implementationType));
+                throw new DependencyResolutionException(string.Format(ReflectionActivatorResources.NoConstructorsAvailable, _implementationType, _constructorFinder));
 
             var constructorBindings = GetConstructorBindings(
                 context,

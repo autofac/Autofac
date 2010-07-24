@@ -6,7 +6,7 @@ using Autofac.Core;
 namespace Autofac.Tests.Builder
 {
     [TestFixture]
-    public class DelegateRegistrationBuilderFixture
+    public class DelegateRegistrationBuilderTests
     {
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
