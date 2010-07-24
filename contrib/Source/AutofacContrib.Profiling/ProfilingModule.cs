@@ -22,6 +22,7 @@ namespace AutofacContrib.Profiling
             if (standardRegistration == null)
                 return;
 
+            _profile.AddComponent(registration);
             standardRegistration.Activator = new ProfilingActivator(
                 registration,
                 standardRegistration.Activator,

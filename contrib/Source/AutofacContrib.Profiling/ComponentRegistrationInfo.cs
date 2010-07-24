@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Autofac.Core;
 
 namespace AutofacContrib.Profiling
@@ -35,9 +36,21 @@ namespace AutofacContrib.Profiling
             _dependencies.Add(dependentComponentId);
         }
 
-        public IEnumerable<Guid> Dependencies
+        /// <summary>
+        /// Get the dependencies of the component, if they are known.
+        /// </summary>
+        /// <param name="dependencies"></param>
+        /// <returns></returns>
+        public bool TryGetDependencies(out IEnumerable<Guid> dependencies)
         {
-            get { return _dependencies; }
+            if (ActivationCount == 0)
+            {
+                dependencies = null;
+                return false;
+            }
+
+            dependencies = _dependencies.ToArray();
+            return true;
         }
     }
 }

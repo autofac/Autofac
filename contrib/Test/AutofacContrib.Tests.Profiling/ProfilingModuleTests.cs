@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
@@ -45,7 +47,9 @@ namespace AutofacContrib.Tests.Profiling
 
             var info = profile.GetComponent(registrationFrom.Id);
 
-            CollectionAssert.AreEquivalent(new[] { registrationTo.Id }, info.Dependencies);
+            IEnumerable<Guid> dependencies;
+            Assert.IsTrue(info.TryGetDependencies(out dependencies));
+            CollectionAssert.AreEquivalent(new[] { registrationTo.Id }, dependencies);
         }
 
         [Test]
@@ -67,7 +71,9 @@ namespace AutofacContrib.Tests.Profiling
 
             var info = profile.GetComponent(registrationFrom.Id);
 
-            CollectionAssert.AreEquivalent(new[] { registrationTo.Id }, info.Dependencies);
+            IEnumerable<Guid> dependencies;
+            Assert.IsTrue(info.TryGetDependencies(out dependencies));
+            CollectionAssert.AreEquivalent(new[] { registrationTo.Id }, dependencies);
         }
     }
 }

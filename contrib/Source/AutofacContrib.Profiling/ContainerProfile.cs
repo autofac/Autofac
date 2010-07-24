@@ -15,20 +15,9 @@ namespace AutofacContrib.Profiling
         {
             lock (_synchRoot)
             {
-                ComponentRegistrationInfo componentInfo = GetComponentInfo(component);
+                var componentInfo = GetComponent(component.Id);
                 componentInfo.RecordActivation();
             }
-        }
-
-        ComponentRegistrationInfo GetComponentInfo(IComponentRegistration component)
-        {
-            ComponentRegistrationInfo componentInfo;
-            if (!_componentRegistrationInfo.TryGetValue(component.Id, out componentInfo))
-            {
-                componentInfo = new ComponentRegistrationInfo(component);
-                _componentRegistrationInfo.Add(component.Id, componentInfo);
-            }
-            return componentInfo;
         }
 
         public ComponentRegistrationInfo GetComponent(Guid id)
@@ -41,6 +30,8 @@ namespace AutofacContrib.Profiling
         {
             get
             {
+                // Really should deep copy here to avoid concurrency issues,
+                // however it is no big deal under the debugger.
                 lock (_synchRoot)
                     return _componentRegistrationInfo.Select(cri => cri.Value).ToArray();
             }
@@ -48,7 +39,14 @@ namespace AutofacContrib.Profiling
 
         public void RecordDependency(IComponentRegistration from, IComponentRegistration to)
         {
-            GetComponentInfo(from).RecordDependency(to.Id);
+            lock (_synchRoot)
+                GetComponent(from.Id).RecordDependency(to.Id);
+        }
+
+        public void AddComponent(IComponentRegistration registration)
+        {
+            lock (_synchRoot)
+                _componentRegistrationInfo.Add(registration.Id, new ComponentRegistrationInfo(registration));
         }
     }
 }
