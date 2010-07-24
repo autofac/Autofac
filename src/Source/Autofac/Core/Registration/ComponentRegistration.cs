@@ -111,7 +111,7 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// The activator used to create instances.
         /// </summary>
-        public IInstanceActivator Activator { get; private set; }
+        public IInstanceActivator Activator { get; set; }
 
         /// <summary>
         /// The lifetime associated with the component.
