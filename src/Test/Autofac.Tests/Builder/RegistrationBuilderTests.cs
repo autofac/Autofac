@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Autofac.Builder;
 using Autofac.Core;
 using NUnit.Framework;
@@ -21,11 +19,9 @@ namespace Autofac.Tests.Builder
         public void WhenPropetyFromStronglyTypedInterfaceConfigured_ReflectedInComponentRegistration()
         {
             var builder = RegistrationBuilder.ForType<object>();
-            builder.WithMetadata<IProperties>(ep =>
-            {
-                ep.For(p => p.A, 42);
-                ep.For(p => p.B, "hello");
-            });
+            builder.WithMetadata<IProperties>(ep => ep
+                .For(p => p.A, 42)
+                .For(p => p.B, "hello"));
             
             var reg = builder.CreateRegistration();
             Assert.AreEqual(42, reg.Metadata["A"]);
