@@ -70,6 +70,15 @@ namespace Autofac.Core.Activators.Reflection {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An exception was thrown while invoking the constructor &apos;{0}&apos; on type &apos;{1}&apos;..
+        /// </summary>
+        internal static string ExceptionDuringInstantiation {
+            get {
+                return ResourceManager.GetString("ExceptionDuringInstantiation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Constructor &apos;{0}&apos; parameter resolution failed at parameter &apos;{1}&apos;..
         /// </summary>
         internal static string NonBindableConstructor {

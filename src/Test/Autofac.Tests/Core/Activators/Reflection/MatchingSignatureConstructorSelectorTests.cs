@@ -4,19 +4,21 @@ using System.Linq;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core;
 
-namespace Autofac.Tests.Component.Activation
+namespace Autofac.Tests.Core.Activators.Reflection
 {
     [TestFixture]
     public class MatchingSignatureConstructorSelectorTests
     {
         class ThreeConstructors
         {
+            // ReSharper disable UnusedMember.Local, UnusedParameter.Local
             public ThreeConstructors() { }
             public ThreeConstructors(int i) { }
             public ThreeConstructors(int i, string s) { }
+            // ReSharper restore UnusedMember.Local, UnusedParameter.Local
         }
 
-        IEnumerable<ConstructorParameterBinding> _ctors = typeof(ThreeConstructors)
+        readonly IEnumerable<ConstructorParameterBinding> _ctors = typeof(ThreeConstructors)
             .GetConstructors()
             .Select(ci => new ConstructorParameterBinding(ci, Enumerable.Empty<Parameter>(), Container.Empty));
 
@@ -40,11 +42,15 @@ namespace Autofac.Tests.Component.Activation
         }
 
         [Test]
-        [ExpectedException(typeof(DependencyResolutionException))]
-        public void ThrowsWhenNotAvailable()
+        public void WhenNoMatchingConstructorsAvailable_ExceptionDescribesTargetTypeAndSignature()
         {
             var target = new MatchingSignatureConstructorSelector(typeof(string));
-            target.SelectConstructorBinding(_ctors);
+
+            var dx = Assert.Throws<DependencyResolutionException>(() =>
+                target.SelectConstructorBinding(_ctors));
+
+            Assert.That(dx.Message.Contains(typeof(ThreeConstructors).Name));
+            Assert.That(dx.Message.Contains(typeof(string).Name));
         }
     }
 }

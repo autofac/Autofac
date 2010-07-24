@@ -82,10 +82,18 @@ namespace Autofac.Core.Activators.Reflection
                 throw new InvalidOperationException();
 
             var values = new object[_valueRetrievers.Length];
-            for (int i = 0; i < _valueRetrievers.Length; ++i)
+            for (var i = 0; i < _valueRetrievers.Length; ++i)
                 values[i] = _valueRetrievers[i].Invoke();
 
-            return TargetConstructor.Invoke(values);
+            try
+            {
+                return TargetConstructor.Invoke(values);
+            }
+            catch (TargetInvocationException tie)
+            {
+                throw new DependencyResolutionException(
+                    string.Format(ConstructorParameterBindingResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType.Name), tie.InnerException);
+            }
         }
 
         /// <summary>

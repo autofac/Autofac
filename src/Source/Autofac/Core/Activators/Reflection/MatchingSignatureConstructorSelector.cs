@@ -59,13 +59,19 @@ namespace Autofac.Core.Activators.Reflection
                 .Where(b => b.TargetConstructor.GetParameters().Select(p => p.ParameterType).SequenceEqual(_signature))
                 .ToArray();
 
+            if (result.Length == 1)
+                return result[0];
+
+            if (!constructorBindings.Any())
+                throw new ArgumentException(MatchingSignatureConstructorSelectorResources.AtLeastOneBindingRequired);
+
+            var targetTypeName = constructorBindings.First().TargetConstructor.DeclaringType.Name;
+            var signature = string.Join(", ", _signature.Select(t => t.Name).ToArray());
+
             if (result.Length == 0)
-                throw new DependencyResolutionException(MatchingSignatureConstructorSelectorResources.RequiredConstructorNotAvailable);
+                throw new DependencyResolutionException(string.Format(MatchingSignatureConstructorSelectorResources.RequiredConstructorNotAvailable, targetTypeName, signature));
             
-            if (result.Length != 1)
-                throw new DependencyResolutionException(MatchingSignatureConstructorSelectorResources.TooManyConstructorsMatch);
-            
-            return result[0];
+            throw new DependencyResolutionException(string.Format(MatchingSignatureConstructorSelectorResources.TooManyConstructorsMatch, signature));
         }
     }
 }

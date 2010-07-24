@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Autofac.Core;
 using Autofac.Tests.Scenarios.Dependencies;
-using Autofac.Core.Resolving;
 
 namespace Autofac.Tests.Core.Resolving
 {
@@ -51,7 +46,7 @@ namespace Autofac.Tests.Core.Resolving
             cb.RegisterType<DependsByProp>().PropertiesAutowired(true);
 
             var c = cb.Build();
-            var dbp = c.Resolve<DependsByProp>();
+            c.Resolve<DependsByProp>();
         }
 
         [Test]
@@ -60,12 +55,14 @@ namespace Autofac.Tests.Core.Resolving
         {
             var cb = new ContainerBuilder();
             var ac = 0;
+            // ReSharper disable AccessToModifiedClosure
             cb.RegisterType<DependsByCtor>().OnActivating(e => { ++ac; });
+            // ReSharper restore AccessToModifiedClosure
             cb.RegisterType<DependsByProp>().OnActivating(e => { ++ac; })
                 .PropertiesAutowired(true);
 
             var c = cb.Build();
-            var dbc = c.Resolve<DependsByCtor>();
+            c.Resolve<DependsByCtor>();
 
             Assert.AreEqual(2, ac);
         }
@@ -74,7 +71,7 @@ namespace Autofac.Tests.Core.Resolving
         [Test]
         public void ActivatingArgsSuppliesParameters()
         {
-            var provided = 12;
+            const int provided = 12;
             var passed = 0;
 
             var builder = new ContainerBuilder();
@@ -89,7 +86,7 @@ namespace Autofac.Tests.Core.Resolving
         [Test]
         public void ActivatedArgsSuppliesParameters()
         {
-            var provided = 12;
+            const int provided = 12;
             var passed = 0;
 
             var builder = new ContainerBuilder();

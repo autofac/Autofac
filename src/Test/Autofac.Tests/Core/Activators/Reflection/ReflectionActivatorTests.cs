@@ -1,9 +1,7 @@
 ﻿using System;
-using Autofac.Builder;
 using NUnit.Framework;
 using System.Linq;
 using Moq;
-using System.Reflection;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core;
 using Autofac.Tests.Scenarios.Dependencies;
@@ -93,12 +91,12 @@ namespace Autofac.Tests.Core.Activators.Reflection
         public void ActivateInstance_ResolvesConstructorDependencies()
         {
             var o = new object();
-            var s = "s";
+            const string s = "s";
 
-			var builder = new ContainerBuilder();
-			builder.RegisterInstance(o);
-			builder.RegisterInstance(s);
-			var container = builder.Build();
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(o);
+            builder.RegisterInstance(s);
+            var container = builder.Build();
 
             var target = Factory.CreateReflectionActivator(typeof(Dependent));
             var instance = target.ActivateInstance(container, Factory.NoParameters);
@@ -116,22 +114,18 @@ namespace Autofac.Tests.Core.Activators.Reflection
         public void ActivateInstance_DependenciesNotAvailable_ThrowsException()
         {
             var target = Factory.CreateReflectionActivator(typeof(DependsByCtor));
-            var ex = Assert.Throws<DependencyResolutionException>(delegate
-            {
-                target.ActivateInstance(Factory.EmptyContext, Factory.NoParameters);
-            });
+            var ex = Assert.Throws<DependencyResolutionException>(
+                () => target.ActivateInstance(Factory.EmptyContext, Factory.NoParameters));
 
             // I.e. the type of the missing dependency.
             Assert.That(ex.Message.Contains("DependsByProp"));
         }
 
-        [Test] // TODO, no longer belongs here
+        [Test]
         public void ByDefault_ChoosesConstructorWithMostResolvableParameters()
         {
-            var o = new object();
-
-			var builder = new ContainerBuilder();
-			builder.RegisterType(typeof(object));
+            var builder = new ContainerBuilder();
+            builder.RegisterType(typeof(object));
             var container = builder.Build();
 
             var target = Factory.CreateReflectionActivator(typeof(MultipleConstructors));
@@ -143,7 +137,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
 
         class AcceptsObjectParameter
         {
-            public object P;
+            public readonly object P;
             public AcceptsObjectParameter(object p) { P = p; }
         }
 
@@ -204,14 +198,14 @@ namespace Autofac.Tests.Core.Activators.Reflection
 
         class AcceptsIntParameter
         {
-            public int I;
+            public readonly int I;
             public AcceptsIntParameter(int i) { I = i; }
         }
 
         [Test]
         public void WhenValueTypeParameterSupplied_ItIsPassedToTheComponent()
         {
-            var i = 42;
+            const int i = 42;
             var parameters = new Parameter[] { new NamedParameter("i", i) };
 
             var target = Factory.CreateReflectionActivator(typeof(AcceptsIntParameter), parameters);
@@ -245,13 +239,15 @@ namespace Autofac.Tests.Core.Activators.Reflection
 
         class ThreeConstructors
         {
-            public int CalledConstructorParameterCount;
+            public readonly int CalledConstructorParameterCount;
+            // ReSharper disable UnusedMember.Local, UnusedParameter.Local
             public ThreeConstructors() { CalledConstructorParameterCount = 0; }
             public ThreeConstructors(int i, string s) { CalledConstructorParameterCount = 2; }
             public ThreeConstructors(int i) { CalledConstructorParameterCount = 1; }
+            // ReSharper restore UnusedMember.Local, UnusedParameter.Local
         }
 
-        [Test] // TODO, no longer belongs here
+        [Test]
         public void ByDefault_ChoosesMostParameterisedConstructor()
         {
             var parameters = new Parameter[] {
@@ -273,10 +269,12 @@ namespace Autofac.Tests.Core.Activators.Reflection
 
         class NoPublicConstructor
         {
+            // ReSharper disable EmptyConstructor
             internal NoPublicConstructor() { }
+            // ReSharper restore EmptyConstructor
         }
 
-        [Test] // TODO, no longer belongs here
+        [Test]
         [ExpectedException(typeof(DependencyResolutionException))]
         public void NonPublicConstructorsIgnored()
         {
@@ -286,7 +284,9 @@ namespace Autofac.Tests.Core.Activators.Reflection
 
         public class WithGenericCtor<T>
         {
+            // ReSharper disable UnusedParameter.Local
             public WithGenericCtor(T t)
+            // ReSharper restore UnusedParameter.Local
             {
             }
         }
@@ -302,8 +302,10 @@ namespace Autofac.Tests.Core.Activators.Reflection
 
         class PrivateSetProperty
         {
+            // ReSharper disable UnusedMember.Local
             public int GetProperty { private set; get; }
             public int P { get; set; }
+            // ReSharper restore UnusedMember.Local
         }
 
         [Test]
@@ -315,25 +317,15 @@ namespace Autofac.Tests.Core.Activators.Reflection
             Assert.IsInstanceOf<PrivateSetProperty>(instance);
         }
 
-        class ThrowsExceptionInCtor
-        {
-            public ThrowsExceptionInCtor()
-            {
-                WeThrowThis();
-            }
-
-            static void WeThrowThis()
-            {
-                throw new InvalidOperationException();
-            }
-        }
-
+        // ReSharper disable UnusedAutoPropertyAccessor.Local
         class R { public int P1 { get; set; } public int P2 { get; set; } }
+        // ReSharper restore UnusedAutoPropertyAccessor.Local
 
         [Test]
         public void SetsMultipleConfiguredProperties()
         {
-            int p1 = 1, p2 = 2;
+            const int p1 = 1;
+            const int p2 = 2;
             var properties = new [] {
                 new NamedPropertyParameter("P1", p1),
                 new NamedPropertyParameter("P2", p2)
@@ -344,5 +336,5 @@ namespace Autofac.Tests.Core.Activators.Reflection
             Assert.AreEqual(2, instance.P2);
         }
 
-	}
+    }
 }

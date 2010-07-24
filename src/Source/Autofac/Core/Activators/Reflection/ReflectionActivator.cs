@@ -100,7 +100,7 @@ namespace Autofac.Core.Activators.Reflection
             var availableConstructors = _constructorFinder.FindConstructors(_implementationType);
 
             if (!availableConstructors.Any())
-                throw new DependencyResolutionException(ReflectionActivatorResources.NoConstructorsAvailable);
+                throw new DependencyResolutionException(string.Format(ReflectionActivatorResources.NoConstructorsAvailable, _implementationType));
 
             var constructorBindings = GetConstructorBindings(
                 context,
@@ -157,26 +157,26 @@ namespace Autofac.Core.Activators.Reflection
 
         void InjectProperties(object instance, IComponentContext context)
         {
-            if (_configuredProperties.Any())
-            {
-                var actualProps = instance
-                    .GetType()
-                    .GetProperties(BindingFlags.Public | BindingFlags.SetProperty | BindingFlags.Instance)
-                    .ToList();
+            if (!_configuredProperties.Any())
+                return;
 
-                foreach (var prop in _configuredProperties)
+            var actualProps = instance
+                .GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.SetProperty | BindingFlags.Instance)
+                .ToList();
+
+            foreach (var prop in _configuredProperties)
+            {
+                foreach (var actual in actualProps)
                 {
-                    foreach (var actual in actualProps)
+                    var setter = actual.GetSetMethod();
+                    Func<object> vp;
+                    if (setter != null &&
+                        prop.CanSupplyValue(setter.GetParameters().First(), context, out vp))
                     {
-                        var setter = actual.GetSetMethod();
-                        Func<object> vp;
-                        if (setter != null &&
-                            prop.CanSupplyValue(setter.GetParameters().First(), context, out vp))
-                        {
-                            actualProps.Remove(actual);
-                            actual.SetValue(instance, vp(), null);
-                            break;
-                        }
+                        actualProps.Remove(actual);
+                        actual.SetValue(instance, vp(), null);
+                        break;
                     }
                 }
             }

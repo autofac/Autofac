@@ -100,6 +100,7 @@
     <Compile Include="Builder\ProvidedInstanceRegistrationBuilderTests.cs" />
     <Compile Include="Builder\ReflectiveRegistrationBuilderTests.cs" />
     <Compile Include="ComponentRegisteredEventArgsTests.cs" />
+    <Compile Include="Core\Activators\Reflection\ConstructorParameterBindingTests.cs" />
     <Compile Include="Core\ComponentRegistrationTests.cs" />
     <Compile Include="Core\KeyedServiceTests.cs" />
     <Compile Include="Core\Lifetime\LifetimeScopeTests.cs" />

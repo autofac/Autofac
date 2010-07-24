@@ -61,7 +61,16 @@ namespace Autofac.Core.Activators.Reflection {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The required constructor is unavailable..
+        ///   Looks up a localized string similar to At least one binding must be provided in order to select a constructor..
+        /// </summary>
+        internal static string AtLeastOneBindingRequired {
+            get {
+                return ResourceManager.GetString("AtLeastOneBindingRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The required constructor on type &apos;{0}&apos;  with signature &apos;{1}&apos; is unavailable..
         /// </summary>
         internal static string RequiredConstructorNotAvailable {
             get {
@@ -70,7 +79,7 @@ namespace Autofac.Core.Activators.Reflection {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More than one constructor matches the selection policy..
+        ///   Looks up a localized string similar to More than one constructor matches the signature &apos;{0}&apos;..
         /// </summary>
         internal static string TooManyConstructorsMatch {
             get {
