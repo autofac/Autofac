@@ -49,7 +49,7 @@ namespace AutofacContrib.Tests.Profiling
 
             IEnumerable<Guid> dependencies;
             Assert.IsTrue(info.TryGetDependencies(out dependencies));
-            CollectionAssert.AreEquivalent(new[] { registrationTo.Id }, dependencies);
+            Assert.AreEqual(registrationTo.Id, dependencies.Single());
         }
 
         [Test]
@@ -73,7 +73,7 @@ namespace AutofacContrib.Tests.Profiling
 
             IEnumerable<Guid> dependencies;
             Assert.IsTrue(info.TryGetDependencies(out dependencies));
-            CollectionAssert.AreEquivalent(new[] { registrationTo.Id }, dependencies);
+            Assert.AreEqual(registrationTo.Id, dependencies.Single());
         }
     }
 }
