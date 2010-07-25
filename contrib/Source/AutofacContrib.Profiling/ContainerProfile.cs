@@ -5,7 +5,7 @@ using Autofac.Core;
 
 namespace AutofacContrib.Profiling
 {
-    class ContainerProfile : IContainerProfile
+    public class ContainerProfile : IContainerProfile
     {
         readonly object _synchRoot = new object();
         readonly IDictionary<Guid, ComponentRegistrationInfo> _componentRegistrationInfo =

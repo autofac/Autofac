@@ -5,7 +5,7 @@ using Autofac.Core;
 
 namespace AutofacContrib.Profiling
 {
-    class ProfilingActivator : IInstanceActivator
+    public class ProfilingActivator : IInstanceActivator
     {
         readonly IComponentRegistration _registration;
         readonly IInstanceActivator _innerActivator;
