@@ -3,7 +3,6 @@ using Autofac;
 using AutofacContrib.AggregateService;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace AutofacContrib.Tests.AggregateService
 {
@@ -16,7 +15,7 @@ namespace AutofacContrib.Tests.AggregateService
             var builder = new ContainerBuilder();
             builder.RegisterAggregateService<IMyContext>();
             var container = builder.Build();
-            
+
             Assert.That(container.IsRegistered<IMyContext>());
         }
 
@@ -26,7 +25,7 @@ namespace AutofacContrib.Tests.AggregateService
             var builder = new ContainerBuilder();
             builder.RegisterAggregateService(typeof(IMyContext));
             var container = builder.Build();
-            
+
             Assert.That(container.IsRegistered<IMyContext>());
         }
 

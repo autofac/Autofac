@@ -3,7 +3,6 @@ using Autofac;
 using AutofacContrib.AggregateService;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace AutofacContrib.Tests.AggregateService
 {
@@ -33,8 +32,8 @@ namespace AutofacContrib.Tests.AggregateService
         [Test]
         public void Property_ResolvesService()
         {
-            Assert.That(_aggregateService.MyService, 
-                Is.Not.Null & Is.InstanceOfType(typeof(IMyService)));
+            Assert.That(_aggregateService.MyService,
+                Is.Not.Null & Is.InstanceOf<IMyService>());
         }
 
         [Test]
@@ -61,8 +60,8 @@ namespace AutofacContrib.Tests.AggregateService
         [Test]
         public void Method_ResolvesService()
         {
-            Assert.That(_aggregateService.GetMyService(), 
-                Is.Not.Null & Is.InstanceOfType(typeof(IMyService)));
+            Assert.That(_aggregateService.GetMyService(),
+                Is.Not.Null & Is.InstanceOf<IMyService>());
         }
 
         [Test]

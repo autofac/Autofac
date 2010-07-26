@@ -16,7 +16,7 @@ namespace AutofacContrib.Tests.DomainServices
             var factory = new AutofacDomainServiceFactory(builder.Build());
             var service = factory.CreateDomainService(typeof(FakeDomainService), null);
 
-            Assert.IsInstanceOfType(typeof(FakeDomainService), service);
+            Assert.IsInstanceOf<FakeDomainService>(service);
         }
 
         [Test]

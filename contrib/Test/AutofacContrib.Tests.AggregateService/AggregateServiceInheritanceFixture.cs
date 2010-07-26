@@ -2,7 +2,6 @@ using Autofac;
 using AutofacContrib.AggregateService;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace AutofacContrib.Tests.AggregateService
 {

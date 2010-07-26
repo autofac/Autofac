@@ -3,7 +3,6 @@ using Autofac;
 using AutofacContrib.AggregateService;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 
 namespace AutofacContrib.Tests.AggregateService
 {
@@ -25,7 +24,7 @@ namespace AutofacContrib.Tests.AggregateService
         {
             var instance = AggregateServiceGenerator.CreateInstance<IMyContext>(_container);
 
-            Assert.That(instance, Is.InstanceOfType(typeof(IMyContext)));
+            Assert.That(instance, Is.InstanceOf<IMyContext>());
         }
 
         [Test]
@@ -33,7 +32,7 @@ namespace AutofacContrib.Tests.AggregateService
         {
             var instance = AggregateServiceGenerator.CreateInstance(typeof(IMyContext), _container);
 
-            Assert.That(instance, Is.InstanceOfType(typeof(IMyContext)));
+            Assert.That(instance, Is.InstanceOf<IMyContext>());
         }
 
         [Test, ExpectedException(typeof(ArgumentNullException))]

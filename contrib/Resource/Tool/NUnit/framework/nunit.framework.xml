@@ -136,6 +136,11 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:NUnit.Framework.Constraints.Constraint.GetStringRepresentation">
+            <summary>
+            Returns the string representation of this constraint
+            </summary>
+        </member>
         <member name="M:NUnit.Framework.Constraints.Constraint.op_BitwiseAnd(NUnit.Framework.Constraints.Constraint,NUnit.Framework.Constraints.Constraint)">
             <summary>
             This operator creates a constraint that is satisfied only if both 
@@ -390,36 +395,6 @@
             Flag the constraint to ignore case and return self.
             </summary>
         </member>
-        <member name="T:NUnit.Framework.Constraints.CollectionItemsEqualConstraint.CollectionTally">
-            <summary>
-            CollectionTally counts (tallies) the number of
-            occurences of each object in one or more enumerations.
-            </summary>
-        </member>
-        <member name="M:NUnit.Framework.Constraints.CollectionItemsEqualConstraint.CollectionTally.#ctor(NUnit.Framework.Constraints.NUnitEqualityComparer,System.Collections.IEnumerable)">
-            <summary>
-            Construct a CollectionTally object from a comparer and a collection
-            </summary>
-        </member>
-        <member name="M:NUnit.Framework.Constraints.CollectionItemsEqualConstraint.CollectionTally.TryRemove(System.Object)">
-            <summary>
-            Try to remove an object from the tally
-            </summary>
-            <param name="o">The object to remove</param>
-            <returns>True if successful, false if the object was not found</returns>
-        </member>
-        <member name="M:NUnit.Framework.Constraints.CollectionItemsEqualConstraint.CollectionTally.TryRemove(System.Collections.IEnumerable)">
-            <summary>
-            Try to remove a set of objects from the tally
-            </summary>
-            <param name="c">The objects to remove</param>
-            <returns>True if successful, false if any object was not found</returns>
-        </member>
-        <member name="P:NUnit.Framework.Constraints.CollectionItemsEqualConstraint.CollectionTally.Count">
-            <summary>
-            The number of objects remaining in the tally
-            </summary>
-        </member>
         <member name="T:NUnit.Framework.Constraints.EmptyCollectionConstraint">
             <summary>
             EmptyCollectionConstraint tests whether a collection is empty. 
@@ -577,7 +552,7 @@
             </summary>
             <param name="writer"></param>
         </member>
-        <member name="M:NUnit.Framework.Constraints.CollectionOrderedConstraint.ToString">
+        <member name="M:NUnit.Framework.Constraints.CollectionOrderedConstraint.GetStringRepresentation">
             <summary>
             Returns the string representation of the constraint.
             </summary>
@@ -1459,7 +1434,7 @@
             </summary>
             <param name="writer">The writer on which the actual value is displayed</param>
         </member>
-        <member name="M:NUnit.Framework.Constraints.PropertyExistsConstraint.ToString">
+        <member name="M:NUnit.Framework.Constraints.PropertyExistsConstraint.GetStringRepresentation">
             <summary>
             Returns the string representation of the constraint.
             </summary>
@@ -1516,7 +1491,7 @@
             </summary>
             <param name="writer">The writer on which the actual value is displayed</param>
         </member>
-        <member name="M:NUnit.Framework.Constraints.PropertyConstraint.ToString">
+        <member name="M:NUnit.Framework.Constraints.PropertyConstraint.GetStringRepresentation">
             <summary>
             Returns the string representation of the constraint.
             </summary>
@@ -1894,7 +1869,7 @@
             </summary>
             <param name="expected">The expected path</param>
         </member>
-        <member name="M:NUnit.Framework.Constraints.PathConstraint.ToString">
+        <member name="M:NUnit.Framework.Constraints.PathConstraint.GetStringRepresentation">
             <summary>
             Returns the string representation of this constraint
             </summary>
@@ -2101,7 +2076,7 @@
             </summary>
             <param name="writer">The writer on which the actual value is displayed</param>
         </member>
-        <member name="M:NUnit.Framework.Constraints.ThrowsConstraint.ToString">
+        <member name="M:NUnit.Framework.Constraints.ThrowsConstraint.GetStringRepresentation">
             <summary>
             Returns the string representation of this constraint
             </summary>
@@ -3280,7 +3255,7 @@
             </summary>
             <param name="writer">The writer on which the actual value is displayed</param>
         </member>
-        <member name="M:NUnit.Framework.Constraints.BinarySerializableConstraint.ToString">
+        <member name="M:NUnit.Framework.Constraints.BinarySerializableConstraint.GetStringRepresentation">
             <summary>
             Returns the string representation
             </summary>
@@ -3313,7 +3288,7 @@
             </summary>
             <param name="writer">The writer on which the actual value is displayed</param>
         </member>
-        <member name="M:NUnit.Framework.Constraints.XmlSerializableConstraint.ToString">
+        <member name="M:NUnit.Framework.Constraints.XmlSerializableConstraint.GetStringRepresentation">
             <summary>
             Returns the string representation of this constraint
             </summary>
@@ -3448,7 +3423,7 @@
             Writes the actual value supplied to the specified writer.
             </summary>
         </member>
-        <member name="M:NUnit.Framework.Constraints.AttributeConstraint.ToString">
+        <member name="M:NUnit.Framework.Constraints.AttributeConstraint.GetStringRepresentation">
             <summary>
             Returns a string representation of the constraint.
             </summary>
@@ -3549,7 +3524,7 @@
             </summary>
             <param name="writer">The writer on which the actual value is displayed</param>
         </member>
-        <member name="M:NUnit.Framework.Constraints.DelayedConstraint.ToString">
+        <member name="M:NUnit.Framework.Constraints.DelayedConstraint.GetStringRepresentation">
             <summary>
             Returns the string representation of the constraint.
             </summary>
@@ -4055,6 +4030,36 @@
         <member name="M:NUnit.Framework.Constraints.PredicateConstraint`1.WriteDescriptionTo(NUnit.Framework.Constraints.MessageWriter)">
             <summary>
             Writes the description to a MessageWriter
+            </summary>
+        </member>
+        <member name="T:NUnit.Framework.Constraints.CollectionTally">
+            <summary>
+            CollectionTally counts (tallies) the number of
+            occurences of each object in one or more enumerations.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Constraints.CollectionTally.#ctor(NUnit.Framework.Constraints.NUnitEqualityComparer,System.Collections.IEnumerable)">
+            <summary>
+            Construct a CollectionTally object from a comparer and a collection
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Constraints.CollectionTally.TryRemove(System.Object)">
+            <summary>
+            Try to remove an object from the tally
+            </summary>
+            <param name="o">The object to remove</param>
+            <returns>True if successful, false if the object was not found</returns>
+        </member>
+        <member name="M:NUnit.Framework.Constraints.CollectionTally.TryRemove(System.Collections.IEnumerable)">
+            <summary>
+            Try to remove a set of objects from the tally
+            </summary>
+            <param name="c">The objects to remove</param>
+            <returns>True if successful, false if any object was not found</returns>
+        </member>
+        <member name="P:NUnit.Framework.Constraints.CollectionTally.Count">
+            <summary>
+            The number of objects remaining in the tally
             </summary>
         </member>
         <member name="T:NUnit.Framework.SetUpFixtureAttribute">
@@ -6200,33 +6205,6 @@
             guaranteed to be called, even if an exception is thrown.
             </summary>
         </member>
-        <member name="T:NUnit.Framework.CategoryAttribute">
-            <summary>
-            Attribute used to apply a category to a test
-            </summary>
-        </member>
-        <member name="F:NUnit.Framework.CategoryAttribute.categoryName">
-            <summary>
-            The name of the category
-            </summary>
-        </member>
-        <member name="M:NUnit.Framework.CategoryAttribute.#ctor(System.String)">
-            <summary>
-            Construct attribute for a given category
-            </summary>
-            <param name="name">The name of the category</param>
-        </member>
-        <member name="M:NUnit.Framework.CategoryAttribute.#ctor">
-            <summary>
-            Protected constructor uses the Type name as the name
-            of the category.
-            </summary>
-        </member>
-        <member name="P:NUnit.Framework.CategoryAttribute.Name">
-            <summary>
-            The name of the category
-            </summary>
-        </member>
         <member name="T:NUnit.Framework.ExplicitAttribute">
             <summary>
             ExplicitAttribute marks a test or test fixture so that it will
@@ -6565,6 +6543,9 @@
             <summary>
             The collection of data to be returned. Must
             be set by any derived attribute classes.
+            We use an object[] so that the individual
+            elements may have their type changed in GetData
+            if necessary.
             </summary>
         </member>
         <member name="M:NUnit.Framework.ValuesAttribute.#ctor(System.Object)">
@@ -10108,6 +10089,40 @@
             </summary>
             <param name="item">The item that should be found.</param>
             <returns>A new CollectionContainsConstraint</returns>
+        </member>
+        <member name="T:NUnit.Framework.CategoryAttribute">
+            <summary>
+            Attribute used to apply a category to a test
+            </summary>
+        </member>
+        <member name="F:NUnit.Framework.CategoryAttribute.categoryName">
+            <summary>
+            The name of the category
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.CategoryAttribute.#ctor(System.String)">
+            <summary>
+            Construct attribute for a given category based on
+            a name. The name may not contain the characters ',',
+            '+', '-' or '!'. However, this is not checked in the
+            constructor since it would cause an error to arise at
+            as the test was loaded without giving a clear indication
+            of where the problem is located. The error is handled
+            in NUnitFramework.cs by marking the test as not
+            runnable.
+            </summary>
+            <param name="name">The name of the category</param>
+        </member>
+        <member name="M:NUnit.Framework.CategoryAttribute.#ctor">
+            <summary>
+            Protected constructor uses the Type name as the name
+            of the category.
+            </summary>
+        </member>
+        <member name="P:NUnit.Framework.CategoryAttribute.Name">
+            <summary>
+            The name of the category
+            </summary>
         </member>
     </members>
 </doc>
