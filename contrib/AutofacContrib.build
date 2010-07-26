@@ -37,9 +37,9 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="$(BuildFramework)==''">
-        <BuildFramework>NET35</BuildFramework>
-        <BuildConstants>NET35</BuildConstants>
-        <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <BuildFramework>NET40</BuildFramework>
+    <BuildConstants>NET40</BuildConstants>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     </PropertyGroup>
 
     <!-- 
