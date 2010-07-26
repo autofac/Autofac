@@ -44,7 +44,7 @@
 	</Target>
 
 	<Target Name="Update">
-		<CreateItem Include="src\Build\Library\Autofac.*" Exclude="src\Build\Library\Autofac.Integration*">
+		<CreateItem Include="src\Build\Library\Autofac.*">
 			<Output ItemName="coreFiles" TaskParameter="Include" />
 		</CreateItem>
 		<Copy SourceFiles="@(coreFiles)" DestinationFolder="$(ContribResources)" />
