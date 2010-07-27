@@ -4,6 +4,75 @@
         <name>Autofac</name>
     </assembly>
     <members>
+        <member name="T:Autofac.Features.LazyDependencies.LazyRegistrationSource">
+            <summary>
+            Support the <see cref="T:System.Lazy`1"/> 
+            type automatically whenever type T is registered with the container.
+            When a dependency of a lazy type is used, the instantiation of the underlying
+            component will be delayed until the Value property is first accessed.
+            </summary>
+        </member>
+        <member name="T:Autofac.Core.IRegistrationSource">
+            <summary>
+            Allows registrations to be made on-the-fly when unregistered
+            services are requested (lazy registrations.)
+            </summary>
+        </member>
+        <member name="M:Autofac.Core.IRegistrationSource.RegistrationsFor(Autofac.Core.Service,System.Func{Autofac.Core.Service,System.Collections.Generic.IEnumerable{Autofac.Core.IComponentRegistration}})">
+            <summary>
+            Retrieve registrations for an unregistered service, to be used
+            by the container.
+            </summary>
+            <param name="service">The service that was requested.</param>
+            <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
+            <returns>Registrations providing the service.</returns>
+        </member>
+        <member name="P:Autofac.Core.IRegistrationSource.IsAdapterForIndividualComponents">
+            <summary>
+            Gets whether the registrations provided by this source are 1:1 adapters on top
+            of other components (I.e. like Meta, Func or Owned.)
+            </summary>
+        </member>
+        <member name="T:Autofac.Features.LazyDependencies.LazyWithMetadataRegistrationSource">
+            <summary>
+            Support the <see cref="T:System.Lazy`2"/>
+            types automatically whenever type T is registered with the container.
+            Metadata values come from the component registration's metadata.
+            When a dependency of a lazy type is used, the instantiation of the underlying
+            component will be delayed until the Value property is first accessed.
+            </summary>
+        </member>
+        <member name="T:Autofac.Features.Metadata.Meta`2">
+            <summary>
+            Provides a value along with metadata describing the value.
+            </summary>
+            <typeparam name="T">The type of the value.</typeparam>
+            <typeparam name="TMetadata">An interface to which metadata values can be bound.</typeparam>
+        </member>
+        <member name="M:Autofac.Features.Metadata.Meta`2.#ctor(`0,`1)">
+            <summary>
+            Create a new instance.
+            </summary>
+            <param name="value">The value described by the instance.</param>
+            <param name="metadata">The metadata describing the value.</param>
+        </member>
+        <member name="P:Autofac.Features.Metadata.Meta`2.Value">
+            <summary>
+            The value described by <see cref="P:Autofac.Features.Metadata.Meta`2.Metadata"/>.
+            </summary>
+        </member>
+        <member name="P:Autofac.Features.Metadata.Meta`2.Metadata">
+            <summary>
+            Metadata describing the value.
+            </summary>
+        </member>
+        <member name="T:Autofac.Features.Metadata.StronglyTypedMetaRegistrationSource">
+            <summary>
+            Support the <see cref="T:Autofac.Features.Metadata.Meta`2"/>
+            types automatically whenever type T is registered with the container.
+            Metadata values come from the component registration's metadata.
+            </summary>
+        </member>
         <member name="T:Autofac.Builder.ConcreteReflectionActivatorData">
             <summary>
             Reflection activator data for concrete types.
@@ -960,27 +1029,6 @@
             Pulls registrations from another component registry.
             Excludes most auto-generated registrations - currently has issues with
             collection registrations.
-            </summary>
-        </member>
-        <member name="T:Autofac.Core.IRegistrationSource">
-            <summary>
-            Allows registrations to be made on-the-fly when unregistered
-            services are requested (lazy registrations.)
-            </summary>
-        </member>
-        <member name="M:Autofac.Core.IRegistrationSource.RegistrationsFor(Autofac.Core.Service,System.Func{Autofac.Core.Service,System.Collections.Generic.IEnumerable{Autofac.Core.IComponentRegistration}})">
-            <summary>
-            Retrieve registrations for an unregistered service, to be used
-            by the container.
-            </summary>
-            <param name="service">The service that was requested.</param>
-            <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
-            <returns>Registrations providing the service.</returns>
-        </member>
-        <member name="P:Autofac.Core.IRegistrationSource.IsAdapterForIndividualComponents">
-            <summary>
-            Gets whether the registrations provided by this source are 1:1 adapters on top
-            of other components (I.e. like Meta, Func or Owned.)
             </summary>
         </member>
         <member name="M:Autofac.Core.Registration.ExternalRegistrySource.#ctor(Autofac.Core.IComponentRegistry)">

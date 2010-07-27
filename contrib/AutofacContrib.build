@@ -1,116 +1,117 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project DefaultTargets="Release" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="Resource\Build\MSBuild.Community.Tasks.targets" />
-    <Import Project="Resource\Build\NCoverExplorer.MSBuildTasks.targets"/>
-    <!-- Main build entry file (extends development builds)-->
-    <PropertyGroup>
-        <!--
+  <Import Project="Resource\Build\MSBuild.Community.Tasks.targets" />
+  <Import Project="Resource\Build\NCoverExplorer.MSBuildTasks.targets"/>
+  <!-- Main build entry file (extends development builds)-->
+  <PropertyGroup>
+    <!--
 			 Primary configuration properties (override them via command line
 			 if needed
 		-->
-        <BuildPath Condition="$(BuildPath)==''">$(MSBuildProjectDirectory)\Build</BuildPath>
-        <Configuration Condition="$(Configuration)==''">Release</Configuration>
-        <ArtifactDirectory Condition="$(ArtifactDirectory)==''">$(BuildPath)\Artifact</ArtifactDirectory>
-        <PackageDirectory Condition="$(PackageDirectory)==''">$(BuildPath)\_Package</PackageDirectory>
-        <Version Condition="$(Version)==''">0.0.0.0</Version>
-        <AllowPartiallyTrustedCallers Condition="$(AllowPartiallyTrustedCallers)==''">true</AllowPartiallyTrustedCallers>
-        <!--
+    <BuildPath Condition="$(BuildPath)==''">$(MSBuildProjectDirectory)\Build</BuildPath>
+    <Configuration Condition="$(Configuration)==''">Release</Configuration>
+    <ArtifactDirectory Condition="$(ArtifactDirectory)==''">$(BuildPath)\Artifact</ArtifactDirectory>
+    <PackageDirectory Condition="$(PackageDirectory)==''">$(BuildPath)\_Package</PackageDirectory>
+    <Version Condition="$(Version)==''">0.0.0.0</Version>
+    <AllowPartiallyTrustedCallers Condition="$(AllowPartiallyTrustedCallers)==''">true</AllowPartiallyTrustedCallers>
+    <!--
 			Derived configuration properties
 				 -->
-        <TestPath>$(BuildPath)\Test</TestPath>
-        <LibraryPath>$(BuildPath)\Library</LibraryPath>
-        <LicensePath>$(BuildPath)\License</LicensePath>
+    <TestPath>$(BuildPath)\Test</TestPath>
+    <LibraryPath>$(BuildPath)\Library</LibraryPath>
+    <LicensePath>$(BuildPath)\License</LicensePath>
 
-        <CslSource>Source\AutofacContrib.CommonServiceLocator\bin\$(Configuration)</CslSource>
-        <DP2Source>Source\AutofacContrib.DynamicProxy2\bin\$(Configuration)</DP2Source>
-        <MoqSource>Source\AutofacContrib.Moq\bin\$(Configuration)</MoqSource>
-        <StartableSource>Source\AutofacContrib.Startable\bin\$(Configuration)</StartableSource>
-        <NMock2Source>Source\AutofacContrib.NMock2\bin\$(Configuration)</NMock2Source>
-        <NHibernateSource>Source\AutofacContrib.NHibernate\bin\$(Configuration)</NHibernateSource>
-        <AggregateServiceSource>Source\AutofacContrib.AggregateService\bin\$(Configuration)</AggregateServiceSource>
-        <DomainServicesSource>Source\AutofacContrib.DomainServices\bin\$(Configuration)</DomainServicesSource>
+    <CslSource>Source\AutofacContrib.CommonServiceLocator\bin\$(Configuration)</CslSource>
+    <DP2Source>Source\AutofacContrib.DynamicProxy2\bin\$(Configuration)</DP2Source>
+    <MoqSource>Source\AutofacContrib.Moq\bin\$(Configuration)</MoqSource>
+    <StartableSource>Source\AutofacContrib.Startable\bin\$(Configuration)</StartableSource>
+    <NMock2Source>Source\AutofacContrib.NMock2\bin\$(Configuration)</NMock2Source>
+    <NHibernateSource>Source\AutofacContrib.NHibernate\bin\$(Configuration)</NHibernateSource>
+    <AggregateServiceSource>Source\AutofacContrib.AggregateService\bin\$(Configuration)</AggregateServiceSource>
+    <DomainServicesSource>Source\AutofacContrib.DomainServices\bin\$(Configuration)</DomainServicesSource>
+    <MultitenantSource>Source\AutofacContrib.Multitenant\bin\$(Configuration)</MultitenantSource>
 
-        <SourceExclusions>**\.svn\**\*.*;**\_svn\**\*.*;**\*.user;**\*.suo;**\*.db;**\bin\**\*.*;**\obj\**\*.*;</SourceExclusions>
+    <SourceExclusions>**\.svn\**\*.*;**\_svn\**\*.*;**\*.user;**\*.suo;**\*.db;**\bin\**\*.*;**\obj\**\*.*;</SourceExclusions>
 
-        <NUnitConsole>"$(MSBuildProjectDirectory)\Resource\Tool\NUnit\nunit-console.exe"</NUnitConsole>
+    <NUnitConsole>"$(MSBuildProjectDirectory)\Resource\Tool\NUnit\nunit-console.exe"</NUnitConsole>
 
-    </PropertyGroup>
+  </PropertyGroup>
 
-    <PropertyGroup Condition="$(BuildFramework)==''">
+  <PropertyGroup Condition="$(BuildFramework)==''">
     <BuildFramework>NET40</BuildFramework>
     <BuildConstants>NET40</BuildConstants>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    </PropertyGroup>
+  </PropertyGroup>
 
-    <!-- 
+  <!-- 
 	 Solution redirects. Every VS project normally knows how to support these targets
 		-->
-    <Target Name="Build">
-        <MSBuild Projects="$(MSBuildProjectName).sln" Targets="Build" Properties="Configuration=$(Configuration);BuildConstants=$(BuildConstants)"/>
-    </Target>
+  <Target Name="Build">
+    <MSBuild Projects="$(MSBuildProjectName).sln" Targets="Build" Properties="Configuration=$(Configuration);BuildConstants=$(BuildConstants)"/>
+  </Target>
 
-    <Target Name="Clean">
-        <MSBuild Projects="$(MSBuildProjectName).sln" Targets="Clean" Properties="Configuration=$(Configuration)"/>
+  <Target Name="Clean">
+    <MSBuild Projects="$(MSBuildProjectName).sln" Targets="Clean" Properties="Configuration=$(Configuration)"/>
 
-        <CreateItem Include="**/Debug/**/*.*;**/Release/**/*.*">
-            <Output ItemName="_binaryFiles" TaskParameter="Include"/>
-        </CreateItem>
-        <Delete Files="@(_binaryFiles)" TreatErrorsAsWarnings="true"/>
-        <RemoveDir Directories="$(BuildPath)" />
-    </Target>
+    <CreateItem Include="**/Debug/**/*.*;**/Release/**/*.*">
+      <Output ItemName="_binaryFiles" TaskParameter="Include"/>
+    </CreateItem>
+    <Delete Files="@(_binaryFiles)" TreatErrorsAsWarnings="true"/>
+    <RemoveDir Directories="$(BuildPath)" />
+  </Target>
 
-    <Target Name="Rebuild" DependsOnTargets="Clean;Build;" />
+  <Target Name="Rebuild" DependsOnTargets="Clean;Build;" />
 
-    <Target Name="Integrate" DependsOnTargets="Clean;Test;Report" />
-    <Target Name="Release" DependsOnTargets="Clean;_Version;Build;Test;Report;Distrib" />
+  <Target Name="Integrate" DependsOnTargets="Clean;Test;Report" />
+  <Target Name="Release" DependsOnTargets="Clean;_Version;Build;Test;Report;Distrib" />
 
-    <Target Name="Report" DependsOnTargets="Clean;Build;Copy">
-        <MakeDir Directories="$(ArtifactDirectory)" />
-        <!--<FxCop ToolPath="Resource/Tool/FxCop" ProjectFile="$(MSBuildProjectName).FxCop" AnalysisReportFileName="$(ArtifactDirectory)/$(MSBuildProjectName).fxcop-result.xml"/>-->
-    </Target>
+  <Target Name="Report" DependsOnTargets="Clean;Build;Copy">
+    <MakeDir Directories="$(ArtifactDirectory)" />
+    <!--<FxCop ToolPath="Resource/Tool/FxCop" ProjectFile="$(MSBuildProjectName).FxCop" AnalysisReportFileName="$(ArtifactDirectory)/$(MSBuildProjectName).fxcop-result.xml"/>-->
+  </Target>
 
-    <!--
+  <!--
 	 Copies built items to the distrib directory
 	 -->
-    <Target Name="Copy" DependsOnTargets="Build">
-        <MakeDir Directories="$(BuildPath);"/>
+  <Target Name="Copy" DependsOnTargets="Build">
+    <MakeDir Directories="$(BuildPath);"/>
 
-        <!--Libraries-->
-        <CreateItem Include="$(CslSource)\*.*;$(DP2Source)\*.*;$(MoqSource)\*.*;$(StartableSource)\*.*;$(NMock2Source)\*.*;$(NHibernateSource)\*.*;$(AggregateServiceSource)\*.*;$(DomainServicesSource)\*.*">
-            <Output ItemName="unmergedFiles" TaskParameter="Include"/>
-        </CreateItem>
-        <Copy SourceFiles="@(unmergedFiles)" DestinationFolder="$(LibraryPath)" />
+    <!--Libraries-->
+    <CreateItem Include="$(CslSource)\*.*;$(DP2Source)\*.*;$(MoqSource)\*.*;$(StartableSource)\*.*;$(NMock2Source)\*.*;$(NHibernateSource)\*.*;$(AggregateServiceSource)\*.*;$(DomainServicesSource)\*.*;$(MultitenantSource)\*.*">
+      <Output ItemName="unmergedFiles" TaskParameter="Include"/>
+    </CreateItem>
+    <Copy SourceFiles="@(unmergedFiles)" DestinationFolder="$(LibraryPath)" />
 
-        <!--All Tests-->
-        <CreateItem Include="Test\**\bin\$(Configuration)\*.*">
-            <Output ItemName="TestFiles" TaskParameter="Include"/>
-        </CreateItem>
-        <Copy SourceFiles="@(TestFiles)" DestinationFolder="$(TestPath)" />
+    <!--All Tests-->
+    <CreateItem Include="Test\**\bin\$(Configuration)\*.*">
+      <Output ItemName="TestFiles" TaskParameter="Include"/>
+    </CreateItem>
+    <Copy SourceFiles="@(TestFiles)" DestinationFolder="$(TestPath)" />
 
-        <!--Licenses-->
-        <CreateItem Include="*License.txt;Resource\Library\*\*License.txt">
-            <Output ItemName="licenseFiles" TaskParameter="Include"/>
-        </CreateItem>
-        <Copy SourceFiles="@(licenseFiles)" DestinationFolder="$(LicensePath)" />
-    </Target>
+    <!--Licenses-->
+    <CreateItem Include="*License.txt;Resource\Library\*\*License.txt">
+      <Output ItemName="licenseFiles" TaskParameter="Include"/>
+    </CreateItem>
+    <Copy SourceFiles="@(licenseFiles)" DestinationFolder="$(LicensePath)" />
+  </Target>
 
-    <Target Name="Config">
-        <Message Text="This sub-solution does not need configuration" />
-    </Target>
+  <Target Name="Config">
+    <Message Text="This sub-solution does not need configuration" />
+  </Target>
 
-    <Target Name="Test" DependsOnTargets="Build;Copy">
-        <MakeDir Directories="$(ArtifactDirectory)" />
+  <Target Name="Test" DependsOnTargets="Build;Copy">
+    <MakeDir Directories="$(ArtifactDirectory)" />
 
-        <!-- Unfortunately NCover doesn't yet support .NET 4.0.
+    <!-- Unfortunately NCover doesn't yet support .NET 4.0.
          When it does this can be removed and the section below it uncommmented. -->
-        <CreateItem Include="$(TestPath)\AutofacContrib.Tests*.dll">
-            <Output ItemName="_testFiles" TaskParameter="Include"/>
-        </CreateItem>
+    <CreateItem Include="$(TestPath)\AutofacContrib.Tests*.dll">
+      <Output ItemName="_testFiles" TaskParameter="Include"/>
+    </CreateItem>
 
-        <Exec Command="$(NUnitConsole) @(_testFiles->'&quot;%(FullPath)&quot;', ' ') /nologo /noshadow"></Exec>
+    <Exec Command="$(NUnitConsole) @(_testFiles->'&quot;%(FullPath)&quot;', ' ') /nologo /noshadow"></Exec>
 
 
-        <!--<CreateItem Include="$(TestPath)\AutofacContrib.Tests*.dll">
+    <!--<CreateItem Include="$(TestPath)\AutofacContrib.Tests*.dll">
 			<Output ItemName="_testFiles" TaskParameter="Include"/>
 		</CreateItem>
 
@@ -118,13 +119,13 @@
 			<Output ItemName="_coverageFiles" TaskParameter="Include"/>
 		</CreateItem>-->
 
-        <!--@(_testFiles->'&quot;%(FullPath)&quot;', ' ')-->
-        <!--
+    <!--@(_testFiles->'&quot;%(FullPath)&quot;', ' ')-->
+    <!--
 		Important: if this code breaks down and you are running 64 bit machine,
 		then you have to force NUnit-console and NCover to 32 bit mode
 		with CorFlags.exe from .NET SDK 2.0 (included in NCover and NUnit folders)
 		-->
-        <!--<NCover ToolPath="Resource\Tool\NCover"
+    <!--<NCover ToolPath="Resource\Tool\NCover"
 			CommandLineExe="Resource/Tool/NUnit/nunit-console-x86.exe"
 			CommandLineArgs="@(_testFiles->'&quot;%(FullPath)&quot;', ' ') /nologo /noshadow /xml=&quot;$(ArtifactDirectory)\$(MSBuildProjectName).Tests-result.xml&quot;"
 			AssemblyList="@(_coverageFiles)"
@@ -146,50 +147,50 @@
 			Sort="FunctionCoverageAscending"
 			CoverageFiles="$(ArtifactDirectory)\$(MSBuildProjectName)-coverage.xml"
 		/>-->
-    </Target>
+  </Target>
 
-    <Target Name="_Version">
-        <CreateItem Include="**\GlobalAssemblyInfo.cs">
-            <Output ItemName="_VersionPaths" TaskParameter="Include"/>
-        </CreateItem>
-        <CreateItem Include="@(_VersionPaths->'%(SubFolder)%(RecursiveDir)VersionAssemblyInfo.cs')">
-            <Output ItemName="_VersionFiles" TaskParameter="Include"/>
-        </CreateItem>
-        <Time Format="yyyy-MM-dd HH:mm">
-            <Output TaskParameter="FormattedTime" PropertyName="BuildTime" />
-        </Time>
-        <AssemblyInfo OutputFile="%(_VersionFiles.FullPath)" CodeLanguage="CS"
-			AssemblyVersion="$(Version)"
-			AssemblyFileVersion="$(Version)"
-			AssemblyConfiguration="$(Configuration) built on $(BuildTime)" />
-        <WriteLinesToFile
-			File="%(_VersionFiles.FullPath)"
-			Overwrite="false"
-			Lines="[assembly: System.Security.AllowPartiallyTrustedCallers]"
-			Condition="$(AllowPartiallyTrustedCallers)==true" />
-    </Target>
-
-
-    <Target Name="WipeResources">
-        <!--Wipe old version files-->
-        <CreateItem Include="**\VersionAssemblyInfo.cs">
-            <Output ItemName="_VersionPaths" TaskParameter="Include"/>
-        </CreateItem>
-        <Delete Files="@(_VersionPaths)" />
-    </Target>
+  <Target Name="_Version">
+    <CreateItem Include="**\GlobalAssemblyInfo.cs">
+      <Output ItemName="_VersionPaths" TaskParameter="Include"/>
+    </CreateItem>
+    <CreateItem Include="@(_VersionPaths->'%(SubFolder)%(RecursiveDir)VersionAssemblyInfo.cs')">
+      <Output ItemName="_VersionFiles" TaskParameter="Include"/>
+    </CreateItem>
+    <Time Format="yyyy-MM-dd HH:mm">
+      <Output TaskParameter="FormattedTime" PropertyName="BuildTime" />
+    </Time>
+    <AssemblyInfo OutputFile="%(_VersionFiles.FullPath)" CodeLanguage="CS"
+  AssemblyVersion="$(Version)"
+  AssemblyFileVersion="$(Version)"
+  AssemblyConfiguration="$(Configuration) built on $(BuildTime)" />
+    <WriteLinesToFile
+  File="%(_VersionFiles.FullPath)"
+  Overwrite="false"
+  Lines="[assembly: System.Security.AllowPartiallyTrustedCallers]"
+  Condition="$(AllowPartiallyTrustedCallers)==true" />
+  </Target>
 
 
-    <!--<Target Name="GenerateHelp" DependsOnTargets="Build;Copy">
+  <Target Name="WipeResources">
+    <!--Wipe old version files-->
+    <CreateItem Include="**\VersionAssemblyInfo.cs">
+      <Output ItemName="_VersionPaths" TaskParameter="Include"/>
+    </CreateItem>
+    <Delete Files="@(_VersionPaths)" />
+  </Target>
+
+
+  <!--<Target Name="GenerateHelp" DependsOnTargets="Build;Copy">
 		<Exec Command="Resource\Tool\SHFB\SandcastleBuilderConsole.exe $(MSBuildProjectName).shfb" />
 	</Target>-->
 
-    <Target Name="Distrib" DependsOnTargets="Clean;Build;Copy;Config">
-        <MakeDir Directories="$(PackageDirectory)" />
+  <Target Name="Distrib" DependsOnTargets="Clean;Build;Copy;Config">
+    <MakeDir Directories="$(PackageDirectory)" />
 
-        <!-- Archive-->
-        <CreateItem Include="$(LibraryPath)\*.*;$(LicensePath)\*.*">
-            <Output ItemName="_libFiles" TaskParameter="Include" />
-        </CreateItem>
-        <Zip Files="@(_libFiles)" ZipFileName="$(PackageDirectory)\$(MSBuildProjectName)-$(Version)-$(BuildFramework).zip" Flatten="false" WorkingDirectory="$(BuildPath)" />
-    </Target>
+    <!-- Archive-->
+    <CreateItem Include="$(LibraryPath)\*.*;$(LicensePath)\*.*">
+      <Output ItemName="_libFiles" TaskParameter="Include" />
+    </CreateItem>
+    <Zip Files="@(_libFiles)" ZipFileName="$(PackageDirectory)\$(MSBuildProjectName)-$(Version)-$(BuildFramework).zip" Flatten="false" WorkingDirectory="$(BuildPath)" />
+  </Target>
 </Project>
