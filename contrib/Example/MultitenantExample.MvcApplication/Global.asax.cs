@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -85,7 +85,7 @@ namespace MultitenantExample.MvcApplication
             // can display output about the current tenant.
             builder.RegisterInstance(tenantIdStrategy).As<ITenantIdentificationStrategy>();
 
-            // The service client is not different per service because
+            // The service client is not different per tenant because
             // the service itself is multitenant - one client for all
             // the tenants and the service implementation switches.
             builder.Register(c => new ChannelFactory<IMultitenantService>(new BasicHttpBinding(), new EndpointAddress("http://localhost:63578/MultitenantService.svc"))).SingleInstance();
