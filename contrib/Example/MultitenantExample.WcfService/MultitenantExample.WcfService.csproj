@@ -82,7 +82,6 @@
     <Compile Include="ServiceImplementations\ServiceInfoBuilder.cs" />
     <Compile Include="ServiceImplementations\Tenant1Implementation.cs" />
     <Compile Include="ServiceImplementations\Tenant2Implementation.cs" />
-    <Compile Include="StubTenantIdentificationStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\AutofacContrib.Multitenant\AutofacContrib.Multitenant.csproj">
