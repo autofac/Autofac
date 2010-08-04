@@ -92,6 +92,7 @@
     <Compile Include="AutofacWebServiceHostFactory.cs" />
     <Compile Include="AutofacHostFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegistrationExtensions.cs" />
     <Compile Include="ServiceHostExtensions.cs" />
     <Compile Include="ServiceHostExtensionsResources.Designer.cs">
       <AutoGen>True</AutoGen>
