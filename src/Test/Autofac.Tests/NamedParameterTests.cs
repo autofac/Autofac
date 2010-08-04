@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using Autofac.Core;
 
@@ -18,7 +16,9 @@ namespace Autofac.Tests
 
         class C
         {
+            // ReSharper disable UnusedParameter.Local
             public C(A a)
+            // ReSharper restore UnusedParameter.Local
             {
             }
         }
@@ -37,7 +37,7 @@ namespace Autofac.Tests
         private static System.Reflection.ParameterInfo AParamOfCConstructor()
         {
             var param = typeof(C)
-                .GetConstructor(new Type[] { typeof(A) })
+                .GetConstructor(new [] { typeof(A) })
                 .GetParameters()
                 .First();
             return param;

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using Autofac.Core;
 using System.Reflection;
@@ -32,14 +30,38 @@ namespace Autofac.Tests
         public void OnlyServicesAssignableToASpecificTypeIsRegistered()
         {
             var container = new Container().BeginLifetimeScope(b =>
-            {
-                b.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).AssignableTo(typeof(IMyService));
-            });
+                b.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
+                    .AssignableTo(typeof(IMyService)));
 
             Assert.AreEqual(1, container.ComponentRegistry.Registrations.Count());
             Object obj;
             Assert.IsTrue(container.TryResolve(typeof(MyComponent), out obj));
             Assert.IsFalse(container.TryResolve(typeof(MyComponent2), out obj));
+        }
+
+        [Test]
+        public void WhenAReleaseActionIsSupplied_TheComponentIsNotDisposedAutomatically()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<DisposeTracker>()
+                .OnRelease(_ => { });
+            var container = builder.Build();
+            var dt = container.Resolve<DisposeTracker>();
+            container.Dispose();
+            Assert.IsFalse(dt.IsDisposed);
+        }
+
+        [Test]
+        public void WhenAReleaseActionIsSupplied_TheInstanceIsPassedToTheReleaseAction()
+        {
+            var builder = new ContainerBuilder();
+            object instance = null;
+            builder.RegisterType<DisposeTracker>()
+                .OnRelease(i => { instance = i; });
+            var container = builder.Build();
+            var dt = container.Resolve<DisposeTracker>();
+            container.Dispose();
+            Assert.AreSame(dt, instance);
         }
     }
 }

@@ -347,12 +347,11 @@ namespace Autofac
         /// Specifies that a type provides its own concrete type as a service.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<TLimit, TScanningActivatorData, SingleRegistrationStyle>
-            AsSelf<TLimit, TScanningActivatorData>(this IRegistrationBuilder<TLimit, TScanningActivatorData, SingleRegistrationStyle> registration)
-            where TScanningActivatorData : ReflectionActivatorData
+        public static IRegistrationBuilder<TLimit, TActivatorData, SingleRegistrationStyle>
+            AsSelf<TLimit, TActivatorData>(this IRegistrationBuilder<TLimit, TActivatorData, SingleRegistrationStyle> registration)
         {
             Enforce.ArgumentNotNull(registration, "registration");
             return registration.As<TLimit>();
@@ -979,6 +978,34 @@ namespace Autofac
             if (adapter == null) throw new ArgumentNullException("adapter");
 
             return builder.RegisterAdapter<TFrom, TTo>((c, p, f) => adapter(f));
+        }
+
+        /// <summary>
+        /// Run a supplied action instead of disposing instances when they're no
+        /// longer required.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to set release action for.</param>
+        /// <param name="releaseAction">An action to perform instead of disposing the instance.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        /// <remarks>Only one release action can be configured per registration.</remarks>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>
+            OnRelease<TLimit, TActivatorData, TRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration,
+                Action<TLimit> releaseAction)
+        {
+            if (registration == null) throw new ArgumentNullException("registration");
+            if (releaseAction == null) throw new ArgumentNullException("releaseAction");
+
+            return registration
+                .ExternallyOwned()
+                .OnActivating(e =>
+                {
+                    var ra = new ReleaseAction(() => releaseAction(e.Instance));
+                    e.Context.Resolve<ILifetimeScope>().Disposer.AddInstanceForDisposal(ra);
+                });
         }
     }
 }

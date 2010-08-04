@@ -78,7 +78,7 @@ namespace Autofac.Features.Metadata
                 .As(providedService)
                 .Targeting(valueRegistration);
 
-            return RegistrationBuilder.CreateRegistration(rb);
+            return rb.CreateRegistration();
         }
     }
 }

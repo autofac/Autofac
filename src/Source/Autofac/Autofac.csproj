@@ -278,6 +278,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ReflectionExtensionsResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Util\ReleaseAction.cs" />
     <Compile Include="Util\SequenceExtensions.cs" />
     <Compile Include="Util\Silverlight\AllowPartiallyTrustedCallerAttribute.cs" />
     <Compile Include="Util\Silverlight\SerializableAttribute.cs" />

@@ -24,37 +24,28 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Threading;
 
 namespace Autofac.Util
 {
     /// <summary>
-    /// Base class for disposable objects.
+    /// Adapts an action to the <see cref="IDisposable"/> interface.
     /// </summary>
-    public class Disposable : IDisposable
+    class ReleaseAction : Disposable
     {
-        int _isDisposed;
+        readonly Action _action;
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
+        public ReleaseAction(Action action)
         {
-            var isDisposed = _isDisposed;
-            Interlocked.CompareExchange(ref _isDisposed, 1, isDisposed);
-            if (isDisposed == 0)
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-            }
+            if (action == null) throw new ArgumentNullException("action");
+            _action = action;
         }
 
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
+            if (disposing)
+                _action();
+
+            base.Dispose(disposing);
         }
     }
 }
