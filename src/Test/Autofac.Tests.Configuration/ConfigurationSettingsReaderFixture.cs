@@ -15,7 +15,7 @@ namespace Autofac.Tests.Configuration
         {
             var container = ConfigureContainer("Metadata").Build();
             IComponentRegistration registration;
-            Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(new NamedService("a", typeof(object)), out registration));
+            Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(new KeyedService("a", typeof(object)), out registration));
             Assert.AreEqual(42, (int)registration.Metadata["answer"]);
         }
 

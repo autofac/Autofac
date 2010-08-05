@@ -15,7 +15,7 @@ namespace Autofac.Tests.Integration.Wcf
         static readonly Uri[] DummyEndpoints = new[] { new Uri("http://localhost") };
 
         [Test]
-        public void HostsNamedServices()
+        public void HostsKeyedServices()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<object>().Named<object>("service");

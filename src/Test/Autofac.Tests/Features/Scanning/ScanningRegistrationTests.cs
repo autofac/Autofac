@@ -98,7 +98,7 @@ namespace Autofac.Tests.Features.Scanning
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(AComponent).Assembly)
-                .As(t => new NamedService(t.Name, typeof(object)));
+                .As(t => new KeyedService(t.Name, typeof(object)));
             var c = cb.Build();
 
             c.AssertRegistered<object>("AComponent");
@@ -107,7 +107,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void NameMappingRegistersNamedServices()
+        public void NameMappingRegistersKeyedServices()
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(AComponent).Assembly)
@@ -118,7 +118,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void NameMappingRegistersNamedServicesWithGenericSyntax()
+        public void NameMappingRegistersKeyedServicesWithGenericSyntax()
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(AComponent).Assembly)

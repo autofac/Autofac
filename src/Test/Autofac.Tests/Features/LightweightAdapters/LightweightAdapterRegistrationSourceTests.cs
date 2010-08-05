@@ -14,7 +14,7 @@ namespace Autofac.Tests.Features.LightweightAdapters
         public class AdaptingFromOneServiceToAnother
         {
             readonly Service _from = new TypedService(typeof(object)),
-                    _to = new NamedService("name", typeof(object));
+                    _to = new KeyedService("name", typeof(object));
 
             readonly IEnumerable<IComponentRegistration> _adaptedFrom = new[]
                 {

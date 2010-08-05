@@ -37,7 +37,7 @@ namespace Autofac.Core
         readonly Type _serviceType;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="KeyedService"/> class.
+        /// Initializes a new instance of the <see cref="Autofac.Core.KeyedService"/> class.
         /// </summary>
         /// <param name="serviceKey">Key of the service.</param>
         /// <param name="serviceType">Type of the service.</param>

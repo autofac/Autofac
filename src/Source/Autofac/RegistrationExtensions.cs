@@ -434,7 +434,7 @@ namespace Autofac
             Enforce.ArgumentNotNull(registration, "registration");
             Enforce.ArgumentNotNull(serviceNameMapping, "serviceNameMapping");
             Enforce.ArgumentNotNull(serviceType, "serviceType");
-            return registration.As(t => new NamedService(serviceNameMapping(t), serviceType));
+            return registration.As(t => new KeyedService(serviceNameMapping(t), serviceType));
         }
 
         /// <summary>

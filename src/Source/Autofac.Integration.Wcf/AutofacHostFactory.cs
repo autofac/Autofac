@@ -64,7 +64,7 @@ namespace Autofac.Integration.Wcf
                 throw new InvalidOperationException(AutofacServiceHostFactoryResources.ContainerIsNull);
 
             IComponentRegistration registration = null;
-            if (!Container.ComponentRegistry.TryGetRegistration(new NamedService(constructorString, typeof(object)), out registration))
+            if (!Container.ComponentRegistry.TryGetRegistration(new KeyedService(constructorString, typeof(object)), out registration))
             {
                 Type serviceType = Type.GetType(constructorString, false);
                 if (serviceType != null)

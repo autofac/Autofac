@@ -14,7 +14,7 @@ namespace Autofac.Tests.Core
             string name = "name";
 
             var r = Factory.CreateSingletonRegistration(
-                new Service[] { new NamedService(name, typeof(string)) },
+                new Service[] { new KeyedService(name, typeof(string)) },
                 Factory.CreateReflectionActivator(typeof(object)));
 
             var c = new Container();

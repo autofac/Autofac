@@ -390,9 +390,9 @@ namespace Autofac.Tests.Integration.Mef
             var catalog = new TypeCatalog(typeof(HasMultipleExports));
 
             var interchangeService1 = new TypedService(typeof(HasMultipleExportsBase));
-            var interchangeService2 = new NamedService("b", typeof(HasMultipleExports));
+            var interchangeService2 = new KeyedService("b", typeof(HasMultipleExports));
             var nonInterchangeService1 = new TypedService(typeof(HasMultipleExports));
-            var nonInterchangeService2 = new NamedService("a", typeof(HasMultipleExports));
+            var nonInterchangeService2 = new KeyedService("a", typeof(HasMultipleExports));
 
             builder.RegisterComposablePartCatalog(catalog,
                 interchangeService1,

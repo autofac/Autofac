@@ -144,7 +144,7 @@ namespace Autofac.Configuration
                 {
                     var serviceType = LoadType(component.Service, defaultAssembly);
                     if (!string.IsNullOrEmpty(component.Name))
-                        services.Add(new NamedService(component.Name, serviceType));
+                        services.Add(new KeyedService(component.Name, serviceType));
                     else
                         services.Add(new TypedService(serviceType));
                 }
@@ -159,7 +159,7 @@ namespace Autofac.Configuration
                 {
                     var serviceType = LoadType(service.Type, defaultAssembly);
                     if (!string.IsNullOrEmpty(service.Name))
-                        services.Add(new NamedService(service.Name, serviceType));
+                        services.Add(new KeyedService(service.Name, serviceType));
                     else
                         services.Add(new TypedService(serviceType));
                 }

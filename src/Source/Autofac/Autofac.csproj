@@ -201,7 +201,6 @@
     </Compile>
     <Compile Include="Core\Lifetime\RootScopeLifetime.cs" />
     <Compile Include="Core\NamedPropertyParameter.cs" />
-    <Compile Include="Core\NamedService.cs" />
     <Compile Include="Core\Parameter.cs" />
     <Compile Include="Core\PreparingEventArgs.cs" />
     <Compile Include="Core\Registration\ComponentNotRegisteredException.cs" />

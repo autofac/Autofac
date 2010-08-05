@@ -98,7 +98,7 @@ namespace Autofac
         /// <exception cref="DependencyResolutionException"/>
         public static TService Resolve<TService>(this IComponentContext context, string serviceName, IEnumerable<Parameter> parameters)
         {
-            return (TService)Resolve(context, new NamedService(serviceName, typeof(TService)), parameters);
+            return (TService)Resolve(context, new KeyedService(serviceName, typeof(TService)), parameters);
         }
 
         /// <summary>
@@ -290,7 +290,7 @@ namespace Autofac
         /// <exception cref="DependencyResolutionException"/>
         public static object Resolve(this IComponentContext context, string serviceName, Type serviceType, IEnumerable<Parameter> parameters)
         {
-            return Resolve(context, new NamedService(serviceName, serviceType), parameters);
+            return Resolve(context, new KeyedService(serviceName, serviceType), parameters);
         }
 
         /// <summary>
@@ -447,7 +447,7 @@ namespace Autofac
         public static TService ResolveOptional<TService>(this IComponentContext context, string serviceName, IEnumerable<Parameter> parameters)
             where TService : class
         {
-            return (TService)ResolveOptional(context, new NamedService(serviceName, typeof(TService)), parameters);
+            return (TService)ResolveOptional(context, new KeyedService(serviceName, typeof(TService)), parameters);
         }
 
         /// <summary>
@@ -599,7 +599,7 @@ namespace Autofac
         /// <returns>True if the service is registered.</returns>
         public static bool IsRegistered(this IComponentContext context, string serviceName, Type serviceType)
         {
-            return IsRegistered(context, new NamedService(serviceName, serviceType));
+            return IsRegistered(context, new KeyedService(serviceName, serviceType));
         }
 
         /// <summary>
@@ -719,7 +719,7 @@ namespace Autofac
         public static bool TryResolve(this IComponentContext context, string serviceName, Type serviceType, out object instance)
         {
             Enforce.ArgumentNotNull(context, "context");
-            return context.TryResolve(new NamedService(serviceName, serviceType), NoParameters, out instance);
+            return context.TryResolve(new KeyedService(serviceName, serviceType), NoParameters, out instance);
         }
 
         /// <summary>

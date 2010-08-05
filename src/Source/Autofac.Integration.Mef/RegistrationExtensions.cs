@@ -52,7 +52,7 @@ namespace Autofac.Integration.Mef
                 return new TypedService(ct);
 
             var et = FindType((string)ed.Metadata[CompositionConstants.ExportTypeIdentityMetadataName]);
-            return new NamedService(ed.ContractName, et);
+            return new KeyedService(ed.ContractName, et);
         }
 
         static Type FindType(string exportTypeIdentity)
@@ -161,8 +161,8 @@ namespace Autofac.Integration.Mef
                     .Cast<Service>()
                     .Union(
                         interchangeServices
-                            .OfType<NamedService>()
-                            .Where(s => ed.ContractName == s.ServiceName)
+                            .OfType<KeyedService>()
+                            .Where(s => ed.ContractName == (string)s.ServiceKey)
                     ));
         }
 

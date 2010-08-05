@@ -34,7 +34,7 @@ namespace Autofac.Tests.Core
         [Test]
         public void TypedServices_DoNotEqualOtherServiceTypes()
         {
-            Assert.IsFalse(new TypedService(typeof(object)).Equals(new NamedService("name", typeof(object))));
+            Assert.IsFalse(new TypedService(typeof(object)).Equals(new KeyedService("name", typeof(object))));
         }
 
         [Test]

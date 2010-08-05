@@ -215,7 +215,7 @@ namespace Autofac.Builder
             Enforce.ArgumentNotNull(serviceName, "serviceName");
             Enforce.ArgumentNotNull(serviceType, "serviceType");
 
-            return As(new NamedService(serviceName, serviceType));
+            return As(new KeyedService(serviceName, serviceType));
         }
 
         /// <summary>
