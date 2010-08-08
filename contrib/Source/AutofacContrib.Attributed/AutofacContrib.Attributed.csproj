@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac">
+      <HintPath>..\..\Resource\Library\Autofac\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
@@ -47,6 +50,7 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AutofacAttribExtensions.cs" />
     <Compile Include="MEF\ExportInfoCompositionContainer.cs" />
     <Compile Include="MEF\ExtendedExportInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
