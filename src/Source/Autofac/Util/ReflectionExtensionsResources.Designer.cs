@@ -61,6 +61,15 @@ namespace Autofac.Util {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The provided expression must be of the form x =&gt;x.M(), but the provided expression was {0}..
+        /// </summary>
+        internal static string ExpressionNotMethodCall {
+            get {
+                return ResourceManager.GetString("ExpressionNotMethodCall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The provided expression must be of the form x =&gt;x.P, but the provided expression was {0}..
         /// </summary>
         internal static string ExpressionNotPropertyAccessor {

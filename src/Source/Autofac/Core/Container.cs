@@ -152,9 +152,9 @@ namespace Autofac.Core
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public object Resolve(IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
-            return _rootLifetimeScope.Resolve(registration, parameters);
+            return _rootLifetimeScope.ResolveComponent(registration, parameters);
         }
 
         /// <summary>

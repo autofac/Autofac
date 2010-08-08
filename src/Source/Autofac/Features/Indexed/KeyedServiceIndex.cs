@@ -42,14 +42,14 @@ namespace Autofac.Features.Indexed
         {
             get
             {
-                return (TValue)_context.Resolve(GetService(key));
+                return (TValue)_context.ResolveService(GetService(key));
             }
         }
 
         public bool TryGetValue(TKey key, out TValue value)
         {
             object result;
-            if (_context.TryResolve(GetService(key), out result))
+            if (_context.TryResolveService(GetService(key), out result))
             {
                 value = (TValue)result;
                 return true;

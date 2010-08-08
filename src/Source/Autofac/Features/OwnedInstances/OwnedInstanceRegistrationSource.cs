@@ -65,7 +65,7 @@ namespace Autofac.Features.OwnedInstances
                             var lifetime = c.Resolve<ILifetimeScope>().BeginLifetimeScope(ownedInstanceService);
                             try
                             {
-                                var value = lifetime.Resolve(r, p);
+                                var value = lifetime.ResolveComponent(r, p);
                                 return Activator.CreateInstance(ts.ServiceType, new [] { value, lifetime });
                             }
                             catch

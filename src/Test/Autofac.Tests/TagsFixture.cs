@@ -89,7 +89,7 @@ namespace Autofac.Tests
 
             var outer = builder.Build();
 
-            var s = outer.Resolve<string>(name);
+            var s = outer.ResolveNamed<string>(name);
             Assert.IsNotNull(s);
         }
 

@@ -22,8 +22,8 @@ namespace AutofacContrib.Tests.Profiling
             var container = builder.Build();
             var profile = container.Resolve<IContainerProfile>();
 
-            container.Resolve(registration, Enumerable.Empty<Parameter>());
-            container.Resolve(registration, Enumerable.Empty<Parameter>());
+            container.ResolveComponent(registration, Enumerable.Empty<Parameter>());
+            container.ResolveComponent(registration, Enumerable.Empty<Parameter>());
 
             var info = profile.GetComponent(registration.Id);
             Assert.AreEqual(2, info.ActivationCount);

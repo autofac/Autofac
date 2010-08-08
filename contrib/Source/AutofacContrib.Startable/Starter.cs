@@ -67,7 +67,7 @@ namespace AutofacContrib.Startable
                 select cr;
 
             foreach (var startable in startableRegistrations)
-                _context.Resolve(startable, Enumerable.Empty<Parameter>());
+                _context.ResolveComponent(startable, Enumerable.Empty<Parameter>());
         }
     }
 }

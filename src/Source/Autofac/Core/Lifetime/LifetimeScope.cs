@@ -200,12 +200,12 @@ namespace Autofac.Core.Lifetime
         /// </returns>
         /// <exception cref="Autofac.Core.Registration.ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public object Resolve(IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
             lock (_synchRoot)
             {
                 var operation = new ResolveOperation(this);
-                return operation.Resolve(registration, parameters);
+                return operation.ResolveComponent(registration, parameters);
             }
         }
 

@@ -61,7 +61,7 @@ namespace Autofac.Core.Registration
         {
             return _registry.RegistrationsFor(service)
                 .Where(r => !r.IsAdapting())
-                .Select(r => RegistrationBuilder.ForDelegate((c, p) => c.Resolve(r, p))
+                .Select(r => RegistrationBuilder.ForDelegate((c, p) => c.ResolveComponent(r, p))
                         .Targeting(r)
                         .As(r.Services.ToArray())
                         .ExternallyOwned()

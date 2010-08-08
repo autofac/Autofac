@@ -18,12 +18,12 @@ namespace Autofac.Tests
 
         public static void AssertRegistered<TService>(this IComponentContext context, string service)
         {
-            Assert.IsTrue(context.IsRegistered<TService>(service));
+            Assert.IsTrue(context.IsRegisteredNamed<TService>(service));
         }
 
         public static void AssertNotRegistered<TService>(this IComponentContext context, string service)
         {
-            Assert.IsFalse(context.IsRegistered<TService>(service));
+            Assert.IsFalse(context.IsRegisteredNamed<TService>(service));
         }
 
         public static void AssertSharing<TComponent>(this IComponentContext context, InstanceSharing sharing)

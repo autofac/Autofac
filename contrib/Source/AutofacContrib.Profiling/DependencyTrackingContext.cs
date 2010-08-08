@@ -20,10 +20,10 @@ namespace AutofacContrib.Profiling
             _context = context;
         }
 
-        public object Resolve(IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
             _profile.RecordDependency(_registration, registration);
-            return _context.Resolve(registration, parameters);
+            return _context.ResolveComponent(registration, parameters);
         }
 
         public IComponentRegistry ComponentRegistry

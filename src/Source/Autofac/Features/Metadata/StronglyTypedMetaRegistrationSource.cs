@@ -74,7 +74,7 @@ namespace Autofac.Features.Metadata
                 {
                     var context = c.Resolve<IComponentContext>();
                     return new Meta<T, TMetadata>(
-                        (T) context.Resolve(valueRegistration, p),
+                        (T) context.ResolveComponent(valueRegistration, p),
                         AttributedModelServices.GetMetadataView<TMetadata>(valueRegistration.Target.Metadata));
                 })
                 .As(providedService)

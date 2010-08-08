@@ -72,7 +72,7 @@ namespace Autofac.Features.Metadata
                 {
                     var context = c.Resolve<IComponentContext>();
                     return new Meta<T>(
-                        (T)context.Resolve(valueRegistration, p),
+                        (T)context.ResolveComponent(valueRegistration, p),
                         valueRegistration.Target.Metadata);
                 })
                 .As(providedService)

@@ -216,7 +216,7 @@ namespace Autofac.Integration.Mef
                 var exportId = new UniqueService();
                 builder.Register(c =>
                     {
-                        var p = ((ComposablePart)c.Resolve(partId));
+                        var p = ((ComposablePart)c.ResolveService(partId));
                         return new Export(exportDef, () => p.GetExportedValue(exportDef));
                     })
                     .As(exportId, contractService)
@@ -227,7 +227,7 @@ namespace Autofac.Integration.Mef
 
                 if (additionalServices.Length > 0)
                 {
-                    builder.Register(c => ((Export)c.Resolve(exportId)).Value)
+                    builder.Register(c => ((Export)c.ResolveService(exportId)).Value)
                         .As(additionalServices)
                         .ExternallyOwned()
                         .WithMetadata(exportDef.Metadata);
@@ -269,7 +269,7 @@ namespace Autofac.Integration.Mef
 
             return context.ComponentRegistry
                 .RegistrationsFor(new ContractBasedService(contractName, AttributedModelServices.GetTypeIdentity(typeof(T))))
-                .Select(cpt => context.Resolve(cpt, Enumerable.Empty<Parameter>()))
+                .Select(cpt => context.ResolveComponent(cpt, Enumerable.Empty<Parameter>()))
                 .Cast<Export>();
         }
 
@@ -299,13 +299,13 @@ namespace Autofac.Integration.Mef
                     var ctx = c.Resolve<IComponentContext>();
                     return new Export(
                         new ExportDefinition(exportConfiguration.ContractName, exportConfiguration.Metadata),
-                        () => ctx.Resolve(registration, new Parameter[0]));
+                        () => ctx.ResolveComponent(registration, new Parameter[0]));
                 })
                 .As(contractService)
                 .ExternallyOwned()
                 .WithMetadata(exportConfiguration.Metadata);
 
-            registry.Register(RegistrationBuilder.CreateRegistration(rb));
+            registry.Register(rb.CreateRegistration());
         }
 
         static void SetNonPrerequisiteImports(IComponentContext context, ComposablePart composablePart)
@@ -339,7 +339,7 @@ namespace Autofac.Integration.Mef
             var componentsForContract = context.ComponentsForContract(cbid);
 
             var exportsForContract = componentsForContract
-                .Select(cpt => context.Resolve(cpt, Enumerable.Empty<Parameter>()))
+                .Select(cpt => context.ResolveComponent(cpt, Enumerable.Empty<Parameter>()))
                 .Cast<Export>()
                 .ToList();
 

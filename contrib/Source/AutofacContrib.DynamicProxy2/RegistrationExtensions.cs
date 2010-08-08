@@ -58,7 +58,7 @@ namespace AutofacContrib.DynamicProxy2
             {
                 e.Parameters = new Parameter[] {
                     new PositionalParameter(0, GetInterceptorServices(e.Component, registration.ActivatorData.ImplementationType)
-                        .Select(s => e.Context.Resolve(s))
+                        .Select(s => e.Context.ResolveService(s))
                         .Cast<IInterceptor>()
                         .ToArray())
                 }.Concat(e.Parameters).ToArray();
@@ -92,7 +92,10 @@ namespace AutofacContrib.DynamicProxy2
                 var theInterface = proxiedInterfaces.First();
                 var interfaces = proxiedInterfaces.Skip(1).ToArray();
 
-                var interceptors = GetInterceptorServices(e.Component, e.Instance.GetType()).Select(s => e.Context.Resolve(s)).Cast<IInterceptor>().ToArray();
+                var interceptors = GetInterceptorServices(e.Component, e.Instance.GetType())
+                    .Select(s => e.Context.ResolveService(s))
+                    .Cast<IInterceptor>()
+                    .ToArray();
 
                 e.Instance = ProxyGenerator.CreateInterfaceProxyWithTarget(theInterface, interfaces, e.Instance, interceptors);
             });

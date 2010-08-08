@@ -16,7 +16,7 @@ namespace AutofacContrib.Multitenant
     /// <para>
     /// This container implementation modifies the definition of the standard
     /// container implementation by returning values that are tenant-specific.
-    /// For example, resolving a component via <see cref="AutofacContrib.Multitenant.MultitenantContainer.Resolve"/>
+    /// For example, resolving a component via <see cref="AutofacContrib.Multitenant.MultitenantContainer.ResolveComponent"/>
     /// will yield a resolution of the dependency for the current tenant, not
     /// from a global container/lifetime.
     /// </para>
@@ -365,9 +365,9 @@ namespace AutofacContrib.Multitenant
         /// if the component registered requires another component be available
         /// but that required component is not available, this exception will be thrown.
         /// </exception>
-        public object Resolve(IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
-            return this.GetCurrentTenantScope().Resolve(registration, parameters);
+            return this.GetCurrentTenantScope().ResolveComponent(registration, parameters);
         }
     }
 }

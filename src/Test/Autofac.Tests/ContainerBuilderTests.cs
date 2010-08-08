@@ -171,7 +171,7 @@ namespace Autofac.Tests
             var c = cb.Build();
 
             object o1;
-            Assert.IsTrue(c.TryResolve(name, typeof(object), out o1));
+            Assert.IsTrue(c.TryResolveNamed(name, typeof(object), out o1));
             Assert.IsNotNull(o1);
 
             object o2;
@@ -189,7 +189,7 @@ namespace Autofac.Tests
             var c = cb.Build();
 
             object o1;
-            Assert.IsTrue(c.TryResolve(key, typeof(object), out o1));
+            Assert.IsTrue(c.TryResolveKeyed(key, typeof(object), out o1));
             Assert.IsNotNull(o1);
 
             object o2;
@@ -326,7 +326,7 @@ namespace Autofac.Tests
             builder.RegisterInstance("s2").Named<string>("name").PreserveExistingDefaults();
             var container = builder.Build();
             Assert.AreEqual("s1", container.Resolve<string>()); // Not overridden
-            Assert.AreEqual("s2", container.Resolve<string>("name"));
+            Assert.AreEqual("s2", container.ResolveNamed<string>("name"));
         }
 
         [Test]

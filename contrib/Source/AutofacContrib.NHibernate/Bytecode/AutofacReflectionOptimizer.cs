@@ -20,9 +20,9 @@ namespace AutofacContrib.NHibernate.Bytecode
         {
             if (_container.IsRegistered(mappedType))
                 return _container.Resolve(mappedType);
-		    
-            return _container.IsRegistered(mappedType.FullName, mappedType)
-                       ? _container.Resolve(mappedType.FullName, mappedType)
+            
+            return _container.IsRegisteredNamed(mappedType.FullName, mappedType)
+                       ? _container.ResolveNamed(mappedType.FullName, mappedType)
                        : base.CreateInstance();
         }
 

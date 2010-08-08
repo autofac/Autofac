@@ -22,7 +22,7 @@ namespace Autofac.Tests.Core
 
             object o;
 
-            Assert.IsTrue(c.TryResolve(name, typeof(string), out o));
+            Assert.IsTrue(c.TryResolveNamed(name, typeof(string), out o));
             Assert.IsNotNull(o);
 
             Assert.IsFalse(c.IsRegistered<object>());
@@ -80,7 +80,7 @@ namespace Autofac.Tests.Core
             var cb = new ContainerBuilder();
             cb.RegisterType<object>().Named<object>(myName);
             var container = cb.Build();
-            var o = container.Resolve<object>(myName);
+            var o = container.ResolveNamed<object>(myName);
             Assert.IsNotNull(o);
         }
 
@@ -94,7 +94,7 @@ namespace Autofac.Tests.Core
             cb.Register( c => component ).Keyed<object>( myKey );
             var container = cb.Build();
 
-            var o = container.Resolve<object>( myKey );
+            var o = container.ResolveKeyed<object>( myKey );
             Assert.AreSame( component, o );
         }
 

@@ -35,13 +35,11 @@ namespace Autofac.Integration.Mef
     /// </summary>
     public class ExportConfigurationBuilder
     {
-        string _contractName;
         readonly IDictionary<string, object> _metadata = new Dictionary<string, object>();
-        string _exportTypeIdentity;
 
-        internal string ContractName { get { return _contractName; } }
+        internal string ContractName { get; private set; }
         internal IDictionary<string, object> Metadata { get { return _metadata; } }
-        internal string ExportTypeIdentity { get { return _exportTypeIdentity; } }
+        internal string ExportTypeIdentity { get; private set; }
 
         /// <summary>
         /// Export the component under typed contract <typeparamref name="TContract"/>.
@@ -51,7 +49,7 @@ namespace Autofac.Integration.Mef
         public ExportConfigurationBuilder As<TContract>()
         {
             WithMetadata(CompositionConstants.ExportTypeIdentityMetadataName, AttributedModelServices.GetTypeIdentity(typeof(TContract)));
-            _contractName = AttributedModelServices.GetContractName(typeof(TContract));
+            ContractName = AttributedModelServices.GetContractName(typeof(TContract));
             return this;
         }
 
@@ -66,7 +64,7 @@ namespace Autofac.Integration.Mef
             if (name == null) throw new ArgumentNullException("name");
 
             WithMetadata(CompositionConstants.ExportTypeIdentityMetadataName, AttributedModelServices.GetTypeIdentity(typeof(TExportedValue)));
-            _contractName = name;
+            ContractName = name;
             return this;
         }
 
@@ -82,7 +80,7 @@ namespace Autofac.Integration.Mef
             if (key == CompositionConstants.ExportTypeIdentityMetadataName)
             {
                 if (value == null) throw new ArgumentNullException("value");
-                _exportTypeIdentity = (string)value;
+                ExportTypeIdentity = (string)value;
             }
 
             return this;

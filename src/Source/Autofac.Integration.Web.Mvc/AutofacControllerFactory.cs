@@ -81,7 +81,7 @@ namespace Autofac.Integration.Web.Mvc
             var controllerService = new TypedService(controllerType);
 
             object controller;
-            if (_containerProvider.RequestLifetime.TryResolve(controllerService, out controller))
+            if (_containerProvider.RequestLifetime.TryResolveService(controllerService, out controller))
                 return (IController)controller;
             
             throw new HttpException(404,

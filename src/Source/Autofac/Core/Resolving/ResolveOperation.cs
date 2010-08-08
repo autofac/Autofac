@@ -44,7 +44,7 @@ namespace Autofac.Core.Resolving
             ResetSuccessfulActivations();
         }
 
-        public object Resolve(IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
             return Resolve(_mostNestedLifetimeScope, registration, parameters);
         }

@@ -5,3 +5,4 @@ glob:*/obj/
 glob:*/_ReSharper*
 glob:src/Build
 glob:TestResult.xml
+glob:*.suo

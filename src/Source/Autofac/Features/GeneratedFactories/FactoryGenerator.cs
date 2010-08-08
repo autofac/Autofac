@@ -55,7 +55,7 @@ namespace Autofac.Features.GeneratedFactories
             _generator = CreateGenerator((activatorContextParam, resolveParameterArray) =>
                 {
                     // c, service, [new Parameter(name, (object)dps)]*
-                    var resolveParams = new Expression[] {
+                    var resolveParams = new[] {
                             activatorContextParam,
                             Expression.Constant(service),
                             Expression.NewArrayInit(typeof(Parameter), resolveParameterArray)
@@ -63,7 +63,7 @@ namespace Autofac.Features.GeneratedFactories
 
                     // c.Resolve(...)
                     return Expression.Call(
-                        typeof(ResolutionExtensions).GetMethod("Resolve", new[] { typeof(IComponentContext), typeof(Service), typeof(Parameter[]) }),
+                        ReflectionExtensions.GetMethod<IComponentContext>(cc => cc.ResolveService(default(Service), default(Parameter[]))),
                         resolveParams);
                 },
                 delegateType,
@@ -93,22 +93,21 @@ namespace Autofac.Features.GeneratedFactories
                     // c.Resolve(...)
                     return Expression.Call(
                         activatorContextParam,
-                        typeof(IComponentContext).GetMethod("Resolve", new[] { typeof(IComponentRegistration), typeof(Parameter[]) }),
+                        ReflectionExtensions.GetMethod<IComponentContext>(cc => cc.ResolveComponent(default(IComponentRegistration), default(Parameter[]))),
                         resolveParams);
                 },
                 delegateType,
                 GetParameterMapping(delegateType, parameterMapping));
         }
 
-        ParameterMapping GetParameterMapping(Type delegateType, ParameterMapping configuredParameterMapping)
+        static ParameterMapping GetParameterMapping(Type delegateType, ParameterMapping configuredParameterMapping)
         {
             if (configuredParameterMapping == ParameterMapping.Adaptive)
                 return delegateType.Name.StartsWith("Func`") ? ParameterMapping.ByType : ParameterMapping.ByName;
-            else
-                return configuredParameterMapping;
+            return configuredParameterMapping;
         }
 
-        Func<IComponentContext, IEnumerable<Parameter>, Delegate> CreateGenerator(Func<Expression, Expression[], Expression> makeResolveCall, Type delegateType, ParameterMapping pm)
+        static Func<IComponentContext, IEnumerable<Parameter>, Delegate> CreateGenerator(Func<Expression, Expression[], Expression> makeResolveCall, Type delegateType, ParameterMapping pm)
         {
             // (c, p) => ([dps]*) => (drt)Resolve(c, productRegistration, [new NamedParameter(name, (object)dps)]*)
 
@@ -125,7 +124,7 @@ namespace Autofac.Features.GeneratedFactories
                 .Select(pi => Expression.Parameter(pi.ParameterType, pi.Name))
                 .ToList();
 
-            Expression[] resolveParameterArray = MapParameters(delegateType, creatorParams, pm);
+            Expression[] resolveParameterArray = MapParameters(creatorParams, pm);
 
             var resolveCall = makeResolveCall(activatorContextParam, resolveParameterArray);
 
@@ -141,7 +140,7 @@ namespace Autofac.Features.GeneratedFactories
             return activator.Compile();
         }
 
-        static Expression[] MapParameters(Type delegateType, List<ParameterExpression> creatorParams, ParameterMapping pm)
+        static Expression[] MapParameters(IEnumerable<ParameterExpression> creatorParams, ParameterMapping pm)
         {
             switch (pm)
             {
@@ -161,7 +160,9 @@ namespace Autofac.Features.GeneratedFactories
                             .OfType<Expression>()
                             .ToArray();
 
+// ReSharper disable RedundantCaseLabel
                 case ParameterMapping.ByName:
+// ReSharper restore RedundantCaseLabel
                 default:
                     return creatorParams
                             .Select(p => Expression.New(

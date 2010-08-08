@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -52,6 +51,25 @@ namespace Autofac.Util
             return (PropertyInfo) mex.Member;
         }
 
+        /// <summary>
+        /// Get the MethodInfo for a method called in the
+        /// expression.
+        /// </summary>
+        /// <typeparam name="TDeclaring">Type on which the method is called.</typeparam>
+        /// <param name="methodCallExpression">Expression demonstrating how the method appears.</param>
+        /// <returns>The method info for the called method.</returns>
+        public static MethodInfo GetMethod<TDeclaring>(
+            Expression<Action<TDeclaring>> methodCallExpression)
+        {
+            Enforce.ArgumentNotNull(methodCallExpression, "methodCallExpression");
+            var callExpression = methodCallExpression.Body as MethodCallExpression;
+            if (callExpression == null)
+                throw new ArgumentException(string.Format(
+                    ReflectionExtensionsResources.ExpressionNotMethodCall,
+                    methodCallExpression));
+            return callExpression.Method;
+        }
+
         public static bool IsDelegate(this Type type)
         {
             Enforce.ArgumentNotNull(type, "type");
@@ -93,7 +111,7 @@ namespace Autofac.Util
                 if ((specialConstraints & GenericParameterAttributes.DefaultConstructorConstraint)
                     != GenericParameterAttributes.None)
                 {
-                    if (!parameter.IsValueType && parameter.GetConstructor(new Type[0]) == null)
+                    if (!parameter.IsValueType && parameter.GetConstructor(Type.EmptyTypes) == null)
                         return false;
                 }
 

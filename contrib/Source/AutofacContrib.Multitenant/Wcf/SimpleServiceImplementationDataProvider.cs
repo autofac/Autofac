@@ -79,11 +79,11 @@ namespace AutofacContrib.Multitenant.Wcf
                     string.Format(CultureInfo.CurrentCulture, Properties.Resources.AutofacHostFactory_ServiceNotRegistered, value));
             }
 
-            return new ServiceImplementationData()
+            return new ServiceImplementationData
             {
                 ConstructorString = value,
                 ServiceTypeToHost = registration.Activator.LimitType,
-                ImplementationResolver = l => l.Resolve(registration, Enumerable.Empty<Parameter>())
+                ImplementationResolver = l => l.ResolveComponent(registration, Enumerable.Empty<Parameter>())
             };
         }
     }

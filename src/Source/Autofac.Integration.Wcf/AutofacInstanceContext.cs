@@ -59,7 +59,7 @@ namespace Autofac.Integration.Wcf
             if (registration == null)
                 throw new ArgumentNullException("registration");
 
-            return _lifetime.Resolve(registration, Enumerable.Empty<Parameter>());
+            return _lifetime.ResolveComponent(registration, Enumerable.Empty<Parameter>());
         }
 
         #region IExtension<InstanceContext> Members

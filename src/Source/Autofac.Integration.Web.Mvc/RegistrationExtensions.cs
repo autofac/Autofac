@@ -97,7 +97,7 @@ namespace Autofac.Integration.Web.Mvc
             {
                 var controller = e.Instance as Controller;
                 if (controller != null)
-                    controller.ActionInvoker = (IActionInvoker)e.Context.Resolve(actionInvokerService);
+                    controller.ActionInvoker = (IActionInvoker)e.Context.ResolveService(actionInvokerService);
             });
         }
     }

@@ -400,10 +400,10 @@ namespace Autofac.Tests.Integration.Mef
 
             var container = builder.Build();
 
-            Assert.IsTrue(container.IsRegistered(interchangeService1));
-            Assert.IsTrue(container.IsRegistered(interchangeService2));
-            Assert.IsFalse(container.IsRegistered(nonInterchangeService1));
-            Assert.IsFalse(container.IsRegistered(nonInterchangeService2));
+            Assert.IsTrue(container.IsRegisteredService(interchangeService1));
+            Assert.IsTrue(container.IsRegisteredService(interchangeService2));
+            Assert.IsFalse(container.IsRegisteredService(nonInterchangeService1));
+            Assert.IsFalse(container.IsRegisteredService(nonInterchangeService2));
         }
 
         [Test]

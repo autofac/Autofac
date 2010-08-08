@@ -94,7 +94,7 @@ namespace Autofac.Core.Resolving
             get { return _activationScope.ComponentRegistry; }
         }
 
-        public object Resolve(IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
             return _context.Resolve(_activationScope, registration, parameters);
         }

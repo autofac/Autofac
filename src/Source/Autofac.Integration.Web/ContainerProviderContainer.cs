@@ -89,9 +89,9 @@ namespace Autofac.Integration.Web
             }
         }
 
-        public object Resolve(IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
-            return _containerProvider.RequestLifetime.Resolve(registration, parameters);
+            return _containerProvider.RequestLifetime.ResolveComponent(registration, parameters);
         }
 
         public void Dispose()

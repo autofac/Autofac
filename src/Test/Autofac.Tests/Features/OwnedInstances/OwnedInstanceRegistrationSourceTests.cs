@@ -66,7 +66,7 @@ namespace Autofac.Tests.Features.OwnedInstances
             builder.RegisterInstance(o).Named<object>("o");
             var container = builder.Build();
 
-            var owned = container.Resolve<Owned<object>>("o");
+            var owned = container.ResolveNamed<Owned<object>>("o");
 
             Assert.AreSame(o, owned.Value);
         }

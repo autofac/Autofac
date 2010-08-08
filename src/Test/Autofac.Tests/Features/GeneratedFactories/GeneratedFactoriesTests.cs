@@ -202,7 +202,7 @@ namespace Autofac.Tests.Features.GeneratedFactories
 
             var container = builder.Build();
 
-            var of = container.Resolve<Func<object>>("object-factory");
+            var of = container.ResolveNamed<Func<object>>("object-factory");
 
             Assert.IsNotNull(of);
         }
@@ -327,7 +327,7 @@ namespace Autofac.Tests.Features.GeneratedFactories
             builder.RegisterInstance(o).Named<object>("o");
             var container = builder.Build();
 
-            var fac = container.Resolve<Func<object>>("o");
+            var fac = container.ResolveNamed<Func<object>>("o");
 
             Assert.AreSame(o, fac());
         }

@@ -48,7 +48,7 @@ namespace Autofac.Core.Activators.Reflection
             IComponentRegistration registration;
             if (context.ComponentRegistry.TryGetRegistration(new TypedService(pi.ParameterType), out registration))
             {
-                valueProvider = () => context.Resolve(registration, Enumerable.Empty<Parameter>());
+                valueProvider = () => context.ResolveComponent(registration, Enumerable.Empty<Parameter>());
                 return true;
             }
             valueProvider = null;

@@ -73,7 +73,7 @@ namespace Autofac.Features.Collections
                         new DelegateActivator(elementArrayType, (c, p) =>
                         {
                             var elements = c.ComponentRegistry.RegistrationsFor(elementTypeService);
-                            var items = elements.Select(cr => c.Resolve(cr, p)).ToArray();
+                            var items = elements.Select(cr => c.ResolveComponent(cr, p)).ToArray();
                             var result = Array.CreateInstance(elementType, items.Length);
                             items.CopyTo(result, 0);
                             return result;

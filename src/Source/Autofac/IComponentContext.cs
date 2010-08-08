@@ -51,7 +51,7 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="Autofac.Core.DependencyResolutionException"/>
-        object Resolve(IComponentRegistration registration, IEnumerable<Parameter> parameters);
+        object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters);
     }
 }
 

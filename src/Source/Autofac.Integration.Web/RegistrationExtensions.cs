@@ -64,7 +64,7 @@ namespace Autofac.Integration.Web
                             result = session[e.ComponentRegistration.Id.ToString()];
                             if (result == null)
                             {
-                                result = c.Resolve(e.ComponentRegistration, p);
+                                result = c.ResolveComponent(e.ComponentRegistration, p);
                                 session[e.ComponentRegistration.Id.ToString()] = result;
                             }
                         }
