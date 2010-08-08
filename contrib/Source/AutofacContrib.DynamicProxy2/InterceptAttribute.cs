@@ -19,7 +19,7 @@ namespace AutofacContrib.DynamicProxy2
         }
 
         public InterceptAttribute(string interceptorServiceName)
-            : this(new NamedService(interceptorServiceName, typeof(IInterceptor)))
+            : this(new KeyedService(interceptorServiceName, typeof(IInterceptor)))
         {
         }
 

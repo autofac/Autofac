@@ -28,7 +28,7 @@ namespace AutofacContrib.Tests.Multitenant.Wcf
         }
 
         [Test]
-        public void HostsNamedServices()
+        public void HostsKeyedServices()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<object>().Named<object>("service");

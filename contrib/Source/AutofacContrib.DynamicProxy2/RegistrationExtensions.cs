@@ -167,7 +167,7 @@ namespace AutofacContrib.DynamicProxy2
             if (interceptorServiceNames == null || interceptorServiceNames.Any(n => n == null))
                 throw new ArgumentNullException("interceptorServiceNames");
 
-            return InterceptedBy(builder, interceptorServiceNames.Select(n => new NamedService(n, typeof(IInterceptor))).ToArray());
+            return InterceptedBy(builder, interceptorServiceNames.Select(n => new KeyedService(n, typeof(IInterceptor))).ToArray());
         }
 
         public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>

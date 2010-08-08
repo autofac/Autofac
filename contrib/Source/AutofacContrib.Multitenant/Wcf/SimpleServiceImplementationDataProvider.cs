@@ -64,7 +64,7 @@ namespace AutofacContrib.Multitenant.Wcf
                 throw new InvalidOperationException(Properties.Resources.AutofacHostFactory_ContainerIsNull);
             }
             IComponentRegistration registration = null;
-            if (!AutofacHostFactory.Container.ComponentRegistry.TryGetRegistration(new NamedService(value, typeof(object)), out registration))
+            if (!AutofacHostFactory.Container.ComponentRegistry.TryGetRegistration(new KeyedService(value, typeof(object)), out registration))
             {
                 Type serviceType = Type.GetType(value, false);
                 if (serviceType != null)

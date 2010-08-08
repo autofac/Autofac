@@ -2658,62 +2658,6 @@
             The name of the property.
             </summary>
         </member>
-        <member name="T:Autofac.Core.NamedService">
-            <summary>
-            Identifies a service using a textual name in addition to its type.
-            </summary>
-        </member>
-        <member name="M:Autofac.Core.NamedService.#ctor(System.String,System.Type)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Autofac.Core.NamedService"/> class.
-            </summary>
-            <param name="serviceName">Name of the service.</param>
-            <param name="serviceType">Type of the service.</param>
-        </member>
-        <member name="M:Autofac.Core.NamedService.Equals(System.Object)">
-            <summary>
-            Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
-            </summary>
-            <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>.</param>
-            <returns>
-            true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.
-            </returns>
-            <exception cref="T:System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
-        </member>
-        <member name="M:Autofac.Core.NamedService.GetHashCode">
-            <summary>
-            Serves as a hash function for a particular type.
-            </summary>
-            <returns>
-            A hash code for the current <see cref="T:System.Object"/>.
-            </returns>
-        </member>
-        <member name="M:Autofac.Core.NamedService.ChangeType(System.Type)">
-            <summary>
-            Return a new service of the same kind, but carrying
-            <paramref name="newType"/> as the <see cref="P:Autofac.Core.NamedService.ServiceType"/>.
-            </summary>
-            <param name="newType">The new service type.</param>
-            <returns>A new service with the service type.</returns>
-        </member>
-        <member name="P:Autofac.Core.NamedService.ServiceName">
-            <summary>
-            Gets or sets the name of the service.
-            </summary>
-            <value>The name of the service.</value>
-        </member>
-        <member name="P:Autofac.Core.NamedService.ServiceType">
-            <summary>
-            Gets the type of the service.
-            </summary>
-            <value>The type of the service.</value>
-        </member>
-        <member name="P:Autofac.Core.NamedService.Description">
-            <summary>
-            Gets a human-readable description of the service.
-            </summary>
-            <value>The description.</value>
-        </member>
         <member name="T:Autofac.Core.PreparingEventArgs">
             <summary>
             Fired before the activation process to allow parameters to be changed or an alternative
@@ -3789,7 +3733,7 @@
             Specifies that a type provides its own concrete type as a service.
             </summary>
             <typeparam name="TLimit">Registration limit type.</typeparam>
-            <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+            <typeparam name="TActivatorData">Activator data type.</typeparam>
             <param name="registration">Registration to set service mapping on.</param>
             <returns>Registration builder allowing the registration to be configured.</returns>
         </member>
@@ -4133,6 +4077,19 @@
             <param name="builder">Container builder.</param>
             <param name="adapter">Function adapting <typeparamref name="TFrom"/> to
             service <typeparamref name="TTo"/>.</param>
+        </member>
+        <member name="M:Autofac.RegistrationExtensions.OnRelease``3(Autofac.Builder.IRegistrationBuilder{``0,``1,``2},System.Action{``0})">
+            <summary>
+            Run a supplied action instead of disposing instances when they're no
+            longer required.
+            </summary>
+            <typeparam name="TLimit">Registration limit type.</typeparam>
+            <typeparam name="TActivatorData">Activator data type.</typeparam>
+            <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+            <param name="registration">Registration to set release action for.</param>
+            <param name="releaseAction">An action to perform instead of disposing the instance.</param>
+            <returns>Registration builder allowing the registration to be configured.</returns>
+            <remarks>Only one release action can be configured per registration.</remarks>
         </member>
         <member name="T:Autofac.RegistrationExtensionsResources">
             <summary>
@@ -5132,6 +5089,11 @@
         <member name="P:Autofac.Util.ReflectionExtensionsResources.ExpressionNotPropertyAccessor">
             <summary>
               Looks up a localized string similar to The provided expression must be of the form x =&gt;x.P, but the provided expression was {0}..
+            </summary>
+        </member>
+        <member name="T:Autofac.Util.ReleaseAction">
+            <summary>
+            Adapts an action to the <see cref="T:System.IDisposable"/> interface.
             </summary>
         </member>
         <member name="M:Autofac.Util.SequenceExtensions.JoinWith(System.Collections.Generic.IEnumerable{System.String},System.String)">
