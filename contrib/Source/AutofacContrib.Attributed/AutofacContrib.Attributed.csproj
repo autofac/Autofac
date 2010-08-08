@@ -47,6 +47,7 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="MEF\ExportInfoCompositionContainer.cs" />
     <Compile Include="MEF\ExtendedExportInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -2,7 +2,7 @@
 using AutofacContrib.Attributed.MEF;
 using NUnit.Framework;
 
-namespace AutofacContrib.Tests.Attributed
+namespace AutofacContrib.Tests.Attributed.MEF
 {
     [TestFixture]
     public class ExtendedExportInfoFixture

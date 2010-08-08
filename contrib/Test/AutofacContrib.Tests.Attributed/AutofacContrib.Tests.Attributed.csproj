@@ -44,7 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExtendedExportInfoFixture.cs" />
+    <Compile Include="MEF\ExportInfoCompositionContainerFixture.cs" />
+    <Compile Include="MEF\ExtendedExportInfoFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -17,5 +17,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("2.2.4.900")]
 [assembly: AssemblyConfiguration("Release built on 2010-05-28 20:56")]
 
-
-[assembly: System.Security.AllowPartiallyTrustedCallers]
+// this is being commented out because of the overzealous CompositionContainer in AutofacContrib.Attributed
+//[assembly: System.Security.AllowPartiallyTrustedCallers]
