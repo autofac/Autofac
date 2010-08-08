@@ -1,0 +1,7 @@
+glob:contrib/AutofacContrib.suo
+glob:contrib/Build
+glob:*/bin/
+glob:*/obj/
+glob:*/_ReSharper*
+glob:src/Build
+glob:TestResult.xml
