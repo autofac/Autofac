@@ -47,6 +47,8 @@
     <Compile Include="MEF\ExportInfoCompositionContainerFixture.cs" />
     <Compile Include="MEF\ExtendedExportInfoFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScenarioTypes\ExportScenario2DiscoveryTargets.cs" />
+    <Compile Include="ScenarioTypes\ExportScenario2Interfaces.cs" />
     <Compile Include="ScenarioTypes\ExportScenario2MetadataAttribute.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -4,6 +4,7 @@ using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using System.Reflection;
 using AutofacContrib.Attributed.MEF;
+using AutofacContrib.Tests.Attributed.ScenarioTypes;
 using NUnit.Framework;
 
 namespace AutofacContrib.Tests.Attributed.MEF
@@ -40,12 +41,8 @@ namespace AutofacContrib.Tests.Attributed.MEF
         public class Foo : IFoo{}
 
         // here we have another export type that declares our metadata in a slightly different fashion
-        [ExportScenario2Metadata(typeof(IExportScenario2), Name="Hello2")]
-        public class ExportScenario2 : IExportScenario2 {}
 
 
-        public interface IExportScenario2 {}
-        public interface IExportScenario2Metadata { string Name { get; } }
 
         #endregion
 
