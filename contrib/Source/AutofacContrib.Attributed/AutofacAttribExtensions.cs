@@ -17,6 +17,9 @@ namespace AutofacContrib.Attributed
 
         public static void RegisterUsingMetadataAttributes<TInterface, TMetadata>(this ContainerBuilder builder, Predicate<TMetadata> inclusionPredicate, params Assembly[] assemblies)
         {
+            if(inclusionPredicate == null)
+                throw new ArgumentNullException("inclusionPredicate");
+
             var aggregateCatalog = new AggregateCatalog(from a in assemblies select new AssemblyCatalog(a));
 
             var container = new ExportInfoCompositionContainer(aggregateCatalog);

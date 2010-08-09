@@ -78,5 +78,25 @@ namespace AutofacContrib.Tests.Attributed
             Assert.That(items.ToArray()[0].Metadata.Name, Is.EqualTo("scenario2"));
         }
 
+        [Test]
+        public void properly_handle_passing_a_null_predicate()
+        {
+            // arrange
+            var builder = new ContainerBuilder();
+            Predicate<IExportScenario2Metadata> predicate = null;
+
+            // act
+            var details = Assert.Throws<ArgumentNullException>(() =>
+                                                               builder.RegisterUsingMetadataAttributes
+                                                                   <IExportScenario2, IExportScenario2Metadata>(
+                                                                       predicate,
+                                                                       Assembly.
+                                                                           GetExecutingAssembly
+                                                                           ()));
+
+            // assert
+            Assert.That(details.ParamName, Is.EqualTo("inclusionPredicate"));
+        }
+
     }
 }
