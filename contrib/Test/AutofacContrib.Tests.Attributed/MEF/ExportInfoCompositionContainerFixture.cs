@@ -25,6 +25,8 @@ namespace AutofacContrib.Tests.Attributed.MEF
             }
         }
 
+        
+        
         public interface IFooMetadata
         {
             string Name { get; }
@@ -37,7 +39,28 @@ namespace AutofacContrib.Tests.Attributed.MEF
         [Export(typeof(IFoo))]
         public class Foo : IFoo{}
 
+        // here we have another export type that declares our metadata in a slightly different fashion
+        [ExportScenario2Metadata(typeof(IExportScenario2), Name="Hello2")]
+        public class ExportScenario2 : IExportScenario2 {}
+
+
+        public interface IExportScenario2 {}
+        public interface IExportScenario2Metadata { string Name { get; } }
+
         #endregion
+
+        [Test]
+        public void verify_scenario2_ability_to_discover_local_types()
+        {
+            var aggregateCatalog = new AggregateCatalog(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
+            var container = new ExportInfoCompositionContainer(aggregateCatalog);
+
+            // act
+            var exports = container.GetExportsWithTargetType<IExportScenario2, IExportScenario2Metadata>();
+
+            // assert
+            Assert.That(exports.Count(), Is.EqualTo(1));
+        }
 
         [Test]
         public void verify_ability_to_discover_local_types()
@@ -49,8 +72,9 @@ namespace AutofacContrib.Tests.Attributed.MEF
             // act
             var exports = container.GetExportsWithTargetType<IFoo, IFooMetadata>();
 
+            var array = exports.ToArray();
             // assert
-            Assert.That(exports.ToArray().Count(), Is.EqualTo(1));
+            Assert.That(array.Count(), Is.EqualTo(1));
         }
 
         [Test]
@@ -94,6 +118,5 @@ namespace AutofacContrib.Tests.Attributed.MEF
             // assert
             Assert.That(exports.ToArray()[0].Value.Value, Is.TypeOf<Foo>());
         }
-
     }
 }
