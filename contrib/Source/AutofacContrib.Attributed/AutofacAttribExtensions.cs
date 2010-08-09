@@ -9,23 +9,20 @@ namespace AutofacContrib.Attributed
 {
     public static class AutofacAttribExtensions
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TInterface"></typeparam>
-        /// <typeparam name="TMetadata"></typeparam>
-        /// <param name="builder"></param>
-        /// <param name="assemblies"></param>
         public static void RegisterUsingMetadataAttributes<TInterface, TMetadata>(this ContainerBuilder builder, params Assembly[] assemblies)
+        {
+            builder.RegisterUsingMetadataAttributes<TInterface, TMetadata>(p => true, assemblies);
+        }
+
+        public static void RegisterUsingMetadataAttributes<TInterface, TMetadata>(this ContainerBuilder builder, Predicate<TMetadata> inclusionPredicate, params Assembly[] assemblies)
         {
             var aggregateCatalog = new AggregateCatalog(from a in assemblies select new AssemblyCatalog(a));
 
             var container = new ExportInfoCompositionContainer(aggregateCatalog);
 
             var exports = container.GetExportsWithTargetType<TInterface, TMetadata>();
-
-
-            foreach (var export in exports)
+            
+            foreach (var export in exports.Where(a => inclusionPredicate(a.Value.Metadata)))
             {
                 // first, register the target type in the container
                 builder.RegisterType(export.InstantiationType);
@@ -39,6 +36,5 @@ namespace AutofacContrib.Attributed
 
             }
         }
-
     }
 }
