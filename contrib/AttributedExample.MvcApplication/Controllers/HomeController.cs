@@ -17,7 +17,7 @@ namespace AttributedExample.MvcApplication.Controllers
         {
             ViewData["Message"] = "Welcome to ASP.NET MVC!";
 
-            return View();
+            return View(_homeModel);
         }
 
         public ActionResult About()

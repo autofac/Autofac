@@ -7,6 +7,7 @@ namespace AttributedExample.MvcApplication.Models.Query
 {
     public interface IQueryPanelModel
     {
+        string Id { get; }
         IQueryModel QueryModel { get; }
     }
 
@@ -14,10 +15,11 @@ namespace AttributedExample.MvcApplication.Models.Query
     public class QueryPanelModel : IQueryPanelModel
     {
         public IQueryModel QueryModel { get; private set; }
-        
-        public QueryPanelModel(IQueryModel queryModel)
+        public string Id { get; private set; }
+        public QueryPanelModel(IQueryModel queryModel, QueryType queryType)
         {
             QueryModel = queryModel;
+            Id = queryType.ToString();
         }
     }
 }
