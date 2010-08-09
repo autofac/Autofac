@@ -1,14 +1,13 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using AutofacContrib.Tests.Attributed.MEF;
 
 namespace AutofacContrib.Tests.Attributed.ScenarioTypes
 {
     [MetadataAttribute]
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public class ExportScenario2MetadataAttribute : ExportAttribute, ExportInfoCompositionContainerFixture.IFooMetadata
+    public class ExportScenario2MetadataAttribute : ExportAttribute, IExportScenario2Metadata
     {
-        public ExportScenario2MetadataAttribute() : base() { }
+        public ExportScenario2MetadataAttribute() { }
         public ExportScenario2MetadataAttribute(Type contractType) : base(contractType) { }
         public ExportScenario2MetadataAttribute(string contractName) : base(contractName) { }
         public ExportScenario2MetadataAttribute(string contractName, Type contractType) : base(contractName, contractType) { }

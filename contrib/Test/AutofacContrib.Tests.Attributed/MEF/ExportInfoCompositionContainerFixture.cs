@@ -12,40 +12,6 @@ namespace AutofacContrib.Tests.Attributed.MEF
     [TestFixture]
     public class ExportInfoCompositionContainerFixture
     {
-
-        #region local discovery related test types
-
-        [MetadataAttribute]
-        public class FooMetadataAttribute : Attribute
-        {
-            public string Name { get; private set; }
-
-            public FooMetadataAttribute(string name)
-            {
-                Name = name;
-            }
-        }
-
-        
-        
-        public interface IFooMetadata
-        {
-            string Name { get; }
-        }
-
-        public interface IFoo
-        {}
-
-        [FooMetadata("Hello")]
-        [Export(typeof(IFoo))]
-        public class Foo : IFoo{}
-
-        // here we have another export type that declares our metadata in a slightly different fashion
-
-
-
-        #endregion
-
         [Test]
         public void verify_scenario2_ability_to_discover_local_types()
         {
@@ -60,6 +26,49 @@ namespace AutofacContrib.Tests.Attributed.MEF
         }
 
         [Test]
+        public void validate_scenario2_discovery_of_the_metadata()
+        {
+            // arrange
+            var aggregateCatalog = new AggregateCatalog(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
+            var container = new ExportInfoCompositionContainer(aggregateCatalog);
+
+            // act
+            var exports = container.GetExportsWithTargetType<IExportScenario2, IExportScenario2Metadata>();
+
+            // assert
+            Assert.That(exports.ToArray()[0].Value.Metadata.Name, Is.EqualTo("Hello2"));
+        }
+
+        [Test]
+        public void validate_scenario2_concrete_type_identification_of_discovery_process()
+        {
+            // arrange
+            var aggregateCatalog = new AggregateCatalog(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
+            var container = new ExportInfoCompositionContainer(aggregateCatalog);
+
+            // act
+            var exports = container.GetExportsWithTargetType<IExportScenario2, IExportScenario2Metadata>();
+
+            // assert
+            Assert.That(exports.ToArray()[0].InstantiationType, Is.EqualTo(typeof(ExportScenario2)));
+        }
+
+        [Test]
+        public void validate_scenario2_lazy_instantiation_of_target_instance()
+        {
+            // arrange
+            var aggregateCatalog = new AggregateCatalog(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
+            var container = new ExportInfoCompositionContainer(aggregateCatalog);
+
+            // act
+            var exports = container.GetExportsWithTargetType<IExportScenario2, IExportScenario2Metadata>();
+
+            // assert
+            Assert.That(exports.ToArray()[0].Value.Value, Is.TypeOf<ExportScenario2>());
+        }
+
+
+        [Test]
         public void verify_ability_to_discover_local_types()
         {
             // arrange
@@ -67,7 +76,7 @@ namespace AutofacContrib.Tests.Attributed.MEF
             var container = new ExportInfoCompositionContainer(aggregateCatalog);
 
             // act
-            var exports = container.GetExportsWithTargetType<IFoo, IFooMetadata>();
+            var exports = container.GetExportsWithTargetType<IExportScenario1, IExportScenario1Metadata>();
 
             var array = exports.ToArray();
             // assert
@@ -82,7 +91,7 @@ namespace AutofacContrib.Tests.Attributed.MEF
             var container = new ExportInfoCompositionContainer(aggregateCatalog);
 
             // act
-            var exports = container.GetExportsWithTargetType<IFoo, IFooMetadata>();
+            var exports = container.GetExportsWithTargetType<IExportScenario1, IExportScenario1Metadata>();
 
             // assert
             Assert.That(exports.ToArray()[0].Value.Metadata.Name, Is.EqualTo("Hello"));
@@ -96,10 +105,10 @@ namespace AutofacContrib.Tests.Attributed.MEF
             var container = new ExportInfoCompositionContainer(aggregateCatalog);
 
             // act
-            var exports = container.GetExportsWithTargetType<IFoo, IFooMetadata>();
+            var exports = container.GetExportsWithTargetType<IExportScenario1, IExportScenario1Metadata>();
 
             // assert
-            Assert.That(exports.ToArray()[0].InstantiationType, Is.EqualTo(typeof(Foo)));
+            Assert.That(exports.ToArray()[0].InstantiationType, Is.EqualTo(typeof(ExportScenario1)));
         }
 
         [Test]
@@ -110,10 +119,10 @@ namespace AutofacContrib.Tests.Attributed.MEF
             var container = new ExportInfoCompositionContainer(aggregateCatalog);
 
             // act
-            var exports = container.GetExportsWithTargetType<IFoo, IFooMetadata>();
+            var exports = container.GetExportsWithTargetType<IExportScenario1, IExportScenario1Metadata>();
 
             // assert
-            Assert.That(exports.ToArray()[0].Value.Value, Is.TypeOf<Foo>());
+            Assert.That(exports.ToArray()[0].Value.Value, Is.TypeOf<ExportScenario1>());
         }
     }
 }
