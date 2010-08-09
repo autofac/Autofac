@@ -1,14 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
+using AttributedExample.MvcApplication.Models;
 
 namespace AttributedExample.MvcApplication.Controllers
 {
     [HandleError]
     public class HomeController : Controller
     {
+        private IHomeModel _homeModel;
+
+        public HomeController(IHomeModel homeModel)
+        {
+            _homeModel = homeModel;    
+        }
+
         public ActionResult Index()
         {
             ViewData["Message"] = "Welcome to ASP.NET MVC!";

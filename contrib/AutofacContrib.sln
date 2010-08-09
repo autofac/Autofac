@@ -71,6 +71,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutofacContrib.Attributed",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutofacContrib.Tests.Attributed", "Test\AutofacContrib.Tests.Attributed\AutofacContrib.Tests.Attributed.csproj", "{03A16C13-A683-4392-96B5-2EE786CEDA88}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttributedExample.MvcApplication", "AttributedExample.MvcApplication\AttributedExample.MvcApplication.csproj", "{1E696F07-E25E-416F-AF45-4E1CC9A7B538}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -341,6 +343,16 @@ Global
 		{03A16C13-A683-4392-96B5-2EE786CEDA88}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{03A16C13-A683-4392-96B5-2EE786CEDA88}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{03A16C13-A683-4392-96B5-2EE786CEDA88}.Release|x86.ActiveCfg = Release|Any CPU
+		{1E696F07-E25E-416F-AF45-4E1CC9A7B538}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E696F07-E25E-416F-AF45-4E1CC9A7B538}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E696F07-E25E-416F-AF45-4E1CC9A7B538}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1E696F07-E25E-416F-AF45-4E1CC9A7B538}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1E696F07-E25E-416F-AF45-4E1CC9A7B538}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1E696F07-E25E-416F-AF45-4E1CC9A7B538}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E696F07-E25E-416F-AF45-4E1CC9A7B538}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E696F07-E25E-416F-AF45-4E1CC9A7B538}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1E696F07-E25E-416F-AF45-4E1CC9A7B538}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{1E696F07-E25E-416F-AF45-4E1CC9A7B538}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -372,5 +384,6 @@ Global
 		{7DC9BFB3-8F43-437D-81E2-BE540A017E70} = {5101146B-55B1-42BB-9232-4A46D88ECD3F}
 		{6F1BD5E2-8195-40AD-85B5-CF1BFB3CCE7F} = {5101146B-55B1-42BB-9232-4A46D88ECD3F}
 		{637C4B18-56BE-4E75-A7CD-7B79C489D33C} = {5101146B-55B1-42BB-9232-4A46D88ECD3F}
+		{1E696F07-E25E-416F-AF45-4E1CC9A7B538} = {5101146B-55B1-42BB-9232-4A46D88ECD3F}
 	EndGlobalSection
 EndGlobal
