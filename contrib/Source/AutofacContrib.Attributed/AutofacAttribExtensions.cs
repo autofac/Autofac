@@ -3,6 +3,7 @@ using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using System.Reflection;
 using Autofac;
+using Autofac.Features.Metadata;
 using AutofacContrib.Attributed.MEF;
 
 namespace AutofacContrib.Attributed
@@ -33,6 +34,10 @@ namespace AutofacContrib.Attributed
                 builder.Register(
                     c => new Lazy<TInterface, TMetadata>(() => (TInterface)c.Resolve(item.InstantiationType),
                                                          item.Value.Metadata));
+
+                // do we really need to do this separately from the Lazy<T, TM> wireup?
+                builder.Register(
+                    c => new Meta<TInterface, TMetadata>((TInterface)c.Resolve(item.InstantiationType), item.Value.Metadata));
 
             }
         }

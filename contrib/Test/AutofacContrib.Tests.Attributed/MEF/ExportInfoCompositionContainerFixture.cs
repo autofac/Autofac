@@ -20,7 +20,7 @@ namespace AutofacContrib.Tests.Attributed.MEF
             var exports = container.GetExportsWithTargetType<IExportScenario2, IExportScenario2Metadata>();
 
             // assert
-            Assert.That(exports.Count(), Is.EqualTo(1));
+            Assert.That(exports.Count(), Is.EqualTo(2));
         }
 
         [Test]

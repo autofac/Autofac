@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=0.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Resource\Library\Autofac\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\Resource\Tool\NUnit\nunit.framework.dll</HintPath>
     </Reference>
@@ -44,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContainerBuilderExtensionTestFixture.cs" />
     <Compile Include="MEF\ExportInfoCompositionContainerFixture.cs" />
     <Compile Include="MEF\ExtendedExportInfoFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
