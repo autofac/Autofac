@@ -75,7 +75,7 @@ namespace AttributedExample.MvcApplication
             builder.RegisterType<QueryHeaderModel>();
             builder.RegisterType<HomeModel>().As<IHomeModel>();
             builder.RegisterType<RunningState>();
-
+            builder.RegisterControllers(Assembly.GetExecutingAssembly());
 
             _containerProvider = new ContainerProvider(builder.Build());
 

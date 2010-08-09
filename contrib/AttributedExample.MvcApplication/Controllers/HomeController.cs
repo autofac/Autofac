@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using AttributedExample.MvcApplication.Models;
 
 namespace AttributedExample.MvcApplication.Controllers
@@ -6,9 +7,9 @@ namespace AttributedExample.MvcApplication.Controllers
     [HandleError]
     public class HomeController : Controller
     {
-        private IHomeModel _homeModel;
+        private readonly Lazy<IHomeModel> _homeModel;
 
-        public HomeController(IHomeModel homeModel)
+        public HomeController(Lazy<IHomeModel> homeModel)
         {
             _homeModel = homeModel;    
         }
@@ -17,7 +18,7 @@ namespace AttributedExample.MvcApplication.Controllers
         {
             ViewData["Message"] = "Welcome to ASP.NET MVC!";
 
-            return View(_homeModel);
+            return View(_homeModel.Value);
         }
 
         public ActionResult About()
