@@ -97,6 +97,5 @@ namespace AutofacContrib.Tests.Attributed
             // assert
             Assert.That(details.ParamName, Is.EqualTo("inclusionPredicate"));
         }
-
     }
 }
