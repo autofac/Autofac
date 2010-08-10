@@ -52,6 +52,8 @@ namespace AttributedExample.MvcApplication
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+            routes.IgnoreRoute("{file}.js");
+            routes.IgnoreRoute("{file}.css");
 
             routes.MapRoute(
                 "Default", // Route name
