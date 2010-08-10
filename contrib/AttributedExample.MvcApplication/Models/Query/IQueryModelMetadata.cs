@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 
 namespace AttributedExample.MvcApplication.Models.Query
 {
@@ -6,9 +7,10 @@ namespace AttributedExample.MvcApplication.Models.Query
     {
         RoleType RoleType { get; }
         QueryType QueryType { get; }
-
     }
 
+    [MetadataAttribute]
+    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public class QueryModelMetadataAttribute : ExportAttribute, IQueryModelMetadata
     {
         public QueryModelMetadataAttribute(RoleType roleType, QueryType queryType) : base(typeof(IQueryModel))

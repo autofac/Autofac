@@ -21,10 +21,10 @@ namespace AttributedExample.MvcApplication.Models
     public class HomeModel : IHomeModel
     {
         public HomeModel(IEnumerable<Lazy<IQueryModel, IQueryModelMetadata>> queryModels, RunningState runningState,
-            Func<QueryType, QueryHeaderModel> headerFactory, Func<IQueryModel, IQueryPanelModel> panelFactory)
+            Func<QueryType, QueryHeaderModel> headerFactory, Func<IQueryModel, QueryType, IQueryPanelModel> panelFactory)
         {
             QueryHeaders = from i in queryModels where(runningState.RoleType == i.Metadata.RoleType) select headerFactory(i.Metadata.QueryType);
-            QueryPanels = from i in queryModels where(runningState.RoleType == i.Metadata.RoleType) select panelFactory(i.Value);
+            QueryPanels = from i in queryModels where(runningState.RoleType == i.Metadata.RoleType) select panelFactory(i.Value, i.Metadata.QueryType);
         }
 
         public IEnumerable<QueryHeaderModel> QueryHeaders { get; private set; }

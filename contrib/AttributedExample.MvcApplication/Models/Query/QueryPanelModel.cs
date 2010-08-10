@@ -16,6 +16,7 @@ namespace AttributedExample.MvcApplication.Models.Query
     {
         public IQueryModel QueryModel { get; private set; }
         public string Id { get; private set; }
+
         public QueryPanelModel(IQueryModel queryModel, QueryType queryType)
         {
             QueryModel = queryModel;
