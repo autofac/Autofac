@@ -14,15 +14,24 @@ namespace Remember.Web
     {
         static IContainerProvider _containerProvider;
 
+        
+
         static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
             routes.IgnoreRoute("favicon.ico");
 
+            AreaRegistration.RegisterAllAreas();
+
             routes.MapRoute(
-                "Default",
-                "{controller}/{action}/{id}",
-                new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                "Default",                              // Route Name
+                "{controller}/{action}/{id}",           // Route URL (pattern)
+                new {                                   // Route Detauls
+                    controller = "Home", 
+                    action = "Index", 
+                    id = UrlParameter.Optional 
+                }, 
+                new []{"Remember.Web.Controllers"}      // Route Namespaces that take preference
             );
         }
 
