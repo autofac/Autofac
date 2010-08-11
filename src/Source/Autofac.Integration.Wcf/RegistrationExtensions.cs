@@ -56,7 +56,10 @@ namespace Autofac.Integration.Wcf
             var disp = (IClientChannel) channel;
             try
             {
-                disp.Close();
+                if (disp.State == CommunicationState.Faulted)
+                    disp.Abort();
+                else
+                    disp.Close();
             }
             catch (TimeoutException)
             {
