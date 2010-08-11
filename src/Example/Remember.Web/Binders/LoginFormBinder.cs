@@ -33,7 +33,7 @@ namespace Remember.Web.Binders
 
                 if (!_authService.IsValid(model.EmailAddress,model.Password ))
                 {
-                    bindingContext.ModelState.AddModelError("", "Invalid credentials (says the injected ModelBinder)");
+                    bindingContext.ModelState.AddModelError("", "Invalid credentials (so says the injected LoginFormBinder)");
                 }
             }
             catch (Exception ex)
