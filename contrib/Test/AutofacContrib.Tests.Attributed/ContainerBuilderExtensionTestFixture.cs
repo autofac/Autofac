@@ -19,7 +19,7 @@ namespace AutofacContrib.Tests.Attributed
             // arrange
             var builder = new ContainerBuilder();
 
-            builder.RegisterUsingMetadataAttributes<IExportScenario1, IExportScenario1Metadata>(
+            builder.RegisterAssemblyTypedMetadata<IExportScenario1, IExportScenario1Metadata>(
                 Assembly.GetExecutingAssembly());
 
             // act
@@ -37,7 +37,7 @@ namespace AutofacContrib.Tests.Attributed
             // arrange
             var builder = new ContainerBuilder();
 
-            builder.RegisterUsingMetadataAttributes<IExportScenario2, IExportScenario2Metadata>(Assembly.GetExecutingAssembly());
+            builder.RegisterAssemblyTypedMetadata<IExportScenario2, IExportScenario2Metadata>(Assembly.GetExecutingAssembly());
 
             // act
             var items = builder.Build().Resolve<IEnumerable<Lazy<IExportScenario2, IExportScenario2Metadata>>>();
@@ -52,7 +52,7 @@ namespace AutofacContrib.Tests.Attributed
             // arrange
             var builder = new ContainerBuilder();
 
-            builder.RegisterUsingMetadataAttributes<IExportScenario2, IExportScenario2Metadata>(Assembly.GetExecutingAssembly());
+            builder.RegisterAssemblyTypedMetadata<IExportScenario2, IExportScenario2Metadata>(Assembly.GetExecutingAssembly());
 
             // act
             var items = builder.Build().Resolve<IEnumerable<Meta<IExportScenario2, IExportScenario2Metadata>>>();
@@ -67,7 +67,7 @@ namespace AutofacContrib.Tests.Attributed
             // arrange
             var builder = new ContainerBuilder();
 
-            builder.RegisterUsingMetadataAttributes<IExportScenario2, IExportScenario2Metadata>(p => p.Name != "Hello2",
+            builder.RegisterAssemblyTypedMetadata<IExportScenario2, IExportScenario2Metadata>(p => p.Name != "Hello2",
                 Assembly.GetExecutingAssembly());
 
             // act
@@ -87,7 +87,7 @@ namespace AutofacContrib.Tests.Attributed
 
             // act
             var details = Assert.Throws<ArgumentNullException>(() =>
-                                                               builder.RegisterUsingMetadataAttributes
+                                                               builder.RegisterAssemblyTypedMetadata
                                                                    <IExportScenario2, IExportScenario2Metadata>(
                                                                        predicate,
                                                                        Assembly.
@@ -104,7 +104,7 @@ namespace AutofacContrib.Tests.Attributed
             // arrange
             var builder = new ContainerBuilder();
 
-            builder.RegisterUsingMetadataAttributes<IExportScenario3, IExportScenario3Metadata>(p => true,
+            builder.RegisterAssemblyTypedMetadata<IExportScenario3, IExportScenario3Metadata>(p => true,
                 Assembly.GetExecutingAssembly());
 
             // act
@@ -120,7 +120,7 @@ namespace AutofacContrib.Tests.Attributed
             // arrange
             var builder = new ContainerBuilder();
 
-            builder.RegisterUsingMetadataAttributes<IExportScenario3, IExportScenario3Metadata>(p => true,
+            builder.RegisterAssemblyTypedMetadata<IExportScenario3, IExportScenario3Metadata>(p => true,
                 Assembly.GetExecutingAssembly());
 
             // act

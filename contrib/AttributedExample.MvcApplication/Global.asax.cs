@@ -71,7 +71,7 @@ namespace AttributedExample.MvcApplication
             var builder = new ContainerBuilder();
 
             // this single call registers all IQueryModel implementations and grabs their metadata for later application
-            builder.RegisterUsingMetadataAttributes<IQueryModel, IQueryModelMetadata>(Assembly.GetExecutingAssembly());
+            builder.RegisterAssemblyTypedMetadata<IQueryModel, IQueryModelMetadata>(Assembly.GetExecutingAssembly());
 
             builder.RegisterType<QueryPanelModel>().As<IQueryPanelModel>();
             builder.RegisterType<QueryHeaderModel>();

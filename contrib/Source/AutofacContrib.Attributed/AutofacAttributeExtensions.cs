@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Reflection;
 using Autofac;
+using Autofac.Builder;
 using Autofac.Features.Metadata;
 
 namespace AutofacContrib.Attributed
@@ -53,37 +54,55 @@ namespace AutofacContrib.Attributed
 
         #endregion
 
-        public static void RegisterUsingMetadataAttributes<TInterface, TMetadata>(this ContainerBuilder builder, params Assembly[] assemblies)
+        public static void RegisterAssemblyTypedMetadata<TInterface, TMetadata>(this ContainerBuilder builder, params Assembly[] assemblies)
         {
-            builder.RegisterUsingMetadataAttributes<TInterface, TMetadata>(p => true, assemblies);
+            builder.RegisterAssemblyTypedMetadata<TInterface, TMetadata>(p => true, assemblies);
         }
 
 
-        public static void RegisterUsingMetadataAttributes<TInterface, TMetadata>(this ContainerBuilder builder, Predicate<TMetadata> inclusionPredicate, params Assembly[] assemblies)
+        public static void RegisterAssemblyTypedMetadata<TInterface, TMetadata>(this ContainerBuilder builder, Predicate<TMetadata> inclusionPredicate, params Assembly[] assemblies)
         {
             if (inclusionPredicate == null)
                 throw new ArgumentNullException("inclusionPredicate");
+
             foreach (var targetType in assemblies.Select(assembly => (from type in assembly.GetTypes()
                                                                       where type.IsClass && type.GetInterface(typeof (TInterface).Name) != null && HasMetadataAttribute(type)
                                                                       select type)).SelectMany(targetTypes => targetTypes))
-            {
-                // register the target instance
-                builder.RegisterType(targetType);
-
-                // get and register all TMetadata instances servicing the IEnumerable<Lazy<..>> and IEnumerable<Meta<..>> resolutions
-                foreach (var metadata in GetStronglyTypedMetadata<TMetadata>(targetType).Where(a => inclusionPredicate(a)))
-                {
-                    // hold onto the ambient properties in local scope declarations to service the lambda-lifted closure
-                    var localType = targetType;
-                    var localMetadata = metadata;
-                    builder.Register(
-                        c => new Lazy<TInterface, TMetadata>(() => (TInterface) c.Resolve(localType), localMetadata));
-
-                    // support the autofac strongly typed Meta wireup
-                    builder.Register(
-                        c => new Meta<TInterface, TMetadata>((TInterface) c.Resolve(localType), localMetadata));
-                }
-            }
+                builder.RegisterTypedMetadata<TInterface, TMetadata>(targetType,
+                                                                     GetStronglyTypedMetadata<TMetadata>(targetType).
+                                                                         Where(a => inclusionPredicate(a)));
         }
+
+        public static IRegistrationBuilder<TInstance,ConcreteReflectionActivatorData,SingleRegistrationStyle> RegisterTypedMetadata<TInterface, TInstance, TMetadata>(this ContainerBuilder builder, IEnumerable<TMetadata> metadataSet) where TInstance : TInterface
+        {
+            foreach (var metadata in metadataSet)
+            {
+                // register Lazy<T, TMetadata> type
+                builder.Register(c => new Lazy<TInterface, TMetadata>(() => c.Resolve<TInstance>(), metadata));
+
+                // register the Meta<T, TMetadata> type
+                builder.Register(c => new Meta<TInterface, TMetadata>(c.Resolve<TInstance>(), metadata));
+            }
+
+            return builder.RegisterType<TInstance>();
+
+        }
+
+        public static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterTypedMetadata<TInterface, TMetadata>(this ContainerBuilder builder, Type instanceType, IEnumerable<TMetadata> metadataSet)
+        {
+            foreach (var metadata in metadataSet)
+            {
+                // register Lazy<T, TMetadata> type
+                builder.Register(c => new Lazy<TInterface, TMetadata>(() => c.Resolve<TInterface>(), metadata));
+
+                // register the Meta<T, TMetadata> type
+                builder.Register(c => new Meta<TInterface, TMetadata>(c.Resolve<TInterface>(), metadata));
+            }
+
+            return builder.RegisterType(instanceType);
+
+        }
+
+        
     }
 }
