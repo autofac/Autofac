@@ -114,5 +114,25 @@ namespace AutofacContrib.Tests.Attributed
             Assert.That(items.Count(), Is.EqualTo(2));
         }
 
+        [Test]
+        public void scenario_3_validate_registration_content()
+        {
+            // arrange
+            var builder = new ContainerBuilder();
+
+            builder.RegisterUsingMetadataAttributes<IExportScenario3, IExportScenario3Metadata>(p => true,
+                Assembly.GetExecutingAssembly());
+
+            // act
+            var items = builder.Build().Resolve<IEnumerable<Lazy<IExportScenario3, IExportScenario3Metadata>>>();
+
+            // assert
+            Assert.That(items.Where(p => p.Metadata.Name == "sid").Count(), Is.EqualTo(1));
+            Assert.That(items.Where(p => p.Metadata.Name == "nancy").Count(), Is.EqualTo(1));
+
+            Assert.That(items.Where(p => p.Metadata.Name == "the-cats").Count(), Is.EqualTo(0));
+
+        }
+
     }
 }
