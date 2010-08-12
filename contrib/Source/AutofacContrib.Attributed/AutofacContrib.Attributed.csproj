@@ -51,8 +51,6 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AutofacAttributeExtensions.cs" />
-    <Compile Include="MEF\ExportInfoCompositionContainer.cs" />
-    <Compile Include="MEF\ExtendedExportInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
