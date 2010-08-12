@@ -73,6 +73,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutofacContrib.Tests.Attrib
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttributedExample.MvcApplication", "AttributedExample.MvcApplication\AttributedExample.MvcApplication.csproj", "{1E696F07-E25E-416F-AF45-4E1CC9A7B538}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttributedExample.ConsoleApplication", "Example\AttributedExample.ConsoleApplication\AttributedExample.ConsoleApplication.csproj", "{CB6B42DE-2464-49A3-9533-8DEBF64A8D8F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -353,6 +355,16 @@ Global
 		{1E696F07-E25E-416F-AF45-4E1CC9A7B538}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{1E696F07-E25E-416F-AF45-4E1CC9A7B538}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{1E696F07-E25E-416F-AF45-4E1CC9A7B538}.Release|x86.ActiveCfg = Release|Any CPU
+		{CB6B42DE-2464-49A3-9533-8DEBF64A8D8F}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{CB6B42DE-2464-49A3-9533-8DEBF64A8D8F}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{CB6B42DE-2464-49A3-9533-8DEBF64A8D8F}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{CB6B42DE-2464-49A3-9533-8DEBF64A8D8F}.Debug|x86.ActiveCfg = Debug|x86
+		{CB6B42DE-2464-49A3-9533-8DEBF64A8D8F}.Debug|x86.Build.0 = Debug|x86
+		{CB6B42DE-2464-49A3-9533-8DEBF64A8D8F}.Release|Any CPU.ActiveCfg = Release|x86
+		{CB6B42DE-2464-49A3-9533-8DEBF64A8D8F}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{CB6B42DE-2464-49A3-9533-8DEBF64A8D8F}.Release|Mixed Platforms.Build.0 = Release|x86
+		{CB6B42DE-2464-49A3-9533-8DEBF64A8D8F}.Release|x86.ActiveCfg = Release|x86
+		{CB6B42DE-2464-49A3-9533-8DEBF64A8D8F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -385,5 +397,6 @@ Global
 		{6F1BD5E2-8195-40AD-85B5-CF1BFB3CCE7F} = {5101146B-55B1-42BB-9232-4A46D88ECD3F}
 		{637C4B18-56BE-4E75-A7CD-7B79C489D33C} = {5101146B-55B1-42BB-9232-4A46D88ECD3F}
 		{1E696F07-E25E-416F-AF45-4E1CC9A7B538} = {5101146B-55B1-42BB-9232-4A46D88ECD3F}
+		{CB6B42DE-2464-49A3-9533-8DEBF64A8D8F} = {5101146B-55B1-42BB-9232-4A46D88ECD3F}
 	EndGlobalSection
 EndGlobal
