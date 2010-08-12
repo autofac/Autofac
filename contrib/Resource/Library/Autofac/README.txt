@@ -1,0 +1,1 @@
+The Autofac binaries are no longer checked in to source control because of the potential size of many frequent revisions. To build AutofacContrib, either copy the binaries of choice to this folder by hand, or use the Autofac.build script in the project root.
