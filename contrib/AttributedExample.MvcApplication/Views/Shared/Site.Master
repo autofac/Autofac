@@ -8,11 +8,7 @@
     <link href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css' />
     <script type="text/javascript" src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js'></script>
     <script type="text/javascript" src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.3/jquery-ui.min.js'></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#tab-set").tabs();
-        });
-	</script> 
+   
 </head>
 
 <body>
@@ -44,5 +40,13 @@
             </div>
         </div>
     </div>
+     <script type="text/javascript">
+         $(document).ready(function () {
+             alert('hello');
+             $("#tab-set").tabs();
+             alert('goodbye');
+             //$('#tab-set').fadeOut("slow");
+         });
+	</script> 
 </body>
 </html>

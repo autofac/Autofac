@@ -58,6 +58,9 @@
     <Compile Include="ScenarioTypes\ExportScenario2DiscoveryTargets.cs" />
     <Compile Include="ScenarioTypes\ExportScenario2Interfaces.cs" />
     <Compile Include="ScenarioTypes\ExportScenario2MetadataAttribute.cs" />
+    <Compile Include="ScenarioTypes\ExportScenario3DiscoveryTargets.cs" />
+    <Compile Include="ScenarioTypes\ExportScenario3Interfaces.cs" />
+    <Compile Include="ScenarioTypes\ExportScenario3MetadataAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\AutofacContrib.Attributed\AutofacContrib.Attributed.csproj">

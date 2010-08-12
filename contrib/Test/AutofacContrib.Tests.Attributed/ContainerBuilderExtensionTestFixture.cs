@@ -97,5 +97,22 @@ namespace AutofacContrib.Tests.Attributed
             // assert
             Assert.That(details.ParamName, Is.EqualTo("inclusionPredicate"));
         }
+
+        [Test]
+        public void scenario_3_exposing_one_class_as_multiple_registrations_based_on_metadata()
+        {
+            // arrange
+            var builder = new ContainerBuilder();
+
+            builder.RegisterUsingMetadataAttributes<IExportScenario3, IExportScenario3Metadata>(p => true,
+                Assembly.GetExecutingAssembly());
+
+            // act
+            var items = builder.Build().Resolve<IEnumerable<Lazy<IExportScenario3, IExportScenario3Metadata>>>();
+
+            // assert
+            Assert.That(items.Count(), Is.EqualTo(2));
+        }
+
     }
 }
