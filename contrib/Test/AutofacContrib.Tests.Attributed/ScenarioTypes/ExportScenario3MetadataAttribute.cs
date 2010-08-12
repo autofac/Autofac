@@ -5,7 +5,7 @@ namespace AutofacContrib.Tests.Attributed.ScenarioTypes
 {
     [MetadataAttribute]
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
-    public class ExportScenario3MetadataAttribute : Attribute, IExportScenario3Metadata
+    public class ExportScenario3MetadataAttribute : Attribute
     {
         public ExportScenario3MetadataAttribute(string name) 
         {
