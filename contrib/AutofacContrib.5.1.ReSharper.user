@@ -1,0 +1,56 @@
+<Configuration>
+  <SettingsComponent>
+    <string />
+    <integer />
+    <boolean>
+      <setting name="SolutionAnalysisEnabled">False</setting>
+    </boolean>
+  </SettingsComponent>
+  <RecentFiles>
+    <RecentFiles>
+      <File id="20325C68-5988-4AEE-954C-2418901AF12E/f:InterceptAttribute.cs" caret="664" fromTop="5" />
+      <File id="5EFE64A7-50F3-4F80-BCF8-9FFE89832349/d:Wcf/f:AutofacServiceHostFactoryFixture.cs" caret="1063" fromTop="0" />
+      <File id="5EFE64A7-50F3-4F80-BCF8-9FFE89832349/d:Wcf/f:AutofacWebServiceHostFactoryFixture.cs" caret="898" fromTop="3" />
+      <File id="20325C68-5988-4AEE-954C-2418901AF12E/f:RegistrationExtensions.cs" caret="4883" fromTop="17" />
+      <File id="AA451B59-0075-4CFD-A847-AF057BB2084B/f:Starter.cs" caret="2698" fromTop="14" />
+      <File id="7A6DB23D-117E-4742-A9FA-8A6956DF6829/f:AutofacServiceLocator.cs" caret="717" fromTop="14" />
+      <File id="D3C12B41-D0BE-43CB-B5F6-6CFB8F20FB51/f:DependencyTrackingContext.cs" caret="496" fromTop="8" />
+      <File id="1263412A-440E-41F1-9729-3A2B58B03124/d:Bytecode/f:AutofacReflectionOptimizer.cs" caret="885" fromTop="14" />
+      <File id="321CEF70-1C21-4CF0-BE04-4F72427A88D6/d:Wcf/f:SimpleServiceImplementationDataProvider.cs" caret="4049" fromTop="14" />
+      <File id="321CEF70-1C21-4CF0-BE04-4F72427A88D6/f:MultitenantContainer.cs" caret="16826" fromTop="14" />
+      <File id="17F78C83-C58F-4E6C-B896-8E85D97683E1/f:ProfilingModuleTests.cs" caret="3207" fromTop="10" />
+      <File id="321CEF70-1C21-4CF0-BE04-4F72427A88D6/f:ConfigurationActionBuilder.cs" caret="2018" fromTop="12" />
+    </RecentFiles>
+    <RecentEdits>
+      <File id="20325C68-5988-4AEE-954C-2418901AF12E/f:InterceptAttribute.cs" caret="664" fromTop="5" />
+      <File id="20325C68-5988-4AEE-954C-2418901AF12E/f:RegistrationExtensions.cs" caret="8342" fromTop="5" />
+      <File id="321CEF70-1C21-4CF0-BE04-4F72427A88D6/d:Wcf/f:SimpleServiceImplementationDataProvider.cs" caret="3179" fromTop="5" />
+      <File id="5EFE64A7-50F3-4F80-BCF8-9FFE89832349/d:Wcf/f:AutofacServiceHostFactoryFixture.cs" caret="941" fromTop="5" />
+      <File id="5EFE64A7-50F3-4F80-BCF8-9FFE89832349/d:Wcf/f:AutofacWebServiceHostFactoryFixture.cs" caret="944" fromTop="5" />
+      <File id="20325C68-5988-4AEE-954C-2418901AF12E/f:RegistrationExtensions.cs" caret="3154" fromTop="14" />
+      <File id="20325C68-5988-4AEE-954C-2418901AF12E/f:RegistrationExtensions.cs" caret="4883" fromTop="17" />
+      <File id="AA451B59-0075-4CFD-A847-AF057BB2084B/f:Starter.cs" caret="2698" fromTop="14" />
+      <File id="7A6DB23D-117E-4742-A9FA-8A6956DF6829/f:AutofacServiceLocator.cs" caret="1106" fromTop="11" />
+      <File id="7A6DB23D-117E-4742-A9FA-8A6956DF6829/f:AutofacServiceLocator.cs" caret="711" fromTop="16" />
+      <File id="D3C12B41-D0BE-43CB-B5F6-6CFB8F20FB51/f:DependencyTrackingContext.cs" caret="669" fromTop="15" />
+      <File id="1263412A-440E-41F1-9729-3A2B58B03124/d:Bytecode/f:AutofacReflectionOptimizer.cs" caret="1037" fromTop="14" />
+      <File id="1263412A-440E-41F1-9729-3A2B58B03124/d:Bytecode/f:AutofacReflectionOptimizer.cs" caret="857" fromTop="21" />
+      <File id="321CEF70-1C21-4CF0-BE04-4F72427A88D6/f:MultitenantContainer.cs" caret="734" fromTop="14" />
+      <File id="321CEF70-1C21-4CF0-BE04-4F72427A88D6/d:Wcf/f:SimpleServiceImplementationDataProvider.cs" caret="3853" fromTop="10" />
+      <File id="321CEF70-1C21-4CF0-BE04-4F72427A88D6/d:Wcf/f:SimpleServiceImplementationDataProvider.cs" caret="4049" fromTop="14" />
+      <File id="321CEF70-1C21-4CF0-BE04-4F72427A88D6/f:MultitenantContainer.cs" caret="16813" fromTop="14" />
+      <File id="17F78C83-C58F-4E6C-B896-8E85D97683E1/f:ProfilingModuleTests.cs" caret="901" fromTop="15" />
+    </RecentEdits>
+  </RecentFiles>
+  <NAntValidationSettings>
+    <NAntPath value="" />
+  </NAntValidationSettings>
+  <UnitTestRunner>
+    <Providers />
+  </UnitTestRunner>
+  <UnitTestRunnerNUnit>
+    <NUnitInstallDir IsNull="False">
+    </NUnitInstallDir>
+    <UseAddins>Never</UseAddins>
+  </UnitTestRunnerNUnit>
+</Configuration>

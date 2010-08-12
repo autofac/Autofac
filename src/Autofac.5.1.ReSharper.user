@@ -1,0 +1,91 @@
+<Configuration>
+  <SettingsComponent>
+    <string />
+    <integer />
+    <boolean>
+      <setting name="SolutionAnalysisEnabled">False</setting>
+    </boolean>
+  </SettingsComponent>
+  <CompletionStatisticsManager>
+    <ItemStatistics item="Default">
+      <Item value="ReflectionExtensions`0" priority="0" />
+      <Item value="IComponentContext`0" priority="0" />
+      <Item value="ConsoleCancelEventArgs`0" priority="0" />
+      <Item value="cc" priority="0" />
+      <Item value="Type`0" priority="0" />
+      <Item value="MethodCallExpression`0" priority="0" />
+      <Item value="methodCallExpression" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@Autofac.Util.ReflectionExtensions">
+      <Item value="GetProperty`2" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@System.Type">
+      <Item value="EmptyTypes" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Linq.Expressions.MethodCallExpression">
+      <Item value="Method" priority="0" />
+    </ItemStatistics>
+  </CompletionStatisticsManager>
+  <RecentFiles>
+    <RecentFiles>
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/f:IComponentContext.cs" caret="2289" fromTop="52" />
+      <File id="DEF93D8F-91B1-42C4-967C-43DB609447CA/f:RegistrationExtensions.cs" caret="14716" fromTop="297" />
+      <File id="DEF93D8F-91B1-42C4-967C-43DB609447CA/f:ContractBasedService.cs" caret="0" fromTop="0" />
+      <File id="DEF93D8F-91B1-42C4-967C-43DB609447CA/f:ExportConfigurationBuilder.cs" caret="4344" fromTop="0" />
+      <File id="d:Miscellaneous Files/f:System.Type.cs/l:C!?Working?Open Source?Autofac?src?_ReSharper.Autofac?DecompilerCache?metadata?mscorlib-b504?System.Type.cs" caret="3443" fromTop="14" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/d:Util/f:ReflectionExtensions.cs" caret="3173" fromTop="18" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/d:Features/d:GeneratedFactories/f:GeneratedFactoryRegistrationSource.cs" caret="1427" fromTop="0" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/d:Features/d:GeneratedFactories/f:FactoryGenerator.cs" caret="7944" fromTop="21" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/f:ResolutionExtensions.cs" caret="33458" fromTop="11" />
+      <File id="E7BB91D2-EAB1-4E06-AC3A-AA865EFEF12B/d:Controllers/f:HomeController.cs" caret="0" fromTop="0" />
+      <File id="9DE8DA2E-AD61-4C49-ACEB-A790CD1E93DE/f:IRepository.cs" caret="463" fromTop="21" />
+      <File id="E7BB91D2-EAB1-4E06-AC3A-AA865EFEF12B/f:Global.asax.cs" caret="1260" fromTop="7" />
+      <File id="E7BB91D2-EAB1-4E06-AC3A-AA865EFEF12B/d:Controllers/f:TaskController.cs" caret="557" fromTop="20" />
+      <File id="225D06BB-05C9-4C2E-BE28-8E77DC0C67EE/f:IncompleteTaskSpecification.cs" caret="543" fromTop="18" />
+      <File id="6B8F4473-BF8C-4AF6-8D8C-1B93E628ACF3/f:NHibernateModule.cs" caret="885" fromTop="9" />
+    </RecentFiles>
+    <RecentEdits>
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/f:ResolutionExtensions.cs" caret="21334" fromTop="13" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/f:ResolutionExtensions.cs" caret="22248" fromTop="16" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/f:ResolutionExtensions.cs" caret="23224" fromTop="13" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/f:ResolutionExtensions.cs" caret="26351" fromTop="10" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/f:ResolutionExtensions.cs" caret="27108" fromTop="17" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/f:ResolutionExtensions.cs" caret="28129" fromTop="15" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/f:ResolutionExtensions.cs" caret="30020" fromTop="10" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/f:ResolutionExtensions.cs" caret="30765" fromTop="22" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/f:ResolutionExtensions.cs" caret="31357" fromTop="15" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/f:ResolutionExtensions.cs" caret="32247" fromTop="10" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/f:ResolutionExtensions.cs" caret="33320" fromTop="9" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/f:ResolutionExtensions.cs" caret="36038" fromTop="21" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/f:ResolutionExtensions.cs" caret="37013" fromTop="20" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/f:IComponentContext.cs" caret="2298" fromTop="22" />
+      <File id="DEF93D8F-91B1-42C4-967C-43DB609447CA/f:RegistrationExtensions.cs" caret="14716" fromTop="18" />
+      <File id="DEF93D8F-91B1-42C4-967C-43DB609447CA/f:ExportConfigurationBuilder.cs" caret="1829" fromTop="14" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/d:Features/d:GeneratedFactories/f:FactoryGenerator.cs" caret="3059" fromTop="5" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/d:Util/f:ReflectionExtensions.cs" caret="4997" fromTop="10" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/d:Util/f:ReflectionExtensions.cs" caret="13" fromTop="0" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/d:Util/f:ReflectionExtensions.cs" caret="3175" fromTop="28" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/d:Util/f:ReflectionExtensions.cs" caret="3161" fromTop="25" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/d:Util/f:ReflectionExtensions.cs" caret="2584" fromTop="22" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/d:Util/f:ReflectionExtensions.cs" caret="2844" fromTop="12" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/d:Util/f:ReflectionExtensions.cs" caret="3578" fromTop="18" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/d:Features/d:GeneratedFactories/f:FactoryGenerator.cs" caret="4660" fromTop="21" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/d:Features/d:GeneratedFactories/f:FactoryGenerator.cs" caret="4877" fromTop="9" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/d:Features/d:GeneratedFactories/f:FactoryGenerator.cs" caret="2592" fromTop="14" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/d:Features/d:GeneratedFactories/f:FactoryGenerator.cs" caret="5293" fromTop="18" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/d:Features/d:GeneratedFactories/f:FactoryGenerator.cs" caret="6826" fromTop="6" />
+      <File id="7D018B3E-34A3-423D-AC35-12731F4E0A2C/d:Features/d:GeneratedFactories/f:FactoryGenerator.cs" caret="7944" fromTop="21" />
+    </RecentEdits>
+  </RecentFiles>
+  <NAntValidationSettings>
+    <NAntPath value="" />
+  </NAntValidationSettings>
+  <UnitTestRunner>
+    <Providers />
+  </UnitTestRunner>
+  <UnitTestRunnerNUnit>
+    <NUnitInstallDir IsNull="False">
+    </NUnitInstallDir>
+    <UseAddins>Never</UseAddins>
+  </UnitTestRunnerNUnit>
+</Configuration>

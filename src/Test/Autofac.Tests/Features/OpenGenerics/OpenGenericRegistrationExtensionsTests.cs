@@ -99,8 +99,8 @@ namespace Autofac.Tests.Features.OpenGenerics
             cb.RegisterGeneric(typeof(G<>))
                 .Named(name, typeof(IG<>));
             var c = cb.Build();
-            Assert.That(c.IsRegisteredNamed<IG<int>>(name));
-            Assert.That(c.IsRegisteredNamed<IG<string>>(name));
+            Assert.That(c.IsRegisteredWithName<IG<int>>(name));
+            Assert.That(c.IsRegisteredWithName<IG<string>>(name));
         }
 
         [Test]

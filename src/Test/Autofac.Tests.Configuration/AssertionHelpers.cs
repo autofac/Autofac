@@ -17,12 +17,12 @@ namespace Autofac.Tests.Configuration
 
         public static void AssertRegistered<TService>(this IComponentContext context, string service)
         {
-            Assert.IsTrue(context.IsRegisteredNamed(service, typeof(TService)));
+            Assert.IsTrue(context.IsRegisteredWithName(service, typeof(TService)));
         }
 
         public static void AssertNotRegistered<TService>(this IComponentContext context, string service)
         {
-            Assert.IsFalse(context.IsRegisteredNamed(service, typeof(TService)));
+            Assert.IsFalse(context.IsRegisteredWithName(service, typeof(TService)));
         }
     }
 }

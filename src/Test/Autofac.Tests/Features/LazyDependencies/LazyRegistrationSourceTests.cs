@@ -27,7 +27,7 @@ namespace Autofac.Tests.Features.LazyDependencies
             var builder = new ContainerBuilder();
             builder.RegisterType<object>().Named<object>("foo");
             var container = builder.Build();
-            Assert.That(container.IsRegisteredNamed<Lazy<object>>("foo"));
+            Assert.That(container.IsRegisteredWithName<Lazy<object>>("foo"));
         }
 
         [Test]

@@ -429,7 +429,7 @@ namespace Autofac
         public static TService ResolveOptionalNamed<TService>(this IComponentContext context, string serviceName)
             where TService : class
         {
-            return ResolveOptionalNamed<TService>(context, serviceName, NoParameters);
+            return ResolveOptionalKeyed<TService>(context, serviceName);
         }
 
         /// <summary>
@@ -447,7 +447,7 @@ namespace Autofac
         public static TService ResolveOptionalNamed<TService>(this IComponentContext context, string serviceName, IEnumerable<Parameter> parameters)
             where TService : class
         {
-            return (TService)ResolveOptionalService(context, new KeyedService(serviceName, typeof(TService)), parameters);
+            return ResolveOptionalKeyed <TService>(context, serviceName, parameters);
         }
 
         /// <summary>
@@ -465,7 +465,60 @@ namespace Autofac
         public static TService ResolveOptionalNamed<TService>(this IComponentContext context, string serviceName, params Parameter[] parameters)
             where TService : class
         {
-            return context.ResolveOptionalNamed<TService>(serviceName, (IEnumerable<Parameter>)parameters);
+            return context.ResolveOptionalKeyed<TService>(serviceName, parameters);
+        }
+
+        /// <summary>
+        /// Retrieve a service from the context, or null if the service is not
+        /// registered.
+        /// </summary>
+        /// <param name="context">The context from which to resolve the service.</param>
+        /// <param name="serviceKey">The name of the service.</param>
+        /// <typeparam name="TService">The service to resolve.</typeparam>
+        /// <returns>
+        /// The component instance that provides the service, or null.
+        /// </returns>
+        /// <exception cref="DependencyResolutionException"/>
+        public static TService ResolveOptionalKeyed<TService>(this IComponentContext context, string serviceKey)
+            where TService : class
+        {
+            return ResolveOptionalKeyed<TService>(context, serviceKey, NoParameters);
+        }
+
+        /// <summary>
+        /// Retrieve a service from the context, or null if the service is not
+        /// registered.
+        /// </summary>
+        /// <param name="context">The context from which to resolve the service.</param>
+        /// <param name="parameters">Parameters for the service.</param>
+        /// <param name="serviceKey">The name of the service.</param>
+        /// <typeparam name="TService">The service to resolve.</typeparam>
+        /// <returns>
+        /// The component instance that provides the service, or null.
+        /// </returns>
+        /// <exception cref="DependencyResolutionException"/>
+        public static TService ResolveOptionalKeyed<TService>(this IComponentContext context, string serviceKey, IEnumerable<Parameter> parameters)
+            where TService : class
+        {
+            return (TService)ResolveOptionalService(context, new KeyedService(serviceKey, typeof(TService)), parameters);
+        }
+
+        /// <summary>
+        /// Retrieve a service from the context, or null if the service is not
+        /// registered.
+        /// </summary>
+        /// <param name="context">The context from which to resolve the service.</param>
+        /// <param name="parameters">Parameters for the service.</param>
+        /// <param name="serviceKey">The key of the service.</param>
+        /// <typeparam name="TService">The service to resolve.</typeparam>
+        /// <returns>
+        /// The component instance that provides the service, or null.
+        /// </returns>
+        /// <exception cref="DependencyResolutionException"/>
+        public static TService ResolveOptionalKeyed<TService>(this IComponentContext context, string serviceKey, params Parameter[] parameters)
+            where TService : class
+        {
+            return context.ResolveOptionalKeyed<TService>(serviceKey, (IEnumerable<Parameter>)parameters);
         }
 
         /// <summary>
@@ -597,9 +650,9 @@ namespace Autofac
         /// <param name="serviceName">The name of the service to test for the registration of.</param>
         /// <param name="serviceType">Type type of the service to test for the registration of.</param>
         /// <returns>True if the service is registered.</returns>
-        public static bool IsRegisteredNamed(this IComponentContext context, string serviceName, Type serviceType)
+        public static bool IsRegisteredWithName(this IComponentContext context, string serviceName, Type serviceType)
         {
-            return IsRegisteredService(context, new KeyedService(serviceName, serviceType));
+            return IsRegisteredWithKey(context, serviceName, serviceType);
         }
 
         /// <summary>
@@ -609,9 +662,33 @@ namespace Autofac
         /// <param name="serviceName">The name of the service to test for the registration of.</param>
         /// <typeparam name="TService">Type type of the service to test for the registration of.</typeparam>
         /// <returns>True if the service is registered.</returns>
-        public static bool IsRegisteredNamed<TService>(this IComponentContext context, string serviceName)
+        public static bool IsRegisteredWithName<TService>(this IComponentContext context, string serviceName)
         {
-            return IsRegisteredNamed(context, serviceName, typeof(TService));
+            return IsRegisteredWithKey<TService>(context, serviceName);
+        }
+
+        /// <summary>
+        /// Determine whether the specified service is available in the context.
+        /// </summary>
+        /// <param name="context">The context from which to resolve the service.</param>
+        /// <param name="serviceKey">The key of the service to test for the registration of.</param>
+        /// <param name="serviceType">Type type of the service to test for the registration of.</param>
+        /// <returns>True if the service is registered.</returns>
+        public static bool IsRegisteredWithKey(this IComponentContext context, object serviceKey, Type serviceType)
+        {
+            return IsRegisteredService(context, new KeyedService(serviceKey, serviceType));
+        }
+
+        /// <summary>
+        /// Determine whether the specified service is available in the context.
+        /// </summary>
+        /// <param name="context">The context from which to resolve the service.</param>
+        /// <param name="serviceKey">The key of the service to test for the registration of.</param>
+        /// <typeparam name="TService">Type type of the service to test for the registration of.</typeparam>
+        /// <returns>True if the service is registered.</returns>
+        public static bool IsRegisteredWithKey<TService>(this IComponentContext context, object serviceKey)
+        {
+            return IsRegisteredWithKey(context, serviceKey, typeof(TService));
         }
 
         /// <summary>
