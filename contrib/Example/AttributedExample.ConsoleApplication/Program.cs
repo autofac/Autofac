@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Reflection;
 using AttributedExample.ConsoleApplication.StateTypes;
 using Autofac;
+using AutofacContrib.Attributed;
 
 namespace AttributedExample.ConsoleApplication
 {
@@ -9,6 +11,8 @@ namespace AttributedExample.ConsoleApplication
         public static void Configure(ContainerBuilder componentRegistry)
         {
             componentRegistry.RegisterType<StateEngine>();
+            componentRegistry.RegisterAssemblyTypedMetadata<IStateStepConfiguration, IStateStepConfigurationMetadata>(Assembly.GetExecutingAssembly());
+
         }
 
     }
@@ -33,6 +37,8 @@ namespace AttributedExample.ConsoleApplication
 
                 menu.ActionLoop(stateEngine);
             }
+        
+        
         }
     }
 }

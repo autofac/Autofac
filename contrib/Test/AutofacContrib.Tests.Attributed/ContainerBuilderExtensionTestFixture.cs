@@ -54,8 +54,9 @@ namespace AutofacContrib.Tests.Attributed
 
             builder.RegisterAssemblyTypedMetadata<IExportScenario2, IExportScenario2Metadata>(Assembly.GetExecutingAssembly());
 
+            var container = builder.Build();
             // act
-            var items = builder.Build().Resolve<IEnumerable<Meta<IExportScenario2, IExportScenario2Metadata>>>();
+            var items = container.Resolve<IEnumerable<Meta<IExportScenario2, IExportScenario2Metadata>>>();
 
             // assert
             Assert.That(items.Count(), Is.EqualTo(2));

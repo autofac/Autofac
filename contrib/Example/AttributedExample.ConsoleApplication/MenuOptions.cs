@@ -16,11 +16,20 @@ namespace AttributedExample.ConsoleApplication
         }
     }
 
+    /// <summary>
+    /// responsible for examining enumeration types and creating associated menu item choices with
+    /// a character associated with each
+    /// </summary>
+    /// <typeparam name="TEnum">enum being targeted</typeparam>
     public class MenuOptions<TEnum>
     {
-        private IDictionary<string, MenuItemInfo<TEnum>> _menuOptions = new Dictionary<string, MenuItemInfo<TEnum>>();
+        private readonly IDictionary<string, MenuItemInfo<TEnum>> _menuOptions = new Dictionary<string, MenuItemInfo<TEnum>>();
         public IDictionary<string, MenuItemInfo<TEnum>> Options { get { return _menuOptions; } }
 
+        /// <summary>
+        /// ctor creating a subset of enumerated values as option
+        /// </summary>
+        /// <param name="enumeratedOptions">set of enumeration values to be targeted</param>
         public MenuOptions(IEnumerable<TEnum> enumeratedOptions)
         {
             var optionNames = from p in enumeratedOptions select Enum.GetName(typeof (TEnum), p);
@@ -37,6 +46,9 @@ namespace AttributedExample.ConsoleApplication
             }
         }
     
+        /// <summary>
+        /// ctor creating a full set of enumerated values as options
+        /// </summary>
         public MenuOptions() : this(from p in Enum.GetNames(typeof(TEnum)) select (TEnum) Enum.Parse(typeof(TEnum), p))
         {}
 

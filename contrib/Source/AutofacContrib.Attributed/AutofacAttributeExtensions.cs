@@ -77,11 +77,13 @@ namespace AutofacContrib.Attributed
         {
             foreach (var metadata in metadataSet)
             {
+                var localMetadata = metadata;
+
                 // register Lazy<T, TMetadata> type
-                builder.Register(c => new Lazy<TInterface, TMetadata>(() => c.Resolve<TInstance>(), metadata));
+                builder.Register(c => new Lazy<TInterface, TMetadata>(() => c.Resolve<TInstance>(), localMetadata));
 
                 // register the Meta<T, TMetadata> type
-                builder.Register(c => new Meta<TInterface, TMetadata>(c.Resolve<TInstance>(), metadata));
+                builder.Register(c => new Meta<TInterface, TMetadata>(c.Resolve<TInstance>(), localMetadata));
             }
 
             return builder.RegisterType<TInstance>();
@@ -92,17 +94,16 @@ namespace AutofacContrib.Attributed
         {
             foreach (var metadata in metadataSet)
             {
+                var localMetadata = metadata;
+
                 // register Lazy<T, TMetadata> type
-                builder.Register(c => new Lazy<TInterface, TMetadata>(() => c.Resolve<TInterface>(), metadata));
+                builder.Register(c => new Lazy<TInterface, TMetadata>(() => (TInterface)c.Resolve(instanceType), localMetadata));
 
                 // register the Meta<T, TMetadata> type
-                builder.Register(c => new Meta<TInterface, TMetadata>(c.Resolve<TInterface>(), metadata));
+                builder.Register(c => new Meta<TInterface, TMetadata>((TInterface)c.Resolve(instanceType), localMetadata));
             }
 
             return builder.RegisterType(instanceType);
-
         }
-
-        
     }
 }

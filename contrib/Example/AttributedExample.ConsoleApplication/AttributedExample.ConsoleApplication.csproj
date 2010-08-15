@@ -59,6 +59,12 @@
     <Compile Include="StateTypes\WorkflowStep.cs" />
     <Compile Include="StateTypes\WorkflowTrigger.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Source\AutofacContrib.Attributed\AutofacContrib.Attributed.csproj">
+      <Project>{D8715248-94C1-4556-8A81-7E338D68FE96}</Project>
+      <Name>AutofacContrib.Attributed</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

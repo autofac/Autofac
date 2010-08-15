@@ -5,8 +5,15 @@ using AttributedExample.ConsoleApplication.StateTypes;
 
 namespace AttributedExample.ConsoleApplication
 {
+    /// <summary>
+    /// Provides the menu loops for capturing user input
+    /// </summary>
     public class ApplicationMenu
     {
+        /// <summary>
+        /// Provides the key portion of the menu loop where the user is asked for the document type
+        /// </summary>
+        /// <returns>selected document type</returns>
         public DocumentType? Loop()
         {
             var options = new MenuOptions<DocumentType>();
@@ -26,6 +33,10 @@ namespace AttributedExample.ConsoleApplication
             return null;
         }
 
+        /// <summary>
+        /// performs the action loop according to trigger values available fromt the state engine
+        /// </summary>
+        /// <param name="stateEngine">state engine containinig workflow definitions</param>
         public void ActionLoop(StateEngine stateEngine)
         {
             IEnumerable<WorkflowTrigger> activeTriggers;
