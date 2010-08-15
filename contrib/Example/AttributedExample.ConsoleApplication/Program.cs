@@ -24,13 +24,14 @@ namespace AttributedExample.ConsoleApplication
             var container = builder.Build();
             
 
-            var mainMenu = new MainMenu();
+            var menu = new ApplicationMenu();
             DocumentType? option = null;
 
-            while((option = mainMenu.Loop())!= null)
+            while((option = menu.Loop())!= null)
             {
                 var stateEngine = container.Resolve<Func<DocumentType, StateEngine>>()(option.Value);
 
+                menu.ActionLoop(stateEngine);
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using AttributedExample.ConsoleApplication.StateTypes;
 using Stateless;
 
@@ -8,12 +9,28 @@ namespace AttributedExample.ConsoleApplication
 {
     public class StateEngine
     {
+        private StateMachine<WorkflowStep, WorkflowTrigger> _stateMachine;
+
         public StateEngine(DocumentType documentType)
         {
-            var stateMachine = new StateMachine<WorkflowStep, WorkflowTrigger>(WorkflowStep.New);
-
-            
+            _stateMachine = new StateMachine<WorkflowStep, WorkflowTrigger>(WorkflowStep.New);
+           
         }
+
+        public IEnumerable<WorkflowTrigger> Actions
+        {
+            get
+            {
+                return _stateMachine.PermittedTriggers;
+            }
+        }
+
+        public void Fire(WorkflowTrigger workflowTrigger)
+        {
+            _stateMachine.Fire(workflowTrigger);
+        }
+
+        
     }
 
     [MetadataAttribute]

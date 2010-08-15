@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AttributedExample.ConsoleApplication
 {
@@ -20,17 +21,24 @@ namespace AttributedExample.ConsoleApplication
         private IDictionary<string, MenuItemInfo<TEnum>> _menuOptions = new Dictionary<string, MenuItemInfo<TEnum>>();
         public IDictionary<string, MenuItemInfo<TEnum>> Options { get { return _menuOptions; } }
 
-        public MenuOptions()
+        public MenuOptions(IEnumerable<TEnum> enumeratedOptions)
         {
-            foreach (var value in Enum.GetNames(typeof(TEnum)))
-            {
-                var optionLetter = value.Substring(0, 1).ToUpper();
-                var optionText = string.Format("[{0}]{1}", value.Substring(0, 1), value.Substring(1, value.Length - 1));
+            var optionNames = from p in enumeratedOptions select Enum.GetName(typeof (TEnum), p);
 
-                _menuOptions[optionLetter] = new MenuItemInfo<TEnum>((TEnum)Enum.Parse(typeof(TEnum), value),
+            foreach(var optionName in optionNames)
+            {
+                
+                var optionLetter = optionName.Substring(0, 1).ToUpper();
+                var optionText = string.Format("[{0}]{1}", optionName.Substring(0, 1), optionName.Substring(1, optionName.Length - 1));
+
+                _menuOptions[optionLetter] = new MenuItemInfo<TEnum>((TEnum)Enum.Parse(typeof(TEnum), optionName),
                                                                      optionText);
+                
             }
         }
+    
+        public MenuOptions() : this(from p in Enum.GetNames(typeof(TEnum)) select (TEnum) Enum.Parse(typeof(TEnum), p))
+        {}
 
     }
 }
