@@ -4,6 +4,10 @@ using System.Linq;
 
 namespace AttributedExample.ConsoleApplication
 {
+    /// <summary>
+    /// encapsulates menu item information for both display and identification
+    /// </summary>
+    /// <typeparam name="TEnumType">enum type being wrapped</typeparam>
     public class MenuItemInfo<TEnumType>
     {
         public string Text { get; private set; }
