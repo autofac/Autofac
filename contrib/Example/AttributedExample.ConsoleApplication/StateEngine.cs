@@ -15,6 +15,8 @@ namespace AttributedExample.ConsoleApplication
         {
             _stateMachine = new StateMachine<WorkflowStep, WorkflowTrigger>(WorkflowStep.New);
 
+            Console.WriteLine("Entering new step at {0}", DateTime.Now.ToLongTimeString());
+
             foreach (var item in (from p in stateSteps where p.Metadata.DocumentType == documentType select p))
             {
                 var localItem = item;
@@ -26,7 +28,7 @@ namespace AttributedExample.ConsoleApplication
                 stateConfig.OnEntry(
                     () =>
                     Console.WriteLine("Entering {0} Step at {1}", localItem.Metadata.WorkflowStep,
-                                      DateTime.Now.ToShortTimeString()));
+                                      DateTime.Now.ToLongTimeString()));
             }
         }
 
@@ -100,6 +102,7 @@ namespace AttributedExample.ConsoleApplication
         #endregion
     } 
 
+    
 
     [StateStepConfigurationMetadata(DocumentType.Amendment, WorkflowStep.Approve)]
     [StateStepConfigurationMetadata(DocumentType.Order, WorkflowStep.Approve)]
@@ -154,10 +157,54 @@ namespace AttributedExample.ConsoleApplication
             get {
                 yield return
                     new KeyValuePair<WorkflowTrigger, WorkflowStep>(WorkflowTrigger.Approve, WorkflowStep.EmailDetails);
-                yield return new KeyValuePair<WorkflowTrigger, WorkflowStep>(WorkflowTrigger.Reject, WorkflowStep.Done);
+                yield return 
+                    new KeyValuePair<WorkflowTrigger, WorkflowStep>(WorkflowTrigger.Reject, WorkflowStep.Done);
             }
         }
 
         #endregion
     }
+
+    [StateStepConfigurationMetadata(DocumentType.Cancellation, WorkflowStep.EmailDetails)]
+    public class EmailDetailsCancellationStepConfiguration : IStateStepConfiguration
+    {
+
+        #region IStateStepConfiguration Members
+
+        public IEnumerable<KeyValuePair<WorkflowTrigger, WorkflowStep>> Permissions
+        {
+            get
+            {
+                yield return
+                    new KeyValuePair<WorkflowTrigger, WorkflowStep>(WorkflowTrigger.Approve, WorkflowStep.Done);
+                yield return 
+                    new KeyValuePair<WorkflowTrigger, WorkflowStep>(WorkflowTrigger.Reject, WorkflowStep.Done);
+            }
+        }
+
+        #endregion
+    }
+
+
+    [StateStepConfigurationMetadata(DocumentType.Order, WorkflowStep.Done)]
+    [StateStepConfigurationMetadata(DocumentType.Amendment, WorkflowStep.Done)]
+    [StateStepConfigurationMetadata(DocumentType.Cancellation, WorkflowStep.Done)]
+    public class GenericDoneStepConfiguration : IStateStepConfiguration
+    {
+
+        #region IStateStepConfiguration Members
+
+        public IEnumerable<KeyValuePair<WorkflowTrigger, WorkflowStep>> Permissions
+        {
+            get
+            {
+                yield break;
+            }
+        }
+
+        #endregion
+    }
+
+
+
 }
