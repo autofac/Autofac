@@ -28,12 +28,13 @@ namespace AttributedExample.ConsoleApplication
         {
             _stateMachine = new StateMachine<WorkflowStep, WorkflowTrigger>(WorkflowStep.New);
 
-            Console.WriteLine("Entering new step at {0}", DateTime.Now.ToLongTimeString());
+            Console.WriteLine("Entering New step at {0}", DateTime.Now.ToLongTimeString());
 
             // here, we'll filter according to the rules we are looking for.  the incorportation of rules is another reason
             // consider the filtering process to be injected and atomically testable
             foreach (var item in (from p in stateSteps where p.Metadata.DocumentType == documentType select p))
             {
+                // the following allocation is required to maintain proper state in the closure' context 
                 var localItem = item;
                 var stateConfig = _stateMachine.Configure(localItem.Metadata.WorkflowStep);
 
