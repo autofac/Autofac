@@ -55,6 +55,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StateEngine.cs" />
+    <Compile Include="StateStepConfiguration.cs" />
     <Compile Include="StateTypes\DocumentType.cs" />
     <Compile Include="StateTypes\WorkflowStep.cs" />
     <Compile Include="StateTypes\WorkflowTrigger.cs" />
