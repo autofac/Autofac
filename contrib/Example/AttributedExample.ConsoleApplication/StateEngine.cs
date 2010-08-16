@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AttributedExample.ConsoleApplication.Configuration;
 using AttributedExample.ConsoleApplication.StateTypes;
 using Stateless;
 

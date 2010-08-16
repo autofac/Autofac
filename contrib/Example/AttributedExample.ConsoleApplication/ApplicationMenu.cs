@@ -14,7 +14,7 @@ namespace AttributedExample.ConsoleApplication
         /// Provides the key portion of the menu loop where the user is asked for the document type
         /// </summary>
         /// <returns>selected document type</returns>
-        public DocumentType? Loop()
+        public DocumentType? DocumentSelectionLoop()
         {
             var options = new MenuOptions<DocumentType>();
 

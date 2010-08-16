@@ -51,6 +51,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationMenu.cs" />
+    <Compile Include="Configuration\IStateStepConfiguration.cs" />
+    <Compile Include="Configuration\MetadataDefinition.cs" />
     <Compile Include="MenuOptions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
