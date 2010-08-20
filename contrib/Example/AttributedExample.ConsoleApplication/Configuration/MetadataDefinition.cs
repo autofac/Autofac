@@ -1,9 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using AttributedExample.ConsoleApplication.StateTypes;
 
 namespace AttributedExample.ConsoleApplication.Configuration
 {
+    public class StateStepConfigurationMetadata : IStateStepConfigurationMetadata
+    {
+        public StateStepConfigurationMetadata(IEnumerable<DocumentType> documentTypes, WorkflowStep workflowStep)
+        {
+            DocumentTypes = documentTypes;
+            WorkflowStep = workflowStep;
+        }
+        #region IStateStepConfigurationMetadata Members
+
+        public IEnumerable<DocumentType> DocumentTypes
+        {
+            get; private set;
+        }
+
+        public WorkflowStep WorkflowStep
+        {
+            get; private set;
+        }
+
+        #endregion
+    }
+
+
     [MetadataAttribute]
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
     public class StateStepConfigurationMetadataAttribute : Attribute
@@ -26,7 +50,7 @@ namespace AttributedExample.ConsoleApplication.Configuration
 
     public interface IStateStepConfigurationMetadata
     {
-        DocumentType? DocumentType { get; }
+        IEnumerable<DocumentType> DocumentTypes { get; }
         WorkflowStep WorkflowStep { get; }
     }
 }

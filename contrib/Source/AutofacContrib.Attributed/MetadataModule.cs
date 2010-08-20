@@ -40,17 +40,6 @@ namespace AutofacContrib.Attributed
 
         #region IMetadataRegistrar<TInterface,TMetadata> Members
 
-        /// <summary>
-        /// registrar providing 1 or more metadata registrations for a given concrete type
-        /// </summary>
-        /// <typeparam name="TInstance">concrete instance type</typeparam>
-        /// <param name="metadataSet">enumeration of associated metadata types to be registered</param>
-        /// <returns>registration builder to further configure the concrete type registration such as lifetime</returns>
-        public IRegistrationBuilder<TInstance, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterTypedMetadata<TInstance>(IEnumerable<TMetadata> metadataSet) where TInstance : TInterface
-        {
-            return _containerBuilder.RegisterTypedMetadata<TInterface, TInstance, TMetadata>(metadataSet);
-        }
-
 
 
         public IRegistrationBuilder<TInstance, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterType<TInstance>(TMetadata metadata) where TInstance : TInterface
