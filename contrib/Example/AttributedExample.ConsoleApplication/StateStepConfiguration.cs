@@ -54,6 +54,7 @@ namespace AttributedExample.ConsoleApplication
         }
     }
 
+    [StateStepConfigurationMetadata(new [] {DocumentType.Amendment, DocumentType.Order}, WorkflowStep.EmailDetails)]
     public class EmailStepCapability : IStateStepConfiguration
     {
         #region IStateStepConfiguration Members
@@ -73,7 +74,7 @@ namespace AttributedExample.ConsoleApplication
     }
 
 
-
+    [StateStepConfigurationMetadata(new[] { DocumentType.Amendment, DocumentType.Order }, WorkflowStep.Approve)]
     public class ApproveStepCapability : IStateStepConfiguration
     {
 
@@ -94,6 +95,7 @@ namespace AttributedExample.ConsoleApplication
     }
 
 
+    [StateStepConfigurationMetadata(new[] { DocumentType.Amendment, DocumentType.Order }, WorkflowStep.New)]
     public class NewOrderStepCapability : IStateStepConfiguration
     {
 
@@ -113,6 +115,7 @@ namespace AttributedExample.ConsoleApplication
         #endregion
     }
 
+    [StateStepConfigurationMetadata(new[] { DocumentType.Cancellation }, WorkflowStep.New)]
     public class NewCancellationStepConfiguration : IStateStepConfiguration
     {
 
@@ -132,6 +135,7 @@ namespace AttributedExample.ConsoleApplication
         #endregion
     }
 
+    [StateStepConfigurationMetadata(new[] { DocumentType.Cancellation }, WorkflowStep.EmailDetails)]
     public class EmailDetailsCancellationStepConfiguration : IStateStepConfiguration
     {
 
@@ -151,7 +155,7 @@ namespace AttributedExample.ConsoleApplication
         #endregion
     }
 
-
+    [StateStepConfigurationMetadata(new[] { DocumentType.Amendment, DocumentType.Order, DocumentType.Cancellation }, WorkflowStep.Done)]
     public class GenericDoneStepConfiguration : IStateStepConfiguration
     {
         #region IStateStepConfiguration Members

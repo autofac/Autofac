@@ -1,25 +1,52 @@
-﻿using System;
+﻿//#define USE_METADATA_MODULE
+using System;
 using System.Reflection;
+using AttributedExample.ConsoleApplication;
 using AttributedExample.ConsoleApplication.Configuration;
 using AttributedExample.ConsoleApplication.StateTypes;
 using Autofac;
+using AutofacContrib.Attributed;
+
 
 namespace AttributedExample.ConsoleApplication
 {
+
+
     /// <summary>
     /// a quick Ioc configuration separated to display the needed registrations
     /// </summary>
     public class IocConfiguration
     {
+
+
         public static void Configure(ContainerBuilder componentRegistry)
         {
             componentRegistry.RegisterType<StateEngine>();
 
+#if(USE_METADATA_MODULE)
             // the following registration hunts the listed assemblies for derivations of IStateStepConfiguration with marked MetadataAttribute-attributes
             // and converts these into strongly typed metadata.  also check out the alternate pattern used in the Attribute Tests scenario 4 where 
             // the Autofac Module pattern is extended for driving these types of registrations directly.
+
             componentRegistry.RegisterModule( new StateStepMetadataModule());
-            //componentRegistry.RegisterAssemblyTypedMetadata<IStateStepConfiguration, IStateStepConfigurationMetadata>(Assembly.GetExecutingAssembly());
+#else
+#if(USE_WEAK_TYPE_SCANNING)
+
+            // this mechanism searches for attributes that are attributed with the MetadataAttribute, these
+            // attributes are then constituted into metadata for each registration type
+            componentRegistry.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
+                .AssignableTo(typeof (IStateStepConfiguration))
+                .As<IStateStepConfiguration>()
+                .WithAttributedMetadata();
+#else
+            // this mechanism searches for attributes that derive from IStateStepConfigurationMetadata. This
+            // mechanism is both strongly typed and results in a faster and more streamlined querying of attributes
+            componentRegistry.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
+                .AssignableTo(typeof (IStateStepConfiguration))
+                .As<IStateStepConfiguration>()
+                .WithAttributedMetadata<IStateStepConfigurationMetadata>();
+#endif
+#endif
         }
     }
      

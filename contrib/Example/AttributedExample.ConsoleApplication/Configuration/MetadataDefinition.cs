@@ -29,23 +29,26 @@ namespace AttributedExample.ConsoleApplication.Configuration
 
 
     [MetadataAttribute]
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
-    public class StateStepConfigurationMetadataAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    public class StateStepConfigurationMetadataAttribute : Attribute, IStateStepConfigurationMetadata
     {
-        public StateStepConfigurationMetadataAttribute(DocumentType documentType, WorkflowStep workflowStep)
+        public StateStepConfigurationMetadataAttribute(DocumentType[] documentTypes, WorkflowStep workflowStep)
         {
-            DocumentType = documentType;
+            DocumentTypes = documentTypes;
             WorkflowStep = workflowStep;
         }
 
-        public StateStepConfigurationMetadataAttribute(WorkflowStep workflowStep)
-        {
-            DocumentType = null;
-            WorkflowStep = workflowStep;
-        }
 
-        public DocumentType? DocumentType { get; set; }
         public WorkflowStep WorkflowStep { get; set; }
+
+        #region IStateStepConfigurationMetadata Members
+
+        public IEnumerable<DocumentType> DocumentTypes
+        {
+            get; private set;
+        }
+
+        #endregion
     }
 
     public interface IStateStepConfigurationMetadata

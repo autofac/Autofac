@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Reflection;
-using Autofac;
 using Autofac.Builder;
-using Autofac.Features.Metadata;
 using Autofac.Features.Scanning;
 
 namespace AutofacContrib.Attributed
@@ -19,7 +16,7 @@ namespace AutofacContrib.Attributed
         /// </summary>
         /// <param name="attribute">attribute being queried</param>
         /// <returns>dictionary of property names and their values</returns>
-        private static IDictionary<string, object> GetProperties(Attribute attribute)
+        private static IDictionary<string, object> GetProperties(object attribute)
         {
             return attribute.GetType().GetProperties().Where(propertyInfo => propertyInfo.CanRead &&
                                                                       propertyInfo.DeclaringType.Name !=
@@ -46,15 +43,33 @@ namespace AutofacContrib.Attributed
                         (this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration)
                                         where TScanningActivatorData : ScanningActivatorData
         {
-            // Count required otherwise the lazyness of the expression is one degree too lazy
+            // Count used otherwise the lazyness of the expression is one degree too lazy
             registration.ActivatorData.ConfigurationActions.Add(
-                
                 (t, rb) => GetMetadata(t).Select(rb.WithMetadata).Count());
 
             return registration;
         }
 
+        public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
+            WithAttributedMetadata<TMetadata>(this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> registration)
+        {
+            registration.ActivatorData.ConfigurationActions.Add(
+                (t, rb) =>
+                    {
+                        var attribute =
+                            (from p in t.GetCustomAttributes(typeof(TMetadata),true)
+                             select p).FirstOrDefault();
 
+                        if( attribute != null)
+                            rb.WithMetadata(attribute.GetType().GetProperties().Where(propertyInfo => propertyInfo.CanRead)
+                                                .Select(
+                                                    propertyInfo =>
+                                                    new KeyValuePair<string, object>(propertyInfo.Name,
+                                                                                     propertyInfo.GetValue(attribute, null))));
+                    });
+            
+            return registration;
+        }
 
     }
 }

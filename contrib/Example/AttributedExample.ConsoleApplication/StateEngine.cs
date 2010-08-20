@@ -12,7 +12,7 @@ namespace AttributedExample.ConsoleApplication
     /// </summary>
     public class StateEngine
     {
-        private StateMachine<WorkflowStep, WorkflowTrigger> _stateMachine;
+        private readonly StateMachine<WorkflowStep, WorkflowTrigger> _stateMachine;
 
         /// <summary>
         /// ctor that configures the state machine according to document type.
