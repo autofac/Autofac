@@ -63,7 +63,8 @@ namespace AutofacContrib.Attributed
 
         #endregion
 
-
+        public interface IFoo{}
+        public class Foo:IFoo{}
 
         public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> WithAttributedMetadata<TLimit, TScanningActivatorData, TRegistrationStyle>
                         (this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration)
@@ -73,6 +74,8 @@ namespace AutofacContrib.Attributed
             registration.ActivatorData.ConfigurationActions.Add(
                 (t, rb) => GetMetadata(t).Select(rb.WithMetadata).Count());
 
+            //registration.WithMetadata<IFoo>(a => new Foo());
+            
             return registration;
         }
 

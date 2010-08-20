@@ -62,6 +62,8 @@
     <Compile Include="ScenarioTypes\ExportScenario4DiscoveryTargets.cs" />
     <Compile Include="ScenarioTypes\ExportScenario4Interfaces.cs" />
     <Compile Include="ScenarioTypes\Scenario4MetadataModule.cs" />
+    <Compile Include="ScenarioTypes\WeakTypedMetadataAttributeScenario.cs" />
+    <Compile Include="WeakTypedAttributeScenarioTestFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\AutofacContrib.Attributed\AutofacContrib.Attributed.csproj">

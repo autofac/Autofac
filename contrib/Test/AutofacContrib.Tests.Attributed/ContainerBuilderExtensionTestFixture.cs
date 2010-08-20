@@ -19,17 +19,19 @@ namespace AutofacContrib.Tests.Attributed
             // arrange
             var builder = new ContainerBuilder();
 
-            builder.RegisterAssemblyTypedMetadata<IExportScenario1, IExportScenario1Metadata>(
-                Assembly.GetExecutingAssembly());
+            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
+                .AssignableTo(typeof (IWeakTypedScenario))
+                .As<IWeakTypedScenario>()
+                .WithAttributedMetadata();
 
             // act
-            var items =builder.Build().Resolve < IEnumerable<Lazy<IExportScenario1, IExportScenario1Metadata>>>();
+            var items =builder.Build().Resolve<IEnumerable<Lazy<IWeakTypedScenario, IWeakTypedScenarioMetadata>>>();
 
             // assert
             Assert.That(items.Count(), Is.EqualTo(1));
-
-
         }
+
+
 
         [Test]
         public void container_wireup_scenario_2_test()
