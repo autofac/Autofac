@@ -55,7 +55,7 @@ namespace Autofac.Core.Resolving
         {
             Enforce.ArgumentNotNull(parameters, "parameters");
             if (_executed)
-                throw new InvalidOperationException("Execute already called.");
+                throw new InvalidOperationException(ComponentActivationResources.ActivationAlreadyExecuted);
             
             _executed = true;
 

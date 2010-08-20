@@ -102,6 +102,11 @@
       <DependentUpon>ConstructorParameterBindingResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Core\Activators\Reflection\DefaultValueParameter.cs" />
+    <Compile Include="Core\ContainerResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ContainerResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Core\IActivatedEventArgs.cs" />
     <Compile Include="Core\IActivatingEventArgs.cs" />
     <Compile Include="Core\IServiceWithType.cs" />
@@ -117,6 +122,21 @@
     <Compile Include="Core\Registration\ExternalRegistrySource.cs" />
     <Compile Include="Core\Registration\ScopeRestrictedRegistry.cs" />
     <Compile Include="Core\Registration\ServiceRegistrationInfo.cs" />
+    <Compile Include="Core\Registration\ServiceRegistrationInfoResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ServiceRegistrationInfoResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Resolving\ComponentActivationResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ComponentActivationResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\ServiceResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ServiceResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Features\LightweightAdapters\LightweightAdapterActivatorData.cs" />
     <Compile Include="Features\LightweightAdapters\LightweightAdapterRegistrationExtensions.cs" />
     <Compile Include="Features\LightweightAdapters\LightweightAdapterRegistrationSource.cs" />
@@ -314,6 +334,10 @@
       <LastGenOutput>ReflectionActivatorResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Core\ContainerResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ContainerResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Core\DependencyResolutionExceptionResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DependencyResolutionExceptionResources.Designer.cs</LastGenOutput>
@@ -330,13 +354,25 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ComponentRegistrationResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Core\Registration\ServiceRegistrationInfoResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ServiceRegistrationInfoResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Core\Resolving\CircularDependencyDetectorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>CircularDependencyDetectorResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Core\Resolving\ComponentActivationResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ComponentActivationResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Core\Resolving\ResolveOperationResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ResolveOperationResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\ServiceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ServiceResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Features\LightweightAdapters\LightweightAdapterRegistrationSourceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -56,7 +56,7 @@ namespace Autofac.Core
             _componentRegistry.Register(new ComponentRegistration(
                 LifetimeScope.SelfRegistrationId,
                 new DelegateActivator(typeof(LifetimeScope), (c, p) => {
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException(ContainerResources.SelfRegistrationCannotBeActivated);
                 }),
                 new CurrentScopeLifetime(),
                 InstanceSharing.Shared,

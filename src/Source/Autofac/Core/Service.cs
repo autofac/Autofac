@@ -81,8 +81,7 @@ namespace Autofac.Core
         /// <exception cref="T:System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
         public override bool Equals(object obj)
         {
-            throw new NotImplementedException(
-                "Subclasses of Autofac.Service must override Object.Equals()");
+            throw new NotImplementedException(ServiceResources.MustOverrideEquals);
         }
 
         /// <summary>
@@ -93,8 +92,7 @@ namespace Autofac.Core
         /// </returns>
         public override int GetHashCode()
         {
-            throw new NotImplementedException(
-                "Subclasses of Autofac.Service must override Object.GetHashCode()");
+            throw new NotImplementedException(ServiceResources.MustOverrideGetHashCode);
         }
     }
 }

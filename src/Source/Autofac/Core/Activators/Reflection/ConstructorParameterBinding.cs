@@ -79,7 +79,7 @@ namespace Autofac.Core.Activators.Reflection
         public object Instantiate()
         {
             if (!CanInstantiate)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException(ConstructorParameterBindingResources.CannotInstantitate);
 
             var values = new object[_valueRetrievers.Length];
             for (var i = 0; i < _valueRetrievers.Length; ++i)

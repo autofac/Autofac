@@ -117,16 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BoundConstructor" xml:space="preserve">
-    <value>Bound constructor '{0}'.</value>
-  </data>
-  <data name="CannotInstantitate" xml:space="preserve">
-    <value>The binding cannot be instantiated.</value>
-  </data>
-  <data name="ExceptionDuringInstantiation" xml:space="preserve">
-    <value>An exception was thrown while invoking the constructor '{0}' on type '{1}'.</value>
-  </data>
-  <data name="NonBindableConstructor" xml:space="preserve">
-    <value>Cannot resolve parameter '{1}' of constructor '{0}'.</value>
+  <data name="SelfRegistrationCannotBeActivated" xml:space="preserve">
+    <value>The container's self-registration of context interfaces should never be activated as it is hard-wired into the LifetimeScope class.</value>
   </data>
 </root>

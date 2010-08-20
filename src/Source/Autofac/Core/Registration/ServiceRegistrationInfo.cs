@@ -50,7 +50,7 @@ namespace Autofac.Core.Registration
         void RequiresInitialization()
         {
             if (!IsInitialized)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException(ServiceRegistrationInfoResources.NotInitialised);
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace Autofac.Core.Registration
         void EnforceDuringInitialization()
         {
             if (!IsInitializing)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException(ServiceRegistrationInfoResources.NotDuringInitialisation);
         }
 
         public IRegistrationSource DequeueNextSource()
