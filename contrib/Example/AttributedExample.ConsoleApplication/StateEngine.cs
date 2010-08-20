@@ -33,7 +33,7 @@ namespace AttributedExample.ConsoleApplication
 
             // here, we'll filter according to the rules we are looking for.  the incorportation of rules is another reason
             // consider the filtering process to be injected and atomically testable
-            foreach (var item in (from p in stateSteps where p.Metadata.DocumentType == documentType select p))
+            foreach (var item in (from p in stateSteps where p.Metadata.DocumentTypes.Contains(documentType) select p))
             {
                 // the following allocation is required to maintain proper state in the closure' context 
                 var localItem = item;

@@ -18,7 +18,7 @@ namespace AttributedExample.ConsoleApplication
             // the following registration hunts the listed assemblies for derivations of IStateStepConfiguration with marked MetadataAttribute-attributes
             // and converts these into strongly typed metadata.  also check out the alternate pattern used in the Attribute Tests scenario 4 where 
             // the Autofac Module pattern is extended for driving these types of registrations directly.
-            componentRegistry.RegisterModule( new StateStepModule());
+            componentRegistry.RegisterModule( new StateStepMetadataModule());
             //componentRegistry.RegisterAssemblyTypedMetadata<IStateStepConfiguration, IStateStepConfigurationMetadata>(Assembly.GetExecutingAssembly());
         }
     }

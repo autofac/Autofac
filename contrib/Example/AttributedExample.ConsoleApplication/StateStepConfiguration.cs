@@ -29,43 +29,31 @@ namespace AttributedExample.ConsoleApplication
     // the done step is shared by all and therefore has three attributes denoting its
     // use in the various document type workflows
 
-    public class StateStepModule : MetadataModule<IStateStepConfiguration, IStateStepConfigurationMetadata>
+    public class StateStepMetadataModule : MetadataModule<IStateStepConfiguration, IStateStepConfigurationMetadata>
     {
 
         public override void Register(IMetadataRegistrar<IStateStepConfiguration, IStateStepConfigurationMetadata> registrar)
         {
-            registrar.RegisterType<EmailStepCapability>(new StateStepConfigurationMetadata(DocumentType.Amendment,
+            // here, we are declaring which types are assigned according to document type and step
+            registrar.RegisterType<EmailStepCapability>(new StateStepConfigurationMetadata(new [] {DocumentType.Amendment, DocumentType.Order},
                                                                                            WorkflowStep.EmailDetails));
 
-            registrar.RegisterType<EmailStepCapability>(new StateStepConfigurationMetadata(DocumentType.Order,
-                                                                               WorkflowStep.EmailDetails));
-
-            registrar.RegisterType<ApproveStepCapability>(new StateStepConfigurationMetadata(DocumentType.Amendment,
+            registrar.RegisterType<ApproveStepCapability>(new StateStepConfigurationMetadata(new [] {DocumentType.Amendment, DocumentType.Order},
                                                                                              WorkflowStep.Approve));
 
-            registrar.RegisterType<ApproveStepCapability>(new StateStepConfigurationMetadata(DocumentType.Order,
-                                                                                             WorkflowStep.Approve));
-
-            registrar.RegisterType<NewOrderStepCapability>(new StateStepConfigurationMetadata(DocumentType.Amendment,
+            registrar.RegisterType<NewOrderStepCapability>(new StateStepConfigurationMetadata(new [] {DocumentType.Amendment, DocumentType.Order},
                                                                                               WorkflowStep.New));
 
-            registrar.RegisterType<NewOrderStepCapability>(new StateStepConfigurationMetadata(DocumentType.Order,
-                                                                                              WorkflowStep.New));
+            registrar.RegisterType<NewCancellationStepConfiguration>(new StateStepConfigurationMetadata(new [] {DocumentType.Cancellation}, WorkflowStep.New));
 
-            registrar.RegisterType<NewCancellationStepConfiguration>(new StateStepConfigurationMetadata(DocumentType.Cancellation, WorkflowStep.New));
-
-            registrar.RegisterType<EmailDetailsCancellationStepConfiguration>(new StateStepConfigurationMetadata(DocumentType.Cancellation, WorkflowStep.EmailDetails));
-
-
-            registrar.RegisterType<GenericDoneStepConfiguration>(new StateStepConfigurationMetadata(DocumentType.Order, WorkflowStep.Done));
-            registrar.RegisterType<GenericDoneStepConfiguration>(new StateStepConfigurationMetadata(DocumentType.Amendment, WorkflowStep.Done));
-            registrar.RegisterType<GenericDoneStepConfiguration>(new StateStepConfigurationMetadata(DocumentType.Cancellation, WorkflowStep.Done));
+            registrar.RegisterType<EmailDetailsCancellationStepConfiguration>(new StateStepConfigurationMetadata(new [] {DocumentType.Cancellation}, WorkflowStep.EmailDetails));
+            
+            registrar.RegisterType<GenericDoneStepConfiguration>(new StateStepConfigurationMetadata(new [] { DocumentType.Order, DocumentType.Amendment, DocumentType.Cancellation},
+                                                                                                    WorkflowStep.Done));
 
         }
     }
 
-    //[StateStepConfigurationMetadata(DocumentType.Amendment, WorkflowStep.EmailDetails)]
-    //[StateStepConfigurationMetadata(DocumentType.Order, WorkflowStep.EmailDetails)]
     public class EmailStepCapability : IStateStepConfiguration
     {
         #region IStateStepConfiguration Members
@@ -86,8 +74,6 @@ namespace AttributedExample.ConsoleApplication
 
 
 
-    //[StateStepConfigurationMetadata(DocumentType.Amendment, WorkflowStep.Approve)]
-    //[StateStepConfigurationMetadata(DocumentType.Order, WorkflowStep.Approve)]
     public class ApproveStepCapability : IStateStepConfiguration
     {
 
@@ -108,8 +94,6 @@ namespace AttributedExample.ConsoleApplication
     }
 
 
-    //[StateStepConfigurationMetadata(DocumentType.Amendment, WorkflowStep.New)]
-    //[StateStepConfigurationMetadata(DocumentType.Order, WorkflowStep.New)]
     public class NewOrderStepCapability : IStateStepConfiguration
     {
 
@@ -129,7 +113,6 @@ namespace AttributedExample.ConsoleApplication
         #endregion
     }
 
-    //[StateStepConfigurationMetadata(DocumentType.Cancellation, WorkflowStep.New)]
     public class NewCancellationStepConfiguration : IStateStepConfiguration
     {
 
@@ -149,7 +132,6 @@ namespace AttributedExample.ConsoleApplication
         #endregion
     }
 
-    //[StateStepConfigurationMetadata(DocumentType.Cancellation, WorkflowStep.EmailDetails)]
     public class EmailDetailsCancellationStepConfiguration : IStateStepConfiguration
     {
 
@@ -170,9 +152,6 @@ namespace AttributedExample.ConsoleApplication
     }
 
 
-    //[StateStepConfigurationMetadata(DocumentType.Order, WorkflowStep.Done)]
-    //[StateStepConfigurationMetadata(DocumentType.Amendment, WorkflowStep.Done)]
-    //[StateStepConfigurationMetadata(DocumentType.Cancellation, WorkflowStep.Done)]
     public class GenericDoneStepConfiguration : IStateStepConfiguration
     {
         #region IStateStepConfiguration Members
