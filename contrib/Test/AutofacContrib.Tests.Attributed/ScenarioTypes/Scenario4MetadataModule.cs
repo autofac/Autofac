@@ -10,16 +10,11 @@ namespace AutofacContrib.Tests.Attributed.ScenarioTypes
     {
         public override void Register(IMetadataRegistrar<IExportScenario4, IExportScenario4Metadata> registrar)
         {
-            // first we'll register two metadata variants of export scenario 4
-            registrar.RegisterTypedMetadata<ExportScenario4>(new[]
-                                                                 {
-                                                                     new ExportScenario4Metadata("sid"),
-                                                                     new ExportScenario4Metadata("nancy")
-         
-                                                                 });
+            registrar.RegisterType<ExportScenario4>(new ExportScenario4Metadata("sid"));
+            registrar.RegisterType<ExportScenario4>(new ExportScenario4Metadata("nancy"));
 
             // in addition, we'll register an additional metadata variant of the alternate scenario 4 type
-            registrar.RegisterTypedMetadata<ExportScenario4Alternate>(new[] {new ExportScenario4Metadata("the-cats")});
+            registrar.RegisterType<ExportScenario4Alternate>(new ExportScenario4Metadata("the-cats"));
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Autofac;
 using Autofac.Builder;
 
@@ -6,8 +8,8 @@ namespace AutofacContrib.Attributed
 {
     public interface IMetadataRegistrar<TInterface, TMetadata>
     {
-        IRegistrationBuilder<TInstance, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterTypedMetadata
-            <TInstance>(IEnumerable<TMetadata> metadataSet) where TInstance : TInterface;
+        IRegistrationBuilder<TInstance, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterType
+            <TInstance>(TMetadata metadata) where TInstance : TInterface;
     }
 
 
@@ -47,6 +49,20 @@ namespace AutofacContrib.Attributed
         public IRegistrationBuilder<TInstance, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterTypedMetadata<TInstance>(IEnumerable<TMetadata> metadataSet) where TInstance : TInterface
         {
             return _containerBuilder.RegisterTypedMetadata<TInterface, TInstance, TMetadata>(metadataSet);
+        }
+
+
+
+        public IRegistrationBuilder<TInstance, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterType<TInstance>(TMetadata metadata) where TInstance : TInterface
+        {
+            return _containerBuilder.RegisterType<TInstance>().As<TInterface>().WithMetadata(TranslateMetadata(metadata));
+        }
+
+        private static IEnumerable<KeyValuePair<string, object>> TranslateMetadata(object instance)
+        {
+            return instance.GetType().GetProperties().Where(propertyInfo => propertyInfo.CanRead)
+                            .Select(propertyInfo => new KeyValuePair<string, object>
+                                            (propertyInfo.Name, propertyInfo.GetValue(instance, null))).ToDictionary(pair => pair.Key, pair => pair.Value);
         }
 
         #endregion
