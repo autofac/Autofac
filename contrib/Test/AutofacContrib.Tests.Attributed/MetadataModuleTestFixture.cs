@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace AutofacContrib.Tests.Attributed
 {
     [TestFixture] 
-    public class ContainerBuilderExtensionTestFixture
+    public class MetadataModuleTestFixture
     {
 
         [Test]
