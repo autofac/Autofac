@@ -52,15 +52,6 @@
     <Compile Include="MetadataModuleTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScenarioTypes\CombinationalWeakTypedAttributeScenario.cs" />
-    <Compile Include="ScenarioTypes\ExportScenario1DiscoveryTargets.cs" />
-    <Compile Include="ScenarioTypes\ExportScenario1Interfaces.cs" />
-    <Compile Include="ScenarioTypes\ExportScenario1MetadataAttribute.cs" />
-    <Compile Include="ScenarioTypes\ExportScenario2DiscoveryTargets.cs" />
-    <Compile Include="ScenarioTypes\ExportScenario2Interfaces.cs" />
-    <Compile Include="ScenarioTypes\ExportScenario2MetadataAttribute.cs" />
-    <Compile Include="ScenarioTypes\ExportScenario3DiscoveryTargets.cs" />
-    <Compile Include="ScenarioTypes\ExportScenario3Interfaces.cs" />
-    <Compile Include="ScenarioTypes\ExportScenario3MetadataAttribute.cs" />
     <Compile Include="ScenarioTypes\ExportScenario4DiscoveryTargets.cs" />
     <Compile Include="ScenarioTypes\ExportScenario4Interfaces.cs" />
     <Compile Include="ScenarioTypes\Scenario4MetadataModule.cs" />
