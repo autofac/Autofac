@@ -1,17 +1,17 @@
 ﻿
 namespace AutofacContrib.Tests.Attributed.ScenarioTypes
 {
-    public class ExportScenario4 : IExportScenario4
+    public class MetadataModuleScenario : IMetadataModuleScenario
     {
     }
 
-    public class ExportScenario4Alternate : IExportScenario4
+    public class MetadataModuleScenarioAlternate : IMetadataModuleScenario
     {
     }
 
-    public class ExportScenario4Metadata : IExportScenario4Metadata
+    public class MetadataModuleScenarioMetadata : IMetadataModuleScenarioMetadata
     {
-        public ExportScenario4Metadata(string name)
+        public MetadataModuleScenarioMetadata(string name)
         {
             Name = name;
         }

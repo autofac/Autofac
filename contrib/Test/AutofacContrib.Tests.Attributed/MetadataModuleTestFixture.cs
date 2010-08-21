@@ -17,10 +17,10 @@ namespace AutofacContrib.Tests.Attributed
             // arrange
             var builder = new ContainerBuilder();
 
-            builder.RegisterModule(new Scenario4MetadataModule());
+            builder.RegisterModule(new ScenarioMetadataModule());
 
             // act
-            var items = builder.Build().Resolve<IEnumerable<Lazy<IExportScenario4, IExportScenario4Metadata>>>();
+            var items = builder.Build().Resolve<IEnumerable<Lazy<IMetadataModuleScenario, IMetadataModuleScenarioMetadata>>>();
 
             // assert
             Assert.That(items.Where(p => p.Metadata.Name == "sid").Count(), Is.EqualTo(1));
