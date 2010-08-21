@@ -12,7 +12,7 @@ namespace AutofacContrib.Tests.Attributed
     {
 
         [Test]
-        public void scenario_4_validate_registration_content()
+        public void metadata_module_scenario_validate_registration_content()
         {
             // arrange
             var builder = new ContainerBuilder();
