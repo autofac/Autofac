@@ -64,7 +64,9 @@
     <Compile Include="ScenarioTypes\ExportScenario4DiscoveryTargets.cs" />
     <Compile Include="ScenarioTypes\ExportScenario4Interfaces.cs" />
     <Compile Include="ScenarioTypes\Scenario4MetadataModule.cs" />
+    <Compile Include="ScenarioTypes\StrongTypedMetadataAttributeScenario.cs" />
     <Compile Include="ScenarioTypes\WeakTypedMetadataAttributeScenario.cs" />
+    <Compile Include="StrongTypedAttributeScenarioTestFixture.cs" />
     <Compile Include="WeakTypedAttributeScenarioTestFixture.cs" />
   </ItemGroup>
   <ItemGroup>
