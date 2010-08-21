@@ -48,8 +48,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CombinationalWeakTypedAttributeScenarioTestFixture.cs" />
     <Compile Include="ContainerBuilderExtensionTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScenarioTypes\CombinationalWeakTypedAttributeScenario.cs" />
     <Compile Include="ScenarioTypes\ExportScenario1DiscoveryTargets.cs" />
     <Compile Include="ScenarioTypes\ExportScenario1Interfaces.cs" />
     <Compile Include="ScenarioTypes\ExportScenario1MetadataAttribute.cs" />
