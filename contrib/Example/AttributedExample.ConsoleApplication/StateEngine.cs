@@ -24,29 +24,36 @@ namespace AttributedExample.ConsoleApplication
         /// in determining the steps.
         /// </summary>
         /// <param name="documentType">document type to use for the state machine</param>
-        /// <param name="stateSteps">enumeration of all state steps along with their respective metadata</param>
-        public StateEngine(DocumentType documentType, IEnumerable<Lazy<IStateStepConfiguration, IStateStepConfigurationMetadata>> stateSteps)
+        /// <param name="stateConfiguration">document type state configuration filtering component</param>
+        public StateEngine(DocumentType documentType, Func<DocumentType, StateEngineConfiguration> stateConfiguration)
         {
-            _stateMachine = new StateMachine<WorkflowStep, WorkflowTrigger>(WorkflowStep.New);
 
-            Console.WriteLine("Entering New step at {0}", DateTime.Now.ToLongTimeString());
 
-            // here, we'll filter according to the rules we are looking for.  the incorportation of rules is another reason
-            // consider the filtering process to be injected and atomically testable
-            foreach (var item in (from p in stateSteps where p.Metadata.DocumentTypes.Contains(documentType) select p))
-            {
-                // the following allocation is required to maintain proper state in the closure' context 
-                var localItem = item;
-                var stateConfig = _stateMachine.Configure(localItem.Metadata.WorkflowStep);
+            var stateMachine = new StateMachine<WorkflowStep, WorkflowTrigger>(WorkflowStep.New);
 
-                foreach(var permission in localItem.Value.Permissions)
-                    stateConfig.Permit(permission.Key, permission.Value);
+            // here, we'll get the state steps particular to our document type and configure the workflow
 
-                stateConfig.OnEntry(
-                    () =>
-                    Console.WriteLine("Entering {0} Step at {1}", localItem.Metadata.WorkflowStep,
-                                      DateTime.Now.ToLongTimeString()));
-            }
+            var stepCount =
+                stateConfiguration(documentType).StateSteps.Select(p => ConfigureStateMachine(stateMachine, p)).Count();
+
+            Console.WriteLine("Creating the workflow at {0} with {1} steps", DateTime.Now.ToLongTimeString(), stepCount);
+
+            _stateMachine = stateMachine;
+        }
+
+        private static Lazy<IStateStepConfiguration, IStateStepConfigurationMetadata> ConfigureStateMachine(StateMachine<WorkflowStep, WorkflowTrigger> stateMachine, 
+                                           Lazy<IStateStepConfiguration, IStateStepConfigurationMetadata> stepConfiguration)
+        {
+            var stateConfig = stateMachine.Configure(stepConfiguration.Metadata.WorkflowStep);
+
+            foreach (var permission in stepConfiguration.Value.Permissions)
+                stateConfig.Permit(permission.Key, permission.Value);
+
+            stateConfig.OnEntry(
+                () => Console.WriteLine("Entering {0} Step at {1}", stepConfiguration.Metadata.WorkflowStep,
+                                        DateTime.Now.ToLongTimeString()));
+
+            return stepConfiguration;
         }
 
         /// <summary>

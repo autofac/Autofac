@@ -1,7 +1,7 @@
 ﻿//#define USE_METADATA_MODULE
+//#define USE_WEAK_TYPE_SCANNING
 using System;
 using System.Reflection;
-using AttributedExample.ConsoleApplication;
 using AttributedExample.ConsoleApplication.Configuration;
 using AttributedExample.ConsoleApplication.StateTypes;
 using Autofac;
@@ -22,6 +22,7 @@ namespace AttributedExample.ConsoleApplication
         public static void Configure(ContainerBuilder componentRegistry)
         {
             componentRegistry.RegisterType<StateEngine>();
+            componentRegistry.RegisterType<StateEngineConfiguration>();
 
 #if(USE_METADATA_MODULE)
             // the following registration hunts the listed assemblies for derivations of IStateStepConfiguration with marked MetadataAttribute-attributes
