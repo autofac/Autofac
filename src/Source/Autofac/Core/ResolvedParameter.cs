@@ -35,8 +35,8 @@ namespace Autofac.Core
     /// </summary>
     public class ResolvedParameter : Parameter
     {
-        Func<ParameterInfo, IComponentContext, bool> _predicate;
-        Func<ParameterInfo, IComponentContext, object> _valueAccessor;
+        readonly Func<ParameterInfo, IComponentContext, bool> _predicate;
+        readonly Func<ParameterInfo, IComponentContext, object> _valueAccessor;
 
         /// <summary>
         /// Create an instance of the ResolvedParameter class.
@@ -68,11 +68,42 @@ namespace Autofac.Core
                 valueProvider = () => _valueAccessor(pi, context);
                 return true;
             }
-            else
-            {
-                valueProvider = null;
-                return false;
-            }
+
+            valueProvider = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Construct a <see cref="ResolvedParameter"/> that will match parameters of type
+        /// <typeparamref name="TService"/> and resolve for those parameters an implementation
+        /// registered with the name <paramref name="serviceName"/>.
+        /// </summary>
+        /// <typeparam name="TService">The type of the parameter to match.</typeparam>
+        /// <param name="serviceName">The name of the matching service to resolve.</param>
+        /// <returns>A configured <see cref="ResolvedParameter"/> instance.</returns>
+        /// <remarks>
+        /// </remarks>
+        public static ResolvedParameter ForNamed<TService>(string serviceName)
+        {
+            if (serviceName == null) throw new ArgumentNullException("serviceName");
+            return ForKeyed<TService>(serviceName);
+        }
+
+        /// <summary>
+        /// Construct a <see cref="ResolvedParameter"/> that will match parameters of type
+        /// <typeparamref name="TService"/> and resolve for those parameters an implementation
+        /// registered with the key <paramref name="serviceKey"/>.
+        /// </summary>
+        /// <typeparam name="TService">The type of the parameter to match.</typeparam>
+        /// <param name="serviceKey">The key of the matching service to resolve.</param>
+        /// <returns>A configured <see cref="ResolvedParameter"/> instance.</returns>
+        public static ResolvedParameter ForKeyed<TService>(object serviceKey)
+        {
+            if (serviceKey == null) throw new ArgumentNullException("serviceKey");
+            var ks = new KeyedService(serviceKey, typeof(TService));
+            return new ResolvedParameter(
+                (pi, c) => pi.ParameterType == typeof(TService) && c.IsRegisteredService(ks),
+                (pi, c) => c.ResolveService(ks));
         }
     }
 }

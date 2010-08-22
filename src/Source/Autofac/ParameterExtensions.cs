@@ -39,7 +39,7 @@ namespace Autofac
     /// </summary>
     /// <example>
     /// At configuration time, delegate registrations can retrieve parameter values using
-    /// the methods <see cref="Named"/>, <see cref="Positional"/> and <see cref="TypedAs"/>:
+    /// the methods <see cref="Named{T}"/>, <see cref="Positional{T}"/> and <see cref="TypedAs{T}"/>:
     /// <code>
     /// builder.Register((c, p) => new FtpClient(p.Named&lt;string&gt;("server")));
     /// </code>

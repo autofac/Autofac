@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 using NUnit.Framework;
-using Autofac;
 using Autofac.Core;
 
 namespace Autofac.Tests.Core
@@ -27,7 +25,9 @@ namespace Autofac.Tests.Core
             Assert.AreEqual("aaaaa", s);
         }
 
+// ReSharper disable UnusedTypeParameter
         interface ISomething<T> { }
+// ReSharper restore UnusedTypeParameter
 
         class ConcreteSomething<T> : ISomething<T> { }
 
@@ -63,6 +63,51 @@ namespace Autofac.Tests.Core
 
             Assert.IsInstanceOf<SomethingDecorator<int>>(concrete);
             Assert.IsInstanceOf<ConcreteSomething<int>>(((SomethingDecorator<int>)concrete).Decorated);
+        }
+
+        [Test]
+        public void ResolvedParameterForNamedServiceResolvesNamedService()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterInstance((object)'a').Named<char>("character");
+            cb.RegisterType<string>()
+                .UsingConstructor(typeof(char), typeof(int))
+                .WithParameter(new TypedParameter(typeof(int), 5))
+                .WithParameter(ResolvedParameter.ForNamed<char>("character"));
+            var c = cb.Build();
+            var s = c.Resolve<string>();
+            Assert.AreEqual("aaaaa", s);
+        }
+
+        [Test]
+        public void AResolvedParameterForAKeyedServiceMatchesParametersOfTheServiceTypeWhenTheKeyedServiceIsAvailable()
+        {
+            var k = new object();
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance((object) 'a').Keyed<char>(k);
+            var container = builder.Build();
+            var rp = ResolvedParameter.ForKeyed<char>(k);
+            var cp = GetCharParameter();
+            Func<object> vp;
+            Assert.That(rp.CanSupplyValue(cp, container, out vp));
+        }
+
+        [Test]
+        public void AResolvedParameterForAKeyedServiceDoesNotMatcheParametersOfTheServiceTypeWhenTheKeyedServiceIsUnavailable()
+        {
+            var rp = ResolvedParameter.ForKeyed<char>(new object());
+            var cp = GetCharParameter();
+            Func<object> vp;
+            var canSupply = rp.CanSupplyValue(cp, Container.Empty, out vp);
+            Assert.That(canSupply, Is.False);
+        }
+
+        static ParameterInfo GetCharParameter()
+        {
+            return typeof(string)
+                .GetConstructor(new[] {typeof (char), typeof (int)})
+                .GetParameters()
+                .First();
         }
     }
 }
