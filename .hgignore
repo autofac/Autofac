@@ -9,3 +9,4 @@ glob:TestResult.xml
 glob:*.suo
 glob:contrib/Resource/Library/Autofac/*.dll
 glob:contrib/Resource/Library/Autofac/*.XML
+glob:Build/

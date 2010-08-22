@@ -148,7 +148,7 @@
 
     <!-- Unfortunately NCover doesn't yet support .NET 4.0.
          When it does this can be removed and the section below it uncommmented. -->
-    <CreateItem Include="$(TestPath)\Autofac.Test*dll">
+    <CreateItem Include="$(TestPath)\Autofac.Test*dll" Exclude="$(TestPath)\Autofac.Tests.Scenarios.ScannedAssembly.dll">
       <Output ItemName="_testFiles" TaskParameter="Include"/>
     </CreateItem>
 
