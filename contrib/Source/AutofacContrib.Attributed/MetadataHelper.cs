@@ -36,5 +36,13 @@ namespace AutofacContrib.Attributed
 
             return propertyList;
         }
+
+        public static IEnumerable<KeyValuePair<string,object>> GetMetadata<TMetadataType>(Type targetType)
+        {
+            var attribute =
+                (from p in targetType.GetCustomAttributes(typeof (TMetadataType), true) select p).FirstOrDefault();
+
+            return attribute != null ? GetProperties(attribute) : new List<KeyValuePair<string, object>>();
+        }
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Linq;
+﻿using System.Linq;
 using Autofac.Builder;
 using Autofac.Features.Scanning;
 
@@ -9,34 +6,6 @@ namespace AutofacContrib.Attributed
 {
     public static class AutofacAttributeExtensions
     {
-        #region discovery suppport methods
-
-        /// <summary>
-        /// retrieves a dictionary of public properties on an attribute
-        /// </summary>
-        /// <param name="attribute">attribute being queried</param>
-        /// <returns>dictionary of property names and their values</returns>
-        private static IDictionary<string, object> GetProperties(object attribute)
-        {
-            return attribute.GetType().GetProperties().Where(propertyInfo => propertyInfo.CanRead &&
-                                                                      propertyInfo.DeclaringType.Name !=
-                                                                      typeof(Attribute).Name)
-                .Select(propertyInfo => new KeyValuePair<string, object>
-                                            (propertyInfo.Name, propertyInfo.GetValue(attribute, null))).ToDictionary(pair => pair.Key, pair => pair.Value);
-
-
-        }
-
-        private static IEnumerable<IDictionary<string, object>> GetMetadata(Type targetType)
-        {
-            return from Attribute attribute in targetType.GetCustomAttributes(true)
-                   where attribute.GetType().GetCustomAttributes(typeof(MetadataAttributeAttribute), false).Count() > 0
-                   select GetProperties(attribute);
-        }
-
-
-        #endregion
-
         /// <summary>
         /// This method can be invoked with the assembly scanner to register metadata that is declared loosely using
         /// attributes marked with the MetadataAttributeAttribute. All of the marked attributes are used together to create
@@ -52,9 +21,12 @@ namespace AutofacContrib.Attributed
                         (this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> builder)
                                         where TScanningActivatorData : ScanningActivatorData
         {
-            // Count used otherwise the lazyness of the expression is one degree too lazy
             builder.ActivatorData.ConfigurationActions.Add(
-                (t, rb) => GetMetadata(t).Select(rb.WithMetadata).Count());
+                (t, rb) =>
+                    {
+                        var metadata = MetadataHelper.GetMetadata(t);
+                        if (metadata.Count() > 0) rb.WithMetadata(MetadataHelper.GetMetadata(t));
+                    });
 
             return builder;
         }
@@ -74,16 +46,10 @@ namespace AutofacContrib.Attributed
             builder.ActivatorData.ConfigurationActions.Add(
                 (t, rb) =>
                     {
-                        var attribute =
-                            (from p in t.GetCustomAttributes(typeof(TMetadata),true)
-                             select p).FirstOrDefault();
+                        var metadataProperties = MetadataHelper.GetMetadata<TMetadata>(t);
 
-                        if( attribute != null)
-                            rb.WithMetadata(attribute.GetType().GetProperties().Where(propertyInfo => propertyInfo.CanRead)
-                                                .Select(
-                                                    propertyInfo =>
-                                                    new KeyValuePair<string, object>(propertyInfo.Name,
-                                                                                     propertyInfo.GetValue(attribute, null))));
+                        if (metadataProperties.Count() > 0)
+                            rb.WithMetadata(metadataProperties);
                     });
             
             return builder;
