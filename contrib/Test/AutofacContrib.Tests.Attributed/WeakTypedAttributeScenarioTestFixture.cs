@@ -19,7 +19,6 @@ namespace AutofacContrib.Tests.Attributed
             var builder = new ContainerBuilder();
 
             builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
-                .AssignableTo(typeof(IWeakTypedScenario))
                 .As<IWeakTypedScenario>()
                 .WithAttributedMetadata();
 

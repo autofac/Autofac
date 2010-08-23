@@ -36,14 +36,12 @@ namespace AttributedExample.ConsoleApplication
             // this mechanism searches for attributes that are attributed with the MetadataAttribute, these
             // attributes are then constituted into metadata for each registration type
             componentRegistry.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
-                .AssignableTo(typeof (IStateStepConfiguration))
                 .As<IStateStepConfiguration>()
                 .WithAttributedMetadata();
 #else
             // this mechanism searches for attributes that derive from IStateStepConfigurationMetadata. This
             // mechanism is both strongly typed and results in a faster and more streamlined querying of attributes
             componentRegistry.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
-                .AssignableTo(typeof (IStateStepConfiguration))
                 .As<IStateStepConfiguration>()
                 .WithAttributedMetadata<IStateStepConfigurationMetadata>();
 #endif
