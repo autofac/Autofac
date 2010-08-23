@@ -17,7 +17,7 @@ namespace AutofacContrib.Tests.Attributed
             // arrange
             var builder = new ContainerBuilder();
 
-            builder.RegisterModule(new ScenarioMetadataModule());
+            builder.RegisterModule(new StrongTypedScenarioMetadataModule());
 
             // act
             var items = builder.Build().Resolve<IEnumerable<Lazy<IMetadataModuleScenario, IMetadataModuleScenarioMetadata>>>();

@@ -6,7 +6,7 @@ namespace AutofacContrib.Tests.Attributed.ScenarioTypes
     /// This class demonstrates programmatic or non-attribute based discovery of metadata types.  This could also be
     /// used to provide variable, non-compile time wireup to the registration of objects. 
     /// </summary>
-    public class ScenarioMetadataModule : MetadataModule<IMetadataModuleScenario,IMetadataModuleScenarioMetadata>
+    public class StrongTypedScenarioMetadataModule : MetadataModule<IMetadataModuleScenario,IMetadataModuleScenarioMetadata>
     {
         public override void Register(IMetadataRegistrar<IMetadataModuleScenario, IMetadataModuleScenarioMetadata> registrar)
         {

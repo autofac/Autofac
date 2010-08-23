@@ -55,11 +55,13 @@
     <Compile Include="ScenarioTypes\CombinationalWeakTypedAttributeScenario.cs" />
     <Compile Include="ScenarioTypes\MetadataModuleScenarioDiscoveryTargets.cs" />
     <Compile Include="ScenarioTypes\MetadataModuleScenarioInterfaces.cs" />
-    <Compile Include="ScenarioTypes\ScenarioMetadataModule.cs" />
+    <Compile Include="ScenarioTypes\StrongTypedScenarioMetadataModule.cs" />
     <Compile Include="ScenarioTypes\StrongTypedMetadataAttributeScenario.cs" />
     <Compile Include="ScenarioTypes\WeakTypedMetadataAttributeScenario.cs" />
+    <Compile Include="ScenarioTypes\WeakTypedScenarioMetadataModule.cs" />
     <Compile Include="StrongTypedAttributeScenarioTestFixture.cs" />
     <Compile Include="WeakTypedAttributeScenarioTestFixture.cs" />
+    <Compile Include="WeakTypedScenarioMetadataModuleTestFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\AutofacContrib.Attributed\AutofacContrib.Attributed.csproj">
