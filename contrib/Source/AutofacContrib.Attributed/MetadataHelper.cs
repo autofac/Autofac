@@ -10,7 +10,12 @@ namespace AutofacContrib.Attributed
     /// </summary>
     public class MetadataHelper
     {
-        private static IEnumerable<KeyValuePair<string, object>> GetProperties(object target)
+        /// <summary>
+        /// given a target object, returns a set of properties and associated values
+        /// </summary>
+        /// <param name="target">target instance to be scanned</param>
+        /// <returns>enumerable set of properties and associated values</returns>
+        public static IEnumerable<KeyValuePair<string, object>> GetProperties(object target)
         {
             return target.GetType()
                          .GetProperties()

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Autofac;
+﻿using Autofac;
 using Autofac.Builder;
 
 namespace AutofacContrib.Attributed
@@ -11,7 +9,7 @@ namespace AutofacContrib.Attributed
             <TInstance>(TMetadata metadata) where TInstance : TInterface;
 
         IRegistrationBuilder<TInstance, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterAttributedType
-            <TInstance>(TMetadata metadata) where TInstance : TInterface;
+            <TInstance>() where TInstance : TInterface;
     }
 
    
@@ -42,28 +40,32 @@ namespace AutofacContrib.Attributed
             Register(this);
         }
 
-        private static IEnumerable<KeyValuePair<string, object>> TranslateMetadata(object instance)
-        {
-            return instance.GetType().GetProperties().Where(propertyInfo => propertyInfo.CanRead)
-                            .Select(propertyInfo => new KeyValuePair<string, object>
-                                            (propertyInfo.Name, propertyInfo.GetValue(instance, null))).ToDictionary(pair => pair.Key, pair => pair.Value);
-        }
-
-
         #region IMetadataRegistrar<TInterface,TMetadata> Members
 
-
-
+        /// <summary>
+        /// registers provided metadata on the declared type 
+        /// </summary>
+        /// <typeparam name="TInstance">concrete instance type</typeparam>
+        /// <param name="metadata">metadata instance</param>
+        /// <returns>container builder</returns>
         public IRegistrationBuilder<TInstance, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterType<TInstance>(TMetadata metadata) where TInstance : TInterface
         {
-            return _containerBuilder.RegisterType<TInstance>().As<TInterface>().WithMetadata(TranslateMetadata(metadata));
+            return
+                _containerBuilder.RegisterType<TInstance>().As<TInterface>().WithMetadata(
+                    MetadataHelper.GetProperties(metadata));
         }
 
 
-
-        public IRegistrationBuilder<TInstance, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterAttributedType<TInstance>(TMetadata metadata) where TInstance : TInterface
+        /// <summary>
+        /// registers the provided concrete instance and scans it for generic MetadataAttribute data
+        /// </summary>
+        /// <typeparam name="TInstance">concrete instance type</typeparam>
+        /// <returns></returns>
+        public IRegistrationBuilder<TInstance, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterAttributedType<TInstance>() where TInstance : TInterface
         {
-            throw new System.NotImplementedException();
+            return
+                _containerBuilder.RegisterType<TInstance>().As<TInterface>().WithMetadata(
+                    MetadataHelper.GetMetadata(typeof (TInstance)));
         }
 
         #endregion
