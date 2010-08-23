@@ -36,5 +36,22 @@ namespace AutofacContrib.Tests.Attributed
             Assert.That(metadata.Where(p => p.Key == "Name").FirstOrDefault().Value, Is.EqualTo("Hello"));
             Assert.That(metadata.Where(p => p.Key == "Age").FirstOrDefault().Value, Is.EqualTo(42));
         }
+
+        [Test]
+        public void verify_that_unfound_strong_typed_attribute_results_in_empty_property_set()
+        {
+            var metadata = MetadataHelper.GetMetadata<IMetadataModuleScenarioMetadata>(typeof (MetadataModuleScenario));
+            
+            Assert.That(metadata.Count(), Is.EqualTo(0));
+        }
+
+        [Test]
+        public void verify_that_unfound_weakly_typed_attribute_results_in_empty_property_set()
+        {
+            var metadata = MetadataHelper.GetMetadata(typeof(MetadataModuleScenario));
+
+            Assert.That(metadata.Count(), Is.EqualTo(0));
+        }
+
     }
 }
