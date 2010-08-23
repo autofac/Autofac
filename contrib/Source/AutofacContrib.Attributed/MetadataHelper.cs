@@ -25,7 +25,7 @@ namespace AutofacContrib.Attributed
         /// given a type, interrogate the attribution to retrieve an enumerable set property names
         /// </summary>
         /// <param name="targetType">type to interrogate for metdata attribute attributes</param>
-        /// <returns>enumerable set of properties</returns>
+        /// <returns>enumerable set of properties found</returns>
         public static IEnumerable<KeyValuePair<string, object>> GetMetadata(Type targetType)
         {
             var propertyList = new List<KeyValuePair<string, object>>();
@@ -37,6 +37,12 @@ namespace AutofacContrib.Attributed
             return propertyList;
         }
 
+        /// <summary>
+        /// given a strong type, interrogate the attribution to retrieve an enumerable set of property names
+        /// </summary>
+        /// <typeparam name="TMetadataType">metadata type to look for in the list of attributes</typeparam>
+        /// <param name="targetType">type to interrogate</param>
+        /// <returns>enumerable set of properties found</returns>
         public static IEnumerable<KeyValuePair<string,object>> GetMetadata<TMetadataType>(Type targetType)
         {
             var attribute =
