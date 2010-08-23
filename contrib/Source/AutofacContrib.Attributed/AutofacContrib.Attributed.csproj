@@ -51,6 +51,7 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AutofacAttributeExtensions.cs" />
+    <Compile Include="MetadataHelper.cs" />
     <Compile Include="MetadataModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

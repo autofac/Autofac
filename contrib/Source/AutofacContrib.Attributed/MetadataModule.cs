@@ -9,7 +9,12 @@ namespace AutofacContrib.Attributed
     {
         IRegistrationBuilder<TInstance, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterType
             <TInstance>(TMetadata metadata) where TInstance : TInterface;
+
+        IRegistrationBuilder<TInstance, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterAttributedType
+            <TInstance>(TMetadata metadata) where TInstance : TInterface;
     }
+
+   
 
 
     /// <summary>
@@ -37,6 +42,14 @@ namespace AutofacContrib.Attributed
             Register(this);
         }
 
+        private static IEnumerable<KeyValuePair<string, object>> TranslateMetadata(object instance)
+        {
+            return instance.GetType().GetProperties().Where(propertyInfo => propertyInfo.CanRead)
+                            .Select(propertyInfo => new KeyValuePair<string, object>
+                                            (propertyInfo.Name, propertyInfo.GetValue(instance, null))).ToDictionary(pair => pair.Key, pair => pair.Value);
+        }
+
+
         #region IMetadataRegistrar<TInterface,TMetadata> Members
 
 
@@ -46,11 +59,11 @@ namespace AutofacContrib.Attributed
             return _containerBuilder.RegisterType<TInstance>().As<TInterface>().WithMetadata(TranslateMetadata(metadata));
         }
 
-        private static IEnumerable<KeyValuePair<string, object>> TranslateMetadata(object instance)
+
+
+        public IRegistrationBuilder<TInstance, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterAttributedType<TInstance>(TMetadata metadata) where TInstance : TInterface
         {
-            return instance.GetType().GetProperties().Where(propertyInfo => propertyInfo.CanRead)
-                            .Select(propertyInfo => new KeyValuePair<string, object>
-                                            (propertyInfo.Name, propertyInfo.GetValue(instance, null))).ToDictionary(pair => pair.Key, pair => pair.Value);
+            throw new System.NotImplementedException();
         }
 
         #endregion
