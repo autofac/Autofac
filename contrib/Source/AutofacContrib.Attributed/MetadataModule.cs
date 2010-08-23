@@ -1,9 +1,10 @@
-﻿using Autofac;
+﻿using System.Linq;
+using Autofac;
 using Autofac.Builder;
 
 namespace AutofacContrib.Attributed
 {
-    public interface IMetadataRegistrar<TInterface, TMetadata>
+    public interface IMetadataRegistrar<TInterface, TMetadata> 
     {
         IRegistrationBuilder<TInstance, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterType
             <TInstance>(TMetadata metadata) where TInstance : TInterface;
@@ -11,8 +12,6 @@ namespace AutofacContrib.Attributed
         IRegistrationBuilder<TInstance, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterAttributedType
             <TInstance>() where TInstance : TInterface;
     }
-
-   
 
 
     /// <summary>

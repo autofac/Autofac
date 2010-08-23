@@ -50,6 +50,7 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AttributedMetadataModule.cs" />
     <Compile Include="AutofacAttributeExtensions.cs" />
     <Compile Include="MetadataHelper.cs" />
     <Compile Include="MetadataModule.cs" />

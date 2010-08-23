@@ -11,7 +11,7 @@ namespace AutofacContrib.Tests.Attributed
     public class WeakTypedScenarioMetadataModuleTestFixture
     {
         [Test]
-        public void verify_scan_results_from_test_fixture()
+        public void verify_single_attribute_scan_results_from_test_fixture()
         {
             // arrange
             var builder = new ContainerBuilder();
@@ -23,7 +23,7 @@ namespace AutofacContrib.Tests.Attributed
 
             // assert
             Assert.That(items.Count(), Is.EqualTo(1));
-            Assert.That(items.Where( p => p.Metadata.Name == "Hello").Count(), Is.EqualTo(1));
+            Assert.That(items.Where(p => p.Metadata.Name == "Hello").Count(), Is.EqualTo(1));
         }
     }
 }
