@@ -99,7 +99,7 @@ namespace MultitenantExample.MvcApplication
                 var factory = c.Resolve<ChannelFactory<IMultitenantService>>();
                 factory.Opening += (sender, args) => factory.Endpoint.Behaviors.Add(new TenantPropagationBehavior<string>(tenantIdStrategy));
                 return factory.CreateChannel();
-            }).HttpRequestScoped();
+            }).InstancePerHttpRequest();
 
             // Create the multitenant container based on the application
             // defaults - here's where the multitenant bits truly come into play.
