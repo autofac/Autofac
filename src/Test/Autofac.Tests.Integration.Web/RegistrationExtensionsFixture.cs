@@ -17,7 +17,7 @@ namespace Autofac.Tests.Integration.Web
         public void HttpRequestScopedIsASynonymForMatchingRequestLifetime()
         {
             var cb = new ContainerBuilder();
-            var regId = cb.RegisterType<object>().HttpRequestScoped().RegistrationStyle.Id;
+            var regId = cb.RegisterType<object>().InstancePerHttpRequest().RegistrationStyle.Id;
             var c = cb.Build();
             var reg = (IComponentRegistration)c.ComponentRegistry.Registrations
                 .Where(cr => cr.Id == regId)

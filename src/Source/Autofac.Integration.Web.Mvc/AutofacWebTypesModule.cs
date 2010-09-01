@@ -12,11 +12,11 @@ namespace Autofac.Integration.Web.Mvc
         {
             builder.Register(c => new HttpContextWrapper(HttpContext.Current))
                 .As<HttpContextBase>()
-                .HttpRequestScoped();
+                .InstancePerHttpRequest();
 
             builder.Register(c => c.Resolve<HttpContextBase>().Session)
                 .As<HttpSessionStateBase>()
-                .HttpRequestScoped();
+                .InstancePerHttpRequest();
         }
 
     }

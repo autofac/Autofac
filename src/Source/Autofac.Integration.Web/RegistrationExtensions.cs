@@ -21,7 +21,7 @@ namespace Autofac.Integration.Web
         /// <param name="registration">The registration to configure.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
-            HttpRequestScoped<TLimit, TActivatorData, TStyle>(
+            InstancePerHttpRequest<TLimit, TActivatorData, TStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration)
         {
             if (registration == null) throw new ArgumentNullException("registration");
