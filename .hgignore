@@ -10,3 +10,5 @@ glob:*.suo
 glob:contrib/Resource/Library/Autofac/*.dll
 glob:contrib/Resource/Library/Autofac/*.XML
 glob:Build/
+glob:contrib/AutofacContrib.5.1.ReSharper.user
+glob:src/Autofac.5.1.ReSharper.user

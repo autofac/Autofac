@@ -37,7 +37,12 @@ namespace Autofac.Features.Indexed
     /// var renderer = accountRenderers[AccountType.User];
     /// </code>
     /// </example>
-    public interface IIndex<TKey, TValue>
+    public interface IIndex
+#if !(SILVERLIGHT || NET35)
+        <in TKey, TValue>
+#else
+        <TKey, TValue>
+#endif
     {
         /// <summary>
         /// Get the value associated with <paramref name="key"/>.
