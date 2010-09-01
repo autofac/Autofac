@@ -30,6 +30,7 @@
     <AggregateServiceSource>Source\AutofacContrib.AggregateService\bin\$(Configuration)</AggregateServiceSource>
     <DomainServicesSource>Source\AutofacContrib.DomainServices\bin\$(Configuration)</DomainServicesSource>
     <MultitenantSource>Source\AutofacContrib.Multitenant\bin\$(Configuration)</MultitenantSource>
+    <AttributedSource>Source\AutofacContrib.Attributed\bin\$(Configuration)</AttributedSource>
 
     <SourceExclusions>**\.svn\**\*.*;**\_svn\**\*.*;**\*.user;**\*.suo;**\*.db;**\bin\**\*.*;**\obj\**\*.*;</SourceExclusions>
 
@@ -77,7 +78,7 @@
     <MakeDir Directories="$(BuildPath);"/>
 
     <!--Libraries-->
-    <CreateItem Include="$(CslSource)\*.*;$(DP2Source)\*.*;$(MoqSource)\*.*;$(StartableSource)\*.*;$(NMock2Source)\*.*;$(NHibernateSource)\*.*;$(AggregateServiceSource)\*.*;$(DomainServicesSource)\*.*;$(MultitenantSource)\*.*">
+    <CreateItem Include="$(CslSource)\*.*;$(DP2Source)\*.*;$(MoqSource)\*.*;$(StartableSource)\*.*;$(NMock2Source)\*.*;$(NHibernateSource)\*.*;$(AggregateServiceSource)\*.*;$(DomainServicesSource)\*.*;$(MultitenantSource)\*.*;$(AttributedSource)\*.*">
       <Output ItemName="unmergedFiles" TaskParameter="Include"/>
     </CreateItem>
     <Copy SourceFiles="@(unmergedFiles)" DestinationFolder="$(LibraryPath)" />
