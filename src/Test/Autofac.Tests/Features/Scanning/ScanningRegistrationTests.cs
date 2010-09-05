@@ -16,7 +16,7 @@ namespace Autofac.Tests.Features.Scanning
         static readonly Assembly ScenarioAssembly = typeof(AComponent).Assembly;
 
         [Test]
-        public void WhenAssemblyIsScanned_TypesRegisteredByDefault()
+        public void WhenAssemblyIsScannedTypesRegisteredByDefault()
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(AComponent).Assembly);
@@ -29,7 +29,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void WhenTypesRegisteredAsSelf_ConcreteTypeIsService()
+        public void WhenTypesRegisteredAsSelfConcreteTypeIsService()
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(AComponent).Assembly)
@@ -40,7 +40,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void WhenNameAndMetadataMappingApplied_ValueCalculatedFromType()
+        public void WhenNameAndMetadataMappingAppliedValueCalculatedFromType()
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(AComponent).Assembly)
@@ -54,7 +54,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void WhenMetadataMappingApplied_ValuesCalculatedFromType()
+        public void WhenMetadataMappingAppliedValuesCalculatedFromType()
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(SaveCommand).Assembly)
@@ -68,7 +68,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void WhenFiltersApplied_NonMatchingTypesExcluded()
+        public void WhenFiltersAppliedNonMatchingTypesExcluded()
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(AComponent).Assembly)
@@ -82,7 +82,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void WhenServiceSpecifiedDirectly_AllMatchingTypesImplementIt()
+        public void WhenServiceSpecifiedDirectlyAllMatchingTypesImplementIt()
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(AComponent).Assembly)
@@ -94,7 +94,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void WhenServicesSpecifiedByFunction_EachTypeMappedIndependently()
+        public void WhenServicesSpecifiedByFunctionEachTypeMappedIndependently()
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(AComponent).Assembly)
@@ -140,7 +140,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void AsImplementedInterfaces_RegistersImplementedInterfaces()
+        public void AsImplementedInterfacesRegistersImplementedInterfaces()
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(AComponent).Assembly)
@@ -152,7 +152,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void WhenFilterApplied_DefaultSelfRegistrationOmitted()
+        public void WhenFilterAppliedDefaultSelfRegistrationOmitted()
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(AComponent).Assembly)
@@ -163,7 +163,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void AsClosedTypesOf_NullTypeProvided_ThrowsException()
+        public void AsClosedTypesOfNullTypeProvidedThrowsException()
         {
             var cb = new ContainerBuilder();
             Assert.Throws<ArgumentNullException>(() => cb.RegisterAssemblyTypes(typeof(ICommand<>).Assembly).
@@ -171,7 +171,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void AsClosedTypesOf_NonGenericTypeProvided_ThrowsException()
+        public void AsClosedTypesOfNonGenericTypeProvidedThrowsException()
         {
             var cb = new ContainerBuilder();
             Assert.Throws<ArgumentException>(() => cb.RegisterAssemblyTypes(typeof(ICommand<>).Assembly).
@@ -179,7 +179,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void AsClosedTypesOf_ClosedGenericTypeProvided_ThrowsException()
+        public void AsClosedTypesOfClosedGenericTypeProvidedThrowsException()
         {
             var cb = new ContainerBuilder();
             Assert.Throws<ArgumentException>(() => cb.RegisterAssemblyTypes(typeof(ICommand<>).Assembly).
@@ -187,7 +187,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void AsClosedTypesOf_OpenGenericInterfaceTypeProvided_ClosingGenericTypesRegistered()
+        public void AsClosedTypesOfOpenGenericInterfaceTypeProvidedClosingGenericTypesRegistered()
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(ICommand<>).Assembly)
@@ -199,7 +199,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void AsClosedTypesOf_OpenGenericAbstractClassTypeProvided_ClosingGenericTypesRegistered()
+        public void AsClosedTypesOfOpenGenericAbstractClassTypeProvidedClosingGenericTypesRegistered()
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(Message<>).Assembly)
@@ -210,7 +210,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void AsSelf_ExposesConcreteTypeAsService()
+        public void AsSelfExposesConcreteTypeAsService()
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(A2Component).Assembly)
@@ -222,7 +222,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void AsClosedTypesOf_MultipleServicesPerClass_ExposesAllServices()
+        public void AsClosedTypesOfMultipleServicesPerClassExposesAllServices()
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(UndoRedoCommand).Assembly)
@@ -234,7 +234,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void DoesNotIncludeDelegateTypes_ThusNotOverridingGeneratedFactories()
+        public void DoesNotIncludeDelegateTypesThusNotOverridingGeneratedFactories()
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(HasNestedFactoryDelegate).Assembly);
@@ -243,7 +243,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void WhenScannedTypesAreRegistered_OnRegisteredHandlersAreCalled()
+        public void WhenScannedTypesAreRegisteredOnRegisteredHandlersAreCalled()
         {
             var onRegisteredCalled = false;
 
@@ -256,7 +256,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void WhenTypedServicesAreSpecified_ImplicitFilterApplied()
+        public void WhenTypedServicesAreSpecifiedImplicitFilterApplied()
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(typeof(A2Component).Assembly)
@@ -268,7 +268,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void WhenExceptionsProvideConfiguration_ComponentConfiguredAppropriately()
+        public void WhenExceptionsProvideConfigurationComponentConfiguredAppropriately()
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyTypes(ScenarioAssembly)
@@ -279,20 +279,8 @@ namespace Autofac.Tests.Features.Scanning
             Assert.AreSame(a1, a2);
         }
 
-        [Test, Ignore("These cases might be better off failing fast.")]
-        public void WhenMultipleServicesAreSpecified_NonMatchingFunctionOfType_ExcludesType()
-        {
-            var cb = new ContainerBuilder();
-
-            cb.RegisterAssemblyTypes(ScenarioAssembly)
-                .AsSelf()
-                .As(t => new KeyedService("foo", typeof(ScanningRegistrationTests)));
-
-            cb.Build().AssertNotRegistered<AComponent>();
-        }
-
         [Test]
-        public void SingleRegistration_CanBeRegistered_AsSelf()
+        public void SingleRegistrationCanBeRegisteredAsSelf()
         {
             var cb = new ContainerBuilder();
 
@@ -306,7 +294,7 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void SingleRegistration_CanBeRegistered_AsImplementedInterfaces()
+        public void SingleRegistrationCanBeRegisteredAsImplementedInterfaces()
         {
             var cb = new ContainerBuilder();
 
@@ -316,6 +304,33 @@ namespace Autofac.Tests.Features.Scanning
             var c = cb.Build();
             c.AssertRegistered<IAService>();
             c.AssertRegistered<IBService>();
+        }
+
+        [Test]
+        public void WhenTransformingTypesToServicesNonAssignableServicesAreExcluded()
+        {
+            var cb = new ContainerBuilder();
+
+            cb.RegisterAssemblyTypes(ScenarioAssembly)
+                .As(t => new KeyedService("foo", typeof(ScanningRegistrationTests)));
+
+            var c = cb.Build();
+
+            Assert.IsFalse(c.IsRegisteredWithKey<ScanningRegistrationTests>("foo"));
+        }
+
+        [Test]
+        public void WhenTransformingTypesToServicesComponentsWithNoServicesAreExcluded()
+        {
+            var cb = new ContainerBuilder();
+
+            cb.RegisterAssemblyTypes(ScenarioAssembly)
+                .As(t => new KeyedService("foo", typeof(ScanningRegistrationTests)));
+
+            var c = cb.Build();
+
+            Assert.IsFalse(c.ComponentRegistry.Registrations.Any(r =>
+                r.Activator.LimitType == typeof(AComponent)));
         }
     }
 }

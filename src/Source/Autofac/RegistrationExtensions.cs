@@ -285,9 +285,10 @@ namespace Autofac
                 Func<Type, IEnumerable<Service>> serviceMapping)
             where TScanningActivatorData : ScanningActivatorData
         {
-            Enforce.ArgumentNotNull(registration, "registration");
-            registration.ActivatorData.ConfigurationActions.Add((t, rb) => rb.As(serviceMapping(t).ToArray()));
-            return registration;
+            if (registration == null) throw new ArgumentNullException("registration");
+            if (serviceMapping == null) throw new ArgumentNullException("serviceMapping");
+
+            return ScanningRegistrationExtensions.As(registration, serviceMapping);
         }
 
         /// <summary>

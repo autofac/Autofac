@@ -77,7 +77,8 @@ namespace Autofac.Features.Scanning
                 foreach (var action in rb.ActivatorData.ConfigurationActions)
                     action(t, scanned);
 
-                RegistrationBuilder.RegisterSingleComponent(cr, scanned);
+                if (scanned.RegistrationData.Services.Any())
+                    RegistrationBuilder.RegisterSingleComponent(cr, scanned);
             }
 
             foreach (var postScanningCallback in rb.ActivatorData.PostScanningCallbacks)
@@ -159,6 +160,27 @@ namespace Autofac.Features.Scanning
             Enforce.ArgumentNotNull(registration, "registration");
 
             registration.ActivatorData.Filters.Add(type.IsAssignableFrom);
+            return registration;
+        }
+
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            As<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                Func<Type, IEnumerable<Service>> serviceMapping)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            if (registration == null) throw new ArgumentNullException("registration");
+            if (serviceMapping == null) throw new ArgumentNullException("serviceMapping");
+
+            registration.ActivatorData.ConfigurationActions.Add((t, rb) =>
+            {
+                var mapped = serviceMapping(t);
+                var impl = rb.ActivatorData.ImplementationType;
+                var applied = mapped.Where(s => !(s is IServiceWithType) ||
+                    ((IServiceWithType)s).ServiceType.IsAssignableFrom(impl));
+                rb.As(applied.ToArray());
+            });
+
             return registration;
         }
     }
