@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Autofac.Builder;
+﻿using Autofac.Builder;
 using Autofac.Features.Scanning;
 
 namespace AutofacContrib.Attributed
@@ -22,11 +21,7 @@ namespace AutofacContrib.Attributed
                                         where TScanningActivatorData : ScanningActivatorData
         {
             builder.ActivatorData.ConfigurationActions.Add(
-                (t, rb) =>
-                    {
-                        var metadata = MetadataHelper.GetMetadata(t);
-                        if (metadata.Count() > 0) rb.WithMetadata(MetadataHelper.GetMetadata(t));
-                    });
+                (t, rb) => rb.WithMetadata(MetadataHelper.GetMetadata(t)));
 
             return builder;
         }
@@ -44,13 +39,7 @@ namespace AutofacContrib.Attributed
             WithAttributedMetadata<TMetadata>(this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> builder)
         {
             builder.ActivatorData.ConfigurationActions.Add(
-                (t, rb) =>
-                    {
-                        var metadataProperties = MetadataHelper.GetMetadata<TMetadata>(t);
-
-                        if (metadataProperties.Count() > 0)
-                            rb.WithMetadata(metadataProperties);
-                    });
+                (t, rb) => rb.WithMetadata(MetadataHelper.GetMetadata<TMetadata>(t)));
             
             return builder;
         }

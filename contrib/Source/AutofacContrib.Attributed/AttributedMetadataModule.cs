@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Autofac.Core;
 
 namespace AutofacContrib.Attributed
 { 
@@ -7,9 +8,9 @@ namespace AutofacContrib.Attributed
     /// </summary>
     public class AttributedMetadataModule : Module
     {
-        protected override void AttachToComponentRegistration(Autofac.Core.IComponentRegistry componentRegistry, Autofac.Core.IComponentRegistration registration)
+        protected override void AttachToComponentRegistration(IComponentRegistry componentRegistry, IComponentRegistration registration)
         {
-            foreach( var property in MetadataHelper.GetMetadata(registration.Activator.LimitType))
+            foreach(var property in MetadataHelper.GetMetadata(registration.Activator.LimitType))
                 registration.Metadata.Add(property);
         }
     }
