@@ -85,7 +85,7 @@ namespace AutofacContrib.Multitenant.Wcf
     ///             factory.Endpoint.Behaviors.Add(
     ///             new TenantPropagationBehavior&lt;string&gt;(tenantIdStrategy);
     ///         return factory.CreateChannel()
-    ///       }).HttpRequestScoped();
+    ///       }).InstancePerHttpRequest();
     /// 
     ///     // Create the multitenant container.
     ///     var mtc = new MultitenantContainer(tenantIdStrategy, builder.Build());
