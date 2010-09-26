@@ -57,7 +57,7 @@ namespace Autofac.Features.GeneratedFactories
                     // c, service, [new Parameter(name, (object)dps)]*
                     var resolveParams = new[] {
                             activatorContextParam,
-                            Expression.Constant(service),
+                            Expression.Constant(service, typeof(Service)),
                             Expression.NewArrayInit(typeof(Parameter), resolveParameterArray)
                         };
 
@@ -86,7 +86,7 @@ namespace Autofac.Features.GeneratedFactories
                 {
                     // productRegistration, [new Parameter(name, (object)dps)]*
                     var resolveParams = new Expression[] {
-                        Expression.Constant(productRegistration),
+                        Expression.Constant(productRegistration, typeof(IComponentRegistration)),
                         Expression.NewArrayInit(typeof(Parameter), resolveParameterArray)
                     };
 
@@ -124,7 +124,7 @@ namespace Autofac.Features.GeneratedFactories
                 .Select(pi => Expression.Parameter(pi.ParameterType, pi.Name))
                 .ToList();
 
-            Expression[] resolveParameterArray = MapParameters(creatorParams, pm);
+            var resolveParameterArray = MapParameters(creatorParams, pm);
 
             var resolveCall = makeResolveCall(activatorContextParam, resolveParameterArray);
 
@@ -148,7 +148,7 @@ namespace Autofac.Features.GeneratedFactories
                     return creatorParams
                             .Select(p => Expression.New(
                                 typeof(TypedParameter).GetConstructor(new[] { typeof(Type), typeof(object) }),
-                                Expression.Constant(p.Type), Expression.Convert(p, typeof(object))))
+                                Expression.Constant(p.Type, typeof(Type)), Expression.Convert(p, typeof(object))))
                             .OfType<Expression>()
                             .ToArray();
 
@@ -156,7 +156,7 @@ namespace Autofac.Features.GeneratedFactories
                     return creatorParams
                         .Select((p, i) => Expression.New(
                                 typeof(PositionalParameter).GetConstructor(new[] { typeof(int), typeof(object) }),
-                                Expression.Constant(i), Expression.Convert(p, typeof(object))))
+                                Expression.Constant(i, typeof(int)), Expression.Convert(p, typeof(object))))
                             .OfType<Expression>()
                             .ToArray();
 
@@ -167,7 +167,7 @@ namespace Autofac.Features.GeneratedFactories
                     return creatorParams
                             .Select(p => Expression.New(
                                 typeof(NamedParameter).GetConstructor(new[] { typeof(string), typeof(object) }),
-                                Expression.Constant(p.Name), Expression.Convert(p, typeof(object))))
+                                Expression.Constant(p.Name, typeof(string)), Expression.Convert(p, typeof(object))))
                             .OfType<Expression>()
                             .ToArray();
             }
