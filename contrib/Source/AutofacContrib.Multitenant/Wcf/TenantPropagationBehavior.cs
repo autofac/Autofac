@@ -148,7 +148,7 @@ namespace AutofacContrib.Multitenant.Wcf
     /// </example>
     /// <seealso cref="AutofacContrib.Multitenant.Wcf.TenantPropagationMessageInspector{TTenantId}"/>
     /// <seealso cref="AutofacContrib.Multitenant.Wcf.OperationContextTenantIdentificationStrategy"/>
-    public class TenantPropagationBehavior<TTenantId> : IServiceBehavior, IEndpointBehavior where TTenantId : class
+    public class TenantPropagationBehavior<TTenantId> : IServiceBehavior, IEndpointBehavior
     {
         /// <summary>
         /// Gets the strategy used for identifying the current tenant.
