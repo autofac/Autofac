@@ -78,6 +78,7 @@
     </Compile>
     <Compile Include="IMetadataConsumer.cs" />
     <Compile Include="IMultitenantService.cs" />
+    <Compile Include="MetadataConsumerBuddyClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GetServiceInfoResponse.cs" />
     <Compile Include="ServiceImplementations\BaseImplementation.cs" />
