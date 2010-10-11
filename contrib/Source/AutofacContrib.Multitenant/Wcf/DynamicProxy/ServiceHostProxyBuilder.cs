@@ -74,9 +74,20 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
                 throw new ArgumentNullException("interfaceToProxy");
             }
             AssertValidType(interfaceToProxy);
+            var metadataBuddyType = GetMetadataBuddyType(interfaceToProxy);
             var generator = new ServiceHostInterfaceProxyGenerator(this.ModuleScope, interfaceToProxy);
             generator.Logger = this.Logger;
             return generator.GenerateCode(interfaceToProxy, null, ProxyGenerationOptions.Default);
+        }
+
+        private static Type GetMetadataBuddyType(Type serviceInterface)
+        {
+            var attribs = (ServiceMetadataTypeAttribute[])serviceInterface.GetCustomAttributes(typeof(ServiceMetadataTypeAttribute), false);
+            if (attribs.Length == 0)
+            {
+                return null;
+            }
+            return attribs[0].MetadataClassType;
         }
     }
 }

@@ -6,8 +6,8 @@ using System.ServiceModel;
 
 namespace MultitenantExample.WcfService
 {
-	[ServiceBehavior(Name = "MultitenantExample.WcfService.IMetadataConsumer")]
-	public class MetadataConsumerBuddyClass
-	{
-	}
+    [ServiceBehavior(Name = "MultitenantExample.WcfService.IMetadataConsumer")]
+    public class MetadataConsumerBuddyClass
+    {
+    }
 }
