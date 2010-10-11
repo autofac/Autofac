@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <Content Include="MetadataConsumer.svc" />
     <Content Include="MultitenantService.svc" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -75,6 +76,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="IMetadataConsumer.cs" />
     <Compile Include="IMultitenantService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GetServiceInfoResponse.cs" />
