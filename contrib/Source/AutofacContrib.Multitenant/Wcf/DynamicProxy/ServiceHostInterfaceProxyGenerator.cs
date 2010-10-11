@@ -6,6 +6,8 @@ using Castle.DynamicProxy.Contributors;
 using Castle.DynamicProxy.Generators;
 using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
+using System.Reflection.Emit;
+using System.Reflection;
 
 namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
 {
@@ -37,6 +39,11 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
     public class ServiceHostInterfaceProxyGenerator : InterfaceProxyWithTargetInterfaceGenerator
     {
         /// <summary>
+        /// Holds the metadata buddy class type for the service interface.
+        /// </summary>
+        private Type _metadataBuddyType = null;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ServiceHostInterfaceProxyGenerator"/> class.
         /// </summary>
         /// <param name="scope">The scope of the module being built.</param>
@@ -44,12 +51,51 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
         public ServiceHostInterfaceProxyGenerator(ModuleScope scope, Type @interface)
             : base(scope, @interface)
         {
+            this._metadataBuddyType = @interface.GetMetadataClassType();
         }
 
         // If it turns out the proxy type needs a parameterless constructor,
         // override the BuildClassEmitter method here, call base, and then
         // add a constructor to the ClassEmitter like this:
         // emitter.CreateConstructor(new ArgumentReference[0]);
+
+        // If it turns out custom attributes also need to be copied at the
+        // method/property/field level, the appropriate overrides need to happen
+        // just like the CreateTypeAttributes override, below.
+
+        /// <summary>
+        /// Adds custom attributes to the generated type.
+        /// </summary>
+        /// <param name="emitter">The class emitter.</param>
+        /// <remarks>
+        /// <para>
+        /// This override calls the base functionality and then uses the metadata
+        /// buddy class (as specified by a <see cref="AutofacContrib.Multitenant.Wcf.ServiceMetadataTypeAttribute"/>
+        /// on the service interface) to copy over class-level attributes to the
+        /// dynamic hosting proxy.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="emitter" /> is <see langword="null" />.
+        /// </exception>
+        protected override void CreateTypeAttributes(ClassEmitter emitter)
+        {
+            if (emitter == null)
+            {
+                throw new ArgumentNullException("emitter");
+            }
+            base.CreateTypeAttributes(emitter);
+            if (this._metadataBuddyType == null)
+            {
+                return;
+            }
+            var attribs = this._metadataBuddyType.GetCustomAttributesData();
+            foreach (var attrib in attribs)
+            {
+                var builder = attrib.ToAttributeBuilder();
+                emitter.DefineCustomAttribute(builder);
+            }
+        }
 
         /// <summary>
         /// Gets the contributors for generating the type definition.

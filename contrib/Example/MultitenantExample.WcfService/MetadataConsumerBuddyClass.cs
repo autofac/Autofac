@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.ServiceModel;
 
 namespace MultitenantExample.WcfService
 {
-    [ServiceBehavior(Name = "MultitenantExample.WcfService.IMetadataConsumer")]
+    // Specifying a ConfigurationName on a metadata buddy class allows you to
+    // set configuration in web.config (or app.config) and have a nice, friendly,
+    // predictable configuration name for your service element.
+    [ServiceBehavior(ConfigurationName = "MultitenantExample.WcfService.IMetadataConsumer")]
     public class MetadataConsumerBuddyClass
     {
     }
