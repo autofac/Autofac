@@ -42,12 +42,23 @@ namespace MultitenantExample.MvcApplication.Models
         public Guid DependencyInstanceId { get; set; }
 
         /// <summary>
-        /// Gets or sets the WCF service information.
+        /// Gets or sets the WCF service information for the service that consumes
+        /// a metadata buddy class.
         /// </summary>
         /// <value>
         /// A <see cref="MultitenantExample.MvcApplication.WcfService.GetServiceInfoResponse"/>
         /// containing information retrieved from the multitenant WCF service.
         /// </value>
-        public GetServiceInfoResponse ServiceInfo { get; set; }
+        public WcfMetadataConsumer.GetServiceInfoResponse MetadataServiceInfo { get; set; }
+
+        /// <summary>
+        /// Gets or sets the WCF service information for the service that doesn't
+        /// use a metadata buddy class.
+        /// </summary>
+        /// <value>
+        /// A <see cref="MultitenantExample.MvcApplication.WcfService.GetServiceInfoResponse"/>
+        /// containing information retrieved from the multitenant WCF service.
+        /// </value>
+        public WcfService.GetServiceInfoResponse StandardServiceInfo { get; set; }
     }
 }

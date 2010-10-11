@@ -25,12 +25,20 @@
     <li>Dependency Instance ID: <%: this.Model.DependencyInstanceId %></li>
     </ul>
 
-    <h2>Current WCF Service Values</h2>
+    <h2>Current Standard WCF Service Values</h2>
     <ul>
-    <li>Tenant ID: <%: this.Model.ServiceInfo.TenantId %></li>
-    <li>Service Implementation Type: <%: this.Model.ServiceInfo.ServiceImplementationTypeName %></li>
-    <li>Dependency Type: <%: this.Model.ServiceInfo.DependencyTypeName %></li>
-    <li>Dependency Instance ID: <%: this.Model.ServiceInfo.DependencyInstanceId %></li>
+    <li>Tenant ID: <%: this.Model.StandardServiceInfo.TenantId %></li>
+    <li>Service Implementation Type: <%: this.Model.StandardServiceInfo.ServiceImplementationTypeName%></li>
+    <li>Dependency Type: <%: this.Model.StandardServiceInfo.DependencyTypeName%></li>
+    <li>Dependency Instance ID: <%: this.Model.StandardServiceInfo.DependencyInstanceId%></li>
+    </ul>
+
+    <h2>Current Metadata-Consuming WCF Service Values</h2>
+    <ul>
+    <li>Tenant ID: <%: this.Model.MetadataServiceInfo.TenantId %></li>
+    <li>Service Implementation Type: <%: this.Model.MetadataServiceInfo.ServiceImplementationTypeName%></li>
+    <li>Dependency Type: <%: this.Model.MetadataServiceInfo.DependencyTypeName%></li>
+    <li>Dependency Instance ID: <%: this.Model.MetadataServiceInfo.DependencyInstanceId%></li>
     </ul>
 
     <h2>Switch Tenants</h2>
