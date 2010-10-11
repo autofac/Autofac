@@ -92,6 +92,7 @@
     <Compile Include="Wcf\DynamicProxy\ServiceHostProxyBuilder.cs" />
     <Compile Include="Wcf\DynamicProxy\ServiceHostProxyGenerator.cs" />
     <Compile Include="Wcf\MultitenantServiceImplementationDataProvider.cs" />
+    <Compile Include="Wcf\ServiceMetadataTypeAttribute.cs" />
     <Compile Include="Wcf\SimpleServiceImplementationDataProvider.cs" />
     <Compile Include="Wcf\IServiceImplementationDataProvider.cs" />
     <Compile Include="Wcf\OperationContextTenantIdentificationStrategy.cs" />
