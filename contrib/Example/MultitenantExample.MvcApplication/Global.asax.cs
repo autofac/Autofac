@@ -90,7 +90,7 @@ namespace MultitenantExample.MvcApplication
 			// the service itself is multitenant - one client for all
 			// the tenants and the service implementation switches.
 			builder.Register(c => new ChannelFactory<IMultitenantService>(new BasicHttpBinding(), new EndpointAddress("http://localhost:63578/MultitenantService.svc"))).SingleInstance();
-			builder.Register(c => new ChannelFactory<IMetadataConsumer>(new BasicHttpBinding(), new EndpointAddress("http://localhost:63578/MetadataConsumer.svc"))).SingleInstance();
+			builder.Register(c => new ChannelFactory<IMetadataConsumer>(new WSHttpBinding(), new EndpointAddress("http://localhost:63578/MetadataConsumer.svc"))).SingleInstance();
 
 			// Register an endpoint behavior on the client channel factory that
 			// will propagate the tenant ID across the wire in a message header.
