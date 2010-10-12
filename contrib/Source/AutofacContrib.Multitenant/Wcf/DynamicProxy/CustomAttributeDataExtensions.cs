@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -47,7 +47,7 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
                 if (fi != null)
                 {
                     fieldArguments.Add(fi);
-                    fieldArgumentValues.Add(namedArg.TypedValue);
+                    fieldArgumentValues.Add(namedArg.TypedValue.Value);
                 }
                 else if (pi != null)
                 {
