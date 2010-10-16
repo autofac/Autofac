@@ -503,7 +503,6 @@ namespace Autofac
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TLimit, TScanningActivatorData, SingleRegistrationStyle>
             AsImplementedInterfaces<TLimit, TScanningActivatorData>(this IRegistrationBuilder<TLimit, TScanningActivatorData, SingleRegistrationStyle> registration)
-            where TScanningActivatorData : ReflectionActivatorData
         {
             Enforce.ArgumentNotNull(registration, "registration");
             return registration.As(typeof(TLimit).GetInterfaces().Select(i => new TypedService(i)).Cast<Service>().ToArray());
