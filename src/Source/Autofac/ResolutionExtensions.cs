@@ -479,7 +479,7 @@ namespace Autofac
         /// The component instance that provides the service, or null.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        public static TService ResolveOptionalKeyed<TService>(this IComponentContext context, string serviceKey)
+        public static TService ResolveOptionalKeyed<TService>(this IComponentContext context, object serviceKey)
             where TService : class
         {
             return ResolveOptionalKeyed<TService>(context, serviceKey, NoParameters);
@@ -497,7 +497,7 @@ namespace Autofac
         /// The component instance that provides the service, or null.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        public static TService ResolveOptionalKeyed<TService>(this IComponentContext context, string serviceKey, IEnumerable<Parameter> parameters)
+        public static TService ResolveOptionalKeyed<TService>(this IComponentContext context, object serviceKey, IEnumerable<Parameter> parameters)
             where TService : class
         {
             return (TService)ResolveOptionalService(context, new KeyedService(serviceKey, typeof(TService)), parameters);
@@ -515,7 +515,7 @@ namespace Autofac
         /// The component instance that provides the service, or null.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        public static TService ResolveOptionalKeyed<TService>(this IComponentContext context, string serviceKey, params Parameter[] parameters)
+        public static TService ResolveOptionalKeyed<TService>(this IComponentContext context, object serviceKey, params Parameter[] parameters)
             where TService : class
         {
             return context.ResolveOptionalKeyed<TService>(serviceKey, (IEnumerable<Parameter>)parameters);
