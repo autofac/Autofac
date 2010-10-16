@@ -46,6 +46,8 @@ namespace Autofac.Features.LazyDependencies
         static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyWithMetadataRegistrationSource).GetMethod(
             "CreateLazyRegistration", BindingFlags.Static | BindingFlags.NonPublic);
 
+        delegate IComponentRegistration RegistrationCreator(Service service, IComponentRegistration valueRegistration);
+
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             var swt = service as IServiceWithType;
@@ -57,11 +59,12 @@ namespace Autofac.Features.LazyDependencies
 
             var valueService = swt.ChangeType(valueType);
 
-            var registrationCreator = CreateLazyRegistrationMethod.MakeGenericMethod(valueType, metaType);
+            var registrationCreator = (RegistrationCreator)Delegate.CreateDelegate(
+                typeof(RegistrationCreator),
+                CreateLazyRegistrationMethod.MakeGenericMethod(valueType, metaType));
 
             return registrationAccessor(valueService)
-                .Select(v => registrationCreator.Invoke(null, new object[] { service, v }))
-                .Cast<IComponentRegistration>();
+                .Select(v => registrationCreator(service, v));
         }
 
         public bool IsAdapterForIndividualComponents
@@ -69,7 +72,9 @@ namespace Autofac.Features.LazyDependencies
             get { return true; }
         }
 
+        // ReSharper disable UnusedMember.Local
         static IComponentRegistration CreateLazyRegistration<T, TMeta>(Service providedService, IComponentRegistration valueRegistration)
+        // ReSharper restore UnusedMember.Local
         {
             var rb = RegistrationBuilder.ForDelegate(
                 (c, p) =>
@@ -82,7 +87,7 @@ namespace Autofac.Features.LazyDependencies
                 .As(providedService)
                 .Targeting(valueRegistration);
 
-            return RegistrationBuilder.CreateRegistration(rb);
+            return rb.CreateRegistration();
         }
     }
 }
