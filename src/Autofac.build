@@ -86,7 +86,7 @@
    Solution redirects. Every VS project normally knows how to support these targets
     -->
   <Target Name="Build">
-    <MSBuild Projects="$(ProjectName).sln" Targets="Build" Properties="Configuration=$(Configuration)$(BuildFramework);BuildConstants=$(BuildConstants);MSBuildTargets=$(BuildTargets);TargetFrameworkVersion=$(TargetFrameworkVersion)"/>
+    <MSBuild Projects="$(ProjectName).sln" Targets="Build" Properties="Configuration=$(Configuration)$(BuildFramework);BuildConstants=$(BuildConstants);MSBuildTargets=$(BuildTargets);TargetFrameworkVersion=$(TargetFrameworkVersion);TargetFrameworkProfile=$(TargetFrameworkProfile)"/>
   </Target>
 
   <Target Name="Clean">
