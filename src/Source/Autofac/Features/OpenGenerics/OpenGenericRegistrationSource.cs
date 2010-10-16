@@ -132,11 +132,21 @@ namespace Autofac.Features.OpenGenerics
             var sourceArgs = implementationType.GetGenericArguments();
             var destinationArgs =
                 serviceType.IsInterface
-                ? implementationType.GetInterface(serviceType.Name).GetGenericArguments()
+                ? GetInterface(implementationType, serviceType).GetGenericArguments()
                 : genericServiceType.GetGenericArguments();
 
             return (from source in sourceArgs
                     select FindMatchingGenericType(source, destinationArgs, resolvedArgs)).ToArray();
+        }
+
+        static Type GetInterface(Type implementationType, Type serviceType)
+        {
+            return 
+#if SILVERLIGHT     
+                implementationType.GetInterfaces().Single(i => i.Name == serviceType.Name);
+#else
+                implementationType.GetInterface(serviceType.Name);
+#endif
         }
 
         static Type FindMatchingGenericType(Type source, Type[] destinationArgs, Type[] resolvedArgs)

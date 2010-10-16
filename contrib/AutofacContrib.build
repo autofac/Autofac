@@ -5,9 +5,9 @@
   <!-- Main build entry file (extends development builds)-->
   <PropertyGroup>
     <!--
-			 Primary configuration properties (override them via command line
-			 if needed
-		-->
+       Primary configuration properties (override them via command line
+       if needed
+    -->
     <BuildPath Condition="$(BuildPath)==''">$(MSBuildProjectDirectory)\Build</BuildPath>
     <Configuration Condition="$(Configuration)==''">Release</Configuration>
     <ArtifactDirectory Condition="$(ArtifactDirectory)==''">$(BuildPath)\Artifact</ArtifactDirectory>
@@ -15,8 +15,8 @@
     <Version Condition="$(Version)==''">0.0.0.0</Version>
     <AllowPartiallyTrustedCallers Condition="$(AllowPartiallyTrustedCallers)==''">true</AllowPartiallyTrustedCallers>
     <!--
-			Derived configuration properties
-				 -->
+      Derived configuration properties
+         -->
     <TestPath>$(BuildPath)\Test</TestPath>
     <LibraryPath>$(BuildPath)\Library</LibraryPath>
     <LicensePath>$(BuildPath)\License</LicensePath>
@@ -30,25 +30,34 @@
     <AggregateServiceSource>Source\AutofacContrib.AggregateService\bin\$(Configuration)</AggregateServiceSource>
     <DomainServicesSource>Source\AutofacContrib.DomainServices\bin\$(Configuration)</DomainServicesSource>
     <MultitenantSource>Source\AutofacContrib.Multitenant\bin\$(Configuration)</MultitenantSource>
-    <AttributedSource>Source\AutofacContrib.Attributed\bin\$(Configuration)</AttributedSource>
 
     <SourceExclusions>**\.svn\**\*.*;**\_svn\**\*.*;**\*.user;**\*.suo;**\*.db;**\bin\**\*.*;**\obj\**\*.*;</SourceExclusions>
 
     <NUnitConsole>"$(MSBuildProjectDirectory)\Resource\Tool\NUnit\nunit-console.exe"</NUnitConsole>
-
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="$(BuildFramework)!='NET35'">
+    <AttributedSource>Source\AutofacContrib.Attributed\bin\$(Configuration)\*.*</AttributedSource>
   </PropertyGroup>
 
+  <!--Default-->
   <PropertyGroup Condition="$(BuildFramework)==''">
-    <BuildFramework>NET40</BuildFramework>
+    <PackageName>$(ProjectName)-$(Version)-NET40</PackageName>
     <BuildConstants>NET40</BuildConstants>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="$(BuildFramework)=='NET35'">
+    <PackageName>$(ProjectName)-$(Version)-NET35</PackageName>
+    <BuildConstants>NET35</BuildConstants>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+
   <!-- 
-	 Solution redirects. Every VS project normally knows how to support these targets
-		-->
+   Solution redirects. Every VS project normally knows how to support these targets
+    -->
   <Target Name="Build">
-    <MSBuild Projects="$(MSBuildProjectName).sln" Targets="Build" Properties="Configuration=$(Configuration);BuildConstants=$(BuildConstants)"/>
+    <MSBuild Projects="$(MSBuildProjectName).sln" Targets="Build" Properties="Configuration=$(Configuration)$(BuildFramework);BuildConstants=$(BuildConstants);MSBuildTargets=$(BuildTargets);TargetFrameworkVersion=$(TargetFrameworkVersion)"/>
   </Target>
 
   <Target Name="Clean">
@@ -72,13 +81,13 @@
   </Target>
 
   <!--
-	 Copies built items to the distrib directory
-	 -->
+   Copies built items to the distrib directory
+   -->
   <Target Name="Copy" DependsOnTargets="Build">
     <MakeDir Directories="$(BuildPath);"/>
 
     <!--Libraries-->
-    <CreateItem Include="$(CslSource)\*.*;$(DP2Source)\*.*;$(MoqSource)\*.*;$(StartableSource)\*.*;$(NMock2Source)\*.*;$(NHibernateSource)\*.*;$(AggregateServiceSource)\*.*;$(DomainServicesSource)\*.*;$(MultitenantSource)\*.*;$(AttributedSource)\*.*">
+    <CreateItem Include="$(CslSource)\*.*;$(DP2Source)\*.*;$(MoqSource)\*.*;$(StartableSource)\*.*;$(NMock2Source)\*.*;$(NHibernateSource)\*.*;$(AggregateServiceSource)\*.*;$(DomainServicesSource)\*.*;$(MultitenantSource)\*.*;$(AttributedSource)">
       <Output ItemName="unmergedFiles" TaskParameter="Include"/>
     </CreateItem>
     <Copy SourceFiles="@(unmergedFiles)" DestinationFolder="$(LibraryPath)" />
@@ -113,41 +122,41 @@
 
 
     <!--<CreateItem Include="$(TestPath)\AutofacContrib.Tests*.dll">
-			<Output ItemName="_testFiles" TaskParameter="Include"/>
-		</CreateItem>
+      <Output ItemName="_testFiles" TaskParameter="Include"/>
+    </CreateItem>
 
-		<CreateItem Include="$(TestPath)\AutofacContrib.*.dll" Exclude="$(TestPath)\AutofacContrib.Tests*.dll">
-			<Output ItemName="_coverageFiles" TaskParameter="Include"/>
-		</CreateItem>-->
+    <CreateItem Include="$(TestPath)\AutofacContrib.*.dll" Exclude="$(TestPath)\AutofacContrib.Tests*.dll">
+      <Output ItemName="_coverageFiles" TaskParameter="Include"/>
+    </CreateItem>-->
 
     <!--@(_testFiles->'&quot;%(FullPath)&quot;', ' ')-->
     <!--
-		Important: if this code breaks down and you are running 64 bit machine,
-		then you have to force NUnit-console and NCover to 32 bit mode
-		with CorFlags.exe from .NET SDK 2.0 (included in NCover and NUnit folders)
-		-->
+    Important: if this code breaks down and you are running 64 bit machine,
+    then you have to force NUnit-console and NCover to 32 bit mode
+    with CorFlags.exe from .NET SDK 2.0 (included in NCover and NUnit folders)
+    -->
     <!--<NCover ToolPath="Resource\Tool\NCover"
-			CommandLineExe="Resource/Tool/NUnit/nunit-console-x86.exe"
-			CommandLineArgs="@(_testFiles->'&quot;%(FullPath)&quot;', ' ') /nologo /noshadow /xml=&quot;$(ArtifactDirectory)\$(MSBuildProjectName).Tests-result.xml&quot;"
-			AssemblyList="@(_coverageFiles)"
-			CoverageFile="$(ArtifactDirectory)\$(MSBuildProjectName)-coverage.xml"
-			LogFile="$(ArtifactDirectory)\$(MSBuildProjectName)-coverage.log"
-			ExcludeAttributes="System.Diagnostics.CodeAnalysis.NoCodeCoverageAttribute;System.Runtime.CompilerServices.CompilerGeneratedAttribute;System.CodeDom.Compiler.GeneratedCodeAttribute"
-			ContinueOnError="false"
-		/>
+      CommandLineExe="Resource/Tool/NUnit/nunit-console-x86.exe"
+      CommandLineArgs="@(_testFiles->'&quot;%(FullPath)&quot;', ' ') /nologo /noshadow /xml=&quot;$(ArtifactDirectory)\$(MSBuildProjectName).Tests-result.xml&quot;"
+      AssemblyList="@(_coverageFiles)"
+      CoverageFile="$(ArtifactDirectory)\$(MSBuildProjectName)-coverage.xml"
+      LogFile="$(ArtifactDirectory)\$(MSBuildProjectName)-coverage.log"
+      ExcludeAttributes="System.Diagnostics.CodeAnalysis.NoCodeCoverageAttribute;System.Runtime.CompilerServices.CompilerGeneratedAttribute;System.CodeDom.Compiler.GeneratedCodeAttribute"
+      ContinueOnError="false"
+    />
 
-		<NCoverExplorer
-			ToolPath="Resource\Tool\NCoverExplorer"
-			ProjectName="$(MSBuildProjectName)"
-			ReportType="ModuleClassSummary"
-			XmlReportName="$(ArtifactDirectory)\$(MSBuildProjectName).fCoverage-result.xml"
-			HtmlReportName="$(ArtifactDirectory)\$(MSBuildProjectName).fCoverage-summary.html"
-			ShowExcluded="True"
-			SatisfactoryCoverage="75"
-			MinimumCoverage="75"
-			Sort="FunctionCoverageAscending"
-			CoverageFiles="$(ArtifactDirectory)\$(MSBuildProjectName)-coverage.xml"
-		/>-->
+    <NCoverExplorer
+      ToolPath="Resource\Tool\NCoverExplorer"
+      ProjectName="$(MSBuildProjectName)"
+      ReportType="ModuleClassSummary"
+      XmlReportName="$(ArtifactDirectory)\$(MSBuildProjectName).fCoverage-result.xml"
+      HtmlReportName="$(ArtifactDirectory)\$(MSBuildProjectName).fCoverage-summary.html"
+      ShowExcluded="True"
+      SatisfactoryCoverage="75"
+      MinimumCoverage="75"
+      Sort="FunctionCoverageAscending"
+      CoverageFiles="$(ArtifactDirectory)\$(MSBuildProjectName)-coverage.xml"
+    />-->
   </Target>
 
   <Target Name="_Version">
@@ -182,8 +191,8 @@
 
 
   <!--<Target Name="GenerateHelp" DependsOnTargets="Build;Copy">
-		<Exec Command="Resource\Tool\SHFB\SandcastleBuilderConsole.exe $(MSBuildProjectName).shfb" />
-	</Target>-->
+    <Exec Command="Resource\Tool\SHFB\SandcastleBuilderConsole.exe $(MSBuildProjectName).shfb" />
+  </Target>-->
 
   <Target Name="Distrib" DependsOnTargets="Clean;Build;Copy;Config">
     <MakeDir Directories="$(PackageDirectory)" />

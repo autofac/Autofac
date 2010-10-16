@@ -13,9 +13,9 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyVersion("2.2.4.900")]
-[assembly: AssemblyFileVersion("2.2.4.900")]
-[assembly: AssemblyConfiguration("Release built on 2010-08-24 10:43")]
+[assembly: AssemblyVersion("2.3.2.632")]
+[assembly: AssemblyFileVersion("2.3.2.632")]
+[assembly: AssemblyConfiguration("Release built on 2010-10-16 17:19")]
 
 
 [assembly: System.Security.AllowPartiallyTrustedCallers]
