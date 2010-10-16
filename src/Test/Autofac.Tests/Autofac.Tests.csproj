@@ -47,6 +47,23 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugWP7|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;$(BuildConstants)</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <TargetFrameworkProfile>WindowsPhone</TargetFrameworkProfile>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <SilverlightApplication>false</SilverlightApplication>
+    <MSBuildTargets>Windows Phone 7</MSBuildTargets>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -81,7 +98,7 @@
       <Private>True</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup Condition="$(TargetFrameworkVersion)=='v4.0'">
+  <ItemGroup Condition="($(TargetFrameworkVersion)=='v4.0') And ($(MSBuildTargets) != 'Windows Phone 7')">
     <Compile Include="Core\Activators\Reflection\DefaultValueParameterTests.cs" />
     <Compile Include="Features\LazyDependencies\LazyRegistrationSourceTests.cs" />
     <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSourceTests.cs" />
@@ -190,6 +207,9 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Silverlight 2.0'" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Silverlight 3.0'" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.WindowsPhone.Overrides.targets" Condition="$(MSBuildTargets) == 'Windows Phone 7'" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Windows Phone 7'" />
+
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

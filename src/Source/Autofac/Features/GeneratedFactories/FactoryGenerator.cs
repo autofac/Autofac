@@ -29,7 +29,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using Autofac.Core;
 using Autofac.Util;
-
+#if WINDOWS_PHONE
+using Autofac.Util.WindowsPhone;
+#endif
 namespace Autofac.Features.GeneratedFactories
 {
     /// <summary>
