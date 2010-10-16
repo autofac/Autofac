@@ -187,7 +187,11 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As(params Type[] services)
         {
-            return As(services.Select(t => new TypedService(t)).Cast<Service>().ToArray());
+            return As(services.Select(t =>
+                t.FullName != null
+                ? new TypedService(t)
+                : new TypedService(t.GetGenericTypeDefinition()))
+                .Cast<Service>().ToArray()); 
         }
 
         /// <summary>

@@ -133,6 +133,7 @@
     <Compile Include="Features\Collections\CollectionRegistrationSourceTests.cs" />
     <Compile Include="Features\Indexed\KeyedServiceIndexTests.cs" />
     <Compile Include="Features\Metadata\MetaRegistrationSourceTests.cs" />
+    <Compile Include="Features\OpenGenerics\ComplexGenericsTests.cs" />
     <Compile Include="Features\OpenGenerics\OpenGenericRegistrationExtensionsTests.cs" />
     <Compile Include="Features\OwnedInstances\OwnedInstanceRegistrationSourceTests.cs" />
     <Compile Include="Features\OwnedInstances\OwnedTests.cs" />

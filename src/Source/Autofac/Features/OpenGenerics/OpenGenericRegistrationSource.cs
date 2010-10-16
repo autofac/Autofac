@@ -96,24 +96,72 @@ namespace Autofac.Features.OpenGenerics
                     .Any(s => s.ServiceType == genericTypeDefinition) &&
                     reflectionActivatorData.ImplementationType.IsCompatibleWithGenericParameters(genericArguments))
                 {
-                    activator = new ReflectionActivator(
-                        reflectionActivatorData.ImplementationType.MakeGenericType(genericArguments),
-                        reflectionActivatorData.ConstructorFinder,
-                        reflectionActivatorData.ConstructorSelector,
-                        reflectionActivatorData.ConfiguredParameters,
-                        reflectionActivatorData.ConfiguredProperties);
+                    var classGenericTypes = ResolveClassArguments(reflectionActivatorData.ImplementationType, swt.ServiceType, genericTypeDefinition, genericArguments);
+ 
+                    if (classGenericTypes.All(it => it != null))
+                    {
+                        activator = new ReflectionActivator(
+                            reflectionActivatorData.ImplementationType.MakeGenericType(classGenericTypes),
+                            reflectionActivatorData.ConstructorFinder,
+                            reflectionActivatorData.ConstructorSelector,
+                            reflectionActivatorData.ConfiguredParameters,
+                            reflectionActivatorData.ConfiguredProperties);
 
-                    services = configuredServices
-                        .Cast<IServiceWithType>()
-                        .Select(s => s.ChangeType(s.ServiceType.MakeGenericType(genericArguments)));
+                        var limitType = activator.LimitType;
 
-                    return true;
-                }
+                        services = (from IServiceWithType s in configuredServices
+                                    let genericService = s.ServiceType.MakeGenericType(genericArguments)
+                                    where genericService.IsAssignableFrom(limitType)
+                                    select s.ChangeType(genericService)).ToArray();
+
+                        return services.Count() > 0;
+                    }
+                 }
             }
 
             activator = null;
             services = null;
             return false;
         }
+
+        static Type[] ResolveClassArguments(Type implementationType, Type serviceType, Type genericServiceType, Type[] resolvedArgs)
+        {
+            if (genericServiceType == implementationType)
+                return resolvedArgs;
+
+            var sourceArgs = implementationType.GetGenericArguments();
+            var destinationArgs =
+                serviceType.IsInterface
+                ? GetInterface(implementationType, serviceType).GetGenericArguments()
+                : genericServiceType.GetGenericArguments();
+
+            return (from source in sourceArgs
+                    select FindMatchingGenericType(source, destinationArgs, resolvedArgs)).ToArray();
+        }
+
+        static Type GetInterface(Type implementationType, Type serviceType)
+        {
+            return 
+#if SILVERLIGHT     
+                implementationType.GetInterfaces().Single(i => i.Name == serviceType.Name);
+#else
+                implementationType.GetInterface(serviceType.Name);
+#endif
+        }
+
+        static Type FindMatchingGenericType(Type source, Type[] destinationArgs, Type[] resolvedArgs)
+        {
+            return (from i in Enumerable.Range(0, destinationArgs.Length)
+                    let destination = destinationArgs[i]
+                    where !destination.IsGenericType
+                    && source.Name == destination.Name
+                    select resolvedArgs[i]).FirstOrDefault()
+                    ?? (from i in Enumerable.Range(0, destinationArgs.Length)
+                        let destination = destinationArgs[i]
+                        where destination.IsGenericType
+                        let arguments = resolvedArgs[i].GetGenericArguments()
+                        where arguments.Length > 0
+                        select FindMatchingGenericType(source, destination.GetGenericArguments(), resolvedArgs[i].GetGenericArguments())).FirstOrDefault();
+        }    
     }
 }
