@@ -53,11 +53,7 @@ namespace Autofac.Core.Activators.Reflection
         /// <returns>Suitable constructors.</returns>
         public IEnumerable<ConstructorInfo> FindConstructors(Type targetType)
         {
-            return targetType.FindMembers(
-                                MemberTypes.Constructor,
-                                BindingFlags.Instance | _bindingFlags,
-                                null,
-                                null).Cast<ConstructorInfo>();
+            return targetType.GetConstructors(BindingFlags.Instance | _bindingFlags);
         }
 
         /// <summary>
