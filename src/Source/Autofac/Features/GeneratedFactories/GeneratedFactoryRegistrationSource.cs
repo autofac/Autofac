@@ -61,7 +61,7 @@ namespace Autofac.Features.GeneratedFactories
                             .InstancePerLifetimeScope()
                             .ExternallyOwned()
                             .As(service)
-                            .Targeting(r.Target);
+                            .Targeting(r);
 
                         return rb.CreateRegistration();
                     });

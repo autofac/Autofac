@@ -744,7 +744,7 @@ namespace Autofac
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
             Enforce.ArgumentNotNull(target, "target");
-            registration.RegistrationStyle.Target = target;
+            registration.RegistrationStyle.Target = target.Target;
             return registration;
         }
 
