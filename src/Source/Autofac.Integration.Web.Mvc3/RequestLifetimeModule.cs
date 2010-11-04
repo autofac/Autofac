@@ -56,7 +56,7 @@ namespace Autofac.Integration.Web.Mvc
         /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
         /// that adds component registations visible only in nested lifetime scopes.</param>
         /// <returns>A new or existing nested lifetime scope.</returns>
-        public ILifetimeScope GetLifetimeScope(IContainer container, Action<ContainerBuilder> configurationAction)
+        public ILifetimeScope GetLifetimeScope(ILifetimeScope container, Action<ContainerBuilder> configurationAction)
         {
             return LifetimeScope ?? (LifetimeScope = InitializeLifetimeScope(configurationAction, container));
         }

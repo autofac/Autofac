@@ -126,7 +126,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
     {
         ILifetimeScope _lifetimeScope;
 
-        public ILifetimeScope GetLifetimeScope(IContainer container, Action<ContainerBuilder> configurationAction)
+        public ILifetimeScope GetLifetimeScope(ILifetimeScope container, Action<ContainerBuilder> configurationAction)
         {
             return _lifetimeScope ?? (_lifetimeScope = GetLifetimeScope(configurationAction, container));
         }

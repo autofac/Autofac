@@ -37,7 +37,7 @@ namespace Autofac.Integration.Web.Mvc
     /// </summary>
     public class AutofacDependencyResolver : IDependencyResolver
     {
-        readonly IContainer _container;
+        readonly ILifetimeScope _container;
         readonly Action<ContainerBuilder> _configurationAction;
         ILifetimeScopeProvider _lifetimeScopeProvider;
 
@@ -45,7 +45,7 @@ namespace Autofac.Integration.Web.Mvc
         /// Initializes a new instance of the <see cref="AutofacDependencyResolver"/> class.
         /// </summary>
         /// <param name="container">The container.</param>
-        public AutofacDependencyResolver(IContainer container)
+        public AutofacDependencyResolver(ILifetimeScope container)
         {
             _container = container;
             _container.TryResolve(out _lifetimeScopeProvider);

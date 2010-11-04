@@ -55,14 +55,14 @@ namespace Autofac.Tests.Integration.Wcf
 
         static void TestWithHostedContainer(IContainer container, Action test)
         {
-            AutofacHostFactory.RootLifetimeScope = container;
+            AutofacHostFactory.Container = container;
             try
             {
                 test();
             }
             finally
             {
-                AutofacHostFactory.RootLifetimeScope = null;
+                AutofacHostFactory.Container = null;
             }
         }
     }

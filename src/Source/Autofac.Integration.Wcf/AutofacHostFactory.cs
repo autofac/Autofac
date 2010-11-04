@@ -40,17 +40,7 @@ namespace Autofac.Integration.Wcf
         /// <summary>
         /// The container or lifetime scope from which service instances will be retrieved.
         /// </summary>
-        public static ILifetimeScope RootLifetimeScope { get; set; }
-
-        /// <summary>
-        /// The container from which service instances will be retrieved.
-        /// </summary>
-        [Obsolete("Use RootLifetimeScope instead."), EditorBrowsable(EditorBrowsableState.Never)]
-        public static ILifetimeScope Container
-        {
-            get { return RootLifetimeScope; }
-            set { RootLifetimeScope = value; }
-        }
+        public static ILifetimeScope Container { get; set; }
 
         /// <summary>
         /// Creates a <see cref="T:System.ServiceModel.ServiceHost"/> with specific base addresses and initializes it with specified data.
@@ -71,15 +61,15 @@ namespace Autofac.Integration.Wcf
             if (constructorString == String.Empty)
                 throw new ArgumentOutOfRangeException("constructorString");
 
-            if (RootLifetimeScope == null)
+            if (Container == null)
                 throw new InvalidOperationException(AutofacServiceHostFactoryResources.ContainerIsNull);
 
             IComponentRegistration registration;
-            if (!RootLifetimeScope.ComponentRegistry.TryGetRegistration(new KeyedService(constructorString, typeof(object)), out registration))
+            if (!Container.ComponentRegistry.TryGetRegistration(new KeyedService(constructorString, typeof(object)), out registration))
             {
                 var serviceType = Type.GetType(constructorString, false);
                 if (serviceType != null)
-                    RootLifetimeScope.ComponentRegistry.TryGetRegistration(new TypedService(serviceType), out registration);
+                    Container.ComponentRegistry.TryGetRegistration(new TypedService(serviceType), out registration);
             }
 
             if (registration == null)
@@ -105,7 +95,7 @@ namespace Autofac.Integration.Wcf
         {
             var host = CreateServiceHost(implementationType, baseAddresses);
             host.Opening += (sender, args) => host.Description.Behaviors.Add(
-                new AutofacDependencyInjectionServiceBehavior(RootLifetimeScope, implementationType, registration));
+                new AutofacDependencyInjectionServiceBehavior(Container, implementationType, registration));
 
             return host;
         }
