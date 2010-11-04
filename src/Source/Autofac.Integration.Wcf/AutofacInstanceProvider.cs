@@ -34,39 +34,37 @@ namespace Autofac.Integration.Wcf
     /// <summary>
     /// Retrieves service instances from an Autofac container.
     /// </summary>
-	public class AutofacInstanceProvider : IInstanceProvider
-	{
-		private readonly IContainer _container;
-        private readonly IComponentRegistration _registration;
+    public class AutofacInstanceProvider : IInstanceProvider
+    {
+        readonly ILifetimeScope _rootLifetimeScope;
+        readonly IComponentRegistration _registration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacInstanceProvider"/> class.
         /// </summary>
-        /// <param name="container">The container.</param>
+        /// <param name="rootLifetimeScope">The container.</param>
         /// <param name="registration">The component to resolve from the container.</param>
-        public AutofacInstanceProvider(IContainer container, IComponentRegistration registration)
-		{
-            if (container == null)
-                throw new ArgumentNullException("container");
+        public AutofacInstanceProvider(ILifetimeScope rootLifetimeScope, IComponentRegistration registration)
+        {
+            if (rootLifetimeScope == null)
+                throw new ArgumentNullException("rootLifetimeScope");
 
             if (registration == null)
                 throw new ArgumentNullException("registration");
 
-            this._container = container;
-            this._registration = registration;
-		}
-
-		#region IInstanceProvider Members
+            _rootLifetimeScope = rootLifetimeScope;
+            _registration = registration;
+        }
 
         /// <summary>
         /// Returns a service object given the specified <see cref="T:System.ServiceModel.InstanceContext"/> object.
         /// </summary>
         /// <param name="instanceContext">The current <see cref="T:System.ServiceModel.InstanceContext"/> object.</param>
         /// <returns>A user-defined service object.</returns>
-		public object GetInstance(InstanceContext instanceContext)
-		{
-			return GetInstance(instanceContext, null);
-		}
+        public object GetInstance(InstanceContext instanceContext)
+        {
+            return GetInstance(instanceContext, null);
+        }
 
         /// <summary>
         /// Returns a service object given the specified <see cref="T:System.ServiceModel.InstanceContext"/> object.
@@ -74,25 +72,23 @@ namespace Autofac.Integration.Wcf
         /// <param name="instanceContext">The current <see cref="T:System.ServiceModel.InstanceContext"/> object.</param>
         /// <param name="message">The message that triggered the creation of a service object.</param>
         /// <returns>The service object.</returns>
-		public object GetInstance(InstanceContext instanceContext, Message message)
-		{
-            var extension = new AutofacInstanceContext(_container);
+        public object GetInstance(InstanceContext instanceContext, Message message)
+        {
+            var extension = new AutofacInstanceContext(_rootLifetimeScope);
             instanceContext.Extensions.Add(extension);
             return extension.Resolve(_registration);
-		}
+        }
 
         /// <summary>
         /// Called when an <see cref="T:System.ServiceModel.InstanceContext"/> object recycles a service object.
         /// </summary>
         /// <param name="instanceContext">The service's instance context.</param>
         /// <param name="instance">The service object to be recycled.</param>
-		public void ReleaseInstance(InstanceContext instanceContext, object instance)
-		{
+        public void ReleaseInstance(InstanceContext instanceContext, object instance)
+        {
             var extension = instanceContext.Extensions.Find<AutofacInstanceContext>();
             if (extension != null)
                 extension.Dispose();
-		}
-
-		#endregion
-	}
+        }
+    }
 }

@@ -35,13 +35,13 @@ namespace Autofac.Integration.Wcf
     /// </summary>
     class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable
     {
-        ILifetimeScope _lifetime;
+        readonly ILifetimeScope _lifetime;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacInstanceContext"/> class.
         /// </summary>
         /// <param name="container">The outer container.</param>
-        public AutofacInstanceContext(IContainer container)
+        public AutofacInstanceContext(ILifetimeScope container)
         {
             if (container == null)
                 throw new ArgumentNullException("container");
@@ -61,8 +61,6 @@ namespace Autofac.Integration.Wcf
 
             return _lifetime.ResolveComponent(registration, Enumerable.Empty<Parameter>());
         }
-
-        #region IExtension<InstanceContext> Members
 
         /// <summary>
         /// Enables an extension object to find out when it has been aggregated.
@@ -84,10 +82,6 @@ namespace Autofac.Integration.Wcf
         {
         }
 
-        #endregion
-
-        #region IDisposable Members
-
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or
         /// resetting unmanaged resources.
@@ -96,7 +90,5 @@ namespace Autofac.Integration.Wcf
         {
             _lifetime.Dispose();
         }
-
-        #endregion
     }
 }

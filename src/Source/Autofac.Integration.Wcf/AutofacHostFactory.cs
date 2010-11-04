@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
@@ -34,12 +35,22 @@ namespace Autofac.Integration.Wcf
     /// <summary>
     /// Creates ServiceHost instances for WCF.
     /// </summary>
-	public abstract class AutofacHostFactory : ServiceHostFactory
-	{
+    public abstract class AutofacHostFactory : ServiceHostFactory
+    {
+        /// <summary>
+        /// The container or lifetime scope from which service instances will be retrieved.
+        /// </summary>
+        public static ILifetimeScope RootLifetimeScope { get; set; }
+
         /// <summary>
         /// The container from which service instances will be retrieved.
         /// </summary>
-        public static IContainer Container { get; set; }
+        [Obsolete("Use RootLifetimeScope instead."), EditorBrowsable(EditorBrowsableState.Never)]
+        public static ILifetimeScope Container
+        {
+            get { return RootLifetimeScope; }
+            set { RootLifetimeScope = value; }
+        }
 
         /// <summary>
         /// Creates a <see cref="T:System.ServiceModel.ServiceHost"/> with specific base addresses and initializes it with specified data.
@@ -50,7 +61,7 @@ namespace Autofac.Integration.Wcf
         /// A <see cref="T:System.ServiceModel.ServiceHost"/> with specific base addresses.
         /// </returns>
         /// <exception cref="T:System.ArgumentNullException">
-        /// 	<paramref name="baseAddress"/> is null.</exception>
+        /// 	<paramref name="baseAddresses"/> is null.</exception>
         /// <exception cref="T:System.InvalidOperationException">There is no hosting context provided or <paramref name="constructorString"/> is null or empty.</exception>
         public override ServiceHostBase CreateServiceHost(string constructorString, Uri[] baseAddresses)
         {
@@ -60,15 +71,15 @@ namespace Autofac.Integration.Wcf
             if (constructorString == String.Empty)
                 throw new ArgumentOutOfRangeException("constructorString");
 
-            if (Container == null)
+            if (RootLifetimeScope == null)
                 throw new InvalidOperationException(AutofacServiceHostFactoryResources.ContainerIsNull);
 
-            IComponentRegistration registration = null;
-            if (!Container.ComponentRegistry.TryGetRegistration(new KeyedService(constructorString, typeof(object)), out registration))
+            IComponentRegistration registration;
+            if (!RootLifetimeScope.ComponentRegistry.TryGetRegistration(new KeyedService(constructorString, typeof(object)), out registration))
             {
-                Type serviceType = Type.GetType(constructorString, false);
+                var serviceType = Type.GetType(constructorString, false);
                 if (serviceType != null)
-                    Container.ComponentRegistry.TryGetRegistration(new TypedService(serviceType), out registration);
+                    RootLifetimeScope.ComponentRegistry.TryGetRegistration(new TypedService(serviceType), out registration);
             }
 
             if (registration == null)
@@ -90,11 +101,11 @@ namespace Autofac.Integration.Wcf
         /// <param name="baseAddresses">The base addresses.</param>
         /// <returns>A <see cref="T:System.ServiceModel.ServiceHost"/> with specific base addresses.</returns>
         /// <remarks>If the serviceType is null, the implementation type is used as the resolution type</remarks>
-        private ServiceHost CreateServiceHost(IComponentRegistration registration, Type implementationType, Uri[] baseAddresses)
+        ServiceHost CreateServiceHost(IComponentRegistration registration, Type implementationType, Uri[] baseAddresses)
         {
             var host = CreateServiceHost(implementationType, baseAddresses);
             host.Opening += (sender, args) => host.Description.Behaviors.Add(
-                new AutofacDependencyInjectionServiceBehavior(Container, implementationType, registration));
+                new AutofacDependencyInjectionServiceBehavior(RootLifetimeScope, implementationType, registration));
 
             return host;
         }
