@@ -65,5 +65,61 @@ namespace Autofac.Tests.Features.LightweightAdapters
                 Assert.AreEqual(_name, _to.Name);
             }
         }
+
+        interface IService { }
+
+        class Implementer1 : IService { }
+
+        class Implementer2 : IService { }
+
+        class Decorator : IService
+        {
+            readonly IService _decorated;
+
+            public Decorator(IService decorated)
+            {
+                _decorated = decorated;
+            }
+
+            public IService Decorated
+            {
+                get { return _decorated; }
+            }
+        }
+
+        [TestFixture]
+        public class DecoratingANamedService
+        {
+            readonly IContainer _container;
+
+            public DecoratingANamedService()
+            {
+                const string from = "from";
+                var builder = new ContainerBuilder();
+                builder.RegisterType<Implementer1>().Named<IService>(from);
+                builder.RegisterType<Implementer2>().Named<IService>(from);
+                builder.RegisterDecorator<IService>(s => new Decorator(s), from);
+                _container = builder.Build();
+            }
+
+            [Test]
+            public void TheDefaultNamedInstanceIsTheDefaultDecoratedInstance()
+            {
+                var d = _container.Resolve<IService>();
+                Assert.IsInstanceOf<Implementer2>(((Decorator)d).Decorated);
+            }
+
+            [Test]
+            public void AllInstancesAreDecorated()
+            {
+                var all = _container.Resolve<IEnumerable<IService>>()
+                    .Cast<Decorator>()
+                    .Select(d => d.Decorated);
+
+                Assert.AreEqual(2, all.Count());
+                Assert.That(all.Any(i => i is Implementer1));
+                Assert.That(all.Any(i => i is Implementer2));
+            }
+        }
     }
 }

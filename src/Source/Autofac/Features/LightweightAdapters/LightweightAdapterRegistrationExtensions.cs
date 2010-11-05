@@ -37,9 +37,36 @@ namespace Autofac.Features.LightweightAdapters
                 ContainerBuilder builder,
                 Func<IComponentContext, IEnumerable<Parameter>, TFrom, TTo> adapter)
         {
+            return RegisterAdapter(builder, adapter, new TypedService(typeof(TFrom)), new TypedService(typeof(TTo)));
+        }
+
+        public static IRegistrationBuilder<TService, LightweightAdapterActivatorData, DynamicRegistrationStyle>
+            RegisterDecorator<TService>(
+                ContainerBuilder builder,
+                Func<IComponentContext, IEnumerable<Parameter>, TService, TService> decorator,
+                object fromKey,
+                object toKey)
+        {
+            return RegisterAdapter(builder, decorator, ServiceWithKey<TService>(fromKey), ServiceWithKey<TService>(toKey));
+        }
+
+        static Service ServiceWithKey<TService>(object key)
+        {
+            if (key == null)
+                return new TypedService(typeof (TService));
+            return new KeyedService(key, typeof(TService));
+        }
+
+        static IRegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
+            RegisterAdapter<TFrom, TTo>(
+                ContainerBuilder builder,
+                Func<IComponentContext, IEnumerable<Parameter>, TFrom, TTo> adapter,
+                Service fromService,
+                Service toService)
+        {
             var rb = new RegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>(
-                new TypedService(typeof(TTo)),
-                new LightweightAdapterActivatorData(new TypedService(typeof(TFrom)), (c, p, f) => adapter(c, p, (TFrom)f)),
+                toService,
+                new LightweightAdapterActivatorData(fromService, (c, p, f) => adapter(c, p, (TFrom)f)),
                 new DynamicRegistrationStyle());
 
             builder.RegisterCallback(cr => cr.AddRegistrationSource(

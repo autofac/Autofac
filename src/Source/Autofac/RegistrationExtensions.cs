@@ -981,6 +981,74 @@ namespace Autofac
         }
 
         /// <summary>
+        /// Decorate all components implementing service <typeparamref name="TService"/>
+        /// using the provided <paramref name="decorator"/> function.
+        /// </summary>
+        /// <typeparam name="TService">Service type being decorated.</typeparam>
+        /// <param name="builder">Container builder.</param>
+        /// <param name="decorator">Function decorating a component instance that provides
+        /// <typeparamref name="TService"/>, given the context and parameters.</param>
+        /// <param name="fromKey">Service key or name associated with the components being decorated.</param>
+        /// <param name="toKey">Service key or name given to the decorated components.</param>
+        public static IRegistrationBuilder<TService, LightweightAdapterActivatorData, DynamicRegistrationStyle>
+            RegisterDecorator<TService>(
+                this ContainerBuilder builder,
+                Func<IComponentContext, IEnumerable<Parameter>, TService, TService> decorator,
+                object fromKey,
+                object toKey = null)
+        {
+            if (builder == null) throw new ArgumentNullException("builder");
+            if (decorator == null) throw new ArgumentNullException("decorator");
+
+            return LightweightAdapterRegistrationExtensions.RegisterDecorator(builder, decorator, fromKey, toKey);
+        }
+        /// <summary>
+        /// Decorate all components implementing service <typeparamref name="TService"/>
+        /// using the provided <paramref name="decorator"/> function.
+        /// </summary>
+        /// <typeparam name="TService">Service type being decorated.</typeparam>
+        /// <param name="builder">Container builder.</param>
+        /// <param name="decorator">Function decorating a component instance that provides
+        /// <typeparamref name="TService"/>, given the context.</param>
+        /// <param name="fromKey">Service key or name associated with the components being decorated.</param>
+        /// <param name="toKey">Service key or name given to the decorated components.</param>
+        public static IRegistrationBuilder<TService, LightweightAdapterActivatorData, DynamicRegistrationStyle>
+            RegisterDecorator<TService>(
+                this ContainerBuilder builder,
+                Func<IComponentContext, TService, TService> decorator,
+                object fromKey,
+                object toKey = null)
+        {
+            if (builder == null) throw new ArgumentNullException("builder");
+            if (decorator == null) throw new ArgumentNullException("decorator");
+
+            return LightweightAdapterRegistrationExtensions.RegisterDecorator<TService>(builder, (c, p, f) => decorator(c, f), fromKey, toKey);
+        }
+
+        /// <summary>
+        /// Decorate all components implementing service <typeparamref name="TService"/>
+        /// using the provided <paramref name="decorator"/> function.
+        /// </summary>
+        /// <typeparam name="TService">Service type being decorated.</typeparam>
+        /// <param name="builder">Container builder.</param>
+        /// <param name="decorator">Function decorating a component instance that provides
+        /// <typeparamref name="TService"/>.</param>
+        /// <param name="fromKey">Service key or name associated with the components being decorated.</param>
+        /// <param name="toKey">Service key or name given to the decorated components.</param>
+        public static IRegistrationBuilder<TService, LightweightAdapterActivatorData, DynamicRegistrationStyle>
+            RegisterDecorator<TService>(
+                this ContainerBuilder builder,
+                Func<TService, TService> decorator,
+                object fromKey,
+                object toKey = null)
+        {
+            if (builder == null) throw new ArgumentNullException("builder");
+            if (decorator == null) throw new ArgumentNullException("decorator");
+
+            return LightweightAdapterRegistrationExtensions.RegisterDecorator<TService>(builder, (c, p, f) => decorator(f), fromKey, toKey);
+        }
+
+        /// <summary>
         /// Run a supplied action instead of disposing instances when they're no
         /// longer required.
         /// </summary>
