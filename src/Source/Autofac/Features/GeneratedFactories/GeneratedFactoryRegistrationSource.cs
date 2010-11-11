@@ -84,7 +84,13 @@ namespace Autofac.Features.GeneratedFactories
             .Where(x => x.Name == "CreateFuncRegistration")
             .ToArray();
 
-        static Type[] _funcTypes = new Type[]  { typeof(Func<>), typeof(Func<,>), typeof(Func<,,>) };
+        static readonly MethodInfo[] delegateFuncRegistrations = typeof (GeneratedFactoryRegistrationSource)
+            .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
+            .Where(x => x.Name == "DelegateFuncRegistration")
+            .ToArray();
+            //("DelegateFuncRegistration", BindingFlags.NonPublic | BindingFlags.Static);
+
+        static readonly Type[] FuncTypes = new Type[]  { typeof(Func<>), typeof(Func<,>), typeof(Func<,,>) };
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(
             Service service,
@@ -95,7 +101,7 @@ namespace Autofac.Features.GeneratedFactories
             var swt = service as IServiceWithType;
             if (swt != null &&
                 swt.ServiceType.IsGenericType &&
-                _funcTypes.Contains(swt.ServiceType.GetGenericTypeDefinition()))
+                FuncTypes.Contains(swt.ServiceType.GetGenericTypeDefinition()))
             {
                 var args = swt.ServiceType.GetGenericArguments();
 
@@ -118,14 +124,15 @@ namespace Autofac.Features.GeneratedFactories
                     .Select(x => x.ParameterType)
                     .ToList();
                 args.Add(delegateMethod.ReturnType);
+                args.Add(swt.ServiceType);
 
                 //Find a func method that matches all args
-                var funcRegistration = createFuncRegistration
-                    .First(x => x.GetGenericArguments().Count() == args.Count());
+                var funcRegistration = delegateFuncRegistrations
+                    .First(x => x.GetGenericArguments().Count() == args.Count()); ;
 
                 var creator = funcRegistration.MakeGenericMethod(args.ToArray());
 
-                return registrationAccessor(new TypedService(args.Last()))
+                return registrationAccessor(new TypedService(delegateMethod.ReturnType))
                      .Select(cr => (IComponentRegistration)creator.Invoke(null, new object[] { cr }));
             }
 
@@ -137,45 +144,82 @@ namespace Autofac.Features.GeneratedFactories
             get { return true; }
         }
 
-        //static IComponentRegistration CreateFuncRegistration<TDelegate, TResult>(IComponentRegistration target, MethodInfo method)
-        //{
-        //    Debug.WriteLine("Creating registration.");
+        static IComponentRegistration DelegateFuncRegistration<TResult, TDelegate>(IComponentRegistration target)
+        {
+            return RegistrationBuilder
+                .ForDelegate(typeof(TDelegate), (c, p) =>
+                {
+                    var ls = c.Resolve<ILifetimeScope>();
+                    Func<TResult> del1 = () =>
+                    {
+                        Debug.WriteLine("Invoking Delegate");
+                        var r = ls.ResolveComponent(target, null);
+                        return (TResult)r;
+                    };
+                    var del = Delegate.CreateDelegate(typeof(TDelegate), del1.Target, del1.Method, true);
+                    return del;
+                })
+                                .Targeting(target)
+                                .CreateRegistration();
+        }
 
-        //    return RegistrationBuilder
-        //        .ForDelegate(typeof(TDelegate),  (c, p) =>
-        //                                    {
-        //                                        var del = Delegate.CreateDelegate(thingthatusesdelegate, method);
-        //                                        var ls = c.Resolve<ILifetimeScope>();
+        static IComponentRegistration DelegateFuncRegistration<TArg0, TResult, TDelegate>(IComponentRegistration target)
+        {
+            return RegistrationBuilder
+                .ForDelegate(typeof(TDelegate), (c, p) =>
+                {
+                    var ls = c.Resolve<ILifetimeScope>();
+                    Func<TArg0, TResult> del1 = (a0) =>
+                    {
+                        Debug.WriteLine("Invoking Delegate");
+                        var r = ls.ResolveComponent(target, new[] { TypedParameter.From(a0) });
+                        return (TResult)r;
+                    };
+                    var del = Delegate.CreateDelegate(typeof(TDelegate), del1.Target, del1.Method, true);
+                    return del;
+                })
+                                .Targeting(target)
+                                .CreateRegistration();
+        }
 
-        //                                        Func<TResult> del1 = () =>
-        //                                        {
-        //                                            Debug.WriteLine("Invoking Func");
-        //                                            var r = (TResult)ls.ResolveComponent(target, p);
-        //                                            return r;
-        //                                        };
+        static IComponentRegistration DelegateFuncRegistration<TArg0, TArg1, TResult, TDelegate>(IComponentRegistration target)
+        {
+            return RegistrationBuilder
+                .ForDelegate(typeof(TDelegate), (c, p) =>
+                            {
+                                var ls = c.Resolve<ILifetimeScope>();
+                                Func<TArg0, TArg1, TResult> del1 = (a0, a1) =>
+                                {
+                                    Debug.WriteLine("Invoking Delegate");
+                                    var r = ls.ResolveComponent(target, new[] { TypedParameter.From(a0), TypedParameter.From(a1) });
+                                    return (TResult)r;
+                                };
+                                var del = Delegate.CreateDelegate(typeof(TDelegate), del1.Target, del1.Method, true);
+                                return del;
+                                })
+                                .Targeting(target)
+                                .CreateRegistration();
+        }
 
-        //                                        return del1;
-        //                                    }).Targeting(target)
-        //                                      .CreateRegistration();
+        static IComponentRegistration CreateFuncRegistration<TResult>(IComponentRegistration target)
+        {
+            Debug.WriteLine("Creating registration.");
 
-
-        //    //(c, p) =>
-        //    //{
-        //    //    Debug.WriteLine("Building Func activator.");
-        //    //    var ls = c.Resolve<ILifetimeScope>();
-
-        //    //    TDelegate del  = (a0, a1) =>
-        //    //    {
-        //    //        Debug.WriteLine("Invoking Func");
-        //    //        var r = (TResult)ls.ResolveComponent(target, new Parameter[]{});
-        //    //        return r;
-        //    //    };
-
-        //    //    return del;
-        //    //})
-        //    //.Targeting(target)
-        //    //.CreateRegistration();
-        //}
+            return RegistrationBuilder
+                .ForDelegate<Func<TResult>>((c, p) =>
+                {
+                    Debug.WriteLine("Building Func activator.");
+                    var ls = c.Resolve<ILifetimeScope>();
+                    return () =>
+                    {
+                        Debug.WriteLine("Invoking Func");
+                        var r = (TResult)ls.ResolveComponent(target, null);
+                        return r;
+                    };
+                })
+                .Targeting(target)
+                .CreateRegistration();
+        }
 
         static IComponentRegistration CreateFuncRegistration<TArg0, TResult>(IComponentRegistration target)
         {
