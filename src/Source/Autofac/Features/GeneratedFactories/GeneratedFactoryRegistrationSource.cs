@@ -26,14 +26,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Util;
+using System.Diagnostics;
 
 namespace Autofac.Features.GeneratedFactories
 {
     class GeneratedFactoryRegistrationSource : IRegistrationSource
     {
+#if !WINDOWS_PHONE
         /// <summary>
         /// Retrieve registrations for an unregistered service, to be used
         /// by the container.
@@ -74,5 +77,145 @@ namespace Autofac.Features.GeneratedFactories
         {
             get { return true; }
         }
+#else
+        static readonly MethodInfo[] createFuncRegistration =
+            typeof(GeneratedFactoryRegistrationSource)
+            .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
+            .Where(x => x.Name == "CreateFuncRegistration")
+            .ToArray();
+
+        static Type[] _funcTypes = new Type[]  { typeof(Func<>), typeof(Func<,>), typeof(Func<,,>) };
+
+        public IEnumerable<IComponentRegistration> RegistrationsFor(
+            Service service,
+            Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+        {
+            Debug.WriteLine("Querying source.");
+
+            var swt = service as IServiceWithType;
+            if (swt != null &&
+                swt.ServiceType.IsGenericType &&
+                _funcTypes.Contains(swt.ServiceType.GetGenericTypeDefinition()))
+            {
+                var args = swt.ServiceType.GetGenericArguments();
+
+                //Find a func method that matches all args
+                var funcRegistration = createFuncRegistration
+                    .First(x => x.GetGenericArguments().Count() == args.Count());
+
+                var creator = funcRegistration.MakeGenericMethod(args);
+
+                return registrationAccessor(new TypedService(args.Last()))
+                     .Select(cr => (IComponentRegistration)creator.Invoke(null, new object[] { cr }));
+
+            }
+            else if (swt != null && swt.ServiceType.IsDelegate())
+            {
+                var delegateMethod = swt.ServiceType.GetMethods().First();
+
+                var args = delegateMethod
+                    .GetParameters()
+                    .Select(x => x.ParameterType)
+                    .ToList();
+                args.Add(delegateMethod.ReturnType);
+
+                //Find a func method that matches all args
+                var funcRegistration = createFuncRegistration
+                    .First(x => x.GetGenericArguments().Count() == args.Count());
+
+                var creator = funcRegistration.MakeGenericMethod(args.ToArray());
+
+                return registrationAccessor(new TypedService(args.Last()))
+                     .Select(cr => (IComponentRegistration)creator.Invoke(null, new object[] { cr }));
+            }
+
+            return Enumerable.Empty<IComponentRegistration>();
+        }
+
+        public bool IsAdapterForIndividualComponents
+        {
+            get { return true; }
+        }
+
+        //static IComponentRegistration CreateFuncRegistration<TDelegate, TResult>(IComponentRegistration target, MethodInfo method)
+        //{
+        //    Debug.WriteLine("Creating registration.");
+
+        //    return RegistrationBuilder
+        //        .ForDelegate(typeof(TDelegate),  (c, p) =>
+        //                                    {
+        //                                        var del = Delegate.CreateDelegate(thingthatusesdelegate, method);
+        //                                        var ls = c.Resolve<ILifetimeScope>();
+
+        //                                        Func<TResult> del1 = () =>
+        //                                        {
+        //                                            Debug.WriteLine("Invoking Func");
+        //                                            var r = (TResult)ls.ResolveComponent(target, p);
+        //                                            return r;
+        //                                        };
+
+        //                                        return del1;
+        //                                    }).Targeting(target)
+        //                                      .CreateRegistration();
+
+
+        //    //(c, p) =>
+        //    //{
+        //    //    Debug.WriteLine("Building Func activator.");
+        //    //    var ls = c.Resolve<ILifetimeScope>();
+
+        //    //    TDelegate del  = (a0, a1) =>
+        //    //    {
+        //    //        Debug.WriteLine("Invoking Func");
+        //    //        var r = (TResult)ls.ResolveComponent(target, new Parameter[]{});
+        //    //        return r;
+        //    //    };
+
+        //    //    return del;
+        //    //})
+        //    //.Targeting(target)
+        //    //.CreateRegistration();
+        //}
+
+        static IComponentRegistration CreateFuncRegistration<TArg0, TResult>(IComponentRegistration target)
+        {
+            Debug.WriteLine("Creating registration.");
+
+            return RegistrationBuilder
+                .ForDelegate<Func<TArg0, TResult>>((c, p) =>
+                {
+                    Debug.WriteLine("Building Func activator.");
+                    var ls = c.Resolve<ILifetimeScope>();
+                    return a0 =>
+                    {
+                        Debug.WriteLine("Invoking Func with {0}", a0);
+                        var r = (TResult)ls.ResolveComponent(target, new[] { TypedParameter.From(a0) });
+                        return r;
+                    };
+                })
+                .Targeting(target)
+                .CreateRegistration();
+        }
+
+        static IComponentRegistration CreateFuncRegistration<TArg0, TArg1, TResult>(IComponentRegistration target)
+        {
+            Debug.WriteLine("Creating registration.");
+
+            return RegistrationBuilder
+                .ForDelegate<Func<TArg0, TArg1, TResult>>((c, p) =>
+                {
+                    Debug.WriteLine("Building Func activator.");
+                    var ls = c.Resolve<ILifetimeScope>();
+                    return (a0, a1) =>
+                    {
+                        Debug.WriteLine("Invoking Func with {0} and {1}", a0, a1);
+                        var r = (TResult)ls.ResolveComponent(target, new[] { TypedParameter.From(a0), TypedParameter.From(a1) });
+                        return r;
+                    };
+                })
+                .Targeting(target)
+                .CreateRegistration();
+        }
+#endif
     }
 }

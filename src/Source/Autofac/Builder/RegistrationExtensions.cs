@@ -41,7 +41,6 @@ namespace Autofac.Builder
     /// </remarks>
     public static class RegistrationExtensions
     {
-//#if !WINDOWS_PHONE
         /// <summary>
         /// Registers a factory delegate.
         /// </summary>
@@ -166,7 +165,7 @@ namespace Autofac.Builder
             registration.ActivatorData.ParameterMapping = ParameterMapping.ByType;
             return registration;
         }
-//#endif
+
         /// <summary>
         /// Registers the type as a collection. If no services or names are specified, the
         /// default services will be IList&lt;T&gt;, ICollection&lt;T&gt;, and IEnumerable&lt;T&gt;        

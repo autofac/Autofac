@@ -149,9 +149,7 @@ namespace Autofac
 
 	    internal static void RegisterDefaultAdapters(IComponentRegistry componentRegistry)
 	    {
-#if !WINDOWS_PHONE
             componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
-#endif
             componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
             componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
 #if !(SL2 || SL3 || NET35)
