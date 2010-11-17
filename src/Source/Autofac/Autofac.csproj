@@ -321,6 +321,17 @@
     <Compile Include="Util\Silverlight\AllowPartiallyTrustedCallerAttribute.cs" />
     <Compile Include="Util\Silverlight\SerializableAttribute.cs" />
     <Compile Include="Util\Traverse.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="$(MSBuildTargets)=='Windows Phone 7'">
+    <Compile Include="Util\WindowsPhone\WP7GeneratedFactoryRegistrationSource.cs" />
+    <Compile Include="Util\WindowsPhone\Expressions\Conversion.cs" />
+    <Compile Include="Util\WindowsPhone\Expressions\ExpressionInterpreter.cs" />
+    <Compile Include="Util\WindowsPhone\Expressions\ExpressionTransformer.cs" />
+    <Compile Include="Util\WindowsPhone\Expressions\ExpressionVisitor.cs" />
+    <Compile Include="Util\WindowsPhone\Expressions\Extensions.cs" />
+    <Compile Include="Util\WindowsPhone\Expressions\LambdaCompiler.cs" />
+    <Compile Include="Util\WindowsPhone\Expressions\Math.cs" />
+    <Compile Include="Util\WindowsPhone\Expressions\Runner.cs" />
     <Compile Include="Util\WindowsPhone\ReflectionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -365,6 +376,7 @@
     <EmbeddedResource Include="Core\Lifetime\MatchingScopeLifetimeResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MatchingScopeLifetimeResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Core\Registration\ComponentNotRegisteredExceptionResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
