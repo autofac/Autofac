@@ -93,62 +93,10 @@ namespace Autofac.Features.Scanning
         {
             Enforce.ArgumentNotNull(openGenericServiceType, "openGenericServiceType");
 
-            if (!(openGenericServiceType.IsGenericTypeDefinition || openGenericServiceType.ContainsGenericParameters))
-            {
-                throw new ArgumentException(
-                    string.Format(ScanningRegistrationExtensionsResources.NotOpenGenericType, openGenericServiceType.FullName));
-            }
-
             return registration
-                .Where(candidateType => IsAssignableToClosed(candidateType, openGenericServiceType))
-                .As(candidateType => GetServicesThatClose(candidateType, openGenericServiceType));
-        }
-
-        /// <summary>Determines whether the candidate type supports any base or interface that closes the
-        /// provided generic service type.</summary>
-        /// <param name="candidateType">The type that is being checked for the interface.</param>
-        /// <param name="openGenericServiceType">The open generic type to locate.</param>
-        /// <returns>True if an interface was found; otherwise false.</returns>
-        static bool IsAssignableToClosed(Type candidateType, Type openGenericServiceType)
-        {
-            return FindAssignableTypesThatClose(candidateType, openGenericServiceType).Any();
-        }
-
-        /// <summary>Returns the first concrete interface supported by the candidate type that
-        /// closes the provided open generic service type.</summary>
-        /// <param name="candidateType">The type that is being checked for the interface.</param>
-        /// <param name="openGenericServiceType">The open generic type to locate.</param>
-        /// <returns>The type of the interface.</returns>
-        static IEnumerable<Service> GetServicesThatClose(Type candidateType, Type openGenericServiceType)
-        {
-            return FindAssignableTypesThatClose(candidateType, openGenericServiceType)
-                .Select(t => new TypedService(t))
-// ReSharper disable RedundantEnumerableCastCall
-                .Cast<Service>();
-// ReSharper restore RedundantEnumerableCastCall
-        }
-
-        /// <summary>
-        /// Looks for an interface on the candidate type that closes the provided open generic interface type.
-        /// </summary>
-        /// <param name="candidateType">The type that is being checked for the interface.</param>
-        /// <param name="openGenericServiceType">The open generic service type to locate.</param>
-        /// <returns>True if a closed implementation was found; otherwise false.</returns>
-        static IEnumerable<Type> FindAssignableTypesThatClose(Type candidateType, Type openGenericServiceType)
-        {
-            if (candidateType.IsAbstract) yield break;
-
-            foreach (var assignableType in TypesAssignableFrom(candidateType)
-                .Where(t => t.IsClosingTypeOf(openGenericServiceType)))
-            {
-                yield return assignableType;
-            }
-        }
-
-        static IEnumerable<Type> TypesAssignableFrom(Type candidateType)
-        {
-            return candidateType.GetInterfaces().Concat(
-                Traverse.Across(candidateType, t => t.BaseType));
+                .Where(candidateType => candidateType.IsClosedTypeOf(openGenericServiceType))
+                .As(candidateType => candidateType.GetTypesThatClose(openGenericServiceType)
+                        .Select(t => (Service) new TypedService(t)));
         }
 
         public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>

@@ -171,22 +171,6 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void AsClosedTypesOfNonGenericTypeProvidedThrowsException()
-        {
-            var cb = new ContainerBuilder();
-            Assert.Throws<ArgumentException>(() => cb.RegisterAssemblyTypes(typeof(ICommand<>).Assembly).
-                AsClosedTypesOf(typeof(SaveCommandData)));
-        }
-
-        [Test]
-        public void AsClosedTypesOfClosedGenericTypeProvidedThrowsException()
-        {
-            var cb = new ContainerBuilder();
-            Assert.Throws<ArgumentException>(() => cb.RegisterAssemblyTypes(typeof(ICommand<>).Assembly).
-                AsClosedTypesOf(typeof(ICommand<SaveCommandData>)));
-        }
-
-        [Test]
         public void AsClosedTypesOfOpenGenericInterfaceTypeProvidedClosingGenericTypesRegistered()
         {
             var cb = new ContainerBuilder();

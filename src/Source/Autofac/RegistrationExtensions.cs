@@ -889,6 +889,7 @@ namespace Autofac
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             InNamespaceOf<T>(this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> registration)
         {
+            if (registration == null) throw new ArgumentNullException("registration");
             return registration.InNamespace(typeof(T).Namespace);
         }
 
@@ -908,10 +909,9 @@ namespace Autofac
                 string ns)
             where TScanningActivatorData : ScanningActivatorData
         {
-            Enforce.ArgumentNotNullOrEmpty(ns, "ns");
-            return registration.Where(t =>
-                t.Namespace != null &&
-                (t.Namespace == ns || t.Namespace.StartsWith(ns + ".")));
+            if (registration == null) throw new ArgumentNullException("registration");
+            if (ns == null) throw new ArgumentNullException("ns");
+            return registration.Where(t => t.IsInNamespace(ns));
         }
 
         /// <summary>

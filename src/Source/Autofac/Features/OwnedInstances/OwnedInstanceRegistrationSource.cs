@@ -51,7 +51,7 @@ namespace Autofac.Features.OwnedInstances
             Enforce.ArgumentNotNull(registrationAccessor, "registrationAccessor");
 
             var ts = service as IServiceWithType;
-            if (ts == null || !ts.ServiceType.IsClosingTypeOf(typeof(Owned<>)))
+            if (ts == null || !ts.ServiceType.IsGenericTypeDefinedBy(typeof(Owned<>)))
                 return Enumerable.Empty<IComponentRegistration>();
 
             var ownedInstanceType = ts.ServiceType.GetGenericArguments()[0];

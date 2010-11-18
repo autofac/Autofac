@@ -150,6 +150,7 @@
     <Compile Include="Scenarios\RegistrationSources\ObjectRegistrationSource.cs" />
     <Compile Include="TagsFixture.cs" />
     <Compile Include="TypedParameterTests.cs" />
+    <Compile Include="TypeExtensionsTests.cs" />
     <Compile Include="Util\DelegateExtensionsTests.cs" />
     <Compile Include="Util\EnforceTests.cs" />
   </ItemGroup>

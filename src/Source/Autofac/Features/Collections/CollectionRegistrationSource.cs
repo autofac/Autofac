@@ -54,7 +54,7 @@ namespace Autofac.Features.Collections
                 var serviceType = swt.ServiceType;
                 Type elementType = null;
 
-                if (serviceType.IsClosingTypeOf(typeof(IEnumerable<>)))
+                if (serviceType.IsGenericTypeDefinedBy(typeof(IEnumerable<>)))
                 {
                     elementType = serviceType.GetGenericArguments()[0];
                 }
