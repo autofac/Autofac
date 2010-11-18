@@ -57,7 +57,7 @@ namespace Autofac.Integration.Web.Mvc
         /// <param name="container">The container.</param>
         /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
         /// that adds component registations visible only in nested lifetime scopes.</param>
-        public AutofacDependencyResolver(IContainer container, Action<ContainerBuilder> configurationAction) : this(container)
+        public AutofacDependencyResolver(ILifetimeScope container, Action<ContainerBuilder> configurationAction) : this(container)
         {
             if (configurationAction == null) throw new ArgumentNullException("configurationAction");
             _configurationAction = configurationAction;

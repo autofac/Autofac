@@ -24,11 +24,14 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.Scanning;
+using Action = System.Action;
 
 namespace Autofac.Integration.Web.Mvc
 {
@@ -109,6 +112,36 @@ namespace Autofac.Integration.Web.Mvc
                 if (controller != null)
                     controller.ActionInvoker = (IActionInvoker)e.Context.ResolveService(actionInvokerService);
             });
+        }
+
+        /// <summary>
+        /// Registers the <see cref="AutofacModelBinderProvider"/>.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        public static void RegisterModelBinderProvider(this ContainerBuilder builder)
+        {
+            builder.RegisterType<AutofacModelBinderProvider>()
+                .As<IModelBinderProvider>()
+                .InstancePerHttpRequest();
+        }
+
+        /// <summary>
+        /// Register types that implement <see cref="IModelBinder"/> in the provided assemblies.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        /// <param name="modelBinderAssemblies">Assemblies to scan for model binders.</param>
+        /// <returns>A registration builder.</returns>
+        public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
+            RegisterModelBinders(this ContainerBuilder builder, params Assembly[] modelBinderAssemblies)
+        {
+            return builder.RegisterAssemblyTypes(modelBinderAssemblies)
+                .Where(type => typeof(IModelBinder).IsAssignableFrom(type))
+                .As<IModelBinder>()
+                .AsSelf()
+                .InstancePerHttpRequest()
+                .WithMetadata(AutofacModelBinderProvider.MetadataKey, type => 
+                    (from ModelBinderTypeAttribute attribute in type.GetCustomAttributes(typeof(ModelBinderTypeAttribute), true)
+                    select attribute.TargetType).ToList());
         }
     }
 }

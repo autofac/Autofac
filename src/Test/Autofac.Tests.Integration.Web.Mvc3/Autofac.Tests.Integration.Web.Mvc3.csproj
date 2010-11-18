@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutofacDependencyResolverFixture.cs" />
+    <Compile Include="AutofacModelBinderProviderFixture.cs" />
     <Compile Include="AutofacWebTypesModuleFixture.cs" />
     <Compile Include="FilterInjectionActionInvokerFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
