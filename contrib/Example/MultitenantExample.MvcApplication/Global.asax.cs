@@ -1,10 +1,8 @@
-using System;
 using System.ServiceModel;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Autofac;
-using Autofac.Integration.Web;
 using Autofac.Integration.Web.Mvc;
 using AutofacContrib.Multitenant;
 using AutofacContrib.Multitenant.Wcf;
@@ -19,30 +17,8 @@ namespace MultitenantExample.MvcApplication
 	/// <summary>
 	/// Global application class for the multitenant MVC example application.
 	/// </summary>
-	public class MvcApplication : HttpApplication, IContainerProviderAccessor
+	public class MvcApplication : HttpApplication
 	{
-		/// <summary>
-		/// Application container provider backing field. Part of standard Autofac web integration.
-		/// </summary>
-		private static IContainerProvider _containerProvider;
-
-		/// <summary>
-		/// Gets the global application container.
-		/// </summary>
-		/// <value>
-		/// An <see cref="Autofac.Integration.Web.IContainerProvider"/> that
-		/// returns the global application container.
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// This is part of standard Autofac web integration.
-		/// </para>
-		/// </remarks>
-		public IContainerProvider ContainerProvider
-		{
-			get { return _containerProvider; }
-		}
-
 		/// <summary>
 		/// Registers the application routes with a route collection.
 		/// </summary>
@@ -139,13 +115,9 @@ namespace MultitenantExample.MvcApplication
 			// tenants.
 			mtc.ConfigureTenant(null, b => b.RegisterType<DefaultTenantDependency>().As<IDependency>().SingleInstance());
 
-			// Create the global application container provider using the
+			// Create the dependency resolver using the
 			// multitenant container instead of the application container.
-			_containerProvider = new ContainerProvider(mtc);
-
-			// Set the controller factory to use Autofac. This is standard
-			// Autofac MVC integration.
-			ControllerBuilder.Current.SetControllerFactory(new AutofacControllerFactory(this.ContainerProvider));
+			DependencyResolver.SetResolver(new AutofacDependencyResolver(mtc));
 
 			// Perform the standard MVC setup requirements.
 			AreaRegistration.RegisterAllAreas();
