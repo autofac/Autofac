@@ -639,6 +639,29 @@ namespace Autofac
         }
 
         /// <summary>
+        /// Configure an explicit value for a constructor parameter.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
+        /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to set parameter on.</param>
+        /// <param name="parameterSelector">A predicate selecting the parameter to set.</param>
+        /// <param name="valueProvider"></param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+            WithParameter<TLimit, TReflectionActivatorData, TStyle>(
+                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                Func<ParameterInfo, IComponentContext, bool> parameterSelector,
+                Func<ParameterInfo, IComponentContext, object> valueProvider)
+            where TReflectionActivatorData : ReflectionActivatorData
+        {
+            if (parameterSelector == null) throw new ArgumentNullException("parameterSelector");
+            if (valueProvider == null) throw new ArgumentNullException("valueProvider");
+            return registration.WithParameter(
+                new ResolvedParameter(parameterSelector, valueProvider));
+        }
+
+        /// <summary>
         /// Configure explicit values for constructor parameters.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
