@@ -24,16 +24,18 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using Autofac.Core;
+using Autofac.Core.Registration;
 
 namespace Autofac.Integration.Wcf
 {
     /// <summary>
     /// Manages instance lifecycle using an Autofac inner container.
     /// </summary>
-    class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable
+    public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable, IComponentContext
     {
         readonly ILifetimeScope _lifetime;
 
@@ -47,19 +49,6 @@ namespace Autofac.Integration.Wcf
                 throw new ArgumentNullException("container");
 
             _lifetime = container.BeginLifetimeScope();
-        }
-
-        /// <summary>
-        /// Retrieve a service instance from the context.
-        /// </summary>
-        /// <param name="registration"></param>
-        /// <returns>The service instance.</returns>
-        public object Resolve(IComponentRegistration registration)
-        {
-            if (registration == null)
-                throw new ArgumentNullException("registration");
-
-            return _lifetime.ResolveComponent(registration, Enumerable.Empty<Parameter>());
         }
 
         /// <summary>
@@ -89,6 +78,29 @@ namespace Autofac.Integration.Wcf
         public void Dispose()
         {
             _lifetime.Dispose();
+        }
+
+        /// <summary>
+        /// Associates services with the components that provide them.
+        /// </summary>
+        public IComponentRegistry ComponentRegistry
+        {
+            get { return _lifetime.ComponentRegistry; }
+        }
+
+        /// <summary>
+        /// Resolve an instance of the provided registration within the context.
+        /// </summary>
+        /// <param name="registration">The registration.</param>
+        /// <param name="parameters">Parameters for the instance.</param>
+        /// <returns>
+        /// The component instance.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="Autofac.Core.DependencyResolutionException"/>
+        public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        {
+            return _lifetime.ResolveComponent(registration, parameters);
         }
     }
 }

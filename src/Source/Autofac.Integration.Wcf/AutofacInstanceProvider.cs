@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Dispatcher;
@@ -76,7 +77,7 @@ namespace Autofac.Integration.Wcf
         {
             var extension = new AutofacInstanceContext(_rootLifetimeScope);
             instanceContext.Extensions.Add(extension);
-            return extension.Resolve(_registration);
+            return extension.ResolveComponent(_registration, Enumerable.Empty<Parameter>());
         }
 
         /// <summary>
