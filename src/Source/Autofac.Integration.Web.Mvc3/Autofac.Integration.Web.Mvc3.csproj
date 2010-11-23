@@ -79,7 +79,7 @@
     <Compile Include="PreApplicationStartCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationExtensions.cs" />
-    <Compile Include="RequestLifetimeModule.cs" />
+    <Compile Include="RequestLifetimeHttpModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\SharedKey.snk">

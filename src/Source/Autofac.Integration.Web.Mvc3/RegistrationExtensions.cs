@@ -55,7 +55,7 @@ namespace Autofac.Integration.Web.Mvc
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
-            return registration.InstancePerMatchingLifetimeScope(RequestLifetimeModule.HttpRequestTag);
+            return registration.InstancePerMatchingLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag);
         }
 
         /// <summary>

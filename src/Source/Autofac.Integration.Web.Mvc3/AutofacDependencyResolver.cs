@@ -24,9 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
@@ -47,6 +45,7 @@ namespace Autofac.Integration.Web.Mvc
         /// <param name="container">The container.</param>
         public AutofacDependencyResolver(ILifetimeScope container)
         {
+            if (container == null) throw new ArgumentNullException("container");
             _container = container;
             _container.TryResolve(out _lifetimeScopeProvider);
         }
@@ -57,7 +56,8 @@ namespace Autofac.Integration.Web.Mvc
         /// <param name="container">The container.</param>
         /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
         /// that adds component registations visible only in nested lifetime scopes.</param>
-        public AutofacDependencyResolver(ILifetimeScope container, Action<ContainerBuilder> configurationAction) : this(container)
+        public AutofacDependencyResolver(ILifetimeScope container, Action<ContainerBuilder> configurationAction)
+            : this(container)
         {
             if (configurationAction == null) throw new ArgumentNullException("configurationAction");
             _configurationAction = configurationAction;
@@ -70,7 +70,7 @@ namespace Autofac.Integration.Web.Mvc
         /// <returns>The single instance if resolved; otherwise, <c>null</c>.</returns>
         public object GetService(Type serviceType)
         {
-            return CurrentLifetimeScope.IsRegistered(serviceType) ? CurrentLifetimeScope.Resolve(serviceType) : null;
+            return RequestLifetimeScope.ResolveOptional(serviceType);
         }
 
         /// <summary>
@@ -80,34 +80,38 @@ namespace Autofac.Integration.Web.Mvc
         /// <returns>The list of instances if any were resolved; otherwise, an empty list.</returns>
         public IEnumerable<object> GetServices(Type serviceType)
         {
-            Type enumerableServiceType = typeof(IEnumerable<>).MakeGenericType(serviceType);
-            object instance = CurrentLifetimeScope.Resolve(enumerableServiceType);
+            var enumerableServiceType = typeof(IEnumerable<>).MakeGenericType(serviceType);
+            var instance = RequestLifetimeScope.Resolve(enumerableServiceType);
+#if NET35
             return ((IEnumerable)instance).Cast<object>();
+#else
+            return (IEnumerable<object>)instance;
+#endif
         }
 
         /// <summary>
-        /// The container used to manage components for processing the current lifetime scope.
+        /// The lifetime containing components for processing the current HTTP request.
         /// </summary>
-        internal ILifetimeScope CurrentLifetimeScope
+        public ILifetimeScope RequestLifetimeScope
         {
             get
             {
                 if (_lifetimeScopeProvider == null)
-                    _lifetimeScopeProvider = GetRequestLifetimeModule();
+                    _lifetimeScopeProvider = GetRequestLifetimeHttpModule();
                 return _lifetimeScopeProvider.GetLifetimeScope(_container, _configurationAction);
             }
         }
 
-        static ILifetimeScopeProvider GetRequestLifetimeModule()
+        static ILifetimeScopeProvider GetRequestLifetimeHttpModule()
         {
-            HttpModuleCollection httpModules = HttpContext.Current.ApplicationInstance.Modules;
-            for (int index = 0; index < httpModules.Count; index++)
+            var httpModules = HttpContext.Current.ApplicationInstance.Modules;
+            for (var index = 0; index < httpModules.Count; index++)
             {
-                if (httpModules[index] is RequestLifetimeModule)
-                    return (RequestLifetimeModule)httpModules[index];
+                if (httpModules[index] is RequestLifetimeHttpModule)
+                    return (RequestLifetimeHttpModule)httpModules[index];
             }
             throw new InvalidOperationException(string.Format(
-                AutofacDependencyResolverResources.HttpModuleNotLoaded, typeof(RequestLifetimeModule)));
+                AutofacDependencyResolverResources.HttpModuleNotLoaded, typeof(RequestLifetimeHttpModule)));
         }
     }
 }

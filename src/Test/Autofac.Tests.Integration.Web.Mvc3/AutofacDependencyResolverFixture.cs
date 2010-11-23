@@ -40,7 +40,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
             IContainer container = GetContainer();
             AutofacDependencyResolver resolver = new AutofacDependencyResolver(container);
 
-            Assert.That(resolver.CurrentLifetimeScope, Is.Not.Null);
+            Assert.That(resolver.RequestLifetimeScope, Is.Not.Null);
         }
 
         [Test]
@@ -134,8 +134,8 @@ namespace Autofac.Tests.Integration.Web.Mvc
         static ILifetimeScope GetLifetimeScope(Action<ContainerBuilder> requestLifetimeConfiguration, ILifetimeScope container)
         {
             return (requestLifetimeConfiguration == null)
-                ? container.BeginLifetimeScope(RequestLifetimeModule.HttpRequestTag)
-                : container.BeginLifetimeScope(RequestLifetimeModule.HttpRequestTag, requestLifetimeConfiguration);
+                ? container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag)
+                : container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag, requestLifetimeConfiguration);
         }
     }
 }

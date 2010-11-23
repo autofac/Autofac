@@ -60,7 +60,7 @@ namespace Autofac.Tests.Integration.Web.Mvc
             builder.RegisterModelBinderProvider();
 
             IContainer container = builder.Build();
-            return container.BeginLifetimeScope(RequestLifetimeModule.HttpRequestTag);
+            return container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag);
         }
     }
 

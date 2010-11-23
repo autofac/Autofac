@@ -45,7 +45,7 @@ namespace Autofac.Integration.Web.Mvc
             if (_startWasCalled) return;
 
             _startWasCalled = true;
-            DynamicModuleUtility.RegisterModule(typeof(RequestLifetimeModule));
+            DynamicModuleUtility.RegisterModule(typeof(RequestLifetimeHttpModule));
         }
     }
 }

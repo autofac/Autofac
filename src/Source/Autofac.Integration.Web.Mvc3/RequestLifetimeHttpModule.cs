@@ -32,7 +32,7 @@ namespace Autofac.Integration.Web.Mvc
     /// An <see cref="IHttpModule"/> and <see cref="ILifetimeScopeProvider"/> implementation 
     /// that creates a nested lifetime scope for each HTTP request.
     /// </summary>
-    internal class RequestLifetimeModule : IHttpModule, ILifetimeScopeProvider
+    internal class RequestLifetimeHttpModule : IHttpModule, ILifetimeScopeProvider
     {
         /// <summary>
         /// Tag used to identify registrations that are scoped to the HTTP request level.
