@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Routing;
-using Autofac.Integration.Web.Mvc;
+using Autofac.Integration.Mvc;
 using Remember.Persistence.NHibernate;
 using Autofac;
 using Remember.Service;

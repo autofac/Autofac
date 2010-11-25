@@ -25,7 +25,7 @@
 
 using System;
 
-namespace Autofac.Integration.Web.Mvc
+namespace Autofac.Integration.Mvc
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
     public sealed class ModelBinderTypeAttribute : Attribute

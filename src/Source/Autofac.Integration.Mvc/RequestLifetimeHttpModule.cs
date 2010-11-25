@@ -26,7 +26,7 @@
 using System;
 using System.Web;
 
-namespace Autofac.Integration.Web.Mvc
+namespace Autofac.Integration.Mvc
 {
     /// <summary>
     /// An <see cref="IHttpModule"/> and <see cref="ILifetimeScopeProvider"/> implementation 

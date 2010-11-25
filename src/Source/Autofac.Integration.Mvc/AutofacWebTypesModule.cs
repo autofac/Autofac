@@ -25,7 +25,7 @@
 
 using System.Web;
 
-namespace Autofac.Integration.Web.Mvc
+namespace Autofac.Integration.Mvc
 {
     /// <summary>
     /// Registers HTTP context abstraction classes including <see cref="HttpContextBase"/> and 

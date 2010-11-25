@@ -25,7 +25,7 @@
 
 using System;
 
-namespace Autofac.Integration.Web.Mvc
+namespace Autofac.Integration.Mvc
 {
     /// <summary>
     /// Implementors are able to control the creation of nested lifetime scopes.

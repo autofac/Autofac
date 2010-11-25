@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Autofac.Integration.Web.Mvc
+namespace Autofac.Integration.Mvc
 {
     /// <summary>
     /// Autofac implementation of the <see cref="IDependencyResolver"/> interface.

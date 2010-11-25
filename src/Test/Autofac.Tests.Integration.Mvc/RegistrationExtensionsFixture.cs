@@ -1,8 +1,8 @@
 ﻿using System.Web.Mvc;
-using Autofac.Integration.Web.Mvc;
+using Autofac.Integration.Mvc;
 using NUnit.Framework;
 
-namespace Autofac.Tests.Integration.Web.Mvc
+namespace Autofac.Tests.Integration.Mvc
 {
     [TestFixture]
     public class RegistrationExtensionsFixture

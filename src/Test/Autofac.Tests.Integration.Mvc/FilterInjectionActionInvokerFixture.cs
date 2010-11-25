@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Autofac.Integration.Web.Mvc;
+using Autofac.Integration.Mvc;
 using Moq;
 using NUnit.Framework;
 
-namespace Autofac.Tests.Integration.Web.Mvc
+namespace Autofac.Tests.Integration.Mvc
 {
     [TestFixture]
     public class ExtensibleActionInvokerFixture

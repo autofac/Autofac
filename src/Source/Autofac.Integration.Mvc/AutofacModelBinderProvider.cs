@@ -29,7 +29,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Autofac.Features.Metadata;
 
-namespace Autofac.Integration.Web.Mvc
+namespace Autofac.Integration.Mvc
 {
     /// <summary>
     /// Autofac implementation of the <see cref="IModelBinderProvider"/> interface.

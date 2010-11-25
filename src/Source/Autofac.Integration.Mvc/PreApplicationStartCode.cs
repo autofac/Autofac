@@ -26,7 +26,7 @@
 using System.ComponentModel;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
-namespace Autofac.Integration.Web.Mvc
+namespace Autofac.Integration.Mvc
 {
     /// <summary>
     /// Container class for the ASP.NET application startup method.

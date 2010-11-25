@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
 
-namespace Autofac.Integration.Web.Mvc
+namespace Autofac.Integration.Mvc
 {
     /// <summary>
     /// Injects services from the container into the ASP.NET MVC invocation pipeline.

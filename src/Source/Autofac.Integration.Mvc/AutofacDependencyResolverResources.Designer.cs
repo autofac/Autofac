@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac.Integration.Web.Mvc {
+namespace Autofac.Integration.Mvc {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Autofac.Integration.Web.Mvc {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Integration.Web.Mvc.AutofacDependencyResolverResources", typeof(AutofacDependencyResolverResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Integration.Mvc.AutofacDependencyResolverResources", typeof(AutofacDependencyResolverResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

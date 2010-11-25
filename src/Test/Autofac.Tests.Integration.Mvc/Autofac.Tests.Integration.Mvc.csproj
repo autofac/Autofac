@@ -8,8 +8,8 @@
     <ProjectGuid>{438022BC-2202-4F9D-A3AD-6EA84DB947D2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Autofac.Tests.Integration.Web.Mvc</RootNamespace>
-    <AssemblyName>Autofac.Tests.Integration.Web.Mvc3</AssemblyName>
+    <RootNamespace>Autofac.Tests.Integration.Mvc</RootNamespace>
+    <AssemblyName>Autofac.Tests.Integration.Mvc</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -67,9 +67,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Source\Autofac.Integration.Web.Mvc3\Autofac.Integration.Web.Mvc3.csproj">
+    <ProjectReference Include="..\..\Source\Autofac.Integration.Mvc\Autofac.Integration.Mvc.csproj">
       <Project>{DD874E64-C7EC-464D-925F-CF4A709EDEEF}</Project>
-      <Name>Autofac.Integration.Web.Mvc3</Name>
+      <Name>Autofac.Integration.Mvc</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Source\Autofac\Autofac.csproj">
       <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>

@@ -8,8 +8,8 @@
     <ProjectGuid>{DD874E64-C7EC-464D-925F-CF4A709EDEEF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Autofac.Integration.Web.Mvc</RootNamespace>
-    <AssemblyName>Autofac.Integration.Web.Mvc3</AssemblyName>
+    <RootNamespace>Autofac.Integration.Mvc</RootNamespace>
+    <AssemblyName>Autofac.Integration.Mvc</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

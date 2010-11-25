@@ -27,7 +27,7 @@
     <LibrarySource>Source\Autofac\bin\$(Configuration)</LibrarySource>
     <WcfSource>Source\Autofac.Integration.Wcf\bin\$(Configuration)</WcfSource>
     <WebSource>Source\Autofac.Integration.Web\bin\$(Configuration)</WebSource>
-    <MvcSource>Source\Autofac.Integration.Web.Mvc3\bin\$(Configuration)</MvcSource>
+    <MvcSource>Source\Autofac.Integration.Mvc\bin\$(Configuration)</MvcSource>
     <MefSource>Source\Autofac.Integration.Mef\bin\$(Configuration)</MefSource>
     <ConfigSource>Source\Autofac.Configuration\bin\$(Configuration)</ConfigSource>
     <SourceExclusions>**\.svn\**\*.*;**\_svn\**\*.*;**\*.user;**\*.suo;**\*.db;**\bin\**\*.*;**\obj\**\*.*;</SourceExclusions>

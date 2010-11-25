@@ -33,7 +33,7 @@ using Autofac.Core;
 using Autofac.Features.Scanning;
 using Action = System.Action;
 
-namespace Autofac.Integration.Web.Mvc
+namespace Autofac.Integration.Mvc
 {
     /// <summary>
     /// Extends <see cref="ContainerBuilder"/> with methods to support ASP.NET MVC.

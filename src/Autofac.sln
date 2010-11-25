@@ -47,9 +47,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remember.Service", "Example\Remember.Service\Remember.Service.csproj", "{C02A73FD-8F99-4127-878F-01F929C67BAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.Web.Mvc3", "Source\Autofac.Integration.Web.Mvc3\Autofac.Integration.Web.Mvc3.csproj", "{DD874E64-C7EC-464D-925F-CF4A709EDEEF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.Mvc", "Source\Autofac.Integration.Mvc\Autofac.Integration.Mvc.csproj", "{DD874E64-C7EC-464D-925F-CF4A709EDEEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.Web.Mvc3", "Test\Autofac.Tests.Integration.Web.Mvc3\Autofac.Tests.Integration.Web.Mvc3.csproj", "{438022BC-2202-4F9D-A3AD-6EA84DB947D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.Mvc", "Test\Autofac.Tests.Integration.Mvc\Autofac.Tests.Integration.Mvc.csproj", "{438022BC-2202-4F9D-A3AD-6EA84DB947D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
