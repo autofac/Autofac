@@ -38,6 +38,12 @@ namespace Autofac.Tests.Integration.Mvc
                 Assert.That(webViewPage.Dependency, Is.Not.Null);
             }
         }
+
+        [Test]
+        public void IsNotAdapterForIndividualComponents()
+        {
+            Assert.That(new WebViewPageRegistrationSource().IsAdapterForIndividualComponents, Is.False);
+        }
     }
 
     public class ViewDependency { }

@@ -60,7 +60,7 @@ namespace Autofac.Integration.Mvc
         /// </summary>
         public bool IsAdapterForIndividualComponents
         {
-            get { return true; }
+            get { return false; }
         }
     }
 }
