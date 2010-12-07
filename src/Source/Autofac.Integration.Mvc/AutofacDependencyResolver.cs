@@ -97,14 +97,28 @@ namespace Autofac.Integration.Mvc
             get
             {
                 if (_lifetimeScopeProvider == null)
-                    _lifetimeScopeProvider = GetRequestLifetimeHttpModule();
+                {
+                    var httpContext = (HttpContext.Current == null) ? null : new HttpContextWrapper(HttpContext.Current);
+                    _lifetimeScopeProvider = GetRequestLifetimeHttpModule(httpContext);
+                }
                 return _lifetimeScopeProvider.GetLifetimeScope(_container, _configurationAction);
             }
         }
 
-        static ILifetimeScopeProvider GetRequestLifetimeHttpModule()
+        /// <summary>
+        /// Gets the request lifetime HTTP module.
+        /// </summary>
+        /// <param name="httpContext">The HTTP context.</param>
+        /// <returns>The HTTP module as an <see cref="ILifetimeScopeProvider"/> instance.</returns>
+        internal static ILifetimeScopeProvider GetRequestLifetimeHttpModule(HttpContextBase httpContext)
         {
-            var httpModules = HttpContext.Current.ApplicationInstance.Modules;
+            if (httpContext == null)
+                throw new InvalidOperationException(AutofacDependencyResolverResources.HttpContextNotAvailable);
+
+            if (httpContext.ApplicationInstance == null)
+                throw new InvalidOperationException(AutofacDependencyResolverResources.ApplicationInstanceNotAvailable);
+
+            var httpModules = httpContext.ApplicationInstance.Modules;
             for (var index = 0; index < httpModules.Count; index++)
             {
                 if (httpModules[index] is RequestLifetimeHttpModule)
