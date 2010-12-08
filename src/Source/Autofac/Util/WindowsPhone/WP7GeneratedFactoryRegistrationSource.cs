@@ -72,7 +72,8 @@ namespace Autofac.Features.GeneratedFactories
                 }
 
             }
-            else if (swt != null && swt.ServiceType.IsDelegate())
+            else if (swt != null && swt.ServiceType.IsDelegate()
+                && !swt.ServiceType.GetMethods().First().ReturnType.Name.Equals("Void"))
             {
                 var delegateMethod = swt.ServiceType.GetMethods().First();
 
