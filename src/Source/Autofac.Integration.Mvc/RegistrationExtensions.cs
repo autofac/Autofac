@@ -141,7 +141,8 @@ namespace Autofac.Integration.Mvc
                 .InstancePerHttpRequest()
                 .WithMetadata(AutofacModelBinderProvider.MetadataKey, type => 
                     (from ModelBinderTypeAttribute attribute in type.GetCustomAttributes(typeof(ModelBinderTypeAttribute), true)
-                    select attribute.TargetType).ToList());
+                     from targetType in attribute.TargetTypes
+                    select targetType).ToList());
         }
     }
 }

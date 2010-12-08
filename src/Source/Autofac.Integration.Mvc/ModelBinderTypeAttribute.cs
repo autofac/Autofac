@@ -24,18 +24,19 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 namespace Autofac.Integration.Mvc
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
     public sealed class ModelBinderTypeAttribute : Attribute
     {
-        public Type TargetType { get; private set; }
+        public IEnumerable<Type> TargetTypes { get; private set; }
 
-        public ModelBinderTypeAttribute(Type targetType)
+        public ModelBinderTypeAttribute(params Type[] targetTypes)
         {
-            if (targetType == null) throw new ArgumentNullException("targetType");
-            TargetType = targetType;
+            if (targetTypes == null) throw new ArgumentNullException("targetTypes");
+            TargetTypes = targetTypes;
         }
     }
 }

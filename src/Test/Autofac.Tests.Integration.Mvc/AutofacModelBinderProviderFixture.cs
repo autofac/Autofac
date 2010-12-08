@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -43,12 +44,24 @@ namespace Autofac.Tests.Integration.Mvc
         }
 
         [Test]
-        public void ProviderFindsMatchingModelBinder()
+        public void MultipleTypesCanBeDeclaredWithSingleAttribute()
         {
             using (ILifetimeScope httpRequestScope = BuilderContainerAndStartHttpRequestScope())
             {
                 AutofacModelBinderProvider provider = (AutofacModelBinderProvider)httpRequestScope.Resolve<IModelBinderProvider>();
                 Assert.That(provider.GetBinder(typeof(Model)), Is.InstanceOf<ModelBinder>());
+                Assert.That(provider.GetBinder(typeof(string)), Is.InstanceOf<ModelBinder>());
+            }
+        }
+
+        [Test]
+        public void MultipleTypesCanBeDeclaredWithMultipleAttribute()
+        {
+            using (ILifetimeScope httpRequestScope = BuilderContainerAndStartHttpRequestScope())
+            {
+                AutofacModelBinderProvider provider = (AutofacModelBinderProvider)httpRequestScope.Resolve<IModelBinderProvider>();
+                Assert.That(provider.GetBinder(typeof(string)), Is.InstanceOf<ModelBinder>());
+                Assert.That(provider.GetBinder(typeof(DateTime)), Is.InstanceOf<ModelBinder>());
             }
         }
 
@@ -72,7 +85,8 @@ namespace Autofac.Tests.Integration.Mvc
     {
     }
 
-    [ModelBinderType(typeof(Model))]
+    [ModelBinderType(typeof(Model), typeof(string))]
+    [ModelBinderType(typeof(DateTime))]
     public class ModelBinder : IModelBinder
     {
         public Dependency Dependency { get; private set; }
