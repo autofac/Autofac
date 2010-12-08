@@ -34,7 +34,7 @@ using System.Diagnostics;
 
 namespace Autofac.Features.GeneratedFactories
 {
-/*    class GeneratedFactoryRegistrationSource : IRegistrationSource
+    class GeneratedFactoryRegistrationSource : IRegistrationSource
     {
         static readonly MethodInfo[] delegateFuncRegistrations = typeof(GeneratedFactoryRegistrationSource)
             .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
@@ -226,5 +226,5 @@ namespace Autofac.Features.GeneratedFactories
                 .Targeting(target)
                 .CreateRegistration();
         }
-    }*/
+    }
 }

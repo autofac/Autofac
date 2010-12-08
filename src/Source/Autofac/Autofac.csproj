@@ -269,7 +269,7 @@
     <Compile Include="Core\TypedService.cs" />
     <Compile Include="Core\UniqueService.cs" />
     <Compile Include="Features\Collections\CollectionRegistrationSource.cs" />
-    <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSource.cs" />
+    
     <Compile Include="Features\GeneratedFactories\FactoryGenerator.cs" />
     <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationExtensions.cs" />
     <Compile Include="Features\OpenGenerics\OpenGenericRegistrationSource.cs" />
@@ -321,6 +321,9 @@
     <Compile Include="Util\Silverlight\AllowPartiallyTrustedCallerAttribute.cs" />
     <Compile Include="Util\Silverlight\SerializableAttribute.cs" />
     <Compile Include="Util\Traverse.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="($(MSBuildTargets)!='Windows Phone 7')">
+    <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSource.cs" />
   </ItemGroup>
   <ItemGroup Condition="$(MSBuildTargets)=='Windows Phone 7'">
     <Compile Include="Util\WindowsPhone\WP7GeneratedFactoryRegistrationSource.cs" />
