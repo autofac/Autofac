@@ -137,7 +137,6 @@ namespace Autofac.Integration.Mvc
             return builder.RegisterAssemblyTypes(modelBinderAssemblies)
                 .Where(type => typeof(IModelBinder).IsAssignableFrom(type))
                 .As<IModelBinder>()
-                .AsSelf()
                 .InstancePerHttpRequest()
                 .WithMetadata(AutofacModelBinderProvider.MetadataKey, type => 
                     (from ModelBinderTypeAttribute attribute in type.GetCustomAttributes(typeof(ModelBinderTypeAttribute), true)
