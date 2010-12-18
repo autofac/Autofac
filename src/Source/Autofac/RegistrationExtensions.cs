@@ -330,6 +330,25 @@ namespace Autofac
         }
 
         /// <summary>
+        /// Specifies how a type from a scanned assembly is mapped to a service.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <param name="serviceMapping">Function mapping types to services.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            As<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                Func<Type, IEnumerable<Type>> serviceMapping)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            Enforce.ArgumentNotNull(registration, "registration");
+            return registration.As(t => serviceMapping(t).Select(s => new TypedService(s)));
+        }
+
+        /// <summary>
         /// Specifies that a type from a scanned assembly provides its own concrete type as a service.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
@@ -489,9 +508,12 @@ namespace Autofac
             where TScanningActivatorData : ScanningActivatorData
         {
             Enforce.ArgumentNotNull(registration, "registration");
-            // ReSharper disable RedundantEnumerableCastCall
-            return registration.As(t => t.GetInterfaces().Select(i => new TypedService(i)).Cast<Service>());
-            // ReSharper restore RedundantEnumerableCastCall
+            return registration.As(t => t.GetInterfaces()
+                .Where(i => i != typeof(IDisposable))
+                .Select(i => new TypedService(i))
+                // ReSharper disable RedundantEnumerableCastCall Be friendly to older compilers
+                .Cast<Service>());
+                // ReSharper restore RedundantEnumerableCastCall
         }
 
         /// <summary>

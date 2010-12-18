@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AComponent.cs" />
+    <Compile Include="ADisposable.cs" />
     <Compile Include="BComponent.cs" />
     <Compile Include="A2Component.cs" />
     <Compile Include="CommandBase.cs" />
