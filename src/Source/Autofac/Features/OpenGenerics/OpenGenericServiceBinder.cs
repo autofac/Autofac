@@ -48,10 +48,11 @@ namespace Autofac.Features.OpenGenerics
 
                 if (configuredOpenGenericServices.Cast<IServiceWithType>().Any(s => s.Equals(definitionService)))
                 {
-                    var implementorGenericArguments = MapImplementationGenericArguments(
+                    var implementorGenericArguments = TryMapImplementationGenericArguments(
                         openGenericImplementationType, swt.ServiceType, definitionService.ServiceType, serviceGenericArguments);
 
-                    if (openGenericImplementationType.IsCompatibleWithGenericParameterConstraints(implementorGenericArguments))
+                    if (!implementorGenericArguments.Any(a => a == null) &&
+                        openGenericImplementationType.IsCompatibleWithGenericParameterConstraints(implementorGenericArguments))
                     {
                         var constructedImplementationTypeTmp = openGenericImplementationType.MakeGenericType(implementorGenericArguments);
 
@@ -76,7 +77,7 @@ namespace Autofac.Features.OpenGenerics
             return false;
         }
 
-        static Type[] MapImplementationGenericArguments(Type implementationType, Type serviceType, Type serviceTypeDefinition, Type[] serviceGenericArguments)
+        static Type[] TryMapImplementationGenericArguments(Type implementationType, Type serviceType, Type serviceTypeDefinition, Type[] serviceGenericArguments)
         {
             if (serviceTypeDefinition == implementationType)
                 return serviceGenericArguments;
@@ -89,7 +90,7 @@ namespace Autofac.Features.OpenGenerics
             var serviceArgumentDefinitionToArgumentMapping = serviceArgumentDefinitions.Zip(serviceGenericArguments, Tuple.Create);
 
             return implementationGenericArgumentDefinitions
-                .Select(implementationGenericArgumentDefinition => FindServiceArgumentForImplementationArgumentDefinition(
+                .Select(implementationGenericArgumentDefinition => TryFindServiceArgumentForImplementationArgumentDefinition(
                     implementationGenericArgumentDefinition, serviceArgumentDefinitionToArgumentMapping))
                 .ToArray();
         }
@@ -104,7 +105,7 @@ namespace Autofac.Features.OpenGenerics
 #endif
         }
 
-        static Type FindServiceArgumentForImplementationArgumentDefinition(Type implementationGenericArgumentDefinition, IEnumerable<Tuple<Type, Type>> serviceArgumentDefinitionToArgument)
+        static Type TryFindServiceArgumentForImplementationArgumentDefinition(Type implementationGenericArgumentDefinition, IEnumerable<Tuple<Type, Type>> serviceArgumentDefinitionToArgument)
         {
             var matchingRegularType = serviceArgumentDefinitionToArgument
                 .Where(argdef => !argdef.Item1.IsGenericType && implementationGenericArgumentDefinition.Name == argdef.Item1.Name)
@@ -116,9 +117,9 @@ namespace Autofac.Features.OpenGenerics
 
             return serviceArgumentDefinitionToArgument
                 .Where(argdef => argdef.Item1.IsGenericType && argdef.Item2.GetGenericArguments().Length > 0)
-                .Select(argdef => FindServiceArgumentForImplementationArgumentDefinition(
+                .Select(argdef => TryFindServiceArgumentForImplementationArgumentDefinition(
                     implementationGenericArgumentDefinition, argdef.Item1.GetGenericArguments().Zip(argdef.Item2.GetGenericArguments(), Tuple.Create)))
-                .Single();
+                .SingleOrDefault();
         }
     }
 }

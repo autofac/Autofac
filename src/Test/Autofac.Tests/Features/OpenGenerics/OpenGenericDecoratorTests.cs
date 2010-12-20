@@ -96,10 +96,10 @@ namespace Autofac.Tests.Features.OpenGenerics
             builder.RegisterGeneric(typeof(ImplementorB<>))
                 .Named("implementor", typeof(IService<>));
 
-            builder.RegisterGenericDecorator(typeof(DecoratorB<>), typeof(IService<>), "implementor", "b")
+            builder.RegisterGenericDecorator(typeof(DecoratorB<>), typeof(IService<>), fromKey: "implementor", toKey: "b")
                 .WithParameter("parameter", ParameterValue);
 
-            builder.RegisterGenericDecorator(typeof(DecoratorA<>), typeof(IService<>), "b");
+            builder.RegisterGenericDecorator(typeof(DecoratorA<>), typeof(IService<>), fromKey: "b");
 
             _container = builder.Build();
         }

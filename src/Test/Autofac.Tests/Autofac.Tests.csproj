@@ -117,6 +117,7 @@
     <Compile Include="Features\Indexed\KeyedServiceIndexTests.cs" />
     <Compile Include="Features\Metadata\MetaRegistrationSourceTests.cs" />
     <Compile Include="Features\OpenGenerics\ComplexGenericsTests.cs" />
+    <Compile Include="Features\OpenGenerics\GenericsForNullableScenarioTests.cs" />
     <Compile Include="Features\OpenGenerics\OpenGenericDecoratorTests.cs" />
     <Compile Include="Features\OpenGenerics\OpenGenericRegistrationExtensionsTests.cs" />
     <Compile Include="Features\OwnedInstances\OwnedInstanceRegistrationSourceTests.cs" />

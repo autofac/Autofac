@@ -6,6 +6,7 @@ namespace Autofac.Tests.Features.OpenGenerics
     [TestFixture]
     public class ComplexGenericsTests
     {
+        // ReSharper disable UnusedTypeParameter, InconsistentNaming
         public interface IDouble<T2, T3> { }
         public class CReversed<T2, T1> : IDouble<T1, T2> { }
 
@@ -16,8 +17,8 @@ namespace Autofac.Tests.Features.OpenGenerics
         public class CNestedDerived<T> : CNested<T> { }
 
         public class CNestedDerivedReversed<TX, TY> : IDouble<TY, INested<Wrapper<TX>>> { }
-
         public class SameTypes<TA, TB> : IDouble<TA, INested<IDouble<TB, TA>>> { }
+        // ReSharper restore UnusedTypeParameter, InconsistentNaming
 
         [Test]
         public void NestedGenericInterfacesCanBeResolved()
@@ -86,7 +87,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
-        public void TestWithSameTypes()
+        public void TheSameaceholderTypeCanAppearMultipleTimesInTheService()
         {
             var cb = new ContainerBuilder();
             cb.RegisterGeneric(typeof(SameTypes<,>)).As(typeof(SameTypes<,>).GetInterfaces());
@@ -97,7 +98,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
-        public void TestWithSameTypesError()
+        public void WhenTheSameTypeAppearsMultipleTimesInTheImplementationMappingItMustAlsoInTheService()
         {
             var cb = new ContainerBuilder();
             cb.RegisterGeneric(typeof(SameTypes<,>)).As(typeof(SameTypes<,>).GetInterfaces());
