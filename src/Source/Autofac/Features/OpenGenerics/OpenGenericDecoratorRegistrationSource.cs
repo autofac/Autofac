@@ -28,27 +28,28 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Activators.Reflection;
 
-namespace Autofac.Features.LightweightAdapters
+namespace Autofac.Features.OpenGenerics
 {
-    class LightweightAdapterRegistrationSource : IRegistrationSource
+    class OpenGenericDecoratorRegistrationSource : IRegistrationSource
     {
         readonly RegistrationData _registrationData;
-        readonly LightweightAdapterActivatorData _activatorData;
+        readonly OpenGenericDecoratorActivatorData _activatorData;
 
-        public LightweightAdapterRegistrationSource(
+        public OpenGenericDecoratorRegistrationSource(
             RegistrationData registrationData,
-            LightweightAdapterActivatorData activatorData)
+            OpenGenericDecoratorActivatorData activatorData)
         {
             if (registrationData == null) throw new ArgumentNullException("registrationData");
             if (activatorData == null) throw new ArgumentNullException("activatorData");
 
             _registrationData = registrationData;
             _activatorData = activatorData;
-            
-            if (registrationData.Services.Contains(activatorData.FromService))
+
+            if (registrationData.Services.Contains((Service)activatorData.FromService))
                 throw new ArgumentException(string.Format(
-                    LightweightAdapterRegistrationSourceResources.FromAndToMustDiffer, activatorData.FromService));
+                    OpenGenericDecoratorRegistrationSourceResources.FromAndToMustDiffer, activatorData.FromService));
         }
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
@@ -56,22 +57,36 @@ namespace Autofac.Features.LightweightAdapters
             if (service == null) throw new ArgumentNullException("service");
             if (registrationAccessor == null) throw new ArgumentNullException("registrationAccessor");
 
-            if (_registrationData.Services.Contains(service))
+            Type constructedImplementationType;
+            IEnumerable<Service> services;
+            if (OpenGenericServiceBinder.TryBindServiceType(service, _registrationData.Services, _activatorData.ImplementationType, out constructedImplementationType, out services))
             {
-                return registrationAccessor(_activatorData.FromService)
-                    .Select(r =>
-                    {
-                        var rb = RegistrationBuilder
-                            .ForDelegate((c, p) => _activatorData.Adapter(c, p, c.ResolveComponent(r, Enumerable.Empty<Parameter>())))
-                            .Targeting(r);
+                var swt = (IServiceWithType)service;
+                var fromService = _activatorData.FromService.ChangeType(swt.ServiceType);
 
-                        rb.RegistrationData.CopyFrom(_registrationData, true);
-
-                        return rb.CreateRegistration();
-                    });
+                return registrationAccessor(fromService)
+                    .Select(cr => RegistrationBuilder.CreateRegistration(
+                            Guid.NewGuid(),
+                            _registrationData,
+                            new ReflectionActivator(
+                                constructedImplementationType,
+                                _activatorData.ConstructorFinder,
+                                _activatorData.ConstructorSelector,
+                                AddDecoratedComponentParameter(swt.ServiceType, cr, _activatorData.ConfiguredParameters),
+                                _activatorData.ConfiguredProperties),
+                            services));
             }
 
-            return new IComponentRegistration[0];
+            return Enumerable.Empty<IComponentRegistration>();
+        }
+
+        static IEnumerable<Parameter> AddDecoratedComponentParameter(Type decoratedParameterType, IComponentRegistration decoratedComponent, IEnumerable<Parameter> configuredParameters)
+        {
+            var parameter = new ResolvedParameter(
+                (pi, c) => pi.ParameterType == decoratedParameterType,
+                (pi, c) => c.ResolveComponent(decoratedComponent, Enumerable.Empty<Parameter>()));
+
+            return new[] { parameter }.Concat(configuredParameters);
         }
 
         public bool IsAdapterForIndividualComponents

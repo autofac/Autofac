@@ -44,7 +44,7 @@ namespace Autofac.Configuration
         /// <returns>An object of the destination type.</returns>
         public static object ChangeToCompatibleType(object value, Type destinationType)
         {
-            Enforce.ArgumentNotNull(destinationType, "destinationType");
+            if (destinationType == null) throw new ArgumentNullException("destinationType");
 
             if (value == null)
             {

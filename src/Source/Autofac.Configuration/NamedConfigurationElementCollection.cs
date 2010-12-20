@@ -49,12 +49,12 @@ namespace Autofac.Configuration
         /// <param name="elementKey">The element key.</param>
         protected NamedConfigurationElementCollection(string elementName, string elementKey)
         {
-            Enforce.ArgumentNotNull(elementName, "elementName");
+            if (elementName == null) throw new ArgumentNullException("elementName");
 
             if (elementName == "")
                 throw new ArgumentOutOfRangeException(elementName);
 
-            Enforce.ArgumentNotNull(elementKey, "elementKey");
+            if (elementKey == null) throw new ArgumentNullException("elementKey");
 
             if (elementKey == "")
                 throw new ArgumentOutOfRangeException(elementKey);
@@ -141,7 +141,7 @@ namespace Autofac.Configuration
         /// </returns>
         protected override object GetElementKey(ConfigurationElement element)
         {
-            Enforce.ArgumentNotNull(element, "element");
+            if (element == null) throw new ArgumentNullException("element");
 
             return (string)element.ElementInformation.Properties[_elementKey].Value;
         }

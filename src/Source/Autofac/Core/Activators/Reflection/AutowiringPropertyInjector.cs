@@ -8,8 +8,8 @@ namespace Autofac.Core.Activators.Reflection
     {
         public void InjectProperties(IComponentContext context, object instance, bool overrideSetValues)
         {
-            Enforce.ArgumentNotNull(context, "context");
-            Enforce.ArgumentNotNull(instance, "instance");
+            if (context == null) throw new ArgumentNullException("context");
+            if (instance == null) throw new ArgumentNullException("instance");
 
             Type instanceType = instance.GetType();
 

@@ -51,5 +51,30 @@ namespace Autofac.Features.OpenGenerics
 
             return rb;
         }
+
+        public static IRegistrationBuilder<object, OpenGenericDecoratorActivatorData, DynamicRegistrationStyle>
+            RegisterGenericDecorator(ContainerBuilder builder, Type decoratorType, Type decoratedServiceType, object fromKey, object toKey)
+        {
+            if (builder == null) throw new ArgumentNullException("builder");
+            if (decoratorType == null) throw new ArgumentNullException("decoratorType");
+            if (decoratedServiceType == null) throw new ArgumentNullException("decoratedServiceType");
+
+            var rb = new RegistrationBuilder<object, OpenGenericDecoratorActivatorData, DynamicRegistrationStyle>(
+                (Service)GetServiceWithKey(decoratedServiceType, toKey),
+                new OpenGenericDecoratorActivatorData(decoratorType, GetServiceWithKey(decoratedServiceType, fromKey)),
+                new DynamicRegistrationStyle());
+
+            builder.RegisterCallback(cr => cr.AddRegistrationSource(
+                new OpenGenericDecoratorRegistrationSource(rb.RegistrationData, rb.ActivatorData)));
+
+            return rb;
+        }
+
+        static IServiceWithType GetServiceWithKey(Type serviceType, object key)
+        {
+            if (key == null)
+                return new TypedService(serviceType);
+            return new KeyedService(key, serviceType);
+        }
     }
 }

@@ -45,7 +45,7 @@ namespace Autofac.Core.Resolving
         {
             _registration = Enforce.ArgumentNotNull(registration, "registration");
             _context = Enforce.ArgumentNotNull(context, "context");
-            Enforce.ArgumentNotNull(mostNestedVisibleScope, "mostNestedVisibleScope");
+            if (mostNestedVisibleScope == null) throw new ArgumentNullException("mostNestedVisibleScope");
             _activationScope = _registration.Lifetime.FindScope(mostNestedVisibleScope);
         }
 
@@ -53,7 +53,7 @@ namespace Autofac.Core.Resolving
 
         public object Execute(IEnumerable<Parameter> parameters)
         {
-            Enforce.ArgumentNotNull(parameters, "parameters");
+            if (parameters == null) throw new ArgumentNullException("parameters");
             if (_executed)
                 throw new InvalidOperationException(ComponentActivationResources.ActivationAlreadyExecuted);
             

@@ -43,8 +43,8 @@ namespace Autofac.Core.Activators.Reflection
         {
             _canInstantiate = true;
             _ci = Enforce.ArgumentNotNull(ci, "ci");
-            Enforce.ArgumentNotNull(availableParameters, "availableParameters");
-            Enforce.ArgumentNotNull(context, "context");
+            if (availableParameters == null) throw new ArgumentNullException("availableParameters");
+            if (context == null) throw new ArgumentNullException("context");
 
             var parameters = ci.GetParameters();
             _valueRetrievers = new Func<object>[parameters.Length];

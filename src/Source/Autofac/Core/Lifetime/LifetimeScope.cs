@@ -299,7 +299,7 @@ namespace Autofac.Core.Lifetime
         /// </returns>
         object IServiceProvider.GetService(Type serviceType)
         {
-            Enforce.ArgumentNotNull(serviceType, "serviceType");
+            if (serviceType == null) throw new ArgumentNullException("serviceType");
             return this.ResolveOptional(serviceType);
         }
     }

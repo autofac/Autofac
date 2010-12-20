@@ -51,7 +51,7 @@ namespace Autofac.Core
             _context = Enforce.ArgumentNotNull(context, "context");
             _component = Enforce.ArgumentNotNull(component, "component");
             _parameters = Enforce.ArgumentNotNull(parameters, "parameters");
-            Enforce.ArgumentNotNull((object)instance, "instance");
+            if ((object)instance == null) throw new ArgumentNullException("instance");
             _instance = instance;
         }
 

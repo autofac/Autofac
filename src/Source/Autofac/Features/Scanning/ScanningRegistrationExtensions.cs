@@ -38,8 +38,8 @@ namespace Autofac.Features.Scanning
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             RegisterAssemblyTypes(ContainerBuilder builder, params Assembly[] assemblies)
         {
-            Enforce.ArgumentNotNull(builder, "builder");
-            Enforce.ArgumentNotNull(assemblies, "assemblies");
+            if (builder == null) throw new ArgumentNullException("builder");
+            if (assemblies == null) throw new ArgumentNullException("assemblies");
 
             var rb = new RegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>(
                 new TypedService(typeof(object)),
@@ -91,7 +91,7 @@ namespace Autofac.Features.Scanning
                 Type openGenericServiceType)
             where TScanningActivatorData : ScanningActivatorData
         {
-            Enforce.ArgumentNotNull(openGenericServiceType, "openGenericServiceType");
+            if (openGenericServiceType == null) throw new ArgumentNullException("openGenericServiceType");
 
             return registration
                 .Where(candidateType => candidateType.IsClosedTypeOf(openGenericServiceType))
@@ -105,7 +105,7 @@ namespace Autofac.Features.Scanning
                 Type type)
             where TScanningActivatorData : ScanningActivatorData
         {
-            Enforce.ArgumentNotNull(registration, "registration");
+            if (registration == null) throw new ArgumentNullException("registration");
 
             registration.ActivatorData.Filters.Add(type.IsAssignableFrom);
             return registration;

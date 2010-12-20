@@ -75,19 +75,19 @@ namespace Autofac.Util
 
         public static bool IsDelegate(this Type type)
         {
-            Enforce.ArgumentNotNull(type, "type");
+            if (type == null) throw new ArgumentNullException("type");
             return type.IsSubclassOf(typeof(Delegate));
         }
 
         public static Type FunctionReturnType(this Type type)
         {
-            Enforce.ArgumentNotNull(type, "type");
+            if (type == null) throw new ArgumentNullException("type");
             var invoke = type.GetMethod("Invoke");
             Enforce.NotNull(invoke);
             return invoke.ReturnType;
         }
 
-        public static bool IsCompatibleWithGenericParameters(this Type genericTypeDefinition, Type[] parameters)
+        public static bool IsCompatibleWithGenericParameterConstraints(this Type genericTypeDefinition, Type[] parameters)
         {
             var genericArgumentDefinitions = genericTypeDefinition.GetGenericArguments();
 

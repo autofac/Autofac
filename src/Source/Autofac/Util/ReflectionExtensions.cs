@@ -65,7 +65,7 @@ namespace Autofac.Util
         public static PropertyInfo GetProperty<TDeclaring, TProperty>(
             Expression<Func<TDeclaring, TProperty>> propertyAccessor)
         {
-            Enforce.ArgumentNotNull(propertyAccessor, "propertyAccessor");
+            if (propertyAccessor == null) throw new ArgumentNullException("propertyAccessor");
             var mex = propertyAccessor.Body as MemberExpression;
             if (mex == null ||
                 mex.Member.MemberType != MemberTypes.Property)
@@ -85,7 +85,7 @@ namespace Autofac.Util
         public static MethodInfo GetMethod<TDeclaring>(
             Expression<Action<TDeclaring>> methodCallExpression)
         {
-            Enforce.ArgumentNotNull(methodCallExpression, "methodCallExpression");
+            if (methodCallExpression == null) throw new ArgumentNullException("methodCallExpression");
             var callExpression = methodCallExpression.Body as MethodCallExpression;
             if (callExpression == null)
                 throw new ArgumentException(string.Format(

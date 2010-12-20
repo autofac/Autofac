@@ -85,7 +85,7 @@ namespace Autofac.Core
             }
             set
             {
-                Enforce.ArgumentNotNull(value, "value");
+                if (value == null) throw new ArgumentNullException("value");
                 _parameters = value;
             }
         }

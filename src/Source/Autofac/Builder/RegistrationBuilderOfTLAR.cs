@@ -30,7 +30,6 @@ using System.Linq;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
-using Autofac.Util;
 
 namespace Autofac.Builder
 {
@@ -43,8 +42,8 @@ namespace Autofac.Builder
         public RegistrationBuilder(Service defaultService, TActivatorData activatorData, TRegistrationStyle style)
         {
             if (defaultService == null) throw new ArgumentNullException("defaultService");
-            Enforce.ArgumentNotNull((object)activatorData, "activatorData");
-            Enforce.ArgumentNotNull((object)style, "style");
+            if ((object)activatorData == null) throw new ArgumentNullException("activatorData");
+            if ((object)style == null) throw new ArgumentNullException("style");
 
             _activatorData = activatorData;
             _registrationStyle = style;
@@ -138,7 +137,7 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerMatchingLifetimeScope(object lifetimeScopeTag)
         {
-            Enforce.ArgumentNotNull(lifetimeScopeTag, "lifetimeScopeTag");
+            if (lifetimeScopeTag == null) throw new ArgumentNullException("lifetimeScopeTag");
             RegistrationData.Sharing = InstanceSharing.Shared;
             RegistrationData.Lifetime = new MatchingScopeLifetime(scope => lifetimeScopeTag.Equals(scope.Tag));
             return this;
@@ -201,7 +200,7 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As(params Service[] services)
         {
-            Enforce.ArgumentNotNull(services, "services");
+            if (services == null) throw new ArgumentNullException("services");
 
             RegistrationData.AddServices(services);
 
@@ -216,8 +215,8 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Named(string serviceName, Type serviceType)
         {
-            Enforce.ArgumentNotNull(serviceName, "serviceName");
-            Enforce.ArgumentNotNull(serviceType, "serviceType");
+            if (serviceName == null) throw new ArgumentNullException("serviceName");
+            if (serviceType == null) throw new ArgumentNullException("serviceType");
 
             return As(new KeyedService(serviceName, serviceType));
         }
@@ -242,8 +241,8 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Keyed(object serviceKey, Type serviceType)
         {
-            Enforce.ArgumentNotNull(serviceKey, "serviceKey");
-            Enforce.ArgumentNotNull(serviceType, "serviceType");
+            if (serviceKey == null) throw new ArgumentNullException("serviceKey");
+            if (serviceType == null) throw new ArgumentNullException("serviceType");
 
             return As(new KeyedService(serviceKey, serviceType));
         }
@@ -267,7 +266,7 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnPreparing(Action<PreparingEventArgs> handler)
         {
-            Enforce.ArgumentNotNull(handler, "handler");
+            if (handler == null) throw new ArgumentNullException("handler");
             RegistrationData.PreparingHandlers.Add((s, e) => handler(e));
             return this;
         }
@@ -279,7 +278,7 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivating(Action<IActivatingEventArgs<TLimit>> handler)
         {
-            Enforce.ArgumentNotNull(handler, "handler");
+            if (handler == null) throw new ArgumentNullException("handler");
             RegistrationData.ActivatingHandlers.Add((s, e) =>
             {
                 var args = new ActivatingEventArgs<TLimit>(e.Context, e.Component, e.Parameters, (TLimit)e.Instance);
@@ -296,7 +295,7 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivated(Action<IActivatedEventArgs<TLimit>> handler)
         {
-            Enforce.ArgumentNotNull(handler, "handler");
+            if (handler == null) throw new ArgumentNullException("handler");
             RegistrationData.ActivatedHandlers.Add(
                 (s, e) => handler(new ActivatedEventArgs<TLimit>(e.Context, e.Component, e.Parameters, (TLimit)e.Instance)));
             return this;
@@ -344,7 +343,7 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(string key, object value)
         {
-            Enforce.ArgumentNotNull(key, "key");
+            if (key == null) throw new ArgumentNullException("key");
 
             RegistrationData.Metadata.Add(key, value);
 
@@ -358,7 +357,7 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(IEnumerable<KeyValuePair<string, object>> properties)
         {
-            Enforce.ArgumentNotNull(properties, "properties");
+            if (properties == null) throw new ArgumentNullException("properties");
 
             foreach (var prop in properties)
                 WithMetadata(prop.Key, prop.Value);
@@ -374,7 +373,7 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata<TMetadata>(Action<MetadataConfiguration<TMetadata>> configurationAction)
         {
-            Enforce.ArgumentNotNull(configurationAction, "configurationAction");
+            if (configurationAction == null) throw new ArgumentNullException("configurationAction");
 
             var epConfiguration = new MetadataConfiguration<TMetadata>();
             configurationAction(epConfiguration);

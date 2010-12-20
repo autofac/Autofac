@@ -67,8 +67,8 @@ namespace Autofac.Configuration
         /// <param name="configurationFile">The configuration file.</param>
         public ConfigurationSettingsReader(string sectionName, string configurationFile)
         {
-            Enforce.ArgumentNotNull(sectionName, "sectionName");
-            Enforce.ArgumentNotNull(configurationFile, "configurationFile");
+            if (sectionName == null) throw new ArgumentNullException("sectionName");
+            if (configurationFile == null) throw new ArgumentNullException("configurationFile");
 
             if (!Path.IsPathRooted(configurationFile))
                 configurationFile = Path.Combine(_configurationDirectory, configurationFile);
@@ -90,7 +90,7 @@ namespace Autofac.Configuration
         /// <param name="sectionName">Name of the configuration section.</param>
         public ConfigurationSettingsReader(string sectionName)
         {
-            Enforce.ArgumentNotNull(sectionName, "sectionName");
+            if (sectionName == null) throw new ArgumentNullException("sectionName");
 
             _sectionHandler = (SectionHandler)ConfigurationManager.GetSection(sectionName);
 
@@ -114,7 +114,7 @@ namespace Autofac.Configuration
         /// <param name="builder">The builder.</param>
         protected override void Load(ContainerBuilder builder)
         {
-            Enforce.ArgumentNotNull(builder, "builder");
+            if (builder == null) throw new ArgumentNullException("builder");
 
             Assembly defaultAssembly = null;
             if (!string.IsNullOrEmpty(_sectionHandler.DefaultAssembly))
@@ -205,8 +205,8 @@ namespace Autofac.Configuration
             where TReflectionActivatorData : ReflectionActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
-            Enforce.ArgumentNotNull(component, "component");
-            Enforce.ArgumentNotNull(registrar, "registrar");
+            if (component == null) throw new ArgumentNullException("component");
+            if (registrar == null) throw new ArgumentNullException("registrar");
 
             if (!string.IsNullOrEmpty(component.InjectProperties))
             {
@@ -233,8 +233,8 @@ namespace Autofac.Configuration
             where TReflectionActivatorData : ReflectionActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
-            Enforce.ArgumentNotNull(component, "component");
-            Enforce.ArgumentNotNull(registrar, "registrar");
+            if (component == null) throw new ArgumentNullException("component");
+            if (registrar == null) throw new ArgumentNullException("registrar");
 
             if (!string.IsNullOrEmpty(component.Ownership))
             {
@@ -262,8 +262,8 @@ namespace Autofac.Configuration
             where TReflectionActivatorData : ReflectionActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
-            Enforce.ArgumentNotNull(component, "component");
-            Enforce.ArgumentNotNull(registrar, "registrar");
+            if (component == null) throw new ArgumentNullException("component");
+            if (registrar == null) throw new ArgumentNullException("registrar");
 
             if (!string.IsNullOrEmpty(component.InstanceScope))
             {
@@ -293,7 +293,7 @@ namespace Autofac.Configuration
         /// <returns></returns>
         protected virtual Type LoadType(string typeName, Assembly defaultAssembly)
         {
-            Enforce.ArgumentNotNull(typeName, "typeName");
+            if (typeName == null) throw new ArgumentNullException("typeName");
             if (typeName == string.Empty)
                 throw new ArgumentOutOfRangeException("typeName");
 

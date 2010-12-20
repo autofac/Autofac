@@ -338,9 +338,9 @@ namespace Autofac
         /// <exception cref="DependencyResolutionException"/>
         public static object ResolveService(this IComponentContext context, Service service, IEnumerable<Parameter> parameters)
         {
-            Enforce.ArgumentNotNull(context, "context");
-            Enforce.ArgumentNotNull(service, "service");
-            Enforce.ArgumentNotNull(parameters, "parameters");
+            if (context == null) throw new ArgumentNullException("context");
+            if (service == null) throw new ArgumentNullException("service");
+            if (parameters == null) throw new ArgumentNullException("parameters");
 
             object instance;
             var successful = context.TryResolveService(service, parameters, out instance);
@@ -596,9 +596,9 @@ namespace Autofac
         /// <exception cref="DependencyResolutionException"/>
         public static object ResolveOptionalService(this IComponentContext context, Service service, IEnumerable<Parameter> parameters)
         {
-            Enforce.ArgumentNotNull(context, "context");
-            Enforce.ArgumentNotNull(service, "service");
-            Enforce.ArgumentNotNull(parameters, "parameters");
+            if (context == null) throw new ArgumentNullException("context");
+            if (service == null) throw new ArgumentNullException("service");
+            if (parameters == null) throw new ArgumentNullException("parameters");
 
             object instance;
             context.TryResolveService(service, parameters, out instance);
@@ -699,8 +699,8 @@ namespace Autofac
         /// <returns>True if the service is registered.</returns>
         public static bool IsRegisteredService(this IComponentContext context, Service service)
         {
-            Enforce.ArgumentNotNull(context, "context");
-            Enforce.ArgumentNotNull(service, "service");
+            if (context == null) throw new ArgumentNullException("context");
+            if (service == null) throw new ArgumentNullException("service");
 
             return context.ComponentRegistry.IsRegistered(service);
         }
@@ -741,7 +741,7 @@ namespace Autofac
         /// <exception cref="DependencyResolutionException"/>
         public static bool TryResolveService(this IComponentContext context, Service service, out object instance)
         {
-            Enforce.ArgumentNotNull(context, "context");
+            if (context == null) throw new ArgumentNullException("context");
             return context.TryResolveService(service, NoParameters, out instance);
         }
 
@@ -757,7 +757,7 @@ namespace Autofac
         /// <exception cref="DependencyResolutionException"/>
         public static bool TryResolve(this IComponentContext context, Type serviceType, out object instance)
         {
-            Enforce.ArgumentNotNull(context, "context");
+            if (context == null) throw new ArgumentNullException("context");
             return context.TryResolveService(new TypedService(serviceType), NoParameters, out instance);
         }
 
@@ -773,7 +773,7 @@ namespace Autofac
         /// <exception cref="DependencyResolutionException"/>
         public static bool TryResolve<T>(this IComponentContext context, out T instance)
         {
-            Enforce.ArgumentNotNull(context, "context");
+            if (context == null) throw new ArgumentNullException("context");
 
             object component;
             bool success = context.TryResolve(typeof(T), out component);
@@ -795,7 +795,7 @@ namespace Autofac
         /// <exception cref="DependencyResolutionException"/>
         public static bool TryResolveNamed(this IComponentContext context, string serviceName, Type serviceType, out object instance)
         {
-            Enforce.ArgumentNotNull(context, "context");
+            if (context == null) throw new ArgumentNullException("context");
             return context.TryResolveService(new KeyedService(serviceName, serviceType), NoParameters, out instance);
         }
 
@@ -812,7 +812,7 @@ namespace Autofac
         /// <exception cref="DependencyResolutionException"/>
         public static bool TryResolveKeyed(this IComponentContext context, object serviceKey, Type serviceType, out object instance)
         {
-            Enforce.ArgumentNotNull(context, "context");
+            if (context == null) throw new ArgumentNullException("context");
             return context.TryResolveService(new KeyedService(serviceKey, serviceType), NoParameters, out instance);
         }
     }

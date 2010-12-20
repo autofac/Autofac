@@ -60,8 +60,8 @@ namespace Autofac.Core.Activators.ProvidedInstance
         /// </remarks>
         public object ActivateInstance(IComponentContext context, IEnumerable<Parameter> parameters)
         {
-            Enforce.ArgumentNotNull(context, "context");
-            Enforce.ArgumentNotNull(parameters, "parameters");
+            if (context == null) throw new ArgumentNullException("context");
+            if (parameters == null) throw new ArgumentNullException("parameters");
 
             if (_activated)
                 throw new InvalidOperationException(ProvidedInstanceActivatorResources.InstanceAlreadyActivated);

@@ -94,8 +94,8 @@ namespace Autofac.Core.Activators.Reflection
         /// </remarks>
         public object ActivateInstance(IComponentContext context, IEnumerable<Parameter> parameters)
         {
-            Enforce.ArgumentNotNull(context, "context");
-            Enforce.ArgumentNotNull(parameters, "parameters");
+            if (context == null) throw new ArgumentNullException("context");
+            if (parameters == null) throw new ArgumentNullException("parameters");
 
             var availableConstructors = _constructorFinder.FindConstructors(_implementationType);
 
@@ -141,9 +141,9 @@ namespace Autofac.Core.Activators.Reflection
             IEnumerable<Parameter> parameters,
             IEnumerable<ConstructorInfo> constructorInfo)
         {
-            Enforce.ArgumentNotNull(context, "context");
-            Enforce.ArgumentNotNull(parameters, "parameters");
-            Enforce.ArgumentNotNull(constructorInfo, "constructorInfo");
+            if (context == null) throw new ArgumentNullException("context");
+            if (parameters == null) throw new ArgumentNullException("parameters");
+            if (constructorInfo == null) throw new ArgumentNullException("constructorInfo");
 
             var prioritisedParameters =
                 parameters.Concat(

@@ -52,7 +52,7 @@ namespace Autofac.Builder
         public static IRegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
             RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType)
         {
-            Enforce.ArgumentNotNull(delegateType, "delegateType");
+            if (delegateType == null) throw new ArgumentNullException("delegateType");
             Enforce.ArgumentTypeIsFunction(delegateType);
 
             var returnType = delegateType.FunctionReturnType();
@@ -102,7 +102,7 @@ namespace Autofac.Builder
             RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder)
             where TDelegate : class
         {
-            Enforce.ArgumentNotNull(builder, "builder");
+            if (builder == null) throw new ArgumentNullException("builder");
             Enforce.ArgumentTypeIsFunction(typeof(TDelegate));
 
             var returnType = typeof(TDelegate).FunctionReturnType();

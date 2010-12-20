@@ -24,35 +24,39 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Autofac.Util;
+using Autofac.Builder;
+using Autofac.Core;
 
-namespace Autofac.Core.Activators.Reflection
+namespace Autofac.Features.OpenGenerics
 {
     /// <summary>
-    /// Selects the constructor with the most parameters.
+    /// Describes the activator for an open generic decorator.
     /// </summary>
-    public class MostParametersConstructorSelector : IConstructorSelector
+    public class OpenGenericDecoratorActivatorData : ReflectionActivatorData
     {
+        readonly IServiceWithType _fromService;
+
         /// <summary>
-        /// Selects the best constructor from the available constructors.
+        /// Construct an <see cref="OpenGenericDecoratorActivatorData"/>.
         /// </summary>
-        /// <param name="constructorBindings">Available constructors.</param>
-        /// <returns>The best constructor.</returns>
-        public ConstructorParameterBinding SelectConstructorBinding(
-            IEnumerable<ConstructorParameterBinding> constructorBindings)
+        /// <param name="implementor">The decorator type.</param>
+        /// <param name="fromService">The open generic service type to decorate.</param>
+        public OpenGenericDecoratorActivatorData(Type implementor, IServiceWithType fromService)
+            : base(implementor)
         {
-            if (constructorBindings == null) throw new ArgumentNullException("constructorBindings");
+            if (fromService == null) throw new ArgumentNullException("fromService");
+            if (!fromService.ServiceType.IsGenericTypeDefinition)
+                throw new ArgumentException(string.Format(OpenGenericDecoratorActivatorDataResources.DecoratedServiceIsNotOpenGeneric, fromService));
 
-            var result = constructorBindings
-                .OrderByDescending(cb => cb.TargetConstructor.GetParameters().Length)
-                .FirstOrDefault();
+            _fromService = fromService;
+        }
 
-            if (result == null)
-                throw new ArgumentOutOfRangeException("constructorBindings");
-
-            return result;
+        /// <summary>
+        /// The open generic service type to decorate.
+        /// </summary>
+        public IServiceWithType FromService
+        {
+            get { return _fromService; }
         }
     }
 }

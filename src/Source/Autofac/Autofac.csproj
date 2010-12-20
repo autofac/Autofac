@@ -154,6 +154,19 @@
     <Compile Include="Features\Indexed\KeyedServiceIndex.cs" />
     <Compile Include="Features\Metadata\MetaRegistrationSource.cs" />
     <Compile Include="Features\Metadata\Meta.cs" />
+    <Compile Include="Features\OpenGenerics\OpenGenericDecoratorActivatorDataResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OpenGenericDecoratorActivatorDataResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\OpenGenerics\OpenGenericServiceBinder.cs" />
+    <Compile Include="Features\OpenGenerics\OpenGenericDecoratorActivatorData.cs" />
+    <Compile Include="Features\OpenGenerics\OpenGenericDecoratorRegistrationSource.cs" />
+    <Compile Include="Features\OpenGenerics\OpenGenericDecoratorRegistrationSourceResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OpenGenericDecoratorRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Features\OpenGenerics\OpenGenericRegistrationExtensions.cs" />
     <Compile Include="Features\OpenGenerics\OpenGenericRegistrationExtensionsResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -379,6 +392,14 @@
     <EmbeddedResource Include="Features\LightweightAdapters\LightweightAdapterRegistrationSourceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LightweightAdapterRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Features\OpenGenerics\OpenGenericDecoratorActivatorDataResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OpenGenericDecoratorActivatorDataResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Features\OpenGenerics\OpenGenericDecoratorRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OpenGenericDecoratorRegistrationSourceResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Features\OpenGenerics\OpenGenericRegistrationExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

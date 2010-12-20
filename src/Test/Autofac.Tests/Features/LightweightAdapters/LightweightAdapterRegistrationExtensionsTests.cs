@@ -45,16 +45,16 @@ namespace Autofac.Tests.Features.LightweightAdapters
         public class OnTopOfAnotherAdapter
         {
             readonly Command _from = new Command();
-            readonly string _nameKey = "Name";
-            readonly string _name = "N";
+            const string NameKey = "Name";
+            const string Name = "N";
             readonly ToolbarButton _to;
 
             public OnTopOfAnotherAdapter()
             {
                 var builder = new ContainerBuilder();
-                builder.RegisterInstance(_from).WithMetadata(_nameKey, _name);
+                builder.RegisterInstance(_from).WithMetadata(NameKey, Name);
                 builder.RegisterAdapter<Meta<Command>, ToolbarButton>(
-                    cmd => new ToolbarButton(cmd.Value, (string)cmd.Metadata[_nameKey]));
+                    cmd => new ToolbarButton(cmd.Value, (string)cmd.Metadata[NameKey]));
                 var container = builder.Build();
                 _to = container.Resolve<ToolbarButton>();
             }
@@ -62,15 +62,16 @@ namespace Autofac.Tests.Features.LightweightAdapters
             [Test]
             public void AdaptedMetadataIsPassed()
             {
-                Assert.AreEqual(_name, _to.Name);
+                Assert.AreEqual(Name, _to.Name);
             }
         }
 
         interface IService { }
 
+        // ReSharper disable ClassNeverInstantiated.Local
         class Implementer1 : IService { }
-
         class Implementer2 : IService { }
+        // ReSharper restore ClassNeverInstantiated.Local
 
         class Decorator : IService
         {
