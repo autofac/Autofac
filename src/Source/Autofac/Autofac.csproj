@@ -173,6 +173,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>OpenGenericRegistrationExtensionsResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Features\OpenGenerics\OpenGenericServiceBinderResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OpenGenericServiceBinderResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Features\ResolveAnything\AnyConcreteTypeNotAlreadyRegisteredSource.cs" />
     <Compile Include="Features\Scanning\ScanningActivatorData.cs" />
     <Compile Include="Core\ActivatedEventArgs.cs" />
@@ -404,6 +409,10 @@
     <EmbeddedResource Include="Features\OpenGenerics\OpenGenericRegistrationExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>OpenGenericRegistrationExtensionsResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Features\OpenGenerics\OpenGenericServiceBinderResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OpenGenericServiceBinderResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="RegistrationExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

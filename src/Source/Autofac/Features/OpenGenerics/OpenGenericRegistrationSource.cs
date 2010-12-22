@@ -46,6 +46,8 @@ namespace Autofac.Features.OpenGenerics
             if (registrationData == null) throw new ArgumentNullException("registrationData");
             if (activatorData == null) throw new ArgumentNullException("activatorData");
 
+            OpenGenericServiceBinder.EnforceBindable(activatorData.ImplementationType, registrationData.Services);
+
             _registrationData = registrationData;
             _activatorData = activatorData;
         }

@@ -44,12 +44,14 @@ namespace Autofac.Features.OpenGenerics
             if (registrationData == null) throw new ArgumentNullException("registrationData");
             if (activatorData == null) throw new ArgumentNullException("activatorData");
 
-            _registrationData = registrationData;
-            _activatorData = activatorData;
+            OpenGenericServiceBinder.EnforceBindable(activatorData.ImplementationType, registrationData.Services);
 
             if (registrationData.Services.Contains((Service)activatorData.FromService))
                 throw new ArgumentException(string.Format(
                     OpenGenericDecoratorRegistrationSourceResources.FromAndToMustDiffer, activatorData.FromService));
+
+            _registrationData = registrationData;
+            _activatorData = activatorData;
         }
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)

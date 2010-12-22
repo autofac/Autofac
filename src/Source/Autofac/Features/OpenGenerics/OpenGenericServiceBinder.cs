@@ -110,7 +110,7 @@ namespace Autofac.Features.OpenGenerics
             var matchingRegularType = serviceArgumentDefinitionToArgument
                 .Where(argdef => !argdef.Item1.IsGenericType && implementationGenericArgumentDefinition.Name == argdef.Item1.Name)
                 .Select(argdef => argdef.Item2)
-                .SingleOrDefault();
+                .FirstOrDefault();
 
             if (matchingRegularType != null)
                 return matchingRegularType;
@@ -119,7 +119,40 @@ namespace Autofac.Features.OpenGenerics
                 .Where(argdef => argdef.Item1.IsGenericType && argdef.Item2.GetGenericArguments().Length > 0)
                 .Select(argdef => TryFindServiceArgumentForImplementationArgumentDefinition(
                     implementationGenericArgumentDefinition, argdef.Item1.GetGenericArguments().Zip(argdef.Item2.GetGenericArguments(), Tuple.Create)))
-                .SingleOrDefault();
+                .FirstOrDefault();
+        }
+
+        public static void EnforceBindable(Type implementationType, IEnumerable<Service> services)
+        {
+            if (implementationType == null) throw new ArgumentNullException("implementationType");
+            if (services == null) throw new ArgumentNullException("services");
+
+            if (!implementationType.IsGenericTypeDefinition)
+                throw new ArgumentException(
+                    string.Format(OpenGenericServiceBinderResources.ImplementorMustBeOpenGenericTypeDefinition, implementationType));
+
+            foreach (IServiceWithType service in services)
+            {
+                if (!service.ServiceType.IsGenericTypeDefinition)
+                    throw new ArgumentException(
+                        string.Format(OpenGenericServiceBinderResources.ServiceTypeMustBeOpenGenericTypeDefinition, service));
+
+                if (service.ServiceType.IsInterface)
+                {
+                    if (GetInterface(implementationType, service.ServiceType) == null)
+                        throw new ArgumentException(string.Format(OpenGenericServiceBinderResources.InterfaceIsNotImplemented, implementationType, service));
+                }
+                else
+                {
+                    if (!Traverse.Across(implementationType, t => t.BaseType).Any(t => IsCompatibleGenericClassDefinition(t, service.ServiceType)))
+                        throw new ArgumentException(string.Format(OpenGenericServiceBinderResources.TypesAreNotConvertible, implementationType, service));
+                }
+            }
+        }
+
+        static bool IsCompatibleGenericClassDefinition(Type implementor, Type serviceType)
+        {
+            return implementor == serviceType || implementor.IsGenericType && implementor.GetGenericTypeDefinition() == serviceType;
         }
     }
 }

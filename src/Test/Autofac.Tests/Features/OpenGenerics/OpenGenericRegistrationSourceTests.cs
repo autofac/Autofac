@@ -10,6 +10,7 @@ namespace Autofac.Tests.Features.OpenGenerics
     [TestFixture]
     public class OpenGenericRegistrationSourceTests
     {
+        // ReSharper disable UnusedTypeParameter
         interface I<T> { }
 
         class A1<T> : DisposeTracker, I<T> { }
@@ -17,9 +18,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         [Test]
         public void GeneratesActivatorAndCorrectServices()
         {
-            var g = new OpenGenericRegistrationSource(
-                new RegistrationData(new TypedService(typeof(I<>))),
-                new ReflectionActivatorData(typeof(A1<>)));
+            var g = ConstructSource(typeof (A1<>), typeof (I<>));
 
             var r = g
                 .RegistrationsFor(new TypedService(typeof(I<int>)), s => null)
@@ -40,7 +39,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         [Test]
         public void DoesNotGenerateActivatorWhenConstructorConstraintBroken()
         {
-            Assert.IsFalse(CanGenerateActivator<string>(typeof(AWithNew<>)));
+            Assert.IsFalse(CanGenerateActivatorForI<string>(typeof(AWithNew<>)));
         }
 
         class PWithNew { }
@@ -48,7 +47,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         [Test]
         public void GeneratesActivatorWhenConstructorConstraintMet()
         {
-            Assert.IsTrue(CanGenerateActivator<PWithNew>(typeof(AWithNew<>)));
+            Assert.IsTrue(CanGenerateActivatorForI<PWithNew>(typeof(AWithNew<>)));
         }
 
         class AWithDisposable<T> : I<T>
@@ -59,13 +58,13 @@ namespace Autofac.Tests.Features.OpenGenerics
         [Test]
         public void DoesNotGenerateActivatorWhenTypeConstraintBroken()
         {
-            Assert.IsFalse(CanGenerateActivator<string>(typeof(AWithDisposable<>)));
+            Assert.IsFalse(CanGenerateActivatorForI<string>(typeof(AWithDisposable<>)));
         }
 
         [Test]
         public void GeneratesActivatorWhenTypeConstraintMet()
         {
-            Assert.IsTrue(CanGenerateActivator<DisposeTracker>(typeof(AWithDisposable<>)));
+            Assert.IsTrue(CanGenerateActivatorForI<DisposeTracker>(typeof(AWithDisposable<>)));
         }
 
         class AWithClass<T> : I<T>
@@ -74,13 +73,13 @@ namespace Autofac.Tests.Features.OpenGenerics
         [Test]
         public void DoesNotGenerateActivatorWhenClassConstraintBroken()
         {
-            Assert.IsFalse(CanGenerateActivator<int>(typeof(AWithClass<>)));
+            Assert.IsFalse(CanGenerateActivatorForI<int>(typeof(AWithClass<>)));
         }
 
         [Test]
         public void GeneratesActivatorWhenClassConstraintMet()
         {
-            Assert.IsTrue(CanGenerateActivator<string>(typeof(AWithClass<>)));
+            Assert.IsTrue(CanGenerateActivatorForI<string>(typeof(AWithClass<>)));
         }
 
         class AWithValue<T> : I<T>
@@ -89,20 +88,18 @@ namespace Autofac.Tests.Features.OpenGenerics
         [Test]
         public void DoesNotGenerateActivatorWhenValueConstraintBroken()
         {
-            Assert.IsFalse(CanGenerateActivator<string>(typeof(AWithValue<>)));
+            Assert.IsFalse(CanGenerateActivatorForI<string>(typeof(AWithValue<>)));
         }
 
         [Test]
         public void GeneratesActivatorWhenValueConstraintMet()
         {
-            Assert.IsTrue(CanGenerateActivator<int>(typeof(AWithValue<>)));
+            Assert.IsTrue(CanGenerateActivatorForI<int>(typeof(AWithValue<>)));
         }
 
-        static bool CanGenerateActivator<TClosing>(Type implementor)
+        static bool CanGenerateActivatorForI<TClosing>(Type implementor)
         {
-            var g = new OpenGenericRegistrationSource(
-                new RegistrationData(new TypedService(typeof(I<>))),
-                new ReflectionActivatorData(implementor));
+            var g = ConstructSource(implementor, typeof (I<>));
 
             var rs = g.RegistrationsFor(new TypedService(typeof(I<TClosing>)), s => null);
 
@@ -115,11 +112,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         [Test]
         public void SupportsMultipleGenericParameters()
         {
-            var tp = typeof(TwoParams<,>);
-
-            var g = new OpenGenericRegistrationSource(
-                new RegistrationData(new TypedService(tp)),
-                new ReflectionActivatorData(tp));
+            var g = ConstructSource(typeof(TwoParams<,>));
 
             var rs = g.RegistrationsFor(new TypedService(typeof(TwoParams<int, string>)), s => null);
 
@@ -129,9 +122,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         [Test]
         public void SupportsMultipleGenericParametersMappedFromService()
         {
-            var g = new OpenGenericRegistrationSource(
-                new RegistrationData(new TypedService(typeof(ITwoParams<,>))),
-                new ReflectionActivatorData(typeof(TwoParams<,>)));
+            var g = ConstructSource(typeof (TwoParams<,>), typeof (ITwoParams<,>));
 
             var rs = g.RegistrationsFor(new TypedService(typeof(ITwoParams<int, string>)), s => null);
 
@@ -147,13 +138,84 @@ namespace Autofac.Tests.Features.OpenGenerics
         [Test]
         public void SupportsCodependentTypeConstraints()
         {
-            var g = new OpenGenericRegistrationSource(
-                new RegistrationData(new TypedService(typeof(Repository<,>))),
-                new ReflectionActivatorData(typeof(Repository<,>)));
+            var g = ConstructSource(typeof(Repository<,>));
 
             var rs = g.RegistrationsFor(new TypedService(typeof(Repository<EntityOfInt, int>)), s => null);
 
             Assert.AreEqual(1, rs.Count());
         }
+
+        public interface IHaveNoParameters { }
+
+        public interface IHaveOneParameter<T> { }
+
+        public interface IHaveTwoParameters<T,U> { }
+
+        public interface IHaveThreeParameters<T,U,V> { }
+
+        public class HaveTwoParameters<T,U> : IHaveThreeParameters<T,U,U>, IHaveTwoParameters<T,T>, IHaveOneParameter<T>, IHaveNoParameters { }
+
+        public interface IUnrelated { }
+
+        [Test]
+        public void RejectsServicesWithoutTypeParameters()
+        {
+            Assert.Throws<ArgumentException>(() => ConstructSource(typeof(HaveTwoParameters<,>), typeof(IHaveNoParameters)));
+        }
+
+        [Test]
+        public void RejectsServicesNotInTheInheritanceChain()
+        {
+            Assert.Throws<ArgumentException>(() => ConstructSource(typeof(HaveTwoParameters<,>), typeof(IUnrelated)));
+        }
+
+        [Test]
+        public void IgnoresServicesWithoutEnoughParameters()
+        {
+            Assert.That(!SourceCanSupply<IHaveOneParameter<int>>(typeof(HaveTwoParameters<,>)));
+        }
+
+        [Test]
+        public void IgnoresServicesThatDoNotSupplyAllParameters()
+        {
+            Assert.That(!SourceCanSupply<IHaveTwoParameters<int,int>>(typeof(HaveTwoParameters<,>)));
+        }
+
+        [Test]
+        public void AcceptsServicesWithMoreParametersWhenAllImplementationParametersCovered()
+        {
+            Assert.That(SourceCanSupply<IHaveThreeParameters<int,string,string>>(typeof(HaveTwoParameters<,>)));
+        }
+
+        [Test]
+        public void IgnoresServicesWithMismatchedParameters()
+        {
+            Assert.That(!SourceCanSupply<IHaveThreeParameters<int,string,decimal>>(typeof(HaveTwoParameters<,>)));
+        }
+
+        static bool SourceCanSupply<TClosedService>(Type component)
+        {
+            var service = typeof (TClosedService).GetGenericTypeDefinition();
+            var source = ConstructSource(component, service);
+
+            var closedServiceType = typeof(TClosedService);
+            var registrations = source.RegistrationsFor(new TypedService(closedServiceType), s => Enumerable.Empty<IComponentRegistration>());
+            if (registrations.Count() != 1)
+                return false;
+
+            var registration = registrations.Single();
+            var instance = registration.Activator.ActivateInstance(Container.Empty, Factory.NoParameters);
+
+            Assert.That(closedServiceType.IsAssignableFrom(instance.GetType()));
+            return true;
+        }
+
+        static OpenGenericRegistrationSource ConstructSource(Type component, Type service = null)
+        {
+            return new OpenGenericRegistrationSource(
+                new RegistrationData(new TypedService(service ?? component)),
+                new ReflectionActivatorData(component));
+        }
+        // ReSharper restore UnusedTypeParameter
     }
 }
