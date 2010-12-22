@@ -39,20 +39,20 @@ namespace Autofac.Integration.Wcf
     /// </summary>
     public class AutofacDependencyInjectionServiceBehavior : IServiceBehavior
     {
-        private readonly IContainer _container;
+        private readonly ILifetimeScope _rootLifetimeScope;
         private readonly Type _implementationType;
         private readonly IComponentRegistration _registration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacDependencyInjectionServiceBehavior"/> class.
         /// </summary>
-        /// <param name="container">The container.</param>
+        /// <param name="rootLifetimeScope">The container.</param>
         /// <param name="implementationType"></param>
         /// <param name="registration"></param>
-        public AutofacDependencyInjectionServiceBehavior(IContainer container, Type implementationType, IComponentRegistration registration)
+        public AutofacDependencyInjectionServiceBehavior(ILifetimeScope rootLifetimeScope, Type implementationType, IComponentRegistration registration)
         {
-            if (container == null)
-                throw new ArgumentNullException("container");
+            if (rootLifetimeScope == null)
+                throw new ArgumentNullException("rootLifetimeScope");
 
             if (implementationType == null)
                 throw new ArgumentNullException("implementationType");
@@ -60,7 +60,7 @@ namespace Autofac.Integration.Wcf
             if (registration == null)
                 throw new ArgumentNullException("registration");
 
-            _container = container;
+            _rootLifetimeScope = rootLifetimeScope;
             _implementationType = implementationType;
             _registration = registration;
         }
@@ -107,14 +107,14 @@ namespace Autofac.Integration.Wcf
                 where ep.Contract.ContractType.IsAssignableFrom(_implementationType)
                 select ep.Contract.Name;
 
-            var instanceProvider = new AutofacInstanceProvider(_container, _registration);
+            var instanceProvider = new AutofacInstanceProvider(_rootLifetimeScope, _registration);
 
-            foreach (ChannelDispatcherBase cdb in serviceHostBase.ChannelDispatchers)
+            foreach (var cdb in serviceHostBase.ChannelDispatchers)
             {
-                ChannelDispatcher cd = cdb as ChannelDispatcher;
+                var cd = cdb as ChannelDispatcher;
                 if (cd != null)
                 {
-                    foreach (EndpointDispatcher ed in cd.Endpoints)
+                    foreach (var ed in cd.Endpoints)
                     {
                         if (implementedContracts.Contains(ed.ContractName))
                             ed.DispatchRuntime.InstanceProvider = instanceProvider;

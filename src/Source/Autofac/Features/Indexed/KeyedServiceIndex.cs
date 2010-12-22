@@ -23,8 +23,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using Autofac.Core;
-using Autofac.Util;
 
 namespace Autofac.Features.Indexed
 {
@@ -34,7 +34,7 @@ namespace Autofac.Features.Indexed
 
         public KeyedServiceIndex(IComponentContext context)
         {
-            Enforce.ArgumentNotNull(context, "context");
+            if (context == null) throw new ArgumentNullException("context");
             _context = context;
         }
 

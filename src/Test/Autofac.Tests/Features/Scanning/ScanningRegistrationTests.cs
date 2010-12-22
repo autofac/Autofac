@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac.Builder;
 using Autofac.Features.Metadata;
+using Autofac.Features.Scanning;
 using NUnit.Framework;
 using Autofac.Tests.Scenarios.ScannedAssembly;
 using Autofac.Core;
@@ -171,22 +173,6 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
-        public void AsClosedTypesOfNonGenericTypeProvidedThrowsException()
-        {
-            var cb = new ContainerBuilder();
-            Assert.Throws<ArgumentException>(() => cb.RegisterAssemblyTypes(typeof(ICommand<>).Assembly).
-                AsClosedTypesOf(typeof(SaveCommandData)));
-        }
-
-        [Test]
-        public void AsClosedTypesOfClosedGenericTypeProvidedThrowsException()
-        {
-            var cb = new ContainerBuilder();
-            Assert.Throws<ArgumentException>(() => cb.RegisterAssemblyTypes(typeof(ICommand<>).Assembly).
-                AsClosedTypesOf(typeof(ICommand<SaveCommandData>)));
-        }
-
-        [Test]
         public void AsClosedTypesOfOpenGenericInterfaceTypeProvidedClosingGenericTypesRegistered()
         {
             var cb = new ContainerBuilder();
@@ -331,6 +317,31 @@ namespace Autofac.Tests.Features.Scanning
 
             Assert.IsFalse(c.ComponentRegistry.Registrations.Any(r =>
                 r.Activator.LimitType == typeof(AComponent)));
+        }
+
+        [Test]
+        public void WhenMappingToMultipleTypedServicesEachExposedAsService()
+        {
+            var c = RegisterScenarioAssembly(a => a.As(t => t.GetInterfaces()));
+            var cd1 = c.ComponentRegistry.Registrations.Single(r => r.Activator.LimitType == typeof(A2Component));
+            Assert.That(cd1.Services.Contains(new TypedService(typeof(IAService))));
+            Assert.That(cd1.Services.Contains(new TypedService(typeof(IBService))));
+        }
+
+        [Test]
+        public void ByDefaultIDisposableIsNotAServiceInterface()
+        {
+            var c = RegisterScenarioAssembly(a => a.AsImplementedInterfaces());
+            Assert.IsFalse(c.IsRegistered<IDisposable>());
+        }
+
+        public IContainer RegisterScenarioAssembly(Action<IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>> configuration = null)
+        {
+            var cb = new ContainerBuilder();
+            var config = cb.RegisterAssemblyTypes(ScenarioAssembly);
+            if (configuration != null)
+                configuration(config);
+            return cb.Build();
         }
     }
 }

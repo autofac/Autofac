@@ -154,11 +154,29 @@
     <Compile Include="Features\Indexed\KeyedServiceIndex.cs" />
     <Compile Include="Features\Metadata\MetaRegistrationSource.cs" />
     <Compile Include="Features\Metadata\Meta.cs" />
+    <Compile Include="Features\OpenGenerics\OpenGenericDecoratorActivatorDataResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OpenGenericDecoratorActivatorDataResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\OpenGenerics\OpenGenericServiceBinder.cs" />
+    <Compile Include="Features\OpenGenerics\OpenGenericDecoratorActivatorData.cs" />
+    <Compile Include="Features\OpenGenerics\OpenGenericDecoratorRegistrationSource.cs" />
+    <Compile Include="Features\OpenGenerics\OpenGenericDecoratorRegistrationSourceResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OpenGenericDecoratorRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Features\OpenGenerics\OpenGenericRegistrationExtensions.cs" />
     <Compile Include="Features\OpenGenerics\OpenGenericRegistrationExtensionsResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>OpenGenericRegistrationExtensionsResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\OpenGenerics\OpenGenericServiceBinderResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OpenGenericServiceBinderResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Features\ResolveAnything\AnyConcreteTypeNotAlreadyRegisteredSource.cs" />
     <Compile Include="Features\Scanning\ScanningActivatorData.cs" />
@@ -257,11 +275,6 @@
     <Compile Include="Features\OwnedInstances\Owned.cs" />
     <Compile Include="Features\OwnedInstances\OwnedInstanceRegistrationSource.cs" />
     <Compile Include="Features\Scanning\ScanningRegistrationExtensions.cs" />
-    <Compile Include="Features\Scanning\ScanningRegistrationExtensionsResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ScanningRegistrationExtensionsResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Module.cs" />
     <Compile Include="Builder\ReflectionActivatorData.cs" />
     <Compile Include="Builder\RegistrationBuilderOfTLAR.cs" />
@@ -284,6 +297,12 @@
     <Compile Include="ResolutionExtensions.cs" />
     <Compile Include="Core\ResolvedParameter.cs" />
     <Compile Include="TypedParameter.cs" />
+    <Compile Include="TypeExtensions.cs" />
+    <Compile Include="TypeExtensionsResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TypeExtensionsResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Util\Disposable.cs" />
     <Compile Include="Util\Enforce.cs" />
     <Compile Include="Util\EnforceResources.Designer.cs">
@@ -302,6 +321,7 @@
     <Compile Include="Util\Silverlight\AllowPartiallyTrustedCallerAttribute.cs" />
     <Compile Include="Util\Silverlight\SerializableAttribute.cs" />
     <Compile Include="Util\Traverse.cs" />
+    <Compile Include="Util\TypeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Builder\RegistrationBuilderResources.resx">
@@ -378,17 +398,29 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LightweightAdapterRegistrationSourceResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Features\OpenGenerics\OpenGenericDecoratorActivatorDataResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OpenGenericDecoratorActivatorDataResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Features\OpenGenerics\OpenGenericDecoratorRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OpenGenericDecoratorRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Features\OpenGenerics\OpenGenericRegistrationExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>OpenGenericRegistrationExtensionsResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Features\Scanning\ScanningRegistrationExtensionsResources.resx">
+    <EmbeddedResource Include="Features\OpenGenerics\OpenGenericServiceBinderResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ScanningRegistrationExtensionsResources.Designer.cs</LastGenOutput>
+      <LastGenOutput>OpenGenericServiceBinderResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="RegistrationExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RegistrationExtensionsResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TypeExtensionsResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TypeExtensionsResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Util\EnforceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

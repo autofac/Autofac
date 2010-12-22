@@ -45,8 +45,8 @@ namespace Autofac.Features.Collections
         /// <returns>Registrations providing the service.</returns>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
-            Enforce.ArgumentNotNull(service, "service");
-            Enforce.ArgumentNotNull(registrationAccessor, "registrationAccessor");
+            if (service == null) throw new ArgumentNullException("service");
+            if (registrationAccessor == null) throw new ArgumentNullException("registrationAccessor");
 
             var swt = service as IServiceWithType;
             if (swt != null)
@@ -54,7 +54,7 @@ namespace Autofac.Features.Collections
                 var serviceType = swt.ServiceType;
                 Type elementType = null;
 
-                if (serviceType.IsClosingTypeOf(typeof(IEnumerable<>)))
+                if (serviceType.IsGenericTypeDefinedBy(typeof(IEnumerable<>)))
                 {
                     elementType = serviceType.GetGenericArguments()[0];
                 }

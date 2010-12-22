@@ -43,8 +43,8 @@ namespace Autofac.Features.Collections
         public static IRegistrationBuilder<T[], SimpleActivatorData, SingleRegistrationStyle>
             RegisterCollection<T>(ContainerBuilder builder, string collectionName, Type elementType)
         {
-            Enforce.ArgumentNotNull(builder, "builder");
-            Enforce.ArgumentNotNull(elementType, "elementType");
+            if (builder == null) throw new ArgumentNullException("builder");
+            if (elementType == null) throw new ArgumentNullException("elementType");
             Enforce.ArgumentNotNullOrEmpty(collectionName, "collectionName");
 
             var arrayType = elementType.MakeArrayType();
@@ -87,7 +87,7 @@ namespace Autofac.Features.Collections
                 string collectionName)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
-            Enforce.ArgumentNotNull(registration, "registration");
+            if (registration == null) throw new ArgumentNullException("registration");
             Enforce.ArgumentNotNullOrEmpty(collectionName, "collectionName");
 
             registration.OnRegistered(e =>

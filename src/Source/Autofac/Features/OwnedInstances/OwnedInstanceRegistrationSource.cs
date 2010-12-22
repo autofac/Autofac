@@ -47,11 +47,11 @@ namespace Autofac.Features.OwnedInstances
         /// <returns>Registrations providing the service.</returns>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
-            Enforce.ArgumentNotNull(service, "service");
-            Enforce.ArgumentNotNull(registrationAccessor, "registrationAccessor");
+            if (service == null) throw new ArgumentNullException("service");
+            if (registrationAccessor == null) throw new ArgumentNullException("registrationAccessor");
 
             var ts = service as IServiceWithType;
-            if (ts == null || !ts.ServiceType.IsClosingTypeOf(typeof(Owned<>)))
+            if (ts == null || !ts.ServiceType.IsGenericTypeDefinedBy(typeof(Owned<>)))
                 return Enumerable.Empty<IComponentRegistration>();
 
             var ownedInstanceType = ts.ServiceType.GetGenericArguments()[0];

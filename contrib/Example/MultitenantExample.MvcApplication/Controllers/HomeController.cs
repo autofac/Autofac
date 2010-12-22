@@ -4,6 +4,7 @@ using AutofacContrib.Multitenant;
 using MultitenantExample.MvcApplication.Dependencies;
 using MultitenantExample.MvcApplication.Models;
 using MultitenantExample.MvcApplication.WcfService;
+using MultitenantExample.MvcApplication.WcfMetadataConsumer;
 
 namespace MultitenantExample.MvcApplication.Controllers
 {
@@ -12,13 +13,15 @@ namespace MultitenantExample.MvcApplication.Controllers
     {
         public IDependency Dependency { get; set; }
         public ITenantIdentificationStrategy TenantIdentificationStrategy { get; set; }
-        public IMultitenantService ServiceProxy { get; set; }
+        public IMultitenantService StandardServiceProxy { get; set; }
+        public IMetadataConsumer MetadataServiceProxy { get; set; }
 
-        public HomeController(IDependency dependency, ITenantIdentificationStrategy tenantIdStrategy, IMultitenantService serviceProxy)
+        public HomeController(IDependency dependency, ITenantIdentificationStrategy tenantIdStrategy, IMultitenantService standardService, IMetadataConsumer metadataService)
         {
             this.Dependency = dependency;
             this.TenantIdentificationStrategy = tenantIdStrategy;
-            this.ServiceProxy = serviceProxy;
+            this.StandardServiceProxy = standardService;
+            this.MetadataServiceProxy = metadataService;
         }
 
         public virtual ActionResult Index()
@@ -35,7 +38,8 @@ namespace MultitenantExample.MvcApplication.Controllers
                 DependencyInstanceId = this.Dependency.InstanceId,
                 DependencyTypeName = this.Dependency.GetType().Name,
                 TenantId = this.GetTenantId(),
-                ServiceInfo = this.ServiceProxy.GetServiceInfo(new GetServiceInfoRequest())
+                StandardServiceInfo = this.StandardServiceProxy.GetServiceInfo(new MultitenantExample.MvcApplication.WcfService.GetServiceInfoRequest()),
+                MetadataServiceInfo = this.MetadataServiceProxy.GetServiceInfo(new MultitenantExample.MvcApplication.WcfMetadataConsumer.GetServiceInfoRequest())
             };
             return model;
         }

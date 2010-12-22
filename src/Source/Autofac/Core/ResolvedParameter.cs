@@ -60,8 +60,8 @@ namespace Autofac.Core
         /// <returns>True if a value can be supplied; otherwise, false.</returns>
         public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<object> valueProvider)
         {
-            Enforce.ArgumentNotNull(pi, "pi");
-            Enforce.ArgumentNotNull(context, "context");
+            if (pi == null) throw new ArgumentNullException("pi");
+            if (context == null) throw new ArgumentNullException("context");
 
             if (_predicate(pi, context))
             {

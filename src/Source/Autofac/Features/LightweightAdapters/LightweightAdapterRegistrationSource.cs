@@ -53,6 +53,9 @@ namespace Autofac.Features.LightweightAdapters
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
+            if (service == null) throw new ArgumentNullException("service");
+            if (registrationAccessor == null) throw new ArgumentNullException("registrationAccessor");
+
             if (_registrationData.Services.Contains(service))
             {
                 return registrationAccessor(_activatorData.FromService)

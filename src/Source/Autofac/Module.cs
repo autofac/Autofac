@@ -23,8 +23,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using Autofac.Core;
-using Autofac.Util;
 
 namespace Autofac
 {
@@ -72,7 +72,7 @@ namespace Autofac
         /// <param name="componentRegistry">Component registry to apply configuration to.</param>
         public void Configure(IComponentRegistry componentRegistry)
         {
-            Enforce.ArgumentNotNull(componentRegistry, "componentRegistry");
+            if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
             var moduleBuilder = new ContainerBuilder();
             Load(moduleBuilder);
             moduleBuilder.Update(componentRegistry);
@@ -105,7 +105,7 @@ namespace Autofac
 
         void AttachToRegistrations(IComponentRegistry componentRegistry)
         {
-            Enforce.ArgumentNotNull(componentRegistry, "componentRegistry");
+            if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
             foreach (var registration in componentRegistry.Registrations)
                 AttachToComponentRegistration(componentRegistry, registration);
             componentRegistry.Registered +=

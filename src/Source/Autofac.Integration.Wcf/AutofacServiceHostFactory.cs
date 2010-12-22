@@ -31,8 +31,8 @@ namespace Autofac.Integration.Wcf
     /// <summary>
     /// Creates ServiceHost instances for WCF.
     /// </summary>
-	public class AutofacServiceHostFactory : AutofacHostFactory
-	{
+    public class AutofacServiceHostFactory : AutofacHostFactory
+    {
         /// <summary>
         /// Creates a <see cref="T:System.ServiceModel.ServiceHost"/> for a specified type of service with a specific base address.
         /// </summary>
@@ -41,8 +41,8 @@ namespace Autofac.Integration.Wcf
         /// <returns>
         /// A <see cref="T:System.ServiceModel.ServiceHost"/> for the type of service specified with a specific base address.
         /// </returns>
-		protected override ServiceHost CreateServiceHost(Type serviceType, Uri[] baseAddresses)
-		{
+        protected override ServiceHost CreateServiceHost(Type serviceType, Uri[] baseAddresses)
+        {
             if (serviceType == null)
                 throw new ArgumentNullException("serviceType");
 
@@ -50,7 +50,7 @@ namespace Autofac.Integration.Wcf
                 throw new ArgumentNullException("baseAddresses");
 
 
-			return new ServiceHost(serviceType, baseAddresses);
-		}
-	}
+            return new ServiceHost(serviceType, baseAddresses);
+        }
+    }
 }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using Autofac.Core;
 using Autofac.Core.Activators.ProvidedInstance;
@@ -16,23 +13,9 @@ namespace Autofac.Tests
         [Test]
         public void ResolvingUnregisteredService_ProvidesDescriptionInException()
         {
-            try
-            {
-                var target = new Container();
-                target.Resolve<object>();
-            }
-            catch (ComponentNotRegisteredException se)
-            {
-                Assert.IsTrue(se.Message.Contains("System.Object"));
-                return;
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("Expected a ComponentNotRegisteredException, got {0}.", ex);
-                return;
-            }
-
-            Assert.Fail("Expected a ComponentNotRegisteredException.");
+            var target = new Container();
+            var ex = Assert.Throws<ComponentNotRegisteredException>(() => target.Resolve<object>());
+            Assert.IsTrue(ex.Message.Contains("System.Object"));
         }
 
         [Test]
@@ -88,11 +71,25 @@ namespace Autofac.Tests
         }
 
         [Test]
-        public void WhenParametersProvided_ResolveOptionalReturnsNull()
+        public void WhenPredicateAndValueParameterSupplied_PassedToComponent()
         {
-            var target = new Container();
-            var instance = target.ResolveOptional<string>(TypedParameter.From(1));
-            Assert.IsNull(instance);
+            const string a = "Hello";
+            const int b = 42;
+            var builder = new ContainerBuilder();
+            
+            builder.RegisterType<Parameterised>()
+                .WithParameter(
+                    (pi, c) => pi.Name == "a",
+                    (pi, c) => a)
+                .WithParameter(
+                    (pi, c) => pi.Name == "b",
+                    (pi, c) => b);
+
+            var container = builder.Build();
+            var result = container.Resolve<Parameterised>();
+
+            Assert.AreEqual(a, result.A);
+            Assert.AreEqual(b, result.B);            
         }
     }
 }

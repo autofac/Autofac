@@ -44,7 +44,7 @@ namespace Autofac.Core.Lifetime
         /// <param name="matchExpression">Expression describing scopes that will match.</param>
         public MatchingScopeLifetime(Expression<Func<ILifetimeScope, bool>> matchExpression)
         {
-            Enforce.ArgumentNotNull(matchExpression, "matchExpression");
+            if (matchExpression == null) throw new ArgumentNullException("matchExpression");
             _matcher = matchExpression.Compile();
             _matchExpressionCode = matchExpression.Body.ToString();
         }
@@ -57,7 +57,7 @@ namespace Autofac.Core.Lifetime
         /// <returns>The scope for the component.</returns>
         public ISharingLifetimeScope FindScope(ISharingLifetimeScope mostNestedVisibleScope)
         {
-            Enforce.ArgumentNotNull(mostNestedVisibleScope, "mostNestedVisibleScope");
+            if (mostNestedVisibleScope == null) throw new ArgumentNullException("mostNestedVisibleScope");
 
             var next = mostNestedVisibleScope;
             while (next != null)

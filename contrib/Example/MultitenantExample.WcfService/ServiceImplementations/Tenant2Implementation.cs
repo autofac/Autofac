@@ -4,7 +4,7 @@ using MultitenantExample.WcfService.Dependencies;
 
 namespace MultitenantExample.WcfService.ServiceImplementations
 {
-    public class Tenant2Implementation : IMultitenantService
+    public class Tenant2Implementation : IMultitenantService, IMetadataConsumer
     {
         public IDependency Dependency { get; set; }
         public ITenantIdentificationStrategy TenantIdentificationStrategy { get; set; }

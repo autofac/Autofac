@@ -23,7 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using Autofac.Util;
+using System;
 
 namespace Autofac.Core.Lifetime
 {
@@ -40,7 +40,7 @@ namespace Autofac.Core.Lifetime
         /// <returns>The scope for the component.</returns>
         public ISharingLifetimeScope FindScope(ISharingLifetimeScope mostNestedVisibleScope)
         {
-            Enforce.ArgumentNotNull(mostNestedVisibleScope, "mostNestedVisibleScope");
+            if (mostNestedVisibleScope == null) throw new ArgumentNullException("mostNestedVisibleScope");
             return mostNestedVisibleScope;
         }
     }

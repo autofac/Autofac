@@ -33,6 +33,7 @@ namespace MultitenantExample.WcfService
             // use named service types as well.
             var builder = new ContainerBuilder();
             builder.RegisterType<BaseImplementation>().As<IMultitenantService>();
+            builder.RegisterType<BaseImplementation>().As<IMetadataConsumer>();
             builder.RegisterType<BaseDependency>().As<IDependency>();
 
             // Adding the tenant ID strategy into the container so services
@@ -53,6 +54,7 @@ namespace MultitenantExample.WcfService
                 {
                     b.RegisterType<Tenant1Dependency>().As<IDependency>().InstancePerDependency();
                     b.RegisterType<Tenant1Implementation>().As<IMultitenantService>();
+                    b.RegisterType<Tenant1Implementation>().As<IMetadataConsumer>();
                 });
 
             // Configure overrides for tenant 2 - dependencies, service implementations, etc.
@@ -61,6 +63,7 @@ namespace MultitenantExample.WcfService
                 {
                     b.RegisterType<Tenant2Dependency>().As<IDependency>().SingleInstance();
                     b.RegisterType<Tenant2Implementation>().As<IMultitenantService>();
+                    b.RegisterType<Tenant2Implementation>().As<IMetadataConsumer>();
                 });
 
             // Configure overrides for the default tenant. That means the default

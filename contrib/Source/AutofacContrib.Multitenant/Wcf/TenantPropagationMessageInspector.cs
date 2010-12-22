@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Dispatcher;
@@ -31,7 +31,7 @@ namespace AutofacContrib.Multitenant.Wcf
     /// </para>
     /// </remarks>
     /// <seealso cref="AutofacContrib.Multitenant.Wcf.TenantPropagationBehavior{TTenantId}"/>
-    public class TenantPropagationMessageInspector<TTenantId> : IClientMessageInspector, IDispatchMessageInspector where TTenantId : class
+    public class TenantPropagationMessageInspector<TTenantId> : IClientMessageInspector, IDispatchMessageInspector
     {
         /// <summary>
         /// Namespace of the header that gets added to messages and carries tenant information.
@@ -144,11 +144,15 @@ namespace AutofacContrib.Multitenant.Wcf
             // you don't want individual tenants overriding the mechanism
             // that determines tenant.
             object contextTenantId;
+            TTenantId tenantId;
             if (!this.TenantIdentificationStrategy.TryIdentifyTenant(out contextTenantId))
             {
-                contextTenantId = null;
+                tenantId = default(TTenantId);
             }
-            TTenantId tenantId = contextTenantId as TTenantId;
+            else
+            {
+                tenantId = (TTenantId)contextTenantId;
+            }
             MessageHeader tenantHeader = new MessageHeader<TTenantId>(tenantId).GetUntypedHeader(TenantHeaderName, TenantHeaderNamespace);
             request.Headers.Add(tenantHeader);
             return null;

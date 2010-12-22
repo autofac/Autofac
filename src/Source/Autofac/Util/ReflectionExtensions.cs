@@ -1,5 +1,29 @@
-﻿using System;
-using System.Linq;
+﻿// This software is part of the Autofac IoC container
+// Copyright (c) 2010 Autofac Contributors
+// http://autofac.org
+//
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+
+using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -41,7 +65,7 @@ namespace Autofac.Util
         public static PropertyInfo GetProperty<TDeclaring, TProperty>(
             Expression<Func<TDeclaring, TProperty>> propertyAccessor)
         {
-            Enforce.ArgumentNotNull(propertyAccessor, "propertyAccessor");
+            if (propertyAccessor == null) throw new ArgumentNullException("propertyAccessor");
             var mex = propertyAccessor.Body as MemberExpression;
             if (mex == null ||
                 mex.Member.MemberType != MemberTypes.Property)
@@ -61,104 +85,13 @@ namespace Autofac.Util
         public static MethodInfo GetMethod<TDeclaring>(
             Expression<Action<TDeclaring>> methodCallExpression)
         {
-            Enforce.ArgumentNotNull(methodCallExpression, "methodCallExpression");
+            if (methodCallExpression == null) throw new ArgumentNullException("methodCallExpression");
             var callExpression = methodCallExpression.Body as MethodCallExpression;
             if (callExpression == null)
                 throw new ArgumentException(string.Format(
                     ReflectionExtensionsResources.ExpressionNotMethodCall,
                     methodCallExpression));
             return callExpression.Method;
-        }
-
-        public static bool IsDelegate(this Type type)
-        {
-            Enforce.ArgumentNotNull(type, "type");
-            return type.IsSubclassOf(typeof(Delegate));
-        }
-
-        public static Type FunctionReturnType(this Type type)
-        {
-            Enforce.ArgumentNotNull(type, "type");
-            var invoke = type.GetMethod("Invoke");
-            Enforce.NotNull(invoke);
-            return invoke.ReturnType;
-        }
-
-        public static bool IsClosingTypeOf(this Type type, Type openGenericType)
-        {
-            Enforce.ArgumentNotNull(type, "type");
-            Enforce.ArgumentNotNull(openGenericType, "openGenericType");
-            return type.IsGenericType && type.GetGenericTypeDefinition() == openGenericType;
-        }
-
-        public static bool IsCompatibleWithGenericParameters(this Type genericTypeDefinition, Type[] parameters)
-        {
-            var genericArgumentDefinitions = genericTypeDefinition.GetGenericArguments();
-
-            for (var i = 0; i < genericArgumentDefinitions.Length; ++i)
-            {
-                var argumentDefinition = genericArgumentDefinitions[i];
-                var parameter = parameters[i];
-
-                if (argumentDefinition.GetGenericParameterConstraints()
-                    .Any(constraint => !ParameterCompatibleWithTypeConstraint(parameter, constraint)))
-                {
-                    return false;
-                }
-
-                var specialConstraints = argumentDefinition.GenericParameterAttributes;
-
-                if ((specialConstraints & GenericParameterAttributes.DefaultConstructorConstraint)
-                    != GenericParameterAttributes.None)
-                {
-                    if (!parameter.IsValueType && parameter.GetConstructor(Type.EmptyTypes) == null)
-                        return false;
-                }
-
-                if ((specialConstraints & GenericParameterAttributes.ReferenceTypeConstraint)
-                    != GenericParameterAttributes.None)
-                {
-                    if (parameter.IsValueType)
-                        return false;
-                }
-
-                if ((specialConstraints & GenericParameterAttributes.NotNullableValueTypeConstraint)
-                    != GenericParameterAttributes.None)
-                {
-                    if (!parameter.IsValueType ||
-                        (parameter.IsGenericType && parameter.IsClosingTypeOf(typeof(Nullable<>))))
-                        return false;
-                }
-            }
-
-            return true;
-        }
-
-        static bool ParameterCompatibleWithTypeConstraint(Type parameter, Type constraint)
-        {
-            return constraint.IsAssignableFrom(parameter) ||
-                (parameter.IsClass &&
-                   Traverse.Across(parameter, p => p.BaseType)
-                       .Concat(parameter.GetInterfaces())
-                       .Any(p => p.GUID == constraint.GUID));
-        }
-
-        public static bool IsCompatibleWith(this Type type, Type that)
-        {
-
-#if !(SILVERLIGHT || NET35)
-            return type.IsEquivalentTo(that);
-#else
-            return type.Equals(that);
-#endif
-        }
-
-        public static int GetCompatibleHashCode(this Type type)
-        {
-            if (type.IsImport)
-                return type.GUID.GetHashCode();
-
-            return type.GetHashCode();
         }
     }
 }

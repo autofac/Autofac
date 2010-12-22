@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Linq;
 using NUnit.Framework;
 using Autofac.Core;
 using System.Collections.Generic;
 
 namespace Autofac.Tests.Features.OpenGenerics
 {
+    // ReSharper disable UnusedTypeParameter
     public interface IG<T>
+    // ReSharper restore UnusedTypeParameter
     {
     }
 
@@ -73,7 +76,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
-        public void WhenNoServicesExplicitlySpecified_GenericComponentTypeIsService()
+        public void WhenNoServicesExplicitlySpecifiedGenericComponentTypeIsService()
         {
             var cb = new ContainerBuilder();
             cb.RegisterGeneric(typeof(G<>));
@@ -92,7 +95,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
-        public void WhenRegistrationNamed_GenericRegistrationsSuppliedViaName()
+        public void WhenRegistrationNamedGenericRegistrationsSuppliedViaName()
         {
             const string name = "n";
             var cb = new ContainerBuilder();
@@ -110,7 +113,10 @@ namespace Autofac.Tests.Features.OpenGenerics
             Assert.Throws<ArgumentException>(() => cb.RegisterGeneric(typeof(List<int>)));
         }
 
+        // ReSharper disable UnusedTypeParameter
         public interface ITwoParams<T, U> { }
+        // ReSharper restore UnusedTypeParameter
+        
         public class TwoParams<T, U> : ITwoParams<T, U> { }
 
         [Test]
@@ -120,6 +126,44 @@ namespace Autofac.Tests.Features.OpenGenerics
             cb.RegisterGeneric(typeof(TwoParams<,>)).As(typeof(ITwoParams<,>));
             var c = cb.Build();
             c.Resolve<ITwoParams<int, string>>();
+        }
+
+        [Test, Ignore("Not sure where to detect this but would be nice.")]
+        public void NonGenericServiceTypesAreRejected()
+        {
+            var cb = new ContainerBuilder();
+            Assert.Throws<ArgumentException>(() =>
+            {
+                cb.RegisterGeneric(typeof(IList<>)).As(typeof(object));
+                cb.Build();
+            });
+        }
+
+        [Test]
+        public void WhenAnOpenGenericIsRegisteredWithANameItProvidesOnlyOneImplementation()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(G<>)).Named("n", typeof(IG<>));
+            var c = cb.Build();
+            Assert.AreEqual(1, c.ResolveNamed<IEnumerable<IG<int>>>("n").Count());
+        }
+
+        [Test]
+        public void WhenAnOpenGenericIsRegisteredWithANameItCannotBeResolvedWithoutOne()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(G<>)).Named("n", typeof(IG<>));
+            var c = cb.Build();
+            Assert.AreEqual(0, c.Resolve<IEnumerable<IG<int>>>().Count());
+        }
+
+        [Test]
+        public void WhenAnOpenGenericIsRegisteredItProvidesOnlyOneImplementation()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(G<>)).As(typeof(IG<>));
+            var c = cb.Build();
+            Assert.AreEqual(1, c.Resolve<IEnumerable<IG<int>>>().Count());
         }
     }
 }

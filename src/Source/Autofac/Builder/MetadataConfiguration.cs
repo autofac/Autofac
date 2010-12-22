@@ -52,7 +52,7 @@ namespace Autofac.Builder
         /// <param name="value">The property value to set.</param>
         public MetadataConfiguration<TMetadata> For<TProperty>(Expression<Func<TMetadata, TProperty>> propertyAccessor, TProperty value)
         {
-            Enforce.ArgumentNotNull(propertyAccessor, "propertyAccessor");
+            if (propertyAccessor == null) throw new ArgumentNullException("propertyAccessor");
             var pn = ReflectionExtensions.GetProperty(propertyAccessor).Name;
             _properties.Add(pn, value);
             return this;

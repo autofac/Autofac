@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
@@ -34,12 +35,12 @@ namespace Autofac.Integration.Wcf
     /// <summary>
     /// Creates ServiceHost instances for WCF.
     /// </summary>
-	public abstract class AutofacHostFactory : ServiceHostFactory
-	{
+    public abstract class AutofacHostFactory : ServiceHostFactory
+    {
         /// <summary>
-        /// The container from which service instances will be retrieved.
+        /// The container or lifetime scope from which service instances will be retrieved.
         /// </summary>
-        public static IContainer Container { get; set; }
+        public static ILifetimeScope Container { get; set; }
 
         /// <summary>
         /// Creates a <see cref="T:System.ServiceModel.ServiceHost"/> with specific base addresses and initializes it with specified data.
@@ -50,7 +51,7 @@ namespace Autofac.Integration.Wcf
         /// A <see cref="T:System.ServiceModel.ServiceHost"/> with specific base addresses.
         /// </returns>
         /// <exception cref="T:System.ArgumentNullException">
-        /// 	<paramref name="baseAddress"/> is null.</exception>
+        /// 	<paramref name="baseAddresses"/> is null.</exception>
         /// <exception cref="T:System.InvalidOperationException">There is no hosting context provided or <paramref name="constructorString"/> is null or empty.</exception>
         public override ServiceHostBase CreateServiceHost(string constructorString, Uri[] baseAddresses)
         {
@@ -63,10 +64,10 @@ namespace Autofac.Integration.Wcf
             if (Container == null)
                 throw new InvalidOperationException(AutofacServiceHostFactoryResources.ContainerIsNull);
 
-            IComponentRegistration registration = null;
+            IComponentRegistration registration;
             if (!Container.ComponentRegistry.TryGetRegistration(new KeyedService(constructorString, typeof(object)), out registration))
             {
-                Type serviceType = Type.GetType(constructorString, false);
+                var serviceType = Type.GetType(constructorString, false);
                 if (serviceType != null)
                     Container.ComponentRegistry.TryGetRegistration(new TypedService(serviceType), out registration);
             }
@@ -90,7 +91,7 @@ namespace Autofac.Integration.Wcf
         /// <param name="baseAddresses">The base addresses.</param>
         /// <returns>A <see cref="T:System.ServiceModel.ServiceHost"/> with specific base addresses.</returns>
         /// <remarks>If the serviceType is null, the implementation type is used as the resolution type</remarks>
-        private ServiceHost CreateServiceHost(IComponentRegistration registration, Type implementationType, Uri[] baseAddresses)
+        ServiceHost CreateServiceHost(IComponentRegistration registration, Type implementationType, Uri[] baseAddresses)
         {
             var host = CreateServiceHost(implementationType, baseAddresses);
             host.Opening += (sender, args) => host.Description.Behaviors.Add(

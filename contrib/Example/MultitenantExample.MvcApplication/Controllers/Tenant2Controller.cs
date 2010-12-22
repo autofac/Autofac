@@ -2,6 +2,7 @@
 using AutofacContrib.Multitenant;
 using MultitenantExample.MvcApplication.Dependencies;
 using MultitenantExample.MvcApplication.WcfService;
+using MultitenantExample.MvcApplication.WcfMetadataConsumer;
 
 namespace MultitenantExample.MvcApplication.Controllers
 {
@@ -16,8 +17,8 @@ namespace MultitenantExample.MvcApplication.Controllers
     /// </remarks>
     public class Tenant2Controller : HomeController
     {
-        public Tenant2Controller(IDependency dependency, ITenantIdentificationStrategy tenantIdStrategy, IMultitenantService serviceProxy) :
-            base(dependency, tenantIdStrategy, serviceProxy)
+        public Tenant2Controller(IDependency dependency, ITenantIdentificationStrategy tenantIdStrategy, IMultitenantService standardService, IMetadataConsumer metadataService) :
+            base(dependency, tenantIdStrategy, standardService, metadataService)
         {
         }
 

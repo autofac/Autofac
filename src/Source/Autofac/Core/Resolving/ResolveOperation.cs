@@ -23,6 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
 using Autofac.Util;
 
@@ -51,9 +52,9 @@ namespace Autofac.Core.Resolving
 
         public object Resolve(ISharingLifetimeScope activationScope, IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
-            Enforce.ArgumentNotNull(activationScope, "activationScope");
-            Enforce.ArgumentNotNull(registration, "registration");
-            Enforce.ArgumentNotNull(parameters, "parameters");
+            if (activationScope == null) throw new ArgumentNullException("activationScope");
+            if (registration == null) throw new ArgumentNullException("registration");
+            if (parameters == null) throw new ArgumentNullException("parameters");
 
             _circularDependencyDetector.CheckForCircularDependency(registration, _activationStack, ++_callDepth);
 

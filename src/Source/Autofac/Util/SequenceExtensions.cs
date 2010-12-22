@@ -23,6 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -39,8 +40,8 @@ namespace Autofac.Util
         /// <returns>The joined string.</returns>
         public static string JoinWith(this IEnumerable<string> elements, string separator)
         {
-            Enforce.ArgumentNotNull(elements, "elements");
-            Enforce.ArgumentNotNull(separator, "separator");
+            if (elements == null) throw new ArgumentNullException("elements");
+            if (separator == null) throw new ArgumentNullException("separator");
 
             return string.Join(separator, elements.ToArray());
         }
@@ -54,8 +55,8 @@ namespace Autofac.Util
         /// <returns></returns>
         public static IEnumerable<T> Append<T>(this IEnumerable<T> sequence, T trailingItem)
         {
-            Enforce.ArgumentNotNull(sequence, "sequence");
-            
+            if (sequence == null) throw new ArgumentNullException("sequence");
+
             foreach (var t in sequence)
                 yield return t;
 
@@ -71,8 +72,8 @@ namespace Autofac.Util
         /// <returns></returns>
         public static IEnumerable<T> Prepend<T>(this IEnumerable<T> sequence, T leadingItem)
         {
-            Enforce.ArgumentNotNull(sequence, "sequence");
-            
+            if (sequence == null) throw new ArgumentNullException("sequence");
+
             yield return leadingItem;
 
             foreach (var t in sequence)

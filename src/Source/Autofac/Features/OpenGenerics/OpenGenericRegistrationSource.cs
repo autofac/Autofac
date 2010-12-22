@@ -25,11 +25,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
-using Autofac.Util;
 
 namespace Autofac.Features.OpenGenerics
 {
@@ -48,72 +46,37 @@ namespace Autofac.Features.OpenGenerics
             if (registrationData == null) throw new ArgumentNullException("registrationData");
             if (activatorData == null) throw new ArgumentNullException("activatorData");
 
+            OpenGenericServiceBinder.EnforceBindable(activatorData.ImplementationType, registrationData.Services);
+
             _registrationData = registrationData;
             _activatorData = activatorData;
         }
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
-            Enforce.ArgumentNotNull(service, "service");
-            var result = Enumerable.Empty<IComponentRegistration>();
+            if (service == null) throw new ArgumentNullException("service");
+            if (registrationAccessor == null) throw new ArgumentNullException("registrationAccessor");
 
-            IInstanceActivator activator;
+            Type constructedImplementationType;
             IEnumerable<Service> services;
-            if (TryGenerateActivator(service, _registrationData.Services, _activatorData, out activator, out services))
+            if (OpenGenericServiceBinder.TryBindServiceType(service, _registrationData.Services, _activatorData.ImplementationType, out constructedImplementationType, out services))
             {
-                result = new[] {
-                    RegistrationBuilder.CreateRegistration(
-                        Guid.NewGuid(),
-                        _registrationData,
-                        activator,
-                        services)
-                };
+                yield return RegistrationBuilder.CreateRegistration(
+                    Guid.NewGuid(),
+                    _registrationData,
+                    new ReflectionActivator(
+                        constructedImplementationType,
+                        _activatorData.ConstructorFinder,
+                        _activatorData.ConstructorSelector,
+                        _activatorData.ConfiguredParameters,
+                        _activatorData.ConfiguredProperties),
+                    services);
             }
-
-            return result;
         }
 
         public bool IsAdapterForIndividualComponents
         {
             get { return false; }
-        }
-
-        static bool TryGenerateActivator(
-            Service service,
-            IEnumerable<Service> configuredServices,
-            ReflectionActivatorData reflectionActivatorData,
-            out IInstanceActivator activator,
-            out IEnumerable<Service> services)
-        {
-            var swt = service as IServiceWithType;
-            if (swt != null && swt.ServiceType.IsGenericType)
-            {
-                var genericTypeDefinition = swt.ServiceType.GetGenericTypeDefinition();
-                var genericArguments = swt.ServiceType.GetGenericArguments();
-
-                if (configuredServices
-                    .Cast<IServiceWithType>()
-                    .Any(s => s.ServiceType == genericTypeDefinition) &&
-                    reflectionActivatorData.ImplementationType.IsCompatibleWithGenericParameters(genericArguments))
-                {
-                    activator = new ReflectionActivator(
-                        reflectionActivatorData.ImplementationType.MakeGenericType(genericArguments),
-                        reflectionActivatorData.ConstructorFinder,
-                        reflectionActivatorData.ConstructorSelector,
-                        reflectionActivatorData.ConfiguredParameters,
-                        reflectionActivatorData.ConfiguredProperties);
-
-                    services = configuredServices
-                        .Cast<IServiceWithType>()
-                        .Select(s => s.ChangeType(s.ServiceType.MakeGenericType(genericArguments)));
-
-                    return true;
-                }
-            }
-
-            activator = null;
-            services = null;
-            return false;
         }
     }
 }

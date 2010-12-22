@@ -114,7 +114,7 @@ namespace Autofac.Core
         /// <returns>A new service with the service type.</returns>
         public Service ChangeType(Type newType)
         {
-            Enforce.ArgumentNotNull(newType, "newType");
+            if (newType == null) throw new ArgumentNullException("newType");
             return new KeyedService(ServiceKey, newType);
         }
     }

@@ -69,7 +69,7 @@ namespace Autofac.Util
         public static T ArgumentElementNotNull<T>(T value, string name)
             where T : class, IEnumerable
         {
-            Enforce.ArgumentNotNull(value, name);
+            if (value == null) throw new ArgumentNullException(name);
 
             // Contains(null) does not work on Mono, must use Any(...)
             if (value.Cast<object>().Any(v => v == null))
@@ -104,9 +104,9 @@ namespace Autofac.Util
         /// <returns><paramref name="value"/></returns>
         public static string ArgumentNotNullOrEmpty(string value, string description)
         {
-            Enforce.ArgumentNotNull(description, "description");
-            Enforce.ArgumentNotNull(value, description);
-            
+            if (description == null) throw new ArgumentNullException("description");
+            if (value == null) throw new ArgumentNullException(description);
+
             if (value == string.Empty)
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
                     EnforceResources.CannotBeEmpty, description));
@@ -120,7 +120,7 @@ namespace Autofac.Util
         /// <param name="delegateType">The type to test.</param>
         public static void ArgumentTypeIsFunction(Type delegateType)
         {
-            Enforce.ArgumentNotNull(delegateType, "delegateType");
+            if (delegateType == null) throw new ArgumentNullException("delegateType");
 
             MethodInfo invoke = delegateType.GetMethod("Invoke");
             if (invoke == null)

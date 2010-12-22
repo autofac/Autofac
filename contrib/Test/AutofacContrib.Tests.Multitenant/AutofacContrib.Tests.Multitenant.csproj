@@ -79,6 +79,7 @@
     <Compile Include="Wcf\DynamicProxy\ServiceHostProxyGeneratorFixture.cs" />
     <Compile Include="Wcf\MultitenantServiceImplementationDataProviderFixture.cs" />
     <Compile Include="Wcf\OperationContextTenantIdentificationStrategyFixture.cs" />
+    <Compile Include="Wcf\ServiceMetadataTypeAttributeFixture.cs" />
     <Compile Include="Wcf\TenantIdentificationContextExtensionFixture.cs" />
     <Compile Include="Wcf\TenantPropagationBehaviorFixture.cs" />
     <Compile Include="Wcf\TenantPropagationMessageInspectorFixture.cs" />

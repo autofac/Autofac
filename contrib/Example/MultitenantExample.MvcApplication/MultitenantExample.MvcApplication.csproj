@@ -7,7 +7,7 @@
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6F1BD5E2-8195-40AD-85B5-CF1BFB3CCE7F}</ProjectGuid>
-    <ProjectTypeGuids>{F85E285D-A4E0-4152-9332-AB1D724D3325};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <ProjectTypeGuids>{E53F8FEA-EAE0-44A6-8774-FFD645390401};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MultitenantExample.MvcApplication</RootNamespace>
@@ -36,13 +36,13 @@
     <Reference Include="Autofac">
       <HintPath>..\..\Resource\Library\Autofac\Autofac.dll</HintPath>
     </Reference>
-    <Reference Include="Autofac.Integration.Web">
-      <HintPath>..\..\Resource\Library\Autofac\Autofac.Integration.Web.dll</HintPath>
-    </Reference>
-    <Reference Include="Autofac.Integration.Web.Mvc">
-      <HintPath>..\..\Resource\Library\Autofac\Autofac.Integration.Web.Mvc.dll</HintPath>
+    <Reference Include="Autofac.Integration.Mvc">
+      <HintPath>..\..\Resource\Library\Autofac\Autofac.Integration.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Resource\Library\ASP.NET Web Pages\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -51,10 +51,6 @@
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
-    <Reference Include="System.Web.Mvc, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" >
-      <SpecificVersion>True</SpecificVersion>
-      <HintPath>..\..\Resource\Library\AspNetMvc\System.Web.Mvc.dll</HintPath>
-    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -63,6 +59,15 @@
     </Reference>
     <Reference Include="System.Data.DataSetExtensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Resource\Library\ASP.NET Web Pages\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Resource\Library\ASP.NET MVC 3\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Resource\Library\ASP.NET Web Pages\System.Web.WebPages.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -92,6 +97,11 @@
     </Compile>
     <Compile Include="Models\IndexModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\WcfMetadataConsumer\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\WcfService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -100,11 +110,25 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <None Include="Service References\WcfMetadataConsumer\IMetadataConsumerProxy_1.wsdl" />
+    <None Include="Service References\WcfMetadataConsumer\MetadataConsumer.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WcfMetadataConsumer\MetadataConsumer1.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\WcfService\BaseImplementation.wsdl" />
     <None Include="Service References\WcfService\MultitenantService.disco" />
     <None Include="Service References\WcfService\configuration91.svcinfo" />
     <None Include="Service References\WcfService\configuration.svcinfo" />
     <None Include="Service References\WcfService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\WcfMetadataConsumer\MetadataConsumer.disco" />
+    <None Include="Service References\WcfMetadataConsumer\configuration91.svcinfo" />
+    <None Include="Service References\WcfMetadataConsumer\configuration.svcinfo" />
+    <None Include="Service References\WcfMetadataConsumer\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
@@ -152,6 +176,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadataStorage Include="Service References\WcfMetadataConsumer\" />
     <WCFMetadataStorage Include="Service References\WcfService\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -43,7 +43,7 @@ namespace Autofac.Core.Activators.Reflection
         public ConstructorParameterBinding SelectConstructorBinding(
             IEnumerable<ConstructorParameterBinding> constructorBindings)
         {
-            Enforce.ArgumentNotNull(constructorBindings, "constructorBindings");
+            if (constructorBindings == null) throw new ArgumentNullException("constructorBindings");
 
             var result = constructorBindings
                 .OrderByDescending(cb => cb.TargetConstructor.GetParameters().Length)

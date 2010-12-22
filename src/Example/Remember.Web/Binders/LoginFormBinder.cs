@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Web.Mvc;
+using Autofac.Integration.Mvc;
 using Remember.Web.Models;
 using Remember.Service;
 
 namespace Remember.Web.Binders
 {
-    [Autofac.Integration.Web.Mvc.ModelBinderType(typeof(LoginForm))]
+    [ModelBinderType(typeof(LoginForm))]
     public class LoginFormBinder: IModelBinder
     {
         private readonly IAuthenticationService _authService;
