@@ -40,7 +40,7 @@ namespace Autofac.Integration.Wcf
 		/// <typeparam name="T">The web service contract type.</typeparam>
 		/// <param name="serviceHost">The service host.</param>
 		/// <param name="container">The container.</param>
-		public static void AddDependencyInjectionBehavior<T>(this ServiceHostBase serviceHost, IContainer container)
+		public static void AddDependencyInjectionBehavior<T>(this ServiceHostBase serviceHost, ILifetimeScope container)
 		{
 			if (container == null) throw new ArgumentNullException("container");
 
@@ -53,7 +53,7 @@ namespace Autofac.Integration.Wcf
 		/// <param name="serviceHost">The service host.</param>
 		/// <param name="contractType">The web service contract type.</param>
 		/// <param name="container">The container.</param>
-		public static void AddDependencyInjectionBehavior(this ServiceHostBase serviceHost, Type contractType, IContainer container)
+		public static void AddDependencyInjectionBehavior(this ServiceHostBase serviceHost, Type contractType, ILifetimeScope container)
 		{
 			if (contractType == null) throw new ArgumentNullException("contractType");
 			if (container == null) throw new ArgumentNullException("container");
@@ -65,8 +65,7 @@ namespace Autofac.Integration.Wcf
 				throw new ArgumentException(message, "contractType");
 			}
 
-			var behavior = new AutofacDependencyInjectionServiceBehavior(
-				container, serviceHost.Description.ServiceType, registration);
+			var behavior = new AutofacDependencyInjectionServiceBehavior(container, serviceHost.Description.ServiceType, registration);
 			serviceHost.Description.Behaviors.Add(behavior);
 		}
 	}
