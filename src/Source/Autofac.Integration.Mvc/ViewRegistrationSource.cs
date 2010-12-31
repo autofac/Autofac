@@ -32,9 +32,13 @@ using Autofac.Core;
 namespace Autofac.Integration.Mvc
 {
     /// <summary>
-    /// A registration source for building <see cref="WebViewPage"/> registrations.
+    /// A registration source for building view registrations.
     /// </summary>
-    public class WebViewPageRegistrationSource : IRegistrationSource
+    /// <remarks>
+    /// Supports view registrations for <see cref="WebViewPage"/>, <see cref="ViewPage"/>, 
+    /// <see cref="ViewMasterPage"/> and <see cref="ViewUserControl"/> derived types.
+    /// </remarks>
+    public class ViewRegistrationSource : IRegistrationSource
     {
         /// <summary>
         /// Retrieve registrations for an unregistered service, to be used
@@ -47,7 +51,7 @@ namespace Autofac.Integration.Mvc
         {
             var typedService = service as IServiceWithType;
 
-            if (typedService != null && typedService.ServiceType.IsAssignableTo<WebViewPage>())
+            if (typedService != null && IsSupportedView(typedService.ServiceType))
                 yield return RegistrationBuilder.ForType(typedService.ServiceType)
                     .PropertiesAutowired()
                     .InstancePerHttpRequest()
@@ -61,6 +65,14 @@ namespace Autofac.Integration.Mvc
         public bool IsAdapterForIndividualComponents
         {
             get { return false; }
+        }
+
+        static bool IsSupportedView(Type serviceType)
+        {
+            return serviceType.IsAssignableTo<WebViewPage>()
+                || serviceType.IsAssignableTo<ViewPage>()
+                || serviceType.IsAssignableTo<ViewMasterPage>()
+                || serviceType.IsAssignableTo<ViewUserControl>();
         }
     }
 }

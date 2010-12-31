@@ -76,7 +76,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationExtensions.cs" />
     <Compile Include="RequestLifetimeHttpModule.cs" />
-    <Compile Include="WebViewPageRegistrationSource.cs" />
+    <Compile Include="ViewRegistrationSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\SharedKey.snk">
