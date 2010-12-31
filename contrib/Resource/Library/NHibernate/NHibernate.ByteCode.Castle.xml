@@ -21,12 +21,12 @@
             <param name="componentIdType"></param>
             <param name="session">The ISession this Proxy is in.</param>
         </member>
-        <member name="M:NHibernate.ByteCode.Castle.LazyInitializer.Intercept(Castle.Core.Interceptor.IInvocation)">
+        <member name="M:NHibernate.ByteCode.Castle.LazyInitializer.Intercept(Castle.DynamicProxy.IInvocation)">
             <summary>
             Invoke the actual Property/Method using the Proxy or instantiate the actual
             object and use it when the Proxy can't handle the method. 
             </summary>
-            <param name="invocation">The <see cref="T:Castle.Core.Interceptor.IInvocation"/> from the generated Castle.DynamicProxy.</param>
+            <param name="invocation">The <see cref="T:Castle.DynamicProxy.IInvocation"/> from the generated Castle.DynamicProxy.</param>
         </member>
         <member name="M:NHibernate.ByteCode.Castle.ProxyFactory.GetProxy(System.Object,NHibernate.Engine.ISessionImplementor)">
             <summary>

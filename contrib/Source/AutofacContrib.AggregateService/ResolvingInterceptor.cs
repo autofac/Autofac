@@ -29,7 +29,7 @@ using System.Linq;
 using System.Reflection;
 using Autofac;
 using Autofac.Core;
-using Castle.Core.Interceptor;
+using Castle.DynamicProxy;
 
 namespace AutofacContrib.AggregateService
 {

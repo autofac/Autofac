@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.ServiceModel;
 using AutofacContrib.Multitenant.Properties;
-using Castle.Core.Interceptor;
 using Castle.DynamicProxy;
 
 namespace AutofacContrib.Multitenant.Wcf.DynamicProxy

@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Autofac.Builder;
 using AutofacContrib.DynamicProxy2;
-using Castle.Core.Interceptor;
+using Castle.DynamicProxy;
 using NUnit.Framework;
 using System;
 

@@ -865,11 +865,11 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="meta" minOccurs="0" maxOccurs="unbounded" />
-				<xs:choice minOccurs="0" maxOccurs="unbounded">
-					<xs:element ref="column" />
-					<xs:element ref="formula" />
-				</xs:choice>
-			</xs:sequence>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="column" />
+          <xs:element ref="formula" />
+        </xs:choice>
+      </xs:sequence>
 			<xs:attribute name="name" use="required" type="xs:string" />
 			<xs:attribute name="access" type="xs:string" />
 			<xs:attribute name="class" type="xs:string" />
@@ -1060,7 +1060,8 @@
 	<xs:element name="parent">
 		<xs:complexType>
 			<xs:attribute name="name" use="required" type="xs:string" />
-		</xs:complexType>
+      <xs:attribute name="access" type="xs:string" />
+    </xs:complexType>
 	</xs:element>
 	<xs:element name="primitive-array">
 		<xs:complexType>

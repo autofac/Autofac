@@ -74,8 +74,7 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
                 throw new ArgumentNullException("interfaceToProxy");
             }
             AssertValidType(interfaceToProxy);
-            var generator = new ServiceHostInterfaceProxyGenerator(this.ModuleScope, interfaceToProxy);
-            generator.Logger = this.Logger;
+            var generator = new ServiceHostInterfaceProxyGenerator(ModuleScope, interfaceToProxy){Logger = Logger};
             return generator.GenerateCode(interfaceToProxy, null, ProxyGenerationOptions.Default);
         }
     }

@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Castle.Core.Interceptor;
 using Castle.DynamicProxy;
 using Castle.DynamicProxy.Contributors;
 using Castle.DynamicProxy.Generators;
 using Castle.DynamicProxy.Generators.Emitters;
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
-using System.Reflection.Emit;
-using System.Reflection;
 
 namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
 {
@@ -41,7 +37,7 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
         /// <summary>
         /// Holds the metadata buddy class type for the service interface.
         /// </summary>
-        private Type _metadataBuddyType = null;
+        private readonly Type _metadataBuddyType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceHostInterfaceProxyGenerator"/> class.
@@ -51,7 +47,7 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
         public ServiceHostInterfaceProxyGenerator(ModuleScope scope, Type @interface)
             : base(scope, @interface)
         {
-            this._metadataBuddyType = @interface.GetMetadataClassType();
+            _metadataBuddyType = @interface.GetMetadataClassType();
         }
 
         // If it turns out the proxy type needs a parameterless constructor,
@@ -85,11 +81,11 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
                 throw new ArgumentNullException("emitter");
             }
             base.CreateTypeAttributes(emitter);
-            if (this._metadataBuddyType == null)
+            if (_metadataBuddyType == null)
             {
                 return;
             }
-            var attribs = this._metadataBuddyType.GetCustomAttributesData();
+            var attribs = _metadataBuddyType.GetCustomAttributesData();
             foreach (var attrib in attribs)
             {
                 var builder = attrib.ToAttributeBuilder();
@@ -152,24 +148,21 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
         /// <seealso cref="AutofacContrib.Multitenant.Wcf.DynamicProxy.IgnoreAttributeInterfaceProxyInstanceContributor"/>
         protected override IEnumerable<Type> GetTypeImplementerMapping(Type[] interfaces, Type proxyTargetType, out IEnumerable<ITypeContributor> contributors, INamingScope namingScope)
         {
-            IDictionary<Type, ITypeContributor> typeImplementerMapping = new Dictionary<Type, ITypeContributor>();
-            ICollection<Type> allInterfaces = TypeUtil.GetAllInterfaces(new Type[] { proxyTargetType });
-            ICollection<Type> additionalInterfaces = TypeUtil.GetAllInterfaces(interfaces);
-            ITypeContributor implementer = this.AddMappingForTargetType(typeImplementerMapping, proxyTargetType, allInterfaces, additionalInterfaces, namingScope);
-            IgnoreAttributeInterfaceProxyInstanceContributor instance = new IgnoreAttributeInterfaceProxyInstanceContributor(this.targetType, this.GeneratorType, interfaces);
-            base.AddMappingForISerializable(typeImplementerMapping, instance);
+            var typeImplementerMapping = new Dictionary<Type, ITypeContributor>();
+            var allInterfaces = TypeUtil.GetAllInterfaces(new[] { proxyTargetType });
+            var additionalInterfaces = TypeUtil.GetAllInterfaces(interfaces);
+            var implementer = AddMappingForTargetType(typeImplementerMapping, proxyTargetType, allInterfaces, additionalInterfaces, namingScope);
+            var instance = new IgnoreAttributeInterfaceProxyInstanceContributor(targetType, GeneratorType, interfaces);
+            AddMappingForISerializable(typeImplementerMapping, instance);
             try
             {
-                this.AddMappingNoCheck(typeof(IProxyTargetAccessor), instance, typeImplementerMapping);
+                AddMappingNoCheck(typeof(IProxyTargetAccessor), instance, typeImplementerMapping);
             }
             catch (ArgumentException)
             {
-                this.HandleExplicitlyPassedProxyTargetAccessor(allInterfaces, additionalInterfaces);
+                HandleExplicitlyPassedProxyTargetAccessor(allInterfaces, additionalInterfaces);
             }
-            List<ITypeContributor> list = new List<ITypeContributor>();
-            list.Add(implementer);
-            list.Add(instance);
-            contributors = list;
+            contributors = new List<ITypeContributor> {implementer, instance};
             return typeImplementerMapping.Keys;
         }
     }
