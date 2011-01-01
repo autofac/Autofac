@@ -156,15 +156,6 @@ namespace AutofacContrib.Multitenant
         }
 
         /// <summary>
-        /// Releases unmanaged resources and performs other cleanup operations before the
-        /// <see cref="AutofacContrib.Multitenant.MultitenantContainer"/> is reclaimed by garbage collection.
-        /// </summary>
-        ~MultitenantContainer()
-        {
-            this.Dispose(false);
-        }
-
-        /// <summary>
         /// Begin a new nested scope for the current tenant. Component instances created via the new scope
         /// will be disposed along with it.
         /// </summary>
