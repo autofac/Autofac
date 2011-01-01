@@ -112,9 +112,7 @@ namespace Autofac.Integration.Mvc
         /// </returns>
         protected override object GetParameterValue(ControllerContext controllerContext, ParameterDescriptor parameterDescriptor)
         {
-            return _context.IsRegistered(parameterDescriptor.ParameterType) 
-                ? _context.Resolve(parameterDescriptor.ParameterType) 
-                : base.GetParameterValue(controllerContext, parameterDescriptor);
+            return _context.ResolveOptional(parameterDescriptor.ParameterType) ?? base.GetParameterValue(controllerContext, parameterDescriptor);
         }
 
         void SetFilters<T>(ICollection<T> existing, IEnumerable<T> additional)
