@@ -8,9 +8,21 @@ namespace AutofacContrib.Tests.Attributed.ScenarioTypes
     /// </summary>
     public class WeakTypedScenarioMetadataModule : MetadataModule<IWeakTypedScenario, IWeakTypedScenarioMetadata>
     {
+        readonly bool _useGeneric;
+
+        public WeakTypedScenarioMetadataModule(bool useGeneric)
+        {
+            _useGeneric = useGeneric;
+        }
         public override void Register(IMetadataRegistrar<IWeakTypedScenario, IWeakTypedScenarioMetadata> registrar)
         {
-            registrar.RegisterAttributedType<WeakTypedScenario>();
+            if (_useGeneric)
+            {
+                registrar.RegisterAttributedType<WeakTypedScenario>();
+                return;
+            }
+
+            registrar.RegisterAttributedType(typeof(WeakTypedScenario));
         }
     }
 }
