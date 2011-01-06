@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security;
 using Castle.DynamicProxy;
 using Castle.DynamicProxy.Contributors;
 using Castle.DynamicProxy.Generators;
@@ -32,6 +33,7 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
     /// </para>
     /// </remarks>
     /// <seealso cref="AutofacContrib.Multitenant.Wcf.DynamicProxy.IgnoreAttributeInterfaceProxyInstanceContributor"/>
+    [SecuritySafeCritical]
     public class ServiceHostInterfaceProxyGenerator : InterfaceProxyWithTargetInterfaceGenerator
     {
         /// <summary>
@@ -74,6 +76,7 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="emitter" /> is <see langword="null" />.
         /// </exception>
+        [SecuritySafeCritical]
         protected override void CreateTypeAttributes(ClassEmitter emitter)
         {
             if (emitter == null)
@@ -146,6 +149,7 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
         /// </list>
         /// </remarks>
         /// <seealso cref="AutofacContrib.Multitenant.Wcf.DynamicProxy.IgnoreAttributeInterfaceProxyInstanceContributor"/>
+        [SecuritySafeCritical]
         protected override IEnumerable<Type> GetTypeImplementerMapping(Type[] interfaces, Type proxyTargetType, out IEnumerable<ITypeContributor> contributors, INamingScope namingScope)
         {
             var typeImplementerMapping = new Dictionary<Type, ITypeContributor>();
@@ -162,7 +166,7 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
             {
                 HandleExplicitlyPassedProxyTargetAccessor(allInterfaces, additionalInterfaces);
             }
-            contributors = new List<ITypeContributor> {implementer, instance};
+            contributors = new List<ITypeContributor> { implementer, instance };
             return typeImplementerMapping.Keys;
         }
     }
