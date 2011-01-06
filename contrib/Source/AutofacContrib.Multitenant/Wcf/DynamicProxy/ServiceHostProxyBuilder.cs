@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Security;
 using AutofacContrib.Multitenant.Properties;
 using Castle.DynamicProxy;
 using Castle.DynamicProxy.Generators;
@@ -18,6 +19,7 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
     /// by WCF.
     /// </para>
     /// </remarks>
+    [SecuritySafeCritical]
     public class ServiceHostProxyBuilder : DefaultProxyBuilder
     {
         /// <summary>
@@ -74,7 +76,7 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
                 throw new ArgumentNullException("interfaceToProxy");
             }
             AssertValidType(interfaceToProxy);
-            var generator = new ServiceHostInterfaceProxyGenerator(ModuleScope, interfaceToProxy){Logger = Logger};
+            var generator = new ServiceHostInterfaceProxyGenerator(ModuleScope, interfaceToProxy) { Logger = Logger };
             return generator.GenerateCode(interfaceToProxy, null, ProxyGenerationOptions.Default);
         }
     }

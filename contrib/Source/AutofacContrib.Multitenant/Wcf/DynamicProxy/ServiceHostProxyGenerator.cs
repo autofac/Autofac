@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Security;
 using System.ServiceModel;
 using AutofacContrib.Multitenant.Properties;
 using Castle.DynamicProxy;
@@ -36,6 +37,7 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
     /// that will cause WCF host initialization to fail or get confused.
     /// </para>
     /// </remarks>
+    [SecuritySafeCritical]
     public class ServiceHostProxyGenerator : ProxyGenerator
     {
         /// <summary>
