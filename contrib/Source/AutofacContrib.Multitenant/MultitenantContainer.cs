@@ -5,6 +5,7 @@ using System.Globalization;
 using Autofac;
 using Autofac.Core;
 using Autofac.Util;
+using System.Collections;
 
 namespace AutofacContrib.Multitenant
 {
@@ -53,14 +54,17 @@ namespace AutofacContrib.Multitenant
         private readonly object _defaultTenantId = new DefaultTenantId();
 
         /// <summary>
-        /// Synchronization object for managing the tenant lifetime scope dictionary.
+        /// Dictionary containing the set of tenant-specific lifetime scopes. Key
+        /// is <see cref="System.Object"/>, value is <see cref="Autofac.ILifetimeScope"/>.
         /// </summary>
-        private readonly object _syncroot = new object();
-
-        /// <summary>
-        /// Dictionary containing the set of tenant-specific lifetime scopes.
-        /// </summary>
-        private readonly Dictionary<object, ILifetimeScope> _tenantLifetimeScopes = new Dictionary<object, ILifetimeScope>();
+        /// <remarks>
+        /// Using synchronized <see cref="System.Collections.Hashtable"/> rather than 
+        /// a generic dictionary because dictionaries aren't threadsafe even with
+        /// the lock/double-check.
+        /// </remarks>
+        /// <seealso href="http://stackoverflow.com/questions/2624301/how-to-show-that-the-double-checked-lock-pattern-with-dictionarys-trygetvalue-is"/>
+        // Issue #280: Incorrect double-checked-lock pattern usage in MultitenantContainer.GetTenantScope
+        private readonly Hashtable _tenantLifetimeScopes = Hashtable.Synchronized(new Hashtable());
 
         /// <summary>
         /// Gets the base application container.
@@ -260,7 +264,7 @@ namespace AutofacContrib.Multitenant
                 tenantId = this._defaultTenantId;
             }
 
-            lock (this._syncroot)
+            lock (this._tenantLifetimeScopes.SyncRoot)
             {
                 if (this._tenantLifetimeScopes.ContainsKey(tenantId))
                 {
@@ -281,7 +285,7 @@ namespace AutofacContrib.Multitenant
         {
             if (disposing)
             {
-                foreach (var scope in this._tenantLifetimeScopes.Values)
+                foreach (ILifetimeScope scope in this._tenantLifetimeScopes.Values)
                 {
                     scope.Dispose();
                 }
@@ -326,19 +330,20 @@ namespace AutofacContrib.Multitenant
             {
                 tenantId = this._defaultTenantId;
             }
-            ILifetimeScope tenantScope = null;
-            if (!this._tenantLifetimeScopes.TryGetValue(tenantId, out tenantScope))
+            object tenantScope = this._tenantLifetimeScopes[tenantId];
+            if (tenantScope == null)
             {
-                lock (this._syncroot)
+                lock (this._tenantLifetimeScopes.SyncRoot)
                 {
-                    if (!this._tenantLifetimeScopes.TryGetValue(tenantId, out tenantScope))
+                    tenantScope = this._tenantLifetimeScopes[tenantId];
+                    if (tenantScope == null)
                     {
                         tenantScope = this.ApplicationContainer.BeginLifetimeScope();
                         this._tenantLifetimeScopes[tenantId] = tenantScope;
                     }
                 }
             }
-            return tenantScope;
+            return (ILifetimeScope)tenantScope;
         }
 
         /// <summary>
