@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Autofac;
 using Autofac.Core;
 using Autofac.Util;
-using System.Collections;
 
 namespace AutofacContrib.Multitenant
 {
@@ -58,13 +58,14 @@ namespace AutofacContrib.Multitenant
         /// is <see cref="System.Object"/>, value is <see cref="Autofac.ILifetimeScope"/>.
         /// </summary>
         /// <remarks>
-        /// Using synchronized <see cref="System.Collections.Hashtable"/> rather than 
+        /// Using <see cref="System.Collections.Hashtable"/> rather than 
         /// a generic dictionary because dictionaries aren't threadsafe even with
-        /// the lock/double-check.
+        /// the lock/double-check. Doesn't have to be a synchronized hashtable
+        /// since we're managing the write operations internally with our own locks.
         /// </remarks>
         /// <seealso href="http://stackoverflow.com/questions/2624301/how-to-show-that-the-double-checked-lock-pattern-with-dictionarys-trygetvalue-is"/>
         // Issue #280: Incorrect double-checked-lock pattern usage in MultitenantContainer.GetTenantScope
-        private readonly Hashtable _tenantLifetimeScopes = Hashtable.Synchronized(new Hashtable());
+        private readonly Hashtable _tenantLifetimeScopes = new Hashtable();
 
         /// <summary>
         /// Gets the base application container.
@@ -264,8 +265,14 @@ namespace AutofacContrib.Multitenant
                 tenantId = this._defaultTenantId;
             }
 
+            // Skipping a read/lock/double-check here since ConfigureTenant
+            // doesn't get called often and is OK to block. Jump straight to
+            // the lock before read.
             lock (this._tenantLifetimeScopes.SyncRoot)
             {
+                // The check and [potential] scope creation are locked here to
+                // ensure atomicity. We don't want to check and then have another
+                // thread create the lifetime scope behind our backs.
                 if (this._tenantLifetimeScopes.ContainsKey(tenantId))
                 {
                     throw new InvalidOperationException(String.Format(CultureInfo.CurrentUICulture, Properties.Resources.MultitenantContainer_TenantAlreadyConfigured, tenantId));
@@ -285,9 +292,14 @@ namespace AutofacContrib.Multitenant
         {
             if (disposing)
             {
-                foreach (ILifetimeScope scope in this._tenantLifetimeScopes.Values)
+                // Lock the lifetime scope table so no threads can add new lifetime
+                // scopes while we're disposing.
+                lock (this._tenantLifetimeScopes.SyncRoot)
                 {
-                    scope.Dispose();
+                    foreach (ILifetimeScope scope in this._tenantLifetimeScopes.Values)
+                    {
+                        scope.Dispose();
+                    }
                 }
                 this.ApplicationContainer.Dispose();
             }
@@ -330,11 +342,15 @@ namespace AutofacContrib.Multitenant
             {
                 tenantId = this._defaultTenantId;
             }
+
             object tenantScope = this._tenantLifetimeScopes[tenantId];
             if (tenantScope == null)
             {
                 lock (this._tenantLifetimeScopes.SyncRoot)
                 {
+                    // The check and [potential] scope creation are locked here to
+                    // ensure atomicity. We don't want to check and then have another
+                    // thread create the lifetime scope behind our backs.
                     tenantScope = this._tenantLifetimeScopes[tenantId];
                     if (tenantScope == null)
                     {
