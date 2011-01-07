@@ -114,6 +114,18 @@ namespace AutofacContrib.Tests.Multitenant
             Assert.Throws<InvalidOperationException>(() => mtc.ConfigureTenant("tenant1", b => b.RegisterType<StubDependency2Impl2>().As<IStubDependency2>()));
         }
 
+        [Test(Description = "Configuring a tenant requires that you provide a configuration lambda.")]
+        public void ConfigureTenant_RequiresConfiguration()
+        {
+            var builder = new ContainerBuilder();
+            var strategy = new StubTenantIdentificationStrategy()
+            {
+                TenantId = "tenant1"
+            };
+            var mtc = new MultitenantContainer(strategy, builder.Build());
+            Assert.Throws<ArgumentNullException>(() => mtc.ConfigureTenant("tenant1", null));
+        }
+
         [Test(Description = "Attempts to create a multitenant container without a tenant ID strategy.")]
         public void Ctor_NullApplicationContainer()
         {
@@ -134,6 +146,29 @@ namespace AutofacContrib.Tests.Multitenant
             var mtc = new MultitenantContainer(strategy, container);
             Assert.AreSame(container, mtc.ApplicationContainer, "The application container wasn't set.");
             Assert.AreSame(strategy, mtc.TenantIdentificationStrategy, "The tenant ID strategy wasn't set.");
+        }
+
+        [Test(Description = "Disposing the multitenant container should dispose of all of the tenant lifetime scopes.")]
+        public void Dispose_DisposesTenantLifetimeScopes()
+        {
+            var appDependency = new StubDisposableDependency();
+            var tenantDependency = new StubDisposableDependency();
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(appDependency).OwnedByLifetimeScope();
+            var strategy = new StubTenantIdentificationStrategy()
+            {
+                TenantId = "tenant1"
+            };
+            var mtc = new MultitenantContainer(strategy, builder.Build());
+            mtc.ConfigureTenant("tenant1", b => b.RegisterInstance(tenantDependency).OwnedByLifetimeScope());
+
+            // Resolve the tenant dependency so it's added to the list of things to dispose.
+            // If you don't do this, it won't be queued for disposal and the test fails.
+            mtc.Resolve<StubDisposableDependency>();
+
+            mtc.Dispose();
+            Assert.IsTrue(appDependency.IsDisposed, "The application scope didn't run Dispose.");
+            Assert.IsTrue(tenantDependency.IsDisposed, "The tenant scope didn't run Dispose.");
         }
 
         [Test(Description = "The Disposer property should return the disposer from the current tenant's lifetime scope.")]

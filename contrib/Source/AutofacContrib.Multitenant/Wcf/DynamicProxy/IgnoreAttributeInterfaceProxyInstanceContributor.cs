@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security;
 using Castle.DynamicProxy;
 using Castle.DynamicProxy.Contributors;
 using Castle.DynamicProxy.Generators.Emitters;
@@ -21,6 +22,7 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
     /// does except it doesn't copy over type-level non-inherited attributes.
     /// </para>
     /// </remarks>
+    [SecuritySafeCritical]
     public class IgnoreAttributeInterfaceProxyInstanceContributor : InterfaceProxyInstanceContributor
     {
         /// <summary>
@@ -53,6 +55,7 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
         /// attributes and copies them over from the proxy target.
         /// </para>
         /// </remarks>
+        [SecuritySafeCritical]
         public override void Generate(ClassEmitter @class, ProxyGenerationOptions options)
         {
             if (@class == null)

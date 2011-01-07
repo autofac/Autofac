@@ -57,6 +57,7 @@
     <Compile Include="ScenarioTypes\MetadataModuleScenarioInterfaces.cs" />
     <Compile Include="ScenarioTypes\StrongTypedScenarioMetadataModule.cs" />
     <Compile Include="ScenarioTypes\StrongTypedMetadataAttributeScenario.cs" />
+    <Compile Include="ScenarioTypes\TypeOfScenarioMetadataModule.cs" />
     <Compile Include="ScenarioTypes\WeakTypeAttributedMetadataModule.cs" />
     <Compile Include="ScenarioTypes\WeakTypedMetadataAttributeScenario.cs" />
     <Compile Include="ScenarioTypes\WeakTypedScenarioMetadataModule.cs" />
