@@ -91,9 +91,23 @@ namespace Autofac.Integration.Web
             }
         }
 
-        public event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning;
-        public event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding;
-        public event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning;
+        public event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning
+        {
+            add { _containerProvider.RequestLifetime.ChildLifetimeScopeBeginning += value; }
+            remove { _containerProvider.RequestLifetime.ChildLifetimeScopeBeginning -= value; }
+        }
+
+        public event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding
+        {
+            add { _containerProvider.RequestLifetime.CurrentScopeEnding += value; }
+            remove { _containerProvider.RequestLifetime.CurrentScopeEnding -= value; }
+        }
+
+        public event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning
+        {
+            add { _containerProvider.RequestLifetime.ResolveOperationBeginning += value; }
+            remove { _containerProvider.RequestLifetime.ResolveOperationBeginning -= value; }
+        }
 
         public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {

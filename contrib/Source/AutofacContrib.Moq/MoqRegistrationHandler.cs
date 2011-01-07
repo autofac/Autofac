@@ -31,7 +31,7 @@ using System.Reflection;
 using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Core.Activators.Delegate;
+using Autofac.Core.Diagnostics;
 using Moq;
 
 namespace AutofacContrib.Moq
@@ -67,7 +67,8 @@ namespace AutofacContrib.Moq
             var typedService = service as TypedService;
             if (typedService == null ||
                 !typedService.ServiceType.IsInterface ||
-                typeof(IEnumerable).IsAssignableFrom(typedService.ServiceType))
+                typeof(IEnumerable).IsAssignableFrom(typedService.ServiceType) ||
+                typeof(IContainerAwareComponent).IsAssignableFrom(typedService.ServiceType))
                 return Enumerable.Empty<IComponentRegistration>();
 
             var rb = RegistrationBuilder.ForDelegate((c, p) =>

@@ -4,6 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Autofac;
 using Autofac.Core;
+using Autofac.Core.Lifetime;
+using Autofac.Core.Resolving;
 using Autofac.Util;
 
 namespace AutofacContrib.Multitenant
@@ -116,6 +118,33 @@ namespace AutofacContrib.Multitenant
         public object Tag
         {
             get { return this.GetCurrentTenantScope().Tag; }
+        }
+
+        /// <summary>
+        /// Fired when a new scope based on the current scope is beginning.
+        /// </summary>
+        public event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning
+        {
+            add { GetCurrentTenantScope().ChildLifetimeScopeBeginning += value; }
+            remove { GetCurrentTenantScope().ChildLifetimeScopeBeginning -= value; }
+        }
+
+        /// <summary>
+        /// Fired when this scope is ending.
+        /// </summary>
+        public event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding
+        {
+            add { GetCurrentTenantScope().CurrentScopeEnding += value; }
+            remove { GetCurrentTenantScope().CurrentScopeEnding -= value; }
+        }
+
+        /// <summary>
+        /// Fired when a resolve operation is beginning in this scope.
+        /// </summary>
+        public event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning
+        {
+            add { GetCurrentTenantScope().ResolveOperationBeginning += value; }
+            remove { GetCurrentTenantScope().ResolveOperationBeginning -= value; }
         }
 
         /// <summary>

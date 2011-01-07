@@ -30,6 +30,7 @@ using System.Linq;
 using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Diagnostics;
 using NMock2;
 
 namespace AutofacContrib.NMock2
@@ -55,7 +56,8 @@ namespace AutofacContrib.NMock2
             var typedService = service as TypedService;
             if (typedService == null ||
                 !typedService.ServiceType.IsInterface ||
-                typeof(IEnumerable).IsAssignableFrom(typedService.ServiceType))
+                typeof(IEnumerable).IsAssignableFrom(typedService.ServiceType) ||
+                typeof(IContainerAwareComponent).IsAssignableFrom(typedService.ServiceType))
                 return Enumerable.Empty<IComponentRegistration>();
 
             var rb = RegistrationBuilder.ForDelegate((c, p) =>

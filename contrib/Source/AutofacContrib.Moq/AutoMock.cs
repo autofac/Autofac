@@ -27,6 +27,7 @@ using System;
 using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Diagnostics;
 using Autofac.Features.ResolveAnything;
 using Moq;
 
