@@ -72,6 +72,11 @@ namespace Autofac.Features.LazyDependencies
             get { return true; }
         }
 
+        public override string ToString()
+        {
+            return LazyRegistrationSourceResources.LazyWithMetadataRegistrationSourceDescription;
+        }
+
         // ReSharper disable UnusedMember.Local
         static IComponentRegistration CreateLazyRegistration<T, TMeta>(Service providedService, IComponentRegistration valueRegistration)
         // ReSharper restore UnusedMember.Local

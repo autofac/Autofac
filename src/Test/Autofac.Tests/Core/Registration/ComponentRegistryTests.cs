@@ -311,5 +311,27 @@ namespace Autofac.Tests.Core.Registration
             var adapters = registry.RegistrationsFor(adapterService);
             Assert.AreEqual(1, adapters.Count());
         }
+
+        [Test]
+        public void WhenASourceIsAddedToTheRegistry_TheSourceAddedEventIsRaised()
+        {
+            var registry = new ComponentRegistry();
+
+            object sender = null;
+            RegistrationSourceAddedEventArgs args = null;
+
+            registry.RegistrationSourceAdded += (s, e) =>
+            {
+                sender = s;
+                args = e;
+            };
+
+            var source = new ObjectRegistrationSource();
+            registry.AddRegistrationSource(source);
+
+            Assert.AreSame(registry, sender);
+            Assert.AreSame(registry, args.ComponentRegistry);
+            Assert.AreSame(source, args.RegistrationSource);
+        }
     }
 }

@@ -77,6 +77,7 @@ namespace Autofac
             Load(moduleBuilder);
             moduleBuilder.Update(componentRegistry);
             AttachToRegistrations(componentRegistry);
+            AttachToSources(componentRegistry);
         }
 
         /// <summary>
@@ -103,6 +104,19 @@ namespace Autofac
         {
         }
 
+        /// <summary>
+        /// Override to perform module-specific processing on a registration source.
+        /// </summary>
+        /// <remarks>This method will be called for all existing <i>and future</i> sources
+        /// - ordering is not important.</remarks>
+        /// <param name="componentRegistry">The component registry into which the source was added.</param>
+        /// <param name="registrationSource">The registration source.</param>
+        protected virtual void AttachToRegistrationSource(
+            IComponentRegistry componentRegistry, 
+            IRegistrationSource registrationSource)
+        {
+        }
+
         void AttachToRegistrations(IComponentRegistry componentRegistry)
         {
             if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
@@ -110,6 +124,15 @@ namespace Autofac
                 AttachToComponentRegistration(componentRegistry, registration);
             componentRegistry.Registered +=
                 (sender, e) => AttachToComponentRegistration(e.ComponentRegistry, e.ComponentRegistration);
+        }
+
+        void AttachToSources(IComponentRegistry componentRegistry)
+        {
+            if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
+            foreach (var source in componentRegistry.Sources)
+                AttachToRegistrationSource(componentRegistry, source);
+            componentRegistry.RegistrationSourceAdded +=
+                (sender, e) => AttachToRegistrationSource(e.ComponentRegistry, e.RegistrationSource);
         }
     }
 }

@@ -92,5 +92,10 @@ namespace Autofac.Core
         /// Gets the registration sources that are used by the registry.
         /// </summary>
         IEnumerable<IRegistrationSource> Sources { get; }
+
+        /// <summary>
+        /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
+        /// </summary>
+        event EventHandler<RegistrationSourceAddedEventArgs> RegistrationSourceAdded;
     }
 }

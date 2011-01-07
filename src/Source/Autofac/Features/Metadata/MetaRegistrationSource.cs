@@ -65,6 +65,11 @@ namespace Autofac.Features.Metadata
             get { return true; }
         }
 
+        public override string ToString()
+        {
+            return MetaRegistrationSourceResources.MetaRegistrationSourceDescription;
+        }
+
         static IComponentRegistration CreateMetaRegistration<T>(Service providedService, IComponentRegistration valueRegistration)
         {
             var rb = RegistrationBuilder.ForDelegate(

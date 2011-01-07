@@ -97,5 +97,26 @@ namespace Autofac.Tests.Core.Resolving
             container.Resolve<object>(TypedParameter.From(provided));
             Assert.AreEqual(provided, passed);
         }
+
+        [Test]
+        public void ChainedOnActivatedEventsAreInvokedWithinASingleResolveOperation()
+        {
+            var builder = new ContainerBuilder();
+
+            bool secondEventRaised = false;
+            builder.RegisterType<object>()
+                .Named<object>("second")
+                .OnActivated(e => secondEventRaised = true);
+
+            builder.RegisterType<object>()
+                .OnActivated(e => e.Context.ResolveNamed<object>("second"));
+
+            var container = builder.Build();
+            container.Resolve<object>();
+
+            Assert.That(secondEventRaised);
+        }
+
+
     }
 }

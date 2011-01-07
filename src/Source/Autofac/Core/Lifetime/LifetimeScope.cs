@@ -38,15 +38,15 @@ namespace Autofac.Core.Lifetime
     public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     {
         /// <summary>
-        /// Protects instance variables from concurrent access.
+        /// Protects shared instances from concurrent access. Other members and the base class are threadsafe.
         /// </summary>
         readonly object _synchRoot = new object();
+        readonly IDictionary<Guid, object> _sharedInstances = new Dictionary<Guid, object>();
 
         readonly IComponentRegistry _componentRegistry;
         readonly ISharingLifetimeScope _root; // Root optimises singleton lookup without traversal
         readonly ISharingLifetimeScope _parent;
         readonly IDisposer _disposer = new Disposer();
-        readonly IDictionary<Guid, object> _sharedInstances = new Dictionary<Guid, object>();
         readonly object _tag;
 
         static internal Guid SelfRegistrationId = Guid.NewGuid();
@@ -116,10 +116,14 @@ namespace Autofac.Core.Lifetime
         /// <returns>A new lifetime scope.</returns>
         public ILifetimeScope BeginLifetimeScope(object tag)
         {
-            lock (_synchRoot)
-            {
-                return new LifetimeScope(_componentRegistry, this, tag);
-            }
+            var scope = new LifetimeScope(_componentRegistry, this, tag);
+            RaiseBeginning(scope);
+            return scope;
+        }
+
+        void RaiseBeginning(ILifetimeScope scope)
+        {
+            ChildLifetimeScopeBeginning(this, new LifetimeScopeBeginningEventArgs(scope));
         }
 
         /// <summary>
@@ -166,28 +170,29 @@ namespace Autofac.Core.Lifetime
         {
             if (configurationAction == null) throw new ArgumentNullException("configurationAction");
 
-            lock (_synchRoot)
-            {
-                var builder =  new ContainerBuilder();
+            var builder =  new ContainerBuilder();
 
-                foreach (var source in ComponentRegistry.Sources
-                        .Where(src => src.IsAdapterForIndividualComponents))
-                    builder.RegisterSource(source);
+            foreach (var source in ComponentRegistry.Sources
+                    .Where(src => src.IsAdapterForIndividualComponents))
+                builder.RegisterSource(source);
 
-                var parents = Traverse.Across<ISharingLifetimeScope>(this, s => s.ParentLifetimeScope)
-                                        .Where(s => s.ParentLifetimeScope == null || s.ComponentRegistry != s.ParentLifetimeScope.ComponentRegistry)
-                                        .Select(s => new ExternalRegistrySource(s.ComponentRegistry))
-                                        .Reverse();
+            var parents = Traverse.Across<ISharingLifetimeScope>(this, s => s.ParentLifetimeScope)
+                                    .Where(s => s.ParentLifetimeScope == null || s.ComponentRegistry != s.ParentLifetimeScope.ComponentRegistry)
+                                    .Select(s => new ExternalRegistrySource(s.ComponentRegistry))
+                                    .Reverse();
 
-                foreach (var external in parents)
-                    builder.RegisterSource(external);
+            foreach (var external in parents)
+                builder.RegisterSource(external);
                 
-                configurationAction(builder);
+            configurationAction(builder);
 
-                var locals = new ScopeRestrictedRegistry(tag);
-                builder.Update(locals);
-                return new LifetimeScope(locals, this, tag);
-            }
+            var locals = new ScopeRestrictedRegistry(tag);
+            builder.Update(locals);
+            var scope = new LifetimeScope(locals, this, tag);
+
+            RaiseBeginning(scope);
+
+            return scope;
         }
 
         /// <summary>
@@ -205,7 +210,8 @@ namespace Autofac.Core.Lifetime
             lock (_synchRoot)
             {
                 var operation = new ResolveOperation(this);
-                return operation.ResolveComponent(registration, parameters);
+                ResolveOperationBeginning(this, new ResolveOperationBeginningEventArgs(operation));
+                return operation.Execute(registration, parameters);
             }
         }
 
@@ -283,7 +289,10 @@ namespace Autofac.Core.Lifetime
         protected override void Dispose(bool disposing)
         {
             if (disposing)
+            {
+                CurrentScopeEnding(this, new LifetimeScopeEndingEventArgs(this));
                 _disposer.Dispose();
+            }
 
             base.Dispose(disposing);
         }
@@ -302,5 +311,20 @@ namespace Autofac.Core.Lifetime
             if (serviceType == null) throw new ArgumentNullException("serviceType");
             return this.ResolveOptional(serviceType);
         }
+
+        /// <summary>
+        /// Fired when a new scope based on the current scope is beginning.
+        /// </summary>
+        public event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning = delegate { };
+
+        /// <summary>
+        /// Fired when this scope is ending.
+        /// </summary>
+        public event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding = delegate { };
+        
+        /// <summary>
+        /// Fired when a resolve operation is beginning in this scope.
+        /// </summary>
+        public event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning = delegate { };
     }
 }

@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using Autofac.Core;
+using Autofac.Core.Diagnostics;
 using Autofac.Features.Collections;
 using Autofac.Features.GeneratedFactories;
 using Autofac.Features.Indexed;
@@ -90,6 +91,8 @@ namespace Autofac
 		{
 			var result = new Container();
 			Build(result.ComponentRegistry, false);
+            foreach (var containerAware in result.Resolve<IEnumerable<IContainerAwareComponent>>())
+                containerAware.SetContainer(result);
 			return result;
 		}
 
@@ -133,22 +136,16 @@ namespace Autofac
 			_wasBuilt = true;
 
             if (!excludeDefaultModules)
-            {
-                this.RegisterGeneric(typeof(KeyedServiceIndex<,>))
-                    .As(typeof(IIndex<,>))
-                    .InstancePerLifetimeScope();
-
-                componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
-
                 RegisterDefaultAdapters(componentRegistry);
-            }
 
 	        foreach (var callback in _configurationCallbacks)
                 callback(componentRegistry);
         }
 
-	    internal static void RegisterDefaultAdapters(IComponentRegistry componentRegistry)
+	    void RegisterDefaultAdapters(IComponentRegistry componentRegistry)
 	    {
+            this.RegisterGeneric(typeof(KeyedServiceIndex<,>)).As(typeof(IIndex<,>)).InstancePerLifetimeScope();
+            componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
             componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
             componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
             componentRegistry.AddRegistrationSource(new MetaRegistrationSource());

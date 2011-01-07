@@ -26,6 +26,8 @@
 using System;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Lifetime;
+using Autofac.Core.Resolving;
 
 namespace Autofac
 {
@@ -130,5 +132,20 @@ namespace Autofac
         /// In most applications, tags are not necessary.</remarks>
         /// <seealso cref="IRegistrationBuilder{TLimit,TActivatorData,TRegistrationStyle}.InstancePerMatchingLifetimeScope"/>
         object Tag { get; }
+
+        /// <summary>
+        /// Fired when a new scope based on the current scope is beginning.
+        /// </summary>
+        event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning;
+
+        /// <summary>
+        /// Fired when this scope is ending.
+        /// </summary>
+        event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding;
+
+        /// <summary>
+        /// Fired when a resolve operation is beginning in this scope.
+        /// </summary>
+        event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning;
     }
 }

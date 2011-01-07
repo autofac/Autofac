@@ -120,4 +120,7 @@
   <data name="FromAndToMustDiffer" xml:space="preserve">
     <value>The service {0} cannot be both the adapter's from and to parameters - these must differ.</value>
   </data>
+  <data name="OpenGenericDecoratorRegistrationSourceImplFromTo" xml:space="preserve">
+    <value>Open Generic Decorator {0} from {1} to {2}</value>
+  </data>
 </root>

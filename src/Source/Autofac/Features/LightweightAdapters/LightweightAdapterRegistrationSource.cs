@@ -78,5 +78,12 @@ namespace Autofac.Features.LightweightAdapters
         {
             get { return true; }
         }
+
+        public override string ToString()
+        {
+            return string.Format(LightweightAdapterRegistrationSourceResources.AdapterFromToDescription, 
+                _activatorData.FromService.Description,
+                string.Join(", ", _registrationData.Services.Select(s => s.Description).ToArray()));
+        }
     }
 }

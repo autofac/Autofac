@@ -25,6 +25,8 @@
 using System;
 using System.Collections.Generic;
 using Autofac.Core;
+using Autofac.Core.Lifetime;
+using Autofac.Core.Resolving;
 
 namespace Autofac.Integration.Web
 {
@@ -88,6 +90,10 @@ namespace Autofac.Integration.Web
                 return _containerProvider.RequestLifetime.Tag;
             }
         }
+
+        public event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning;
+        public event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding;
+        public event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning;
 
         public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
