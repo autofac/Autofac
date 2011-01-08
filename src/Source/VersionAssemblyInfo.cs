@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("0.0.0.0")]
 [assembly: AssemblyFileVersion("0.0.0.0")]
-[assembly: AssemblyConfiguration("Release built on 2011-01-09 08:20")]
+[assembly: AssemblyConfiguration("Release built on 2011-01-09 08:29")]
 
 
 [assembly: System.Security.AllowPartiallyTrustedCallers]

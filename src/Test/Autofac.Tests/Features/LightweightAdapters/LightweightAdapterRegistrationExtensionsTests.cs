@@ -24,7 +24,7 @@ namespace Autofac.Tests.Features.LightweightAdapters
                 var builder = new ContainerBuilder();
                 foreach (var command in _commands)
                     builder.RegisterInstance(command);
-#if !(SL2 || SL3 || NET35)
+#if !NET35
                 builder.RegisterAdapter<Command, ToolbarButton>(cmd => new ToolbarButton(cmd)) 
 #else
                 builder.RegisterAdapter<Command, ToolbarButton>(cmd => new ToolbarButton(cmd, "")) 

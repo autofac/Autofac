@@ -41,7 +41,7 @@ namespace Autofac.Builder
         bool _defaultServiceOverridden;
         Service _defaultService;
 
-#if !(SL2 || SL3 || NET35)
+#if !NET35
         readonly ICollection<Service> _services = new HashSet<Service>();
 #else
         readonly ICollection<Service> _services = new List<Service>();

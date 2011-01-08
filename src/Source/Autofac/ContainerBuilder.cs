@@ -34,7 +34,7 @@ using Autofac.Features.OwnedInstances;
 using Autofac.Util;
 using Autofac.Features.Metadata;
 
-#if !(SL2 || SL3 || NET35)
+#if !NET35
 using Autofac.Features.LazyDependencies;
 #endif
 
@@ -149,7 +149,7 @@ namespace Autofac
             componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
             componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
             componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
-#if !(SL2 || SL3 || NET35)
+#if !NET35
             componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
             componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
             componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());

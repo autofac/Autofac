@@ -49,22 +49,6 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$(BuildFramework)=='SL2'">
-    <BuildTargets>Silverlight 2.0</BuildTargets>
-    <BuildConstants>SILVERLIGHT;SL2</BuildConstants>
-    <PackageName>$(ProjectName)-$(Version)-SL2</PackageName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="$(BuildFramework)=='SL3'">
-    <BuildTargets>Silverlight 3.0</BuildTargets>
-    <BuildConstants>SILVERLIGHT;SL3</BuildConstants>
-    <PackageName>$(ProjectName)-$(Version)-SL3</PackageName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
-  </PropertyGroup>
-
   <PropertyGroup Condition="$(BuildFramework)=='SL4'">
     <BuildTargets>Silverlight 4.0</BuildTargets>
     <BuildConstants>SILVERLIGHT;SL4</BuildConstants>

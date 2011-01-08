@@ -10,7 +10,7 @@ namespace Autofac.Tests.Scenarios.Adapters
         readonly Command _command;
         readonly string _name;
 
-#if !(SL2 || SL3 || NET35)
+#if !NET35
         public ToolbarButton(Command command, string name = "")
 #else
         public ToolbarButton(Command command, string name)
