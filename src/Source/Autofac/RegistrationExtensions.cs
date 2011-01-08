@@ -326,7 +326,7 @@ namespace Autofac
             where TScanningActivatorData : ScanningActivatorData
         {
             if (registration == null) throw new ArgumentNullException("registration");
-            return registration.As(t => new TypedService(serviceMapping(t)));
+            return registration.As(t => (Service)new TypedService(serviceMapping(t)));
         }
 
         /// <summary>
@@ -345,7 +345,7 @@ namespace Autofac
             where TScanningActivatorData : ScanningActivatorData
         {
             if (registration == null) throw new ArgumentNullException("registration");
-            return registration.As(t => serviceMapping(t).Select(s => new TypedService(s)));
+            return registration.As(t => serviceMapping(t).Select(s => (Service)new TypedService(s)));
         }
 
         /// <summary>

@@ -87,7 +87,7 @@ namespace Autofac.Features.OpenGenerics
                     GetInterface(implementationType, serviceType).GetGenericArguments() :
                     serviceTypeDefinition.GetGenericArguments();
 
-            var serviceArgumentDefinitionToArgumentMapping = serviceArgumentDefinitions.Zip(serviceGenericArguments, Tuple.Create);
+            var serviceArgumentDefinitionToArgumentMapping = serviceArgumentDefinitions.Zip(serviceGenericArguments, (a, b) => new KeyValuePair<Type, Type>(a, b));
 
             return implementationGenericArgumentDefinitions
                 .Select(implementationGenericArgumentDefinition => TryFindServiceArgumentForImplementationArgumentDefinition(
@@ -105,20 +105,20 @@ namespace Autofac.Features.OpenGenerics
 #endif
         }
 
-        static Type TryFindServiceArgumentForImplementationArgumentDefinition(Type implementationGenericArgumentDefinition, IEnumerable<Tuple<Type, Type>> serviceArgumentDefinitionToArgument)
+        static Type TryFindServiceArgumentForImplementationArgumentDefinition(Type implementationGenericArgumentDefinition, IEnumerable<KeyValuePair<Type, Type>> serviceArgumentDefinitionToArgument)
         {
             var matchingRegularType = serviceArgumentDefinitionToArgument
-                .Where(argdef => !argdef.Item1.IsGenericType && implementationGenericArgumentDefinition.Name == argdef.Item1.Name)
-                .Select(argdef => argdef.Item2)
+                .Where(argdef => !argdef.Key.IsGenericType && implementationGenericArgumentDefinition.Name == argdef.Key.Name)
+                .Select(argdef => argdef.Value)
                 .FirstOrDefault();
 
             if (matchingRegularType != null)
                 return matchingRegularType;
 
             return serviceArgumentDefinitionToArgument
-                .Where(argdef => argdef.Item1.IsGenericType && argdef.Item2.GetGenericArguments().Length > 0)
+                .Where(argdef => argdef.Key.IsGenericType && argdef.Value.GetGenericArguments().Length > 0)
                 .Select(argdef => TryFindServiceArgumentForImplementationArgumentDefinition(
-                    implementationGenericArgumentDefinition, argdef.Item1.GetGenericArguments().Zip(argdef.Item2.GetGenericArguments(), Tuple.Create)))
+                    implementationGenericArgumentDefinition, argdef.Key.GetGenericArguments().Zip(argdef.Value.GetGenericArguments(), (a, b) => new KeyValuePair<Type, Type>(a, b))))
                 .FirstOrDefault();
         }
 
