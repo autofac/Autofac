@@ -13,7 +13,7 @@ namespace Autofac.Tests.Core.Registration
         class ClassB : IServiceA { }
 
         // Courtesy of M. Kowalewski
-        [Test, Ignore("Unresolved issue #282")]
+        [Test]
         public void OneTypeImplementTwoInterfaces_OtherObjectsImplementingOneOfThoseInterfaces_CanBeResolved()
         {
             var builder = new ContainerBuilder();
