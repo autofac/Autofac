@@ -24,14 +24,13 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Web;
 using System.Web.Mvc;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.Scanning;
-using Action = System.Action;
 
 namespace Autofac.Integration.Mvc
 {
@@ -120,6 +119,8 @@ namespace Autofac.Integration.Mvc
         /// <param name="builder">The container builder.</param>
         public static void RegisterModelBinderProvider(this ContainerBuilder builder)
         {
+            if (builder == null) throw new ArgumentNullException("builder");
+
             builder.RegisterType<AutofacModelBinderProvider>()
                 .As<IModelBinderProvider>()
                 .InstancePerHttpRequest();
@@ -134,6 +135,9 @@ namespace Autofac.Integration.Mvc
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             RegisterModelBinders(this ContainerBuilder builder, params Assembly[] modelBinderAssemblies)
         {
+            if (builder == null) throw new ArgumentNullException("builder");
+            if (modelBinderAssemblies == null) throw new ArgumentNullException("modelBinderAssemblies");
+
             return builder.RegisterAssemblyTypes(modelBinderAssemblies)
                 .Where(type => typeof(IModelBinder).IsAssignableFrom(type))
                 .As<IModelBinder>()
@@ -142,6 +146,54 @@ namespace Autofac.Integration.Mvc
                     (from ModelBinderTypeAttribute attribute in type.GetCustomAttributes(typeof(ModelBinderTypeAttribute), true)
                      from targetType in attribute.TargetTypes
                     select targetType).ToList());
+        }
+
+        /// <summary>
+        /// Cache instances in the web session. This implies external ownership (disposal is not
+        /// available.) All dependencies must also have external ownership.
+        /// </summary>
+        /// <remarks>
+        /// It is strongly recommended that components cached per-session do not take dependencies on
+        /// other services.
+        /// </remarks>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">The registration to configure.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+            CacheInSession<TLimit, TActivatorData, TSingleRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration)
+            where TActivatorData : IConcreteActivatorData
+            where TSingleRegistrationStyle : SingleRegistrationStyle
+        {
+            if (registration == null) throw new ArgumentNullException("registration");
+
+            var services = registration.RegistrationData.Services.ToArray();
+            registration.RegistrationData.ClearServices();
+
+            return registration
+                .ExternallyOwned()
+                .OnRegistered(e => e.ComponentRegistry.Register(RegistrationBuilder
+                    .ForDelegate((c, p) =>
+                    {
+                        var session = HttpContext.Current.Session;
+                        object result;
+                        lock (session.SyncRoot)
+                        {
+                            result = session[e.ComponentRegistration.Id.ToString()];
+                            if (result == null)
+                            {
+                                result = c.ResolveComponent(e.ComponentRegistration, p);
+                                session[e.ComponentRegistration.Id.ToString()] = result;
+                            }
+                        }
+                        return result;
+                    })
+                    .As(services)
+                    .InstancePerLifetimeScope()
+                    .ExternallyOwned()
+                    .CreateRegistration()));
         }
     }
 }

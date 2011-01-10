@@ -1,4 +1,7 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Reflection;
+using System.Web.Mvc;
+using Autofac.Builder;
 using Autofac.Integration.Mvc;
 using NUnit.Framework;
 
@@ -7,6 +10,38 @@ namespace Autofac.Tests.Integration.Mvc
     [TestFixture]
     public class RegistrationExtensionsFixture
     {
+        [Test]
+        public void RegisterModelBinderProviderThrowsExceptionForNullBuilder()
+        {
+            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
+                () => Autofac.Integration.Mvc.RegistrationExtensions.RegisterModelBinderProvider(null));
+            Assert.That(exception.ParamName, Is.EqualTo("builder"));
+        }
+
+        [Test]
+        public void RegisterModelBindersThrowsExceptionForNullBuilder()
+        {
+            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
+                () => Autofac.Integration.Mvc.RegistrationExtensions.RegisterModelBinders(null, Assembly.GetExecutingAssembly()));
+            Assert.That(exception.ParamName, Is.EqualTo("builder"));
+        }
+
+        [Test]
+        public void RegisterModelBindersThrowsExceptionForNullAssemblies()
+        {
+            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
+                () => new ContainerBuilder().RegisterModelBinders(null));
+            Assert.That(exception.ParamName, Is.EqualTo("modelBinderAssemblies"));
+        }
+
+        [Test]
+        public void CacheInSessionThrowsExceptionForNullRegistration()
+        {
+            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
+                () => Autofac.Integration.Mvc.RegistrationExtensions.CacheInSession<object, SimpleActivatorData, SingleRegistrationStyle>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
+        }
+
         [Test]
         public void InvokesCustomActivating()
         {
