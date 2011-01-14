@@ -60,6 +60,7 @@ namespace Autofac.Integration.Mvc
         public IModelBinder GetBinder(Type modelType)
         {
             Meta<Lazy<IModelBinder>> modelBinder = _modelBinders
+                .Where(binder => binder.Metadata.ContainsKey(MetadataKey))
                 .FirstOrDefault(binder => ((List<Type>)binder.Metadata[MetadataKey]).Contains(modelType));
             return (modelBinder != null) ? modelBinder.Value.Value : null;
         }

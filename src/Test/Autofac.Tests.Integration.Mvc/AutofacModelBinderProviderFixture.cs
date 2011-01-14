@@ -21,12 +21,12 @@ namespace Autofac.Tests.Integration.Mvc
         }
 
         [Test]
-        public void ModelBinderIsRegistered()
+        public void ModelBindersAreRegistered()
         {
             using (ILifetimeScope httpRequestScope = BuilderContainerAndStartHttpRequestScope())
             {
                 IEnumerable<IModelBinder> modelBinders = httpRequestScope.Resolve<IEnumerable<IModelBinder>>();
-                Assert.That(modelBinders.Count(), Is.EqualTo(1));
+                Assert.That(modelBinders.Count(), Is.EqualTo(2));
             }
         }
 
@@ -40,6 +40,25 @@ namespace Autofac.Tests.Integration.Mvc
                     .FirstOrDefault();
                 Assert.That(modelBinder, Is.Not.Null);
                 Assert.That(modelBinder.Dependency, Is.Not.Null);
+            }
+        }
+
+        [Test]
+        public void ReturnsNullWhenModelBinderRegisteredWithoutMetadata()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ModelBinderWithoutAttribute>().As<IModelBinder>().InstancePerHttpRequest();
+            builder.RegisterModelBinderProvider();
+            var container = builder.Build();
+
+            using (var httpRequestScope = container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag))
+            {
+                var modelBinders = httpRequestScope.Resolve<IEnumerable<IModelBinder>>();
+                Assert.That(modelBinders.Count(), Is.EqualTo(1));
+                Assert.That(modelBinders.First(), Is.InstanceOf<ModelBinderWithoutAttribute>());
+
+                var provider = (AutofacModelBinderProvider)httpRequestScope.Resolve<IModelBinderProvider>();
+                Assert.That(provider.GetBinder(typeof(object)), Is.Null);
             }
         }
 
@@ -96,6 +115,14 @@ namespace Autofac.Tests.Integration.Mvc
             Dependency = dependency;
         }
 
+        public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
+        {
+            return "Bound";
+        }
+    }
+
+    public class ModelBinderWithoutAttribute : IModelBinder
+    {
         public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             return "Bound";
