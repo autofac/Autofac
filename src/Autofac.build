@@ -37,7 +37,7 @@
   </PropertyGroup>
 
   <!--Default-->
-  <PropertyGroup Condition="$(BuildFramework)==''">
+  <PropertyGroup Condition="$(BuildFramework)=='' or $(BuildFramework)=='NET40'">
     <PackageName>$(ProjectName)-$(Version)-NET40</PackageName>
     <BuildConstants>NET40</BuildConstants>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
@@ -130,52 +130,12 @@
   
   <Target Name="Test" DependsOnTargets="Build;Copy" Condition="$(TargetFrameworkIdentifier) != 'Silverlight'">
 
-    <!-- Unfortunately NCover doesn't yet support .NET 4.0.
-         When it does this can be removed and the section below it uncommmented. -->
     <CreateItem Include="$(TestPath)\Autofac.Test*dll" Exclude="$(TestPath)\Autofac.Tests.Scenarios.ScannedAssembly.dll">
       <Output ItemName="_testFiles" TaskParameter="Include"/>
     </CreateItem>
 
     <Exec Command="$(NUnitConsole) @(_testFiles->'&quot;%(FullPath)&quot;', ' ') /nologo /noshadow"></Exec>
 
-    <!--<MakeDir Directories="$(ArtifactDirectory)" />
-
-    <CreateItem Include="$(TestPath)\Autofac.Test*dll">
-      <Output ItemName="_testFiles" TaskParameter="Include"/>
-    </CreateItem>
-
-    <CreateItem Include="$(TestPath)\Autofac*dll" Exclude="$(TestPath)\Autofac.Test*dll">
-      <Output ItemName="_coverageFiles" TaskParameter="Include"/>
-    </CreateItem>-->
-
-    <!--@(_testFiles->'&quot;%(FullPath)&quot;', ' ')-->
-    <!--
-    Important: if this code breaks down and you are running 64 bit machine,
-    then you have to force NUnit-console and NCover to 32 bit mode
-    with CorFlags.exe from .NET SDK 2.0 (included in NCover and NUnit folders)
-    -->
-    <!--<NCover ToolPath="Resource\Tool\NCover"
-      CommandLineExe="Resource/Tool/NUnit/nunit-console-x86.exe"
-      CommandLineArgs="@(_testFiles->'&quot;%(FullPath)&quot;', ' ') /nologo /noshadow /xml=&quot;$(ArtifactDirectory)\$(ProjectName).Tests-result.xml&quot;"
-      AssemblyList="@(_coverageFiles)"
-      CoverageFile="$(ArtifactDirectory)\$(ProjectName)-coverage.xml"
-      LogFile="$(ArtifactDirectory)\$(ProjectName)-coverage.log"
-      ExcludeAttributes="System.Diagnostics.CodeAnalysis.NoCodeCoverageAttribute;System.Runtime.CompilerServices.CompilerGeneratedAttribute;System.CodeDom.Compiler.GeneratedCodeAttribute"
-      ContinueOnError="false"
-    />
-
-    <NCoverExplorer
-      ToolPath="Resource\Tool\NCoverExplorer"
-      ProjectName="$(ProjectName)"
-      ReportType="ModuleClassSummary"
-      XmlReportName="$(ArtifactDirectory)\$(ProjectName).fCoverage-result.xml"
-      HtmlReportName="$(ArtifactDirectory)\$(ProjectName).fCoverage-summary.html"
-      ShowExcluded="True"
-      SatisfactoryCoverage="75"
-      MinimumCoverage="75"
-      Sort="FunctionCoverageAscending"
-      CoverageFiles="$(ArtifactDirectory)\$(ProjectName)-coverage.xml"
-    />-->
   </Target>
 
   <Target Name="_Version">
@@ -213,7 +173,7 @@
     <Exec Command="Resource\Tool\SHFB\SandcastleBuilderConsole.exe $(ProjectName).shfb" />
   </Target>
 
-  <Target Name="Distrib" DependsOnTargets="Clean;Build;Copy;Config;GenerateHelp">
+  <Target Name="Distrib" DependsOnTargets="Clean;Build;Copy;Config">
     <MakeDir Directories="$(PackageDirectory)" />
 
     <!-- Archive-->
