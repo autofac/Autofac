@@ -66,17 +66,17 @@
 
   <Target Name="CopyAutofacLibs">
     <Copy SourceFiles="$(ArtifactTemp)\NET40\Autofac.dll;$(ArtifactTemp)\NET40\Autofac.xml;$(ArtifactTemp)\NET40\Autofac.Integration.Mef.dll;$(ArtifactTemp)\NET40\Autofac.Configuration.dll;$(ArtifactTemp)\NET40\Autofac.Integration.Wcf.dll" DestinationFolder="$(AutofacSpecPath)\lib\NET40"  />
-    <Copy SourceFiles="$(ArtifactTemp)\NET35\Autofac.dll;$(ArtifactTemp)\NET35\Autofac.xml;$(ArtifactTemp)\NET35\Autofac.Configuration.dll;$(ArtifactTemp)\NET35\Autofac.Integration.Wcf.dll" DestinationFolder="$(AutofacSpecPath)\lib\NET40"  />
+    <Copy SourceFiles="$(ArtifactTemp)\NET35\Autofac.dll;$(ArtifactTemp)\NET35\Autofac.xml;$(ArtifactTemp)\NET35\Autofac.Configuration.dll;$(ArtifactTemp)\NET35\Autofac.Integration.Wcf.dll" DestinationFolder="$(AutofacSpecPath)\lib\NET35"  />
     <Copy SourceFiles="$(ArtifactTemp)\SL4\Autofac.dll;$(ArtifactTemp)\SL4\Autofac.xml" DestinationFolder="$(AutofacSpecPath)\lib\SL4"  />
   </Target>
 
   <Target Name="CopyAutofacMvc3Libs">
-    <Copy SourceFiles="$(ArtifactTemp)\NET40\Autofac.Integration.Mvc.dll" DestinationFolder="$(AutofacSpecPath)\lib\NET40"  />
+    <Copy SourceFiles="$(ArtifactTemp)\NET40\Autofac.Integration.Mvc.dll" DestinationFolder="$(AutofacMvc3SpecPath)\lib\NET40"  />
   </Target>
 
   <Target Name="CopyAutofacWebLibs">
-    <Copy SourceFiles="$(ArtifactTemp)\NET40\Autofac.Integration.Web.dll" DestinationFolder="$(AutofacSpecPath)\lib\NET40"  />
-    <Copy SourceFiles="$(ArtifactTemp)\NET35\Autofac.Integration.Web.dll" DestinationFolder="$(AutofacSpecPath)\lib\NET40"  />
+    <Copy SourceFiles="$(ArtifactTemp)\NET40\Autofac.Integration.Web.dll" DestinationFolder="$(AutofacWebSpecPath)\lib\NET40"  />
+    <Copy SourceFiles="$(ArtifactTemp)\NET35\Autofac.Integration.Web.dll" DestinationFolder="$(AutofacWebSpecPath)\lib\NET35"  />
   </Target>
 
   <Target Name="CopyLibs">
