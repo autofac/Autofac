@@ -12,6 +12,8 @@
     <PackageDefinitionPath>$(PackageWorkingPath)\PackageTemp</PackageDefinitionPath>
     <NuGetExe>"$(MSBuildProjectDirectory)\Resource\Tool\NuGet\NuGet.exe"</NuGetExe>
     <AutofacBuild>$(MSBuildProjectDirectory)\Autofac.build</AutofacBuild>
+    <PackageOutput>$(PackageWorkingPath)\Packages</PackageOutput>
+    <ZipPath>$(BuildPath)\_Package</ZipPath>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -38,6 +40,7 @@
       <Output ItemName="Net40Artifact" TaskParameter="Include"/>
     </CreateItem>
     <Copy SourceFiles="@(Net40Artifact)" DestinationFolder="$(ArtifactTemp)\NET40" />
+    <Copy SourceFiles="$(ZipPath)\Autofac-$(Version)-NET40.zip" DestinationFolder="$(PackageOutput)" />
   </Target>
 
   <Target Name="Net35Build">
@@ -47,6 +50,7 @@
       <Output ItemName="Net35Artifact" TaskParameter="Include"/>
     </CreateItem>
     <Copy SourceFiles="@(Net35Artifact)" DestinationFolder="$(ArtifactTemp)\NET35" />
+    <Copy SourceFiles="$(ZipPath)\Autofac-$(Version)-NET35.zip" DestinationFolder="$(PackageOutput)" />
   </Target>
 
   <Target Name="Sl4Build">
@@ -56,6 +60,7 @@
       <Output ItemName="Sl4Artifact" TaskParameter="Include"/>
     </CreateItem>
     <Copy SourceFiles="@(Sl4Artifact)" DestinationFolder="$(ArtifactTemp)\SL4" />
+    <Copy SourceFiles="$(ZipPath)\Autofac-$(Version)-SL4.zip" DestinationFolder="$(PackageOutput)" />
   </Target>
 
   <Target Name="Build">
@@ -95,8 +100,8 @@
     </CreateItem>
     <FileUpdate Files="@(NuGetSpec)" Regex="0\.0\.0\.0" ReplacementText="$(Version)" />
     <CallTarget Targets="CopyLibs" />
-    <MakeDir Directories="$(PackageWorkingPath)\Packages" ContinueOnError="true"/>
-    <Exec Command='$(NuGetExe) pack "%(NuGetSpec.FullPath)"' WorkingDirectory="$(PackageWorkingPath)\Packages"/>
+    <MakeDir Directories="$(PackageOutput)" ContinueOnError="true"/>
+    <Exec Command='$(NuGetExe) pack "%(NuGetSpec.FullPath)"' WorkingDirectory="$(PackageOutput)"/>
   </Target>
 
   <Target Name="Release" DependsOnTargets="Clean;Prepare;Build;Pack"/>
