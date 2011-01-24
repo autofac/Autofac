@@ -74,6 +74,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{AB95
 		Packages\Autofac.Web\content\web.config.transform = Packages\Autofac.Web\content\web.config.transform
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Autofac.Mef", "Autofac.Mef", "{3D2912F8-FBDC-4121-BF7E-5B5C2C9AA4EF}"
+	ProjectSection(SolutionItems) = preProject
+		Packages\Autofac.Mef\Autofac.Mef.nuspec = Packages\Autofac.Mef\Autofac.Mef.nuspec
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Autofac.Wcf", "Autofac.Wcf", "{B9A087C9-3A28-445C-A998-7D323BB1E963}"
+	ProjectSection(SolutionItems) = preProject
+		Packages\Autofac.Wcf\Autofac.Wcf.nuspec = Packages\Autofac.Wcf\Autofac.Wcf.nuspec
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -221,6 +231,8 @@ Global
 		{4020F810-7DBB-496E-8C85-2CDC5D63072C} = {3BD47FB1-848D-4780-A089-0983D0F97953}
 		{C6F14D79-CC0C-4D03-8AE9-854320CB009D} = {3BD47FB1-848D-4780-A089-0983D0F97953}
 		{5E69140E-DDCC-4D33-9D67-DBCB091E1640} = {3BD47FB1-848D-4780-A089-0983D0F97953}
+		{3D2912F8-FBDC-4121-BF7E-5B5C2C9AA4EF} = {3BD47FB1-848D-4780-A089-0983D0F97953}
+		{B9A087C9-3A28-445C-A998-7D323BB1E963} = {3BD47FB1-848D-4780-A089-0983D0F97953}
 		{AB95C267-705A-4F13-AFEF-1CA063BE95CD} = {4020F810-7DBB-496E-8C85-2CDC5D63072C}
 	EndGlobalSection
 EndGlobal
