@@ -1,5 +1,5 @@
 ﻿using System;
-using Autofac.Core;
+using System.Linq;
 using NHibernate.Bytecode;
 using Autofac;
 
@@ -16,17 +16,20 @@ namespace AutofacContrib.NHibernate.Bytecode
 
         public object CreateInstance(Type type)
         {
-            return _container.IsRegistered(type) ? _container.Resolve(type) : Activator.CreateInstance(type);
+            return _container.ResolveOptional(type) ?? Activator.CreateInstance(type);
         }
 
         public object CreateInstance(Type type, bool nonPublic)
         {
-            return _container.IsRegistered(type) ? _container.Resolve(type) : Activator.CreateInstance(type, nonPublic);
+            return _container.ResolveOptional(type) ?? Activator.CreateInstance(type, nonPublic);
         }
 
         public object CreateInstance(Type type, params object[] ctorArgs)
         {
-            return Activator.CreateInstance(type, ctorArgs);
+            return _container.ResolveOptional(
+                    type,
+                    (ctorArgs ?? Enumerable.Empty<object>()).Select((p, i) => new PositionalParameter(i, p))) ??
+                Activator.CreateInstance(type, ctorArgs);
         }
     }
 }

@@ -58,6 +58,7 @@ namespace Autofac.Integration.Mvc
         readonly IEnumerable<IAuthorizationFilter> _authorizationFilters;
         readonly IEnumerable<IExceptionFilter> _exceptionFilters;
         readonly IEnumerable<IResultFilter> _resultFilters;
+        readonly bool _injectActionMethodParameters;
 
         /// <summary>
         /// Create an instance of the action invoker.
@@ -67,12 +68,15 @@ namespace Autofac.Integration.Mvc
         /// <param name="authorizationFilters">The authorization filters.</param>
         /// <param name="exceptionFilters">The exception filters.</param>
         /// <param name="resultFilters">The result filters.</param>
+        /// <param name="injectActionMethodParameters">If set to true, the action invoker will attempt to resolve
+        /// the parameters of action methods via the container.</param>
         public ExtensibleActionInvoker(
             IComponentContext context,
             IEnumerable<IActionFilter> actionFilters,
             IEnumerable<IAuthorizationFilter> authorizationFilters,
             IEnumerable<IExceptionFilter> exceptionFilters,
-            IEnumerable<IResultFilter> resultFilters)
+            IEnumerable<IResultFilter> resultFilters,
+            bool injectActionMethodParameters = false)
         {
             if (context == null) throw new ArgumentNullException("context");
             if (actionFilters == null) throw new ArgumentNullException("actionFilters");
@@ -84,6 +88,7 @@ namespace Autofac.Integration.Mvc
             _authorizationFilters = authorizationFilters;
             _exceptionFilters = exceptionFilters;
             _resultFilters = resultFilters;
+            _injectActionMethodParameters = injectActionMethodParameters;
         }
 
         /// <summary>
@@ -112,9 +117,10 @@ namespace Autofac.Integration.Mvc
         /// </returns>
         protected override object GetParameterValue(ControllerContext controllerContext, ParameterDescriptor parameterDescriptor)
         {
-            return _context.IsRegistered(parameterDescriptor.ParameterType) 
-                ? _context.Resolve(parameterDescriptor.ParameterType) 
-                : base.GetParameterValue(controllerContext, parameterDescriptor);
+            if (_injectActionMethodParameters)
+                return _context.ResolveOptional(parameterDescriptor.ParameterType) ?? base.GetParameterValue(controllerContext, parameterDescriptor);
+
+            return base.GetParameterValue(controllerContext, parameterDescriptor);
         }
 
         void SetFilters<T>(ICollection<T> existing, IEnumerable<T> additional)

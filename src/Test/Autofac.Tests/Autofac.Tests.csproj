@@ -106,6 +106,7 @@
     <Compile Include="Core\NamedPropertyParameterTests.cs" />
     <Compile Include="Core\DisposerTests.cs" />
     <Compile Include="Core\Registration\ComponentRegistryTests.cs" />
+    <Compile Include="Core\Registration\ExternalRegistrySourceTests.cs" />
     <Compile Include="Core\Resolving\CircularDependencyDetectorTests.cs" />
     <Compile Include="Core\Resolving\ResolveOperationTests.cs" />
     <Compile Include="Core\TypedServiceTests.cs" />
@@ -125,7 +126,6 @@
     <Compile Include="Features\ResolveAnything\ResolveAnythingTests.cs" />
     <Compile Include="NamedParameterTests.cs" />
     <Compile Include="Features\OpenGenerics\OpenGenericRegistrationSourceTests.cs" />
-    <Compile Include="Core\Registration\RegistrationFixture.cs" />
     <Compile Include="Core\Activators\Delegate\DelegateActivatorTests.cs" />
     <Compile Include="DisposeTracker.cs" />
     <Compile Include="IntegrationTests.cs" />

@@ -5,7 +5,6 @@ using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.Scanning;
-using Castle.Core.Interceptor;
 using Castle.DynamicProxy;
 
 namespace AutofacContrib.DynamicProxy2

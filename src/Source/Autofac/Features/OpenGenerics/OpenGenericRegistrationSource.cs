@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
@@ -77,6 +78,13 @@ namespace Autofac.Features.OpenGenerics
         public bool IsAdapterForIndividualComponents
         {
             get { return false; }
+        }
+
+        public override string ToString()
+        {
+            return string.Format(OpenGenericRegistrationSourceResources.OpenGenericRegistrationSourceDescription,
+                _activatorData.ImplementationType.FullName,
+                string.Join(", ", _registrationData.Services.Select(s => s.Description).ToArray()));
         }
     }
 }

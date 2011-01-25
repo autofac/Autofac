@@ -47,9 +47,6 @@
     <Reference Include="Castle.Core">
       <HintPath>..\..\Resource\Library\Castle\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.DynamicProxy2">
-      <HintPath>..\..\Resource\Library\Castle\Castle.DynamicProxy2.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />

@@ -23,12 +23,34 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
 
 namespace Autofac.Core.Resolving
 {
-    interface IResolveOperation
+    /// <summary>
+    /// An <see cref="IResolveOperation"/> is a component context that sequences and monitors the multiple
+    /// activations that go into producing a single requested object graph.
+    /// </summary>
+    public interface IResolveOperation
     {
-        object Resolve(ISharingLifetimeScope activationScope, IComponentRegistration registration, IEnumerable<Parameter> parameters);
+        /// <summary>
+        /// Get or create and share an instance of <paramref name="registration"/> in the <paramref name="currentOperationScope"/>.
+        /// </summary>
+        /// <param name="currentOperationScope">The scope in the hierarchy in which the operation will begin.</param>
+        /// <param name="registration">The component to resolve.</param>
+        /// <param name="parameters">Parameters for the component.</param>
+        /// <returns>The component instance.</returns>
+        object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, IComponentRegistration registration, IEnumerable<Parameter> parameters);
+
+        /// <summary>
+        /// Raised when the entire operation is complete.
+        /// </summary>
+        event EventHandler<ResolveOperationEndingEventArgs> CurrentOperationEnding;
+
+        /// <summary>
+        /// Raised when an instance is looked up within the operation.
+        /// </summary>
+        event EventHandler<InstanceLookupBeginningEventArgs> InstanceLookupBeginning;
     }
 }

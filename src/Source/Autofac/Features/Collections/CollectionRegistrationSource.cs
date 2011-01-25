@@ -95,5 +95,10 @@ namespace Autofac.Features.Collections
         {
             get { return false; }
         }
+
+        public override string ToString()
+        {
+            return CollectionRegistrationSourceResources.CollectionRegistrationSourceDescription;
+        }
     }
 }

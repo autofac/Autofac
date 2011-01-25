@@ -23,7 +23,7 @@ namespace Remember.Persistence.NHibernate
 
         public IQueryable<T> Items
         {
-            get { return _session.Linq<T>(); }
+            get { return _session.Query<T>(); }
         }
 
         public void Add(T item)

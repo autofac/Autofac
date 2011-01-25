@@ -13,3 +13,4 @@ glob:Build/
 glob:contrib/AutofacContrib.5.1.ReSharper.user
 glob:src/Autofac.5.1.ReSharper.user
 glob:*.user
+glob:src/PackageBuild

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project DefaultTargets="Release" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="Resource\Build\MSBuild.Community.Tasks.targets" />
+
+  <PropertyGroup>
+    <Version Condition="$(Version)==''">0.0.0.0</Version>
+    <BuildPath>$(MSBuildProjectDirectory)\Build</BuildPath>
+    <ArtifactPath>$(BuildPath)\Library</ArtifactPath>
+    <PackageDefinitionSourcePath>$(MSBuildProjectDirectory)\Packages</PackageDefinitionSourcePath>
+    <PackageWorkingPath>$(MSBuildProjectDirectory)\PackageBuild</PackageWorkingPath>
+    <ArtifactTemp>$(PackageWorkingPath)\Library</ArtifactTemp>
+    <PackageDefinitionPath>$(PackageWorkingPath)\PackageTemp</PackageDefinitionPath>
+    <NuGetExe>"$(MSBuildProjectDirectory)\Resource\Tool\NuGet\NuGet.exe"</NuGetExe>
+    <AutofacBuild>$(MSBuildProjectDirectory)\Autofac.build</AutofacBuild>
+    <PackageOutput>$(PackageWorkingPath)\Packages</PackageOutput>
+    <ZipPath>$(BuildPath)\_Package</ZipPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AutofacSpecPath>$(PackageDefinitionPath)\Autofac</AutofacSpecPath>
+    <AutofacSpec>$(AutofacSpecPath)\Autofac.nuspec</AutofacSpec>
+    <AutofacMvc3SpecPath>$(PackageDefinitionPath)\Autofac.Mvc3</AutofacMvc3SpecPath>
+    <AutofacMvc3Spec>$(AutofacMvc3SpecPath)\Autofac.Mvc3.nuspec</AutofacMvc3Spec>
+    <AutofacWebSpecPath>$(PackageDefinitionPath)\Autofac.Web</AutofacWebSpecPath>
+    <AutofacWebSpec>$(AutofacWebSpecPath)\Autofac.Web.nuspec</AutofacWebSpec>
+    <AutofacWcfSpecPath>$(PackageDefinitionPath)\Autofac.Wcf</AutofacWcfSpecPath>
+    <AutofacWcfSpec>$(AutofacWcfSpecPath)\Autofac.Wcf.nuspec</AutofacWcfSpec>
+    <AutofacMefSpecPath>$(PackageDefinitionPath)\Autofac.Mef</AutofacMefSpecPath>
+    <AutofacMefSpec>$(AutofacMefSpecPath)\Autofac.Mef.nuspec</AutofacMefSpec>
+  </PropertyGroup>
+
+  <Target Name="Clean">
+    <RemoveDir Directories="$(PackageWorkingPath)" />
+  </Target>
+
+  <Target Name="Prepare">
+    <MakeDir Directories="$(PackageWorkingPath)" ContinueOnError="true" />
+  </Target>
+
+  <Target Name="Net40Build">
+    <MSBuild Projects="$(AutofacBuild)" Properties="Version=$(Version);BuildFramework=" Targets="Release" />
+    <MakeDir Directories="$(ArtifactTemp)\NET40"/>
+    <CreateItem Include="$(ArtifactPath)\*.*">
+      <Output ItemName="Net40Artifact" TaskParameter="Include"/>
+    </CreateItem>
+    <Copy SourceFiles="@(Net40Artifact)" DestinationFolder="$(ArtifactTemp)\NET40" />
+    <Copy SourceFiles="$(ZipPath)\Autofac-$(Version)-NET40.zip" DestinationFolder="$(PackageOutput)" />
+  </Target>
+
+  <Target Name="Net35Build">
+    <MSBuild Projects="$(AutofacBuild)" Properties="Version=$(Version);BuildFramework=NET35" Targets="Release" />
+    <MakeDir Directories="$(ArtifactTemp)\NET35"/>
+    <CreateItem Include="$(ArtifactPath)\*.*">
+      <Output ItemName="Net35Artifact" TaskParameter="Include"/>
+    </CreateItem>
+    <Copy SourceFiles="@(Net35Artifact)" DestinationFolder="$(ArtifactTemp)\NET35" />
+    <Copy SourceFiles="$(ZipPath)\Autofac-$(Version)-NET35.zip" DestinationFolder="$(PackageOutput)" />
+  </Target>
+
+  <Target Name="Sl4Build">
+    <MSBuild Projects="$(AutofacBuild)" Properties="Version=$(Version);BuildFramework=SL4" Targets="Release" />
+    <MakeDir Directories="$(ArtifactTemp)\SL4"/>
+    <CreateItem Include="$(ArtifactPath)\*.*">
+      <Output ItemName="Sl4Artifact" TaskParameter="Include"/>
+    </CreateItem>
+    <Copy SourceFiles="@(Sl4Artifact)" DestinationFolder="$(ArtifactTemp)\SL4" />
+    <Copy SourceFiles="$(ZipPath)\Autofac-$(Version)-SL4.zip" DestinationFolder="$(PackageOutput)" />
+  </Target>
+
+  <Target Name="Build">
+    <CallTarget Targets="Net40Build" />
+    <CallTarget Targets="Net35Build" />
+    <CallTarget Targets="Sl4Build" />
+  </Target>
+
+  <Target Name="CopyAutofacLibs">
+    <Copy SourceFiles="$(ArtifactTemp)\NET40\Autofac.dll;$(ArtifactTemp)\NET40\Autofac.xml;$(ArtifactTemp)\NET40\Autofac.Configuration.dll" DestinationFolder="$(AutofacSpecPath)\lib\NET40"  />
+    <Copy SourceFiles="$(ArtifactTemp)\NET35\Autofac.dll;$(ArtifactTemp)\NET35\Autofac.xml;$(ArtifactTemp)\NET35\Autofac.Configuration.dll" DestinationFolder="$(AutofacSpecPath)\lib\NET35"  />
+    <Copy SourceFiles="$(ArtifactTemp)\SL4\Autofac.dll;$(ArtifactTemp)\SL4\Autofac.xml" DestinationFolder="$(AutofacSpecPath)\lib\SL4"  />
+  </Target>
+
+  <Target Name="CopyAutofacMvc3Libs">
+    <Copy SourceFiles="$(ArtifactTemp)\NET40\Autofac.Integration.Mvc.dll" DestinationFolder="$(AutofacMvc3SpecPath)\lib\NET40"  />
+  </Target>
+
+  <Target Name="CopyAutofacWebLibs">
+    <Copy SourceFiles="$(ArtifactTemp)\NET40\Autofac.Integration.Web.dll" DestinationFolder="$(AutofacWebSpecPath)\lib\NET40"  />
+    <Copy SourceFiles="$(ArtifactTemp)\NET35\Autofac.Integration.Web.dll" DestinationFolder="$(AutofacWebSpecPath)\lib\NET35"  />
+  </Target>
+
+  <Target Name="CopyAutofacMefLibs">
+    <Copy SourceFiles="$(ArtifactTemp)\NET40\Autofac.Integration.Mef.dll" DestinationFolder="$(AutofacMefSpecPath)\lib\NET40"  />
+  </Target>
+
+  <Target Name="CopyAutofacWcfLibs">
+    <Copy SourceFiles="$(ArtifactTemp)\NET40\Autofac.Integration.Wcf.dll" DestinationFolder="$(AutofacWcfSpecPath)\lib\NET40"  />
+    <Copy SourceFiles="$(ArtifactTemp)\NET35\Autofac.Integration.Wcf.dll" DestinationFolder="$(AutofacWcfSpecPath)\lib\NET35"  />
+  </Target>
+
+  <Target Name="CopyLibs">
+    <CallTarget Targets="CopyAutofacLibs"/>
+    <CallTarget Targets="CopyAutofacMvc3Libs"/>
+    <CallTarget Targets="CopyAutofacWebLibs" />
+    <CallTarget Targets="CopyAutofacMefLibs"/>
+    <CallTarget Targets="CopyAutofacWcfLibs" />
+  </Target>
+
+  <Target Name="Pack">
+    <CreateItem Include="$(PackageDefinitionSourcePath)\**\*.*">
+      <Output ItemName="PackageContent" TaskParameter="Include"/>
+    </CreateItem>
+    <Copy SourceFiles="@(PackageContent)" DestinationFiles="@(PackageContent->'$(PackageDefinitionPath)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <CreateItem Include="$(AutofacSpec);$(AutofacMvc3Spec);$(AutofacWebSpec);$(AutofacMefSpec);$(AutofacWcfSpec)">
+      <Output ItemName="NuGetSpec" TaskParameter="Include"/>
+    </CreateItem>
+    <FileUpdate Files="@(NuGetSpec)" Regex="0\.0\.0\.0" ReplacementText="$(Version)" />
+    <CallTarget Targets="CopyLibs" />
+    <MakeDir Directories="$(PackageOutput)" ContinueOnError="true"/>
+    <Exec Command='$(NuGetExe) pack "%(NuGetSpec.FullPath)"' WorkingDirectory="$(PackageOutput)"/>
+  </Target>
+
+  <Target Name="Release" DependsOnTargets="Clean;Prepare;Build;Pack"/>
+  
+</Project>

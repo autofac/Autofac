@@ -95,5 +95,13 @@ namespace Autofac.Features.OpenGenerics
         {
             get { return true; }
         }
+
+        public override string ToString()
+        {
+            return string.Format(OpenGenericDecoratorRegistrationSourceResources.OpenGenericDecoratorRegistrationSourceImplFromTo,
+                _activatorData.ImplementationType.FullName,
+                ((Service)_activatorData.FromService).Description,
+                string.Join(", ", _registrationData.Services.Select(s => s.Description).ToArray()));
+        }
     }
 }

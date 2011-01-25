@@ -30,7 +30,7 @@ namespace Autofac.Integration.Mvc
     /// <summary>
     /// Implementors are able to control the creation of nested lifetime scopes.
     /// </summary>
-    public interface ILifetimeScopeProvider
+    interface ILifetimeScopeProvider
     {
         /// <summary>
         /// Gets a nested lifetime scope that services can be resolved from.

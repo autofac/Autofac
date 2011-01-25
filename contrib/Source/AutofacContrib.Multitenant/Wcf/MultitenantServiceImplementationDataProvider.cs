@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Security;
 using System.ServiceModel;
 using Autofac;
 using AutofacContrib.Multitenant.Properties;
@@ -53,6 +54,7 @@ namespace AutofacContrib.Multitenant.Wcf
         /// a known type, resolves to a type that is not an interface, or the
         /// interface it resolves to is not marked with a <see cref="System.ServiceModel.ServiceContractAttribute"/>.
         /// </exception>
+        [SecuritySafeCritical]
         public ServiceImplementationData GetServiceImplementationData(string value)
         {
             if (value == null)

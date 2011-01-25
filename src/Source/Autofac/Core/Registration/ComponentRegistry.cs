@@ -214,6 +214,8 @@ namespace Autofac.Core.Registration
                 _dynamicRegistrationSources.Insert(0, source);
                 foreach (var serviceRegistrationInfo in _serviceInfo)
                     serviceRegistrationInfo.Value.Include(source);
+
+                RegistrationSourceAdded(this, new RegistrationSourceAddedEventArgs(this, source));
             }
         }
 
@@ -230,6 +232,11 @@ namespace Autofac.Core.Registration
                 }
             }
         }
+
+        /// <summary>
+        /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
+        /// </summary>
+        public event EventHandler<RegistrationSourceAddedEventArgs> RegistrationSourceAdded = delegate { };
 
         ServiceRegistrationInfo GetInitializedServiceInfo(Service service)
         {

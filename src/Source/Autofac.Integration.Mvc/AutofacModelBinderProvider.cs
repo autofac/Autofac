@@ -36,21 +36,10 @@ namespace Autofac.Integration.Mvc
     /// </summary>
     public class AutofacModelBinderProvider : IModelBinderProvider
     {
-        readonly IEnumerable<Meta<Lazy<IModelBinder>>> _modelBinders;
-
         /// <summary>
         /// Metadata key for the supported model types.
         /// </summary>
         internal static readonly string MetadataKey = "SupportedModelTypes";
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AutofacModelBinderProvider"/> class.
-        /// </summary>
-        /// <param name="modelBinders">The model binders.</param>
-        public AutofacModelBinderProvider(IEnumerable<Meta<Lazy<IModelBinder>>> modelBinders)
-        {
-            _modelBinders = modelBinders;
-        }
 
         /// <summary>
         /// Gets the model binder associated with the provided model type.
@@ -59,7 +48,10 @@ namespace Autofac.Integration.Mvc
         /// <returns>An <see cref="IModelBinder"/> instance if found; otherwise, <c>null</c>.</returns>
         public IModelBinder GetBinder(Type modelType)
         {
-            Meta<Lazy<IModelBinder>> modelBinder = _modelBinders
+            var modelBinders = DependencyResolver.Current.GetServices<Meta<Lazy<IModelBinder>>>();
+
+            var modelBinder = modelBinders
+                .Where(binder => binder.Metadata.ContainsKey(MetadataKey))
                 .FirstOrDefault(binder => ((List<Type>)binder.Metadata[MetadataKey]).Contains(modelType));
             return (modelBinder != null) ? modelBinder.Value.Value : null;
         }

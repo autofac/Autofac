@@ -1,7 +1,7 @@
 ﻿using System;
 using Autofac;
 using Autofac.Core;
-using Castle.Core.Interceptor;
+using Castle.DynamicProxy;
 
 namespace AutofacContrib.DynamicProxy2
 {

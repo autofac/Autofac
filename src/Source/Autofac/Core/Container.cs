@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
+using Autofac.Core.Resolving;
 using Autofac.Util;
 
 namespace Autofac.Core
@@ -132,6 +133,33 @@ namespace Autofac.Core
         public object Tag
         {
             get { return _rootLifetimeScope.Tag; }
+        }
+
+        /// <summary>
+        /// Fired when a new scope based on the current scope is beginning.
+        /// </summary>
+        public event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning
+        {
+            add { _rootLifetimeScope.ChildLifetimeScopeBeginning += value; }
+            remove { _rootLifetimeScope.ChildLifetimeScopeBeginning -= value; }
+        }
+
+        /// <summary>
+        /// Fired when this scope is ending.
+        /// </summary>
+        public event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding
+        {
+            add { _rootLifetimeScope.CurrentScopeEnding += value; }
+            remove { _rootLifetimeScope.CurrentScopeEnding -= value; }
+        }
+
+        /// <summary>
+        /// Fired when a resolve operation is beginning in this scope.
+        /// </summary>
+        public event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning
+        {
+            add { _rootLifetimeScope.ResolveOperationBeginning += value; }
+            remove { _rootLifetimeScope.ResolveOperationBeginning -= value; }
         }
 
         /// <summary>

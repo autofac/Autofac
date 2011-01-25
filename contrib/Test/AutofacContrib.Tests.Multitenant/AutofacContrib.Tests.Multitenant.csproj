@@ -36,8 +36,9 @@
     <Reference Include="Autofac">
       <HintPath>..\..\Resource\Library\Autofac\Autofac.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Core, Version=1.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL" />
-    <Reference Include="Castle.DynamicProxy2, Version=2.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL" />
+    <Reference Include="Castle.Core">
+      <HintPath>..\..\Resource\Library\Castle\Castle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\Resource\Tool\NUnit\framework\nunit.framework.dll</HintPath>
     </Reference>
@@ -62,6 +63,7 @@
     <Compile Include="ConfigurationActionBuilderFixture.cs" />
     <Compile Include="MultitenantContainerFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stubs\StubDisposableDependency.cs" />
     <Compile Include="Stubs\IStubDependency1.cs" />
     <Compile Include="Stubs\IStubDependency2.cs" />
     <Compile Include="Stubs\StubDependency1Impl1.cs" />

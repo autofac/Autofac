@@ -1,11 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Autofac.Builder;
-using Autofac.Core;
+﻿using Castle.DynamicProxy;
 using NUnit.Framework;
 using Autofac;
 using AutofacContrib.DynamicProxy2;
-using Castle.Core.Interceptor;
 
 namespace AutofacContrib.Tests.DynamicProxy2
 {

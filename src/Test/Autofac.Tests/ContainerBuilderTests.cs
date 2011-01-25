@@ -323,10 +323,30 @@ namespace Autofac.Tests
         {
             var builder = new ContainerBuilder();
             builder.RegisterInstance("s1");
-            builder.RegisterInstance("s2").Named<string>("name").PreserveExistingDefaults();
+            builder.RegisterInstance("s2").PreserveExistingDefaults();
             var container = builder.Build();
-            Assert.AreEqual("s1", container.Resolve<string>()); // Not overridden
-            Assert.AreEqual("s2", container.ResolveNamed<string>("name"));
+            Assert.AreEqual("s1", container.Resolve<string>());
+        }
+
+        [Test]
+        public void WhenNoDefaultNewRegistrationIsAvailable()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance("s2").PreserveExistingDefaults();
+            var container = builder.Build();
+            Assert.AreEqual("s2", container.Resolve<string>());
+        }
+
+        [Test, Ignore("#272")]
+        public void DefaultsPreservedInNestedScope()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance("s1");
+            var container = builder.Build();
+            var scope = container.BeginLifetimeScope(b => 
+                b.RegisterInstance("s2").PreserveExistingDefaults());
+
+            Assert.AreEqual("s1", scope.Resolve<string>());
         }
 
         [Test]

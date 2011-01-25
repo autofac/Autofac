@@ -68,5 +68,14 @@ namespace Autofac.Features.OpenGenerics {
                 return ResourceManager.GetString("FromAndToMustDiffer", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Generic Decorator {0} from {1} to {2}.
+        /// </summary>
+        internal static string OpenGenericDecoratorRegistrationSourceImplFromTo {
+            get {
+                return ResourceManager.GetString("OpenGenericDecoratorRegistrationSourceImplFromTo", resourceCulture);
+            }
+        }
     }
 }

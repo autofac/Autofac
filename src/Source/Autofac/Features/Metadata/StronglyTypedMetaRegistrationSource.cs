@@ -70,6 +70,11 @@ namespace Autofac.Features.Metadata
             get { return true; }
         }
 
+        public override string ToString()
+        {
+            return MetaRegistrationSourceResources.StronglyTypedMetaRegistrationSourceDescription;
+        }
+
         // ReSharper disable UnusedMember.Local
         static IComponentRegistration CreateMetaRegistration<T, TMetadata>(Service providedService, IComponentRegistration valueRegistration)
         // ReSharper restore UnusedMember.Local

@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using Autofac.Core;
+using Autofac.Core.Diagnostics;
 using Autofac.Features.Collections;
 using Autofac.Features.GeneratedFactories;
 using Autofac.Features.Indexed;
@@ -33,7 +34,7 @@ using Autofac.Features.OwnedInstances;
 using Autofac.Util;
 using Autofac.Features.Metadata;
 
-#if !(SL2 || SL3 || NET35)
+#if !NET35
 using Autofac.Features.LazyDependencies;
 #endif
 
@@ -90,6 +91,8 @@ namespace Autofac
 		{
 			var result = new Container();
 			Build(result.ComponentRegistry, false);
+            foreach (var containerAware in result.Resolve<IEnumerable<IContainerAwareComponent>>())
+                containerAware.SetContainer(result);
 			return result;
 		}
 
@@ -133,26 +136,20 @@ namespace Autofac
 			_wasBuilt = true;
 
             if (!excludeDefaultModules)
-            {
-                this.RegisterGeneric(typeof(KeyedServiceIndex<,>))
-                    .As(typeof(IIndex<,>))
-                    .InstancePerLifetimeScope();
-
-                componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
-
                 RegisterDefaultAdapters(componentRegistry);
-            }
 
 	        foreach (var callback in _configurationCallbacks)
                 callback(componentRegistry);
         }
 
-	    internal static void RegisterDefaultAdapters(IComponentRegistry componentRegistry)
+	    void RegisterDefaultAdapters(IComponentRegistry componentRegistry)
 	    {
+            this.RegisterGeneric(typeof(KeyedServiceIndex<,>)).As(typeof(IIndex<,>)).InstancePerLifetimeScope();
+            componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
             componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
             componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
             componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
-#if !(SL2 || SL3 || NET35)
+#if !NET35
             componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
             componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
             componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());

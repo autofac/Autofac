@@ -78,13 +78,18 @@ namespace Autofac.Features.OwnedInstances
                         .As(service)
                         .Targeting(r);
 
-                    return RegistrationBuilder.CreateRegistration(rb);
+                    return rb.CreateRegistration();
                 });
         }
 
         public bool IsAdapterForIndividualComponents
         {
             get { return true; }
+        }
+
+        public override string ToString()
+        {
+            return OwnedInstanceRegistrationSourceResources.OwnedInstanceRegistrationSourceDescription;
         }
     }
 }
