@@ -12,11 +12,15 @@ namespace Autofac.Tests.Integration.Mvc
     public class AutofacModelBinderProviderFixture
     {
         [Test]
-        public void ProviderIsRegisteredInHttpRequestScope()
+        public void ProviderIsRegisteredAsSingleInstance()
         {
-            using (var httpRequestScope = BuildContainer().BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag))
+            var container = BuildContainer();
+            var modelBinderProvider = container.Resolve<IModelBinderProvider>();
+            Assert.That(modelBinderProvider, Is.InstanceOf<AutofacModelBinderProvider>());
+
+            using (var httpRequestScope = container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag))
             {
-                Assert.That(httpRequestScope.Resolve<IModelBinderProvider>(), Is.InstanceOf<AutofacModelBinderProvider>());
+                Assert.That(httpRequestScope.Resolve<IModelBinderProvider>(), Is.EqualTo(modelBinderProvider));
             }
         }
 
