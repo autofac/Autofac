@@ -123,7 +123,7 @@ namespace Autofac.Integration.Mvc
 
             builder.RegisterType<AutofacModelBinderProvider>()
                 .As<IModelBinderProvider>()
-                .InstancePerHttpRequest();
+                .SingleInstance();
         }
 
         /// <summary>
