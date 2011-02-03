@@ -72,14 +72,10 @@ namespace Autofac.Features.Metadata
 
         static IComponentRegistration CreateMetaRegistration<T>(Service providedService, IComponentRegistration valueRegistration)
         {
-            var rb = RegistrationBuilder.ForDelegate(
-                (c, p) =>
-                {
-                    var context = c.Resolve<IComponentContext>();
-                    return new Meta<T>(
-                        (T)context.ResolveComponent(valueRegistration, p),
-                        valueRegistration.Target.Metadata);
-                })
+            var rb = RegistrationBuilder
+                .ForDelegate((c, p) => new Meta<T>(
+                    (T)c.ResolveComponent(valueRegistration, p),
+                    valueRegistration.Target.Metadata))
                 .As(providedService)
                 .Targeting(valueRegistration);
 

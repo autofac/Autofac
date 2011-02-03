@@ -79,14 +79,10 @@ namespace Autofac.Features.Metadata
         static IComponentRegistration CreateMetaRegistration<T, TMetadata>(Service providedService, IComponentRegistration valueRegistration)
         // ReSharper restore UnusedMember.Local
         {
-            var rb = RegistrationBuilder.ForDelegate(
-                (c, p) =>
-                {
-                    var context = c.Resolve<IComponentContext>();
-                    return new Meta<T, TMetadata>(
-                        (T)context.ResolveComponent(valueRegistration, p),
-                        AttributedModelServices.GetMetadataView<TMetadata>(valueRegistration.Target.Metadata));
-                })
+            var rb = RegistrationBuilder
+                .ForDelegate((c, p) => new Meta<T, TMetadata>(
+                                           (T)c.ResolveComponent(valueRegistration, p),
+                                           AttributedModelServices.GetMetadataView<TMetadata>(valueRegistration.Target.Metadata)))
                 .As(providedService)
                 .Targeting(valueRegistration);
 
