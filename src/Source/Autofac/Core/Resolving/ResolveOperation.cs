@@ -104,6 +104,7 @@ namespace Autofac.Core.Resolving
             if (currentOperationScope == null) throw new ArgumentNullException("currentOperationScope");
             if (registration == null) throw new ArgumentNullException("registration");
             if (parameters == null) throw new ArgumentNullException("parameters");
+            if (_ended) throw new ObjectDisposedException(ResolveOperationResources.TemporaryContextDisposed);
 
             _circularDependencyDetector.CheckForCircularDependency(registration, _activationStack, ++_callDepth);
 
