@@ -24,8 +24,12 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections;
 using System.ComponentModel;
+using System.Configuration;
 using Autofac.Configuration.Util;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Autofac.Configuration
 {
@@ -56,6 +60,10 @@ namespace Autofac.Configuration
 
             if (destinationType.IsAssignableFrom(value.GetType()))
                 return value;
+
+            var sourceConverter = TypeDescriptor.GetConverter(value.GetType());
+            if(sourceConverter != null && sourceConverter.CanConvertTo(destinationType))
+                return sourceConverter.ConvertTo(value, destinationType);
 
             return TypeDescriptor.GetConverter(destinationType).ConvertFrom(value);
         }

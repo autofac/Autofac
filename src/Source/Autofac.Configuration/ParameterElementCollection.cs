@@ -53,7 +53,7 @@ namespace Autofac.Configuration
                 var localParameter = parameter;
                 yield return new ResolvedParameter(
                     (pi, c) => pi.Name == localParameter.Name,
-                    (pi, c) => TypeManipulation.ChangeToCompatibleType(localParameter.Value, pi.ParameterType));
+                    (pi, c) => TypeManipulation.ChangeToCompatibleType(localParameter.CoerceValue(), pi.ParameterType));
             }
         }
     }

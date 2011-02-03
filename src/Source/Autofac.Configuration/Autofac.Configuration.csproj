@@ -72,6 +72,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="ListElementCollection.cs" />
     <Compile Include="Util\Enforce.cs" />
     <Compile Include="MetadataElement.cs" />
     <Compile Include="MetadataElementCollection.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="ServiceElement.cs" />
     <Compile Include="ServiceElementCollection.cs" />
     <Compile Include="TypeManipulation.cs" />
+    <Compile Include="ListItemElement.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ConfigurationSettingsReaderResources.resx">
