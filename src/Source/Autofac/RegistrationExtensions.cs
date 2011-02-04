@@ -749,38 +749,6 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Configure an explicit value for a property.
-        /// </summary>
-        /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
-        /// <typeparam name="TStyle">Registration style.</typeparam>
-        /// <typeparam name="TProperty">Type of property supplied.</typeparam>
-        /// <param name="registration">Registration to set property on.</param>
-        /// <param name="property">The property to supply.</param>
-        /// <param name="propertyValue">Value to supply to the property.</param>
-        /// <returns></returns>
-        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> 
-            WithProperty<TLimit, TReflectionActivatorData, TStyle, TProperty>(
-                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration, 
-                Expression<Func<TLimit, TProperty>> property, TProperty propertyValue) 
-            where TReflectionActivatorData : ReflectionActivatorData
-        {
-            Expression expression = property.Body;
-            if (expression is UnaryExpression)
-                expression = ((UnaryExpression) expression).Operand;
-
-            MemberExpression memberExpression = expression as MemberExpression;
-            if(memberExpression == null)
-                throw new InvalidOperationException("Cannot extract property name out of this type of expression.");
-            if(memberExpression.Expression is MemberExpression)
-                throw new InvalidOperationException("Cannot violate the law of Demeter");
-
-            string propertyName = memberExpression.Member.Name;
-
-            return registration.WithProperty(propertyName, propertyValue);
-        }
-
-        /// <summary>
         /// Configure explicit values for properties.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
