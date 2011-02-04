@@ -32,7 +32,7 @@ namespace Autofac.Integration.Mvc
     /// An <see cref="IHttpModule"/> and <see cref="ILifetimeScopeProvider"/> implementation 
     /// that creates a nested lifetime scope for each HTTP request.
     /// </summary>
-    internal class RequestLifetimeHttpModule : IHttpModule, ILifetimeScopeProvider
+    internal class RequestLifetimeHttpModule : IHttpModule
     {
         /// <summary>
         /// Tag used to identify registrations that are scoped to the HTTP request level.
@@ -56,8 +56,11 @@ namespace Autofac.Integration.Mvc
         /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
         /// that adds component registations visible only in nested lifetime scopes.</param>
         /// <returns>A new or existing nested lifetime scope.</returns>
-        public ILifetimeScope GetLifetimeScope(ILifetimeScope container, Action<ContainerBuilder> configurationAction)
+        public static ILifetimeScope GetLifetimeScope(ILifetimeScope container, Action<ContainerBuilder> configurationAction)
         {
+            if (HttpContext.Current == null)
+                throw new InvalidOperationException(RequestLifetimeHttpModuleResources.HttpContextNotAvailable);
+
             return LifetimeScope ?? (LifetimeScope = InitializeLifetimeScope(configurationAction, container));
         }
 
