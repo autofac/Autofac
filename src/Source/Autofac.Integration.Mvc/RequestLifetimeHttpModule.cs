@@ -40,12 +40,18 @@ namespace Autofac.Integration.Mvc
         internal static readonly object HttpRequestTag = "httpRequest";
 
         /// <summary>
+        /// Gets the module instance as an <see cref="ILifetimeScopeProvider"/>.
+        /// </summary>
+        internal static ILifetimeScopeProvider Instance { get; private set; }
+
+        /// <summary>
         /// Initializes a module and prepares it to handle requests.
         /// </summary>
         /// <param name="context">An <see cref="T:System.Web.HttpApplication"/> that provides access to the 
         /// methods, properties, and events common to all application objects within an ASP.NET application</param>
         public void Init(HttpApplication context)
         {
+            Instance = this;
             context.EndRequest += ContextEndRequest;
         }
 

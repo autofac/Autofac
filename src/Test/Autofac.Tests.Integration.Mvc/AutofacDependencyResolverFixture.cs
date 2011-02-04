@@ -26,9 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Autofac.Integration.Mvc;
-using Moq;
 using NUnit.Framework;
 
 namespace Autofac.Tests.Integration.Mvc
@@ -115,18 +113,11 @@ namespace Autofac.Tests.Integration.Mvc
         }
 
         [Test]
-        public void MeaningfulExceptionThrowWhenHttpContextUnavailable()
+        public void MeaningfulExceptionThrowWhenHttpModuleNotLoaded()
         {
-            var exception = Assert.Throws<InvalidOperationException>(() => AutofacDependencyResolver.GetRequestLifetimeHttpModule(null));
-            Assert.That(exception.Message, Is.EqualTo(AutofacDependencyResolverResources.HttpContextNotAvailable));
-        }
-
-        [Test]
-        public void MeaningfulExceptionThrowWhenApplicationInstanceUnavailable()
-        {
-            Mock<HttpContextBase> httpContext = new Mock<HttpContextBase>();
-            var exception = Assert.Throws<InvalidOperationException>(() => AutofacDependencyResolver.GetRequestLifetimeHttpModule(httpContext.Object));
-            Assert.That(exception.Message, Is.EqualTo(AutofacDependencyResolverResources.ApplicationInstanceNotAvailable));
+            var exception = Assert.Throws<InvalidOperationException>(() => AutofacDependencyResolver.GetRequestLifetimeHttpModule());
+            string expectedMessage = string.Format(AutofacDependencyResolverResources.HttpModuleNotLoaded, typeof(RequestLifetimeHttpModule));
+            Assert.That(exception.Message, Is.EqualTo(expectedMessage));
         }
 
         static IContainer GetContainer(Action<ContainerBuilder> configurationAction = null)

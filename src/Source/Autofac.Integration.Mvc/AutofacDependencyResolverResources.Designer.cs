@@ -61,24 +61,6 @@ namespace Autofac.Integration.Mvc {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The request lifetime scope cannot be created because the ApplicationInstance is not available..
-        /// </summary>
-        internal static string ApplicationInstanceNotAvailable {
-            get {
-                return ResourceManager.GetString("ApplicationInstanceNotAvailable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The request lifetime scope cannot be created because the HttpContext is not available..
-        /// </summary>
-        internal static string HttpContextNotAvailable {
-            get {
-                return ResourceManager.GetString("HttpContextNotAvailable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The HTTP module &apos;{0}&apos; has not been loaded..
         /// </summary>
         internal static string HttpModuleNotLoaded {

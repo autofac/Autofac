@@ -98,8 +98,7 @@ namespace Autofac.Integration.Mvc
             {
                 if (_lifetimeScopeProvider == null)
                 {
-                    var httpContext = (HttpContext.Current == null) ? null : new HttpContextWrapper(HttpContext.Current);
-                    _lifetimeScopeProvider = GetRequestLifetimeHttpModule(httpContext);
+                    _lifetimeScopeProvider = GetRequestLifetimeHttpModule();
                 }
                 return _lifetimeScopeProvider.GetLifetimeScope(_container, _configurationAction);
             }
@@ -108,24 +107,14 @@ namespace Autofac.Integration.Mvc
         /// <summary>
         /// Gets the request lifetime HTTP module.
         /// </summary>
-        /// <param name="httpContext">The HTTP context.</param>
         /// <returns>The HTTP module as an <see cref="ILifetimeScopeProvider"/> instance.</returns>
-        internal static ILifetimeScopeProvider GetRequestLifetimeHttpModule(HttpContextBase httpContext)
+        internal static ILifetimeScopeProvider GetRequestLifetimeHttpModule()
         {
-            if (httpContext == null)
-                throw new InvalidOperationException(AutofacDependencyResolverResources.HttpContextNotAvailable);
+            if (RequestLifetimeHttpModule.Instance == null)
+                throw new InvalidOperationException(string.Format(
+                    AutofacDependencyResolverResources.HttpModuleNotLoaded, typeof(RequestLifetimeHttpModule)));
 
-            if (httpContext.ApplicationInstance == null)
-                throw new InvalidOperationException(AutofacDependencyResolverResources.ApplicationInstanceNotAvailable);
-
-            var httpModules = httpContext.ApplicationInstance.Modules;
-            for (var index = 0; index < httpModules.Count; index++)
-            {
-                if (httpModules[index] is RequestLifetimeHttpModule)
-                    return (RequestLifetimeHttpModule)httpModules[index];
-            }
-            throw new InvalidOperationException(string.Format(
-                AutofacDependencyResolverResources.HttpModuleNotLoaded, typeof(RequestLifetimeHttpModule)));
+            return RequestLifetimeHttpModule.Instance;
         }
     }
 }
