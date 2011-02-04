@@ -32,17 +32,12 @@ namespace Autofac.Integration.Mvc
     /// An <see cref="IHttpModule"/> and <see cref="ILifetimeScopeProvider"/> implementation 
     /// that creates a nested lifetime scope for each HTTP request.
     /// </summary>
-    internal class RequestLifetimeHttpModule : IHttpModule, ILifetimeScopeProvider
+    internal class RequestLifetimeHttpModule : IHttpModule
     {
         /// <summary>
         /// Tag used to identify registrations that are scoped to the HTTP request level.
         /// </summary>
         internal static readonly object HttpRequestTag = "httpRequest";
-
-        /// <summary>
-        /// Gets the module instance as an <see cref="ILifetimeScopeProvider"/>.
-        /// </summary>
-        internal static ILifetimeScopeProvider Instance { get; private set; }
 
         /// <summary>
         /// Initializes a module and prepares it to handle requests.
@@ -51,7 +46,6 @@ namespace Autofac.Integration.Mvc
         /// methods, properties, and events common to all application objects within an ASP.NET application</param>
         public void Init(HttpApplication context)
         {
-            Instance = this;
             context.EndRequest += ContextEndRequest;
         }
 
@@ -62,8 +56,11 @@ namespace Autofac.Integration.Mvc
         /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
         /// that adds component registations visible only in nested lifetime scopes.</param>
         /// <returns>A new or existing nested lifetime scope.</returns>
-        public ILifetimeScope GetLifetimeScope(ILifetimeScope container, Action<ContainerBuilder> configurationAction)
+        public static ILifetimeScope GetLifetimeScope(ILifetimeScope container, Action<ContainerBuilder> configurationAction)
         {
+            if (HttpContext.Current == null)
+                throw new InvalidOperationException(RequestLifetimeHttpModuleResources.HttpContextNotAvailable);
+
             return LifetimeScope ?? (LifetimeScope = InitializeLifetimeScope(configurationAction, container));
         }
 

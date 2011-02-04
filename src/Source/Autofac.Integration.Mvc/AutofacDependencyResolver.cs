@@ -37,7 +37,7 @@ namespace Autofac.Integration.Mvc
     {
         readonly ILifetimeScope _container;
         readonly Action<ContainerBuilder> _configurationAction;
-        ILifetimeScopeProvider _lifetimeScopeProvider;
+        readonly ILifetimeScopeProvider _lifetimeScopeProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacDependencyResolver"/> class.
@@ -47,7 +47,9 @@ namespace Autofac.Integration.Mvc
         {
             if (container == null) throw new ArgumentNullException("container");
             _container = container;
-            _container.TryResolve(out _lifetimeScopeProvider);
+
+            if (!_container.TryResolve(out _lifetimeScopeProvider))
+                _lifetimeScopeProvider = new DefaultLifetimeScopeProvider();
         }
 
         /// <summary>
@@ -96,25 +98,8 @@ namespace Autofac.Integration.Mvc
         {
             get
             {
-                if (_lifetimeScopeProvider == null)
-                {
-                    _lifetimeScopeProvider = GetRequestLifetimeHttpModule();
-                }
                 return _lifetimeScopeProvider.GetLifetimeScope(_container, _configurationAction);
             }
-        }
-
-        /// <summary>
-        /// Gets the request lifetime HTTP module.
-        /// </summary>
-        /// <returns>The HTTP module as an <see cref="ILifetimeScopeProvider"/> instance.</returns>
-        internal static ILifetimeScopeProvider GetRequestLifetimeHttpModule()
-        {
-            if (RequestLifetimeHttpModule.Instance == null)
-                throw new InvalidOperationException(string.Format(
-                    AutofacDependencyResolverResources.HttpModuleNotLoaded, typeof(RequestLifetimeHttpModule)));
-
-            return RequestLifetimeHttpModule.Instance;
         }
     }
 }

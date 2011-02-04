@@ -112,14 +112,6 @@ namespace Autofac.Tests.Integration.Mvc
             Assert.That(services.Count(), Is.EqualTo(1));
         }
 
-        [Test]
-        public void MeaningfulExceptionThrowWhenHttpModuleNotLoaded()
-        {
-            var exception = Assert.Throws<InvalidOperationException>(() => AutofacDependencyResolver.GetRequestLifetimeHttpModule());
-            string expectedMessage = string.Format(AutofacDependencyResolverResources.HttpModuleNotLoaded, typeof(RequestLifetimeHttpModule));
-            Assert.That(exception.Message, Is.EqualTo(expectedMessage));
-        }
-
         static IContainer GetContainer(Action<ContainerBuilder> configurationAction = null)
         {
             ContainerBuilder builder = new ContainerBuilder();
