@@ -116,6 +116,7 @@ namespace Autofac.Core.Lifetime
         /// <returns>A new lifetime scope.</returns>
         public ILifetimeScope BeginLifetimeScope(object tag)
         {
+            CheckNotDisposed();
             var scope = new LifetimeScope(_componentRegistry, this, tag);
             RaiseBeginning(scope);
             return scope;
@@ -169,6 +170,7 @@ namespace Autofac.Core.Lifetime
         public ILifetimeScope BeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction)
         {
             if (configurationAction == null) throw new ArgumentNullException("configurationAction");
+            CheckNotDisposed();
 
             var builder =  new ContainerBuilder();
 
@@ -207,6 +209,10 @@ namespace Autofac.Core.Lifetime
         /// <exception cref="DependencyResolutionException"/>
         public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
+            if (registration == null) throw new ArgumentNullException("registration");
+            if (parameters == null) throw new ArgumentNullException("parameters");
+            CheckNotDisposed();
+
             lock (_synchRoot)
             {
                 var operation = new ResolveOperation(this);
@@ -295,6 +301,12 @@ namespace Autofac.Core.Lifetime
             }
 
             base.Dispose(disposing);
+        }
+
+        void CheckNotDisposed()
+        {
+            if (IsDisposed)
+                throw new ObjectDisposedException(LifetimeScopeResources.ScopeIsDisposed);
         }
 
         /// <summary>

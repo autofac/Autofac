@@ -112,6 +112,11 @@
     <Compile Include="Core\KeyedService.cs" />
     <Compile Include="Core\Lifetime\LifetimeScopeBeginningEventArgs.cs" />
     <Compile Include="Core\Lifetime\LifetimeScopeEndingEventArgs.cs" />
+    <Compile Include="Core\Lifetime\LifetimeScopeResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LifetimeScopeResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Core\RegistrationSourceAddedEventArgs.cs" />
     <Compile Include="Core\Resolving\IInstanceLookup.cs" />
     <Compile Include="Core\Resolving\InstanceLookupCompletionBeginningEventArgs.cs" />
@@ -405,6 +410,10 @@
     <EmbeddedResource Include="Core\DependencyResolutionExceptionResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DependencyResolutionExceptionResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Lifetime\LifetimeScopeResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LifetimeScopeResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Core\Lifetime\MatchingScopeLifetimeResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
