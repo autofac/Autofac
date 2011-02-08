@@ -189,7 +189,7 @@ namespace AutofacContrib.Tests.Moq
         private static void AssertProperties(AutoMock mock)
         {
             Assert.IsNotNull(mock.Container);
-            Assert.IsNotNull(mock.MockFactory);
+            Assert.IsNotNull(mock.MockRepository);
         }
 
         private static void RunTest(AutoMock mock)
