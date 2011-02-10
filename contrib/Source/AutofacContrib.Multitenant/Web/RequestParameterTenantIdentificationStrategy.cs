@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2010 Autofac Contributors
+// Copyright (c) 2010 Autofac Contributors
 //
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
@@ -92,7 +92,7 @@ namespace AutofacContrib.Multitenant.Web
         public bool TryIdentifyTenant(out object tenantId)
         {
             var context = HttpContext.Current;
-            if (context == null)
+            if (context == null || context.Request == null)
             {
                 tenantId = null;
                 return false;
