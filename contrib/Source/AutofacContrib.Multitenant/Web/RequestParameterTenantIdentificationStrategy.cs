@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2010 Autofac Contributors
+// Copyright (c) 2010 Autofac Contributors
 //
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
@@ -92,10 +92,22 @@ namespace AutofacContrib.Multitenant.Web
         public bool TryIdentifyTenant(out object tenantId)
         {
             var context = HttpContext.Current;
-            if (context == null)
+            try
             {
-                tenantId = null;
-                return false;
+                if (context == null || context.Request == null)
+                {
+                    tenantId = null;
+                    return false;
+                }
+            }
+            catch(HttpException)
+            {
+                    // This will happen at application startup in MVC3
+                    // integration since the ILifetimeScopeProvider tries
+                    // to be resolved from the container at the point where
+                    // a new AutofacDependencyResolver is created.
+                    tenantId = null;
+                    return false;
             }
 
             tenantId = context.Request.Params[this.ParameterName];
