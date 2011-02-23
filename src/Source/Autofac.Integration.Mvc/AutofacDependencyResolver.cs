@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Autofac.Integration.Mvc
@@ -37,7 +36,7 @@ namespace Autofac.Integration.Mvc
     {
         readonly ILifetimeScope _container;
         readonly Action<ContainerBuilder> _configurationAction;
-        readonly ILifetimeScopeProvider _lifetimeScopeProvider;
+        ILifetimeScopeProvider _lifetimeScopeProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacDependencyResolver"/> class.
@@ -47,9 +46,6 @@ namespace Autofac.Integration.Mvc
         {
             if (container == null) throw new ArgumentNullException("container");
             _container = container;
-
-            if (!_container.TryResolve(out _lifetimeScopeProvider))
-                _lifetimeScopeProvider = new DefaultLifetimeScopeProvider();
         }
 
         /// <summary>
@@ -98,6 +94,11 @@ namespace Autofac.Integration.Mvc
         {
             get
             {
+                if (_lifetimeScopeProvider == null)
+                {
+                    if (!_container.TryResolve(out _lifetimeScopeProvider))
+                        _lifetimeScopeProvider = new DefaultLifetimeScopeProvider();
+                }
                 return _lifetimeScopeProvider.GetLifetimeScope(_container, _configurationAction);
             }
         }
