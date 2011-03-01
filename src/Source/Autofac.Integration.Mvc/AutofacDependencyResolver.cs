@@ -98,9 +98,9 @@ namespace Autofac.Integration.Mvc
             {
                 if (_lifetimeScopeProvider == null)
                 {
-                    _lifetimeScopeProvider = new DefaultLifetimeScopeProvider();
+                    _lifetimeScopeProvider = new RequestLifetimeScopeProvider(_container, _configurationAction);
                 }
-                return _lifetimeScopeProvider.GetLifetimeScope(_container, _configurationAction);
+                return _lifetimeScopeProvider.GetLifetimeScope();
             }
         }
 

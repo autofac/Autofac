@@ -38,8 +38,9 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void NestedLifetimeScopeIsCreated()
         {
-            IContainer container = new ContainerBuilder().Build();
-            AutofacDependencyResolver resolver = new AutofacDependencyResolver(container, new StubLifetimeScopeProvider());
+            var container = new ContainerBuilder().Build();
+            var lifetimeScopeProvider = new StubLifetimeScopeProvider(container);
+            var resolver = new AutofacDependencyResolver(container, lifetimeScopeProvider);
 
             Assert.That(resolver.RequestLifetimeScope, Is.Not.Null);
         }
@@ -47,7 +48,7 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void NullContainerThrowsException()
         {
-            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => new AutofacDependencyResolver(null));
             Assert.That(exception.ParamName, Is.EqualTo("container"));
 
@@ -67,9 +68,9 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void NullConfigurationActionThrowsException()
         {
-            IContainer container = new ContainerBuilder().Build();
+            var container = new ContainerBuilder().Build();
 
-            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => new AutofacDependencyResolver(container, (Action<ContainerBuilder>)null));
             Assert.That(exception.ParamName, Is.EqualTo("configurationAction"));
 
@@ -81,9 +82,9 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void NullLifetimeScopeProviderThrowsException()
         {
-            IContainer container = new ContainerBuilder().Build();
+            var container = new ContainerBuilder().Build();
 
-            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => new AutofacDependencyResolver(container, (ILifetimeScopeProvider)null));
             Assert.That(exception.ParamName, Is.EqualTo("lifetimeScopeProvider"));
 
@@ -95,7 +96,7 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void ApplicationContainerExposed()
         {
-            IContainer container = new ContainerBuilder().Build();
+            var container = new ContainerBuilder().Build();
             var dependencyResolver = new AutofacDependencyResolver(container);
 
             Assert.That(dependencyResolver.ApplicationContainer, Is.EqualTo(container));
@@ -104,12 +105,13 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void ConfigurationActionInvokedForNestedLifetime()
         {
-            IContainer container = new ContainerBuilder().Build();
+            var container = new ContainerBuilder().Build();
             Action<ContainerBuilder> configurationAction = builder => builder.Register(c => new object());
-            AutofacDependencyResolver resolver = new AutofacDependencyResolver(container, new StubLifetimeScopeProvider(), configurationAction);
+            var lifetimeScopeProvider = new StubLifetimeScopeProvider(container, configurationAction);
+            var resolver = new AutofacDependencyResolver(container, lifetimeScopeProvider, configurationAction);
 
-            object service = resolver.GetService(typeof(object));
-            IEnumerable<object> services = resolver.GetServices(typeof(object));
+            var service = resolver.GetService(typeof(object));
+            var services = resolver.GetServices(typeof(object));
 
             Assert.That(service, Is.Not.Null);
             Assert.That(services.Count(), Is.EqualTo(1));
@@ -118,10 +120,11 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void GetServiceReturnsNullForUnregisteredService()
         {
-            IContainer container = new ContainerBuilder().Build();
-            AutofacDependencyResolver resolver = new AutofacDependencyResolver(container, new StubLifetimeScopeProvider());
+            var container = new ContainerBuilder().Build();
+            var lifetimeScopeProvider = new StubLifetimeScopeProvider(container);
+            var resolver = new AutofacDependencyResolver(container, lifetimeScopeProvider);
 
-            object service = resolver.GetService(typeof(object));
+            var service = resolver.GetService(typeof(object));
 
             Assert.That(service, Is.Null);
         }
@@ -129,12 +132,13 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void GetServiceReturnsRegisteredService()
         {
-            ContainerBuilder builder = new ContainerBuilder();
+            var builder = new ContainerBuilder();
             builder.Register(c => new object());
-            IContainer container = builder.Build();
-            AutofacDependencyResolver resolver = new AutofacDependencyResolver(container, new StubLifetimeScopeProvider());
+            var container = builder.Build();
+            var lifetimeScopeProvider = new StubLifetimeScopeProvider(container);
+            var resolver = new AutofacDependencyResolver(container, lifetimeScopeProvider);
 
-            object service = resolver.GetService(typeof(object));
+            var service = resolver.GetService(typeof(object));
 
             Assert.That(service, Is.Not.Null);
         }
@@ -142,10 +146,11 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void GetServicesReturnsEmptyEnumerableForUnregisteredService()
         {
-            IContainer container = new ContainerBuilder().Build();
-            AutofacDependencyResolver resolver = new AutofacDependencyResolver(container, new StubLifetimeScopeProvider());
+            var container = new ContainerBuilder().Build();
+            var lifetimeScopeProvider = new StubLifetimeScopeProvider(container);
+            var resolver = new AutofacDependencyResolver(container, lifetimeScopeProvider);
 
-            IEnumerable<object> services = resolver.GetServices(typeof(object));
+            var services = resolver.GetServices(typeof(object));
 
             Assert.That(services.Count(), Is.EqualTo(0));
         }
@@ -153,12 +158,13 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void GetServicesReturnsRegisteredService()
         {
-            ContainerBuilder builder = new ContainerBuilder();
+            var builder = new ContainerBuilder();
             builder.Register(c => new object());
-            IContainer container = builder.Build();
-            AutofacDependencyResolver resolver = new AutofacDependencyResolver(container, new StubLifetimeScopeProvider());
+            var container = builder.Build();
+            var lifetimeScopeProvider = new StubLifetimeScopeProvider(container);
+            var resolver = new AutofacDependencyResolver(container, lifetimeScopeProvider);
 
-            IEnumerable<object> services = resolver.GetServices(typeof(object));
+            var services = resolver.GetServices(typeof(object));
 
             Assert.That(services.Count(), Is.EqualTo(1));
         }

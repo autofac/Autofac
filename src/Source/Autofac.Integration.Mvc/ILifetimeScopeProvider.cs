@@ -35,10 +35,12 @@ namespace Autofac.Integration.Mvc
         /// <summary>
         /// Gets a nested lifetime scope that services can be resolved from.
         /// </summary>
-        /// <param name="container">The parent container.</param>
-        /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
-        /// that adds component registations visible only in nested lifetime scopes.</param>
         /// <returns>A new or existing nested lifetime scope.</returns>
-        ILifetimeScope GetLifetimeScope(ILifetimeScope container, Action<ContainerBuilder> configurationAction);
+        ILifetimeScope GetLifetimeScope();
+
+        /// <summary>
+        /// Ends the current lifetime scope.
+        /// </summary>
+        void EndLifetimeScope();
     }
 }

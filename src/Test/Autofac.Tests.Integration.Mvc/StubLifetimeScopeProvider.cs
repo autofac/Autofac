@@ -6,17 +6,36 @@ namespace Autofac.Tests.Integration.Mvc
     public class StubLifetimeScopeProvider : ILifetimeScopeProvider
     {
         ILifetimeScope _lifetimeScope;
+        readonly ILifetimeScope _container;
+        readonly Action<ContainerBuilder> _configurationAction;
 
-        public ILifetimeScope GetLifetimeScope(ILifetimeScope container, Action<ContainerBuilder> configurationAction)
+        public StubLifetimeScopeProvider(ILifetimeScope container)
         {
-            return _lifetimeScope ?? (_lifetimeScope = GetLifetimeScope(configurationAction, container));
+            _container = container;
         }
 
-        static ILifetimeScope GetLifetimeScope(Action<ContainerBuilder> requestLifetimeConfiguration, ILifetimeScope container)
+        public StubLifetimeScopeProvider(ILifetimeScope container, Action<ContainerBuilder> configurationAction)
         {
-            return (requestLifetimeConfiguration == null)
-                       ? container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag)
-                       : container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag, requestLifetimeConfiguration);
+            _container = container;
+            _configurationAction = configurationAction;
+        }
+
+        public ILifetimeScope GetLifetimeScope()
+        {
+            return _lifetimeScope ?? (_lifetimeScope = BuildLifetimeScope());
+        }
+
+        public void EndLifetimeScope()
+        {
+            if (_lifetimeScope != null)
+                _lifetimeScope.Dispose();
+        }
+
+        ILifetimeScope BuildLifetimeScope()
+        {
+            return (_configurationAction == null)
+                       ? _container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag)
+                       : _container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag, _configurationAction);
         }
     }
 }

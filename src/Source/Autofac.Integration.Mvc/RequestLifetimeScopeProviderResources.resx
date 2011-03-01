@@ -120,4 +120,7 @@
   <data name="HttpContextNotAvailable" xml:space="preserve">
     <value>The request lifetime scope cannot be created because the HttpContext is not available.</value>
   </data>
+  <data name="NullLifetimeScopeReturned" xml:space="preserve">
+    <value>The 'GetLifetimeScopeCore' method implementation on '{0}' returned a null ILifetimeScope instance. When overridden this method must return a valid ILifetimeScope instance for the current HTTP request.</value>
+  </data>
 </root>
