@@ -61,6 +61,29 @@ namespace Autofac.Integration.Mvc
         }
 
         /// <summary>
+        /// Gets the global, application-wide container.
+        /// </summary>
+        public ILifetimeScope ApplicationContainer
+        {
+            get { return _container; }
+        }
+
+        /// <summary>
+        /// Gets the configuration action that adds component registations 
+        /// visible only in HTTP request lifetime scopes.
+        /// </summary>
+        protected Action<ContainerBuilder> ConfigurationAction
+        {
+            get { return _configurationAction; }
+        }
+
+        static ILifetimeScope LifetimeScope
+        {
+            get { return (ILifetimeScope)HttpContext.Current.Items[typeof(ILifetimeScope)]; }
+            set { HttpContext.Current.Items[typeof(ILifetimeScope)] = value; }
+        }
+
+        /// <summary>
         /// Gets a HTTP request lifetime scope that services can be resolved from.
         /// </summary>
         /// <returns>A new or existing lifetime scope for the current HTTP request.</returns>
@@ -95,15 +118,9 @@ namespace Autofac.Integration.Mvc
         /// <returns>A new lifetime scope for the current HTTP request.</returns>
         protected virtual ILifetimeScope GetLifetimeScopeCore()
         {
-            return (_configurationAction == null)
-                ? _container.BeginLifetimeScope(HttpRequestTag)
-                : _container.BeginLifetimeScope(HttpRequestTag, _configurationAction);
-        }
-
-        static ILifetimeScope LifetimeScope
-        {
-            get { return (ILifetimeScope)HttpContext.Current.Items[typeof(ILifetimeScope)]; }
-            set { HttpContext.Current.Items[typeof(ILifetimeScope)] = value; }
+            return (ConfigurationAction == null)
+                       ? ApplicationContainer.BeginLifetimeScope(HttpRequestTag)
+                       : ApplicationContainer.BeginLifetimeScope(HttpRequestTag, ConfigurationAction);
         }
     }
 }

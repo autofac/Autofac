@@ -42,5 +42,10 @@ namespace Autofac.Integration.Mvc
         /// Ends the current lifetime scope.
         /// </summary>
         void EndLifetimeScope();
+
+        /// <summary>
+        /// Gets the global, application-wide container.
+        /// </summary>
+        ILifetimeScope ApplicationContainer { get; }
     }
 }

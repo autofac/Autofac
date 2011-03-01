@@ -20,6 +20,11 @@ namespace Autofac.Tests.Integration.Mvc
             _configurationAction = configurationAction;
         }
 
+        public ILifetimeScope ApplicationContainer
+        {
+            get { return _container; }
+        }
+
         public ILifetimeScope GetLifetimeScope()
         {
             return _lifetimeScope ?? (_lifetimeScope = BuildLifetimeScope());
