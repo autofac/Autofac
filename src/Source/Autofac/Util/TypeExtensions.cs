@@ -50,13 +50,8 @@ namespace Autofac.Util
         /// <returns>True if a closed implementation was found; otherwise false.</returns>
         static IEnumerable<Type> FindAssignableTypesThatClose(Type candidateType, Type openGenericServiceType)
         {
-            if (candidateType.IsAbstract) yield break;
-
-            foreach (var assignableType in TypesAssignableFrom(candidateType)
-                .Where(t => IsGenericTypeDefinedBy(t, openGenericServiceType)))
-            {
-                yield return assignableType;
-            }
+            return TypesAssignableFrom(candidateType)
+                .Where(t => IsGenericTypeDefinedBy(t, openGenericServiceType));
         }
 
         static IEnumerable<Type> TypesAssignableFrom(Type candidateType)
