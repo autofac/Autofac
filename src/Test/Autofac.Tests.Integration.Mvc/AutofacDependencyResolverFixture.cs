@@ -26,9 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Autofac.Integration.Mvc;
-using Moq;
 using NUnit.Framework;
 
 namespace Autofac.Tests.Integration.Mvc
@@ -114,21 +112,6 @@ namespace Autofac.Tests.Integration.Mvc
             Assert.That(services.Count(), Is.EqualTo(1));
         }
 
-        [Test]
-        public void MeaningfulExceptionThrowWhenHttpContextUnavailable()
-        {
-            var exception = Assert.Throws<InvalidOperationException>(() => AutofacDependencyResolver.GetRequestLifetimeHttpModule(null));
-            Assert.That(exception.Message, Is.EqualTo(AutofacDependencyResolverResources.HttpContextNotAvailable));
-        }
-
-        [Test]
-        public void MeaningfulExceptionThrowWhenApplicationInstanceUnavailable()
-        {
-            Mock<HttpContextBase> httpContext = new Mock<HttpContextBase>();
-            var exception = Assert.Throws<InvalidOperationException>(() => AutofacDependencyResolver.GetRequestLifetimeHttpModule(httpContext.Object));
-            Assert.That(exception.Message, Is.EqualTo(AutofacDependencyResolverResources.ApplicationInstanceNotAvailable));
-        }
-
         static IContainer GetContainer(Action<ContainerBuilder> configurationAction = null)
         {
             ContainerBuilder builder = new ContainerBuilder();
@@ -136,23 +119,6 @@ namespace Autofac.Tests.Integration.Mvc
             if (configurationAction != null)
                 configurationAction(builder);
             return builder.Build();
-        }
-    }
-
-    public class StubLifetimeScopeProvider : ILifetimeScopeProvider
-    {
-        ILifetimeScope _lifetimeScope;
-
-        public ILifetimeScope GetLifetimeScope(ILifetimeScope container, Action<ContainerBuilder> configurationAction)
-        {
-            return _lifetimeScope ?? (_lifetimeScope = GetLifetimeScope(configurationAction, container));
-        }
-
-        static ILifetimeScope GetLifetimeScope(Action<ContainerBuilder> requestLifetimeConfiguration, ILifetimeScope container)
-        {
-            return (requestLifetimeConfiguration == null)
-                ? container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag)
-                : container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag, requestLifetimeConfiguration);
         }
     }
 }

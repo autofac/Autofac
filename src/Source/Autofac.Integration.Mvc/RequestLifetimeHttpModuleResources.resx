@@ -117,13 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ApplicationInstanceNotAvailable" xml:space="preserve">
-    <value>The request lifetime scope cannot be created because the ApplicationInstance is not available.</value>
-  </data>
   <data name="HttpContextNotAvailable" xml:space="preserve">
     <value>The request lifetime scope cannot be created because the HttpContext is not available.</value>
-  </data>
-  <data name="HttpModuleNotLoaded" xml:space="preserve">
-    <value>The HTTP module '{0}' has not been loaded.</value>
   </data>
 </root>

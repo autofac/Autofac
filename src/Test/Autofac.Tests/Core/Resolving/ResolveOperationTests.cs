@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using Autofac.Core;
 using Autofac.Tests.Scenarios.Dependencies;
 
@@ -117,6 +118,17 @@ namespace Autofac.Tests.Core.Resolving
             Assert.That(secondEventRaised);
         }
 
-
+        [Test]
+        public void ReusingTheTemporaryContextAfterTheOperationIsFinishedThrows()
+        {
+            IComponentContext ctx = null;
+            var builder = new ContainerBuilder();
+            builder.Register(c => { ctx = c; return new object(); });
+            builder.RegisterInstance("Hello");
+            var container = builder.Build();
+            container.Resolve<string>();
+            container.Resolve<object>();
+            Assert.Throws<ObjectDisposedException>(() => ctx.Resolve<string>());
+        }
     }
 }

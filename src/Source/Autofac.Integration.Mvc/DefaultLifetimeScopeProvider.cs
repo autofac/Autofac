@@ -1,5 +1,5 @@
-// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+﻿// This software is part of the Autofac IoC container
+// Copyright (c) 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -24,36 +24,24 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
-using Autofac.Features.Metadata;
 
 namespace Autofac.Integration.Mvc
 {
     /// <summary>
-    /// Autofac implementation of the <see cref="IModelBinderProvider"/> interface.
+    /// Creates the request lifetime scope using the <see cref="RequestLifetimeHttpModule"/>.
     /// </summary>
-    public class AutofacModelBinderProvider : IModelBinderProvider
+    internal class DefaultLifetimeScopeProvider : ILifetimeScopeProvider
     {
         /// <summary>
-        /// Metadata key for the supported model types.
+        /// Gets a nested lifetime scope that services can be resolved from.
         /// </summary>
-        internal static readonly string MetadataKey = "SupportedModelTypes";
-
-        /// <summary>
-        /// Gets the model binder associated with the provided model type.
-        /// </summary>
-        /// <param name="modelType">Type of the model.</param>
-        /// <returns>An <see cref="IModelBinder"/> instance if found; otherwise, <c>null</c>.</returns>
-        public IModelBinder GetBinder(Type modelType)
+        /// <param name="container">The parent container.</param>
+        /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
+        /// that adds component registations visible only in nested lifetime scopes.</param>
+        /// <returns>A new or existing nested lifetime scope.</returns>
+        public ILifetimeScope GetLifetimeScope(ILifetimeScope container, Action<ContainerBuilder> configurationAction)
         {
-            var modelBinders = DependencyResolver.Current.GetServices<Meta<Lazy<IModelBinder>>>();
-
-            var modelBinder = modelBinders
-                .Where(binder => binder.Metadata.ContainsKey(MetadataKey))
-                .FirstOrDefault(binder => ((List<Type>)binder.Metadata[MetadataKey]).Contains(modelType));
-            return (modelBinder != null) ? modelBinder.Value.Value : null;
+            return RequestLifetimeHttpModule.GetLifetimeScope(container, configurationAction);
         }
     }
 }
