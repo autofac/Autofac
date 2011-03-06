@@ -149,7 +149,7 @@ namespace Autofac
             componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
             componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
             componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
-#if !NET35
+#if !NET35 && !WINDOWS_PHONE
             componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
             componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
             componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());

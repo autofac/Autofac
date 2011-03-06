@@ -170,11 +170,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CollectionRegistrationSourceResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSourceResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>GeneratedFactoryRegistrationSourceResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Features\LazyDependencies\LazyRegistrationSourceResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -331,7 +326,6 @@
     <Compile Include="Core\TypedService.cs" />
     <Compile Include="Core\UniqueService.cs" />
     <Compile Include="Features\Collections\CollectionRegistrationSource.cs" />
-    
     <Compile Include="Features\GeneratedFactories\FactoryGenerator.cs" />
     <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationExtensions.cs" />
     <Compile Include="Features\OpenGenerics\OpenGenericRegistrationSource.cs" />
@@ -388,8 +382,19 @@
   </ItemGroup>
   <ItemGroup Condition="($(MSBuildTargets)!='Windows Phone 7')">
     <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSource.cs" />
+    <EmbeddedResource Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>GeneratedFactoryRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSourceResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GeneratedFactoryRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup Condition="$(MSBuildTargets)=='Windows Phone 7'">
+    <Compile Include="Util\WindowsPhone\Enumerable.cs" />
+    <Compile Include="Util\WindowsPhone\HashSet.cs" />
     <Compile Include="Util\WindowsPhone\WP7GeneratedFactoryRegistrationSource.cs" />
     <Compile Include="Util\WindowsPhone\Expressions\Conversion.cs" />
     <Compile Include="Util\WindowsPhone\Expressions\ExpressionInterpreter.cs" />
@@ -476,10 +481,6 @@
     <EmbeddedResource Include="Features\Collections\CollectionRegistrationSourceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>CollectionRegistrationSourceResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSourceResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>GeneratedFactoryRegistrationSourceResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Features\LazyDependencies\LazyRegistrationSourceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
