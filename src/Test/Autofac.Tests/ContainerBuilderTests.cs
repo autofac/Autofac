@@ -435,5 +435,15 @@ namespace Autofac.Tests
             var idx = container.Resolve<IIndex<int, IEnumerable<string>>>();
             Assert.AreSame(cpt, idx[key].Single());
         }
+
+        [Test]
+        public void AfterCallingBuild_SubsequentCallsFail()
+        {
+            var builder = new ContainerBuilder();
+            var c = builder.Build();
+
+            var ex = Assert.Throws<InvalidOperationException>(() => builder.Build());
+            Assert.That(ex.Message.Contains("once"));
+        }
     }
 }

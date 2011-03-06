@@ -131,7 +131,7 @@ namespace Autofac
 	        if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
 
 	        if (_wasBuilt)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException(ContainerBuilderResources.BuildCanOnlyBeCalledOnce);
 
 			_wasBuilt = true;
 
