@@ -5,11 +5,11 @@ using System.Linq;
 namespace System.Collections.Generic {
 
     ///<summary>
+    /// A hashset implementation that uses an IDictionary
     ///</summary>
-    ///<typeparam name="T"></typeparam>
     public class HashSet<T> : ICollection<T>
     {
-        private Dictionary<T, short> _dict;
+        private readonly Dictionary<T, short> _dict;
 
         ///<summary>
         ///</summary>
@@ -53,7 +53,7 @@ namespace System.Collections.Generic {
         /// </summary>
         public void CopyTo(T[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            _dict.Keys.CopyTo(array, arrayIndex);
         }
 
         /// <summary>
@@ -76,12 +76,12 @@ namespace System.Collections.Generic {
         /// </returns>
         public IEnumerator<T> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return _dict.Keys.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return _dict.Keys.GetEnumerator();
         }
 
         // Properties

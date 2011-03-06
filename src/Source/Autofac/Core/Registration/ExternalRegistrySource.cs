@@ -68,7 +68,7 @@ namespace Autofac.Core.Registration
             {
                 var nextService = lastRunServices.First();
                 lastRunServices.Remove(nextService);
-                seenServices.Add(service);
+                seenServices.Add(nextService);
                 foreach (var registration in _registry.RegistrationsFor(nextService).Where(r => !r.IsAdapting()))
                 {
                     if (seenRegistrations.Contains(registration))
