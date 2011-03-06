@@ -46,7 +46,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;SL3;WINDOWS_PHONE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -398,8 +398,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup Condition="$(MSBuildTargets)=='Windows Phone 7'">
-    <Compile Include="Util\WindowsPhone\Enumerable.cs" />
-    <Compile Include="Util\WindowsPhone\HashSet.cs" />
     <Compile Include="Util\WindowsPhone\WP7GeneratedFactoryRegistrationSource.cs" />
     <Compile Include="Util\WindowsPhone\Expressions\Conversion.cs" />
     <Compile Include="Util\WindowsPhone\Expressions\ExpressionInterpreter.cs" />
