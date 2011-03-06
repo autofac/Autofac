@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Autofac.Builder;
 using Autofac.Features.Indexed;
+using Moq;
 using NUnit.Framework;
 using Autofac.Core;
 using System.Linq;
@@ -444,6 +445,21 @@ namespace Autofac.Tests
 
             var ex = Assert.Throws<InvalidOperationException>(() => builder.Build());
             Assert.That(ex.Message.Contains("once"));
+        }
+
+        [Test]
+        public void WhenTheContainerIsBuilt_StartableComponentsAreStarted()
+        {
+            var started = false;
+            var startable = new Mock<IStartable>();
+            startable.Setup(s => s.Start())
+                .Callback(() => started = true);
+
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(startable.Object);
+            builder.Build();
+
+            Assert.IsTrue(started);
         }
     }
 }
