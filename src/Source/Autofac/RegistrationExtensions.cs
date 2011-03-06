@@ -467,9 +467,9 @@ namespace Autofac
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             Keyed<TService>(
                 this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> registration,
-                Func<Type, string> serviceKeyMapping)
+                Func<Type, object> serviceKeyMapping)
         {
-            return registration.Keyed(serviceKeyMapping, typeof(TService));
+            return Keyed(registration, serviceKeyMapping, typeof(TService));
         }
 
         /// <summary>
@@ -485,7 +485,7 @@ namespace Autofac
         public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             Keyed<TLimit, TScanningActivatorData, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
-                Func<Type, string> serviceKeyMapping,
+                Func<Type, object> serviceKeyMapping,
                 Type serviceType)
             where TScanningActivatorData : ScanningActivatorData
         {
