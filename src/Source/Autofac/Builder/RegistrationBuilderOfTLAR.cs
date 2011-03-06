@@ -139,7 +139,7 @@ namespace Autofac.Builder
         {
             if (lifetimeScopeTag == null) throw new ArgumentNullException("lifetimeScopeTag");
             RegistrationData.Sharing = InstanceSharing.Shared;
-            RegistrationData.Lifetime = new MatchingScopeLifetime(scope => lifetimeScopeTag.Equals(scope.Tag));
+            RegistrationData.Lifetime = new MatchingScopeLifetime(lifetimeScopeTag);
             return this;
         }
 

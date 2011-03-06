@@ -119,7 +119,7 @@ namespace Autofac.Tests.Core.Resolving
         }
 
         [Test]
-        public void ReusingTheTemporaryContextAfterTheOperationIsFinishedThrows()
+        public void AfterTheOperationIsFinished_ReusingTheTemporaryContextThrows()
         {
             IComponentContext ctx = null;
             var builder = new ContainerBuilder();

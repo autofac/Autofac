@@ -427,6 +427,7 @@
     <EmbeddedResource Include="Core\Lifetime\MatchingScopeLifetimeResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MatchingScopeLifetimeResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Core\Registration\ComponentNotRegisteredExceptionResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
