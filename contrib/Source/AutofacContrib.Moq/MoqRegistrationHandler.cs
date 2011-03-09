@@ -45,7 +45,7 @@ namespace AutofacContrib.Moq
         /// </summary>
         public MoqRegistrationHandler()
         {
-            var factoryType = typeof(MockRepository);
+            var factoryType = typeof(MockRepository);   
             _createMethod = factoryType.GetMethod("Create", new Type[] { });
         }
 
@@ -67,7 +67,8 @@ namespace AutofacContrib.Moq
             var typedService = service as TypedService;
             if (typedService == null ||
                 !typedService.ServiceType.IsInterface ||
-                typeof(IEnumerable).IsAssignableFrom(typedService.ServiceType) ||
+                typedService.ServiceType.IsGenericType && typedService.ServiceType.GetGenericTypeDefinition() == typeof(IEnumerable<>) ||
+                typedService.ServiceType.IsArray ||
                 typeof(IContainerAwareComponent).IsAssignableFrom(typedService.ServiceType))
                 return Enumerable.Empty<IComponentRegistration>();
 
