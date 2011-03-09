@@ -75,15 +75,20 @@ namespace Autofac.Core.Resolving
         public object Execute(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
             object result;
-
+            
             try
             {
                 result = ResolveComponent(registration, parameters);
             }
+            catch(DependencyResolutionException dependencyResolutionException)
+            {
+                End(dependencyResolutionException);
+                throw;
+            }
             catch (Exception exception)
             {
                 End(exception);
-                throw;
+                throw new DependencyResolutionException(ResolveOperationResources.ExceptionDuringResolve, exception);
             }
 
             End();

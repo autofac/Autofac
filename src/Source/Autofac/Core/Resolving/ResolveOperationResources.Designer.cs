@@ -61,6 +61,15 @@ namespace Autofac.Core.Resolving {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An exception was thrown while executing a resolve operation. See the InnerException for details..
+        /// </summary>
+        internal static string ExceptionDuringResolve {
+            get {
+                return ResourceManager.GetString("ExceptionDuringResolve", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Probable circular dependency between factory-scoped components. Chain includes &apos;{0}&apos;.
         /// </summary>
         internal static string MaxDepthExceeded {
