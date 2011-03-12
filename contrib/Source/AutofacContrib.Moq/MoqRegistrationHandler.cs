@@ -69,7 +69,7 @@ namespace AutofacContrib.Moq
                 !typedService.ServiceType.IsInterface ||
                 typedService.ServiceType.IsGenericType && typedService.ServiceType.GetGenericTypeDefinition() == typeof(IEnumerable<>) ||
                 typedService.ServiceType.IsArray ||
-                typeof(IContainerAwareComponent).IsAssignableFrom(typedService.ServiceType))
+                typeof(IStartable).IsAssignableFrom(typedService.ServiceType))
                 return Enumerable.Empty<IComponentRegistration>();
 
             var rb = RegistrationBuilder.ForDelegate((c, p) =>

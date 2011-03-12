@@ -1,5 +1,6 @@
 ﻿using System;
 using Autofac;
+using Autofac.Core;
 using Castle.DynamicProxy;
 using NUnit.Framework;
 using AutofacContrib.DynamicProxy2;
@@ -40,14 +41,15 @@ namespace AutofacContrib.Tests.DynamicProxy2
             }
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void DetectsNonInterfaceServices()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<C>().EnableInterfaceInterceptors();
             builder.RegisterType<AddOneInterceptor>();
             var c = builder.Build();
-            c.Resolve<C>();
+            var dx = Assert.Throws<DependencyResolutionException>(() => c.Resolve<C>());
+            Assert.IsInstanceOf<InvalidOperationException>(dx.InnerException);
         }
 
         [Test]
