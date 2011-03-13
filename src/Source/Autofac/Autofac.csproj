@@ -103,6 +103,11 @@
       <DependentUpon>RegistrationBuilderResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Builder\RegistrationExtensions.cs" />
+    <Compile Include="ContainerBuilderResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ContainerBuilderResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Core\Activators\Delegate\DelegateActivatorResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -337,6 +342,7 @@
     <Compile Include="Features\OwnedInstances\Owned.cs" />
     <Compile Include="Features\OwnedInstances\OwnedInstanceRegistrationSource.cs" />
     <Compile Include="Features\Scanning\ScanningRegistrationExtensions.cs" />
+    <Compile Include="IStartable.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="Builder\ReflectionActivatorData.cs" />
     <Compile Include="Builder\RegistrationBuilderOfTLAR.cs" />
@@ -413,6 +419,10 @@
     <EmbeddedResource Include="Builder\RegistrationBuilderResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RegistrationBuilderResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ContainerBuilderResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ContainerBuilderResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Core\Activators\Delegate\DelegateActivatorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

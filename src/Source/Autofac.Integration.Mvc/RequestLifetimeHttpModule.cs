@@ -40,28 +40,18 @@ namespace Autofac.Integration.Mvc
         internal static readonly object HttpRequestTag = "httpRequest";
 
         /// <summary>
+        /// Gets the lifetime scope provider that should be notified when a HTTP request ends.
+        /// </summary>
+        internal static ILifetimeScopeProvider LifetimeScopeProvider { get; private set; }
+
+        /// <summary>
         /// Initializes a module and prepares it to handle requests.
         /// </summary>
         /// <param name="context">An <see cref="T:System.Web.HttpApplication"/> that provides access to the 
         /// methods, properties, and events common to all application objects within an ASP.NET application</param>
         public void Init(HttpApplication context)
         {
-            context.EndRequest += ContextEndRequest;
-        }
-
-        /// <summary>
-        /// Gets a nested lifetime scope that services can be resolved from.
-        /// </summary>
-        /// <param name="container">The parent container.</param>
-        /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
-        /// that adds component registations visible only in nested lifetime scopes.</param>
-        /// <returns>A new or existing nested lifetime scope.</returns>
-        public static ILifetimeScope GetLifetimeScope(ILifetimeScope container, Action<ContainerBuilder> configurationAction)
-        {
-            if (HttpContext.Current == null)
-                throw new InvalidOperationException(RequestLifetimeHttpModuleResources.HttpContextNotAvailable);
-
-            return LifetimeScope ?? (LifetimeScope = InitializeLifetimeScope(configurationAction, container));
+            context.EndRequest += OnEndRequest;
         }
 
         /// <summary>
@@ -71,24 +61,17 @@ namespace Autofac.Integration.Mvc
         {
         }
 
-        static ILifetimeScope LifetimeScope
+        public static void SetLifetimeScopeProvider(ILifetimeScopeProvider lifetimeScopeProvider)
         {
-            get { return (ILifetimeScope)HttpContext.Current.Items[typeof(ILifetimeScope)]; }
-            set { HttpContext.Current.Items[typeof(ILifetimeScope)] = value; }
+            if (lifetimeScopeProvider == null) throw new ArgumentNullException("lifetimeScopeProvider");
+
+            LifetimeScopeProvider = lifetimeScopeProvider;
         }
 
-        static void ContextEndRequest(object sender, EventArgs e)
+        static void OnEndRequest(object sender, EventArgs e)
         {
-            ILifetimeScope lifetimeScope = LifetimeScope;
-            if (lifetimeScope != null)
-                lifetimeScope.Dispose();
-        }
-
-        static ILifetimeScope InitializeLifetimeScope(Action<ContainerBuilder> configurationAction, ILifetimeScope container)
-        {
-            return (configurationAction == null)
-                ? container.BeginLifetimeScope(HttpRequestTag)
-                : container.BeginLifetimeScope(HttpRequestTag, configurationAction);
+            if (LifetimeScopeProvider != null)
+                LifetimeScopeProvider.EndLifetimeScope();
         }
     }
 }

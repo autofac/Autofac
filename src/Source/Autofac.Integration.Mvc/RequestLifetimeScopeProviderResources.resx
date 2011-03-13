@@ -112,14 +112,15 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="MatchingScopeNotFound" xml:space="preserve">
-    <value>No scope with a Tag matching '{0}' is visible from the scope in which the instance was requested. This generally indicates that a 
-    component registered as per-HTTP request is being reqested by a SingleInstance() component (or a similar scenario.) Under the web integration
-    always request dependencies from the DependencyResolver.Current or ILifetimeScopeProvider.RequestLifetime, never from the container itself.</value>
+  <data name="HttpContextNotAvailable" xml:space="preserve">
+    <value>The request lifetime scope cannot be created because the HttpContext is not available.</value>
+  </data>
+  <data name="NullLifetimeScopeReturned" xml:space="preserve">
+    <value>The 'GetLifetimeScopeCore' method implementation on '{0}' returned a null ILifetimeScope instance. When overridden this method must return a valid ILifetimeScope instance for the current HTTP request.</value>
   </data>
 </root>

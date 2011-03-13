@@ -120,6 +120,7 @@
     <Compile Include="Core\ComponentRegistrationTests.cs" />
     <Compile Include="Core\KeyedServiceTests.cs" />
     <Compile Include="Core\Lifetime\LifetimeScopeTests.cs" />
+    <Compile Include="Core\Lifetime\MatchingScopeLifetimeTests.cs" />
     <Compile Include="Core\NamedPropertyParameterTests.cs" />
     <Compile Include="Core\DisposerTests.cs" />
     <Compile Include="Core\Registration\ComponentRegistryTests.cs" />

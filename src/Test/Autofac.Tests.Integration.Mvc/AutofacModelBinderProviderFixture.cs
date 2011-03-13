@@ -91,10 +91,9 @@ namespace Autofac.Tests.Integration.Mvc
             builder.RegisterModelBinders(Assembly.GetExecutingAssembly());
             builder.RegisterModelBinderProvider();
 
-            builder.RegisterInstance(new StubLifetimeScopeProvider()).As<ILifetimeScopeProvider>();
-
             var container = builder.Build();
-            DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+            var lifetimeScopeProvider = new StubLifetimeScopeProvider(container);
+            DependencyResolver.SetResolver(new AutofacDependencyResolver(container, lifetimeScopeProvider));
             return container;
         }
     }

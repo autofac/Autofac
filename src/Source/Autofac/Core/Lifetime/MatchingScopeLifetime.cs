@@ -26,7 +26,6 @@
 using System;
 using System.Globalization;
 using System.Linq.Expressions;
-using Autofac.Util;
 #if WINDOWS_PHONE
 using Autofac.Util.WindowsPhone;
 #endif
@@ -64,6 +63,17 @@ namespace Autofac.Core.Lifetime
             _matchExpressionCode = matchExpression.Method.ToString();
         }
 #endif
+
+        /// <summary>
+        /// Match scopes by comparing tags for equality.
+        /// </summary>
+        /// <param name="lifetimeScopeTagToMatch">The tag applied to matching scopes.</param>
+        public MatchingScopeLifetime(object lifetimeScopeTagToMatch)
+        {
+            if (lifetimeScopeTagToMatch == null) throw new ArgumentNullException("lifetimeScopeTagToMatch");
+            _matcher = ls => lifetimeScopeTagToMatch.Equals(ls.Tag);
+            _matchExpressionCode = lifetimeScopeTagToMatch.ToString();
+        }
 
         /// <summary>
         /// Given the most nested scope visible within the resolve operation, find

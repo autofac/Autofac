@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="HttpContextNotAvailable" xml:space="preserve">
-    <value>The request lifetime scope cannot be created because the HttpContext is not available.</value>
+  <data name="BuildCanOnlyBeCalledOnce" xml:space="preserve">
+    <value>Build() or Update() can only be called once on a ContainerBuilder.</value>
   </data>
 </root>

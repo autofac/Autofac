@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac.Core.Lifetime {
+namespace Autofac {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Autofac.Core.Lifetime {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class MatchingScopeLifetimeResources {
+    internal class ContainerBuilderResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal MatchingScopeLifetimeResources() {
+        internal ContainerBuilderResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Autofac.Core.Lifetime {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Lifetime.MatchingScopeLifetimeResources", typeof(MatchingScopeLifetimeResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.ContainerBuilderResources", typeof(ContainerBuilderResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,13 +61,11 @@ namespace Autofac.Core.Lifetime {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No scope with a Tag matching &apos;{0}&apos; is visible from the scope in which the instance was requested. This generally indicates that a 
-        ///    component registered as per-HTTP request is being reqested by a SingleInstance() component (or a similar scenario.) Under the web integration
-        ///    always request dependencies from the DependencyResolver.Current or ILifetimeScopeProvider.RequestLifetime, never from the container itself..
+        ///   Looks up a localized string similar to Build() or Update() can only be called once on a ContainerBuilder..
         /// </summary>
-        internal static string MatchingScopeNotFound {
+        internal static string BuildCanOnlyBeCalledOnce {
             get {
-                return ResourceManager.GetString("MatchingScopeNotFound", resourceCulture);
+                return ResourceManager.GetString("BuildCanOnlyBeCalledOnce", resourceCulture);
             }
         }
     }

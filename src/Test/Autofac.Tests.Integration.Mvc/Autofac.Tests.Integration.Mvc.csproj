@@ -67,6 +67,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationExtensionsFixture.cs" />
     <Compile Include="RequestLifetimeHttpModuleFixture.cs" />
+    <Compile Include="RequestLifetimeScopeProviderFixture.cs" />
     <Compile Include="StubLifetimeScopeProvider.cs" />
     <Compile Include="ViewRegistrationSourceFixture.cs">
       <SubType>ASPXCodeBehind</SubType>

@@ -26,7 +26,6 @@
 using System;
 using System.Collections.Generic;
 using Autofac.Core;
-using Autofac.Core.Diagnostics;
 using Autofac.Features.Collections;
 using Autofac.Features.GeneratedFactories;
 using Autofac.Features.Indexed;
@@ -91,8 +90,8 @@ namespace Autofac
 		{
 			var result = new Container();
 			Build(result.ComponentRegistry, false);
-            foreach (var containerAware in result.Resolve<IEnumerable<IContainerAwareComponent>>())
-                containerAware.SetContainer(result);
+            foreach (var containerAware in result.Resolve<IEnumerable<IStartable>>())
+                containerAware.Start();
 			return result;
 		}
 
@@ -131,7 +130,7 @@ namespace Autofac
 	        if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
 
 	        if (_wasBuilt)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException(ContainerBuilderResources.BuildCanOnlyBeCalledOnce);
 
 			_wasBuilt = true;
 

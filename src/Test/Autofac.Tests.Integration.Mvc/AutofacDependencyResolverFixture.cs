@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Integration.Mvc;
+using Moq;
 using NUnit.Framework;
 
 namespace Autofac.Tests.Integration.Mvc
@@ -37,32 +38,80 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void NestedLifetimeScopeIsCreated()
         {
-            IContainer container = GetContainer();
-            AutofacDependencyResolver resolver = new AutofacDependencyResolver(container);
+            var container = new ContainerBuilder().Build();
+            var lifetimeScopeProvider = new StubLifetimeScopeProvider(container);
+            var resolver = new AutofacDependencyResolver(container, lifetimeScopeProvider);
 
             Assert.That(resolver.RequestLifetimeScope, Is.Not.Null);
         }
 
         [Test]
+        public void NullContainerThrowsException()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => new AutofacDependencyResolver(null));
+            Assert.That(exception.ParamName, Is.EqualTo("container"));
+
+            exception = Assert.Throws<ArgumentNullException>(
+                () => new AutofacDependencyResolver(null, cb => { }));
+            Assert.That(exception.ParamName, Is.EqualTo("container"));
+
+            exception = Assert.Throws<ArgumentNullException>(
+                () => new AutofacDependencyResolver(null, new Mock<ILifetimeScopeProvider>().Object));
+            Assert.That(exception.ParamName, Is.EqualTo("container"));
+
+            exception = Assert.Throws<ArgumentNullException>(
+                () => new AutofacDependencyResolver(null, new Mock<ILifetimeScopeProvider>().Object, cb => { }));
+            Assert.That(exception.ParamName, Is.EqualTo("container"));
+        }
+
+        [Test]
         public void NullConfigurationActionThrowsException()
         {
-            IContainer container = GetContainer();
+            var container = new ContainerBuilder().Build();
 
-            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
-                () => new AutofacDependencyResolver(container, null));
-
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => new AutofacDependencyResolver(container, (Action<ContainerBuilder>)null));
             Assert.That(exception.ParamName, Is.EqualTo("configurationAction"));
+
+            exception = Assert.Throws<ArgumentNullException>(
+                () => new AutofacDependencyResolver(container, new Mock<ILifetimeScopeProvider>().Object, null));
+            Assert.That(exception.ParamName, Is.EqualTo("configurationAction"));
+        }
+
+        [Test]
+        public void NullLifetimeScopeProviderThrowsException()
+        {
+            var container = new ContainerBuilder().Build();
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => new AutofacDependencyResolver(container, (ILifetimeScopeProvider)null));
+            Assert.That(exception.ParamName, Is.EqualTo("lifetimeScopeProvider"));
+
+            exception = Assert.Throws<ArgumentNullException>(
+                () => new AutofacDependencyResolver(container, null, cb => { }));
+            Assert.That(exception.ParamName, Is.EqualTo("lifetimeScopeProvider"));
+        }
+
+        [Test]
+        public void ApplicationContainerExposed()
+        {
+            var container = new ContainerBuilder().Build();
+            var dependencyResolver = new AutofacDependencyResolver(container);
+
+            Assert.That(dependencyResolver.ApplicationContainer, Is.EqualTo(container));
         }
 
         [Test]
         public void ConfigurationActionInvokedForNestedLifetime()
         {
-            IContainer container = GetContainer();
+            var container = new ContainerBuilder().Build();
             Action<ContainerBuilder> configurationAction = builder => builder.Register(c => new object());
-            AutofacDependencyResolver resolver = new AutofacDependencyResolver(container, configurationAction);
+            var lifetimeScopeProvider = new StubLifetimeScopeProvider(container, configurationAction);
+            var resolver = new AutofacDependencyResolver(container, lifetimeScopeProvider, configurationAction);
 
-            object service = resolver.GetService(typeof(object));
-            IEnumerable<object> services = resolver.GetServices(typeof(object));
+            var service = resolver.GetService(typeof(object));
+            var services = resolver.GetServices(typeof(object));
 
             Assert.That(service, Is.Not.Null);
             Assert.That(services.Count(), Is.EqualTo(1));
@@ -71,10 +120,11 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void GetServiceReturnsNullForUnregisteredService()
         {
-            IContainer container = GetContainer();
-            AutofacDependencyResolver resolver = new AutofacDependencyResolver(container);
+            var container = new ContainerBuilder().Build();
+            var lifetimeScopeProvider = new StubLifetimeScopeProvider(container);
+            var resolver = new AutofacDependencyResolver(container, lifetimeScopeProvider);
 
-            object service = resolver.GetService(typeof(object));
+            var service = resolver.GetService(typeof(object));
 
             Assert.That(service, Is.Null);
         }
@@ -82,10 +132,13 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void GetServiceReturnsRegisteredService()
         {
-            IContainer container = GetContainer(builder => builder.Register(c => new object()));
-            AutofacDependencyResolver resolver = new AutofacDependencyResolver(container);
+            var builder = new ContainerBuilder();
+            builder.Register(c => new object());
+            var container = builder.Build();
+            var lifetimeScopeProvider = new StubLifetimeScopeProvider(container);
+            var resolver = new AutofacDependencyResolver(container, lifetimeScopeProvider);
 
-            object service = resolver.GetService(typeof(object));
+            var service = resolver.GetService(typeof(object));
 
             Assert.That(service, Is.Not.Null);
         }
@@ -93,10 +146,11 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void GetServicesReturnsEmptyEnumerableForUnregisteredService()
         {
-            IContainer container = GetContainer();
-            AutofacDependencyResolver resolver = new AutofacDependencyResolver(container);
+            var container = new ContainerBuilder().Build();
+            var lifetimeScopeProvider = new StubLifetimeScopeProvider(container);
+            var resolver = new AutofacDependencyResolver(container, lifetimeScopeProvider);
 
-            IEnumerable<object> services = resolver.GetServices(typeof(object));
+            var services = resolver.GetServices(typeof(object));
 
             Assert.That(services.Count(), Is.EqualTo(0));
         }
@@ -104,21 +158,15 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void GetServicesReturnsRegisteredService()
         {
-            IContainer container = GetContainer(builder => builder.Register(c => new object()));
-            AutofacDependencyResolver resolver = new AutofacDependencyResolver(container);
+            var builder = new ContainerBuilder();
+            builder.Register(c => new object());
+            var container = builder.Build();
+            var lifetimeScopeProvider = new StubLifetimeScopeProvider(container);
+            var resolver = new AutofacDependencyResolver(container, lifetimeScopeProvider);
 
-            IEnumerable<object> services = resolver.GetServices(typeof(object));
+            var services = resolver.GetServices(typeof(object));
 
             Assert.That(services.Count(), Is.EqualTo(1));
-        }
-
-        static IContainer GetContainer(Action<ContainerBuilder> configurationAction = null)
-        {
-            ContainerBuilder builder = new ContainerBuilder();
-            builder.Register(c => new StubLifetimeScopeProvider()).As<ILifetimeScopeProvider>();
-            if (configurationAction != null)
-                configurationAction(builder);
-            return builder.Build();
         }
     }
 }

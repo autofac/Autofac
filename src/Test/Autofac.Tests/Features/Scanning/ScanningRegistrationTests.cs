@@ -335,6 +335,14 @@ namespace Autofac.Tests.Features.Scanning
             Assert.IsFalse(c.IsRegistered<IDisposable>());
         }
 
+        [Test]
+        public void WhenDerivingKeysDynamically_TheCorrectOverloadIsChosen()
+        {
+            const string key = "akey";
+            var c = RegisterScenarioAssembly(a => a.Keyed<IAService>(t => key));
+            Assert.That(c.IsRegisteredWithKey<IAService>(key));
+        }
+
         public IContainer RegisterScenarioAssembly(Action<IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>> configuration = null)
         {
             var cb = new ContainerBuilder();

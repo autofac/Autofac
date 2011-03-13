@@ -36,7 +36,7 @@ using Moq;
 
 namespace AutofacContrib.Moq
 {
-    /// <summary> Resolves unknown interfaces and Mocks using the <see cref="MockFactory"/> from the scope. </summary>
+    /// <summary> Resolves unknown interfaces and Mocks using the <see cref="MockRepository"/> from the scope. </summary>
     internal class MoqRegistrationHandler : IRegistrationSource
     {
         private readonly MethodInfo _createMethod;
@@ -45,7 +45,7 @@ namespace AutofacContrib.Moq
         /// </summary>
         public MoqRegistrationHandler()
         {
-            var factoryType = typeof(MockFactory);
+            var factoryType = typeof(MockRepository);   
             _createMethod = factoryType.GetMethod("Create", new Type[] { });
         }
 
@@ -67,7 +67,8 @@ namespace AutofacContrib.Moq
             var typedService = service as TypedService;
             if (typedService == null ||
                 !typedService.ServiceType.IsInterface ||
-                typeof(IEnumerable).IsAssignableFrom(typedService.ServiceType) ||
+                typedService.ServiceType.IsGenericType && typedService.ServiceType.GetGenericTypeDefinition() == typeof(IEnumerable<>) ||
+                typedService.ServiceType.IsArray ||
                 typeof(IContainerAwareComponent).IsAssignableFrom(typedService.ServiceType))
                 return Enumerable.Empty<IComponentRegistration>();
 
@@ -75,7 +76,7 @@ namespace AutofacContrib.Moq
                 {
                     var specificCreateMethod =
                         _createMethod.MakeGenericMethod(new[] { typedService.ServiceType });
-                    var mock = (Mock) specificCreateMethod.Invoke(c.Resolve<MockFactory>(), null);
+                    var mock = (Mock) specificCreateMethod.Invoke(c.Resolve<MockRepository>(), null);
                     return mock.Object;
                 })
                 .As(service)
