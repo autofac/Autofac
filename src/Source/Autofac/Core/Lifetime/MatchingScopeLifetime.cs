@@ -58,7 +58,7 @@ namespace Autofac.Core.Lifetime
         /// <param name="matchExpression">Expression describing scopes that will match.</param>
         public MatchingScopeLifetime(Func<ILifetimeScope, bool> matchExpression)
         {
-            Enforce.ArgumentNotNull(matchExpression, "matchExpression");
+            if (matchExpression == null) throw new ArgumentNullException("matchExpression");
             _matcher = matchExpression;
             _matchExpressionCode = matchExpression.Method.ToString();
         }
