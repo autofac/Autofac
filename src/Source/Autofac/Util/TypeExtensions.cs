@@ -91,6 +91,7 @@ namespace Autofac.Util
                 var argumentDefinition = genericArgumentDefinitions[i];
                 var parameter = parameters[i];
 
+#if !WINDOWS_PHONE
                 if (argumentDefinition.GetGenericParameterConstraints()
                     .Any(constraint => !ParameterCompatibleWithTypeConstraint(parameter, constraint)))
                 {
@@ -120,6 +121,7 @@ namespace Autofac.Util
                         (parameter.IsGenericType && IsGenericTypeDefinedBy(parameter, typeof(Nullable<>))))
                         return false;
                 }
+#endif
             }
 
             return true;

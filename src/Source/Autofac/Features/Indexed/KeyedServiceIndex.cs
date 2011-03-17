@@ -28,16 +28,23 @@ using Autofac.Core;
 
 namespace Autofac.Features.Indexed
 {
+#if WINDOWS_PHONE
+    ///<summary>Internal implementation</summary>
+    public class KeyedServiceIndex<TKey, TValue> : IIndex<TKey, TValue>
+#else
     class KeyedServiceIndex<TKey, TValue> : IIndex<TKey, TValue>
+#endif
     {
         readonly IComponentContext _context;
 
+        ///<summary></summary>
         public KeyedServiceIndex(IComponentContext context)
         {
             if (context == null) throw new ArgumentNullException("context");
             _context = context;
         }
 
+        ///<summary></summary>
         public TValue this[TKey key]
         {
             get
@@ -46,6 +53,7 @@ namespace Autofac.Features.Indexed
             }
         }
 
+        ///<summary></summary>
         public bool TryGetValue(TKey key, out TValue value)
         {
             object result;

@@ -26,9 +26,6 @@
 using System;
 using System.Globalization;
 using System.Linq.Expressions;
-#if WINDOWS_PHONE
-using Autofac.Util.WindowsPhone;
-#endif
 
 namespace Autofac.Core.Lifetime
 {

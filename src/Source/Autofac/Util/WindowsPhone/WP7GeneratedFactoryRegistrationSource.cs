@@ -95,7 +95,7 @@ namespace Autofac.Features.GeneratedFactories
 
                 //Find a func method that matches all args
                 var funcRegistration = delegateFuncRegistrations
-                    .FirstOrDefault(x => x.GetGenericArguments().Count() == args.Count()); ;
+                    .FirstOrDefault(x => x.GetGenericArguments().Count() == args.Count());
 
                 if (funcRegistration != null)
                 {
@@ -145,17 +145,7 @@ namespace Autofac.Features.GeneratedFactories
                     Func<TArg0, TResult> del1 = a0 =>
                     {
                         Debug.WriteLine("Invoking Delegate Func<TArg0, TResult>");
-                        IEnumerable<Parameter> parameterCollection;
-                        if (typeof(TDelegate).IsGenericType)
-                            parameterCollection = new[] { TypedParameter.From(a0) };
-                        else
-                        {
-                            var parameters = typeof(TDelegate).GetMethods().First().GetParameters();
-                            parameterCollection = new[]
-                                {
-                                    new NamedParameter(parameters[0].Name, a0)
-                                };
-                        }
+                        var parameterCollection = FactoryGenerator.GetParameterCollection<TDelegate>(FactoryGenerator.GetParameterMapping(typeof(TDelegate), ParameterMapping.Adaptive), a0);
 
                         var r = ls.ResolveComponent(target, parameterCollection);
                         return (TResult)r;
@@ -179,18 +169,7 @@ namespace Autofac.Features.GeneratedFactories
                     Func<TArg0, TArg1, TResult> del1 = (a0, a1) =>
                     {
                         Debug.WriteLine("Invoking Delegate Func<TArg0, TArg1, TResult>");
-                        IEnumerable<Parameter> parameterCollection;
-                        if (typeof(TDelegate).IsGenericType)
-                            parameterCollection = new[] { TypedParameter.From(a0), TypedParameter.From(a1) };
-                        else
-                        {
-                            var parameters = typeof(TDelegate).GetMethods().First().GetParameters();
-                            parameterCollection = new[]
-                                {
-                                    new NamedParameter(parameters[0].Name, a0),
-                                    new NamedParameter(parameters[1].Name, a1)
-                                };
-                        }
+                        var parameterCollection = FactoryGenerator.GetParameterCollection<TDelegate>(FactoryGenerator.GetParameterMapping(typeof(TDelegate), ParameterMapping.Adaptive), a0, a1);
 
                         var r = ls.ResolveComponent(target, parameterCollection);
                         return (TResult)r;
@@ -214,19 +193,7 @@ namespace Autofac.Features.GeneratedFactories
                     Func<TArg0, TArg1, TArg2, TResult> del1 = (a0, a1, a2) =>
                     {
                         Debug.WriteLine("Invoking Delegate Func<TArg0, TArg1, TArg2, TResult>");
-                        IEnumerable<Parameter> parameterCollection;
-                        if (typeof(TDelegate).IsGenericType)
-                            parameterCollection = new[] { TypedParameter.From(a0), TypedParameter.From(a1), TypedParameter.From(a2) };
-                        else
-                        {
-                            var parameters = typeof(TDelegate).GetMethods().First().GetParameters();
-                            parameterCollection = new[]
-                                {
-                                    new NamedParameter(parameters[0].Name, a0),
-                                    new NamedParameter(parameters[1].Name, a1),
-                                    new NamedParameter(parameters[2].Name, a2)
-                                };
-                        }
+                        var parameterCollection = FactoryGenerator.GetParameterCollection<TDelegate>(FactoryGenerator.GetParameterMapping(typeof(TDelegate), ParameterMapping.Adaptive), a0, a1, a2);
 
                         var r = ls.ResolveComponent(target, parameterCollection);
                         return (TResult)r;

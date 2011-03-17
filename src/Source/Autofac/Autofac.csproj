@@ -336,7 +336,6 @@
     <Compile Include="Core\TypedService.cs" />
     <Compile Include="Core\UniqueService.cs" />
     <Compile Include="Features\Collections\CollectionRegistrationSource.cs" />
-    <Compile Include="Features\GeneratedFactories\FactoryGenerator.cs" />
     <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationExtensions.cs" />
     <Compile Include="Features\OpenGenerics\OpenGenericRegistrationSource.cs" />
     <Compile Include="Features\OwnedInstances\Owned.cs" />
@@ -392,6 +391,7 @@
     <Compile Include="Util\TypeExtensions.cs" />
   </ItemGroup>
   <ItemGroup Condition="($(MSBuildTargets)!='Windows Phone 7')">
+    <Compile Include="Features\GeneratedFactories\FactoryGenerator.cs" />
     <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSource.cs" />
     <EmbeddedResource Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSourceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -405,15 +405,7 @@
   </ItemGroup>
   <ItemGroup Condition="$(MSBuildTargets)=='Windows Phone 7'">
     <Compile Include="Util\WindowsPhone\WP7GeneratedFactoryRegistrationSource.cs" />
-    <Compile Include="Util\WindowsPhone\Expressions\Conversion.cs" />
-    <Compile Include="Util\WindowsPhone\Expressions\ExpressionInterpreter.cs" />
-    <Compile Include="Util\WindowsPhone\Expressions\ExpressionTransformer.cs" />
-    <Compile Include="Util\WindowsPhone\Expressions\ExpressionVisitor.cs" />
-    <Compile Include="Util\WindowsPhone\Expressions\Extensions.cs" />
-    <Compile Include="Util\WindowsPhone\Expressions\LambdaCompiler.cs" />
-    <Compile Include="Util\WindowsPhone\Expressions\Math.cs" />
-    <Compile Include="Util\WindowsPhone\Expressions\Runner.cs" />
-    <Compile Include="Util\WindowsPhone\ReflectionExtensions.cs" />
+    <Compile Include="Util\WindowsPhone\WP7FactoryGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Builder\RegistrationBuilderResources.resx">
