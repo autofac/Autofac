@@ -8,10 +8,10 @@ namespace Autofac.Tests.Builder
     [TestFixture]
     public class ReflectiveRegistrationBuilderTests
     {
-        class A1 { }
-        class A2 { }
+        public class A1 { }
+        public class A2 { }
 
-        class TwoCtors
+        public class TwoCtors
         {
             public Type[] CalledCtor { get; private set; }
 
@@ -72,7 +72,7 @@ namespace Autofac.Tests.Builder
             Assert.Throws<ArgumentNullException>(() => registration.UsingConstructor((Type[])null));
         }
 
-        class WithParam
+        public class WithParam
         {
             public int I { get; private set; }
             public WithParam(int i, int j) { I = i + j; }
@@ -94,7 +94,7 @@ namespace Autofac.Tests.Builder
             Assert.AreEqual(ival * 2, result.I);
         }
 
-        class WithProp
+        public class WithProp
         {
             public string Prop { get; set; }
             public int Prop2 { get; set; }

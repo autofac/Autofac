@@ -1,4 +1,5 @@
 ﻿using System;
+using Autofac.Tests.Util;
 using NUnit.Framework;
 using System.Linq;
 using Autofac.Core;
@@ -11,9 +12,9 @@ namespace Autofac.Tests.Features.OpenGenerics
     public class OpenGenericRegistrationSourceTests
     {
         // ReSharper disable UnusedTypeParameter
-        interface I<T> { }
+        public interface I<T> { }
 
-        class A1<T> : DisposeTracker, I<T> { }
+        public class A1<T> : DisposeTracker, I<T> { }
 
         [Test]
         public void GeneratesActivatorAndCorrectServices()
@@ -31,18 +32,19 @@ namespace Autofac.Tests.Features.OpenGenerics
             Assert.IsInstanceOf<A1<int>>(activatedInstance);
         }
 
-        class AWithNew<T> : I<T>
+        public class AWithNew<T> : I<T>
             where T : new()
         {
         }
 
         [Test]
+        [IgnoreOnPhone("Reflection does not provide information to check")]
         public void DoesNotGenerateActivatorWhenConstructorConstraintBroken()
         {
             Assert.IsFalse(CanGenerateActivatorForI<string>(typeof(AWithNew<>)));
         }
 
-        class PWithNew { }
+        public class PWithNew { }
 
         [Test]
         public void GeneratesActivatorWhenConstructorConstraintMet()
@@ -50,12 +52,13 @@ namespace Autofac.Tests.Features.OpenGenerics
             Assert.IsTrue(CanGenerateActivatorForI<PWithNew>(typeof(AWithNew<>)));
         }
 
-        class AWithDisposable<T> : I<T>
+        public class AWithDisposable<T> : I<T>
             where T : IDisposable
         {
         }
 
         [Test]
+        [IgnoreOnPhone("Reflection does not provide information to check")]
         public void DoesNotGenerateActivatorWhenTypeConstraintBroken()
         {
             Assert.IsFalse(CanGenerateActivatorForI<string>(typeof(AWithDisposable<>)));
@@ -67,10 +70,11 @@ namespace Autofac.Tests.Features.OpenGenerics
             Assert.IsTrue(CanGenerateActivatorForI<DisposeTracker>(typeof(AWithDisposable<>)));
         }
 
-        class AWithClass<T> : I<T>
+        public class AWithClass<T> : I<T>
             where T : class { }
 
         [Test]
+        [IgnoreOnPhone("Reflection does not provide information to check")]
         public void DoesNotGenerateActivatorWhenClassConstraintBroken()
         {
             Assert.IsFalse(CanGenerateActivatorForI<int>(typeof(AWithClass<>)));
@@ -82,10 +86,11 @@ namespace Autofac.Tests.Features.OpenGenerics
             Assert.IsTrue(CanGenerateActivatorForI<string>(typeof(AWithClass<>)));
         }
 
-        class AWithValue<T> : I<T>
+        public class AWithValue<T> : I<T>
             where T : struct { }
 
         [Test]
+        [IgnoreOnPhone("Reflection does not provide information to check")]
         public void DoesNotGenerateActivatorWhenValueConstraintBroken()
         {
             Assert.IsFalse(CanGenerateActivatorForI<string>(typeof(AWithValue<>)));
@@ -176,6 +181,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
+        [IgnoreOnPhone("Fails because IsCompatibleWithGenericParameterConstraints cannot check contraints")]
         public void IgnoresServicesThatDoNotSupplyAllParameters()
         {
             Assert.That(!SourceCanSupply<IHaveTwoParameters<int,int>>(typeof(HaveTwoParameters<,>)));

@@ -45,7 +45,7 @@ namespace Autofac.Core.Activators.Reflection
         /// <returns>True if a value can be supplied; otherwise, false.</returns>
         public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<object> valueProvider)
         {
-#if !WINDOWS_PHONE //DefaultValue is always 'null'
+#if !WINDOWS_PHONE //DefaultValue is always 'null' not DBNull
             if (!(pi.DefaultValue is DBNull))
             {
                 valueProvider = () => pi.DefaultValue;

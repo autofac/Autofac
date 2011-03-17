@@ -1,5 +1,6 @@
 ﻿using Autofac.Core.Registration;
 using NUnit.Framework;
+using Autofac.Tests.Util;
 
 namespace Autofac.Tests.Features.OpenGenerics
 {
@@ -21,6 +22,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         // ReSharper restore UnusedTypeParameter, InconsistentNaming
 
         [Test]
+        [IgnoreOnPhone]
         public void NestedGenericInterfacesCanBeResolved()
         {
             var cb = new ContainerBuilder();
@@ -43,6 +45,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
+        [IgnoreOnPhone]
         public void CanResolveImplementationsWhereTypeParametersAreReordered()
         {
             var cb = new ContainerBuilder();
@@ -65,6 +68,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
+        [IgnoreOnPhone]
         public void TestNestingAndReversingSimplification()
         {
             var cb = new ContainerBuilder();
@@ -76,6 +80,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
+        [IgnoreOnPhone]
         public void TestReversingWithoutNesting()
         {
             var cb = new ContainerBuilder();
@@ -87,6 +92,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
+        [IgnoreOnPhone]
         public void TheSameaceholderTypeCanAppearMultipleTimesInTheService()
         {
             var cb = new ContainerBuilder();

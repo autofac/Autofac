@@ -66,14 +66,14 @@ namespace Autofac.Tests.Features.LightweightAdapters
             }
         }
 
-        interface IService { }
+        public interface IService { }
 
         // ReSharper disable ClassNeverInstantiated.Local
-        class Implementer1 : IService { }
-        class Implementer2 : IService { }
+        public class Implementer1 : IService { }
+        public class Implementer2 : IService { }
         // ReSharper restore ClassNeverInstantiated.Local
 
-        class Decorator : IService
+        public class Decorator : IService
         {
             readonly IService _decorated;
 

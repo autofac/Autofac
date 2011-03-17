@@ -1,8 +1,9 @@
-﻿using NUnit.Framework;
+﻿using Autofac.Tests.Util;
+using NUnit.Framework;
 
 namespace Autofac.Tests.Features.OpenGenerics
 {
-    public interface IItemProducer<out T> { }
+    public interface IItemProducer<T> { }
 
     public class NullableProducer<T> : IItemProducer<T?>
         where T : struct
@@ -23,12 +24,14 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
+        [IgnoreOnPhone("IsCompatibleWithGenericParameterConstraints cannot interrogate GenericParameterAttributes")]
         public void TheServiceIsAvailable()
         {
             Assert.IsTrue(_container.IsRegistered<IItemProducer<byte?>>());
         }
 
         [Test]
+        [IgnoreOnPhone("IsCompatibleWithGenericParameterConstraints cannot interrogate GenericParameterAttributes")]
         public void TheImplementationTypeParametersAreMapped()
         {
             var np = _container.Resolve<IItemProducer<byte?>>();

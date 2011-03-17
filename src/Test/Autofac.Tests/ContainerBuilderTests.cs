@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using Autofac.Builder;
 using Autofac.Features.Indexed;
+
+#if !WINDOWS_PHONE
 using Moq;
+#endif
+
 using NUnit.Framework;
 using Autofac.Core;
 using System.Linq;
@@ -19,7 +23,7 @@ namespace Autofac.Tests
         interface IB { }
         interface IC { }
 
-        class Abc : DisposeTracker, IA, IB, IC { }
+        public class Abc : DisposeTracker, IA, IB, IC { }
 
         [Test]
         public void SimpleReg()
@@ -146,8 +150,8 @@ namespace Autofac.Tests
             target.Build();
         }
 
-        class A1 { }
-        class A2 { }
+        public class A1 { }
+        public class A2 { }
 
         public class Named
         {
@@ -447,6 +451,7 @@ namespace Autofac.Tests
             Assert.That(ex.Message.Contains("once"));
         }
 
+#if !WINDOWS_PHONE
         [Test]
         public void WhenTheContainerIsBuilt_StartableComponentsAreStarted()
         {
@@ -461,5 +466,6 @@ namespace Autofac.Tests
 
             Assert.IsTrue(started);
         }
+#endif
     }
 }

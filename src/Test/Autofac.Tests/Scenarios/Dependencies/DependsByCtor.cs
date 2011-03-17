@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Autofac.Tests.Scenarios.Dependencies
 {
-    class DependsByCtor
+    public class DependsByCtor
     {
         public DependsByCtor(DependsByProp o)
         {

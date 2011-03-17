@@ -26,7 +26,7 @@ namespace Autofac.Tests.Component.Activation
             target.SelectConstructorBinding(new ConstructorParameterBinding[] { });
         }
 
-        class ThreeConstructors
+        public class ThreeConstructors
         {
             public ThreeConstructors() { }
             public ThreeConstructors(int i, string s) { }

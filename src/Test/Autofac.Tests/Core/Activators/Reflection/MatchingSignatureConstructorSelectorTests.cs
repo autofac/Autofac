@@ -9,7 +9,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
     [TestFixture]
     public class MatchingSignatureConstructorSelectorTests
     {
-        class ThreeConstructors
+        public class ThreeConstructors
         {
             // ReSharper disable UnusedMember.Local, UnusedParameter.Local
             public ThreeConstructors() { }

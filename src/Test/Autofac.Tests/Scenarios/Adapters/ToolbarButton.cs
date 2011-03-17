@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Autofac.Tests.Scenarios.Adapters
 {
-    class ToolbarButton : IToolbarButton
+    public class ToolbarButton : IToolbarButton
     {
         readonly Command _command;
         readonly string _name;

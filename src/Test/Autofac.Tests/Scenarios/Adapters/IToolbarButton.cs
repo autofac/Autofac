@@ -1,6 +1,6 @@
 ﻿namespace Autofac.Tests.Scenarios.Adapters
 {
-    interface IToolbarButton
+    public interface IToolbarButton
     {
         string Name { get; }
         Command Command { get; }

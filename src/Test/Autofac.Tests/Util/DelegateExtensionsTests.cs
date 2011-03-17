@@ -10,7 +10,7 @@ namespace Autofac.Tests.Util
     [TestFixture]
     public class DelegateExtensionsTests
     {
-        class WithTwoInvokes
+        public class WithTwoInvokes
         {
             public void Invoke() { }
             public void Invoke(string s) { }

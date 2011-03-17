@@ -8,13 +8,13 @@ namespace Autofac.Tests
     [TestFixture]
     public class NamedParameterTests
     {
-        class A
+        public class A
         {
         }
 
-        class B : A { }
+        public class B : A { }
 
-        class C
+        public class C
         {
             // ReSharper disable UnusedParameter.Local
             public C(A a)

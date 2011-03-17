@@ -2,7 +2,7 @@
 
 namespace Autofac.Tests
 {
-    class DisposeTracker : IDisposable
+    public class DisposeTracker : IDisposable
     {
         public event EventHandler<EventArgs> Disposing;
 

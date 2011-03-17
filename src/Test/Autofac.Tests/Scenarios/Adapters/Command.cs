@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Autofac.Tests.Scenarios.Adapters
 {
-    class Command
+    public class Command
     {
     }
 }

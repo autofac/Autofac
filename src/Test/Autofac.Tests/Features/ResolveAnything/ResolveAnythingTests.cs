@@ -10,7 +10,7 @@ namespace Autofac.Tests.Features.ResolveAnything
     [TestFixture]
     public class ResolveAnythingTests
     {
-        class NotRegisteredType { }
+        public class NotRegisteredType { }
 
         [Test]
         public void AConcreteTypeNotRegisteredWithTheContainerWillBeProvided()
@@ -19,7 +19,7 @@ namespace Autofac.Tests.Features.ResolveAnything
             Assert.That(container.IsRegistered<NotRegisteredType>());
         }
 
-        abstract class AbstractType { }
+        public abstract class AbstractType { }
 
         [Test]
         public void AnAbstractTypeNotRegisteredWithTheContainerWillNotBeProvided()
@@ -28,7 +28,7 @@ namespace Autofac.Tests.Features.ResolveAnything
             Assert.IsFalse(container.IsRegistered<AbstractType>());
         }
 
-        interface IInterfaceType { }
+        public interface IInterfaceType { }
 
         [Test]
         public void AnInterfaceTypeNotRegisteredWithTheContainerWillNotBeProvided()
@@ -57,7 +57,7 @@ namespace Autofac.Tests.Features.ResolveAnything
             Assert.AreEqual(1, container.Resolve<IEnumerable<object>>().Count());
         }
 
-        class RegisteredType { }
+        public class RegisteredType { }
 
         [Test]
         public void AServiceAlreadyRegisteredWillNotBeProvided()

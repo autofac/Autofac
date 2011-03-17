@@ -10,14 +10,14 @@ namespace Autofac.Tests
     [TestFixture]
     public class TagsFixture
     {
-        class HomeController
+        public class HomeController
         {
             public HomeController()
             {
             }
         }
 
-        enum Tag { None, Outer, Middle, Inner }
+        public enum Tag { None, Outer, Middle, Inner }
 
         [Test]
         public void OuterSatisfiesInnerResolutions()

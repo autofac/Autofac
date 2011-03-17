@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Autofac.Tests.Scenarios.Dependencies
 {
-    class Dependent
+    public class Dependent
     {
         public object TheObject;
         public string TheString;

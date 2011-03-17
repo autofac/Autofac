@@ -5,25 +5,25 @@ using System.Text;
 
 namespace Autofac.Tests.Scenarios.Dependencies.Circularity
 {
-    interface IA { }
+    public interface IA { }
 
-    interface IB { }
+    public interface IB { }
 
-    interface IC { }
+    public interface IC { }
 
-    interface ID { }
+    public interface ID { }
 
-    class A : IA
+    public class A : IA
     {
         public A(IC c) { }
     }
 
-    class BC : IB, IC
+    public class BC : IB, IC
     {
         public BC(IA a) { }
     }
 
-    class D : ID
+    public class D : ID
     {
         public D(IA a, IC c) { }
     }

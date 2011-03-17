@@ -1,7 +1,9 @@
 ﻿using System;
 using NUnit.Framework;
 using System.Linq;
+#if !WINDOWS_PHONE
 using Moq;
+#endif
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core;
 using Autofac.Tests.Scenarios.Dependencies;
@@ -12,6 +14,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
     [TestFixture]
     public class ReflectionActivatorTests
     {
+#if !WINDOWS_PHONE
         [Test]
         public void Constructor_DoesNotAcceptNullType()
         {
@@ -76,6 +79,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
                     Factory.NoProperties);
             });
         }
+#endif
 
         [Test]
         public void ActivateInstance_ReturnsInstanceOfTargetType()
@@ -135,7 +139,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             Assert.IsInstanceOf<MultipleConstructors>(instance);
         }
 
-        class AcceptsObjectParameter
+        public class AcceptsObjectParameter
         {
             public readonly object P;
             public AcceptsObjectParameter(object p) { P = p; }
@@ -196,7 +200,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             Assert.IsNull(typedInstance.P);
         }
 
-        class AcceptsIntParameter
+        public class AcceptsIntParameter
         {
             public readonly int I;
             public AcceptsIntParameter(int i) { I = i; }
@@ -237,7 +241,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             Assert.AreEqual(0, typedInstance.I);
         }
 
-        class ThreeConstructors
+        public class ThreeConstructors
         {
             public readonly int CalledConstructorParameterCount;
             // ReSharper disable UnusedMember.Local, UnusedParameter.Local
@@ -267,7 +271,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             Assert.AreEqual(2, typedInstance.CalledConstructorParameterCount);
         }
 
-        class NoPublicConstructor
+        public class NoPublicConstructor
         {
             // ReSharper disable EmptyConstructor
             internal NoPublicConstructor() { }
@@ -302,7 +306,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             Assert.IsInstanceOf<WithGenericCtor<string>>(instance);
         }
 
-        class PrivateSetProperty
+        public class PrivateSetProperty
         {
             // ReSharper disable UnusedMember.Local
             public int GetProperty { private set; get; }
@@ -320,7 +324,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
         }
 
         // ReSharper disable UnusedAutoPropertyAccessor.Local
-        class R { public int P1 { get; set; } public int P2 { get; set; } }
+        public class R { public int P1 { get; set; } public int P2 { get; set; } }
         // ReSharper restore UnusedAutoPropertyAccessor.Local
 
         [Test]

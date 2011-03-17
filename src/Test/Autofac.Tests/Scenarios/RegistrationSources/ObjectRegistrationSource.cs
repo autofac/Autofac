@@ -6,7 +6,7 @@ using Autofac.Core;
 
 namespace Autofac.Tests.Scenarios.RegistrationSources
 {
-    class ObjectRegistrationSource : IRegistrationSource
+    public class ObjectRegistrationSource : IRegistrationSource
     {
         readonly object _instance;
 

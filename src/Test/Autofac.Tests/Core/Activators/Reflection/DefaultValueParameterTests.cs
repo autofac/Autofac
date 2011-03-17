@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace Autofac.Tests.Core.Activators.Reflection
 {
-    class HasDefaultValues
+    public class HasDefaultValues
     {
         public HasDefaultValues(string s, string t = "Hello")
         {
@@ -14,6 +14,9 @@ namespace Autofac.Tests.Core.Activators.Reflection
     }
 
     [TestFixture]
+#if WINDOWS_PHONE //Parameter defaults dont exist until SL4...
+    [Ignore]
+#endif
     public class DefaultValueParameterTests
     {
         static ParameterInfo GetTestParameter(string name)
@@ -27,6 +30,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
         {
             var dvp = new DefaultValueParameter();
             Func<object> vp;
+            var dp = GetTestParameter("s").DefaultValue;
             Assert.IsFalse(dvp.CanSupplyValue(GetTestParameter("s"), Autofac.Core.Container.Empty, out vp));
         }
 
@@ -36,6 +40,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             var dvp = new DefaultValueParameter();
             var u = GetTestParameter("t");
             Func<object> vp;
+            var dp = u.DefaultValue;
             Assert.IsTrue(dvp.CanSupplyValue(u, Autofac.Core.Container.Empty, out vp));
             Assert.AreEqual("Hello", vp());
         }
