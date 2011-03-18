@@ -143,6 +143,20 @@ namespace Autofac.Features.GeneratedFactories
                 return del;
         }
 
+        static Delegate DelegateFuncRegistration<TArg0, TArg1, TArg2, TResult, TDelegate>(IComponentContext context, Service target, IEnumerable<Parameter> parameters, ParameterMapping mapping)
+        {
+            var ls = context.Resolve<ILifetimeScope>();
+            Func<TArg0, TArg1, TArg2, TResult> del1 = (a0, a1, a2) =>
+            {
+                Debug.WriteLine("Invoking Delegate Func<TArg0, TArg1, TArg2, TResult>");
+                var parameterCollection = GetParameterCollection<TDelegate>(mapping, a0, a1, a2);
+                var r = ls.ResolveService(target, parameterCollection);
+                return (TResult)r;
+            };
+            var del = Delegate.CreateDelegate(typeof(TDelegate), del1.Target, del1.Method, true);
+            return del;
+        }
+
         internal static IEnumerable<Parameter> GetParameterCollection<TDelegate>(ParameterMapping mapping, params object[] param)
         {
             IEnumerable<Parameter> parameterCollection;

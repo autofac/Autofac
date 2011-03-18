@@ -51,20 +51,38 @@ namespace Autofac.Features.GeneratedFactories
             Debug.WriteLine("Querying source for {0}.", service.Description);
 
             var ts = service as IServiceWithType;
-            if (ts != null &&
-                ts.ServiceType.IsGenericType &&
-                ts.ServiceType.Name.StartsWith("Func"))
+            Service resultTypeService = null;
+            IEnumerable<Type> args = null;
+
+            if (ts != null)
             {
-                var resultType = ts.ServiceType.FunctionReturnType();
-                var resultTypeService = ts.ChangeType(resultType);
+                var invoke = ts.ServiceType.GetMethod("Invoke");
+                if (invoke != null)
+                {
+                    var resultType = ts.ServiceType.FunctionReturnType();
+                    resultTypeService = ts.ChangeType(resultType);
+                    if (ts.ServiceType.Name.StartsWith("Func`"))
+                    {
+                        args = ts.ServiceType.GetGenericArguments()
+                            .Append(ts.ServiceType)
+                            .ToList();
+                    }
+                    else if (ts.ServiceType.IsDelegate() &&
+                             !invoke.ReturnType.Name.Equals("Void"))
+                    {
+                        args = invoke
+                            .GetParameters()
+                            .Select(x => x.ParameterType)
+                            .Append(resultType)
+                            .Append(ts.ServiceType)
+                            .ToList();
+                    }
+                }
+            }
 
-                var genericArguments = ts.ServiceType.GetGenericArguments();
-
-                var args = genericArguments
-                    .Append(ts.ServiceType)
-                    .ToList();
-
-                //Find a func method that matches all args
+            //Find a func method that matches all args
+            if (args != null)
+            {
                 var funcRegistration = delegateFuncRegistrations
                     .FirstOrDefault(x => x.GetGenericArguments().Count() == args.Count());
 
@@ -74,35 +92,7 @@ namespace Autofac.Features.GeneratedFactories
                         .MakeGenericMethod(args.ToArray());
 
                     return registrationAccessor(resultTypeService)
-                        .Select(cr => (IComponentRegistration)creator.Invoke(null, new object[] { cr, service }));
-                }
-
-            }
-            else if (ts != null && ts.ServiceType.IsDelegate()
-                && !ts.ServiceType.GetMethods().First().ReturnType.Name.Equals("Void"))
-            {
-                var resultType = ts.ServiceType.FunctionReturnType();
-                var resultTypeService = ts.ChangeType(resultType);
-
-                var delegateMethod = ts.ServiceType.GetMethods().First();
-
-                var args = delegateMethod
-                    .GetParameters()
-                    .Select(x => x.ParameterType)
-                    .ToList();
-                args.Add(delegateMethod.ReturnType);
-                args.Add(ts.ServiceType);
-
-                //Find a func method that matches all args
-                var funcRegistration = delegateFuncRegistrations
-                    .FirstOrDefault(x => x.GetGenericArguments().Count() == args.Count());
-
-                if (funcRegistration != null)
-                {
-                    var creator = funcRegistration.MakeGenericMethod(args.ToArray());
-
-                    return registrationAccessor(resultTypeService)
-                        .Select(cr => (IComponentRegistration)creator.Invoke(null, new object[] { cr, service }));
+                        .Select(cr => (IComponentRegistration) creator.Invoke(null, new object[] {cr, service}));
                 }
             }
 
