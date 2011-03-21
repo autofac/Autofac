@@ -39,8 +39,8 @@ namespace Autofac.Tests.Integration.Mvc
         ILifetimeScope BuildLifetimeScope()
         {
             return (_configurationAction == null)
-                       ? _container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag)
-                       : _container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag, _configurationAction);
+                       ? _container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag)
+                       : _container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag, _configurationAction);
         }
     }
 }

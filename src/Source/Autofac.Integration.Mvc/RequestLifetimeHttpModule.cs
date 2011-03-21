@@ -35,11 +35,6 @@ namespace Autofac.Integration.Mvc
     internal class RequestLifetimeHttpModule : IHttpModule
     {
         /// <summary>
-        /// Tag used to identify registrations that are scoped to the HTTP request level.
-        /// </summary>
-        internal static readonly object HttpRequestTag = "httpRequest";
-
-        /// <summary>
         /// Gets the lifetime scope provider that should be notified when a HTTP request ends.
         /// </summary>
         internal static ILifetimeScopeProvider LifetimeScopeProvider { get; private set; }

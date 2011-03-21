@@ -15,7 +15,7 @@ namespace Autofac.Tests.Integration.Mvc
             builder.RegisterSource(new ViewRegistrationSource());
 
             var container = builder.Build();
-            using (var lifetimeScope = container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag))
+            using (var lifetimeScope = container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag))
             {
                 var webViewPage = lifetimeScope.Resolve<GeneratedWebViewPage>();
                 Assert.That(webViewPage, Is.Not.Null);
@@ -31,7 +31,7 @@ namespace Autofac.Tests.Integration.Mvc
             builder.RegisterSource(new ViewRegistrationSource());
 
             var container = builder.Build();
-            using (var lifetimeScope = container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag))
+            using (var lifetimeScope = container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag))
             {
                 var webViewPage = lifetimeScope.Resolve<GeneratedWebViewPageWithModel>();
                 Assert.That(webViewPage, Is.Not.Null);
@@ -47,7 +47,7 @@ namespace Autofac.Tests.Integration.Mvc
             builder.RegisterSource(new ViewRegistrationSource());
 
             var container = builder.Build();
-            using (var lifetimeScope = container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag))
+            using (var lifetimeScope = container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag))
             {
                 var viewPage = lifetimeScope.Resolve<GeneratedViewPage>();
                 Assert.That(viewPage, Is.Not.Null);
@@ -63,7 +63,7 @@ namespace Autofac.Tests.Integration.Mvc
             builder.RegisterSource(new ViewRegistrationSource());
 
             var container = builder.Build();
-            using (var lifetimeScope = container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag))
+            using (var lifetimeScope = container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag))
             {
                 var viewPage = lifetimeScope.Resolve<GeneratedViewPageWithModel>();
                 Assert.That(viewPage, Is.Not.Null);
@@ -79,7 +79,7 @@ namespace Autofac.Tests.Integration.Mvc
             builder.RegisterSource(new ViewRegistrationSource());
 
             var container = builder.Build();
-            using (var lifetimeScope = container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag))
+            using (var lifetimeScope = container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag))
             {
                 var viewMasterPage = lifetimeScope.Resolve<GeneratedViewMasterPage>();
                 Assert.That(viewMasterPage, Is.Not.Null);
@@ -95,7 +95,7 @@ namespace Autofac.Tests.Integration.Mvc
             builder.RegisterSource(new ViewRegistrationSource());
 
             var container = builder.Build();
-            using (var lifetimeScope = container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag))
+            using (var lifetimeScope = container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag))
             {
                 var viewMasterPage = lifetimeScope.Resolve<GeneratedViewMasterPageWithModel>();
                 Assert.That(viewMasterPage, Is.Not.Null);
@@ -111,7 +111,7 @@ namespace Autofac.Tests.Integration.Mvc
             builder.RegisterSource(new ViewRegistrationSource());
 
             var container = builder.Build();
-            using (var lifetimeScope = container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag))
+            using (var lifetimeScope = container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag))
             {
                 var viewUserControl = lifetimeScope.Resolve<GeneratedViewUserControl>();
                 Assert.That(viewUserControl, Is.Not.Null);
@@ -127,7 +127,7 @@ namespace Autofac.Tests.Integration.Mvc
             builder.RegisterSource(new ViewRegistrationSource());
 
             var container = builder.Build();
-            using (var lifetimeScope = container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag))
+            using (var lifetimeScope = container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag))
             {
                 var viewUserControl = lifetimeScope.Resolve<GeneratedViewUserControlWithModel>();
                 Assert.That(viewUserControl, Is.Not.Null);
