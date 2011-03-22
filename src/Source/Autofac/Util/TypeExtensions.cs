@@ -65,7 +65,7 @@ namespace Autofac.Util
             if (@this == null) throw new ArgumentNullException("this");
             if (openGeneric == null) throw new ArgumentNullException("openGeneric");
 
-            return @this.IsGenericType && @this.GetGenericTypeDefinition() == openGeneric;
+            return !@this.ContainsGenericParameters && @this.IsGenericType && @this.GetGenericTypeDefinition() == openGeneric;
         }
 
         public static bool IsDelegate(this Type type)
