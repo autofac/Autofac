@@ -306,7 +306,7 @@ namespace Autofac.Core.Lifetime
         void CheckNotDisposed()
         {
             if (IsDisposed)
-                throw new ObjectDisposedException(LifetimeScopeResources.ScopeIsDisposed);
+                throw new ObjectDisposedException(LifetimeScopeResources.ScopeIsDisposed, innerException: null);
         }
 
         /// <summary>
