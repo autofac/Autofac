@@ -62,6 +62,7 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AutofacDependencyResolver.cs" />
+    <Compile Include="AutofacFilterAttributeFilterProvider.cs" />
     <Compile Include="AutofacModelBinderProvider.cs" />
     <Compile Include="AutofacWebTypesModule.cs" />
     <Compile Include="RequestLifetimeScopeProvider.cs" />
