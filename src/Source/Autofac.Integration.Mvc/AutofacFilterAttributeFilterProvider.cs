@@ -10,6 +10,16 @@ namespace Autofac.Integration.Mvc
     public class AutofacFilterAttributeFilterProvider : FilterAttributeFilterProvider
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="AutofacFilterAttributeFilterProvider"/> class.
+        /// </summary>
+        /// <remarks>
+        /// The <c>false</c> constructor parameter passed to base here ensures that attribute instances are not cached.
+        /// </remarks>
+        public AutofacFilterAttributeFilterProvider() : base(false)
+        {
+        }
+
+        /// <summary>
         /// Aggregates the filters from all of the filter providers into one collection.
         /// </summary>
         /// <param name="controllerContext">The controller context.</param>
