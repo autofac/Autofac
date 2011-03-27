@@ -9,7 +9,7 @@
     <description>Base assemblies for the Autofac Inversion of Control Container</description>
     <summary>Autofac is an IoC container for Microsoft .NET. It manages the dependencies between classes so that applications stay easy to change as they grow in size and complexity.</summary>
     <language>en-US</language>
-    <title>Autofac for Windows Phone 7 (unofficial)</title>
+    <title>Autofac for Windows Phone 7</title>
     <projectUrl>http://autofac.org</projectUrl>
     <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
   </metadata>
