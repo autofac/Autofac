@@ -127,9 +127,7 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\Shared\Error.aspx" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\Source\AutofacContrib.CommonServiceLocator\AutofacContrib.CommonServiceLocator.csproj">
       <Project>{7A6DB23D-117E-4742-A9FA-8A6956DF6829}</Project>
