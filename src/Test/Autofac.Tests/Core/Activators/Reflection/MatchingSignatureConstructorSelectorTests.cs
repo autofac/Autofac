@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core;
@@ -18,10 +17,10 @@ namespace Autofac.Tests.Core.Activators.Reflection
             // ReSharper restore UnusedMember.Local, UnusedParameter.Local
         }
 
-        readonly IEnumerable<ConstructorParameterBinding> _ctors = typeof(ThreeConstructors)
+        readonly ConstructorParameterBinding[] _ctors = typeof(ThreeConstructors)
             .GetConstructors()
-            .Select(ci => new ConstructorParameterBinding(ci, Enumerable.Empty<Parameter>(), Container.Empty));
-
+            .Select(ci => new ConstructorParameterBinding(ci, Enumerable.Empty<Parameter>(), Container.Empty))
+            .ToArray();
 
         [Test]
         public void SelectsEmptyConstructor()
