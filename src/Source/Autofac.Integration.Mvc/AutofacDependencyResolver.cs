@@ -90,6 +90,14 @@ namespace Autofac.Integration.Mvc
         }
 
         /// <summary>
+        /// Gets the Autofac implementation of the dependency resolver.
+        /// </summary>
+        public static AutofacDependencyResolver Current
+        {
+            get { return DependencyResolver.Current as AutofacDependencyResolver; }
+        }
+
+        /// <summary>
         /// The lifetime containing components for processing the current HTTP request.
         /// </summary>
         public ILifetimeScope RequestLifetimeScope

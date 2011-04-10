@@ -149,6 +149,22 @@ namespace Autofac.Integration.Mvc
         }
 
         /// <summary>
+        /// Registers the <see cref="AutofacFilterAttributeFilterProvider"/>.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        public static void RegisterFilterProvider(this ContainerBuilder builder)
+        {
+            if (builder == null) throw new ArgumentNullException("builder");
+
+            foreach (var provider in FilterProviders.Providers.OfType<FilterAttributeFilterProvider>().ToArray())
+                FilterProviders.Providers.Remove(provider);
+
+            builder.RegisterType<AutofacFilterAttributeFilterProvider>()
+                .As<IFilterProvider>()
+                .SingleInstance();
+        }
+
+        /// <summary>
         /// Cache instances in the web session. This implies external ownership (disposal is not
         /// available.) All dependencies must also have external ownership.
         /// </summary>

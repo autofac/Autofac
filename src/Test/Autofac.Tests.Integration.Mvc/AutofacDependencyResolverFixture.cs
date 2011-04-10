@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Mvc;
 using Autofac.Integration.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -35,6 +36,18 @@ namespace Autofac.Tests.Integration.Mvc
     [TestFixture]
     public class AutofacDependencyResolverFixture
     {
+        [Test]
+        public void CurrentPropertyExposesTheCorrectResolver()
+        {
+            var container = new ContainerBuilder().Build();
+            var lifetimeScopeProvider = new StubLifetimeScopeProvider(container);
+            var resolver = new AutofacDependencyResolver(container, lifetimeScopeProvider);
+
+            DependencyResolver.SetResolver(resolver);
+
+            Assert.That(AutofacDependencyResolver.Current, Is.EqualTo(DependencyResolver.Current));
+        }
+
         [Test]
         public void NestedLifetimeScopeIsCreated()
         {
