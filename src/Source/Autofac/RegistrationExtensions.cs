@@ -353,12 +353,10 @@ namespace Autofac
         /// Specifies that a type from a scanned assembly provides its own concrete type as a service.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<TLimit, TScanningActivatorData, DynamicRegistrationStyle>
-            AsSelf<TLimit, TScanningActivatorData>(this IRegistrationBuilder<TLimit, TScanningActivatorData, DynamicRegistrationStyle> registration)
-            where TScanningActivatorData : ScanningActivatorData
+        public static IRegistrationBuilder<TLimit, ScanningActivatorData, DynamicRegistrationStyle>
+            AsSelf<TLimit>(this IRegistrationBuilder<TLimit, ScanningActivatorData, DynamicRegistrationStyle> registration)
         {
             if (registration == null) throw new ArgumentNullException("registration");
             return registration.As(t => t);
@@ -368,14 +366,28 @@ namespace Autofac
         /// Specifies that a type provides its own concrete type as a service.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TConcreteActivatorData">Activator data type.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<TLimit, TActivatorData, SingleRegistrationStyle>
-            AsSelf<TLimit, TActivatorData>(this IRegistrationBuilder<TLimit, TActivatorData, SingleRegistrationStyle> registration)
+        public static IRegistrationBuilder<TLimit, TConcreteActivatorData, SingleRegistrationStyle>
+            AsSelf<TLimit, TConcreteActivatorData>(this IRegistrationBuilder<TLimit, TConcreteActivatorData, SingleRegistrationStyle> registration)
+            where TConcreteActivatorData : IConcreteActivatorData
         {
             if (registration == null) throw new ArgumentNullException("registration");
-            return registration.As<TLimit>();
+            return registration.As(registration.ActivatorData.Activator.LimitType);
+        }
+
+        /// <summary>
+        /// Specifies that a type provides its own concrete type as a service.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, ReflectionActivatorData, DynamicRegistrationStyle>
+            AsSelf<TLimit>(this IRegistrationBuilder<TLimit, ReflectionActivatorData, DynamicRegistrationStyle> registration)
+        {
+            if (registration == null) throw new ArgumentNullException("registration");
+            return registration.As(registration.ActivatorData.ImplementationType);
         }
 
         /// <summary>
@@ -468,9 +480,9 @@ namespace Autofac
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             Keyed<TService>(
                 this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> registration,
-                Func<Type, string> serviceKeyMapping)
+                Func<Type, object> serviceKeyMapping)
         {
-            return registration.Keyed(serviceKeyMapping, typeof(TService));
+            return Keyed(registration, serviceKeyMapping, typeof(TService));
         }
 
         /// <summary>
@@ -486,7 +498,7 @@ namespace Autofac
         public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             Keyed<TLimit, TScanningActivatorData, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
-                Func<Type, string> serviceKeyMapping,
+                Func<Type, object> serviceKeyMapping,
                 Type serviceType)
             where TScanningActivatorData : ScanningActivatorData
         {
@@ -501,34 +513,47 @@ namespace Autofac
         /// implemented interfaces.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<TLimit, TScanningActivatorData, DynamicRegistrationStyle>
-            AsImplementedInterfaces<TLimit, TScanningActivatorData>(this IRegistrationBuilder<TLimit, TScanningActivatorData, DynamicRegistrationStyle> registration)
-            where TScanningActivatorData : ScanningActivatorData
+        public static IRegistrationBuilder<TLimit, ScanningActivatorData, DynamicRegistrationStyle>
+            AsImplementedInterfaces<TLimit>(this IRegistrationBuilder<TLimit, ScanningActivatorData, DynamicRegistrationStyle> registration)
         {
             if (registration == null) throw new ArgumentNullException("registration");
-            return registration.As(t => t.GetInterfaces()
-                .Where(i => i != typeof(IDisposable))
-                .Select(i => new TypedService(i))
-                // ReSharper disable RedundantEnumerableCastCall
-                .Cast<Service>());
-                // ReSharper restore RedundantEnumerableCastCall
+            return registration.As(t => GetImplementedInterfaces(t));
         }
 
         /// <summary>
         /// Specifies that a type is registered as providing all of its implemented interfaces.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TConcreteActivatorData">Activator data type.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<TLimit, TScanningActivatorData, SingleRegistrationStyle>
-            AsImplementedInterfaces<TLimit, TScanningActivatorData>(this IRegistrationBuilder<TLimit, TScanningActivatorData, SingleRegistrationStyle> registration)
+        public static IRegistrationBuilder<TLimit, TConcreteActivatorData, SingleRegistrationStyle>
+            AsImplementedInterfaces<TLimit, TConcreteActivatorData>(this IRegistrationBuilder<TLimit, TConcreteActivatorData, SingleRegistrationStyle> registration)
+            where TConcreteActivatorData : IConcreteActivatorData
         {
             if (registration == null) throw new ArgumentNullException("registration");
-            return registration.As(typeof(TLimit).GetInterfaces().Select(i => new TypedService(i)).Cast<Service>().ToArray());
+            return registration.As(GetImplementedInterfaces(registration.ActivatorData.Activator.LimitType));
+        }
+
+        /// <summary>
+        /// Specifies that a type is registered as providing all of its implemented interfaces.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, ReflectionActivatorData, DynamicRegistrationStyle>
+            AsImplementedInterfaces<TLimit>(this IRegistrationBuilder<TLimit, ReflectionActivatorData, DynamicRegistrationStyle> registration)
+        {
+            if (registration == null) throw new ArgumentNullException("registration");
+            var implementationType = registration.ActivatorData.ImplementationType;
+            return registration.As(GetImplementedInterfaces(implementationType));
+        }
+
+        static Type[] GetImplementedInterfaces(Type type)
+        {
+            return type.GetInterfaces().Where(i => i != typeof (IDisposable)).ToArray();
         }
 
         /// <summary>

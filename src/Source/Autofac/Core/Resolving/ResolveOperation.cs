@@ -75,15 +75,20 @@ namespace Autofac.Core.Resolving
         public object Execute(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
             object result;
-
+            
             try
             {
                 result = ResolveComponent(registration, parameters);
             }
+            catch(DependencyResolutionException dependencyResolutionException)
+            {
+                End(dependencyResolutionException);
+                throw;
+            }
             catch (Exception exception)
             {
                 End(exception);
-                throw;
+                throw new DependencyResolutionException(ResolveOperationResources.ExceptionDuringResolve, exception);
             }
 
             End();
@@ -104,7 +109,7 @@ namespace Autofac.Core.Resolving
             if (currentOperationScope == null) throw new ArgumentNullException("currentOperationScope");
             if (registration == null) throw new ArgumentNullException("registration");
             if (parameters == null) throw new ArgumentNullException("parameters");
-            if (_ended) throw new ObjectDisposedException(ResolveOperationResources.TemporaryContextDisposed);
+            if (_ended) throw new ObjectDisposedException(ResolveOperationResources.TemporaryContextDisposed, innerException: null);
 
             _circularDependencyDetector.CheckForCircularDependency(registration, _activationStack, ++_callDepth);
 

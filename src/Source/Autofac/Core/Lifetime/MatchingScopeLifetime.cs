@@ -26,7 +26,6 @@
 using System;
 using System.Globalization;
 using System.Linq.Expressions;
-using Autofac.Util;
 
 namespace Autofac.Core.Lifetime
 {
@@ -47,6 +46,17 @@ namespace Autofac.Core.Lifetime
             if (matchExpression == null) throw new ArgumentNullException("matchExpression");
             _matcher = matchExpression.Compile();
             _matchExpressionCode = matchExpression.Body.ToString();
+        }
+
+        /// <summary>
+        /// Match scopes by comparing tags for equality.
+        /// </summary>
+        /// <param name="lifetimeScopeTagToMatch">The tag applied to matching scopes.</param>
+        public MatchingScopeLifetime(object lifetimeScopeTagToMatch)
+        {
+            if (lifetimeScopeTagToMatch == null) throw new ArgumentNullException("lifetimeScopeTagToMatch");
+            _matcher = ls => lifetimeScopeTagToMatch.Equals(ls.Tag);
+            _matchExpressionCode = lifetimeScopeTagToMatch.ToString();
         }
 
         /// <summary>

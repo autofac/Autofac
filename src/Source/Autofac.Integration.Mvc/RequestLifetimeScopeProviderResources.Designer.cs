@@ -22,14 +22,14 @@ namespace Autofac.Integration.Mvc {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class AutofacDependencyResolverResources {
+    internal class RequestLifetimeScopeProviderResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal AutofacDependencyResolverResources() {
+        internal RequestLifetimeScopeProviderResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Autofac.Integration.Mvc {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Integration.Mvc.AutofacDependencyResolverResources", typeof(AutofacDependencyResolverResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Integration.Mvc.RequestLifetimeScopeProviderResources", typeof(RequestLifetimeScopeProviderResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,15 +61,6 @@ namespace Autofac.Integration.Mvc {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The request lifetime scope cannot be created because the ApplicationInstance is not available..
-        /// </summary>
-        internal static string ApplicationInstanceNotAvailable {
-            get {
-                return ResourceManager.GetString("ApplicationInstanceNotAvailable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The request lifetime scope cannot be created because the HttpContext is not available..
         /// </summary>
         internal static string HttpContextNotAvailable {
@@ -79,11 +70,11 @@ namespace Autofac.Integration.Mvc {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The HTTP module &apos;{0}&apos; has not been loaded..
+        ///   Looks up a localized string similar to The &apos;GetLifetimeScopeCore&apos; method implementation on &apos;{0}&apos; returned a null ILifetimeScope instance. When overridden this method must return a valid ILifetimeScope instance for the current HTTP request..
         /// </summary>
-        internal static string HttpModuleNotLoaded {
+        internal static string NullLifetimeScopeReturned {
             get {
-                return ResourceManager.GetString("HttpModuleNotLoaded", resourceCulture);
+                return ResourceManager.GetString("NullLifetimeScopeReturned", resourceCulture);
             }
         }
     }

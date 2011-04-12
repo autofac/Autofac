@@ -27,21 +27,20 @@ using System;
 using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Core.Diagnostics;
 using Autofac.Features.ResolveAnything;
 using Moq;
 
 namespace AutofacContrib.Moq
 {
     /// <summary>
-    /// Wrapper around the <see cref="Autofac"/> and <see cref="Moq"/>
+    /// Wrapper around <see cref="Autofac"/> and <see cref="Moq"/>
     /// </summary>
     public class AutoMock : IDisposable
     {
         /// <summary> 
-        /// <see cref="MockFactory"/> instance responsible for expectations and mocks. 
+        /// <see cref="MockRepository"/> instance responsible for expectations and mocks. 
         /// </summary>
-        public MockFactory MockFactory { get; private set; }
+        public MockRepository MockRepository { get; private set; }
 
         /// <summary>
         /// <see cref="IContainer"/> that handles the component resolution.
@@ -49,10 +48,15 @@ namespace AutofacContrib.Moq
         public IContainer Container { get; private set; }
 
         private AutoMock(MockBehavior behavior)
+            : this(new MockRepository(behavior))
         {
-            MockFactory = new MockFactory(behavior);
+        }
+
+        private AutoMock(MockRepository repository)
+        {
+            MockRepository = repository;
             var builder = new ContainerBuilder();
-            builder.RegisterInstance(MockFactory);
+            builder.RegisterInstance(MockRepository);
             builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
             builder.RegisterSource(new MoqRegistrationHandler());
             Container = builder.Build();
@@ -60,9 +64,9 @@ namespace AutofacContrib.Moq
         }
 
         /// <summary>
-        /// Create new <see cref="AutoMock"/> instance with strict loose behavior.
+        /// Create new <see cref="AutoMock"/> instance with loose mock behavior.
         /// </summary>
-        /// <seealso cref="MockFactory"/>
+        /// <seealso cref="MockRepository"/>
         /// <returns>Container initialized for loose behavior.</returns>
         public static AutoMock GetLoose()
         {
@@ -72,11 +76,21 @@ namespace AutofacContrib.Moq
         /// <summary>
         /// Create new <see cref="AutoMock"/> instance with strict mock behavior.
         /// </summary>
-        /// <seealso cref="MockFactory"/>
+        /// <seealso cref="MockRepository"/>
         /// <returns>Container initialized for loose behavior.</returns>
         public static AutoMock GetStrict()
         {
             return new AutoMock(MockBehavior.Strict);
+        }
+
+        /// <summary>
+        /// Create new <see cref="AutoMock"/> instance that will create mocks with behavior defined by <c>repository</c>.
+        /// </summary>
+        /// <param name="repository"></param>
+        /// <returns></returns>
+        public static AutoMock GetFromRepository(MockRepository repository)
+        {
+            return new AutoMock(repository);
         }
 
         /// <summary>
@@ -87,9 +101,9 @@ namespace AutofacContrib.Moq
             try
             {
                 if (VerifyAll)
-                    MockFactory.VerifyAll();
+                    MockRepository.VerifyAll();
                 else
-                    MockFactory.Verify();
+                    MockRepository.Verify();
             }
             finally
             {

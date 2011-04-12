@@ -33,6 +33,7 @@ namespace Autofac.Util
     /// </summary>
     public class Disposable : IDisposable
     {
+        const int DisposedFlag = 1;
         int _isDisposed;
 
         /// <summary>
@@ -41,7 +42,7 @@ namespace Autofac.Util
         public void Dispose()
         {
             var isDisposed = _isDisposed;
-            Interlocked.CompareExchange(ref _isDisposed, 1, isDisposed);
+            Interlocked.CompareExchange(ref _isDisposed, DisposedFlag, isDisposed);
             if (isDisposed == 0)
             {
                 Dispose(true);
@@ -55,6 +56,18 @@ namespace Autofac.Util
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
+        }
+
+        /// <summary>
+        /// Returns true if the current instance has been disposed; otherwise false;
+        /// </summary>
+        protected bool IsDisposed
+        {
+            get 
+            {
+                Thread.MemoryBarrier();
+                return _isDisposed == DisposedFlag;
+            }
         }
     }
 }

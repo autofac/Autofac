@@ -24,7 +24,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Autofac.Core.Activators.Reflection
@@ -51,7 +50,7 @@ namespace Autofac.Core.Activators.Reflection
         /// </summary>
         /// <param name="constructorBindings">Available constructors.</param>
         /// <returns>The best constructor.</returns>
-        public ConstructorParameterBinding SelectConstructorBinding(IEnumerable<ConstructorParameterBinding> constructorBindings)
+        public ConstructorParameterBinding SelectConstructorBinding(ConstructorParameterBinding[] constructorBindings)
         {
             if (constructorBindings == null) throw new ArgumentNullException("constructorBindings");
             

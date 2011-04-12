@@ -29,19 +29,14 @@ using System.Runtime.Serialization;
 namespace Autofac.Core
 {
 	/// <summary>
-	/// Problem resolving dependencies, e.g. circular references, no callable constructor etc.
+	/// Base exception type thrown whenever the dependency resolution process fails. This is a fatal
+	/// exception, as Autofac is unable to 'roll back' changes to components that may have already
+	/// been made during the operation. For example, 'on activated' handlers may have already been
+	/// fired, or 'single instance' components partially constructed.
 	/// </summary>
     [Serializable]
 	public class DependencyResolutionException : Exception
 	{
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DependencyResolutionException"/> class.
-        /// </summary>
-        public DependencyResolutionException()
-            : base(DependencyResolutionExceptionResources.DefaultMessage)
-        {
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="DependencyResolutionException"/> class.
         /// </summary>

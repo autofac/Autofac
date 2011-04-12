@@ -23,10 +23,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Autofac.Core.Lifetime;
 
 namespace Autofac.Core.Registration
@@ -37,11 +33,11 @@ namespace Autofac.Core.Registration
     /// </summary>
     class ScopeRestrictedRegistry : ComponentRegistry
     {
-        IComponentLifetime _restrictedRootScopeLifetime;
+        readonly IComponentLifetime _restrictedRootScopeLifetime;
 
         public ScopeRestrictedRegistry(object scopeTag)
         {
-            _restrictedRootScopeLifetime = new MatchingScopeLifetime(s => s.Tag == scopeTag);
+            _restrictedRootScopeLifetime = new MatchingScopeLifetime(scopeTag);
         }
 
         public override void Register(IComponentRegistration registration, bool preserveDefaults)

@@ -62,13 +62,10 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AutofacDependencyResolver.cs" />
-    <Compile Include="AutofacDependencyResolverResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AutofacDependencyResolverResources.resx</DependentUpon>
-    </Compile>
+    <Compile Include="AutofacFilterAttributeFilterProvider.cs" />
     <Compile Include="AutofacModelBinderProvider.cs" />
     <Compile Include="AutofacWebTypesModule.cs" />
+    <Compile Include="RequestLifetimeScopeProvider.cs" />
     <Compile Include="ExtensibleActionInvoker.cs" />
     <Compile Include="ILifetimeScopeProvider.cs" />
     <Compile Include="ModelBinderTypeAttribute.cs" />
@@ -76,6 +73,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationExtensions.cs" />
     <Compile Include="RequestLifetimeHttpModule.cs" />
+    <Compile Include="RequestLifetimeScopeProviderResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RequestLifetimeScopeProviderResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="ViewRegistrationSource.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -90,9 +92,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AutofacDependencyResolverResources.resx">
+    <EmbeddedResource Include="RequestLifetimeScopeProviderResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>AutofacDependencyResolverResources.Designer.cs</LastGenOutput>
+      <LastGenOutput>RequestLifetimeScopeProviderResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -23,8 +23,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Collections.Generic;
-
 namespace Autofac.Core.Activators.Reflection
 {
     /// <summary>
@@ -37,6 +35,6 @@ namespace Autofac.Core.Activators.Reflection
         /// </summary>
         /// <param name="constructorBindings">Available constructors.</param>
         /// <returns>The best constructor.</returns>
-        ConstructorParameterBinding SelectConstructorBinding(IEnumerable<ConstructorParameterBinding> constructorBindings);
+        ConstructorParameterBinding SelectConstructorBinding(ConstructorParameterBinding[] constructorBindings);
     }
 }

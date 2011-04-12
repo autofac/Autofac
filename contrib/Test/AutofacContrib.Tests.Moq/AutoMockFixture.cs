@@ -55,6 +55,26 @@ namespace AutofacContrib.Tests.Moq
         }
 
         [Test]
+        public void GetFromRepositoryUsesLooseBehaviorSetOnRepository()
+        {
+            using (var mock = AutoMock.GetFromRepository(new MockRepository(MockBehavior.Loose)))
+            {
+                RunWithSingleSetupationTest(mock);
+            }
+        }
+
+        [Test]
+        [ExpectedException(typeof(MockException))]
+        public void GetFromRepositoryUsesStrictBehaviorSetOnRepository()
+        {
+            using (var mock = AutoMock.GetFromRepository(new MockRepository(MockBehavior.Strict)))
+            {
+                RunWithSingleSetupationTest(mock);
+            }
+        }
+
+
+        [Test]
         public void ProvideInstance()
         {
             using (var mock = AutoMock.GetLoose())
@@ -169,7 +189,7 @@ namespace AutofacContrib.Tests.Moq
         private static void AssertProperties(AutoMock mock)
         {
             Assert.IsNotNull(mock.Container);
-            Assert.IsNotNull(mock.MockFactory);
+            Assert.IsNotNull(mock.MockRepository);
         }
 
         private static void RunTest(AutoMock mock)

@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Autofac.Integration.Mvc
@@ -42,18 +41,17 @@ namespace Autofac.Integration.Mvc
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacDependencyResolver"/> class.
         /// </summary>
-        /// <param name="container">The container.</param>
+        /// <param name="container">The container that nested lifetime scopes will be create from.</param>
         public AutofacDependencyResolver(ILifetimeScope container)
         {
             if (container == null) throw new ArgumentNullException("container");
             _container = container;
-            _container.TryResolve(out _lifetimeScopeProvider);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacDependencyResolver"/> class.
         /// </summary>
-        /// <param name="container">The container.</param>
+        /// <param name="container">The container that nested lifetime scopes will be create from.</param>
         /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
         /// that adds component registations visible only in nested lifetime scopes.</param>
         public AutofacDependencyResolver(ILifetimeScope container, Action<ContainerBuilder> configurationAction)
@@ -61,6 +59,65 @@ namespace Autofac.Integration.Mvc
         {
             if (configurationAction == null) throw new ArgumentNullException("configurationAction");
             _configurationAction = configurationAction;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AutofacDependencyResolver"/> class.
+        /// </summary>
+        /// <param name="container">The container that nested lifetime scopes will be create from.</param>
+        /// <param name="lifetimeScopeProvider">A <see cref="ILifetimeScopeProvider"/> implementation for 
+        /// creating new lifetime scopes.</param>
+        public AutofacDependencyResolver(ILifetimeScope container, ILifetimeScopeProvider lifetimeScopeProvider) : 
+            this(container)
+        {
+            if (lifetimeScopeProvider == null) throw new ArgumentNullException("lifetimeScopeProvider");
+            _lifetimeScopeProvider = lifetimeScopeProvider;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AutofacDependencyResolver"/> class.
+        /// </summary>
+        /// <param name="container">The container that nested lifetime scopes will be create from.</param>
+        /// <param name="lifetimeScopeProvider">A <see cref="ILifetimeScopeProvider"/> implementation for 
+        /// creating new lifetime scopes.</param>
+        /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
+        /// that adds component registations visible only in nested lifetime scopes.</param>
+        public AutofacDependencyResolver(ILifetimeScope container, ILifetimeScopeProvider lifetimeScopeProvider, Action<ContainerBuilder> configurationAction)
+            : this(container, lifetimeScopeProvider)
+        {
+            if (configurationAction == null) throw new ArgumentNullException("configurationAction");
+            _configurationAction = configurationAction;
+        }
+
+        /// <summary>
+        /// Gets the Autofac implementation of the dependency resolver.
+        /// </summary>
+        public static AutofacDependencyResolver Current
+        {
+            get { return DependencyResolver.Current as AutofacDependencyResolver; }
+        }
+
+        /// <summary>
+        /// The lifetime containing components for processing the current HTTP request.
+        /// </summary>
+        public ILifetimeScope RequestLifetimeScope
+        {
+            get
+            {
+                if (_lifetimeScopeProvider == null)
+                {
+                    _lifetimeScopeProvider = new RequestLifetimeScopeProvider(_container, _configurationAction);
+                }
+                return _lifetimeScopeProvider.GetLifetimeScope();
+            }
+        }
+
+        /// <summary>
+        /// Gets the application container that was provided to the constructor.
+        /// </summary>
+        public ILifetimeScope ApplicationContainer
+        {
+            get { return _container; }
         }
 
         /// <summary>
@@ -87,45 +144,6 @@ namespace Autofac.Integration.Mvc
 #else
             return (IEnumerable<object>)instance;
 #endif
-        }
-
-        /// <summary>
-        /// The lifetime containing components for processing the current HTTP request.
-        /// </summary>
-        public ILifetimeScope RequestLifetimeScope
-        {
-            get
-            {
-                if (_lifetimeScopeProvider == null)
-                {
-                    var httpContext = (HttpContext.Current == null) ? null : new HttpContextWrapper(HttpContext.Current);
-                    _lifetimeScopeProvider = GetRequestLifetimeHttpModule(httpContext);
-                }
-                return _lifetimeScopeProvider.GetLifetimeScope(_container, _configurationAction);
-            }
-        }
-
-        /// <summary>
-        /// Gets the request lifetime HTTP module.
-        /// </summary>
-        /// <param name="httpContext">The HTTP context.</param>
-        /// <returns>The HTTP module as an <see cref="ILifetimeScopeProvider"/> instance.</returns>
-        internal static ILifetimeScopeProvider GetRequestLifetimeHttpModule(HttpContextBase httpContext)
-        {
-            if (httpContext == null)
-                throw new InvalidOperationException(AutofacDependencyResolverResources.HttpContextNotAvailable);
-
-            if (httpContext.ApplicationInstance == null)
-                throw new InvalidOperationException(AutofacDependencyResolverResources.ApplicationInstanceNotAvailable);
-
-            var httpModules = httpContext.ApplicationInstance.Modules;
-            for (var index = 0; index < httpModules.Count; index++)
-            {
-                if (httpModules[index] is RequestLifetimeHttpModule)
-                    return (RequestLifetimeHttpModule)httpModules[index];
-            }
-            throw new InvalidOperationException(string.Format(
-                AutofacDependencyResolverResources.HttpModuleNotLoaded, typeof(RequestLifetimeHttpModule)));
         }
     }
 }

@@ -63,6 +63,9 @@
     <Compile Include="ConfigurationActionBuilderFixture.cs" />
     <Compile Include="MultitenantContainerFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegistrationExtensionsFixture.cs" />
+    <Compile Include="Stubs\IStubDependency3.cs" />
+    <Compile Include="Stubs\StubDependency3Impl.cs" />
     <Compile Include="Stubs\StubDisposableDependency.cs" />
     <Compile Include="Stubs\IStubDependency1.cs" />
     <Compile Include="Stubs\IStubDependency2.cs" />

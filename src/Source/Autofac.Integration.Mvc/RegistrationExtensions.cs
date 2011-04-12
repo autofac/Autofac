@@ -54,7 +54,7 @@ namespace Autofac.Integration.Mvc
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
-            return registration.InstancePerMatchingLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag);
+            return registration.InstancePerMatchingLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag);
         }
 
         /// <summary>
@@ -146,6 +146,22 @@ namespace Autofac.Integration.Mvc
                     (from ModelBinderTypeAttribute attribute in type.GetCustomAttributes(typeof(ModelBinderTypeAttribute), true)
                      from targetType in attribute.TargetTypes
                     select targetType).ToList());
+        }
+
+        /// <summary>
+        /// Registers the <see cref="AutofacFilterAttributeFilterProvider"/>.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        public static void RegisterFilterProvider(this ContainerBuilder builder)
+        {
+            if (builder == null) throw new ArgumentNullException("builder");
+
+            foreach (var provider in FilterProviders.Providers.OfType<FilterAttributeFilterProvider>().ToArray())
+                FilterProviders.Providers.Remove(provider);
+
+            builder.RegisterType<AutofacFilterAttributeFilterProvider>()
+                .As<IFilterProvider>()
+                .SingleInstance();
         }
 
         /// <summary>

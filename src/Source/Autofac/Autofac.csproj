@@ -84,6 +84,11 @@
       <DependentUpon>RegistrationBuilderResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Builder\RegistrationExtensions.cs" />
+    <Compile Include="ContainerBuilderResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ContainerBuilderResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Core\Activators\Delegate\DelegateActivatorResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -112,6 +117,11 @@
     <Compile Include="Core\KeyedService.cs" />
     <Compile Include="Core\Lifetime\LifetimeScopeBeginningEventArgs.cs" />
     <Compile Include="Core\Lifetime\LifetimeScopeEndingEventArgs.cs" />
+    <Compile Include="Core\Lifetime\LifetimeScopeResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LifetimeScopeResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Core\RegistrationSourceAddedEventArgs.cs" />
     <Compile Include="Core\Resolving\IInstanceLookup.cs" />
     <Compile Include="Core\Resolving\InstanceLookupCompletionBeginningEventArgs.cs" />
@@ -256,11 +266,6 @@
     <Compile Include="Core\ConstantParameter.cs" />
     <Compile Include="Core\Container.cs" />
     <Compile Include="Core\DependencyResolutionException.cs" />
-    <Compile Include="Core\DependencyResolutionExceptionResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DependencyResolutionExceptionResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Core\Disposer.cs" />
     <Compile Include="IComponentContext.cs" />
     <Compile Include="Core\IComponentLifetime.cs" />
@@ -319,6 +324,7 @@
     <Compile Include="Features\OwnedInstances\Owned.cs" />
     <Compile Include="Features\OwnedInstances\OwnedInstanceRegistrationSource.cs" />
     <Compile Include="Features\Scanning\ScanningRegistrationExtensions.cs" />
+    <Compile Include="IStartable.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="Builder\ReflectionActivatorData.cs" />
     <Compile Include="Builder\RegistrationBuilderOfTLAR.cs" />
@@ -372,6 +378,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RegistrationBuilderResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="ContainerBuilderResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ContainerBuilderResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Core\Activators\Delegate\DelegateActivatorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DelegateActivatorResources.Designer.cs</LastGenOutput>
@@ -402,13 +412,14 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ContainerResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Core\DependencyResolutionExceptionResources.resx">
+    <EmbeddedResource Include="Core\Lifetime\LifetimeScopeResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>DependencyResolutionExceptionResources.Designer.cs</LastGenOutput>
+      <LastGenOutput>LifetimeScopeResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Core\Lifetime\MatchingScopeLifetimeResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MatchingScopeLifetimeResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Core\Registration\ComponentNotRegisteredExceptionResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

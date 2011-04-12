@@ -18,7 +18,7 @@ namespace Autofac.Tests.Integration.Mvc
             var modelBinderProvider = container.Resolve<IModelBinderProvider>();
             Assert.That(modelBinderProvider, Is.InstanceOf<AutofacModelBinderProvider>());
 
-            using (var httpRequestScope = container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag))
+            using (var httpRequestScope = container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag))
             {
                 Assert.That(httpRequestScope.Resolve<IModelBinderProvider>(), Is.EqualTo(modelBinderProvider));
             }
@@ -27,7 +27,7 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void ModelBindersAreRegistered()
         {
-            using (var httpRequestScope = BuildContainer().BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag))
+            using (var httpRequestScope = BuildContainer().BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag))
             {
                 var modelBinders = httpRequestScope.Resolve<IEnumerable<IModelBinder>>();
                 Assert.That(modelBinders.Count(), Is.EqualTo(2));
@@ -37,7 +37,7 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void ModelBinderHasDependenciesInjected()
         {
-            using (var httpRequestScope = BuildContainer().BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag))
+            using (var httpRequestScope = BuildContainer().BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag))
             {
                 var modelBinder = httpRequestScope.Resolve<IEnumerable<IModelBinder>>()
                     .OfType<ModelBinder>()
@@ -55,14 +55,14 @@ namespace Autofac.Tests.Integration.Mvc
             builder.RegisterModelBinderProvider();
             var container = builder.Build();
 
-            using (var httpRequestScope = container.BeginLifetimeScope(RequestLifetimeHttpModule.HttpRequestTag))
+            using (var httpRequestScope = container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag))
             {
-                var modelBinders = httpRequestScope.Resolve<IEnumerable<IModelBinder>>();
+                var modelBinders = httpRequestScope.Resolve<IEnumerable<IModelBinder>>().ToList();
                 Assert.That(modelBinders.Count(), Is.EqualTo(1));
                 Assert.That(modelBinders.First(), Is.InstanceOf<ModelBinderWithoutAttribute>());
 
-                var provider = (AutofacModelBinderProvider)httpRequestScope.Resolve<IModelBinderProvider>();
-                Assert.That(provider.GetBinder(typeof(object)), Is.Null);
+                var provider = (AutofacModelBinderProvider) httpRequestScope.Resolve<IModelBinderProvider>();
+                Assert.That(provider.GetBinder(typeof (object)), Is.Null);
             }
         }
 
@@ -91,10 +91,9 @@ namespace Autofac.Tests.Integration.Mvc
             builder.RegisterModelBinders(Assembly.GetExecutingAssembly());
             builder.RegisterModelBinderProvider();
 
-            builder.RegisterInstance(new StubLifetimeScopeProvider()).As<ILifetimeScopeProvider>();
-
             var container = builder.Build();
-            DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+            var lifetimeScopeProvider = new StubLifetimeScopeProvider(container);
+            DependencyResolver.SetResolver(new AutofacDependencyResolver(container, lifetimeScopeProvider));
             return container;
         }
     }

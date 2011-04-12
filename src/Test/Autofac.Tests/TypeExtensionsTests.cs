@@ -22,5 +22,22 @@ namespace Autofac.Tests
                 typeof(object).IsClosedTypeOf(typeof(ICommand<SaveCommandData>)));
         }
 
+        [Test]
+        public void IsClosedTypeOfReturnsTrueForOpenGenericInterfaces()
+        {
+            Assert.True(typeof(ICommand<SaveCommandData>).IsClosedTypeOf(typeof(ICommand<>)));
+        }
+
+        [Test]
+        public void IsClosedTypeOfReturnsTrueForClosedClasses()
+        {
+            Assert.True(typeof(SaveCommand).IsClosedTypeOf(typeof(ICommand<>)));
+        }
+
+        [Test]
+        public void AnOpenGenericTypeIsNotAClosedTypeOfAnything()
+        {
+            Assert.IsFalse(typeof(CommandBase<>).IsClosedTypeOf(typeof(CommandBase<>)));
+        }
     }
 }

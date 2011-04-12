@@ -63,5 +63,73 @@ namespace Autofac.Tests
             container.Dispose();
             Assert.AreSame(dt, instance);
         }
+
+        public interface IImplementedInterface { }
+        public class SelfComponent : IImplementedInterface { }
+
+        [Test]
+        public void AsImplementedInterfaces_CanBeAppliedToNonGenericRegistrations()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType(typeof(SelfComponent)).AsImplementedInterfaces();
+            var context = builder.Build();
+
+            context.Resolve<IImplementedInterface>();
+        }
+
+        [Test]
+        public void AsSelf_CanBeAppliedToNonGenericRegistrations()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType(typeof(SelfComponent)).AsSelf();
+            var context = builder.Build();
+
+            context.Resolve<SelfComponent>();
+        }
+
+        [Test]
+        public void AsImplementedInterfaces_CanBeAppliedToInstanceRegistrations()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(new SelfComponent()).AsImplementedInterfaces();
+            var context = builder.Build();
+
+            context.Resolve<IImplementedInterface>();
+        }
+
+        [Test]
+        public void AsSelf_CanBeAppliedToInstanceRegistrations()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(new SelfComponent()).AsSelf();
+            var context = builder.Build();
+
+            context.Resolve<SelfComponent>();
+        }
+
+// ReSharper disable UnusedTypeParameter
+        public interface IImplementedInterface<T> { }
+// ReSharper restore UnusedTypeParameter
+        public class SelfComponent<T> : IImplementedInterface<T> { }
+
+        [Test]
+        public void AsImplementedInterfaces_CanBeAppliedToOpenGenericRegistrations()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterGeneric(typeof(SelfComponent<>)).AsImplementedInterfaces();
+            var context = builder.Build();
+
+            context.Resolve<IImplementedInterface<object>>();
+        }
+
+        [Test]
+        public void AsSelf_CanBeAppliedToOpenGenericRegistrations()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterGeneric(typeof(SelfComponent<>)).AsSelf();
+            var context = builder.Build();
+
+            context.Resolve<SelfComponent<object>>();
+        }
     }
 }

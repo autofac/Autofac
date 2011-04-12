@@ -216,5 +216,16 @@ namespace Autofac.Tests.Core.Lifetime
             child.Dispose();
             Assert.That(dt.IsDisposed);
         }
+
+        [Test]
+        public void ResolvingFromAnEndedLifetimeProducesObjectDisposedException()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<object>();
+            var container = builder.Build();
+            var lifetime = container.BeginLifetimeScope();
+            lifetime.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => lifetime.Resolve<object>());
+        }
     }
 }

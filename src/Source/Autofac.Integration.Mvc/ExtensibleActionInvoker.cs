@@ -123,11 +123,8 @@ namespace Autofac.Integration.Mvc
             return base.GetParameterValue(controllerContext, parameterDescriptor);
         }
 
-        void SetFilters<T>(ICollection<T> existing, IEnumerable<T> additional)
+        static void SetFilters<T>(ICollection<T> existing, IEnumerable<T> additional)
         {
-            foreach (var filter in existing)
-                _context.InjectProperties(filter);
-
             foreach (var add in additional)
                 existing.Add(add);
         }
