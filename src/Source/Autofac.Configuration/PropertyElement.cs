@@ -82,9 +82,9 @@ namespace Autofac.Configuration
         public object CoerceValue()
         {
             //look for lists first
-            if (List != null && List.Count > 0)
+            if (List.ElementInformation.IsPresent)
                 return List;
-
+            
             return Value;
         }
 	}

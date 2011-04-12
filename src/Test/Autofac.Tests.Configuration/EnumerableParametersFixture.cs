@@ -97,6 +97,22 @@ namespace Autofac.Tests.Configuration
             Assert.AreEqual(poco.List[1], 2);            
         }
 
+        public class F
+        {
+            public IList<int> List { get; set; }
+        }
+
+        [Test]
+        public void InjectsEmptyList()
+        {
+            var container = ConfigureContainer("EnumerableParameters").Build();
+
+            var poco = container.Resolve<F>();
+
+            Assert.IsNotNull(poco.List);
+            Assert.AreEqual(0, poco.List.Count);
+        }
+
         static ContainerBuilder ConfigureContainer(string configFile)
         {
             var cb = new ContainerBuilder();
