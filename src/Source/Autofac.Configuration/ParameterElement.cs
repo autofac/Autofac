@@ -36,6 +36,7 @@ namespace Autofac.Configuration
         const string NameAttributeName = "name";
         const string ValueAttributeName = "value";
         const string ListElementName = "list";
+        const string DictionaryElementName = "dictionary";
         internal const string Key = NameAttributeName;
 
         /// <summary>
@@ -77,14 +78,27 @@ namespace Autofac.Configuration
         }
 
         /// <summary>
+        /// If this parameter's value is a dictionary
+        /// </summary>
+        [ConfigurationProperty(DictionaryElementName, IsRequired = false, DefaultValue = null)]
+        public DictionaryElementCollection Dictionary
+        {
+            get { return this[DictionaryElementName] as DictionaryElementCollection; }
+        }
+
+        /// <summary>
         /// Get the value of this element
         /// </summary>
         /// <returns></returns>
         public object CoerceValue()
         {
             //look for lists first
-            if (List != null && List.Count > 0)
+            if (List.ElementInformation.IsPresent)
                 return List;
+
+            //then dictionaries
+            if (Dictionary.ElementInformation.IsPresent)
+                return Dictionary;
 
             return Value;
         }

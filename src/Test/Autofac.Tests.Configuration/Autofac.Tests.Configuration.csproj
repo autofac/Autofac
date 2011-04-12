@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="AssertionHelpers.cs" />
     <Compile Include="ConfigurationSettingsReaderFixture.cs" />
+    <Compile Include="DictionaryParametersFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EnumerableParametersFixture.cs" />
   </ItemGroup>
@@ -84,6 +85,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="CWithBoolean.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="DictionaryParameters.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Metadata.config">

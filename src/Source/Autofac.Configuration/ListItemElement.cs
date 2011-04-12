@@ -8,6 +8,16 @@ namespace Autofac.Configuration
     public class ListItemElement : ConfigurationElement
     {
         const string ValueAttributeName = "value";
+        const string KeyAttributeName = "key";
+
+        /// <summary>
+        /// Gets the key to be set (will be converted.)
+        /// </summary>
+        [ConfigurationProperty(KeyAttributeName, IsRequired = false)]
+        public string Key
+        {
+            get { return (string) this[KeyAttributeName]; }
+        }
 
         /// <summary>
         /// Gets the value to be set (will be converted.)
