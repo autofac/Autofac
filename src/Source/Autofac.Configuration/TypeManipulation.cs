@@ -24,12 +24,8 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Configuration;
-using Autofac.Configuration.Util;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Autofac.Configuration
 {
@@ -58,14 +54,21 @@ namespace Autofac.Configuration
                 return null;
             }
 
+            //is there an explicit conversion
+            var converter = TypeDescriptor.GetConverter(value.GetType());
+            if(converter != null && converter.CanConvertTo(destinationType))
+                return converter.ConvertTo(value, destinationType);
+
+            //is there an implicit conversion
             if (destinationType.IsAssignableFrom(value.GetType()))
                 return value;
 
-            var sourceConverter = TypeDescriptor.GetConverter(value.GetType());
-            if(sourceConverter != null && sourceConverter.CanConvertTo(destinationType))
-                return sourceConverter.ConvertTo(value, destinationType);
-
-            return TypeDescriptor.GetConverter(destinationType).ConvertFrom(value);
+            //is there an opposite conversion
+            converter = TypeDescriptor.GetConverter(destinationType);
+            if(converter == null)
+                throw new ConfigurationErrorsException(String.Format("Cannot convert type from {0} to {1}.", value.GetType(), destinationType));
+                
+            return converter.ConvertFrom(value);
         }
     }
 }

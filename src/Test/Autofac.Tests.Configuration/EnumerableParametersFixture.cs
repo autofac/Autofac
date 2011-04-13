@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using Autofac.Configuration;
 using NUnit.Framework;
 
@@ -111,6 +113,62 @@ namespace Autofac.Tests.Configuration
 
             Assert.IsNotNull(poco.List);
             Assert.AreEqual(0, poco.List.Count);
+        }
+
+        public class G
+        {
+            public IEnumerable Enumerable { get; set; }
+        }
+
+        [Test]
+        public void InjectsIEnumerable()
+        {
+            var container = ConfigureContainer("EnumerableParameters").Build();
+
+            var poco = container.Resolve<G>();
+
+            Assert.IsNotNull(poco.Enumerable);
+            var enumerable = poco.Enumerable.Cast<string>().ToList();
+            Assert.IsTrue(enumerable.Count == 2);
+            Assert.AreEqual(enumerable[0], "Val1");
+            Assert.AreEqual(enumerable[1], "Val2");
+        }
+
+        public class H
+        {
+            public IEnumerable<int> Enumerable { get; set; }
+        }
+
+        [Test]
+        public void InjectsGenericIEnumerable()
+        {
+            var container = ConfigureContainer("EnumerableParameters").Build();
+
+            var poco = container.Resolve<H>();
+
+            Assert.IsNotNull(poco.Enumerable);
+            var enumerable = poco.Enumerable.ToList();
+            Assert.IsTrue(enumerable.Count == 2);
+            Assert.AreEqual(enumerable[0], 1);
+            Assert.AreEqual(enumerable[1], 2);
+        }
+
+        public class I
+        {
+            public ICollection<int> Collection { get; set; }
+        }
+
+        [Test]
+        public void InjectsGenericCollection()
+        {
+            var container = ConfigureContainer("EnumerableParameters").Build();
+
+            var poco = container.Resolve<I>();
+
+            Assert.IsNotNull(poco.Collection);
+            Assert.IsTrue(poco.Collection.Count == 2);
+            Assert.AreEqual(poco.Collection.First(), 1);
+            Assert.AreEqual(poco.Collection.Last(), 2);
         }
 
         static ContainerBuilder ConfigureContainer(string configFile)

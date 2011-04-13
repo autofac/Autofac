@@ -89,6 +89,7 @@
     </None>
     <None Include="DictionaryParameters.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Metadata.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -106,6 +107,7 @@
     </None>
     <None Include="EnumerableParameters.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="TypeMultipleTimes.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
