@@ -305,34 +305,21 @@ namespace Autofac.Builder
         /// Configure the component so that any properties whose types are registered in the
         /// container will be wired to instances of the appropriate service.
         /// </summary>
+        /// <param name="wiringFlags">Set wiring options such as circular dependency wiring support.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> PropertiesAutowired()
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> PropertiesAutowired(PropertyWiringFlags wiringFlags)
         {
             var injector = new AutowiringPropertyInjector();
-            RegistrationData.ActivatingHandlers.Add((s, e) => 
-                injector.InjectProperties(e.Context, e.Instance, true));
-            return this;
-        }
 
-        /// <summary>
-        /// Configure the component so that any properties whose types are registered in the
-        /// container will be wired to instances of the appropriate service.
-        /// </summary>
-        /// <param name="allowCircularDependencies">If set to true, the properties won't be wired until
-        /// after the component has been activated. This allows property-property and constructor-property
-        /// circularities in the dependency graph.</param>
-        /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> PropertiesAutowired(bool allowCircularDependencies)
-        {
+            var allowCircularDependencies = 0 != (int)(wiringFlags & PropertyWiringFlags.AllowCircularDependencies);
+            var preserveSetValues = 0 != (int) (wiringFlags & PropertyWiringFlags.PreserveSetValues);
+
             if (allowCircularDependencies)
-            {
-                var injector = new AutowiringPropertyInjector();
-                RegistrationData.ActivatedHandlers.Add((s, e) =>
-                    injector.InjectProperties(e.Context, e.Instance, true));
-                return this;
-            }
-
-            return PropertiesAutowired();
+                RegistrationData.ActivatedHandlers.Add((s, e) => injector.InjectProperties(e.Context, e.Instance, !preserveSetValues));
+            else
+                RegistrationData.ActivatingHandlers.Add((s, e) => injector.InjectProperties(e.Context, e.Instance, !preserveSetValues));
+            
+            return this;
         }
 
         /// <summary>
