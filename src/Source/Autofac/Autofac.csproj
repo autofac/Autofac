@@ -96,6 +96,7 @@
     <Compile Include="Builder\IRegistrationBuilder.cs" />
     <Compile Include="Builder\MetadataConfiguration.cs" />
     <Compile Include="Builder\IConcreteActivatorData.cs" />
+    <Compile Include="PropertyWiringFlags.cs" />
     <Compile Include="Builder\RegistrationBuilder.cs" />
     <Compile Include="Builder\RegistrationBuilderResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -280,11 +281,6 @@
     <Compile Include="Core\ConstantParameter.cs" />
     <Compile Include="Core\Container.cs" />
     <Compile Include="Core\DependencyResolutionException.cs" />
-    <Compile Include="Core\DependencyResolutionExceptionResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DependencyResolutionExceptionResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Core\Disposer.cs" />
     <Compile Include="IComponentContext.cs" />
     <Compile Include="Core\IComponentLifetime.cs" />
@@ -445,10 +441,6 @@
     <EmbeddedResource Include="Core\ContainerResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ContainerResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Core\DependencyResolutionExceptionResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>DependencyResolutionExceptionResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Core\Lifetime\LifetimeScopeResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -24,9 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using Autofac.Util;
 
 namespace Autofac.Core.Activators.Reflection
 {
@@ -40,19 +38,32 @@ namespace Autofac.Core.Activators.Reflection
         /// </summary>
         /// <param name="constructorBindings">Available constructors.</param>
         /// <returns>The best constructor.</returns>
-        public ConstructorParameterBinding SelectConstructorBinding(
-            IEnumerable<ConstructorParameterBinding> constructorBindings)
+        /// <exception cref='DependencyResolutionException'>A single unambiguous match could not be chosen.</exception>
+        public ConstructorParameterBinding SelectConstructorBinding(ConstructorParameterBinding[] constructorBindings)
         {
             if (constructorBindings == null) throw new ArgumentNullException("constructorBindings");
+            if (constructorBindings.Length == 0) throw new ArgumentOutOfRangeException("constructorBindings");
 
-            var result = constructorBindings
-                .OrderByDescending(cb => cb.TargetConstructor.GetParameters().Length)
-                .FirstOrDefault();
+            if (constructorBindings.Length == 1)
+                return constructorBindings[0];
 
-            if (result == null)
-                throw new ArgumentOutOfRangeException("constructorBindings");
+            var withLength = constructorBindings
+                .Select(binding => new { Binding = binding, ConstructorParameterLength = binding.TargetConstructor.GetParameters().Length });
 
-            return result;
+            var maxLength = withLength.Max(binding => binding.ConstructorParameterLength);
+
+            var maximal = withLength
+                .Where(binding => binding.ConstructorParameterLength == maxLength)
+                .Select(ctor => ctor.Binding)
+                .ToArray();
+
+            if (maximal.Length == 1)
+                return maximal[0];
+
+            throw new DependencyResolutionException(string.Format(
+                "Cannot choose between multiple constructors with equal length {0} on type '{1}'. Select the constructor explicitly, with the UsingConstructor() configuration method, when the component is registered.",
+                maxLength,
+                maximal[0].TargetConstructor.DeclaringType));
         }
     }
 }

@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ExceptionDuringResolve" xml:space="preserve">
+    <value>An exception was thrown while executing a resolve operation. See the InnerException for details.</value>
+  </data>
   <data name="MaxDepthExceeded" xml:space="preserve">
     <value>Probable circular dependency between factory-scoped components. Chain includes '{0}'</value>
   </data>

@@ -70,8 +70,8 @@ namespace Autofac.Tests.Features.Metadata
         [Test]
         public void ResolvingStronglyTypedMetadataWithoutDefaultValueThrowsException()
         {
-            Assert.Throws<CompositionContractMismatchException>(() =>
-                _container.Resolve<Meta<object, IMeta>>());
+            var dx = Assert.Throws<DependencyResolutionException>(() => _container.Resolve<Meta<object, IMeta>>());
+            Assert.IsInstanceOf<CompositionContractMismatchException>(dx.InnerException);
         }
 
         [Test]

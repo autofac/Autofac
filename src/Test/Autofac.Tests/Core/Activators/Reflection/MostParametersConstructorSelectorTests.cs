@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Reflection;
 using NUnit.Framework;
 using System.Linq;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core;
 
-namespace Autofac.Tests.Component.Activation
+namespace Autofac.Tests.Core.Activators.Reflection
 {
     [TestFixture]
     public class MostParametersConstructorSelectorFixture
     {
+        // ReSharper disable ClassNeverInstantiated.Local
+
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         public void DoesNotAcceptNullBindings()
@@ -36,17 +37,37 @@ namespace Autofac.Tests.Component.Activation
         [Test]
         public void ChoosesCorrectConstructor()
         {
-            var constructors = typeof(ThreeConstructors).GetConstructors()
-                .Select(ci => new ConstructorParameterBinding(ci, Enumerable.Empty<Parameter>(), Container.Empty));
-
-            Assert.AreEqual(3, constructors.Count());
-
+            var constructors = GetBindingsForAllConstructorsOf<ThreeConstructors>();
             var target = new MostParametersConstructorSelector();
-
+            
             var chosen = target.SelectConstructorBinding(constructors);
 
             Assert.IsNotNull(chosen);
             Assert.AreEqual(2, chosen.TargetConstructor.GetParameters().Length);
         }
+
+        class TwoConstructors
+        {
+            public TwoConstructors(int i) { }
+            public TwoConstructors(string s) { }
+        }
+
+        [Test]
+        public void WhenMultipleConstructorsWithTheSameLengthResolvable_ExceptionIsThrown()
+        {
+            var constructors = GetBindingsForAllConstructorsOf<TwoConstructors>();
+            var target = new MostParametersConstructorSelector();
+
+            Assert.Throws<DependencyResolutionException>(() => target.SelectConstructorBinding(constructors));
+        }
+
+        static ConstructorParameterBinding[] GetBindingsForAllConstructorsOf<TTarget>()
+        {
+            return typeof(TTarget).GetConstructors()
+                .Select(ci => new ConstructorParameterBinding(ci, Enumerable.Empty<Parameter>(), Container.Empty))
+                .ToArray();
+        }
+
+        // ReSharper restore ClassNeverInstantiated.Local
     }
 }

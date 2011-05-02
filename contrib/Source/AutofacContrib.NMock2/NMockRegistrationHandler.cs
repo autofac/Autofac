@@ -57,7 +57,7 @@ namespace AutofacContrib.NMock2
             if (typedService == null ||
                 !typedService.ServiceType.IsInterface ||
                 typeof(IEnumerable).IsAssignableFrom(typedService.ServiceType) ||
-                typeof(IContainerAwareComponent).IsAssignableFrom(typedService.ServiceType))
+                typeof(IStartable).IsAssignableFrom(typedService.ServiceType))
                 return Enumerable.Empty<IComponentRegistration>();
 
             var rb = RegistrationBuilder.ForDelegate((c, p) =>

@@ -79,6 +79,7 @@ namespace Autofac
 
             return @this.GetTypesThatClose(openGeneric).Any();
         }
+
         /// <summary>
         /// Determines whether this type is assignable to <typeparamref name="T"/>.
         /// </summary>

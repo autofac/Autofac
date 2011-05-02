@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 using Autofac.Builder;
@@ -13,7 +14,7 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void RegisterModelBinderProviderThrowsExceptionForNullBuilder()
         {
-            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => Autofac.Integration.Mvc.RegistrationExtensions.RegisterModelBinderProvider(null));
             Assert.That(exception.ParamName, Is.EqualTo("builder"));
         }
@@ -21,7 +22,7 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void RegisterModelBindersThrowsExceptionForNullBuilder()
         {
-            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => Autofac.Integration.Mvc.RegistrationExtensions.RegisterModelBinders(null, Assembly.GetExecutingAssembly()));
             Assert.That(exception.ParamName, Is.EqualTo("builder"));
         }
@@ -29,15 +30,39 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void RegisterModelBindersThrowsExceptionForNullAssemblies()
         {
-            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => new ContainerBuilder().RegisterModelBinders(null));
             Assert.That(exception.ParamName, Is.EqualTo("modelBinderAssemblies"));
         }
 
         [Test]
+        public void RegisterFilterProviderThrowsExceptionForNullBuilder()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => Autofac.Integration.Mvc.RegistrationExtensions.RegisterFilterProvider(null));
+            Assert.That(exception.ParamName, Is.EqualTo("builder"));
+        }
+
+        [Test]
+        public void RegisterFilterProviderRemovesExistingProvider()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterFilterProvider();
+            Assert.That(FilterProviders.Providers.OfType<FilterAttributeFilterProvider>().Any(), Is.False);
+        }
+
+        [Test]
+        public void RegisterFilterProviderCanSafelyBeCalledTwice()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterFilterProvider();
+            builder.RegisterFilterProvider();
+        }
+
+        [Test]
         public void CacheInSessionThrowsExceptionForNullRegistration()
         {
-            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => Autofac.Integration.Mvc.RegistrationExtensions.CacheInSession<object, SimpleActivatorData, SingleRegistrationStyle>(null));
             Assert.That(exception.ParamName, Is.EqualTo("registration"));
         }

@@ -51,6 +51,11 @@ namespace AutofacContrib.Multitenant
     public class MultitenantContainer : Disposable, IContainer
     {
         /// <summary>
+        /// Marker object-tag for the tenant-level lifetime scope.
+        /// </summary>
+        internal static readonly object TenantLifetimeScopeTag = "tenantLifetime";
+
+        /// <summary>
         /// Marker object representing the default tenant ID.
         /// </summary>
         private readonly object _defaultTenantId = new DefaultTenantId();
@@ -306,7 +311,7 @@ namespace AutofacContrib.Multitenant
                 {
                     throw new InvalidOperationException(String.Format(CultureInfo.CurrentUICulture, Properties.Resources.MultitenantContainer_TenantAlreadyConfigured, tenantId));
                 }
-                this._tenantLifetimeScopes[tenantId] = this.ApplicationContainer.BeginLifetimeScope(configuration);
+                this._tenantLifetimeScopes[tenantId] = this.ApplicationContainer.BeginLifetimeScope(TenantLifetimeScopeTag, configuration);
             }
         }
 
@@ -383,7 +388,7 @@ namespace AutofacContrib.Multitenant
                     tenantScope = this._tenantLifetimeScopes[tenantId];
                     if (tenantScope == null)
                     {
-                        tenantScope = this.ApplicationContainer.BeginLifetimeScope();
+                        tenantScope = this.ApplicationContainer.BeginLifetimeScope(TenantLifetimeScopeTag);
                         this._tenantLifetimeScopes[tenantId] = tenantScope;
                     }
                 }

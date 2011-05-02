@@ -51,7 +51,7 @@ namespace Autofac.Core.Activators.Reflection
         /// </summary>
         /// <param name="targetType">Type to search for constructors.</param>
         /// <returns>Suitable constructors.</returns>
-        public IEnumerable<ConstructorInfo> FindConstructors(Type targetType)
+        public ConstructorInfo[] FindConstructors(Type targetType)
         {
             return targetType.GetConstructors(BindingFlags.Instance | _bindingFlags);
         }

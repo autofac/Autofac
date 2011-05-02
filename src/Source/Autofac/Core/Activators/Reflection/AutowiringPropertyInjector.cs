@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using Autofac.Util;
 
 namespace Autofac.Core.Activators.Reflection
 {
@@ -13,7 +12,7 @@ namespace Autofac.Core.Activators.Reflection
 
             Type instanceType = instance.GetType();
 
-            foreach (PropertyInfo property in instanceType.GetProperties(
+            foreach (var property in instanceType.GetProperties(
                 BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty))
             {
                 Type propertyType = property.PropertyType;
@@ -36,7 +35,7 @@ namespace Autofac.Core.Activators.Reflection
                     (property.GetValue(instance, null) != null))
                     continue;
 
-                object propertyValue = context.Resolve(propertyType);
+                var propertyValue = context.Resolve(propertyType);
                 property.SetValue(instance, propertyValue, null);
             }
         }

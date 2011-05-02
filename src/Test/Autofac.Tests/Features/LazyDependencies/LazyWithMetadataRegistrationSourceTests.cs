@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using Autofac.Core;
 using NUnit.Framework;
 
 namespace Autofac.Tests.Features.LazyDependencies
@@ -68,8 +69,9 @@ namespace Autofac.Tests.Features.LazyDependencies
         [Test]
         public void ResolvingStronglyTypedMetadataWithoutDefaultValueThrowsException()
         {
-            Assert.Throws<CompositionContractMismatchException>(() =>
-                _container.Resolve<Lazy<object, IMeta>>());
+            var dx = Assert.Throws<DependencyResolutionException>(() => _container.Resolve<Lazy<object, IMeta>>());
+
+            Assert.IsInstanceOf<CompositionContractMismatchException>(dx.InnerException);
         }
 
         [Test]

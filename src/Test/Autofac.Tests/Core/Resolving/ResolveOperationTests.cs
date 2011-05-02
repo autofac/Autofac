@@ -1,4 +1,5 @@
 ﻿using System;
+using Autofac.Builder;
 using NUnit.Framework;
 using Autofac.Core;
 using Autofac.Tests.Scenarios.Dependencies;
@@ -13,7 +14,7 @@ namespace Autofac.Tests.Core.Resolving
         {
             var cb = new ContainerBuilder();
             cb.RegisterType<DependsByCtor>().SingleInstance();
-            cb.RegisterType<DependsByProp>().SingleInstance().PropertiesAutowired(true);
+            cb.RegisterType<DependsByProp>().SingleInstance().PropertiesAutowired(PropertyWiringFlags.AllowCircularDependencies);
 
             var c = cb.Build();
             var dbp = c.Resolve<DependsByProp>();
@@ -28,7 +29,7 @@ namespace Autofac.Tests.Core.Resolving
         {
             var cb = new ContainerBuilder();
             cb.RegisterType<DependsByCtor>().SingleInstance();
-            cb.RegisterType<DependsByProp>().SingleInstance().PropertiesAutowired(true);
+            cb.RegisterType<DependsByProp>().SingleInstance().PropertiesAutowired(PropertyWiringFlags.AllowCircularDependencies);
 
             var c = cb.Build();
             var dbc = c.Resolve<DependsByCtor>();
@@ -44,7 +45,7 @@ namespace Autofac.Tests.Core.Resolving
         {
             var cb = new ContainerBuilder();
             cb.RegisterType<DependsByCtor>();
-            cb.RegisterType<DependsByProp>().PropertiesAutowired(true);
+            cb.RegisterType<DependsByProp>().PropertiesAutowired(PropertyWiringFlags.AllowCircularDependencies);
 
             var c = cb.Build();
             c.Resolve<DependsByProp>();
@@ -60,7 +61,7 @@ namespace Autofac.Tests.Core.Resolving
             cb.RegisterType<DependsByCtor>().OnActivating(e => { ++ac; });
             // ReSharper restore AccessToModifiedClosure
             cb.RegisterType<DependsByProp>().OnActivating(e => { ++ac; })
-                .PropertiesAutowired(true);
+                .PropertiesAutowired(PropertyWiringFlags.AllowCircularDependencies);
 
             var c = cb.Build();
             c.Resolve<DependsByCtor>();

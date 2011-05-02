@@ -33,5 +33,11 @@ namespace Autofac.Tests
         {
             Assert.True(typeof(SaveCommand).IsClosedTypeOf(typeof(ICommand<>)));
         }
+
+        [Test]
+        public void AnOpenGenericTypeIsNotAClosedTypeOfAnything()
+        {
+            Assert.IsFalse(typeof(CommandBase<>).IsClosedTypeOf(typeof(CommandBase<>)));
+        }
     }
 }
