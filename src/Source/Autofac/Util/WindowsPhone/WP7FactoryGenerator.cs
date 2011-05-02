@@ -54,21 +54,6 @@ namespace Autofac.Features.GeneratedFactories
             }
         }
 
-        /// <summary>
-        /// Create a factory generator.
-        /// </summary>
-        /// <param name="productRegistration">The component that will be activated in
-        /// order to create the products of the factory.</param>
-        /// <param name="delegateType">The delegate to provide as a factory.</param>
-        /// <param name="parameterMapping">The parameter mapping mode to use.</param>
-        public FactoryGenerator(Type delegateType, IComponentRegistration productRegistration, ParameterMapping parameterMapping)
-        {
-            if (productRegistration == null) throw new ArgumentNullException("productRegistration");
-            Enforce.ArgumentTypeIsFunction(delegateType);
-
-            
-        }
-
         internal static ParameterMapping GetParameterMapping(Type delegateType, ParameterMapping configuredParameterMapping)
         {
             if (configuredParameterMapping == ParameterMapping.Adaptive)
