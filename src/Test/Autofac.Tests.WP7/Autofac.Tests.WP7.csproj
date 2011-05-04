@@ -48,6 +48,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac">
+      <HintPath>..\..\Source\Autofac\bin\Release\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Tests.Scenarios.ScannedAssembly">
+      <HintPath>..\Autofac.Tests.Scenarios.ScannedAssembly\bin\Release\Autofac.Tests.Scenarios.ScannedAssembly.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Interop" />
     <Reference Include="Microsoft.Silverlight.Testing">
@@ -310,16 +316,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="SplashScreenImage.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Source\Autofac\Autofac.csproj">
-      <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
-      <Name>Autofac</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Autofac.Tests.Scenarios.ScannedAssembly\Autofac.Tests.Scenarios.ScannedAssembly.csproj">
-      <Project>{DF1D239B-CDEA-4FFF-A84A-4FE0F8B3DC26}</Project>
-      <Name>Autofac.Tests.Scenarios.ScannedAssembly</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tests\Features\LazyDependencies\" />
