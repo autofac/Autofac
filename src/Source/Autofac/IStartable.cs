@@ -10,7 +10,9 @@ namespace Autofac
     /// </summary>
     /// <remarks>
     /// For equivalent "Stop" functionality, implement <see cref="IDisposable"/>. Autofac
-    /// will always dispose a component before any of its dependencies.
+    /// will always dispose a component before any of its dependencies (except in the presence
+    /// of circular dependencies, in which case the components in the cycle are disposed in
+    /// reverse-construction order.)
     /// </remarks>
     public interface IStartable
     {
