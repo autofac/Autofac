@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
+using System.ServiceModel;
 using Autofac.Integration.Wcf;
-using Autofac.Builder;
-using Autofac.Core;
+using NUnit.Framework;
 
 namespace Autofac.Tests.Integration.Wcf
 {
@@ -51,6 +47,39 @@ namespace Autofac.Tests.Integration.Wcf
                 var factory = new AutofacWebServiceHostFactory();
                 factory.CreateServiceHost("service", DummyEndpoints);
             });
+        }
+
+        [Test]
+        public void ExecutesHostConfigurationActionWhenSet()
+        {
+            try
+            {
+                ServiceHostBase hostParameter = null;
+                ServiceHostBase actualHost = null;
+                bool actionCalled = false;
+
+                AutofacHostFactory.HostConfigurationAction = host =>
+                {
+                    hostParameter = host;
+                    actionCalled = true;
+                };
+
+                var builder = new ContainerBuilder();
+                builder.RegisterType<object>();
+                TestWithHostedContainer(builder.Build(), () =>
+                {
+                    var factory = new AutofacWebServiceHostFactory();
+                    actualHost = factory.CreateServiceHost(typeof(object).FullName, DummyEndpoints);
+                    Assert.IsNotNull(actualHost);
+                });
+
+                Assert.AreSame(hostParameter, actualHost);
+                Assert.IsTrue(actionCalled);
+            }
+            finally
+            {
+                AutofacHostFactory.HostConfigurationAction = null;
+            }
         }
 
         static void TestWithHostedContainer(IContainer container, Action test)
