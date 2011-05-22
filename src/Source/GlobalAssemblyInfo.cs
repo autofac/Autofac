@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyCompany("Autofac Project - http://autofac.org")]
 [assembly: AssemblyProduct("Autofac")]
-[assembly: AssemblyCopyright("Copyright © 2008 Autofac Contributors")]
+[assembly: AssemblyCopyright("Copyright © 2011 Autofac Contributors")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
