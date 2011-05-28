@@ -124,9 +124,11 @@ namespace Autofac.Core.Registration
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
-            AddRegistration(registration, preserveDefaults);
-
-            UpdateInitialisedAdapters(registration);
+            lock (_synchRoot)
+            {
+                AddRegistration(registration, preserveDefaults);
+                UpdateInitialisedAdapters(registration);
+            }
         }
 
         void UpdateInitialisedAdapters(IComponentRegistration registration)
