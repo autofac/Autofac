@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Tests.Util;
 using NUnit.Framework;
 
 namespace Autofac.Tests.Core.Activators.Reflection
@@ -14,9 +15,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
     }
 
     [TestFixture]
-#if WINDOWS_PHONE //Parameter defaults dont exist until SL4...
-    [Ignore]
-#endif
+    [IgnoreOnPhone("Parameter defaults don't exist until SL4")]
     public class DefaultValueParameterTests
     {
         static ParameterInfo GetTestParameter(string name)

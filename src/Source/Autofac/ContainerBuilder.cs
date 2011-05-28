@@ -156,11 +156,7 @@ namespace Autofac
             componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
             componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());
 #endif
-#if !WINDOWS_PHONE
             componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
-#else
-            componentRegistry.AddRegistrationSource(new Wp7GeneratedFactoryRegistrationSource());
-#endif
         }
 	}
 }

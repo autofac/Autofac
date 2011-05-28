@@ -19,15 +19,29 @@ namespace Autofac.Util.WindowsPhone
             .Where(x => x.Name == "DelegateActivator")
             .ToArray();
 
-        readonly Func<IComponentContext, IEnumerable<Parameter>, Delegate> _generator;
+        Func<IComponentContext, IEnumerable<Parameter>, Delegate> _generator;
 
-        ///<summary>
-        ///</summary>
+        ///<summary />
         public Wp7FactoryGenerator(Type delegateType, Service service, ParameterMapping parameterMapping)
         {
             if (service == null) throw new ArgumentNullException("service");
             Enforce.ArgumentTypeIsFunction(delegateType);
 
+            CreateGenerator(service, delegateType, parameterMapping);
+        }
+
+        ///<summary />
+        public Wp7FactoryGenerator(Type delegateType, IComponentRegistration service, ParameterMapping parameterMapping)
+        {
+            if(service == null)
+                throw new ArgumentNullException("service");
+            Enforce.ArgumentTypeIsFunction(delegateType);
+
+            CreateGenerator(service, delegateType, parameterMapping);
+        }
+
+        void CreateGenerator(object service, Type delegateType, ParameterMapping parameterMapping)
+        {
             var resultType = delegateType.FunctionReturnType();
             var invoke = delegateType.GetMethod("Invoke");
             var args = invoke.GetParameters().Select(x => x.ParameterType)
@@ -39,25 +53,17 @@ namespace Autofac.Util.WindowsPhone
             var funcRegistration = DelegateActivators
                 .FirstOrDefault(x => x.GetGenericArguments().Count() == args.Count());
 
-            if (funcRegistration != null)
+            if(funcRegistration != null)
             {
-                var creator = funcRegistration
-                    .MakeGenericMethod(args.ToArray());
+                var creator = funcRegistration.MakeGenericMethod(args.ToArray());
 
                 _generator = (a0, a1) =>
                 {
-                    return (Delegate)creator.Invoke(null, new object[] { a0, service, a1, GetParameterMapping(delegateType, parameterMapping) });
+                    return (Delegate)creator.Invoke(null, new[] { a0, service, parameterMapping.ResolveParameterMapping(delegateType) });
                 };
             }
         }
 
-        internal static ParameterMapping GetParameterMapping(Type delegateType, ParameterMapping configuredParameterMapping)
-        {
-            if (configuredParameterMapping == ParameterMapping.Adaptive)
-                return delegateType.Name.StartsWith("Func`") ? ParameterMapping.ByType : ParameterMapping.ByName;
-            return configuredParameterMapping;
-        }
-        
         /// <summary>
         /// Generates a factory delegate that closes over the provided context.
         /// </summary>
@@ -85,93 +91,86 @@ namespace Autofac.Util.WindowsPhone
         }
 
         // ReSharper disable UnusedMember.Local
-
-        static Delegate DelegateActivator<TResult, TDelegate>(IComponentContext context, Service target, IEnumerable<Parameter> parameters, ParameterMapping mapping)
+        // ReSharper disable UnusedParameter.Local
+        
+        static Delegate DelegateActivator<TResult, TDelegate>(IComponentContext context, object target, ParameterMapping mapping)
         {
+            if(!(target is Service || target is IComponentRegistration))
+                throw new ArgumentException("target");
             var ls = context.Resolve<ILifetimeScope>();
             Func<TResult> del1 = () =>
             {
                 Debug.WriteLine("Invoking Delegate Func<TResult>");
-                var r = ls.ResolveService(target, parameters);
-                return (TResult)r;
+                object resolved ;
+                if(target is Service)
+                    resolved = ls.ResolveService((Service)target, new List<Parameter>());
+                else
+                    resolved = ls.ResolveComponent((IComponentRegistration)target, new List<Parameter>());
+                return (TResult)resolved;
             };
             var del = Delegate.CreateDelegate(typeof(TDelegate), del1.Target, del1.Method, true);
             return del;
         }
+        // ReSharper restore UnusedParameter.Local
 
-        static Delegate DelegateActivator<TArg0, TResult, TDelegate>(IComponentContext context, Service target, IEnumerable<Parameter> parameters, ParameterMapping mapping)
+        static Delegate DelegateActivator<TArg0, TResult, TDelegate>(IComponentContext context, object target, ParameterMapping mapping)
         {
+            if(!(target is Service || target is IComponentRegistration))
+                throw new ArgumentException("target");
             var ls = context.Resolve<ILifetimeScope>();
             Func<TArg0, TResult> del1 = a0 =>
             {
                 Debug.WriteLine("Invoking Delegate Func<TArg0, TResult>");
-                var parameterCollection = GetParameterCollection<TDelegate>(mapping, a0);
-                var r = ls.ResolveService(target, parameterCollection);
-                return (TResult)r;
+                var parameterCollection = mapping.GetParameterCollection<TDelegate>(a0);
+                object resolved;
+                if(target is Service)
+                    resolved = ls.ResolveService((Service)target, parameterCollection);
+                else
+                    resolved = ls.ResolveComponent((IComponentRegistration)target, parameterCollection);
+                return (TResult)resolved;
             };
             var del = Delegate.CreateDelegate(typeof(TDelegate), del1.Target, del1.Method, true);
             return del;
         }
 
-        static Delegate DelegateActivator<TArg0, TArg1, TResult, TDelegate>(IComponentContext context, Service target, IEnumerable<Parameter> parameters, ParameterMapping mapping)
+        static Delegate DelegateActivator<TArg0, TArg1, TResult, TDelegate>(IComponentContext context, object target, ParameterMapping mapping)
         {
-                var ls = context.Resolve<ILifetimeScope>();
-                Func<TArg0, TArg1, TResult> del1 = (a0, a1) =>
-                {
-                    Debug.WriteLine("Invoking Delegate Func<TArg0, TArg1, TResult>");
-                    var parameterCollection = GetParameterCollection<TDelegate>(mapping, a0, a1);
-                    var r = ls.ResolveService(target, parameterCollection);
-                    return (TResult)r;
-                };
-                var del = Delegate.CreateDelegate(typeof(TDelegate), del1.Target, del1.Method, true);
-                return del;
+            if(!(target is Service || target is IComponentRegistration))
+                throw new ArgumentException("target");
+            var ls = context.Resolve<ILifetimeScope>();
+            Func<TArg0, TArg1, TResult> del1 = (a0, a1) =>
+            {
+                Debug.WriteLine("Invoking Delegate Func<TArg0, TArg1, TResult>");
+                var parameterCollection = mapping.GetParameterCollection<TDelegate>(a0, a1);
+                object resolved;
+                if(target is Service)
+                    resolved = ls.ResolveService((Service)target, parameterCollection);
+                else
+                    resolved = ls.ResolveComponent((IComponentRegistration)target, parameterCollection);
+                return (TResult)resolved;
+            };
+            var del = Delegate.CreateDelegate(typeof(TDelegate), del1.Target, del1.Method, true);
+            return del;
         }
 
-        static Delegate DelegateActivator<TArg0, TArg1, TArg2, TResult, TDelegate>(IComponentContext context, Service target, IEnumerable<Parameter> parameters, ParameterMapping mapping)
+        static Delegate DelegateActivator<TArg0, TArg1, TArg2, TResult, TDelegate>(IComponentContext context, object target, ParameterMapping mapping)
         {
+            if(!(target is Service || target is IComponentRegistration))
+                throw new ArgumentException("target");
             var ls = context.Resolve<ILifetimeScope>();
             Func<TArg0, TArg1, TArg2, TResult> del1 = (a0, a1, a2) =>
             {
                 Debug.WriteLine("Invoking Delegate Func<TArg0, TArg1, TArg2, TResult>");
-                var parameterCollection = GetParameterCollection<TDelegate>(mapping, a0, a1, a2);
-                var r = ls.ResolveService(target, parameterCollection);
-                return (TResult)r;
+                var parameterCollection = mapping.GetParameterCollection<TDelegate>(a0, a1, a2);
+                object resolved;
+                if(target is Service)
+                    resolved = ls.ResolveService((Service)target, parameterCollection);
+                else
+                    resolved = ls.ResolveComponent((IComponentRegistration)target, parameterCollection);
+                return (TResult)resolved;
             };
             var del = Delegate.CreateDelegate(typeof(TDelegate), del1.Target, del1.Method, true);
             return del;
-        }
-
-        internal static IEnumerable<Parameter> GetParameterCollection<TDelegate>(ParameterMapping mapping, params object[] param)
-        {
-            IEnumerable<Parameter> parameterCollection;
-
-            switch (mapping)
-            {
-                case ParameterMapping.ByType:
-                    parameterCollection = param.Select(x => (Parameter)new TypedParameter(x.GetType(), x));
-                    break;
-                case ParameterMapping.ByName:
-                    {
-                        var parameterInfo = typeof(TDelegate).GetMethods().First().GetParameters();
-                        parameterCollection = new List<Parameter>();
-                        for (var i = 0; i < param.Length; i++)
-                        {
-                            ((IList<Parameter>)parameterCollection).Add(new NamedParameter(parameterInfo[i].Name, param[i]));
-                        }
-                    }
-                    break;
-                case ParameterMapping.ByPosition:
-                    parameterCollection = new List<Parameter>();
-                    for (var i = 0; i < param.Length; i++)
-                    {
-                        ((IList<Parameter>)parameterCollection).Add(new PositionalParameter(i, param[i]));
-                    }
-                    break;
-                default:
-                    throw new NotSupportedException("Parameter mapping not supported");
-            }
-
-            return parameterCollection;
         }
 
         // ReSharper restore UnusedMember.Local
