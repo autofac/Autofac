@@ -52,5 +52,39 @@ namespace Autofac.Tests
             Assert.IsEmpty(exceptions);
             Assert.AreEqual(1, results.Distinct().Count());
         }
+
+        [Test]
+        public void ConcurrentResolveOperationsForNonSharedInstancesFromDifferentLifetimes_DoNotBlock()
+        {
+            var evt = new ManualResetEvent(false);
+
+            var builder = new ContainerBuilder();
+            builder.Register((c, p) =>
+                {
+                    if (p.TypedAs<bool>())
+                        evt.WaitOne();
+                    return new object();
+                });
+
+            var container = builder.Build();
+
+            var unblocked = 0;
+            var blockedScope = container.BeginLifetimeScope();
+            var blockedThread = new Thread(() =>
+            {
+                blockedScope.Resolve<object>(TypedParameter.From(true));
+                Interlocked.Increment(ref unblocked);
+            });
+            blockedThread.Start();
+            Thread.Sleep(500);
+
+            container.Resolve<object>(TypedParameter.From(false));
+            container.BeginLifetimeScope().Resolve<object>(TypedParameter.From(false));
+
+            Thread.MemoryBarrier();
+            Assert.AreEqual(0, unblocked);
+            evt.Set();
+            blockedThread.Join();
+        }
     }
 }
