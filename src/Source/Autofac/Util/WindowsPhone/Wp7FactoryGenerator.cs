@@ -3,43 +3,40 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Autofac.Core;
-using Autofac.Util;
+using Autofac.Features.GeneratedFactories;
 
-namespace Autofac.Features.GeneratedFactories
+namespace Autofac.Util.WindowsPhone
 {
     /// <summary>
     /// Generates context-bound closures that represent factories from
     /// a set of heuristics based on delegate type signatures.
     /// </summary>
-    public class FactoryGenerator
+    public class Wp7FactoryGenerator
     {
-        static readonly MethodInfo[] delegateFuncRegistrations = typeof(FactoryGenerator)
+        static readonly MethodInfo[] DelegateActivators = typeof(Wp7FactoryGenerator)
             .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
-            .Where(x => x.Name == "DelegateFuncRegistration")
+            .Where(x => x.Name == "DelegateActivator")
             .ToArray();
 
         readonly Func<IComponentContext, IEnumerable<Parameter>, Delegate> _generator;
 
         ///<summary>
         ///</summary>
-        public FactoryGenerator(Type delegateType, Service service, ParameterMapping parameterMapping)
+        public Wp7FactoryGenerator(Type delegateType, Service service, ParameterMapping parameterMapping)
         {
             if (service == null) throw new ArgumentNullException("service");
             Enforce.ArgumentTypeIsFunction(delegateType);
-            List<Type> args = null;
-            MethodInfo funcRegistration = null;
 
             var resultType = delegateType.FunctionReturnType();
             var invoke = delegateType.GetMethod("Invoke");
-            args = invoke.GetParameters().Select(x => x.ParameterType)
+            var args = invoke.GetParameters().Select(x => x.ParameterType)
                 .Append(resultType)
                 .Append(delegateType)
                 .ToList();
 
             //Find a func method that matches all args
-            funcRegistration = delegateFuncRegistrations
+            var funcRegistration = DelegateActivators
                 .FirstOrDefault(x => x.GetGenericArguments().Count() == args.Count());
 
             if (funcRegistration != null)
@@ -87,7 +84,9 @@ namespace Autofac.Features.GeneratedFactories
             return (TDelegate)(object)GenerateFactory(context, parameters);
         }
 
-        static Delegate DelegateFuncRegistration<TResult, TDelegate>(IComponentContext context, Service target, IEnumerable<Parameter> parameters, ParameterMapping mapping)
+        // ReSharper disable UnusedMember.Local
+
+        static Delegate DelegateActivator<TResult, TDelegate>(IComponentContext context, Service target, IEnumerable<Parameter> parameters, ParameterMapping mapping)
         {
             var ls = context.Resolve<ILifetimeScope>();
             Func<TResult> del1 = () =>
@@ -100,7 +99,7 @@ namespace Autofac.Features.GeneratedFactories
             return del;
         }
 
-        static Delegate DelegateFuncRegistration<TArg0, TResult, TDelegate>(IComponentContext context, Service target, IEnumerable<Parameter> parameters, ParameterMapping mapping)
+        static Delegate DelegateActivator<TArg0, TResult, TDelegate>(IComponentContext context, Service target, IEnumerable<Parameter> parameters, ParameterMapping mapping)
         {
             var ls = context.Resolve<ILifetimeScope>();
             Func<TArg0, TResult> del1 = a0 =>
@@ -114,7 +113,7 @@ namespace Autofac.Features.GeneratedFactories
             return del;
         }
 
-        static Delegate DelegateFuncRegistration<TArg0, TArg1, TResult, TDelegate>(IComponentContext context, Service target, IEnumerable<Parameter> parameters, ParameterMapping mapping)
+        static Delegate DelegateActivator<TArg0, TArg1, TResult, TDelegate>(IComponentContext context, Service target, IEnumerable<Parameter> parameters, ParameterMapping mapping)
         {
                 var ls = context.Resolve<ILifetimeScope>();
                 Func<TArg0, TArg1, TResult> del1 = (a0, a1) =>
@@ -128,7 +127,7 @@ namespace Autofac.Features.GeneratedFactories
                 return del;
         }
 
-        static Delegate DelegateFuncRegistration<TArg0, TArg1, TArg2, TResult, TDelegate>(IComponentContext context, Service target, IEnumerable<Parameter> parameters, ParameterMapping mapping)
+        static Delegate DelegateActivator<TArg0, TArg1, TArg2, TResult, TDelegate>(IComponentContext context, Service target, IEnumerable<Parameter> parameters, ParameterMapping mapping)
         {
             var ls = context.Resolve<ILifetimeScope>();
             Func<TArg0, TArg1, TArg2, TResult> del1 = (a0, a1, a2) =>
@@ -157,7 +156,7 @@ namespace Autofac.Features.GeneratedFactories
                         parameterCollection = new List<Parameter>();
                         for (var i = 0; i < param.Length; i++)
                         {
-                            ((List<Parameter>)parameterCollection).Add(new NamedParameter(parameterInfo[i].Name, param[i]));
+                            ((IList<Parameter>)parameterCollection).Add(new NamedParameter(parameterInfo[i].Name, param[i]));
                         }
                     }
                     break;
@@ -165,7 +164,7 @@ namespace Autofac.Features.GeneratedFactories
                     parameterCollection = new List<Parameter>();
                     for (var i = 0; i < param.Length; i++)
                     {
-                        ((List<Parameter>)parameterCollection).Add(new PositionalParameter(i, param[i]));
+                        ((IList<Parameter>)parameterCollection).Add(new PositionalParameter(i, param[i]));
                     }
                     break;
                 default:
@@ -174,5 +173,7 @@ namespace Autofac.Features.GeneratedFactories
 
             return parameterCollection;
         }
+
+        // ReSharper restore UnusedMember.Local
     }
 }

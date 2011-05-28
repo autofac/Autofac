@@ -386,8 +386,6 @@
     <Compile Include="Util\Silverlight\SerializableAttribute.cs" />
     <Compile Include="Util\Traverse.cs" />
     <Compile Include="Util\TypeExtensions.cs" />
-  </ItemGroup>
-  <ItemGroup Condition="($(MSBuildTargets)!='Windows Phone 7')">
     <Compile Include="Features\GeneratedFactories\FactoryGenerator.cs" />
     <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSource.cs" />
     <EmbeddedResource Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSourceResources.resx">
@@ -399,10 +397,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>GeneratedFactoryRegistrationSourceResources.resx</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup Condition="$(MSBuildTargets)=='Windows Phone 7'">
-    <Compile Include="Util\WindowsPhone\WP7GeneratedFactoryRegistrationSource.cs" />
-    <Compile Include="Util\WindowsPhone\WP7FactoryGenerator.cs" />
+    <Compile Include="Util\WindowsPhone\Wp7GeneratedFactoryRegistrationSource.cs" />
+    <Compile Include="Util\WindowsPhone\Wp7FactoryGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Builder\RegistrationBuilderResources.resx">

@@ -37,6 +37,10 @@ using Autofac.Features.Metadata;
 using Autofac.Features.LazyDependencies;
 #endif
 
+#if WINDOWS_PHONE
+using Autofac.Util.WindowsPhone;
+#endif
+
 namespace Autofac
 {
 	/// <summary>
@@ -145,13 +149,17 @@ namespace Autofac
 	    {
             this.RegisterGeneric(typeof(KeyedServiceIndex<,>)).As(typeof(IIndex<,>)).InstancePerLifetimeScope();
             componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
-            componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
             componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
             componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
 #if !(NET35 || WINDOWS_PHONE)
             componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
             componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
             componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());
+#endif
+#if !WINDOWS_PHONE
+            componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
+#else
+            componentRegistry.AddRegistrationSource(new Wp7GeneratedFactoryRegistrationSource());
 #endif
         }
 	}

@@ -29,14 +29,14 @@ using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Util;
+using Autofac.Features.GeneratedFactories;
 using System.Diagnostics;
 
-namespace Autofac.Features.GeneratedFactories
+namespace Autofac.Util.WindowsPhone
 {
-    class GeneratedFactoryRegistrationSource : IRegistrationSource
+    class Wp7GeneratedFactoryRegistrationSource : IRegistrationSource
     {
-        static readonly MethodInfo[] delegateFuncRegistrations = typeof(GeneratedFactoryRegistrationSource)
+        static readonly MethodInfo[] DelegateFuncRegistrations = typeof(GeneratedFactoryRegistrationSource)
             .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
             .Where(x => x.Name == "DelegateFuncRegistration")
             .ToArray();
@@ -83,7 +83,7 @@ namespace Autofac.Features.GeneratedFactories
             //Find a func method that matches all args
             if (args != null)
             {
-                var funcRegistration = delegateFuncRegistrations
+                var funcRegistration = DelegateFuncRegistrations
                     .FirstOrDefault(x => x.GetGenericArguments().Count() == args.Count());
 
                 if (funcRegistration != null)
@@ -103,6 +103,8 @@ namespace Autofac.Features.GeneratedFactories
         {
             get { return true; }
         }
+
+        // ReSharper disable UnusedMember.Local
 
         static IComponentRegistration DelegateFuncRegistration<TResult, TDelegate>(IComponentRegistration target, Service service)
         {
@@ -135,7 +137,7 @@ namespace Autofac.Features.GeneratedFactories
                     Func<TArg0, TResult> del1 = a0 =>
                     {
                         Debug.WriteLine("Invoking Delegate Func<TArg0, TResult>");
-                        var parameterCollection = FactoryGenerator.GetParameterCollection<TDelegate>(FactoryGenerator.GetParameterMapping(typeof(TDelegate), ParameterMapping.Adaptive), a0);
+                        var parameterCollection = Wp7FactoryGenerator.GetParameterCollection<TDelegate>(Wp7FactoryGenerator.GetParameterMapping(typeof(TDelegate), ParameterMapping.Adaptive), a0);
 
                         var r = ls.ResolveComponent(target, parameterCollection);
                         return (TResult)r;
@@ -159,7 +161,7 @@ namespace Autofac.Features.GeneratedFactories
                     Func<TArg0, TArg1, TResult> del1 = (a0, a1) =>
                     {
                         Debug.WriteLine("Invoking Delegate Func<TArg0, TArg1, TResult>");
-                        var parameterCollection = FactoryGenerator.GetParameterCollection<TDelegate>(FactoryGenerator.GetParameterMapping(typeof(TDelegate), ParameterMapping.Adaptive), a0, a1);
+                        var parameterCollection = Wp7FactoryGenerator.GetParameterCollection<TDelegate>(Wp7FactoryGenerator.GetParameterMapping(typeof(TDelegate), ParameterMapping.Adaptive), a0, a1);
 
                         var r = ls.ResolveComponent(target, parameterCollection);
                         return (TResult)r;
@@ -183,7 +185,7 @@ namespace Autofac.Features.GeneratedFactories
                     Func<TArg0, TArg1, TArg2, TResult> del1 = (a0, a1, a2) =>
                     {
                         Debug.WriteLine("Invoking Delegate Func<TArg0, TArg1, TArg2, TResult>");
-                        var parameterCollection = FactoryGenerator.GetParameterCollection<TDelegate>(FactoryGenerator.GetParameterMapping(typeof(TDelegate), ParameterMapping.Adaptive), a0, a1, a2);
+                        var parameterCollection = Wp7FactoryGenerator.GetParameterCollection<TDelegate>(Wp7FactoryGenerator.GetParameterMapping(typeof(TDelegate), ParameterMapping.Adaptive), a0, a1, a2);
 
                         var r = ls.ResolveComponent(target, parameterCollection);
                         return (TResult)r;
@@ -197,5 +199,7 @@ namespace Autofac.Features.GeneratedFactories
                 .Targeting(target)
                 .CreateRegistration();
         }
+
+        // ReSharper restore UnusedMember.Local
     }
 }
