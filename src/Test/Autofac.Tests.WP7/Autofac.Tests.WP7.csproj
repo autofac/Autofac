@@ -1,0 +1,334 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{85ABA97E-5913-4CE6-A5B7-64C5E4B4628F}</ProjectGuid>
+    <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Autofac.Tests.WP7</RootNamespace>
+    <AssemblyName>Autofac.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <TargetFrameworkProfile>WindowsPhone</TargetFrameworkProfile>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <SilverlightApplication>true</SilverlightApplication>
+    <SupportedCultures>
+    </SupportedCultures>
+    <XapOutputs>true</XapOutputs>
+    <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
+    <XapFilename>Autofac.Tests.WP7.xap</XapFilename>
+    <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
+    <SilverlightAppEntry>Autofac.Tests.WP7.App</SilverlightAppEntry>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Autofac">
+      <HintPath>..\..\Source\Autofac\bin\Release\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Tests.Scenarios.ScannedAssembly">
+      <HintPath>..\Autofac.Tests.Scenarios.ScannedAssembly\bin\Release\Autofac.Tests.Scenarios.ScannedAssembly.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Phone" />
+    <Reference Include="Microsoft.Phone.Interop" />
+    <Reference Include="Microsoft.Silverlight.Testing">
+      <HintPath>..\..\Resource\Library\Microsoft.Silverlight.Testing.WP7\Microsoft.Silverlight.Testing.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight">
+      <HintPath>..\..\Resource\Library\Microsoft.Silverlight.Testing.WP7\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
+    </Reference>
+    <Reference Include="NUnit.Silverlight.Compatibility">
+      <HintPath>..\..\Resource\Library\Silverlight3-NUnit2.5.8-Apr2010\NUnit.Silverlight.Compatibility.dll</HintPath>
+    </Reference>
+    <Reference Include="NUnit.Silverlight.Framework">
+      <HintPath>..\..\Resource\Library\Silverlight3-NUnit2.5.8-Apr2010\NUnit.Silverlight.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="NUnit.Silverlight.Metadata">
+      <HintPath>..\..\Resource\Library\Silverlight3-NUnit2.5.8-Apr2010\NUnit.Silverlight.Metadata.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows" />
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Autofac.Tests\Assertions.cs">
+      <Link>Tests\Assertions.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Builder\CollectionRegistrationBuilderTests.cs">
+      <Link>Tests\Builder\CollectionRegistrationBuilderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Builder\DelegateRegistrationBuilderTests.cs">
+      <Link>Tests\Builder\DelegateRegistrationBuilderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Builder\ModuleTests.cs">
+      <Link>Tests\Builder\ModuleTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Builder\PropertyInjectionTests.cs">
+      <Link>Tests\Builder\PropertyInjectionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Builder\ProvidedInstanceRegistrationBuilderTests.cs">
+      <Link>Tests\Builder\ProvidedInstanceRegistrationBuilderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Builder\ReflectiveRegistrationBuilderTests.cs">
+      <Link>Tests\Builder\ReflectiveRegistrationBuilderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Builder\RegistrationBuilderTests.cs">
+      <Link>Tests\Builder\RegistrationBuilderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\ComponentRegisteredEventArgsTests.cs">
+      <Link>Tests\ComponentRegisteredEventArgsTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\ContainerBuilderTests.cs">
+      <Link>Tests\ContainerBuilderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\Activators\Delegate\DelegateActivatorTests.cs">
+      <Link>Tests\Core\Activators\Delegate\DelegateActivatorTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\Activators\ProvidedInstance\ProvidedInstanceActivatorTests.cs">
+      <Link>Tests\Core\Activators\ProvidedInstance\ProvidedInstanceActivatorTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\Activators\Reflection\ConstructorParameterBindingTests.cs">
+      <Link>Tests\Core\Activators\Reflection\ConstructorParameterBindingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\Activators\Reflection\DefaultValueParameterTests.cs">
+      <Link>Tests\Core\Activators\Reflection\DefaultValueParameterTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\Activators\Reflection\MatchingSignatureConstructorSelectorTests.cs">
+      <Link>Tests\Core\Activators\Reflection\MatchingSignatureConstructorSelectorTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\Activators\Reflection\MostParametersConstructorSelectorTests.cs">
+      <Link>Tests\Core\Activators\Reflection\MostParametersConstructorSelectorTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\Activators\Reflection\ReflectionActivatorTests.cs">
+      <Link>Tests\Core\Activators\Reflection\ReflectionActivatorTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\ComponentRegistrationTests.cs">
+      <Link>Tests\Core\ComponentRegistrationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\ContainerTests.cs">
+      <Link>Tests\Core\ContainerTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\DisposerTests.cs">
+      <Link>Tests\Core\DisposerTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\KeyedServiceTests.cs">
+      <Link>Tests\Core\KeyedServiceTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\Lifetime\LifetimeScopeTests.cs">
+      <Link>Tests\Core\Lifetime\LifetimeScopeTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\Lifetime\MatchingScopeLifetimeTests.cs">
+      <Link>Tests\Core\Lifetime\MatchingScopeLifetimeTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\NamedPropertyParameterTests.cs">
+      <Link>Tests\Core\NamedPropertyParameterTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\Registration\ComponentRegistryTests.cs">
+      <Link>Tests\Core\Registration\ComponentRegistryTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\Registration\ExternalRegistrySourceTests.cs">
+      <Link>Tests\Core\Registration\ExternalRegistrySourceTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\ResolvedParameterTests.cs">
+      <Link>Tests\Core\ResolvedParameterTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\Resolving\CircularDependencyDetectorTests.cs">
+      <Link>Tests\Core\Resolving\CircularDependencyDetectorTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\Resolving\ResolveOperationTests.cs">
+      <Link>Tests\Core\Resolving\ResolveOperationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Core\TypedServiceTests.cs">
+      <Link>Tests\Core\TypedServiceTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\DisposeTracker.cs">
+      <Link>Tests\DisposeTracker.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Factory.cs">
+      <Link>Tests\Factory.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Features\Collections\CollectionRegistrationSourceTests.cs">
+      <Link>Tests\Features\Collections\CollectionRegistrationSourceTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Features\GeneratedFactories\GeneratedFactoriesTests.cs">
+      <Link>Tests\Features\GeneratedFactories\GeneratedFactoriesTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Features\Indexed\KeyedServiceIndexTests.cs">
+      <Link>Tests\Features\Indexed\KeyedServiceIndexTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Features\LightweightAdapters\LightweightAdapterRegistrationExtensionsTests.cs">
+      <Link>Tests\Features\LightweightAdapters\LightweightAdapterRegistrationExtensionsTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Features\LightweightAdapters\LightweightAdapterRegistrationSourceTests.cs">
+      <Link>Tests\Features\LightweightAdapters\LightweightAdapterRegistrationSourceTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Features\OpenGenerics\ComplexGenericsTests.cs">
+      <Link>Tests\Features\OpenGenerics\ComplexGenericsTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Features\OpenGenerics\GenericsForNullableScenarioTests.cs">
+      <Link>Tests\Features\OpenGenerics\GenericsForNullableScenarioTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Features\OpenGenerics\OpenGenericDecoratorTests.cs">
+      <Link>Tests\Features\OpenGenerics\OpenGenericDecoratorTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Features\OpenGenerics\OpenGenericRegistrationExtensionsTests.cs">
+      <Link>Tests\Features\OpenGenerics\OpenGenericRegistrationExtensionsTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Features\OpenGenerics\OpenGenericRegistrationSourceTests.cs">
+      <Link>Tests\Features\OpenGenerics\OpenGenericRegistrationSourceTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Features\OwnedInstances\OwnedInstanceRegistrationSourceTests.cs">
+      <Link>Tests\Features\OwnedInstances\OwnedInstanceRegistrationSourceTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Features\ResolveAnything\ResolveAnythingTests.cs">
+      <Link>Tests\Features\ResolveAnything\ResolveAnythingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Features\Scanning\ScanningRegistrationTests.cs">
+      <Link>Tests\Features\Scanning\ScanningRegistrationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\IntegrationTests.cs">
+      <Link>Tests\IntegrationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\NamedParameterTests.cs">
+      <Link>Tests\NamedParameterTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\RegistrationExtensionsTests.cs">
+      <Link>Tests\RegistrationExtensionsTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\ResolutionExtensionsTests.cs">
+      <Link>Tests\ResolutionExtensionsTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Scenarios\Adapters\Command.cs">
+      <Link>Tests\Scenarios\Adapters\Command.cs</Link>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Scenarios\Adapters\IToolbarButton.cs">
+      <Link>Tests\Scenarios\Adapters\IToolbarButton.cs</Link>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Scenarios\Adapters\ToolbarButton.cs">
+      <Link>Tests\Scenarios\Adapters\ToolbarButton.cs</Link>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Scenarios\ConstructorSelection\MultipleConstructors.cs">
+      <Link>Tests\Scenarios\ConstructorSelection\MultipleConstructors.cs</Link>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Scenarios\Dependencies\Circularity.cs">
+      <Link>Tests\Scenarios\Dependencies\Circularity.cs</Link>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Scenarios\Dependencies\Dependent.cs">
+      <Link>Tests\Scenarios\Dependencies\Dependent.cs</Link>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Scenarios\Dependencies\DependsByCtor.cs">
+      <Link>Tests\Scenarios\Dependencies\DependsByCtor.cs</Link>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Scenarios\Dependencies\DependsByProp.cs">
+      <Link>Tests\Scenarios\Dependencies\DependsByProp.cs</Link>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Scenarios\Graph1.cs">
+      <Link>Tests\Scenarios\Graph1.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Scenarios\Parameterisation\Parameterised.cs">
+      <Link>Tests\Scenarios\Parameterisation\Parameterised.cs</Link>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Scenarios\RegistrationSources\ObjectRegistrationSource.cs">
+      <Link>Tests\Scenarios\RegistrationSources\ObjectRegistrationSource.cs</Link>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\TagsFixture.cs">
+      <Link>Tests\TagsFixture.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\TypedParameterTests.cs">
+      <Link>Tests\TypedParameterTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Util\DelegateExtensionsTests.cs">
+      <Link>Tests\Util\DelegateExtensionsTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Util\EnforceTests.cs">
+      <Link>Tests\Util\EnforceTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\Util\IgnoreOnPhoneAttribute.cs">
+      <Link>Internal\IgnoreOnPhoneAttribute.cs</Link>
+    </Compile>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
+    <Page Include="MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\SharedKey.snk">
+      <Link>SharedKey.snk</Link>
+    </None>
+    <None Include="Properties\AppManifest.xml" />
+    <None Include="Properties\WMAppManifest.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ApplicationIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Background.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SplashScreenImage.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tests\Features\LazyDependencies\" />
+    <Folder Include="Tests\Features\Metadata\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions />
+</Project>

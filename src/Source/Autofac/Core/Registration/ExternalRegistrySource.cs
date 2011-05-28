@@ -60,15 +60,20 @@ namespace Autofac.Core.Registration
         /// <returns>Registrations providing the service.</returns>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
+#if !WINDOWS_PHONE
             var seenRegistrations = new HashSet<IComponentRegistration>();
             var seenServices = new HashSet<Service>();
+#else
+            var seenRegistrations = new List<IComponentRegistration>();
+            var seenServices = new List<Service>();
+#endif
             var lastRunServices = new List<Service> { service };
 
             while (lastRunServices.Any())
             {
                 var nextService = lastRunServices.First();
                 lastRunServices.Remove(nextService);
-                seenServices.Add(service);
+                seenServices.Add(nextService);
                 foreach (var registration in _registry.RegistrationsFor(nextService).Where(r => !r.IsAdapting()))
                 {
                     if (seenRegistrations.Contains(registration))

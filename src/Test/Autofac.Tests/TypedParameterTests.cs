@@ -10,13 +10,13 @@ namespace Autofac.Tests
     [TestFixture]
     public class TypedParameterTests
     {
-        class A
+        public class A
         {
         }
 
-        class B : A { }
+        public class B : A { }
 
-        class C
+        public class C
         {
             public C(A a)
             {

@@ -1,6 +1,7 @@
 ﻿using System;
-using NUnit.Framework;
+using System.ServiceModel;
 using Autofac.Integration.Wcf;
+using NUnit.Framework;
 
 namespace Autofac.Tests.Integration.Wcf
 {
@@ -62,6 +63,39 @@ namespace Autofac.Tests.Integration.Wcf
                 var factory = new AutofacServiceHostFactory();
                 factory.CreateServiceHost("service", DummyEndpoints);
             });
+        }
+
+        [Test]
+        public void ExecutesHostConfigurationActionWhenSet()
+        {
+            try
+            {
+                ServiceHostBase hostParameter = null;
+                ServiceHostBase actualHost = null;
+                bool actionCalled = false;
+
+                AutofacHostFactory.HostConfigurationAction = host =>
+                    {
+                        hostParameter = host;
+                        actionCalled = true;
+                    };
+
+                var builder = new ContainerBuilder();
+                builder.RegisterType<object>();
+                TestWithHostedContainer(builder.Build(), () =>
+                {
+                    var factory = new AutofacServiceHostFactory();
+                    actualHost = factory.CreateServiceHost(typeof(object).FullName, DummyEndpoints);
+                    Assert.IsNotNull(actualHost);
+                });
+
+                Assert.AreSame(hostParameter, actualHost);
+                Assert.IsTrue(actionCalled);
+            }
+            finally
+            {
+                AutofacHostFactory.HostConfigurationAction = null;
+            }
         }
 
         static void TestWithHostedContainer(IContainer container, Action test)

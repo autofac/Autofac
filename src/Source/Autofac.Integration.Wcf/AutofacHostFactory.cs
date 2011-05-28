@@ -35,12 +35,32 @@ namespace Autofac.Integration.Wcf
     /// <summary>
     /// Creates ServiceHost instances for WCF.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// You may configure additional behaviors or other aspects of generated
+    /// service instances by setting the <see cref="Autofac.Integration.Wcf.AutofacHostFactory.HostConfigurationAction"/>.
+    /// If this value is not <see langword="null" />, generated host instances
+    /// will be run through that action.
+    /// </para>
+    /// </remarks>
     public abstract class AutofacHostFactory : ServiceHostFactory
     {
         /// <summary>
         /// The container or lifetime scope from which service instances will be retrieved.
         /// </summary>
         public static ILifetimeScope Container { get; set; }
+
+        /// <summary>
+        /// Gets or sets an action that can be used to programmatically configure
+        /// service host instances this factory generates.
+        /// </summary>
+        /// <value>
+        /// An <see cref="Action{T}"/> that can be used to configure service host
+        /// instances that this factory creates. This action can be used to add
+        /// behaviors or otherwise modify the host before it gets returned by
+        /// the factory.
+        /// </value>
+        public static Action<ServiceHostBase> HostConfigurationAction { get; set; }
 
         /// <summary>
         /// Creates a <see cref="T:System.ServiceModel.ServiceHost"/> with specific base addresses and initializes it with specified data.
@@ -51,8 +71,17 @@ namespace Autofac.Integration.Wcf
         /// A <see cref="T:System.ServiceModel.ServiceHost"/> with specific base addresses.
         /// </returns>
         /// <exception cref="T:System.ArgumentNullException">
-        /// 	<paramref name="baseAddresses"/> is null.</exception>
+        /// <paramref name="baseAddresses"/> is null.</exception>
         /// <exception cref="T:System.InvalidOperationException">There is no hosting context provided or <paramref name="constructorString"/> is null or empty.</exception>
+        /// <remarks>
+        /// <para>
+        /// If <see cref="Autofac.Integration.Wcf.AutofacHostFactory.HostConfigurationAction"/>
+        /// is not <see langword="null" />, the new service host instance is run
+        /// through the configuration action prior to being returned. This allows
+        /// you to programmatically configure behaviors or other aspects of the
+        /// host.
+        /// </para>
+        /// </remarks>
         public override ServiceHostBase CreateServiceHost(string constructorString, Uri[] baseAddresses)
         {
             if (constructorString == null)
@@ -82,7 +111,7 @@ namespace Autofac.Integration.Wcf
 
             return CreateServiceHost(registration, registration.Activator.LimitType, baseAddresses);
         }
- 
+
         /// <summary>
         /// Creates the service host and attaches a WCF Service behaviour that uses Autofac to resolve the service instance.
         /// </summary>
@@ -90,12 +119,29 @@ namespace Autofac.Integration.Wcf
         /// <param name="implementationType">Type of the implementation.</param>
         /// <param name="baseAddresses">The base addresses.</param>
         /// <returns>A <see cref="T:System.ServiceModel.ServiceHost"/> with specific base addresses.</returns>
-        /// <remarks>If the serviceType is null, the implementation type is used as the resolution type</remarks>
+        /// <remarks>
+        /// <para>
+        /// If the service type is <see langword="null" />, the implementation type is used as the resolution type.
+        /// </para>
+        /// <para>
+        /// If <see cref="Autofac.Integration.Wcf.AutofacHostFactory.HostConfigurationAction"/>
+        /// is not <see langword="null" />, the new service host instance is run
+        /// through the configuration action prior to being returned. This allows
+        /// you to programmatically configure behaviors or other aspects of the
+        /// host.
+        /// </para>
+        /// </remarks>
         ServiceHost CreateServiceHost(IComponentRegistration registration, Type implementationType, Uri[] baseAddresses)
         {
             var host = CreateServiceHost(implementationType, baseAddresses);
             host.Opening += (sender, args) => host.Description.Behaviors.Add(
                 new AutofacDependencyInjectionServiceBehavior(Container, implementationType, registration));
+
+            var action = AutofacHostFactory.HostConfigurationAction;
+            if (action != null)
+            {
+                action(host);
+            }
 
             return host;
         }

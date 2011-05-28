@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Autofac.Tests.Scenarios.ConstructorSelection
 {
-    class MultipleConstructors
+    public class MultipleConstructors
     {
         public MultipleConstructors(object o, string s)
         {

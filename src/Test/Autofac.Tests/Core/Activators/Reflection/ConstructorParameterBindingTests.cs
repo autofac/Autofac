@@ -9,7 +9,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
     [TestFixture]
     public class ConstructorParameterBindingTests
     {
-        class ThrowsInCtor
+        public class ThrowsInCtor
         {
             public const string Message = "Message";
 

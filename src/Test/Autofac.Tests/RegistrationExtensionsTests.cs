@@ -13,8 +13,8 @@ namespace Autofac.Tests
 
         interface IMyService { }
 
-        sealed class MyComponent : IMyService { }
-        sealed class MyComponent2 {}
+        public sealed class MyComponent : IMyService { }
+        public sealed class MyComponent2 {}
 
         [Test]
         public void RegistrationsMadeInConfigureExpressionAreAddedToContainer()

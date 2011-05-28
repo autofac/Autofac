@@ -1,5 +1,4 @@
 ﻿using System;
-using Autofac.Features.LazyDependencies;
 using NUnit.Framework;
 
 namespace Autofac.Tests.Features.LazyDependencies

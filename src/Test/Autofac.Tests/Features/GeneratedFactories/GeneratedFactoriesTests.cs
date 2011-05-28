@@ -6,6 +6,7 @@ using Autofac.Builder;
 using Autofac.Core;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac.Tests.Util;
 
 namespace Autofac.Tests.Features.GeneratedFactories
 {
@@ -209,7 +210,7 @@ namespace Autofac.Tests.Features.GeneratedFactories
 
         // This became necessary because by default the char[] constructor of string
         // is chosen in the presence of implicit collection support.
-        class HasCharIntCtor
+        public class HasCharIntCtor
         {
             public string Str;
 
@@ -234,9 +235,10 @@ namespace Autofac.Tests.Features.GeneratedFactories
             Assert.AreEqual("aaa", str);
         }
 
-        delegate string CharCountStringFactory(char c, int count);
+        public delegate string CharCountStringFactory(char c, int count);
 
         [Test]
+        [IgnoreOnPhone("Required constructor not available on phone; String .ctor System.Reflection.ConstructorInfo[6]")]
         public void CanAutoGenerateFactoriesFromCustomDelegateTypes()
         {
             var builder = new ContainerBuilder();

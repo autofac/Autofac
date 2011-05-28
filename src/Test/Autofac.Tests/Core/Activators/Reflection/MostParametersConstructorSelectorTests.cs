@@ -27,7 +27,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             target.SelectConstructorBinding(new ConstructorParameterBinding[] { });
         }
 
-        class ThreeConstructors
+        public class ThreeConstructors
         {
             public ThreeConstructors() { }
             public ThreeConstructors(int i, string s) { }

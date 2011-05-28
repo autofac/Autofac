@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <id>Autofac.Wp7</id>
+    <version>0.0.0.0</version>
+    <authors>Autofac Contributors</authors>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Base assemblies for the Autofac Inversion of Control Container</description>
+    <summary>Autofac is an IoC container for Microsoft .NET. It manages the dependencies between classes so that applications stay easy to change as they grow in size and complexity.</summary>
+    <language>en-US</language>
+    <title>Autofac for Windows Phone 7</title>
+    <projectUrl>http://autofac.org</projectUrl>
+    <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
+  </metadata>
+</package>

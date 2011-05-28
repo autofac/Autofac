@@ -30,7 +30,7 @@ namespace Autofac.Core
     /// <summary>
     /// Fired when the activation process for a new instance is complete.
     /// </summary>
-#if !NET35
+#if !(NET35 || WINDOWS_PHONE)
     public interface IActivatedEventArgs<out T>
 #else
     public interface IActivatedEventArgs<T>

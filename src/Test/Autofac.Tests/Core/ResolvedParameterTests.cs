@@ -26,12 +26,12 @@ namespace Autofac.Tests.Core
         }
 
 // ReSharper disable UnusedTypeParameter
-        interface ISomething<T> { }
+        public interface ISomething<T> { }
 // ReSharper restore UnusedTypeParameter
 
-        class ConcreteSomething<T> : ISomething<T> { }
+        public class ConcreteSomething<T> : ISomething<T> { }
 
-        class SomethingDecorator<T> : ISomething<T>
+        public class SomethingDecorator<T> : ISomething<T>
         {
             public ISomething<T> Decorated { get; private set; }
 

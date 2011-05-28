@@ -5,12 +5,12 @@ using System.Text;
 
 namespace Autofac.Tests.Scenarios.Adapters
 {
-    class ToolbarButton : IToolbarButton
+    public class ToolbarButton : IToolbarButton
     {
         readonly Command _command;
         readonly string _name;
 
-#if !NET35
+#if !(NET35 || WINDOWS_PHONE)
         public ToolbarButton(Command command, string name = "")
 #else
         public ToolbarButton(Command command, string name)

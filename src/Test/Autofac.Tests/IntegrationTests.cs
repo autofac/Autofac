@@ -90,9 +90,9 @@ namespace Autofac.Tests
             Assert.IsFalse(disposable.IsDisposed);
         }
 
-        interface I1<T> { }
-        interface I2<T> { }
-        class C<T> : I1<T>, I2<T> { }
+        public interface I1<T> { }
+        public interface I2<T> { }
+        public class C<T> : I1<T>, I2<T> { }
 
         [Test]
         public void MultipleServicesOnAnOpenGenericType_ShareTheSameRegistration()

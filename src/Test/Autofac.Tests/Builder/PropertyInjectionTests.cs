@@ -6,7 +6,7 @@ namespace Autofac.Tests.Builder
     [TestFixture]
     public class PropertyInjectionTests
     {
-        class HasSetter
+        public class HasSetter
         {
             string _val;
 
@@ -57,7 +57,7 @@ namespace Autofac.Tests.Builder
             Assert.AreEqual(val, instance.Val);
         }
 
-        class HasSetterWithValue
+        public class HasSetterWithValue
         {
             string _val = "Default";
 
@@ -109,7 +109,7 @@ namespace Autofac.Tests.Builder
             Assert.AreEqual(val, instance.Val);
         }
 
-        class HasPropReadOnly
+        public class HasPropReadOnly
         {
             string _val = "Default";
 
@@ -160,7 +160,7 @@ namespace Autofac.Tests.Builder
             Assert.AreEqual("Default", instance.Val);
         }
 
-        class HasPropWriteOnly
+        public class HasPropWriteOnly
         {
             string _val;
 
@@ -210,7 +210,7 @@ namespace Autofac.Tests.Builder
             Assert.AreEqual(val, instance.GetVal());
         }
 
-        class SplitAccess
+        public class SplitAccess
         {
             public bool GetterCalled
             {
@@ -256,7 +256,7 @@ namespace Autofac.Tests.Builder
             Assert.IsFalse(instance.GetterCalled);
         }
 
-        class Invokee
+        public class Invokee
         {
             public int Param { get; set; }
 

@@ -7,10 +7,10 @@ namespace Autofac.Tests.Core.Registration
     [TestFixture]
     public class ExternalRegistrySourceTests
     {
-        interface IServiceA { }
-        interface IServiceB { }
-        class ClassA : IServiceA, IServiceB { }
-        class ClassB : IServiceA { }
+        public interface IServiceA { }
+        public interface IServiceB { }
+        public class ClassA : IServiceA, IServiceB { }
+        public class ClassB : IServiceA { }
 
         // Courtesy of M. Kowalewski
         [Test]

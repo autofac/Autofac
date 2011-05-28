@@ -86,6 +86,7 @@ namespace Autofac.Util
         {
             var genericArgumentDefinitions = genericTypeDefinition.GetGenericArguments();
 
+#if !WINDOWS_PHONE //No support for GenericParameterAttributes
             for (var i = 0; i < genericArgumentDefinitions.Length; ++i)
             {
                 var argumentDefinition = genericArgumentDefinitions[i];
@@ -121,6 +122,7 @@ namespace Autofac.Util
                         return false;
                 }
             }
+#endif
 
             return true;
         }

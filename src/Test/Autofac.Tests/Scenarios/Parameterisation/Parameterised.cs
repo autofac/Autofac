@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Autofac.Tests.Scenarios.Parameterisation
 {
-    class Parameterised
+    public class Parameterised
     {
         public string A { get; private set; }
         public int B { get; private set; }

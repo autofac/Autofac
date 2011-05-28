@@ -37,6 +37,7 @@ namespace Autofac.Core.Lifetime
         readonly Func<ILifetimeScope, bool> _matcher;
         readonly string _matchExpressionCode;
 
+#if !WINDOWS_PHONE
         /// <summary>
         /// Match scopes based on the provided expression.
         /// </summary>
@@ -47,6 +48,18 @@ namespace Autofac.Core.Lifetime
             _matcher = matchExpression.Compile();
             _matchExpressionCode = matchExpression.Body.ToString();
         }
+#else
+        /// <summary>
+        /// Match scopes based on the provided expression.
+        /// </summary>
+        /// <param name="matchExpression">Expression describing scopes that will match.</param>
+        public MatchingScopeLifetime(Func<ILifetimeScope, bool> matchExpression)
+        {
+            if (matchExpression == null) throw new ArgumentNullException("matchExpression");
+            _matcher = matchExpression;
+            _matchExpressionCode = matchExpression.Method.ToString();
+        }
+#endif
 
         /// <summary>
         /// Match scopes by comparing tags for equality.

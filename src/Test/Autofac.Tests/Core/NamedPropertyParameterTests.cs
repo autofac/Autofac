@@ -11,7 +11,7 @@ namespace Autofac.Tests.Core
     [TestFixture]
     public class NamedPropertyParameterTests
     {
-        class HasInjectionPoints
+        public class HasInjectionPoints
         {
             public const string PropertyName = "PropertyInjectionPoint";
             public const string WrongPropertyName = "WrongPropertyInjectionPoint";

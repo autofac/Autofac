@@ -24,7 +24,7 @@ namespace Autofac.Tests.Features.LightweightAdapters
                 var builder = new ContainerBuilder();
                 foreach (var command in _commands)
                     builder.RegisterInstance(command);
-#if !NET35
+#if !(NET35 || WINDOWS_PHONE)
                 builder.RegisterAdapter<Command, ToolbarButton>(cmd => new ToolbarButton(cmd)) 
 #else
                 builder.RegisterAdapter<Command, ToolbarButton>(cmd => new ToolbarButton(cmd, "")) 
@@ -66,14 +66,14 @@ namespace Autofac.Tests.Features.LightweightAdapters
             }
         }
 
-        interface IService { }
+        public interface IService { }
 
         // ReSharper disable ClassNeverInstantiated.Local
-        class Implementer1 : IService { }
-        class Implementer2 : IService { }
+        public class Implementer1 : IService { }
+        public class Implementer2 : IService { }
         // ReSharper restore ClassNeverInstantiated.Local
 
-        class Decorator : IService
+        public class Decorator : IService
         {
             readonly IService _decorated;
 
