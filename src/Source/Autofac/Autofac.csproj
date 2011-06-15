@@ -453,6 +453,7 @@
     <EmbeddedResource Include="Core\Registration\ComponentNotRegisteredExceptionResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ComponentNotRegisteredExceptionResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Core\Registration\ComponentRegistrationResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
