@@ -28,6 +28,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security;
 using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
@@ -43,6 +44,7 @@ namespace AutofacContrib.Moq
 
         /// <summary>
         /// </summary>
+        [SecurityCritical]
         public MoqRegistrationHandler()
         {
             var factoryType = typeof(MockRepository);   
@@ -58,6 +60,7 @@ namespace AutofacContrib.Moq
         /// <returns>
         /// Registrations for the service.
         /// </returns>
+        [SecuritySafeCritical]
         public IEnumerable<IComponentRegistration> RegistrationsFor
             (Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
@@ -72,13 +75,7 @@ namespace AutofacContrib.Moq
                 typeof(IStartable).IsAssignableFrom(typedService.ServiceType))
                 return Enumerable.Empty<IComponentRegistration>();
 
-            var rb = RegistrationBuilder.ForDelegate((c, p) =>
-                {
-                    var specificCreateMethod =
-                        _createMethod.MakeGenericMethod(new[] { typedService.ServiceType });
-                    var mock = (Mock) specificCreateMethod.Invoke(c.Resolve<MockRepository>(), null);
-                    return mock.Object;
-                })
+            var rb = RegistrationBuilder.ForDelegate((c, p) => CreateMock(c, typedService))
                 .As(service)
                 .InstancePerLifetimeScope();
 
@@ -88,6 +85,21 @@ namespace AutofacContrib.Moq
         public bool IsAdapterForIndividualComponents
         {
             get { return false; }
+        }
+        
+        /// <summary>
+        /// Creates a mock object.
+        /// </summary>
+        /// <param name="context">The component context.</param>
+        /// <param name="typedService">The typed service.</param>
+        /// <returns></returns>
+        [SecuritySafeCritical]
+        private object CreateMock(IComponentContext context, TypedService typedService)
+        {
+            var specificCreateMethod =
+                        _createMethod.MakeGenericMethod(new[] { typedService.ServiceType });
+            var mock = (Mock)specificCreateMethod.Invoke(context.Resolve<MockRepository>(), null);
+            return mock.Object;
         }
     }
 }
