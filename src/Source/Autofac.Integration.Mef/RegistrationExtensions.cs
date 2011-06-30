@@ -57,7 +57,14 @@ namespace Autofac.Integration.Mef
 
         static Type FindType(string exportTypeIdentity)
         {
-            return AppDomain.CurrentDomain.GetAssemblies()
+#if SL4
+            var assemblies = System.Windows.Deployment.Current.Parts
+                .Select(r => System.Windows.Application.GetResourceStream(new Uri(r.Source, UriKind.Relative)))
+                .Select(s => new System.Windows.AssemblyPart().Load(s.Stream));
+#else
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+#endif
+            return assemblies
                 .Select(a => a.GetType(exportTypeIdentity, false))
                 .Where(t => t != null)
                 .SingleOrDefault();
