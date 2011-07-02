@@ -45,7 +45,10 @@ namespace Autofac.Core
         /// <summary>
         /// An empty container.
         /// </summary>
-        public static readonly Container Empty = new Container();
+        public static Container Empty
+        {
+            get { return new Container(); }
+        }
 
         /// <summary>
         /// Create a new container.
