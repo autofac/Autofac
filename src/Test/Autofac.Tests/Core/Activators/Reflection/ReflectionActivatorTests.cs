@@ -342,5 +342,22 @@ namespace Autofac.Tests.Core.Activators.Reflection
             Assert.AreEqual(2, instance.P2);
         }
 
+        public enum E { A, B }
+
+        public class WithE
+        {
+            public E E { get; set; }
+        }
+
+        [Test]
+        public void EnumPropertiesCanBeAutowired()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<WithE>().PropertiesAutowired();
+            builder.Register(c => E.B);
+            var container = builder.Build();
+            var withE = container.Resolve<WithE>();
+            Assert.AreEqual(E.B, withE.E);
+        }
     }
 }
