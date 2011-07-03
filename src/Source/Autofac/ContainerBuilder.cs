@@ -25,6 +25,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.Collections;
 using Autofac.Features.GeneratedFactories;
@@ -82,6 +84,7 @@ namespace Autofac
 		/// <summary>
 		/// Create a new container with the component registrations that have been made.
 		/// </summary>
+		/// <param name="options">Options that influence the way the container is initialised.</param>
 		/// <remarks>
         /// Build can only be called once per <see cref="ContainerBuilder"/>
         /// - this prevents ownership issues for provided instances.
@@ -90,16 +93,25 @@ namespace Autofac
         /// first create the container, then call Update() on the builder.
 		/// </remarks>
 		/// <returns>A new container with the configured component registrations.</returns>
-		public IContainer Build()
+		public IContainer Build(ContainerBuildOptions options = ContainerBuildOptions.Default)
 		{
 			var result = new Container();
-			Build(result.ComponentRegistry, false);
-            foreach (var containerAware in result.Resolve<IEnumerable<IStartable>>())
-                containerAware.Start();
-			return result;
+			Build(result.ComponentRegistry, (options & ContainerBuildOptions.ExcludeDefaultModules) != ContainerBuildOptions.None);
+            if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
+                StartStartableComponents(result);
+		    return result;
 		}
 
-        /// <summary>
+	    static void StartStartableComponents(IComponentContext componentContext)
+	    {
+	        foreach (var startable in componentContext.ComponentRegistry.RegistrationsFor(new TypedService(typeof (IStartable))))
+	        {
+	            var instance = (IStartable) componentContext.ResolveComponent(startable, Enumerable.Empty<Parameter>());
+	            instance.Start();
+	        }
+	    }
+
+	    /// <summary>
         /// Configure an existing container with the component registrations
         /// that have been made.
         /// </summary>
