@@ -130,10 +130,9 @@ namespace Autofac.Util
         static bool ParameterCompatibleWithTypeConstraint(Type parameter, Type constraint)
         {
             return constraint.IsAssignableFrom(parameter) ||
-                (parameter.IsClass &&
-                   Traverse.Across(parameter, p => p.BaseType)
-                       .Concat(parameter.GetInterfaces())
-                       .Any(p => p.GUID == constraint.GUID));
+                Traverse.Across(parameter, p => p.BaseType)
+                    .Concat(parameter.GetInterfaces())
+                    .Any(p => p.GUID == constraint.GUID);
         }
 
         public static bool IsCompatibleWith(this Type type, Type that)
