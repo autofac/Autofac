@@ -42,7 +42,7 @@ namespace Autofac.Core.Activators.Reflection
             {
                 var propertyType = property.PropertyType;
 
-                if (propertyType.IsValueType)
+                if (propertyType.IsValueType && !propertyType.IsEnum)
                     continue;
 
                 if (property.GetIndexParameters().Length != 0)
