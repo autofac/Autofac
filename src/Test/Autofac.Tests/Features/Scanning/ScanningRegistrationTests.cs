@@ -343,6 +343,21 @@ namespace Autofac.Tests.Features.Scanning
             Assert.That(c.IsRegisteredWithKey<IAService>(key));
         }
 
+        [Test]
+        public void PreserveExistingDefaults()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterType<AnExistingComponent>().As<IAService>();
+            cb.RegisterAssemblyTypes(ScenarioAssembly)
+                .As<IAService>()
+                .PreserveExistingDefaults();
+
+            var c = cb.Build();
+
+            c.AssertComponentRegistrationOrder<IAService, AnExistingComponent, A2Component>();
+        }
+
+
         public IContainer RegisterScenarioAssembly(Action<IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>> configuration = null)
         {
             var cb = new ContainerBuilder();
@@ -350,6 +365,14 @@ namespace Autofac.Tests.Features.Scanning
             if (configuration != null)
                 configuration(config);
             return cb.Build();
+        }
+
+        // ReSharper disable ClassNeverInstantiated.Local
+        /// <summary>
+        /// Test class used in the <see cref="ScanningRegistrationTests.PreserveExistingDefaults"/> test case.
+        /// </summary>
+        private class AnExistingComponent : IAService
+        {
         }
     }
 }

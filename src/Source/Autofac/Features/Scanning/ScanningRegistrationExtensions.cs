@@ -131,5 +131,17 @@ namespace Autofac.Features.Scanning
 
             return registration;
         }
+
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            PreserveExistingDefaults<TLimit, TScanningActivatorData, TRegistrationStyle>(
+            IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            if (registration == null) throw new ArgumentNullException("registration");
+
+            registration.ActivatorData.ConfigurationActions.Add((t, r) => r.PreserveExistingDefaults());
+            
+            return registration;
+        }
     }
 }
