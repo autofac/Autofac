@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Security;
 using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
@@ -35,12 +36,13 @@ namespace AutofacContrib.Moq
     /// <summary>
     /// Wrapper around <see cref="Autofac"/> and <see cref="Moq"/>
     /// </summary>
+    [SecurityCritical]
     public class AutoMock : IDisposable
     {
         /// <summary> 
         /// <see cref="MockRepository"/> instance responsible for expectations and mocks. 
         /// </summary>
-        public MockRepository MockRepository { get; private set; }
+        public MockRepository MockRepository { [SecurityCritical]get; [SecurityCritical]private set; }
 
         /// <summary>
         /// <see cref="IContainer"/> that handles the component resolution.
@@ -96,6 +98,7 @@ namespace AutofacContrib.Moq
         /// <summary>
         /// Verifies mocks and disposes internal container.
         /// </summary>
+        [SecuritySafeCritical]
         public void Dispose()
         {
             try
