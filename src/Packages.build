@@ -91,6 +91,8 @@
     <Copy SourceFiles="$(ArtifactTemp)\NET35\Autofac.dll;$(ArtifactTemp)\NET35\Autofac.xml;$(ArtifactTemp)\NET35\Autofac.Configuration.dll" DestinationFolder="$(AutofacSpecPath)\lib\NET35"  />
     <Copy SourceFiles="$(ArtifactTemp)\SL4\Autofac.dll;$(ArtifactTemp)\SL4\Autofac.xml" DestinationFolder="$(AutofacSpecPath)\lib\SL4"  />
 	<Copy SourceFiles="$(ArtifactTemp)\SL3-WP\Autofac.dll;$(ArtifactTemp)\SL3-WP\Autofac.xml" DestinationFolder="$(AutofacWp7SpecPath)\lib\SL3-WP"  />
+	<Copy SourceFiles="$(ArtifactTemp)\SL3-WP\Autofac.dll;$(ArtifactTemp)\SL3-WP\Autofac.xml" DestinationFolder="$(AutofacWp7SpecPath)\lib\SL4-WindowsPhone"  />
+	<Copy SourceFiles="$(ArtifactTemp)\SL3-WP\Autofac.dll;$(ArtifactTemp)\SL3-WP\Autofac.xml" DestinationFolder="$(AutofacWp7SpecPath)\lib\SL4-WindowsPhone71"  />
   </Target>
 
   <Target Name="CopyAutofacMvc3Libs">
