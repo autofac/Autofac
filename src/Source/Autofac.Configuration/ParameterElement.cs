@@ -35,6 +35,8 @@ namespace Autofac.Configuration
     {
         const string NameAttributeName = "name";
         const string ValueAttributeName = "value";
+        const string ListElementName = "list";
+        const string DictionaryElementName = "dictionary";
         internal const string Key = NameAttributeName;
 
         /// <summary>
@@ -54,13 +56,51 @@ namespace Autofac.Configuration
         /// Gets the value used to set the parameter (type will be converted.)
         /// </summary>
         /// <value>The value.</value>
-        [ConfigurationProperty(ValueAttributeName, IsRequired = true)]
+        [ConfigurationProperty(ValueAttributeName, IsRequired = false)]
         public string Value
         {
             get
             {
                 return (string)this[ValueAttributeName];
             }
+        }
+
+        /// <summary>
+        /// If this parameter's value is a list of values
+        /// </summary>
+        [ConfigurationProperty(ListElementName, IsRequired = false, DefaultValue = null)]
+        public ListElementCollection List
+        {
+            get
+            {
+                return this[ListElementName] as ListElementCollection;
+            }
+        }
+
+        /// <summary>
+        /// If this parameter's value is a dictionary
+        /// </summary>
+        [ConfigurationProperty(DictionaryElementName, IsRequired = false, DefaultValue = null)]
+        public DictionaryElementCollection Dictionary
+        {
+            get { return this[DictionaryElementName] as DictionaryElementCollection; }
+        }
+
+        /// <summary>
+        /// Get the value of this element
+        /// </summary>
+        /// <returns></returns>
+        public object CoerceValue()
+        {
+            //look for lists first
+            if (List.ElementInformation.IsPresent)
+                return List;
+
+            //then dictionaries
+            if (Dictionary.ElementInformation.IsPresent)
+                return Dictionary;
+
+            return Value;
         }
     }
 
