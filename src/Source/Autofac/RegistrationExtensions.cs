@@ -240,6 +240,21 @@ namespace Autofac
         }
 
         /// <summary>
+        /// Specifies that the components being registered should only be made the default for services
+        /// that have not already been registered.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle>
+            PreserveExistingDefaults<TLimit, TRegistrationStyle>(this
+            IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle> registration)
+        {
+            return ScanningRegistrationExtensions.PreserveExistingDefaults(registration);
+        }
+
+        /// <summary>
         /// Register the types in an assembly.
         /// </summary>
         /// <param name="builder">Container builder.</param>
