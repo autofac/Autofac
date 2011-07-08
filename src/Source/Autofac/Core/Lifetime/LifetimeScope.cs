@@ -50,6 +50,7 @@ namespace Autofac.Core.Lifetime
         readonly object _tag;
 
         static internal Guid SelfRegistrationId = Guid.NewGuid();
+        static readonly Action<ContainerBuilder> NoConfiguration = b => { };
 
         /// <summary>
         /// The tag applied to root scopes when no other tag is specified.
@@ -117,7 +118,8 @@ namespace Autofac.Core.Lifetime
         public ILifetimeScope BeginLifetimeScope(object tag)
         {
             CheckNotDisposed();
-            var scope = new LifetimeScope(_componentRegistry, this, tag);
+            var registry = new CopyOnWriteRegistry(_componentRegistry, () => CreateScopeRestrictedRegistry(tag, NoConfiguration));
+            var scope = new LifetimeScope(registry, this, tag);
             RaiseBeginning(scope);
             return scope;
         }
@@ -172,29 +174,35 @@ namespace Autofac.Core.Lifetime
             if (configurationAction == null) throw new ArgumentNullException("configurationAction");
             CheckNotDisposed();
 
-            var builder =  new ContainerBuilder();
-
-            foreach (var source in ComponentRegistry.Sources
-                    .Where(src => src.IsAdapterForIndividualComponents))
-                builder.RegisterSource(source);
-
-            var parents = Traverse.Across<ISharingLifetimeScope>(this, s => s.ParentLifetimeScope)
-                                    .Where(s => s.ParentLifetimeScope == null || s.ComponentRegistry != s.ParentLifetimeScope.ComponentRegistry)
-                                    .Select(s => new ExternalRegistrySource(s.ComponentRegistry))
-                                    .Reverse();
-
-            foreach (var external in parents)
-                builder.RegisterSource(external);
-                
-            configurationAction(builder);
-
-            var locals = new ScopeRestrictedRegistry(tag);
-            builder.Update(locals);
+            var locals = CreateScopeRestrictedRegistry(tag, configurationAction);
             var scope = new LifetimeScope(locals, this, tag);
 
             RaiseBeginning(scope);
 
             return scope;
+        }
+
+        ScopeRestrictedRegistry CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction)
+        {
+            var builder = new ContainerBuilder();
+
+            foreach (var source in ComponentRegistry.Sources
+                .Where(src => src.IsAdapterForIndividualComponents))
+                builder.RegisterSource(source);
+
+            var parents = Traverse.Across<ISharingLifetimeScope>(this, s => s.ParentLifetimeScope)
+                .Where(s => s.ParentLifetimeScope == null || s.ComponentRegistry != s.ParentLifetimeScope.ComponentRegistry)
+                .Select(s => new ExternalRegistrySource(s.ComponentRegistry))
+                .Reverse();
+
+            foreach (var external in parents)
+                builder.RegisterSource(external);
+
+            configurationAction(builder);
+
+            var locals = new ScopeRestrictedRegistry(tag);
+            builder.Update(locals);
+            return locals;
         }
 
         /// <summary>

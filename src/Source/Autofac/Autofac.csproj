@@ -101,6 +101,7 @@
     <Compile Include="Builder\IRegistrationBuilder.cs" />
     <Compile Include="Builder\MetadataConfiguration.cs" />
     <Compile Include="Builder\IConcreteActivatorData.cs" />
+    <Compile Include="Core\Registration\CopyOnWriteRegistry.cs" />
     <Compile Include="PropertyWiringFlags.cs" />
     <Compile Include="Builder\RegistrationBuilder.cs" />
     <Compile Include="Builder\RegistrationBuilderResources.Designer.cs">

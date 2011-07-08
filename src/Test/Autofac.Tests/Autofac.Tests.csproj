@@ -91,8 +91,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup Condition="$(MSBuildTargets) != 'Windows Phone 7'">
-		<Reference Include="System.Data" />
-	</ItemGroup>
+    <Reference Include="System.Data" />
+  </ItemGroup>
   <ItemGroup Condition="($(TargetFrameworkVersion)=='v4.0') And ($(MSBuildTargets)!='Windows Phone 7')">
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
@@ -127,6 +127,7 @@
     <Compile Include="Core\NamedPropertyParameterTests.cs" />
     <Compile Include="Core\DisposerTests.cs" />
     <Compile Include="Core\Registration\ComponentRegistryTests.cs" />
+    <Compile Include="Core\Registration\CopyOnWriteRegistryTests.cs" />
     <Compile Include="Core\Registration\ExternalRegistrySourceTests.cs" />
     <Compile Include="Core\Resolving\CircularDependencyDetectorTests.cs" />
     <Compile Include="Core\Resolving\ResolveOperationTests.cs" />
