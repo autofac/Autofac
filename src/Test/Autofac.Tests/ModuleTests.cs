@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac.Builder;
+using System.Reflection;
 using NUnit.Framework;
 using Autofac.Core;
 using Autofac.Core.Registration;
 
-namespace Autofac.Tests.Builder
+namespace Autofac.Tests
 {
     [TestFixture]
     public class ModuleTests
@@ -59,6 +59,29 @@ namespace Autofac.Tests.Builder
             var container = builder.Build();
 
             Assert.AreEqual(container.ComponentRegistry.Registrations.Count(), attachingModule.Registrations.Count);
+        }
+
+        class ModuleExposingThisAssembly : Module
+        {
+            public Assembly ModuleThisAssembly { get { return ThisAssembly; }}
+        }
+
+        [Test]
+        public void TheAssemblyExposedByThisAssemblyIsTheOneContainingTheConcreteModuleClass()
+        {
+            var module = new ModuleExposingThisAssembly();
+            Assert.AreSame(typeof(ModuleExposingThisAssembly).Assembly, module.ModuleThisAssembly);
+        }
+
+        class ModuleIndirectlyExposingThisAssembly : ModuleExposingThisAssembly
+        {
+        }
+
+        [Test]
+        public void IndirectlyDerivedModulesCannotUseThisAssembly()
+        {
+            var module = new ModuleIndirectlyExposingThisAssembly();
+            Assert.Throws<InvalidOperationException>(() => { var unused = module.ModuleThisAssembly; });
         }
     }
 }

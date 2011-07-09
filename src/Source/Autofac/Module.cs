@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Reflection;
 using Autofac.Core;
 
 namespace Autofac
@@ -133,6 +134,23 @@ namespace Autofac
                 AttachToRegistrationSource(componentRegistry, source);
             componentRegistry.RegistrationSourceAdded +=
                 (sender, e) => AttachToRegistrationSource(e.ComponentRegistry, e.RegistrationSource);
+        }
+
+        /// <summary>
+        /// The assembly in which the concrete module type is located. To avoid bugs whereby deriving from a module will
+        /// change the target assembly, this property can only be used by modules that inherit directly from
+        /// <see cref="Module"/>.
+        /// </summary>
+        protected virtual Assembly ThisAssembly
+        {
+            get
+            {
+                var thisType = GetType();
+                if (thisType.BaseType != typeof(Module))
+                    throw new InvalidOperationException("Module.ThisAssembly is only available in modules that inherit directly from Module.");
+
+                return thisType.Assembly;
+            }
         }
     }
 }
