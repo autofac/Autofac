@@ -26,7 +26,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
@@ -411,7 +410,7 @@ namespace Autofac
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
         /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
-        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <param name="registration">Registration to set metadata on.</param>
         /// <param name="metadataMapping">A function mapping the type to a list of metadata items.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
@@ -423,6 +422,33 @@ namespace Autofac
             if (registration == null) throw new ArgumentNullException("registration");
             registration.ActivatorData.ConfigurationActions.Add((t, rb) => rb.WithMetadata(metadataMapping(t)));
             return registration;
+        }
+
+        /// <summary>
+        /// Use the properties of an attribute (or interface implemented by an attribute) on the scanned type
+        /// to provide metadata values.
+        /// </summary>
+        /// <remarks>Inherited attributes are supported; however, there must be at most one matching attribute
+        /// in the inheritance chain.</remarks>
+        /// <typeparam name="TAttribute">The attribute applied to the scanned type.</typeparam>
+        /// <param name="registration">Registration to set metadata on.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
+            WithMetadataFrom<TAttribute>(
+                this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> registration)
+        {
+            var attrType = typeof (TAttribute);
+            var metadataProperties = attrType.GetProperties(BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance);
+            return registration.WithMetadata(t =>
+            {
+                var attrs = t.GetCustomAttributes(true).OfType<TAttribute>().ToArray();
+                if (attrs.Length == 0)
+                    throw new ArgumentException(string.Format("A metadata attribute of type {0} was not found on {1}.", typeof(TAttribute), t));
+                if (attrs.Length != 1)
+                    throw new ArgumentException(string.Format("More than one metadata attribute of type {0} was found on {1}.", typeof(TAttribute), t));
+                var attr = attrs[0];
+                return metadataProperties.Select(p => new KeyValuePair<string, object>(p.Name, p.GetValue(attr, null)));
+            });
         }
 
         /// <summary>

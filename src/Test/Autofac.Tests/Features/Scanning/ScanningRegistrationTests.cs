@@ -374,5 +374,21 @@ namespace Autofac.Tests.Features.Scanning
         private class AnExistingComponent : IAService
         {
         }
+
+        [Test]
+        public void MetadataCanBeScannedFromAMatchingAttributeInterface()
+        {
+            var c = RegisterScenarioAssembly(a => a
+                .Where(t => t == typeof (ScannedComponentWithName))
+                .WithMetadataFrom<IHaveName>());
+
+            IComponentRegistration r;
+            c.ComponentRegistry.TryGetRegistration(new TypedService(typeof (ScannedComponentWithName)), out r);
+
+            object name;
+            r.Metadata.TryGetValue("Name", out name);
+
+            Assert.AreEqual("My Name", name);
+        }
     }
 }
