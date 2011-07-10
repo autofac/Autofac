@@ -390,5 +390,17 @@ namespace Autofac.Tests.Features.Scanning
 
             Assert.AreEqual("My Name", name);
         }
+
+        [Test]
+        public void ScanningKeyedRegistrationsFilterByAssignabilityBeforeMappingKey()
+        {
+            const string k = "key";
+            var c = RegisterScenarioAssembly(a => a.Keyed<IAService>(t =>
+            {
+                Assert.That(typeof(IAService).IsAssignableFrom(t));
+                return k;
+            }));
+            Assert.That(c.IsRegisteredWithKey<IAService>(k));
+        }
     }
 }

@@ -546,7 +546,9 @@ namespace Autofac
             if (registration == null) throw new ArgumentNullException("registration");
             if (serviceKeyMapping == null) throw new ArgumentNullException("serviceKeyMapping");
             if (serviceType == null) throw new ArgumentNullException("serviceType");
-            return registration.As(t => new KeyedService(serviceKeyMapping(t), serviceType));
+            return registration
+                .AssignableTo(serviceType)
+                .As(t => new KeyedService(serviceKeyMapping(t), serviceType));
         }
 
         /// <summary>
