@@ -191,7 +191,7 @@ namespace Autofac.Core.Lifetime
                 builder.RegisterSource(source);
 
             var parents = Traverse.Across<ISharingLifetimeScope>(this, s => s.ParentLifetimeScope)
-                .Where(s => s.ParentLifetimeScope == null || s.ComponentRegistry != s.ParentLifetimeScope.ComponentRegistry)
+                .Where(s => s.ComponentRegistry.HasLocalComponents)
                 .Select(s => new ExternalRegistrySource(s.ComponentRegistry))
                 .Reverse();
 

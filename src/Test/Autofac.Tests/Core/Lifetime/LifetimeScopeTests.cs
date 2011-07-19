@@ -227,5 +227,16 @@ namespace Autofac.Tests.Core.Lifetime
             lifetime.Dispose();
             Assert.Throws<ObjectDisposedException>(() => lifetime.Resolve<object>());
         }
+
+        [Test]
+        public void WhenRegisteringIntoADeeplyNestedLifetimeScopeParentRegistrationsAreNotDuplicated()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<string>();
+            var container = builder.Build();
+            var child1 = container.BeginLifetimeScope();
+            var child2 = child1.BeginLifetimeScope(b => b.RegisterType<object>());
+            Assert.AreEqual(1, child2.Resolve<IEnumerable<string>>().Count());
+        }
     }
 }

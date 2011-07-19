@@ -236,6 +236,17 @@ namespace Autofac.Core.Registration
         }
 
         /// <summary>
+        /// True if the registry contains its own components; false if it is forwarding
+        /// registrations from another external registry.
+        /// </summary>
+        /// <remarks>This property is used when walking up the scope tree looking for
+        /// registrations for a new customised scope. (See issue 336.)</remarks>
+        public bool HasLocalComponents
+        {
+            get { return true; }
+        }
+
+        /// <summary>
         /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
         /// </summary>
         public event EventHandler<RegistrationSourceAddedEventArgs> RegistrationSourceAdded = delegate { };

@@ -88,6 +88,11 @@ namespace Autofac.Core.Registration
             get { return Registry.Sources; }
         }
 
+        public bool HasLocalComponents
+        {
+            get { return _writeRegistry != null; }
+        }
+
         public event EventHandler<RegistrationSourceAddedEventArgs> RegistrationSourceAdded
         {
             add { WriteRegistry.RegistrationSourceAdded += value; }

@@ -94,6 +94,14 @@ namespace Autofac.Core
         IEnumerable<IRegistrationSource> Sources { get; }
 
         /// <summary>
+        /// True if the registry contains its own components; false if it is forwarding
+        /// registrations from another external registry.
+        /// </summary>
+        /// <remarks>This property is used when walking up the scope tree looking for
+        /// registrations for a new customised scope. (See issue 336.)</remarks>
+        bool HasLocalComponents { get; }
+
+        /// <summary>
         /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
         /// </summary>
         event EventHandler<RegistrationSourceAddedEventArgs> RegistrationSourceAdded;
