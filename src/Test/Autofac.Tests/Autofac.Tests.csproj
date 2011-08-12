@@ -115,6 +115,7 @@
     <Compile Include="Builder\RegistrationBuilderTests.cs" />
     <Compile Include="ContainerBuilderTests.cs" />
     <Compile Include="Builder\DelegateRegistrationBuilderTests.cs" />
+    <Compile Include="Features\Variance\ContravariantRegistrationSourceTests.cs" />
     <Compile Include="ModuleTests.cs" />
     <Compile Include="Builder\ProvidedInstanceRegistrationBuilderTests.cs" />
     <Compile Include="Builder\ReflectiveRegistrationBuilderTests.cs" />

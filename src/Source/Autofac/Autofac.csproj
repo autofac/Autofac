@@ -102,6 +102,7 @@
     <Compile Include="Builder\MetadataConfiguration.cs" />
     <Compile Include="Builder\IConcreteActivatorData.cs" />
     <Compile Include="Core\Registration\CopyOnWriteRegistry.cs" />
+    <Compile Include="Features\Variance\ContravariantRegistrationSource.cs" />
     <Compile Include="PropertyWiringFlags.cs" />
     <Compile Include="Builder\RegistrationBuilder.cs" />
     <Compile Include="Builder\RegistrationBuilderResources.Designer.cs">
