@@ -23,7 +23,7 @@ namespace Autofac.Tests.Features.Variance
     class InterfaceHandler : IHandler<ICommand>
     {
         public void Handle(ICommand command) { }
-    }    
+    }
 
     class CommandA { }
 
@@ -44,6 +44,19 @@ namespace Autofac.Tests.Features.Variance
     }
 
     class UnrelatedCommand { }
+
+    interface IConstrainedHandler<in TCommand>
+        where TCommand : new() { }
+
+    class BaseWithArg
+    {
+        public BaseWithArg(int arg) { }
+    }
+
+    class DerivedWithoutArg : BaseWithArg
+    {
+        public DerivedWithoutArg() : base(0) { }
+    }
 
     static class HandlerTestExtensions
     {
@@ -189,6 +202,19 @@ namespace Autofac.Tests.Features.Variance
             public void AnyInterfaceTypeCanBeHandled()
             {
                 _container.AssertSingleHandlerCanHandle<ICommand>();
+            }
+        }
+
+        [TestFixture]
+        public class WhenBaseTypesDoNotSatisfyConstraints
+        {
+            [Test]
+            public void TheSourceDoesNotAttemptGenericTypeConstruction()
+            {
+                var builder = new ContainerBuilder();
+                builder.RegisterSource(new ContravariantRegistrationSource());
+                var container = builder.Build();
+                Assert.IsFalse(container.IsRegistered<IConstrainedHandler<DerivedWithoutArg>>());
             }
         }
     }
