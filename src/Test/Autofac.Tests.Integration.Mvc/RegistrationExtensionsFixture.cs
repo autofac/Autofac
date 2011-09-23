@@ -36,6 +36,81 @@ namespace Autofac.Tests.Integration.Mvc
         }
 
         [Test]
+        public void AsModelBinderForTypesThrowsExceptionWhenAllTypesNullInList()
+        {
+            var builder = new ContainerBuilder();
+            var registration = builder.RegisterType<TestModelBinder>();
+            Assert.Throws<ArgumentException>(() => registration.AsModelBinderForTypes(null, null, null));
+        }
+
+        [Test]
+        public void AsModelBinderForTypesThrowsExceptionForEmptyTypeList()
+        {
+            var types = new Type[0];
+            var builder = new ContainerBuilder();
+            var registration = builder.RegisterType<TestModelBinder>();
+            Assert.Throws<ArgumentException>(() => registration.AsModelBinderForTypes(types));
+        }
+
+        [Test]
+        public void AsModelBinderForTypesRegistersInstanceModelBinder()
+        {
+            IDependencyResolver originalResolver = null;
+            try
+            {
+                originalResolver = DependencyResolver.Current;
+                var builder = new ContainerBuilder();
+                var binder = new TestModelBinder();
+                builder.RegisterInstance(binder).AsModelBinderForTypes(typeof(TestModel1));
+                var container = builder.Build();
+                DependencyResolver.SetResolver(new AutofacDependencyResolver(container, new StubLifetimeScopeProvider(container)));
+                var provider = new AutofacModelBinderProvider();
+                Assert.AreSame(binder, provider.GetBinder(typeof(TestModel1)));
+            }
+            finally
+            {
+                DependencyResolver.SetResolver(originalResolver);
+            }
+        }
+
+        [Test]
+        public void AsModelBinderForTypesRegistersTypeModelBinder()
+        {
+            IDependencyResolver originalResolver = null;
+            try
+            {
+                originalResolver = DependencyResolver.Current;
+                var builder = new ContainerBuilder();
+                builder.RegisterType<TestModelBinder>().AsModelBinderForTypes(typeof(TestModel1), typeof(TestModel2));
+                var container = builder.Build();
+                DependencyResolver.SetResolver(new AutofacDependencyResolver(container, new StubLifetimeScopeProvider(container)));
+                var provider = new AutofacModelBinderProvider();
+                Assert.IsInstanceOf<TestModelBinder>(provider.GetBinder(typeof(TestModel1)), "The model binder was not registered for TestModel1");
+                Assert.IsInstanceOf<TestModelBinder>(provider.GetBinder(typeof(TestModel2)), "The model binder was not registered for TestModel2");
+            }
+            finally
+            {
+                DependencyResolver.SetResolver(originalResolver);
+            }
+        }
+
+        [Test]
+        public void AsModelBinderForTypesThrowsExceptionForNullRegistration()
+        {
+            IRegistrationBuilder<RegistrationExtensionsFixture, ConcreteReflectionActivatorData, SingleRegistrationStyle> registration = null;
+            Assert.Throws<ArgumentNullException>(() => registration.AsModelBinderForTypes(typeof(TestModel1)));
+        }
+
+        [Test]
+        public void AsModelBinderForTypesThrowsExceptionForNullTypeList()
+        {
+            Type[] types = null;
+            var builder = new ContainerBuilder();
+            var registration = builder.RegisterType<TestModelBinder>();
+            Assert.Throws<ArgumentNullException>(() => registration.AsModelBinderForTypes(types));
+        }
+
+        [Test]
         public void RegisterFilterProviderThrowsExceptionForNullBuilder()
         {
             var exception = Assert.Throws<ArgumentNullException>(
@@ -119,6 +194,22 @@ namespace Autofac.Tests.Integration.Mvc
         }
 
         public class IsAControllerNot : Controller
+        {
+        }
+
+        public class TestModelBinder : IModelBinder
+        {
+            public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public class TestModel1
+        {
+        }
+
+        public class TestModel2
         {
         }
     }
