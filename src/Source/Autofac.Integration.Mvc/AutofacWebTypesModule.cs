@@ -25,6 +25,8 @@
 
 using System.Web;
 using System.Web.Hosting;
+using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace Autofac.Integration.Mvc
 {
@@ -68,6 +70,10 @@ namespace Autofac.Integration.Mvc
     /// <description><see cref="System.Web.HttpFileCollectionBase"/></description>
     /// </item>
     /// <item>
+    /// <term><c>HttpContext.Current.Request.RequestContext</c></term>
+    /// <description><see cref="System.Web.Routing.RequestContext"/></description>
+    /// </item>
+    /// <item>
     /// <term><c>HttpContext.Current.Response</c></term>
     /// <description><see cref="System.Web.HttpResponseBase"/></description>
     /// </item>
@@ -88,6 +94,10 @@ namespace Autofac.Integration.Mvc
     /// <description><see cref="System.Web.Hosting.VirtualPathProvider"/></description>
     /// </item>
     /// </list>
+    /// <para>
+    /// In addition, the <see cref="System.Web.Mvc.UrlHelper"/> type is registered
+    /// for construction based on the current <see cref="System.Web.Routing.RequestContext"/>.
+    /// </para>
     /// <para>
     /// The lifetime for each of these items is one web request.
     /// </para>
@@ -145,6 +155,10 @@ namespace Autofac.Integration.Mvc
                 .As<HttpFileCollectionBase>()
                 .InstancePerHttpRequest();
 
+            builder.Register(c => c.Resolve<HttpRequestBase>().RequestContext)
+                .As<RequestContext>()
+                .InstancePerHttpRequest();
+
             // HttpResponse properties
             builder.Register(c => c.Resolve<HttpResponseBase>().Cache)
                 .As<HttpCachePolicyBase>()
@@ -153,6 +167,11 @@ namespace Autofac.Integration.Mvc
             // HostingEnvironment properties
             builder.Register(c => HostingEnvironment.VirtualPathProvider)
                 .As<VirtualPathProvider>()
+                .InstancePerHttpRequest();
+
+            // MVC types
+            builder.Register(c => new UrlHelper(c.Resolve<RequestContext>()))
+                .As<UrlHelper>()
                 .InstancePerHttpRequest();
         }
     }
