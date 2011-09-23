@@ -29,44 +29,48 @@ using Autofac.Core;
 
 namespace Autofac.Integration.Wcf
 {
-	/// <summary>
-	///		Adds dependency injection related methods to service hosts.
-	/// </summary>
-	public static class ServiceHostExtensions
-	{
-		/// <summary>
-		/// Adds the custom service behavior required for dependency injection.
-		/// </summary>
-		/// <typeparam name="T">The web service contract type.</typeparam>
-		/// <param name="serviceHost">The service host.</param>
-		/// <param name="container">The container.</param>
-		public static void AddDependencyInjectionBehavior<T>(this ServiceHostBase serviceHost, ILifetimeScope container)
-		{
-			if (container == null) throw new ArgumentNullException("container");
+    /// <summary>
+    ///		Adds dependency injection related methods to service hosts.
+    /// </summary>
+    public static class ServiceHostExtensions
+    {
+        /// <summary>
+        /// Adds the custom service behavior required for dependency injection.
+        /// </summary>
+        /// <typeparam name="T">The web service contract type.</typeparam>
+        /// <param name="serviceHost">The service host.</param>
+        /// <param name="container">The container.</param>
+        public static void AddDependencyInjectionBehavior<T>(this ServiceHostBase serviceHost, ILifetimeScope container)
+        {
+            if (container == null) throw new ArgumentNullException("container");
 
-			AddDependencyInjectionBehavior(serviceHost, typeof(T), container);
-		}
+            AddDependencyInjectionBehavior(serviceHost, typeof(T), container);
+        }
 
-		/// <summary>
-		/// Adds the custom service behavior required for dependency injection.
-		/// </summary>
-		/// <param name="serviceHost">The service host.</param>
-		/// <param name="contractType">The web service contract type.</param>
-		/// <param name="container">The container.</param>
-		public static void AddDependencyInjectionBehavior(this ServiceHostBase serviceHost, Type contractType, ILifetimeScope container)
-		{
-			if (contractType == null) throw new ArgumentNullException("contractType");
-			if (container == null) throw new ArgumentNullException("container");
+        /// <summary>
+        /// Adds the custom service behavior required for dependency injection.
+        /// </summary>
+        /// <param name="serviceHost">The service host.</param>
+        /// <param name="contractType">The web service contract type.</param>
+        /// <param name="container">The container.</param>
+        public static void AddDependencyInjectionBehavior(this ServiceHostBase serviceHost, Type contractType, ILifetimeScope container)
+        {
+            if (contractType == null) throw new ArgumentNullException("contractType");
+            if (container == null) throw new ArgumentNullException("container");
 
-			IComponentRegistration registration;
-			if (!container.ComponentRegistry.TryGetRegistration(new TypedService(contractType), out registration))
-			{
-				var message = string.Format(ServiceHostExtensionsResources.ContractTypeNotRegistered, contractType.FullName);
-				throw new ArgumentException(message, "contractType");
-			}
+            var serviceBehavior = serviceHost.Description.Behaviors.Find<ServiceBehaviorAttribute>();
+            if (serviceBehavior != null && serviceBehavior.InstanceContextMode == InstanceContextMode.Single)
+                return;
 
-			var behavior = new AutofacDependencyInjectionServiceBehavior(container, serviceHost.Description.ServiceType, registration);
-			serviceHost.Description.Behaviors.Add(behavior);
-		}
-	}
+            IComponentRegistration registration;
+            if (!container.ComponentRegistry.TryGetRegistration(new TypedService(contractType), out registration))
+            {
+                var message = string.Format(ServiceHostExtensionsResources.ContractTypeNotRegistered, contractType.FullName);
+                throw new ArgumentException(message, "contractType");
+            }
+
+            var behavior = new AutofacDependencyInjectionServiceBehavior(container, serviceHost.Description.ServiceType, registration);
+            serviceHost.Description.Behaviors.Add(behavior);
+        }
+    }
 }
