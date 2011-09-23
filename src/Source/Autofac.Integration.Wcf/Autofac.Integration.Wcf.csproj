@@ -84,10 +84,10 @@
     <Compile Include="AutofacInstanceContext.cs" />
     <Compile Include="AutofacInstanceProvider.cs" />
     <Compile Include="AutofacServiceHostFactory.cs" />
-    <Compile Include="AutofacServiceHostFactoryResources.Designer.cs">
+    <Compile Include="AutofacHostFactoryResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>AutofacServiceHostFactoryResources.resx</DependentUpon>
+      <DependentUpon>AutofacHostFactoryResources.resx</DependentUpon>
     </Compile>
     <Compile Include="AutofacWebServiceHostFactory.cs" />
     <Compile Include="AutofacHostFactory.cs" />
@@ -112,9 +112,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AutofacServiceHostFactoryResources.resx">
+    <EmbeddedResource Include="AutofacHostFactoryResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>AutofacServiceHostFactoryResources.Designer.cs</LastGenOutput>
+      <LastGenOutput>AutofacHostFactoryResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ServiceHostExtensionsResources.resx">

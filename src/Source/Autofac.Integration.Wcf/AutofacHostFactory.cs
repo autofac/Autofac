@@ -24,11 +24,12 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using Autofac.Core;
+using Autofac.Core.Lifetime;
 
 namespace Autofac.Integration.Wcf
 {
@@ -91,7 +92,7 @@ namespace Autofac.Integration.Wcf
                 throw new ArgumentOutOfRangeException("constructorString");
 
             if (Container == null)
-                throw new InvalidOperationException(AutofacServiceHostFactoryResources.ContainerIsNull);
+                throw new InvalidOperationException(AutofacHostFactoryResources.ContainerIsNull);
 
             IComponentRegistration registration;
             if (!Container.ComponentRegistry.TryGetRegistration(new KeyedService(constructorString, typeof(object)), out registration))
@@ -103,47 +104,65 @@ namespace Autofac.Integration.Wcf
 
             if (registration == null)
                 throw new InvalidOperationException(
-                    string.Format(CultureInfo.CurrentCulture, AutofacServiceHostFactoryResources.ServiceNotRegistered, constructorString));
+                    string.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ServiceNotRegistered, constructorString));
 
-            if (!registration.Activator.LimitType.IsClass)
+            Type implementationType = registration.Activator.LimitType;
+
+            if (!implementationType.IsClass)
                 throw new InvalidOperationException(
-                    string.Format(CultureInfo.CurrentCulture, AutofacServiceHostFactoryResources.ImplementationTypeUnknown, constructorString, registration));
+                    string.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ImplementationTypeUnknown, constructorString, registration));
 
-            return CreateServiceHost(registration, registration.Activator.LimitType, baseAddresses);
+            ServiceBehaviorAttribute serviceBehaviorAttribute = implementationType
+                .GetCustomAttributes(typeof(ServiceBehaviorAttribute), true)
+                .OfType<ServiceBehaviorAttribute>()
+                .FirstOrDefault();
+
+            ServiceHost host;
+            if (serviceBehaviorAttribute != null && serviceBehaviorAttribute.InstanceContextMode == InstanceContextMode.Single)
+            {
+                if (!IsRegistrationSingleInstance(registration))
+                    throw new InvalidOperationException(
+                        string.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ServiceMustBeSingleInstance, implementationType.FullName));
+
+                object singletonInstance = Container.Resolve(implementationType);
+                host = CreateSingletonServiceHost(singletonInstance, baseAddresses);
+            }
+            else
+            {
+                if (IsRegistrationSingleInstance(registration))
+                    throw new InvalidOperationException(
+                        string.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ServiceMustNotBeSingleInstance, implementationType.FullName));
+
+                host = CreateServiceHost(implementationType, baseAddresses);
+                host.Opening += (sender, args) => host.Description.Behaviors.Add(
+                    new AutofacDependencyInjectionServiceBehavior(Container, implementationType, registration));
+            }
+
+            ApplyHostConfigurationAction(host);
+
+            return host;
         }
 
         /// <summary>
-        /// Creates the service host and attaches a WCF Service behaviour that uses Autofac to resolve the service instance.
+        /// Creates a <see cref="T:System.ServiceModel.ServiceHost"/> for a specified type of service with a specific base address.
         /// </summary>
-        /// <param name="registration">Registration to provide the service.</param>
-        /// <param name="implementationType">Type of the implementation.</param>
-        /// <param name="baseAddresses">The base addresses.</param>
-        /// <returns>A <see cref="T:System.ServiceModel.ServiceHost"/> with specific base addresses.</returns>
-        /// <remarks>
-        /// <para>
-        /// If the service type is <see langword="null" />, the implementation type is used as the resolution type.
-        /// </para>
-        /// <para>
-        /// If <see cref="Autofac.Integration.Wcf.AutofacHostFactory.HostConfigurationAction"/>
-        /// is not <see langword="null" />, the new service host instance is run
-        /// through the configuration action prior to being returned. This allows
-        /// you to programmatically configure behaviors or other aspects of the
-        /// host.
-        /// </para>
-        /// </remarks>
-        ServiceHost CreateServiceHost(IComponentRegistration registration, Type implementationType, Uri[] baseAddresses)
+        /// <param name="singletonInstance">Specifies the singleton service instance to host.</param>
+        /// <param name="baseAddresses">The <see cref="T:System.Array"/> of type <see cref="T:System.Uri"/> that contains the base addresses for the service hosted.</param>
+        /// <returns>
+        /// A <see cref="T:System.ServiceModel.ServiceHost"/> for the singleton service instance specified with a specific base address.
+        /// </returns>
+        protected abstract ServiceHost CreateSingletonServiceHost(object singletonInstance, Uri[] baseAddresses);
+
+        static bool IsRegistrationSingleInstance(IComponentRegistration registration)
         {
-            var host = CreateServiceHost(implementationType, baseAddresses);
-            host.Opening += (sender, args) => host.Description.Behaviors.Add(
-                new AutofacDependencyInjectionServiceBehavior(Container, implementationType, registration));
+            return registration.Sharing == InstanceSharing.Shared && registration.Lifetime is RootScopeLifetime;
+        }
 
-            var action = AutofacHostFactory.HostConfigurationAction;
+        static void ApplyHostConfigurationAction(ServiceHostBase host)
+        {
+            var action = HostConfigurationAction;
             if (action != null)
-            {
                 action(host);
-            }
-
-            return host;
         }
     }
 }

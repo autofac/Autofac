@@ -49,8 +49,26 @@ namespace Autofac.Integration.Wcf
             if (baseAddresses == null)
                 throw new ArgumentNullException("baseAddresses");
 
-
             return new ServiceHost(serviceType, baseAddresses);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="T:System.ServiceModel.ServiceHost"/> for a specified type of service with a specific base address.
+        /// </summary>
+        /// <param name="singletonInstance">Specifies the singleton service instance to host.</param>
+        /// <param name="baseAddresses">The <see cref="T:System.Array"/> of type <see cref="T:System.Uri"/> that contains the base addresses for the service hosted.</param>
+        /// <returns>
+        /// A <see cref="T:System.ServiceModel.ServiceHost"/> for the singleton service instance specified with a specific base address.
+        /// </returns>
+        protected override ServiceHost CreateSingletonServiceHost(object singletonInstance, Uri[] baseAddresses)
+        {
+            if (singletonInstance == null)
+                throw new ArgumentNullException("singletonInstance");
+
+            if (baseAddresses == null)
+                throw new ArgumentNullException("baseAddresses");
+
+            return new ServiceHost(singletonInstance, baseAddresses);
         }
     }
 }

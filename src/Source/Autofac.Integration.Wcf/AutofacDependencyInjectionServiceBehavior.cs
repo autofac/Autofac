@@ -103,23 +103,21 @@ namespace Autofac.Integration.Wcf
                 throw new ArgumentNullException("serviceHostBase");
 
             var implementedContracts =
-                from ep in serviceDescription.Endpoints
+                (from ep in serviceDescription.Endpoints
                 where ep.Contract.ContractType.IsAssignableFrom(_implementationType)
-                select ep.Contract.Name;
+                select ep.Contract.Name).ToArray();
 
             var instanceProvider = new AutofacInstanceProvider(_rootLifetimeScope, _registration);
 
-            foreach (var cdb in serviceHostBase.ChannelDispatchers)
+            var endpointDispatchers = 
+                from cd in serviceHostBase.ChannelDispatchers.OfType<ChannelDispatcher>() 
+                from ed in cd.Endpoints 
+                where implementedContracts.Contains(ed.ContractName) 
+                select ed;
+
+            foreach (var ed in endpointDispatchers)
             {
-                var cd = cdb as ChannelDispatcher;
-                if (cd != null)
-                {
-                    foreach (var ed in cd.Endpoints)
-                    {
-                        if (implementedContracts.Contains(ed.ContractName))
-                            ed.DispatchRuntime.InstanceProvider = instanceProvider;
-                    }
-                }
+                ed.DispatchRuntime.InstanceProvider = instanceProvider;
             }
         }
 
