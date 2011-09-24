@@ -106,19 +106,14 @@ namespace Autofac.Integration.Wcf
                 throw new InvalidOperationException(
                     string.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ServiceNotRegistered, constructorString));
 
-            Type implementationType = registration.Activator.LimitType;
+            var implementationType = registration.Activator.LimitType;
 
             if (!implementationType.IsClass)
                 throw new InvalidOperationException(
                     string.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ImplementationTypeUnknown, constructorString, registration));
 
-            ServiceBehaviorAttribute serviceBehaviorAttribute = implementationType
-                .GetCustomAttributes(typeof(ServiceBehaviorAttribute), true)
-                .OfType<ServiceBehaviorAttribute>()
-                .FirstOrDefault();
-
             ServiceHost host;
-            if (serviceBehaviorAttribute != null && serviceBehaviorAttribute.InstanceContextMode == InstanceContextMode.Single)
+            if (IsSingletonWcfService(implementationType))
             {
                 if (!IsRegistrationSingleInstance(registration))
                     throw new InvalidOperationException(
@@ -156,6 +151,16 @@ namespace Autofac.Integration.Wcf
         static bool IsRegistrationSingleInstance(IComponentRegistration registration)
         {
             return registration.Sharing == InstanceSharing.Shared && registration.Lifetime is RootScopeLifetime;
+        }
+
+        static bool IsSingletonWcfService(Type implementationType)
+        {
+            var behavior = implementationType
+                .GetCustomAttributes(typeof(ServiceBehaviorAttribute), true)
+                .OfType<ServiceBehaviorAttribute>()
+                .FirstOrDefault();
+
+            return behavior != null && behavior.InstanceContextMode == InstanceContextMode.Single;
         }
 
         static void ApplyHostConfigurationAction(ServiceHostBase host)

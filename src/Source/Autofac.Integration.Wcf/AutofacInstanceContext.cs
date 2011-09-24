@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel;
 using Autofac.Core;
 using Autofac.Core.Registration;
