@@ -127,11 +127,119 @@ namespace Autofac.Integration.Mvc
         }
 
         /// <summary>
-        /// Register types that implement <see cref="IModelBinder"/> in the provided assemblies.
+        /// Sets a provided registration to act as an <see cref="System.Web.Mvc.IModelBinder"/>
+        /// for the specified list of types.
+        /// </summary>
+        /// <param name="registration">
+        /// The registration for the type or object instance that will act as
+        /// the model binder.
+        /// </param>
+        /// <param name="types">
+        /// The list of model <see cref="System.Type"/> for which the <paramref name="registration" />
+        /// should be a model binder.
+        /// </param>
+        /// <typeparam name="TLimit">
+        /// Registration limit type.
+        /// </typeparam>
+        /// <typeparam name="TActivatorData">
+        /// Activator data type.
+        /// </typeparam>
+        /// <typeparam name="TRegistrationStyle">
+        /// Registration style.
+        /// </typeparam>
+        /// <returns>
+        /// An Autofac registration that can be modified as needed.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="registration" /> or <paramref name="types" /> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown if <paramref name="types" /> is empty or contains all <see langword="null" />
+        /// values.
+        /// </exception>
+        /// <remarks>
+        /// <para>
+        /// The declarative mechanism of registering model binders with Autofac
+        /// is through use of <see cref="Autofac.Integration.Mvc.RegistrationExtensions.RegisterModelBinders"/>
+        /// and the <see cref="Autofac.Integration.Mvc.ModelBinderTypeAttribute"/>.
+        /// This method is an imperative alternative.
+        /// </para>
+        /// <para>
+        /// The two mechanisms are mutually exclusive. If you register a model
+        /// binder using <see cref="Autofac.Integration.Mvc.RegistrationExtensions.RegisterModelBinders"/>
+        /// and register the same model binder with this method, the results
+        /// are not automatically merged together - standard dependency
+        /// registration/resolution rules will be used to manage the conflict.
+        /// </para>
+        /// <para>
+        /// Any <see langword="null" /> values provided in <paramref name="types" />
+        /// will be removed prior to registration.
+        /// </para>
+        /// </remarks>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> AsModelBinderForTypes<TLimit, TActivatorData, TRegistrationStyle>(this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration, params Type[] types)
+            where TActivatorData : IConcreteActivatorData
+            where TRegistrationStyle : SingleRegistrationStyle
+        {
+            if (registration == null)
+            {
+                throw new ArgumentNullException("registration");
+            }
+            if (types == null)
+            {
+                throw new ArgumentNullException("types");
+            }
+            var typeList = types.Where(type => type != null).ToList();
+            if (typeList.Count == 0)
+            {
+                throw new ArgumentException("Type list may not be empty or contain all null values.", "types");
+            }
+
+            return registration.As<IModelBinder>().WithMetadata(AutofacModelBinderProvider.MetadataKey, typeList);
+        }
+
+        /// <summary>
+        /// Register types that implement <see cref="IModelBinder"/> in the provided assemblies
+        /// and have a <see cref="Autofac.Integration.Mvc.ModelBinderTypeAttribute"/>.
         /// </summary>
         /// <param name="builder">The container builder.</param>
         /// <param name="modelBinderAssemblies">Assemblies to scan for model binders.</param>
         /// <returns>A registration builder.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="builder" /> or <paramref name="modelBinderAssemblies" /> is <see langword="null" />.
+        /// </exception>
+        /// <remarks>
+        /// <para>
+        /// The declarative mechanism of registering model binders with Autofac
+        /// is through use of this method and the
+        /// <see cref="Autofac.Integration.Mvc.ModelBinderTypeAttribute"/>.
+        /// If you would like more imperative control over registration for your
+        /// model binders, see the <see cref="Autofac.Integration.Mvc.RegistrationExtensions.AsModelBinderForTypes"/>
+        /// method.
+        /// </para>
+        /// <para>
+        /// The two mechanisms are mutually exclusive. If you register a model
+        /// binder using <see cref="Autofac.Integration.Mvc.RegistrationExtensions.AsModelBinderForTypes"/>
+        /// and register the same model binder with this method, the results
+        /// are not automatically merged together - standard dependency
+        /// registration/resolution rules will be used to manage the conflict.
+        /// </para>
+        /// <para>
+        /// This method only registers types that implement <see cref="IModelBinder"/>
+        /// and are marked with the <see cref="Autofac.Integration.Mvc.ModelBinderTypeAttribute"/>.
+        /// The model binder must have the attribute because the
+        /// <see cref="Autofac.Integration.Mvc.AutofacModelBinderProvider"/> uses
+        /// the associated metadata - from the attribute(s) - to resolve the
+        /// binder based on model type. If there aren't any attributes, there
+        /// won't be any metadata, so the model binder will be technically
+        /// registered but will never actually be resolved.
+        /// </para>
+        /// <para>
+        /// If your model is not marked with the attribute, or if you don't want
+        /// to use attributes, use the
+        /// <see cref="Autofac.Integration.Mvc.RegistrationExtensions.AsModelBinderForTypes"/>
+        /// extension instead.
+        /// </para>
+        /// </remarks>
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             RegisterModelBinders(this ContainerBuilder builder, params Assembly[] modelBinderAssemblies)
         {
@@ -139,13 +247,13 @@ namespace Autofac.Integration.Mvc
             if (modelBinderAssemblies == null) throw new ArgumentNullException("modelBinderAssemblies");
 
             return builder.RegisterAssemblyTypes(modelBinderAssemblies)
-                .Where(type => typeof(IModelBinder).IsAssignableFrom(type))
+                .Where(type => typeof(IModelBinder).IsAssignableFrom(type) && type.GetCustomAttributes(typeof(ModelBinderTypeAttribute), true).Length > 0)
                 .As<IModelBinder>()
                 .InstancePerHttpRequest()
-                .WithMetadata(AutofacModelBinderProvider.MetadataKey, type => 
+                .WithMetadata(AutofacModelBinderProvider.MetadataKey, type =>
                     (from ModelBinderTypeAttribute attribute in type.GetCustomAttributes(typeof(ModelBinderTypeAttribute), true)
                      from targetType in attribute.TargetTypes
-                    select targetType).ToList());
+                     select targetType).ToList());
         }
 
         /// <summary>
