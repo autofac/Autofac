@@ -144,6 +144,64 @@ namespace Autofac.Builder
         }
 
         /// <summary>
+        /// Configure the component so that every dependent component or call to Resolve()
+        /// within a ILifetimeScope created by an owned instance gets the same, shared instance.
+        /// Dependent components in lifetime scopes that are children of the owned instance scope will
+        /// share the parent's instance. If no appropriate owned instance scope can be found in the
+        /// hierarchy an <see cref="DependencyResolutionException"/> is thrown.
+        /// </summary>
+        /// <typeparam name="TService">The service type provided by the component.</typeparam>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerOwned<TService>()
+        {
+            return InstancePerOwned(typeof(TService));
+        }
+
+        /// <summary>
+        /// Configure the component so that every dependent component or call to Resolve()
+        /// within a ILifetimeScope created by an owned instance gets the same, shared instance.
+        /// Dependent components in lifetime scopes that are children of the owned instance scope will
+        /// share the parent's instance. If no appropriate owned instance scope can be found in the
+        /// hierarchy an <see cref="DependencyResolutionException"/> is thrown.
+        /// </summary>
+        /// <param name="serviceType">The service type provided by the component.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerOwned(Type serviceType)
+        {
+            return InstancePerMatchingLifetimeScope(new TypedService(serviceType));
+        }
+
+        /// <summary>
+        /// Configure the component so that every dependent component or call to Resolve()
+        /// within a ILifetimeScope created by an owned instance gets the same, shared instance.
+        /// Dependent components in lifetime scopes that are children of the owned instance scope will
+        /// share the parent's instance. If no appropriate owned instance scope can be found in the
+        /// hierarchy an <see cref="DependencyResolutionException"/> is thrown.
+        /// </summary>
+        /// <typeparam name="TService">The service type provided by the component.</typeparam>
+        /// <param name="serviceKey">Key to associate with the component.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerOwned<TService>(object serviceKey)
+        {
+            return InstancePerOwned(serviceKey, typeof(TService));
+        }
+
+        /// <summary>
+        /// Configure the component so that every dependent component or call to Resolve()
+        /// within a ILifetimeScope created by an owned instance gets the same, shared instance.
+        /// Dependent components in lifetime scopes that are children of the owned instance scope will
+        /// share the parent's instance. If no appropriate owned instance scope can be found in the
+        /// hierarchy an <see cref="DependencyResolutionException"/> is thrown.
+        /// </summary>
+        /// <param name="serviceKey">Key to associate with the component.</param>
+        /// <param name="serviceType">The service type provided by the component.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerOwned(object serviceKey, Type serviceType)
+        {
+            return InstancePerMatchingLifetimeScope(new KeyedService(serviceKey, serviceType));
+        }
+
+        /// <summary>
         /// Configure the services that the component will provide. The generic parameter(s) to As()
         /// will be exposed as TypedService instances.
         /// </summary>
@@ -231,7 +289,6 @@ namespace Autofac.Builder
         {
             return Named(serviceName, typeof(TService));
         }
-
 
         /// <summary>
         /// Provide a key that can be used to retrieve the component.

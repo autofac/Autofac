@@ -110,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assertions.cs" />
+    <Compile Include="Builder\InstancePerOwnedRegistrationBuilderTests.cs" />
     <Compile Include="Builder\PropertyInjectionTests.cs" />
     <Compile Include="Builder\CollectionRegistrationBuilderTests.cs" />
     <Compile Include="Builder\RegistrationBuilderTests.cs" />
