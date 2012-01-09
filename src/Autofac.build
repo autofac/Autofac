@@ -163,7 +163,7 @@
     <WriteLinesToFile
       File="%(_VersionFiles.FullPath)"
       Overwrite="false"
-      Lines="[assembly: System.Security.AllowPartiallyTrustedCallers]"
+      Lines="[assembly: System.Security.SecurityTransparent];[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level2)]"
       Condition="$(AllowPartiallyTrustedCallers)==true" />
   </Target>
 
