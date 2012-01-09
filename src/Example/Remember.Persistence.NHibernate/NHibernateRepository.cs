@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Remember.Model;
 using NHibernate;
 using NHibernate.Linq;
@@ -11,7 +10,7 @@ namespace Remember.Persistence.NHibernate
     public class NHibernateRepository<T> : IRepository<T>
         where T : class, IIdentifiable
     {
-        ISession _session;
+        readonly ISession _session;
 
         public NHibernateRepository(ISession session)
         {
@@ -52,12 +51,7 @@ namespace Remember.Persistence.NHibernate
             if (specifications == null || specifications.Any(s => s == null))
                 throw new ArgumentNullException("specifications");
 
-            var items = Items;
-
-            foreach (var specification in specifications)
-                items = specification.SatisfyingElementsFrom(items);
-
-            return items;
+            return specifications.Aggregate(Items, (current, specification) => specification.SatisfyingElementsFrom(current));
         }
     }
 }

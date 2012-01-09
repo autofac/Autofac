@@ -1,5 +1,4 @@
-﻿
-namespace Remember.Model
+﻿namespace Remember.Model
 {
     public class Task : IIdentifiable
     {

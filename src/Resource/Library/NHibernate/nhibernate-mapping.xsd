@@ -692,7 +692,8 @@
 			<xs:attribute name="name" type="xs:string" />
 			<xs:attribute name="proxy" type="xs:string" />
 			<xs:attribute name="table" type="xs:string" />
-			<xs:attribute name="schema" type="xs:string" />
+      <xs:attribute name="schema-action" type="xs:string" />
+      <xs:attribute name="schema" type="xs:string" />
 			<xs:attribute name="catalog" type="xs:string" />
 			<xs:attribute name="subselect" type="xs:string" />
 			<xs:attribute name="dynamic-update" default="false" type="xs:boolean">
@@ -1342,6 +1343,7 @@
 					<xs:element ref="one-to-one" />
 					<xs:element ref="component" />
 					<xs:element ref="dynamic-component" />
+					<xs:element ref="properties" />
 					<xs:element ref="any" />
 					<xs:element ref="map" />
 					<xs:element ref="set" />

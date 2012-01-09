@@ -102,7 +102,6 @@
 								<xs:enumeration value="command_timeout" />
 								<xs:enumeration value="adonet.batch_size" />
 								<xs:enumeration value="use_proxy_validator" />
-								<xs:enumeration value="use_outer_join" />
 								<xs:enumeration value="xml.output_stylesheet" />
 								<xs:enumeration value="generate_statistics" />
 								<xs:enumeration value="query.startup_check" />
@@ -114,7 +113,8 @@
 								<xs:enumeration value="use_sql_comments" />
 								<xs:enumeration value="format_sql" />
 								<xs:enumeration value="collectiontype.factory_class" />
-							</xs:restriction>
+                <xs:enumeration value="order_inserts" />
+              </xs:restriction>
 						</xs:simpleType>
 					</xs:attribute>
 				</xs:extension>

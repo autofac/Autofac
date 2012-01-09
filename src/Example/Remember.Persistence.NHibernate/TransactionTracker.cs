@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NHibernate;
 using System.Web;
 
@@ -15,18 +12,16 @@ namespace Remember.Persistence.NHibernate
 
         public void Dispose()
         {
-            if (!_disposed)
-            {
-                _disposed = true;
+            if (_disposed) return;
 
-                if (CurrentTransaction != null)
-                {
-                    if (HttpContext.Current.Error != null)
-                        CurrentTransaction.Rollback();
-                    else
-                        CurrentTransaction.Commit();
-                }
-            }
+            _disposed = true;
+
+            if (CurrentTransaction == null) return;
+
+            if (HttpContext.Current.Error != null)
+                CurrentTransaction.Rollback();
+            else
+                CurrentTransaction.Commit();
         }
     }
 }
