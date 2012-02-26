@@ -54,7 +54,7 @@ namespace Autofac.Integration.Mvc
             if (typedService != null && IsSupportedView(typedService.ServiceType))
                 yield return RegistrationBuilder.ForType(typedService.ServiceType)
                     .PropertiesAutowired()
-                    .InstancePerHttpRequest()
+                    .InstancePerDependency()
                     .CreateRegistration();
         }
 

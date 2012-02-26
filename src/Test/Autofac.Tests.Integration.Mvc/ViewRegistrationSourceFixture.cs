@@ -140,6 +140,40 @@ namespace Autofac.Tests.Integration.Mvc
         {
             Assert.That(new ViewRegistrationSource().IsAdapterForIndividualComponents, Is.False);
         }
+
+        [Test]
+        public void ViewRegistrationIsInstancePerDependency()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ViewDependency>().AsSelf();
+            builder.RegisterSource(new ViewRegistrationSource());
+
+            var container = builder.Build();
+            using (var lifetimeScope = container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag))
+            {
+                var viewPage1 = lifetimeScope.Resolve<GeneratedWebViewPageWithModel>();
+                var viewPage2 = lifetimeScope.Resolve<GeneratedWebViewPageWithModel>();
+
+                Assert.That(viewPage1, Is.Not.SameAs(viewPage2));
+            }
+        }
+
+        [Test]
+        public void ViewCanHaveInstancePerHttpRequestDependency()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ViewDependency>().AsSelf().InstancePerHttpRequest();
+            builder.RegisterSource(new ViewRegistrationSource());
+
+            var container = builder.Build();
+            using (var lifetimeScope = container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag))
+            {
+                var viewPage1 = lifetimeScope.Resolve<GeneratedWebViewPageWithModel>();
+                var viewPage2 = lifetimeScope.Resolve<GeneratedWebViewPageWithModel>();
+
+                Assert.That(viewPage1.Dependency, Is.SameAs(viewPage2.Dependency));
+            }
+        }
     }
 
     public class ViewDependency { }
