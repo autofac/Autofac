@@ -10,4 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © 2011 Autofac Contributors")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+
+#if !WINDOWS_PHONE
 [assembly: ComVisible(false)]
+#endif

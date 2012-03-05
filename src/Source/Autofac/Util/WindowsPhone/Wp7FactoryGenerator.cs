@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Autofac.Core;
@@ -108,10 +107,9 @@ namespace Autofac.Util.WindowsPhone
             var ls = context.Resolve<ILifetimeScope>();
             Func<TResult> delegateClosure = () =>
             {
-                Debug.WriteLine("Invoking Delegate Func<TResult>");
                 return Resolve<TResult>(target, ls, new List<Parameter>());
             };
-            return Delegate.CreateDelegate(typeof(TDelegate), delegateClosure.Target, delegateClosure.Method, true);
+            return Delegate.CreateDelegate(typeof(TDelegate), delegateClosure.Target, delegateClosure.Method);
         }
 
         // ReSharper restore UnusedParameter.Local
@@ -121,11 +119,10 @@ namespace Autofac.Util.WindowsPhone
             var ls = context.Resolve<ILifetimeScope>();
             Func<TArg0, TResult> delegateClosure = a0 =>
             {
-                Debug.WriteLine("Invoking Delegate Func<TArg0, TResult>");
                 var parameterCollection = mapping.GetParameterCollection<TDelegate>(a0);
                 return Resolve<TResult>(target, ls, parameterCollection);
             };
-            return Delegate.CreateDelegate(typeof(TDelegate), delegateClosure.Target, delegateClosure.Method, true);
+            return Delegate.CreateDelegate(typeof(TDelegate), delegateClosure.Target, delegateClosure.Method);
         }
 
         static Delegate DelegateActivator<TArg0, TArg1, TResult, TDelegate>(IComponentContext context, object target, ParameterMapping mapping)
@@ -133,11 +130,10 @@ namespace Autofac.Util.WindowsPhone
             var ls = context.Resolve<ILifetimeScope>();
             Func<TArg0, TArg1, TResult> delegateClosure = (a0, a1) =>
             {
-                Debug.WriteLine("Invoking Delegate Func<TArg0, TArg1, TResult>");
                 var parameterCollection = mapping.GetParameterCollection<TDelegate>(a0, a1);
                 return Resolve<TResult>(target, ls, parameterCollection);
             };
-            return Delegate.CreateDelegate(typeof(TDelegate), delegateClosure.Target, delegateClosure.Method, true);
+            return Delegate.CreateDelegate(typeof(TDelegate), delegateClosure.Target, delegateClosure.Method);
         }
 
         static Delegate DelegateActivator<TArg0, TArg1, TArg2, TResult, TDelegate>(IComponentContext context, object target, ParameterMapping mapping)
@@ -145,11 +141,10 @@ namespace Autofac.Util.WindowsPhone
             var ls = context.Resolve<ILifetimeScope>();
             Func<TArg0, TArg1, TArg2, TResult> delegateClosure = (a0, a1, a2) =>
             {
-                Debug.WriteLine("Invoking Delegate Func<TArg0, TArg1, TArg2, TResult>");
                 var parameterCollection = mapping.GetParameterCollection<TDelegate>(a0, a1, a2);
                 return Resolve<TResult>(target, ls, parameterCollection);
             };
-            return Delegate.CreateDelegate(typeof(TDelegate), delegateClosure.Target, delegateClosure.Method, true);
+            return Delegate.CreateDelegate(typeof(TDelegate), delegateClosure.Target, delegateClosure.Method);
         }
 
         static Delegate DelegateActivator<TArg0, TArg1, TArg2, TArg3, TResult, TDelegate>(IComponentContext context, object target, ParameterMapping mapping)
@@ -157,11 +152,10 @@ namespace Autofac.Util.WindowsPhone
             var ls = context.Resolve<ILifetimeScope>();
             Func<TArg0, TArg1, TArg2, TArg3, TResult> delegateClosure = (a0, a1, a2, a3) =>
             {
-                Debug.WriteLine("Invoking Delegate Func<TArg0, TArg1, TArg2, TArg3, TResult>");
                 var parameterCollection = mapping.GetParameterCollection<TDelegate>(a0, a1, a2, a3);
                 return Resolve<TResult>(target, ls, parameterCollection);
             };
-            return Delegate.CreateDelegate(typeof(TDelegate), delegateClosure.Target, delegateClosure.Method, true);
+            return Delegate.CreateDelegate(typeof(TDelegate), delegateClosure.Target, delegateClosure.Method);
         }
 
         // ReSharper restore UnusedMember.Local

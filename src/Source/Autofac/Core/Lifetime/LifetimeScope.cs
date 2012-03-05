@@ -35,7 +35,10 @@ namespace Autofac.Core.Lifetime
     /// <summary>
     /// Lifetime scope implementation.
     /// </summary>
-    public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
+    public class LifetimeScope : Disposable, ISharingLifetimeScope
+#if !WINDOWS_PHONE
+, IServiceProvider
+#endif
     {
         /// <summary>
         /// Protects shared instances from concurrent access. Other members and the base class are threadsafe.
@@ -317,6 +320,7 @@ namespace Autofac.Core.Lifetime
                 throw new ObjectDisposedException(LifetimeScopeResources.ScopeIsDisposed, innerException: null);
         }
 
+#if !WINDOWS_PHONE
         /// <summary>
         /// Gets the service object of the specified type.
         /// </summary>
@@ -331,6 +335,7 @@ namespace Autofac.Core.Lifetime
             if (serviceType == null) throw new ArgumentNullException("serviceType");
             return this.ResolveOptional(serviceType);
         }
+#endif
 
         /// <summary>
         /// Fired when a new scope based on the current scope is beginning.

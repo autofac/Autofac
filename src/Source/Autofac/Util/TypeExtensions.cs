@@ -132,7 +132,11 @@ namespace Autofac.Util
             return constraint.IsAssignableFrom(parameter) ||
                 Traverse.Across(parameter, p => p.BaseType)
                     .Concat(parameter.GetInterfaces())
-                    .Any(p => p.GUID == constraint.GUID);
+#if !(WINDOWS_PHONE)
+                    .Any(p => p.GUID.Equals(constraint.GUID));
+#else
+                    .Any(p => p.FullName != null && p.FullName.Equals(constraint.FullName));
+#endif
         }
 
         public static bool IsCompatibleWith(this Type type, Type that)
@@ -147,9 +151,10 @@ namespace Autofac.Util
 
         public static int GetCompatibleHashCode(this Type type)
         {
+#if !WINDOWS_PHONE
             if (type.IsImport)
                 return type.GUID.GetHashCode();
-
+#endif
             return type.GetHashCode();
         }
     }

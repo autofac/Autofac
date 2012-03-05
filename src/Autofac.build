@@ -16,7 +16,6 @@
 
     <PackageDirectory Condition="$(PackageDirectory)==''">$(BuildPath)\_Package</PackageDirectory>
     <Version Condition="$(Version)==''">0.0.0.0</Version>
-    <AllowPartiallyTrustedCallers Condition="$(AllowPartiallyTrustedCallers)==''">true</AllowPartiallyTrustedCallers>
     <!--
       Derived configuration properties
          -->
@@ -41,21 +40,20 @@
     <PackageName>$(ProjectName)-$(Version)-NET40</PackageName>
     <BuildConstants>NET40</BuildConstants>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <AllowPartiallyTrustedCallers>true</AllowPartiallyTrustedCallers>
   </PropertyGroup>
-
   <PropertyGroup Condition="$(BuildFramework)=='NET35'">
     <PackageName>$(ProjectName)-$(Version)-NET35</PackageName>
     <BuildConstants>NET35</BuildConstants>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <AllowPartiallyTrustedCallers>false</AllowPartiallyTrustedCallers>
   </PropertyGroup>
-
-   <PropertyGroup Condition="$(BuildFramework)=='WP7'">
+  <PropertyGroup Condition="$(BuildFramework)=='WP7'">
     <BuildTargets>Windows Phone 7</BuildTargets>
     <BuildConstants>SILVERLIGHT;SL3;WINDOWS_PHONE</BuildConstants>
     <PackageName>$(ProjectName)-$(Version)-WP7</PackageName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
-	<TargetFrameworkProfile>WindowsPhone</TargetFrameworkProfile>
+    <AllowPartiallyTrustedCallers>false</AllowPartiallyTrustedCallers>
   </PropertyGroup>
   <PropertyGroup Condition="$(BuildFramework)=='SL4'">
     <BuildTargets>Silverlight 4.0</BuildTargets>
@@ -63,6 +61,7 @@
     <PackageName>$(ProjectName)-$(Version)-SL4</PackageName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <AllowPartiallyTrustedCallers>false</AllowPartiallyTrustedCallers>
   </PropertyGroup>
 
   <!-- 
@@ -136,7 +135,7 @@
   
   </Target>
   
-  <Target Name="Test" DependsOnTargets="Build;Copy" Condition="$(TargetFrameworkIdentifier) != 'Silverlight'">
+  <Target Name="Test" DependsOnTargets="Build;Copy" Condition="$(TargetFrameworkIdentifier) != 'Silverlight' And $(BuildFramework) != WP7">
 
     <CreateItem Include="$(TestPath)\Autofac.Test*dll" Exclude="$(TestPath)\Autofac.Tests.Scenarios.ScannedAssembly.dll">
       <Output ItemName="_testFiles" TaskParameter="Include"/>

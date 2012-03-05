@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Linq;
 using System.Reflection;
 
 namespace Autofac.Core.Activators.Reflection
@@ -37,8 +38,9 @@ namespace Autofac.Core.Activators.Reflection
 
             var instanceType = instance.GetType();
 
-            foreach (var property in instanceType.GetProperties(
-                BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty))
+            foreach (var property in instanceType
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(pi => pi.CanWrite))
             {
                 var propertyType = property.PropertyType;
 

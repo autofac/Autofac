@@ -68,7 +68,7 @@ namespace Autofac.Util
             if (propertyAccessor == null) throw new ArgumentNullException("propertyAccessor");
             var mex = propertyAccessor.Body as MemberExpression;
             if (mex == null ||
-                mex.Member.MemberType != MemberTypes.Property)
+                !(mex.Member is PropertyInfo))
                 throw new ArgumentException(string.Format(
                     ReflectionExtensionsResources.ExpressionNotPropertyAccessor,
                     propertyAccessor));

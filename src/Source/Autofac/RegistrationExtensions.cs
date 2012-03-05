@@ -438,7 +438,10 @@ namespace Autofac
                 this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> registration)
         {
             var attrType = typeof (TAttribute);
-            var metadataProperties = attrType.GetProperties(BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance);
+            var metadataProperties = attrType
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(pi => pi.CanRead);
+
             return registration.WithMetadata(t =>
             {
                 var attrs = t.GetCustomAttributes(true).OfType<TAttribute>().ToArray();

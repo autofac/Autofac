@@ -162,7 +162,8 @@ namespace Autofac.Core.Activators.Reflection
 
             var actualProps = instance
                 .GetType()
-                .GetProperties(BindingFlags.Public | BindingFlags.SetProperty | BindingFlags.Instance)
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(pi => pi.CanWrite)
                 .ToList();
 
             foreach (var prop in _configuredProperties)

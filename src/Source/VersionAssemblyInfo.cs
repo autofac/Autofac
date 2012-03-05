@@ -15,8 +15,6 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("0.0.0.0")]
 [assembly: AssemblyFileVersion("0.0.0.0")]
-[assembly: AssemblyConfiguration("Release built on 2012-01-10 01:09")]
+[assembly: AssemblyConfiguration("Release built on 2012-03-04 17:31")]
 
 
-[assembly: System.Security.SecurityTransparent]
-[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level2)]
