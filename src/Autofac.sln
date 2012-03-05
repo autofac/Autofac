@@ -7,7 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{3ACB9FCB-4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F6BC8907-80FA-491E-9404-29C401A17FD7}"
 	ProjectSection(SolutionItems) = preProject
-		Autofac.build = Autofac.build
 		Source\GlobalAssemblyInfo.cs = Source\GlobalAssemblyInfo.cs
 		go.cmd = go.cmd
 		Packages.build = Packages.build
