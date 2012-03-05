@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Security;
 using Autofac;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
@@ -48,6 +49,7 @@ namespace AutofacContrib.Multitenant
     /// </para>
     /// </remarks>
     /// <seealso cref="AutofacContrib.Multitenant.ConfigurationActionBuilder"/>
+    [SecurityCritical]
     public class MultitenantContainer : Disposable, IContainer
     {
         /// <summary>
@@ -93,6 +95,7 @@ namespace AutofacContrib.Multitenant
         /// </value>
         public IComponentRegistry ComponentRegistry
         {
+            [SecurityCritical]
             get { return this.GetCurrentTenantScope().ComponentRegistry; }
         }
 
@@ -110,6 +113,7 @@ namespace AutofacContrib.Multitenant
         /// </remarks>
         public IDisposer Disposer
         {
+            [SecurityCritical]
             get { return this.GetCurrentTenantScope().Disposer; }
         }
 
@@ -127,6 +131,7 @@ namespace AutofacContrib.Multitenant
         /// <seealso cref="M:Autofac.Builder.IRegistrationBuilder{T, U, V}.InstancePerMatchingLifetimeScope(System.Object)"/>
         public object Tag
         {
+            [SecurityCritical]
             get { return this.GetCurrentTenantScope().Tag; }
         }
 
@@ -135,7 +140,10 @@ namespace AutofacContrib.Multitenant
         /// </summary>
         public event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning
         {
+            [SecurityCritical]
             add { GetCurrentTenantScope().ChildLifetimeScopeBeginning += value; }
+
+            [SecurityCritical]
             remove { GetCurrentTenantScope().ChildLifetimeScopeBeginning -= value; }
         }
 
@@ -144,7 +152,10 @@ namespace AutofacContrib.Multitenant
         /// </summary>
         public event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding
         {
+            [SecurityCritical]
             add { GetCurrentTenantScope().CurrentScopeEnding += value; }
+
+            [SecurityCritical]
             remove { GetCurrentTenantScope().CurrentScopeEnding -= value; }
         }
 
@@ -153,7 +164,10 @@ namespace AutofacContrib.Multitenant
         /// </summary>
         public event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning
         {
+            [SecurityCritical]
             add { GetCurrentTenantScope().ResolveOperationBeginning += value; }
+
+            [SecurityCritical]
             remove { GetCurrentTenantScope().ResolveOperationBeginning -= value; }
         }
 
@@ -199,6 +213,7 @@ namespace AutofacContrib.Multitenant
         /// will be disposed along with it.
         /// </summary>
         /// <returns>A new lifetime scope.</returns>
+        [SecurityCritical]
         public ILifetimeScope BeginLifetimeScope()
         {
             return this.GetCurrentTenantScope().BeginLifetimeScope();
@@ -210,6 +225,7 @@ namespace AutofacContrib.Multitenant
         /// </summary>
         /// <param name="tag">The tag applied to the <see cref="T:Autofac.ILifetimeScope"/>.</param>
         /// <returns>A new lifetime scope.</returns>
+        [SecurityCritical]
         public ILifetimeScope BeginLifetimeScope(object tag)
         {
             return this.GetCurrentTenantScope().BeginLifetimeScope(tag);
@@ -222,7 +238,7 @@ namespace AutofacContrib.Multitenant
         /// </summary>
         /// <param name="configurationAction">
         /// Action on a <see cref="T:Autofac.ContainerBuilder"/>
-        /// that adds component registations visible only in the new scope.
+        /// that adds component registrations visible only in the new scope.
         /// </param>
         /// <returns>A new lifetime scope.</returns>
         /// <remarks>
@@ -230,6 +246,7 @@ namespace AutofacContrib.Multitenant
         /// registered in the root scope, i.e., SingleInstance() components will live as long
         /// as the root scope.
         /// </remarks>
+        [SecurityCritical]
         public ILifetimeScope BeginLifetimeScope(Action<ContainerBuilder> configurationAction)
         {
             return this.GetCurrentTenantScope().BeginLifetimeScope(configurationAction);
@@ -253,6 +270,7 @@ namespace AutofacContrib.Multitenant
         /// registered in the root scope, i.e., SingleInstance() components will live as long
         /// as the root scope.
         /// </remarks>
+        [SecurityCritical]
         public ILifetimeScope BeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction)
         {
             return this.GetCurrentTenantScope().BeginLifetimeScope(tag, configurationAction);
@@ -322,6 +340,7 @@ namespace AutofacContrib.Multitenant
         /// <see langword="true" /> to release both managed and unmanaged resources;
         /// <see langword="false" /> to release only unmanaged resources.
         /// </param>
+        [SecurityCritical]
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -411,6 +430,7 @@ namespace AutofacContrib.Multitenant
         /// if the component registered requires another component be available
         /// but that required component is not available, this exception will be thrown.
         /// </exception>
+        [SecurityCritical]
         public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
             return this.GetCurrentTenantScope().ResolveComponent(registration, parameters);

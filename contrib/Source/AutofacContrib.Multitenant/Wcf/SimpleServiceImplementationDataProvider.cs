@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Security;
 using Autofac.Core;
+using Autofac;
 
 namespace AutofacContrib.Multitenant.Wcf
 {
@@ -49,6 +51,7 @@ namespace AutofacContrib.Multitenant.Wcf
         /// <exception cref="System.ArgumentException">
         /// Thrown if <paramref name="value" /> is empty.
         /// </exception>
+        [SecuritySafeCritical]
         public virtual ServiceImplementationData GetServiceImplementationData(string value)
         {
             if (value == null)

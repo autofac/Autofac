@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Dispatcher;
@@ -18,7 +19,14 @@ namespace AutofacContrib.Multitenant.Wcf
         /// An <see cref="Autofac.IContainer"/> from which a lifetime scope will
         /// be spawned and service instances will be resolved.
         /// </value>
-        public IContainer Container { get; private set; }
+        public IContainer Container
+        {
+            [SecuritySafeCritical]
+            get;
+
+            [SecuritySafeCritical]
+            private set;
+        }
 
         /// <summary>
         /// Gets the service data for which instances will be resolved.
@@ -43,6 +51,7 @@ namespace AutofacContrib.Multitenant.Wcf
         /// Thrown if <paramref name="container" /> or <paramref name="serviceData" />
         /// is <see langword="null" />.
         /// </exception>
+        [SecuritySafeCritical]
         public AutofacInstanceProvider(IContainer container, ServiceImplementationData serviceData)
         {
             if (container == null)
@@ -78,6 +87,7 @@ namespace AutofacContrib.Multitenant.Wcf
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="instanceContext" /> is <see langword="null" />.
         /// </exception>
+        [SecuritySafeCritical]
         public object GetInstance(InstanceContext instanceContext, Message message)
         {
             if (instanceContext == null)
@@ -97,6 +107,7 @@ namespace AutofacContrib.Multitenant.Wcf
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="instanceContext" /> is <see langword="null" />.
         /// </exception>
+        [SecuritySafeCritical]
         public void ReleaseInstance(InstanceContext instanceContext, object instance)
         {
             if (instanceContext == null)
