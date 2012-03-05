@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security;
 using System.ServiceModel;
 using Autofac;
 using Autofac.Util;
@@ -20,7 +19,6 @@ namespace AutofacContrib.Multitenant.Wcf
     /// (which contains the resolved service instance) is also disposed.
     /// </para>
     /// </remarks>
-    [SecurityCritical]
     public class AutofacInstanceContext : Disposable, IExtension<InstanceContext>, IDisposable
     {
         /// <summary>
@@ -98,7 +96,6 @@ namespace AutofacContrib.Multitenant.Wcf
         /// <see langword="true" /> to release both managed and unmanaged
         /// resources; <see langword="false" /> to release only unmanaged resources.
         /// </param>
-        [SecurityCritical]
         protected override void Dispose(bool disposing)
         {
             if (disposing)
