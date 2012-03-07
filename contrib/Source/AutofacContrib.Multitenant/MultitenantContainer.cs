@@ -136,6 +136,7 @@ namespace AutofacContrib.Multitenant
         public event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning
         {
             add { GetCurrentTenantScope().ChildLifetimeScopeBeginning += value; }
+
             remove { GetCurrentTenantScope().ChildLifetimeScopeBeginning -= value; }
         }
 
@@ -145,6 +146,7 @@ namespace AutofacContrib.Multitenant
         public event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding
         {
             add { GetCurrentTenantScope().CurrentScopeEnding += value; }
+
             remove { GetCurrentTenantScope().CurrentScopeEnding -= value; }
         }
 
@@ -154,6 +156,7 @@ namespace AutofacContrib.Multitenant
         public event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning
         {
             add { GetCurrentTenantScope().ResolveOperationBeginning += value; }
+
             remove { GetCurrentTenantScope().ResolveOperationBeginning -= value; }
         }
 
@@ -222,7 +225,7 @@ namespace AutofacContrib.Multitenant
         /// </summary>
         /// <param name="configurationAction">
         /// Action on a <see cref="T:Autofac.ContainerBuilder"/>
-        /// that adds component registations visible only in the new scope.
+        /// that adds component registrations visible only in the new scope.
         /// </param>
         /// <returns>A new lifetime scope.</returns>
         /// <remarks>

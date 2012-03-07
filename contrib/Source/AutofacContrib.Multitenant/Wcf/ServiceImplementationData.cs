@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security;
 using Autofac;
 
 namespace AutofacContrib.Multitenant.Wcf
@@ -45,6 +46,13 @@ namespace AutofacContrib.Multitenant.Wcf
         /// given service. This is the object that the service host will use
         /// and should be assignable from the <see cref="AutofacContrib.Multitenant.Wcf.ServiceImplementationData.ServiceTypeToHost"/>.
         /// </value>
-        public Func<ILifetimeScope, object> ImplementationResolver { get; set; }
+        public Func<ILifetimeScope, object> ImplementationResolver
+        {
+            [SecuritySafeCritical]
+            get;
+
+            [SecuritySafeCritical]
+            set;
+        }
     }
 }

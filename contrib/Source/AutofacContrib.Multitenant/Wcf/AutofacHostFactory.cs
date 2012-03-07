@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Security;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using Autofac;
@@ -47,7 +48,14 @@ namespace AutofacContrib.Multitenant.Wcf
         /// An <see cref="Autofac.IContainer"/> that will be used to resolve service
         /// implementation instances.
         /// </value>
-        public static IContainer Container { get; set; }
+        public static IContainer Container
+        {
+            [SecuritySafeCritical]
+            get;
+
+            [SecuritySafeCritical]
+            set;
+        }
 
         /// <summary>
         /// Gets or sets an action that can be used to programmatically configure
