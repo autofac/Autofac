@@ -1,0 +1,2015 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Web.Http</name>
+  </assembly>
+  <members>
+    <member name="T:System.Web.Http.AcceptVerbsAttribute"></member>
+    <member name="M:System.Web.Http.AcceptVerbsAttribute.#ctor(System.String[])">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.AcceptVerbsAttribute" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.AcceptVerbsAttribute.HttpMethods">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.AcceptVerbsAttribute.IsValidHttpMethod(System.Net.Http.HttpMethod,System.Reflection.MethodInfo)"></member>
+    <member name="T:System.Web.Http.ActionNameAttribute"></member>
+    <member name="M:System.Web.Http.ActionNameAttribute.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ActionNameAttribute" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ActionNameAttribute.IsValidName(System.String,System.Reflection.MethodInfo)"></member>
+    <member name="P:System.Web.Http.ActionNameAttribute.Name">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.AllowAnonymousAttribute">
+      <summary> Actions and controllers marked with this attribute are skipped by <see cref="T:System.Web.Http.AuthorizeAttribute" /> during authorization. </summary>
+    </member>
+    <member name="M:System.Web.Http.AllowAnonymousAttribute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.AllowAnonymousAttribute" /> class.</summary>
+    </member>
+    <member name="T:System.Web.Http.ApiController"></member>
+    <member name="M:System.Web.Http.ApiController.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ApiController" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.ApiController.Configuration">
+      <summary> Gets the &lt;see name="HttpConfiguration" /&gt; of the current ApiController.  The setter is not intended to be used other than for unit testing purpose.  </summary>
+    </member>
+    <member name="M:System.Web.Http.ApiController.Dispose"></member>
+    <member name="M:System.Web.Http.ApiController.Dispose(System.Boolean)"></member>
+    <member name="M:System.Web.Http.ApiController.ExecuteAsync(System.Void,System.Net.Http.HttpResponseMessage)"></member>
+    <member name="M:System.Web.Http.ApiController.Initialize(System.Web.Http.Controllers.HttpControllerContext)"></member>
+    <member name="P:System.Web.Http.ApiController.ModelState">
+      <summary> Gets model state after the model binding process. This ModelState will be empty before model binding happens. Please do not populate this property other than for unit testing purpose. </summary>
+    </member>
+    <member name="P:System.Web.Http.ApiController.Request">
+      <summary> Gets the &lt;see name="HttpRequestMessage" /&gt; of the current ApiController.  The setter is not intended to be used other than for unit testing purpose.  </summary>
+    </member>
+    <member name="T:System.Web.Http.AuthorizeAttribute">
+      <summary> An authorization filter that verifies the request's <see cref="T:System.Security.Principal.IPrincipal" />. </summary>
+    </member>
+    <member name="M:System.Web.Http.AuthorizeAttribute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.AuthorizeAttribute" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.AuthorizeAttribute.HandleUnauthorizedRequest(System.Web.Http.Controllers.HttpActionContext)">
+      <summary> Processes requests that fail authorization. This default implementation creates a new response with the Unauthorized status code. Override this method to provide your own handling for unauthorized requests. </summary>
+      <param name="actionContext">The context.</param>
+    </member>
+    <member name="M:System.Web.Http.AuthorizeAttribute.OnAuthorization(System.Web.Http.Controllers.HttpActionContext)">
+      <summary> Called when an action is being authorized. This method uses the user <see cref="T:System.Security.Principal.IPrincipal" /> returned via <see cref="M:HttpRequestMessageExtensions.GetUserPrincipal" />. Authorization is denied if - the request is not associated with any user. - the user is not authenticated, - the user is authenticated but is not in the authorized group of <see cref="P:Users" /> (if defined), or if the user is not in any of the authorized <see cref="P:Roles" /> (if defined).  If authorization is denied then this method will invoke <see cref="M:HandleUnauthorizedRequest" /> to process the unauthorized request. </summary>
+      <param name="actionContext">The context.</param>
+      <exception cref="T:System.ArgumentNullException">The context parameter is null.</exception>
+    </member>
+    <member name="P:System.Web.Http.AuthorizeAttribute.Roles">
+      <summary> Gets or sets the authorized roles. </summary>
+      <returns> The roles string. </returns>
+    </member>
+    <member name="P:System.Web.Http.AuthorizeAttribute.TypeId">
+      <summary> Gets a unique identifier for this <see cref="T:System.Attribute" />. </summary>
+    </member>
+    <member name="P:System.Web.Http.AuthorizeAttribute.Users">
+      <summary> Gets or sets the authorized users. </summary>
+      <returns> The users string. </returns>
+    </member>
+    <member name="T:System.Web.Http.DependencyResolverExtensions">
+      <summary> This provides a centralized list of type-safe accessors describing where and how we use the dependency resolver. </summary>
+    </member>
+    <member name="M:System.Web.Http.DependencyResolverExtensions.GetActionInvoker(System.Web.Http.Services.DependencyResolver)"></member>
+    <member name="M:System.Web.Http.DependencyResolverExtensions.GetActionSelector(System.Web.Http.Services.DependencyResolver)"></member>
+    <member name="M:System.Web.Http.DependencyResolverExtensions.GetActionValueBinder(System.Web.Http.Services.DependencyResolver)"></member>
+    <member name="M:System.Web.Http.DependencyResolverExtensions.GetBuildManager(System.Web.Http.Services.DependencyResolver)"></member>
+    <member name="M:System.Web.Http.DependencyResolverExtensions.GetFilterProviders(System.Web.Http.Services.DependencyResolver)"></member>
+    <member name="M:System.Web.Http.DependencyResolverExtensions.GetFormatterSelector(System.Web.Http.Services.DependencyResolver)"></member>
+    <member name="M:System.Web.Http.DependencyResolverExtensions.GetHttpControllerActivator(System.Web.Http.Services.DependencyResolver)">
+      <summary> Controller activator is used to instantiate an <see cref="T:System.Web.Http.Controllers.IHttpController" />.  </summary>
+      <returns> An <see cref="T:System.Web.Http.Dispatcher.IHttpControllerActivator" /> instance or null if none are registered. </returns>
+    </member>
+    <member name="M:System.Web.Http.DependencyResolverExtensions.GetHttpControllerFactory(System.Web.Http.Services.DependencyResolver)">
+      <summary> Get a controller factory, which instantiates a string name into an <see cref="T:System.Web.Http.Controllers.IHttpController" />. This may be implemented by first getting the <see cref="T:System.Type" /> from the controller name, and  then using a <see cref="T:System.Web.Http.Dispatcher.IHttpControllerActivator" />. </summary>
+    </member>
+    <member name="M:System.Web.Http.DependencyResolverExtensions.GetLogger(System.Web.Http.Services.DependencyResolver)">
+      <summary> Gets a <see cref="T:System.Web.Http.Common.ILogger" /> service.  </summary>
+      <returns>An <see cref="T:System.Web.Http.Common.ILogger" /> instance or null if none found.</returns>
+    </member>
+    <member name="M:System.Web.Http.DependencyResolverExtensions.GetModelBinderProviders(System.Web.Http.Services.DependencyResolver)"></member>
+    <member name="M:System.Web.Http.DependencyResolverExtensions.GetModelMetadataProvider(System.Web.Http.Services.DependencyResolver)"></member>
+    <member name="M:System.Web.Http.DependencyResolverExtensions.GetModelValidatorProviders(System.Web.Http.Services.DependencyResolver)"></member>
+    <member name="M:System.Web.Http.DependencyResolverExtensions.GetRequestContentReadPolicy(System.Web.Http.Services.DependencyResolver)"></member>
+    <member name="M:System.Web.Http.DependencyResolverExtensions.GetValueProviderFactories(System.Web.Http.Services.DependencyResolver)">
+      <summary> Get ValueProviderFactories. The order of returned providers is the priority order that we search the factories.  </summary>
+    </member>
+    <member name="T:System.Web.Http.DictionaryExtensions">
+      <summary> Extension methods for &lt;see cref="T:System.Collections.Generic.IDictionary`2" /&gt;. </summary>
+    </member>
+    <member name="M:System.Web.Http.DictionaryExtensions.GetValue``1(System.Collections.Generic.IDictionary{System.String,System.Object},System.String)">
+      <summary> Gets the value of &lt;typeparamref name="T" /&gt; associated with the specified key or throw an <see cref="T:System.InvalidOperationException" />  if either the key is not present or the value is not of type &lt;typeparamref name="T" /&gt;.  </summary>
+      <param name="collection">The &lt;see cref="T:System.Collections.Generic.IDictionary`2" /&gt; instance where TValue is object.</param>
+      <param name="key">The key whose value to get.</param>
+      <typeparam name="T"></typeparam>
+    </member>
+    <member name="M:System.Web.Http.DictionaryExtensions.TryGetValue``1(System.Collections.Generic.IDictionary{System.String,System.Object},System.String,``0@)">
+      <summary> Gets the value of &lt;typeparamref name="T" /&gt; associated with the specified key or default value if either the key is not present or the value is not of type &lt;typeparamref name="T" /&gt;.  </summary>
+      <returns>true if key was found, value is non-null, and value is of type &lt;typeparamref name="T" /&gt;; otherwise false.</returns>
+      <param name="collection">The &lt;see cref="T:System.Collections.Generic.IDictionary`2" /&gt; instance where TValue is object.</param>
+      <param name="key">The key whose value to get.</param>
+      <param name="value">When this method returns, the value associated with the specified key, if the key is found; otherwise, the default value for the type of the value parameter.</param>
+      <typeparam name="T">The type of the value associated with the specified key.</typeparam>
+    </member>
+    <member name="T:System.Web.Http.FromBodyAttribute">
+      <summary> This attribute is used on action parameters to indicate they come only from the content body of the incoming <see cref="T:System.Net.Http.HttpRequestMessage" />. </summary>
+    </member>
+    <member name="M:System.Web.Http.FromBodyAttribute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.FromBodyAttribute" /> class.</summary>
+    </member>
+    <member name="T:System.Web.Http.FromUriAttribute">
+      <summary> This attribute is used on action parameters to indicate they come only from the <see cref="T:System.Uri" /> of the incoming <see cref="T:System.Net.Http.HttpRequestMessage" />. </summary>
+    </member>
+    <member name="M:System.Web.Http.FromUriAttribute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.FromUriAttribute" /> class.</summary>
+    </member>
+    <member name="T:System.Web.Http.HttpBindingBehavior"></member>
+    <member name="F:System.Web.Http.HttpBindingBehavior.Optional">
+      <summary />
+    </member>
+    <member name="F:System.Web.Http.HttpBindingBehavior.Never">
+      <summary />
+    </member>
+    <member name="F:System.Web.Http.HttpBindingBehavior.Required">
+      <summary />
+    </member>
+    <member name="T:System.Web.Http.HttpBindingBehaviorAttribute"></member>
+    <member name="M:System.Web.Http.HttpBindingBehaviorAttribute.#ctor(System.Web.Http.HttpBindingBehavior)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.HttpBindingBehaviorAttribute" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.HttpBindingBehaviorAttribute.Behavior">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.HttpBindingBehaviorAttribute.TypeId">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.HttpBindNeverAttribute"></member>
+    <member name="M:System.Web.Http.HttpBindNeverAttribute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.HttpBindNeverAttribute" /> class.</summary>
+    </member>
+    <member name="T:System.Web.Http.HttpBindRequiredAttribute"></member>
+    <member name="M:System.Web.Http.HttpBindRequiredAttribute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.HttpBindRequiredAttribute" /> class.</summary>
+    </member>
+    <member name="T:System.Web.Http.HttpConfiguration">
+      <summary> Configuration of <see cref="T:System.Web.Http.HttpServer" /> instances. </summary>
+    </member>
+    <member name="M:System.Web.Http.HttpConfiguration.#ctor">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.HttpConfiguration" /> class. </summary>
+    </member>
+    <member name="M:System.Web.Http.HttpConfiguration.#ctor(System.Web.Http.HttpRouteCollection)">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.HttpConfiguration" /> class. </summary>
+      <param name="routes">The <see cref="T:System.Web.Http.HttpRouteCollection" /> to associate with this instance.</param>
+    </member>
+    <member name="M:System.Web.Http.HttpConfiguration.Dispose"></member>
+    <member name="M:System.Web.Http.HttpConfiguration.Dispose(System.Boolean)"></member>
+    <member name="P:System.Web.Http.HttpConfiguration.Filters">
+      <summary> Gets the list of global filters. </summary>
+    </member>
+    <member name="P:System.Web.Http.HttpConfiguration.Formatters">
+      <summary> Gets the media type formatters. </summary>
+    </member>
+    <member name="P:System.Web.Http.HttpConfiguration.IncludeErrorDetailPolicy">
+      <summary> Gets or sets a value indicating whether error details should be included in error messages. </summary>
+    </member>
+    <member name="P:System.Web.Http.HttpConfiguration.MessageHandlers">
+      <summary> Gets an ordered list of <see cref="T:System.Net.Http.DelegatingHandler" /> instances to be invoked as an <see cref="T:System.Net.Http.HttpRequestMessage" /> travels up the stack and an <see cref="T:System.Net.Http.HttpResponseMessage" /> travels down in stack in return. The handlers are invoked in a bottom-up fashion in the incoming path and top-down in the outgoing  path. That is, the last entry is called first for an incoming request message but invoked last for an outgoing  response message. </summary>
+      <returns> The message handler collection. </returns>
+    </member>
+    <member name="P:System.Web.Http.HttpConfiguration.Properties">
+      <summary> Gets the properties associated with this instance. </summary>
+    </member>
+    <member name="P:System.Web.Http.HttpConfiguration.Routes">
+      <summary> Gets the <see cref="T:System.Web.Http.HttpRouteCollection" /> associated with this <see cref="T:System.Web.Http.HttpServer" /> instance. </summary>
+      <returns>
+        <see cref="T:System.Web.Http.HttpRouteCollection" />
+      </returns>
+    </member>
+    <member name="P:System.Web.Http.HttpConfiguration.ServiceResolver">
+      <summary> Gets the <see cref="T:System.Web.Http.Services.DependencyResolver" /> used to resolve services to use by this <see cref="T:System.Web.Http.HttpServer" />. </summary>
+      <returns>
+        <see cref="T:System.Web.Http.Services.DependencyResolver" />
+      </returns>
+    </member>
+    <member name="P:System.Web.Http.HttpConfiguration.VirtualPathRoot">
+      <summary> Gets the root virtual path. The <see cref="M:VirtualPathRoot" /> property always returns  "/" as the first character of the returned value. </summary>
+    </member>
+    <member name="T:System.Web.Http.HttpDeleteAttribute"></member>
+    <member name="M:System.Web.Http.HttpDeleteAttribute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.HttpDeleteAttribute" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.HttpDeleteAttribute.IsValidHttpMethod(System.Net.Http.HttpMethod,System.Reflection.MethodInfo)"></member>
+    <member name="T:System.Web.Http.HttpGetAttribute"></member>
+    <member name="M:System.Web.Http.HttpGetAttribute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.HttpGetAttribute" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.HttpGetAttribute.IsValidHttpMethod(System.Net.Http.HttpMethod,System.Reflection.MethodInfo)"></member>
+    <member name="T:System.Web.Http.HttpPostAttribute"></member>
+    <member name="M:System.Web.Http.HttpPostAttribute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.HttpPostAttribute" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.HttpPostAttribute.IsValidHttpMethod(System.Net.Http.HttpMethod,System.Reflection.MethodInfo)"></member>
+    <member name="T:System.Web.Http.HttpPutAttribute"></member>
+    <member name="M:System.Web.Http.HttpPutAttribute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.HttpPutAttribute" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.HttpPutAttribute.IsValidHttpMethod(System.Net.Http.HttpMethod,System.Reflection.MethodInfo)"></member>
+    <member name="T:System.Web.Http.HttpRequestMessageExtensions">
+      <summary> Provides extension methods for the <see cref="T:System.Net.Http.HttpRequestMessage" /> class. </summary>
+    </member>
+    <member name="M:System.Web.Http.HttpRequestMessageExtensions.GetConfiguration(System.Net.Http.HttpRequestMessage)">
+      <summary> Gets the <see cref="T:System.Web.Http.HttpConfiguration" /> for the given request. </summary>
+      <returns>The <see cref="T:System.Web.Http.HttpConfiguration" />.</returns>
+      <param name="request">The HTTP request.</param>
+    </member>
+    <member name="M:System.Web.Http.HttpRequestMessageExtensions.GetRouteData(System.Net.Http.HttpRequestMessage)">
+      <summary> Gets the <see cref="T:System.Web.Http.Routing.IHttpRouteData" /> for the given request or null if not available. </summary>
+      <returns>The <see cref="T:System.Web.Http.Routing.IHttpRouteData" /> or null.</returns>
+      <param name="request">The HTTP request.</param>
+    </member>
+    <member name="M:System.Web.Http.HttpRequestMessageExtensions.GetSynchronizationContext(System.Net.Http.HttpRequestMessage)">
+      <summary> Gets the <see cref="T:System.Threading.SynchronizationContext" /> for the given request or null if not available. </summary>
+      <returns>The <see cref="T:System.Threading.SynchronizationContext" /> or null.</returns>
+      <param name="request">The HTTP request.</param>
+    </member>
+    <member name="M:System.Web.Http.HttpRequestMessageExtensions.GetUserPrincipal(System.Net.Http.HttpRequestMessage)">
+      <summary> Gets the <see cref="T:System.Security.Principal.IPrincipal" /> for the given request or null if not available. </summary>
+      <returns>The <see cref="T:System.Security.Principal.IPrincipal" /> or null.</returns>
+      <param name="request">The HTTP request.</param>
+    </member>
+    <member name="T:System.Web.Http.HttpResponseException">
+      <summary> An exception that allows for a given <see cref="T:System.Net.Http.HttpResponseMessage" />  to be returned to the client. </summary>
+    </member>
+    <member name="M:System.Web.Http.HttpResponseException.#ctor">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.HttpResponseException" /> class. </summary>
+    </member>
+    <member name="M:System.Web.Http.HttpResponseException.#ctor(System.Net.Http.HttpResponseMessage)">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.HttpResponseException" /> class. </summary>
+      <param name="response">The response message.</param>
+    </member>
+    <member name="M:System.Web.Http.HttpResponseException.#ctor(System.Net.HttpStatusCode)">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.HttpResponseException" /> class. </summary>
+      <param name="statusCode">The status code to use with the <see cref="T:System.Net.Http.HttpResponseMessage" />.</param>
+    </member>
+    <member name="M:System.Web.Http.HttpResponseException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.HttpResponseException" /> class. </summary>
+      <param name="serializationInfo">The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+      <param name="streamingContext">The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+    </member>
+    <member name="M:System.Web.Http.HttpResponseException.#ctor(System.String)">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.HttpResponseException" /> class. </summary>
+      <param name="message">The message that describes the error.</param>
+    </member>
+    <member name="M:System.Web.Http.HttpResponseException.#ctor(System.String,System.Exception)">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.HttpResponseException" /> class. </summary>
+      <param name="message">The message that describes the error.</param>
+      <param name="innerException">The exception that is the cause of the current exception, or a null reference if no inner exception is specified.</param>
+    </member>
+    <member name="M:System.Web.Http.HttpResponseException.#ctor(System.String,System.Net.HttpStatusCode)">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.HttpResponseException" /> class. </summary>
+      <param name="message">The message that describes the error.</param>
+      <param name="statusCode">The status code to use with the <see cref="T:System.Net.Http.HttpResponseMessage" />.</param>
+    </member>
+    <member name="P:System.Web.Http.HttpResponseException.Response">
+      <summary> Gets the <see cref="T:System.Net.Http.HttpResponseMessage" /> to return to the client. </summary>
+    </member>
+    <member name="T:System.Web.Http.HttpResponseMessageExtensions"></member>
+    <member name="M:System.Web.Http.HttpResponseMessageExtensions.TryGetObjectValue``1(System.Net.Http.HttpResponseMessage,``0@)">
+      <typeparam name="T"></typeparam>
+    </member>
+    <member name="M:System.Web.Http.HttpResponseMessageExtensions.TrySetObjectValue``1(System.Net.Http.HttpResponseMessage,``0)">
+      <typeparam name="T"></typeparam>
+    </member>
+    <member name="T:System.Web.Http.HttpRouteCollection"></member>
+    <member name="M:System.Web.Http.HttpRouteCollection.#ctor">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.HttpRouteCollection" /> class with a <see cref="M:VirtualPathRoot" /> value of "/". </summary>
+    </member>
+    <member name="M:System.Web.Http.HttpRouteCollection.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.HttpRouteCollection" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.HttpRouteCollection.Add(System.String,System.Web.Http.Routing.IHttpRoute)"></member>
+    <member name="M:System.Web.Http.HttpRouteCollection.Clear"></member>
+    <member name="M:System.Web.Http.HttpRouteCollection.Contains(System.Web.Http.Routing.IHttpRoute)"></member>
+    <member name="M:System.Web.Http.HttpRouteCollection.ContainsKey(System.String)"></member>
+    <member name="M:System.Web.Http.HttpRouteCollection.CopyTo(System.Collections.Generic.KeyValuePair{System.String,System.Web.Http.Routing.IHttpRoute}[],System.Int32)"></member>
+    <member name="M:System.Web.Http.HttpRouteCollection.CopyTo(System.Web.Http.Routing.IHttpRoute[],System.Int32)"></member>
+    <member name="P:System.Web.Http.HttpRouteCollection.Count">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.HttpRouteCollection.CreateRoute(System.String,System.Collections.Generic.IDictionary{System.String,System.Object},System.Collections.Generic.IDictionary{System.String,System.Object},System.Collections.Generic.IDictionary{System.String,System.Object},System.Collections.Generic.IDictionary{System.String,System.Object})"></member>
+    <member name="M:System.Web.Http.HttpRouteCollection.CreateRoute(System.String,System.Object,System.Object,System.String[],System.Collections.Generic.IDictionary{System.String,System.Object})"></member>
+    <member name="M:System.Web.Http.HttpRouteCollection.Dispose"></member>
+    <member name="M:System.Web.Http.HttpRouteCollection.Dispose(System.Boolean)"></member>
+    <member name="M:System.Web.Http.HttpRouteCollection.GetEnumerator"></member>
+    <member name="M:System.Web.Http.HttpRouteCollection.GetRouteData(System.Net.Http.HttpRequestMessage)"></member>
+    <member name="M:System.Web.Http.HttpRouteCollection.GetVirtualPath(System.Web.Http.Controllers.HttpControllerContext,System.String,System.Collections.Generic.IDictionary{System.String,System.Object})"></member>
+    <member name="M:System.Web.Http.HttpRouteCollection.Insert(System.Int32,System.String,System.Web.Http.Routing.IHttpRoute)"></member>
+    <member name="P:System.Web.Http.HttpRouteCollection.IsReadOnly">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.HttpRouteCollection.Item(System.Int32)">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.HttpRouteCollection.Item(System.String)">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.HttpRouteCollection.OnGetEnumerator"></member>
+    <member name="M:System.Web.Http.HttpRouteCollection.Remove(System.String)"></member>
+    <member name="M:System.Web.Http.HttpRouteCollection.System#Collections#Generic#ICollection{T}#Add(System.Web.Http.Routing.IHttpRoute)"></member>
+    <member name="M:System.Web.Http.HttpRouteCollection.System#Collections#Generic#ICollection{T}#Remove(System.Web.Http.Routing.IHttpRoute)"></member>
+    <member name="M:System.Web.Http.HttpRouteCollection.System#Collections#IEnumerable#GetEnumerator"></member>
+    <member name="M:System.Web.Http.HttpRouteCollection.TryGetValue(System.String,System.Web.Http.Routing.IHttpRoute@)"></member>
+    <member name="P:System.Web.Http.HttpRouteCollection.VirtualPathRoot">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.HttpRouteCollectionExtensions">
+      <summary> Extension methods for <see cref="T:System.Web.Http.HttpRouteCollection" /></summary>
+    </member>
+    <member name="M:System.Web.Http.HttpRouteCollectionExtensions.MapHttpRoute(System.Web.Http.HttpRouteCollection,System.String,System.String,System.Object)">
+      <summary> Maps the specified route template and sets default constraints. </summary>
+      <returns>A reference to the mapped route.</returns>
+      <param name="routes">A collection of routes for the application.</param>
+      <param name="name">The name of the route to map.</param>
+      <param name="routeTemplate">The route template for the route.</param>
+      <param name="defaults">An object that contains default route values.</param>
+    </member>
+    <member name="M:System.Web.Http.HttpRouteCollectionExtensions.MapHttpRoute(System.Web.Http.HttpRouteCollection,System.String,System.String,System.Object,System.Object)">
+      <summary> Maps the specified route template and sets default route values and constraints. </summary>
+      <returns>A reference to the mapped route.</returns>
+      <param name="routes">A collection of routes for the application.</param>
+      <param name="name">The name of the route to map.</param>
+      <param name="routeTemplate">The route template for the route.</param>
+      <param name="defaults">An object that contains default route values.</param>
+      <param name="constraints">A set of expressions that specify values for routeTemplate.</param>
+    </member>
+    <member name="T:System.Web.Http.HttpServer">
+      <summary> Defines an implementation of an <see cref="T:System.Net.Http.HttpMessageHandler" /> which dispatches an  incoming <see cref="T:System.Net.Http.HttpRequestMessage" /> and creates an <see cref="T:System.Net.Http.HttpResponseMessage" /> as a result. </summary>
+    </member>
+    <member name="M:System.Web.Http.HttpServer.#ctor">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.HttpServer" /> class with default configuration and dispatcher. </summary>
+    </member>
+    <member name="M:System.Web.Http.HttpServer.#ctor(System.Web.Http.Dispatcher.HttpControllerDispatcher)">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.HttpServer" /> class with default dispatcher. </summary>
+      <param name="dispatcher">Http dispatcher responsible for handling incoming requests.</param>
+    </member>
+    <member name="M:System.Web.Http.HttpServer.#ctor(System.Web.Http.HttpConfiguration)">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.HttpServer" /> class with default dispatcher. </summary>
+      <param name="configuration">The <see cref="T:System.Web.Http.HttpConfiguration" /> used to configure this <see cref="T:System.Web.Http.HttpServer" /> instance.</param>
+    </member>
+    <member name="M:System.Web.Http.HttpServer.#ctor(System.Web.Http.HttpConfiguration,System.Net.Http.HttpMessageHandler)">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.HttpServer" /> class. </summary>
+      <param name="configuration">The <see cref="T:System.Web.Http.HttpConfiguration" /> used to configure this <see cref="T:System.Web.Http.HttpServer" /> instance.</param>
+      <param name="dispatcher">Http dispatcher responsible for handling incoming requests.</param>
+    </member>
+    <member name="P:System.Web.Http.HttpServer.Configuration">
+      <summary> Gets the <see cref="T:System.Web.Http.HttpConfiguration" />. </summary>
+    </member>
+    <member name="P:System.Web.Http.HttpServer.Dispatcher">
+      <summary> Gets the dispatcher. </summary>
+    </member>
+    <member name="M:System.Web.Http.HttpServer.Dispose(System.Boolean)">
+      <summary> Releases unmanaged and - optionally - managed resources </summary>
+      <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged SRResources.</param>
+    </member>
+    <member name="M:System.Web.Http.HttpServer.SendAsync(System.Void,System.Net.Http.HttpResponseMessage)"></member>
+    <member name="M:System.Web.Http.HttpServer.SubmitRequestAsync(System.Void,System.Net.Http.HttpResponseMessage)"></member>
+    <member name="T:System.Web.Http.IncludeErrorDetailPolicy">
+      <summary> Enum to indicate whether error details, such as exception messages and stack traces, should be included in error messages. </summary>
+    </member>
+    <member name="F:System.Web.Http.IncludeErrorDetailPolicy.LocalOnly">
+      <summary> Only include error details when responding to a local request. </summary>
+    </member>
+    <member name="F:System.Web.Http.IncludeErrorDetailPolicy.Always">
+      <summary> Always include error details. </summary>
+    </member>
+    <member name="F:System.Web.Http.IncludeErrorDetailPolicy.Never">
+      <summary> Never include error details. </summary>
+    </member>
+    <member name="T:System.Web.Http.NonActionAttribute"></member>
+    <member name="M:System.Web.Http.NonActionAttribute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.NonActionAttribute" /> class.</summary>
+    </member>
+    <member name="T:System.Web.Http.ResultLimitAttribute">
+      <summary> This result filter indicates that the results returned from an action should be limited to the specified ResultLimit. </summary>
+    </member>
+    <member name="M:System.Web.Http.ResultLimitAttribute.#ctor(System.Int32)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ResultLimitAttribute" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ResultLimitAttribute.OnActionExecuted(System.Web.Http.Filters.HttpActionExecutedContext)"></member>
+    <member name="M:System.Web.Http.ResultLimitAttribute.OnActionExecuting(System.Web.Http.Controllers.HttpActionContext)"></member>
+    <member name="P:System.Web.Http.ResultLimitAttribute.ResultLimit">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Controllers.ApiControllerActionInvoker"></member>
+    <member name="M:System.Web.Http.Controllers.ApiControllerActionInvoker.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Controllers.ApiControllerActionInvoker" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Controllers.ApiControllerActionInvoker.InvokeActionAsync(System.Void,System.Net.Http.HttpResponseMessage)"></member>
+    <member name="T:System.Web.Http.Controllers.ApiControllerActionSelector">
+      <summary> Reflection based action selector.  We optimize for the case where we have an <see cref="T:System.Web.Http.Controllers.ApiControllerActionSelector" /> instance per <see cref="T:System.Web.Http.Controllers.HttpControllerDescriptor" /> instance but can support cases where there are many <see cref="T:System.Web.Http.Controllers.HttpControllerDescriptor" /> instances for one  <see cref="T:System.Web.Http.Controllers.ApiControllerActionSelector" /> as well. In the latter case the lookup is slightly slower because it goes through the <see cref="P:HttpControllerDescriptor.Properties" /> dictionary. </summary>
+    </member>
+    <member name="M:System.Web.Http.Controllers.ApiControllerActionSelector.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Controllers.ApiControllerActionSelector" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Controllers.ApiControllerActionSelector.SelectAction(System.Web.Http.Controllers.HttpControllerContext)"></member>
+    <member name="T:System.Web.Http.Controllers.HttpActionContext">
+      <summary> Contains information for the executing action. </summary>
+    </member>
+    <member name="M:System.Web.Http.Controllers.HttpActionContext.#ctor">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.Controllers.HttpActionContext" /> class. </summary>
+    </member>
+    <member name="M:System.Web.Http.Controllers.HttpActionContext.#ctor(System.Web.Http.Controllers.HttpControllerContext,System.Web.Http.Controllers.HttpActionDescriptor)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Controllers.HttpActionContext" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpActionContext.ActionArguments">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpActionContext.ActionDescriptor">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpActionContext.ControllerContext">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpActionContext.ModelState">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpActionContext.Request">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpActionContext.RequestContentKeyValueModel">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpActionContext.Response">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Controllers.HttpActionContextExtensions">
+      <summary> Extension methods for <see cref="T:System.Web.Http.Controllers.HttpActionContext" />. </summary>
+    </member>
+    <member name="M:System.Web.Http.Controllers.HttpActionContextExtensions.GetBinder(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)">
+      <summary> Gets the <see cref="T:System.Web.Http.ModelBinding.ModelBindingContext" /> for this <see cref="T:System.Web.Http.Controllers.HttpActionContext" />. </summary>
+      <returns>The <see cref="T:System.Web.Http.ModelBinding.ModelBindingContext" />.</returns>
+      <param name="actionContext">The execution context.</param>
+      <param name="bindingContext">The binding context.</param>
+    </member>
+    <member name="M:System.Web.Http.Controllers.HttpActionContextExtensions.GetMetadataProvider(System.Web.Http.Controllers.HttpActionContext)">
+      <summary> Gets the <see cref="T:System.Web.Http.Metadata.ModelMetadataProvider" /> instance for a given <see cref="T:System.Web.Http.Controllers.HttpActionContext" />. </summary>
+      <returns>An <see cref="T:System.Web.Http.Metadata.ModelMetadataProvider" /> instance.</returns>
+      <param name="actionContext">The context.</param>
+    </member>
+    <member name="M:System.Web.Http.Controllers.HttpActionContextExtensions.GetValidatorProviders(System.Web.Http.Controllers.HttpActionContext)">
+      <summary> Gets the collection of registered <see cref="T:System.Web.Http.Validation.ModelValidatorProvider" /> instances. </summary>
+      <returns>A collection of <see cref="T:System.Web.Http.Validation.ModelValidatorProvider" /> instances.</returns>
+      <param name="actionContext">The context.</param>
+    </member>
+    <member name="M:System.Web.Http.Controllers.HttpActionContextExtensions.GetValidators(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.Metadata.ModelMetadata)">
+      <summary> Gets the collection of registered <see cref="T:System.Web.Http.Validation.ModelValidator" /> instances. </summary>
+      <returns>A collection of registered <see cref="T:System.Web.Http.Validation.ModelValidator" /> instances.</returns>
+      <param name="actionContext">The context.</param>
+      <param name="metadata">The metadata.</param>
+    </member>
+    <member name="M:System.Web.Http.Controllers.HttpActionContextExtensions.TryGetBinder(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext,System.Web.Http.ModelBinding.IModelBinder@)">
+      <summary> Gets the <see cref="T:System.Web.Http.ModelBinding.ModelBindingContext" /> for this <see cref="T:System.Web.Http.Controllers.HttpActionContext" />. </summary>
+      <returns>true if <see cref="T:System.Web.Http.ModelBinding.ModelBindingContext" /> was present; otherwise false.</returns>
+      <param name="actionContext">The action context.</param>
+      <param name="bindingContext">The binding context.</param>
+      <param name="binder">When this method returns, the value associated with the specified binding context, if the context is found; otherwise, the default value for the type of the value parameter.</param>
+    </member>
+    <member name="T:System.Web.Http.Controllers.HttpActionDescriptor"></member>
+    <member name="M:System.Web.Http.Controllers.HttpActionDescriptor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Controllers.HttpActionDescriptor" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Controllers.HttpActionDescriptor.#ctor(System.Web.Http.Controllers.HttpControllerDescriptor)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Controllers.HttpActionDescriptor" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpActionDescriptor.ActionName">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpActionDescriptor.Configuration">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpActionDescriptor.ControllerDescriptor">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.Controllers.HttpActionDescriptor.Execute(System.Web.Http.Controllers.HttpControllerContext,System.Collections.Generic.IDictionary{System.String,System.Object})">
+      <summary> Executes the described action. </summary>
+      <returns>The return value of the action.</returns>
+      <param name="controllerContext">The context.</param>
+      <param name="arguments">The arguments.</param>
+    </member>
+    <member name="M:System.Web.Http.Controllers.HttpActionDescriptor.GetCustomAttributes``1">
+      <typeparam name="T"></typeparam>
+    </member>
+    <member name="M:System.Web.Http.Controllers.HttpActionDescriptor.GetFilterPipeline">
+      <summary> Returns the filters for the given configuration and action. The filter collection is ordered according to the FilterScope (in order from least specific to most specific: First, Global, Controller, Action).  If a given filter disallows duplicates (AllowMultiple=False) then the most specific filter is maintained and less specific filters get removed (e.g. if there is a Authorize filter with a Controller scope and another one with an Action scope then the one with the Action scope will be maintained and the one with the Controller scope will be discarded). </summary>
+      <returns>A &lt;see cref="T:System.Collections.ObjectModel.Collection`1" /&gt; of all filters associated with this <see cref="T:System.Web.Http.Controllers.HttpActionDescriptor" />.</returns>
+    </member>
+    <member name="M:System.Web.Http.Controllers.HttpActionDescriptor.GetFilters"></member>
+    <member name="M:System.Web.Http.Controllers.HttpActionDescriptor.GetParameters"></member>
+    <member name="P:System.Web.Http.Controllers.HttpActionDescriptor.Properties">
+      <summary> Gets the properties associated with this instance. </summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpActionDescriptor.ReturnType">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Controllers.HttpControllerConfigurationAttribute">
+      <summary> Provides a mechanism for a <see cref="T:System.Web.Http.Controllers.IHttpController" /> implementation to indicate  what kind of <see cref="T:System.Web.Http.Dispatcher.IHttpControllerActivator" />, <see cref="T:System.Web.Http.Controllers.IHttpActionSelector" />, and <see cref="T:System.Web.Http.Controllers.IHttpActionInvoker" /> to use for that controller. The types are  first looked up in the <see cref="T:System.Web.Http.Services.DependencyResolver" /> and if not found there then created directly. </summary>
+    </member>
+    <member name="M:System.Web.Http.Controllers.HttpControllerConfigurationAttribute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Controllers.HttpControllerConfigurationAttribute" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpControllerConfigurationAttribute.HttpActionInvoker">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpControllerConfigurationAttribute.HttpActionSelector">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpControllerConfigurationAttribute.HttpControllerActivator">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Controllers.HttpControllerContext">
+      <summary> Contains information for a single HTTP operation. </summary>
+    </member>
+    <member name="M:System.Web.Http.Controllers.HttpControllerContext.#ctor">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.Controllers.HttpControllerContext" /> class. </summary>
+    </member>
+    <member name="M:System.Web.Http.Controllers.HttpControllerContext.#ctor(System.Web.Http.HttpConfiguration,System.Web.Http.Routing.IHttpRouteData,System.Net.Http.HttpRequestMessage)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Controllers.HttpControllerContext" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpControllerContext.Configuration">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpControllerContext.Controller">
+      <summary> Gets or sets the HTTP controller. </summary>
+      <returns> The HTTP controller. </returns>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpControllerContext.ControllerDescriptor">
+      <summary> Gets or sets the controller descriptor. </summary>
+      <returns> The controller descriptor. </returns>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpControllerContext.Request">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpControllerContext.RouteData">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Controllers.HttpControllerDescriptor"></member>
+    <member name="M:System.Web.Http.Controllers.HttpControllerDescriptor.#ctor">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.Controllers.HttpControllerDescriptor" /> class. </summary>
+    </member>
+    <member name="M:System.Web.Http.Controllers.HttpControllerDescriptor.#ctor(System.Web.Http.HttpConfiguration,System.String,System.Type)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Controllers.HttpControllerDescriptor" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpControllerDescriptor.Configuration">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpControllerDescriptor.ControllerName">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpControllerDescriptor.ControllerType">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.Controllers.HttpControllerDescriptor.GetCustomAttributes``1">
+      <typeparam name="T"></typeparam>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpControllerDescriptor.HttpActionInvoker">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpControllerDescriptor.HttpActionSelector">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpControllerDescriptor.HttpControllerActivator">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpControllerDescriptor.Properties">
+      <summary> Gets the properties associated with this instance. </summary>
+    </member>
+    <member name="T:System.Web.Http.Controllers.HttpParameterDescriptor"></member>
+    <member name="M:System.Web.Http.Controllers.HttpParameterDescriptor.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Controllers.HttpParameterDescriptor" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Controllers.HttpParameterDescriptor.#ctor(System.Web.Http.Controllers.HttpActionDescriptor)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Controllers.HttpParameterDescriptor" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpParameterDescriptor.ActionDescriptor">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpParameterDescriptor.Configuration">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpParameterDescriptor.DefaultValue">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.Controllers.HttpParameterDescriptor.GetCustomAttributes(System.Boolean)"></member>
+    <member name="M:System.Web.Http.Controllers.HttpParameterDescriptor.GetCustomAttributes(System.Type,System.Boolean)"></member>
+    <member name="M:System.Web.Http.Controllers.HttpParameterDescriptor.IsDefined(System.Type,System.Boolean)"></member>
+    <member name="P:System.Web.Http.Controllers.HttpParameterDescriptor.ParameterName">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpParameterDescriptor.ParameterType">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpParameterDescriptor.Prefix">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpParameterDescriptor.Properties">
+      <summary> Gets the properties associated with this instance. </summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.HttpParameterDescriptor.ValuePrefixAttribute">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Controllers.IActionValueBinder"></member>
+    <member name="M:System.Web.Http.Controllers.IActionValueBinder.BindValuesAsync(System.Web.Http.Controllers.HttpActionContext,System.Threading.CancellationToken)"></member>
+    <member name="T:System.Web.Http.Controllers.IHttpActionInvoker"></member>
+    <member name="M:System.Web.Http.Controllers.IHttpActionInvoker.InvokeActionAsync(System.Void,System.Net.Http.HttpResponseMessage)"></member>
+    <member name="T:System.Web.Http.Controllers.IHttpActionSelector"></member>
+    <member name="M:System.Web.Http.Controllers.IHttpActionSelector.SelectAction(System.Web.Http.Controllers.HttpControllerContext)"></member>
+    <member name="T:System.Web.Http.Controllers.IHttpController"></member>
+    <member name="M:System.Web.Http.Controllers.IHttpController.ExecuteAsync(System.Void,System.Net.Http.HttpResponseMessage)"></member>
+    <member name="T:System.Web.Http.Controllers.ReflectedHttpActionDescriptor"></member>
+    <member name="M:System.Web.Http.Controllers.ReflectedHttpActionDescriptor.#ctor">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.Controllers.ReflectedHttpActionDescriptor" /> class. </summary>
+    </member>
+    <member name="M:System.Web.Http.Controllers.ReflectedHttpActionDescriptor.#ctor(System.Web.Http.Controllers.HttpControllerDescriptor,System.Reflection.MethodInfo)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Controllers.ReflectedHttpActionDescriptor" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ActionName">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.Controllers.ReflectedHttpActionDescriptor.Execute(System.Web.Http.Controllers.HttpControllerContext,System.Collections.Generic.IDictionary{System.String,System.Object})"></member>
+    <member name="M:System.Web.Http.Controllers.ReflectedHttpActionDescriptor.GetCustomAttributes``1">
+      <typeparam name="T"></typeparam>
+    </member>
+    <member name="M:System.Web.Http.Controllers.ReflectedHttpActionDescriptor.GetFilters"></member>
+    <member name="M:System.Web.Http.Controllers.ReflectedHttpActionDescriptor.GetParameters"></member>
+    <member name="P:System.Web.Http.Controllers.ReflectedHttpActionDescriptor.MethodInfo">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.ReflectedHttpActionDescriptor.ReturnType">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Controllers.ReflectedHttpParameterDescriptor"></member>
+    <member name="M:System.Web.Http.Controllers.ReflectedHttpParameterDescriptor.#ctor">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.Controllers.ReflectedHttpParameterDescriptor" /> class. </summary>
+    </member>
+    <member name="M:System.Web.Http.Controllers.ReflectedHttpParameterDescriptor.#ctor(System.Web.Http.Controllers.HttpActionDescriptor,System.Reflection.ParameterInfo)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Controllers.ReflectedHttpParameterDescriptor" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.ReflectedHttpParameterDescriptor.DefaultValue">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.Controllers.ReflectedHttpParameterDescriptor.GetCustomAttributes(System.Boolean)"></member>
+    <member name="M:System.Web.Http.Controllers.ReflectedHttpParameterDescriptor.GetCustomAttributes(System.Type,System.Boolean)"></member>
+    <member name="M:System.Web.Http.Controllers.ReflectedHttpParameterDescriptor.IsDefined(System.Type,System.Boolean)"></member>
+    <member name="P:System.Web.Http.Controllers.ReflectedHttpParameterDescriptor.ParameterInfo">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.ReflectedHttpParameterDescriptor.ParameterName">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Controllers.ReflectedHttpParameterDescriptor.ParameterType">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Dispatcher.DefaultHttpControllerActivator">
+      <summary> Default implementation of an <see cref="T:System.Web.Http.Dispatcher.IHttpControllerActivator" />. A different implementation can be registered via the <see cref="T:System.Web.Http.Services.DependencyResolver" />.    We optimize for the case where we have an <see cref="T:System.Web.Http.Controllers.ApiControllerActionInvoker" />  instance per <see cref="T:System.Web.Http.Controllers.HttpControllerDescriptor" /> instance but can support cases where there are many <see cref="T:System.Web.Http.Controllers.HttpControllerDescriptor" /> instances for one <see cref="T:System.Web.Http.Controllers.ApiControllerActionInvoker" />  as well. In the latter case the lookup is slightly slower because it goes through the  <see cref="P:HttpControllerDescriptor.Properties" /> dictionary. </summary>
+    </member>
+    <member name="M:System.Web.Http.Dispatcher.DefaultHttpControllerActivator.#ctor(System.Web.Http.HttpConfiguration)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Dispatcher.DefaultHttpControllerActivator" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Dispatcher.DefaultHttpControllerActivator.Create(System.Web.Http.Controllers.HttpControllerContext,System.Type)">
+      <summary> Creates the <see cref="T:System.Web.Http.Controllers.IHttpController" /> specified by controllerType using the given controllerContext</summary>
+      <returns>An instance of type controllerType.</returns>
+      <param name="controllerContext">The controller context.</param>
+      <param name="controllerType">Type of the controller.</param>
+    </member>
+    <member name="T:System.Web.Http.Dispatcher.DefaultHttpControllerFactory">
+      <summary> Default <see cref="T:System.Web.Http.Dispatcher.IHttpControllerFactory" /> instance creating new <see cref="T:System.Web.Http.Controllers.IHttpController" /> instances. A different implementation can be registered via the <see cref="T:System.Web.Http.Services.DependencyResolver" />.    </summary>
+    </member>
+    <member name="M:System.Web.Http.Dispatcher.DefaultHttpControllerFactory.#ctor(System.Web.Http.HttpConfiguration)">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.Dispatcher.DefaultHttpControllerFactory" /> class. </summary>
+      <param name="configuration">The configuration.</param>
+    </member>
+    <member name="F:System.Web.Http.Dispatcher.DefaultHttpControllerFactory.ControllerSuffix"></member>
+    <member name="M:System.Web.Http.Dispatcher.DefaultHttpControllerFactory.CreateController(System.Web.Http.Controllers.HttpControllerContext,System.String)"></member>
+    <member name="M:System.Web.Http.Dispatcher.DefaultHttpControllerFactory.ReleaseController(System.Web.Http.Controllers.IHttpController)"></member>
+    <member name="T:System.Web.Http.Dispatcher.ExceptionSurrogate"></member>
+    <member name="P:System.Web.Http.Dispatcher.ExceptionSurrogate.ExceptionType">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Dispatcher.ExceptionSurrogate.InnerException">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Dispatcher.ExceptionSurrogate.Message">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Dispatcher.ExceptionSurrogate.StackTrace">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Dispatcher.HttpControllerDispatcher">
+      <summary> Dispatches an incoming <see cref="T:System.Net.Http.HttpRequestMessage" /> to an <see cref="T:System.Web.Http.Controllers.IHttpController" /> implementation for processing. </summary>
+    </member>
+    <member name="M:System.Web.Http.Dispatcher.HttpControllerDispatcher.#ctor">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.Dispatcher.HttpControllerDispatcher" /> class using default <see cref="T:System.Web.Http.HttpConfiguration" />. </summary>
+    </member>
+    <member name="M:System.Web.Http.Dispatcher.HttpControllerDispatcher.#ctor(System.Web.Http.HttpConfiguration)">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.Dispatcher.HttpControllerDispatcher" /> class. </summary>
+    </member>
+    <member name="P:System.Web.Http.Dispatcher.HttpControllerDispatcher.Configuration">
+      <summary> Gets the <see cref="T:System.Web.Http.HttpConfiguration" />. </summary>
+    </member>
+    <member name="M:System.Web.Http.Dispatcher.HttpControllerDispatcher.Dispose(System.Boolean)">
+      <summary> Releases unmanaged and - optionally - managed resources </summary>
+      <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged SRResources.</param>
+    </member>
+    <member name="M:System.Web.Http.Dispatcher.HttpControllerDispatcher.SendAsync(System.Void,System.Net.Http.HttpResponseMessage)"></member>
+    <member name="T:System.Web.Http.Dispatcher.IBuildManager">
+      <summary> Provides an abstraction for managing the compilation of an application. A different implementation can be registered via the <see cref="T:System.Web.Http.Servies.DependencyResolver" />. </summary>
+    </member>
+    <member name="M:System.Web.Http.Dispatcher.IBuildManager.CreateCachedFile(System.String)">
+      <summary> Creates a cached file. </summary>
+      <returns>The <see cref="T:System.IO.Stream" /> object for the new file.</returns>
+      <param name="fileName">Name of the file.</param>
+    </member>
+    <member name="M:System.Web.Http.Dispatcher.IBuildManager.FileExists(System.String)">
+      <summary> Gets an object factory for the specified virtual path. </summary>
+      <returns>true if file exists; otherwise false.</returns>
+      <param name="virtualPath">The virtual path.</param>
+    </member>
+    <member name="M:System.Web.Http.Dispatcher.IBuildManager.GetCompiledType(System.String)">
+      <summary> Compiles a file, given its virtual path, and returns the compiled type. </summary>
+      <returns>The compiled <see cref="T:System.Type" />.</returns>
+      <param name="virtualPath">The virtual path.</param>
+    </member>
+    <member name="M:System.Web.Http.Dispatcher.IBuildManager.GetReferencedAssemblies">
+      <summary> Returns a list of assembly references that all page compilations must reference. </summary>
+      <returns>An <see cref="T:System.Collections.ICollection" /> of assembly references.</returns>
+    </member>
+    <member name="M:System.Web.Http.Dispatcher.IBuildManager.ReadCachedFile(System.String)">
+      <summary> Reads a cached file. </summary>
+      <returns>The <see cref="T:System.IO.Stream" /> object for the file, or null if the file does not exist.</returns>
+      <param name="fileName">Name of the file.</param>
+    </member>
+    <member name="T:System.Web.Http.Dispatcher.IHttpControllerActivator">
+      <summary> Defines the methods that are required for an <see cref="T:System.Web.Http.Dispatcher.IHttpControllerActivator" />. </summary>
+    </member>
+    <member name="M:System.Web.Http.Dispatcher.IHttpControllerActivator.Create(System.Web.Http.Controllers.HttpControllerContext,System.Type)"></member>
+    <member name="T:System.Web.Http.Dispatcher.IHttpControllerFactory">
+      <summary> Defines the methods that are required for an <see cref="T:System.Web.Http.Controllers.IHttpController" /> factory. </summary>
+    </member>
+    <member name="M:System.Web.Http.Dispatcher.IHttpControllerFactory.CreateController(System.Web.Http.Controllers.HttpControllerContext,System.String)">
+      <summary> Creates the <see cref="T:System.Web.Http.Controllers.IHttpController" /> using the specified context and controller name. </summary>
+      <returns>An <see cref="T:System.Web.Http.Controllers.IHttpController" /> instance.</returns>
+      <param name="controllerContext">The controller context.</param>
+      <param name="controllerName">Name of the controller.</param>
+    </member>
+    <member name="M:System.Web.Http.Dispatcher.IHttpControllerFactory.ReleaseController(System.Web.Http.Controllers.IHttpController)">
+      <summary> Releases an <see cref="T:System.Web.Http.Controllers.IHttpController" /> instance. </summary>
+      <param name="controller">The controller.</param>
+    </member>
+    <member name="T:System.Web.Http.Filters.ActionDescriptorFilterProvider"></member>
+    <member name="M:System.Web.Http.Filters.ActionDescriptorFilterProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Filters.ActionDescriptorFilterProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Filters.ActionDescriptorFilterProvider.GetFilters(System.Web.Http.HttpConfiguration,System.Web.Http.Controllers.HttpActionDescriptor)"></member>
+    <member name="T:System.Web.Http.Filters.ActionFilterAttribute"></member>
+    <member name="M:System.Web.Http.Filters.ActionFilterAttribute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Filters.ActionFilterAttribute" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Filters.ActionFilterAttribute.OnActionExecuted(System.Web.Http.Filters.HttpActionExecutedContext)"></member>
+    <member name="M:System.Web.Http.Filters.ActionFilterAttribute.OnActionExecuting(System.Web.Http.Controllers.HttpActionContext)"></member>
+    <member name="M:System.Web.Http.Filters.ActionFilterAttribute.System#Web#Http#Filters#IActionFilter#ExecuteActionFilterAsync(System.Void,System.Net.Http.HttpResponseMessage,System.Web.Http.Controllers.HttpActionContext)"></member>
+    <member name="T:System.Web.Http.Filters.AuthorizationFilterAttribute"></member>
+    <member name="M:System.Web.Http.Filters.AuthorizationFilterAttribute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Filters.AuthorizationFilterAttribute" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Filters.AuthorizationFilterAttribute.OnAuthorization(System.Web.Http.Controllers.HttpActionContext)"></member>
+    <member name="M:System.Web.Http.Filters.AuthorizationFilterAttribute.System#Web#Http#Filters#IAuthorizationFilter#ExecuteAuthorizationFilterAsync(System.Void,System.Net.Http.HttpResponseMessage,System.Web.Http.Controllers.HttpActionContext)"></member>
+    <member name="T:System.Web.Http.Filters.ConfigurationFilterProvider"></member>
+    <member name="M:System.Web.Http.Filters.ConfigurationFilterProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Filters.ConfigurationFilterProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Filters.ConfigurationFilterProvider.GetFilters(System.Web.Http.HttpConfiguration,System.Web.Http.Controllers.HttpActionDescriptor)"></member>
+    <member name="T:System.Web.Http.Filters.ExceptionFilterAttribute"></member>
+    <member name="M:System.Web.Http.Filters.ExceptionFilterAttribute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Filters.ExceptionFilterAttribute" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Filters.ExceptionFilterAttribute.OnException(System.Web.Http.Filters.HttpActionExecutedContext)"></member>
+    <member name="M:System.Web.Http.Filters.ExceptionFilterAttribute.System#Web#Http#Filters#IExceptionFilter#ExecuteExceptionFilterAsync(System.Web.Http.Filters.HttpActionExecutedContext,System.Threading.CancellationToken)"></member>
+    <member name="T:System.Web.Http.Filters.Filter"></member>
+    <member name="M:System.Web.Http.Filters.Filter.#ctor(System.Web.Http.Filters.IFilter,System.Web.Http.Filters.FilterScope)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Filters.Filter" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Filters.Filter.Instance">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Filters.Filter.Scope">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Filters.FilterAttribute"></member>
+    <member name="M:System.Web.Http.Filters.FilterAttribute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Filters.FilterAttribute" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Filters.FilterAttribute.AllowMultiple">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Filters.FilterScope"></member>
+    <member name="F:System.Web.Http.Filters.FilterScope.First">
+      <summary />
+    </member>
+    <member name="F:System.Web.Http.Filters.FilterScope.Global">
+      <summary />
+    </member>
+    <member name="F:System.Web.Http.Filters.FilterScope.Controller">
+      <summary />
+    </member>
+    <member name="F:System.Web.Http.Filters.FilterScope.Action">
+      <summary />
+    </member>
+    <member name="F:System.Web.Http.Filters.FilterScope.Last">
+      <summary />
+    </member>
+    <member name="T:System.Web.Http.Filters.GlobalFilterCollection"></member>
+    <member name="M:System.Web.Http.Filters.GlobalFilterCollection.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Filters.GlobalFilterCollection" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Filters.GlobalFilterCollection.Add(System.Web.Http.Filters.IFilter)"></member>
+    <member name="M:System.Web.Http.Filters.GlobalFilterCollection.Clear"></member>
+    <member name="M:System.Web.Http.Filters.GlobalFilterCollection.Contains(System.Object)"></member>
+    <member name="P:System.Web.Http.Filters.GlobalFilterCollection.Count">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.Filters.GlobalFilterCollection.GetEnumerator"></member>
+    <member name="M:System.Web.Http.Filters.GlobalFilterCollection.Remove(System.Object)"></member>
+    <member name="M:System.Web.Http.Filters.GlobalFilterCollection.System#Collections#IEnumerable#GetEnumerator"></member>
+    <member name="T:System.Web.Http.Filters.HttpActionExecutedContext"></member>
+    <member name="M:System.Web.Http.Filters.HttpActionExecutedContext.#ctor">
+      <summary> Initializes a new instance of the <see cref="T:System.Web.Http.Filters.HttpActionExecutedContext" /> class. </summary>
+    </member>
+    <member name="M:System.Web.Http.Filters.HttpActionExecutedContext.#ctor(System.Web.Http.Controllers.HttpActionContext,System.Exception)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Filters.HttpActionExecutedContext" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Filters.HttpActionExecutedContext.ActionContext">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Filters.HttpActionExecutedContext.Exception">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Filters.HttpActionExecutedContext.Request">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Filters.HttpActionExecutedContext.Result">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Filters.IActionFilter"></member>
+    <member name="M:System.Web.Http.Filters.IActionFilter.ExecuteActionFilterAsync(System.Void,System.Net.Http.HttpResponseMessage,System.Web.Http.Controllers.HttpActionContext)"></member>
+    <member name="T:System.Web.Http.Filters.IAuthorizationFilter"></member>
+    <member name="M:System.Web.Http.Filters.IAuthorizationFilter.ExecuteAuthorizationFilterAsync(System.Void,System.Net.Http.HttpResponseMessage,System.Web.Http.Controllers.HttpActionContext)"></member>
+    <member name="T:System.Web.Http.Filters.IExceptionFilter"></member>
+    <member name="M:System.Web.Http.Filters.IExceptionFilter.ExecuteExceptionFilterAsync(System.Web.Http.Filters.HttpActionExecutedContext,System.Threading.CancellationToken)"></member>
+    <member name="T:System.Web.Http.Filters.IFilter"></member>
+    <member name="P:System.Web.Http.Filters.IFilter.AllowMultiple">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Filters.IFilterProvider"></member>
+    <member name="M:System.Web.Http.Filters.IFilterProvider.GetFilters(System.Web.Http.HttpConfiguration,System.Web.Http.Controllers.HttpActionDescriptor)"></member>
+    <member name="T:System.Web.Http.Hosting.HttpPropertyKeys">
+      <summary> Provides common keys for properties stored in the <see cref="M:HttpRequestMessage.Properties" /></summary>
+    </member>
+    <member name="F:System.Web.Http.Hosting.HttpPropertyKeys.HttpConfigurationKey">
+      <summary> Provides a key for the <see cref="T:System.Web.Http.HttpConfiguration" /> associated with this request. </summary>
+    </member>
+    <member name="F:System.Web.Http.Hosting.HttpPropertyKeys.HttpRouteDataKey">
+      <summary> Provides a key for the <see cref="T:System.Web.Http.Routing.IHttpRouteData" /> associated with this request. </summary>
+    </member>
+    <member name="F:System.Web.Http.Hosting.HttpPropertyKeys.SynchronizationContextKey">
+      <summary> Provides a key for the current <see cref="T:System.Threading.SynchronizationContext" /> stored in <see cref="M:HttpRequestMessage.Properties" />. If <see cref="M:SynchronizationContext.Current" /> is null then no context is stored. </summary>
+    </member>
+    <member name="F:System.Web.Http.Hosting.HttpPropertyKeys.UserPrincipalKey">
+      <summary> Provides a key for the current <see cref="T:System.Security.Principal.IPrincipal" /> stored in <see cref="M:HttpRequestMessage.Properties" />. </summary>
+    </member>
+    <member name="T:System.Web.Http.Metadata.IMetadataAware"></member>
+    <member name="M:System.Web.Http.Metadata.IMetadataAware.OnMetadataCreated(System.Web.Http.Metadata.ModelMetadata)"></member>
+    <member name="T:System.Web.Http.Metadata.ModelMetadata"></member>
+    <member name="M:System.Web.Http.Metadata.ModelMetadata.#ctor(System.Web.Http.Metadata.ModelMetadataProvider,System.Type,System.Func`1,System.Void,System.Object)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Metadata.ModelMetadata" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.AdditionalValues">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.ContainerType">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.ConvertEmptyStringToNull">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.DataTypeName">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="F:System.Web.Http.Metadata.ModelMetadata.DefaultOrder"></member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.Description">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.DisplayFormatString">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.DisplayName">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.EditFormatString">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.Metadata.ModelMetadata.GetDisplayName"></member>
+    <member name="M:System.Web.Http.Metadata.ModelMetadata.GetSimpleDisplayText"></member>
+    <member name="M:System.Web.Http.Metadata.ModelMetadata.GetValidators(System.Web.Http.Controllers.HttpActionContext)"></member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.HideSurroundingHtml">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.IsComplexType">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.IsNullableValueType">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.IsReadOnly">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.IsRequired">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.Model">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.ModelType">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.NullDisplayText">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.Order">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.Properties">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.PropertyName">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.Provider">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.RequestValidationEnabled">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.ShortDisplayName">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.ShowForDisplay">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.ShowForEdit">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.SimpleDisplayText">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.TemplateHint">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.ModelMetadata.Watermark">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Metadata.ModelMetadataProvider"></member>
+    <member name="M:System.Web.Http.Metadata.ModelMetadataProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Metadata.ModelMetadataProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Metadata.ModelMetadataProvider.GetMetadataForProperties(System.Object,System.Type)"></member>
+    <member name="M:System.Web.Http.Metadata.ModelMetadataProvider.GetMetadataForProperty(System.Func`1,System.Void,System.Object)"></member>
+    <member name="M:System.Web.Http.Metadata.ModelMetadataProvider.GetMetadataForType(System.Func`1,System.Void)"></member>
+    <member name="T:System.Web.Http.Metadata.Providers.AssociatedMetadataProvider"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.AssociatedMetadataProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Metadata.Providers.AssociatedMetadataProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Metadata.Providers.AssociatedMetadataProvider.CreateMetadata(System.Collections.Generic.IEnumerable{System.Attribute},System.Type,System.Func`1,System.Void,System.Object)"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.AssociatedMetadataProvider.FilterAttributes(System.Type,System.ComponentModel.PropertyDescriptor,System.Collections.Generic.IEnumerable{System.Attribute})"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.AssociatedMetadataProvider.GetMetadataForProperties(System.Object,System.Type)"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.AssociatedMetadataProvider.GetMetadataForProperty(System.Func`1,System.Void,System.Object)"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.AssociatedMetadataProvider.GetMetadataForType(System.Func`1,System.Void)"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.AssociatedMetadataProvider.GetTypeDescriptor(System.Type)"></member>
+    <member name="T:System.Web.Http.Metadata.Providers.CachedAssociatedMetadataProvider`1">
+      <typeparam name="TModelMetadata"></typeparam>
+    </member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedAssociatedMetadataProvider`1.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Metadata.Providers.CachedAssociatedMetadataProvider`1" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedAssociatedMetadataProvider`1.CacheItemPolicy">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedAssociatedMetadataProvider`1.CacheKeyPrefix">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedAssociatedMetadataProvider`1.CreateMetadata(System.Collections.Generic.IEnumerable{System.Attribute},System.Type,System.Func`1,System.Void,System.Object)"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedAssociatedMetadataProvider`1.CreateMetadataFromPrototype(`0,System.Func`1)"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedAssociatedMetadataProvider`1.CreateMetadataPrototype(System.Collections.Generic.IEnumerable{System.Attribute},System.Type,System.Type,System.String)"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedAssociatedMetadataProvider`1.GetMetadataForProperties(System.Object,System.Type)"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedAssociatedMetadataProvider`1.GetMetadataForProperty(System.Func`1,System.Void,System.Object)"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedAssociatedMetadataProvider`1.GetMetadataForType(System.Func`1,System.Void)"></member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedAssociatedMetadataProvider`1.PrototypeCache">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Metadata.Providers.CachedDataAnnotationsMetadataAttributes"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsMetadataAttributes.#ctor(System.Attribute[])">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Metadata.Providers.CachedDataAnnotationsMetadataAttributes" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedDataAnnotationsMetadataAttributes.DataType">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedDataAnnotationsMetadataAttributes.Display">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedDataAnnotationsMetadataAttributes.DisplayColumn">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedDataAnnotationsMetadataAttributes.DisplayFormat">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedDataAnnotationsMetadataAttributes.DisplayName">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedDataAnnotationsMetadataAttributes.Editable">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedDataAnnotationsMetadataAttributes.ReadOnly">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedDataAnnotationsMetadataAttributes.Required">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedDataAnnotationsMetadataAttributes.ScaffoldColumn">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedDataAnnotationsMetadataAttributes.UIHint">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata.#ctor(System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata,System.Func`1)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata.#ctor(System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadataProvider,System.Type,System.Type,System.String,System.Collections.Generic.IEnumerable{System.Attribute})">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata.ComputeConvertEmptyStringToNull"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata.ComputeDataTypeName"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata.ComputeDescription"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata.ComputeDisplayFormatString"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata.ComputeDisplayName"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata.ComputeEditFormatString"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata.ComputeHideSurroundingHtml"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata.ComputeIsReadOnly"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata.ComputeIsRequired"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata.ComputeNullDisplayText"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata.ComputeOrder"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata.ComputeShortDisplayName"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata.ComputeShowForDisplay"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata.ComputeShowForEdit"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata.ComputeSimpleDisplayText"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata.ComputeTemplateHint"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata.ComputeWatermark"></member>
+    <member name="T:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadataProvider"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadataProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadataProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadataProvider.CreateMetadataFromPrototype(System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadata,System.Func`1)"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadataProvider.CreateMetadataPrototype(System.Collections.Generic.IEnumerable{System.Attribute},System.Type,System.Type,System.String)"></member>
+    <member name="T:System.Web.Http.Metadata.Providers.CachedModelMetadata`1">
+      <typeparam name="TPrototypeCache"></typeparam>
+    </member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.#ctor(System.Web.Http.Metadata.Providers.CachedDataAnnotationsModelMetadataProvider,System.Type,System.Type,System.String,`0)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Metadata.Providers.CachedModelMetadata`1" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.#ctor(System.Web.Http.Metadata.Providers.CachedModelMetadata{`0},System.Func`1)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Metadata.Providers.CachedModelMetadata`1" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ComputeConvertEmptyStringToNull"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ComputeDataTypeName"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ComputeDescription"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ComputeDisplayFormatString"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ComputeDisplayName"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ComputeEditFormatString"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ComputeHideSurroundingHtml"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ComputeIsReadOnly"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ComputeIsRequired"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ComputeNullDisplayText"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ComputeOrder"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ComputeShortDisplayName"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ComputeShowForDisplay"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ComputeShowForEdit"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ComputeSimpleDisplayText"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ComputeTemplateHint"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ComputeWatermark"></member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ConvertEmptyStringToNull">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.DataTypeName">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.Description">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.DisplayFormatString">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.DisplayName">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.EditFormatString">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.GetSimpleDisplayText"></member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.HideSurroundingHtml">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.IsReadOnly">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.IsRequired">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.NullDisplayText">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.Order">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.PrototypeCache">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ShortDisplayName">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ShowForDisplay">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.ShowForEdit">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.SimpleDisplayText">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.TemplateHint">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Metadata.Providers.CachedModelMetadata`1.Watermark">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Metadata.Providers.EmptyModelMetadataProvider"></member>
+    <member name="M:System.Web.Http.Metadata.Providers.EmptyModelMetadataProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Metadata.Providers.EmptyModelMetadataProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Metadata.Providers.EmptyModelMetadataProvider.CreateMetadata(System.Collections.Generic.IEnumerable{System.Attribute},System.Type,System.Func`1,System.Void,System.Object)"></member>
+    <member name="T:System.Web.Http.ModelBinding.CustomModelBinderAttribute"></member>
+    <member name="M:System.Web.Http.ModelBinding.CustomModelBinderAttribute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.CustomModelBinderAttribute" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.CustomModelBinderAttribute.GetBinder"></member>
+    <member name="T:System.Web.Http.ModelBinding.DefaultActionValueBinder"></member>
+    <member name="M:System.Web.Http.ModelBinding.DefaultActionValueBinder.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.DefaultActionValueBinder" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.DefaultActionValueBinder.BindValuesAsync(System.Web.Http.Controllers.HttpActionContext,System.Threading.CancellationToken)"></member>
+    <member name="T:System.Web.Http.ModelBinding.HttpParameterBinding">
+      <summary> This class associates a <see cref="P:System.Web.Http.ModelBinding.HttpParameterBinding.ParameterDescriptor" /> with its corresponding <see cref="T:System.Web.Http.ValueProviders.IValueProvider" /> and <see cref="P:System.Web.Http.ModelBinding.HttpParameterBinding.ModelBinderProvider" /> necessary to perform model binding. </summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.HttpParameterBinding.#ctor(System.Web.Http.Controllers.HttpParameterDescriptor)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.HttpParameterBinding" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.HttpParameterBinding.ModelBinderProvider">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.HttpParameterBinding.ParameterDescriptor">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.HttpParameterBinding.ValueProvider">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.ModelBinding.IModelBinder"></member>
+    <member name="M:System.Web.Http.ModelBinding.IModelBinder.BindModel(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="T:System.Web.Http.ModelBinding.IRequestContentReadPolicy"></member>
+    <member name="M:System.Web.Http.ModelBinding.IRequestContentReadPolicy.GetRequestContentReadKind(System.Web.Http.Controllers.HttpActionDescriptor)">
+      <summary> Asks how the request content should be read for the given <see cref="T:System.Web.Http.Controllers.HttpActionDescriptor" />. </summary>
+      <returns>A <see cref="T:System.Web.Http.ModelBinding.RequestContentReadKind" /> value indicating how the request content body should be read.</returns>
+      <param name="actionDescriptor">The <see cref="T:System.Web.Http.Controllers.HttpActionDescriptor" /> for the action to be invoked.</param>
+    </member>
+    <member name="T:System.Web.Http.ModelBinding.ModelBinderAttribute"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelBinderAttribute.#ctor(System.Type)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.ModelBinderAttribute" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.ModelBinderAttribute.BinderType">
+      <summary> Sets the type of the model binder.   This type must be either a subclass of <see cref="T:System.Web.Http.ModelBinding.ModelBinderProvider" /> or any type with a parameterless constructor that implements <see cref="T:System.Web.Http.ModelBinding.IModelBinder" />/ </summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.ModelBinderAttribute.SuppressPrefixCheck">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.ModelBinding.ModelBinderConfig"></member>
+    <member name="P:System.Web.Http.ModelBinding.ModelBinderConfig.ResourceClassKey">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.ModelBinderConfig.TypeConversionErrorMessageProvider">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.ModelBinderConfig.ValueRequiredErrorMessageProvider">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.ModelBinding.ModelBinderErrorMessageProvider"></member>
+    <member name="T:System.Web.Http.ModelBinding.ModelBinderProvider"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelBinderProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.ModelBinderProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.ModelBinderProvider.GetBinder(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="T:System.Web.Http.ModelBinding.ModelBindingContext"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelBindingContext.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.ModelBindingContext" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.ModelBindingContext.#ctor(System.Web.Http.ModelBinding.ModelBindingContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.ModelBindingContext" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.ModelBindingContext.FallbackToEmptyPrefix">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.ModelBindingContext.Model">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.ModelBindingContext.ModelMetadata">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.ModelBindingContext.ModelName">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.ModelBindingContext.ModelState">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.ModelBindingContext.ModelType">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.ModelBindingContext.PropertyMetadata">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.ModelBindingContext.ValidationNode">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.ModelBindingContext.ValueProvider">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.ModelBinding.ModelBindingHelper"></member>
+    <member name="T:System.Web.Http.ModelBinding.ModelError"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelError.#ctor(System.Exception)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.ModelError" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.ModelError.#ctor(System.Exception,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.ModelError" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.ModelError.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.ModelError" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.ModelError.ErrorMessage">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.ModelError.Exception">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.ModelBinding.ModelErrorCollection"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelErrorCollection.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.ModelErrorCollection" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.ModelErrorCollection.Add(System.Exception)"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelErrorCollection.Add(System.String)"></member>
+    <member name="T:System.Web.Http.ModelBinding.ModelState"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelState.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.ModelState" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.ModelState.Errors">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.ModelState.Value">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.ModelBinding.ModelStateDictionary"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelStateDictionary.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.ModelStateDictionary" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.ModelStateDictionary.#ctor(System.Web.Http.ModelBinding.ModelStateDictionary)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.ModelStateDictionary" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.ModelStateDictionary.Add(System.Collections.Generic.KeyValuePair{System.String,System.Web.Http.ModelBinding.ModelState})"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelStateDictionary.Add(System.String,System.Web.Http.ModelBinding.ModelState)"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelStateDictionary.AddModelError(System.String,System.Exception)"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelStateDictionary.AddModelError(System.String,System.String)"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelStateDictionary.Clear"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelStateDictionary.Contains(System.Collections.Generic.KeyValuePair{System.String,System.Web.Http.ModelBinding.ModelState})"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelStateDictionary.ContainsKey(System.String)"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelStateDictionary.CopyTo(System.Collections.Generic.KeyValuePair{System.String,System.Web.Http.ModelBinding.ModelState}[],System.Int32)"></member>
+    <member name="P:System.Web.Http.ModelBinding.ModelStateDictionary.Count">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.ModelStateDictionary.GetEnumerator"></member>
+    <member name="P:System.Web.Http.ModelBinding.ModelStateDictionary.IsReadOnly">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.ModelStateDictionary.IsValid">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.ModelStateDictionary.IsValidField(System.String)"></member>
+    <member name="P:System.Web.Http.ModelBinding.ModelStateDictionary.Item(System.String)">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.ModelStateDictionary.Keys">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.ModelStateDictionary.Merge(System.Web.Http.ModelBinding.ModelStateDictionary)"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelStateDictionary.Remove(System.Collections.Generic.KeyValuePair{System.String,System.Web.Http.ModelBinding.ModelState})"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelStateDictionary.Remove(System.String)"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelStateDictionary.SetModelValue(System.String,System.Web.Http.ValueProviders.ValueProviderResult)"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelStateDictionary.System#Collections#IEnumerable#GetEnumerator"></member>
+    <member name="M:System.Web.Http.ModelBinding.ModelStateDictionary.TryGetValue(System.String,System.Web.Http.ModelBinding.ModelState@)"></member>
+    <member name="P:System.Web.Http.ModelBinding.ModelStateDictionary.Values">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.ModelBinding.RequestContentReadKind">
+      <summary> Enum to indicate how the request body content should be (or was) read. </summary>
+    </member>
+    <member name="F:System.Web.Http.ModelBinding.RequestContentReadKind.None">
+      <summary> Do not read the request content. </summary>
+    </member>
+    <member name="F:System.Web.Http.ModelBinding.RequestContentReadKind.AsKeyValuePairs">
+      <summary> Read the request content as key/value pairs. </summary>
+    </member>
+    <member name="F:System.Web.Http.ModelBinding.RequestContentReadKind.AsSingleObject">
+      <summary> Read the request content as a single object of a specific type. </summary>
+    </member>
+    <member name="F:System.Web.Http.ModelBinding.RequestContentReadKind.AsKeyValuePairsOrSingleObject">
+      <summary> Read the request content as key/value pairs if the formatter supports it, otherwise read as a single object. </summary>
+    </member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.ArrayModelBinder`1">
+      <typeparam name="TElement"></typeparam>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.ArrayModelBinder`1.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.ArrayModelBinder`1" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.ArrayModelBinder`1.CreateOrReplaceCollection(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext,System.Collections.Generic.IList{`0})"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.ArrayModelBinderProvider"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.ArrayModelBinderProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.ArrayModelBinderProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.ArrayModelBinderProvider.GetBinder(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.BinaryDataModelBinderProvider"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.BinaryDataModelBinderProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.BinaryDataModelBinderProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.BinaryDataModelBinderProvider.GetBinder(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.CancellationTokenModelBinder">
+      <summary> This class provides an <see cref="T:System.Web.Http.ModelBinding.IModelBinder" /> that can bind to <see cref="T:System.Threading.CancellationToken" /></summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.CancellationTokenModelBinder.#ctor(System.Threading.CancellationToken)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.CancellationTokenModelBinder" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.CancellationTokenModelBinder.BindModel(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.CancellationTokenModelBinder.CanBindModelType(System.Type)"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.CancellationTokenModelBinderProvider"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.CancellationTokenModelBinderProvider.#ctor(System.Threading.CancellationToken)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.CancellationTokenModelBinderProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.CancellationTokenModelBinderProvider.GetBinder(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.CollectionModelBinder`1">
+      <typeparam name="TElement"></typeparam>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.CollectionModelBinder`1.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.CollectionModelBinder`1" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.CollectionModelBinder`1.BindModel(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.CollectionModelBinder`1.CreateOrReplaceCollection(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext,System.Collections.Generic.IList{`0})"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.CollectionModelBinderProvider"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.CollectionModelBinderProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.CollectionModelBinderProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.CollectionModelBinderProvider.GetBinder(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.ComplexModelDto"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.ComplexModelDto.#ctor(System.Web.Http.Metadata.ModelMetadata,System.Collections.Generic.IEnumerable{System.Web.Http.Metadata.ModelMetadata})">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.ComplexModelDto" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.Binders.ComplexModelDto.ModelMetadata">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.Binders.ComplexModelDto.PropertyMetadata">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.Binders.ComplexModelDto.Results">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.ComplexModelDtoModelBinder"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.ComplexModelDtoModelBinder.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.ComplexModelDtoModelBinder" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.ComplexModelDtoModelBinder.BindModel(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.ComplexModelDtoModelBinderProvider"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.ComplexModelDtoModelBinderProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.ComplexModelDtoModelBinderProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.ComplexModelDtoModelBinderProvider.GetBinder(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.ComplexModelDtoResult"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.ComplexModelDtoResult.#ctor(System.Object,System.Web.Http.Validation.ModelValidationNode)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.ComplexModelDtoResult" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.Binders.ComplexModelDtoResult.Model">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.Binders.ComplexModelDtoResult.ValidationNode">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.CompositeModelBinder">
+      <summary> This class is an <see cref="T:System.Web.Http.ModelBinding.IModelBinder" /> that delegates to one of a collection of <see cref="T:System.Web.Http.ModelBinding.ModelBinderProvider" /> instances. </summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.CompositeModelBinder.#ctor(System.Collections.Generic.IEnumerable{System.Web.Http.ModelBinding.ModelBinderProvider})">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.CompositeModelBinder" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.CompositeModelBinder.BindModel(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.CompositeModelBinderProvider"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.CompositeModelBinderProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.CompositeModelBinderProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.CompositeModelBinderProvider.#ctor(System.Collections.Generic.IEnumerable{System.Web.Http.ModelBinding.ModelBinderProvider})">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.CompositeModelBinderProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.CompositeModelBinderProvider.GetBinder(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.DictionaryModelBinder`2">
+      <typeparam name="TKey"></typeparam>
+      <typeparam name="TValue"></typeparam>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.DictionaryModelBinder`2.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.DictionaryModelBinder`2" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.DictionaryModelBinder`2.CreateOrReplaceCollection(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext,System.Collections.Generic.IList{System.Collections.Generic.KeyValuePair{`0,`1}})"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.DictionaryModelBinderProvider"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.DictionaryModelBinderProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.DictionaryModelBinderProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.DictionaryModelBinderProvider.GetBinder(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.GenericModelBinderProvider"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.GenericModelBinderProvider.#ctor(System.Type,System.Func`2)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.GenericModelBinderProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.GenericModelBinderProvider.#ctor(System.Type,System.Type)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.GenericModelBinderProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.GenericModelBinderProvider.#ctor(System.Type,System.Web.Http.ModelBinding.IModelBinder)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.GenericModelBinderProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.GenericModelBinderProvider.GetBinder(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="P:System.Web.Http.ModelBinding.Binders.GenericModelBinderProvider.ModelType">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.Binders.GenericModelBinderProvider.SuppressPrefixCheck">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.KeyValuePairModelBinder`2">
+      <typeparam name="TKey"></typeparam>
+      <typeparam name="TValue"></typeparam>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.KeyValuePairModelBinder`2.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.KeyValuePairModelBinder`2" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.KeyValuePairModelBinder`2.BindModel(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.KeyValuePairModelBinderProvider"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.KeyValuePairModelBinderProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.KeyValuePairModelBinderProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.KeyValuePairModelBinderProvider.GetBinder(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.MutableObjectModelBinder"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.MutableObjectModelBinder.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.MutableObjectModelBinder" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.MutableObjectModelBinder.BindModel(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.MutableObjectModelBinder.CanUpdateProperty(System.Web.Http.Metadata.ModelMetadata)"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.MutableObjectModelBinder.CreateModel(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.MutableObjectModelBinder.EnsureModel(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.MutableObjectModelBinder.GetMetadataForProperties(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.MutableObjectModelBinder.SetProperty(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext,System.Web.Http.Metadata.ModelMetadata,System.Web.Http.ModelBinding.Binders.ComplexModelDtoResult)"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.MutableObjectModelBinderProvider"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.MutableObjectModelBinderProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.MutableObjectModelBinderProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.MutableObjectModelBinderProvider.GetBinder(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.SimpleModelBinderProvider"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.SimpleModelBinderProvider.#ctor(System.Type,System.Func`1)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.SimpleModelBinderProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.SimpleModelBinderProvider.#ctor(System.Type,System.Web.Http.ModelBinding.IModelBinder)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.SimpleModelBinderProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.SimpleModelBinderProvider.GetBinder(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="P:System.Web.Http.ModelBinding.Binders.SimpleModelBinderProvider.ModelType">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ModelBinding.Binders.SimpleModelBinderProvider.SuppressPrefixCheck">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.TypeConverterModelBinder"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.TypeConverterModelBinder.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.TypeConverterModelBinder" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.TypeConverterModelBinder.BindModel(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.TypeConverterModelBinderProvider"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.TypeConverterModelBinderProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.TypeConverterModelBinderProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.TypeConverterModelBinderProvider.GetBinder(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.TypeMatchModelBinder"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.TypeMatchModelBinder.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.TypeMatchModelBinder" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.TypeMatchModelBinder.BindModel(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.TypeMatchModelBinderProvider"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.TypeMatchModelBinderProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.TypeMatchModelBinderProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.TypeMatchModelBinderProvider.GetBinder(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.ValidatingModelBinder">
+      <summary> This class is an <see cref="T:System.Web.Http.ModelBinding.IModelBinder" /> that validates the current model instance in the <see cref="T:System.Web.Http.ModelBinding.ModelBindingContext" />.  It is meant to be used for model validation whenever the normal name/value model validation is not available. </summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.ValidatingModelBinder.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.ValidatingModelBinder" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.ValidatingModelBinder.BindModel(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.ValidatingModelBinder.ValidateModel(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext,System.Object)"></member>
+    <member name="T:System.Web.Http.ModelBinding.Binders.ValidatingModelBinderProvider"></member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.ValidatingModelBinderProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ModelBinding.Binders.ValidatingModelBinderProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ModelBinding.Binders.ValidatingModelBinderProvider.GetBinder(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.ModelBinding.ModelBindingContext)"></member>
+    <member name="T:System.Web.Http.Routing.HttpMethodConstraint"></member>
+    <member name="M:System.Web.Http.Routing.HttpMethodConstraint.#ctor(System.Net.Http.HttpMethod[])">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Routing.HttpMethodConstraint" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Routing.HttpMethodConstraint.AllowedMethods">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.Routing.HttpMethodConstraint.Match(System.Net.Http.HttpRequestMessage,System.Web.Http.Routing.IHttpRoute,System.String,System.Collections.Generic.IDictionary{System.String,System.Object},System.Web.Http.Routing.HttpRouteDirection)"></member>
+    <member name="M:System.Web.Http.Routing.HttpMethodConstraint.System#Web#Http#Routing#IHttpRouteConstraint#Match(System.Net.Http.HttpRequestMessage,System.Web.Http.Routing.IHttpRoute,System.String,System.Collections.Generic.IDictionary{System.String,System.Object},System.Web.Http.Routing.HttpRouteDirection)"></member>
+    <member name="T:System.Web.Http.Routing.HttpRoute">
+      <summary> Route class for self-host (i.e. hosted outside of ASP.NET). This class is mostly the same as the System.Web.Routing.Route implementation. This class has the same URL matching functionality as System.Web.Routing.Route. However, in order for this route to match when generating URLs, a special "httproute" key must be specified when generating the URL. </summary>
+    </member>
+    <member name="M:System.Web.Http.Routing.HttpRoute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Routing.HttpRoute" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Routing.HttpRoute.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Routing.HttpRoute" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Routing.HttpRoute.#ctor(System.String,System.Web.Http.Routing.HttpRouteValueDictionary)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Routing.HttpRoute" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Routing.HttpRoute.#ctor(System.String,System.Web.Http.Routing.HttpRouteValueDictionary,System.Web.Http.Routing.HttpRouteValueDictionary)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Routing.HttpRoute" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Routing.HttpRoute.#ctor(System.String,System.Web.Http.Routing.HttpRouteValueDictionary,System.Web.Http.Routing.HttpRouteValueDictionary,System.Web.Http.Routing.HttpRouteValueDictionary)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Routing.HttpRoute" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Routing.HttpRoute.Constraints">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Routing.HttpRoute.DataTokens">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Routing.HttpRoute.Defaults">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.Routing.HttpRoute.GetRouteData(System.String,System.Net.Http.HttpRequestMessage)"></member>
+    <member name="M:System.Web.Http.Routing.HttpRoute.GetVirtualPath(System.Web.Http.Controllers.HttpControllerContext,System.Collections.Generic.IDictionary{System.String,System.Object})">
+      <summary> Attempt to generate a URI that represents the values passed in based on current values from the <see cref="T:System.Web.Http.Routing.HttpRouteData" /> and new values using the specified <see cref="T:System.Web.Http.Routing.HttpRoute" />. </summary>
+      <returns>A <see cref="T:System.Web.Http.Routing.HttpVirtualPathData" /> instance or null if URI cannot be generated.</returns>
+      <param name="controllerContext">The HTTP execution context.</param>
+      <param name="values">The route values.</param>
+    </member>
+    <member name="M:System.Web.Http.Routing.HttpRoute.ProcessConstraint(System.Net.Http.HttpRequestMessage,System.Object,System.String,System.Web.Http.Routing.HttpRouteValueDictionary,System.Web.Http.Routing.HttpRouteDirection)"></member>
+    <member name="P:System.Web.Http.Routing.HttpRoute.RouteTemplate">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Routing.HttpRouteData"></member>
+    <member name="M:System.Web.Http.Routing.HttpRouteData.#ctor(System.Web.Http.Routing.IHttpRoute)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Routing.HttpRouteData" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Routing.HttpRouteData.#ctor(System.Web.Http.Routing.IHttpRoute,System.Web.Http.Routing.HttpRouteValueDictionary)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Routing.HttpRouteData" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Routing.HttpRouteData.Route">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Routing.HttpRouteData.Values">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Routing.HttpRouteDirection"></member>
+    <member name="F:System.Web.Http.Routing.HttpRouteDirection.UriResolution">
+      <summary />
+    </member>
+    <member name="F:System.Web.Http.Routing.HttpRouteDirection.UriGeneration">
+      <summary />
+    </member>
+    <member name="T:System.Web.Http.Routing.HttpRouteValueDictionary"></member>
+    <member name="M:System.Web.Http.Routing.HttpRouteValueDictionary.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Routing.HttpRouteValueDictionary" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Routing.HttpRouteValueDictionary.#ctor(System.Collections.Generic.IDictionary{System.String,System.Object})">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Routing.HttpRouteValueDictionary" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Routing.HttpRouteValueDictionary.#ctor(System.Object)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Routing.HttpRouteValueDictionary" /> class.</summary>
+    </member>
+    <member name="T:System.Web.Http.Routing.HttpVirtualPathData"></member>
+    <member name="M:System.Web.Http.Routing.HttpVirtualPathData.#ctor(System.Web.Http.Routing.IHttpRoute,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Routing.HttpVirtualPathData" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Routing.HttpVirtualPathData.Route">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Routing.HttpVirtualPathData.VirtualPath">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Routing.IHttpRoute">
+      <summary>
+        <see cref="T:System.Web.Http.Routing.IHttpRoute" /> defines the interface for a route expressing how to map an incoming <see cref="T:System.Net.Http.HttpRequestMessage" /> to a particular controller and action. </summary>
+    </member>
+    <member name="P:System.Web.Http.Routing.IHttpRoute.Constraints">
+      <summary> Gets the constraints for the route parameters. </summary>
+    </member>
+    <member name="P:System.Web.Http.Routing.IHttpRoute.DataTokens">
+      <summary> Gets any additional data tokens not used directly to determine whether a route matches an incoming <see cref="T:System.Net.Http.HttpRequestMessage" />. </summary>
+    </member>
+    <member name="P:System.Web.Http.Routing.IHttpRoute.Defaults">
+      <summary> Gets the default values for route parameters if not provided by the incoming <see cref="T:System.Net.Http.HttpRequestMessage" />. </summary>
+    </member>
+    <member name="M:System.Web.Http.Routing.IHttpRoute.GetRouteData(System.String,System.Net.Http.HttpRequestMessage)">
+      <summary> Determine whether this route is a match for the incoming request by looking up the &lt;see cref="!:IRouteData" /&gt; for the route. </summary>
+      <returns>The &lt;see cref="!:RouteData" /&gt; for a route if matches; otherwise null.</returns>
+      <param name="virtualPathRoot">The virtual path root.</param>
+      <param name="request">The request.</param>
+    </member>
+    <member name="M:System.Web.Http.Routing.IHttpRoute.GetVirtualPath(System.Web.Http.Controllers.HttpControllerContext,System.Collections.Generic.IDictionary{System.String,System.Object})">
+      <summary> Compute a URI based on the route and the values provided. </summary>
+      <param name="controllerContext">The controller context.</param>
+      <param name="values">The values.</param>
+    </member>
+    <member name="P:System.Web.Http.Routing.IHttpRoute.RouteTemplate">
+      <summary> Gets the route template describing the URI pattern to match against.  </summary>
+    </member>
+    <member name="T:System.Web.Http.Routing.IHttpRouteConstraint"></member>
+    <member name="M:System.Web.Http.Routing.IHttpRouteConstraint.Match(System.Net.Http.HttpRequestMessage,System.Web.Http.Routing.IHttpRoute,System.String,System.Collections.Generic.IDictionary{System.String,System.Object},System.Web.Http.Routing.HttpRouteDirection)"></member>
+    <member name="T:System.Web.Http.Routing.IHttpRouteData"></member>
+    <member name="P:System.Web.Http.Routing.IHttpRouteData.Route">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Routing.IHttpRouteData.Values">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Routing.IHttpVirtualPathData"></member>
+    <member name="P:System.Web.Http.Routing.IHttpVirtualPathData.Route">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Routing.IHttpVirtualPathData.VirtualPath">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Services.DependencyResolver"></member>
+    <member name="M:System.Web.Http.Services.DependencyResolver.#ctor(System.Web.Http.HttpConfiguration)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Services.DependencyResolver" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Services.DependencyResolver.#ctor(System.Web.Http.HttpConfiguration,System.Web.Http.Services.IDependencyResolver)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Services.DependencyResolver" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Services.DependencyResolver.GetCachedService(System.Type)"></member>
+    <member name="M:System.Web.Http.Services.DependencyResolver.GetCachedServices(System.Type)"></member>
+    <member name="M:System.Web.Http.Services.DependencyResolver.GetService(System.Type)"></member>
+    <member name="M:System.Web.Http.Services.DependencyResolver.GetServices(System.Type)"></member>
+    <member name="M:System.Web.Http.Services.DependencyResolver.SetResolver(System.Func`2,System.Boolean)"></member>
+    <member name="M:System.Web.Http.Services.DependencyResolver.SetResolver(System.Object)"></member>
+    <member name="M:System.Web.Http.Services.DependencyResolver.SetResolver(System.Web.Http.Services.IDependencyResolver)"></member>
+    <member name="M:System.Web.Http.Services.DependencyResolver.SetService(System.Type,System.Object)"></member>
+    <member name="M:System.Web.Http.Services.DependencyResolver.SetServices(System.Type,System.Object[])"></member>
+    <member name="T:System.Web.Http.Services.IDependencyResolver"></member>
+    <member name="M:System.Web.Http.Services.IDependencyResolver.GetService(System.Type)">
+      <summary> Try to get a service of the given type. </summary>
+      <returns>an instance of the service, or null if the service is not found</returns>
+      <param name="serviceType">Type of service to request.</param>
+    </member>
+    <member name="M:System.Web.Http.Services.IDependencyResolver.GetServices(System.Type)">
+      <summary> Try to get a list of services of the given type. </summary>
+      <returns>an enumeration (possibly empty) of the service.  Return an empty enumeration is the service is not found (don't return null)</returns>
+      <param name="serviceType">Type of services to request.</param>
+    </member>
+    <member name="T:System.Web.Http.Validation.IClientValidatable"></member>
+    <member name="M:System.Web.Http.Validation.IClientValidatable.GetClientValidationRules(System.Web.Http.Metadata.ModelMetadata,System.Web.Http.Controllers.HttpActionContext)"></member>
+    <member name="T:System.Web.Http.Validation.ModelClientValidationRule"></member>
+    <member name="M:System.Web.Http.Validation.ModelClientValidationRule.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.ModelClientValidationRule" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Validation.ModelClientValidationRule.ErrorMessage">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Validation.ModelClientValidationRule.ValidationParameters">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Validation.ModelClientValidationRule.ValidationType">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Validation.ModelValidatedEventArgs"></member>
+    <member name="M:System.Web.Http.Validation.ModelValidatedEventArgs.#ctor(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.Validation.ModelValidationNode)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.ModelValidatedEventArgs" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Validation.ModelValidatedEventArgs.ActionContext">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Validation.ModelValidatedEventArgs.ParentNode">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Validation.ModelValidatingEventArgs"></member>
+    <member name="M:System.Web.Http.Validation.ModelValidatingEventArgs.#ctor(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.Validation.ModelValidationNode)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.ModelValidatingEventArgs" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Validation.ModelValidatingEventArgs.ActionContext">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Validation.ModelValidatingEventArgs.ParentNode">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Validation.ModelValidationNode"></member>
+    <member name="M:System.Web.Http.Validation.ModelValidationNode.#ctor(System.Web.Http.Metadata.ModelMetadata,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.ModelValidationNode" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.ModelValidationNode.#ctor(System.Web.Http.Metadata.ModelMetadata,System.String,System.Collections.Generic.IEnumerable{System.Web.Http.Validation.ModelValidationNode})">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.ModelValidationNode" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Validation.ModelValidationNode.ChildNodes">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.ModelValidationNode.CombineWith(System.Web.Http.Validation.ModelValidationNode)"></member>
+    <member name="P:System.Web.Http.Validation.ModelValidationNode.ModelMetadata">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Validation.ModelValidationNode.ModelStateKey">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Validation.ModelValidationNode.SuppressValidation">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.ModelValidationNode.Validate(System.Web.Http.Controllers.HttpActionContext)"></member>
+    <member name="M:System.Web.Http.Validation.ModelValidationNode.Validate(System.Web.Http.Controllers.HttpActionContext,System.Web.Http.Validation.ModelValidationNode)"></member>
+    <member name="P:System.Web.Http.Validation.ModelValidationNode.ValidateAllProperties">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="E:System.Web.Http.Validation.ModelValidationNode.Validated"></member>
+    <member name="E:System.Web.Http.Validation.ModelValidationNode.Validating"></member>
+    <member name="T:System.Web.Http.Validation.ModelValidationResult"></member>
+    <member name="M:System.Web.Http.Validation.ModelValidationResult.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.ModelValidationResult" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Validation.ModelValidationResult.MemberName">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Validation.ModelValidationResult.Message">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Validation.ModelValidator"></member>
+    <member name="M:System.Web.Http.Validation.ModelValidator.#ctor(System.Web.Http.Metadata.ModelMetadata,System.Web.Http.Controllers.HttpActionContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.ModelValidator" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Validation.ModelValidator.ActionContext">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.ModelValidator.GetClientValidationRules"></member>
+    <member name="M:System.Web.Http.Validation.ModelValidator.GetModelValidator(System.Web.Http.Metadata.ModelMetadata,System.Web.Http.Controllers.HttpActionContext)"></member>
+    <member name="P:System.Web.Http.Validation.ModelValidator.IsRequired">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Validation.ModelValidator.Metadata">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.ModelValidator.Validate(System.Object)"></member>
+    <member name="T:System.Web.Http.Validation.ModelValidatorProvider"></member>
+    <member name="M:System.Web.Http.Validation.ModelValidatorProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.ModelValidatorProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.ModelValidatorProvider.GetValidators(System.Web.Http.Metadata.ModelMetadata,System.Web.Http.Controllers.HttpActionContext)"></member>
+    <member name="T:System.Web.Http.Validation.ClientRules.ModelClientValidationRangeRule"></member>
+    <member name="M:System.Web.Http.Validation.ClientRules.ModelClientValidationRangeRule.#ctor(System.String,System.Object,System.Object)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.ClientRules.ModelClientValidationRangeRule" /> class.</summary>
+    </member>
+    <member name="T:System.Web.Http.Validation.ClientRules.ModelClientValidationRegexRule"></member>
+    <member name="M:System.Web.Http.Validation.ClientRules.ModelClientValidationRegexRule.#ctor(System.String,System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.ClientRules.ModelClientValidationRegexRule" /> class.</summary>
+    </member>
+    <member name="T:System.Web.Http.Validation.ClientRules.ModelClientValidationRequiredRule"></member>
+    <member name="M:System.Web.Http.Validation.ClientRules.ModelClientValidationRequiredRule.#ctor(System.String)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.ClientRules.ModelClientValidationRequiredRule" /> class.</summary>
+    </member>
+    <member name="T:System.Web.Http.Validation.ClientRules.ModelClientValidationStringLengthRule"></member>
+    <member name="M:System.Web.Http.Validation.ClientRules.ModelClientValidationStringLengthRule.#ctor(System.String,System.Int32,System.Int32)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.ClientRules.ModelClientValidationStringLengthRule" /> class.</summary>
+    </member>
+    <member name="T:System.Web.Http.Validation.Providers.AssociatedValidatorProvider"></member>
+    <member name="M:System.Web.Http.Validation.Providers.AssociatedValidatorProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.Providers.AssociatedValidatorProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.Providers.AssociatedValidatorProvider.GetTypeDescriptor(System.Type)"></member>
+    <member name="M:System.Web.Http.Validation.Providers.AssociatedValidatorProvider.GetValidators(System.Web.Http.Metadata.ModelMetadata,System.Web.Http.Controllers.HttpActionContext)"></member>
+    <member name="M:System.Web.Http.Validation.Providers.AssociatedValidatorProvider.GetValidators(System.Web.Http.Metadata.ModelMetadata,System.Web.Http.Controllers.HttpActionContext,System.Collections.Generic.IEnumerable{System.Attribute})"></member>
+    <member name="T:System.Web.Http.Validation.Providers.ClientDataTypeModelValidatorProvider"></member>
+    <member name="M:System.Web.Http.Validation.Providers.ClientDataTypeModelValidatorProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.Providers.ClientDataTypeModelValidatorProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.Providers.ClientDataTypeModelValidatorProvider.GetValidators(System.Web.Http.Metadata.ModelMetadata,System.Web.Http.Controllers.HttpActionContext)"></member>
+    <member name="P:System.Web.Http.Validation.Providers.ClientDataTypeModelValidatorProvider.ResourceClassKey">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Validation.Providers.DataAnnotationsModelValidationFactory"></member>
+    <member name="T:System.Web.Http.Validation.Providers.DataAnnotationsModelValidatorProvider">
+      <summary> An implementation of <see cref="T:System.Web.Http.Validation.ModelValidatorProvider" /> which providers validators for attributes which derive from <see cref="T:System.ComponentModel.DataAnnotations.ValidationAttribute" />. It also provides a validator for types which implement <see cref="T:System.ComponentModel.DataAnnotations.IValidatableObject" />. To support client side validation, you can either register adapters through the static methods on this class, or by having your validation attributes implement <see cref="T:System.Web.Http.Validation.IClientValidatable" />. The logic to support IClientValidatable is implemented in <see cref="T:System.Web.Http.Validation.Validators.DataAnnotationsModelValidator" />. </summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.Providers.DataAnnotationsModelValidatorProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.Providers.DataAnnotationsModelValidatorProvider" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Validation.Providers.DataAnnotationsModelValidatorProvider.AddImplicitRequiredAttributeForValueTypes">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.Providers.DataAnnotationsModelValidatorProvider.GetValidators(System.Web.Http.Metadata.ModelMetadata,System.Web.Http.Controllers.HttpActionContext,System.Collections.Generic.IEnumerable{System.Attribute})"></member>
+    <member name="M:System.Web.Http.Validation.Providers.DataAnnotationsModelValidatorProvider.RegisterAdapter(System.Type,System.Type)"></member>
+    <member name="M:System.Web.Http.Validation.Providers.DataAnnotationsModelValidatorProvider.RegisterAdapterFactory(System.Type,System.Web.Http.Validation.Providers.DataAnnotationsModelValidationFactory)"></member>
+    <member name="M:System.Web.Http.Validation.Providers.DataAnnotationsModelValidatorProvider.RegisterDefaultAdapter(System.Type)"></member>
+    <member name="M:System.Web.Http.Validation.Providers.DataAnnotationsModelValidatorProvider.RegisterDefaultAdapterFactory(System.Web.Http.Validation.Providers.DataAnnotationsModelValidationFactory)"></member>
+    <member name="M:System.Web.Http.Validation.Providers.DataAnnotationsModelValidatorProvider.RegisterDefaultValidatableObjectAdapter(System.Type)">
+      <summary> Registers the default adapter type for objects which implement <see cref="T:System.ComponentModel.DataAnnotations.IValidatableObject" />. The adapter type must derive from <see cref="T:System.Web.Http.Validation.ModelValidator" /> and it must contain a public constructor which takes two parameters of types <see cref="T:System.Web.Http.Metadata.ModelMetadata" /> and <see cref="T:System.Web.Http.Controllers.HttpActionContext" />. </summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.Providers.DataAnnotationsModelValidatorProvider.RegisterDefaultValidatableObjectAdapterFactory(System.Web.Http.Validation.Providers.DataAnnotationsValidatableObjectAdapterFactory)">
+      <summary> Registers the default adapter factory for objects which implement <see cref="T:System.ComponentModel.DataAnnotations.IValidatableObject" />. </summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.Providers.DataAnnotationsModelValidatorProvider.RegisterValidatableObjectAdapter(System.Type,System.Type)">
+      <summary> Registers an adapter type for the given modelType, which must implement <see cref="T:System.ComponentModel.DataAnnotations.IValidatableObject" />. The adapter type must derive from <see cref="T:System.Web.Http.Validation.ModelValidator" /> and it must contain a public constructor which takes two parameters of types <see cref="T:System.Web.Http.Metadata.ModelMetadata" /> and <see cref="T:System.Web.Http.Controllers.HttpActionContext" />. </summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.Providers.DataAnnotationsModelValidatorProvider.RegisterValidatableObjectAdapterFactory(System.Type,System.Web.Http.Validation.Providers.DataAnnotationsValidatableObjectAdapterFactory)">
+      <summary> Registers an adapter factory for the given modelType, which must implement <see cref="T:System.ComponentModel.DataAnnotations.IValidatableObject" />. </summary>
+    </member>
+    <member name="T:System.Web.Http.Validation.Providers.DataAnnotationsValidatableObjectAdapterFactory"></member>
+    <member name="T:System.Web.Http.Validation.Validators.DataAnnotationsModelValidator"></member>
+    <member name="M:System.Web.Http.Validation.Validators.DataAnnotationsModelValidator.#ctor(System.Web.Http.Metadata.ModelMetadata,System.Web.Http.Controllers.HttpActionContext,System.ComponentModel.DataAnnotations.ValidationAttribute)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.Validators.DataAnnotationsModelValidator" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Validation.Validators.DataAnnotationsModelValidator.Attribute">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.Validation.Validators.DataAnnotationsModelValidator.ErrorMessage">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.Validators.DataAnnotationsModelValidator.GetClientValidationRules"></member>
+    <member name="P:System.Web.Http.Validation.Validators.DataAnnotationsModelValidator.IsRequired">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.Validators.DataAnnotationsModelValidator.Validate(System.Object)"></member>
+    <member name="T:System.Web.Http.Validation.Validators.DataAnnotationsModelValidator`1">
+      <typeparam name="TAttribute"></typeparam>
+    </member>
+    <member name="M:System.Web.Http.Validation.Validators.DataAnnotationsModelValidator`1.#ctor(System.Web.Http.Metadata.ModelMetadata,System.Web.Http.Controllers.HttpActionContext,`0)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.Validators.DataAnnotationsModelValidator`1" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.Validation.Validators.DataAnnotationsModelValidator`1.Attribute">
+      <summary>Gets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.Validation.Validators.RangeAttributeAdapter"></member>
+    <member name="M:System.Web.Http.Validation.Validators.RangeAttributeAdapter.#ctor(System.Web.Http.Metadata.ModelMetadata,System.Web.Http.Controllers.HttpActionContext,System.ComponentModel.DataAnnotations.RangeAttribute)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.Validators.RangeAttributeAdapter" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.Validators.RangeAttributeAdapter.GetClientValidationRules"></member>
+    <member name="T:System.Web.Http.Validation.Validators.RegularExpressionAttributeAdapter"></member>
+    <member name="M:System.Web.Http.Validation.Validators.RegularExpressionAttributeAdapter.#ctor(System.Web.Http.Metadata.ModelMetadata,System.Web.Http.Controllers.HttpActionContext,System.ComponentModel.DataAnnotations.RegularExpressionAttribute)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.Validators.RegularExpressionAttributeAdapter" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.Validators.RegularExpressionAttributeAdapter.GetClientValidationRules"></member>
+    <member name="T:System.Web.Http.Validation.Validators.RequiredAttributeAdapter"></member>
+    <member name="M:System.Web.Http.Validation.Validators.RequiredAttributeAdapter.#ctor(System.Web.Http.Metadata.ModelMetadata,System.Web.Http.Controllers.HttpActionContext,System.ComponentModel.DataAnnotations.RequiredAttribute)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.Validators.RequiredAttributeAdapter" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.Validators.RequiredAttributeAdapter.GetClientValidationRules"></member>
+    <member name="T:System.Web.Http.Validation.Validators.StringLengthAttributeAdapter"></member>
+    <member name="M:System.Web.Http.Validation.Validators.StringLengthAttributeAdapter.#ctor(System.Web.Http.Metadata.ModelMetadata,System.Web.Http.Controllers.HttpActionContext,System.ComponentModel.DataAnnotations.StringLengthAttribute)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.Validators.StringLengthAttributeAdapter" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.Validators.StringLengthAttributeAdapter.GetClientValidationRules"></member>
+    <member name="T:System.Web.Http.Validation.Validators.ValidatableObjectAdapter"></member>
+    <member name="M:System.Web.Http.Validation.Validators.ValidatableObjectAdapter.#ctor(System.Web.Http.Metadata.ModelMetadata,System.Web.Http.Controllers.HttpActionContext)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.Validation.Validators.ValidatableObjectAdapter" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.Validation.Validators.ValidatableObjectAdapter.Validate(System.Object)"></member>
+    <member name="T:System.Web.Http.ValueProviders.IEnumerableValueProvider"></member>
+    <member name="M:System.Web.Http.ValueProviders.IEnumerableValueProvider.GetKeysFromPrefix(System.String)"></member>
+    <member name="T:System.Web.Http.ValueProviders.IUriValueProviderFactory"></member>
+    <member name="T:System.Web.Http.ValueProviders.IValueProvider"></member>
+    <member name="M:System.Web.Http.ValueProviders.IValueProvider.ContainsPrefix(System.String)"></member>
+    <member name="M:System.Web.Http.ValueProviders.IValueProvider.GetValue(System.String)"></member>
+    <member name="T:System.Web.Http.ValueProviders.ValuePrefixAttribute">
+      <summary> This attribute is used optionally to assign a prefix to an action parameter to be used during model binding. </summary>
+    </member>
+    <member name="M:System.Web.Http.ValueProviders.ValuePrefixAttribute.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ValueProviders.ValuePrefixAttribute" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.ValueProviders.ValuePrefixAttribute.Prefix">
+      <summary> Gets or sets the name to consider as the parameter name during model binding </summary>
+    </member>
+    <member name="T:System.Web.Http.ValueProviders.ValueProviderAttribute">
+      <summary> This attribute is used to specify a custom <see cref="T:System.Web.Http.ValueProviders.ValueProviderFactory" />. </summary>
+    </member>
+    <member name="M:System.Web.Http.ValueProviders.ValueProviderAttribute.#ctor(System.Type)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ValueProviders.ValueProviderAttribute" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.ValueProviders.ValueProviderAttribute.ValueProviderFactoryType">
+      <summary> Gets or sets the type of the <see cref="T:System.Web.Http.ValueProviders.ValueProviderFactory" />. </summary>
+    </member>
+    <member name="T:System.Web.Http.ValueProviders.ValueProviderFactory"></member>
+    <member name="M:System.Web.Http.ValueProviders.ValueProviderFactory.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ValueProviders.ValueProviderFactory" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ValueProviders.ValueProviderFactory.GetValueProvider(System.Web.Http.Controllers.HttpActionContext)"></member>
+    <member name="T:System.Web.Http.ValueProviders.ValueProviderResult"></member>
+    <member name="M:System.Web.Http.ValueProviders.ValueProviderResult.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ValueProviders.ValueProviderResult" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ValueProviders.ValueProviderResult.#ctor(System.Object,System.String,System.Globalization.CultureInfo)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ValueProviders.ValueProviderResult" /> class.</summary>
+    </member>
+    <member name="P:System.Web.Http.ValueProviders.ValueProviderResult.AttemptedValue">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="M:System.Web.Http.ValueProviders.ValueProviderResult.ConvertTo(System.Type)"></member>
+    <member name="M:System.Web.Http.ValueProviders.ValueProviderResult.ConvertTo(System.Type,System.Globalization.CultureInfo)"></member>
+    <member name="P:System.Web.Http.ValueProviders.ValueProviderResult.Culture">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="P:System.Web.Http.ValueProviders.ValueProviderResult.RawValue">
+      <summary>Gets or sets {insert text here}.</summary>
+    </member>
+    <member name="T:System.Web.Http.ValueProviders.Providers.CompositeValueProvider"></member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.CompositeValueProvider.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ValueProviders.Providers.CompositeValueProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.CompositeValueProvider.#ctor(System.Collections.Generic.IList{System.Web.Http.ValueProviders.IValueProvider})">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ValueProviders.Providers.CompositeValueProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.CompositeValueProvider.ContainsPrefix(System.String)"></member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.CompositeValueProvider.GetKeysFromPrefix(System.String)"></member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.CompositeValueProvider.GetValue(System.String)"></member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.CompositeValueProvider.InsertItem(System.Int32,System.Web.Http.ValueProviders.IValueProvider)"></member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.CompositeValueProvider.SetItem(System.Int32,System.Web.Http.ValueProviders.IValueProvider)"></member>
+    <member name="T:System.Web.Http.ValueProviders.Providers.CompositeValueProviderFactory"></member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.CompositeValueProviderFactory.#ctor(System.Collections.Generic.IEnumerable{System.Web.Http.ValueProviders.ValueProviderFactory})">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ValueProviders.Providers.CompositeValueProviderFactory" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.CompositeValueProviderFactory.GetValueProvider(System.Web.Http.Controllers.HttpActionContext)"></member>
+    <member name="T:System.Web.Http.ValueProviders.Providers.KeyValueModelValueProvider">
+      <summary> This class provides a <see cref="T:System.Web.Http.ValueProviders.IValueProvider" /> facade over a <see cref="T:System.Net.Http.Formatting.IKeyValueModel" /> instance. </summary>
+    </member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.KeyValueModelValueProvider.#ctor(System.Net.Http.Formatting.IKeyValueModel,System.Globalization.CultureInfo)">
+      <summary> Creates a new instance of the <see cref="T:System.Web.Http.ValueProviders.Providers.KeyValueModelValueProvider" /> class. </summary>
+      <param name="provider">The inner <see cref="T:System.Net.Http.Formatting.IKeyValueModel" /> to use.  It may be null.</param>
+      <param name="culture">The culture to use.  It cannot be null.</param>
+    </member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.KeyValueModelValueProvider.ContainsPrefix(System.String)"></member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.KeyValueModelValueProvider.GetKeysFromPrefix(System.String)"></member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.KeyValueModelValueProvider.GetValue(System.String)"></member>
+    <member name="T:System.Web.Http.ValueProviders.Providers.KeyValueModelValueProviderFactory"></member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.KeyValueModelValueProviderFactory.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ValueProviders.Providers.KeyValueModelValueProviderFactory" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.KeyValueModelValueProviderFactory.GetValueProvider(System.Web.Http.Controllers.HttpActionContext)"></member>
+    <member name="T:System.Web.Http.ValueProviders.Providers.NameValueCollectionValueProvider"></member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.NameValueCollectionValueProvider.#ctor(System.Collections.Specialized.NameValueCollection,System.Globalization.CultureInfo)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ValueProviders.Providers.NameValueCollectionValueProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.NameValueCollectionValueProvider.#ctor(System.Func`1,System.Void)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ValueProviders.Providers.NameValueCollectionValueProvider" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.NameValueCollectionValueProvider.ContainsPrefix(System.String)"></member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.NameValueCollectionValueProvider.GetKeysFromPrefix(System.String)"></member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.NameValueCollectionValueProvider.GetValue(System.String)"></member>
+    <member name="T:System.Web.Http.ValueProviders.Providers.QueryStringValueProvider"></member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.QueryStringValueProvider.#ctor(System.Web.Http.Controllers.HttpActionContext,System.Globalization.CultureInfo)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ValueProviders.Providers.QueryStringValueProvider" /> class.</summary>
+    </member>
+    <member name="T:System.Web.Http.ValueProviders.Providers.QueryStringValueProviderFactory"></member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.QueryStringValueProviderFactory.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ValueProviders.Providers.QueryStringValueProviderFactory" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.QueryStringValueProviderFactory.GetValueProvider(System.Web.Http.Controllers.HttpActionContext)"></member>
+    <member name="T:System.Web.Http.ValueProviders.Providers.RouteDataValueProvider"></member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.RouteDataValueProvider.#ctor(System.Web.Http.Controllers.HttpActionContext,System.Globalization.CultureInfo)">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ValueProviders.Providers.RouteDataValueProvider" /> class.</summary>
+    </member>
+    <member name="T:System.Web.Http.ValueProviders.Providers.RouteDataValueProviderFactory"></member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.RouteDataValueProviderFactory.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.Http.ValueProviders.Providers.RouteDataValueProviderFactory" /> class.</summary>
+    </member>
+    <member name="M:System.Web.Http.ValueProviders.Providers.RouteDataValueProviderFactory.GetValueProvider(System.Web.Http.Controllers.HttpActionContext)"></member>
+  </members>
+</doc>
