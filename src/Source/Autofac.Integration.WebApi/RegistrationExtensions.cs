@@ -56,9 +56,7 @@ namespace Autofac.Integration.WebApi
         /// <param name="controllerAssemblies">Assemblies to scan for controllers.</param>
         /// <returns>Registration builder allowing the controller components to be customised.</returns>
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
-            RegisterApiControllers(
-                this ContainerBuilder builder,
-                params Assembly[] controllerAssemblies)
+            RegisterApiControllers(this ContainerBuilder builder, params Assembly[] controllerAssemblies)
         {
             return builder.RegisterAssemblyTypes(controllerAssemblies)
                 .Where(t => typeof(IHttpController).IsAssignableFrom(t) && t.Name.EndsWith("Controller"));
