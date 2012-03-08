@@ -42,7 +42,7 @@ namespace Autofac.Integration.WebApi
         /// <summary>
         /// Tag used to identify registrations that are scoped to the API request level.
         /// </summary>
-        internal static readonly string ApiRequestTag = "AutofacApiRequest";
+        internal static readonly string ApiRequestTag = "AutofacWebRequest";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacControllerFactory"/> class.

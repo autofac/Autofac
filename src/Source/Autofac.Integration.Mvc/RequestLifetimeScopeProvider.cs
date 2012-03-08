@@ -42,7 +42,7 @@ namespace Autofac.Integration.Mvc
         /// <summary>
         /// Tag used to identify registrations that are scoped to the HTTP request level.
         /// </summary>
-        internal static readonly object HttpRequestTag = "httpRequest";
+        internal static readonly object HttpRequestTag = "AutofacWebRequest";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestLifetimeScopeProvider"/> class.
