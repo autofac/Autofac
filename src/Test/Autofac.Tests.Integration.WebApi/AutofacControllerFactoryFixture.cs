@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Controllers;
+using System.Web.Http.Dispatcher;
 using System.Web.Http.Routing;
 using Autofac.Integration.WebApi;
 using Moq;
@@ -87,6 +88,29 @@ namespace Autofac.Tests.Integration.WebApi
             var controller = factory.CreateController(controllerContext, "Test");
 
             factory.ReleaseController(controller);
+
+            lifetimeScope.VerifyAll();
+        }
+
+        [Test]
+        public void ActivatorReturningNullControllerDisposesLifetimeScope()
+        {
+            var container = new Mock<ILifetimeScope>();
+            var lifetimeScope = new Mock<ILifetimeScope>();
+            var configuration = new HttpConfiguration();
+            var routeData = new Mock<IHttpRouteData>();
+            var requestMessage = new HttpRequestMessage();
+            var controllerContext = new HttpControllerContext(configuration, routeData.Object, requestMessage);
+            var activator = new Mock<IHttpControllerActivator>();
+            var factory = new AutofacControllerFactory(configuration, container.Object);
+
+            configuration.ServiceResolver.SetService(typeof(IHttpControllerActivator), activator.Object);
+
+            activator.Setup(mock => mock.Create(controllerContext, typeof(TestController))).Returns((IHttpController) null);
+            container.Setup(mock => mock.BeginLifetimeScope(_apiRequestTag)).Returns(lifetimeScope.Object);
+            lifetimeScope.Setup(mock => mock.Dispose()).Verifiable();
+
+            Assert.Throws<ArgumentNullException>(() => factory.CreateController(controllerContext, "Test"));
 
             lifetimeScope.VerifyAll();
         }

@@ -66,10 +66,19 @@ namespace Autofac.Integration.WebApi
             var lifetimeScope = _container.BeginLifetimeScope(ApiRequestTag);
             controllerContext.Request.Properties.Add(ApiRequestTag, lifetimeScope);
 
-            var controller = base.CreateController(controllerContext, controllerName);
-            _controllers.TryAdd(controller, lifetimeScope);
+            try
+            {
+                var controller = base.CreateController(controllerContext, controllerName);
+                if (controller != null)
+                    _controllers.TryAdd(controller, lifetimeScope);
 
-            return controller;
+                return controller;
+            }
+            catch (Exception)
+            {
+                lifetimeScope.Dispose();
+                throw;
+            }
         }
 
         /// <summary>
@@ -79,7 +88,7 @@ namespace Autofac.Integration.WebApi
         public override void ReleaseController(IHttpController controller)
         {
             ILifetimeScope lifetimeScope;
-            if (_controllers.TryRemove(controller, out lifetimeScope))
+            if (controller != null && _controllers.TryRemove(controller, out lifetimeScope))
                 if (lifetimeScope != null)
                     lifetimeScope.Dispose();
         }
