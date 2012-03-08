@@ -67,7 +67,7 @@ namespace Autofac.Integration.WebApi
         {
             var enumerableServiceType = typeof(IEnumerable<>).MakeGenericType(serviceType);
             var instance = _container.Resolve(enumerableServiceType);
-            return ((IEnumerable)instance).Cast<object>();
+            return (IEnumerable<object>)instance;
         }
     }
 }

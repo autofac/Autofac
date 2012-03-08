@@ -139,11 +139,7 @@ namespace Autofac.Integration.Mvc
         {
             var enumerableServiceType = typeof(IEnumerable<>).MakeGenericType(serviceType);
             var instance = RequestLifetimeScope.Resolve(enumerableServiceType);
-#if NET35
-            return ((IEnumerable)instance).Cast<object>();
-#else
             return (IEnumerable<object>)instance;
-#endif
         }
     }
 }

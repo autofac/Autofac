@@ -19,8 +19,10 @@
   <PropertyGroup>
     <AutofacSpecPath>$(PackageDefinitionPath)\Autofac</AutofacSpecPath>
     <AutofacSpec>$(AutofacSpecPath)\Autofac.nuspec</AutofacSpec>
-    <AutofacMvc3SpecPath>$(PackageDefinitionPath)\Autofac.Mvc3</AutofacMvc3SpecPath>
-    <AutofacMvc3Spec>$(AutofacMvc3SpecPath)\Autofac.Mvc3.nuspec</AutofacMvc3Spec>
+    <AutofacMvc4SpecPath>$(PackageDefinitionPath)\Autofac.Mvc4</AutofacMvc4SpecPath>
+    <AutofacMvc4Spec>$(AutofacMvc4SpecPath)\Autofac.Mvc4.nuspec</AutofacMvc4Spec>
+    <AutofacWebApiSpecPath>$(PackageDefinitionPath)\Autofac.WebApi</AutofacWebApiSpecPath>
+    <AutofacWebApiSpec>$(AutofacWebApiSpecPath)\Autofac.WebApi.nuspec</AutofacWebApiSpec>
     <AutofacWebSpecPath>$(PackageDefinitionPath)\Autofac.Web</AutofacWebSpecPath>
     <AutofacWebSpec>$(AutofacWebSpecPath)\Autofac.Web.nuspec</AutofacWebSpec>
     <AutofacWcfSpecPath>$(PackageDefinitionPath)\Autofac.Wcf</AutofacWcfSpecPath>
@@ -82,7 +84,7 @@
     <CallTarget Targets="Net40Build" />
     <CallTarget Targets="Net35Build" />
     <CallTarget Targets="Sl4Build" />
-	  <CallTarget Targets="Wp7Build" />
+    <CallTarget Targets="Wp7Build" />
   </Target>
 
   <Target Name="CopyAutofacLibs">
@@ -94,8 +96,12 @@
     <Copy SourceFiles="$(ArtifactTemp)\SL3-WP\Autofac.dll;$(ArtifactTemp)\SL3-WP\Autofac.xml" DestinationFolder="$(AutofacSpecPath)\lib\SL4-WindowsPhone71"  />
   </Target>
 
-  <Target Name="CopyAutofacMvc3Libs">
-    <Copy SourceFiles="$(ArtifactTemp)\NET40\Autofac.Integration.Mvc.dll" DestinationFolder="$(AutofacMvc3SpecPath)\lib\NET40"  />
+  <Target Name="CopyAutofacMvc4Libs">
+    <Copy SourceFiles="$(ArtifactTemp)\NET40\Autofac.Integration.Mvc.dll" DestinationFolder="$(AutofacMvc4SpecPath)\lib\NET40"  />
+  </Target>
+  
+  <Target Name="CopyAutofacWebApiLibs">
+    <Copy SourceFiles="$(ArtifactTemp)\NET40\Autofac.Integration.WebApi.dll" DestinationFolder="$(AutofacWebApiSpecPath)\lib\NET40"  />
   </Target>
 
   <Target Name="CopyAutofacWebLibs">
@@ -114,7 +120,8 @@
 
   <Target Name="CopyLibs">
     <CallTarget Targets="CopyAutofacLibs"/>
-    <CallTarget Targets="CopyAutofacMvc3Libs"/>
+    <CallTarget Targets="CopyAutofacMvc4Libs"/>
+	<CallTarget Targets="CopyAutofacWebApiLibs"/>
     <CallTarget Targets="CopyAutofacWebLibs" />
     <CallTarget Targets="CopyAutofacMefLibs"/>
     <CallTarget Targets="CopyAutofacWcfLibs" />
@@ -125,7 +132,7 @@
       <Output ItemName="PackageContent" TaskParameter="Include"/>
     </CreateItem>
     <Copy SourceFiles="@(PackageContent)" DestinationFiles="@(PackageContent->'$(PackageDefinitionPath)\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <CreateItem Include="$(AutofacSpec);$(AutofacMvc3Spec);$(AutofacWebSpec);$(AutofacMefSpec);$(AutofacWcfSpec);">
+    <CreateItem Include="$(AutofacSpec);$(AutofacMvc4Spec);$(AutofacWebApiSpec);$(AutofacWebSpec);$(AutofacMefSpec);$(AutofacWcfSpec);">
       <Output ItemName="NuGetSpec" TaskParameter="Include"/>
     </CreateItem>
     <FileUpdate Files="@(NuGetSpec)" Regex="0\.0\.0\.0" ReplacementText="$(Version)" />

@@ -63,9 +63,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Autofac_", "Autofac_", "{C6
 		Packages\Autofac\Autofac.nuspec = Packages\Autofac\Autofac.nuspec
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Autofac.Mvc3", "Autofac.Mvc3", "{5E69140E-DDCC-4D33-9D67-DBCB091E1640}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Autofac.Mvc4", "Autofac.Mvc4", "{5E69140E-DDCC-4D33-9D67-DBCB091E1640}"
 	ProjectSection(SolutionItems) = preProject
-		Packages\Autofac.Mvc3\Autofac.Mvc3.nuspec = Packages\Autofac.Mvc3\Autofac.Mvc3.nuspec
+		Packages\Autofac.Mvc4\Autofac.Mvc4.nuspec = Packages\Autofac.Mvc4\Autofac.Mvc4.nuspec
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{AB95C267-705A-4F13-AFEF-1CA063BE95CD}"
@@ -86,6 +86,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.WebApi", "Source\Autofac.Integration.WebApi\Autofac.Integration.WebApi.csproj", "{8437DAE1-0F24-44A9-A187-B34F52858A58}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.WebApi", "Test\Autofac.Tests.Integration.WebApi\Autofac.Tests.Integration.WebApi.csproj", "{AD8D8B7A-184E-428D-AD9C-BE1CEA8225A8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Autofac.WebApi", "Autofac.WebApi", "{E9539920-C273-4C8A-B5CA-B2350B6331E9}"
+	ProjectSection(SolutionItems) = preProject
+		Packages\Autofac.WebApi\Autofac.WebApi.nuspec = Packages\Autofac.WebApi\Autofac.WebApi.nuspec
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -235,21 +240,15 @@ Global
 		{8437DAE1-0F24-44A9-A187-B34F52858A58}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8437DAE1-0F24-44A9-A187-B34F52858A58}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8437DAE1-0F24-44A9-A187-B34F52858A58}.ReleaseNET35|Any CPU.ActiveCfg = Release|Any CPU
-		{8437DAE1-0F24-44A9-A187-B34F52858A58}.ReleaseNET35|Any CPU.Build.0 = Release|Any CPU
 		{8437DAE1-0F24-44A9-A187-B34F52858A58}.ReleaseSL4|Any CPU.ActiveCfg = Release|Any CPU
-		{8437DAE1-0F24-44A9-A187-B34F52858A58}.ReleaseSL4|Any CPU.Build.0 = Release|Any CPU
 		{8437DAE1-0F24-44A9-A187-B34F52858A58}.ReleaseWP7|Any CPU.ActiveCfg = Release|Any CPU
-		{8437DAE1-0F24-44A9-A187-B34F52858A58}.ReleaseWP7|Any CPU.Build.0 = Release|Any CPU
 		{AD8D8B7A-184E-428D-AD9C-BE1CEA8225A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AD8D8B7A-184E-428D-AD9C-BE1CEA8225A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD8D8B7A-184E-428D-AD9C-BE1CEA8225A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD8D8B7A-184E-428D-AD9C-BE1CEA8225A8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AD8D8B7A-184E-428D-AD9C-BE1CEA8225A8}.ReleaseNET35|Any CPU.ActiveCfg = Release|Any CPU
-		{AD8D8B7A-184E-428D-AD9C-BE1CEA8225A8}.ReleaseNET35|Any CPU.Build.0 = Release|Any CPU
 		{AD8D8B7A-184E-428D-AD9C-BE1CEA8225A8}.ReleaseSL4|Any CPU.ActiveCfg = Release|Any CPU
-		{AD8D8B7A-184E-428D-AD9C-BE1CEA8225A8}.ReleaseSL4|Any CPU.Build.0 = Release|Any CPU
 		{AD8D8B7A-184E-428D-AD9C-BE1CEA8225A8}.ReleaseWP7|Any CPU.ActiveCfg = Release|Any CPU
-		{AD8D8B7A-184E-428D-AD9C-BE1CEA8225A8}.ReleaseWP7|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -280,6 +279,7 @@ Global
 		{5E69140E-DDCC-4D33-9D67-DBCB091E1640} = {3BD47FB1-848D-4780-A089-0983D0F97953}
 		{3D2912F8-FBDC-4121-BF7E-5B5C2C9AA4EF} = {3BD47FB1-848D-4780-A089-0983D0F97953}
 		{B9A087C9-3A28-445C-A998-7D323BB1E963} = {3BD47FB1-848D-4780-A089-0983D0F97953}
+		{E9539920-C273-4C8A-B5CA-B2350B6331E9} = {3BD47FB1-848D-4780-A089-0983D0F97953}
 		{AB95C267-705A-4F13-AFEF-1CA063BE95CD} = {4020F810-7DBB-496E-8C85-2CDC5D63072C}
 	EndGlobalSection
 EndGlobal
