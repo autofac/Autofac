@@ -24,10 +24,12 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Dispatcher;
+using System.Web.Http.ModelBinding;
 using Autofac.Builder;
 using Autofac.Features.Scanning;
 
@@ -78,6 +80,86 @@ namespace Autofac.Integration.WebApi
             if (registration == null) throw new ArgumentNullException("registration");
 
             return registration.InstancePerMatchingLifetimeScope(AutofacControllerFactory.ApiRequestTag);
+        }
+
+        /// <summary>
+        /// Registers the <see cref="AutofacModelBinderProvider"/>.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        public static void RegisterModelBinderProvider(this ContainerBuilder builder)
+        {
+            if (builder == null) throw new ArgumentNullException("builder");
+
+            builder.RegisterType<AutofacModelBinderProvider>()
+                .As<ModelBinderProvider>()
+                .SingleInstance();
+        }
+
+        /// <summary>
+        /// Sets a provided registration to act as an <see cref="IModelBinder"/>
+        /// for the specified list of types.
+        /// </summary>
+        /// <param name="registration">
+        /// The registration for the type or object instance that will act as
+        /// the model binder.
+        /// </param>
+        /// <param name="types">
+        /// The list of model <see cref="System.Type"/> for which the <paramref name="registration" />
+        /// should be a model binder.
+        /// </param>
+        /// <typeparam name="TLimit">
+        /// Registration limit type.
+        /// </typeparam>
+        /// <typeparam name="TActivatorData">
+        /// Activator data type.
+        /// </typeparam>
+        /// <typeparam name="TRegistrationStyle">
+        /// Registration style.
+        /// </typeparam>
+        /// <returns>
+        /// An Autofac registration that can be modified as needed.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="registration" /> or <paramref name="types" /> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown if <paramref name="types" /> is empty or contains all <see langword="null" />
+        /// values.
+        /// </exception>
+        /// <remarks>
+        /// <para>
+        /// The declarative mechanism of registering model binders with Autofac
+        /// is through use of <see cref="Autofac.Integration.Mvc.RegistrationExtensions.RegisterModelBinders"/>
+        /// and the <see cref="Autofac.Integration.Mvc.ModelBinderTypeAttribute"/>.
+        /// This method is an imperative alternative.
+        /// </para>
+        /// <para>
+        /// The two mechanisms are mutually exclusive. If you register a model
+        /// binder using <see cref="Autofac.Integration.Mvc.RegistrationExtensions.RegisterModelBinders"/>
+        /// and register the same model binder with this method, the results
+        /// are not automatically merged together - standard dependency
+        /// registration/resolution rules will be used to manage the conflict.
+        /// </para>
+        /// <para>
+        /// Any <see langword="null" /> values provided in <paramref name="types" />
+        /// will be removed prior to registration.
+        /// </para>
+        /// </remarks>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> AsModelBinderForTypes<TLimit, TActivatorData, TRegistrationStyle>(this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration, params Type[] types)
+            where TActivatorData : IConcreteActivatorData
+            where TRegistrationStyle : SingleRegistrationStyle
+        {
+            if (registration == null)
+                throw new ArgumentNullException("registration");
+
+            if (types == null)
+                throw new ArgumentNullException("types");
+
+            var typeList = types.Where(type => type != null).ToList();
+            if (typeList.Count == 0)
+                throw new ArgumentException("Type list may not be empty or contain all null values.", "types");
+
+            return registration.As<IModelBinder>().WithMetadata(AutofacModelBinderProvider.MetadataKey, typeList);
         }
     }
 }

@@ -67,6 +67,7 @@
       <DependentUpon>AutofacControllerActivatorResources.resx</DependentUpon>
     </Compile>
     <Compile Include="AutofacControllerFactory.cs" />
+    <Compile Include="AutofacModelBinderProvider.cs" />
     <Compile Include="AutofacWebApiDependencyResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationExtensions.cs" />

@@ -23,9 +23,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Dispatcher;
+using System.Web.Http.ModelBinding;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
 using NUnit.Framework;
@@ -119,6 +121,28 @@ namespace Autofac.Tests.Integration.WebApi
             Assert.That(sharedInstance && rootScopeLifetime, Is.True);
 
             Assert.That(container.Resolve<TService>(), Is.InstanceOf<TInstance>());
+        }
+
+        [Test]
+        public void RegisterModelBinderProviderThrowsExceptionForNullBuilder()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => Autofac.Integration.WebApi.RegistrationExtensions.RegisterModelBinderProvider(null));
+            Assert.That(exception.ParamName, Is.EqualTo("builder"));
+        }
+
+        [Test]
+        public void RegisterModelBinderProviderRegistersSingleInstanceProvider()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterModelBinderProvider();
+            builder.RegisterInstance(new HttpConfiguration());
+            var container = builder.Build();
+
+            var resolvedProvider1 = container.Resolve<ModelBinderProvider>();
+            var resolvedProvider2 = container.Resolve<ModelBinderProvider>();
+
+            Assert.That(resolvedProvider1, Is.SameAs(resolvedProvider2));
         }
     }
 }
