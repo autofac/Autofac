@@ -129,7 +129,9 @@ namespace Autofac.Core.Lifetime
 
         void RaiseBeginning(ILifetimeScope scope)
         {
-            ChildLifetimeScopeBeginning(this, new LifetimeScopeBeginningEventArgs(scope));
+            var handler = ChildLifetimeScopeBeginning;
+            if (handler != null)
+                handler(this, new LifetimeScopeBeginningEventArgs(scope));
         }
 
         /// <summary>
@@ -227,7 +229,9 @@ namespace Autofac.Core.Lifetime
             lock (_synchRoot)
             {
                 var operation = new ResolveOperation(this);
-                ResolveOperationBeginning(this, new ResolveOperationBeginningEventArgs(operation));
+                var handler = ResolveOperationBeginning;
+                if (handler != null)
+                    handler(this, new ResolveOperationBeginningEventArgs(operation));
                 return operation.Execute(registration, parameters);
             }
         }
@@ -307,7 +311,9 @@ namespace Autofac.Core.Lifetime
         {
             if (disposing)
             {
-                CurrentScopeEnding(this, new LifetimeScopeEndingEventArgs(this));
+                var handler = CurrentScopeEnding;
+                if (handler != null)
+                    handler(this, new LifetimeScopeEndingEventArgs(this));
                 _disposer.Dispose();
             }
 
@@ -340,16 +346,16 @@ namespace Autofac.Core.Lifetime
         /// <summary>
         /// Fired when a new scope based on the current scope is beginning.
         /// </summary>
-        public event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning = delegate { };
+        public event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning;
 
         /// <summary>
         /// Fired when this scope is ending.
         /// </summary>
-        public event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding = delegate { };
-        
+        public event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding;
+
         /// <summary>
         /// Fired when a resolve operation is beginning in this scope.
         /// </summary>
-        public event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning = delegate { };
+        public event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning;
     }
 }

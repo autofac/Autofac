@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
 using Autofac.Util;
 
@@ -38,6 +39,7 @@ namespace Autofac.Core.Activators.Reflection
         readonly ConstructorInfo _ci;
         readonly Func<object>[] _valueRetrievers;
         readonly bool _canInstantiate;
+        readonly static Dictionary<ConstructorInfo, ConstructorInvoker> _constructorInvokers = new Dictionary<ConstructorInfo, ConstructorInvoker>();
 
         // We really need to report all non-bindable parameters, howevers some refactoring
         // will be necessary before this is possible. Adding this now to ease the
@@ -110,14 +112,21 @@ namespace Autofac.Core.Activators.Reflection
             for (var i = 0; i < _valueRetrievers.Length; ++i)
                 values[i] = _valueRetrievers[i].Invoke();
 
+            ConstructorInvoker constructorInvoker;
+            if (!_constructorInvokers.TryGetValue(TargetConstructor, out constructorInvoker))
+            {
+                constructorInvoker = GetConstructorInvoker(TargetConstructor);
+                _constructorInvokers.Add(TargetConstructor, constructorInvoker);
+            }
+
             try
             {
-                return TargetConstructor.Invoke(values);
+                return constructorInvoker(values);
             }
-            catch (TargetInvocationException tie)
+            catch (Exception ex)
             {
                 throw new DependencyResolutionException(
-                    string.Format(ConstructorParameterBindingResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType.Name), tie.InnerException);
+                    string.Format(ConstructorParameterBindingResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType.Name), ex);
             }
         }
 
@@ -128,10 +137,9 @@ namespace Autofac.Core.Activators.Reflection
         {
             get
             {
-                if (CanInstantiate)
-                    return string.Format(ConstructorParameterBindingResources.BoundConstructor, _ci);
-                
-                return string.Format(ConstructorParameterBindingResources.NonBindableConstructor, _ci, _firstNonBindableParameter);
+                return CanInstantiate 
+                    ? string.Format(ConstructorParameterBindingResources.BoundConstructor, _ci) 
+                    : string.Format(ConstructorParameterBindingResources.NonBindableConstructor, _ci, _firstNonBindableParameter);
             }
         }
 
@@ -140,6 +148,39 @@ namespace Autofac.Core.Activators.Reflection
         public override string ToString()
         {
             return Description;
+        }
+
+        delegate object ConstructorInvoker(params object[] args);
+
+        static ConstructorInvoker GetConstructorInvoker(ConstructorInfo constructorInfo)
+        {
+            var paramsInfo = constructorInfo.GetParameters();
+
+            var parametersExpression = Expression.Parameter(typeof(object[]), "args");
+            var argumentsExpression = new Expression[paramsInfo.Length];
+
+            for (int paramIndex = 0; paramIndex < paramsInfo.Length; paramIndex++)
+            {
+                var indexExpression = Expression.Constant(paramIndex);
+                var parameterType = paramsInfo[paramIndex].ParameterType;
+
+                var parameterIndexExpression = Expression.ArrayIndex(parametersExpression, indexExpression);
+                var convertExpression = Expression.Convert(parameterIndexExpression, parameterType);
+                argumentsExpression[paramIndex] = convertExpression;
+
+                if (!parameterType.IsValueType) continue;
+
+                var nullConditionExpression = Expression.Equal(
+                    parameterIndexExpression, Expression.Constant(null));
+                argumentsExpression[paramIndex] = Expression.Condition(
+                    nullConditionExpression, Expression.Default(parameterType), convertExpression);
+            }
+
+            var newExpression = Expression.New(constructorInfo, argumentsExpression);
+            var lambdaExpression = Expression.Lambda(
+                typeof(ConstructorInvoker), newExpression, parametersExpression);
+
+            return (ConstructorInvoker)lambdaExpression.Compile();
         }
     }
 }

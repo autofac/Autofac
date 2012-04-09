@@ -50,7 +50,7 @@ namespace Autofac.Core.Resolving
         /// can move upward to less nested scopes as components with wider sharing scopes are activated</param>
         public ResolveOperation(ISharingLifetimeScope mostNestedLifetimeScope)
         {
-            _mostNestedLifetimeScope = Enforce.ArgumentNotNull(mostNestedLifetimeScope, "mostNestedLifetimeScope");
+            _mostNestedLifetimeScope = mostNestedLifetimeScope;
             ResetSuccessfulActivations();
         }
 
@@ -117,7 +117,9 @@ namespace Autofac.Core.Resolving
 
             _activationStack.Push(activation);
 
-            InstanceLookupBeginning(this, new InstanceLookupBeginningEventArgs(activation));
+            var handler = InstanceLookupBeginning;
+            if (handler != null)
+                handler(this, new InstanceLookupBeginningEventArgs(activation));
 
             var instance = activation.Execute();
             _successfulActivations.Add(activation);
@@ -132,9 +134,9 @@ namespace Autofac.Core.Resolving
             return instance;
         }
 
-        public event EventHandler<ResolveOperationEndingEventArgs> CurrentOperationEnding = delegate { };
+        public event EventHandler<ResolveOperationEndingEventArgs> CurrentOperationEnding;
 
-        public event EventHandler<InstanceLookupBeginningEventArgs> InstanceLookupBeginning = delegate { };
+        public event EventHandler<InstanceLookupBeginningEventArgs> InstanceLookupBeginning;
 
         void CompleteActivations()
         {
@@ -160,11 +162,12 @@ namespace Autofac.Core.Resolving
 
         void End(Exception exception = null)
         {
-            if (!_ended)
-            {
-                _ended = true;
-                CurrentOperationEnding(this, new ResolveOperationEndingEventArgs(this, exception));
-            }
+            if (_ended) return;
+
+            _ended = true;
+            var handler = CurrentOperationEnding;
+            if (handler != null)
+                handler(this, new ResolveOperationEndingEventArgs(this, exception));
         }
     }
 }

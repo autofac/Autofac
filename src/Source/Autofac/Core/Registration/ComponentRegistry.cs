@@ -165,7 +165,9 @@ namespace Autofac.Core.Registration
 
             _registrations.Add(registration);
 
-            Registered(this, new ComponentRegisteredEventArgs(this, registration));
+            var handler = Registered;
+            if (handler != null)
+                handler(this, new ComponentRegisteredEventArgs(this, registration));
         }
 
         /// <summary>
@@ -201,7 +203,7 @@ namespace Autofac.Core.Registration
         /// Fired whenever a component is registered - either explicitly or via a
         /// <see cref="IRegistrationSource"/>.
         /// </summary>
-        public event EventHandler<ComponentRegisteredEventArgs> Registered = (s, e) => { };
+        public event EventHandler<ComponentRegisteredEventArgs> Registered;
 
         /// <summary>
         /// Add a registration source that will provide registrations on-the-fly.
@@ -217,7 +219,9 @@ namespace Autofac.Core.Registration
                 foreach (var serviceRegistrationInfo in _serviceInfo)
                     serviceRegistrationInfo.Value.Include(source);
 
-                RegistrationSourceAdded(this, new RegistrationSourceAddedEventArgs(this, source));
+                var handler = RegistrationSourceAdded;
+                if (handler != null)
+                    handler(this, new RegistrationSourceAddedEventArgs(this, source));
             }
         }
 
@@ -249,7 +253,7 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
         /// </summary>
-        public event EventHandler<RegistrationSourceAddedEventArgs> RegistrationSourceAdded = delegate { };
+        public event EventHandler<RegistrationSourceAddedEventArgs> RegistrationSourceAdded;
 
         ServiceRegistrationInfo GetInitializedServiceInfo(Service service)
         {
