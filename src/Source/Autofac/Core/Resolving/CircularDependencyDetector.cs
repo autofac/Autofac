@@ -37,7 +37,7 @@ namespace Autofac.Core.Resolving
         /// </summary>
         const int MaxResolveDepth = 50;
 
-        static string CreateDependencyGraphTo(IComponentRegistration registration, Stack<InstanceLookup> activationStack)
+        static string CreateDependencyGraphTo(IComponentRegistration registration, IEnumerable<InstanceLookup> activationStack)
         {
             if (registration == null) throw new ArgumentNullException("registration");
             if (activationStack == null) throw new ArgumentNullException("activationStack");
@@ -69,11 +69,9 @@ namespace Autofac.Core.Resolving
                     CircularDependencyDetectorResources.CircularDependency, CreateDependencyGraphTo(registration, activationStack)));
         }
 
-        static bool IsCircularDependency(IComponentRegistration registration, Stack<InstanceLookup> activationStack)
+        static bool IsCircularDependency(IComponentRegistration registration, IEnumerable<InstanceLookup> activationStack)
         {
-            if (registration == null) throw new ArgumentNullException("registration");
-            if (activationStack == null) throw new ArgumentNullException("activationStack");
-            return activationStack.Count(a => a.ComponentRegistration == registration) >= 1;
+            return activationStack.Any(a => a.ComponentRegistration == registration);
         }
     }
 }

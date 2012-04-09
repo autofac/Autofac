@@ -143,7 +143,7 @@ namespace Autofac.Core.Registration
         /// provided in order to skip the regular activator, by setting the Instance property in
         /// the provided event arguments.
         /// </summary>
-        public event EventHandler<PreparingEventArgs> Preparing = (s, e) => { };
+        public event EventHandler<PreparingEventArgs> Preparing;
 
         /// <summary>
         /// Called by the container when an instance is required.
@@ -152,8 +152,11 @@ namespace Autofac.Core.Registration
         /// <param name="parameters">Parameters for activation.</param>
         public void RaisePreparing(IComponentContext context, ref IEnumerable<Parameter> parameters)
         {
+            var handler = Preparing;
+            if (handler == null) return;
+
             var args = new PreparingEventArgs(context, this, parameters);
-            Preparing(this, args);
+            handler(this, args);
             parameters = args.Parameters;
         }
 
@@ -162,7 +165,7 @@ namespace Autofac.Core.Registration
         /// wrapped or switched at this time by setting the Instance property in
         /// the provided event arguments.
         /// </summary>
-        public event EventHandler<ActivatingEventArgs<object>> Activating = (s, e) => { };
+        public event EventHandler<ActivatingEventArgs<object>> Activating;
 
         /// <summary>
         /// Called by the container once an instance has been constructed.
@@ -172,15 +175,18 @@ namespace Autofac.Core.Registration
         /// <param name="instance">The instance.</param>
         public void RaiseActivating(IComponentContext context, IEnumerable<Parameter> parameters, ref object instance)
         {
+            var handler = Activating;
+            if (handler == null) return;
+
             var args = new ActivatingEventArgs<object>(context, this, parameters, instance);
-            Activating(this, args);
+            handler(this, args);
             instance = args.Instance;
         }
 
         /// <summary>
         /// Fired when the activation process for a new instance is complete.
         /// </summary>
-        public event EventHandler<ActivatedEventArgs<object>> Activated = (s, e) => { };
+        public event EventHandler<ActivatedEventArgs<object>> Activated;
 
         /// <summary>
         /// Called by the container once an instance has been fully constructed, including
@@ -191,7 +197,11 @@ namespace Autofac.Core.Registration
         /// <param name="instance">The instance.</param>
         public void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, object instance)
         {
-            Activated(this, new ActivatedEventArgs<object>(context, this, parameters, instance));
+            var handler = Activated;
+            if (handler == null) return;
+
+            var args = new ActivatedEventArgs<object>(context, this, parameters, instance);
+            handler(this, args);
         }
 
         /// <summary>

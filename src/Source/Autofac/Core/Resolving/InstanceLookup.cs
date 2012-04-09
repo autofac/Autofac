@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using Autofac.Util;
 
 namespace Autofac.Core.Resolving
 {
@@ -46,10 +45,8 @@ namespace Autofac.Core.Resolving
             IEnumerable<Parameter> parameters)
         {
             _parameters = parameters;
-            _componentRegistration = Enforce.ArgumentNotNull(registration, "registration");
-            _context = Enforce.ArgumentNotNull(context, "context");
-            if (mostNestedVisibleScope == null) throw new ArgumentNullException("mostNestedVisibleScope");
-            if (parameters == null) throw new ArgumentNullException("parameters");
+            _componentRegistration = registration;
+            _context = context;
             _activationScope = _componentRegistration.Lifetime.FindScope(mostNestedVisibleScope);
         }
 
@@ -66,7 +63,9 @@ namespace Autofac.Core.Resolving
             else
                 instance = _activationScope.GetOrCreateAndShare(_componentRegistration.Id, () => Activate(Parameters));
 
-            InstanceLookupEnding(this, new InstanceLookupEndingEventArgs(this, NewInstanceActivated));
+            var handler = InstanceLookupEnding;
+            if (handler != null)
+                handler(this, new InstanceLookupEndingEventArgs(this, NewInstanceActivated));
 
             return instance;
         }
@@ -93,14 +92,17 @@ namespace Autofac.Core.Resolving
 
         public void Complete()
         {
-            if (NewInstanceActivated)
-            {
-                CompletionBeginning(this, new InstanceLookupCompletionBeginningEventArgs(this));
+            if (!NewInstanceActivated) return;
 
-                _componentRegistration.RaiseActivated(this, Parameters, _newInstance);
+            var beginningHandler = CompletionBeginning;
+            if (beginningHandler != null)
+                beginningHandler(this, new InstanceLookupCompletionBeginningEventArgs(this));
 
-                CompletionEnding(this, new InstanceLookupCompletionEndingEventArgs(this));
-            }
+            _componentRegistration.RaiseActivated(this, Parameters, _newInstance);
+
+            var endingHandler = CompletionEnding;
+            if (endingHandler != null)
+                endingHandler(this, new InstanceLookupCompletionEndingEventArgs(this));
         }
 
         public IComponentRegistry ComponentRegistry
@@ -119,10 +121,10 @@ namespace Autofac.Core.Resolving
 
         public IEnumerable<Parameter> Parameters { get { return _parameters; } }
 
-        public event EventHandler<InstanceLookupEndingEventArgs> InstanceLookupEnding = delegate { };
+        public event EventHandler<InstanceLookupEndingEventArgs> InstanceLookupEnding;
 
-        public event EventHandler<InstanceLookupCompletionBeginningEventArgs> CompletionBeginning = delegate { };
+        public event EventHandler<InstanceLookupCompletionBeginningEventArgs> CompletionBeginning;
 
-        public event EventHandler<InstanceLookupCompletionEndingEventArgs> CompletionEnding = delegate { };
+        public event EventHandler<InstanceLookupCompletionEndingEventArgs> CompletionEnding;
     }
 }
