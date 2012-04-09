@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Autofac.Builder;
 using Autofac.Features.Indexed;
 
 #if !WINDOWS_PHONE
+using Autofac.Tests.Scenarios.ScannedAssembly;
 using Moq;
 #endif
 
@@ -139,6 +141,30 @@ namespace Autofac.Tests
             var container = target.Build();
             Assert.IsTrue(mod.ConfigureCalled);
             Assert.IsTrue(container.IsRegistered<object>());
+        }
+
+        [Test]
+        public void RegisterAssemblyModules()
+        {
+            var assembly = typeof(AComponent).Assembly;
+            var builder = new ContainerBuilder();
+            builder.RegisterAssemblyModules(assembly);
+            var container = builder.Build();
+
+            Assert.That(container.IsRegistered<AComponent>(), Is.True);
+            Assert.That(container.IsRegistered<BComponent>(), Is.True);
+        }
+
+        [Test]
+        public void RegisterAssemblyModulesOfType()
+        {
+            var assembly = typeof(AComponent).Assembly;
+            var builder = new ContainerBuilder();
+            builder.RegisterAssemblyModules<AModule>(assembly);
+            var container = builder.Build();
+
+            Assert.That(container.IsRegistered<AComponent>(), Is.True);
+            Assert.That(container.IsRegistered<BComponent>(), Is.False);
         }
 
         [Test]
