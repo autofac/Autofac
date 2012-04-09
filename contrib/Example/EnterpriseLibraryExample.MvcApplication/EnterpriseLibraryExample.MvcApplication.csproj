@@ -40,13 +40,13 @@
 		<Reference Include="Autofac.Integration.Mvc">
 			<HintPath>..\..\Resource\Library\Autofac\Autofac.Integration.Mvc.dll</HintPath>
 		</Reference>
-		<Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+		<Reference Include="Microsoft.Practices.EnterpriseLibrary.Common">
 			<HintPath>..\..\Resource\Library\EnterpriseLibrary\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
 		</Reference>
-		<Reference Include="Microsoft.Practices.EnterpriseLibrary.ExceptionHandling, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+		<Reference Include="Microsoft.Practices.EnterpriseLibrary.ExceptionHandling">
 			<HintPath>Library\Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.dll</HintPath>
 		</Reference>
-		<Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+		<Reference Include="Microsoft.Practices.ServiceLocation">
 			<HintPath>..\..\Resource\Library\EnterpriseLibrary\Microsoft.Practices.ServiceLocation.dll</HintPath>
 		</Reference>
 		<Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
