@@ -34,7 +34,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\..\SharedKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\..\SharedKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -55,10 +55,10 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\GlobalAssemblyInfo.cs">
+    <Compile Include="..\..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\VersionAssemblyInfo.cs">
+    <Compile Include="..\..\..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AutofacDependencyResolver.cs" />
@@ -79,11 +79,6 @@
       <DependentUpon>RequestLifetimeScopeProviderResources.resx</DependentUpon>
     </Compile>
     <Compile Include="ViewRegistrationSource.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\SharedKey.snk">
-      <Link>SharedKey.snk</Link>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Autofac\Autofac.csproj">
