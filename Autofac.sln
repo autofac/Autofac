@@ -16,6 +16,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extras.Tests", "Extras.Tests", "{98A6896C-CD9D-478F-B74F-D600576C8617}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A08F3DAB-E605-4245-A54F-A46A573C0225}"
+	ProjectSection(SolutionItems) = preProject
+		SharedKey.snk = SharedKey.snk
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
