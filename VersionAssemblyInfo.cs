@@ -8,15 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
-[assembly: AssemblyVersion("2.6.1.841")]
-[assembly: AssemblyFileVersion("2.6.1.841")]
+[assembly: AssemblyVersion("0.0.0.0")]
+[assembly: AssemblyFileVersion("0.0.0.0")]
 [assembly: AssemblyConfiguration("Release built on 2012-03-05 11:24")]
-
-
-[assembly: System.Security.SecurityTransparent]
-[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level2)]

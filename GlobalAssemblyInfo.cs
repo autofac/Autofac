@@ -1,15 +1,15 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
-
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
+using System.Security;
 
 [assembly: AssemblyCompany("Autofac Project - http://autofac.org")]
 [assembly: AssemblyProduct("Autofac")]
 [assembly: AssemblyCopyright("Copyright © 2011 Autofac Contributors")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+
+[assembly: SecurityTransparent]
+[assembly: SecurityRules(SecurityRuleSet.Level2)]
 
 #if !WINDOWS_PHONE
 [assembly: ComVisible(false)]
