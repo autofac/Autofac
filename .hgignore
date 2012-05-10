@@ -1,13 +1,14 @@
-glob:contrib/Build
+# Build Output
 glob:*/bin/
 glob:*/obj/
-glob:*/_ReSharper*
-glob:src/Build
 glob:TestResult.xml
-glob:*.suo
-glob:contrib/Resource/Library/Autofac/*.dll
-glob:contrib/Resource/Library/Autofac/*.XML
-glob:Build/
+
+# Per-User Development Artifacts
+glob:*/_ReSharper*
 glob:*.user
-glob:src/PackageBuild
+glob:*.suo
 glob:*.docstates
+
+# NuGet Packages
+glob:packages/Moq*
+glob:packages/NUnit*

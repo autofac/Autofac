@@ -302,9 +302,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\SharedKey.snk">
-      <Link>SharedKey.snk</Link>
-    </None>
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml" />
   </ItemGroup>
