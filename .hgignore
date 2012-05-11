@@ -10,5 +10,7 @@ glob:*.suo
 glob:*.docstates
 
 # NuGet Packages
+glob:packages/Iesi*
 glob:packages/Moq*
+glob:packages/NHibernate*
 glob:packages/NUnit*
