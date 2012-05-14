@@ -1,7 +1,0 @@
-<TestRunner>
-	<FriendlyName>NUnit {0}.{1}.{2}</FriendlyName>
-	<AssemblyPath>..\nunit.tdnet.dll</AssemblyPath>
-	<TypeName>NUnit.AddInRunner.NUnitTestRunner</TypeName>
-	<TargetResolution>Reference</TargetResolution>
-	<ApartmentState>MTA</ApartmentState>
-</TestRunner>
