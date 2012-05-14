@@ -21,10 +21,8 @@ namespace AutofacContrib.Multitenant.Wcf
         /// </value>
         public IContainer Container
         {
-            [SecuritySafeCritical]
             get;
 
-            [SecuritySafeCritical]
             private set;
         }
 
@@ -51,7 +49,6 @@ namespace AutofacContrib.Multitenant.Wcf
         /// Thrown if <paramref name="container" /> or <paramref name="serviceData" />
         /// is <see langword="null" />.
         /// </exception>
-        [SecuritySafeCritical]
         public AutofacInstanceProvider(IContainer container, ServiceImplementationData serviceData)
         {
             if (container == null)
@@ -87,7 +84,6 @@ namespace AutofacContrib.Multitenant.Wcf
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="instanceContext" /> is <see langword="null" />.
         /// </exception>
-        [SecuritySafeCritical]
         public object GetInstance(InstanceContext instanceContext, Message message)
         {
             if (instanceContext == null)
@@ -107,7 +103,6 @@ namespace AutofacContrib.Multitenant.Wcf
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="instanceContext" /> is <see langword="null" />.
         /// </exception>
-        [SecuritySafeCritical]
         public void ReleaseInstance(InstanceContext instanceContext, object instance)
         {
             if (instanceContext == null)

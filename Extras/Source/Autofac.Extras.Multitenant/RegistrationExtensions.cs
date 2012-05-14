@@ -26,7 +26,6 @@ namespace AutofacContrib.Multitenant
         /// component created per tenant.
         /// </para>
         /// </remarks>
-        [SecuritySafeCritical]
         public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerTenant<TLimit, TActivatorData, TRegistrationStyle>(
             this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration)
         {

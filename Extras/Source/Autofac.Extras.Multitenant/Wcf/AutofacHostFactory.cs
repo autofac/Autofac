@@ -50,10 +50,8 @@ namespace AutofacContrib.Multitenant.Wcf
         /// </value>
         public static IContainer Container
         {
-            [SecuritySafeCritical]
             get;
 
-            [SecuritySafeCritical]
             set;
         }
 
@@ -107,6 +105,7 @@ namespace AutofacContrib.Multitenant.Wcf
         /// Thrown if the <see cref="AutofacContrib.Multitenant.Wcf.AutofacHostFactory.Container"/>
         /// is <see langword="null" />.
         /// </exception>
+        [SecuritySafeCritical]
         public override ServiceHostBase CreateServiceHost(string constructorString, Uri[] baseAddresses)
         {
             if (constructorString == null)

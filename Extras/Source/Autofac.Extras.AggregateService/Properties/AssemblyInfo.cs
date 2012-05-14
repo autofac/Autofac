@@ -1,4 +1,4 @@
 ﻿using System.Reflection;
 
-[assembly: AssemblyTitle("AutofacContrib.AggregateService")]
+[assembly: AssemblyTitle("Autofac.Extras.AggregateService")]
 [assembly: AssemblyDescription("Autofac Aggregate Service Module")]

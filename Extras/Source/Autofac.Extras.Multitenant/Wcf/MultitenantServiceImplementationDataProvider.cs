@@ -12,6 +12,7 @@ namespace AutofacContrib.Multitenant.Wcf
     /// Service implementation data provider that returns multitenant-aware
     /// service hosting information.
     /// </summary>
+    [SecurityCritical]
     public class MultitenantServiceImplementationDataProvider : IServiceImplementationDataProvider
     {
         /// <summary>

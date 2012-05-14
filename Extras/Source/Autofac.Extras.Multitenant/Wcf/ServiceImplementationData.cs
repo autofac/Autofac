@@ -48,10 +48,8 @@ namespace AutofacContrib.Multitenant.Wcf
         /// </value>
         public Func<ILifetimeScope, object> ImplementationResolver
         {
-            [SecuritySafeCritical]
             get;
 
-            [SecuritySafeCritical]
             set;
         }
     }

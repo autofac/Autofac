@@ -1,4 +1,4 @@
 ﻿using System.Reflection;
 
-[assembly: AssemblyTitle("AutofacContrib.CommonServiceLocator")]
-[assembly: AssemblyDescription("Autofac Adapter for the CommonServiceLocator")]
+[assembly: AssemblyTitle("Autofac.Extras.CommonServiceLocator")]
+[assembly: AssemblyDescription("Autofac Adapter for the Microsoft CommonServiceLocator")]

@@ -1,4 +1,4 @@
 using System.Reflection;
 
-[assembly: AssemblyTitle("AutofacContrib.DomainServices")]
-[assembly: AssemblyDescription("Autofac Integration for Ria Services")]
+[assembly: AssemblyTitle("Autofac.Extras.DomainServices")]
+[assembly: AssemblyDescription("Autofac Integration for RIA Services")]

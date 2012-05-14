@@ -51,7 +51,6 @@ namespace AutofacContrib.Multitenant.Wcf
         /// <exception cref="System.ArgumentException">
         /// Thrown if <paramref name="value" /> is empty.
         /// </exception>
-        [SecuritySafeCritical]
         public virtual ServiceImplementationData GetServiceImplementationData(string value)
         {
             if (value == null)

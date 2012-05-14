@@ -24,10 +24,8 @@ namespace AutofacContrib.Multitenant.Wcf
 		/// </value>
 		public IContainer Container
 		{
-			[SecuritySafeCritical]
 			get;
 
-			[SecuritySafeCritical]
 			private set;
 		}
 
@@ -50,7 +48,6 @@ namespace AutofacContrib.Multitenant.Wcf
 		/// Data about which service type should be hosted and how to resolve
 		/// the type to use for the service implementation.
 		/// </param>
-		[SecuritySafeCritical]
 		public AutofacDependencyInjectionServiceBehavior(IContainer container, ServiceImplementationData serviceData)
 		{
 			if (container == null)

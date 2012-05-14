@@ -28,7 +28,6 @@ namespace AutofacContrib.Multitenant
     /// </para>
     /// </remarks>
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix", Justification = "This builder behaves like a collection but it is specifically for building an aggregate action, not just collecting them.")]
-    [SecuritySafeCritical]
     public class ConfigurationActionBuilder : List<Action<ContainerBuilder>>
     {
         /// <summary>

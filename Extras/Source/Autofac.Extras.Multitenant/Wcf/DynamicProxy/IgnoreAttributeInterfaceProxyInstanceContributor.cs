@@ -22,7 +22,7 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
 	/// does except it doesn't copy over type-level non-inherited attributes.
 	/// </para>
 	/// </remarks>
-    [SecuritySafeCritical]
+    [SecurityCritical]
     public class IgnoreAttributeInterfaceProxyInstanceContributor : InterfaceProxyInstanceContributor
 	{
 		/// <summary>
@@ -31,7 +31,7 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
 		/// <param name="targetType">Type of the target to proxy.</param>
 		/// <param name="proxyGeneratorId">The proxy generator ID.</param>
 		/// <param name="interfaces">The additional interfaces to implement.</param>
-		public IgnoreAttributeInterfaceProxyInstanceContributor(Type targetType, string proxyGeneratorId, Type[] interfaces)
+        public IgnoreAttributeInterfaceProxyInstanceContributor(Type targetType, string proxyGeneratorId, Type[] interfaces)
 			: base(targetType, proxyGeneratorId, interfaces)
 		{
 		}
@@ -55,7 +55,7 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
 		/// attributes and copies them over from the proxy target.
 		/// </para>
 		/// </remarks>
-        [SecuritySafeCritical]
+        [SecurityCritical]
         public override void Generate(ClassEmitter @class, ProxyGenerationOptions options)
 		{
 			if (@class == null)

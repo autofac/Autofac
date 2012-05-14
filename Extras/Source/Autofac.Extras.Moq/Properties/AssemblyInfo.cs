@@ -1,4 +1,4 @@
 using System.Reflection;
 
-[assembly: AssemblyTitle("AutofacContrib.Moq")]
+[assembly: AssemblyTitle("Autofac.Extras.Moq")]
 [assembly: AssemblyDescription("Autofac Moq Integration")]

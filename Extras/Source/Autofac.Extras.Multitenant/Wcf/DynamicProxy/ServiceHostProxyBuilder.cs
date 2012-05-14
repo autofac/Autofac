@@ -4,6 +4,7 @@ using System.Security;
 using AutofacContrib.Multitenant.Properties;
 using Castle.DynamicProxy;
 using Castle.DynamicProxy.Generators;
+using Castle.DynamicProxy.Internal;
 
 namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
 {
@@ -19,7 +20,7 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
 	/// by WCF.
 	/// </para>
 	/// </remarks>
-	[SecuritySafeCritical]
+    [SecurityCritical]
 	public class ServiceHostProxyBuilder : DefaultProxyBuilder
 	{
 		/// <summary>
@@ -38,7 +39,7 @@ namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
 			bool isInternalNotNested = target.IsVisible == false && isTargetNested == false;
 
 			bool internalAndVisibleToDynProxy = (isInternalNotNested || isNestedAndInternal) &&
-			InternalsHelper.IsInternalToDynamicProxy(target.Assembly);
+			InternalsUtil.IsInternalToDynamicProxy(target.Assembly);
 			var isAccessible = target.IsPublic || target.IsNestedPublic || internalAndVisibleToDynProxy;
 
 			if (!isAccessible)
