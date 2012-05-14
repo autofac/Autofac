@@ -10,7 +10,11 @@ glob:*.suo
 glob:*.docstates
 
 # NuGet Packages
+glob:packages/Castle*
+glob:packages/Common*
+glob:packages/EnterpriseLibrary*
 glob:packages/Iesi*
 glob:packages/Moq*
 glob:packages/NHibernate*
 glob:packages/NUnit*
+glob:packages/Unity*
