@@ -76,6 +76,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\VersionAssemblyInfo.cs">
+      <Link>Properties\VersionAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Dependencies\BaseDependency.cs" />
     <Compile Include="Dependencies\DefaultTenantDependency.cs" />
     <Compile Include="Dependencies\IDependency.cs" />
