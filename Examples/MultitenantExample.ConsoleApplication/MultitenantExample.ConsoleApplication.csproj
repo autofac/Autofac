@@ -67,9 +67,6 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Autofac">
-      <HintPath>..\..\Resource\Library\Autofac\Autofac.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -91,9 +88,13 @@
     <Compile Include="Tenant2Dependency.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Source\AutofacContrib.Multitenant\AutofacContrib.Multitenant.csproj">
-      <Project>{321CEF70-1C21-4CF0-BE04-4F72427A88D6}</Project>
-      <Name>AutofacContrib.Multitenant</Name>
+    <ProjectReference Include="..\..\Core\Source\Autofac\Autofac.csproj">
+      <Project>{7d018b3e-34a3-423d-ac35-12731f4e0a2c}</Project>
+      <Name>Autofac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Extras\Source\Autofac.Extras.Multitenant\Autofac.Extras.Multitenant.csproj">
+      <Project>{321cef70-1c21-4cf0-be04-4f72427a88d6}</Project>
+      <Name>Autofac.Extras.Multitenant</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

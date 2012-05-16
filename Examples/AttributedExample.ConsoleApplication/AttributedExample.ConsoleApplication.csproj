@@ -67,9 +67,6 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Autofac">
-      <HintPath>..\..\Resource\Library\Autofac\Autofac.dll</HintPath>
-    </Reference>
     <Reference Include="Stateless">
       <HintPath>..\..\Resource\Library\stateless\Stateless.dll</HintPath>
     </Reference>
@@ -97,9 +94,13 @@
     <Compile Include="StateTypes\WorkflowTrigger.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Source\AutofacContrib.Attributed\AutofacContrib.Attributed.csproj">
-      <Project>{D8715248-94C1-4556-8A81-7E338D68FE96}</Project>
-      <Name>AutofacContrib.Attributed</Name>
+    <ProjectReference Include="..\..\Core\Source\Autofac\Autofac.csproj">
+      <Project>{7d018b3e-34a3-423d-ac35-12731f4e0a2c}</Project>
+      <Name>Autofac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Extras\Source\Autofac.Extras.Attributed\Autofac.Extras.Attributed.csproj">
+      <Project>{d8715248-94c1-4556-8a81-7e338d68fe96}</Project>
+      <Name>Autofac.Extras.Attributed</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
