@@ -1,4 +1,4 @@
 ﻿using System.Reflection;
 
-[assembly: AssemblyTitle("AutofacContrib.Tests.Multitenant")]
+[assembly: AssemblyTitle("Autofac.Extras.Tests.Multitenant")]
 [assembly: AssemblyDescription("Tests for the Autofac multitenancy feature.")]

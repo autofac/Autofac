@@ -12,6 +12,10 @@
     <AssemblyName>AutofacContrib.Tests.Attributed</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\..\SharedKey.snk</AssemblyOriginatorKeyFile>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,12 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Autofac, Version=0.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Resource\Library\Autofac\Autofac.dll</HintPath>
-    </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>..\..\Resource\Tool\NUnit\nunit.framework.dll</HintPath>
+      <HintPath>..\..\..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -48,6 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\VersionAssemblyInfo.cs">
+      <Link>Properties\VersionAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="CombinationalWeakTypedAttributeScenarioTestFixture.cs" />
     <Compile Include="MetadataHelperTestFixture.cs" />
     <Compile Include="MetadataModuleTestFixture.cs" />
@@ -67,12 +73,20 @@
     <Compile Include="WeakTypedScenarioMetadataModuleTestFixture.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Source\AutofacContrib.Attributed\AutofacContrib.Attributed.csproj">
-      <Project>{D8715248-94C1-4556-8A81-7E338D68FE96}</Project>
-      <Name>AutofacContrib.Attributed</Name>
+    <ProjectReference Include="..\..\..\Core\Source\Autofac\Autofac.csproj">
+      <Project>{7d018b3e-34a3-423d-ac35-12731f4e0a2c}</Project>
+      <Name>Autofac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Source\Autofac.Extras.Attributed\Autofac.Extras.Attributed.csproj">
+      <Project>{d8715248-94c1-4556-8a81-7e338d68fe96}</Project>
+      <Name>Autofac.Extras.Attributed</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

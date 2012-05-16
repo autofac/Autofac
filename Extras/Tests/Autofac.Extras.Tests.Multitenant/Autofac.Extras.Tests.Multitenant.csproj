@@ -11,9 +11,13 @@
     <RootNamespace>AutofacContrib.Tests.Multitenant</RootNamespace>
     <AssemblyName>AutofacContrib.Tests.Multitenant</AssemblyName>
     <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\..\SharedKey.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion Condition="$(TargetFrameworkVersion)==''">v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile Condition="$(TargetFrameworkVersion)==''">
     </TargetFrameworkProfile>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,14 +37,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Autofac">
-      <HintPath>..\..\Resource\Library\Autofac\Autofac.dll</HintPath>
-    </Reference>
     <Reference Include="Castle.Core">
-      <HintPath>..\..\Resource\Library\Castle\Castle.Core.dll</HintPath>
+      <HintPath>..\..\..\packages\Castle.Core.3.0.0.4001\lib\net40-client\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>..\..\Resource\Tool\NUnit\framework\nunit.framework.dll</HintPath>
+      <HintPath>..\..\..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -54,10 +55,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Source\GlobalAssemblyInfo.cs">
+    <Compile Include="..\..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\Source\VersionAssemblyInfo.cs">
+    <Compile Include="..\..\..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="ConfigurationActionBuilderFixture.cs" />
@@ -91,13 +92,20 @@
     <Compile Include="Web\RequestParameterTenantIdentificationStrategyFixture.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Source\AutofacContrib.Multitenant\AutofacContrib.Multitenant.csproj">
-      <Project>{321CEF70-1C21-4CF0-BE04-4F72427A88D6}</Project>
-      <Name>AutofacContrib.Multitenant</Name>
+    <ProjectReference Include="..\..\..\Core\Source\Autofac\Autofac.csproj">
+      <Project>{7d018b3e-34a3-423d-ac35-12731f4e0a2c}</Project>
+      <Name>Autofac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Source\Autofac.Extras.Multitenant\Autofac.Extras.Multitenant.csproj">
+      <Project>{321cef70-1c21-4cf0-be04-4f72427a88d6}</Project>
+      <Name>Autofac.Extras.Multitenant</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
