@@ -53,7 +53,7 @@
 	</Target>
 	<Target Name="Test">
 		<ItemGroup>
-			<TestAssemblies Include="%(TestProject.RootDir)%(TestProject.Directory)\bin\$(BuildConfiguration)\Autofac.Tests*.dll" />
+			<TestAssemblies Include="%(TestProject.RootDir)%(TestProject.Directory)\bin\$(BuildConfiguration)\Autofac*.Tests*.dll" />
 			<NUnitConsole Include="$(MSBuildProjectDirectory)\packages\NUnit.Runners.*\tools\nunit-console.exe" />
 		</ItemGroup>
 		<PropertyGroup>
