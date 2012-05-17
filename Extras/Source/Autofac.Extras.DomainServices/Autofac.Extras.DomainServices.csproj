@@ -39,9 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.ServiceModel.DomainServices.Server">
-      <HintPath>..\..\Resource\Library\RIAServices\System.ServiceModel.DomainServices.Server.dll</HintPath>
-    </Reference>
+    <Reference Include="System.ServiceModel.DomainServices.Server, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\GlobalAssemblyInfo.cs">
