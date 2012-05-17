@@ -27,7 +27,7 @@
 
 	<Target Name="All">
 		<CallTarget Targets="UpdateVersion" Condition="'$(AssemblyVersion)' !='0.0.0.0'" />
-		<CallTarget Targets="Clean;Compile" />
+		<CallTarget Targets="Clean;Compile;Test" />
 	</Target>
 	<Target Name="Clean">
 		<RemoveDir Directories="$(BuildDirectory)" ContinueOnError="true" />
@@ -50,6 +50,18 @@
 				Exclude="**\*.vshost.*" />
 		</ItemGroup>
 		<Copy SourceFiles="@(SourceOutputList)" DestinationFolder="$(BuildDirectory)\bin" />
+	</Target>
+	<Target Name="Test">
+		<ItemGroup>
+			<TestAssemblies Include="%(TestProject.RootDir)%(TestProject.Directory)\bin\$(BuildConfiguration)\Autofac.Tests*.dll" />
+			<NUnitConsole Include="$(MSBuildProjectDirectory)\packages\NUnit.Runners.*\tools\nunit-console.exe" />
+		</ItemGroup>
+		<PropertyGroup>
+			<TestResultsFile>$(BuildDirectory)\log\TestResults.xml</TestResultsFile>
+			<NUnitCommandLineArgs>@(TestAssemblies->'%(FullPath)', ' ') /xml:$(TestResultsFile) /framework:net-4.0</NUnitCommandLineArgs>
+		</PropertyGroup>
+		<MakeDir Directories="$(BuildDirectory)\log" Condition="!Exists('$(BuildDirectory)\log')" />
+		<Exec Command="&quot;%(NUnitConsole.FullPath)&quot; $(NUnitCommandLineArgs)" />
 	</Target>
 	<Target Name="UpdateVersion">
 		<AssemblyInfo
