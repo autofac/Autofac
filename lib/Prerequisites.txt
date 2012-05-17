@@ -1,7 +1,0 @@
-These prerequisites are not distributed within this folder and must be installed separately
-
-ASP.NET MVC RC 2 or later has to be registered in the global assembly cache. 
-
-Download link: http://www.microsoft.com/downloads/details.aspx?displaylang=en&FamilyID=ee4b2e97-8a72-449a-82d2-2f720d421031
-
-To build the documentation, download the latest Sandcastle release from http://www.codeplex.com/Sandcastle.
