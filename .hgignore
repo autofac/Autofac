@@ -1,7 +1,7 @@
 # Build Output
 glob:*/bin/
 glob:*/obj/
-glob:TestResult.xml
+glob:build_output
 
 # Per-User Development Artifacts
 glob:*/_ReSharper*
