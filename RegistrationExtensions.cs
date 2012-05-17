@@ -7,12 +7,12 @@ using Autofac.Core;
 using Autofac.Features.Scanning;
 using Castle.DynamicProxy;
 
-namespace AutofacContrib.DynamicProxy2
+namespace Autofac.Extras.DynamicProxy2
 {
     public static class RegistrationExtensions
     {
         static readonly ProxyGenerator ProxyGenerator = new ProxyGenerator();
-        const string InterceptorsPropertyName = "AutofacContrib.DynamicProxy2.RegistrationExtensions.InterceptorsPropertyName";
+        const string InterceptorsPropertyName = "Autofac.Extras.DynamicProxy2.RegistrationExtensions.InterceptorsPropertyName";
         static readonly IEnumerable<Service> EmptyServices = new Service[0];
 
         /// <summary>
