@@ -59,6 +59,15 @@
 	</Target>
 	<Target Name="Compile">
 		<MSBuild Projects="%(SolutionFile.FullPath)" Targets="Build" Properties="Configuration=$(BuildConfiguration)" />
+
+		<!--
+			The current build only targets .NET 4.0. It finds all the build output and puts
+			it in bin\NET40. (Note "NET40" is what NuGet uses as the framework ID for .NET 4.)
+
+			When more platforms are targeted, put the appropriate build output into bin\XYZ where
+			XYZ is the associated NuGet framework identifier. This will allow easier convention-based
+			NuGet packaging to occur.
+		-->
 		<ItemGroup>
 			<SourceOutputList
 				Include="
@@ -68,20 +77,72 @@
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.config"
 				Exclude="**\*.vshost.*;**\*.CodeAnalysis.*" />
 		</ItemGroup>
-		<Copy SourceFiles="@(SourceOutputList)" DestinationFolder="$(BuildDirectory)\bin" />
+		<Copy SourceFiles="@(SourceOutputList)" DestinationFolder="$(BuildDirectory)\bin\NET40" />
 	</Target>
 	<Target Name="Document">
 	</Target>
 	<Target Name="Package">
 		<PropertyGroup>
-			<PackageDir>$(BuildDirectory)\package</PackageDir>
+			<!-- All packages will end up in the package directory. -->
+			<PackageDirectory>$(BuildDirectory)\package</PackageDirectory>
+
+			<!-- Nuspec/NuGet package contents will be staged in a temporary location for building. -->
+			<StagingDirectory>$(PackageDirectory)\nuspec-staging</StagingDirectory>
 		</PropertyGroup>
 		<ItemGroup>
-			<ExtrasPackageItems Include="$(BuildDirectory)\bin\Autofac.Extras.*" />
-			<CorePackageItems Include="$(BuildDirectory)\bin\Autofac.*" Exclude="@(ExtrasPackageItems)" />
+			<!-- One set of Extras and Core items should be created for each target zip file. -->
+			<NET40ExtrasPackageItems Include="$(BuildDirectory)\bin\NET40\Autofac.Extras.*" />
+			<NET40CorePackageItems Include="$(BuildDirectory)\bin\NET40\Autofac.*" Exclude="@(NET40ExtrasPackageItems)" />
+
+			<!-- The license file gets included with zip files; NuGet packages have a license URL. -->
+			<LicenseFile Include="$(MSBuildProjectDirectory)\License.txt" />
+
+			<!-- Nuspec/NuGet packages get staged using these scripts. -->
+			<NuspecStagingScripts Include="$(MSBuildProjectDirectory)\**\NuspecStaging.proj" />
 		</ItemGroup>
-		<Zip Files="@(CorePackageItems)" ZipFileName="$(PackageDir)\Autofac-$(AssemblyVersion).zip" Flatten="true" />
-		<Zip Files="@(ExtrasPackageItems)" ZipFileName="$(PackageDir)\Autofac.Extras-$(AssemblyVersion).zip" Flatten="true" />
+
+		<Message Text="Packaging downloadable zip files..." />
+		<Zip Files="@(NET40CorePackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac-$(AssemblyVersion)-NET40.zip" Flatten="true" />
+		<Zip Files="@(NET40ExtrasPackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac.Extras-$(AssemblyVersion)-NET40.zip" Flatten="true" />
+		
+		<!--
+			NuGet packaging is done by convention.
+
+			In the folder containing the .nuspec file, add a NuspecStaging.proj file. That project should take in
+			two variables:
+			* StagingDirectory = the location where all NuGet package contents are being staged.
+			* BuildBinDirectory = the location where the compiled binaries are.
+
+			The NuspecStaging.proj script should:
+			* Create a folder under the StagingDirectory where it will stage its package structure.
+			* Copy the .nuspec file into the folder.
+			* Create the lib/XYZ folder structure using compiled binaries from BuildBinDirectory.
+			* Copy any additional files required.
+
+			After all Nuspec staging is done, this script will find all .nuspec files in the staging area and:
+			* Replace any instances of $version$ with the current AssemblyVersion value.
+			* Run nuget pack to create the .nupkg file.
+			* Move the .nupkg file to the package folder.
+			* Remove the temporary staging area.
+		-->
+		<Message Text="Staging NuGet package contents..." />
+		<MSBuild Projects="%(NuspecStagingScripts.FullPath)" Properties="BuildBinDirectory=$(BuildDirectory)\bin;StagingDirectory=$(StagingDirectory)" />
+		<ItemGroup>
+			<NuspecFiles Include="$(StagingDirectory)\**\*.nuspec" />
+		</ItemGroup>
+		<Message Text="Updating NuGet package version info..." />
+		<FileUpdate Files="@(NuspecFiles)" Regex="\$version\$" ReplacementText="$(AssemblyVersion)" />
+		<Message Text="Packaging NuGet packages..." />
+		<Exec
+			Command="&quot;$(MSBuildProjectDirectory)\.nuget\nuget.exe&quot; pack %(NuspecFiles.Filename)%(NuspecFiles.Extension)"
+			WorkingDirectory="%(NuspecFiles.RootDir)%(NuspecFiles.Directory)" />
+		<ItemGroup>
+			<NupkgFiles Include="$(StagingDirectory)\**\*.nupkg" />
+		</ItemGroup>
+		<Move SourceFiles="@(NupkgFiles)" DestinationFolder="$(PackageDirectory)" />
+		<Message Text="Cleaning NuGet staging..." />
+		<RemoveDir Directories="$(StagingDirectory)" />
+		<Message Text="Packaging complete." />
 	</Target>
 	<Target Name="Test">
 		<ItemGroup>
