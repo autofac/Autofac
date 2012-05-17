@@ -13,12 +13,29 @@
 
 		<!-- BuildDirectory is the root of where build output goes. -->
 		<BuildDirectory>$(MSBuildProjectDirectory)\build_output</BuildDirectory>
+
+		<!-- Setting the path to MSBuildCommunityTasks to . allows you to check them in; otherwise you must install them. -->
+		<MSBuildCommunityTasksPath>.</MSBuildCommunityTasksPath>
 	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(BuildConfiguration)' == ''">
-		<!-- Unless otherwise specified, dev build is Debug, production build is Release -->
+		<!-- Unless otherwise specified, dev build is Debug, production build is Release. -->
 		<BuildConfiguration Condition="'$(AssemblyVersion)' == '0.0.0.0'">Debug</BuildConfiguration>
 		<BuildConfiguration Condition="'$(AssemblyVersion)' != '0.0.0.0'">Release</BuildConfiguration>
 	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Package)' == ''">
+		<!-- Unless otherwise specified, dev build will not run packaging, production build will. -->
+		<Package Condition="'$(AssemblyVersion)' == '0.0.0.0'">false</Package>
+		<Package Condition="'$(AssemblyVersion)' != '0.0.0.0'">true</Package>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Document)' == ''">
+		<!-- Unless otherwise specified, dev build will not build documentation, production build will. -->
+		<Document Condition="'$(AssemblyVersion)' == '0.0.0.0'">Debug</Document>
+		<Document Condition="'$(AssemblyVersion)' != '0.0.0.0'">Release</Document>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<SolutionFile Include="$(MSBuildProjectDirectory)\Autofac.sln" />
 	</ItemGroup>
@@ -28,6 +45,8 @@
 	<Target Name="All">
 		<CallTarget Targets="UpdateVersion" Condition="'$(AssemblyVersion)' !='0.0.0.0'" />
 		<CallTarget Targets="Clean;Compile;Test" />
+		<CallTarget Targets="Package" Condition="'$(Package)' == 'true'" />
+		<CallTarget Targets="Document" Condition="'$(Document)' == 'true'" />
 	</Target>
 	<Target Name="Clean">
 		<RemoveDir Directories="$(BuildDirectory)" ContinueOnError="true" />
@@ -47,9 +66,22 @@
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.pdb;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.xml;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.config"
-				Exclude="**\*.vshost.*" />
+				Exclude="**\*.vshost.*;**\*.CodeAnalysis.*" />
 		</ItemGroup>
 		<Copy SourceFiles="@(SourceOutputList)" DestinationFolder="$(BuildDirectory)\bin" />
+	</Target>
+	<Target Name="Document">
+	</Target>
+	<Target Name="Package">
+		<PropertyGroup>
+			<PackageDir>$(BuildDirectory)\package</PackageDir>
+		</PropertyGroup>
+		<ItemGroup>
+			<ExtrasPackageItems Include="$(BuildDirectory)\bin\Autofac.Extras.*" />
+			<CorePackageItems Include="$(BuildDirectory)\bin\Autofac.*" Exclude="@(ExtrasPackageItems)" />
+		</ItemGroup>
+		<Zip Files="@(CorePackageItems)" ZipFileName="$(PackageDir)\Autofac-$(AssemblyVersion).zip" Flatten="true" />
+		<Zip Files="@(ExtrasPackageItems)" ZipFileName="$(PackageDir)\Autofac.Extras-$(AssemblyVersion).zip" Flatten="true" />
 	</Target>
 	<Target Name="Test">
 		<ItemGroup>
