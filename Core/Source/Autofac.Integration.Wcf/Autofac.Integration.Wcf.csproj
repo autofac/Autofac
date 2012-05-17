@@ -77,6 +77,9 @@
     <Compile Include="..\..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\SecurityAssemblyInfo.cs">
+      <Link>Properties\SecurityAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
