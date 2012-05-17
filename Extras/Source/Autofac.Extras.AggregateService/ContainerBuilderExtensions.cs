@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Security;
 using Autofac;
 
 namespace Autofac.Extras.AggregateService
@@ -40,6 +41,7 @@ namespace Autofac.Extras.AggregateService
         ///<typeparam name="TInterface">The interface type to register</typeparam>
         /// <exception cref="ArgumentNullException">If <typeparamref name="TInterface"/> is null</exception>
         /// <exception cref="ArgumentException">If <typeparamref name="TInterface"/> is not an interface</exception>
+        [SecuritySafeCritical]
         public static void RegisterAggregateService<TInterface>(this ContainerBuilder builder) where TInterface:class 
         {
             builder.RegisterAggregateService(typeof (TInterface));
@@ -52,6 +54,7 @@ namespace Autofac.Extras.AggregateService
         ///<param name="interfaceType">The interface type to register</param>
         /// <exception cref="ArgumentNullException">If <paramref name="interfaceType"/> is null</exception>
         /// <exception cref="ArgumentException">If <paramref name="interfaceType"/> is not an interface</exception>
+        [SecuritySafeCritical]
         public static void RegisterAggregateService(this ContainerBuilder builder, Type interfaceType)
         {
             if (interfaceType == null) throw new ArgumentNullException("interfaceType");

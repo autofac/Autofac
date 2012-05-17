@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security;
 using Autofac;
 using Autofac.Core;
 using Castle.DynamicProxy;
@@ -36,6 +37,7 @@ namespace Autofac.Extras.AggregateService
     /// <summary>
     /// Interceptor that resolves types of properties and methods using a <see cref="IComponentContext"/>.
     /// </summary>
+    [SecurityCritical]
     public class ResolvingInterceptor : IInterceptor
     {
         private readonly IComponentContext _context;
@@ -50,6 +52,7 @@ namespace Autofac.Extras.AggregateService
             _invocationMap = SetupInvocationMap(interfaceType);
         }
 
+        [SecurityCritical]
         void IInterceptor.Intercept(IInvocation invocation)
         {
             var invocationHandler = _invocationMap[invocation.Method];

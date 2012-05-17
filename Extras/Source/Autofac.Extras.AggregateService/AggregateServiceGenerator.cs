@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Security;
 using Autofac;
 using Castle.DynamicProxy;
 
@@ -32,6 +33,7 @@ namespace Autofac.Extras.AggregateService
     ///<summary>
     /// Generate aggregate service instances from interface types.
     ///</summary>
+    [SecuritySafeCritical]
     public static class AggregateServiceGenerator
     {
         private static readonly ProxyGenerator Generator = new ProxyGenerator();

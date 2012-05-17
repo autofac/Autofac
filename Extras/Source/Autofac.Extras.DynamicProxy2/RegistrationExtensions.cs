@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
@@ -9,6 +10,7 @@ using Castle.DynamicProxy;
 
 namespace Autofac.Extras.DynamicProxy2
 {
+    [SecuritySafeCritical]
     public static class RegistrationExtensions
     {
         static readonly ProxyGenerator ProxyGenerator = new ProxyGenerator();
