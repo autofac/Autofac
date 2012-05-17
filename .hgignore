@@ -10,6 +10,7 @@ glob:*.suo
 glob:*.docstates
 glob:Index.dat
 glob:Storage.dat
+glob:TestResults
 
 # NuGet Packages
 glob:packages/Castle*
