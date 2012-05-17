@@ -110,12 +110,16 @@
 					<li>WCF RIA Services</li>
 				</ul>
 			</li>
+			<li><a href="http://nunit.org/index.php?p=vsTestAdapter&amp;r=2.6">NUnit Test Adapter for VS11</a> (to run unit tests inside Visual Studio)</li>
 			<li><a href="http://www.microsoft.com/en-us/download/details.aspx?id=29062">SQL Server Express 2012</a> (for demo applications)</li>
 			<li><a href="http://sandcastle.codeplex.com/">Sandcastle</a> (for building documentation)</li>
 		</ul>
 
 		<h1>Building the Project</h1>
 		<p>Developer build:<br />
-			<code>msbuild</code></p>
+			<code>msbuild default.proj</code></p>
+
+		<p>Production/Release build:<br />
+			<code>msbuild default.proj /p:AssemblyVersion=1.2.3.4</code></p>
 	</body>
 </html>
