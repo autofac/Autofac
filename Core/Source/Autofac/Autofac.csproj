@@ -40,7 +40,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseWP7|AnyCPU'">
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE;CODE_ANALYSIS;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
-    <DocumentationFile>bin\Release\Autofac.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\Autofac.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <NoStdLib>true</NoStdLib>
     <DebugType>pdbonly</DebugType>
