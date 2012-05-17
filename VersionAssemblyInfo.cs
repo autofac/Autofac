@@ -12,4 +12,4 @@ using System.Reflection;
 
 [assembly: AssemblyVersion("0.0.0.0")]
 [assembly: AssemblyFileVersion("0.0.0.0")]
-[assembly: AssemblyConfiguration("Release built on 2012-03-05 11:24")]
+[assembly: AssemblyConfiguration("Debug built on 2012-01-01 00:00")]
