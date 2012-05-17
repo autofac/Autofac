@@ -1,4 +1,4 @@
-namespace AutofacContrib.Tests.AggregateService
+namespace Autofac.Extras.Tests.AggregateService
 {
     public interface ISubService : ISuperService
     {

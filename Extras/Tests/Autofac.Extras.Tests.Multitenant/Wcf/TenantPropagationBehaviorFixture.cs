@@ -2,11 +2,11 @@
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
-using AutofacContrib.Multitenant.Wcf;
-using AutofacContrib.Tests.Multitenant.Stubs;
+using Autofac.Extras.Multitenant.Wcf;
+using Autofac.Extras.Tests.Multitenant.Stubs;
 using NUnit.Framework;
 
-namespace AutofacContrib.Tests.Multitenant.Wcf
+namespace Autofac.Extras.Tests.Multitenant.Wcf
 {
     [TestFixture]
     public class TenantPropagationBehaviorFixture

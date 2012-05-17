@@ -25,7 +25,7 @@ using System;
 using System.Globalization;
 using System.Web;
 
-namespace AutofacContrib.Multitenant.Web
+namespace Autofac.Extras.Multitenant.Web
 {
     /// <summary>
     /// Uses the specified request parameter (query string, post data etc.) to identify

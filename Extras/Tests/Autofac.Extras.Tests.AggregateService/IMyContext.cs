@@ -1,6 +1,6 @@
 using System;
 
-namespace AutofacContrib.Tests.AggregateService
+namespace Autofac.Extras.Tests.AggregateService
 {
     /// <summary>
     /// Interface illustrating an aggregate service context with supported and unsupported

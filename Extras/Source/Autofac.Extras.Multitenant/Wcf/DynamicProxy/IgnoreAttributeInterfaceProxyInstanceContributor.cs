@@ -5,7 +5,7 @@ using Castle.DynamicProxy.Contributors;
 using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 
-namespace AutofacContrib.Multitenant.Wcf.DynamicProxy
+namespace Autofac.Extras.Multitenant.Wcf.DynamicProxy
 {
 	/// <summary>
 	/// Code generator that ignores type-level non-inherited attributes.

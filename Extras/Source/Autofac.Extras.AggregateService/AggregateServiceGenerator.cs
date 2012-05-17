@@ -27,7 +27,7 @@ using System;
 using Autofac;
 using Castle.DynamicProxy;
 
-namespace AutofacContrib.AggregateService
+namespace Autofac.Extras.AggregateService
 {
     ///<summary>
     /// Generate aggregate service instances from interface types.

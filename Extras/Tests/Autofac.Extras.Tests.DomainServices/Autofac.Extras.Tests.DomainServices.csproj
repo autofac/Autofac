@@ -8,8 +8,8 @@
     <ProjectGuid>{0100653D-0EFC-44E2-88D3-BA66762B8A7D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutofacContrib.Tests.DomainServices</RootNamespace>
-    <AssemblyName>AutofacContrib.Tests.DomainServices</AssemblyName>
+    <RootNamespace>Autofac.Extras.Tests.DomainServices</RootNamespace>
+    <AssemblyName>Autofac.Extras.Tests.DomainServices</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>

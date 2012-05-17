@@ -1,9 +1,9 @@
 ﻿using Autofac;
 using Autofac.Builder;
-using AutofacContrib.Startable;
+using Autofac.Extras.Startable;
 using NUnit.Framework;
 
-namespace AutofacContrib.Tests.Startable
+namespace Autofac.Extras.Tests.Startable
 {
     [TestFixture]
     public class StartableModuleFixture

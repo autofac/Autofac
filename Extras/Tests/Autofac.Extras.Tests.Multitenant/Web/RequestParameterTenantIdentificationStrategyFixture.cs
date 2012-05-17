@@ -1,8 +1,8 @@
 ﻿using System;
-using AutofacContrib.Multitenant.Web;
+using Autofac.Extras.Multitenant.Web;
 using NUnit.Framework;
 
-namespace AutofacContrib.Tests.Multitenant.Web
+namespace Autofac.Extras.Tests.Multitenant.Web
 {
     [TestFixture]
     public class RequestParameterTenantIdentificationStrategyFixture

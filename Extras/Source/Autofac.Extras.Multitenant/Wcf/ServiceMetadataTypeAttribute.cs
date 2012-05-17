@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AutofacContrib.Multitenant.Wcf
+namespace Autofac.Extras.Multitenant.Wcf
 {
     /// <summary>
     /// Specifies the metadata class to associate with a service implementation.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// When hosting a service in a multitenant environment using <see cref="AutofacContrib.Multitenant.Wcf.AutofacHostFactory"/>
+    /// When hosting a service in a multitenant environment using <see cref="Autofac.Extras.Multitenant.Wcf.AutofacHostFactory"/>
     /// and the dynamic proxy generation that occurs therein, you can't really
     /// mark your "service implementation class" with metadata attributes like
     /// the <see cref="System.ServiceModel.ServiceBehaviorAttribute"/>. Also,

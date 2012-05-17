@@ -24,7 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 
-namespace AutofacContrib.Startable
+namespace Autofac.Extras.Startable
 {
     /// <summary>
     /// Used to activate and 'Start' an instance of every components

@@ -8,7 +8,7 @@ using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
 using Autofac;
 
-namespace AutofacContrib.Multitenant.Wcf
+namespace Autofac.Extras.Multitenant.Wcf
 {
 	/// <summary>
 	/// Sets the instance provider to an AutofacInstanceProvider.
@@ -33,7 +33,7 @@ namespace AutofacContrib.Multitenant.Wcf
 		/// Gets the service data for which instances will be resolved.
 		/// </summary>
 		/// <value>
-		/// A <see cref="AutofacContrib.Multitenant.Wcf.ServiceImplementationData"/>
+		/// A <see cref="Autofac.Extras.Multitenant.Wcf.ServiceImplementationData"/>
 		/// containing data about the service type that should be resolved.
 		/// </value>
 		public ServiceImplementationData ServiceData { get; private set; }

@@ -1,8 +1,8 @@
-using AutofacContrib.Moq;
+using Autofac.Extras.Moq;
 using Moq;
 using NUnit.Framework;
 
-namespace AutofacContrib.Tests.Moq
+namespace Autofac.Extras.Tests.Moq
 {
     [TestFixture]
     public sealed class AutoMockFixture

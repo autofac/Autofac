@@ -5,13 +5,13 @@ using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
-using AutofacContrib.EnterpriseLibraryConfigurator;
+using Autofac.Extras.EnterpriseLibraryConfigurator;
 using Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
 using Microsoft.Practices.EnterpriseLibrary.Common.Configuration.ContainerModel;
 using NUnit.Framework;
 using EntLibContainer = Microsoft.Practices.EnterpriseLibrary.Common.Configuration.ContainerModel.Container;
 
-namespace AutofacContrib.Tests.EnterpriseLibraryConfigurator
+namespace Autofac.Extras.Tests.EnterpriseLibraryConfigurator
 {
 	[TestFixture]
 	public class EnterpriseLibraryRegistrationExtensionsFixture

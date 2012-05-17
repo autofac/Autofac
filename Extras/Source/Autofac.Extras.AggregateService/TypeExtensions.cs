@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AutofacContrib.AggregateService
+namespace Autofac.Extras.AggregateService
 {
     internal static class TypeExtensions
     {

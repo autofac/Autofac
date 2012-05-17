@@ -1,7 +1,7 @@
 ﻿using System;
 using Autofac;
-using AutofacContrib.Multitenant;
-using AutofacContrib.Multitenant.Wcf;
+using Autofac.Extras.Multitenant;
+using Autofac.Extras.Multitenant.Wcf;
 using MultitenantExample.WcfService.Dependencies;
 using MultitenantExample.WcfService.ServiceImplementations;
 
@@ -88,8 +88,8 @@ namespace MultitenantExample.WcfService
             AutofacHostFactory.Container = mtc;
 
             // Note that the .svc file for your service needs to use the
-            // AutofacContrib.Multitenant.Wcf.AutofacServiceHostFactory or
-            // AutofacContrib.Multitenant.Wcf.AutofacWebServiceHostFactory rather
+            // Autofac.Extras.Multitenant.Wcf.AutofacServiceHostFactory or
+            // Autofac.Extras.Multitenant.Wcf.AutofacWebServiceHostFactory rather
             // than the standard Autofac host factories.
         }
     }

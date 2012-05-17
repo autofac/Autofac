@@ -27,7 +27,7 @@ using System;
 using System.ServiceModel.DomainServices.Server;
 using Autofac;
 
-namespace AutofacContrib.DomainServices
+namespace Autofac.Extras.DomainServices
 {
     public class AutofacDomainServiceFactory : IDomainServiceFactory
     {

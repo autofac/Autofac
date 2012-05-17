@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutofacContrib.Multitenant
+namespace Autofac.Extras.Multitenant
 {
     /// <summary>
     /// Object type that represents a default tenant ID. Primarily used internally;

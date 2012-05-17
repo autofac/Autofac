@@ -4,7 +4,7 @@ using NHibernate.Bytecode.Lightweight;
 using NHibernate.Properties;
 using Autofac;
 
-namespace AutofacContrib.NHibernate.Bytecode
+namespace Autofac.Extras.NHibernate.Bytecode
 {
     public class AutofacReflectionOptimizer : ReflectionOptimizer
     {

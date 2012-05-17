@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutofacContrib.Multitenant.Wcf
+namespace Autofac.Extras.Multitenant.Wcf
 {
     /// <summary>
     /// Defines a strategy for resolving which service type should be
@@ -17,7 +17,7 @@ namespace AutofacContrib.Multitenant.Wcf
         /// implementation.
         /// </param>
         /// <returns>
-        /// A <see cref="AutofacContrib.Multitenant.Wcf.ServiceImplementationData"/>
+        /// A <see cref="Autofac.Extras.Multitenant.Wcf.ServiceImplementationData"/>
         /// object containing information about which type to use in
         /// the service host and how to resolve the implementation.
         /// </returns>

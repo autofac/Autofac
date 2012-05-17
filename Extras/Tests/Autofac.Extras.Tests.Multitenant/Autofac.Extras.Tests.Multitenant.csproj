@@ -8,8 +8,8 @@
     <ProjectGuid>{5EFE64A7-50F3-4F80-BCF8-9FFE89832349}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutofacContrib.Tests.Multitenant</RootNamespace>
-    <AssemblyName>AutofacContrib.Tests.Multitenant</AssemblyName>
+    <RootNamespace>Autofac.Extras.Tests.Multitenant</RootNamespace>
+    <AssemblyName>Autofac.Extras.Tests.Multitenant</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\SharedKey.snk</AssemblyOriginatorKeyFile>

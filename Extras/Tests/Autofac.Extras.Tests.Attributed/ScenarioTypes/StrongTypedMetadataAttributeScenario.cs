@@ -4,7 +4,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 
-namespace AutofacContrib.Tests.Attributed.ScenarioTypes
+namespace Autofac.Extras.Tests.Attributed.ScenarioTypes
 {
     #region interfaces
 

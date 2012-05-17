@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace AutofacContrib.Multitenant
+namespace Autofac.Extras.Multitenant
 {
     /// <summary>
     /// Defines a provider that determines the current tenant ID from

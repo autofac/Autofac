@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ServiceModel;
-using AutofacContrib.Multitenant.Wcf;
+using Autofac.Extras.Multitenant.Wcf;
 
 namespace MultitenantExample.WcfService
 {

@@ -5,7 +5,7 @@ using System.ServiceModel.Dispatcher;
 using Autofac;
 using System.Diagnostics.CodeAnalysis;
 
-namespace AutofacContrib.Multitenant.Wcf
+namespace Autofac.Extras.Multitenant.Wcf
 {
     /// <summary>
     /// Message inspector that helps in passing the tenant ID from a WCF client
@@ -17,26 +17,26 @@ namespace AutofacContrib.Multitenant.Wcf
     /// </typeparam>
     /// <remarks>
     /// <para>
-    /// Use this in conjunction with the <see cref="AutofacContrib.Multitenant.Wcf.TenantPropagationBehavior{TTenantId}"/>
+    /// Use this in conjunction with the <see cref="Autofac.Extras.Multitenant.Wcf.TenantPropagationBehavior{TTenantId}"/>
     /// to automatically get the tenant ID on the WCF client end, add the ID
     /// to a header on the outbound message, and have the tenant ID read from
     /// headers on the service side and added to the operation context in an
-    /// <see cref="AutofacContrib.Multitenant.Wcf.TenantIdentificationContextExtension"/>.
+    /// <see cref="Autofac.Extras.Multitenant.Wcf.TenantIdentificationContextExtension"/>.
     /// This allows you, on the service side, to use the
-    /// <see cref="AutofacContrib.Multitenant.Wcf.OperationContextTenantIdentificationStrategy"/>
-    /// as your registered <see cref="AutofacContrib.Multitenant.ITenantIdentificationStrategy"/>.
+    /// <see cref="Autofac.Extras.Multitenant.Wcf.OperationContextTenantIdentificationStrategy"/>
+    /// as your registered <see cref="Autofac.Extras.Multitenant.ITenantIdentificationStrategy"/>.
     /// </para>
     /// <para>
-    /// For a usage example, see <see cref="AutofacContrib.Multitenant.Wcf.TenantPropagationBehavior{TTenantId}"/>.
+    /// For a usage example, see <see cref="Autofac.Extras.Multitenant.Wcf.TenantPropagationBehavior{TTenantId}"/>.
     /// </para>
     /// </remarks>
-    /// <seealso cref="AutofacContrib.Multitenant.Wcf.TenantPropagationBehavior{TTenantId}"/>
+    /// <seealso cref="Autofac.Extras.Multitenant.Wcf.TenantPropagationBehavior{TTenantId}"/>
     public class TenantPropagationMessageInspector<TTenantId> : IClientMessageInspector, IDispatchMessageInspector
     {
         /// <summary>
         /// Namespace of the header that gets added to messages and carries tenant information.
         /// </summary>
-        protected const string TenantHeaderNamespace = "urn:AutofacContrib.Multitenant";
+        protected const string TenantHeaderNamespace = "urn:Autofac.Extras.Multitenant";
 
         /// <summary>
         /// Name of the header that gets added to messages and carries the tenant ID.
@@ -47,14 +47,14 @@ namespace AutofacContrib.Multitenant.Wcf
         /// Gets the strategy used for identifying the current tenant.
         /// </summary>
         /// <value>
-        /// An <see cref="AutofacContrib.Multitenant.ITenantIdentificationStrategy"/>
+        /// An <see cref="Autofac.Extras.Multitenant.ITenantIdentificationStrategy"/>
         /// used to identify the current tenant from the execution context.
         /// </value>
         public ITenantIdentificationStrategy TenantIdentificationStrategy { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the
-        /// <see cref="AutofacContrib.Multitenant.Wcf.TenantPropagationMessageInspector{TTenantId}"/> class.
+        /// <see cref="Autofac.Extras.Multitenant.Wcf.TenantPropagationMessageInspector{TTenantId}"/> class.
         /// </summary>
         /// <param name="tenantIdentificationStrategy">
         /// The strategy to use for identifying the current tenant.
@@ -88,7 +88,7 @@ namespace AutofacContrib.Multitenant.Wcf
 
         /// <summary>
         /// Inspects inbound message headers and adds an
-        /// <see cref="AutofacContrib.Multitenant.Wcf.TenantIdentificationContextExtension"/>
+        /// <see cref="Autofac.Extras.Multitenant.Wcf.TenantIdentificationContextExtension"/>
         /// to the current operation context with the tenant ID.
         /// </summary>
         /// <param name="request">The request message.</param>

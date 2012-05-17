@@ -2,7 +2,7 @@
 using System.ServiceModel;
 using System.ServiceModel.Web;
 
-namespace AutofacContrib.Multitenant.Wcf
+namespace Autofac.Extras.Multitenant.Wcf
 {
     /// <summary>
     /// Creates <see cref="System.ServiceModel.Web.WebServiceHost"/> instances for WCF.

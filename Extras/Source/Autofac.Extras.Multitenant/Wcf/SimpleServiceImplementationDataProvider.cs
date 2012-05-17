@@ -5,7 +5,7 @@ using System.Security;
 using Autofac.Core;
 using Autofac;
 
-namespace AutofacContrib.Multitenant.Wcf
+namespace Autofac.Extras.Multitenant.Wcf
 {
     /// <summary>
     /// Simple resolver for WCF service implementations. Allows for single-tenant
@@ -27,7 +27,7 @@ namespace AutofacContrib.Multitenant.Wcf
         /// that is used to determine which type to host/use as a service
         /// implementation.</param>
         /// <returns>
-        /// A <see cref="AutofacContrib.Multitenant.Wcf.ServiceImplementationData"/>
+        /// A <see cref="Autofac.Extras.Multitenant.Wcf.ServiceImplementationData"/>
         /// object containing information about which type to use in
         /// the service host and which type to use to resolve the implementation.
         /// </returns>
@@ -40,10 +40,10 @@ namespace AutofacContrib.Multitenant.Wcf
         /// </para>
         /// </remarks>
         /// <exception cref="System.InvalidOperationException">
-        /// Thrown if the <see cref="AutofacContrib.Multitenant.Wcf.AutofacHostFactory.Container"/>
+        /// Thrown if the <see cref="Autofac.Extras.Multitenant.Wcf.AutofacHostFactory.Container"/>
         /// is <see langword="null" />; or
         /// if the service indicated by <paramref name="value" />
-        /// is not registered with the <see cref="AutofacContrib.Multitenant.Wcf.AutofacHostFactory.Container"/>.
+        /// is not registered with the <see cref="Autofac.Extras.Multitenant.Wcf.AutofacHostFactory.Container"/>.
         /// </exception>
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="value" /> is <see langword="null" />.

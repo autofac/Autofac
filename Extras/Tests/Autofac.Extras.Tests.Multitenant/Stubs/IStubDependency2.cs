@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutofacContrib.Tests.Multitenant.Stubs
+namespace Autofac.Extras.Tests.Multitenant.Stubs
 {
     public interface IStubDependency2
     {

@@ -29,7 +29,7 @@ using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
 
-namespace AutofacContrib.Startable
+namespace Autofac.Extras.Startable
 {
     /// <summary>
     /// Calls a method ('Start') on a particular interface every time a component exposing

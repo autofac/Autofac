@@ -1,10 +1,10 @@
 ﻿using System;
 using Autofac;
 using Autofac.Util;
-using AutofacContrib.Multitenant.Wcf;
+using Autofac.Extras.Multitenant.Wcf;
 using NUnit.Framework;
 
-namespace AutofacContrib.Tests.Multitenant.Wcf
+namespace Autofac.Extras.Tests.Multitenant.Wcf
 {
 	[TestFixture]
 	public class AutofacInstanceContextFixture

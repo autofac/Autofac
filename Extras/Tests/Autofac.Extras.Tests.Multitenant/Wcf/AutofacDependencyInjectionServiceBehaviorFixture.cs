@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using Autofac;
-using AutofacContrib.Multitenant.Wcf;
+using Autofac.Extras.Multitenant.Wcf;
 using NUnit.Framework;
 
-namespace AutofacContrib.Tests.Multitenant.Wcf
+namespace Autofac.Extras.Tests.Multitenant.Wcf
 {
     [TestFixture]
     public class AutofacDependencyInjectionServiceBehaviorFixture

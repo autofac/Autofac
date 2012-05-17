@@ -1,11 +1,11 @@
 ﻿using System;
 using Autofac;
 using Autofac.Builder;
-using AutofacContrib.Multitenant;
-using AutofacContrib.Tests.Multitenant.Stubs;
+using Autofac.Extras.Multitenant;
+using Autofac.Extras.Tests.Multitenant.Stubs;
 using NUnit.Framework;
 
-namespace AutofacContrib.Tests.Multitenant
+namespace Autofac.Extras.Tests.Multitenant
 {
     [TestFixture]
     public class RegistrationExtensionsFixture

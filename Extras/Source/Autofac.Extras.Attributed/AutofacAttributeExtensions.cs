@@ -1,7 +1,7 @@
 ﻿using Autofac.Builder;
 using Autofac.Features.Scanning;
 
-namespace AutofacContrib.Attributed
+namespace Autofac.Extras.Attributed
 {
     public static class AutofacAttributeExtensions
     {

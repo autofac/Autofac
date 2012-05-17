@@ -1,5 +1,5 @@
 ﻿using System;
-using AutofacContrib.Multitenant;
+using Autofac.Extras.Multitenant;
 
 namespace MultitenantExample.ConsoleApplication
 {

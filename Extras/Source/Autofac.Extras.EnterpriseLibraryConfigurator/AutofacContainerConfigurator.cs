@@ -3,7 +3,7 @@ using Autofac;
 using Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
 using Microsoft.Practices.EnterpriseLibrary.Common.Configuration.ContainerModel;
 
-namespace AutofacContrib.EnterpriseLibraryConfigurator
+namespace Autofac.Extras.EnterpriseLibraryConfigurator
 {
     /// <summary>
     /// <see cref="Microsoft.Practices.EnterpriseLibrary.Common.Configuration.ContainerModel.IContainerConfigurator"/>
@@ -44,14 +44,14 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
     /// EnterpriseLibraryContainer.Current = autofacLocator;
     /// </code>
     /// <para>
-    /// Note the use of <see cref="T:AutofacContrib.CommonServiceLocator.AutofacServiceLocator"/>
+    /// Note the use of <see cref="T:Autofac.Extras.CommonServiceLocator.AutofacServiceLocator"/>
     /// to set the Enterprise Library service locator. You need to do that so
     /// Enterprise Library can do any internal resolutions it requires.
     /// </para>
     /// <para>
     /// Even though you can use this configurator directly, the simplest way
     /// to get Enterprise Library configured with Autofac is to use the
-    /// <see cref="M:AutofacContrib.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary"/>
+    /// <see cref="M:Autofac.Extras.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary"/>
     /// extensions. The above sample code becomes much simpler and more
     /// Autofac-styled with the extensions.
     /// </para>
@@ -84,7 +84,7 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
     /// changes even though the component appears to be present in the container.
     /// </para>
     /// </remarks>
-    /// <seealso cref="M:AutofacContrib.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary"/>
+    /// <seealso cref="M:Autofac.Extras.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary"/>
     public class AutofacContainerConfigurator : IContainerConfigurator
     {
         /// <summary>

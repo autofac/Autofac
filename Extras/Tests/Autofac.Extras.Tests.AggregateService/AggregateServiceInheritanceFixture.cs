@@ -1,9 +1,9 @@
 using Autofac;
-using AutofacContrib.AggregateService;
+using Autofac.Extras.AggregateService;
 using Moq;
 using NUnit.Framework;
 
-namespace AutofacContrib.Tests.AggregateService
+namespace Autofac.Extras.Tests.AggregateService
 {
     [TestFixture]
     public class AggregateServiceInheritanceFixture

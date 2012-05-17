@@ -8,8 +8,8 @@
     <ProjectGuid>{03A16C13-A683-4392-96B5-2EE786CEDA88}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutofacContrib.Tests.Attributed</RootNamespace>
-    <AssemblyName>AutofacContrib.Tests.Attributed</AssemblyName>
+    <RootNamespace>Autofac.Extras.Tests.Attributed</RootNamespace>
+    <AssemblyName>Autofac.Extras.Tests.Attributed</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>

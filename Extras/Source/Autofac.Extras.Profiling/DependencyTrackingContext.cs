@@ -2,7 +2,7 @@
 using Autofac;
 using Autofac.Core;
 
-namespace AutofacContrib.Profiling
+namespace Autofac.Extras.Profiling
 {
     class DependencyTrackingContext : IComponentContext
     {

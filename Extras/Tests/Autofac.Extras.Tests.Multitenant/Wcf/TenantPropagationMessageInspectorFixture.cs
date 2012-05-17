@@ -1,10 +1,10 @@
 ﻿using System;
 using System.ServiceModel.Channels;
-using AutofacContrib.Multitenant.Wcf;
-using AutofacContrib.Tests.Multitenant.Stubs;
+using Autofac.Extras.Multitenant.Wcf;
+using Autofac.Extras.Tests.Multitenant.Stubs;
 using NUnit.Framework;
 
-namespace AutofacContrib.Tests.Multitenant.Wcf
+namespace Autofac.Extras.Tests.Multitenant.Wcf
 {
     [TestFixture]
     public class TenantPropagationMessageInspectorFixture

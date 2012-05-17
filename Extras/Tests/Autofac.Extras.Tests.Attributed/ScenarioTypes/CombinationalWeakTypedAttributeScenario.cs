@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 
-namespace AutofacContrib.Tests.Attributed.ScenarioTypes
+namespace Autofac.Extras.Tests.Attributed.ScenarioTypes
 {
     #region interfaces
 

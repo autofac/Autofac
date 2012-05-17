@@ -1,6 +1,6 @@
 using System;
 
-namespace AutofacContrib.Tests.CommonServiceLocator.Components
+namespace Autofac.Extras.Tests.CommonServiceLocator.Components
 {
 	public class SimpleLogger : ILogger
 	{

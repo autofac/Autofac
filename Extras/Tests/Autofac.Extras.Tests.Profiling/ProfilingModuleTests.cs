@@ -4,10 +4,10 @@ using System.Linq;
 using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
-using AutofacContrib.Profiling;
+using Autofac.Extras.Profiling;
 using NUnit.Framework;
 
-namespace AutofacContrib.Tests.Profiling
+namespace Autofac.Extras.Tests.Profiling
 {
     [TestFixture]
     public class ProfilingModuleTests

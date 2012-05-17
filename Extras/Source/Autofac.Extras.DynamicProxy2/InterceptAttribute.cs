@@ -3,7 +3,7 @@ using Autofac;
 using Autofac.Core;
 using Castle.DynamicProxy;
 
-namespace AutofacContrib.DynamicProxy2
+namespace Autofac.Extras.DynamicProxy2
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
     public class InterceptAttribute : Attribute

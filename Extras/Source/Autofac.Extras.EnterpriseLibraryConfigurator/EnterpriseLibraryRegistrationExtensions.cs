@@ -6,7 +6,7 @@ using Autofac.Builder;
 using Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
 using Microsoft.Practices.EnterpriseLibrary.Common.Configuration.ContainerModel;
 
-namespace AutofacContrib.EnterpriseLibraryConfigurator
+namespace Autofac.Extras.EnterpriseLibraryConfigurator
 {
     /// <summary>
     /// Extension methods that assist in adding Enterprise Library type
@@ -21,13 +21,13 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
     /// instances into Autofac-specific registrations.
     /// </para>
     /// <para>
-    /// This is particularly useful in conjunction with the <see cref="T:AutofacContrib.CommonServiceLocator.AutofacServiceLocator"/>
+    /// This is particularly useful in conjunction with the <see cref="T:Autofac.Extras.CommonServiceLocator.AutofacServiceLocator"/>
     /// when you want to use Autofac as the mechanism for resolving Enterprise Library
     /// application block dependencies rather than Unity.
     /// </para>
     /// <para>
     /// The primary Enterprise Library entry point is
-    /// <see cref="M:AutofacContrib.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary"/>.
+    /// <see cref="M:Autofac.Extras.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary"/>.
     /// If you're trying to get Enterprise Library application blocks to use
     /// Autofac, start there.
     /// </para>
@@ -35,13 +35,13 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
     /// <example>
     /// <para>
     /// The simplest way to get started with Enterprise Library and Autofac is
-    /// via <see cref="AutofacContrib.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary(ContainerBuilder)"/>.
+    /// via <see cref="Autofac.Extras.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary(ContainerBuilder)"/>.
     /// While building your Autofac container, use that extension to get the
     /// configuration out of the default Enterprise Library configuration location
     /// and add the appropriate dependency registrations to your container.
     /// </para>
     /// <para>
-    /// After the container is built, use the <see cref="T:AutofacContrib.CommonServiceLocator.AutofacServiceLocator"/>
+    /// After the container is built, use the <see cref="T:Autofac.Extras.CommonServiceLocator.AutofacServiceLocator"/>
     /// to set the default Enterprise Library container for any internal resolutions
     /// it needs to make.
     /// </para>
@@ -57,8 +57,8 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
     /// EnterpriseLibraryContainer.Current = autofacLocator;
     /// </code>
     /// </example>
-    /// <seealso cref="AutofacContrib.EnterpriseLibraryConfigurator.AutofacContainerConfigurator"/>
-    /// <seealso cref="AutofacContrib.EnterpriseLibraryConfigurator.AutofacParameterBuilderVisitor"/>
+    /// <seealso cref="Autofac.Extras.EnterpriseLibraryConfigurator.AutofacContainerConfigurator"/>
+    /// <seealso cref="Autofac.Extras.EnterpriseLibraryConfigurator.AutofacParameterBuilderVisitor"/>
     public static class EnterpriseLibraryRegistrationExtensions
     {
         /// <summary>
@@ -83,7 +83,7 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
         /// <para>
         /// If you need to provide a specific configuration source from which
         /// the container should be populated, use the
-        /// <see cref="AutofacContrib.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary(ContainerBuilder,IConfigurationSource)"/>
+        /// <see cref="Autofac.Extras.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary(ContainerBuilder,IConfigurationSource)"/>
         /// overload of this method.
         /// </para>
         /// </remarks>
@@ -93,7 +93,7 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
         /// dependencies with Autofac.
         /// </para>
         /// <para>
-        /// After the container is built, use the <see cref="T:AutofacContrib.CommonServiceLocator.AutofacServiceLocator"/>
+        /// After the container is built, use the <see cref="T:Autofac.Extras.CommonServiceLocator.AutofacServiceLocator"/>
         /// to set the default Enterprise Library container for any internal resolutions
         /// it needs to make.
         /// </para>
@@ -148,7 +148,7 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
         /// <para>
         /// If you want to use the default Enterprise Library configuration source,
         /// use the
-        /// <see cref="AutofacContrib.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary(ContainerBuilder)"/>
+        /// <see cref="Autofac.Extras.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary(ContainerBuilder)"/>
         /// overload of this method.
         /// </para>
         /// </remarks>
@@ -158,7 +158,7 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
         /// dependencies with Autofac and a specified configuration source.
         /// </para>
         /// <para>
-        /// After the container is built, use the <see cref="T:AutofacContrib.CommonServiceLocator.AutofacServiceLocator"/>
+        /// After the container is built, use the <see cref="T:Autofac.Extras.CommonServiceLocator.AutofacServiceLocator"/>
         /// to set the default Enterprise Library container for any internal resolutions
         /// it needs to make.
         /// </para>
@@ -214,7 +214,7 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
         /// Generally speaking, developers will not directly interface with this
         /// method. The primary entry point to registering Enterprise Library
         /// dependencies is
-        /// <see cref="M:AutofacContrib.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary"/>.
+        /// <see cref="M:Autofac.Extras.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary"/>.
         /// However, if you have a specific Enterprise Library registration
         /// definition that you need to add to an Autofac container, this method
         /// is how you do it.
@@ -240,7 +240,7 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
         /// var container = builder.Build();
         /// </code>
         /// </example>
-        /// <seealso cref="M:AutofacContrib.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary"/>
+        /// <seealso cref="M:Autofac.Extras.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary"/>
         public static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterTypeRegistration(this ContainerBuilder builder, TypeRegistration registration)
         {
             if (builder == null)
@@ -293,7 +293,7 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
         /// Generally speaking, developers will not directly interface with this
         /// method. The primary entry point to registering Enterprise Library
         /// dependencies is
-        /// <see cref="M:AutofacContrib.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary"/>.
+        /// <see cref="M:Autofac.Extras.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary"/>.
         /// However, if you have a specific Enterprise Library registration
         /// definition that you want to get the constructor information from and
         /// set that on a registration in Autofac, this method is how you do it.
@@ -319,7 +319,7 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
         /// var container = builder.Build();
         /// </code>
         /// </example>
-        /// <seealso cref="M:AutofacContrib.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary"/>
+        /// <seealso cref="M:Autofac.Extras.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary"/>
         public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> UsingConstructorFrom<TLimit, TReflectionActivatorData, TStyle>(this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registrar, TypeRegistration registration) where TReflectionActivatorData : ReflectionActivatorData
         {
             if (registrar == null)
@@ -416,7 +416,7 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
         /// This method takes each of the <see cref="Microsoft.Practices.EnterpriseLibrary.Common.Configuration.ContainerModel.ParameterValue"/>
         /// values found in the constructor used by the <paramref name="registration" />
         /// and runs each one through an
-        /// <see cref="AutofacContrib.EnterpriseLibraryConfigurator.AutofacParameterBuilderVisitor"/>.
+        /// <see cref="Autofac.Extras.EnterpriseLibraryConfigurator.AutofacParameterBuilderVisitor"/>.
         /// The converted set of parameters gets added to the <paramref name="registrar" />
         /// for use during object construction.
         /// </para>
@@ -424,7 +424,7 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
         /// Generally speaking, developers will not directly interface with this
         /// method. The primary entry point to registering Enterprise Library
         /// dependencies is
-        /// <see cref="M:AutofacContrib.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary"/>.
+        /// <see cref="M:Autofac.Extras.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary"/>.
         /// However, if you have a specific Enterprise Library registration
         /// definition that you want to get the constructor parameters from and
         /// set them on a registration in Autofac, this method is how you do it.
@@ -454,8 +454,8 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
         /// // registration.
         /// </code>
         /// </example>
-        /// <seealso cref="M:AutofacContrib.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary"/>
-        /// <seealso cref="AutofacContrib.EnterpriseLibraryConfigurator.AutofacParameterBuilderVisitor"/>
+        /// <seealso cref="M:Autofac.Extras.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions.RegisterEnterpriseLibrary"/>
+        /// <seealso cref="Autofac.Extras.EnterpriseLibraryConfigurator.AutofacParameterBuilderVisitor"/>
         public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> WithParametersFrom<TLimit, TReflectionActivatorData, TStyle>(this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registrar, TypeRegistration registration) where TReflectionActivatorData : ReflectionActivatorData
         {
             if (registrar == null)

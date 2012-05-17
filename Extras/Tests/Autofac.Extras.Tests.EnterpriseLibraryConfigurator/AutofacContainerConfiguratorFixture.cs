@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using Autofac;
-using AutofacContrib.EnterpriseLibraryConfigurator;
+using Autofac.Extras.EnterpriseLibraryConfigurator;
 using Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
 using Microsoft.Practices.EnterpriseLibrary.Common.Configuration.ContainerModel;
 using NUnit.Framework;
 
-namespace AutofacContrib.Tests.EnterpriseLibraryConfigurator
+namespace Autofac.Extras.Tests.EnterpriseLibraryConfigurator
 {
 	[TestFixture]
 	public class AutofacContainerConfiguratorFixture

@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Autofac.Core;
 
-namespace AutofacContrib.Attributed
+namespace Autofac.Extras.Attributed
 { 
     /// <summary>
     /// this module will scan all registrations for metadata and associate them if found

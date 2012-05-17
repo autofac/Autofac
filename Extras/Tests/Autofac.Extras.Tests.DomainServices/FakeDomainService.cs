@@ -1,6 +1,6 @@
 using System.ServiceModel.DomainServices.Server;
 
-namespace AutofacContrib.Tests.DomainServices
+namespace Autofac.Extras.Tests.DomainServices
 {
     public class FakeDomainService : DomainService
     {

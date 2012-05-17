@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core;
 
-namespace AutofacContrib.Profiling
+namespace Autofac.Extras.Profiling
 {
     public class ContainerProfile : IContainerProfile
     {

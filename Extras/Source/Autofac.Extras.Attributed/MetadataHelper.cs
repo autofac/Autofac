@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 
-namespace AutofacContrib.Attributed
+namespace Autofac.Extras.Attributed
 {
     /// <summary>
     /// this class is responsible for translating a types attribute properties into a set consumable by autofac

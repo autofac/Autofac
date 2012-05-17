@@ -26,7 +26,7 @@
 using System;
 using Autofac;
 
-namespace AutofacContrib.AggregateService
+namespace Autofac.Extras.AggregateService
 {
     /// <summary>
     /// AggregateService extensions to <see cref="ContainerBuilder"/>.

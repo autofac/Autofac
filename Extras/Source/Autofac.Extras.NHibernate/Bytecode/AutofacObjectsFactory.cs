@@ -3,7 +3,7 @@ using System.Linq;
 using NHibernate.Bytecode;
 using Autofac;
 
-namespace AutofacContrib.NHibernate.Bytecode
+namespace Autofac.Extras.NHibernate.Bytecode
 {
     public class AutofacObjectsFactory : IObjectsFactory
     {

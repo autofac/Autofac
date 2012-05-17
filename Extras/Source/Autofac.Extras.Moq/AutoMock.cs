@@ -31,7 +31,7 @@ using Autofac.Core;
 using Autofac.Features.ResolveAnything;
 using Moq;
 
-namespace AutofacContrib.Moq
+namespace Autofac.Extras.Moq
 {
     /// <summary>
     /// Wrapper around <see cref="Autofac"/> and <see cref="Moq"/>

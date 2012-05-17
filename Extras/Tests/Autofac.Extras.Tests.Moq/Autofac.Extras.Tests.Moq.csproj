@@ -8,8 +8,8 @@
     <ProjectGuid>{55C8A6C6-1852-44DE-BE39-69C04D4C2584}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutofacContrib.Tests.Moq</RootNamespace>
-    <AssemblyName>AutofacContrib.Tests.Moq</AssemblyName>
+    <RootNamespace>Autofac.Extras.Tests.Moq</RootNamespace>
+    <AssemblyName>Autofac.Extras.Tests.Moq</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>

@@ -2,7 +2,7 @@
 using Autofac.Core;
 using Autofac.Core.Registration;
 
-namespace AutofacContrib.Profiling
+namespace Autofac.Extras.Profiling
 {
     public class ProfilingModule : Module
     {

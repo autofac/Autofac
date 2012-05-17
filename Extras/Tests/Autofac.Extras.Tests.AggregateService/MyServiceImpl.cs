@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AutofacContrib.Tests.AggregateService
+namespace Autofac.Extras.Tests.AggregateService
 {
     public class MyServiceImpl : IMyService
     {

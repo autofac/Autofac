@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using AutofacContrib.Tests.CommonServiceLocator.Components;
+using Autofac.Extras.Tests.CommonServiceLocator.Components;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 

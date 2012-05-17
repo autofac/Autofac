@@ -1,11 +1,11 @@
 using System.ServiceModel.DomainServices.Server;
 using Moq;
 using NUnit.Framework;
-using AutofacContrib.DomainServices;
+using Autofac.Extras.DomainServices;
 using Autofac;
 using System;
 using System.Reflection;
-namespace AutofacContrib.Tests.DomainServices
+namespace Autofac.Extras.Tests.DomainServices
 {
     [TestFixture]
     public class DomainServiceModuleFixture

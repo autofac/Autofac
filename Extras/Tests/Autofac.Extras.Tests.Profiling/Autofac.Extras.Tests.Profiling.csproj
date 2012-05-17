@@ -8,8 +8,8 @@
     <ProjectGuid>{17F78C83-C58F-4E6C-B896-8E85D97683E1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutofacContrib.Tests.Profiling</RootNamespace>
-    <AssemblyName>AutofacContrib.Tests.Profiling</AssemblyName>
+    <RootNamespace>Autofac.Extras.Tests.Profiling</RootNamespace>
+    <AssemblyName>Autofac.Extras.Tests.Profiling</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\SharedKey.snk</AssemblyOriginatorKeyFile>

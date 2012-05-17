@@ -2,7 +2,7 @@
 using System.Security;
 using Autofac;
 
-namespace AutofacContrib.Multitenant.Wcf
+namespace Autofac.Extras.Multitenant.Wcf
 {
     /// <summary>
     /// Contains data about a WCF service implementation.
@@ -10,11 +10,11 @@ namespace AutofacContrib.Multitenant.Wcf
     /// <remarks>
     /// <para>
     /// This data transfer object class is used in conjunction with
-    /// <see cref="AutofacContrib.Multitenant.Wcf.IServiceImplementationDataProvider"/>
+    /// <see cref="Autofac.Extras.Multitenant.Wcf.IServiceImplementationDataProvider"/>
     /// implementations for resolving service implementation instance information.
     /// </para>
     /// </remarks>
-    /// <seealso cref="AutofacContrib.Multitenant.Wcf.IServiceImplementationDataProvider"/>
+    /// <seealso cref="Autofac.Extras.Multitenant.Wcf.IServiceImplementationDataProvider"/>
     public class ServiceImplementationData
     {
         /// <summary>
@@ -44,7 +44,7 @@ namespace AutofacContrib.Multitenant.Wcf
         /// An <see cref="System.Func{T,U}"/> that takes in a lifetime scope returns
         /// an <see cref="System.Object"/> that is the implementation type for the
         /// given service. This is the object that the service host will use
-        /// and should be assignable from the <see cref="AutofacContrib.Multitenant.Wcf.ServiceImplementationData.ServiceTypeToHost"/>.
+        /// and should be assignable from the <see cref="Autofac.Extras.Multitenant.Wcf.ServiceImplementationData.ServiceTypeToHost"/>.
         /// </value>
         public Func<ILifetimeScope, object> ImplementationResolver
         {

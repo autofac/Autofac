@@ -6,7 +6,7 @@ using Autofac;
 using Autofac.Core;
 using Microsoft.Practices.EnterpriseLibrary.Common.Configuration.ContainerModel;
 
-namespace AutofacContrib.EnterpriseLibraryConfigurator
+namespace Autofac.Extras.EnterpriseLibraryConfigurator
 {
     /// <summary>
     /// Visitor for resolving object construction parameters from
@@ -44,7 +44,7 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
     /// <term><see cref="Microsoft.Practices.EnterpriseLibrary.Common.Configuration.ContainerModel.ConstantParameterValue"/></term>
     /// <description>
     /// The exact provided constant value.
-    /// (<see cref="AutofacContrib.EnterpriseLibraryConfigurator.AutofacParameterBuilderVisitor.VisitConstantParameterValue"/>)
+    /// (<see cref="Autofac.Extras.EnterpriseLibraryConfigurator.AutofacParameterBuilderVisitor.VisitConstantParameterValue"/>)
     /// </description>
     /// </item>
     /// <item>
@@ -52,7 +52,7 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
     /// <description>
     /// A lambda that builds a generic list of the specified type containing
     /// the set of resolved named service instances.
-    /// (<see cref="AutofacContrib.EnterpriseLibraryConfigurator.AutofacParameterBuilderVisitor.VisitEnumerableParameterValue"/>)
+    /// (<see cref="Autofac.Extras.EnterpriseLibraryConfigurator.AutofacParameterBuilderVisitor.VisitEnumerableParameterValue"/>)
     /// </description>
     /// </item>
     /// <item>
@@ -60,23 +60,23 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
     /// <description>
     /// If the parameter is a named parameter, the named service is resolved;
     /// otherwise the typed service is resolved.
-    /// (<see cref="AutofacContrib.EnterpriseLibraryConfigurator.AutofacParameterBuilderVisitor.VisitResolvedParameterValue"/>)
+    /// (<see cref="Autofac.Extras.EnterpriseLibraryConfigurator.AutofacParameterBuilderVisitor.VisitResolvedParameterValue"/>)
     /// </description>
     /// </item>
     /// </list>
     /// <para>
     /// After calling the
     /// <see cref="Microsoft.Practices.EnterpriseLibrary.Common.Configuration.ContainerModel.ParameterValueVisitor.Visit"/>
-    /// method on this visitor, the <see cref="AutofacContrib.EnterpriseLibraryConfigurator.AutofacParameterBuilderVisitor.AutofacParameter"/>
+    /// method on this visitor, the <see cref="Autofac.Extras.EnterpriseLibraryConfigurator.AutofacParameterBuilderVisitor.AutofacParameter"/>
     /// property will be set with the output of the transformation. You can use
     /// this in conjunction with <see cref="Autofac.RegistrationExtensions.WithParameters{TLimit, TReflectionActivatorData, TStyle}"/>
     /// to add the parameters to the component registration.
     /// </para>
     /// <para>
     /// Normally this class will not be used by itself. Instead, consider using
-    /// it in conjunction with the <see cref="AutofacContrib.EnterpriseLibraryConfigurator.AutofacContainerConfigurator"/>
+    /// it in conjunction with the <see cref="Autofac.Extras.EnterpriseLibraryConfigurator.AutofacContainerConfigurator"/>
     /// and the Enterprise Library registration extension methods in
-    /// <see cref="AutofacContrib.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions"/>.
+    /// <see cref="Autofac.Extras.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions"/>.
     /// </para>
     /// <para>
     /// For more information on how type registrations are created and the possible
@@ -88,13 +88,13 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
     /// signifying that a parameter value is resolved rather than constant.
     /// </para>
     /// </remarks>
-    /// <seealso cref="AutofacContrib.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions"/>
-    /// <seealso cref="AutofacContrib.EnterpriseLibraryConfigurator.AutofacContainerConfigurator"/>
+    /// <seealso cref="Autofac.Extras.EnterpriseLibraryConfigurator.EnterpriseLibraryRegistrationExtensions"/>
+    /// <seealso cref="Autofac.Extras.EnterpriseLibraryConfigurator.AutofacContainerConfigurator"/>
     public class AutofacParameterBuilderVisitor : ParameterValueVisitor
     {
         /// <summary>
         /// Storage for the reflected parameter information that should receive
-        /// the resolved value from <see cref="AutofacContrib.EnterpriseLibraryConfigurator.AutofacParameterBuilderVisitor.AutofacParameter"/>
+        /// the resolved value from <see cref="Autofac.Extras.EnterpriseLibraryConfigurator.AutofacParameterBuilderVisitor.AutofacParameter"/>
         /// </summary>
         private readonly ParameterInfo _methodParameter;
 
@@ -157,7 +157,7 @@ namespace AutofacContrib.EnterpriseLibraryConfigurator
         /// that goes in the constructor parameter indicated by <paramref name="methodParameter" />.
         /// They need to match because the generated
         /// <see cref="Autofac.Core.Parameter"/> in
-        /// <see cref="AutofacContrib.EnterpriseLibraryConfigurator.AutofacParameterBuilderVisitor.AutofacParameter"/>
+        /// <see cref="Autofac.Extras.EnterpriseLibraryConfigurator.AutofacParameterBuilderVisitor.AutofacParameter"/>
         /// will match the reflected information about the parameter to the value
         /// it has to resolve.
         /// </para>

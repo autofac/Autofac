@@ -28,7 +28,7 @@ using System.Linq;
 using Autofac;
 using Autofac.Core;
 
-namespace AutofacContrib.Startable
+namespace Autofac.Extras.Startable
 {
     /// <summary>
     /// Can be used to instantiate an instance of all 'startable' services in

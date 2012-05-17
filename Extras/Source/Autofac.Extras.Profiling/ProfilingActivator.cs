@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Autofac;
 using Autofac.Core;
 
-namespace AutofacContrib.Profiling
+namespace Autofac.Extras.Profiling
 {
     public class ProfilingActivator : IInstanceActivator
     {

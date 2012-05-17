@@ -8,8 +8,8 @@
     <ProjectGuid>{4BCA97A6-BF40-4B29-B025-0F53A6E4A682}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutofacContrib.Tests.AggregateService</RootNamespace>
-    <AssemblyName>AutofacContrib.Tests.AggregateService</AssemblyName>
+    <RootNamespace>Autofac.Extras.Tests.AggregateService</RootNamespace>
+    <AssemblyName>Autofac.Extras.Tests.AggregateService</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>

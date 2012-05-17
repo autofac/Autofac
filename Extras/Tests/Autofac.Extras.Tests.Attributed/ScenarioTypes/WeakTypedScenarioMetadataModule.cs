@@ -1,6 +1,6 @@
-﻿using AutofacContrib.Attributed;
+﻿using Autofac.Extras.Attributed;
 
-namespace AutofacContrib.Tests.Attributed.ScenarioTypes
+namespace Autofac.Extras.Tests.Attributed.ScenarioTypes
 {
     /// <summary>
     /// this class demonstratees the ability to search for metadata based on metadata attributes instead of

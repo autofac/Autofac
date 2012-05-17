@@ -8,8 +8,8 @@
     <ProjectGuid>{304C6D1B-7264-408E-BE9B-4F6E6462CF08}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutofacContrib.Tests.CommonServiceLocator</RootNamespace>
-    <AssemblyName>AutofacContrib.Tests.CommonServiceLocator</AssemblyName>
+    <RootNamespace>Autofac.Extras.Tests.CommonServiceLocator</RootNamespace>
+    <AssemblyName>Autofac.Extras.Tests.CommonServiceLocator</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>

@@ -2,37 +2,37 @@
 using System.Linq;
 using System.ServiceModel;
 
-namespace AutofacContrib.Multitenant.Wcf
+namespace Autofac.Extras.Multitenant.Wcf
 {
     /// <summary>
-    /// An <see cref="AutofacContrib.Multitenant.ITenantIdentificationStrategy"/>
-    /// implementation that gets the tenant ID from a <see cref="AutofacContrib.Multitenant.Wcf.TenantIdentificationContextExtension"/>
+    /// An <see cref="Autofac.Extras.Multitenant.ITenantIdentificationStrategy"/>
+    /// implementation that gets the tenant ID from a <see cref="Autofac.Extras.Multitenant.Wcf.TenantIdentificationContextExtension"/>
     /// attached to the current <see cref="System.ServiceModel.OperationContext"/>.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Use this <see cref="AutofacContrib.Multitenant.ITenantIdentificationStrategy"/>
-    /// if you are using the <see cref="AutofacContrib.Multitenant.Wcf.TenantIdentificationContextExtension"/>
+    /// Use this <see cref="Autofac.Extras.Multitenant.ITenantIdentificationStrategy"/>
+    /// if you are using the <see cref="Autofac.Extras.Multitenant.Wcf.TenantIdentificationContextExtension"/>
     /// as the mechanism for tracking which tenant a given operation is running
     /// under.
     /// </para>
     /// <para>
     /// For example, you could use an <see cref="System.ServiceModel.Dispatcher.IDispatchMessageInspector"/>
     /// that gets the tenant ID from an incoming header and adds a
-    /// <see cref="AutofacContrib.Multitenant.Wcf.TenantIdentificationContextExtension"/>
+    /// <see cref="Autofac.Extras.Multitenant.Wcf.TenantIdentificationContextExtension"/>
     /// to the current <see cref="System.ServiceModel.OperationContext"/> with
     /// the tenant ID value. Then you could register this provider as the
     /// mechanism for determining the tenant ID when resolving multitenant dependencies.
     /// </para>
     /// <para>
-    /// The <see cref="AutofacContrib.Multitenant.Wcf.TenantPropagationBehavior{TTenantId}"/>
+    /// The <see cref="Autofac.Extras.Multitenant.Wcf.TenantPropagationBehavior{TTenantId}"/>
     /// does exactly that - adds the tenant ID to outbound messages on the client
     /// and parses them on the service side. For a usage example, see
-    /// <see cref="AutofacContrib.Multitenant.Wcf.TenantPropagationBehavior{TTenantId}"/>
+    /// <see cref="Autofac.Extras.Multitenant.Wcf.TenantPropagationBehavior{TTenantId}"/>
     /// </para>
     /// </remarks>
-    /// <seealso cref="AutofacContrib.Multitenant.Wcf.TenantIdentificationContextExtension"/>
-    /// <seealso cref="AutofacContrib.Multitenant.Wcf.TenantPropagationBehavior{TTenantId}"/>
+    /// <seealso cref="Autofac.Extras.Multitenant.Wcf.TenantIdentificationContextExtension"/>
+    /// <seealso cref="Autofac.Extras.Multitenant.Wcf.TenantPropagationBehavior{TTenantId}"/>
     public class OperationContextTenantIdentificationStrategy : ITenantIdentificationStrategy
     {
         /// <summary>
@@ -46,7 +46,7 @@ namespace AutofacContrib.Multitenant.Wcf
         /// <remarks>
         /// <para>
         /// The <paramref name="tenantId" /> will be the <see cref="System.Object"/> value from the first
-        /// <see cref="AutofacContrib.Multitenant.Wcf.TenantIdentificationContextExtension"/>
+        /// <see cref="Autofac.Extras.Multitenant.Wcf.TenantIdentificationContextExtension"/>
         /// found on the current <see cref="System.ServiceModel.OperationContext"/>,
         /// or <see langword="null" /> if there is no extension found on the
         /// operation context.

@@ -35,7 +35,7 @@ using Autofac.Core;
 using Autofac.Core.Diagnostics;
 using Moq;
 
-namespace AutofacContrib.Moq
+namespace Autofac.Extras.Moq
 {
     /// <summary> Resolves unknown interfaces and Mocks using the <see cref="MockRepository"/> from the scope. </summary>
     internal class MoqRegistrationHandler : IRegistrationSource

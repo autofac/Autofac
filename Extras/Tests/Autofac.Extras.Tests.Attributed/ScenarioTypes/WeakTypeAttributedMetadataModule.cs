@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using AutofacContrib.Attributed;
+using Autofac.Extras.Attributed;
 
-namespace AutofacContrib.Tests.Attributed.ScenarioTypes
+namespace Autofac.Extras.Tests.Attributed.ScenarioTypes
 {
     public class WeakTypeAttributedMetadataModule : AttributedMetadataModule 
     {

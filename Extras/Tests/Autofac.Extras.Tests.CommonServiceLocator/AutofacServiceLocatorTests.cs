@@ -1,13 +1,13 @@
 using System;
 using Autofac;
-using AutofacContrib.CommonServiceLocator;
-using AutofacContrib.Tests.CommonServiceLocator.Components;
+using Autofac.Extras.CommonServiceLocator;
+using Autofac.Extras.Tests.CommonServiceLocator.Components;
 using CommonServiceLocator.AutofacAdapter;
 
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 
-namespace AutofacContrib.Tests.CommonServiceLocator
+namespace Autofac.Extras.Tests.CommonServiceLocator
 {
     [TestFixture]
     public sealed class AutofacServiceLocatorTests : ServiceLocatorTestCase

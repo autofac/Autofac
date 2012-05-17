@@ -5,7 +5,7 @@ using System.ServiceModel;
 using System.ServiceModel.Activation;
 using Autofac;
 
-namespace AutofacContrib.Multitenant.Wcf
+namespace Autofac.Extras.Multitenant.Wcf
 {
     /// <summary>
     /// Base class for factories that create service host instances for WCF.
@@ -14,25 +14,25 @@ namespace AutofacContrib.Multitenant.Wcf
     /// <para>
     /// This implementation of the Autofac service host factory allows you to change
     /// the strategy by which service implementations are resolved. You do this by
-    /// setting the <see cref="AutofacContrib.Multitenant.Wcf.AutofacHostFactory.ServiceImplementationDataProvider"/>
+    /// setting the <see cref="Autofac.Extras.Multitenant.Wcf.AutofacHostFactory.ServiceImplementationDataProvider"/>
     /// with a strategy implementation.
     /// </para>
     /// <para>
-    /// If <see cref="AutofacContrib.Multitenant.Wcf.AutofacHostFactory.ServiceImplementationDataProvider"/>
-    /// is <see langword="null" /> a new instance of <see cref="AutofacContrib.Multitenant.Wcf.MultitenantServiceImplementationDataProvider"/>
+    /// If <see cref="Autofac.Extras.Multitenant.Wcf.AutofacHostFactory.ServiceImplementationDataProvider"/>
+    /// is <see langword="null" /> a new instance of <see cref="Autofac.Extras.Multitenant.Wcf.MultitenantServiceImplementationDataProvider"/>
     /// will be used. This is different behavior than the standard Autofac
     /// service host factory. If you want to use the standard behavior (which is
-    /// not multitenant), set <see cref="AutofacContrib.Multitenant.Wcf.AutofacHostFactory.ServiceImplementationDataProvider"/>
-    /// to be an instance of <see cref="AutofacContrib.Multitenant.Wcf.SimpleServiceImplementationDataProvider"/>.
+    /// not multitenant), set <see cref="Autofac.Extras.Multitenant.Wcf.AutofacHostFactory.ServiceImplementationDataProvider"/>
+    /// to be an instance of <see cref="Autofac.Extras.Multitenant.Wcf.SimpleServiceImplementationDataProvider"/>.
     /// </para>
     /// <para>
     /// For multitenancy to work properly, you must set the
-    /// <see cref="AutofacContrib.Multitenant.Wcf.AutofacHostFactory.Container"/>
-    /// to be a <see cref="AutofacContrib.Multitenant.MultitenantContainer"/>.
+    /// <see cref="Autofac.Extras.Multitenant.Wcf.AutofacHostFactory.Container"/>
+    /// to be a <see cref="Autofac.Extras.Multitenant.MultitenantContainer"/>.
     /// </para>
     /// <para>
     /// You may configure additional behaviors or other aspects of generated
-    /// service instances by setting the <see cref="AutofacContrib.Multitenant.Wcf.AutofacHostFactory.HostConfigurationAction"/>.
+    /// service instances by setting the <see cref="Autofac.Extras.Multitenant.Wcf.AutofacHostFactory.HostConfigurationAction"/>.
     /// If this value is not <see langword="null" />, generated host instances
     /// will be run through that action.
     /// </para>
@@ -42,7 +42,7 @@ namespace AutofacContrib.Multitenant.Wcf
         /// <summary>
         /// Gets or sets the container from which service instances will be retrieved.
         /// For multitenancy to work properly, you must set this
-        /// to be a <see cref="AutofacContrib.Multitenant.MultitenantContainer"/>.
+        /// to be a <see cref="Autofac.Extras.Multitenant.MultitenantContainer"/>.
         /// </summary>
         /// <value>
         /// An <see cref="Autofac.IContainer"/> that will be used to resolve service
@@ -71,7 +71,7 @@ namespace AutofacContrib.Multitenant.Wcf
         /// Gets or sets the service implementation data strategy.
         /// </summary>
         /// <value>
-        /// An <see cref="AutofacContrib.Multitenant.Wcf.IServiceImplementationDataProvider"/>
+        /// An <see cref="Autofac.Extras.Multitenant.Wcf.IServiceImplementationDataProvider"/>
         /// that will be used to determine the proper service implementation given
         /// a service constructor string.
         /// </value>
@@ -87,12 +87,12 @@ namespace AutofacContrib.Multitenant.Wcf
         /// </returns>
         /// <remarks>
         /// <para>
-        /// If <see cref="AutofacContrib.Multitenant.Wcf.AutofacHostFactory.ServiceImplementationDataProvider"/>
-        /// is <see langword="null" /> a new instance of <see cref="AutofacContrib.Multitenant.Wcf.MultitenantServiceImplementationDataProvider"/>
+        /// If <see cref="Autofac.Extras.Multitenant.Wcf.AutofacHostFactory.ServiceImplementationDataProvider"/>
+        /// is <see langword="null" /> a new instance of <see cref="Autofac.Extras.Multitenant.Wcf.MultitenantServiceImplementationDataProvider"/>
         /// will be used. This is different behavior than the standard Autofac
         /// service host factory. If you want to use the standard behavior (which is
-        /// not multitenant), set <see cref="AutofacContrib.Multitenant.Wcf.AutofacHostFactory.ServiceImplementationDataProvider"/>
-        /// to be an instance of <see cref="AutofacContrib.Multitenant.Wcf.SimpleServiceImplementationDataProvider"/>.
+        /// not multitenant), set <see cref="Autofac.Extras.Multitenant.Wcf.AutofacHostFactory.ServiceImplementationDataProvider"/>
+        /// to be an instance of <see cref="Autofac.Extras.Multitenant.Wcf.SimpleServiceImplementationDataProvider"/>.
         /// </para>
         /// </remarks>
         /// <exception cref="T:System.ArgumentNullException">
@@ -102,7 +102,7 @@ namespace AutofacContrib.Multitenant.Wcf
         /// Thrown if <paramref name="constructorString" /> is empty.
         /// </exception>
         /// <exception cref="T:System.InvalidOperationException">
-        /// Thrown if the <see cref="AutofacContrib.Multitenant.Wcf.AutofacHostFactory.Container"/>
+        /// Thrown if the <see cref="Autofac.Extras.Multitenant.Wcf.AutofacHostFactory.Container"/>
         /// is <see langword="null" />.
         /// </exception>
         [SecuritySafeCritical]
@@ -152,7 +152,7 @@ namespace AutofacContrib.Multitenant.Wcf
         /// </exception>
         /// <remarks>
         /// <para>
-        /// If <see cref="AutofacContrib.Multitenant.Wcf.AutofacHostFactory.HostConfigurationAction"/>
+        /// If <see cref="Autofac.Extras.Multitenant.Wcf.AutofacHostFactory.HostConfigurationAction"/>
         /// is not <see langword="null" />, the new service host instance is run
         /// through the configuration action prior to being returned. This allows
         /// you to programmatically configure behaviors or other aspects of the

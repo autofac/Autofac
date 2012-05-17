@@ -8,8 +8,8 @@
     <ProjectGuid>{0122ECB8-93C3-4020-A28D-1078E32C5DB2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutofacContrib.Tests.EnterpriseLibraryConfigurator</RootNamespace>
-    <AssemblyName>AutofacContrib.Tests.EnterpriseLibraryConfigurator</AssemblyName>
+    <RootNamespace>Autofac.Extras.Tests.EnterpriseLibraryConfigurator</RootNamespace>
+    <AssemblyName>Autofac.Extras.Tests.EnterpriseLibraryConfigurator</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\SharedKey.snk</AssemblyOriginatorKeyFile>

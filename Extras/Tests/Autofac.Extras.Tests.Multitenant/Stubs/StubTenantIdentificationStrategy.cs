@@ -1,7 +1,7 @@
 ﻿using System;
-using AutofacContrib.Multitenant;
+using Autofac.Extras.Multitenant;
 
-namespace AutofacContrib.Tests.Multitenant.Stubs
+namespace Autofac.Extras.Tests.Multitenant.Stubs
 {
     public class StubTenantIdentificationStrategy : ITenantIdentificationStrategy
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AutofacContrib.Tests.Multitenant.Stubs
+namespace Autofac.Extras.Tests.Multitenant.Stubs
 {
     public class StubDependency3Impl : IStubDependency3
     {

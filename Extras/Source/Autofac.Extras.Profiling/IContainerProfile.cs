@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AutofacContrib.Profiling
+namespace Autofac.Extras.Profiling
 {
     public interface IContainerProfile
     {

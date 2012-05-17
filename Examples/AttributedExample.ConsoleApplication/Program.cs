@@ -5,7 +5,7 @@ using System.Reflection;
 using AttributedExample.ConsoleApplication.Configuration;
 using AttributedExample.ConsoleApplication.StateTypes;
 using Autofac;
-using AutofacContrib.Attributed;
+using Autofac.Extras.Attributed;
 
 
 namespace AttributedExample.ConsoleApplication

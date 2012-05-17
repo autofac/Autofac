@@ -27,7 +27,7 @@ using Autofac;
 using Autofac.Core;
 using System.ServiceModel.DomainServices.Server;
 
-namespace AutofacContrib.DomainServices
+namespace Autofac.Extras.DomainServices
 {
     /// <summary>
     /// Initializes all registrated DomainServices. 

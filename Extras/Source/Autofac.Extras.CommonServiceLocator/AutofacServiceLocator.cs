@@ -5,7 +5,7 @@ using System.Linq;
 using Autofac;
 using Microsoft.Practices.ServiceLocation;
 
-namespace AutofacContrib.CommonServiceLocator
+namespace Autofac.Extras.CommonServiceLocator
 {
     public sealed class AutofacServiceLocator : ServiceLocatorImplBase
     {

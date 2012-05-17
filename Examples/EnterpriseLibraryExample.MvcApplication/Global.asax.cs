@@ -5,8 +5,8 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Autofac;
 using Autofac.Integration.Mvc;
-using AutofacContrib.CommonServiceLocator;
-using AutofacContrib.EnterpriseLibraryConfigurator;
+using Autofac.Extras.CommonServiceLocator;
+using Autofac.Extras.EnterpriseLibraryConfigurator;
 using Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
 using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling;
 
@@ -77,7 +77,7 @@ namespace EnterpriseLibraryExample.MvcApplication
             }
             if (exceptionManager == null)
             {
-                // If we hit this it means the AutofacContrib.EnterpriseLibraryConfigurator.AutofacContainerConfigurator
+                // If we hit this it means the Autofac.Extras.EnterpriseLibraryConfigurator.AutofacContainerConfigurator
                 // didn't do its job and EntLib isn't registered properly.
                 Trace.TraceError("The Enterprise Library Exception Handling block is not registered with the current Dependency Resolver. Check your Dependency Resolver registrations.");
                 return;

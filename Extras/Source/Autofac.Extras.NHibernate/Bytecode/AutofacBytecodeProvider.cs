@@ -4,7 +4,7 @@ using Autofac.Core;
 using NHibernate.Bytecode;
 using NHibernate.Properties;
 
-namespace AutofacContrib.NHibernate.Bytecode
+namespace Autofac.Extras.NHibernate.Bytecode
 {
     public class AutofacBytecodeProvider : IBytecodeProvider
     {

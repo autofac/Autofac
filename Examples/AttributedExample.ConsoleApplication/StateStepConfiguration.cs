@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using AttributedExample.ConsoleApplication.Configuration;
 using AttributedExample.ConsoleApplication.StateTypes;
-using AutofacContrib.Attributed;
+using Autofac.Extras.Attributed;
 
 namespace AttributedExample.ConsoleApplication
 {

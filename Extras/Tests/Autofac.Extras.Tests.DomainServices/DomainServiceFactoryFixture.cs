@@ -1,8 +1,8 @@
 using Autofac;
-using AutofacContrib.DomainServices;
+using Autofac.Extras.DomainServices;
 using NUnit.Framework;
 
-namespace AutofacContrib.Tests.DomainServices
+namespace Autofac.Extras.Tests.DomainServices
 {
     [TestFixture]
     public class DomainServiceFactoryFixture

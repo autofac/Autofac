@@ -1,5 +1,5 @@
 ﻿
-namespace AutofacContrib.Tests.Attributed.ScenarioTypes
+namespace Autofac.Extras.Tests.Attributed.ScenarioTypes
 {
     public class MetadataModuleScenario : IMetadataModuleScenario
     {

@@ -3,7 +3,7 @@ using System.ServiceModel;
 using Autofac;
 using Autofac.Util;
 
-namespace AutofacContrib.Multitenant.Wcf
+namespace Autofac.Extras.Multitenant.Wcf
 {
     /// <summary>
     /// Manages instance lifetimes using an Autofac inner container.

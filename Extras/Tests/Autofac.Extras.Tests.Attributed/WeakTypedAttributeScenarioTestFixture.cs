@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Autofac;
-using AutofacContrib.Attributed;
-using AutofacContrib.Tests.Attributed.ScenarioTypes;
+using Autofac.Extras.Attributed;
+using Autofac.Extras.Tests.Attributed.ScenarioTypes;
 using NUnit.Framework;
 
-namespace AutofacContrib.Tests.Attributed
+namespace Autofac.Extras.Tests.Attributed
 {
     [TestFixture]
     public class WeakTypedAttributeScenarioTestFixture

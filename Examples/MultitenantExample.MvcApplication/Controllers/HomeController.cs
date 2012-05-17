@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Web.Mvc;
-using AutofacContrib.Multitenant;
+using Autofac.Extras.Multitenant;
 using MultitenantExample.MvcApplication.Dependencies;
 using MultitenantExample.MvcApplication.Models;
 using MultitenantExample.MvcApplication.WcfService;

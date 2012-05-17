@@ -2,7 +2,7 @@
 using Autofac;
 using Autofac.Builder;
 
-namespace AutofacContrib.Attributed
+namespace Autofac.Extras.Attributed
 {
     public interface IMetadataRegistrar<in TInterface, in TMetadata>
     {

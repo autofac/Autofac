@@ -3,10 +3,10 @@ using System.Globalization;
 using System.Security;
 using System.ServiceModel;
 using Autofac;
-using AutofacContrib.Multitenant.Properties;
-using AutofacContrib.Multitenant.Wcf.DynamicProxy;
+using Autofac.Extras.Multitenant.Properties;
+using Autofac.Extras.Multitenant.Wcf.DynamicProxy;
 
-namespace AutofacContrib.Multitenant.Wcf
+namespace Autofac.Extras.Multitenant.Wcf
 {
     /// <summary>
     /// Service implementation data provider that returns multitenant-aware
@@ -30,7 +30,7 @@ namespace AutofacContrib.Multitenant.Wcf
         /// implementation.
         /// </param>
         /// <returns>
-        /// A <see cref="AutofacContrib.Multitenant.Wcf.ServiceImplementationData"/>
+        /// A <see cref="Autofac.Extras.Multitenant.Wcf.ServiceImplementationData"/>
         /// object containing information about which type to use in
         /// the service host and how to resolve the implementation.
         /// </returns>

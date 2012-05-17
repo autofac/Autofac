@@ -8,8 +8,8 @@
     <ProjectGuid>{C2F90D43-6146-4414-8423-D5E6F4EB06D4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutofacContrib.Tests.DynamicProxy2</RootNamespace>
-    <AssemblyName>AutofacContrib.Tests.DynamicProxy2</AssemblyName>
+    <RootNamespace>Autofac.Extras.Tests.DynamicProxy2</RootNamespace>
+    <AssemblyName>Autofac.Extras.Tests.DynamicProxy2</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>

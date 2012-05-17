@@ -2,7 +2,7 @@
 using System.Security;
 using Autofac.Builder;
 
-namespace AutofacContrib.Multitenant
+namespace Autofac.Extras.Multitenant
 {
     /// <summary>
     /// Extends <see cref="IRegistrationBuilder{TLimit, TActivatorData, TStyle}"/> with methods to support multitenancy.

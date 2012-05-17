@@ -31,7 +31,7 @@ using Autofac;
 using Autofac.Core;
 using Castle.DynamicProxy;
 
-namespace AutofacContrib.AggregateService
+namespace Autofac.Extras.AggregateService
 {
     /// <summary>
     /// Interceptor that resolves types of properties and methods using a <see cref="IComponentContext"/>.

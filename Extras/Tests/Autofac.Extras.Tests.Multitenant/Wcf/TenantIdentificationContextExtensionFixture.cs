@@ -1,8 +1,8 @@
 ﻿using System;
-using AutofacContrib.Multitenant.Wcf;
+using Autofac.Extras.Multitenant.Wcf;
 using NUnit.Framework;
 
-namespace AutofacContrib.Tests.Multitenant.Wcf
+namespace Autofac.Extras.Tests.Multitenant.Wcf
 {
     [TestFixture]
     public class TenantIdentificationContextExtensionFixture
