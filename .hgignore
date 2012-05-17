@@ -8,6 +8,8 @@ glob:*/_ReSharper*
 glob:*.user
 glob:*.suo
 glob:*.docstates
+glob:Index.dat
+glob:Storage.dat
 
 # NuGet Packages
 glob:packages/Castle*
