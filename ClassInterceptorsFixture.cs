@@ -1,11 +1,11 @@
 ﻿using Autofac;
 using Autofac.Builder;
-using AutofacContrib.DynamicProxy2;
+using Autofac.Extras.DynamicProxy2;
 using Castle.DynamicProxy;
 using NUnit.Framework;
 using System;
 
-namespace AutofacContrib.Tests.DynamicProxy2
+namespace Autofac.Extras.Tests.DynamicProxy2
 {
     [TestFixture]
     public class ClassInterceptorsFixture

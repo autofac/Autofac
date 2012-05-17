@@ -3,9 +3,9 @@ using Autofac;
 using Autofac.Core;
 using Castle.DynamicProxy;
 using NUnit.Framework;
-using AutofacContrib.DynamicProxy2;
+using Autofac.Extras.DynamicProxy2;
 
-namespace AutofacContrib.Tests.DynamicProxy2
+namespace Autofac.Extras.Tests.DynamicProxy2
 {
     [TestFixture]
     public class AttributedInterfaceInterceptionFixture
