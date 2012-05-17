@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -32,6 +34,7 @@ namespace Autofac.Tests.Integration.Mvc
             _controller = new TestController();
             _context = new ControllerContext {Controller = _controller, HttpContext = httpContext.Object};
             _controller.ControllerContext = _context;
+            _controller.ValueProvider = new NameValueCollectionValueProvider(new NameValueCollection(), CultureInfo.InvariantCulture);
         }
 
         [Test]
@@ -48,19 +51,45 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void ActionInjectionTurnedOn_DependencyRegistered_ServiceResolved()
         {
+            this.SetChildAction();
             var invoker = _container.Resolve<TestableActionInvoker>(new NamedParameter("injectActionMethodParameters", true));
             invoker.InvokeAction(_context, "Index");
 
             Assert.That(_controller.Dependency, Is.InstanceOf<IActionDependency>());
         }
 
-        [Test, Ignore("Controller context (base) failing in fixture.")]
+        [Test, Ignore("Interface dependencies cause this to fail. Issue #368")]
         public void ActionInjectionTurnedOff_DependencyRegistered_ServiceNotResolved()
         {
+            /* If action injection is turned off, this falls back to a
+             * default value by attempting to bind a model using the
+             * default model binder. That is...
+             * - ExtensibleActionInvoker.GetParameterValue falls back to
+             * - ControllerActionInvoker.GetParameterValue, which uses the
+             *   incoming ParameterDescriptor to attempt to model bind to a value.
+             * - DefaultModelBinder.BindModel looks for a value being passed in
+             *   and, not finding one, calls Activator.CreateInstance on the expected
+             *   dependency type. If the dependency type is an interface, an exception
+             *   is raised because you can't create instances of interfaces.
+             * 
+             * ExtensibleActionInvoker.GetParameterValue needs to be updated to either
+             * check for this sort of scenario or handle the exception and automatically
+             * return null.
+             */
+            this.SetChildAction();
             var invoker = _container.Resolve<TestableActionInvoker>();
             invoker.InvokeAction(_context, "Index");
 
             Assert.That(_controller.Dependency, Is.Null);
+        }
+
+        private void SetChildAction()
+        {
+            // Setting ParentActionViewContext makes this a "child action" and
+            // side-steps the call for DynamicValidationShim.EnableDynamicValidation(HttpRequest)
+            // which isn't mockable, requires a real HttpContext.Current, and
+            // throws NullReferenceException if the HttpContext.Current.Request doesn't exist.
+            _context.RouteData.DataTokens["ParentActionViewContext"] = "parent";
         }
 
         private static void AssertFiltersInjected(IEnumerable filters)
