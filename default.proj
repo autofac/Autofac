@@ -98,7 +98,7 @@
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.pdb;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.xml;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.config"
-				Exclude="**\*.vshost.*;**\*.CodeAnalysis.*" />
+				Exclude="**\*.vshost.*;**\*.CodeAnalysisLog.*" />
 		</ItemGroup>
 		<Copy SourceFiles="@(SourceOutputList)" DestinationFolder="$(BuildDirectory)\bin\NET40" />
 	</Target>
