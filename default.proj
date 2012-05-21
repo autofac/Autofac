@@ -44,9 +44,33 @@
 
 	<Target Name="All">
 		<CallTarget Targets="UpdateVersion" Condition="'$(AssemblyVersion)' !='0.0.0.0'" />
-		<CallTarget Targets="Clean;Compile;Test" />
+		<CallTarget Targets="Clean;Compile;Test;Analyze" />
 		<CallTarget Targets="Package" Condition="'$(Package)' == 'true'" />
 		<CallTarget Targets="Document" Condition="'$(Document)' == 'true'" />
+	</Target>
+	<Target Name="Analyze">
+		<PropertyGroup>
+			<SecAnnotateAnalyzeResponseFile>$(BuildDirectory)\log\SecAnnotateAnalyzeList.txt</SecAnnotateAnalyzeResponseFile>
+			<SecAnnotateReferenceResponseFile>$(BuildDirectory)\log\SecAnnotateReferenceList.txt</SecAnnotateReferenceResponseFile>
+		</PropertyGroup>
+		<ItemGroup>
+			<SecAnnotateAnalyzeAssemblies Include="$(BuildDirectory)\bin\NET40\*.dll" />
+			<SecAnnotateReferenceAssemblies Include="$(MSBuildProjectDirectory)\packages\**\*.dll" />
+			<SecAnnotateReferenceDirectories Include="%(SecAnnotateReferenceAssemblies.RootDir)%(SecAnnotateReferenceAssemblies.Directory)" />
+		</ItemGroup>
+		<Delete Files="$(SecAnnotateAnalyzeResponseFile)" Condition="Exists('$(SecAnnotateAnalyzeResponseFile)')" />
+		<Delete Files="$(SecAnnotateReferenceResponseFile)" Condition="Exists('$(SecAnnotateReferenceResponseFile)')" />
+		<WriteLinesToFile
+			File="$(SecAnnotateAnalyzeResponseFile)"
+			Lines="%(SecAnnotateAnalyzeAssemblies.FullPath)"
+			Overwrite="false" />
+		<WriteLinesToFile
+			File="$(SecAnnotateReferenceResponseFile)"
+			Lines="/d:%(SecAnnotateReferenceDirectories.FullPath)"
+			Overwrite="false" />
+		<Exec
+			Command="SecAnnotate.exe /o:&quot;$(BuildDirectory)\log\SecAnnotateResults.xml&quot; @&quot;$(SecAnnotateReferenceResponseFile)&quot; @&quot;$(SecAnnotateAnalyzeResponseFile)&quot;"
+			WorkingDirectory="$(BuildDirectory)\bin\NET40\" />
 	</Target>
 	<Target Name="Clean">
 		<RemoveDir Directories="$(BuildDirectory)" ContinueOnError="true" />
