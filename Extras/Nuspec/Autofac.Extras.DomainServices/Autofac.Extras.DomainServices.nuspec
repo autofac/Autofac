@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <id>Autofac.Extras.DomainServices</id>
+    <version>$version$</version>
+    <authors>Autofac Contributors</authors>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This extension allows you to use Autofac dependency injection in RIA domain services.</description>
+    <summary>Autofac extension for RIA services support.</summary>
+    <language>en-US</language>
+    <title>Autofac Extras: Domain Service Factory for RIA Services</title>
+    <projectUrl>http://autofac.org</projectUrl>
+    <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
+    <dependencies>
+      <dependency id="Autofac" version="$version$" />
+    </dependencies>
+  </metadata>
+</package>

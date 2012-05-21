@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Stage" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+	<Target Name="Stage">
+		<Error Text="You must specify the project binary output directory." Condition="'$(BuildBinDirectory)' == ''" />
+		<Error Text="You must specify the Nuspec staging directory." Condition="'$(StagingDirectory)' == ''" />
+		<PropertyGroup>
+			<!-- The name of the .nuspec file being staged, minus extension. -->
+			<NuspecName>Autofac.Extras.Attributed</NuspecName>
+		</PropertyGroup>
+		<ItemGroup>
+			<!--
+				Staging goes in build_output\package\nuspec-staging\NuspecName so the
+				master build script can run NuGet and package it all up.
+
+				Select which assemblies from the root build_output folder get included.
+				Everything else will get staged automatically.
+			-->
+			<LibFiles Include="
+				$(BuildBinDirectory)\**\Autofac.Extras.Attributed.dll;
+				$(BuildBinDirectory)\**\Autofac.Extras.Attributed.xml" />
+			<ProjectFiles Include="$(MSBuildProjectDirectory)\**\*.*" Exclude="$(MSBuildProjectDirectory)\NuspecStaging.proj;$(MSBuildProjectDirectory)\*.nuspec" />
+		</ItemGroup>
+
+		<!-- Copy the .nuspec, other project files in this folder, and requisite lib files into a staging area for packaging. -->
+		<MakeDir Directories="$(StagingDirectory)\$(NuspecName)" />
+		<Copy SourceFiles="$(MSBuildProjectDirectory)\$(NuspecName).nuspec" DestinationFolder="$(StagingDirectory)\$(NuspecName)" />
+		<Copy SourceFiles="%(ProjectFiles.FullPath)" DestinationFiles="$(StagingDirectory)\$(NuspecName)\%(ProjectFiles.RecursiveDir)%(ProjectFiles.Filename)%(ProjectFiles.Extension)" />
+		<Copy SourceFiles="%(LibFiles.FullPath)" DestinationFiles="$(StagingDirectory)\$(NuspecName)\lib\%(LibFiles.RecursiveDir)%(LibFiles.Filename)%(LibFiles.Extension)" />
+	</Target>
+</Project>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <id>Autofac.Extras.AggregateService</id>
+    <version>$version$</version>
+    <authors>Autofac Contributors</authors>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Aggregate services are sets of dependencies you can treat as a single dependency. This extension enables support for aggregate dependencies in Autofac.</description>
+    <summary>Autofac extension for generating aggregate services.</summary>
+    <language>en-US</language>
+    <title>Autofac Extras: Aggregate Service Support</title>
+    <projectUrl>http://autofac.org</projectUrl>
+    <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
+    <dependencies>
+      <dependency id="Autofac" version="$version$" />
+    </dependencies>
+  </metadata>
+</package>
