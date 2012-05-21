@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security;
 using Autofac;
 using Autofac.Core;
 using Castle.DynamicProxy;
@@ -18,6 +19,7 @@ namespace Autofac.Extras.DynamicProxy2
             _interceptorService = interceptorService;
         }
 
+        [SecuritySafeCritical]
         public InterceptAttribute(string interceptorServiceName)
             : this(new KeyedService(interceptorServiceName, typeof(IInterceptor)))
         {
