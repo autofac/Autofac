@@ -86,6 +86,17 @@
 		<Copy SourceFiles="@(SourceOutputList)" DestinationFolder="$(BuildDirectory)\bin\NET40" />
 	</Target>
 	<Target Name="Document">
+		<ItemGroup>
+			<DocTarget Include="$(BuildDirectory)\bin\NET40\*.dll;$(BuildDirectory)\bin\NET40\*.xml" />
+		</ItemGroup>
+		<CreateProperty Value="@(DocTarget -> '&lt;DocumentationSource sourceFile=%27%(FullPath)%27 /&gt;', '')">
+			<Output TaskParameter="Value" PropertyName="DocumentationSources" />
+		</CreateProperty>
+		<Message Text="$(DocumentationSources)" />
+		<MSBuild
+			ToolsVersion="4.0"
+			Projects="Documentation.shfbproj"
+			Properties="SHFBRoot=$(MSBuildProjectDirectory)\lib\SHFB;HelpFileVersion=$(AssemblyVersion);DocumentationSources=$(DocumentationSources)" />
 	</Target>
 	<Target Name="Package">
 		<PropertyGroup>
