@@ -121,5 +121,20 @@
 
 		<p>Production/Release build:<br />
 			<code>msbuild default.proj /p:AssemblyVersion=1.2.3.4</code></p>
+
+		<p>The <strong>developer build</strong> will...</p>
+		<ul>
+			<li>Clean all build artifacts.</li>
+			<li>Build the solution.</li>
+			<li>Execute the unit tests.</li>
+			<li>Run code analysis (secannotate).</li>
+		</ul>
+
+		<p>The <strong>production/release build</strong> will do everything in the developer build <em>plus</em>...</p>
+		<ul>
+			<li>Create zip packages for distribution.</li>
+			<li>Create NuGet packages for distribution.</li>
+			<li>Build the compiled API help documentation.</li>
+		</ul>
 	</body>
 </html>
