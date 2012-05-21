@@ -7,44 +7,66 @@
 // System  : Sandcastle Help File Builder
 // File    : BuildLog.xsl
 // Author  : Eric Woodruff
-// Updated : 03/15/2008
-// Note    : Copyright 2008, Eric Woodruff, All rights reserved
+// Updated : 01/07/2012
+// Note    : Copyright 2008-2012, Eric Woodruff, All rights reserved
 //
 // This is used to convert a SHFB build log into a viewable HTML page.
 -->
 
-  <msxsl:script language="C#" implements-prefix="shfb">
+  <xsl:param name="filterOn" select="'false'" />
+	<xsl:param name="highlightOn" select="'false'" />
+
+	<msxsl:script language="C#" implements-prefix="shfb">
+  <msxsl:using namespace="System.Text" />
   <msxsl:using namespace="System.Text.RegularExpressions" />
     <![CDATA[
-    private static Regex reScriptName = new Regex("^\\[.*?\\]",
-        RegexOptions.Multiline);
-
-    private static Regex reWarning = new Regex("(Warn|Warning):",
-        RegexOptions.IgnoreCase);
+    private static Regex reWarning = new Regex(@"(Warn|Warning( HXC\d+)?):|" +
+        @"SHFB\s*:\s*Warning\s.*?:|.*?(\(\d*,\d*\))?:\s*warning\s.*?:");
 
     private static Regex reErrors = new Regex(
-        @"^(Error|UnrecognizedOption|Unhandled Exception|Fatal Error|" +
-        @"Unexpected error.*|HHC\d+: Error|(Fatal )?Error HXC\d+|" +
-        @"Process is terminated|BUILD FAILED):|BUILD CANCELLED BY USER",
-        RegexOptions.IgnoreCase | RegexOptions.Multiline);
+        @"^\s*((Error|UnrecognizedOption|Unhandled Exception|Fatal Error|" +
+        @"Unexpected error.*|HHC\d+: Error|(Fatal )?Error HXC\d+):|" +
+        @"Process is terminated|BUILD FAILED|\w+\s*:\s*Error\s.*?:|" +
+        @".*?\(\d*,\d*\):\s*error\s.*?:)", RegexOptions.Multiline);
 
-    // Encode a few special characters, add a style to script names, warnings,
-    // and errors, and return a non-breaking space if empty.
-    public static string StyleLogText(string logText)
+    // Encode a few special characters, add a style to warnings and errors, and
+		// return a non-breaking space if empty.
+    public static string StyleLogText(string logText, string filterOn, string highlightOn)
     {
         // System.Web isn't always available so do some simple encoding
         logText = logText.Trim().Replace("&", "&amp;");
         logText = logText.Replace("<", "&lt;");
         logText = logText.Replace(">", "&gt;");
 
-        logText = reScriptName.Replace(logText,
-            "<span class=\"ScriptName\">$0</span>");
+        // Include all text or just filter for warnings and errors?
+        if(filterOn == "false")
+        {
+						// Highlight warnings and errors in the full text?
+						if(highlightOn == "true")
+						{
+								logText = reWarning.Replace(logText, "<span class=\"Warning\">$0</span>");
+								logText = reErrors.Replace(logText, "<span class=\"Error\">$0</span>");
+						}
+        }
+        else
+        {
+            StringBuilder sb = new StringBuilder(2048);
 
-        logText = reWarning.Replace(logText,
-            "<span class=\"Warning\">$0</span>");
+            foreach(string s in logText.Split('\n'))
+                if(reWarning.IsMatch(s))
+                {
+                    sb.Append(reWarning.Replace(s, "<span class=\"Warning\">$0</span>"));
+                    sb.Append('\n');
+                }
+                else
+                    if(reErrors.IsMatch(s))
+                    {
+                        sb.Append(reErrors.Replace(s, "<span class=\"Error\">$0</span>"));
+                        sb.Append('\n');
+                    }
 
-        logText = reErrors.Replace(logText,
-            "<span class=\"Error\">$0</span>");
+            logText = sb.ToString();
+        }
 
         return (logText.Length == 0) ? "&#160;" : logText;
     }
@@ -60,16 +82,15 @@
 <title><xsl:value-of select="product"/></title>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
 <style>
-  body { font-size: 10pt; font-family: Arial, Verdana, sans-serif; color: black; background-color: white; }
+  body { font-size: 8pt; font-family: Arial, Verdana, sans-serif; color: black; background-color: white; }
   h3 { margin: 0px; }
   h4 { margin: 0px; }
-  pre { font-family: Consolas, "Courier New", Courier, monospace; font-size: 10pt; margin-top: 0px; margin-left: 20px; margin-bottom: 20px; padding: 0px; }
+  pre { font-family: Consolas, "Courier New", Courier, monospace; font-size: 8pt; margin-top: 0px; margin-left: 20px; margin-bottom: 20px; padding: 0px; }
   .SectionHeader { background-color: #0066cc; color: white; padding: 5px; width: 95%; margin-left: 0px; margin-right: 2px; margin-top: 0px; padding: 2px; }
   .CollapsedHeader { background-color: #dcdcdc; color: black; padding: 5px; width: 95%; margin-left: 0px; margin-right: 2px; margin-top: 0px; padding: 2px; }
   .Warning { font-weight: bold; background-color: #ffd700; padding: 2px; }
   .Error { font-weight: bold; background-color: #b22222; color: #ffffff; padding: 2px; }
   .CollapseBox { cursor: pointer; color: black; text-align: center; border-style: solid; border-width: 1px; border-color: gray; margin-left: 0px; margin-right: 2px; margin-top: 0px; padding: 2px; width: 20px; }
-  .ScriptName { font-weight: bold; }
   .PlugIn { border-left: black 5px solid; padding-top: 5px; padding-bottom: 5px; padding-left: 10px; }
   .PlugInHeader { background-color: #cccc99; color: black; width: 95%; padding: 2px; }
 </style>
@@ -79,6 +100,11 @@
 <h3><xsl:value-of select="@product"/>&#160;<xsl:value-of select="@version"/> Build Log</h3>
 <h4>Project File: <xsl:value-of select="@projectFile"/></h4>
 <h4>Build Started: <xsl:value-of select="@started"/></h4>
+
+<xsl:if test="$filterOn = 'true'">
+(Filtered for warnings and errors only)
+</xsl:if>
+
 <br/><hr/>
 <a href="#" onclick="javascript: ExpandCollapseAll(false);">Collapse All</a>&#160;&#160;&#160;&#160;<a href="#" onclick="javascript: ExpandCollapseAll(true);">Expand All</a>
 <hr/>
@@ -140,14 +166,14 @@ function ExpandCollapseAll(expand)
 
   <!-- Plug-in template -->
   <xsl:template match="plugIn">
-    <div class="PlugIn"><span class="PlugInHeader"><b>Plug-In:</b>&#160;<xsl:value-of select="@name" />&#160;&#160;<b>Running:</b>&#160;<xsl:value-of select="@behavior" /></span><br/>
-      <xsl:value-of select="shfb:StyleLogText(text())" disable-output-escaping="yes" />
+    <div class="PlugIn"><span class="PlugInHeader"><b>Plug-In:</b>&#160;<xsl:value-of select="@name" />&#160;&#160;<b>Running:</b>&#160;<xsl:value-of select="@behavior" />&#160;&#160;<b>Priority:</b>&#160;<xsl:value-of select="@priority" /></span><br/>
+      <xsl:value-of select="shfb:StyleLogText(text(), $filterOn, $highlightOn)" disable-output-escaping="yes" />
     </div>
   </xsl:template>
 
   <!-- Text template -->
   <xsl:template match="text()">
-    <xsl:value-of select="shfb:StyleLogText(.)" disable-output-escaping="yes" />
+    <xsl:value-of select="shfb:StyleLogText(., $filterOn, $highlightOn)" disable-output-escaping="yes" />
   </xsl:template>
 
 </xsl:stylesheet>

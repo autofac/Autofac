@@ -64,7 +64,7 @@
     <MSHelp:Attr Name="Locale" Value="<@Locale>" />
     <MSHelp:Attr Name="TargetOS" Value="Windows" />
 
-<!-- Include the user's XML data island for HTML Help 2.0 if present -->
+<!-- Include the user's XML data island for MS Help 2.0 if present -->
 <xsl:if test="xml">
     <xsl:copy-of select="xml/*"/>
 </xsl:if>

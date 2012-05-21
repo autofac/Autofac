@@ -2,12 +2,13 @@
 <html>
 
 <head>
-<title>Table of Content</title>
+<title>{@HtmlEncHelpTitle} - Table of Content</title>
 <link rel="stylesheet" href="TOC.css">
+<link rel="shortcut icon" href="favicon.ico"/>
 <script type="text/javascript" src="TOC.js"></script>
 </head>
 
-<body onload="javascript: Initialize();" onresize="javascript: ResizeTree();">
+<body onload="javascript: Initialize('.aspx');" onresize="javascript: ResizeTree();">
 <form id="IndexForm" runat="server">
 
 <div id="TOCDiv" class="TOCDiv">
@@ -35,6 +36,9 @@ Keyword Index
         src="ExpandAll.bmp" height="16" width="16" alt="Expand all "/>
     <img class="TOCLink" onclick="javascript: ExpandOrCollapseAll(false);"
         src="CollapseAll.bmp" height="16" width="16" alt="Collapse all" />
+    <a href="#" title="Click to obtain a direct link to the displayed topic"
+        style="margin-left: 10px; vertical-align: top;"
+        onclick="javascript: ShowDirectLink();">Direct Link</a>
 </div>
 
 <div class="Tree" id="divSearchResults" style="display: none;"

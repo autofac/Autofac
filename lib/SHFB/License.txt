@@ -63,11 +63,21 @@ purpose and non-infringement.
 
 Copyright Notices
 -----------------
-AjaxDoc is Copyright (c) 2006-2008 Bertrand Le Roy, All Rights Reserved.
+The ICSharpCode.TextEditor is Copyright (c) 2000-2012 IC#Code, All Rights
+Reserved.
 
-Script# is Copyright (c) 2007-2008 Nikhil Kothari, All Rights Reserved.
+The Weifen Luo DockPanel Suite is Copyright (c) 2007-2012 Weifen Luo, All
+Rights Reserved.
 
-The code colorizer library is Copyright (c) 2003-2008, Jonathan de Halleux,
+The Ionic.Zip Library is Copyright (c) 2009-2012 Dino Chiesa, All Rights Reserved.
+
+AjaxDoc is Copyright (c) 2006-2012 Bertrand Le Roy, All Rights Reserved.
+
+Script# is Copyright (c) 2007-2012 Nikhil Kothari, All Rights Reserved.
+
+SBAppLocale is Copyright 2005-2012 Steel Bytes, All Rights Reserved.
+
+The code colorizer library is Copyright (c) 2003-2012, Jonathan de Halleux,
 All Rights Reserved.
 
-All other code is Copyright (c) 2006-2008, Eric Woodruff, All Rights Reserved.
+All other code is Copyright (c) 2006-2012, Eric Woodruff, All Rights Reserved.

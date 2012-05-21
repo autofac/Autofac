@@ -9,6 +9,9 @@
         <language from="c++" to="cpp"/>
         <language from="cplusplus" to="cpp"/>
         <language from="cpp#" to="cpp"/>
+        <language from="f#" to="fs"/>
+        <language from="fsharp" to="fs"/>
+        <language from="fsscript" to="fs"/>
         <language from="j#" to="jsharp"/>
         <language from="ecmascript" to="javascript"/>
         <language from="js" to="javascript"/>
@@ -21,11 +24,14 @@
         <language from="vbs" to="vbscript"/>
         <language from="htm" to="xml"/>
         <language from="html" to="xml"/>
+        <language from="aspnet" to="xml"/>
+        <language from="asp.net" to="xml"/>
         <language from="xsl" to="xml"/>
         <language from="sql server" to="sql"/>
         <language from="sqlserver" to="sql"/>
         <language from="powershell" to="pshell"/>
         <language from="ps1" to="pshell"/>
+        <language from="py" to="python" />
     </map>
 	<!-- families of keywords -->
 	<keywordlists>
@@ -142,23 +148,38 @@
 		<keywordlist id="kwcs-keywords">
 			<kw>abstract</kw>
 			<kw>as</kw>
+			<kw>ascending</kw>
+			<kw>async</kw>
+			<kw>await</kw>
 			<kw>base</kw>
 			<kw>byte</kw>
 			<kw>checked</kw>
 			<kw>decimal</kw>
 			<kw>delegate</kw>
+			<kw>descending</kw>
+			<kw>dynamic</kw>
+			<kw>equals</kw>
 			<kw>event</kw>
 			<kw>finally</kw>
 			<kw>fixed</kw>
 			<kw>foreach</kw>
+			<kw>from</kw>
+			<kw>get</kw>
+			<kw>global</kw>
+			<kw>group</kw>
 			<kw>implicit</kw>
 			<kw>in</kw>
 			<kw>interface</kw>
 			<kw>internal</kw>
+			<kw>into</kw>
 			<kw>is</kw>
+			<kw>join</kw>
+			<kw>let</kw>
 			<kw>lock</kw>
 			<kw>null</kw>
 			<kw>object</kw>
+			<kw>on</kw>
+			<kw>orderby</kw>
 			<kw>out</kw>
 			<kw>override</kw>
 			<kw>params</kw>
@@ -167,6 +188,8 @@
 			<kw>ref</kw>
 			<kw>sbyte</kw>
 			<kw>sealed</kw>
+			<kw>select</kw>
+			<kw>set</kw>
 			<kw>stackalloc</kw>
 			<kw>string</kw>
 			<kw>typeof</kw>
@@ -175,6 +198,10 @@
 			<kw>unchecked</kw>
 			<kw>unsafe</kw>
 			<kw>ushort</kw>
+			<kw>value</kw>
+			<kw>var</kw>
+			<kw>where</kw>
+			<kw>yield</kw>
 		</keywordlist>
 		<!-- Common VB-like language keywords (VB.NET, VBScript) -->
 		<keywordlist id="kwvblang-keywords">
@@ -239,6 +266,8 @@
 			<kw>Alias</kw>
 			<kw>AndAlso</kw>
 			<kw>As</kw>
+			<kw>Async</kw>
+			<kw>Await</kw>
 			<kw>Boolean</kw>
 			<kw>ByRef</kw>
 			<kw>ByVal</kw>
@@ -789,6 +818,141 @@
 			<kw>$switch</kw>
 			<kw>$this</kw>
 		</keywordlist>
+        <!-- Python keywords -->
+        <keywordlist id="kwpython-keywords">
+            <kw>and</kw>
+            <kw>as</kw>
+            <kw>assert</kw>
+            <kw>break</kw>
+            <kw>class</kw>
+            <kw>continue</kw>
+            <kw>def</kw>
+            <kw>del</kw>
+            <kw>elif</kw>
+            <kw>else</kw>
+            <kw>except</kw>
+            <kw>exec</kw>
+            <kw>finally</kw>
+            <kw>for</kw>
+            <kw>from</kw>
+            <kw>global</kw>
+            <kw>if</kw>
+            <kw>import</kw>
+            <kw>in</kw>
+            <kw>is</kw>
+            <kw>lambda</kw>
+            <kw>not</kw>
+            <kw>or</kw>
+            <kw>pass</kw>
+            <kw>print</kw>
+            <kw>raise</kw>
+            <kw>return</kw>
+            <kw>try</kw>
+            <kw>while</kw>
+            <kw>with</kw>
+            <kw>yield</kw>
+        </keywordlist>
+		<!-- F# language keywords -->
+		<keywordlist id="kwfslang-keywords">
+			<kw>abstract</kw>
+			<kw>and</kw>
+			<kw>as</kw>
+			<kw>asr</kw>
+			<kw>assert</kw>
+			<kw>atomic</kw>
+			<kw>base</kw>
+			<kw>begin</kw>
+			<kw>break</kw>
+			<kw>checked</kw>
+			<kw>class</kw>
+			<kw>component</kw>
+			<kw>const</kw>
+			<kw>constraint</kw>
+			<kw>constructor</kw>
+			<kw>continue</kw>
+			<kw>default</kw>
+			<kw>delegate</kw>
+			<kw>do</kw>
+			<kw>done</kw>
+			<kw>downcast</kw>
+			<kw>downto</kw>
+			<kw>eager</kw>
+			<kw>elif</kw>
+			<kw>else</kw>
+			<kw>end</kw>
+			<kw>event</kw>
+			<kw>exception</kw>
+			<kw>extern</kw>
+			<kw>external</kw>
+			<kw>false</kw>
+			<kw>finally</kw>
+			<kw>fixed</kw>
+			<kw>for</kw>
+			<kw>fori</kw>
+			<kw>fun</kw>
+			<kw>function</kw>
+			<kw>functor</kw>
+			<kw>global</kw>
+			<kw>if</kw>
+			<kw>in</kw>
+			<kw>include</kw>
+			<kw>inherit</kw>
+			<kw>inline</kw>
+			<kw>interface</kw>
+			<kw>internal</kw>
+			<kw>land</kw>
+			<kw>lazy</kw>
+			<kw>let</kw>
+			<kw>lor</kw>
+			<kw>lsl</kw>
+			<kw>lsr</kw>
+			<kw>lxor</kw>
+			<kw>match</kw>
+			<kw>member</kw>
+			<kw>method</kw>
+			<kw>mixin</kw>
+			<kw>mod</kw>
+			<kw>module</kw>
+			<kw>mutable</kw>
+			<kw>namespace</kw>
+			<kw>new</kw>
+			<kw>null</kw>
+			<kw>object</kw>
+			<kw>of</kw>
+			<kw>open</kw>
+			<kw>or</kw>
+			<kw>override</kw>
+			<kw>parallel</kw>
+			<kw>params</kw>
+			<kw>private</kw>
+			<kw>process</kw>
+			<kw>protected</kw>
+			<kw>public</kw>
+			<kw>pure</kw>
+			<kw>rec</kw>
+			<kw>return</kw>
+			<kw>sealed</kw>
+			<kw>sig</kw>
+			<kw>static</kw>
+			<kw>struct</kw>
+			<kw>tailcall</kw>
+			<kw>then</kw>
+			<kw>to</kw>
+			<kw>trait</kw>
+			<kw>true</kw>
+			<kw>try</kw>
+			<kw>type</kw>
+			<kw>upcast</kw>
+			<kw>use</kw>
+			<kw>val</kw>
+			<kw>virtual</kw>
+			<kw>void</kw>
+			<kw>volatile</kw>
+			<kw>when</kw>
+			<kw>while</kw>
+			<kw>with</kw>
+			<kw>yield</kw>
+		</keywordlist>
 	</keywordlists>
 	<!-- Languages syntax specification -->
 	<languages>
@@ -816,7 +980,7 @@
 					<keyword attribute="keyword" context="code" family="kwc-keywords" />
 				</context>
 				<!-- block comment /* ... */ -->
-				<context id="blockcomment" attribute="cpp-blockcomment">
+				<context id="blockcomment" attribute="blockcomment">
 					<!-- finish line of comment, start block -->
 					<detect2chars attribute="hidden" context="code" char="*" char1="/" />
 				</context>
@@ -856,7 +1020,7 @@
 					<keyword attribute="keyword" context="code" family="kwcpp-managed" />
 				</context>
 				<!-- block comment /* ... */ -->
-				<context id="blockcomment" attribute="cpp-blockcomment">
+				<context id="blockcomment" attribute="blockcomment">
 					<!-- finish line of comment, start block -->
 					<detect2chars attribute="hidden" context="code" char="*" char1="/" />
 				</context>
@@ -895,7 +1059,7 @@
 					<keyword attribute="keyword" context="code" family="kwcs-keywords" />
 				</context>
 				<!-- block comment /* ... */ -->
-				<context id="blockcomment" attribute="cpp-blockcomment">
+				<context id="blockcomment" attribute="blockcomment">
 					<!-- finish line of comment, start block -->
 					<detect2chars attribute="hidden" context="code" char="*" char1="/" />
 				</context>
@@ -908,13 +1072,49 @@
 				</context>
 			</contexts>
 		</language>
+		<!-- F# language specification -->
+		<language id="fs" tabSize="4" name="F#">
+			<!-- Code contexts: default (most common) is code. -->
+			<contexts default="code">
+				<!-- basic source code context -->
+				<context id="code" attribute="code">
+					<!-- (* block of comment *) -->
+					<detect2chars attribute="hidden" context="blockcomment" char="(" char1="*" />
+					<!-- // line of comment -->
+					<detect2chars attribute="hidden" context="linecomment" char="/" char1="/" />
+					<!-- " " literals -->
+					<regexp id="dqliteral" attribute="literal" context="code" expression="(&quot;&quot;)|(@&quot;(.|[\r\n])*?&quot;|&quot;(.|\\&quot;|\\\r\n)*?((\\\\)+&quot;|[^\\]{1}&quot;))" />
+					<!-- ' ' literals -->
+					<regexp id="sqliteral" attribute="literal" context="code" expression="(&apos;&apos;)|(&apos;(.|\\&apos;|\\\r\n)*?((\\\\)+&apos;|[^\\]{1}&apos;))" />
+					<!-- preprocessor (#XXXX) -->
+					<regexp id="preprocessor" attribute="preprocessor" context="code" expression="#\w+" />
+					<!-- numbers -->
+					<regexp id="number" attribute="number" context="code" expression="0x[0-9a-fA-F]*|(((?&lt;=[^0-9])(\+|-))?)\b[0-9][0-9]*(\.[0-9]+)?" />
+					<!-- keyword F# -->
+					<keyword attribute="keyword" context="code" family="kwfslang-keywords" />
+				</context>
+				<!-- block comment (* ... *) -->
+				<context id="blockcomment" attribute="fsblockcomment">
+					<!-- finish line of comment, start block -->
+					<detect2chars attribute="hidden" context="code" char="*" char1=")" />
+				</context>
+				<!-- line comment // ... -->
+				<context id="linecomment" attribute="cpp-linecomment">
+					<!-- finish line of comment, start block -->
+					<!-- detect2chars attribute="hidden" context="blockcomment" char="(" char1="*" / -->
+					<!-- finish line of comment end of line -->
+					<linecontinue attribute="hidden" context="code" />
+				</context>
+			</contexts>
+		</language>
+
 		<!-- VB.NET -->
 		<language id="vbnet" not-case-sensitive="yes" tabSize="4" name="VB.NET">
 			<contexts default="code">
 				<!-- Code context -->
 				<context id="code" attribute="code">
 					<!-- Single line of comment -->
-					<regexp id="vb-comment" attribute="vb-comment" context="code" expression="(?&lt;=\W|^)('.*|Rem(\t| ).*|Rem)([\r\n]{1,2}|$)" />
+					<regexp id="vb-comment" attribute="comment" context="code" expression="(?&lt;=\W|^)('.*|Rem(\t| ).*|Rem)([\r\n]{1,2}|$)" />
 					<!-- literal -->
 					<regexp id="literal" attribute="literal" context="code" expression="&quot;(.|&quot;&quot;)*?&quot;" />
 					<!-- preprocessor (#XXXX) -->
@@ -934,7 +1134,7 @@
 				<!-- Code context -->
 				<context id="code" attribute="code">
 					<!-- Single line of comment -->
-					<regexp id="vb-comment" attribute="vb-comment" context="code" expression="(?&lt;=\W|^)('.*|Rem(\t| ).*|Rem)([\r\n]{1,2}|$)" />
+					<regexp id="vb-comment" attribute="comment" context="code" expression="(?&lt;=\W|^)('.*|Rem(\t| ).*|Rem)([\r\n]{1,2}|$)" />
 					<!-- literal -->
 					<regexp id="literal" attribute="literal" context="code" expression="&quot;(.|&quot;&quot;)*?&quot;" />
 					<!-- numbers -->
@@ -972,14 +1172,14 @@
 					<keyword attribute="keyword" context="code" family="kwjavascript-objects" />
 				</context>
 				<!-- block comment /* ... */ -->
-				<context id="blockcomment" attribute="cpp-blockcomment">
+				<context id="blockcomment" attribute="blockcomment">
 					<!-- finish line of comment, start block -->
 					<detect2chars attribute="hidden" context="code" char="*" char1="/" />
 				</context>
 				<!-- line comment // ... -->
 				<context id="linecomment" attribute="cpp-linecomment">
 					<!-- finish line of comment, start block -->
-					<!-- detect2chars attribute="hidden" context="cpp-blockcomment" char="/" char1="*" / -->
+					<!-- detect2chars attribute="hidden" context="blockcomment" char="/" char1="*" / -->
 					<!-- finish line of comment end of line -->
 					<linecontinue attribute="hidden" context="code" />
 				</context>
@@ -1012,14 +1212,14 @@
 					<keyword attribute="keyword" context="code" family="kwjscriptnet-statements" />
 				</context>
 				<!-- block comment /* ... */ -->
-				<context id="blockcomment" attribute="cpp-blockcomment">
+				<context id="blockcomment" attribute="blockcomment">
 					<!-- finish line of comment, start block -->
 					<detect2chars attribute="hidden" context="code" char="*" char1="/" />
 				</context>
 				<!-- line comment // ... -->
 				<context id="linecomment" attribute="cpp-linecomment">
 					<!-- finish line of comment, start block -->
-					<!-- detect2chars attribute="hidden" context="cpp-blockcomment" char="/" char1="*" / -->
+					<!-- detect2chars attribute="hidden" context="blockcomment" char="/" char1="*" / -->
 					<!-- finish line of comment end of line -->
 					<linecontinue attribute="hidden" context="code" />
 				</context>
@@ -1047,7 +1247,7 @@
 					<keyword attribute="keyword" context="code" family="kwjsharp" />
 				</context>
 				<!-- block comment /* ... */ -->
-				<context id="blockcomment" attribute="cpp-blockcomment">
+				<context id="blockcomment" attribute="blockcomment">
 					<!-- finish line of comment, start block -->
 					<detect2chars attribute="hidden" context="code" char="*" char1="/" />
 				</context>
@@ -1192,7 +1392,7 @@
 					<keyword attribute="keyword" context="code" family="kwsql-keywords"/>
 				</context>
 				<!-- block comment /* ... */ -->
-				<context id="blockcomment" attribute="sql-blockcomment">
+				<context id="blockcomment" attribute="blockcomment">
 					<!-- finish line of comment, start block -->
 					<detect2chars attribute="hidden" context="code" char="*" char1="/" />
 				</context>
@@ -1216,7 +1416,7 @@
 					<!-- ' ' literals -->
 					<regexp id="sqliteral" attribute="literal" context="code" expression="(&apos;&apos;)|(&apos;(.|\\&apos;|\\\r\n)*?((\\\\)+&apos;|[^\\]{1}&apos;))" />
 					<!-- line comment -->
-					<regexp id="pshellComment" attribute="pshell-linecomment" context="code" expression="#[^\r\n]*" />
+					<regexp id="pshellComment" attribute="comment" context="code" expression="#[^\r\n]*" />
 					<!-- namespace -->
 					<regexp id="namespace" attribute="namespace" context="code" expression="\[[^\r\n]+\]" />
 					<!-- numbers -->
@@ -1227,6 +1427,30 @@
 					<keyword attribute="keyword" context="code" family="kwpshelllangoo-keywords" />
 					<!-- keyword C-like -->
 					<keyword attribute="keyword" context="code" family="kwclang-keywords" />
+				</context>
+			</contexts>
+		</language>
+		<!-- Python language specification -->
+		<language id="python" tabSize="4" name="Python">
+			<!-- Code contexts: default (most common) is code. -->
+			<contexts default="code">
+				<!-- basic source code context -->
+				<context id="code" attribute="code">
+					<!-- Single line of comment -->
+					<regexp id="python-comment" attribute="comment" context="code" expression="(?&lt;=\W|^)(#.*)([\r\n]{1,2}|$)" />
+					<!-- " " literals -->
+					<regexp id="dqliteral" attribute="literal" context="code" expression="(&quot;&quot;)|(@&quot;(.|[\r\n])*?&quot;|&quot;(.|\\&quot;|\\\r\n)*?((\\\\)+&quot;|[^\\]{1}&quot;))" />
+					<!-- ' ' literals -->
+					<regexp id="sqliteral" attribute="literal" context="code" expression="(&apos;&apos;)|(&apos;(.|\\&apos;|\\\r\n)*?((\\\\)+&apos;|[^\\]{1}&apos;))" />
+					<!-- numbers -->
+					<regexp id="number" attribute="number" context="code" expression="0x[0-9a-fA-F]*|(((?&lt;=[^0-9])(\+|-))?)\b[0-9][0-9]*(\.[0-9]+)?" />
+					<!-- keyword Python-like -->
+					<keyword attribute="keyword" context="code" family="kwpython-keywords" />
+				</context>
+				<!-- line comment // ... -->
+				<context id="linecomment" attribute="cpp-linecomment">
+					<!-- finish line of comment end of line -->
+					<linecontinue attribute="hidden" context="code" />
 				</context>
 			</contexts>
 		</language>

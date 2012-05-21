@@ -6,28 +6,24 @@
 <xsl:value-of select="text()" disable-output-escaping="yes" />
 </xsl:template>
 
+<xsl:template match="comment">
+<span class="highlight-comment"><xsl:value-of select="text()" disable-output-escaping="yes" /></span>
+</xsl:template>
+
+<xsl:template match="blockcomment">
+<span class="highlight-comment">/*<xsl:value-of select="text()" disable-output-escaping="yes" />*/</span>
+</xsl:template>
+
+<xsl:template match="fsblockcomment">
+<span class="highlight-comment">(*<xsl:value-of select="text()" disable-output-escaping="yes" />*)</span>
+</xsl:template>
+
 <xsl:template match="cpp-linecomment">
 <span class="highlight-comment">//<xsl:value-of select="text()" disable-output-escaping="yes" /></span>
 </xsl:template>
 
-<xsl:template match="vb-comment">
-<span class="highlight-comment"><xsl:value-of select="text()" disable-output-escaping="yes" /></span>
-</xsl:template>
-
-<xsl:template match="cpp-blockcomment">
-<span class="highlight-comment">/*<xsl:value-of select="text()" disable-output-escaping="yes" />*/</span>
-</xsl:template>
-
-<xsl:template match="sql-blockcomment">
-<span class="highlight-comment">/*<xsl:value-of select="text()" disable-output-escaping="yes" />*/</span>
-</xsl:template>
-
 <xsl:template match="sql-linecomment">
 <span class="highlight-comment">--<xsl:value-of select="text()" disable-output-escaping="yes" /></span>
-</xsl:template>
-
-<xsl:template match="pshell-linecomment">
-<span class="highlight-comment"><xsl:value-of select="text()" disable-output-escaping="yes" /></span>
 </xsl:template>
 
 <xsl:template match="pshell-cmdlet">

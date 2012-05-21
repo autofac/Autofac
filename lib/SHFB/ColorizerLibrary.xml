@@ -223,7 +223,7 @@
             code.  If set to true, any <c>&lt;see&gt;</c> tags are preserved so
             that they may be processed as normal HTML tags.  This is useful when
             using the code colorizer in conjunction with a documentation tool
-            such as the <see href="http://www.CodePlex.com/SHFB">Sandcastle
+            such as the <see href="http://SHFB.CodePlex.com">Sandcastle
             Help File Builder</see>.</value>
         </member>
         <member name="P:ColorizerLibrary.CodeColorizer.UseDefaultTitle">
@@ -307,61 +307,6 @@
             <summary>
             This returns true if this entry represents the start of a
             region.
-            </summary>
-        </member>
-        <member name="T:ColorizerLibrary.Controls.TextColorizerControl">
-            <summary>
-            A syntax colorizing control
-            </summary>
-            <remarks>Original Author: Jonathan de Halleux, dehalleux@pelikhan.com,
-            2003.
-            <p/>Modified by Eric Woodruff (Eric@EWoodruff.us) 11/2006. The original
-            Code Project article and code by Jonathan can be found at:
-            <a href="http://www.codeproject.com/csharp/highlightcs.asp">
-            http://www.codeproject.com/csharp/highlightcs.asp</a>.</remarks>
-        </member>
-        <member name="M:ColorizerLibrary.Controls.TextColorizerControl.Render(System.Web.UI.HtmlTextWriter)">
-            <summary>
-            Renders the code
-            </summary>
-            <remarks>You must specify a colorizing engine using SetSyntaxEngine
-            before calling this method</remarks>
-            <param name="writer">HTML writer</param>
-        </member>
-        <member name="P:ColorizerLibrary.Controls.TextColorizerControl.SyntaxEngine">
-            <summary>
-            The syntax engine does the job.
-            </summary>
-        </member>
-        <member name="P:ColorizerLibrary.Controls.TextColorizerControl.Text">
-            <summary>
-            Get or set the text to colorize
-            </summary>
-        </member>
-        <member name="T:ColorizerLibrary.XmlHelper">
-            <summary>
-            Some basic function helpers for xml creation.
-            </summary>
-        </member>
-        <member name="M:ColorizerLibrary.XmlHelper.#ctor">
-            <summary>
-            Private constructor.
-            </summary>
-        </member>
-        <member name="M:ColorizerLibrary.XmlHelper.XmlAddChildCDATAElem(System.Xml.XmlNode,System.String,System.String)">
-            <summary>adds a CDATA child elem</summary>
-            <param name="node">node to append child</param>
-            <param name="nodeName">new child node name</param>
-            <param name="cdata">CDATA value</param>
-            <exception>If could not create child node</exception>
-            <exception>If could not create CDATA node</exception>
-        </member>
-        <member name="M:ColorizerLibrary.XmlHelper.XmlSetAttribute(System.Xml.XmlNode,System.String,System.String)">
-            <summary>
-            Adds or updates an attribute in the node
-            <param name="node">node to modify</param>
-            <param name="name">Attribute name</param>
-            <param name="text">Attribute value</param>
             </summary>
         </member>
         <member name="T:ColorizerLibrary.RegexDictionary">
@@ -454,6 +399,56 @@
             parameter is null or the regular expression is null.</exception>
             <exception cref="T:System.ArgumentException">This is thrown if a node
             parameter does not have an 'id' attribute.</exception>
+        </member>
+        <member name="T:ColorizerLibrary.Controls.TextColorizerControl">
+            <summary>
+            A syntax colorizing control
+            </summary>
+            <remarks>Original Author: Jonathan de Halleux, dehalleux@pelikhan.com,
+            2003.
+            <p/>Modified by Eric Woodruff (Eric@EWoodruff.us) 11/2006. The original
+            Code Project article and code by Jonathan can be found at:
+            <a href="http://www.codeproject.com/csharp/highlightcs.asp">
+            http://www.codeproject.com/csharp/highlightcs.asp</a>.</remarks>
+        </member>
+        <member name="M:ColorizerLibrary.Controls.TextColorizerControl.Render(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Renders the code
+            </summary>
+            <remarks>You must specify a colorizing engine using SetSyntaxEngine
+            before calling this method</remarks>
+            <param name="writer">HTML writer</param>
+        </member>
+        <member name="P:ColorizerLibrary.Controls.TextColorizerControl.SyntaxEngine">
+            <summary>
+            The syntax engine does the job.
+            </summary>
+        </member>
+        <member name="P:ColorizerLibrary.Controls.TextColorizerControl.Text">
+            <summary>
+            Get or set the text to colorize
+            </summary>
+        </member>
+        <member name="T:ColorizerLibrary.XmlHelper">
+            <summary>
+            Some basic function helpers for xml creation.
+            </summary>
+        </member>
+        <member name="M:ColorizerLibrary.XmlHelper.XmlAddChildCDATAElem(System.Xml.XmlNode,System.String,System.String)">
+            <summary>adds a CDATA child elem</summary>
+            <param name="node">node to append child</param>
+            <param name="nodeName">new child node name</param>
+            <param name="cdata">CDATA value</param>
+            <exception>If could not create child node</exception>
+            <exception>If could not create CDATA node</exception>
+        </member>
+        <member name="M:ColorizerLibrary.XmlHelper.XmlSetAttribute(System.Xml.XmlNode,System.String,System.String)">
+            <summary>
+            Adds or updates an attribute in the node
+            <param name="node">node to modify</param>
+            <param name="name">Attribute name</param>
+            <param name="text">Attribute value</param>
+            </summary>
         </member>
     </members>
 </doc>

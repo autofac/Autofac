@@ -4,8 +4,8 @@
                so that these items override the matching items in the
                stock content files! -->
 
+    <item id="rootLink"><referenceLink target="{@ProjectNodeName}">{@RootNamespaceTitle}</referenceLink></item>
     <item id="header"><span style="color: DarkGray">{@HeaderText} {@Preliminary}</span></item>
-
     <item id="footer"><div id="footer">{@FooterText}{@Comments} {@Copyright}</div></item>
 
 </content>
