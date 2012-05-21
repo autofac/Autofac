@@ -16,6 +16,9 @@
 
 		<!-- Setting the path to MSBuildCommunityTasks to . allows you to check them in; otherwise you must install them. -->
 		<MSBuildCommunityTasksPath>.</MSBuildCommunityTasksPath>
+
+		<!-- PackageInstallDirectory is where NuGet installs the set of dependencies. -->
+		<PackageInstallDirectory>$(MSBuildProjectDirectory)\packages</PackageInstallDirectory>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(BuildConfiguration)' == ''">
@@ -37,41 +40,30 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<!-- SolutionFile is the solution to build. Technically we could add more if needed. -->
 		<SolutionFile Include="$(MSBuildProjectDirectory)\Autofac.sln" />
 	</ItemGroup>
 
 	<Import Project="$(MSBuildProjectDirectory)\lib\BuildTasks\MSBuild.Community.Tasks.targets" />
 
+
+	<!--
+	-
+	- TARGETS are in alpha order. "Private" targets that act as "subroutines" start with
+	- double-underscore. The "All" target is the primary entry point.
+	-
+	-->
 	<Target Name="All">
 		<CallTarget Targets="UpdateVersion" Condition="'$(AssemblyVersion)' !='0.0.0.0'" />
 		<CallTarget Targets="Clean;Compile;Test;Analyze" />
 		<CallTarget Targets="Package" Condition="'$(Package)' == 'true'" />
 		<CallTarget Targets="Document" Condition="'$(Document)' == 'true'" />
 	</Target>
+
 	<Target Name="Analyze">
-		<PropertyGroup>
-			<SecAnnotateAnalyzeResponseFile>$(BuildDirectory)\log\SecAnnotateAnalyzeList.txt</SecAnnotateAnalyzeResponseFile>
-			<SecAnnotateReferenceResponseFile>$(BuildDirectory)\log\SecAnnotateReferenceList.txt</SecAnnotateReferenceResponseFile>
-		</PropertyGroup>
-		<ItemGroup>
-			<SecAnnotateAnalyzeAssemblies Include="$(BuildDirectory)\bin\NET40\*.dll" />
-			<SecAnnotateReferenceAssemblies Include="$(MSBuildProjectDirectory)\packages\**\*.dll" />
-			<SecAnnotateReferenceDirectories Include="%(SecAnnotateReferenceAssemblies.RootDir)%(SecAnnotateReferenceAssemblies.Directory)" />
-		</ItemGroup>
-		<Delete Files="$(SecAnnotateAnalyzeResponseFile)" Condition="Exists('$(SecAnnotateAnalyzeResponseFile)')" />
-		<Delete Files="$(SecAnnotateReferenceResponseFile)" Condition="Exists('$(SecAnnotateReferenceResponseFile)')" />
-		<WriteLinesToFile
-			File="$(SecAnnotateAnalyzeResponseFile)"
-			Lines="%(SecAnnotateAnalyzeAssemblies.FullPath)"
-			Overwrite="false" />
-		<WriteLinesToFile
-			File="$(SecAnnotateReferenceResponseFile)"
-			Lines="/d:%(SecAnnotateReferenceDirectories.FullPath)"
-			Overwrite="false" />
-		<Exec
-			Command="SecAnnotate.exe /o:&quot;$(BuildDirectory)\log\SecAnnotateResults.xml&quot; @&quot;$(SecAnnotateReferenceResponseFile)&quot; @&quot;$(SecAnnotateAnalyzeResponseFile)&quot;"
-			WorkingDirectory="$(BuildDirectory)\bin\NET40\" />
+		<CallTarget Targets="__SecAnnotate" />
 	</Target>
+
 	<Target Name="Clean">
 		<RemoveDir Directories="$(BuildDirectory)" ContinueOnError="true" />
 		<RemoveDir
@@ -81,6 +73,7 @@
 			Directories="%(AllProject.RootDir)%(AllProject.Directory)obj"
 			Condition="Exists('%(AllProject.RootDir)%(AllProject.Directory)obj')" />
 	</Target>
+
 	<Target Name="Compile">
 		<MSBuild Projects="%(SolutionFile.FullPath)" Targets="Build" Properties="Configuration=$(BuildConfiguration)" />
 
@@ -109,6 +102,7 @@
 		</ItemGroup>
 		<Copy SourceFiles="@(SourceOutputList)" DestinationFolder="$(BuildDirectory)\bin\NET40" />
 	</Target>
+
 	<Target Name="Document">
 		<!--
 			Dynamically generate the list of Autofac assemblies to put in the documentation so we don't
@@ -125,6 +119,7 @@
 			Projects="Documentation.shfbproj"
 			Properties="SHFBRoot=$(MSBuildProjectDirectory)\lib\SHFB;HelpFileVersion=$(AssemblyVersion);DocumentationSources=$(DocumentationSources)" />
 	</Target>
+
 	<Target Name="Package">
 		<PropertyGroup>
 			<!-- All packages will end up in the package directory. -->
@@ -188,10 +183,11 @@
 		<RemoveDir Directories="$(StagingDirectory)" />
 		<Message Text="Packaging complete." />
 	</Target>
+
 	<Target Name="Test">
 		<ItemGroup>
 			<TestAssemblies Include="%(TestProject.RootDir)%(TestProject.Directory)\bin\$(BuildConfiguration)\Autofac*.Tests*.dll" />
-			<NUnitConsole Include="$(MSBuildProjectDirectory)\packages\NUnit.Runners.*\tools\nunit-console.exe" />
+			<NUnitConsole Include="$(PackageInstallDirectory)\NUnit.Runners.*\tools\nunit-console.exe" />
 		</ItemGroup>
 		<PropertyGroup>
 			<TestResultsFile>$(BuildDirectory)\log\TestResults.xml</TestResultsFile>
@@ -200,6 +196,7 @@
 		<MakeDir Directories="$(BuildDirectory)\log" Condition="!Exists('$(BuildDirectory)\log')" />
 		<Exec Command="&quot;%(NUnitConsole.FullPath)&quot; $(NUnitCommandLineArgs)" />
 	</Target>
+
 	<Target Name="UpdateVersion">
 		<AssemblyInfo
 			OutputFile="$(MSBuildProjectDirectory)\VersionAssemblyInfo.cs"
@@ -208,6 +205,7 @@
 			AssemblyFileVersion="$(AssemblyVersion)"
 			AssemblyConfiguration="$(BuildConfiguration) built on $(BuildTime)" />
 	</Target>
+
 	<Target Name="__EnvironmentSetup">
 		<ItemGroup>
 			<AllProject Include="$(MSBuildProjectDirectory)\**\*.csproj" />
@@ -223,5 +221,77 @@
 		<Message Text="Build Configuration: $(BuildConfiguration)" />
 		<Message Text="Build Directory:     $(BuildDirectory)" />
 		<Message Text="Build Time:          $(BuildTime)" />
+	</Target>
+
+	<Target Name="__SecAnnotate">
+		<PropertyGroup>
+			<!-- Too many parameters for the comand line, so parameters get written to response files. -->
+			<SecAnnotateAnalyzeResponseFile>$(BuildDirectory)\log\SecAnnotateAnalyzeList.txt</SecAnnotateAnalyzeResponseFile>
+			<SecAnnotateReferenceResponseFile>$(BuildDirectory)\log\SecAnnotateReferenceList.txt</SecAnnotateReferenceResponseFile>
+		</PropertyGroup>
+		<ItemGroup>
+			<!--
+				Only analyze the .NET 4.0 assemblies. This shouldn't change if multi-targeting because
+				Silverlight, Windows Phone, etc. don't have the same security model as .NET 4.0.
+			-->
+			<SecAnnotateAnalyzeAssemblies Include="$(BuildDirectory)\bin\NET40\*.dll" />
+
+			<!--
+				We need to dynamically determine which assemblies/versions are being used so SecAnnotate can do
+				its job. Without correct references, SecAnnotate fails or analyzes incorrectly.
+
+				The first block here finds - in groups - the set of dependencies from NuGet that are...
+				* .NET 4.0
+				* .NET 4.0 Client Profile
+				* .NET 3.5
+			-->
+
+			<DetectedDependencies40 Include="$(PackageInstallDirectory)\**\net40\*.dll;$(PackageInstallDirectory)\**\40\*.dll" />
+			<DetectedDependencies40Client Include="$(PackageInstallDirectory)\**\net40-client\*.dll;$(PackageInstallDirectory)\**\40-client\*.dll" />
+			<DetectedDependencies35 Include="$(PackageInstallDirectory)\**\net35\*.dll;$(PackageInstallDirectory)\**\35\*.dll" />
+
+			<!--
+				This block of items aggregates the set of grouped dependencies from above. We need UNIQUE
+				dependencies by name (e.g., you can't include two "Castle.Core" references) so we fall
+				back, first opting for the .NET 4.0, then 4.0 client profile, then 3.5 assemblies.
+
+				In the end, DetectedDependencies will be a list of names ("Castle.Core"), each with a metadata
+				item "HintPath" that points to the full path of the detected assembly.
+			-->
+			<DetectedDependencies Include="%(DetectedDependencies40.Filename)">
+				<HintPath>%(DetectedDependencies40.FullPath)</HintPath>
+			</DetectedDependencies>
+			<DetectedDependencies Include="%(DetectedDependencies40Client.Filename)" Exclude="@(DetectedDependencies)">
+				<HintPath>%(DetectedDependencies40Client.FullPath)</HintPath>
+			</DetectedDependencies>
+			<DetectedDependencies Include="%(DetectedDependencies35.Filename)" Exclude="@(DetectedDependencies)">
+				<HintPath>%(DetectedDependencies35.FullPath)</HintPath>
+			</DetectedDependencies>
+
+			<!--
+				Finally, switch the list of detected dependencies to actually point to the
+				files so we can find the directories. We'll tell SecAnnotate the list of
+				directories so it can search for dependencies, appropriately using only
+				the set of directories we're ostensibly using ourselves based on the detected
+				set of assemblies above.
+			-->
+			<SecAnnotateReferenceAssemblies Include="%(DetectedDependencies.HintPath)" />
+			<SecAnnotateReferenceDirectories Include="%(SecAnnotateReferenceAssemblies.RootDir)%(SecAnnotateReferenceAssemblies.Directory)" />
+		</ItemGroup>
+
+		<!-- Files get written using batching so we always append. Delete existing ones first to start clean. -->
+		<Delete Files="$(SecAnnotateAnalyzeResponseFile)" Condition="Exists('$(SecAnnotateAnalyzeResponseFile)')" />
+		<Delete Files="$(SecAnnotateReferenceResponseFile)" Condition="Exists('$(SecAnnotateReferenceResponseFile)')" />
+		<WriteLinesToFile
+			File="$(SecAnnotateAnalyzeResponseFile)"
+			Lines="%(SecAnnotateAnalyzeAssemblies.FullPath)"
+			Overwrite="false" />
+		<WriteLinesToFile
+			File="$(SecAnnotateReferenceResponseFile)"
+			Lines="/d:%(SecAnnotateReferenceDirectories.FullPath)"
+			Overwrite="false" />
+		<Exec
+			Command="SecAnnotate.exe /o:&quot;$(BuildDirectory)\log\SecAnnotateResults.xml&quot; @&quot;$(SecAnnotateReferenceResponseFile)&quot; @&quot;$(SecAnnotateAnalyzeResponseFile)&quot;"
+			WorkingDirectory="$(BuildDirectory)\bin\NET40\" />
 	</Target>
 </Project>
