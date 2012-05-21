@@ -67,6 +67,12 @@
 			When more platforms are targeted, put the appropriate build output into bin\XYZ where
 			XYZ is the associated NuGet framework identifier. This will allow easier convention-based
 			NuGet packaging to occur.
+
+			Original build constants used for targeting:
+			* NET40 = .NET 4.0 (TargetFrameworkVersion = v4.0; AllowPartiallyTrustedCallers = true)
+			* NET35 = .NET 3.5 (TargetFrameworkVersion = v3.5; AllowPartiallyTrustedCallers = false)
+			* SILVERLIGHT;SL3;WINDOWS_PHONE = WP7 (TargetFrameworkVersion = v4.0; AllowPartiallyTrustedCallers = false)
+			* SILVERLIGHT;SL4 = SL4 (TargetFrameworkVersion = v4.0; TargetFrameworkIdentifier = Silverlight; AllowPartiallyTrustedCallers = false)
 		-->
 		<ItemGroup>
 			<SourceOutputList
