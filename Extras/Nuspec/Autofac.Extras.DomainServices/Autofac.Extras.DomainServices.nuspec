@@ -15,5 +15,8 @@
     <dependencies>
       <dependency id="Autofac" version="$version$" />
     </dependencies>
+    <frameworkAssemblies>
+        <frameworkAssembly assemblyName="System.ServiceModel.DomainServices.Server" />
+    </frameworkAssemblies>
   </metadata>
 </package>

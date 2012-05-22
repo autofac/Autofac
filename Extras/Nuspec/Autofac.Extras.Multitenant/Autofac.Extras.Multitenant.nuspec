@@ -14,6 +14,7 @@
     <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
     <dependencies>
       <dependency id="Autofac" version="$version$" />
+      <dependency id="Castle.Core" version="$version_Castle.Core$" />
     </dependencies>
   </metadata>
 </package>

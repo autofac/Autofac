@@ -14,6 +14,7 @@
     <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
     <dependencies>
       <dependency id="Autofac" version="$version$" />
+      <dependency id="NHibernate" version="$version_NHibernate$" />
     </dependencies>
   </metadata>
 </package>

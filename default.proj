@@ -160,6 +160,8 @@
 
 			After all Nuspec staging is done, this script will find all .nuspec files in the staging area and:
 			* Replace any instances of $version$ with the current AssemblyVersion value.
+			* Replace any instances of $version_DependencyName$ with the version found referenced in the
+			    "packages" folder. (eg: $version_Castle.Core$ -> 3.0.0.4001)
 			* Run nuget pack to create the .nupkg file.
 			* Move the .nupkg file to the package folder.
 			* Remove the temporary staging area.
@@ -169,8 +171,16 @@
 		<ItemGroup>
 			<NuspecFiles Include="$(StagingDirectory)\**\*.nuspec" />
 		</ItemGroup>
+
 		<Message Text="Updating NuGet package version info..." />
 		<FileUpdate Files="@(NuspecFiles)" Regex="\$version\$" ReplacementText="$(AssemblyVersion)" />
+
+		<Message Text="Updating NuGet package dependency version info..." />
+		<GetNuGetDependencyVersions PackageInstallDirectory="$(PackageInstallDirectory)">
+			<Output TaskParameter="Dependencies" ItemName="LocatedDependencies" />
+		</GetNuGetDependencyVersions>
+		<FileUpdate Files="@(NuspecFiles)" Regex="\$version_%(LocatedDependencies.Identity)\$" ReplacementText="%(LocatedDependencies.Version)" />
+
 		<Message Text="Packaging NuGet packages..." />
 		<Exec
 			Command="&quot;$(MSBuildProjectDirectory)\.nuget\nuget.exe&quot; pack %(NuspecFiles.Filename)%(NuspecFiles.Extension)"
@@ -179,8 +189,10 @@
 			<NupkgFiles Include="$(StagingDirectory)\**\*.nupkg" />
 		</ItemGroup>
 		<Move SourceFiles="@(NupkgFiles)" DestinationFolder="$(PackageDirectory)" />
+
 		<Message Text="Cleaning NuGet staging..." />
 		<RemoveDir Directories="$(StagingDirectory)" />
+		
 		<Message Text="Packaging complete." />
 	</Target>
 
@@ -274,6 +286,12 @@
 				directories so it can search for dependencies, appropriately using only
 				the set of directories we're ostensibly using ourselves based on the detected
 				set of assemblies above.
+
+				In the end we'll have lists of folders like
+				...\packages\Castle.Core.3.0.0.4001\lib\NET40
+				...\packages\CommonServiceLocator.1.0\lib\NET35
+
+				But only the ones that point to the actual target frameworks we're using.
 			-->
 			<SecAnnotateReferenceAssemblies Include="%(DetectedDependencies.HintPath)" />
 			<SecAnnotateReferenceDirectories Include="%(SecAnnotateReferenceAssemblies.RootDir)%(SecAnnotateReferenceAssemblies.Directory)" />
@@ -294,4 +312,57 @@
 			Command="SecAnnotate.exe /o:&quot;$(BuildDirectory)\log\SecAnnotateResults.xml&quot; @&quot;$(SecAnnotateReferenceResponseFile)&quot; @&quot;$(SecAnnotateAnalyzeResponseFile)&quot;"
 			WorkingDirectory="$(BuildDirectory)\bin\NET40\" />
 	</Target>
+	<UsingTask TaskName="GetNuGetDependencyVersions" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+		<ParameterGroup>
+			<PackageInstallDirectory Required="true" />
+			<Dependencies ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
+		</ParameterGroup>
+		<Task>
+			<Using Namespace="System" />
+			<Using Namespace="System.Collections.Generic" />
+			<Using Namespace="System.IO" />
+			<Using Namespace="System.Text.RegularExpressions" />
+			<Using Namespace="Microsoft.Build.Framework" />
+			<Using Namespace="Microsoft.Build.Utilities" />
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+					// Match package folders like Castle.Core.3.0.0.4001
+					// Groups[1] = "Castle.Core"
+					// Groups[2] = "3.0.0.4001"
+					var re = new Regex(@"^(.+?)\.([0-9\.]+)$");
+
+					try
+					{
+						// Create item metadata based on the list of packages found
+						// in the PackageInstallDirectory. Item identities will be
+						// the name of the package ("Castle.Core") and they'll have
+						// a "Version" metadata item with the package version.
+						var returnItems = new List<ITaskItem>();
+						foreach(var directory in Directory.EnumerateDirectories(PackageInstallDirectory))
+						{
+							var directoryName = Path.GetFileName(directory);
+							var match = re.Match(directoryName);
+							if(!match.Success)
+							{
+								continue;
+							}
+							var name = match.Groups[1].Value;
+							var version = match.Groups[2].Value;
+							var metadata = new Dictionary<string, string>();
+							metadata["Version"] = version;
+							var item = new TaskItem(name, metadata);
+							returnItems.Add(item);
+						}
+						Dependencies = returnItems.ToArray();
+						return true;
+					}
+					catch(Exception ex)
+					{
+						Log.LogErrorFromException(ex);
+						return false;
+					}
+				]]>
+			</Code>
+		</Task>
+	</UsingTask>
 </Project>

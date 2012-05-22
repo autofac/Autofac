@@ -14,6 +14,9 @@
     <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
     <dependencies>
       <dependency id="Autofac" version="$version$" />
+      <dependency id="Autofac.Extras.CommonServiceLocator" version="$version$" />
+      <dependency id="CommonServiceLocator" version="$version_CommonServiceLocator$" />
+      <dependency id="EnterpriseLibrary.Common" version="$version_EnterpriseLibrary.Common$" />
     </dependencies>
   </metadata>
 </package>
