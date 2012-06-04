@@ -82,7 +82,7 @@
     <CallTarget Targets="Net40Build" />
     <CallTarget Targets="Net35Build" />
     <CallTarget Targets="Sl4Build" />
-	  <CallTarget Targets="Wp7Build" />
+    <CallTarget Targets="Wp7Build" />
   </Target>
 
   <Target Name="CopyAutofacLibs">

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Autofac.Builder;
 using Autofac.Features.Indexed;
 
@@ -143,6 +142,8 @@ namespace Autofac.Tests
             Assert.IsTrue(container.IsRegistered<object>());
         }
 
+#if !WINDOWS_PHONE
+
         [Test]
         public void RegisterAssemblyModules()
         {
@@ -166,6 +167,7 @@ namespace Autofac.Tests
             Assert.That(container.IsRegistered<AComponent>(), Is.True);
             Assert.That(container.IsRegistered<BComponent>(), Is.False);
         }
+#endif
 
         [Test]
         [ExpectedException(typeof(InvalidOperationException))]
