@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -40,7 +41,7 @@ namespace Autofac.Core.Activators.Reflection
         readonly Func<object>[] _valueRetrievers;
         readonly bool _canInstantiate;
 #if !(WINDOWS_PHONE || NET35)
-        readonly static Dictionary<ConstructorInfo, ConstructorInvoker> _constructorInvokers = new Dictionary<ConstructorInfo, ConstructorInvoker>();
+        readonly static ConcurrentDictionary<ConstructorInfo, ConstructorInvoker> _constructorInvokers = new ConcurrentDictionary<ConstructorInfo, ConstructorInvoker>();
 #endif
 
         // We really need to report all non-bindable parameters, howevers some refactoring
@@ -119,7 +120,7 @@ namespace Autofac.Core.Activators.Reflection
             if (!_constructorInvokers.TryGetValue(TargetConstructor, out constructorInvoker))
             {
                 constructorInvoker = GetConstructorInvoker(TargetConstructor);
-                _constructorInvokers.Add(TargetConstructor, constructorInvoker);
+                _constructorInvokers.TryAdd(TargetConstructor, constructorInvoker);
             }
 #endif
 
