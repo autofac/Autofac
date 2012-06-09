@@ -91,7 +91,7 @@ namespace Autofac.Integration.WebApi
         /// </returns>
         public IDependencyScope BeginScope()
         {
-            ILifetimeScope lifetimeScope = _container.BeginLifetimeScope(ApiRequestTag);
+            var lifetimeScope = _container.BeginLifetimeScope(ApiRequestTag);
             return new AutofacWebApiDependencyScope(lifetimeScope);
         }
 
@@ -100,7 +100,8 @@ namespace Autofac.Integration.WebApi
         /// </summary>
         public void Dispose()
         {
-            _rootDependencyScope.Dispose();
+            if (_rootDependencyScope != null)
+                _rootDependencyScope.Dispose();
         }
     }
 }

@@ -22,17 +22,56 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="httpContext" /> is null.</exception>
     </member>
+    <member name="M:System.Web.Helpers.AntiForgery.GetTokens(System.String,System.String@,System.String@)"></member>
     <member name="M:System.Web.Helpers.AntiForgery.Validate">
       <summary>Validates that input data from an HTML form field comes from the user who submitted the data.</summary>
       <exception cref="T:System.ArgumentException">The current <see cref="T:System.Web.HttpContext" /> value is null.</exception>
       <exception cref="T:System.Web.Helpers.HttpAntiForgeryException">The HTTP cookie token that accompanies a valid request is missing-or-The form token is missing.-or-The form token value does not match the cookie token value.-or-The form token value does not match the cookie token value.</exception>
     </member>
+    <member name="M:System.Web.Helpers.AntiForgery.Validate(System.String,System.String)"></member>
     <member name="M:System.Web.Helpers.AntiForgery.Validate(System.Web.HttpContextBase,System.String)">
       <summary>Validates that input data from an HTML form field comes from the user who submitted the data and lets callers specify additional validation details.</summary>
       <param name="httpContext">The HTTP context data for a request.</param>
       <param name="salt">An optional string of random characters (such as Z*7g1&amp;p4) that is used to decrypt an authentication token created by the <see cref="T:System.Web.Helpers.AntiForgery" /> class. The default is null.</param>
       <exception cref="T:System.ArgumentException">The current <see cref="T:System.Web.HttpContext" /> value is null.</exception>
       <exception cref="T:System.Web.Helpers.HttpAntiForgeryException">The HTTP cookie token that accompanies a valid request is missing.-or-The form token is missing.-or-The form token value does not match the cookie token value.-or-The form token value does not match the cookie token value.-or-The <paramref name="salt" /> value supplied does not match the <paramref name="salt" /> value that was used to create the form token.</exception>
+    </member>
+    <member name="T:System.Web.Helpers.AntiForgeryConfig">
+      <summary>Provides programmatic configuration for the anti-forgery token system.</summary>
+    </member>
+    <member name="P:System.Web.Helpers.AntiForgeryConfig.AdditionalDataProvider">
+      <summary>Gets a data provider that can provide additional data to put into all generated tokens and that can validate additional data in incoming tokens.</summary>
+      <returns>The data provider.</returns>
+    </member>
+    <member name="P:System.Web.Helpers.AntiForgeryConfig.CookieName">
+      <summary>Gets or sets the name of the cookie that is used by the anti-forgery system.</summary>
+      <returns>The cookie name.</returns>
+    </member>
+    <member name="P:System.Web.Helpers.AntiForgeryConfig.RequireSsl">
+      <summary>Gets or sets a value that indicates whether the anti-forgery cookie requires SSL in order to be returned to the server.</summary>
+      <returns>true if SSL is required to return the anti-forgery cookie to the server; otherwise, false. </returns>
+    </member>
+    <member name="P:System.Web.Helpers.AntiForgeryConfig.SuppressIdentityHeuristicChecks">
+      <summary>Gets or sets a value that indicates whether the anti-forgery system should skip checking for conditions that might indicate misuse of the system.</summary>
+      <returns>true if the anti-forgery system should not check for possible misuse; otherwise, false.</returns>
+    </member>
+    <member name="P:System.Web.Helpers.AntiForgeryConfig.UniqueClaimTypeIdentifier">
+      <summary>If claims-based authorization is in use, gets or sets the claim type from the identity that is used to uniquely identify the user.</summary>
+      <returns>The claim type.</returns>
+    </member>
+    <member name="T:System.Web.Helpers.IAntiForgeryAdditionalDataProvider">
+      <summary>Provides a way to include or validate custom data for anti-forgery tokens.</summary>
+    </member>
+    <member name="M:System.Web.Helpers.IAntiForgeryAdditionalDataProvider.GetAdditionalData(System.Web.HttpContextBase)">
+      <summary>Provides additional data to store for the anti-forgery tokens that are generated during this request.</summary>
+      <returns>The supplemental data to embed in the anti-forgery token.</returns>
+      <param name="context">Information about the current request.</param>
+    </member>
+    <member name="M:System.Web.Helpers.IAntiForgeryAdditionalDataProvider.ValidateAdditionalData(System.Web.HttpContextBase,System.String)">
+      <summary>Validates additional data that was embedded inside an incoming anti-forgery token.</summary>
+      <returns>true if the data is valid, or false if the data is invalid.</returns>
+      <param name="context">Information about the current request.</param>
+      <param name="additionalData">The supplemental data that was embedded in the token.</param>
     </member>
     <member name="T:System.Web.Helpers.UnvalidatedRequestValues">
       <summary>Provides access to unvalidated form values in the <see cref="T:System.Web.HttpRequest" /> object.</summary>
@@ -86,18 +125,25 @@
     </member>
     <member name="M:System.Web.Mvc.HttpAntiForgeryException.#ctor(System.String,System.Exception)">
       <summary>This member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+      <param name="message">The message.</param>
+      <param name="innerException">The inner exception.</param>
     </member>
     <member name="T:System.Web.Mvc.ModelClientValidationEqualToRule">
       <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.Mvc.ModelClientValidationEqualToRule.#ctor(System.String,System.Object)">
       <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+      <param name="errorMessage">The error message.</param>
+      <param name="other">The other.</param>
     </member>
     <member name="T:System.Web.Mvc.ModelClientValidationRangeRule">
       <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.Mvc.ModelClientValidationRangeRule.#ctor(System.String,System.Object,System.Object)">
       <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+      <param name="errorMessage">The error message.</param>
+      <param name="minValue">The minimum value.</param>
+      <param name="maxValue">The maximum value.</param>
     </member>
     <member name="T:System.Web.Mvc.ModelClientValidationRegexRule">
       <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
@@ -283,7 +329,10 @@
       <summary>Gets the <see cref="T:System.Web.HttpContextBase" /> object that represents context data that is associated with this page.</summary>
       <returns>The current context data.</returns>
     </member>
-    <member name="M:System.Web.WebPages.ApplicationStartPage.GetOutputWriter"></member>
+    <member name="M:System.Web.WebPages.ApplicationStartPage.GetOutputWriter">
+      <summary>Returns the text writer instance that is used to render the page.</summary>
+      <returns>The text writer.</returns>
+    </member>
     <member name="P:System.Web.WebPages.ApplicationStartPage.Markup">
       <summary>Gets the output from the application start page as an HTML-encoded string.</summary>
       <returns>The output from the application start page as an HTML-encoded string.</returns>
@@ -311,126 +360,174 @@
       <summary>Writes the specified object without HTML encoding.</summary>
       <param name="value">The object to write.</param>
     </member>
-    <member name="T:System.Web.WebPages.Assets"></member>
-    <member name="M:System.Web.WebPages.Assets.AddScript(System.String)"></member>
-    <member name="M:System.Web.WebPages.Assets.AddScriptBlock(System.String)"></member>
-    <member name="M:System.Web.WebPages.Assets.AddScriptBlock(System.String,System.Boolean)"></member>
-    <member name="M:System.Web.WebPages.Assets.AddStyle(System.String)"></member>
-    <member name="M:System.Web.WebPages.Assets.AddStyleBlock(System.String)"></member>
-    <member name="M:System.Web.WebPages.Assets.AddStyleBlock(System.String,System.Boolean)"></member>
-    <member name="M:System.Web.WebPages.Assets.GetScripts">
-      <returns>Returns <see cref="T:System.Web.IHtmlString" />.</returns>
+    <member name="T:System.Web.WebPages.AttributeValue">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
-    <member name="M:System.Web.WebPages.Assets.GetStyles">
-      <returns>Returns <see cref="T:System.Web.IHtmlString" />.</returns>
+    <member name="M:System.Web.WebPages.AttributeValue.#ctor(System.Web.WebPages.Instrumentation.PositionTagged{System.String},System.Web.WebPages.Instrumentation.PositionTagged{System.Object},System.Boolean)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
-    <member name="T:System.Web.WebPages.AttributeValue"></member>
-    <member name="M:System.Web.WebPages.AttributeValue.#ctor(System.Web.WebPages.Instrumentation.PositionTagged{System.String},System.Web.WebPages.Instrumentation.PositionTagged{System.Object},System.Boolean)"></member>
     <member name="M:System.Web.WebPages.AttributeValue.FromTuple(System.Tuple`3)">
-      <returns>Returns <see cref="T:System.Web.WebPages.AttributeValue" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="P:System.Web.WebPages.AttributeValue.Literal">
-      <returns>Returns <see cref="T:System.Boolean" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.AttributeValue.op_Implicit(System.Tuple`3)~System.Web.WebPages.AttributeValue">
-      <returns>Returns <see cref="T:System.Web.WebPages.AttributeValue" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="P:System.Web.WebPages.AttributeValue.Prefix">
-      <returns>Returns <see cref="T:System.Web.WebPages.Instrumentation.PositionTagged`1" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="P:System.Web.WebPages.AttributeValue.Value">
-      <returns>Returns <see cref="T:System.Web.WebPages.Instrumentation.PositionTagged`1" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
-    <member name="T:System.Web.WebPages.BrowserHelpers"></member>
-    <member name="M:System.Web.WebPages.BrowserHelpers.ClearOverriddenBrowser(System.Web.HttpContextBase)"></member>
+    <member name="T:System.Web.WebPages.BrowserHelpers">
+      <summary>Provides a way to specify custom browser (user agent) information.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.BrowserHelpers.ClearOverriddenBrowser(System.Web.HttpContextBase)">
+      <summary>Removes any overridden user agent for the current request.</summary>
+      <param name="httpContext">The current context.</param>
+    </member>
     <member name="M:System.Web.WebPages.BrowserHelpers.GetOverriddenBrowser(System.Web.HttpContextBase)">
-      <returns>Returns <see cref="T:System.Web.HttpBrowserCapabilitiesBase" />.</returns>
+      <summary>Returns the browser capabilities object for the overridden browser capabilities or for the actual browser if no override has been specified.</summary>
+      <returns>The browser capabilities.</returns>
+      <param name="httpContext">The current context.</param>
     </member>
     <member name="M:System.Web.WebPages.BrowserHelpers.GetOverriddenUserAgent(System.Web.HttpContextBase)">
-      <returns>Returns <see cref="T:System.String" />.</returns>
+      <summary>Returns the overridden user agent value or the actual user agent string if no override has been specified.</summary>
+      <returns>The user agent string</returns>
+      <param name="httpContext">The current context.</param>
     </member>
     <member name="M:System.Web.WebPages.BrowserHelpers.GetVaryByCustomStringForOverriddenBrowser(System.Web.HttpContext)">
-      <returns>Returns <see cref="T:System.String" />.</returns>
+      <summary>Gets a string that varies based on the type of the browser.</summary>
+      <returns>A string that identifies the browser.</returns>
+      <param name="httpContext">The current context.</param>
     </member>
     <member name="M:System.Web.WebPages.BrowserHelpers.GetVaryByCustomStringForOverriddenBrowser(System.Web.HttpContextBase)">
-      <returns>Returns <see cref="T:System.String" />.</returns>
+      <summary>Gets a string that varies based on the type of the browser. </summary>
+      <returns>A string that identifies the browser.</returns>
+      <param name="httpContext">The current context base.</param>
     </member>
-    <member name="M:System.Web.WebPages.BrowserHelpers.SetOverriddenBrowser(System.Web.HttpContextBase,System.String)"></member>
-    <member name="M:System.Web.WebPages.BrowserHelpers.SetOverriddenBrowser(System.Web.HttpContextBase,System.Web.WebPages.BrowserOverride)"></member>
-    <member name="T:System.Web.WebPages.BrowserOverride"></member>
+    <member name="M:System.Web.WebPages.BrowserHelpers.SetOverriddenBrowser(System.Web.HttpContextBase,System.String)">
+      <summary>Overrides the request's actual user agent value using the specified user agent.</summary>
+      <param name="httpContext">The current context.</param>
+      <param name="userAgent">The user agent to use.</param>
+    </member>
+    <member name="M:System.Web.WebPages.BrowserHelpers.SetOverriddenBrowser(System.Web.HttpContextBase,System.Web.WebPages.BrowserOverride)">
+      <summary>Overrides the request's actual user agent value using the specified browser override information.</summary>
+      <param name="httpContext">The current context.</param>
+      <param name="browserOverride">One of the enumeration values that represents the browser override information to use.</param>
+    </member>
+    <member name="T:System.Web.WebPages.BrowserOverride">
+      <summary>Specifies browser types that can be defined for the <see cref="M:System.Web.WebPages.BrowserHelpers.SetOverriddenBrowser(System.Web.HttpContextBase,System.Web.WebPages.BrowserOverride)" /> method.</summary>
+    </member>
     <member name="F:System.Web.WebPages.BrowserOverride.Desktop">
-      <summary />
+      <summary>Specifies a desktop browser.</summary>
     </member>
     <member name="F:System.Web.WebPages.BrowserOverride.Mobile">
-      <summary />
+      <summary>Specifies a mobile browser.</summary>
     </member>
-    <member name="T:System.Web.WebPages.BrowserOverrideStore"></member>
-    <member name="M:System.Web.WebPages.BrowserOverrideStore.#ctor"></member>
+    <member name="T:System.Web.WebPages.BrowserOverrideStore">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.BrowserOverrideStore.#ctor">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
     <member name="M:System.Web.WebPages.BrowserOverrideStore.GetOverriddenUserAgent(System.Web.HttpContextBase)">
-      <returns>Returns <see cref="T:System.String" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
-    <member name="M:System.Web.WebPages.BrowserOverrideStore.SetOverriddenUserAgent(System.Web.HttpContextBase,System.String)"></member>
-    <member name="T:System.Web.WebPages.BrowserOverrideStores"></member>
-    <member name="M:System.Web.WebPages.BrowserOverrideStores.#ctor"></member>
+    <member name="M:System.Web.WebPages.BrowserOverrideStore.SetOverriddenUserAgent(System.Web.HttpContextBase,System.String)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="T:System.Web.WebPages.BrowserOverrideStores">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.BrowserOverrideStores.#ctor">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
     <member name="P:System.Web.WebPages.BrowserOverrideStores.Current">
-      <returns>Returns <see cref="T:System.Web.WebPages.BrowserOverrideStore" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
-    <member name="T:System.Web.WebPages.CookieBrowserOverrideStore"></member>
-    <member name="M:System.Web.WebPages.CookieBrowserOverrideStore.#ctor"></member>
-    <member name="M:System.Web.WebPages.CookieBrowserOverrideStore.#ctor(System.Int32)"></member>
+    <member name="T:System.Web.WebPages.CookieBrowserOverrideStore">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.CookieBrowserOverrideStore.#ctor">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.CookieBrowserOverrideStore.#ctor(System.Int32)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
     <member name="M:System.Web.WebPages.CookieBrowserOverrideStore.GetOverriddenUserAgent(System.Web.HttpContextBase)">
-      <returns>Returns <see cref="T:System.String" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
-    <member name="M:System.Web.WebPages.CookieBrowserOverrideStore.SetOverriddenUserAgent(System.Web.HttpContextBase,System.String)"></member>
-    <member name="T:System.Web.WebPages.DefaultDisplayMode"></member>
-    <member name="M:System.Web.WebPages.DefaultDisplayMode.#ctor"></member>
-    <member name="M:System.Web.WebPages.DefaultDisplayMode.#ctor(System.String)"></member>
+    <member name="M:System.Web.WebPages.CookieBrowserOverrideStore.SetOverriddenUserAgent(System.Web.HttpContextBase,System.String)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="T:System.Web.WebPages.DefaultDisplayMode">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.DefaultDisplayMode.#ctor">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.DefaultDisplayMode.#ctor(System.String)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
     <member name="M:System.Web.WebPages.DefaultDisplayMode.CanHandleContext(System.Web.HttpContextBase)">
-      <returns>Returns <see cref="T:System.Boolean" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="P:System.Web.WebPages.DefaultDisplayMode.ContextCondition">
-      <returns>Returns <see cref="T:System.Func`2" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="P:System.Web.WebPages.DefaultDisplayMode.DisplayModeId">
-      <returns>Returns <see cref="T:System.String" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.DefaultDisplayMode.GetDisplayInfo(System.Web.HttpContextBase,System.String,System.Func`2)">
-      <returns>Returns <see cref="T:System.Web.WebPages.DisplayInfo" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.DefaultDisplayMode.TransformPath(System.String,System.String)">
-      <returns>Returns <see cref="T:System.String" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
-    <member name="T:System.Web.WebPages.DisplayInfo"></member>
-    <member name="M:System.Web.WebPages.DisplayInfo.#ctor(System.String,System.Web.WebPages.IDisplayMode)"></member>
+    <member name="T:System.Web.WebPages.DisplayInfo">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.DisplayInfo.#ctor(System.String,System.Web.WebPages.IDisplayMode)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
     <member name="P:System.Web.WebPages.DisplayInfo.DisplayMode">
-      <returns>Returns <see cref="T:System.Web.WebPages.IDisplayMode" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="P:System.Web.WebPages.DisplayInfo.FilePath">
-      <returns>Returns <see cref="T:System.String" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
-    <member name="T:System.Web.WebPages.DisplayModeProvider"></member>
-    <member name="F:System.Web.WebPages.DisplayModeProvider.DefaultDisplayModeId"></member>
+    <member name="T:System.Web.WebPages.DisplayModeProvider">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="F:System.Web.WebPages.DisplayModeProvider.DefaultDisplayModeId">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
     <member name="M:System.Web.WebPages.DisplayModeProvider.GetAvailableDisplayModesForContext(System.Web.HttpContextBase,System.Web.WebPages.IDisplayMode)">
-      <returns>Returns <see cref="T:System.Collections.Generic.IEnumerable`1" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.DisplayModeProvider.GetDisplayInfoForVirtualPath(System.String,System.Web.HttpContextBase,System.Func`2,System.Boolean)">
-      <returns>Returns <see cref="T:System.Web.WebPages.DisplayInfo" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="P:System.Web.WebPages.DisplayModeProvider.Instance">
-      <returns>Returns <see cref="T:System.Web.WebPages.DisplayModeProvider" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
-    <member name="F:System.Web.WebPages.DisplayModeProvider.MobileDisplayModeId"></member>
+    <member name="F:System.Web.WebPages.DisplayModeProvider.MobileDisplayModeId">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
     <member name="P:System.Web.WebPages.DisplayModeProvider.Modes">
-      <returns>Returns <see cref="T:System.Collections.Generic.IList`1" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="P:System.Web.WebPages.DisplayModeProvider.RequireConsistentDisplayMode">
-      <returns>Returns <see cref="T:System.Boolean" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="T:System.Web.WebPages.HelperPage">
-      <summary>Represents a base class that is used when ASP.NET compiles a .cshtml or .vbhtml file that is in the App_Code folder.</summary>
+      <summary>Represents a base class for pages that is used when ASP.NET compiles a .cshtml or .vbhtml file and that exposes page-level and application-level properties and methods.</summary>
     </member>
     <member name="M:System.Web.WebPages.HelperPage.#ctor">
-      <summary>Initializes a new instance of the <see cref="T:System.Web.WebPages.HelperPage" /> class.</summary>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="P:System.Web.WebPages.HelperPage.App">
       <summary>Gets the application-state data as a <see cref="T:System.Dynamic.DynamicObject" /> object that callers can use to create and access custom application-scoped properties.</summary>
@@ -440,8 +537,12 @@
       <summary>Gets a reference to global application-state data that can be shared across sessions and requests in an ASP.NET application.</summary>
       <returns>The application-state data.</returns>
     </member>
-    <member name="M:System.Web.WebPages.HelperPage.BeginContext(System.IO.TextWriter,System.String,System.Int32,System.Int32,System.Boolean)"></member>
-    <member name="M:System.Web.WebPages.HelperPage.BeginContext(System.String,System.Int32,System.Int32,System.Boolean)"></member>
+    <member name="M:System.Web.WebPages.HelperPage.BeginContext(System.IO.TextWriter,System.String,System.Int32,System.Int32,System.Boolean)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.HelperPage.BeginContext(System.String,System.Int32,System.Int32,System.Boolean)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
     <member name="P:System.Web.WebPages.HelperPage.Cache">
       <summary>Gets the cache object for the current application domain.</summary>
       <returns>The cache object.</returns>
@@ -454,10 +555,14 @@
       <summary>Gets the current page for this helper page.</summary>
       <returns>The current page.</returns>
     </member>
-    <member name="M:System.Web.WebPages.HelperPage.EndContext(System.IO.TextWriter,System.String,System.Int32,System.Int32,System.Boolean)"></member>
-    <member name="M:System.Web.WebPages.HelperPage.EndContext(System.String,System.Int32,System.Int32,System.Boolean)"></member>
+    <member name="M:System.Web.WebPages.HelperPage.EndContext(System.IO.TextWriter,System.String,System.Int32,System.Int32,System.Boolean)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.HelperPage.EndContext(System.String,System.Int32,System.Int32,System.Boolean)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
     <member name="P:System.Web.WebPages.HelperPage.HelperVirtualPath">
-      <returns>Returns <see cref="T:System.String" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.HelperPage.Href(System.String,System.Object[])">
       <summary>Builds an absolute URL from an application-relative URL by using the specified parameters.</summary>
@@ -474,8 +579,8 @@
       <returns>true if Ajax is being used during the request; otherwise, false.</returns>
     </member>
     <member name="P:System.Web.WebPages.HelperPage.IsPost">
-      <summary>Gets a value that indicates whether the HTTP data transfer method used by the client to request the web page is a POST operation.</summary>
-      <returns>true if the HTTP verb is "POST"; otherwise, false.</returns>
+      <summary>Gets a value that indicates whether the current request is a post (submitted using the HTTP POST verb).</summary>
+      <returns>true if the HTTP verb is POST; otherwise, false.</returns>
     </member>
     <member name="P:System.Web.WebPages.HelperPage.Model">
       <summary>Gets the model that is associated with a page.</summary>
@@ -525,84 +630,71 @@
       <summary>Gets the virtual path of the page.</summary>
       <returns>The virtual path.</returns>
     </member>
-    <member name="M:System.Web.WebPages.HelperPage.WriteAttributeTo(System.IO.TextWriter,System.String,System.Web.WebPages.Instrumentation.PositionTagged{System.String},System.Web.WebPages.Instrumentation.PositionTagged{System.String},System.Web.WebPages.AttributeValue[])"></member>
+    <member name="M:System.Web.WebPages.HelperPage.WriteAttributeTo(System.IO.TextWriter,System.String,System.Web.WebPages.Instrumentation.PositionTagged{System.String},System.Web.WebPages.Instrumentation.PositionTagged{System.String},System.Web.WebPages.AttributeValue[])">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
     <member name="M:System.Web.WebPages.HelperPage.WriteLiteralTo(System.IO.TextWriter,System.Object)">
-      <summary>Writes the specified object to the specified <see cref="T:System.IO.TextWriter" /> instance without HTML encoding.</summary>
-      <param name="writer">The text writer.</param>
-      <param name="value">The object to write.</param>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.HelperPage.WriteLiteralTo(System.IO.TextWriter,System.Web.WebPages.HelperResult)">
-      <summary>Writes the specified <see cref="T:System.Web.WebPages.HelperResult" /> object to the specified <see cref="T:System.IO.TextWriter" /> instance without HTML encoding.</summary>
-      <param name="writer">The text writer.</param>
-      <param name="value">The object to write.</param>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.HelperPage.WriteTo(System.IO.TextWriter,System.Object)">
-      <summary>Writes the specified object as an HTML-encoded string to the specified text writer.</summary>
-      <param name="writer">The text writer.</param>
-      <param name="value">The object to encode and write.</param>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.HelperPage.WriteTo(System.IO.TextWriter,System.Web.WebPages.HelperResult)">
-      <summary>Writes the specified <see cref="T:System.Web.WebPages.HelperResult" /> object as an HTML-encoded string to the specified text writer.</summary>
-      <param name="writer">The text writer.</param>
-      <param name="value">The helper result to encode and write.</param>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="T:System.Web.WebPages.HelperResult">
-      <summary>Represents the result of a helper action as an HTML-encoded string.</summary>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.HelperResult.#ctor(System.Action{System.IO.TextWriter})">
-      <summary>Initializes a new instance of the <see cref="T:System.Web.WebPages.HelperResult" /> class.</summary>
-      <param name="action">A function that takes a <see cref="T:System.IO.TextWriter" /> instance as its only parameter, and writes its result to the <see cref="T:System.IO.TextWriter" /> as an HTML-encoded string. The function does not have a return value.</param>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.HelperResult.ToHtmlString">
-      <summary>Returns an HTML-encoded string that represents the helper result.</summary>
-      <returns>The HTML-encoded string that represents the result.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.HelperResult.ToString">
-      <summary>Returns an HTML-encoded string that represents the helper result.</summary>
-      <returns>The HTML-encoded string that represents the result.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.HelperResult.WriteTo(System.IO.TextWriter)">
-      <summary>Writes an HTML-encoded string that writes the helper result to the specified <see cref="T:System.IO.TextWriter" /> object.</summary>
-      <param name="writer">The <see cref="T:System.IO.TextWriter" /> instance to write the result to.</param>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="T:System.Web.WebPages.HttpContextExtensions">
-      <summary>Provides methods to extend the HTTP context.</summary>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.HttpContextExtensions.RedirectLocal(System.Web.HttpContextBase,System.String)">
-      <summary>Redirects to the root of the website if the host is not local.</summary>
-      <param name="context">The HTTP context of the HTTP request.</param>
-      <param name="url">A local URL.</param>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.HttpContextExtensions.RegisterForDispose(System.Web.HttpContextBase,System.IDisposable)">
-      <summary>Adds a resource to the list of resources to dispose at the end of an HTTP request.</summary>
-      <param name="context">The HTTP context of the HTTP request.</param>
-      <param name="resource">The resource to dispose.</param>
-      <exception cref="ArgumentNullException">
-        <paramref name="context" /> is null.</exception>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code..</summary>
     </member>
-    <member name="T:System.Web.WebPages.IDisplayMode"></member>
+    <member name="T:System.Web.WebPages.IDisplayMode">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
     <member name="M:System.Web.WebPages.IDisplayMode.CanHandleContext(System.Web.HttpContextBase)">
-      <returns>Returns <see cref="T:System.Boolean" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="P:System.Web.WebPages.IDisplayMode.DisplayModeId">
-      <returns>Returns <see cref="T:System.String" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.IDisplayMode.GetDisplayInfo(System.Web.HttpContextBase,System.String,System.Func`2)">
-      <returns>Returns <see cref="T:System.Web.WebPages.DisplayInfo" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="T:System.Web.WebPages.ITemplateFile">
-      <summary>Defines an interface to provide information about the currently executing file.</summary>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="P:System.Web.WebPages.ITemplateFile.TemplateInfo">
-      <summary>Gets the template information for the current web page.</summary>
-      <returns>The template information.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
-    <member name="T:System.Web.WebPages.IValidator"></member>
+    <member name="T:System.Web.WebPages.IValidator">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
     <member name="P:System.Web.WebPages.IValidator.ClientValidationRule">
-      <returns>Returns <see cref="T:System.Web.Mvc.ModelClientValidationRule" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.IValidator.Validate(System.ComponentModel.DataAnnotations.ValidationContext)">
-      <returns>Returns <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="T:System.Web.WebPages.IVirtualPathFactory">
       <summary>Defines methods that are implemented by virtual path handler factories.</summary>
@@ -651,23 +743,43 @@
       <param name="request">The HTTP request object.</param>
       <param name="url">The URL to test.</param>
     </member>
-    <member name="T:System.Web.WebPages.RequestFieldValidatorBase"></member>
-    <member name="M:System.Web.WebPages.RequestFieldValidatorBase.#ctor(System.String)"></member>
-    <member name="M:System.Web.WebPages.RequestFieldValidatorBase.#ctor(System.String,System.Boolean)"></member>
+    <member name="T:System.Web.WebPages.RequestFieldValidatorBase">
+      <summary>Serves as the abstract base class for the validation helper classes.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.RequestFieldValidatorBase.#ctor(System.String)">
+      <summary>Initializes a new instance of the derived class and specifies the name of the HTML element that is being validated.</summary>
+      <param name="errorMessage">The name (value of the name attribute) of the user input element to validate.</param>
+    </member>
+    <member name="M:System.Web.WebPages.RequestFieldValidatorBase.#ctor(System.String,System.Boolean)">
+      <summary>Initializes a new instance of the derived class, registers the specified string as the error message to display if no value is supplied, and specifies whether the method can use unvalidated data.</summary>
+      <param name="errorMessage">The error message.</param>
+      <param name="useUnvalidatedValues">true to use unvalidated user input; false to reject unvalidated data. This parameter is set to true by calling methods in circumstances when the actual value of the user input is not important, such as for required fields.</param>
+    </member>
     <member name="P:System.Web.WebPages.RequestFieldValidatorBase.ClientValidationRule">
-      <returns>Returns <see cref="T:System.Web.Mvc.ModelClientValidationRule" />.</returns>
+      <summary>When implemented in a derived class, gets a container for client validation for the required field.</summary>
+      <returns>The container.</returns>
     </member>
     <member name="M:System.Web.WebPages.RequestFieldValidatorBase.GetHttpContext(System.ComponentModel.DataAnnotations.ValidationContext)">
-      <returns>Returns <see cref="T:System.Web.HttpContextBase" />.</returns>
+      <summary>Returns the HTTP context of the current request.</summary>
+      <returns>The context.</returns>
+      <param name="validationContext">The validation context.</param>
     </member>
     <member name="M:System.Web.WebPages.RequestFieldValidatorBase.GetRequestValue(System.Web.HttpRequestBase,System.String)">
-      <returns>Returns <see cref="T:System.String" />.</returns>
+      <summary>Returns the value to validate.</summary>
+      <returns>The value to validate.</returns>
+      <param name="request">The current request.</param>
+      <param name="field">The name of the field from the current request to validate.</param>
     </member>
     <member name="M:System.Web.WebPages.RequestFieldValidatorBase.IsValid(System.Web.HttpContextBase,System.String)">
-      <returns>Returns <see cref="T:System.Boolean" />.</returns>
+      <summary>Returns a value that indicates whether the specified value is valid.</summary>
+      <returns>true if the value is valid; otherwise, false.</returns>
+      <param name="httpContext">The current context.</param>
+      <param name="value">The value to validate.</param>
     </member>
     <member name="M:System.Web.WebPages.RequestFieldValidatorBase.Validate(System.ComponentModel.DataAnnotations.ValidationContext)">
-      <returns>Returns <see cref="T:System.ComponentModel.DataAnnotations.ValidationResult" />.</returns>
+      <summary>Performs the validation test.</summary>
+      <returns>The result of the validation test.</returns>
+      <param name="validationContext">The context.</param>
     </member>
     <member name="T:System.Web.WebPages.ResponseExtensions">
       <summary>Defines extension methods for the <see cref="T:System.Web.HttpResponseBase" /> base class.</summary>
@@ -723,7 +835,10 @@
     <member name="M:System.Web.WebPages.StartPage.ExecutePageHierarchy">
       <summary>Calls the methods that are used to execute the developer-written code in the _PageStart start page and in the <see cref="P:System.Web.WebPages.StartPage.ChildPage" /> page.</summary>
     </member>
-    <member name="M:System.Web.WebPages.StartPage.GetOutputWriter"></member>
+    <member name="M:System.Web.WebPages.StartPage.GetOutputWriter">
+      <summary>Returns the text writer instance that is used to render the page.</summary>
+      <returns>The text writer.</returns>
+    </member>
     <member name="M:System.Web.WebPages.StartPage.GetStartPage(System.Web.WebPages.WebPageRenderingBase,System.String,System.Collections.Generic.IEnumerable{System.String})">
       <summary>Returns the initialization page for the specified page.</summary>
       <returns>The _AppStart page if the _AppStart page exists. If the _AppStart page cannot be found, returns the _PageStart page if a _PageStart page exists. If the _AppStart and _PageStart pages cannot be found, returns <paramref name="page" />.</returns>
@@ -907,79 +1022,149 @@
       <exception cref="T:System.ArgumentNullException">
         <paramref name="httpContext" /> or <paramref name="templateFile" /> are null.</exception>
     </member>
-    <member name="T:System.Web.WebPages.ValidationHelper"></member>
-    <member name="M:System.Web.WebPages.ValidationHelper.Add(System.Collections.Generic.IEnumerable{System.String},System.Web.WebPages.IValidator[])"></member>
-    <member name="M:System.Web.WebPages.ValidationHelper.Add(System.String,System.Web.WebPages.IValidator[])"></member>
+    <member name="T:System.Web.WebPages.ValidationHelper">
+      <summary>Implements validation for user input.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.ValidationHelper.Add(System.Collections.Generic.IEnumerable{System.String},System.Web.WebPages.IValidator[])">
+      <summary>Registers a list of user input elements for validation.</summary>
+      <param name="fields">The names (value of the name attribute) of the user input elements to validate.</param>
+      <param name="validators">The type of validation to register for each user input element specified in <paramref name="fields" />.</param>
+    </member>
+    <member name="M:System.Web.WebPages.ValidationHelper.Add(System.String,System.Web.WebPages.IValidator[])">
+      <summary>Registers a user input element for validation.</summary>
+      <param name="field">The name (value of the name attribute) of the user input element to validate.</param>
+      <param name="validators">A list of one or more types of validation to register.</param>
+    </member>
+    <member name="M:System.Web.WebPages.ValidationHelper.AddFormError(System.String)"></member>
     <member name="M:System.Web.WebPages.ValidationHelper.ClassFor(System.String)">
-      <returns>Returns <see cref="T:System.Web.HtmlString" />.</returns>
+      <summary>Renders an attribute that references the CSS style definition to use when validation messages for the user input element are rendered.</summary>
+      <returns>The attribute.</returns>
+      <param name="field">The name (value of the name attribute) of the user input element to validate.</param>
     </member>
     <member name="M:System.Web.WebPages.ValidationHelper.For(System.String)">
-      <returns>Returns <see cref="T:System.Web.HtmlString" />.</returns>
+      <summary>Renders attributes that enable client-side validation for an individual user input element.</summary>
+      <returns>The attributes to render.</returns>
+      <param name="field">The name (value of the name attribute) of the user input element to validate.</param>
     </member>
     <member name="P:System.Web.WebPages.ValidationHelper.FormField">
-      <returns>Returns <see cref="T:System.String" />.</returns>
+      <summary>Gets the name of the current form. This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code. </summary>
+      <returns>The name.</returns>
     </member>
     <member name="M:System.Web.WebPages.ValidationHelper.GetErrors(System.String[])">
-      <returns>Returns <see cref="T:System.Collections.Generic.IEnumerable`1" />.</returns>
+      <summary>Returns a list of current validation errors, , and optionally lets you specify a list of fields to check.</summary>
+      <returns>The list of errors.</returns>
+      <param name="fields">Optional. The names (value of the name attribute) of the user input elements to get error information for. You can specify any number of element names, separated by commas. If you do not specify a list of fields, the method returns errors for all fields.</param>
     </member>
     <member name="P:System.Web.WebPages.ValidationHelper.InvalidCssClass">
-      <returns>Returns <see cref="T:System.String" />.</returns>
+      <summary>Gets the name of the class that is used to specify the appearance of error-message display when errors have occurred. This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code. </summary>
+      <returns>The name.</returns>
     </member>
     <member name="M:System.Web.WebPages.ValidationHelper.IsValid(System.String[])">
-      <returns>Returns <see cref="T:System.Boolean" />.</returns>
+      <summary>Determines whether the contents of the user input fields pass validation checks, and optionally lets you specify a list of fields to check.</summary>
+      <returns>true if all specified field or fields pass validation checks; false if any field contains a validation error.</returns>
+      <param name="fields">Optional. The names (value of the name attribute) of the user input elements to check for validation errors. You can specify any number of element names, separated by commas. If you do not specify a list of fields, the method checks all elements that are registered for validation.</param>
     </member>
-    <member name="M:System.Web.WebPages.ValidationHelper.RequireField(System.String)"></member>
-    <member name="M:System.Web.WebPages.ValidationHelper.RequireField(System.String,System.String)"></member>
-    <member name="M:System.Web.WebPages.ValidationHelper.RequireFields(System.String[])"></member>
+    <member name="M:System.Web.WebPages.ValidationHelper.RequireField(System.String)">
+      <summary>Registers the specified field as one that requires user entry.</summary>
+      <param name="field">The name (value of the name attribute) of the user input element to validate.</param>
+    </member>
+    <member name="M:System.Web.WebPages.ValidationHelper.RequireField(System.String,System.String)">
+      <summary>Registers the specified field as one that requires user entry and registers the specified string as the error message to display if no value is supplied.</summary>
+      <param name="field">The name (value of the name attribute) of the user input element to validate.</param>
+      <param name="errorMessage">The error message.</param>
+    </member>
+    <member name="M:System.Web.WebPages.ValidationHelper.RequireFields(System.String[])">
+      <summary>Registers the specified fields as ones that require user entry.</summary>
+      <param name="fields">The names (value of the name attribute) of the user input elements to validate. You can specify any number of element names, separated by commas.</param>
+    </member>
     <member name="M:System.Web.WebPages.ValidationHelper.Validate(System.String[])">
-      <returns>Returns <see cref="T:System.Collections.Generic.IEnumerable`1" />.</returns>
+      <summary>Performs validation on elements registered for validation, and optionally lets you specify a list of fields to check.</summary>
+      <returns>The list of errors for the specified fields, if any validation errors occurred.</returns>
+      <param name="fields">Optional. The names (value of the name attribute) of the user input elements to validate. You can specify any number of element names, separated by commas. If you do not specify a list, the method validates all registered elements.</param>
     </member>
     <member name="P:System.Web.WebPages.ValidationHelper.ValidCssClass">
-      <returns>Returns <see cref="T:System.String" />.</returns>
+      <summary>Gets the name of the class that is used to specify the appearance of error-message display when errors have occurred. This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code. </summary>
+      <returns>The name.</returns>
     </member>
-    <member name="T:System.Web.WebPages.Validator"></member>
-    <member name="M:System.Web.WebPages.Validator.#ctor"></member>
+    <member name="T:System.Web.WebPages.Validator">
+      <summary>Defines validation tests that can be registered using the <see cref="M:System.Web.WebPages.ValidationHelper.Add(System.String,System.Web.WebPages.IValidator[])" /> method.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.Validator.#ctor">
+      <summary>Initializes a new instance of the <see cref="T:System.Web.WebPages.Validator" /> class.</summary>
+    </member>
     <member name="M:System.Web.WebPages.Validator.DateTime(System.String)">
-      <returns>Returns <see cref="T:System.Web.WebPages.IValidator" />.</returns>
+      <summary>Defines a validation test that tests whether a value can be treated as a date/time value.</summary>
+      <returns>The validation test.</returns>
+      <param name="errorMessage">The error message to display if validation fails.</param>
     </member>
     <member name="M:System.Web.WebPages.Validator.Decimal(System.String)">
-      <returns>Returns <see cref="T:System.Web.WebPages.IValidator" />.</returns>
+      <summary>Defines a validation test that tests whether a value can be treated as a decimal number.</summary>
+      <returns>The validation test.</returns>
+      <param name="errorMessage">The error message to display if validation fails.</param>
     </member>
     <member name="M:System.Web.WebPages.Validator.EqualsTo(System.String,System.String)">
-      <returns>Returns <see cref="T:System.Web.WebPages.IValidator" />.</returns>
+      <summary>Defines a validation test that test user input against the value of another field.</summary>
+      <returns>The validation test.</returns>
+      <param name="errorMessage">The error message to display if validation fails.</param>
     </member>
     <member name="M:System.Web.WebPages.Validator.Float(System.String)">
-      <returns>Returns <see cref="T:System.Web.WebPages.IValidator" />.</returns>
+      <summary>Defines a validation test that tests whether a value can be treated as a floating-point number.</summary>
+      <returns>The validation test.</returns>
+      <param name="errorMessage">The error message to display if validation fails.</param>
     </member>
     <member name="M:System.Web.WebPages.Validator.Integer(System.String)">
-      <returns>Returns <see cref="T:System.Web.WebPages.IValidator" />.</returns>
+      <summary>Defines a validation test that tests whether a value can be treated as an integer.</summary>
+      <returns>The validation test.</returns>
+      <param name="errorMessage">The error message to display if validation fails.</param>
     </member>
     <member name="M:System.Web.WebPages.Validator.Range(System.Double,System.Double,System.String)">
-      <returns>Returns <see cref="T:System.Web.WebPages.IValidator" />.</returns>
+      <summary>Defines a validation test that tests whether a decimal number falls within a specific range.</summary>
+      <returns>The validation test.</returns>
+      <param name="minValue">The minimum value. The default is 0.</param>
+      <param name="maxValue">The maximum value.</param>
+      <param name="errorMessage">The error message to display if validation fails.</param>
     </member>
     <member name="M:System.Web.WebPages.Validator.Range(System.Int32,System.Int32,System.String)">
-      <returns>Returns <see cref="T:System.Web.WebPages.IValidator" />.</returns>
+      <summary>Defines a validation test that tests whether an integer value falls within a specific range.</summary>
+      <returns>The validation test.</returns>
+      <param name="minValue">The minimum value. The default is 0.</param>
+      <param name="maxValue">The maximum value. </param>
+      <param name="errorMessage">The error message to display if validation fails.</param>
     </member>
     <member name="M:System.Web.WebPages.Validator.Regex(System.String,System.String)">
-      <returns>Returns <see cref="T:System.Web.WebPages.IValidator" />.</returns>
+      <summary>Defines a validation test that tests a value against a pattern specified as a regular expression.</summary>
+      <returns>The validation test.</returns>
+      <param name="pattern">The regular expression to use to test the user input.</param>
+      <param name="errorMessage">The error message to display if validation fails.</param>
     </member>
     <member name="M:System.Web.WebPages.Validator.Required(System.String)">
-      <returns>Returns <see cref="T:System.Web.WebPages.IValidator" />.</returns>
+      <summary>Defines a validation test that tests whether a value has been provided.</summary>
+      <returns>The validation test.</returns>
+      <param name="errorMessage">The error message to display if validation fails.</param>
     </member>
     <member name="M:System.Web.WebPages.Validator.StringLength(System.Int32,System.Int32,System.String)">
-      <returns>Returns <see cref="T:System.Web.WebPages.IValidator" />.</returns>
+      <summary>Defines a validation test that tests the length of a string.</summary>
+      <returns>The validation test.</returns>
+      <param name="maxLength">The maximum length of the string.</param>
+      <param name="minLength">The minimum length of the string. The default is 0.</param>
+      <param name="errorMessage">The error message to display if validation fails.</param>
     </member>
     <member name="M:System.Web.WebPages.Validator.Url(System.String)">
-      <returns>Returns <see cref="T:System.Web.WebPages.IValidator" />.</returns>
+      <summary>Defines a validation test that tests whether a value is a well-formed URL.</summary>
+      <returns>The validation test.</returns>
+      <param name="errorMessage">The error message to display if validation fails.</param>
     </member>
     <member name="T:System.Web.WebPages.VirtualPathFactoryManager">
-      <summary>Contains methods that are used for managing virtual path factories.</summary>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
-    <member name="M:System.Web.WebPages.VirtualPathFactoryManager.CreateInstance(System.String)"></member>
-    <member name="M:System.Web.WebPages.VirtualPathFactoryManager.Exists(System.String)"></member>
+    <member name="M:System.Web.WebPages.VirtualPathFactoryManager.CreateInstance(System.String)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.VirtualPathFactoryManager.Exists(System.String)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
     <member name="M:System.Web.WebPages.VirtualPathFactoryManager.RegisterVirtualPathFactory(System.Web.WebPages.IVirtualPathFactory)">
-      <summary>Adds a virtual path factory to the list of virtual path factories.</summary>
-      <param name="virtualPathFactory">The virtual path factory to add.</param>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="T:System.Web.WebPages.WebPage">
       <summary>Represents an ASP.NET Razor page.</summary>
@@ -1013,8 +1198,16 @@
       <summary>Adds a class to a list of classes that handle page execution and that implement custom features for pages.</summary>
       <param name="executor">The class to add.</param>
     </member>
-    <member name="M:System.Web.WebPages.WebPage.RenderPage(System.String,System.Object[])"></member>
-    <member name="P:System.Web.WebPages.WebPage.Validation"></member>
+    <member name="M:System.Web.WebPages.WebPage.RenderPage(System.String,System.Object[])">
+      <summary>Renders a content page.</summary>
+      <returns>An object that can write the output of the page.</returns>
+      <param name="path">The path of the page to render.</param>
+      <param name="data">Data to pass to the page.</param>
+    </member>
+    <member name="P:System.Web.WebPages.WebPage.Validation">
+      <summary>Gets the validation helper for the current page context.</summary>
+      <returns>The validation helper.</returns>
+    </member>
     <member name="T:System.Web.WebPages.WebPageBase">
       <summary>Serves as the base class for classes that represent an ASP.NET Razor page.</summary>
     </member>
@@ -1049,7 +1242,10 @@
       <param name="writer">The writer to use to write the executed HTML.</param>
       <param name="startPage">The page to start execution in the page hierarchy.</param>
     </member>
-    <member name="M:System.Web.WebPages.WebPageBase.GetOutputWriter"></member>
+    <member name="M:System.Web.WebPages.WebPageBase.GetOutputWriter">
+      <summary>Returns the text writer instance that is used to render the page.</summary>
+      <returns>The text writer.</returns>
+    </member>
     <member name="M:System.Web.WebPages.WebPageBase.InitializePage">
       <summary>Initializes the current page.</summary>
     </member>
@@ -1162,23 +1358,47 @@
       <summary>Gets a reference to global application-state data that can be shared across sessions and requests in an ASP.NET application.</summary>
       <returns>The application-state data.</returns>
     </member>
-    <member name="M:System.Web.WebPages.WebPageExecutingBase.BeginContext(System.Int32,System.Int32,System.Boolean)"></member>
-    <member name="M:System.Web.WebPages.WebPageExecutingBase.BeginContext(System.IO.TextWriter,System.Int32,System.Int32,System.Boolean)"></member>
-    <member name="M:System.Web.WebPages.WebPageExecutingBase.BeginContext(System.IO.TextWriter,System.String,System.Int32,System.Int32,System.Boolean)"></member>
-    <member name="M:System.Web.WebPages.WebPageExecutingBase.BeginContext(System.String,System.Int32,System.Int32,System.Boolean)"></member>
+    <member name="M:System.Web.WebPages.WebPageExecutingBase.BeginContext(System.Int32,System.Int32,System.Boolean)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.WebPageExecutingBase.BeginContext(System.IO.TextWriter,System.Int32,System.Int32,System.Boolean)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.WebPageExecutingBase.BeginContext(System.IO.TextWriter,System.String,System.Int32,System.Int32,System.Boolean)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.WebPageExecutingBase.BeginContext(System.String,System.Int32,System.Int32,System.Boolean)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
     <member name="P:System.Web.WebPages.WebPageExecutingBase.Context">
       <summary>When overridden in a derived class, gets or sets the <see cref="T:System.Web.HttpContextBase" /> object that is associated with a page.</summary>
       <returns>The current context data.</returns>
     </member>
-    <member name="M:System.Web.WebPages.WebPageExecutingBase.EndContext(System.Int32,System.Int32,System.Boolean)"></member>
-    <member name="M:System.Web.WebPages.WebPageExecutingBase.EndContext(System.IO.TextWriter,System.Int32,System.Int32,System.Boolean)"></member>
-    <member name="M:System.Web.WebPages.WebPageExecutingBase.EndContext(System.IO.TextWriter,System.String,System.Int32,System.Int32,System.Boolean)"></member>
-    <member name="M:System.Web.WebPages.WebPageExecutingBase.EndContext(System.String,System.Int32,System.Int32,System.Boolean)"></member>
+    <member name="M:System.Web.WebPages.WebPageExecutingBase.EndContext(System.Int32,System.Int32,System.Boolean)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.WebPageExecutingBase.EndContext(System.IO.TextWriter,System.Int32,System.Int32,System.Boolean)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.WebPageExecutingBase.EndContext(System.IO.TextWriter,System.String,System.Int32,System.Int32,System.Boolean)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.WebPageExecutingBase.EndContext(System.String,System.Int32,System.Int32,System.Boolean)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
     <member name="M:System.Web.WebPages.WebPageExecutingBase.Execute">
       <summary>Executes the server code in the current web page that is marked using Razor syntax.</summary>
     </member>
-    <member name="M:System.Web.WebPages.WebPageExecutingBase.GetOutputWriter"></member>
-    <member name="M:System.Web.WebPages.WebPageExecutingBase.Href(System.String,System.Object[])"></member>
+    <member name="M:System.Web.WebPages.WebPageExecutingBase.GetOutputWriter">
+      <summary>Returns the text writer instance that is used to render the page.</summary>
+      <returns>The text writer.</returns>
+    </member>
+    <member name="M:System.Web.WebPages.WebPageExecutingBase.Href(System.String,System.Object[])">
+      <summary>Builds an absolute URL from an application-relative URL by using the specified parameters.</summary>
+      <returns>The absolute URL.</returns>
+      <param name="path">The initial path to use in the URL.</param>
+      <param name="pathParts">Additional path information, such as folders and subfolders.</param>
+    </member>
     <member name="M:System.Web.WebPages.WebPageExecutingBase.NormalizePath(System.String)">
       <summary>Returns a normalized path from the specified path.</summary>
       <returns>The normalized path.</returns>
@@ -1188,7 +1408,9 @@
       <summary>Gets or sets the virtual path of the page.</summary>
       <returns>The virtual path.</returns>
     </member>
-    <member name="P:System.Web.WebPages.WebPageExecutingBase.VirtualPathFactory"></member>
+    <member name="P:System.Web.WebPages.WebPageExecutingBase.VirtualPathFactory">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
     <member name="M:System.Web.WebPages.WebPageExecutingBase.Write(System.Object)">
       <summary>Writes the string representation of the specified object as an HTML-encoded string.</summary>
       <param name="value">The object to encode and write.</param>
@@ -1197,9 +1419,15 @@
       <summary>Writes the specified <see cref="T:System.Web.WebPages.HelperResult" /> object as an HTML-encoded string.</summary>
       <param name="result">The helper result to encode and write.</param>
     </member>
-    <member name="M:System.Web.WebPages.WebPageExecutingBase.WriteAttribute(System.String,System.Web.WebPages.Instrumentation.PositionTagged{System.String},System.Web.WebPages.Instrumentation.PositionTagged{System.String},System.Web.WebPages.AttributeValue[])"></member>
-    <member name="M:System.Web.WebPages.WebPageExecutingBase.WriteAttributeTo(System.IO.TextWriter,System.String,System.Web.WebPages.Instrumentation.PositionTagged{System.String},System.Web.WebPages.Instrumentation.PositionTagged{System.String},System.Web.WebPages.AttributeValue[])"></member>
-    <member name="M:System.Web.WebPages.WebPageExecutingBase.WriteAttributeTo(System.String,System.IO.TextWriter,System.String,System.Web.WebPages.Instrumentation.PositionTagged{System.String},System.Web.WebPages.Instrumentation.PositionTagged{System.String},System.Web.WebPages.AttributeValue[])"></member>
+    <member name="M:System.Web.WebPages.WebPageExecutingBase.WriteAttribute(System.String,System.Web.WebPages.Instrumentation.PositionTagged{System.String},System.Web.WebPages.Instrumentation.PositionTagged{System.String},System.Web.WebPages.AttributeValue[])">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.WebPageExecutingBase.WriteAttributeTo(System.IO.TextWriter,System.String,System.Web.WebPages.Instrumentation.PositionTagged{System.String},System.Web.WebPages.Instrumentation.PositionTagged{System.String},System.Web.WebPages.AttributeValue[])">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.WebPageExecutingBase.WriteAttributeTo(System.String,System.IO.TextWriter,System.String,System.Web.WebPages.Instrumentation.PositionTagged{System.String},System.Web.WebPages.Instrumentation.PositionTagged{System.String},System.Web.WebPages.AttributeValue[])">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
     <member name="M:System.Web.WebPages.WebPageExecutingBase.WriteLiteral(System.Object)">
       <summary>Writes the specified object without HTML encoding.</summary>
       <param name="value">The object to write.</param>
@@ -1270,7 +1498,10 @@
       <summary>When overridden in a derived class, gets or sets the culture for the current thread.</summary>
       <returns>The culture for the current thread.</returns>
     </member>
-    <member name="P:System.Web.WebPages.WebPageRenderingBase.DisplayMode"></member>
+    <member name="P:System.Web.WebPages.WebPageRenderingBase.DisplayMode">
+      <summary>Gets the display mode for the request.</summary>
+      <returns>The display mode.</returns>
+    </member>
     <member name="M:System.Web.WebPages.WebPageRenderingBase.ExecutePageHierarchy">
       <summary>When overridden in a derived class, calls the methods that are used to initialize the page.</summary>
     </member>
@@ -1298,7 +1529,10 @@
       <summary>When overridden in a derived class, provides array-like access to page data that is shared between pages, layout pages, and partial pages.</summary>
       <returns>An object that provides array-like access to page data.</returns>
     </member>
-    <member name="P:System.Web.WebPages.WebPageRenderingBase.Profile"></member>
+    <member name="P:System.Web.WebPages.WebPageRenderingBase.Profile">
+      <summary>Gets profile information for the current request context.</summary>
+      <returns>The profile information.</returns>
+    </member>
     <member name="M:System.Web.WebPages.WebPageRenderingBase.RenderPage(System.String,System.Object[])">
       <summary>When overridden in a derived class, renders a web page.</summary>
       <returns>The markup that represents the web page.</returns>
@@ -1534,6 +1768,7 @@
       <summary>Returns an HTML label that displays the specified text and that has the specified custom attributes.</summary>
       <returns>The HTML markup that represents the label.</returns>
       <param name="labelText">The text to display.</param>
+      <param name="attributes">An object that contains custom attributes for the element. The attribute names and values are retrieved through reflection by examining the properties of the object.</param>
       <exception cref="T:Sytem.ArgumentException">
         <paramref name="labelText" /> is null or empty.</exception>
     </member>
@@ -1778,10 +2013,13 @@
         <paramref name="name" /> is null or empty.</exception>
     </member>
     <member name="M:System.Web.WebPages.Html.HtmlHelper.Raw(System.Object)">
-      <returns>Returns <see cref="T:System.Web.IHtmlString" />.</returns>
+      <summary>Wraps HTML markup in an <see cref="T:System.Web.HtmlString" /> instance so that it is interpreted as HTML markup.</summary>
+      <returns>The unencoded HTML.</returns>
+      <param name="value">The object to render HTML for.</param>
     </member>
     <member name="M:System.Web.WebPages.Html.HtmlHelper.Raw(System.String)">
       <summary>Wraps HTML markup in an <see cref="T:System.Web.HtmlString" /> instance so that it is interpreted as HTML markup.</summary>
+      <returns>The unencoded HTML.</returns>
       <param name="value">The string to interpret as HTML markup instead of being HTML-encoded.</param>
     </member>
     <member name="M:System.Web.WebPages.Html.HtmlHelper.TextArea(System.String)">
@@ -1889,16 +2127,16 @@
         <paramref name="name" /> is null or empty.</exception>
     </member>
     <member name="P:System.Web.WebPages.Html.HtmlHelper.UnobtrusiveJavaScriptEnabled">
-      <returns>Returns <see cref="T:System.Boolean" />.</returns>
+      <summary>Gets or sets a value that indicates whether the page uses unobtrusive JavaScript for Ajax functionality.</summary>
+      <returns>true if the page uses unobtrusive JavaScript; otherwise, false.</returns>
     </member>
     <member name="P:System.Web.WebPages.Html.HtmlHelper.ValidationInputCssClassName">
-      <summary>Gets or sets the name of the CSS class that is associated with field validation error messages.</summary>
-      <returns>The name of the CSS class that is associated with field validation errors. The default is field-validation-error.</returns>
-      <exception cref="T:Sytem.ArgumentNullException">
-        <paramref name="value" /> is null.</exception>
+      <summary>Gets or sets the name of the CSS class that defines the appearance of input elements when validation fails.</summary>
+      <returns>The name of the CSS class. The default is field-validation-error.</returns>
     </member>
     <member name="P:System.Web.WebPages.Html.HtmlHelper.ValidationInputValidCssClassName">
-      <returns>Returns <see cref="T:System.String" />.</returns>
+      <summary>Gets or sets the name of the CSS class that defines the appearance of input elements when validation passes.</summary>
+      <returns>The name of the CSS class. The default is input-validation-valid.</returns>
     </member>
     <member name="M:System.Web.WebPages.Html.HtmlHelper.ValidationMessage(System.String)">
       <summary>Returns an HTML span element that contains the first validation error message for the specified form field.</summary>
@@ -1950,10 +2188,12 @@
         <paramref name="name" /> is null or empty.</exception>
     </member>
     <member name="P:System.Web.WebPages.Html.HtmlHelper.ValidationMessageCssClassName">
-      <returns>Returns <see cref="T:System.String" />.</returns>
+      <summary>Gets or sets the name of the CSS class that defines the appearance of validation error messages when validation fails.</summary>
+      <returns>The name of the CSS class.  The default is field-validation-error.</returns>
     </member>
     <member name="P:System.Web.WebPages.Html.HtmlHelper.ValidationMessageValidCssClassName">
-      <returns>Returns <see cref="T:System.String" />.</returns>
+      <summary>Gets or sets the name of the CSS class that defines the appearance of validation error messages when validation passes.</summary>
+      <returns>The name of the CSS class. The default is field-validation-valid.</returns>
     </member>
     <member name="M:System.Web.WebPages.Html.HtmlHelper.ValidationSummary">
       <summary>Returns an HTML div element that contains an unordered list of all validation error messages from the model-state dictionary.</summary>
@@ -2006,13 +2246,12 @@
       <param name="htmlAttributes">An object that contains custom attributes for the element. The attribute names and values are retrieved through reflection by examining the properties of the object.</param>
     </member>
     <member name="P:System.Web.WebPages.Html.HtmlHelper.ValidationSummaryClass">
-      <summary>Gets or sets the name of the CSS class that is associated with validation summary messages.</summary>
-      <returns>The name of the CSS class that is associated with validation summaries. The default is validation-summary-errors.</returns>
-      <exception cref="T:Sytem.ArgumentNullException">
-        <paramref name="value" /> is null.</exception>
+      <summary>Gets or sets the name of the CSS class that defines the appearance of a validation summary when validation fails.</summary>
+      <returns>The name of the CSS class. The default is validation-summary-errors.</returns>
     </member>
     <member name="P:System.Web.WebPages.Html.HtmlHelper.ValidationSummaryValidClass">
-      <returns>Returns <see cref="T:System.String" />.</returns>
+      <summary>Gets or sets the name of the CSS class that defines the appearance of a validation summary when validation passes.</summary>
+      <returns>The name of the CSS class. The default is validation-summary-valid.</returns>
     </member>
     <member name="T:System.Web.WebPages.Html.ModelState">
       <summary>Encapsulates the state of model binding to a property of an action-method argument, or to the argument itself.</summary>
@@ -2161,43 +2400,54 @@
       <summary>Gets or sets the value of the HTML value attribute of the HTML option element that is associated with the <see cref="T:System.Web.WebPages.Html.SelectListItem" /> instance.</summary>
       <returns>The value of the HTML value attribute that is associated with the select list item.</returns>
     </member>
-    <member name="T:System.Web.WebPages.Instrumentation.InstrumentationService"></member>
-    <member name="M:System.Web.WebPages.Instrumentation.InstrumentationService.#ctor"></member>
-    <member name="M:System.Web.WebPages.Instrumentation.InstrumentationService.BeginContext(System.Web.HttpContextBase,System.String,System.IO.TextWriter,System.Int32,System.Int32,System.Boolean)"></member>
-    <member name="M:System.Web.WebPages.Instrumentation.InstrumentationService.EndContext(System.Web.HttpContextBase,System.String,System.IO.TextWriter,System.Int32,System.Int32,System.Boolean)"></member>
+    <member name="T:System.Web.WebPages.Instrumentation.InstrumentationService">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.Instrumentation.InstrumentationService.#ctor">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.Instrumentation.InstrumentationService.BeginContext(System.Web.HttpContextBase,System.String,System.IO.TextWriter,System.Int32,System.Int32,System.Boolean)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
+    <member name="M:System.Web.WebPages.Instrumentation.InstrumentationService.EndContext(System.Web.HttpContextBase,System.String,System.IO.TextWriter,System.Int32,System.Int32,System.Boolean)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
     <member name="P:System.Web.WebPages.Instrumentation.InstrumentationService.IsAvailable">
-      <returns>Returns <see cref="T:System.Boolean" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="T:System.Web.WebPages.Instrumentation.PositionTagged`1">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
       <typeparam name="T"></typeparam>
     </member>
-    <member name="M:System.Web.WebPages.Instrumentation.PositionTagged`1.#ctor(`0,System.Int32)"></member>
+    <member name="M:System.Web.WebPages.Instrumentation.PositionTagged`1.#ctor(`0,System.Int32)">
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
+    </member>
     <member name="M:System.Web.WebPages.Instrumentation.PositionTagged`1.Equals(System.Object)">
-      <returns>Returns <see cref="T:System.Boolean" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.Instrumentation.PositionTagged`1.GetHashCode">
-      <returns>Returns <see cref="T:System.Int32" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.Instrumentation.PositionTagged`1.op_Equality(System.Web.WebPages.Instrumentation.PositionTagged{`0},System.Web.WebPages.Instrumentation.PositionTagged{`0})">
-      <returns>Returns <see cref="T:System.Boolean" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.Instrumentation.PositionTagged`1.op_Implicit(System.Tuple`2)~System.Web.WebPages.Instrumentation.PositionTagged{`0}">
-      <returns>Returns <see cref="T:System.Web.WebPages.Instrumentation.PositionTagged`1" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.Instrumentation.PositionTagged`1.op_Implicit(System.Web.WebPages.Instrumentation.PositionTagged{`0})~`0">
-      <returns>Returns <see cref="T:System.Web.WebPages.Instrumentation.PositionTagged`1" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.Instrumentation.PositionTagged`1.op_Inequality(System.Web.WebPages.Instrumentation.PositionTagged{`0},System.Web.WebPages.Instrumentation.PositionTagged{`0})">
-      <returns>Returns <see cref="T:System.Boolean" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="P:System.Web.WebPages.Instrumentation.PositionTagged`1.Position">
-      <returns>Returns <see cref="T:System.Int32" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="M:System.Web.WebPages.Instrumentation.PositionTagged`1.ToString">
-      <returns>Returns <see cref="T:System.String" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="P:System.Web.WebPages.Instrumentation.PositionTagged`1.Value">
-      <returns>Returns <see cref="T:System.Int32" />.</returns>
+      <summary>This type/member supports the .NET Framework infrastructure and is not intended to be used directly from your code.</summary>
     </member>
     <member name="T:System.Web.WebPages.Scope.AspNetRequestScopeStorageProvider">
       <summary>Defines an ASP.NET request scope storage provider.</summary>

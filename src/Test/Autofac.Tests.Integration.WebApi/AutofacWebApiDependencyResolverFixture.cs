@@ -91,6 +91,20 @@ namespace Autofac.Tests.Integration.WebApi
         }
 
         [Test]
+        public void GetServicesReturnsRegisteredServices()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(c => new object());
+            builder.Register(c => new object());
+            var container = builder.Build();
+            var resolver = new AutofacWebApiDependencyResolver(container);
+
+            var services = resolver.GetServices(typeof(object));
+
+            Assert.That(services.Count(), Is.EqualTo(2));
+        }
+
+        [Test]
         public void BeginScopeReturnsNewScopeOnEachCall()
         {
             var builder = new ContainerBuilder();

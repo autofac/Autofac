@@ -217,12 +217,12 @@
       <summary>Returns the number of elements in the <see cref="T:System.Web.Helpers.DynamicJsonArray" /> instance.</summary>
       <returns>The number of elements in the JSON array.</returns>
     </member>
-    <member name="M:System.Web.Helpers.DynamicJsonArray.op_Implicit(System.Web.Helpers.DynamicJsonArray)~System.Array">
+    <member name="M:System.Web.Helpers.DynamicJsonArray.op_Implicit(System.Web.Helpers.DynamicJsonArray)~System.Object[]">
       <summary>Converts a <see cref="T:System.Web.Helpers.DynamicJsonArray" /> instance to an array of objects.</summary>
       <returns>The array of objects that represents the JSON array.</returns>
       <param name="obj">The JSON array to convert.</param>
     </member>
-    <member name="M:System.Web.Helpers.DynamicJsonArray.op_Implicit(System.Web.Helpers.DynamicJsonArray)~System.Object[]">
+    <member name="M:System.Web.Helpers.DynamicJsonArray.op_Implicit(System.Web.Helpers.DynamicJsonArray)~System.Array">
       <summary>Converts a <see cref="T:System.Web.Helpers.DynamicJsonArray" /> instance to an array of objects.</summary>
       <returns>The array of objects that represents the JSON array.</returns>
       <param name="obj">The JSON array to convert.</param>
@@ -404,7 +404,10 @@
       <param name="autoSortAndPage">true to enable sorting and paging of the <see cref="T:System.Web.Helpers.WebGrid" /> instance; otherwise, false.</param>
       <param name="rowCount">The number of rows to display on each page of the grid.</param>
     </member>
-    <member name="P:System.Web.Helpers.WebGrid.CanSort"></member>
+    <member name="P:System.Web.Helpers.WebGrid.CanSort">
+      <summary>Gets a value that indicates whether the <see cref="T:System.Web.Helpers.WebGrid" /> instance supports sorting.</summary>
+      <returns>true if the instance supports sorting; otherwise, false.</returns>
+    </member>
     <member name="M:System.Web.Helpers.WebGrid.Column(System.String,System.String,System.Func`2,System.Boolean,System.Object)">
       <summary>Creates a new <see cref="T:System.Web.Helpers.WebGridColumn" /> instance.</summary>
       <returns>The new column.</returns>
@@ -469,7 +472,10 @@
       <summary>Gets a value that indicates whether a row in the <see cref="T:System.Web.Helpers.WebGrid" /> instance is selected.</summary>
       <returns>true if a row is currently selected; otherwise, false.</returns>
     </member>
-    <member name="P:System.Web.Helpers.WebGrid.IsAjaxEnabled"></member>
+    <member name="P:System.Web.Helpers.WebGrid.IsAjaxEnabled">
+      <summary>Returns a value that indicates whether the <see cref="T:System.Web.Helpers.WebGrid" /> instance can use Ajax calls to refresh the display.</summary>
+      <returns>true if the instance supports Ajax calls; otherwise, false..</returns>
+    </member>
     <member name="P:System.Web.Helpers.WebGrid.PageCount">
       <summary>Gets the number of pages that the <see cref="T:System.Web.Helpers.WebGrid" /> instance contains.</summary>
       <returns>The page count.</returns>
@@ -791,7 +797,22 @@
       <summary>Gets or sets the password of the sender's email account.</summary>
       <returns>The sender's password.</returns>
     </member>
-    <member name="M:System.Web.Helpers.WebMail.Send(System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.IEnumerable{System.String},System.Boolean,System.Collections.Generic.IEnumerable{System.String},System.String,System.String,System.String,System.String,System.String)"></member>
+    <member name="M:System.Web.Helpers.WebMail.Send(System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.IEnumerable{System.String},System.Boolean,System.Collections.Generic.IEnumerable{System.String},System.String,System.String,System.String,System.String,System.String)">
+      <summary>Sends the specified message to an SMTP server for delivery.</summary>
+      <param name="to">The email address of the recipient or recipients. Separate multiple recipients using a semicolon (;).</param>
+      <param name="subject">The subject line for the email message.</param>
+      <param name="body">The body of the email message. If <paramref name="isBodyHtml" /> is true, HTML in the body is interpreted as markup.</param>
+      <param name="from">(Optional) The email address of the message sender, or null to not specify a sender. The default value is null.</param>
+      <param name="cc">(Optional) The email addresses of additional recipients to send a copy of the message to, or null if there are no additional recipients. Separate multiple recipients using a semicolon (;). The default value is null.</param>
+      <param name="filesToAttach">(Optional) A collection of file names that specifies the files to attach to the email message, or null if there are no files to attach. The default value is null.</param>
+      <param name="isBodyHtml">(Optional) true to specify that the email message body is in HTML format; false to indicate that the body is in plain-text format. The default value is true.</param>
+      <param name="additionalHeaders">(Optional) A collection of headers to add to the normal SMTP headers included in this email message, or null to send no additional headers. The default value is null.</param>
+      <param name="bcc">(Optional) The email addresses of additional recipients to send a "blind" copy of the message to, or null if there are no additional recipients. Separate multiple recipients using a semicolon (;). The default value is null.</param>
+      <param name="contentEncoding">(Optional) The encoding to use for the body of the message. Possible values are property values for the <see cref="T:System.Text.Encoding" /> class, such as <see cref="P:System.Text.Encoding.UTF8" />. The default value is null.</param>
+      <param name="headerEncoding">(Optional) The encoding to use for the header of the message. Possible values are property values for the <see cref="T:System.Text.Encoding" /> class, such as <see cref="P:System.Text.Encoding.UTF8" />. The default value is null.</param>
+      <param name="priority">(Optional) A value ("Normal", "Low", "High") that specifies the priority of the message. The default is "Normal".</param>
+      <param name="replyTo">(Optional) The email address that will be used when the recipient replies to the message. The default value is null, which indicates that the reply address is the value of the From property. </param>
+    </member>
     <member name="P:System.Web.Helpers.WebMail.SmtpPort">
       <summary>Gets or sets the port that is used for SMTP transactions.</summary>
       <returns>The port that is used for SMTP transactions.</returns>

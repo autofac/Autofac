@@ -25,8 +25,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web.Http.Dependencies;
+using System.Linq;
 
 namespace Autofac.Integration.WebApi
 {
@@ -43,6 +43,8 @@ namespace Autofac.Integration.WebApi
         /// <param name="lifetimeScope">The lifetime scope to resolve services from.</param>
         public AutofacWebApiDependencyScope(ILifetimeScope lifetimeScope)
         {
+            if (lifetimeScope == null) throw new ArgumentNullException("lifetimeScope");
+
             _lifetimeScope = lifetimeScope;
         }
 
