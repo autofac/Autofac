@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace Autofac.Tests
@@ -85,6 +84,26 @@ namespace Autofac.Tests
             Assert.AreEqual(0, unblocked);
             evt.Set();
             blockedThread.Join();
+        }
+
+        [Test]
+        public void ConcurrentResolveOperationsFromDifferentContainers_DoesNotThrow()
+        {
+            var task1 = Task.Factory.StartNew(ResolveObjectInstanceLoop);
+            var task2 = Task.Factory.StartNew(ResolveObjectInstanceLoop);
+            Task.WaitAll(task1, task2);
+        }
+
+        static void ResolveObjectInstanceLoop()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<object>();
+            var container = builder.Build();
+
+            for (var index = 0; index < 100; index++)
+            {
+                container.Resolve<object>();
+            }
         }
     }
 }
