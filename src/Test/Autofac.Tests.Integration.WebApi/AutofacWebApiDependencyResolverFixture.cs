@@ -89,5 +89,16 @@ namespace Autofac.Tests.Integration.WebApi
 
             Assert.That(services.Count(), Is.EqualTo(1));
         }
+
+        [Test]
+        public void BeginScopeReturnsNewScopeOnEachCall()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(c => new object());
+            var container = builder.Build();
+            var resolver = new AutofacWebApiDependencyResolver(container);
+
+            Assert.That(resolver.BeginScope(), Is.Not.SameAs(resolver.BeginScope()));
+        }
     }
 }

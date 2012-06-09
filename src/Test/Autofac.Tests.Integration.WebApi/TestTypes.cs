@@ -23,11 +23,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
+using System.Web.Http.Filters;
+using System.Web.Http.ModelBinding;
 
 namespace Autofac.Tests.Integration.WebApi
 {
@@ -37,6 +41,11 @@ namespace Autofac.Tests.Integration.WebApi
 
     public class TestController : ApiController
     {
+        [CustomActionFilter]
+        public IEnumerable<string> Get()
+        {
+            return new string[] { "value1", "value2" };
+        }
     }
 
     public class InterfaceController : IHttpController
@@ -44,6 +53,60 @@ namespace Autofac.Tests.Integration.WebApi
         public Task<HttpResponseMessage> ExecuteAsync(HttpControllerContext controllerContext, CancellationToken cancellationToken)
         {
             throw new System.NotImplementedException();
+        }
+    }
+
+    public interface ILogger
+    {
+        void Log(string value);
+    }
+
+    public class Logger : ILogger, IDisposable
+    {
+        public void Log(string value)
+        {
+            Console.WriteLine(value);
+        }
+
+        public void Dispose()
+        {
+        }
+    }
+
+    public class CustomActionFilter : ActionFilterAttribute
+    {
+        public ILogger Logger { get; set; }
+
+        public override void OnActionExecuting(HttpActionContext actionContext)
+        {
+        }
+    }
+
+
+    public class Dependency
+    {
+    }
+
+    public class TestModel1
+    {
+    }
+
+    public class TestModel2
+    {
+    }
+
+    public class TestModelBinder : IModelBinder
+    {
+        public Dependency Dependency { get; private set; }
+
+        public TestModelBinder(Dependency dependency)
+        {
+            Dependency = dependency;
+        }
+
+        public bool BindModel(HttpActionContext actionContext, ModelBindingContext bindingContext)
+        {
+            return true;
         }
     }
 }

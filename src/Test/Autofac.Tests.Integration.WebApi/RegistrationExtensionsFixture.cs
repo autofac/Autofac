@@ -23,13 +23,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
 using System.Reflection;
-using System.Web.Http;
-using System.Web.Http.Dispatcher;
-using System.Web.Http.ModelBinding;
 using Autofac.Core;
-using Autofac.Core.Lifetime;
 using NUnit.Framework;
 using Autofac.Integration.WebApi;
 
@@ -38,24 +33,6 @@ namespace Autofac.Tests.Integration.WebApi
     [TestFixture]
     public class RegistrationExtensionsFixture
     {
-        [Test]
-        public void ConfigureWebApiRegistersConfiguration()
-        {
-            AssertConfigureWebApiRegistration<HttpConfiguration, HttpConfiguration>();
-        }
-
-        [Test]
-        public void ConfigureWebApiRegistersControllerActivator()
-        {
-            AssertConfigureWebApiRegistration<IHttpControllerActivator, AutofacControllerActivator>();
-        }
-
-        [Test]
-        public void ConfigureWebApiRegistersControllerFactory()
-        {
-            AssertConfigureWebApiRegistration<IHttpControllerFactory, AutofacControllerFactory>();
-        }
-
         [Test]
         public void RegisterApiControllersRegistersTypesWithControllerSuffix()
         {
@@ -100,49 +77,8 @@ namespace Autofac.Tests.Integration.WebApi
             Assert.Throws<DependencyResolutionException>(() => container.Resolve<object>());
             Assert.Throws<DependencyResolutionException>(() => container.BeginLifetimeScope().Resolve<object>());
 
-            var apiRequestScope = container.BeginLifetimeScope(AutofacControllerFactory.ApiRequestTag);
+            var apiRequestScope = container.BeginLifetimeScope(AutofacWebApiDependencyResolver.ApiRequestTag);
             Assert.That(apiRequestScope.Resolve<object>(), Is.Not.Null);
-        }
-
-        static void AssertConfigureWebApiRegistration<TService, TInstance>()
-        {
-            var configuration = new HttpConfiguration();
-            var builder = new ContainerBuilder();
-            var service = new TypedService(typeof(TService));
-
-            builder.ConfigureWebApi(configuration);
-
-            var container = builder.Build();
-            IComponentRegistration registration;
-            Assert.That(container.ComponentRegistry.TryGetRegistration(service, out registration));
-
-            var sharedInstance = registration.Sharing == InstanceSharing.Shared;
-            var rootScopeLifetime = registration.Lifetime is RootScopeLifetime;
-            Assert.That(sharedInstance && rootScopeLifetime, Is.True);
-
-            Assert.That(container.Resolve<TService>(), Is.InstanceOf<TInstance>());
-        }
-
-        [Test]
-        public void RegisterModelBinderProviderThrowsExceptionForNullBuilder()
-        {
-            var exception = Assert.Throws<ArgumentNullException>(
-                () => Autofac.Integration.WebApi.RegistrationExtensions.RegisterModelBinderProvider(null));
-            Assert.That(exception.ParamName, Is.EqualTo("builder"));
-        }
-
-        [Test]
-        public void RegisterModelBinderProviderRegistersSingleInstanceProvider()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterModelBinderProvider();
-            builder.RegisterInstance(new HttpConfiguration());
-            var container = builder.Build();
-
-            var resolvedProvider1 = container.Resolve<ModelBinderProvider>();
-            var resolvedProvider2 = container.Resolve<ModelBinderProvider>();
-
-            Assert.That(resolvedProvider1, Is.SameAs(resolvedProvider2));
         }
     }
 }

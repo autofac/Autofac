@@ -25,51 +25,35 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Http.Dependencies;
 
 namespace Autofac.Integration.WebApi
 {
     /// <summary>
-    /// Autofac implementation of the <see cref="IDependencyResolver"/> interface.
+    /// Autofac implementation of the <see cref="IDependencyScope"/> interface.
     /// </summary>
-    public class AutofacWebApiDependencyResolver : IDependencyResolver
+    public class AutofacWebApiDependencyScope : IDependencyScope
     {
-        readonly ILifetimeScope _container;
-        readonly IDependencyScope _rootDependencyScope;
+        readonly ILifetimeScope _lifetimeScope;
 
         /// <summary>
-        /// Tag used to identify registrations that are scoped to the API request level.
+        /// Initializes a new instance of the <see cref="AutofacWebApiDependencyScope"/> class.
         /// </summary>
-        internal static readonly string ApiRequestTag = "AutofacWebRequest";
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AutofacWebApiDependencyResolver"/> class.
-        /// </summary>
-        /// <param name="container">The container that nested lifetime scopes will be create from.</param>
-        public AutofacWebApiDependencyResolver(ILifetimeScope container)
+        /// <param name="lifetimeScope">The lifetime scope to resolve services from.</param>
+        public AutofacWebApiDependencyScope(ILifetimeScope lifetimeScope)
         {
-            if (container == null) throw new ArgumentNullException("container");
-
-            _container = container;
-            _rootDependencyScope = new AutofacWebApiDependencyScope(container);
-        }
-
-        /// <summary>
-        /// Gets the root container provided to the dependency resolver.
-        /// </summary>
-        public ILifetimeScope Container
-        {
-            get { return _container; }
+            _lifetimeScope = lifetimeScope;
         }
 
         /// <summary>
         /// Try to get a service of the given type.
         /// </summary>
-        /// <param name="serviceType">Type of service to request.</param>
+        /// <param name="serviceType">ControllerType of service to request.</param>
         /// <returns>An instance of the service, or null if the service is not found.</returns>
         public object GetService(Type serviceType)
         {
-            return _rootDependencyScope.GetService(serviceType);
+            return _lifetimeScope.ResolveOptional(serviceType);
         }
 
         /// <summary>
@@ -79,20 +63,12 @@ namespace Autofac.Integration.WebApi
         /// <returns>An enumeration (possibly empty) of the service.</returns>
         public IEnumerable<object> GetServices(Type serviceType)
         {
-            return _rootDependencyScope.GetServices(serviceType);
-        }
+            if (!_lifetimeScope.IsRegistered(serviceType))
+                return Enumerable.Empty<object>();
 
-        /// <summary>
-        /// Starts a resolution scope. Objects which are resolved in the given scope will belong to
-        /// that scope, and when the scope is disposed, those objects are returned to the container.
-        /// </summary>
-        /// <returns>
-        /// The dependency scope.
-        /// </returns>
-        public IDependencyScope BeginScope()
-        {
-            ILifetimeScope lifetimeScope = _container.BeginLifetimeScope(ApiRequestTag);
-            return new AutofacWebApiDependencyScope(lifetimeScope);
+            var enumerableServiceType = typeof(IEnumerable<>).MakeGenericType(serviceType);
+            var instance = _lifetimeScope.Resolve(enumerableServiceType);
+            return (IEnumerable<object>)instance;
         }
 
         /// <summary>
@@ -100,7 +76,8 @@ namespace Autofac.Integration.WebApi
         /// </summary>
         public void Dispose()
         {
-            _rootDependencyScope.Dispose();
+            if (_lifetimeScope != null)
+                _lifetimeScope.Dispose();
         }
     }
 }

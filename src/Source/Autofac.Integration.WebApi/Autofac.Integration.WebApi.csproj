@@ -60,15 +60,10 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AutofacControllerActivator.cs" />
-    <Compile Include="AutofacControllerActivatorResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AutofacControllerActivatorResources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="AutofacControllerFactory.cs" />
-    <Compile Include="AutofacModelBinderProvider.cs" />
     <Compile Include="AutofacWebApiDependencyResolver.cs" />
+    <Compile Include="AutofacWebApiDependencyScope.cs" />
+    <Compile Include="AutofacWebApiFilterProvider.cs" />
+    <Compile Include="DependencyResolverExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationExtensions.cs" />
   </ItemGroup>
@@ -77,12 +72,6 @@
       <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
       <Name>Autofac</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="AutofacControllerActivatorResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>AutofacControllerActivatorResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
