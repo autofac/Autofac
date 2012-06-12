@@ -24,9 +24,13 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+#if !(SILVERLIGHT || NET35)
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
+#if !(SILVERLIGHT || NET35)
 using System.Linq.Expressions;
+#endif
 using System.Reflection;
 using Autofac.Util;
 
@@ -40,7 +44,7 @@ namespace Autofac.Core.Activators.Reflection
         readonly ConstructorInfo _ci;
         readonly Func<object>[] _valueRetrievers;
         readonly bool _canInstantiate;
-#if !(WINDOWS_PHONE || NET35)
+#if !(SILVERLIGHT || NET35)
         readonly static ConcurrentDictionary<ConstructorInfo, ConstructorInvoker> _constructorInvokers = new ConcurrentDictionary<ConstructorInfo, ConstructorInvoker>();
 #endif
 
@@ -115,7 +119,7 @@ namespace Autofac.Core.Activators.Reflection
             for (var i = 0; i < _valueRetrievers.Length; ++i)
                 values[i] = _valueRetrievers[i].Invoke();
 
-#if !(WINDOWS_PHONE || NET35)
+#if !(SILVERLIGHT || NET35)
             ConstructorInvoker constructorInvoker;
             if (!_constructorInvokers.TryGetValue(TargetConstructor, out constructorInvoker))
             {
@@ -126,7 +130,7 @@ namespace Autofac.Core.Activators.Reflection
 
             try
             {
-#if !(WINDOWS_PHONE || NET35)
+#if !(SILVERLIGHT || NET35)
                 return constructorInvoker(values);
 #else
                 return TargetConstructor.Invoke(values);
@@ -164,7 +168,7 @@ namespace Autofac.Core.Activators.Reflection
             return Description;
         }
 
-#if !(WINDOWS_PHONE || NET35)
+#if !(SILVERLIGHT || NET35)
         delegate object ConstructorInvoker(params object[] args);
 
         static ConstructorInvoker GetConstructorInvoker(ConstructorInfo constructorInfo)

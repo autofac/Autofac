@@ -53,6 +53,8 @@
     <BuildConstants>SILVERLIGHT;SL3;WINDOWS_PHONE</BuildConstants>
     <PackageName>$(ProjectName)-$(Version)-WP7</PackageName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile4</TargetFrameworkProfile>
+    <MSBuildTargets>Windows Phone 7</MSBuildTargets>
     <AllowPartiallyTrustedCallers>false</AllowPartiallyTrustedCallers>
   </PropertyGroup>
   <PropertyGroup Condition="$(BuildFramework)=='SL4'">

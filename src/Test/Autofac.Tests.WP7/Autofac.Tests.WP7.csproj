@@ -87,9 +87,6 @@
     <Compile Include="..\Autofac.Tests\Builder\DelegateRegistrationBuilderTests.cs">
       <Link>Tests\Builder\DelegateRegistrationBuilderTests.cs</Link>
     </Compile>
-    <Compile Include="..\Autofac.Tests\Builder\ModuleTests.cs">
-      <Link>Tests\Builder\ModuleTests.cs</Link>
-    </Compile>
     <Compile Include="..\Autofac.Tests\Builder\PropertyInjectionTests.cs">
       <Link>Tests\Builder\PropertyInjectionTests.cs</Link>
     </Compile>
@@ -215,6 +212,9 @@
     </Compile>
     <Compile Include="..\Autofac.Tests\IntegrationTests.cs">
       <Link>Tests\IntegrationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Autofac.Tests\ModuleTests.cs">
+      <Link>Tests\ModuleTests.cs</Link>
     </Compile>
     <Compile Include="..\Autofac.Tests\NamedParameterTests.cs">
       <Link>Tests\NamedParameterTests.cs</Link>
