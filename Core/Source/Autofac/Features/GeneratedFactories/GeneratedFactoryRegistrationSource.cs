@@ -55,8 +55,8 @@ namespace Autofac.Features.GeneratedFactories
                 return registrationAccessor(resultTypeService)
                     .Select(r =>
                     {
-#if WINDOWS_PHONE
-                        var factory = new Util.WindowsPhone.Wp7FactoryGenerator(ts.ServiceType, r, ParameterMapping.Adaptive);
+#if PORTABLE
+                        var factory = new Util.Portable.PortableFactoryGenerator(ts.ServiceType, r, ParameterMapping.Adaptive);
 #else
                         var factory = new FactoryGenerator(ts.ServiceType, r, ParameterMapping.Adaptive);
 #endif

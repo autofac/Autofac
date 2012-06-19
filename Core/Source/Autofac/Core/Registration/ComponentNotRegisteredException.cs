@@ -25,7 +25,9 @@
 
 using System;
 using System.Globalization;
+#if !PORTABLE
 using System.Runtime.Serialization;
+#endif
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
@@ -62,7 +64,7 @@ namespace Autofac.Core.Registration
             innerException)
         {
         }
-#if !SILVERLIGHT
+#if !PORTABLE
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentNotRegisteredException"/> class.
         /// </summary>

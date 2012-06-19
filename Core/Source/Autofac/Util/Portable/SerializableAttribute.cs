@@ -23,18 +23,17 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+#if PORTABLE
 
-#if SILVERLIGHT
-
-namespace System.Security
+namespace System
 {
 	/// <summary>
 	/// Attribute marker to make code compatible with Silverlight
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
-	public sealed class AllowPartiallyTrustedCallersAttribute : Attribute
+	[AttributeUsage(AttributeTargets.Class,AllowMultiple = false)]
+	sealed class SerializableAttribute : Attribute
 	{
-
+		
 	}
 }
 

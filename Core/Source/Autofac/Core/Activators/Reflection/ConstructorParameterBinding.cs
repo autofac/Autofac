@@ -24,8 +24,13 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+#if !PORTABLE
+using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
+#if !PORTABLE
 using System.Linq.Expressions;
+#endif
 using System.Reflection;
 using Autofac.Util;
 
@@ -39,7 +44,9 @@ namespace Autofac.Core.Activators.Reflection
         readonly ConstructorInfo _ci;
         readonly Func<object>[] _valueRetrievers;
         readonly bool _canInstantiate;
-        readonly static Dictionary<ConstructorInfo, ConstructorInvoker> _constructorInvokers = new Dictionary<ConstructorInfo, ConstructorInvoker>();
+#if !PORTABLE
+        readonly static ConcurrentDictionary<ConstructorInfo, ConstructorInvoker> _constructorInvokers = new ConcurrentDictionary<ConstructorInfo, ConstructorInvoker>();
+#endif
 
         // We really need to report all non-bindable parameters, howevers some refactoring
         // will be necessary before this is possible. Adding this now to ease the
@@ -112,16 +119,27 @@ namespace Autofac.Core.Activators.Reflection
             for (var i = 0; i < _valueRetrievers.Length; ++i)
                 values[i] = _valueRetrievers[i].Invoke();
 
+#if !PORTABLE
             ConstructorInvoker constructorInvoker;
             if (!_constructorInvokers.TryGetValue(TargetConstructor, out constructorInvoker))
             {
                 constructorInvoker = GetConstructorInvoker(TargetConstructor);
-                _constructorInvokers.Add(TargetConstructor, constructorInvoker);
+                _constructorInvokers.TryAdd(TargetConstructor, constructorInvoker);
             }
+#endif
 
             try
             {
+#if !PORTABLE
                 return constructorInvoker(values);
+#else
+                return TargetConstructor.Invoke(values);
+#endif
+            }
+            catch (TargetInvocationException ex)
+            {
+                throw new DependencyResolutionException(
+                    string.Format(ConstructorParameterBindingResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType.Name), ex.InnerException);
             }
             catch (Exception ex)
             {
@@ -137,8 +155,8 @@ namespace Autofac.Core.Activators.Reflection
         {
             get
             {
-                return CanInstantiate 
-                    ? string.Format(ConstructorParameterBindingResources.BoundConstructor, _ci) 
+                return CanInstantiate
+                    ? string.Format(ConstructorParameterBindingResources.BoundConstructor, _ci)
                     : string.Format(ConstructorParameterBindingResources.NonBindableConstructor, _ci, _firstNonBindableParameter);
             }
         }
@@ -150,6 +168,7 @@ namespace Autofac.Core.Activators.Reflection
             return Description;
         }
 
+#if !PORTABLE
         delegate object ConstructorInvoker(params object[] args);
 
         static ConstructorInvoker GetConstructorInvoker(ConstructorInfo constructorInfo)
@@ -182,5 +201,6 @@ namespace Autofac.Core.Activators.Reflection
 
             return (ConstructorInvoker)lambdaExpression.Compile();
         }
+#endif
     }
 }

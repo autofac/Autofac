@@ -57,7 +57,7 @@ namespace Autofac.Integration.Mef
 
         static Type FindType(string exportTypeIdentity)
         {
-#if SL4
+#if PORTABLE
             var assemblies = System.Windows.Deployment.Current.Parts
                 .Select(r => System.Windows.Application.GetResourceStream(new Uri(r.Source, UriKind.Relative)))
                 .Select(s => new System.Windows.AssemblyPart().Load(s.Stream));

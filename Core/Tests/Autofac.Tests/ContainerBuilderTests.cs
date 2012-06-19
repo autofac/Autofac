@@ -4,7 +4,7 @@ using System.Reflection;
 using Autofac.Builder;
 using Autofac.Features.Indexed;
 
-#if !WINDOWS_PHONE
+#if !PORTABLE
 using Autofac.Tests.Scenarios.ScannedAssembly;
 using Moq;
 #endif
@@ -143,6 +143,8 @@ namespace Autofac.Tests
             Assert.IsTrue(container.IsRegistered<object>());
         }
 
+#if !PORTABLE
+
         [Test]
         public void RegisterAssemblyModules()
         {
@@ -166,6 +168,8 @@ namespace Autofac.Tests
             Assert.That(container.IsRegistered<AComponent>(), Is.True);
             Assert.That(container.IsRegistered<BComponent>(), Is.False);
         }
+
+#endif
 
         [Test]
         [ExpectedException(typeof(InvalidOperationException))]
@@ -485,7 +489,7 @@ namespace Autofac.Tests
             Assert.That(ex.Message.Contains("once"));
         }
 
-#if !WINDOWS_PHONE
+#if !PORTABLE
         [Test]
         public void WhenTheContainerIsBuilt_StartableComponentsAreStarted()
         {

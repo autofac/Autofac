@@ -60,6 +60,7 @@ namespace Autofac.Tests.Core
             Assert.AreEqual(bVal, result.B);
         }
 
+#if !PORTABLE
         [Test]
         public void SupportsIServiceProvider()
         {
@@ -72,6 +73,7 @@ namespace Autofac.Tests.Core
             var s = sp.GetService(typeof(string));
             Assert.IsNull(s);
         }
+#endif
 
         [Test]
         public void ResolveByNameWithServiceType()

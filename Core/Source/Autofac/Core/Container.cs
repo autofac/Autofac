@@ -37,7 +37,7 @@ namespace Autofac.Core
     /// Standard container implementation.
     /// </summary>
     public class Container : Disposable, IContainer
-#if !WINDOWS_PHONE
+#if !PORTABLE
         , IServiceProvider
 #endif
     {
@@ -206,7 +206,7 @@ namespace Autofac.Core
             base.Dispose(disposing);
         }
 
-#if !WINDOWS_PHONE
+#if !PORTABLE
         /// <summary>
         /// Gets the service object of the specified type.
         /// </summary>

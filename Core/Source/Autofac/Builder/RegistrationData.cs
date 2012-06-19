@@ -41,7 +41,7 @@ namespace Autofac.Builder
         bool _defaultServiceOverridden;
         Service _defaultService;
 
-#if !(NET35 || WINDOWS_PHONE)
+#if !PORTABLE
         readonly ICollection<Service> _services = new HashSet<Service>();
 #else
         readonly ICollection<Service> _services = new List<Service>();

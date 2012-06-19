@@ -5,15 +5,15 @@ using System.Reflection;
 using Autofac.Core;
 using Autofac.Features.GeneratedFactories;
 
-namespace Autofac.Util.WindowsPhone
+namespace Autofac.Util.Portable
 {
     /// <summary>
     /// Generates context-bound closures that represent factories from
     /// a set of heuristics based on delegate type signatures.
     /// </summary>
-    public class Wp7FactoryGenerator
+    public class PortableFactoryGenerator
     {
-        static readonly MethodInfo[] DelegateActivators = typeof(Wp7FactoryGenerator)
+        static readonly MethodInfo[] DelegateActivators = typeof(PortableFactoryGenerator)
             .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
             .Where(x => x.Name == "DelegateActivator")
             .ToArray();
@@ -21,7 +21,7 @@ namespace Autofac.Util.WindowsPhone
         Func<IComponentContext, IEnumerable<Parameter>, Delegate> _generator;
 
         ///<summary />
-        public Wp7FactoryGenerator(Type delegateType, Service service, ParameterMapping parameterMapping)
+        public PortableFactoryGenerator(Type delegateType, Service service, ParameterMapping parameterMapping)
         {
             if (service == null) throw new ArgumentNullException("service");
             Enforce.ArgumentTypeIsFunction(delegateType);
@@ -30,7 +30,7 @@ namespace Autofac.Util.WindowsPhone
         }
 
         ///<summary />
-        public Wp7FactoryGenerator(Type delegateType, IComponentRegistration service, ParameterMapping parameterMapping)
+        public PortableFactoryGenerator(Type delegateType, IComponentRegistration service, ParameterMapping parameterMapping)
         {
             if(service == null)
                 throw new ArgumentNullException("service");

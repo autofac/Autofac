@@ -5,6 +5,7 @@ glob:build_output
 
 # Per-User Development Artifacts
 glob:*/_ReSharper*
+glob:_ReSharper*
 glob:*.user
 glob:*.suo
 glob:*.docstates

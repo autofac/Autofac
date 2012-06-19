@@ -10,7 +10,7 @@ namespace Autofac.Tests.Scenarios.Adapters
         readonly Command _command;
         readonly string _name;
 
-#if !(NET35 || WINDOWS_PHONE)
+#if !PORTABLE
         public ToolbarButton(Command command, string name = "")
 #else
         public ToolbarButton(Command command, string name)

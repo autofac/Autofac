@@ -86,7 +86,7 @@ namespace Autofac.Util
                 collection.Add(item);
         }
 
-#if (NET35 || WINDOWS_PHONE)
+#if PORTABLE
         public static IEnumerable<V> Zip<T,U,V>(this IEnumerable<T> first, IEnumerable<U> second, Func<T,U,V> resultMapping)
         {
             using (var firstEnumerator = first.GetEnumerator())

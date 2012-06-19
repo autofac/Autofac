@@ -36,7 +36,7 @@ namespace Autofac.Core.Lifetime
     /// Lifetime scope implementation.
     /// </summary>
     public class LifetimeScope : Disposable, ISharingLifetimeScope
-#if !WINDOWS_PHONE
+#if !PORTABLE
 , IServiceProvider
 #endif
     {
@@ -326,7 +326,7 @@ namespace Autofac.Core.Lifetime
                 throw new ObjectDisposedException(LifetimeScopeResources.ScopeIsDisposed, innerException: null);
         }
 
-#if !WINDOWS_PHONE
+#if !PORTABLE
         /// <summary>
         /// Gets the service object of the specified type.
         /// </summary>

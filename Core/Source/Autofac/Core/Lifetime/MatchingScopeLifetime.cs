@@ -25,7 +25,9 @@
 
 using System;
 using System.Globalization;
+#if !PORTABLE
 using System.Linq.Expressions;
+#endif
 
 namespace Autofac.Core.Lifetime
 {
@@ -37,7 +39,7 @@ namespace Autofac.Core.Lifetime
         readonly Func<ILifetimeScope, bool> _matcher;
         readonly string _matchExpressionCode;
 
-#if !WINDOWS_PHONE
+#if !PORTABLE
         /// <summary>
         /// Match scopes based on the provided expression.
         /// </summary>

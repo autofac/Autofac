@@ -24,7 +24,7 @@ namespace Autofac.Tests.Features.LightweightAdapters
                 var builder = new ContainerBuilder();
                 foreach (var command in _commands)
                     builder.RegisterInstance(command);
-#if !(NET35 || WINDOWS_PHONE)
+#if !PORTABLE
                 builder.RegisterAdapter<Command, ToolbarButton>(cmd => new ToolbarButton(cmd)) 
 #else
                 builder.RegisterAdapter<Command, ToolbarButton>(cmd => new ToolbarButton(cmd, "")) 

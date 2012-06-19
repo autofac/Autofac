@@ -24,7 +24,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Builder;
@@ -60,7 +59,7 @@ namespace Autofac.Core.Registration
         /// <returns>Registrations providing the service.</returns>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
-#if !WINDOWS_PHONE
+#if !PORTABLE
             var seenRegistrations = new HashSet<IComponentRegistration>();
             var seenServices = new HashSet<Service>();
 #else

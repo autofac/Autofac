@@ -67,7 +67,7 @@ namespace Autofac.Features.Collections
                 {
                     var elementTypeService = swt.ChangeType(elementType);
                     var elementArrayType = elementType.MakeArrayType();
-#if WINDOWS_PHONE //.MakeArrayType() doesn't work for some types on WP7
+#if PORTABLE //.MakeArrayType() doesn't work for some types on WP7
                     if (elementArrayType == null)
                         elementArrayType = typeof (IEnumerable<>).MakeGenericType(elementType);
 #endif

@@ -24,7 +24,9 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+#if !PORTABLE
 using System.Runtime.Serialization;
+#endif
 
 namespace Autofac.Core
 {
@@ -56,8 +58,8 @@ namespace Autofac.Core
 		{
 		}
 
-#if !SILVERLIGHT
-                /// <summary>
+#if !PORTABLE
+        /// <summary>
         /// Initializes a new instance of the <see cref="Autofac.Core.Registration.ComponentNotRegisteredException"/> class.
         /// </summary>
         /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>

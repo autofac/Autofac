@@ -35,12 +35,10 @@ using Autofac.Features.OwnedInstances;
 using Autofac.Util;
 using Autofac.Features.Metadata;
 
-#if !(NET35 || WINDOWS_PHONE)
+#if !PORTABLE
 using Autofac.Features.LazyDependencies;
-#endif
-
-#if WINDOWS_PHONE
-using Autofac.Util.WindowsPhone;
+#else
+using Autofac.Util.Portable;
 #endif
 
 namespace Autofac
@@ -163,7 +161,7 @@ namespace Autofac
             componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
             componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
             componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
-#if !(NET35 || WINDOWS_PHONE)
+#if !PORTABLE
             componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
             componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
             componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());

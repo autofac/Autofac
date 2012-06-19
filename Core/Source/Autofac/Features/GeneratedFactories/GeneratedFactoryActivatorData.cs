@@ -70,8 +70,8 @@ namespace Autofac.Features.GeneratedFactories
         {
             get 
             {
-#if WINDOWS_PHONE
-                var factory = new Util.WindowsPhone.Wp7FactoryGenerator(_delegateType, _productService, ParameterMapping);
+#if PORTABLE
+                var factory = new Util.Portable.PortableFactoryGenerator(_delegateType, _productService, ParameterMapping);
                 return new DelegateActivator(_delegateType, (c, p) => factory.GenerateFactory(c, p));
 #else
                 var factory = new FactoryGenerator(_delegateType, _productService, ParameterMapping);

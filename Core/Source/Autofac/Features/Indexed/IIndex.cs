@@ -38,7 +38,7 @@ namespace Autofac.Features.Indexed
     /// </code>
     /// </example>
     public interface IIndex
-#if !(SILVERLIGHT || NET35)
+#if !PORTABLE
         <in TKey, TValue>
 #else
         <TKey, TValue>

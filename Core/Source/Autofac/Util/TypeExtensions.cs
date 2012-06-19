@@ -84,9 +84,9 @@ namespace Autofac.Util
 
         public static bool IsCompatibleWithGenericParameterConstraints(this Type genericTypeDefinition, Type[] parameters)
         {
+#if !PORTABLE //No support for GenericParameterAttributes
             var genericArgumentDefinitions = genericTypeDefinition.GetGenericArguments();
 
-#if !WINDOWS_PHONE //No support for GenericParameterAttributes
             for (var i = 0; i < genericArgumentDefinitions.Length; ++i)
             {
                 var argumentDefinition = genericArgumentDefinitions[i];
@@ -132,7 +132,7 @@ namespace Autofac.Util
             return constraint.IsAssignableFrom(parameter) ||
                 Traverse.Across(parameter, p => p.BaseType)
                     .Concat(parameter.GetInterfaces())
-#if !(WINDOWS_PHONE)
+#if !PORTABLE
                     .Any(p => p.GUID.Equals(constraint.GUID));
 #else
                     .Any(p => p.FullName != null && p.FullName.Equals(constraint.FullName));
@@ -142,7 +142,7 @@ namespace Autofac.Util
         public static bool IsCompatibleWith(this Type type, Type that)
         {
 
-#if !(SILVERLIGHT || NET35)
+#if !PORTABLE
             return type.IsEquivalentTo(that);
 #else
             return type.Equals(that);
@@ -151,7 +151,7 @@ namespace Autofac.Util
 
         public static int GetCompatibleHashCode(this Type type)
         {
-#if !WINDOWS_PHONE
+#if !PORTABLE
             if (type.IsImport)
                 return type.GUID.GetHashCode();
 #endif

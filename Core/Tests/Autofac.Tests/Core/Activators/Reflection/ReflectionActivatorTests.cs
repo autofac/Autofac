@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using System.Linq;
-#if !WINDOWS_PHONE
+#if !PORTABLE
 using Moq;
 #endif
 using Autofac.Core.Activators.Reflection;
@@ -14,7 +14,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
     [TestFixture]
     public class ReflectionActivatorTests
     {
-#if !WINDOWS_PHONE
+#if !PORTABLE
         [Test]
         public void Constructor_DoesNotAcceptNullType()
         {

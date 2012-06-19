@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !PORTABLE
+using System;
 using NUnit.Framework;
 
 namespace Autofac.Tests.Features.LazyDependencies
@@ -46,3 +47,4 @@ namespace Autofac.Tests.Features.LazyDependencies
         }
     }
 }
+#endif

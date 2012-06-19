@@ -28,7 +28,7 @@ using Autofac.Core;
 
 namespace Autofac.Features.Indexed
 {
-#if WINDOWS_PHONE
+#if PORTABLE
     ///<summary>Internal implementation</summary>
     public class KeyedServiceIndex<TKey, TValue> : IIndex<TKey, TValue>
 #else

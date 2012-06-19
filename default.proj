@@ -103,9 +103,18 @@
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.pdb;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.xml;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.config"
+				Exclude="
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Portable.*;
+					**\*.vshost.*;**\*.CodeAnalysisLog.*" />
+			<PortableOutputList
+				Include="%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Portable.*"
 				Exclude="**\*.vshost.*;**\*.CodeAnalysisLog.*" />
 		</ItemGroup>
-		<Copy SourceFiles="@(SourceOutputList)" DestinationFolder="$(BuildDirectory)\bin\NET40" />
+		<Copy SourceFiles="@(SourceOutputList)" DestinationFolder="$(BuildDirectory)\bin\net40" />
+		<Copy SourceFiles="@(PortableOutputList)" DestinationFolder="$(BuildDirectory)\bin\sl4" />
+		<Copy SourceFiles="@(PortableOutputList)" DestinationFolder="$(BuildDirectory)\bin\sl3-wp" />
+		<Copy SourceFiles="@(PortableOutputList)" DestinationFolder="$(BuildDirectory)\bin\sl4-windowsphone71" />
+		<Copy SourceFiles="@(PortableOutputList)" DestinationFolder="$(BuildDirectory)\bin\winrt45" />
 	</Target>
 
 	<Target Name="Document">
@@ -114,7 +123,7 @@
 			have to modify the doc build when assemblies change.
 		-->
 		<ItemGroup>
-			<DocTarget Include="$(BuildDirectory)\bin\NET40\*.dll;$(BuildDirectory)\bin\NET40\*.xml" />
+			<DocTarget Include="$(BuildDirectory)\bin\net40\*.dll;$(BuildDirectory)\bin\net40\*.xml" />
 		</ItemGroup>
 		<CreateProperty Value="@(DocTarget -> '&lt;DocumentationSource sourceFile=%27%(FullPath)%27 /&gt;', '')">
 			<Output TaskParameter="Value" PropertyName="DocumentationSources" />
@@ -135,8 +144,9 @@
 		</PropertyGroup>
 		<ItemGroup>
 			<!-- One set of Extras and Core items should be created for each target zip file. -->
-			<NET40ExtrasPackageItems Include="$(BuildDirectory)\bin\NET40\Autofac.Extras.*" />
-			<NET40CorePackageItems Include="$(BuildDirectory)\bin\NET40\Autofac.*" Exclude="@(NET40ExtrasPackageItems)" />
+			<NET40ExtrasPackageItems Include="$(BuildDirectory)\bin\net40\Autofac.Extras.*" />
+			<NET40CorePackageItems Include="$(BuildDirectory)\bin\net40\Autofac.*" Exclude="@(NET40ExtrasPackageItems)" />
+			<PortablePackageItems Include="$(BuildDirectory)\bin\winrt45\Autofac.Portable.*" />
 
 			<!-- The license file gets included with zip files; NuGet packages have a license URL. -->
 			<LicenseFile Include="$(MSBuildProjectDirectory)\License.txt" />
@@ -148,6 +158,7 @@
 		<Message Text="Packaging downloadable zip files..." />
 		<Zip Files="@(NET40CorePackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac-$(AssemblyVersion)-NET40.zip" Flatten="true" />
 		<Zip Files="@(NET40ExtrasPackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac.Extras-$(AssemblyVersion)-NET40.zip" Flatten="true" />
+		<Zip Files="@(PortablePackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac-$(AssemblyVersion)-Portable.zip" Flatten="true" />
 		
 		<!--
 			NuGet packaging is done by convention.
@@ -251,7 +262,7 @@
 				Only analyze the .NET 4.0 assemblies. This shouldn't change if multi-targeting because
 				Silverlight, Windows Phone, etc. don't have the same security model as .NET 4.0.
 			-->
-			<SecAnnotateAnalyzeAssemblies Include="$(BuildDirectory)\bin\NET40\*.dll" />
+			<SecAnnotateAnalyzeAssemblies Include="$(BuildDirectory)\bin\net40\*.dll" />
 
 			<!--
 				We need to dynamically determine which assemblies/versions are being used so SecAnnotate can do
@@ -293,8 +304,8 @@
 				set of assemblies above.
 
 				In the end we'll have lists of folders like
-				...\packages\Castle.Core.3.0.0.4001\lib\NET40
-				...\packages\CommonServiceLocator.1.0\lib\NET35
+				...\packages\Castle.Core.3.0.0.4001\lib\net40
+				...\packages\CommonServiceLocator.1.0\lib\net35
 
 				But only the ones that point to the actual target frameworks we're using.
 			-->
@@ -315,7 +326,7 @@
 			Overwrite="false" />
 		<Exec
 			Command="SecAnnotate.exe /o:&quot;$(BuildDirectory)\log\SecAnnotateResults.xml&quot; @&quot;$(SecAnnotateReferenceResponseFile)&quot; @&quot;$(SecAnnotateAnalyzeResponseFile)&quot;"
-			WorkingDirectory="$(BuildDirectory)\bin\NET40\" />
+			WorkingDirectory="$(BuildDirectory)\bin\net40\" />
 	</Target>
 	<UsingTask TaskName="GetNuGetDependencyVersions" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
 		<ParameterGroup>

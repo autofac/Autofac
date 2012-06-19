@@ -1,57 +1,43 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</ProjectGuid>
+    <ProjectGuid>{BCEE8DFF-9FAB-4FC3-9749-F311913A802C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Autofac</RootNamespace>
-    <AssemblyName>Autofac</AssemblyName>
+    <AssemblyName>Autofac.Portable</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\SharedKey.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile4</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;PORTABLE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Debug\Autofac.xml</DocumentationFile>
-    <NoStdLib>true</NoStdLib>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Debug\Autofac.Portable.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;CODE_ANALYSIS</DefineConstants>
+    <DefineConstants>TRACE;PORTABLE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Autofac.xml</DocumentationFile>
-    <NoStdLib>true</NoStdLib>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Release\Autofac.Portable.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.ComponentModel.Composition" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Features\LazyDependencies\LazyRegistrationSource.cs" />
-    <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSource.cs" />
-    <Compile Include="Features\Metadata\StronglyTypedMeta.cs" />
-    <Compile Include="Features\Metadata\StronglyTypedMetaRegistrationSource.cs" />
-    <Compile Include="Features\GeneratedFactories\FactoryGenerator.cs" />
+    <!-- A reference to the entire .NET Framework is automatically included -->
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
@@ -152,11 +138,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CollectionRegistrationSourceResources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Features\LazyDependencies\LazyRegistrationSourceResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LazyRegistrationSourceResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Features\LightweightAdapters\LightweightAdapterActivatorData.cs" />
     <Compile Include="Features\LightweightAdapters\LightweightAdapterRegistrationExtensions.cs" />
@@ -328,7 +309,6 @@
     <Compile Include="ParameterExtensions.cs" />
     <Compile Include="PositionalParameter.cs" />
     <Compile Include="IContainer.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResolutionExtensions.cs" />
     <Compile Include="Core\ResolvedParameter.cs" />
     <Compile Include="TypedParameter.cs" />
@@ -450,10 +430,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>CollectionRegistrationSourceResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Features\LazyDependencies\LazyRegistrationSourceResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>LazyRegistrationSourceResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Features\LightweightAdapters\LightweightAdapterRegistrationSourceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LightweightAdapterRegistrationSourceResources.Designer.cs</LastGenOutput>
@@ -507,7 +483,7 @@
       <LastGenOutput>ReflectionExtensionsResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

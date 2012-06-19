@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace Autofac.Tests.Util
 {
-#if WINDOWS_PHONE
+#if PORTABLE
     public class IgnoreOnPhoneAttribute : IgnoreAttribute
     {
         public IgnoreOnPhoneAttribute()

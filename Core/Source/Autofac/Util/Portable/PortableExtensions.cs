@@ -4,9 +4,9 @@ using System.Linq;
 using Autofac.Core;
 using Autofac.Features.GeneratedFactories;
 
-namespace Autofac.Util.WindowsPhone
+namespace Autofac.Util.Portable
 {
-    internal static class Wp7Extensions
+    internal static class PortableExtensions
     {
         internal static ParameterMapping ResolveParameterMapping(this ParameterMapping configuredParameterMapping, Type delegateType)
         {
