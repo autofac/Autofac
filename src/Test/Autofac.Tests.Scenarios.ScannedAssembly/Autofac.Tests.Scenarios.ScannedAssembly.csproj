@@ -92,6 +92,7 @@
     <Compile Include="ICommand.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MetadataAttributeScanningScenario.cs" />
+    <Compile Include="ModuleBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedoCommandData.cs" />
     <Compile Include="SaveCommand.cs" />

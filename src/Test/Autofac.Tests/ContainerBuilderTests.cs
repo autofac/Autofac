@@ -157,7 +157,7 @@ namespace Autofac.Tests
         }
 
         [Test]
-        public void RegisterAssemblyModulesOfType()
+        public void RegisterAssemblyModulesOfGenericType()
         {
             var assembly = typeof(AComponent).Assembly;
             var builder = new ContainerBuilder();
@@ -166,6 +166,42 @@ namespace Autofac.Tests
 
             Assert.That(container.IsRegistered<AComponent>(), Is.True);
             Assert.That(container.IsRegistered<BComponent>(), Is.False);
+        }
+
+        [Test]
+        public void RegisterAssemblyModulesOfBaseGenericType()
+        {
+            var assembly = typeof(AComponent).Assembly;
+            var builder = new ContainerBuilder();
+            builder.RegisterAssemblyModules<ModuleBase>(assembly);
+            var container = builder.Build();
+
+            Assert.That(container.IsRegistered<AComponent>(), Is.True);
+            Assert.That(container.IsRegistered<BComponent>(), Is.True);
+        }
+
+        [Test]
+        public void RegisterAssemblyModulesOfType()
+        {
+            var assembly = typeof(AComponent).Assembly;
+            var builder = new ContainerBuilder();
+            builder.RegisterAssemblyModules(typeof(AModule), assembly);
+            var container = builder.Build();
+
+            Assert.That(container.IsRegistered<AComponent>(), Is.True);
+            Assert.That(container.IsRegistered<BComponent>(), Is.False);
+        }
+
+        [Test]
+        public void RegisterAssemblyModulesOfBaseType()
+        {
+            var assembly = typeof(AComponent).Assembly;
+            var builder = new ContainerBuilder();
+            builder.RegisterAssemblyModules(typeof(ModuleBase), assembly);
+            var container = builder.Build();
+
+            Assert.That(container.IsRegistered<AComponent>(), Is.True);
+            Assert.That(container.IsRegistered<BComponent>(), Is.True);
         }
 #endif
 

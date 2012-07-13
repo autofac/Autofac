@@ -86,9 +86,19 @@ namespace Autofac
         public static void RegisterAssemblyModules<TModule>(this ContainerBuilder builder, params Assembly[] assemblies)
             where TModule : IModule
         {
+            RegisterAssemblyModules(builder, typeof(TModule), assemblies);
+        }
+
+        /// <summary>
+        /// Registers modules found in an assembly.
+        /// </summary>
+        /// <param name="builder">Container builder.</param>
+        /// <param name="moduleType">The <see cref="Type"/> of the module to add.</param>
+        /// <param name="assemblies">The assemblies from which to register modules.</param>
+        public static void RegisterAssemblyModules(this ContainerBuilder builder, Type moduleType, params Assembly[] assemblies)
+        {
             var moduleFinder = new ContainerBuilder();
 
-            var moduleType = typeof(TModule);
             moduleFinder.RegisterAssemblyTypes(assemblies)
                 .Where(moduleType.IsAssignableFrom)
                 .As<IModule>();

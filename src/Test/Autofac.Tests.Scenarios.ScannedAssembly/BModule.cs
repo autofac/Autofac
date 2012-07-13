@@ -1,6 +1,6 @@
 ﻿namespace Autofac.Tests.Scenarios.ScannedAssembly
 {
-    public class BModule : Module
+    public class BModule : ModuleBase
     {
         protected override void Load(ContainerBuilder builder)
         {
