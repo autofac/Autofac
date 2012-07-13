@@ -14,7 +14,7 @@
       <param name="uri">The Uri the request is sent to.</param>
     </member>
     <member name="T:System.Net.Http.WebRequestHandler">
-      <summary>Provides desktop-specific features not available to Metro apps or other environments. </summary>
+      <summary>Provides desktop-specific features not available to Windows Store apps or other environments. </summary>
     </member>
     <member name="M:System.Net.Http.WebRequestHandler.#ctor">
       <summary>Initializes a new instance of the <see cref="T:System.Net.Http.WebRequestHandler" /> class.</summary>
@@ -50,6 +50,10 @@
     <member name="P:System.Net.Http.WebRequestHandler.ReadWriteTimeout">
       <summary>Gets or sets a time-out in milliseconds when writing a request to or reading a response from a server.</summary>
       <returns>Returns <see cref="T:System.Int32" />.The number of milliseconds before the writing or reading times out. The default value is 300,000 milliseconds (5 minutes). </returns>
+    </member>
+    <member name="P:System.Net.Http.WebRequestHandler.ServerCertificateValidationCallback">
+      <summary>Gets or sets a callback method to validate the server certificate.</summary>
+      <returns>Returns <see cref="T:System.Net.Security.RemoteCertificateValidationCallback" />.A callback method to validate the server certificate.</returns>
     </member>
     <member name="P:System.Net.Http.WebRequestHandler.UnsafeAuthenticatedConnectionSharing">
       <summary>Gets or sets a value that indicates whether to allow high-speed NTLM-authenticated connection sharing.</summary>
