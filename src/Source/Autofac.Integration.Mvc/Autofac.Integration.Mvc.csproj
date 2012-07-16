@@ -61,10 +61,17 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Param.cs" />
     <Compile Include="AutofacDependencyResolver.cs" />
-    <Compile Include="AutofacFilterAttributeFilterProvider.cs" />
+    <Compile Include="AutofacFilterProvider.cs" />
     <Compile Include="AutofacModelBinderProvider.cs" />
     <Compile Include="AutofacWebTypesModule.cs" />
+    <Compile Include="FilterKey.cs" />
+    <Compile Include="RegistrationExtensionsResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RegistrationExtensionsResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="RequestLifetimeScopeProvider.cs" />
     <Compile Include="ExtensibleActionInvoker.cs" />
     <Compile Include="ILifetimeScopeProvider.cs" />
@@ -92,6 +99,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="RegistrationExtensionsResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RegistrationExtensionsResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="RequestLifetimeScopeProviderResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RequestLifetimeScopeProviderResources.Designer.cs</LastGenOutput>

@@ -147,11 +147,11 @@ namespace Autofac.Tests.Integration.Mvc
         {
             var builder = new ContainerBuilder();
             builder.RegisterControllers(GetType().Assembly)
-                .OnActivating(e => ((ModuleTestController)e.Instance).Dependency = new object());
+                .OnActivating(e => ((TestController)e.Instance).Dependency = new object());
 
             var container = builder.Build();
 
-            var controller = container.Resolve<ModuleTestController>();
+            var controller = container.Resolve<TestController>();
             Assert.IsNotNull(controller.Dependency);
         }
 
@@ -164,7 +164,7 @@ namespace Autofac.Tests.Integration.Mvc
             builder.RegisterType<TestActionInvoker>().As<IActionInvoker>();
             var container = builder.Build();
 
-            var controller = container.Resolve<ModuleTestController>();
+            var controller = container.Resolve<TestController>();
             Assert.IsInstanceOf<TestActionInvoker>(controller.ActionInvoker);
         }
 
@@ -180,37 +180,180 @@ namespace Autofac.Tests.Integration.Mvc
             Assert.IsFalse(container.IsRegistered<IsAControllerNot>());
         }
 
-        public class TestActionInvoker : IActionInvoker
+        [Test]
+        public void AsActionFilterForControllerScopedFilterThrowsExceptionForNullRegistration()
         {
-            public bool InvokeAction(ControllerContext controllerContext, string actionName)
-            {
-                return true;
-            }
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => Autofac.Integration.Mvc.RegistrationExtensions.AsActionFilterFor<TestController>(null));
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
         }
 
-        public class ModuleTestController : Controller
+        [Test]
+        public void AsActionFilterForActionScopedFilterThrowsExceptionForNullRegistration()
         {
-            public object Dependency;
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => Autofac.Integration.Mvc.RegistrationExtensions.AsActionFilterFor<TestController>
+                    (null, c => c.Action1(Param<string>.Value)));
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
         }
 
-        public class IsAControllerNot : Controller
+        [Test]
+        public void AsActionFilterForControllerScopedFilterAddsKeyedRegistration()
         {
+            var builder = new ContainerBuilder();
+            builder.Register(c => new TestActionFilter()).AsActionFilterFor<TestController>();
+            var container = builder.Build();
+
+            var key = new FilterKey(typeof(TestController), FilterScope.Controller, null);
+
+            Assert.That(container.IsRegisteredWithKey<IActionFilter>(key), Is.True);
         }
 
-        public class TestModelBinder : IModelBinder
+        [Test]
+        public void AsActionFilterForActionScopedFilterAddsKeyedRegistration()
         {
-            public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
-            {
-                throw new NotImplementedException();
-            }
+            var builder = new ContainerBuilder();
+            builder.Register(c => new TestActionFilter()).AsActionFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            var container = builder.Build();
+
+            var methodInfo = TestController.GetAction1MethodInfo();
+            var key = new FilterKey(typeof(TestController), FilterScope.Action, methodInfo);
+            
+            Assert.That(container.IsRegisteredWithKey<IActionFilter>(key), Is.True);
         }
 
-        public class TestModel1
+        [Test]
+        public void AsAuthoizationFilterForControllerScopedFilterThrowsExceptionForNullRegistration()
         {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => Autofac.Integration.Mvc.RegistrationExtensions.AsAuthorizationFilterFor<TestController>(null));
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
         }
 
-        public class TestModel2
+        [Test]
+        public void AsAuthoizationFilterForActionScopedFilterThrowsExceptionForNullRegistration()
         {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => Autofac.Integration.Mvc.RegistrationExtensions.AsAuthorizationFilterFor<TestController>
+                    (null, c => c.Action1(Param<string>.Value)));
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
+        }
+
+        [Test]
+        public void AsAuthoizationFilterForControllerScopedFilterAddsKeyedRegistration()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(c => new TestAuthorizationFilter()).AsAuthorizationFilterFor<TestController>();
+            var container = builder.Build();
+
+            var key = new FilterKey(typeof(TestController), FilterScope.Controller, null);
+
+            Assert.That(container.IsRegisteredWithKey<IAuthorizationFilter>(key), Is.True);
+        }
+
+        [Test]
+        public void AsAuthoizationFilterForActionScopedFilterAddsKeyedRegistration()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(c => new TestAuthorizationFilter()).AsAuthorizationFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            var container = builder.Build();
+
+            var methodInfo = TestController.GetAction1MethodInfo();
+            var key = new FilterKey(typeof(TestController), FilterScope.Action, methodInfo);
+
+            Assert.That(container.IsRegisteredWithKey<IAuthorizationFilter>(key), Is.True);
+        }
+
+        [Test]
+        public void AsExceptionFilterForControllerScopedFilterThrowsExceptionForNullRegistration()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => Autofac.Integration.Mvc.RegistrationExtensions.AsExceptionFilterFor<TestController>(null));
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
+        }
+
+        [Test]
+        public void AsExceptionFilterForActionScopedFilterThrowsExceptionForNullRegistration()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => Autofac.Integration.Mvc.RegistrationExtensions.AsExceptionFilterFor<TestController>
+                    (null, c => c.Action1(Param<string>.Value)));
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
+        }
+
+        [Test]
+        public void AsExceptionFilterForControllerScopedFilterAddsKeyedRegistration()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(c => new TestExceptionFilter()).AsExceptionFilterFor<TestController>();
+            var container = builder.Build();
+
+            var key = new FilterKey(typeof(TestController), FilterScope.Controller, null);
+
+            Assert.That(container.IsRegisteredWithKey<IExceptionFilter>(key), Is.True);
+        }
+
+        [Test]
+        public void AsExceptionFilterForActionScopedFilterAddsKeyedRegistration()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(c => new TestExceptionFilter()).AsExceptionFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            var container = builder.Build();
+
+            var methodInfo = TestController.GetAction1MethodInfo();
+            var key = new FilterKey(typeof(TestController), FilterScope.Action, methodInfo);
+
+            Assert.That(container.IsRegisteredWithKey<IExceptionFilter>(key), Is.True);
+        }
+
+        [Test]
+        public void AsResultFilterForControllerScopedFilterThrowsExceptionForNullRegistration()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => Autofac.Integration.Mvc.RegistrationExtensions.AsResultFilterFor<TestController>(null));
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
+        }
+
+        [Test]
+        public void AsResultFilterForActionScopedFilterThrowsExceptionForNullRegistration()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => Autofac.Integration.Mvc.RegistrationExtensions.AsResultFilterFor<TestController>
+                    (null, c => c.Action1(Param<string>.Value)));
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
+        }
+
+        [Test]
+        public void AsResultFilterForControllerScopedFilterAddsKeyedRegistration()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(c => new TestResultFilter()).AsResultFilterFor<TestController>();
+            var container = builder.Build();
+
+            var key = new FilterKey(typeof(TestController), FilterScope.Controller, null);
+
+            Assert.That(container.IsRegisteredWithKey<IResultFilter>(key), Is.True);
+        }
+
+        [Test]
+        public void AsResultFilterForActionScopedFilterAddsKeyedRegistration()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(c => new TestResultFilter()).AsResultFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            var container = builder.Build();
+
+            var methodInfo = TestController.GetAction1MethodInfo();
+            var key = new FilterKey(typeof(TestController), FilterScope.Action, methodInfo);
+
+            Assert.That(container.IsRegisteredWithKey<IResultFilter>(key), Is.True);
         }
     }
 }
