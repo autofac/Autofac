@@ -100,7 +100,7 @@ namespace Autofac.Tests.Integration.Mvc
         {
             var builder = new ContainerBuilder();
             builder.Register(c => new TestActionFilter()).AsActionFilterFor<TestController>();
-            builder.Register(c => new TestActionFilter2()).AsActionFilterFor<TestController>();
+            builder.Register(c => new TestActionFilter2()).AsActionFilterFor<TestController>().WithFilterOrder(20);
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
@@ -109,10 +109,14 @@ namespace Autofac.Tests.Integration.Mvc
             var filters = provider.GetFilters(_controllerContext, actionDescriptor).ToList();
 
             Assert.That(filters, Has.Count.EqualTo(2));
+
             var filter = filters.Single(f => f.Instance is TestActionFilter);
             Assert.That(filter.Scope, Is.EqualTo(FilterScope.Controller));
+            Assert.That(filter.Order, Is.EqualTo(Filter.DefaultOrder));
+
             filter = filters.Single(f => f.Instance is TestActionFilter2);
             Assert.That(filter.Scope, Is.EqualTo(FilterScope.Controller));
+            Assert.That(filter.Order, Is.EqualTo(20));
         }
 
         [Test]
@@ -120,7 +124,7 @@ namespace Autofac.Tests.Integration.Mvc
         {
             var builder = new ContainerBuilder();
             builder.Register(c => new TestActionFilter()).AsActionFilterFor<TestController>(c => c.Action1(Param<string>.Value));
-            builder.Register(c => new TestActionFilter2()).AsActionFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestActionFilter2()).AsActionFilterFor<TestController>(c => c.Action1(Param<string>.Value)).WithFilterOrder(20);
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
@@ -129,10 +133,14 @@ namespace Autofac.Tests.Integration.Mvc
             var filters = provider.GetFilters(_controllerContext, actionDescriptor).ToList();
 
             Assert.That(filters, Has.Count.EqualTo(2));
+
             var filter = filters.Single(f => f.Instance is TestActionFilter);
             Assert.That(filter.Scope, Is.EqualTo(FilterScope.Action));
+            Assert.That(filter.Order, Is.EqualTo(Filter.DefaultOrder));
+
             filter = filters.Single(f => f.Instance is TestActionFilter2);
             Assert.That(filter.Scope, Is.EqualTo(FilterScope.Action));
+            Assert.That(filter.Order, Is.EqualTo(20));
         }
 
         [Test]
@@ -208,7 +216,7 @@ namespace Autofac.Tests.Integration.Mvc
         {
             var builder = new ContainerBuilder();
             builder.Register(c => new TestAuthorizationFilter()).AsAuthorizationFilterFor<TestController>();
-            builder.Register(c => new TestAuthorizationFilter2()).AsAuthorizationFilterFor<TestController>();
+            builder.Register(c => new TestAuthorizationFilter2()).AsAuthorizationFilterFor<TestController>().WithFilterOrder(20);
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
@@ -217,10 +225,14 @@ namespace Autofac.Tests.Integration.Mvc
             var filters = provider.GetFilters(_controllerContext, actionDescriptor).ToList();
 
             Assert.That(filters, Has.Count.EqualTo(2));
+
             var filter = filters.Single(f => f.Instance is TestAuthorizationFilter);
             Assert.That(filter.Scope, Is.EqualTo(FilterScope.Controller));
+            Assert.That(filter.Order, Is.EqualTo(Filter.DefaultOrder));
+
             filter = filters.Single(f => f.Instance is TestAuthorizationFilter2);
             Assert.That(filter.Scope, Is.EqualTo(FilterScope.Controller));
+            Assert.That(filter.Order, Is.EqualTo(20));
         }
 
         [Test]
@@ -228,7 +240,7 @@ namespace Autofac.Tests.Integration.Mvc
         {
             var builder = new ContainerBuilder();
             builder.Register(c => new TestAuthorizationFilter()).AsAuthorizationFilterFor<TestController>(c => c.Action1(Param<string>.Value));
-            builder.Register(c => new TestAuthorizationFilter2()).AsAuthorizationFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestAuthorizationFilter2()).AsAuthorizationFilterFor<TestController>(c => c.Action1(Param<string>.Value)).WithFilterOrder(20);
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
@@ -237,10 +249,14 @@ namespace Autofac.Tests.Integration.Mvc
             var filters = provider.GetFilters(_controllerContext, actionDescriptor).ToList();
 
             Assert.That(filters, Has.Count.EqualTo(2));
+
             var filter = filters.Single(f => f.Instance is TestAuthorizationFilter);
             Assert.That(filter.Scope, Is.EqualTo(FilterScope.Action));
+            Assert.That(filter.Order, Is.EqualTo(Filter.DefaultOrder));
+
             filter = filters.Single(f => f.Instance is TestAuthorizationFilter2);
             Assert.That(filter.Scope, Is.EqualTo(FilterScope.Action));
+            Assert.That(filter.Order, Is.EqualTo(20));
         }
 
         [Test]
@@ -316,7 +332,7 @@ namespace Autofac.Tests.Integration.Mvc
         {
             var builder = new ContainerBuilder();
             builder.Register(c => new TestExceptionFilter()).AsExceptionFilterFor<TestController>();
-            builder.Register(c => new TestExceptionFilter2()).AsExceptionFilterFor<TestController>();
+            builder.Register(c => new TestExceptionFilter2()).AsExceptionFilterFor<TestController>().WithFilterOrder(20);
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
@@ -325,10 +341,14 @@ namespace Autofac.Tests.Integration.Mvc
             var filters = provider.GetFilters(_controllerContext, actionDescriptor).ToList();
 
             Assert.That(filters, Has.Count.EqualTo(2));
+
             var filter = filters.Single(f => f.Instance is TestExceptionFilter);
             Assert.That(filter.Scope, Is.EqualTo(FilterScope.Controller));
+            Assert.That(filter.Order, Is.EqualTo(Filter.DefaultOrder));
+
             filter = filters.Single(f => f.Instance is TestExceptionFilter2);
             Assert.That(filter.Scope, Is.EqualTo(FilterScope.Controller));
+            Assert.That(filter.Order, Is.EqualTo(20));
         }
 
         [Test]
@@ -336,7 +356,7 @@ namespace Autofac.Tests.Integration.Mvc
         {
             var builder = new ContainerBuilder();
             builder.Register(c => new TestExceptionFilter()).AsExceptionFilterFor<TestController>(c => c.Action1(Param<string>.Value));
-            builder.Register(c => new TestExceptionFilter2()).AsExceptionFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestExceptionFilter2()).AsExceptionFilterFor<TestController>(c => c.Action1(Param<string>.Value)).WithFilterOrder(20);
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
@@ -345,10 +365,14 @@ namespace Autofac.Tests.Integration.Mvc
             var filters = provider.GetFilters(_controllerContext, actionDescriptor).ToList();
 
             Assert.That(filters, Has.Count.EqualTo(2));
+
             var filter = filters.Single(f => f.Instance is TestExceptionFilter);
             Assert.That(filter.Scope, Is.EqualTo(FilterScope.Action));
+            Assert.That(filter.Order, Is.EqualTo(Filter.DefaultOrder));
+
             filter = filters.Single(f => f.Instance is TestExceptionFilter2);
             Assert.That(filter.Scope, Is.EqualTo(FilterScope.Action));
+            Assert.That(filter.Order, Is.EqualTo(20));
         }
 
 
@@ -425,7 +449,7 @@ namespace Autofac.Tests.Integration.Mvc
         {
             var builder = new ContainerBuilder();
             builder.Register(c => new TestResultFilter()).AsResultFilterFor<TestController>();
-            builder.Register(c => new TestResultFilter2()).AsResultFilterFor<TestController>();
+            builder.Register(c => new TestResultFilter2()).AsResultFilterFor<TestController>().WithFilterOrder(20);
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
@@ -434,10 +458,14 @@ namespace Autofac.Tests.Integration.Mvc
             var filters = provider.GetFilters(_controllerContext, actionDescriptor).ToList();
 
             Assert.That(filters, Has.Count.EqualTo(2));
+
             var filter = filters.Single(f => f.Instance is TestResultFilter);
             Assert.That(filter.Scope, Is.EqualTo(FilterScope.Controller));
+            Assert.That(filter.Order, Is.EqualTo(Filter.DefaultOrder));
+
             filter = filters.Single(f => f.Instance is TestResultFilter2);
             Assert.That(filter.Scope, Is.EqualTo(FilterScope.Controller));
+            Assert.That(filter.Order, Is.EqualTo(20));
         }
 
         [Test]
@@ -445,7 +473,7 @@ namespace Autofac.Tests.Integration.Mvc
         {
             var builder = new ContainerBuilder();
             builder.Register(c => new TestResultFilter()).AsResultFilterFor<TestController>(c => c.Action1(Param<string>.Value));
-            builder.Register(c => new TestResultFilter2()).AsResultFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestResultFilter2()).AsResultFilterFor<TestController>(c => c.Action1(Param<string>.Value)).WithFilterOrder(20);
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
@@ -454,10 +482,14 @@ namespace Autofac.Tests.Integration.Mvc
             var filters = provider.GetFilters(_controllerContext, actionDescriptor).ToList();
 
             Assert.That(filters, Has.Count.EqualTo(2));
+
             var filter = filters.Single(f => f.Instance is TestResultFilter);
             Assert.That(filter.Scope, Is.EqualTo(FilterScope.Action));
+            Assert.That(filter.Order, Is.EqualTo(Filter.DefaultOrder));
+
             filter = filters.Single(f => f.Instance is TestResultFilter2);
             Assert.That(filter.Scope, Is.EqualTo(FilterScope.Action));
+            Assert.That(filter.Order, Is.EqualTo(20));
         }
 
         static void SetupMockLifetimeScopeProvider(ILifetimeScope container)

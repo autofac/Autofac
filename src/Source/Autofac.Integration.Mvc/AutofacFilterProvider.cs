@@ -29,6 +29,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Mvc.Async;
+using Autofac.Features.Metadata;
 
 namespace Autofac.Integration.Mvc
 {
@@ -37,6 +38,11 @@ namespace Autofac.Integration.Mvc
     /// </summary>
     public class AutofacFilterProvider : FilterAttributeFilterProvider
     {
+        /// <summary>
+        /// The metadata key used for the Order value of a filter.
+        /// </summary>
+        internal static readonly string FilterOrderKey = "FilterOrder";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacFilterProvider"/> class.
         /// </summary>
@@ -85,6 +91,20 @@ namespace Autofac.Integration.Mvc
             ResolveControllerScopedFilter<IResultFilter>(filters, lifetimeScope, controllerType);
         }
 
+        static void ResolveControllerScopedFilter<TFilter>(ICollection<Filter> filters, IComponentContext lifetimeScope, Type controllerType) 
+            where TFilter : class
+        {
+            var key = new FilterKey(controllerType, FilterScope.Controller, null);
+            var actionFilters = lifetimeScope.ResolveOptionalKeyed<IEnumerable<Meta<TFilter>>>(key);
+            if (actionFilters == null) return;
+
+            foreach (var filter in actionFilters.Select(actionFilter => new Filter(
+                actionFilter.Value, FilterScope.Controller, GetFilterOrder(actionFilter))))
+            {
+                filters.Add(filter);
+            }
+        }
+
         static void ResolveActionScopedFilters<T>(ActionDescriptor descriptor, IComponentContext lifetimeScope, Type controllerType, ICollection<Filter> filters, Func<T, MethodInfo> methodSelector)
             where T : ActionDescriptor
         {
@@ -103,26 +123,24 @@ namespace Autofac.Integration.Mvc
             where TFilter : class
         {
             var key = new FilterKey(controllerType, FilterScope.Action, methodInfo);
-            var actionFilters = lifetimeScope.ResolveOptionalKeyed<IEnumerable<TFilter>>(key);
+            var actionFilters = lifetimeScope.ResolveOptionalKeyed<IEnumerable<Meta<TFilter>>>(key);
             if (actionFilters == null) return;
 
-            foreach (var filter in actionFilters.Select(actionFilter => new Filter(actionFilter, FilterScope.Action, null)))
+            foreach (var filter in actionFilters.Select(actionFilter => new Filter(
+                actionFilter.Value, FilterScope.Action, GetFilterOrder(actionFilter))))
             {
                 filters.Add(filter);
             }
         }
 
-        static void ResolveControllerScopedFilter<TFilter>(ICollection<Filter> filters, IComponentContext lifetimeScope, Type controllerType) 
-            where TFilter : class
+        static int GetFilterOrder<TFilter>(Meta<TFilter> actionFilter) where TFilter : class
         {
-            var key = new FilterKey(controllerType, FilterScope.Controller, null);
-            var actionFilters = lifetimeScope.ResolveOptionalKeyed<IEnumerable<TFilter>>(key);
-            if (actionFilters == null) return;
-
-            foreach (var filter in actionFilters.Select(actionFilter => new Filter(actionFilter, FilterScope.Controller, null)))
+            var order = Filter.DefaultOrder;
+            if (actionFilter.Metadata.ContainsKey(FilterOrderKey))
             {
-                filters.Add(filter);
+                order = (int) actionFilter.Metadata[FilterOrderKey];
             }
+            return order;
         }
     }
 }

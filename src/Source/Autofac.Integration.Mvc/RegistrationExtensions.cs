@@ -356,6 +356,20 @@ namespace Autofac.Integration.Mvc
         }
 
         /// <summary>
+        /// Sets the order in which the <see cref="IActionFilter"/> is applied.
+        /// </summary>
+        /// <param name="registration">The registration.</param>
+        /// <param name="order">The order in which the filter is applied.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle>
+            WithFilterOrder(this IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, int order)
+        {
+            if (registration == null) throw new ArgumentNullException("registration");
+
+            return registration.WithMetadata(AutofacFilterProvider.FilterOrderKey, order);
+        }
+
+        /// <summary>
         /// Sets the provided registration to act as an <see cref="IAuthorizationFilter"/> for the specified controller action.
         /// </summary>
         /// <typeparam name="TController">The type of the controller.</typeparam>
@@ -387,6 +401,20 @@ namespace Autofac.Integration.Mvc
 
             var filterKey = new FilterKey(typeof(TController), FilterScope.Controller, null);
             return registration.Keyed(filterKey, typeof(IAuthorizationFilter));
+        }
+
+        /// <summary>
+        /// Sets the order in which the <see cref="IAuthorizationFilter"/> is applied.
+        /// </summary>
+        /// <param name="registration">The registration.</param>
+        /// <param name="order">The order in which the filter is applied.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<IAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle>
+            WithFilterOrder(this IRegistrationBuilder<IAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, int order)
+        {
+            if (registration == null) throw new ArgumentNullException("registration");
+
+            return registration.WithMetadata(AutofacFilterProvider.FilterOrderKey, order);
         }
 
         /// <summary>
@@ -424,6 +452,20 @@ namespace Autofac.Integration.Mvc
         }
 
         /// <summary>
+        /// Sets the order in which the <see cref="IExceptionFilter"/> is applied.
+        /// </summary>
+        /// <param name="registration">The registration.</param>
+        /// <param name="order">The order in which the filter is applied.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<IExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle>
+            WithFilterOrder(this IRegistrationBuilder<IExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, int order)
+        {
+            if (registration == null) throw new ArgumentNullException("registration");
+
+            return registration.WithMetadata(AutofacFilterProvider.FilterOrderKey, order);
+        }
+
+        /// <summary>
         /// Sets the provided registration to act as an <see cref="IResultFilter"/> for the specified controller action.
         /// </summary>
         /// <typeparam name="TController">The type of the controller.</typeparam>
@@ -455,6 +497,20 @@ namespace Autofac.Integration.Mvc
 
             var filterKey = new FilterKey(typeof(TController), FilterScope.Controller, null);
             return registration.Keyed(filterKey, typeof(IResultFilter));
+        }
+
+        /// <summary>
+        /// Sets the order in which the <see cref="IResultFilter"/> is applied.
+        /// </summary>
+        /// <param name="registration">The registration.</param>
+        /// <param name="order">The order in which the filter is applied.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<IResultFilter, IConcreteActivatorData, SingleRegistrationStyle>
+            WithFilterOrder(this IRegistrationBuilder<IResultFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, int order)
+        {
+            if (registration == null) throw new ArgumentNullException("registration");
+
+            return registration.WithMetadata(AutofacFilterProvider.FilterOrderKey, order);
         }
 
         static MethodInfo GetMethodInfo(LambdaExpression expression)
