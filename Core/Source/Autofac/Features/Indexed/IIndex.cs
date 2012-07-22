@@ -37,12 +37,7 @@ namespace Autofac.Features.Indexed
     /// var renderer = accountRenderers[AccountType.User];
     /// </code>
     /// </example>
-    public interface IIndex
-#if !PORTABLE
-        <in TKey, TValue>
-#else
-        <TKey, TValue>
-#endif
+    public interface IIndex<in TKey, TValue>
     {
         /// <summary>
         /// Get the value associated with <paramref name="key"/>.

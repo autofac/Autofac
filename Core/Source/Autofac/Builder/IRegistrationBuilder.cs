@@ -37,12 +37,7 @@ namespace Autofac.Builder
     /// can be cast.</typeparam>
     /// <typeparam name="TActivatorData">Activator builder type.</typeparam>
     /// <typeparam name="TRegistrationStyle">Registration style type.</typeparam>
-    public interface IRegistrationBuilder
-#if !PORTABLE
-    <out TLimit, out TActivatorData, out TRegistrationStyle>
-#else
-<TLimit, TActivatorData, TRegistrationStyle>
-#endif
+    public interface IRegistrationBuilder<out TLimit, out TActivatorData, out TRegistrationStyle>
     {
         /// <summary>
         /// The activator data.

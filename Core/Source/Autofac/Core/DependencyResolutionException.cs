@@ -24,19 +24,18 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-#if !PORTABLE
 using System.Runtime.Serialization;
-#endif
 
 namespace Autofac.Core
 {
+    //TODO: Determine best way to deal with serialization attribute and constructors.
+
 	/// <summary>
 	/// Base exception type thrown whenever the dependency resolution process fails. This is a fatal
 	/// exception, as Autofac is unable to 'roll back' changes to components that may have already
 	/// been made during the operation. For example, 'on activated' handlers may have already been
 	/// fired, or 'single instance' components partially constructed.
 	/// </summary>
-    [Serializable]
 	public class DependencyResolutionException : Exception
 	{
         /// <summary>
@@ -57,19 +56,5 @@ namespace Autofac.Core
 			: base(message, innerException)
 		{
 		}
-
-#if !PORTABLE
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Autofac.Core.Registration.ComponentNotRegisteredException"/> class.
-        /// </summary>
-        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
-        /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
-        /// <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is null. </exception>
-        /// <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult"/> is zero (0). </exception>
-        protected DependencyResolutionException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-#endif
 	}
 }

@@ -45,13 +45,17 @@ namespace Autofac.Core.Activators.Reflection
         /// <returns>True if a value can be supplied; otherwise, false.</returns>
         public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<object> valueProvider)
         {
-#if !PORTABLE //DefaultValue is always 'null' not DBNull
-            if (!(pi.DefaultValue is DBNull))
+            // System.DBNull is not included in PCL even though it seems to be available in the selected targets.
+            // TODO:Make sure the documentation for Metro Style apps is correct and that System.DBNull is available.
+            // http://msdn.microsoft.com/en-us/library/windows/apps/system.dbnull(v=vs.110).aspx
+
+            var hasDefaultValue = pi.DefaultValue == null || pi.DefaultValue.GetType().FullName != "System.DBNull";
+
+            if (hasDefaultValue)
             {
                 valueProvider = () => pi.DefaultValue;
                 return true;
             }
-#endif
             valueProvider = null;
             return false;
         }

@@ -34,12 +34,7 @@ using Autofac.Features.Indexed;
 using Autofac.Features.OwnedInstances;
 using Autofac.Util;
 using Autofac.Features.Metadata;
-
-#if !PORTABLE
 using Autofac.Features.LazyDependencies;
-#else
-using Autofac.Util.Portable;
-#endif
 
 namespace Autofac
 {
@@ -161,11 +156,9 @@ namespace Autofac
             componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
             componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
             componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
-#if !PORTABLE
             componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
             componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
             componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());
-#endif
             componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
         }
 	}

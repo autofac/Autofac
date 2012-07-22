@@ -85,22 +85,5 @@ namespace Autofac.Util
             foreach (var item in items)
                 collection.Add(item);
         }
-
-#if PORTABLE
-        public static IEnumerable<V> Zip<T,U,V>(this IEnumerable<T> first, IEnumerable<U> second, Func<T,U,V> resultMapping)
-        {
-            using (var firstEnumerator = first.GetEnumerator())
-            using (var secondEnumerator = second.GetEnumerator())
-            {
-                while (firstEnumerator.MoveNext())
-                {
-                    if (!secondEnumerator.MoveNext())
-                        yield break;
-
-                    yield return resultMapping(firstEnumerator.Current, secondEnumerator.Current);
-                }
-            }
-        }
-#endif
     }
 }

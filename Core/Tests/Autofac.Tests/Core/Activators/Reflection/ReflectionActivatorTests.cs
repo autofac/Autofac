@@ -1,9 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using System.Linq;
-#if !PORTABLE
 using Moq;
-#endif
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core;
 using Autofac.Tests.Scenarios.Dependencies;
@@ -14,7 +12,6 @@ namespace Autofac.Tests.Core.Activators.Reflection
     [TestFixture]
     public class ReflectionActivatorTests
     {
-#if !PORTABLE
         [Test]
         public void Constructor_DoesNotAcceptNullType()
         {
@@ -79,7 +76,6 @@ namespace Autofac.Tests.Core.Activators.Reflection
                     Factory.NoProperties);
             });
         }
-#endif
 
         [Test]
         public void ActivateInstance_ReturnsInstanceOfTargetType()

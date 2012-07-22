@@ -28,12 +28,7 @@ using Autofac.Core;
 
 namespace Autofac.Features.Indexed
 {
-#if PORTABLE
-    ///<summary>Internal implementation</summary>
-    public class KeyedServiceIndex<TKey, TValue> : IIndex<TKey, TValue>
-#else
     class KeyedServiceIndex<TKey, TValue> : IIndex<TKey, TValue>
-#endif
     {
         readonly IComponentContext _context;
 

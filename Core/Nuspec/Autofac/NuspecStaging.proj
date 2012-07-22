@@ -19,9 +19,7 @@
 				$(BuildBinDirectory)\**\Autofac.dll;
 				$(BuildBinDirectory)\**\Autofac.xml;
 				$(BuildBinDirectory)\**\Autofac.Configuration.dll;
-				$(BuildBinDirectory)\**\Autofac.Configuration.xml;
-				$(BuildBinDirectory)\**\Autofac.Portable.dll;
-				$(BuildBinDirectory)\**\Autofac.Portable.xml" />
+				$(BuildBinDirectory)\**\Autofac.Configuration.xml" />
 			<ProjectFiles Include="$(MSBuildProjectDirectory)\**\*.*" Exclude="$(MSBuildProjectDirectory)\NuspecStaging.proj;$(MSBuildProjectDirectory)\*.nuspec" />
 		</ItemGroup>
 

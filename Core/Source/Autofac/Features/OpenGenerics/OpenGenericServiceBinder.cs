@@ -97,12 +97,7 @@ namespace Autofac.Features.OpenGenerics
 
         static Type GetInterface(Type implementationType, Type serviceType)
         {
-            return
-#if PORTABLE
-                implementationType.GetInterfaces().Single(i => i.Name == serviceType.Name);
-#else
-                implementationType.GetInterface(serviceType.Name);
-#endif
+            return implementationType.GetInterfaces().Single(i => i.Name == serviceType.Name);
         }
 
         static Type TryFindServiceArgumentForImplementationArgumentDefinition(Type implementationGenericArgumentDefinition, IEnumerable<KeyValuePair<Type, Type>> serviceArgumentDefinitionToArgument)

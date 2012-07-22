@@ -67,11 +67,6 @@ namespace Autofac.Features.Collections
                 {
                     var elementTypeService = swt.ChangeType(elementType);
                     var elementArrayType = elementType.MakeArrayType();
-#if PORTABLE //.MakeArrayType() doesn't work for some types on WP7
-                    if (elementArrayType == null)
-                        elementArrayType = typeof (IEnumerable<>).MakeGenericType(elementType);
-#endif
-
                     var registration = new ComponentRegistration(
                         Guid.NewGuid(),
                         new DelegateActivator(elementArrayType, (c, p) =>

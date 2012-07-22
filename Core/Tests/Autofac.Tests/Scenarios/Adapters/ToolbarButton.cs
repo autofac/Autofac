@@ -10,11 +10,7 @@ namespace Autofac.Tests.Scenarios.Adapters
         readonly Command _command;
         readonly string _name;
 
-#if !PORTABLE
         public ToolbarButton(Command command, string name = "")
-#else
-        public ToolbarButton(Command command, string name)
-#endif
         {
             _command = command;
             _name = name;

@@ -61,7 +61,9 @@
 	</Target>
 
 	<Target Name="Analyze">
+		<!--
 		<CallTarget Targets="__SecAnnotate" />
+		-->
 	</Target>
 
 	<Target Name="Clean">
@@ -103,17 +105,16 @@
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.pdb;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.xml;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.config"
-				Exclude="
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Portable.*;
-					**\*.vshost.*;**\*.CodeAnalysisLog.*" />
+				Exclude="**\*.vshost.*;**\*.CodeAnalysisLog.*" />
 			<PortableOutputList
-				Include="%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Portable.*"
+				Include="
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.dll;
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.pdb;
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.xml"
 				Exclude="**\*.vshost.*;**\*.CodeAnalysisLog.*" />
 		</ItemGroup>
 		<Copy SourceFiles="@(SourceOutputList)" DestinationFolder="$(BuildDirectory)\bin\net40" />
-		<Copy SourceFiles="@(PortableOutputList)" DestinationFolder="$(BuildDirectory)\bin\sl4" />
-		<Copy SourceFiles="@(PortableOutputList)" DestinationFolder="$(BuildDirectory)\bin\sl3-wp" />
-		<Copy SourceFiles="@(PortableOutputList)" DestinationFolder="$(BuildDirectory)\bin\sl4-windowsphone71" />
+		<Copy SourceFiles="@(PortableOutputList)" DestinationFolder="$(BuildDirectory)\bin\sl5" />
 		<Copy SourceFiles="@(PortableOutputList)" DestinationFolder="$(BuildDirectory)\bin\winrt45" />
 	</Target>
 
@@ -146,7 +147,7 @@
 			<!-- One set of Extras and Core items should be created for each target zip file. -->
 			<NET40ExtrasPackageItems Include="$(BuildDirectory)\bin\net40\Autofac.Extras.*" />
 			<NET40CorePackageItems Include="$(BuildDirectory)\bin\net40\Autofac.*" Exclude="@(NET40ExtrasPackageItems)" />
-			<PortablePackageItems Include="$(BuildDirectory)\bin\winrt45\Autofac.Portable.*" />
+			<PortablePackageItems Include="$(BuildDirectory)\bin\winrt45\Autofac.*" />
 
 			<!-- The license file gets included with zip files; NuGet packages have a license URL. -->
 			<LicenseFile Include="$(MSBuildProjectDirectory)\License.txt" />

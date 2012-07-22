@@ -55,11 +55,7 @@ namespace Autofac.Features.GeneratedFactories
                 return registrationAccessor(resultTypeService)
                     .Select(r =>
                     {
-#if PORTABLE
-                        var factory = new Util.Portable.PortableFactoryGenerator(ts.ServiceType, r, ParameterMapping.Adaptive);
-#else
                         var factory = new FactoryGenerator(ts.ServiceType, r, ParameterMapping.Adaptive);
-#endif
                         var rb = RegistrationBuilder.ForDelegate(ts.ServiceType, factory.GenerateFactory)
                             .InstancePerLifetimeScope()
                             .ExternallyOwned()

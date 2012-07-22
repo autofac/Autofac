@@ -24,11 +24,7 @@ namespace Autofac.Tests.Features.LightweightAdapters
                 var builder = new ContainerBuilder();
                 foreach (var command in _commands)
                     builder.RegisterInstance(command);
-#if !PORTABLE
-                builder.RegisterAdapter<Command, ToolbarButton>(cmd => new ToolbarButton(cmd)) 
-#else
-                builder.RegisterAdapter<Command, ToolbarButton>(cmd => new ToolbarButton(cmd, "")) 
-#endif
+                builder.RegisterAdapter<Command, ToolbarButton>(cmd => new ToolbarButton(cmd))
                     .As<IToolbarButton>();
                 var container = builder.Build();
                 _toolbarButtons = container.Resolve<IEnumerable<IToolbarButton>>();

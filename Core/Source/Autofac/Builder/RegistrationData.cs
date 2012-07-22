@@ -41,11 +41,7 @@ namespace Autofac.Builder
         bool _defaultServiceOverridden;
         Service _defaultService;
 
-#if !PORTABLE
         readonly ICollection<Service> _services = new HashSet<Service>();
-#else
-        readonly ICollection<Service> _services = new List<Service>();
-#endif
 
         InstanceOwnership _ownership = InstanceOwnership.OwnedByLifetimeScope;
         IComponentLifetime _lifetime = new CurrentScopeLifetime();

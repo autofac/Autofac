@@ -205,7 +205,6 @@ namespace Autofac.Tests.Features.Variance
             }
         }
 
-#if !PORTABLE
         [TestFixture]
         public class WhenBaseTypesDoNotSatisfyConstraints
         {
@@ -218,6 +217,5 @@ namespace Autofac.Tests.Features.Variance
                 Assert.IsFalse(container.IsRegistered<IConstrainedHandler<DerivedWithoutArg>>());
             }
         }
-#endif
     }
 }

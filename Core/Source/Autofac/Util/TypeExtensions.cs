@@ -32,6 +32,8 @@ namespace Autofac.Util
 {
     static class TypeExtensions
     {
+        public static readonly Type[] EmptyTypes = new Type[0];
+
         /// <summary>Returns the first concrete interface supported by the candidate type that
         /// closes the provided open generic service type.</summary>
         /// <param name="this">The type that is being checked for the interface.</param>
@@ -84,7 +86,6 @@ namespace Autofac.Util
 
         public static bool IsCompatibleWithGenericParameterConstraints(this Type genericTypeDefinition, Type[] parameters)
         {
-#if !PORTABLE //No support for GenericParameterAttributes
             var genericArgumentDefinitions = genericTypeDefinition.GetGenericArguments();
 
             for (var i = 0; i < genericArgumentDefinitions.Length; ++i)
@@ -103,7 +104,7 @@ namespace Autofac.Util
                 if ((specialConstraints & GenericParameterAttributes.DefaultConstructorConstraint)
                     != GenericParameterAttributes.None)
                 {
-                    if (!parameter.IsValueType && parameter.GetConstructor(Type.EmptyTypes) == null)
+                    if (!parameter.IsValueType && parameter.GetConstructor(EmptyTypes) == null)
                         return false;
                 }
 
@@ -122,40 +123,30 @@ namespace Autofac.Util
                         return false;
                 }
             }
-#endif
 
             return true;
         }
 
         static bool ParameterCompatibleWithTypeConstraint(Type parameter, Type constraint)
         {
+            //TODO: The FullName check does not work in PCL (previously used Type.GUID which is not available).
             return constraint.IsAssignableFrom(parameter) ||
-                Traverse.Across(parameter, p => p.BaseType)
-                    .Concat(parameter.GetInterfaces())
-#if !PORTABLE
-                    .Any(p => p.GUID.Equals(constraint.GUID));
-#else
-                    .Any(p => p.FullName != null && p.FullName.Equals(constraint.FullName));
-#endif
+                   Traverse.Across(parameter, p => p.BaseType)
+                       .Concat(parameter.GetInterfaces())
+                       .Any(p => p.FullName != null && p.FullName.Equals(constraint.FullName));
         }
+
+        //TODO: The extension methods below were also using Type.GUID.
 
         public static bool IsCompatibleWith(this Type type, Type that)
         {
-
-#if !PORTABLE
-            return type.IsEquivalentTo(that);
-#else
             return type.Equals(that);
-#endif
         }
 
         public static int GetCompatibleHashCode(this Type type)
         {
-#if !PORTABLE
-            if (type.IsImport)
-                return type.GUID.GetHashCode();
-#endif
             return type.GetHashCode();
         }
     }
 }
+

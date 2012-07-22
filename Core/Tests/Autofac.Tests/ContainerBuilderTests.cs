@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Features.Indexed;
-
-#if !PORTABLE
 using Autofac.Tests.Scenarios.ScannedAssembly;
 using Moq;
-#endif
 
 using NUnit.Framework;
 using Autofac.Core;
@@ -143,8 +140,6 @@ namespace Autofac.Tests
             Assert.IsTrue(container.IsRegistered<object>());
         }
 
-#if !PORTABLE
-
         [Test]
         public void RegisterAssemblyModules()
         {
@@ -168,8 +163,6 @@ namespace Autofac.Tests
             Assert.That(container.IsRegistered<AComponent>(), Is.True);
             Assert.That(container.IsRegistered<BComponent>(), Is.False);
         }
-
-#endif
 
         [Test]
         [ExpectedException(typeof(InvalidOperationException))]
@@ -489,7 +482,6 @@ namespace Autofac.Tests
             Assert.That(ex.Message.Contains("once"));
         }
 
-#if !PORTABLE
         [Test]
         public void WhenTheContainerIsBuilt_StartableComponentsAreStarted()
         {
@@ -518,6 +510,5 @@ namespace Autofac.Tests
             builder.Build(buildOptions);
             return started;
         }
-#endif
     }
 }

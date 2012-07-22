@@ -70,13 +70,8 @@ namespace Autofac.Features.GeneratedFactories
         {
             get 
             {
-#if PORTABLE
-                var factory = new Util.Portable.PortableFactoryGenerator(_delegateType, _productService, ParameterMapping);
-                return new DelegateActivator(_delegateType, (c, p) => factory.GenerateFactory(c, p));
-#else
                 var factory = new FactoryGenerator(_delegateType, _productService, ParameterMapping);
                 return new DelegateActivator(_delegateType, (c, p) => factory.GenerateFactory(c, p));
-#endif
             }
         }
     }

@@ -36,10 +36,7 @@ namespace Autofac.Core
     /// <summary>
     /// Standard container implementation.
     /// </summary>
-    public class Container : Disposable, IContainer
-#if !PORTABLE
-        , IServiceProvider
-#endif
+    public class Container : Disposable, IContainer, IServiceProvider
     {
         readonly IComponentRegistry _componentRegistry;
 
@@ -206,7 +203,6 @@ namespace Autofac.Core
             base.Dispose(disposing);
         }
 
-#if !PORTABLE
         /// <summary>
         /// Gets the service object of the specified type.
         /// </summary>
@@ -220,6 +216,5 @@ namespace Autofac.Core
         {
             return ((IServiceProvider)_rootLifetimeScope).GetService(serviceType);
         }
-#endif
     }
 }

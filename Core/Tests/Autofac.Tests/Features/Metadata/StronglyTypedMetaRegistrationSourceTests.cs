@@ -1,5 +1,4 @@
-﻿#if !PORTABLE
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using Autofac.Core;
@@ -83,4 +82,3 @@ namespace Autofac.Tests.Features.Metadata
         }
     }
 }
-#endif

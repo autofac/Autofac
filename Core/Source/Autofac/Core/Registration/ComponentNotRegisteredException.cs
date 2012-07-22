@@ -25,20 +25,19 @@
 
 using System;
 using System.Globalization;
-#if !PORTABLE
 using System.Runtime.Serialization;
-#endif
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
 {
+    //TODO: Determine best way to deal with serialization attribute and constructors.
+
 	/// <summary>
 	/// A service was requested that cannot be provided by the container. To avoid this exception, either register a component
 	/// to provide the required service, check for service registration using IsRegistered(), or use the ResolveOptional()
 	/// method to resolve an optional dependency.
 	/// </summary>
 	/// <remarks>This exception is fatal. See <see cref="DependencyResolutionException"/> for more information.</remarks>
-    [Serializable]
     public class ComponentNotRegisteredException : DependencyResolutionException
 	{
         /// <summary>
@@ -64,18 +63,5 @@ namespace Autofac.Core.Registration
             innerException)
         {
         }
-#if !PORTABLE
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ComponentNotRegisteredException"/> class.
-        /// </summary>
-        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
-        /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
-        /// <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is null. </exception>
-        /// <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult"/> is zero (0). </exception>
-        protected ComponentNotRegisteredException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-#endif
     }
 }
