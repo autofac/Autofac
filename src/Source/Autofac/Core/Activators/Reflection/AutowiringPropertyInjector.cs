@@ -47,6 +47,9 @@ namespace Autofac.Core.Activators.Reflection
                 if (propertyType.IsValueType && !propertyType.IsEnum)
                     continue;
 
+                if (propertyType.IsArray && propertyType.GetElementType().IsValueType)
+                    continue;
+
                 if (property.GetIndexParameters().Length != 0)
                     continue;
 

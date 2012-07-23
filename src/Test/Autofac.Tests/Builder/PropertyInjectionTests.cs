@@ -1,5 +1,4 @@
-﻿using Autofac.Builder;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace Autofac.Tests.Builder
 {
@@ -278,6 +277,50 @@ namespace Autofac.Tests.Builder
             var inner = container.BeginLifetimeScope();
             var invokee = inner.Resolve<Invokee>();
             Assert.AreEqual(pval, invokee.Param);
+        }
+
+        public class HasValueTypeArray
+        {
+            public byte[] ByteArray { get; set; }
+
+            public HasValueTypeArray()
+            {
+                ByteArray = new byte[] {1, 2, 3};
+            }
+        }
+
+        [Test]
+        public void SetterInjectionIgnoresArraysOfValueTypes()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<HasValueTypeArray>().PropertiesAutowired();
+            var container = builder.Build();
+
+            var instance = container.Resolve<HasValueTypeArray>();
+
+            Assert.That(instance.ByteArray, Is.EqualTo(new byte[] {1, 2, 3}));
+        }
+
+        public class HasNullableValueTypeArray
+        {
+            public double?[] DoubleArray { get; set; }
+
+            public HasNullableValueTypeArray()
+            {
+                DoubleArray = new double?[] {null, 0.1, null};
+            }
+        }
+
+        [Test]
+        public void SetterInjectionIgnoresArraysOfNullableValueTypes()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<HasNullableValueTypeArray>().PropertiesAutowired();
+            var container = builder.Build();
+
+            var instance = container.Resolve<HasNullableValueTypeArray>();
+
+            Assert.That(instance.DoubleArray, Is.EqualTo(new double?[] {null, 0.1, null}));
         }
     }
 }
