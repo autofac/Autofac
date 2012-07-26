@@ -82,6 +82,16 @@ namespace Autofac.Tests.Features.ResolveAnything
             Assert.AreEqual(1, container.Resolve<IEnumerable<object>>().Count());
         }
 
+        [Test]
+        public void TypesIgnoredUsingPredicateAreNotResolvedFromTheContainer()
+        {
+            var cb = new ContainerBuilder();
+            var registrationSource = new AnyConcreteTypeNotAlreadyRegisteredSource(t => !t.IsAssignableTo<string>());
+            cb.RegisterSource(registrationSource);
+            var container = cb.Build();
+            Assert.That(container.IsRegistered<string>(), Is.False);
+        }
+
         static IContainer CreateResolveAnythingContainer()
         {
             var cb = new ContainerBuilder();
