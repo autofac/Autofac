@@ -93,5 +93,23 @@ namespace Autofac.Util
                     methodCallExpression));
             return callExpression.Method;
         }
+
+        /// <summary>
+        /// Gets the <see cref="ConstructorInfo"/> for the new operation called in the expression.
+        /// </summary>
+        /// <typeparam name="TDeclaring">The type on which the constructor is called.</typeparam>
+        /// <param name="constructorCallExpression">Expression demonstrating how the constructor is called.</param>
+        /// <returns>The <see cref="ConstructorInfo"/> for the called constructor.</returns>
+        public static ConstructorInfo GetConstructor<TDeclaring>(
+            Expression<Func<TDeclaring>> constructorCallExpression)
+        {
+            if (constructorCallExpression == null) throw new ArgumentNullException("constructorCallExpression");
+            var callExpression = constructorCallExpression.Body as NewExpression;
+            if (callExpression == null)
+                throw new ArgumentException(string.Format(
+                    ReflectionExtensionsResources.ExpressionNotConstructorCall,
+                    constructorCallExpression));
+            return callExpression.Constructor;
+        }
     }
 }

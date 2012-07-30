@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
@@ -732,6 +733,29 @@ namespace Autofac
             if (constructorSelector == null) throw new ArgumentNullException("constructorSelector");
             registration.ActivatorData.ConstructorSelector = constructorSelector;
             return registration;
+        }
+
+        /// <summary>
+        /// Set the policy used to select from available constructors on the implementation type.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to set policy on.</param>
+        /// <param name="constructorSelector">Expression demonstrating how the constructor is called.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+            UsingConstructor<TLimit, TReflectionActivatorData, TStyle>(
+                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                Expression<Func<TLimit>> constructorSelector)
+            where TReflectionActivatorData : ReflectionActivatorData
+        {
+            if (registration == null) throw new ArgumentNullException("registration");
+            if (constructorSelector == null) throw new ArgumentNullException("constructorSelector");
+
+            var constructor = ReflectionExtensions.GetConstructor(constructorSelector);
+            var parameterTypes = constructor.GetParameters().Select(p => p.ParameterType).ToArray();
+            return UsingConstructor(registration, parameterTypes);
         }
 
         /// <summary>

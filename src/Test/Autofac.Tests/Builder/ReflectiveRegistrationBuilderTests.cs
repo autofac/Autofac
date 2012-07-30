@@ -1,5 +1,5 @@
 ﻿using System;
-using Autofac.Builder;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using Autofac.Core;
 
@@ -57,6 +57,40 @@ namespace Autofac.Tests.Builder
         }
 
         [Test]
+        public void ExplicitCtorFromExpression()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterType<A1>();
+            cb.RegisterType<A2>();
+
+            cb.RegisterType<TwoCtors>()
+                .UsingConstructor(() => new TwoCtors(default(A1), default(A2)));
+
+            var c = cb.Build();
+            var result = c.Resolve<TwoCtors>();
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.CalledCtor, Is.EqualTo(new[] {typeof(A1), typeof(A2)}));
+        }
+
+        [Test]
+        public void OtherExplicitCtorFromExpression()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterType<A1>();
+            cb.RegisterType<A2>();
+
+            cb.RegisterType<TwoCtors>()
+                .UsingConstructor(() => new TwoCtors(default(A1)));
+
+            var c = cb.Build();
+            var result = c.Resolve<TwoCtors>();
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.CalledCtor, Is.EqualTo(new[] {typeof(A1)}));
+        }
+
+        [Test]
         public void UsingConstructorThatIsNotPresent_ThrowsArgumentException()
         {
             var cb = new ContainerBuilder();
@@ -70,6 +104,14 @@ namespace Autofac.Tests.Builder
             var cb = new ContainerBuilder();
             var registration = cb.RegisterType<TwoCtors>();
             Assert.Throws<ArgumentNullException>(() => registration.UsingConstructor((Type[])null));
+        }
+
+        [Test]
+        public void NullIsNotAValidExpressionConstructor()
+        {
+            var cb = new ContainerBuilder();
+            var registration = cb.RegisterType<TwoCtors>();
+            Assert.Throws<ArgumentNullException>(() => registration.UsingConstructor((Expression<Func<TwoCtors>>)null));
         }
 
         public class WithParam
