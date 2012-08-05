@@ -61,7 +61,6 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Param.cs" />
     <Compile Include="AutofacDependencyResolver.cs" />
     <Compile Include="AutofacFilterProvider.cs" />
     <Compile Include="AutofacModelBinderProvider.cs" />

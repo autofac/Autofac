@@ -194,7 +194,7 @@ namespace Autofac.Tests.Integration.Mvc
         {
             var exception = Assert.Throws<ArgumentNullException>(
                 () => Autofac.Integration.Mvc.RegistrationExtensions.AsActionFilterFor<TestController>
-                    (null, c => c.Action1(Param<string>.Value)));
+                    (null, c => c.Action1(default(string))));
 
             Assert.That(exception.ParamName, Is.EqualTo("registration"));
         }
@@ -215,7 +215,7 @@ namespace Autofac.Tests.Integration.Mvc
         public void AsActionFilterForActionScopedFilterAddsKeyedRegistration()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestActionFilter()).AsActionFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestActionFilter()).AsActionFilterFor<TestController>(c => c.Action1(default(string)));
             var container = builder.Build();
 
             var methodInfo = TestController.GetAction1MethodInfo();
@@ -238,7 +238,7 @@ namespace Autofac.Tests.Integration.Mvc
         {
             var exception = Assert.Throws<ArgumentNullException>(
                 () => Autofac.Integration.Mvc.RegistrationExtensions.AsAuthorizationFilterFor<TestController>
-                    (null, c => c.Action1(Param<string>.Value)));
+                    (null, c => c.Action1(default(string))));
 
             Assert.That(exception.ParamName, Is.EqualTo("registration"));
         }
@@ -259,7 +259,7 @@ namespace Autofac.Tests.Integration.Mvc
         public void AsAuthoizationFilterForActionScopedFilterAddsKeyedRegistration()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestAuthorizationFilter()).AsAuthorizationFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestAuthorizationFilter()).AsAuthorizationFilterFor<TestController>(c => c.Action1(default(string)));
             var container = builder.Build();
 
             var methodInfo = TestController.GetAction1MethodInfo();
@@ -282,7 +282,7 @@ namespace Autofac.Tests.Integration.Mvc
         {
             var exception = Assert.Throws<ArgumentNullException>(
                 () => Autofac.Integration.Mvc.RegistrationExtensions.AsExceptionFilterFor<TestController>
-                    (null, c => c.Action1(Param<string>.Value)));
+                    (null, c => c.Action1(default(string))));
 
             Assert.That(exception.ParamName, Is.EqualTo("registration"));
         }
@@ -303,7 +303,7 @@ namespace Autofac.Tests.Integration.Mvc
         public void AsExceptionFilterForActionScopedFilterAddsKeyedRegistration()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestExceptionFilter()).AsExceptionFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestExceptionFilter()).AsExceptionFilterFor<TestController>(c => c.Action1(default(string)));
             var container = builder.Build();
 
             var methodInfo = TestController.GetAction1MethodInfo();
@@ -326,7 +326,7 @@ namespace Autofac.Tests.Integration.Mvc
         {
             var exception = Assert.Throws<ArgumentNullException>(
                 () => Autofac.Integration.Mvc.RegistrationExtensions.AsResultFilterFor<TestController>
-                    (null, c => c.Action1(Param<string>.Value)));
+                    (null, c => c.Action1(default(string))));
 
             Assert.That(exception.ParamName, Is.EqualTo("registration"));
         }
@@ -347,7 +347,7 @@ namespace Autofac.Tests.Integration.Mvc
         public void AsResultFilterForActionScopedFilterAddsKeyedRegistration()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestResultFilter()).AsResultFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestResultFilter()).AsResultFilterFor<TestController>(c => c.Action1(default(string)));
             var container = builder.Build();
 
             var methodInfo = TestController.GetAction1MethodInfo();

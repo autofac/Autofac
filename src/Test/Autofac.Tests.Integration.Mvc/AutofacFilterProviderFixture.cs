@@ -48,7 +48,7 @@ namespace Autofac.Tests.Integration.Mvc
         public void ResolvesActionScopedActionFilterFromReflectedActionDescriptor()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestActionFilter()).AsActionFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestActionFilter()).AsActionFilterFor<TestController>(c => c.Action1(default(string)));
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
@@ -65,7 +65,7 @@ namespace Autofac.Tests.Integration.Mvc
         public void ResolvesActionScopedActionFilterFromReflectedAsyncActionDescriptor()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestActionFilter()).AsActionFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestActionFilter()).AsActionFilterFor<TestController>(c => c.Action1(default(string)));
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedAsyncActionDescriptor(_methodInfo, _methodInfo, _actionName, _controllerDescriptor);
@@ -82,7 +82,7 @@ namespace Autofac.Tests.Integration.Mvc
         public void ResolvesActionScopedActionFilterFromTaskAsyncActionDescriptor()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestActionFilter()).AsActionFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestActionFilter()).AsActionFilterFor<TestController>(c => c.Action1(default(string)));
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new TaskAsyncActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
@@ -123,8 +123,8 @@ namespace Autofac.Tests.Integration.Mvc
         public void ResolvesMultipleActionScopedActionFilters()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestActionFilter()).AsActionFilterFor<TestController>(c => c.Action1(Param<string>.Value));
-            builder.Register(c => new TestActionFilter2()).AsActionFilterFor<TestController>(c => c.Action1(Param<string>.Value)).WithFilterOrder(20);
+            builder.Register(c => new TestActionFilter()).AsActionFilterFor<TestController>(c => c.Action1(default(string)));
+            builder.Register(c => new TestActionFilter2()).AsActionFilterFor<TestController>(c => c.Action1(default(string))).WithFilterOrder(20);
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
@@ -164,7 +164,7 @@ namespace Autofac.Tests.Integration.Mvc
         public void ResolvesActionScopedAuthorizationFilterFromReflectedActionDescriptor()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestAuthorizationFilter()).AsAuthorizationFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestAuthorizationFilter()).AsAuthorizationFilterFor<TestController>(c => c.Action1(default(string)));
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
@@ -181,7 +181,7 @@ namespace Autofac.Tests.Integration.Mvc
         public void ResolvesActionScopedAuthorizationFilterFromReflectedAsyncActionDescriptor()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestAuthorizationFilter()).AsAuthorizationFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestAuthorizationFilter()).AsAuthorizationFilterFor<TestController>(c => c.Action1(default(string)));
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedAsyncActionDescriptor(_methodInfo, _methodInfo, _actionName, _controllerDescriptor);
@@ -198,7 +198,7 @@ namespace Autofac.Tests.Integration.Mvc
         public void ResolvesActionScopedAuthorizationFilterFromTaskAsyncActionDescriptor()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestAuthorizationFilter()).AsAuthorizationFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestAuthorizationFilter()).AsAuthorizationFilterFor<TestController>(c => c.Action1(default(string)));
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new TaskAsyncActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
@@ -239,8 +239,8 @@ namespace Autofac.Tests.Integration.Mvc
         public void ResolvesMultipleActionScopedAuthorizationFilters()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestAuthorizationFilter()).AsAuthorizationFilterFor<TestController>(c => c.Action1(Param<string>.Value));
-            builder.Register(c => new TestAuthorizationFilter2()).AsAuthorizationFilterFor<TestController>(c => c.Action1(Param<string>.Value)).WithFilterOrder(20);
+            builder.Register(c => new TestAuthorizationFilter()).AsAuthorizationFilterFor<TestController>(c => c.Action1(default(string)));
+            builder.Register(c => new TestAuthorizationFilter2()).AsAuthorizationFilterFor<TestController>(c => c.Action1(default(string))).WithFilterOrder(20);
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
@@ -280,7 +280,7 @@ namespace Autofac.Tests.Integration.Mvc
         public void ResolvesActionScopedExceptionFilterFromReflectedActionDescriptor()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestExceptionFilter()).AsExceptionFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestExceptionFilter()).AsExceptionFilterFor<TestController>(c => c.Action1(default(string)));
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
@@ -297,7 +297,7 @@ namespace Autofac.Tests.Integration.Mvc
         public void ResolvesActionScopedExceptionFilterFromReflectedAsyncActionDescriptor()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestExceptionFilter()).AsExceptionFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestExceptionFilter()).AsExceptionFilterFor<TestController>(c => c.Action1(default(string)));
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedAsyncActionDescriptor(_methodInfo, _methodInfo, _actionName, _controllerDescriptor);
@@ -314,7 +314,7 @@ namespace Autofac.Tests.Integration.Mvc
         public void ResolvesActionScopedExceptionFilterFromTaskAsyncActionDescriptor()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestExceptionFilter()).AsExceptionFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestExceptionFilter()).AsExceptionFilterFor<TestController>(c => c.Action1(default(string)));
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new TaskAsyncActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
@@ -355,8 +355,8 @@ namespace Autofac.Tests.Integration.Mvc
         public void ResolvesMultipleActionScopedExceptionFilters()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestExceptionFilter()).AsExceptionFilterFor<TestController>(c => c.Action1(Param<string>.Value));
-            builder.Register(c => new TestExceptionFilter2()).AsExceptionFilterFor<TestController>(c => c.Action1(Param<string>.Value)).WithFilterOrder(20);
+            builder.Register(c => new TestExceptionFilter()).AsExceptionFilterFor<TestController>(c => c.Action1(default(string)));
+            builder.Register(c => new TestExceptionFilter2()).AsExceptionFilterFor<TestController>(c => c.Action1(default(string))).WithFilterOrder(20);
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
@@ -397,7 +397,7 @@ namespace Autofac.Tests.Integration.Mvc
         public void ResolvesActionScopedResultFilterFromReflectedActionDescriptor()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestResultFilter()).AsResultFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestResultFilter()).AsResultFilterFor<TestController>(c => c.Action1(default(string)));
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
@@ -414,7 +414,7 @@ namespace Autofac.Tests.Integration.Mvc
         public void ResolvesActionScopedResultFilterFromReflectedAsyncActionDescriptor()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestResultFilter()).AsResultFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestResultFilter()).AsResultFilterFor<TestController>(c => c.Action1(default(string)));
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedAsyncActionDescriptor(_methodInfo, _methodInfo, _actionName, _controllerDescriptor);
@@ -431,7 +431,7 @@ namespace Autofac.Tests.Integration.Mvc
         public void ResolvesActionScopedResultFilterFromTaskAsyncActionDescriptor()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestResultFilter()).AsResultFilterFor<TestController>(c => c.Action1(Param<string>.Value));
+            builder.Register(c => new TestResultFilter()).AsResultFilterFor<TestController>(c => c.Action1(default(string)));
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new TaskAsyncActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
@@ -472,8 +472,8 @@ namespace Autofac.Tests.Integration.Mvc
         public void ResolvesMultipleActionScopedReultFilters()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestResultFilter()).AsResultFilterFor<TestController>(c => c.Action1(Param<string>.Value));
-            builder.Register(c => new TestResultFilter2()).AsResultFilterFor<TestController>(c => c.Action1(Param<string>.Value)).WithFilterOrder(20);
+            builder.Register(c => new TestResultFilter()).AsResultFilterFor<TestController>(c => c.Action1(default(string)));
+            builder.Register(c => new TestResultFilter2()).AsResultFilterFor<TestController>(c => c.Action1(default(string))).WithFilterOrder(20);
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
             var actionDescriptor = new ReflectedActionDescriptor(_methodInfo, _actionName, _controllerDescriptor);
