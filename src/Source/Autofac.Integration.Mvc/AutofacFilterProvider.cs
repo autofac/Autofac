@@ -29,7 +29,6 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Mvc.Async;
-using Autofac.Features.Metadata;
 
 namespace Autofac.Integration.Mvc
 {
@@ -38,10 +37,13 @@ namespace Autofac.Integration.Mvc
     /// </summary>
     public class AutofacFilterProvider : FilterAttributeFilterProvider
     {
-        /// <summary>
-        /// The metadata key used for the Order value of a filter.
-        /// </summary>
-        internal static readonly string FilterOrderKey = "FilterOrder";
+        class FilterContext
+        {
+            public ActionDescriptor ActionDescriptor { get; set; }
+            public ILifetimeScope LifetimeScope { get; set; }
+            public Type ControllerType { get; set; }
+            public List<Filter> Filters { get; set; }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacFilterProvider"/> class.
@@ -73,74 +75,78 @@ namespace Autofac.Integration.Mvc
 
                 var controllerType = controllerContext.Controller.GetType();
 
-                ResolveControllerScopedFilters(lifetimeScope, controllerType, filters);
+                var filterContext = new FilterContext
+                {
+                    ActionDescriptor = actionDescriptor,
+                    LifetimeScope = lifetimeScope,
+                    ControllerType = controllerType,
+                    Filters = filters
+                };
 
-                ResolveActionScopedFilters<ReflectedActionDescriptor>(actionDescriptor, lifetimeScope, controllerType, filters, d => d.MethodInfo);
-                ResolveActionScopedFilters<ReflectedAsyncActionDescriptor>(actionDescriptor, lifetimeScope, controllerType, filters, d => d.AsyncMethodInfo);
-                ResolveActionScopedFilters<TaskAsyncActionDescriptor>(actionDescriptor, lifetimeScope, controllerType, filters, d => d.TaskMethodInfo);
+                ResolveControllerScopedFilters(filterContext);
+
+                ResolveActionScopedFilters<ReflectedActionDescriptor>(filterContext, d => d.MethodInfo);
+                ResolveActionScopedFilters<ReflectedAsyncActionDescriptor>(filterContext, d => d.AsyncMethodInfo);
+                ResolveActionScopedFilters<TaskAsyncActionDescriptor>(filterContext, d => d.TaskMethodInfo);
             }
 
             return filters.ToArray();
         }
 
-        static void ResolveControllerScopedFilters(IComponentContext lifetimeScope, Type controllerType, ICollection<Filter> filters)
+        static void ResolveControllerScopedFilters(FilterContext filterContext)
         {
-            ResolveControllerScopedFilter<IActionFilter>(filters, lifetimeScope, controllerType);
-            ResolveControllerScopedFilter<IAuthorizationFilter>(filters, lifetimeScope, controllerType);
-            ResolveControllerScopedFilter<IExceptionFilter>(filters, lifetimeScope, controllerType);
-            ResolveControllerScopedFilter<IResultFilter>(filters, lifetimeScope, controllerType);
+            ResolveControllerScopedFilter<IActionFilter>(filterContext);
+            ResolveControllerScopedFilter<IAuthorizationFilter>(filterContext);
+            ResolveControllerScopedFilter<IExceptionFilter>(filterContext);
+            ResolveControllerScopedFilter<IResultFilter>(filterContext);
         }
 
-        static void ResolveControllerScopedFilter<TFilter>(ICollection<Filter> filters, IComponentContext lifetimeScope, Type controllerType) 
+        static void ResolveControllerScopedFilter<TFilter>(FilterContext filterContext) 
             where TFilter : class
         {
-            var key = new FilterKey(controllerType, FilterScope.Controller, null);
-            var actionFilters = lifetimeScope.ResolveOptionalKeyed<IEnumerable<Meta<TFilter>>>(key);
-            if (actionFilters == null) return;
-
-            foreach (var filter in actionFilters.Select(actionFilter => new Filter(
-                actionFilter.Value, FilterScope.Controller, GetFilterOrder(actionFilter))))
+            var actionFilters = filterContext.LifetimeScope.Resolve<IEnumerable<Lazy<TFilter, IFilterMetadata>>>();
+            foreach (var actionFilter in actionFilters)
             {
-                filters.Add(filter);
+                var metadata = actionFilter.Metadata;
+                if (filterContext.ControllerType.IsAssignableFrom(metadata.ControllerType)
+                    && metadata.FilterScope == FilterScope.Controller
+                    && metadata.MethodInfo == null)
+                {
+                    var filter = new Filter(actionFilter.Value, FilterScope.Controller, metadata.Order);
+                    filterContext.Filters.Add(filter);
+                }
             }
         }
 
-        static void ResolveActionScopedFilters<T>(ActionDescriptor descriptor, IComponentContext lifetimeScope, Type controllerType, ICollection<Filter> filters, Func<T, MethodInfo> methodSelector)
+        static void ResolveActionScopedFilters<T>(FilterContext filterContext, Func<T, MethodInfo> methodSelector)
             where T : ActionDescriptor
         {
-            var actionDescriptor = descriptor as T;
+            var actionDescriptor = filterContext.ActionDescriptor as T;
             if (actionDescriptor == null) return;
 
             var methodInfo = methodSelector(actionDescriptor);
 
-            ResolveActionScopedFilter<IActionFilter>(filters, lifetimeScope, methodInfo, controllerType);
-            ResolveActionScopedFilter<IAuthorizationFilter>(filters, lifetimeScope, methodInfo, controllerType);
-            ResolveActionScopedFilter<IExceptionFilter>(filters, lifetimeScope, methodInfo, controllerType);
-            ResolveActionScopedFilter<IResultFilter>(filters, lifetimeScope, methodInfo, controllerType);
+            ResolveActionScopedFilter<IActionFilter>(filterContext, methodInfo);
+            ResolveActionScopedFilter<IAuthorizationFilter>(filterContext, methodInfo);
+            ResolveActionScopedFilter<IExceptionFilter>(filterContext, methodInfo);
+            ResolveActionScopedFilter<IResultFilter>(filterContext, methodInfo);
         }
 
-        static void ResolveActionScopedFilter<TFilter>(ICollection<Filter> filters, IComponentContext lifetimeScope, MethodInfo methodInfo, Type controllerType) 
+        static void ResolveActionScopedFilter<TFilter>(FilterContext filterContext, MethodInfo methodInfo) 
             where TFilter : class
         {
-            var key = new FilterKey(controllerType, FilterScope.Action, methodInfo);
-            var actionFilters = lifetimeScope.ResolveOptionalKeyed<IEnumerable<Meta<TFilter>>>(key);
-            if (actionFilters == null) return;
-
-            foreach (var filter in actionFilters.Select(actionFilter => new Filter(
-                actionFilter.Value, FilterScope.Action, GetFilterOrder(actionFilter))))
+            var actionFilters = filterContext.LifetimeScope.Resolve<IEnumerable<Lazy<TFilter, IFilterMetadata>>>();
+            foreach (var actionFilter in actionFilters)
             {
-                filters.Add(filter);
+                var metadata = actionFilter.Metadata;
+                if (filterContext.ControllerType.IsAssignableFrom(metadata.ControllerType)
+                    && metadata.FilterScope == FilterScope.Action
+                    && metadata.MethodInfo.GetBaseDefinition() == methodInfo.GetBaseDefinition())
+                {
+                    var filter = new Filter(actionFilter.Value, FilterScope.Action, metadata.Order);
+                    filterContext.Filters.Add(filter);
+                }
             }
-        }
-
-        static int GetFilterOrder<TFilter>(Meta<TFilter> actionFilter) where TFilter : class
-        {
-            var order = Filter.DefaultOrder;
-            if (actionFilter.Metadata.ContainsKey(FilterOrderKey))
-            {
-                order = (int) actionFilter.Metadata[FilterOrderKey];
-            }
-            return order;
         }
     }
 }

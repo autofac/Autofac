@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 using Autofac.Builder;
+using Autofac.Features.Metadata;
 using Autofac.Integration.Mvc;
 using NUnit.Framework;
 
@@ -200,32 +201,25 @@ namespace Autofac.Tests.Integration.Mvc
         }
 
         [Test]
-        public void AsActionFilterForControllerScopedFilterAddsKeyedRegistration()
+        public void AsActionFilterForControllerScopedFilterAddsCorrectMetadata()
         {
-            var builder = new ContainerBuilder();
-            builder.Register(c => new TestActionFilter()).AsActionFilterFor<TestController>();
-            var container = builder.Build();
-
-            var key = new FilterKey(typeof(TestController), FilterScope.Controller, null);
-
-            Assert.That(container.IsRegisteredWithKey<IActionFilter>(key), Is.True);
+            AssertFilterRegistration<TestActionFilter, IActionFilter>(
+                FilterScope.Controller, 
+                null,
+                r => r.AsActionFilterFor<TestController>(20));
         }
 
         [Test]
-        public void AsActionFilterForActionScopedFilterAddsKeyedRegistration()
+        public void AsActionFilterForActionScopedFilterAddsCorrectMetadata()
         {
-            var builder = new ContainerBuilder();
-            builder.Register(c => new TestActionFilter()).AsActionFilterFor<TestController>(c => c.Action1(default(string)));
-            var container = builder.Build();
-
-            var methodInfo = TestController.GetAction1MethodInfo();
-            var key = new FilterKey(typeof(TestController), FilterScope.Action, methodInfo);
-            
-            Assert.That(container.IsRegisteredWithKey<IActionFilter>(key), Is.True);
+            AssertFilterRegistration<TestActionFilter, IActionFilter>(
+                FilterScope.Action,
+                TestController.GetAction1MethodInfo<TestController>(),
+                r => r.AsActionFilterFor<TestController>(c => c.Action1(default(string)), 20));
         }
 
         [Test]
-        public void AsAuthoizationFilterForControllerScopedFilterThrowsExceptionForNullRegistration()
+        public void AsAuthorizationFilterForControllerScopedFilterThrowsExceptionForNullRegistration()
         {
             var exception = Assert.Throws<ArgumentNullException>(
                 () => Autofac.Integration.Mvc.RegistrationExtensions.AsAuthorizationFilterFor<TestController>(null));
@@ -234,7 +228,7 @@ namespace Autofac.Tests.Integration.Mvc
         }
 
         [Test]
-        public void AsAuthoizationFilterForActionScopedFilterThrowsExceptionForNullRegistration()
+        public void AsAuthorizationFilterForActionScopedFilterThrowsExceptionForNullRegistration()
         {
             var exception = Assert.Throws<ArgumentNullException>(
                 () => Autofac.Integration.Mvc.RegistrationExtensions.AsAuthorizationFilterFor<TestController>
@@ -244,28 +238,21 @@ namespace Autofac.Tests.Integration.Mvc
         }
 
         [Test]
-        public void AsAuthoizationFilterForControllerScopedFilterAddsKeyedRegistration()
+        public void AsAuthorizationFilterForControllerScopedFilterAddsCorrectMetadata()
         {
-            var builder = new ContainerBuilder();
-            builder.Register(c => new TestAuthorizationFilter()).AsAuthorizationFilterFor<TestController>();
-            var container = builder.Build();
-
-            var key = new FilterKey(typeof(TestController), FilterScope.Controller, null);
-
-            Assert.That(container.IsRegisteredWithKey<IAuthorizationFilter>(key), Is.True);
+            AssertFilterRegistration<TestAuthorizationFilter, IAuthorizationFilter>(
+                FilterScope.Controller,
+                null,
+                r => r.AsAuthorizationFilterFor<TestController>(20));
         }
 
         [Test]
-        public void AsAuthoizationFilterForActionScopedFilterAddsKeyedRegistration()
+        public void AsAuthorizationFilterForActionScopedFilterAddsCorrectMetadata()
         {
-            var builder = new ContainerBuilder();
-            builder.Register(c => new TestAuthorizationFilter()).AsAuthorizationFilterFor<TestController>(c => c.Action1(default(string)));
-            var container = builder.Build();
-
-            var methodInfo = TestController.GetAction1MethodInfo();
-            var key = new FilterKey(typeof(TestController), FilterScope.Action, methodInfo);
-
-            Assert.That(container.IsRegisteredWithKey<IAuthorizationFilter>(key), Is.True);
+            AssertFilterRegistration<TestAuthorizationFilter, IAuthorizationFilter>(
+                FilterScope.Action,
+                TestController.GetAction1MethodInfo<TestController>(),
+                r => r.AsAuthorizationFilterFor<TestController>(c => c.Action1(default(string)), 20));
         }
 
         [Test]
@@ -288,28 +275,21 @@ namespace Autofac.Tests.Integration.Mvc
         }
 
         [Test]
-        public void AsExceptionFilterForControllerScopedFilterAddsKeyedRegistration()
+        public void AsExceptionFilterForControllerScopedFilterAddsCorrectMetadata()
         {
-            var builder = new ContainerBuilder();
-            builder.Register(c => new TestExceptionFilter()).AsExceptionFilterFor<TestController>();
-            var container = builder.Build();
-
-            var key = new FilterKey(typeof(TestController), FilterScope.Controller, null);
-
-            Assert.That(container.IsRegisteredWithKey<IExceptionFilter>(key), Is.True);
+            AssertFilterRegistration<TestExceptionFilter, IExceptionFilter>(
+                FilterScope.Controller,
+                null,
+                r => r.AsExceptionFilterFor<TestController>(20));
         }
 
         [Test]
-        public void AsExceptionFilterForActionScopedFilterAddsKeyedRegistration()
+        public void AsExceptionFilterForActionScopedFilterAddsCorrectMetadata()
         {
-            var builder = new ContainerBuilder();
-            builder.Register(c => new TestExceptionFilter()).AsExceptionFilterFor<TestController>(c => c.Action1(default(string)));
-            var container = builder.Build();
-
-            var methodInfo = TestController.GetAction1MethodInfo();
-            var key = new FilterKey(typeof(TestController), FilterScope.Action, methodInfo);
-
-            Assert.That(container.IsRegisteredWithKey<IExceptionFilter>(key), Is.True);
+            AssertFilterRegistration<TestExceptionFilter, IExceptionFilter>(
+                FilterScope.Action,
+                TestController.GetAction1MethodInfo<TestController>(),
+                r => r.AsExceptionFilterFor<TestController>(c => c.Action1(default(string)), 20));
         }
 
         [Test]
@@ -332,28 +312,38 @@ namespace Autofac.Tests.Integration.Mvc
         }
 
         [Test]
-        public void AsResultFilterForControllerScopedFilterAddsKeyedRegistration()
+        public void AsResultFilterForControllerScopedFilterAddsCorrectMetadata()
         {
-            var builder = new ContainerBuilder();
-            builder.Register(c => new TestResultFilter()).AsResultFilterFor<TestController>();
-            var container = builder.Build();
-
-            var key = new FilterKey(typeof(TestController), FilterScope.Controller, null);
-
-            Assert.That(container.IsRegisteredWithKey<IResultFilter>(key), Is.True);
+            AssertFilterRegistration<TestResultFilter, IResultFilter>(
+                FilterScope.Controller,
+                null,
+                r => r.AsResultFilterFor<TestController>(20));
         }
 
         [Test]
-        public void AsResultFilterForActionScopedFilterAddsKeyedRegistration()
+        public void AsResultFilterForActionScopedFilterAddsCorrectMetadata()
+        {
+            AssertFilterRegistration<TestResultFilter, IResultFilter>(
+                FilterScope.Action,
+                TestController.GetAction1MethodInfo<TestController>(),
+                r => r.AsResultFilterFor<TestController>(c => c.Action1(default(string)), 20));
+        }
+
+        static void AssertFilterRegistration<TFilter, TService>(FilterScope filterScope, MethodInfo methodInfo,
+            Action<IRegistrationBuilder<TFilter, SimpleActivatorData, SingleRegistrationStyle>> configure)
+                where TFilter : new()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new TestResultFilter()).AsResultFilterFor<TestController>(c => c.Action1(default(string)));
+            configure(builder.Register(c => new TFilter()));
             var container = builder.Build();
 
-            var methodInfo = TestController.GetAction1MethodInfo();
-            var key = new FilterKey(typeof(TestController), FilterScope.Action, methodInfo);
+            var service = container.Resolve<Meta<TService, IFilterMetadata>>();
 
-            Assert.That(container.IsRegisteredWithKey<IResultFilter>(key), Is.True);
+            Assert.That(service.Metadata.ControllerType, Is.EqualTo(typeof(TestController)));
+            Assert.That(service.Metadata.FilterScope, Is.EqualTo(filterScope));
+            Assert.That(service.Metadata.MethodInfo, Is.EqualTo(methodInfo));
+            Assert.That(service.Metadata.Order, Is.EqualTo(20));
+            Assert.That(service.Value, Is.InstanceOf<TService>());
         }
     }
 }

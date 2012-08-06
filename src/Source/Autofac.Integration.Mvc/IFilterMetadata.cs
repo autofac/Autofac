@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
+// Copyright © 2012 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -23,27 +23,35 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
+using System.Reflection;
+using System.Web.Mvc;
+
 namespace Autofac.Integration.Mvc
 {
     /// <summary>
-    /// Implementors are able to control the creation of nested lifetime scopes.
+    /// Metadata interface for filter registrations.
     /// </summary>
-    public interface ILifetimeScopeProvider
+    public interface IFilterMetadata
     {
         /// <summary>
-        /// Gets a nested lifetime scope that services can be resolved from.
+        /// Gets the type of the controller.
         /// </summary>
-        /// <returns>A new or existing nested lifetime scope.</returns>
-        ILifetimeScope GetLifetimeScope();
+        Type ControllerType { get; }
 
         /// <summary>
-        /// Ends the current lifetime scope.
+        /// Gets the filter scope.
         /// </summary>
-        void EndLifetimeScope();
+        FilterScope FilterScope { get; }
 
         /// <summary>
-        /// Gets the global, application-wide container.
+        /// Gets the method info.
         /// </summary>
-        ILifetimeScope ApplicationContainer { get; }
+        MethodInfo MethodInfo { get; }
+
+        /// <summary>
+        /// Gets the order in which the filter is applied.
+        /// </summary>
+        int Order { get; }
     }
 }

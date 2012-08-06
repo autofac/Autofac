@@ -16,19 +16,45 @@ namespace Autofac.Tests.Integration.Mvc
     {
         public object Dependency;
 
-        public ActionResult Action1(string value)
+        public virtual ActionResult Action1(string value)
         {
             return new EmptyResult();
         }
 
-        public ActionResult Action2(int value)
+        public virtual ActionResult Action2(int value)
         {
             return new EmptyResult();
         }
 
-        public static MethodInfo GetAction1MethodInfo()
+        public static MethodInfo GetAction1MethodInfo<T>() where T : TestController
         {
-            return typeof(TestController).GetMethod("Action1");
+            return typeof(T).GetMethod("Action1");
+        }
+    }
+
+    public class TestControllerA : TestController
+    {
+        public override ActionResult Action1(string value)
+        {
+            return new EmptyResult();
+        }
+
+        public override ActionResult Action2(int value)
+        {
+            return new EmptyResult();
+        }
+    }
+
+    public class TestControllerB : TestControllerA
+    {
+        public override ActionResult Action1(string value)
+        {
+            return new EmptyResult();
+        }
+
+        public override ActionResult Action2(int value)
+        {
+            return new EmptyResult();
         }
     }
 

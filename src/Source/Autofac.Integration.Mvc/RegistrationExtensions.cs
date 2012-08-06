@@ -327,16 +327,22 @@ namespace Autofac.Integration.Mvc
         /// <typeparam name="TController">The type of the controller.</typeparam>
         /// <param name="registration">The registration.</param>
         /// <param name="actionSelector">The action selector.</param>
+        /// <param name="order">The order in which the filter is applied.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle>
             AsActionFilterFor<TController>(this IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, 
-                Expression<Action<TController>> actionSelector) where TController : IController
+                Expression<Action<TController>> actionSelector, int order = Filter.DefaultOrder) where TController : IController
         {
             if (registration == null) throw new ArgumentNullException("registration");
             if (actionSelector == null) throw new ArgumentNullException("actionSelector");
 
-            var filterKey = new FilterKey(typeof(TController), FilterScope.Action, GetMethodInfo(actionSelector));
-            return registration.Keyed(filterKey, typeof(IActionFilter));
+            return registration.As<IActionFilter>().WithMetadata<IFilterMetadata>(m =>
+            {
+                m.For(f => f.ControllerType, typeof(TController));
+                m.For(f => f.FilterScope, FilterScope.Action);
+                m.For(f => f.MethodInfo, GetMethodInfo(actionSelector));
+                m.For(f => f.Order, order);
+            });
         }
 
         /// <summary>
@@ -344,29 +350,21 @@ namespace Autofac.Integration.Mvc
         /// </summary>
         /// <typeparam name="TController">The type of the controller.</typeparam>
         /// <param name="registration">The registration.</param>
-        /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsActionFilterFor<TController>(this IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration) 
-                where TController : IController
-        {
-            if (registration == null) throw new ArgumentNullException("registration");
-
-            var filterKey = new FilterKey(typeof(TController), FilterScope.Controller, null);
-            return registration.Keyed(filterKey, typeof(IActionFilter));
-        }
-
-        /// <summary>
-        /// Sets the order in which the <see cref="IActionFilter"/> is applied.
-        /// </summary>
-        /// <param name="registration">The registration.</param>
         /// <param name="order">The order in which the filter is applied.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            WithFilterOrder(this IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, int order)
+            AsActionFilterFor<TController>(this IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, 
+                int order = Filter.DefaultOrder) where TController : IController
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
-            return registration.WithMetadata(AutofacFilterProvider.FilterOrderKey, order);
+            return registration.As<IActionFilter>().WithMetadata<IFilterMetadata>(m =>
+            {
+                m.For(f => f.ControllerType, typeof(TController));
+                m.For(f => f.FilterScope, FilterScope.Controller);
+                m.For(f => f.MethodInfo, null);
+                m.For(f => f.Order, order);
+            });
         }
 
         /// <summary>
@@ -375,16 +373,22 @@ namespace Autofac.Integration.Mvc
         /// <typeparam name="TController">The type of the controller.</typeparam>
         /// <param name="registration">The registration.</param>
         /// <param name="actionSelector">The action selector.</param>
+        /// <param name="order">The order in which the filter is applied.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<IAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle>
             AsAuthorizationFilterFor<TController>(this IRegistrationBuilder<IAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
-                Expression<Action<TController>> actionSelector) where TController : IController
+                Expression<Action<TController>> actionSelector, int order = Filter.DefaultOrder) where TController : IController
         {
             if (registration == null) throw new ArgumentNullException("registration");
             if (actionSelector == null) throw new ArgumentNullException("actionSelector");
 
-            var filterKey = new FilterKey(typeof(TController), FilterScope.Action, GetMethodInfo(actionSelector));
-            return registration.Keyed(filterKey, typeof(IAuthorizationFilter));
+            return registration.As<IAuthorizationFilter>().WithMetadata<IFilterMetadata>(m =>
+            {
+                m.For(f => f.ControllerType, typeof(TController));
+                m.For(f => f.FilterScope, FilterScope.Action);
+                m.For(f => f.MethodInfo, GetMethodInfo(actionSelector));
+                m.For(f => f.Order, order);
+            });
         }
 
         /// <summary>
@@ -392,29 +396,21 @@ namespace Autofac.Integration.Mvc
         /// </summary>
         /// <typeparam name="TController">The type of the controller.</typeparam>
         /// <param name="registration">The registration.</param>
-        /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<IAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsAuthorizationFilterFor<TController>(this IRegistrationBuilder<IAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle> registration) 
-                where TController : IController
-        {
-            if (registration == null) throw new ArgumentNullException("registration");
-
-            var filterKey = new FilterKey(typeof(TController), FilterScope.Controller, null);
-            return registration.Keyed(filterKey, typeof(IAuthorizationFilter));
-        }
-
-        /// <summary>
-        /// Sets the order in which the <see cref="IAuthorizationFilter"/> is applied.
-        /// </summary>
-        /// <param name="registration">The registration.</param>
         /// <param name="order">The order in which the filter is applied.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<IAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            WithFilterOrder(this IRegistrationBuilder<IAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, int order)
+            AsAuthorizationFilterFor<TController>(this IRegistrationBuilder<IAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, 
+                int order = Filter.DefaultOrder) where TController : IController
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
-            return registration.WithMetadata(AutofacFilterProvider.FilterOrderKey, order);
+            return registration.As<IAuthorizationFilter>().WithMetadata<IFilterMetadata>(m =>
+            {
+                m.For(f => f.ControllerType, typeof(TController));
+                m.For(f => f.FilterScope, FilterScope.Controller);
+                m.For(f => f.MethodInfo, null);
+                m.For(f => f.Order, order);
+            });
         }
 
         /// <summary>
@@ -423,16 +419,22 @@ namespace Autofac.Integration.Mvc
         /// <typeparam name="TController">The type of the controller.</typeparam>
         /// <param name="registration">The registration.</param>
         /// <param name="actionSelector">The action selector.</param>
+        /// <param name="order">The order in which the filter is applied.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<IExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle>
             AsExceptionFilterFor<TController>(this IRegistrationBuilder<IExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
-                Expression<Action<TController>> actionSelector) where TController : IController
+                Expression<Action<TController>> actionSelector, int order = Filter.DefaultOrder) where TController : IController
         {
             if (registration == null) throw new ArgumentNullException("registration");
             if (actionSelector == null) throw new ArgumentNullException("actionSelector");
 
-            var filterKey = new FilterKey(typeof(TController), FilterScope.Action, GetMethodInfo(actionSelector));
-            return registration.Keyed(filterKey, typeof(IExceptionFilter));
+            return registration.As<IExceptionFilter>().WithMetadata<IFilterMetadata>(m =>
+            {
+                m.For(f => f.ControllerType, typeof(TController));
+                m.For(f => f.FilterScope, FilterScope.Action);
+                m.For(f => f.MethodInfo, GetMethodInfo(actionSelector));
+                m.For(f => f.Order, order);
+            });
         }
 
         /// <summary>
@@ -440,29 +442,21 @@ namespace Autofac.Integration.Mvc
         /// </summary>
         /// <typeparam name="TController">The type of the controller.</typeparam>
         /// <param name="registration">The registration.</param>
-        /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<IExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsExceptionFilterFor<TController>(this IRegistrationBuilder<IExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration) 
-                where TController : IController
-        {
-            if (registration == null) throw new ArgumentNullException("registration");
-
-            var filterKey = new FilterKey(typeof(TController), FilterScope.Controller, null);
-            return registration.Keyed(filterKey, typeof(IExceptionFilter));
-        }
-
-        /// <summary>
-        /// Sets the order in which the <see cref="IExceptionFilter"/> is applied.
-        /// </summary>
-        /// <param name="registration">The registration.</param>
         /// <param name="order">The order in which the filter is applied.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<IExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            WithFilterOrder(this IRegistrationBuilder<IExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, int order)
+            AsExceptionFilterFor<TController>(this IRegistrationBuilder<IExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
+                int order = Filter.DefaultOrder) where TController : IController
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
-            return registration.WithMetadata(AutofacFilterProvider.FilterOrderKey, order);
+            return registration.As<IExceptionFilter>().WithMetadata<IFilterMetadata>(m =>
+            {
+                m.For(f => f.ControllerType, typeof(TController));
+                m.For(f => f.FilterScope, FilterScope.Controller);
+                m.For(f => f.MethodInfo, null);
+                m.For(f => f.Order, order);
+            });
         }
 
         /// <summary>
@@ -471,16 +465,22 @@ namespace Autofac.Integration.Mvc
         /// <typeparam name="TController">The type of the controller.</typeparam>
         /// <param name="registration">The registration.</param>
         /// <param name="actionSelector">The action selector.</param>
+        /// <param name="order">The order in which the filter is applied.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<IResultFilter, IConcreteActivatorData, SingleRegistrationStyle>
             AsResultFilterFor<TController>(this IRegistrationBuilder<IResultFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
-                Expression<Action<TController>> actionSelector) where TController : IController
+                Expression<Action<TController>> actionSelector, int order = Filter.DefaultOrder) where TController : IController
         {
             if (registration == null) throw new ArgumentNullException("registration");
             if (actionSelector == null) throw new ArgumentNullException("actionSelector");
 
-            var filterKey = new FilterKey(typeof(TController), FilterScope.Action, GetMethodInfo(actionSelector));
-            return registration.Keyed(filterKey, typeof(IResultFilter));
+            return registration.As<IResultFilter>().WithMetadata<IFilterMetadata>(m =>
+            {
+                m.For(f => f.ControllerType, typeof(TController));
+                m.For(f => f.FilterScope, FilterScope.Action);
+                m.For(f => f.MethodInfo, GetMethodInfo(actionSelector));
+                m.For(f => f.Order, order);
+            });
         }
 
         /// <summary>
@@ -488,29 +488,21 @@ namespace Autofac.Integration.Mvc
         /// </summary>
         /// <typeparam name="TController">The type of the controller.</typeparam>
         /// <param name="registration">The registration.</param>
-        /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<IResultFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsResultFilterFor<TController>(this IRegistrationBuilder<IResultFilter, IConcreteActivatorData, SingleRegistrationStyle> registration)
-                where TController : IController
-        {
-            if (registration == null) throw new ArgumentNullException("registration");
-
-            var filterKey = new FilterKey(typeof(TController), FilterScope.Controller, null);
-            return registration.Keyed(filterKey, typeof(IResultFilter));
-        }
-
-        /// <summary>
-        /// Sets the order in which the <see cref="IResultFilter"/> is applied.
-        /// </summary>
-        /// <param name="registration">The registration.</param>
         /// <param name="order">The order in which the filter is applied.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<IResultFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            WithFilterOrder(this IRegistrationBuilder<IResultFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, int order)
+            AsResultFilterFor<TController>(this IRegistrationBuilder<IResultFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
+                int order = Filter.DefaultOrder) where TController : IController
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
-            return registration.WithMetadata(AutofacFilterProvider.FilterOrderKey, order);
+            return registration.As<IResultFilter>().WithMetadata<IFilterMetadata>(m =>
+            {
+                m.For(f => f.ControllerType, typeof(TController));
+                m.For(f => f.FilterScope, FilterScope.Controller);
+                m.For(f => f.MethodInfo, null);
+                m.For(f => f.Order, order);
+            });
         }
 
         static MethodInfo GetMethodInfo(LambdaExpression expression)
