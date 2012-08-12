@@ -27,6 +27,7 @@
     <WcfSource>Source\Autofac.Integration.Wcf\bin\$(Configuration)</WcfSource>
     <WebSource>Source\Autofac.Integration.Web\bin\$(Configuration)</WebSource>
     <MvcSource>Source\Autofac.Integration.Mvc\bin\$(Configuration)</MvcSource>
+	<WebApiSource>Source\Autofac.Integration.WebApi\bin\$(Configuration)</WebApiSource>
     <MefSource>Source\Autofac.Integration.Mef\bin\$(Configuration)</MefSource>
     <ConfigSource>Source\Autofac.Configuration\bin\$(Configuration)</ConfigSource>
     <SourceExclusions>**\.svn\**\*.*;**\_svn\**\*.*;**\*.user;**\*.suo;**\*.db;**\bin\**\*.*;**\obj\**\*.*;</SourceExclusions>
@@ -101,7 +102,7 @@
     
     <!--Libraries-->
     <CreateItem
-      Include="$(LibrarySource)\*.dll;$(LibrarySource)\*.xml;$(WebSource)\*.dll;$(MvcSource)\*.dll;$(MefSource)\*.dll;$(WcfSource)\*.dll;$(ConfigSource)\*.dll">
+      Include="$(LibrarySource)\*.dll;$(LibrarySource)\*.xml;$(WebSource)\*.dll;$(MvcSource)\*.dll;$(WebApiSource)\*.dll;$(MefSource)\*.dll;$(WcfSource)\*.dll;$(ConfigSource)\*.dll">
       <Output ItemName="unmergedFiles" TaskParameter="Include"/>
     </CreateItem>
     <Copy SourceFiles="@(unmergedFiles)" DestinationFolder="$(LibraryPath)" />

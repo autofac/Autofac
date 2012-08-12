@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-    <id>Autofac.Mvc3</id>
+    <id>Autofac.Mvc4</id>
     <version>0.0.0.0</version>
     <authors>Autofac Contributors</authors>
     <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>ASP.NET MVC3 Integration for Autofac</description>
+    <description>ASP.NET MVC4 (Beta) Integration for Autofac</description>
     <summary>Provides an IControllerFactory implementation and other integration points for System.Web.Mvc.</summary>
     <language>en-US</language>
-    <title>Autofac ASP.NET MVC3 Integration</title>
+    <title>Autofac ASP.NET MVC4 (Beta) Integration</title>
     <projectUrl>http://autofac.org</projectUrl>
     <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
     <dependencies>

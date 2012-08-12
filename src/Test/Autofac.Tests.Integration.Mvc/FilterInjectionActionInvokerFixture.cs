@@ -29,7 +29,7 @@ namespace Autofac.Tests.Integration.Mvc
             var httpContext = new Mock<HttpContextBase>();
             httpContext.Setup(mock => mock.Request).Returns(request.Object);
 
-            _controller = new TestController();
+            _controller = new TestController {ValidateRequest = false};
             _context = new ControllerContext {Controller = _controller, HttpContext = httpContext.Object};
             _controller.ControllerContext = _context;
         }
