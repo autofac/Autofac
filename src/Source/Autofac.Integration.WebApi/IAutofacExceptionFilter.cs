@@ -23,31 +23,19 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Web.Http.Dependencies;
+using System.Web.Http.Filters;
 
 namespace Autofac.Integration.WebApi
 {
     /// <summary>
-    /// Extension methods to the <see cref="IDependencyResolver"/> interface.
+    /// An exception filter that will be created for each controller request.
     /// </summary>
-    public static class DependencyResolverExtensions
+    public interface IAutofacExceptionFilter
     {
         /// <summary>
-        /// Gets the root lifetime scope from the Autofac dependency resolver.
+        /// Called when an exception is thrown.
         /// </summary>
-        public static ILifetimeScope GetRootLifetimeScope(this IDependencyResolver dependencyResolver)
-        {
-            var resolver = dependencyResolver as AutofacWebApiDependencyResolver;
-            return (resolver == null) ? null : resolver.Container;
-        }
-
-        /// <summary>
-        /// Gets the request lifetime scope from the Autofac dependency scope.
-        /// </summary>
-        public static ILifetimeScope GetRequestLifetimeScope(this IDependencyScope dependencyScope)
-        {
-            var scope = dependencyScope as AutofacWebApiDependencyScope;
-            return (scope == null) ? null : scope.LifetimeScope;
-        }
+        /// <param name="actionExecutedContext">The context for the action.</param>
+        void OnException(HttpActionExecutedContext actionExecutedContext);
     }
 }

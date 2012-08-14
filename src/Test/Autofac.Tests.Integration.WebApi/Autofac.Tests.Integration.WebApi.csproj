@@ -64,10 +64,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionFilterWrapperFixture.cs" />
     <Compile Include="AutofacWebApiDependencyResolverFixture.cs" />
     <Compile Include="AutofacWebApiFilterProviderFixture.cs" />
     <Compile Include="AutofacWebApiModelBinderProviderFixture.cs" />
     <Compile Include="AutofacWebApiDependencyScopeFixture.cs" />
+    <Compile Include="AuthorizationFilterWrapperFixture.cs" />
+    <Compile Include="ExceptionFilterWrapperFixture.cs" />
     <Compile Include="InjectControllerServicesAttributeFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationExtensionsFixture.cs" />

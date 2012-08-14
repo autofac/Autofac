@@ -48,6 +48,15 @@ namespace Autofac.Tests.Integration.Mvc
         }
 
         [Test]
+        public void AsActionFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.Register(c => new TestActionFilter()).AsActionFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        [Test]
         public void ResolvesControllerScopedActionFilterForReflectedActionDescriptor()
         {
             AssertSingleFilter<TestActionFilter>(
@@ -117,6 +126,15 @@ namespace Autofac.Tests.Integration.Mvc
                 FilterScope.Action,
                 r => r.AsActionFilterFor<TestController>(c => c.Action1(default(string))),
                 r => r.AsActionFilterFor<TestController>(c => c.Action1(default(string)), 20));
+        }
+
+        [Test]
+        public void AsAuthorizationFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.Register(c => new TestAuthorizationFilter()).AsAuthorizationFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
         }
 
         [Test]
@@ -192,6 +210,15 @@ namespace Autofac.Tests.Integration.Mvc
         }
 
         [Test]
+        public void AsExceptionFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.Register(c => new TestExceptionFilter()).AsExceptionFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        [Test]
         public void ResolvesControllerScopedExceptionFilterForReflectedActionDescriptor()
         {
             AssertSingleFilter<TestExceptionFilter>(
@@ -261,6 +288,15 @@ namespace Autofac.Tests.Integration.Mvc
                 FilterScope.Action,
                 r => r.AsExceptionFilterFor<TestController>(c => c.Action1(default(string))),
                 r => r.AsExceptionFilterFor<TestController>(c => c.Action1(default(string)), 20));
+        }
+
+        [Test]
+        public void AsResultFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.Register(c => new TestResultFilter()).AsResultFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
         }
 
         [Test]

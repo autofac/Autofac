@@ -25,6 +25,7 @@
 
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Http.Formatting;
 using System.Reflection;
 using System.Web.Http;
@@ -197,6 +198,116 @@ namespace Autofac.Integration.WebApi
                 .SingleInstance(); // It would be nice to scope this per request.
         }
 
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAutofacActionFilter"/> for the specified controller action.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <param name="actionSelector">The action selector.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<IAutofacActionFilter, IConcreteActivatorData, SingleRegistrationStyle>
+            AsActionFilterFor<TController>(this IRegistrationBuilder<IAutofacActionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
+                Expression<Action<TController>> actionSelector) where TController : IHttpController
+        {
+            return AsFilterFor(registration, actionSelector);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAutofacActionFilter"/> for the specified controller.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<IAutofacActionFilter, IConcreteActivatorData, SingleRegistrationStyle>
+            AsActionFilterFor<TController>(this IRegistrationBuilder<IAutofacActionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration)
+                where TController : IHttpController
+        {
+            return AsFilterFor<IAutofacActionFilter, TController>(registration);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAutofacAuthorizationFilter"/> for the specified controller action.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <param name="actionSelector">The action selector.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<IAutofacAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle>
+            AsAuthorizationFilterFor<TController>(this IRegistrationBuilder<IAutofacAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
+                Expression<Action<TController>> actionSelector) where TController : IHttpController
+        {
+            return AsFilterFor(registration, actionSelector);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAutofacAuthorizationFilter"/> for the specified controller.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<IAutofacAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle>
+            AsAuthorizationFilterFor<TController>(this IRegistrationBuilder<IAutofacAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle> registration)
+                where TController : IHttpController
+        {
+            return AsFilterFor<IAutofacAuthorizationFilter, TController>(registration);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAutofacExceptionFilter"/> for the specified controller action.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <param name="actionSelector">The action selector.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<IAutofacExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle>
+            AsExceptionFilterFor<TController>(this IRegistrationBuilder<IAutofacExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
+                Expression<Action<TController>> actionSelector) where TController : IHttpController
+        {
+            return AsFilterFor(registration, actionSelector);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAutofacExceptionFilter"/> for the specified controller.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<IAutofacExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle>
+            AsExceptionFilterFor<TController>(this IRegistrationBuilder<IAutofacExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration)
+                where TController : IHttpController
+        {
+            return AsFilterFor<IAutofacExceptionFilter, TController>(registration);
+        }
+
+        static IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle>
+            AsFilterFor<TFilter, TController>(IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle> registration)
+                where TController : IHttpController
+        {
+            if (registration == null) throw new ArgumentNullException("registration");
+
+            return registration.As<TFilter>().WithMetadata<IFilterMetadata>(m =>
+                {
+                    m.For(f => f.ControllerType, typeof(TController));
+                    m.For(f => f.FilterScope, FilterScope.Controller);
+                    m.For(f => f.MethodInfo, null);
+                });
+        }
+
+        static IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle>
+            AsFilterFor<TFilter, TController>(IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, Expression<Action<TController>> actionSelector)
+                where TController : IHttpController
+        {
+            if (registration == null) throw new ArgumentNullException("registration");
+            if (actionSelector == null) throw new ArgumentNullException("actionSelector");
+
+            return registration.As<TFilter>().WithMetadata<IFilterMetadata>(m =>
+                {
+                    m.For(f => f.ControllerType, typeof(TController));
+                    m.For(f => f.FilterScope, FilterScope.Action);
+                    m.For(f => f.MethodInfo, GetMethodInfo(actionSelector));
+                });
+        }
+
         static bool IsMultipleServiceType<TLimit>()
         {
             var limitType = typeof(TLimit);
@@ -204,6 +315,16 @@ namespace Autofac.Integration.WebApi
                     || limitType.IsAssignableTo<ModelValidatorProvider>()
                     || limitType.IsAssignableTo<ValueProviderFactory>()
                     || limitType.IsAssignableTo<MediaTypeFormatter>());
+        }
+
+        static MethodInfo GetMethodInfo(LambdaExpression expression)
+        {
+            var outermostExpression = expression.Body as MethodCallExpression;
+
+            if (outermostExpression == null)
+                throw new ArgumentException(RegistrationExtensionsResources.InvalidActionExpress);
+
+            return outermostExpression.Method;
         }
     }
 }

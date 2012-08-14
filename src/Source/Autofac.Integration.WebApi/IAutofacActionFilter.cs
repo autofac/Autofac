@@ -1,4 +1,4 @@
-﻿// This software is part of the Autofac IoC container
+// This software is part of the Autofac IoC container
 // Copyright (c) 2012 Autofac Contributors
 // http://autofac.org
 //
@@ -23,31 +23,26 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Web.Http.Dependencies;
+using System.Web.Http.Controllers;
+using System.Web.Http.Filters;
 
 namespace Autofac.Integration.WebApi
 {
     /// <summary>
-    /// Extension methods to the <see cref="IDependencyResolver"/> interface.
+    /// An action filter that will be created for each controller request.
     /// </summary>
-    public static class DependencyResolverExtensions
+    public interface IAutofacActionFilter
     {
         /// <summary>
-        /// Gets the root lifetime scope from the Autofac dependency resolver.
+        /// Occurs before the action method is invoked.
         /// </summary>
-        public static ILifetimeScope GetRootLifetimeScope(this IDependencyResolver dependencyResolver)
-        {
-            var resolver = dependencyResolver as AutofacWebApiDependencyResolver;
-            return (resolver == null) ? null : resolver.Container;
-        }
+        /// <param name="actionContext">The context for the action.</param>
+        void OnActionExecuting(HttpActionContext actionContext);
 
         /// <summary>
-        /// Gets the request lifetime scope from the Autofac dependency scope.
+        /// Occurs after the action method is invoked.
         /// </summary>
-        public static ILifetimeScope GetRequestLifetimeScope(this IDependencyScope dependencyScope)
-        {
-            var scope = dependencyScope as AutofacWebApiDependencyScope;
-            return (scope == null) ? null : scope.LifetimeScope;
-        }
+        /// <param name="actionExecutedContext">The context for the action.</param>
+        void OnActionExecuted(HttpActionExecutedContext actionExecutedContext);
     }
 }

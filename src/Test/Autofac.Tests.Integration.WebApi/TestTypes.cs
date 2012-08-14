@@ -32,6 +32,7 @@ using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using System.Web.Http.ModelBinding;
+using Autofac.Integration.WebApi;
 
 namespace Autofac.Tests.Integration.WebApi
 {
@@ -42,9 +43,25 @@ namespace Autofac.Tests.Integration.WebApi
     public class TestController : ApiController
     {
         [CustomActionFilter]
-        public IEnumerable<string> Get()
+        public virtual IEnumerable<string> Get()
         {
-            return new string[] {"value1", "value2"};
+            return new[] {"value1", "value2"};
+        }
+    }
+
+    public class TestControllerA : TestController
+    {
+        public override IEnumerable<string> Get()
+        {
+            return new[] {"value1", "value2"};
+        }
+    }
+
+    public class TestControllerB : TestControllerA
+    {
+        public override IEnumerable<string> Get()
+        {
+            return new[] { "value1", "value2" };
         }
     }
 
@@ -107,6 +124,98 @@ namespace Autofac.Tests.Integration.WebApi
         public bool BindModel(HttpActionContext actionContext, ModelBindingContext bindingContext)
         {
             return true;
+        }
+    }
+
+    public class TestActionFilter : IAutofacActionFilter
+    {
+        public ILogger Logger { get; private set; }
+
+        public TestActionFilter(ILogger logger)
+        {
+            Logger = logger;
+        }
+
+        public void OnActionExecuting(HttpActionContext actionContext)
+        {
+        }
+
+        public void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
+        {
+        }
+    }
+
+    public class TestActionFilter2 : IAutofacActionFilter
+    {
+        public ILogger Logger { get; private set; }
+
+        public TestActionFilter2(ILogger logger)
+        {
+            Logger = logger;
+        }
+
+        public void OnActionExecuting(HttpActionContext actionContext)
+        {
+        }
+
+        public void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
+        {
+        }
+    }
+
+    public class TestAuthorizationFilter : IAutofacAuthorizationFilter
+    {
+        public ILogger Logger { get; private set; }
+
+        public TestAuthorizationFilter(ILogger logger)
+        {
+            Logger = logger;
+        }
+
+        public void OnAuthorization(HttpActionContext actionContext)
+        {
+        }
+    }
+
+    public class TestAuthorizationFilter2 : IAutofacAuthorizationFilter
+    {
+        public ILogger Logger { get; private set; }
+
+        public TestAuthorizationFilter2(ILogger logger)
+        {
+            Logger = logger;
+        }
+
+        public void OnAuthorization(HttpActionContext actionContext)
+        {
+        }
+    }
+
+    public class TestExceptionFilter : IAutofacExceptionFilter
+    {
+        public ILogger Logger { get; private set; }
+
+        public TestExceptionFilter(ILogger logger)
+        {
+            Logger = logger;
+        }
+
+        public void OnException(HttpActionExecutedContext actionExecutedContext)
+        {
+        }
+    }
+
+    public class TestExceptionFilter2 : IAutofacExceptionFilter
+    {
+        public ILogger Logger { get; private set; }
+
+        public TestExceptionFilter2(ILogger logger)
+        {
+            Logger = logger;
+        }
+
+        public void OnException(HttpActionExecutedContext actionExecutedContext)
+        {
         }
     }
 }

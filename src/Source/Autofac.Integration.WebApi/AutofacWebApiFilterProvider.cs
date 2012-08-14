@@ -23,7 +23,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
@@ -36,6 +38,13 @@ namespace Autofac.Integration.WebApi
     /// </summary>
     public class AutofacWebApiFilterProvider : IFilterProvider
     {
+        class FilterContext
+        {
+            public ILifetimeScope LifetimeScope { get; set; }
+            public Type ControllerType { get; set; }
+            public List<FilterInfo> Filters { get; set; }
+        }
+
         readonly ILifetimeScope _rootLifetimeScope;
         readonly ActionDescriptorFilterProvider _filterProvider = new ActionDescriptorFilterProvider();
 
@@ -55,12 +64,78 @@ namespace Autofac.Integration.WebApi
         /// <returns>A collection of filters with instances property injected.</returns>
         public IEnumerable<FilterInfo> GetFilters(HttpConfiguration configuration, HttpActionDescriptor actionDescriptor)
         {
-            var filterInfos = _filterProvider.GetFilters(configuration, actionDescriptor).ToArray();
+            var filters = _filterProvider.GetFilters(configuration, actionDescriptor).ToList();
 
-            foreach (var filterInfo in filterInfos)
+            foreach (var filterInfo in filters)
                 _rootLifetimeScope.InjectProperties(filterInfo.Instance);
 
-            return filterInfos;
+            var descriptor = actionDescriptor as ReflectedHttpActionDescriptor;
+            if (descriptor == null) return filters;
+
+            // Use a fake scope to resolve the metadata for the filter.
+            using (var dependencyScope = configuration.DependencyResolver.BeginScope())
+            {
+                var filterContext = new FilterContext
+                {
+                    LifetimeScope = dependencyScope.GetRequestLifetimeScope(),
+                    ControllerType = actionDescriptor.ControllerDescriptor.ControllerType,
+                    Filters = filters
+                };
+
+                ResolveControllerScopedFilter<IAutofacActionFilter, ActionFilterWrapper>(
+                    filterContext, m => new ActionFilterWrapper(m));
+                ResolveControllerScopedFilter<IAutofacAuthorizationFilter, AuthorizationFilterWrapper>(
+                    filterContext, m => new AuthorizationFilterWrapper(m));
+                ResolveControllerScopedFilter<IAutofacExceptionFilter, ExceptionFilterWrapper>(
+                    filterContext, m => new ExceptionFilterWrapper(m));
+
+                ResolveActionScopedFilter<IAutofacActionFilter, ActionFilterWrapper>(
+                    filterContext, descriptor.MethodInfo, m => new ActionFilterWrapper(m));
+                ResolveActionScopedFilter<IAutofacAuthorizationFilter, AuthorizationFilterWrapper>(
+                    filterContext, descriptor.MethodInfo, m => new AuthorizationFilterWrapper(m));
+                ResolveActionScopedFilter<IAutofacExceptionFilter, ExceptionFilterWrapper>(
+                    filterContext, descriptor.MethodInfo, m => new ExceptionFilterWrapper(m));
+            }
+
+            return filters;
+        }
+
+        static void ResolveControllerScopedFilter<TFilter, TWrapper>(
+            FilterContext filterContext, Func<IFilterMetadata, TWrapper> wrapperFactory) 
+            where TFilter : class 
+            where TWrapper : IFilter
+        {
+            var filters = filterContext.LifetimeScope.Resolve<IEnumerable<Lazy<TFilter, IFilterMetadata>>>();
+            foreach (var filter in filters)
+            {
+                var metadata = filter.Metadata;
+                if (filterContext.ControllerType.IsAssignableFrom(metadata.ControllerType)
+                    && metadata.FilterScope == FilterScope.Controller
+                    && metadata.MethodInfo == null)
+                {
+                    var wrapper = wrapperFactory(filter.Metadata);
+                    filterContext.Filters.Add(new FilterInfo(wrapper, filter.Metadata.FilterScope));
+                }
+            }
+        }
+
+        static void ResolveActionScopedFilter<TFilter, TWrapper>(
+            FilterContext filterContext, MethodInfo methodInfo, Func<IFilterMetadata, TWrapper> wrapperFactory) 
+                where TFilter : class 
+                where TWrapper : IFilter
+        {
+            var filters = filterContext.LifetimeScope.Resolve<IEnumerable<Lazy<TFilter, IFilterMetadata>>>();
+            foreach (var filter in filters)
+            {
+                var metadata = filter.Metadata;
+                if (filterContext.ControllerType.IsAssignableFrom(metadata.ControllerType)
+                    && metadata.FilterScope == FilterScope.Action
+                    && metadata.MethodInfo.GetBaseDefinition() == methodInfo.GetBaseDefinition())
+                {
+                    var wrapper = wrapperFactory(filter.Metadata);
+                    filterContext.Filters.Add(new FilterInfo(wrapper, filter.Metadata.FilterScope));
+                }
+            }
         }
     }
 }

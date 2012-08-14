@@ -37,6 +37,9 @@ using Autofac.Features.Metadata;
 
 namespace Autofac.Integration.WebApi
 {
+    /// <summary>
+    /// Configures the controller descriptor with per-controller services from the container.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public class InjectControllerServicesAttribute : Attribute, IControllerConfiguration
     {
@@ -44,6 +47,14 @@ namespace Autofac.Integration.WebApi
 
         internal static readonly string ClearServiceListKey = "ClearServiceList";
 
+        /// <summary>
+        /// Callback invoked to set per-controller overrides for this controllerDescriptor.
+        /// </summary>
+        /// <param name="controllerSettings">The controller settings to initialize.</param>
+        /// <param name="controllerDescriptor">The controller descriptor. Note that the 
+        /// <see cref="T:System.Web.Http.Controllers.HttpControllerDescriptor"/> can be 
+        /// associated with the derived controller type given that <see cref="T:System.Web.Http.Controllers.IControllerConfiguration"/> 
+        /// is inherited.</param>
         public void Initialize(HttpControllerSettings controllerSettings, HttpControllerDescriptor controllerDescriptor)
         {
             if (controllerDescriptor.Configuration == null) return;

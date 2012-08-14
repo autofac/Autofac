@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2012 Autofac Contributors
+// Copyright © 2012 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -23,31 +23,30 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Web.Http.Dependencies;
+using System;
+using System.Reflection;
+using System.Web.Http.Filters;
 
 namespace Autofac.Integration.WebApi
 {
     /// <summary>
-    /// Extension methods to the <see cref="IDependencyResolver"/> interface.
+    /// Metadata interface for filter registrations.
     /// </summary>
-    public static class DependencyResolverExtensions
+    public interface IFilterMetadata
     {
         /// <summary>
-        /// Gets the root lifetime scope from the Autofac dependency resolver.
+        /// Gets the type of the controller.
         /// </summary>
-        public static ILifetimeScope GetRootLifetimeScope(this IDependencyResolver dependencyResolver)
-        {
-            var resolver = dependencyResolver as AutofacWebApiDependencyResolver;
-            return (resolver == null) ? null : resolver.Container;
-        }
+        Type ControllerType { get; }
 
         /// <summary>
-        /// Gets the request lifetime scope from the Autofac dependency scope.
+        /// Gets the filter scope.
         /// </summary>
-        public static ILifetimeScope GetRequestLifetimeScope(this IDependencyScope dependencyScope)
-        {
-            var scope = dependencyScope as AutofacWebApiDependencyScope;
-            return (scope == null) ? null : scope.LifetimeScope;
-        }
+        FilterScope FilterScope { get; }
+
+        /// <summary>
+        /// Gets the method info.
+        /// </summary>
+        MethodInfo MethodInfo { get; }
     }
 }

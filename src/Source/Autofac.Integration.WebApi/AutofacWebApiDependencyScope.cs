@@ -49,6 +49,14 @@ namespace Autofac.Integration.WebApi
         }
 
         /// <summary>
+        /// Gets the lifetime scope for the current dependency scope.
+        /// </summary>
+        public ILifetimeScope LifetimeScope
+        {
+            get { return _lifetimeScope; }
+        }
+
+        /// <summary>
         /// Try to get a service of the given type.
         /// </summary>
         /// <param name="serviceType">ControllerType of service to request.</param>
