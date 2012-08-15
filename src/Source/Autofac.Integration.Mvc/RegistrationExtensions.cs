@@ -192,7 +192,7 @@ namespace Autofac.Integration.Mvc
             var typeList = types.Where(type => type != null).ToList();
             if (typeList.Count == 0)
             {
-                throw new ArgumentException("Type list may not be empty or contain all null values.", "types");
+                throw new ArgumentException(RegistrationExtensionsResources.InvalidModelBinderType, "types");
             }
 
             return registration.As<IModelBinder>().WithMetadata(AutofacModelBinderProvider.MetadataKey, typeList);
@@ -214,12 +214,12 @@ namespace Autofac.Integration.Mvc
         /// is through use of this method and the
         /// <see cref="Autofac.Integration.Mvc.ModelBinderTypeAttribute"/>.
         /// If you would like more imperative control over registration for your
-        /// model binders, see the <see cref="Autofac.Integration.Mvc.RegistrationExtensions.AsModelBinderForTypes"/>
+        /// model binders, see the <see cref="AsModelBinderForTypes{TLimit,TActivatorData,TRegistrationStyle}"/>
         /// method.
         /// </para>
         /// <para>
         /// The two mechanisms are mutually exclusive. If you register a model
-        /// binder using <see cref="Autofac.Integration.Mvc.RegistrationExtensions.AsModelBinderForTypes"/>
+        /// binder using <see cref="AsModelBinderForTypes{TLimit,TActivatorData,TRegistrationStyle}"/>
         /// and register the same model binder with this method, the results
         /// are not automatically merged together - standard dependency
         /// registration/resolution rules will be used to manage the conflict.
@@ -237,7 +237,7 @@ namespace Autofac.Integration.Mvc
         /// <para>
         /// If your model is not marked with the attribute, or if you don't want
         /// to use attributes, use the
-        /// <see cref="Autofac.Integration.Mvc.RegistrationExtensions.AsModelBinderForTypes"/>
+        /// <see cref="AsModelBinderForTypes{TLimit,TActivatorData,TRegistrationStyle}"/>
         /// extension instead.
         /// </para>
         /// </remarks>
@@ -333,16 +333,7 @@ namespace Autofac.Integration.Mvc
             AsActionFilterFor<TController>(this IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, 
                 Expression<Action<TController>> actionSelector, int order = Filter.DefaultOrder) where TController : IController
         {
-            if (registration == null) throw new ArgumentNullException("registration");
-            if (actionSelector == null) throw new ArgumentNullException("actionSelector");
-
-            return registration.As<IActionFilter>().WithMetadata<IFilterMetadata>(m =>
-            {
-                m.For(f => f.ControllerType, typeof(TController));
-                m.For(f => f.FilterScope, FilterScope.Action);
-                m.For(f => f.MethodInfo, GetMethodInfo(actionSelector));
-                m.For(f => f.Order, order);
-            });
+            return AsFilterFor(registration, actionSelector, order);
         }
 
         /// <summary>
@@ -356,15 +347,7 @@ namespace Autofac.Integration.Mvc
             AsActionFilterFor<TController>(this IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, 
                 int order = Filter.DefaultOrder) where TController : IController
         {
-            if (registration == null) throw new ArgumentNullException("registration");
-
-            return registration.As<IActionFilter>().WithMetadata<IFilterMetadata>(m =>
-            {
-                m.For(f => f.ControllerType, typeof(TController));
-                m.For(f => f.FilterScope, FilterScope.Controller);
-                m.For(f => f.MethodInfo, null);
-                m.For(f => f.Order, order);
-            });
+            return AsFilterFor<IActionFilter, TController>(registration, order);
         }
 
         /// <summary>
@@ -379,16 +362,7 @@ namespace Autofac.Integration.Mvc
             AsAuthorizationFilterFor<TController>(this IRegistrationBuilder<IAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
                 Expression<Action<TController>> actionSelector, int order = Filter.DefaultOrder) where TController : IController
         {
-            if (registration == null) throw new ArgumentNullException("registration");
-            if (actionSelector == null) throw new ArgumentNullException("actionSelector");
-
-            return registration.As<IAuthorizationFilter>().WithMetadata<IFilterMetadata>(m =>
-            {
-                m.For(f => f.ControllerType, typeof(TController));
-                m.For(f => f.FilterScope, FilterScope.Action);
-                m.For(f => f.MethodInfo, GetMethodInfo(actionSelector));
-                m.For(f => f.Order, order);
-            });
+            return AsFilterFor(registration, actionSelector, order);
         }
 
         /// <summary>
@@ -402,15 +376,7 @@ namespace Autofac.Integration.Mvc
             AsAuthorizationFilterFor<TController>(this IRegistrationBuilder<IAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, 
                 int order = Filter.DefaultOrder) where TController : IController
         {
-            if (registration == null) throw new ArgumentNullException("registration");
-
-            return registration.As<IAuthorizationFilter>().WithMetadata<IFilterMetadata>(m =>
-            {
-                m.For(f => f.ControllerType, typeof(TController));
-                m.For(f => f.FilterScope, FilterScope.Controller);
-                m.For(f => f.MethodInfo, null);
-                m.For(f => f.Order, order);
-            });
+            return AsFilterFor<IAuthorizationFilter, TController>(registration, order);
         }
 
         /// <summary>
@@ -425,16 +391,7 @@ namespace Autofac.Integration.Mvc
             AsExceptionFilterFor<TController>(this IRegistrationBuilder<IExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
                 Expression<Action<TController>> actionSelector, int order = Filter.DefaultOrder) where TController : IController
         {
-            if (registration == null) throw new ArgumentNullException("registration");
-            if (actionSelector == null) throw new ArgumentNullException("actionSelector");
-
-            return registration.As<IExceptionFilter>().WithMetadata<IFilterMetadata>(m =>
-            {
-                m.For(f => f.ControllerType, typeof(TController));
-                m.For(f => f.FilterScope, FilterScope.Action);
-                m.For(f => f.MethodInfo, GetMethodInfo(actionSelector));
-                m.For(f => f.Order, order);
-            });
+            return AsFilterFor(registration, actionSelector, order);
         }
 
         /// <summary>
@@ -448,15 +405,7 @@ namespace Autofac.Integration.Mvc
             AsExceptionFilterFor<TController>(this IRegistrationBuilder<IExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
                 int order = Filter.DefaultOrder) where TController : IController
         {
-            if (registration == null) throw new ArgumentNullException("registration");
-
-            return registration.As<IExceptionFilter>().WithMetadata<IFilterMetadata>(m =>
-            {
-                m.For(f => f.ControllerType, typeof(TController));
-                m.For(f => f.FilterScope, FilterScope.Controller);
-                m.For(f => f.MethodInfo, null);
-                m.For(f => f.Order, order);
-            });
+            return AsFilterFor<IExceptionFilter, TController>(registration, order);
         }
 
         /// <summary>
@@ -471,16 +420,7 @@ namespace Autofac.Integration.Mvc
             AsResultFilterFor<TController>(this IRegistrationBuilder<IResultFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
                 Expression<Action<TController>> actionSelector, int order = Filter.DefaultOrder) where TController : IController
         {
-            if (registration == null) throw new ArgumentNullException("registration");
-            if (actionSelector == null) throw new ArgumentNullException("actionSelector");
-
-            return registration.As<IResultFilter>().WithMetadata<IFilterMetadata>(m =>
-            {
-                m.For(f => f.ControllerType, typeof(TController));
-                m.For(f => f.FilterScope, FilterScope.Action);
-                m.For(f => f.MethodInfo, GetMethodInfo(actionSelector));
-                m.For(f => f.Order, order);
-            });
+            return AsFilterFor(registration, actionSelector, order);
         }
 
         /// <summary>
@@ -494,15 +434,38 @@ namespace Autofac.Integration.Mvc
             AsResultFilterFor<TController>(this IRegistrationBuilder<IResultFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
                 int order = Filter.DefaultOrder) where TController : IController
         {
+            return AsFilterFor<IResultFilter, TController>(registration, order);
+        }
+
+        static IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle>
+            AsFilterFor<TFilter, TController>(IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, Expression<Action<TController>> actionSelector, int order) 
+            where TController : IController
+        {
+            if (registration == null) throw new ArgumentNullException("registration");
+            if (actionSelector == null) throw new ArgumentNullException("actionSelector");
+
+            return registration.As<TFilter>().WithMetadata<IFilterMetadata>(m =>
+                {
+                    m.For(f => f.ControllerType, typeof(TController));
+                    m.For(f => f.FilterScope, FilterScope.Action);
+                    m.For(f => f.MethodInfo, GetMethodInfo(actionSelector));
+                    m.For(f => f.Order, order);
+                });
+        }
+
+        static IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle>
+            AsFilterFor<TFilter, TController>(IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, int order)
+            where TController : IController
+        {
             if (registration == null) throw new ArgumentNullException("registration");
 
-            return registration.As<IResultFilter>().WithMetadata<IFilterMetadata>(m =>
-            {
-                m.For(f => f.ControllerType, typeof(TController));
-                m.For(f => f.FilterScope, FilterScope.Controller);
-                m.For(f => f.MethodInfo, null);
-                m.For(f => f.Order, order);
-            });
+            return registration.As<TFilter>().WithMetadata<IFilterMetadata>(m =>
+                {
+                    m.For(f => f.ControllerType, typeof(TController));
+                    m.For(f => f.FilterScope, FilterScope.Controller);
+                    m.For(f => f.MethodInfo, null);
+                    m.For(f => f.Order, order);
+                });
         }
 
         static MethodInfo GetMethodInfo(LambdaExpression expression)
