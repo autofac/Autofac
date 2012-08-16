@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Http.Formatting;
@@ -35,6 +36,7 @@ using System.Web.Http.ModelBinding;
 using System.Web.Http.Validation;
 using System.Web.Http.ValueProviders;
 using Autofac.Builder;
+using Autofac.Core;
 using Autofac.Features.Scanning;
 
 namespace Autofac.Integration.WebApi
@@ -90,9 +92,7 @@ namespace Autofac.Integration.WebApi
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
-            return IsMultipleServiceType<TLimit>() 
-                ? InstancePerApiControllerType(registration, controllerType, false)
-                : registration.Keyed<TLimit>(new ControllerTypeKey(controllerType));
+            return InstancePerApiControllerType(registration, controllerType, false);
         }
 
         /// <summary>
@@ -111,10 +111,13 @@ namespace Autofac.Integration.WebApi
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
-            return IsMultipleServiceType<TLimit>()
-                ? registration.Keyed<TLimit>(new ControllerTypeKey(controllerType))
-                    .WithMetadata(InjectControllerServicesAttribute.ClearServiceListKey, clearExistingServices)
-                : InstancePerApiControllerType(registration, controllerType);
+            var services = registration.RegistrationData.Services.ToArray();
+            registration.RegistrationData.ClearServices();
+            var defaultService = new TypedService(typeof(TLimit));
+            registration.RegistrationData.AddServices(services.Where(s => s != defaultService));
+
+            return registration.Keyed<TLimit>(new ControllerTypeKey(controllerType))
+                .WithMetadata(InjectControllerServicesAttribute.ClearServiceListKey, clearExistingServices);
         }
 
         /// <summary>
@@ -306,15 +309,6 @@ namespace Autofac.Integration.WebApi
                     m.For(f => f.FilterScope, FilterScope.Action);
                     m.For(f => f.MethodInfo, GetMethodInfo(actionSelector));
                 });
-        }
-
-        static bool IsMultipleServiceType<TLimit>()
-        {
-            var limitType = typeof(TLimit);
-            return (limitType.IsAssignableTo<ModelBinderProvider>()
-                    || limitType.IsAssignableTo<ModelValidatorProvider>()
-                    || limitType.IsAssignableTo<ValueProviderFactory>()
-                    || limitType.IsAssignableTo<MediaTypeFormatter>());
         }
 
         static MethodInfo GetMethodInfo(LambdaExpression expression)

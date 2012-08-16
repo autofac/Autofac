@@ -57,6 +57,27 @@ namespace Autofac.Tests.Integration.WebApi
             Assert.That(callCount, Is.EqualTo(1));
         }
 
+
+        [Test]
+        public void PerControllerServiceDoesNotOverrideDefault()
+        {
+            var builder = new ContainerBuilder();
+            var service = new Mock<IHttpActionSelector>().Object;
+            builder.Register(c => service)
+                .As<IHttpActionSelector>()
+                .InstancePerApiControllerType(typeof(TestController));
+            var container = builder.Build();
+            var resolver = new AutofacWebApiDependencyResolver(container);
+            var configuration = new HttpConfiguration {DependencyResolver = resolver};
+            var settings = new HttpControllerSettings(configuration);
+            var descriptor = new HttpControllerDescriptor(configuration, "TestController", typeof(TestController));
+            var attribute = new InjectControllerServicesAttribute();
+
+            attribute.Initialize(settings, descriptor);
+
+            Assert.That(configuration.Services.GetActionSelector(), Is.Not.SameAs(service));
+        }
+
         [Test]
         public void UsesDefaultServiceWhenNoKeyedServiceRegistered()
         {
@@ -226,7 +247,8 @@ namespace Autofac.Tests.Integration.WebApi
 
             attribute.Initialize(settings, descriptor);
 
-            Assert.That(serviceLocator(settings.Services), Is.EqualTo(service));
+            Assert.That(serviceLocator(settings.Services), Is.SameAs(service));
+            Assert.That(serviceLocator(configuration.Services), Is.Not.SameAs(service));
         }
 
         static void AssertControllerServicesReplaced<TLimit>(Func<ServicesContainer, IEnumerable<TLimit>> serviceLocator) where TLimit : class
@@ -243,6 +265,7 @@ namespace Autofac.Tests.Integration.WebApi
             attribute.Initialize(settings, descriptor);
 
             Assert.That(serviceLocator(settings.Services).Contains(service), Is.True);
+            Assert.That(serviceLocator(configuration.Services).Contains(service), Is.False);
         }
     }
 }

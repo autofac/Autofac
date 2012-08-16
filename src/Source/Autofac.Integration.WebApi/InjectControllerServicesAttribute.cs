@@ -86,19 +86,15 @@ namespace Autofac.Integration.WebApi
 
         static void UpdateControllerService<T>(ServicesContainer services, IComponentContext container, ControllerTypeKey serviceKey) where T : class
         {
-            object instance;
-            if (container.TryResolveKeyed(serviceKey, typeof(T), out instance))
-                services.Replace(typeof(T), instance);
+            var instance = container.ResolveOptionalKeyed<Meta<T>>(serviceKey);
+            if (instance != null)
+                services.Replace(typeof(T), instance.Value);
         }
 
         static void UpdateControllerServices<T>(ServicesContainer services, IComponentContext container, ControllerTypeKey serviceKey) where T : class
         {
-            var metaType = typeof(Meta<>).MakeGenericType(typeof(T));
-            var enumerableServiceType = typeof(IEnumerable<>).MakeGenericType(metaType);
-            object instances;
-            if (!container.TryResolveKeyed(serviceKey, enumerableServiceType, out instances)) return;
+            var resolvedInstances = container.ResolveOptionalKeyed<IEnumerable<Meta<T>>>(serviceKey).ToArray();
 
-            var resolvedInstances = (IEnumerable<Meta<T>>)instances;
             if (resolvedInstances.Any(service => ClearExistingServices(service.Metadata)))
                 services.Clear(typeof(T));
 
@@ -108,8 +104,7 @@ namespace Autofac.Integration.WebApi
 
         static void UpdateControllerFormatters(ICollection<MediaTypeFormatter> collection, IComponentContext container, ControllerTypeKey serviceKey)
         {
-            var formatters = container.ResolveOptionalKeyed<IEnumerable<Meta<MediaTypeFormatter>>>(serviceKey);
-            if (formatters == null) return;
+            var formatters = container.ResolveOptionalKeyed<IEnumerable<Meta<MediaTypeFormatter>>>(serviceKey).ToArray();
 
             if (formatters.Any(service => ClearExistingServices(service.Metadata)))
                 collection.Clear();
