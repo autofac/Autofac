@@ -15,3 +15,5 @@ glob:src/Autofac.5.1.ReSharper.user
 glob:*.user
 glob:src/PackageBuild
 glob:*.sln.docstates
+glob:*/packages/
+glob:*/Packages/
