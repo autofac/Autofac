@@ -73,11 +73,12 @@ namespace Autofac.Integration.WebApi
             if (descriptor == null) return filters;
 
             // Use a fake scope to resolve the metadata for the filter.
-            using (var dependencyScope = configuration.DependencyResolver.BeginScope())
+            var rootLifetimeScope = configuration.DependencyResolver.GetRootLifetimeScope();
+            using (var lifetimeScope = rootLifetimeScope.BeginLifetimeScope(AutofacWebApiDependencyResolver.ApiRequestTag))
             {
                 var filterContext = new FilterContext
                 {
-                    LifetimeScope = dependencyScope.GetRequestLifetimeScope(),
+                    LifetimeScope = lifetimeScope,
                     ControllerType = actionDescriptor.ControllerDescriptor.ControllerType,
                     Filters = filters
                 };
