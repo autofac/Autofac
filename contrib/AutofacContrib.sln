@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{15DE9887-5721-421E-9EE0-714D8EF2104E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{3ACB9FCB-420F-4555-BCE4-F98F9A569B70}"
@@ -12,6 +12,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Source\GlobalAssemblyInfo.cs = Source\GlobalAssemblyInfo.cs
 		go.cmd = go.cmd
 		SharedKey.snk = SharedKey.snk
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example", "Example", "{5101146B-55B1-42BB-9232-4A46D88ECD3F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F07B10D2-F88F-4786-9283-9931E802DDE3}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutofacContrib.NMock2", "Source\AutofacContrib.NMock2\AutofacContrib.NMock2.csproj", "{C1C4B360-02D0-480A-A567-FD53A5D94FBA}"
@@ -37,8 +46,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutofacContrib.NHibernate", "Source\AutofacContrib.NHibernate\AutofacContrib.NHibernate.csproj", "{1263412A-440E-41F1-9729-3A2B58B03124}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutofacContrib.Prism", "Source\AutofacContrib.Prism\AutofacContrib.Prism.csproj", "{A3D47086-F033-437E-9B8B-691B97B81D0C}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example", "Example", "{5101146B-55B1-42BB-9232-4A46D88ECD3F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrismStockTraderRI", "Example\PrismStockTraderRI\PrismStockTraderRI.csproj", "{FE57E1C8-C820-4046-8CE6-5EFC65E670CE}"
 EndProject
@@ -78,13 +85,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutofacContrib.Tests.EnterpriseLibraryConfigurator", "Test\AutofacContrib.Tests.EnterpriseLibraryConfigurator\AutofacContrib.Tests.EnterpriseLibraryConfigurator.csproj", "{0122ECB8-93C3-4020-A28D-1078E32C5DB2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnterpriseLibraryExample.MvcApplication", "Example\EnterpriseLibraryExample.MvcApplication\EnterpriseLibraryExample.MvcApplication.csproj", "{AA1B1114-2E7C-4B42-BC75-E91888C9C2C1}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F07B10D2-F88F-4786-9283-9931E802DDE3}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

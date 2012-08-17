@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{15DE9887-5721-421E-9EE0-714D8EF2104E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{3ACB9FCB-420F-4555-BCE4-F98F9A569B70}"
@@ -15,6 +15,50 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example", "Example", "{01C16A53-606F-4F57-ADF0-D15974B0832D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Packages", "Packages", "{3BD47FB1-848D-4780-A089-0983D0F97953}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Autofac.Web", "Autofac.Web", "{4020F810-7DBB-496E-8C85-2CDC5D63072C}"
+	ProjectSection(SolutionItems) = preProject
+		Packages\Autofac.Web\Autofac.Web.nuspec = Packages\Autofac.Web\Autofac.Web.nuspec
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Autofac_", "Autofac_", "{C6F14D79-CC0C-4D03-8AE9-854320CB009D}"
+	ProjectSection(SolutionItems) = preProject
+		Packages\Autofac\Autofac.nuspec = Packages\Autofac\Autofac.nuspec
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Autofac.Mvc4", "Autofac.Mvc4", "{5E69140E-DDCC-4D33-9D67-DBCB091E1640}"
+	ProjectSection(SolutionItems) = preProject
+		Packages\Autofac.Mvc4\Autofac.Mvc4.nuspec = Packages\Autofac.Mvc4\Autofac.Mvc4.nuspec
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{AB95C267-705A-4F13-AFEF-1CA063BE95CD}"
+	ProjectSection(SolutionItems) = preProject
+		Packages\Autofac.Web\content\web.config.transform = Packages\Autofac.Web\content\web.config.transform
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Autofac.Mef", "Autofac.Mef", "{3D2912F8-FBDC-4121-BF7E-5B5C2C9AA4EF}"
+	ProjectSection(SolutionItems) = preProject
+		Packages\Autofac.Mef\Autofac.Mef.nuspec = Packages\Autofac.Mef\Autofac.Mef.nuspec
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Autofac.Wcf", "Autofac.Wcf", "{B9A087C9-3A28-445C-A998-7D323BB1E963}"
+	ProjectSection(SolutionItems) = preProject
+		Packages\Autofac.Wcf\Autofac.Wcf.nuspec = Packages\Autofac.Wcf\Autofac.Wcf.nuspec
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Autofac.WebApi", "Autofac.WebApi", "{E9539920-C273-4C8A-B5CA-B2350B6331E9}"
+	ProjectSection(SolutionItems) = preProject
+		Packages\Autofac.WebApi\Autofac.WebApi.nuspec = Packages\Autofac.WebApi\Autofac.WebApi.nuspec
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{8468C77B-3DF7-44F6-A924-1A4953752DB2}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac", "Source\Autofac\Autofac.csproj", "{7D018B3E-34A3-423D-AC35-12731F4E0A2C}"
 EndProject
@@ -52,53 +96,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.Mvc", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.Mvc", "Test\Autofac.Tests.Integration.Mvc\Autofac.Tests.Integration.Mvc.csproj", "{438022BC-2202-4F9D-A3AD-6EA84DB947D2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Packages", "Packages", "{3BD47FB1-848D-4780-A089-0983D0F97953}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Autofac.Web", "Autofac.Web", "{4020F810-7DBB-496E-8C85-2CDC5D63072C}"
-	ProjectSection(SolutionItems) = preProject
-		Packages\Autofac.Web\Autofac.Web.nuspec = Packages\Autofac.Web\Autofac.Web.nuspec
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Autofac_", "Autofac_", "{C6F14D79-CC0C-4D03-8AE9-854320CB009D}"
-	ProjectSection(SolutionItems) = preProject
-		Packages\Autofac\Autofac.nuspec = Packages\Autofac\Autofac.nuspec
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Autofac.Mvc4", "Autofac.Mvc4", "{5E69140E-DDCC-4D33-9D67-DBCB091E1640}"
-	ProjectSection(SolutionItems) = preProject
-		Packages\Autofac.Mvc4\Autofac.Mvc4.nuspec = Packages\Autofac.Mvc4\Autofac.Mvc4.nuspec
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{AB95C267-705A-4F13-AFEF-1CA063BE95CD}"
-	ProjectSection(SolutionItems) = preProject
-		Packages\Autofac.Web\content\web.config.transform = Packages\Autofac.Web\content\web.config.transform
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Autofac.Mef", "Autofac.Mef", "{3D2912F8-FBDC-4121-BF7E-5B5C2C9AA4EF}"
-	ProjectSection(SolutionItems) = preProject
-		Packages\Autofac.Mef\Autofac.Mef.nuspec = Packages\Autofac.Mef\Autofac.Mef.nuspec
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Autofac.Wcf", "Autofac.Wcf", "{B9A087C9-3A28-445C-A998-7D323BB1E963}"
-	ProjectSection(SolutionItems) = preProject
-		Packages\Autofac.Wcf\Autofac.Wcf.nuspec = Packages\Autofac.Wcf\Autofac.Wcf.nuspec
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.WebApi", "Source\Autofac.Integration.WebApi\Autofac.Integration.WebApi.csproj", "{8437DAE1-0F24-44A9-A187-B34F52858A58}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.WebApi", "Test\Autofac.Tests.Integration.WebApi\Autofac.Tests.Integration.WebApi.csproj", "{AD8D8B7A-184E-428D-AD9C-BE1CEA8225A8}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Autofac.WebApi", "Autofac.WebApi", "{E9539920-C273-4C8A-B5CA-B2350B6331E9}"
-	ProjectSection(SolutionItems) = preProject
-		Packages\Autofac.WebApi\Autofac.WebApi.nuspec = Packages\Autofac.WebApi\Autofac.WebApi.nuspec
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{8468C77B-3DF7-44F6-A924-1A4953752DB2}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
