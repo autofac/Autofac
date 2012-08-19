@@ -68,5 +68,14 @@ namespace Autofac.Integration.WebApi {
                 return ResourceManager.GetString("InvalidActionExpress", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type list may not be empty or contain all null values..
+        /// </summary>
+        internal static string ListMustNotBeEmptyOrContainNulls {
+            get {
+                return ResourceManager.GetString("ListMustNotBeEmptyOrContainNulls", resourceCulture);
+            }
+        }
     }
 }

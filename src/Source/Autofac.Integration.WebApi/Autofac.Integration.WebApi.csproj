@@ -79,11 +79,11 @@
     <Compile Include="IAutofacAuthorizationFilter.cs" />
     <Compile Include="IAutofacExceptionFilter.cs" />
     <Compile Include="IFilterMetadata.cs" />
-    <Compile Include="InjectControllerServicesAttribute.cs" />
-    <Compile Include="InjectControllerServicesAttributeResources.Designer.cs">
+    <Compile Include="AutofacControllerConfigurationAttribute.cs" />
+    <Compile Include="AutofacControllerConfigurationAttributeResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>InjectControllerServicesAttributeResources.resx</DependentUpon>
+      <DependentUpon>AutofacControllerConfigurationAttributeResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationExtensions.cs" />
@@ -100,9 +100,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="InjectControllerServicesAttributeResources.resx">
+    <EmbeddedResource Include="AutofacControllerConfigurationAttributeResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>InjectControllerServicesAttributeResources.Designer.cs</LastGenOutput>
+      <LastGenOutput>AutofacControllerConfigurationAttributeResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="RegistrationExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

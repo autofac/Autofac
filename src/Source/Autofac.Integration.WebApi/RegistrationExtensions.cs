@@ -117,7 +117,7 @@ namespace Autofac.Integration.WebApi
             registration.RegistrationData.AddServices(services.Where(s => s != defaultService));
 
             return registration.Keyed<TLimit>(new ControllerTypeKey(controllerType))
-                .WithMetadata(InjectControllerServicesAttribute.ClearServiceListKey, clearExistingServices);
+                .WithMetadata(AutofacControllerConfigurationAttribute.ClearServiceListKey, clearExistingServices);
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace Autofac.Integration.WebApi
 
             var typeList = types.Where(type => type != null).ToList();
             if (typeList.Count == 0)
-                throw new ArgumentException(InjectControllerServicesAttributeResources.ListMustNotBeEmptyOrContainNulls, "types");
+                throw new ArgumentException(RegistrationExtensionsResources.ListMustNotBeEmptyOrContainNulls, "types");
 
             return registration.As<IModelBinder>().WithMetadata(AutofacWebApiModelBinderProvider.MetadataKey, typeList);
         }

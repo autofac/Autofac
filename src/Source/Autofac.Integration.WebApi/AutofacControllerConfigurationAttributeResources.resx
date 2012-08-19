@@ -120,7 +120,4 @@
   <data name="DependencyResolverMissing" xml:space="preserve">
     <value>The '{0}' must be configured as the dependency resolver for Web API before the '{1}' can resolve services from the container for a controller type.</value>
   </data>
-  <data name="ListMustNotBeEmptyOrContainNulls">
-    <value xml:space="preserve">Type list may not be empty or contain all null values.</value>
-  </data>
 </root>

@@ -72,7 +72,7 @@
     <Compile Include="AutofacWebApiDependencyScopeFixture.cs" />
     <Compile Include="AuthorizationFilterWrapperFixture.cs" />
     <Compile Include="ExceptionFilterWrapperFixture.cs" />
-    <Compile Include="InjectControllerServicesAttributeFixture.cs" />
+    <Compile Include="AutofacControllerConfigurationAttributeFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationExtensionsFixture.cs" />
     <Compile Include="TestTypes.cs" />

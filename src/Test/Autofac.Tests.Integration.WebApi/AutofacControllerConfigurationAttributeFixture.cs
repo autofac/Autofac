@@ -12,12 +12,12 @@ using NUnit.Framework;
 namespace Autofac.Tests.Integration.WebApi
 {
     [TestFixture]
-    public class InjectControllerServicesAttributeFixture
+    public class AutofacControllerConfigurationAttributeFixture
     {
         [Test]
         public void ExceptionThrownWhenAutofacDependencyResolverMissing()
         {
-            var attribute = new InjectControllerServicesAttribute();
+            var attribute = new AutofacControllerConfigurationAttribute();
             var configuration = new HttpConfiguration();
             var settings = new HttpControllerSettings(configuration);
             var descriptor = new HttpControllerDescriptor(configuration, "TestController", typeof(TestController));
@@ -28,7 +28,7 @@ namespace Autofac.Tests.Integration.WebApi
         [Test]
         public void HandlesMissingHttpConfiguration()
         {
-            var attribute = new InjectControllerServicesAttribute();
+            var attribute = new AutofacControllerConfigurationAttribute();
             var settings = new HttpControllerSettings(new HttpConfiguration());
             var descriptor = new HttpControllerDescriptor();
 
@@ -49,7 +49,7 @@ namespace Autofac.Tests.Integration.WebApi
             var configuration = new HttpConfiguration {DependencyResolver = new AutofacWebApiDependencyResolver(container)};
             var settings = new HttpControllerSettings(configuration);
             var descriptor = new HttpControllerDescriptor(configuration, "TestController", typeof(TestController));
-            var attribute = new InjectControllerServicesAttribute();
+            var attribute = new AutofacControllerConfigurationAttribute();
 
             attribute.Initialize(settings, descriptor);
             attribute.Initialize(settings, descriptor);
@@ -71,7 +71,7 @@ namespace Autofac.Tests.Integration.WebApi
             var configuration = new HttpConfiguration {DependencyResolver = resolver};
             var settings = new HttpControllerSettings(configuration);
             var descriptor = new HttpControllerDescriptor(configuration, "TestController", typeof(TestController));
-            var attribute = new InjectControllerServicesAttribute();
+            var attribute = new AutofacControllerConfigurationAttribute();
 
             attribute.Initialize(settings, descriptor);
 
@@ -86,7 +86,7 @@ namespace Autofac.Tests.Integration.WebApi
             var configuration = new HttpConfiguration {DependencyResolver = new AutofacWebApiDependencyResolver(container)};
             var settings = new HttpControllerSettings(configuration);
             var descriptor = new HttpControllerDescriptor(configuration, "TestController", typeof(TestController));
-            var attribute = new InjectControllerServicesAttribute();
+            var attribute = new AutofacControllerConfigurationAttribute();
 
             attribute.Initialize(settings, descriptor);
 
@@ -103,7 +103,7 @@ namespace Autofac.Tests.Integration.WebApi
             var configuration = new HttpConfiguration {DependencyResolver = new AutofacWebApiDependencyResolver(container)};
             var settings = new HttpControllerSettings(configuration);
             var descriptor = new HttpControllerDescriptor(configuration, "TestController", typeof(TestController));
-            var attribute = new InjectControllerServicesAttribute();
+            var attribute = new AutofacControllerConfigurationAttribute();
 
             attribute.Initialize(settings, descriptor);
 
@@ -122,7 +122,7 @@ namespace Autofac.Tests.Integration.WebApi
             var configuration = new HttpConfiguration {DependencyResolver = new AutofacWebApiDependencyResolver(container)};
             var settings = new HttpControllerSettings(configuration);
             var descriptor = new HttpControllerDescriptor(configuration, "TestController", typeof(TestController));
-            var attribute = new InjectControllerServicesAttribute();
+            var attribute = new AutofacControllerConfigurationAttribute();
 
             attribute.Initialize(settings, descriptor);
 
@@ -142,7 +142,7 @@ namespace Autofac.Tests.Integration.WebApi
             var configuration = new HttpConfiguration {DependencyResolver = new AutofacWebApiDependencyResolver(container)};
             var settings = new HttpControllerSettings(configuration);
             var descriptor = new HttpControllerDescriptor(configuration, "TestController", typeof(TestController));
-            var attribute = new InjectControllerServicesAttribute();
+            var attribute = new AutofacControllerConfigurationAttribute();
 
             attribute.Initialize(settings, descriptor);
 
@@ -163,7 +163,7 @@ namespace Autofac.Tests.Integration.WebApi
             var configuration = new HttpConfiguration {DependencyResolver = new AutofacWebApiDependencyResolver(container)};
             var settings = new HttpControllerSettings(configuration);
             var descriptor = new HttpControllerDescriptor(configuration, "TestController", typeof(TestController));
-            var attribute = new InjectControllerServicesAttribute();
+            var attribute = new AutofacControllerConfigurationAttribute();
 
             attribute.Initialize(settings, descriptor);
 
@@ -243,7 +243,7 @@ namespace Autofac.Tests.Integration.WebApi
             var configuration = new HttpConfiguration {DependencyResolver = new AutofacWebApiDependencyResolver(container)};
             var settings = new HttpControllerSettings(configuration);
             var descriptor = new HttpControllerDescriptor(configuration, "TestController", typeof(TestController));
-            var attribute = new InjectControllerServicesAttribute();
+            var attribute = new AutofacControllerConfigurationAttribute();
 
             attribute.Initialize(settings, descriptor);
 
@@ -260,7 +260,7 @@ namespace Autofac.Tests.Integration.WebApi
             var configuration = new HttpConfiguration {DependencyResolver = new AutofacWebApiDependencyResolver(container)};
             var settings = new HttpControllerSettings(configuration);
             var descriptor = new HttpControllerDescriptor(configuration, "TestController", typeof(TestController));
-            var attribute = new InjectControllerServicesAttribute();
+            var attribute = new AutofacControllerConfigurationAttribute();
 
             attribute.Initialize(settings, descriptor);
 

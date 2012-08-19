@@ -41,7 +41,7 @@ namespace Autofac.Integration.WebApi
     /// Configures the controller descriptor with per-controller services from the container.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public class InjectControllerServicesAttribute : Attribute, IControllerConfiguration
+    public class AutofacControllerConfigurationAttribute : Attribute, IControllerConfiguration
     {
         const string InitializedKey = "InjectControllerServicesAttributeInitialized";
 
@@ -63,8 +63,8 @@ namespace Autofac.Integration.WebApi
             var container = controllerDescriptor.Configuration.DependencyResolver.GetRootLifetimeScope();
             if (container == null)
                 throw new InvalidOperationException(
-                    string.Format(InjectControllerServicesAttributeResources.DependencyResolverMissing,
-                        typeof(AutofacWebApiDependencyResolver).Name, typeof(InjectControllerServicesAttribute).Name));
+                    string.Format(AutofacControllerConfigurationAttributeResources.DependencyResolverMissing,
+                        typeof(AutofacWebApiDependencyResolver).Name, typeof(AutofacControllerConfigurationAttribute).Name));
 
             var controllerServices = controllerSettings.Services;
             var serviceKey = new ControllerTypeKey(controllerDescriptor.ControllerType);
