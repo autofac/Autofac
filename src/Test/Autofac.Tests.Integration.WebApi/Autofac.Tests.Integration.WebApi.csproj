@@ -71,6 +71,7 @@
     <Compile Include="AutofacWebApiModelBinderProviderFixture.cs" />
     <Compile Include="AutofacWebApiDependencyScopeFixture.cs" />
     <Compile Include="AuthorizationFilterWrapperFixture.cs" />
+    <Compile Include="ControllerTypeKeyFixture.cs" />
     <Compile Include="ExceptionFilterWrapperFixture.cs" />
     <Compile Include="AutofacControllerConfigurationAttributeFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

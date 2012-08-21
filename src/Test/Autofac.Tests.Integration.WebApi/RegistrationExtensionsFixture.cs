@@ -71,6 +71,17 @@ namespace Autofac.Tests.Integration.WebApi
         }
 
         [Test]
+        public void InstancePerApiRequestRequiresControllerTypeParameter()
+        {
+            var builder = new ContainerBuilder();
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.RegisterType<object>().InstancePerApiControllerType(null));
+
+            Assert.That(exception.ParamName, Is.EqualTo("controllerType"));
+        }
+
+        [Test]
         public void InstancePerApiRequestTagsRegistrations()
         {
             var builder = new ContainerBuilder();

@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Formatting;
+using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Dispatcher;
 using System.Web.Http.Metadata;
@@ -87,6 +88,14 @@ namespace Autofac.Integration.WebApi
         static void UpdateControllerService<T>(ServicesContainer services, IComponentContext container, ControllerTypeKey serviceKey) where T : class
         {
             var instance = container.ResolveOptionalKeyed<Meta<T>>(serviceKey);
+            var baseControllerType = serviceKey.ControllerType.BaseType;
+            while (instance == null && baseControllerType != typeof(ApiController))
+            {
+                var baseServiceKey = new ControllerTypeKey(baseControllerType);
+                instance = container.ResolveOptionalKeyed<Meta<T>>(baseServiceKey);
+                baseControllerType = baseServiceKey.ControllerType.BaseType;
+            }
+
             if (instance != null)
                 services.Replace(typeof(T), instance.Value);
         }

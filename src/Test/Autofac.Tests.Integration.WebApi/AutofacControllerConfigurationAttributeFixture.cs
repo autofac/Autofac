@@ -111,6 +111,26 @@ namespace Autofac.Tests.Integration.WebApi
         }
 
         [Test]
+        public void RegistrationForBaseControllerAppliesForDerived()
+        {
+            var builder = new ContainerBuilder();
+            var service = new Mock<IHttpActionSelector>().Object;
+            builder.Register(c => service)
+                .As<IHttpActionSelector>()
+                .InstancePerApiControllerType(typeof(TestController));
+            var container = builder.Build();
+            var resolver = new AutofacWebApiDependencyResolver(container);
+            var configuration = new HttpConfiguration {DependencyResolver = resolver};
+            var settings = new HttpControllerSettings(configuration);
+            var descriptor = new HttpControllerDescriptor(configuration, "TestControllerA", typeof(TestControllerA));
+            var attribute = new AutofacControllerConfigurationAttribute();
+
+            attribute.Initialize(settings, descriptor);
+
+            Assert.That(settings.Services.GetActionSelector(), Is.EqualTo(service));
+        }
+
+        [Test]
         public void FormattersCanBeResolvedPerControllerType()
         {
             var builder = new ContainerBuilder();
@@ -126,6 +146,7 @@ namespace Autofac.Tests.Integration.WebApi
 
             attribute.Initialize(settings, descriptor);
 
+            Assert.That(settings.Formatters.Count, Is.EqualTo(6));
             Assert.That(settings.Formatters.Contains(formatter1), Is.True);
             Assert.That(settings.Formatters.Contains(formatter2), Is.True);
         }

@@ -304,11 +304,11 @@ namespace Autofac.Integration.WebApi
             if (actionSelector == null) throw new ArgumentNullException("actionSelector");
 
             return registration.As<TFilter>().WithMetadata<IFilterMetadata>(m =>
-                {
-                    m.For(f => f.ControllerType, typeof(TController));
-                    m.For(f => f.FilterScope, FilterScope.Action);
-                    m.For(f => f.MethodInfo, GetMethodInfo(actionSelector));
-                });
+            {
+                m.For(f => f.ControllerType, typeof(TController));
+                m.For(f => f.FilterScope, FilterScope.Action);
+                m.For(f => f.MethodInfo, GetMethodInfo(actionSelector));
+            });
         }
 
         static MethodInfo GetMethodInfo(LambdaExpression expression)

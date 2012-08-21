@@ -30,7 +30,7 @@ namespace Autofac.Integration.WebApi
     /// <summary>
     /// A service key used to register services per controller type.
     /// </summary>
-    internal class ControllerTypeKey
+    internal class ControllerTypeKey : IEquatable<ControllerTypeKey>
     {
         /// <summary>
         /// Gets the type of the controller.
@@ -49,6 +49,18 @@ namespace Autofac.Integration.WebApi
         }
 
         /// <summary>
+        /// Determines whether the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns>
+        /// true if the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />; otherwise, false.
+        /// </returns>
+        public bool Equals(ControllerTypeKey other)
+        {
+            return other != null && other.ControllerType.IsAssignableFrom(ControllerType);
+        }
+
+        /// <summary>
         /// Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
         /// </summary>
         /// <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>.</param>
@@ -58,8 +70,7 @@ namespace Autofac.Integration.WebApi
         /// <exception cref="T:System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
         public override bool Equals(object obj)
         {
-            var that = obj as ControllerTypeKey;
-            return that != null && ControllerType.IsEquivalentTo(that.ControllerType);
+            return Equals(obj as ControllerTypeKey);
         }
 
         /// <summary>
