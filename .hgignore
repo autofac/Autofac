@@ -22,3 +22,5 @@ glob:packages/Moq*
 glob:packages/NHibernate*
 glob:packages/NUnit*
 glob:packages/Unity*
+syntax: glob
+packages/*
