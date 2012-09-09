@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project InitialTargets="__EnvironmentSetup" DefaultTargets="All" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+	<!--
+		Standard Build
+		msbuild default.proj
+
+		Production/Release Build
+		msbuild default.proj /p:AssemblyVersion=1.2.3.4
+	-->
+	<PropertyGroup>
+		<!-- 0.0.0.0 == developer build; a.b.c.d == production/release build -->
+		<AssemblyVersion Condition="'$(AssemblyVersion)' == ''">0.0.0.0</AssemblyVersion>
+
+		<!-- BuildDirectory is the root of where build output goes. -->
+		<BuildDirectory>$(MSBuildProjectDirectory)\build_output</BuildDirectory>
+
+		<!-- Setting the path to MSBuildCommunityTasks to . allows you to check them in; otherwise you must install them. -->
+		<MSBuildCommunityTasksPath>.</MSBuildCommunityTasksPath>
+
+		<!-- PackageInstallDirectory is where NuGet installs the set of dependencies. -->
+		<PackageInstallDirectory>$(MSBuildProjectDirectory)\packages</PackageInstallDirectory>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(BuildConfiguration)' == ''">
+		<!-- Unless otherwise specified, dev build is Debug, production build is Release. -->
+		<BuildConfiguration Condition="'$(AssemblyVersion)' == '0.0.0.0'">Debug</BuildConfiguration>
+		<BuildConfiguration Condition="'$(AssemblyVersion)' != '0.0.0.0'">Release</BuildConfiguration>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Package)' == ''">
+		<!-- Unless otherwise specified, dev build will not run packaging, production build will. -->
+		<Package Condition="'$(AssemblyVersion)' == '0.0.0.0'">false</Package>
+		<Package Condition="'$(AssemblyVersion)' != '0.0.0.0'">true</Package>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Document)' == ''">
+		<!-- Unless otherwise specified, dev build will not build documentation, production build will. -->
+		<Document Condition="'$(AssemblyVersion)' == '0.0.0.0'">Debug</Document>
+		<Document Condition="'$(AssemblyVersion)' != '0.0.0.0'">Release</Document>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- SolutionFile is the solution to build. Technically we could add more if needed. -->
+		<SolutionFile Include="$(MSBuildProjectDirectory)\Autofac.sln" />
+	</ItemGroup>
+
+	<Import Project="$(MSBuildProjectDirectory)\lib\BuildTasks\MSBuild.Community.Tasks.targets" />
+
+
+	<!--
+	-
+	- TARGETS are in alpha order. "Private" targets that act as "subroutines" start with
+	- double-underscore. The "All" target is the primary entry point.
+	-
+	-->
+	<Target Name="All">
+		<CallTarget Targets="UpdateVersion" Condition="'$(AssemblyVersion)' !='0.0.0.0'" />
+		<CallTarget Targets="Clean;Compile;Test;Analyze" />
+		<CallTarget Targets="Package" Condition="'$(Package)' == 'true'" />
+		<CallTarget Targets="Document" Condition="'$(Document)' == 'true'" />
+	</Target>
+
+	<Target Name="Analyze">
+		<!--
+		<CallTarget Targets="__SecAnnotate" />
+		-->
+	</Target>
+
+	<Target Name="Clean">
+		<RemoveDir Directories="$(BuildDirectory)" ContinueOnError="true" />
+		<RemoveDir
+			Directories="%(AllProject.RootDir)%(AllProject.Directory)bin"
+			Condition="Exists('%(AllProject.RootDir)%(AllProject.Directory)bin')" />
+		<RemoveDir
+			Directories="%(AllProject.RootDir)%(AllProject.Directory)obj"
+			Condition="Exists('%(AllProject.RootDir)%(AllProject.Directory)obj')" />
+	</Target>
+
+	<Target Name="Compile">
+		<!--
+			Manually restore solution-level packages before build. NuGet doesn't do this automatically
+			"by design": http://nuget.codeplex.com/workitem/1880
+		-->
+		<MSBuild Projects="$(MSBuildProjectDirectory)\.nuget\NuGet.targets" Targets="RestorePackages" />
+		<MSBuild Projects="%(SolutionFile.FullPath)" Targets="Build" Properties="Configuration=$(BuildConfiguration)" />
+
+		<!--
+			The current build only targets .NET 4.0. It finds all the build output and puts
+			it in bin\NET40. (Note "NET40" is what NuGet uses as the framework ID for .NET 4.)
+
+			When more platforms are targeted, put the appropriate build output into bin\XYZ where
+			XYZ is the associated NuGet framework identifier. This will allow easier convention-based
+			NuGet packaging to occur.
+
+			Original build constants used for targeting:
+			* NET40 = .NET 4.0 (TargetFrameworkVersion = v4.0; AllowPartiallyTrustedCallers = true)
+			* NET35 = .NET 3.5 (TargetFrameworkVersion = v3.5; AllowPartiallyTrustedCallers = false)
+			* SILVERLIGHT;SL3;WINDOWS_PHONE = WP7 (TargetFrameworkVersion = v4.0; AllowPartiallyTrustedCallers = false)
+			* SILVERLIGHT;SL4 = SL4 (TargetFrameworkVersion = v4.0; TargetFrameworkIdentifier = Silverlight; AllowPartiallyTrustedCallers = false)
+		-->
+		<ItemGroup>
+			<SourceOutputList
+				Include="
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.dll;
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.pdb;
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.xml;
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.config"
+				Exclude="**\*.vshost.*;**\*.CodeAnalysisLog.*" />
+			<PortableOutputList
+				Include="
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.dll;
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.pdb;
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.xml"
+				Exclude="**\*.vshost.*;**\*.CodeAnalysisLog.*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(SourceOutputList)" DestinationFolder="$(BuildDirectory)\bin\net40" />
+		<Copy SourceFiles="@(PortableOutputList)" DestinationFolder="$(BuildDirectory)\bin\sl5" />
+		<Copy SourceFiles="@(PortableOutputList)" DestinationFolder="$(BuildDirectory)\bin\winrt45" />
+	</Target>
+
+	<Target Name="Document">
+		<!--
+			Dynamically generate the list of Autofac assemblies to put in the documentation so we don't
+			have to modify the doc build when assemblies change.
+		-->
+		<ItemGroup>
+			<DocTarget Include="$(BuildDirectory)\bin\net40\*.dll;$(BuildDirectory)\bin\net40\*.xml" />
+		</ItemGroup>
+		<CreateProperty Value="@(DocTarget -> '&lt;DocumentationSource sourceFile=%27%(FullPath)%27 /&gt;', '')">
+			<Output TaskParameter="Value" PropertyName="DocumentationSources" />
+		</CreateProperty>
+		<MSBuild
+			ToolsVersion="4.0"
+			Projects="Documentation.shfbproj"
+			Properties="SHFBRoot=$(MSBuildProjectDirectory)\lib\SHFB;HelpFileVersion=$(AssemblyVersion);DocumentationSources=$(DocumentationSources)" />
+	</Target>
+
+	<Target Name="Package">
+		<PropertyGroup>
+			<!-- All packages will end up in the package directory. -->
+			<PackageDirectory>$(BuildDirectory)\package</PackageDirectory>
+
+			<!-- Nuspec/NuGet package contents will be staged in a temporary location for building. -->
+			<StagingDirectory>$(PackageDirectory)\nuspec-staging</StagingDirectory>
+		</PropertyGroup>
+		<ItemGroup>
+			<!-- One set of Extras and Core items should be created for each target zip file. -->
+			<NET40ExtrasPackageItems Include="$(BuildDirectory)\bin\net40\Autofac.Extras.*" />
+			<NET40CorePackageItems Include="$(BuildDirectory)\bin\net40\Autofac.*" Exclude="@(NET40ExtrasPackageItems)" />
+			<PortablePackageItems Include="$(BuildDirectory)\bin\winrt45\Autofac.*" />
+
+			<!-- The license file gets included with zip files; NuGet packages have a license URL. -->
+			<LicenseFile Include="$(MSBuildProjectDirectory)\License.txt" />
+
+			<!-- Nuspec/NuGet packages get staged using these scripts. -->
+			<NuspecStagingScripts Include="$(MSBuildProjectDirectory)\**\NuspecStaging.proj" />
+		</ItemGroup>
+
+		<Message Text="Packaging downloadable zip files..." />
+		<Zip Files="@(NET40CorePackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac-$(AssemblyVersion)-NET40.zip" Flatten="true" />
+		<Zip Files="@(NET40ExtrasPackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac.Extras-$(AssemblyVersion)-NET40.zip" Flatten="true" />
+		<Zip Files="@(PortablePackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac-$(AssemblyVersion)-Portable.zip" Flatten="true" />
+		
+		<!--
+			NuGet packaging is done by convention.
+
+			In the folder containing the .nuspec file, add a NuspecStaging.proj file. That project should take in
+			two variables:
+			* StagingDirectory = the location where all NuGet package contents are being staged.
+			* BuildBinDirectory = the location where the compiled binaries are.
+
+			The NuspecStaging.proj script should:
+			* Create a folder under the StagingDirectory where it will stage its package structure.
+			* Copy the .nuspec file into the folder.
+			* Create the lib/XYZ folder structure using compiled binaries from BuildBinDirectory.
+			* Copy any additional files required.
+
+			After all Nuspec staging is done, this script will find all .nuspec files in the staging area and:
+			* Replace any instances of $version$ with the current AssemblyVersion value.
+			* Replace any instances of $version_DependencyName$ with the version found referenced in the
+			    "packages" folder. (eg: $version_Castle.Core$ -> 3.0.0.4001)
+			* Run nuget pack to create the .nupkg file.
+			* Move the .nupkg file to the package folder.
+			* Remove the temporary staging area.
+		-->
+		<Message Text="Staging NuGet package contents..." />
+		<MSBuild Projects="%(NuspecStagingScripts.FullPath)" Properties="BuildBinDirectory=$(BuildDirectory)\bin;StagingDirectory=$(StagingDirectory)" />
+		<ItemGroup>
+			<NuspecFiles Include="$(StagingDirectory)\**\*.nuspec" />
+		</ItemGroup>
+
+		<Message Text="Updating NuGet package version info..." />
+		<FileUpdate Files="@(NuspecFiles)" Regex="\$version\$" ReplacementText="$(AssemblyVersion)" />
+
+		<Message Text="Updating NuGet package dependency version info..." />
+		<GetNuGetDependencyVersions PackageInstallDirectory="$(PackageInstallDirectory)">
+			<Output TaskParameter="Dependencies" ItemName="LocatedDependencies" />
+		</GetNuGetDependencyVersions>
+		<FileUpdate Files="@(NuspecFiles)" Regex="\$version_%(LocatedDependencies.Identity)\$" ReplacementText="%(LocatedDependencies.Version)" />
+
+		<Message Text="Packaging NuGet packages..." />
+		<Exec
+			Command="&quot;$(MSBuildProjectDirectory)\.nuget\nuget.exe&quot; pack %(NuspecFiles.Filename)%(NuspecFiles.Extension)"
+			WorkingDirectory="%(NuspecFiles.RootDir)%(NuspecFiles.Directory)" />
+		<ItemGroup>
+			<NupkgFiles Include="$(StagingDirectory)\**\*.nupkg" />
+		</ItemGroup>
+		<Move SourceFiles="@(NupkgFiles)" DestinationFolder="$(PackageDirectory)" />
+
+		<Message Text="Cleaning NuGet staging..." />
+		<RemoveDir Directories="$(StagingDirectory)" />
+		
+		<Message Text="Packaging complete." />
+	</Target>
+
+	<Target Name="Test">
+		<ItemGroup>
+			<TestAssemblies Include="%(TestProject.RootDir)%(TestProject.Directory)\bin\$(BuildConfiguration)\Autofac*.Tests*.dll" />
+			<NUnitConsole Include="$(PackageInstallDirectory)\NUnit.Runners.*\tools\nunit-console.exe" />
+		</ItemGroup>
+		<PropertyGroup>
+			<TestResultsFile>$(BuildDirectory)\log\TestResults.xml</TestResultsFile>
+			<NUnitCommandLineArgs>@(TestAssemblies->'%(FullPath)', ' ') /xml:$(TestResultsFile) /framework:net-4.0</NUnitCommandLineArgs>
+		</PropertyGroup>
+		<MakeDir Directories="$(BuildDirectory)\log" Condition="!Exists('$(BuildDirectory)\log')" />
+		<Exec Command="&quot;%(NUnitConsole.FullPath)&quot; $(NUnitCommandLineArgs)" />
+	</Target>
+
+	<Target Name="UpdateVersion">
+		<AssemblyInfo
+			OutputFile="$(MSBuildProjectDirectory)\VersionAssemblyInfo.cs"
+			CodeLanguage="CS"
+			AssemblyVersion="$(AssemblyVersion)"
+			AssemblyFileVersion="$(AssemblyVersion)"
+			AssemblyConfiguration="$(BuildConfiguration) built on $(BuildTime)" />
+	</Target>
+
+	<Target Name="__EnvironmentSetup">
+		<ItemGroup>
+			<AllProject Include="$(MSBuildProjectDirectory)\**\*.csproj" />
+			<TestProject Include="$(MSBuildProjectDirectory)\**\Tests\**\*.csproj" />
+			<SourceProject Include="$(MSBuildProjectDirectory)\**\Source\**\*.csproj" />
+			<ExampleProject Include="$(MSBuildProjectDirectory)\**\Examples\**\*.csproj" />
+		</ItemGroup>
+		<Time Format="yyyy-MM-dd HH:mm">
+			<Output TaskParameter="FormattedTime" PropertyName="BuildTime" />
+		</Time>
+		<Message Text="Environment Setup:" />
+		<Message Text="Assembly Version:    $(AssemblyVersion)" />
+		<Message Text="Build Configuration: $(BuildConfiguration)" />
+		<Message Text="Build Directory:     $(BuildDirectory)" />
+		<Message Text="Build Time:          $(BuildTime)" />
+	</Target>
+
+	<Target Name="__SecAnnotate">
+		<PropertyGroup>
+			<!-- Too many parameters for the comand line, so parameters get written to response files. -->
+			<SecAnnotateAnalyzeResponseFile>$(BuildDirectory)\log\SecAnnotateAnalyzeList.txt</SecAnnotateAnalyzeResponseFile>
+			<SecAnnotateReferenceResponseFile>$(BuildDirectory)\log\SecAnnotateReferenceList.txt</SecAnnotateReferenceResponseFile>
+		</PropertyGroup>
+		<ItemGroup>
+			<!--
+				Only analyze the .NET 4.0 assemblies. This shouldn't change if multi-targeting because
+				Silverlight, Windows Phone, etc. don't have the same security model as .NET 4.0.
+			-->
+			<SecAnnotateAnalyzeAssemblies Include="$(BuildDirectory)\bin\net40\*.dll" />
+
+			<!--
+				We need to dynamically determine which assemblies/versions are being used so SecAnnotate can do
+				its job. Without correct references, SecAnnotate fails or analyzes incorrectly.
+
+				The first block here finds - in groups - the set of dependencies from NuGet that are...
+				* .NET 4.0
+				* .NET 4.0 Client Profile
+				* .NET 3.5
+			-->
+
+			<DetectedDependencies40 Include="$(PackageInstallDirectory)\**\net40\*.dll;$(PackageInstallDirectory)\**\40\*.dll" />
+			<DetectedDependencies40Client Include="$(PackageInstallDirectory)\**\net40-client\*.dll;$(PackageInstallDirectory)\**\40-client\*.dll" />
+			<DetectedDependencies35 Include="$(PackageInstallDirectory)\**\net35\*.dll;$(PackageInstallDirectory)\**\35\*.dll" />
+
+			<!--
+				This block of items aggregates the set of grouped dependencies from above. We need UNIQUE
+				dependencies by name (e.g., you can't include two "Castle.Core" references) so we fall
+				back, first opting for the .NET 4.0, then 4.0 client profile, then 3.5 assemblies.
+
+				In the end, DetectedDependencies will be a list of names ("Castle.Core"), each with a metadata
+				item "HintPath" that points to the full path of the detected assembly.
+			-->
+			<DetectedDependencies Include="%(DetectedDependencies40.Filename)">
+				<HintPath>%(DetectedDependencies40.FullPath)</HintPath>
+			</DetectedDependencies>
+			<DetectedDependencies Include="%(DetectedDependencies40Client.Filename)" Exclude="@(DetectedDependencies)">
+				<HintPath>%(DetectedDependencies40Client.FullPath)</HintPath>
+			</DetectedDependencies>
+			<DetectedDependencies Include="%(DetectedDependencies35.Filename)" Exclude="@(DetectedDependencies)">
+				<HintPath>%(DetectedDependencies35.FullPath)</HintPath>
+			</DetectedDependencies>
+
+			<!--
+				Finally, switch the list of detected dependencies to actually point to the
+				files so we can find the directories. We'll tell SecAnnotate the list of
+				directories so it can search for dependencies, appropriately using only
+				the set of directories we're ostensibly using ourselves based on the detected
+				set of assemblies above.
+
+				In the end we'll have lists of folders like
+				...\packages\Castle.Core.3.0.0.4001\lib\net40
+				...\packages\CommonServiceLocator.1.0\lib\net35
+
+				But only the ones that point to the actual target frameworks we're using.
+			-->
+			<SecAnnotateReferenceAssemblies Include="%(DetectedDependencies.HintPath)" />
+			<SecAnnotateReferenceDirectories Include="%(SecAnnotateReferenceAssemblies.RootDir)%(SecAnnotateReferenceAssemblies.Directory)" />
+		</ItemGroup>
+
+		<!-- Files get written using batching so we always append. Delete existing ones first to start clean. -->
+		<Delete Files="$(SecAnnotateAnalyzeResponseFile)" Condition="Exists('$(SecAnnotateAnalyzeResponseFile)')" />
+		<Delete Files="$(SecAnnotateReferenceResponseFile)" Condition="Exists('$(SecAnnotateReferenceResponseFile)')" />
+		<WriteLinesToFile
+			File="$(SecAnnotateAnalyzeResponseFile)"
+			Lines="%(SecAnnotateAnalyzeAssemblies.FullPath)"
+			Overwrite="false" />
+		<WriteLinesToFile
+			File="$(SecAnnotateReferenceResponseFile)"
+			Lines="/d:%(SecAnnotateReferenceDirectories.FullPath)"
+			Overwrite="false" />
+		<Exec
+			Command="SecAnnotate.exe /o:&quot;$(BuildDirectory)\log\SecAnnotateResults.xml&quot; @&quot;$(SecAnnotateReferenceResponseFile)&quot; @&quot;$(SecAnnotateAnalyzeResponseFile)&quot;"
+			WorkingDirectory="$(BuildDirectory)\bin\net40\" />
+	</Target>
+	<UsingTask TaskName="GetNuGetDependencyVersions" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+		<ParameterGroup>
+			<PackageInstallDirectory Required="true" />
+			<Dependencies ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
+		</ParameterGroup>
+		<Task>
+			<Using Namespace="System" />
+			<Using Namespace="System.Collections.Generic" />
+			<Using Namespace="System.IO" />
+			<Using Namespace="System.Text.RegularExpressions" />
+			<Using Namespace="Microsoft.Build.Framework" />
+			<Using Namespace="Microsoft.Build.Utilities" />
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+					// Match package folders like Castle.Core.3.0.0.4001
+					// Groups[1] = "Castle.Core"
+					// Groups[2] = "3.0.0.4001"
+					var re = new Regex(@"^(.+?)\.([0-9\.]+)$");
+
+					try
+					{
+						// Create item metadata based on the list of packages found
+						// in the PackageInstallDirectory. Item identities will be
+						// the name of the package ("Castle.Core") and they'll have
+						// a "Version" metadata item with the package version.
+						var returnItems = new List<ITaskItem>();
+						foreach(var directory in Directory.EnumerateDirectories(PackageInstallDirectory))
+						{
+							var directoryName = Path.GetFileName(directory);
+							var match = re.Match(directoryName);
+							if(!match.Success)
+							{
+								continue;
+							}
+							var name = match.Groups[1].Value;
+							var version = match.Groups[2].Value;
+							var metadata = new Dictionary<string, string>();
+							metadata["Version"] = version;
+							var item = new TaskItem(name, metadata);
+							returnItems.Add(item);
+						}
+						Dependencies = returnItems.ToArray();
+						return true;
+					}
+					catch(Exception ex)
+					{
+						Log.LogErrorFromException(ex);
+						return false;
+					}
+				]]>
+			</Code>
+		</Task>
+	</UsingTask>
+</Project>

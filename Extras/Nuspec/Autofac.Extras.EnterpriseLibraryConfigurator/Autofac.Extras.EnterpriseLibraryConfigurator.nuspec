@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <id>Autofac.Extras.EnterpriseLibraryConfigurator</id>
+    <version>$version$</version>
+    <authors>Autofac Contributors</authors>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Microsoft Enterprise Library features generally assume Unity as the backing store for IoC operations. This extension allows you to use Autofa as the backing store for Microsoft Enterprise Library application blocks.</description>
+    <summary>Autofac extension allowing Autofac to be used with Microsoft Enterprise Library.</summary>
+    <language>en-US</language>
+    <title>Autofac Extras: Enterprise Library Configuration Support</title>
+    <projectUrl>http://autofac.org</projectUrl>
+    <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
+    <dependencies>
+      <dependency id="Autofac" version="$version$" />
+      <dependency id="Autofac.Extras.CommonServiceLocator" version="$version$" />
+      <dependency id="CommonServiceLocator" version="$version_CommonServiceLocator$" />
+      <dependency id="EnterpriseLibrary.Common" version="$version_EnterpriseLibrary.Common$" />
+    </dependencies>
+  </metadata>
+</package>

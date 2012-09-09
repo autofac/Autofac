@@ -1,2 +1,2 @@
 @echo off
-@%SystemRoot%\Microsoft.NET\Framework\v4.0.30319\msbuild Autofac.build %*
+@%SystemRoot%\Microsoft.NET\Framework\v4.0.30319\msbuild default.proj %*

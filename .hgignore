@@ -1,19 +1,24 @@
-glob:contrib/AutofacContrib.suo
-glob:contrib/Build
+# Build Output
 glob:*/bin/
 glob:*/obj/
+glob:build_output
+
+# Per-User Development Artifacts
 glob:*/_ReSharper*
-glob:src/Build
-glob:src/Autofac.suo
-glob:TestResult.xml
-glob:*.suo
-glob:contrib/Resource/Library/Autofac/*.dll
-glob:contrib/Resource/Library/Autofac/*.XML
-glob:Build/
-glob:contrib/AutofacContrib.5.1.ReSharper.user
-glob:src/Autofac.5.1.ReSharper.user
+glob:_ReSharper*
 glob:*.user
-glob:src/PackageBuild
-glob:*.sln.docstates
-glob:*/packages/
-glob:*/Packages/
+glob:*.suo
+glob:*.docstates
+glob:Index.dat
+glob:Storage.dat
+glob:TestResults
+
+# NuGet Packages
+glob:packages/Castle*
+glob:packages/Common*
+glob:packages/EnterpriseLibrary*
+glob:packages/Iesi*
+glob:packages/Moq*
+glob:packages/NHibernate*
+glob:packages/NUnit*
+glob:packages/Unity*

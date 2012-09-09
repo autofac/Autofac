@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Translations provided by TimberLandChapel -->
+<content xml:space="preserve">
+	<!-- NOTE: This file must appear LAST in the list of content files
+              so that these items override the matching items in the
+              stock content files! -->
+
+	<!-- Note that the copyright item in the shared content is not used. The following items are used instead. -->
+	<item id="copyright_info">{@CopyrightInfo}</item>
+	<item id="copyright_link">{@CopyrightHref}</item>
+	<item id="copyright_text">{@CopyrightText}</item>
+
+	<item id="header"><span class="introStyle">{@HeaderText}</span> {@Preliminary}</item>
+	<item id="footer_text">{@FooterText}</item>
+
+	<item id="fb_alias">{@FeedbackEMailAddress}</item>
+  <item id="fb_product">{@ScriptHelpTitle}</item>
+  <item id="fb_topic">{0}</item>
+	<item id="fb_text">フィードバックの送信</item>
+  <item id="fb_footer_to">{@HtmlEncFeedbackEMailAddress}</item>
+  <item id="fb_footer_text">このトピックに対して</item>
+  <item id="fb_footer_text_to">このトピックに対して to {@HtmlEncFeedbackEMailAddress}.</item>
+  <item id="fb_body">ドキュメント開発チームはドキュメントの品質向上にあなたのフィードバックを使用いたします。送信いただいたメールアドレスは他の用途に使用いたしません。問題が解決した後送信されたメールアドレスを破棄いたします。送信いただいた問題の処理において，詳細をお伺いする場合や問題の切り分けのためにコンタクトをとらせていただく場合がございます。</item>
+
+</content>

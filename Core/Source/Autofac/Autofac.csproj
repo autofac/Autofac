@@ -1,0 +1,505 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Autofac</RootNamespace>
+    <AssemblyName>Autofac</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\..\SharedKey.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile14</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Autofac.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Autofac.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .NET Framework is automatically included -->
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Features\LazyDependencies\LazyRegistrationSource.cs" />
+    <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSource.cs" />
+    <Compile Include="Features\Metadata\StronglyTypedMeta.cs" />
+    <Compile Include="Features\Metadata\StronglyTypedMetaRegistrationSource.cs" />
+    <Compile Include="Features\GeneratedFactories\FactoryGenerator.cs" />
+    <Compile Include="..\..\..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\SecurityAssemblyInfo.cs">
+      <Link>Properties\SecurityAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\VersionAssemblyInfo.cs">
+      <Link>Properties\VersionAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Builder\ConcreteReflectionActivatorData.cs" />
+    <Compile Include="Builder\ContainerBuildOptions.cs" />
+    <Compile Include="Builder\IRegistrationBuilder.cs" />
+    <Compile Include="Builder\MetadataConfiguration.cs" />
+    <Compile Include="Builder\IConcreteActivatorData.cs" />
+    <Compile Include="Core\Registration\CopyOnWriteRegistry.cs" />
+    <Compile Include="Features\Variance\ContravariantRegistrationSource.cs" />
+    <Compile Include="PropertyWiringFlags.cs" />
+    <Compile Include="Builder\RegistrationBuilder.cs" />
+    <Compile Include="Builder\RegistrationBuilderResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RegistrationBuilderResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Builder\RegistrationExtensions.cs" />
+    <Compile Include="ContainerBuilderResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ContainerBuilderResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Activators\Delegate\DelegateActivatorResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DelegateActivatorResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Activators\Reflection\BindingFlagsConstructorFinderResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BindingFlagsConstructorFinderResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Activators\Reflection\ConstructorParameterBindingResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ConstructorParameterBindingResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Activators\Reflection\DefaultValueParameter.cs" />
+    <Compile Include="Core\ContainerResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ContainerResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Diagnostics\IContainerAwareComponent.cs" />
+    <Compile Include="Core\IActivatedEventArgs.cs" />
+    <Compile Include="Core\IActivatingEventArgs.cs" />
+    <Compile Include="Core\IServiceWithType.cs" />
+    <Compile Include="Core\KeyedService.cs" />
+    <Compile Include="Core\Lifetime\LifetimeScopeBeginningEventArgs.cs" />
+    <Compile Include="Core\Lifetime\LifetimeScopeEndingEventArgs.cs" />
+    <Compile Include="Core\Lifetime\LifetimeScopeResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LifetimeScopeResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\RegistrationSourceAddedEventArgs.cs" />
+    <Compile Include="Core\Resolving\IInstanceLookup.cs" />
+    <Compile Include="Core\Resolving\InstanceLookupCompletionBeginningEventArgs.cs" />
+    <Compile Include="Core\Resolving\InstanceLookupCompletionEndingEventArgs.cs" />
+    <Compile Include="Core\Resolving\InstanceLookupEndingEventArgs.cs" />
+    <Compile Include="Core\Resolving\InstanceLookupBeginningEventArgs.cs" />
+    <Compile Include="Core\Resolving\ResolveOperationBeginningEventArgs.cs" />
+    <Compile Include="Core\Registration\AdaptationSandbox.cs" />
+    <Compile Include="Core\Registration\ComponentRegistrationExtensions.cs" />
+    <Compile Include="Core\Registration\ComponentRegistrationLifetimeDecorator.cs" />
+    <Compile Include="Core\Registration\ComponentRegistrationResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ComponentRegistrationResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Registration\ExternalRegistrySource.cs" />
+    <Compile Include="Core\Registration\ScopeRestrictedRegistry.cs" />
+    <Compile Include="Core\Registration\ServiceRegistrationInfo.cs" />
+    <Compile Include="Core\Registration\ServiceRegistrationInfoResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ServiceRegistrationInfoResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Resolving\ComponentActivationResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ComponentActivationResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Resolving\ResolveOperationEndingEventArgs.cs" />
+    <Compile Include="Core\ServiceResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ServiceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Collections\CollectionRegistrationSourceResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CollectionRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\LazyDependencies\LazyRegistrationSourceResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LazyRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\LightweightAdapters\LightweightAdapterActivatorData.cs" />
+    <Compile Include="Features\LightweightAdapters\LightweightAdapterRegistrationExtensions.cs" />
+    <Compile Include="Features\LightweightAdapters\LightweightAdapterRegistrationSource.cs" />
+    <Compile Include="Features\LightweightAdapters\LightweightAdapterRegistrationSourceResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LightweightAdapterRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Collections\CollectionRegistrationExtensions.cs" />
+    <Compile Include="Builder\DynamicRegistrationStyle.cs" />
+    <Compile Include="Features\GeneratedFactories\GeneratedFactoryActivatorData.cs" />
+    <Compile Include="Builder\IHideObjectMembers.cs" />
+    <Compile Include="Features\GeneratedFactories\ParameterMapping.cs" />
+    <Compile Include="Features\Indexed\IIndex.cs" />
+    <Compile Include="Features\Indexed\KeyedServiceIndex.cs" />
+    <Compile Include="Features\Metadata\MetaRegistrationSource.cs" />
+    <Compile Include="Features\Metadata\Meta.cs" />
+    <Compile Include="Features\Metadata\MetaRegistrationSourceResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MetaRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\OpenGenerics\OpenGenericDecoratorActivatorDataResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OpenGenericDecoratorActivatorDataResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\OpenGenerics\OpenGenericRegistrationSourceResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OpenGenericRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\OpenGenerics\OpenGenericServiceBinder.cs" />
+    <Compile Include="Features\OpenGenerics\OpenGenericDecoratorActivatorData.cs" />
+    <Compile Include="Features\OpenGenerics\OpenGenericDecoratorRegistrationSource.cs" />
+    <Compile Include="Features\OpenGenerics\OpenGenericDecoratorRegistrationSourceResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OpenGenericDecoratorRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\OpenGenerics\OpenGenericRegistrationExtensions.cs" />
+    <Compile Include="Features\OpenGenerics\OpenGenericRegistrationExtensionsResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OpenGenericRegistrationExtensionsResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\OpenGenerics\OpenGenericServiceBinderResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OpenGenericServiceBinderResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\OwnedInstances\OwnedInstanceRegistrationSourceResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OwnedInstanceRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\ResolveAnything\AnyConcreteTypeNotAlreadyRegisteredSource.cs" />
+    <Compile Include="Features\ResolveAnything\AnyConcreteTypeNotAlreadyRegisteredSourceResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AnyConcreteTypeNotAlreadyRegisteredSourceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Scanning\ScanningActivatorData.cs" />
+    <Compile Include="Core\ActivatedEventArgs.cs" />
+    <Compile Include="Core\ActivatingEventArgs.cs" />
+    <Compile Include="Core\Activators\Delegate\DelegateActivator.cs" />
+    <Compile Include="Core\Activators\InstanceActivator.cs" />
+    <Compile Include="Core\Activators\ProvidedInstance\ProvidedInstanceActivator.cs" />
+    <Compile Include="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ProvidedInstanceActivatorResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Activators\Reflection\AutowiringParameter.cs" />
+    <Compile Include="Core\Activators\Reflection\AutowiringPropertyInjector.cs" />
+    <Compile Include="Core\Activators\Reflection\BindingFlagsConstructorFinder.cs" />
+    <Compile Include="Core\Activators\Reflection\ConstructorParameterBinding.cs" />
+    <Compile Include="Core\Activators\Reflection\IConstructorFinder.cs" />
+    <Compile Include="Core\Activators\Reflection\IConstructorSelector.cs" />
+    <Compile Include="Core\Activators\Reflection\MatchingSignatureConstructorSelector.cs" />
+    <Compile Include="Core\Activators\Reflection\MatchingSignatureConstructorSelectorResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MatchingSignatureConstructorSelectorResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Activators\Reflection\MostParametersConstructorSelector.cs" />
+    <Compile Include="Core\Activators\Reflection\ReflectionActivator.cs" />
+    <Compile Include="Core\Activators\Reflection\ReflectionActivatorResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReflectionActivatorResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\ConstantParameter.cs" />
+    <Compile Include="Core\Container.cs" />
+    <Compile Include="Core\DependencyResolutionException.cs" />
+    <Compile Include="Core\Disposer.cs" />
+    <Compile Include="IComponentContext.cs" />
+    <Compile Include="Core\IComponentLifetime.cs" />
+    <Compile Include="Core\IComponentRegistration.cs" />
+    <Compile Include="Core\IComponentRegistry.cs" />
+    <Compile Include="Core\IDisposer.cs" />
+    <Compile Include="Core\IInstanceActivator.cs" />
+    <Compile Include="Core\IModule.cs" />
+    <Compile Include="Core\InstanceOwnership.cs" />
+    <Compile Include="Core\InstanceSharing.cs" />
+    <Compile Include="Core\IRegistrationSource.cs" />
+    <Compile Include="Core\ISharingLifetimeScope.cs" />
+    <Compile Include="Core\Lifetime\CurrentScopeLifetime.cs" />
+    <Compile Include="Core\Lifetime\LifetimeScope.cs" />
+    <Compile Include="Core\Lifetime\MatchingScopeLifetime.cs" />
+    <Compile Include="Core\Lifetime\MatchingScopeLifetimeResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MatchingScopeLifetimeResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Lifetime\RootScopeLifetime.cs" />
+    <Compile Include="Core\NamedPropertyParameter.cs" />
+    <Compile Include="Core\Parameter.cs" />
+    <Compile Include="Core\PreparingEventArgs.cs" />
+    <Compile Include="Core\Registration\ComponentNotRegisteredException.cs" />
+    <Compile Include="Core\Registration\ComponentNotRegisteredExceptionResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ComponentNotRegisteredExceptionResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\ComponentRegisteredEventArgs.cs" />
+    <Compile Include="Core\Registration\ComponentRegistration.cs" />
+    <Compile Include="Core\Registration\ComponentRegistry.cs" />
+    <Compile Include="Core\Resolving\CircularDependencyDetector.cs" />
+    <Compile Include="Core\Resolving\CircularDependencyDetectorResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CircularDependencyDetectorResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Resolving\InstanceLookup.cs" />
+    <Compile Include="Core\Resolving\IResolveOperation.cs" />
+    <Compile Include="Core\Resolving\ResolveOperation.cs" />
+    <Compile Include="Core\Resolving\ResolveOperationResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ResolveOperationResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Service.cs" />
+    <Compile Include="Core\TypedService.cs" />
+    <Compile Include="Core\UniqueService.cs" />
+    <Compile Include="Features\Collections\CollectionRegistrationSource.cs" />
+    <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationExtensions.cs" />
+    <Compile Include="Features\OpenGenerics\OpenGenericRegistrationSource.cs" />
+    <Compile Include="Features\OwnedInstances\Owned.cs" />
+    <Compile Include="Features\OwnedInstances\OwnedInstanceRegistrationSource.cs" />
+    <Compile Include="Features\Scanning\ScanningRegistrationExtensions.cs" />
+    <Compile Include="IStartable.cs" />
+    <Compile Include="Module.cs" />
+    <Compile Include="Builder\ReflectionActivatorData.cs" />
+    <Compile Include="Builder\RegistrationBuilderOfTLAR.cs" />
+    <Compile Include="Builder\RegistrationData.cs" />
+    <Compile Include="RegistrationExtensions.cs" />
+    <Compile Include="RegistrationExtensionsResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RegistrationExtensionsResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Builder\SimpleActivatorData.cs" />
+    <Compile Include="Builder\SingleRegistrationStyle.cs" />
+    <Compile Include="ContainerBuilder.cs" />
+    <Compile Include="ILifetimeScope.cs" />
+    <Compile Include="NamedParameter.cs" />
+    <Compile Include="ParameterExtensions.cs" />
+    <Compile Include="PositionalParameter.cs" />
+    <Compile Include="IContainer.cs" />
+    <Compile Include="ResolutionExtensions.cs" />
+    <Compile Include="Core\ResolvedParameter.cs" />
+    <Compile Include="TypedParameter.cs" />
+    <Compile Include="TypeExtensions.cs" />
+    <Compile Include="TypeExtensionsResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TypeExtensionsResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Util\Disposable.cs" />
+    <Compile Include="Util\Enforce.cs" />
+    <Compile Include="Util\EnforceResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EnforceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Util\ReflectionExtensions.cs" />
+    <Compile Include="Util\ReflectionExtensionsResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReflectionExtensionsResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Util\ReleaseAction.cs" />
+    <Compile Include="Util\SequenceExtensions.cs" />
+    <Compile Include="Util\Traverse.cs" />
+    <Compile Include="Util\TypeExtensions.cs" />
+    <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSource.cs" />
+    <EmbeddedResource Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>GeneratedFactoryRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSourceResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GeneratedFactoryRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Builder\RegistrationBuilderResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RegistrationBuilderResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ContainerBuilderResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ContainerBuilderResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Activators\Delegate\DelegateActivatorResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DelegateActivatorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ProvidedInstanceActivatorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Activators\Reflection\BindingFlagsConstructorFinderResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BindingFlagsConstructorFinderResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Activators\Reflection\ConstructorParameterBindingResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ConstructorParameterBindingResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Activators\Reflection\MatchingSignatureConstructorSelectorResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MatchingSignatureConstructorSelectorResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Activators\Reflection\ReflectionActivatorResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ReflectionActivatorResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\ContainerResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ContainerResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Lifetime\LifetimeScopeResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LifetimeScopeResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Lifetime\MatchingScopeLifetimeResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MatchingScopeLifetimeResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Registration\ComponentNotRegisteredExceptionResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ComponentNotRegisteredExceptionResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Registration\ComponentRegistrationResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ComponentRegistrationResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Registration\ServiceRegistrationInfoResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ServiceRegistrationInfoResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Resolving\CircularDependencyDetectorResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CircularDependencyDetectorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Resolving\ComponentActivationResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ComponentActivationResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Resolving\ResolveOperationResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResolveOperationResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\ServiceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ServiceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Features\Collections\CollectionRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CollectionRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Features\LazyDependencies\LazyRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LazyRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Features\LightweightAdapters\LightweightAdapterRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LightweightAdapterRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Features\Metadata\MetaRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MetaRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Features\OpenGenerics\OpenGenericDecoratorActivatorDataResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OpenGenericDecoratorActivatorDataResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Features\OpenGenerics\OpenGenericDecoratorRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OpenGenericDecoratorRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Features\OpenGenerics\OpenGenericRegistrationExtensionsResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OpenGenericRegistrationExtensionsResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Features\OpenGenerics\OpenGenericRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OpenGenericRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Features\OpenGenerics\OpenGenericServiceBinderResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OpenGenericServiceBinderResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Features\OwnedInstances\OwnedInstanceRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OwnedInstanceRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Features\ResolveAnything\AnyConcreteTypeNotAlreadyRegisteredSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AnyConcreteTypeNotAlreadyRegisteredSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RegistrationExtensionsResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RegistrationExtensionsResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TypeExtensionsResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TypeExtensionsResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Util\EnforceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EnforceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Util\ReflectionExtensionsResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ReflectionExtensionsResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+	<head>
+		<title>Readme for Autofac Developers</title>
+		<style type="text/css">
+		<!--
+		body
+		{
+			font-family: Calibri;
+			background-color: white;
+			color: black;
+			font-size: 11pt;
+			padding-left: 10pt;
+			padding-right: 10pt;
+		}
+		h1, h2, h3, h4, h5, h6
+		{
+			font-family: Cambria;
+		}
+		h1, h2, h3, h4
+		{
+			font-weight: bold;
+		}
+		h2, h3, h4
+		{
+			color: #4F81BD;
+		}
+		h3, h4, h5, h6
+		{
+			font-size: 11pt;
+		}
+		h4, h6
+		{
+			font-style: italic;
+		}
+		h5, h6
+		{
+			color: #17365D;
+			font-weight: normal;
+		}
+		h1
+		{
+			font-size: 14pt;
+			color: #365F91;
+			border-bottom: 1px solid black;
+			margin-top: 26pt;
+		}
+		h2
+		{
+			font-size: 13pt;
+		}
+		h1.title
+		{
+			font-size: 26pt;
+			font-weight: normal;
+			color: #17365D;
+			border-bottom: 1px solid #4F81BD;
+		}
+		table
+		{
+			border-collapse: collapse;
+			border: 1px solid gray;
+		}
+		table thead th
+		{
+			padding: 2pt 4pt 2pt 4pt;
+			border-bottom: 1px solid gray;
+		}
+		table tbody td
+		{
+			padding: 2pt 4pt 2pt 4pt;
+			vertical-align: top;
+			border-bottom: 1px solid lightgray;
+		}
+		table tbody tr:last-child td
+		{
+			border-bottom: 1px solid gray;
+		}
+		div.callout
+		{
+			margin: 5pt 20pt 5pt 20pt;
+			padding-left: 5pt;
+			padding-right: 5pt;
+			border: 1px solid black;
+			background-color: lightgray;
+		}
+		.footnote
+		{
+			font-size: 8pt;
+		}
+		.footnote p
+		{
+			text-indent: -10pt;
+			padding-left: 10pt;
+		}
+		-->
+		</style>
+	</head>
+	<body>
+		<h1 class='title'>Readme for Autofac Developers</h1>
+		<p>This document explains the developer setup and build execution for Autofac.</p>
+
+		<h1>Developer Environment</h1>
+		<ul>
+			<li>Visual Studio 11, which includes:
+				<ul>
+					<li>.NET 4.0</li>
+					<li>ASP.NET MVC3</li>
+					<li>WCF RIA Services</li>
+				</ul>
+			</li>
+			<li><a href="http://nunit.org/index.php?p=vsTestAdapter&amp;r=2.6">NUnit Test Adapter for VS11</a> (to run unit tests inside Visual Studio)</li>
+			<li><a href="http://www.microsoft.com/en-us/download/details.aspx?id=29062">SQL Server Express 2012</a> (for demo applications)</li>
+			<li><a href="http://sandcastle.codeplex.com/">Sandcastle</a> (for building documentation)</li>
+		</ul>
+
+		<h1>Building the Project</h1>
+		<p>Developer build:<br />
+			<code>msbuild default.proj</code></p>
+
+		<p>Production/Release build:<br />
+			<code>msbuild default.proj /p:AssemblyVersion=1.2.3.4</code></p>
+
+		<p>The <strong>developer build</strong> will...</p>
+		<ul>
+			<li>Clean all build artifacts.</li>
+			<li>Build the solution.</li>
+			<li>Execute the unit tests.</li>
+			<li>Run code analysis (secannotate).</li>
+		</ul>
+
+		<p>The <strong>production/release build</strong> will do everything in the developer build <em>plus</em>...</p>
+		<ul>
+			<li>Create zip packages for distribution.</li>
+			<li>Create NuGet packages for distribution.</li>
+			<li>Build the compiled API help documentation.</li>
+		</ul>
+	</body>
+</html>
