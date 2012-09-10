@@ -5,7 +5,7 @@
 		<Error Text="You must specify the Nuspec staging directory." Condition="'$(StagingDirectory)' == ''" />
 		<PropertyGroup>
 			<!-- The name of the .nuspec file being staged, minus extension. -->
-			<NuspecName>Autofac.Mvc3</NuspecName>
+			<NuspecName>Autofac.WebApi</NuspecName>
 		</PropertyGroup>
 		<ItemGroup>
 			<!--
@@ -16,8 +16,8 @@
 				Everything else will get staged automatically.
 			-->
 			<LibFiles Include="
-				$(BuildBinDirectory)\**\Autofac.Integration.Mvc.dll;
-				$(BuildBinDirectory)\**\Autofac.Integration.Mvc.xml" />
+				$(BuildBinDirectory)\**\Autofac.Integration.WebApi.dll;
+				$(BuildBinDirectory)\**\Autofac.Integration.WebApi.xml" />
 			<ProjectFiles Include="$(MSBuildProjectDirectory)\**\*.*" Exclude="$(MSBuildProjectDirectory)\NuspecStaging.proj;$(MSBuildProjectDirectory)\*.nuspec" />
 		</ItemGroup>
 
