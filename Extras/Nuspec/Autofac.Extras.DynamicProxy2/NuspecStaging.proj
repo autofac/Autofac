@@ -17,7 +17,15 @@
 			-->
 			<LibFiles Include="
 				$(BuildBinDirectory)\**\Autofac.Extras.DynamicProxy2.dll;
-				$(BuildBinDirectory)\**\Autofac.Extras.DynamicProxy2.xml" />
+				$(BuildBinDirectory)\**\Autofac.Extras.DynamicProxy2.xml;
+				$(BuildBinDirectory)\**\Autofac.Extras.DynamicProxy2.pdb" />
+			<SourceFiles
+				Include="$(MSBuildProjectDirectory)\..\..\Source\Autofac.Extras.DynamicProxy2\**\*.*"
+				Exclude="
+					$(MSBuildProjectDirectory)\..\..\Source\**\bin\**\*.*;
+					$(MSBuildProjectDirectory)\..\..\Source\**\obj\**\*.*;
+					$(MSBuildProjectDirectory)\..\..\Source\**\*.suo;
+					$(MSBuildProjectDirectory)\..\..\Source\**\*.user" />
 			<ProjectFiles Include="$(MSBuildProjectDirectory)\**\*.*" Exclude="$(MSBuildProjectDirectory)\NuspecStaging.proj;$(MSBuildProjectDirectory)\*.nuspec" />
 		</ItemGroup>
 
@@ -26,5 +34,6 @@
 		<Copy SourceFiles="$(MSBuildProjectDirectory)\$(NuspecName).nuspec" DestinationFolder="$(StagingDirectory)\$(NuspecName)" />
 		<Copy SourceFiles="%(ProjectFiles.FullPath)" DestinationFiles="$(StagingDirectory)\$(NuspecName)\%(ProjectFiles.RecursiveDir)%(ProjectFiles.Filename)%(ProjectFiles.Extension)" />
 		<Copy SourceFiles="%(LibFiles.FullPath)" DestinationFiles="$(StagingDirectory)\$(NuspecName)\lib\%(LibFiles.RecursiveDir)%(LibFiles.Filename)%(LibFiles.Extension)" />
+		<Copy SourceFiles="%(SourceFiles.FullPath)" DestinationFiles="$(StagingDirectory)\$(NuspecName)\src\%(SourceFiles.RecursiveDir)%(SourceFiles.Filename)%(SourceFiles.Extension)" />
 	</Target>
 </Project>
