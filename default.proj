@@ -190,7 +190,10 @@
 		</ItemGroup>
 
 		<Message Text="Updating NuGet package version info..." />
-		<FileUpdate Files="@(NuspecFiles)" Regex="\$version\$" ReplacementText="$(AssemblyVersion)" />
+		<GetSemanticVersion AssemblyVersion="$(AssemblyVersion)">
+			<Output TaskParameter="SemanticVersion" PropertyName="SemanticVersion" />
+		</GetSemanticVersion>
+		<FileUpdate Files="@(NuspecFiles)" Regex="\$version\$" ReplacementText="$(SemanticVersion)-beta" />
 
 		<Message Text="Updating NuGet package dependency version info..." />
 		<GetNuGetDependencyVersions PackageInstallDirectory="$(PackageInstallDirectory)">
@@ -371,6 +374,34 @@
 							returnItems.Add(item);
 						}
 						Dependencies = returnItems.ToArray();
+						return true;
+					}
+					catch(Exception ex)
+					{
+						Log.LogErrorFromException(ex);
+						return false;
+					}
+				]]>
+			</Code>
+		</Task>
+	</UsingTask>
+	<UsingTask TaskName="GetSemanticVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+		<ParameterGroup>
+			<AssemblyVersion Required="true" />
+			<SemanticVersion ParameterType="System.String" Output="true" />
+		</ParameterGroup>
+		<Task>
+			<Using Namespace="System" />
+			<Using Namespace="Microsoft.Build.Framework" />
+			<Using Namespace="Microsoft.Build.Utilities" />
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+					try
+					{
+						// The package version is a three-digit X.Y.Z semantic
+						// version, not a four-digit assembly version, per semver.org.
+						var parsedVersion = new Version(AssemblyVersion);
+						SemanticVersion = String.Format("{0}.{1}.{2}", parsedVersion.Major, parsedVersion.Minor, parsedVersion.Build);
 						return true;
 					}
 					catch(Exception ex)
