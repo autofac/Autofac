@@ -18,8 +18,24 @@
 			<LibFiles Include="
 				$(BuildBinDirectory)\**\Autofac.dll;
 				$(BuildBinDirectory)\**\Autofac.xml;
+				$(BuildBinDirectory)\**\Autofac.pdb;
 				$(BuildBinDirectory)\**\Autofac.Configuration.dll;
-				$(BuildBinDirectory)\**\Autofac.Configuration.xml" />
+				$(BuildBinDirectory)\**\Autofac.Configuration.xml;
+				$(BuildBinDirectory)\**\Autofac.Configuration.pdb;" />
+			<AutofacSourceFiles
+				Include="$(MSBuildProjectDirectory)\..\..\Source\Autofac\**\*.*"
+				Exclude="
+					$(MSBuildProjectDirectory)\..\..\Source\**\bin\**\*.*;
+					$(MSBuildProjectDirectory)\..\..\Source\**\obj\**\*.*;
+					$(MSBuildProjectDirectory)\..\..\Source\**\*.suo;
+					$(MSBuildProjectDirectory)\..\..\Source\**\*.user" />
+			<AutofacConfigurationSourceFiles
+				Include="$(MSBuildProjectDirectory)\..\..\Source\Autofac.Configuration\**\*.*"
+				Exclude="
+					$(MSBuildProjectDirectory)\..\..\Source\**\bin\**\*.*;
+					$(MSBuildProjectDirectory)\..\..\Source\**\obj\**\*.*;
+					$(MSBuildProjectDirectory)\..\..\Source\**\*.suo;
+					$(MSBuildProjectDirectory)\..\..\Source\**\*.user" />
 			<ProjectFiles Include="$(MSBuildProjectDirectory)\**\*.*" Exclude="$(MSBuildProjectDirectory)\NuspecStaging.proj;$(MSBuildProjectDirectory)\*.nuspec" />
 		</ItemGroup>
 
@@ -28,5 +44,7 @@
 		<Copy SourceFiles="$(MSBuildProjectDirectory)\$(NuspecName).nuspec" DestinationFolder="$(StagingDirectory)\$(NuspecName)" />
 		<Copy SourceFiles="%(ProjectFiles.FullPath)" DestinationFiles="$(StagingDirectory)\$(NuspecName)\%(ProjectFiles.RecursiveDir)%(ProjectFiles.Filename)%(ProjectFiles.Extension)" />
 		<Copy SourceFiles="%(LibFiles.FullPath)" DestinationFiles="$(StagingDirectory)\$(NuspecName)\lib\%(LibFiles.RecursiveDir)%(LibFiles.Filename)%(LibFiles.Extension)" />
+		<Copy SourceFiles="%(AutofacSourceFiles.FullPath)" DestinationFiles="$(StagingDirectory)\$(NuspecName)\src\Autofac\%(AutofacSourceFiles.RecursiveDir)%(AutofacSourceFiles.Filename)%(AutofacSourceFiles.Extension)" />
+		<Copy SourceFiles="%(AutofacConfigurationSourceFiles.FullPath)" DestinationFiles="$(StagingDirectory)\$(NuspecName)\src\Autofac.Configuration\%(AutofacConfigurationSourceFiles.RecursiveDir)%(AutofacConfigurationSourceFiles.Filename)%(AutofacConfigurationSourceFiles.Extension)" />
 	</Target>
 </Project>
