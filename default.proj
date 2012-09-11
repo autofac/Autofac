@@ -200,7 +200,7 @@
 
 		<Message Text="Packaging NuGet packages..." />
 		<Exec
-			Command="&quot;$(MSBuildProjectDirectory)\.nuget\nuget.exe&quot; pack %(NuspecFiles.Filename)%(NuspecFiles.Extension)"
+			Command="&quot;$(MSBuildProjectDirectory)\.nuget\nuget.exe&quot; pack %(NuspecFiles.Filename)%(NuspecFiles.Extension) -symbols"
 			WorkingDirectory="%(NuspecFiles.RootDir)%(NuspecFiles.Directory)" />
 		<ItemGroup>
 			<NupkgFiles Include="$(StagingDirectory)\**\*.nupkg" />
