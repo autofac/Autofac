@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project InitialTargets="" DefaultTargets="All" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+	<!--
+		This script builds the test application and then runs AppCert.exe on the resulting packages.
+		The project is always built in Release mode because AppCert.exe fails in Debug.
+		msbuild default.proj
+	-->
+	<PropertyGroup>
+		<BuildConfiguration>Release</BuildConfiguration>
+		<BuildOuptutDirectory>$(MSBuildProjectDirectory)\..\..\build_output\appcert</BuildOuptutDirectory>
+		<BuildBinDirectory>$(BuildOuptutDirectory)\bin</BuildBinDirectory>
+		<BuildLogDirectory>$(BuildOuptutDirectory)\log</BuildLogDirectory>
+		<AppCert>$(ProgramFiles)\Windows Kits\8.0\App Certification Kit\appcert.exe</AppCert>
+	</PropertyGroup>
+	<ItemGroup>
+		<CleanFolders Include="$(BuildOuptutDirectory)"/>
+		<CleanFolders Include="AutofacAppCertTest\AppPackages"/>
+		<CleanFolders Include="AutofacAppCertTest\bin"/>
+		<CleanFolders Include="AutofacAppCertTest\obj"/>
+		<Platform Include="x86;x64"/>
+	</ItemGroup>
+	<Target Name="All">
+		<CallTarget Targets="Clean;Compile;Analyze" />
+		<Message Text="Build complete."/>
+	</Target>
+	<Target Name="Analyze" Inputs="@(Platform)" Outputs="%(Identity).Dummy">
+		<!--
+		  Analyze runs the appcert.exe tool on each package. Note the "batching" on the inputs/outputs that
+		  effectively parameterizes the target as a whole.
+		  http://www.paraesthesia.com/archive/2012/03/21/call-an-msbuild-target-like-a-function.aspx
+		-->
+		<ConvertToAbsolutePath Paths="$(BuildBinDirectory)\AppPackages\AutofacAppCertTest_1.0.0.0_%(Platform.Identity)_Test\AutofacAppCertTest_1.0.0.0_%(Platform.Identity).appx">
+			<Output TaskParameter="AbsolutePaths" ItemName="AppXPath" />
+		</ConvertToAbsolutePath>
+		<ConvertToAbsolutePath Paths="$(BuildLogDirectory)\AppCert_%(Platform.Identity).xml">
+			<Output TaskParameter="AbsolutePaths" ItemName="AppCertReportPath" />
+		</ConvertToAbsolutePath>
+		<PropertyGroup>
+			<AppXPathAbsolute>%(AppXPath.FullPath)</AppXPathAbsolute>
+			<AppCertReportPathAbsolute>%(AppCertReportPath.FullPath)</AppCertReportPathAbsolute>
+		</PropertyGroup>
+		<MakeDir Directories="$(BuildLogDirectory)" />
+		<Exec Command="&quot;$(AppCert)&quot; reset" />
+		<Exec Command="&quot;$(AppCert)&quot; test -apptype metrostyle -appxpackagepath &quot;$(AppXPathAbsolute)&quot; -reportoutputpath &quot;$(AppCertReportPathAbsolute)&quot;" />
+	</Target>
+	<Target Name="Clean">
+		<!-- Clean removes all build artifacts to prepare for a new build. -->
+		<RemoveDir Directories="@(CleanFolders)" />
+	</Target>
+	<Target Name="Compile">
+		<!-- Compile builds all the projects/solutions and copies the output to prepare for analysis/packaging. -->
+		<MSBuild Projects="AutofacAppCertTest.sln" Targets="Build" Properties="Configuration=$(BuildConfiguration);Platform=%(Platform.Identity);GenerateProjectSpecificOutputFolder=false;OutDir=$(BuildBinDirectory)" />
+	</Target>
+</Project>
