@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<head>
+	<title>Autofac AppCert Test Application</title>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript">
+	// TableOfContents Plugin for jQuery (by Doug Neiner) MIT License
+	// Modified to exclude h1.title
+	(function($){$.TableOfContents=function(el,scope,options){var base=this;base.$el=$(el);base.el=el;base.toc="";base.listStyle=null;base.tags=["h1","h2","h3","h4","h5","h6"];base.init=function(){base.options=$.extend({},$.TableOfContents.defaultOptions,options);if(typeof(scope)=="undefined"||scope==null)scope=document.body;base.$scope=$(scope);var $first=base.$scope.find(base.tags.join(', ')).filter(':first');if($first.length!=1)return;base.starting_depth=base.options.startLevel;if(base.options.depth<1)base.options.depth=1;var filtered_tags=base.tags.splice(base.options.startLevel-1,base.options.depth);base.$headings=base.$scope.find(filtered_tags.join(', ')).not('.title');if(base.options.topLinks!==false){var id=$(document.body).attr('id');if(id==""){id=base.options.topBodyId;document.body.id=id};base.topLinkId=id};if(base.$el.is('ul')){base.listStyle='ul'}else if(base.$el.is('ol')){base.listStyle='ol'};base.buildTOC();if(base.options.proportionateSpacing===true&&!base.tieredList()){base.addSpacing()};return base};base.tieredList=function(){return(base.listStyle=='ul'||base.listStyle=='ol')};base.buildTOC=function(){base.current_depth=base.starting_depth;base.$headings.each(function(i,element){var depth=this.nodeName.toLowerCase().substr(1,1);if(i>0||(i==0&&depth!=base.current_depth)){base.changeDepth(depth)};base.toc+=base.formatLink(this,depth,i)+"\n";if(base.options.topLinks!==false)base.addTopLink(this)});base.changeDepth(base.starting_depth,true);if(base.tieredList())base.toc="<li>\n"+base.toc+"</li>\n";base.$el.html(base.toc)};base.addTopLink=function(element){var text=(base.options.topLinks===true?"Top":base.options.topLinks);var $a=$("<a href='#"+base.topLinkId+"' class='"+base.options.topLinkClass+"'></a>").html(text);$(element).append($a)};base.formatLink=function(element,depth,index){var id=element.id;if(id==""){id=base.buildSlug($(element).text());element.id=id};var a="<a href='#"+id+"'";if(!base.tieredList())a+=" class='"+base.depthClass(depth)+"'";a+=">"+base.options.levelText.replace('%',$(element).text())+'</a>';return a};base.changeDepth=function(new_depth,last){if(last!==true)last=false;if(!base.tieredList()){base.current_depth=new_depth;return true};if(new_depth>base.current_depth){var opening_tags=[];for(var i=base.current_depth;i<new_depth;i++){opening_tags.push('<'+base.listStyle+'>'+"\n")};var li="<li>\n";base.toc+=opening_tags.join(li)+li}else if(new_depth<base.current_depth){var closing_tags=[];for(var i=base.current_depth;i>new_depth;i--){closing_tags.push('</'+base.listStyle+'>'+"\n")};base.toc+="</li>\n"+closing_tags.join('</li>'+"\n");if(!last){base.toc+="</li>\n<li>\n"}}else{if(!last){base.toc+="</li>\n<li>\n"}};base.current_depth=new_depth};base.buildSlug=function(text){text=text.toLowerCase().replace(/[^a-z0-9 -]/gi,'').replace(/ /gi,'-');text=text.substr(0,50);return text};base.depthClass=function(depth){return base.options.levelClass.replace('%',(depth-(base.starting_depth-1)))};base.addSpacing=function(){var start=base.$headings.filter(':first').position().top;base.$headings.each(function(i,el){var $a=base.$el.find('a:eq('+i+')');var pos=(($(this).position().top-start)/(base.$scope.height()-start))*base.$el.height();$a.css({position:"absolute",top:pos})})};return base.init()};$.TableOfContents.defaultOptions={startLevel:1,depth:3,levelClass:"toc-depth-%",levelText:"%",topLinks:false,topLinkClass:"toc-top-link",topBodyId:"toc-top",proportionateSpacing:false};$.fn.tableOfContents=function(scope,options){return this.each(function(){var toc=new $.TableOfContents(this,scope,options);delete toc})}})(jQuery);
+	$(function(){ $("#toc").tableOfContents(); })
+	</script>
+	<style type="text/css">
+<!--
+body
+{
+	font-family: Calibri;
+	background-color: white;
+	color: black;
+	font-size: 11pt;
+	padding-left: 10pt;
+	padding-right: 10pt;
+}
+h1, h2, h3, h4, h5, h6
+{
+	font-family: Cambria;
+}
+h1, h2, h3, h4
+{
+	font-weight: bold;
+}
+h2, h3, h4
+{
+	color: #4F81BD;
+}
+h3, h4, h5, h6
+{
+	font-size: 11pt;
+}
+h4, h6
+{
+	font-style: italic;
+}
+h5, h6
+{
+	color: #17365D;
+	font-weight: normal;
+}
+h1
+{
+	font-size: 14pt;
+	color: #365F91;
+}
+h2
+{
+	font-size: 13pt;
+}
+h1.title
+{
+	font-size: 26pt;
+	font-weight: normal;
+	color: #17365D;
+	border-bottom: 1px solid #4F81BD;
+}
+table
+{
+	border-collapse: collapse;
+	border: 1px solid gray;
+}
+table thead th
+{
+	padding: 2pt 4pt 2pt 4pt;
+	border-bottom: 1px solid gray;
+}
+table tbody td
+{
+	padding: 2pt 4pt 2pt 4pt;
+	vertical-align: top;
+	border-bottom: 1px solid lightgray;
+}
+table tbody tr:last-child td
+{
+	border-bottom: 1px solid gray;
+}
+div.callout
+{
+	margin: 5pt 20pt 5pt 20pt;
+	padding-left: 5pt;
+	padding-right: 5pt;
+	border: 1px solid black;
+	background-color: lightgray;
+}
+.footnote
+{
+	font-size: 8pt;
+}
+.footnote p
+{
+	text-indent: -10pt;
+	padding-left: 10pt;
+}
+#toc
+{
+	margin: 5pt 20pt 5pt 20pt;
+	padding-top: 5pt;
+	padding-bottom: 5pt;
+	border: 1px solid black;
+	background-color: lightgray;
+}
+-->
+	</style>
+</head>
+
+<body>
+	<h1 class="title">Autofac AppCert Test Application</h1>
+	<p>This application exists to test Windows Store application certification (appcert.exe) using the Autofac core library. It is intentionally not included in the main build because application certification testing requires administrative privileges and additional tools to install. It is also intentionally simple - it is only for cert testing, not to demonstrate Metro application design patterns.</p>
+	<ul id="toc"></ul>
+
+	<h1>Developer Setup</h1>
+	<p>It is assumed that your developer workstation has all the usual stuff required to build Autofac - Visual Studio, the whole source tree, etc.</p>
+	<h2>Get a Windows Store Developer License</h2>
+	<p>You need a Windows Store developer license installed on the machine where you're building/testing. If you already have one, skip this section.</p>
+	<ol>
+		<li>Run PowerShell as an administrator.</li>
+		<li>Execute <code>Get-WindowsDeveloperLicense</code> - this will show you if you already have a license. If you do, you're done.</li>
+		<li>Execute <code>Show-WindowsDeveloperLicenseRegistration</code> - this will bring up a dialog where you can request a developer license. On successful completion, the license is automatically set up on your machine.</li>
+	</ol>
+
+	<h1>Running Application Certification Testing</h1>
+	<h2>Build the AutofacAppCertTest Application</h2>
+	<h2>Run appcert.exe</h2>
+	<p><code>"C:\Program Files (x86)\Windows Kits\8.0\App Certification Kit\appcert.exe"</code></p>
+</body>
+</html>
