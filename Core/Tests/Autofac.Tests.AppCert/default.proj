@@ -48,7 +48,7 @@
 			XmlInputPath="$(AppCertReportPathAbsolute)">
 			<Output TaskParameter="Result" ItemName="AppCertFailedRequirements" />
 		</XmlPeek>
-		<Warning Text="APPCERT TEST FAIL: %(AppCertFailedRequirements.Identity)" />
+		<Warning Text="APPCERT TEST FAIL: %(AppCertFailedRequirements.Identity)" Condition="'%(AppCertFailedRequirements.Identity)'!=''" />
 		<!-- Actually fail the build if any tests failed. -->
 		<XmlPeek
 			Query="/REPORT/@OVERALL_RESULT"
