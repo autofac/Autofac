@@ -117,11 +117,14 @@ div.callout
 	<ul id="toc"></ul>
 
 	<h1>Developer Setup</h1>
-	<p>It is assumed that your developer workstation has all the usual stuff required to build Autofac - Visual Studio, the whole source tree, etc.</p>
+	<h2>General Prerequisites</h2>
+	<p>It is assumed that your developer workstation has all the usual stuff required to build Autofac - Visual Studio, the whole source tree, etc. Try building Autofac from the root of the project. If you can build it, you're good to go.</p>
+	<h2>Get a Local Admin Account</h2>
+	<p>The <code>appcert.exe</code> tool requires administrative permission to run. Make sure you have an admin account.</p>
 	<h2>Get a Windows Store Developer License</h2>
 	<p>You need a Windows Store developer license installed on the machine where you're building/testing. If you already have one, skip this section.</p>
 	<ol>
-		<li>Run PowerShell as an administrator.</li>
+		<li>Run PowerShell <strong>as an administrator</strong>.</li>
 		<li>Execute <code>Get-WindowsDeveloperLicense</code> - this will show you if you already have a license. If you do, you're done.</li>
 		<li>Execute <code>Show-WindowsDeveloperLicenseRegistration</code> - this will bring up a dialog where you can request a developer license. On successful completion, the license is automatically set up on your machine.</li>
 	</ol>
@@ -133,6 +136,6 @@ div.callout
 	</div>
 	<p>Building the application using the command-line script will automatically create application packages for various platforms and then run the <code>appcert.exe</code> tool against each to generate reports. The build process requires administrative privileges because <code>appcert.exe</code> requires those privileges.</p>
 	<h2>Inspect Reports</h2>
-	<p>The <code>appcert.exe</code> reports are in the <code>build_output\appcert\log</code> folder in the root of your project checkout. If you see any failures in application certification, these reports will tell you more about what happened and how to fix it.</p>
+	<p>The <code>appcert.exe</code> reports are in the <code>build_output\appcert\log</code> folder in the same folder as the test app's solution. If you see any failures in application certification, these reports will tell you more about what happened and how to fix it.</p>
 </body>
 </html>
