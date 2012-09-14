@@ -2,12 +2,12 @@
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
 
   <Identity Name="0eff6b46-af78-44e2-aeef-d7fc0faa8a63"
-            Publisher="CN=Travis"
+            Publisher="CN=Autofac"
             Version="1.0.0.0" />
 
   <Properties>
-    <DisplayName>AutofacAppCertTest</DisplayName>
-    <PublisherDisplayName>Travis</PublisherDisplayName>
+    <DisplayName>Autofac.Tests.AppCert</DisplayName>
+    <PublisherDisplayName>Autofac</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -23,12 +23,12 @@
   <Applications>
     <Application Id="App"
         Executable="$targetnametoken$.exe"
-        EntryPoint="AutofacAppCertTest.App">
+        EntryPoint="Autofac.Tests.AppCert.App">
         <VisualElements
-            DisplayName="AutofacAppCertTest"
+            DisplayName="Autofac.Tests.AppCert"
             Logo="Assets\Logo.png"
             SmallLogo="Assets\SmallLogo.png"
-            Description="AutofacAppCertTest"
+            Description="Autofac.Tests.AppCert"
             ForegroundText="light"
             BackgroundColor="#464646">
             <DefaultTile ShowName="allLogos" />

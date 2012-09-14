@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AutofacAppCertTest
+namespace Autofac.Tests.AppCert
 {
     /// <summary>
     /// Simple date provider implementation.

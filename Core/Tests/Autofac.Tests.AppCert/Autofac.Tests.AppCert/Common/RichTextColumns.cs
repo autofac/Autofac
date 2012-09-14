@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Documents;
 
-namespace AutofacAppCertTest.Common
+namespace Autofac.Tests.AppCert.Common
 {
     /// <summary>
     /// Wrapper for <see cref="RichTextBlock"/> that creates as many additional overflow

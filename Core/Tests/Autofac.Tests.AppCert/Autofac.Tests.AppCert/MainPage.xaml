@@ -1,11 +1,11 @@
 ﻿<common:LayoutAwarePage
     x:Name="pageRoot"
-    x:Class="AutofacAppCertTest.MainPage"
+    x:Class="Autofac.Tests.AppCert.MainPage"
     DataContext="{Binding DefaultViewModel, RelativeSource={RelativeSource Self}}"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:AutofacAppCertTest"
-    xmlns:common="using:AutofacAppCertTest.Common"
+    xmlns:local="using:Autofac.Tests.AppCert"
+    xmlns:common="using:Autofac.Tests.AppCert.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">

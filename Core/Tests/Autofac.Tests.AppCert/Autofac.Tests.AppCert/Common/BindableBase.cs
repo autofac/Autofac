@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Data;
 
-namespace AutofacAppCertTest.Common
+namespace Autofac.Tests.AppCert.Common
 {
     /// <summary>
     /// Implementation of <see cref="INotifyPropertyChanged"/> to simplify models.

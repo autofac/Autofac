@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.UI.Xaml.Data;
 
-namespace AutofacAppCertTest.Common
+namespace Autofac.Tests.AppCert.Common
 {
     /// <summary>
     /// Value converter that translates true to false and vice versa.

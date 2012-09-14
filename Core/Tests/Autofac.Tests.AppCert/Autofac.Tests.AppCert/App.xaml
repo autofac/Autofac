@@ -1,8 +1,8 @@
 ﻿<Application
-    x:Class="AutofacAppCertTest.App"
+    x:Class="Autofac.Tests.AppCert.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:AutofacAppCertTest">
+    xmlns:local="using:Autofac.Tests.AppCert">
 
     <Application.Resources>
         <ResourceDictionary>

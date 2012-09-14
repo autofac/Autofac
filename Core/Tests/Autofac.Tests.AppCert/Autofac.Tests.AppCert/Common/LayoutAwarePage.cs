@@ -11,7 +11,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-namespace AutofacAppCertTest.Common
+namespace Autofac.Tests.AppCert.Common
 {
     /// <summary>
     /// Typical implementation of Page that provides several important conveniences:

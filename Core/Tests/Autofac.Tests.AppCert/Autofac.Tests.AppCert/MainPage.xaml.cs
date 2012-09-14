@@ -4,12 +4,12 @@ using System.Linq;
 using Autofac;
 using Windows.UI.Xaml;
 
-namespace AutofacAppCertTest
+namespace Autofac.Tests.AppCert
 {
     /// <summary>
     /// Main page for the AppCert test application.
     /// </summary>
-    public sealed partial class MainPage : AutofacAppCertTest.Common.LayoutAwarePage
+    public sealed partial class MainPage : Autofac.Tests.AppCert.Common.LayoutAwarePage
     {
         /// <summary>
         /// Initializes a new instance of <see cref="MainPage"/>.

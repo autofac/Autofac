@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutofacAppCertTest", "AutofacAppCertTest\AutofacAppCertTest.csproj", "{AB14F11A-5F85-485E-A1FE-8E25C93891C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.AppCert", "Autofac.Tests.AppCert\Autofac.Tests.AppCert.csproj", "{AB14F11A-5F85-485E-A1FE-8E25C93891C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

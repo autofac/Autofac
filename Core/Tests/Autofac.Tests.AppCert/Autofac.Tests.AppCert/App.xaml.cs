@@ -7,7 +7,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace AutofacAppCertTest
+namespace Autofac.Tests.AppCert
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
@@ -54,11 +54,11 @@ namespace AutofacAppCertTest
             {
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Frame();
-                AutofacAppCertTest.Common.SuspensionManager.RegisterFrame(rootFrame, "appFrame");
+                Autofac.Tests.AppCert.Common.SuspensionManager.RegisterFrame(rootFrame, "appFrame");
 
                 if (args.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
-                    await AutofacAppCertTest.Common.SuspensionManager.RestoreAsync();
+                    await Autofac.Tests.AppCert.Common.SuspensionManager.RestoreAsync();
                 }
 
                 // Place the frame in the current Window
@@ -89,7 +89,7 @@ namespace AutofacAppCertTest
         private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-            await AutofacAppCertTest.Common.SuspensionManager.SaveAsync();
+            await Autofac.Tests.AppCert.Common.SuspensionManager.SaveAsync();
             deferral.Complete();
         }
     }

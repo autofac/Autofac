@@ -7,16 +7,16 @@
 	-->
 	<PropertyGroup>
 		<BuildConfiguration>Release</BuildConfiguration>
-		<BuildOuptutDirectory>$(MSBuildProjectDirectory)\..\..\build_output\appcert</BuildOuptutDirectory>
+		<BuildOuptutDirectory>$(MSBuildProjectDirectory)\build_output</BuildOuptutDirectory>
 		<BuildBinDirectory>$(BuildOuptutDirectory)\bin</BuildBinDirectory>
 		<BuildLogDirectory>$(BuildOuptutDirectory)\log</BuildLogDirectory>
 		<AppCert>$(ProgramFiles)\Windows Kits\8.0\App Certification Kit\appcert.exe</AppCert>
 	</PropertyGroup>
 	<ItemGroup>
 		<CleanFolders Include="$(BuildOuptutDirectory)"/>
-		<CleanFolders Include="AutofacAppCertTest\AppPackages"/>
-		<CleanFolders Include="AutofacAppCertTest\bin"/>
-		<CleanFolders Include="AutofacAppCertTest\obj"/>
+		<CleanFolders Include="Autofac.Tests.AppCert\AppPackages"/>
+		<CleanFolders Include="Autofac.Tests.AppCert\bin"/>
+		<CleanFolders Include="Autofac.Tests.AppCert\obj"/>
 		<Platform Include="x86;x64"/>
 	</ItemGroup>
 	<Target Name="All">
@@ -29,7 +29,7 @@
 		  effectively parameterizes the target as a whole.
 		  http://www.paraesthesia.com/archive/2012/03/21/call-an-msbuild-target-like-a-function.aspx
 		-->
-		<ConvertToAbsolutePath Paths="$(BuildBinDirectory)\AppPackages\AutofacAppCertTest_1.0.0.0_%(Platform.Identity)_Test\AutofacAppCertTest_1.0.0.0_%(Platform.Identity).appx">
+		<ConvertToAbsolutePath Paths="$(BuildBinDirectory)\AppPackages\Autofac.Tests.AppCert_1.0.0.0_%(Platform.Identity)_Test\Autofac.Tests.AppCert_1.0.0.0_%(Platform.Identity).appx">
 			<Output TaskParameter="AbsolutePaths" ItemName="AppXPath" />
 		</ConvertToAbsolutePath>
 		<ConvertToAbsolutePath Paths="$(BuildLogDirectory)\AppCert_%(Platform.Identity).xml">
@@ -49,6 +49,6 @@
 	</Target>
 	<Target Name="Compile">
 		<!-- Compile builds all the projects/solutions and copies the output to prepare for analysis/packaging. -->
-		<MSBuild Projects="AutofacAppCertTest.sln" Targets="Build" Properties="Configuration=$(BuildConfiguration);Platform=%(Platform.Identity);GenerateProjectSpecificOutputFolder=false;OutDir=$(BuildBinDirectory)" />
+		<MSBuild Projects="Autofac.Tests.AppCert.sln" Targets="Build" Properties="Configuration=$(BuildConfiguration);Platform=%(Platform.Identity);GenerateProjectSpecificOutputFolder=false;OutDir=$(BuildBinDirectory)" />
 	</Target>
 </Project>

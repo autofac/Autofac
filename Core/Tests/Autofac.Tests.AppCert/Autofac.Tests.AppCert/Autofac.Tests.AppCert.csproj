@@ -7,12 +7,12 @@
     <ProjectGuid>{AB14F11A-5F85-485E-A1FE-8E25C93891C8}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutofacAppCertTest</RootNamespace>
-    <AssemblyName>AutofacAppCertTest</AssemblyName>
-    <DefaultLanguage>en-US</DefaultLanguage>
+    <RootNamespace>Autofac.Tests.AppCert</RootNamespace>
+    <AssemblyName>Autofac.Tests.AppCert</AssemblyName>
+    <DefaultLanguage>en</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>AutofacAppCertTest_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>Autofac.Tests.AppCert_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -101,10 +101,10 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\GlobalAssemblyInfo.cs">
+    <Compile Include="..\..\..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\VersionAssemblyInfo.cs">
+    <Compile Include="..\..\..\..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="App.xaml.cs">
@@ -127,7 +127,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="AutofacAppCertTest_TemporaryKey.pfx" />
+    <None Include="Autofac.Tests.AppCert_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Logo.png" />
@@ -152,7 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Autofac">
-      <HintPath>..\..\..\build_output\bin\winrt45\Autofac.dll</HintPath>
+      <HintPath>..\..\..\..\build_output\bin\winrt45\Autofac.dll</HintPath>
     </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
