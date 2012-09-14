@@ -22,7 +22,6 @@ namespace Autofac.Tests.Features.OpenGenerics
         // ReSharper restore UnusedTypeParameter, InconsistentNaming
 
         [Test]
-        [IgnoreOnPhone("Limited open generics support http://msdn.microsoft.com/en-us/library/ff426930(VS.96).aspx#Reflection")]
         public void NestedGenericInterfacesCanBeResolved()
         {
             var cb = new ContainerBuilder();
@@ -45,7 +44,6 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
-        [IgnoreOnPhone("Limited open generics support")]
         public void CanResolveImplementationsWhereTypeParametersAreReordered()
         {
             var cb = new ContainerBuilder();
@@ -68,7 +66,6 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
-        [IgnoreOnPhone("Limited open generics support")]
         public void TestNestingAndReversingSimplification()
         {
             var cb = new ContainerBuilder();
@@ -80,7 +77,6 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
-        [IgnoreOnPhone("Limited open generics support")]
         public void TestReversingWithoutNesting()
         {
             var cb = new ContainerBuilder();
@@ -92,7 +88,6 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
-        [IgnoreOnPhone("Limited open generics support")]
         public void TheSameaceholderTypeCanAppearMultipleTimesInTheService()
         {
             var cb = new ContainerBuilder();

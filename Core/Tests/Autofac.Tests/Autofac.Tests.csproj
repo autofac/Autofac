@@ -140,7 +140,6 @@
     <Compile Include="TypeExtensionsTests.cs" />
     <Compile Include="Util\DelegateExtensionsTests.cs" />
     <Compile Include="Util\EnforceTests.cs" />
-    <Compile Include="Util\IgnoreOnPhoneAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\Autofac\Autofac.csproj">

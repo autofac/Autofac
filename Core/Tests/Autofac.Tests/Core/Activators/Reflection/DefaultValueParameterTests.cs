@@ -15,7 +15,6 @@ namespace Autofac.Tests.Core.Activators.Reflection
     }
 
     [TestFixture]
-    [IgnoreOnPhone("Parameter defaults don't exist until SL4")]
     public class DefaultValueParameterTests
     {
         static ParameterInfo GetTestParameter(string name)
