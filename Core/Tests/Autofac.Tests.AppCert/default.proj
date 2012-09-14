@@ -42,6 +42,20 @@
 		<MakeDir Directories="$(BuildLogDirectory)" />
 		<Exec Command="&quot;$(AppCert)&quot; reset" />
 		<Exec Command="&quot;$(AppCert)&quot; test -apptype metrostyle -appxpackagepath &quot;$(AppXPathAbsolute)&quot; -reportoutputpath &quot;$(AppCertReportPathAbsolute)&quot;" />
+		<!-- Write out the failure messages for simple debugging/info. -->
+		<XmlPeek
+			Query="/REPORT/REQUIREMENTS/REQUIREMENT/TEST[RESULT/text()='FAIL']/MESSAGES/MESSAGE/@TEXT"
+			XmlInputPath="$(AppCertReportPathAbsolute)">
+			<Output TaskParameter="Result" ItemName="AppCertFailedRequirements" />
+		</XmlPeek>
+		<Warning Text="APPCERT TEST FAIL: %(AppCertFailedRequirements.Identity)" />
+		<!-- Actually fail the build if any tests failed. -->
+		<XmlPeek
+			Query="/REPORT/@OVERALL_RESULT"
+			XmlInputPath="$(AppCertReportPathAbsolute)">
+			<Output TaskParameter="Result" ItemName="AppCertResult" />
+		</XmlPeek>
+		<Error Text="AppCert failed. Review report at $(AppCertReportPathAbsolute) for failure details." Condition="'%(AppCertResult.Identity)' == 'FAIL'" />
 	</Target>
 	<Target Name="Clean">
 		<!-- Clean removes all build artifacts to prepare for a new build. -->
