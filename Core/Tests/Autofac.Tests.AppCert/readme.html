@@ -130,6 +130,9 @@ div.callout
 	</ol>
 
 	<h1>Running Application Certification Testing</h1>
+	<h2>Build Core Autofac in Release Mode</h2>
+	<p>One of the <code>appcert.exe</code> tests is to verify everything is built in release mode <em>including dependencies</em>. If you haven't already, run the main build in release mode so everything's ready to go.</p>
+	<p><code>msbuild default.proj /p:BuildConfiguration=Release</code></p>
 	<h2>Build and Analyze the Application</h2>
 	<div class="callout">
 		<p>You must build the application under an administrator command prompt.</p>
