@@ -25,13 +25,11 @@
 
 using System;
 using System.Globalization;
-using System.Runtime.Serialization;
+
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
 {
-    //TODO: Determine best way to deal with serialization attribute and constructors.
-
 	/// <summary>
 	/// A service was requested that cannot be provided by the container. To avoid this exception, either register a component
 	/// to provide the required service, check for service registration using IsRegistered(), or use the ResolveOptional()
