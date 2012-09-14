@@ -24,12 +24,9 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Runtime.Serialization;
 
 namespace Autofac.Core
 {
-    //TODO: Determine best way to deal with serialization attribute and constructors.
-
 	/// <summary>
 	/// Base exception type thrown whenever the dependency resolution process fails. This is a fatal
 	/// exception, as Autofac is unable to 'roll back' changes to components that may have already

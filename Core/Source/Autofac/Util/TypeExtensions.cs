@@ -129,17 +129,17 @@ namespace Autofac.Util
 
         static bool ParameterCompatibleWithTypeConstraint(Type parameter, Type constraint)
         {
-            //TODO: The FullName check does not work in PCL (previously used Type.GUID which is not available).
+            // This previously used Type.GUID instead of FullName which is not available in PCL.
             return constraint.IsAssignableFrom(parameter) ||
                    Traverse.Across(parameter, p => p.BaseType)
                        .Concat(parameter.GetInterfaces())
                        .Any(p => p.FullName != null && p.FullName.Equals(constraint.FullName));
         }
 
-        //TODO: The extension methods below were also using Type.GUID.
-
         public static bool IsCompatibleWith(this Type type, Type that)
         {
+            // This previously used Type.GUID which is not available in PCL.
+            // Leaving this method here for now because it is public and could have been used by others.
             return type.Equals(that);
         }
 

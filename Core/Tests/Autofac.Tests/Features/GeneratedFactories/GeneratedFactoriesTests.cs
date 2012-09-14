@@ -238,7 +238,6 @@ namespace Autofac.Tests.Features.GeneratedFactories
         public delegate string CharCountStringFactory(char c, int count);
 
         [Test]
-        [IgnoreOnPhone("Required constructor not available on phone; String .ctor System.Reflection.ConstructorInfo[6]")]
         public void CanAutoGenerateFactoriesFromCustomDelegateTypes()
         {
             var builder = new ContainerBuilder();

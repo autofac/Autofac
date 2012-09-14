@@ -112,7 +112,6 @@ namespace Autofac.Core.Activators.Reflection
             for (var i = 0; i < _valueRetrievers.Length; ++i)
                 values[i] = _valueRetrievers[i].Invoke();
 
-            //TODO:Find or build a better concurrent data structure that works in PCL.
             ConstructorInvoker constructorInvoker;
             lock (_constructorInvokers)
             {

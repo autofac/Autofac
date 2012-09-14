@@ -24,14 +24,12 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
-        [IgnoreOnPhone("IsCompatibleWithGenericParameterConstraints cannot interrogate GenericParameterAttributes")]
         public void TheServiceIsAvailable()
         {
             Assert.IsTrue(_container.IsRegistered<IItemProducer<byte?>>());
         }
 
         [Test]
-        [IgnoreOnPhone("IsCompatibleWithGenericParameterConstraints cannot interrogate GenericParameterAttributes")]
         public void TheImplementationTypeParametersAreMapped()
         {
             var np = _container.Resolve<IItemProducer<byte?>>();

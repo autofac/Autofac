@@ -38,7 +38,6 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
-        [IgnoreOnPhone("Reflection does not provide information to check")]
         public void DoesNotGenerateActivatorWhenConstructorConstraintBroken()
         {
             Assert.IsFalse(CanGenerateActivatorForI<string>(typeof(AWithNew<>)));
@@ -58,7 +57,6 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
-        [IgnoreOnPhone("Reflection does not provide information to check")]
         public void DoesNotGenerateActivatorWhenTypeConstraintBroken()
         {
             Assert.IsFalse(CanGenerateActivatorForI<string>(typeof(AWithDisposable<>)));
@@ -74,7 +72,6 @@ namespace Autofac.Tests.Features.OpenGenerics
             where T : class { }
 
         [Test]
-        [IgnoreOnPhone("Reflection does not provide information to check")]
         public void DoesNotGenerateActivatorWhenClassConstraintBroken()
         {
             Assert.IsFalse(CanGenerateActivatorForI<int>(typeof(AWithClass<>)));
@@ -90,7 +87,6 @@ namespace Autofac.Tests.Features.OpenGenerics
             where T : struct { }
 
         [Test]
-        [IgnoreOnPhone("Reflection does not provide information to check")]
         public void DoesNotGenerateActivatorWhenValueConstraintBroken()
         {
             Assert.IsFalse(CanGenerateActivatorForI<string>(typeof(AWithValue<>)));
@@ -182,7 +178,6 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
-        [IgnoreOnPhone("Fails because IsCompatibleWithGenericParameterConstraints cannot check contraints")]
         public void IgnoresServicesThatDoNotSupplyAllParameters()
         {
             Assert.That(!SourceCanSupply<IHaveTwoParameters<int,int>>(typeof(HaveTwoParameters<,>)));
