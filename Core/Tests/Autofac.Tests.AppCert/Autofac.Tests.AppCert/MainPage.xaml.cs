@@ -73,7 +73,7 @@ namespace Autofac.Tests.AppCert
             {
                 if (result.Success)
                 {
-                    sb.AppendFormat("☺ {0}", result.TestMethod.Name);
+                    sb.AppendFormat("☺ {0}.{1}", result.TestMethod.DeclaringType.FullName, result.TestMethod.Name);
                     sb.AppendLine();
                 }
                 else

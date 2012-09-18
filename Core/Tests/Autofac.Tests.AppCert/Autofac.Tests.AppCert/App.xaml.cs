@@ -28,11 +28,6 @@ namespace Autofac.Tests.AppCert
         /// </summary>
         public App()
         {
-            // Simple container with something in it that can be resolved.
-            var builder = new ContainerBuilder();
-            builder.RegisterType<DateProvider>().As<IDateProvider>();
-            ApplicationContainer = builder.Build();
-
             // Standard app setup.
             this.InitializeComponent();
             this.Suspending += OnSuspending;
