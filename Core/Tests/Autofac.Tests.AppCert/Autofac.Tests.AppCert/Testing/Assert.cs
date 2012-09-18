@@ -15,6 +15,24 @@ namespace Autofac.Tests.AppCert.Testing
             }
         }
 
+        public static void IsFalse(bool actual, string message = null)
+        {
+            if (actual)
+            {
+                var exMessage = message == null ? null : Environment.NewLine + message + Environment.NewLine;
+                throw new AssertionException(String.Format("Value was not FALSE.{0}", exMessage));
+            }
+        }
+
+        public static void IsTrue(bool actual, string message = null)
+        {
+            if (!actual)
+            {
+                var exMessage = message == null ? null : Environment.NewLine + message + Environment.NewLine;
+                throw new AssertionException(String.Format("Value was not TRUE.{0}", exMessage));
+            }
+        }
+
         private static bool ObjectsEqual(object x, object y)
         {
             if (x == null && y == null)
