@@ -36,13 +36,17 @@
             <Button x:Name="backButton" Click="GoBack" IsEnabled="{Binding Frame.CanGoBack, ElementName=pageRoot}" Style="{StaticResource BackButtonStyle}"/>
             <TextBlock x:Name="pageTitle" Grid.Column="1" Text="{StaticResource AppName}" Style="{StaticResource PageHeaderTextStyle}"/>
         </Grid>
-        <StackPanel Grid.Row="1" Margin="120,30,0,0">
-            <StackPanel Orientation="Horizontal" Margin="0,20,0,20">
-                <TextBlock Text="Click the button to get the current date via a simple stub provider." VerticalAlignment="Center" Style="{StaticResource BasicTextStyle}"/>
-                <Button Content="Get Date" Click="GetDate_Click" />
+        <Grid Grid.Row="1" Margin="120,30,120,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <TextBlock Text="Click the button to execute the tests. Results will appear below." VerticalAlignment="Center" Style="{StaticResource BasicTextStyle}"/>
+                <Button Content="Run Tests" Click="RunTests_Click" />
             </StackPanel>
-            <TextBlock x:Name="dateOutput" Style="{StaticResource BasicTextStyle}"/>
-        </StackPanel>
+            <TextBox Grid.Row="1" x:Name="testResults" TextWrapping="Wrap" AcceptsReturn="True" Margin="0,0,0,30"/>
+        </Grid>
 
         <VisualStateManager.VisualStateGroups>
 

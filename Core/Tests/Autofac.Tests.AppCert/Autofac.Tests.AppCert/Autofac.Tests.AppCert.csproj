@@ -122,6 +122,11 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Testing\AssertionException.cs" />
+    <Compile Include="Testing\TestAttribute.cs" />
+    <Compile Include="Testing\TestFixtureAttribute.cs" />
+    <Compile Include="Testing\TestResult.cs" />
+    <Compile Include="Testing\TestRunner.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -154,6 +159,9 @@
     <Reference Include="Autofac">
       <HintPath>..\..\..\..\build_output\bin\winrt45\Autofac.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tests\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Autofac;
+using Autofac.Tests.AppCert.Testing;
 using Windows.UI.Xaml;
 
 namespace Autofac.Tests.AppCert
@@ -30,10 +32,10 @@ namespace Autofac.Tests.AppCert
         /// session.  This will be null the first time a page is visited.</param>
         protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
-            if (pageState != null && pageState.ContainsKey("dateOutputText"))
+            if (pageState != null && pageState.ContainsKey("testResultContent"))
             {
                 // If the app was previously suspended/terminated, put the text back.
-                this.dateOutput.Text = pageState["dateOutputText"].ToString();
+                this.testResults.Text = pageState["testResultContent"].ToString();
             }
         }
 
@@ -46,25 +48,45 @@ namespace Autofac.Tests.AppCert
         protected override void SaveState(Dictionary<String, Object> pageState)
         {
             // Save the date output text when the app is suspended/terminated.
-            pageState["dateOutputText"] = this.dateOutput.Text;
+            pageState["testResultContent"] = this.testResults.Text;
         }
 
         /// <summary>
-        /// Handles the "Get Date" button click event.
+        /// Handles the "Run Tests" button click event.
         /// </summary>
         /// <param name="sender">The sender of the event.</param>
         /// <param name="e">The event arguments.</param>
         /// <remarks>
         /// <para>
-        /// This method is where we resolve a service from Autofac and make use of it.
-        /// Very simple mechanism just to get Autofac integrated with Metro, nothing
-        /// fancy.
+        /// This method is where we execute a few tests that will get
+        /// Autofac working in a Metro environment. Nothing too fancy.
         /// </para>
         /// </remarks>
-        private void GetDate_Click(object sender, RoutedEventArgs e)
+        private void RunTests_Click(object sender, RoutedEventArgs e)
         {
-            var provider = App.ApplicationContainer.Resolve<IDateProvider>();
-            this.dateOutput.Text = provider.Now.ToString();
+            var runner = new TestRunner("Autofac.Tests.AppCert.Tests");
+            var sb = new StringBuilder();
+            var results = runner.ExecuteTests().ToList();
+            sb.AppendFormat("{0} tests | {1} success | {2} fail", results.Count(), results.Count(r => r.Success), results.Count(r => !r.Success));
+            sb.AppendLine();
+            foreach (var result in results)
+            {
+                if (result.Success)
+                {
+                    sb.AppendFormat("☺ {0}", result.TestMethod.Name);
+                    sb.AppendLine();
+                }
+                else
+                {
+                    sb.AppendFormat("*** FAIL: {0}", result.TestMethod.Name);
+                    sb.AppendLine();
+                    if (!String.IsNullOrEmpty(result.Message))
+                    {
+                        sb.AppendLine(result.Message);
+                    }
+                }
+            }
+            this.testResults.Text = sb.ToString();
         }
     }
 }
