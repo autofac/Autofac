@@ -24,7 +24,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
         {
             var ci = typeof (ThrowsInCtor).GetConstructor(new Type[0]);
             var cpb = new ConstructorParameterBinding(
-                ci, Enumerable.Empty<Parameter>(), Container.Empty);
+                ci, Enumerable.Empty<Parameter>(), new ContainerBuilder().Build());
             var dx = Assert.Throws<DependencyResolutionException>(() =>
                 cpb.Instantiate());
 

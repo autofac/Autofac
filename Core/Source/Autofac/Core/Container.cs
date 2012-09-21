@@ -43,14 +43,6 @@ namespace Autofac.Core
         readonly ILifetimeScope _rootLifetimeScope;
 
         /// <summary>
-        /// An empty container.
-        /// </summary>
-        public static Container Empty
-        {
-            get { return new Container(); }
-        }
-
-        /// <summary>
         /// Create a new container.
         /// </summary>
         internal Container()

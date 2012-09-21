@@ -19,7 +19,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
 
         readonly ConstructorParameterBinding[] _ctors = typeof(ThreeConstructors)
             .GetConstructors()
-            .Select(ci => new ConstructorParameterBinding(ci, Enumerable.Empty<Parameter>(), Container.Empty))
+            .Select(ci => new ConstructorParameterBinding(ci, Enumerable.Empty<Parameter>(), new ContainerBuilder().Build()))
             .ToArray();
 
         [Test]

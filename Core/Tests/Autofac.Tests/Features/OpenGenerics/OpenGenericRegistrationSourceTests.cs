@@ -28,7 +28,7 @@ namespace Autofac.Tests.Features.OpenGenerics
             Assert.AreEqual(typeof(I<int>),
                 r.Services.Cast<TypedService>().Single().ServiceType);
 
-            var activatedInstance = r.Activator.ActivateInstance(Container.Empty, Factory.NoParameters);
+            var activatedInstance = r.Activator.ActivateInstance(new ContainerBuilder().Build(), Factory.NoParameters);
             Assert.IsInstanceOf<A1<int>>(activatedInstance);
         }
 
@@ -206,7 +206,7 @@ namespace Autofac.Tests.Features.OpenGenerics
                 return false;
 
             var registration = registrations.Single();
-            var instance = registration.Activator.ActivateInstance(Container.Empty, Factory.NoParameters);
+            var instance = registration.Activator.ActivateInstance(new ContainerBuilder().Build(), Factory.NoParameters);
 
             Assert.That(closedServiceType.IsAssignableFrom(instance.GetType()));
             return true;

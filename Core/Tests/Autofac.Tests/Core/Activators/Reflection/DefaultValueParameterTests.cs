@@ -29,7 +29,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             var dvp = new DefaultValueParameter();
             Func<object> vp;
             var dp = GetTestParameter("s").DefaultValue;
-            Assert.IsFalse(dvp.CanSupplyValue(GetTestParameter("s"), Autofac.Core.Container.Empty, out vp));
+            Assert.IsFalse(dvp.CanSupplyValue(GetTestParameter("s"), new ContainerBuilder().Build(), out vp));
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             var u = GetTestParameter("t");
             Func<object> vp;
             var dp = u.DefaultValue;
-            Assert.IsTrue(dvp.CanSupplyValue(u, Autofac.Core.Container.Empty, out vp));
+            Assert.IsTrue(dvp.CanSupplyValue(u, new ContainerBuilder().Build(), out vp));
             Assert.AreEqual("Hello", vp());
         }
     }
