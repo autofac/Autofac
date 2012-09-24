@@ -23,7 +23,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using System.Configuration;
+using System.Xml;
 
 namespace Autofac.Configuration
 {
@@ -35,7 +37,6 @@ namespace Autofac.Configuration
     {
 		const string ModulesPropertyName = "modules";
 		const string ComponentsPropertyName = "components";
-		const string CollectionsPropertyName = "collections";
         const string DefaultAssemblyPropertyName="defaultAssembly";
         const string FilesPropertyName = "files";
 
@@ -91,6 +92,37 @@ namespace Autofac.Configuration
                 return (string)this[DefaultAssemblyPropertyName];
             }
         }
-    }
 
+        /// <summary>
+        /// Deserializes a configuration section handler from a specific block of XML.
+        /// </summary>
+        /// <param name="reader">
+        /// The <see cref="System.Xml.XmlReader"/> used to read the XML configuration from the source.
+        /// </param>
+        /// <returns>
+        /// A read/parsed <see cref="SectionHandler"/> based on the contents of the <paramref name="reader"/>.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="reader"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="System.Configuration.ConfigurationErrorsException">
+        /// Thrown if <paramref name="reader"/> does not contain XML configuration that can be parsed into
+        /// a <see cref="SectionHandler"/>.
+        /// </exception>
+        public static SectionHandler Deserialize(XmlReader reader)
+        {
+            if (reader == null)
+            {
+                throw new ArgumentNullException("reader");
+            }
+            reader.MoveToContent();
+            if (reader.EOF)
+            {
+                throw new ConfigurationErrorsException("No XML content nodes found in configuration. Check the XML reader to ensure configuration is in place.");
+            }
+            var handler = new SectionHandler();
+            handler.DeserializeElement(reader, false);
+            return handler;
+        }
+    }
 }

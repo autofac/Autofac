@@ -30,13 +30,13 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Xml;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 
 namespace Autofac.Configuration
 {
-
     /// <summary>
     /// Configures containers based upon app.config settings.
     /// </summary>
@@ -96,6 +96,19 @@ namespace Autofac.Configuration
             if (_sectionHandler == null)
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
                           ConfigurationSettingsReaderResources.SectionNotFound, sectionName));
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConfigurationSettingsReader"/> class.
+        /// </summary>
+        /// <param name="reader">An <see cref="System.Xml.XmlReader"/> that contains the configuration.</param>
+        public ConfigurationSettingsReader(XmlReader reader)
+        {
+            if (reader == null)
+            {
+                throw new ArgumentNullException("reader");
+            }
+            _sectionHandler = SectionHandler.Deserialize(reader);
         }
 
         /// <summary>
