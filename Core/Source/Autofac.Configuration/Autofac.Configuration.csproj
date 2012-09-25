@@ -82,6 +82,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="ContainerBuilderExtensions.cs" />
     <Compile Include="DictionaryElementCollection.cs" />
     <Compile Include="ListElementCollection.cs" />
     <Compile Include="Util\Enforce.cs" />

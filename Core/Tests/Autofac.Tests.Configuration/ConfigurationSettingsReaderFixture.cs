@@ -1,11 +1,11 @@
-﻿using Autofac.Builder;
-using Autofac.Configuration;
-using Autofac.Core;
-using NUnit.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using Autofac.Builder;
+using Autofac.Configuration;
+using Autofac.Core;
+using NUnit.Framework;
 
 namespace Autofac.Tests.Configuration
 {
