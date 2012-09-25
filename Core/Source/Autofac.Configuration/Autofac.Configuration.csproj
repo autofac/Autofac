@@ -98,7 +98,7 @@
     <Compile Include="ParameterElementCollection.cs" />
     <Compile Include="PropertyElement.cs" />
     <Compile Include="PropertyElementCollection.cs" />
-    <Compile Include="SectionHandler.cs" />
+    <Compile Include="AutofacConfigurationSection.cs" />
     <Compile Include="ServiceElement.cs" />
     <Compile Include="ServiceElementCollection.cs" />
     <Compile Include="TypeManipulation.cs" />

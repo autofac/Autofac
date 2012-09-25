@@ -26,7 +26,7 @@ namespace Autofac.Tests.Configuration
             Assert.Throws<ArgumentNullException>(() => builder.RegisterConfigurationSection(null));
         }
 
-        private static SectionHandler CreateSection()
+        private static AutofacConfigurationSection CreateSection()
         {
             const string metadataConfiguration =
 @"<autofac defaultAssembly=""mscorlib"">
@@ -41,11 +41,11 @@ namespace Autofac.Tests.Configuration
             return CreateSection(metadataConfiguration);
         }
 
-        private static SectionHandler CreateSection(string config)
+        private static AutofacConfigurationSection CreateSection(string config)
         {
             using (var reader = new XmlTextReader(new StringReader(config)))
             {
-                return SectionHandler.Deserialize(reader);
+                return AutofacConfigurationSection.Deserialize(reader);
             }
         }
     }

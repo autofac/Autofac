@@ -39,10 +39,10 @@ namespace Autofac.Configuration
     /// This configuration section is used for XML-based configuration of an Autofac
     /// container. While it is primarily used from inside <c>app.config</c> or <c>web.config</c>
     /// files, you may also use it with other arbitrary XML files via the
-    /// <see cref="Autofac.Configuration.SectionHandler.Deserialize"/> helper method.
+    /// <see cref="Autofac.Configuration.AutofacConfigurationSection.Deserialize"/> helper method.
     /// </para>
     /// </remarks>
-    public class SectionHandler : ConfigurationSection
+    public class AutofacConfigurationSection : ConfigurationSection
     {
         private const string ModulesPropertyName = "modules";
         private const string ComponentsPropertyName = "components";
@@ -122,16 +122,16 @@ namespace Autofac.Configuration
         /// The <see cref="System.Xml.XmlReader"/> used to read the XML configuration from the source.
         /// </param>
         /// <returns>
-        /// A read/parsed <see cref="SectionHandler"/> based on the contents of the <paramref name="reader"/>.
+        /// A read/parsed <see cref="AutofacConfigurationSection"/> based on the contents of the <paramref name="reader"/>.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="reader"/> is <see langword="null"/>.
         /// </exception>
         /// <exception cref="System.Configuration.ConfigurationErrorsException">
         /// Thrown if <paramref name="reader"/> does not contain XML configuration that can be parsed into
-        /// a <see cref="SectionHandler"/>.
+        /// a <see cref="AutofacConfigurationSection"/>.
         /// </exception>
-        public static SectionHandler Deserialize(XmlReader reader)
+        public static AutofacConfigurationSection Deserialize(XmlReader reader)
         {
             if (reader == null)
             {
@@ -142,7 +142,7 @@ namespace Autofac.Configuration
             {
                 throw new ConfigurationErrorsException("No XML content nodes found in configuration. Check the XML reader to ensure configuration is in place.");
             }
-            var handler = new SectionHandler();
+            var handler = new AutofacConfigurationSection();
             handler.DeserializeElement(reader, false);
             return handler;
         }

@@ -43,14 +43,14 @@ namespace Autofac.Configuration
         /// </summary>
         public const string DefaultSectionName = "autofac";
 
-        private readonly SectionHandler _sectionHandler;
+        private readonly AutofacConfigurationSection _sectionHandler;
         private readonly string _configurationDirectory = Path.GetDirectoryName(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
 
         /// <summary>
         /// Gets the section handler.
         /// </summary>
         /// <value>The section handler.</value>
-        protected virtual SectionHandler SectionHandler
+        protected virtual AutofacConfigurationSection SectionHandler
         {
             get
             {
@@ -90,7 +90,7 @@ namespace Autofac.Configuration
             map.ExeConfigFilename = configurationFile;
 
             var configuration = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
-            _sectionHandler = (SectionHandler)configuration.GetSection(sectionName);
+            _sectionHandler = (AutofacConfigurationSection)configuration.GetSection(sectionName);
 
             if (_sectionHandler == null)
             {
@@ -108,7 +108,7 @@ namespace Autofac.Configuration
             {
                 throw new ArgumentNullException("sectionName");
             }
-            _sectionHandler = (SectionHandler)ConfigurationManager.GetSection(sectionName);
+            _sectionHandler = (AutofacConfigurationSection)ConfigurationManager.GetSection(sectionName);
 
             if (_sectionHandler == null)
             {
@@ -126,7 +126,7 @@ namespace Autofac.Configuration
             {
                 throw new ArgumentNullException("reader");
             }
-            _sectionHandler = SectionHandler.Deserialize(reader);
+            _sectionHandler = AutofacConfigurationSection.Deserialize(reader);
         }
 
         /// <summary>

@@ -27,12 +27,12 @@ namespace Autofac.Configuration
         /// The <see cref="Autofac.ContainerBuilder"/> that should receive the configured registrations.
         /// </param>
         /// <param name="configurationSection">
-        /// The <see cref="Autofac.Configuration.SectionHandler"/> containing the configured registrations.
+        /// The <see cref="Autofac.Configuration.AutofacConfigurationSection"/> containing the configured registrations.
         /// </param>
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="builder" /> or <paramref name="configurationSection" /> is <see langword="null" />.
         /// </exception>
-        public static void RegisterConfigurationSection(this ContainerBuilder builder, SectionHandler configurationSection)
+        public static void RegisterConfigurationSection(this ContainerBuilder builder, AutofacConfigurationSection configurationSection)
         {
             if (builder == null)
             {
@@ -48,7 +48,7 @@ namespace Autofac.Configuration
             RegisterReferencedFiles(builder, configurationSection);
         }
 
-        private static void RegisterConfiguredComponents(ContainerBuilder builder, SectionHandler configurationSection)
+        private static void RegisterConfiguredComponents(ContainerBuilder builder, AutofacConfigurationSection configurationSection)
         {
             foreach (ComponentElement component in configurationSection.Components)
             {
@@ -116,7 +116,7 @@ namespace Autofac.Configuration
             }
         }
 
-        private static void RegisterConfiguredModules(ContainerBuilder builder, SectionHandler configurationSection)
+        private static void RegisterConfiguredModules(ContainerBuilder builder, AutofacConfigurationSection configurationSection)
         {
             foreach (ModuleElement moduleElement in configurationSection.Modules)
             {
@@ -132,7 +132,7 @@ namespace Autofac.Configuration
             }
         }
 
-        private static void RegisterReferencedFiles(ContainerBuilder builder, SectionHandler configurationSection)
+        private static void RegisterReferencedFiles(ContainerBuilder builder, AutofacConfigurationSection configurationSection)
         {
             foreach (FileElement file in configurationSection.Files)
             {
