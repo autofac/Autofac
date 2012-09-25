@@ -38,7 +38,12 @@ namespace Autofac.Tests.Configuration
     </component>
   </components>
 </autofac>";
-            using (var reader = new XmlTextReader(new StringReader(metadataConfiguration)))
+            return CreateSection(metadataConfiguration);
+        }
+
+        private static SectionHandler CreateSection(string config)
+        {
+            using (var reader = new XmlTextReader(new StringReader(config)))
             {
                 return SectionHandler.Deserialize(reader);
             }

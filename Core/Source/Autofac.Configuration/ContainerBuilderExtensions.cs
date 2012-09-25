@@ -43,27 +43,21 @@ namespace Autofac.Configuration
                 throw new ArgumentNullException("configurationSection");
             }
 
-            Assembly defaultAssembly = null;
-            if (!string.IsNullOrEmpty(configurationSection.DefaultAssembly))
-            {
-                defaultAssembly = Assembly.Load(configurationSection.DefaultAssembly);
-            }
-
-            RegisterConfiguredModules(builder, configurationSection, defaultAssembly);
-            RegisterConfiguredComponents(builder, configurationSection, defaultAssembly);
+            RegisterConfiguredModules(builder, configurationSection);
+            RegisterConfiguredComponents(builder, configurationSection);
             RegisterReferencedFiles(builder, configurationSection);
         }
 
-        private static void RegisterConfiguredComponents(ContainerBuilder builder, SectionHandler configurationSection, Assembly defaultAssembly)
+        private static void RegisterConfiguredComponents(ContainerBuilder builder, SectionHandler configurationSection)
         {
             foreach (ComponentElement component in configurationSection.Components)
             {
-                var registrar = builder.RegisterType(LoadType(component.Type, defaultAssembly));
+                var registrar = builder.RegisterType(LoadType(component.Type, configurationSection.DefaultAssembly));
 
                 IList<Service> services = new List<Service>();
                 if (!string.IsNullOrEmpty(component.Service))
                 {
-                    var serviceType = LoadType(component.Service, defaultAssembly);
+                    var serviceType = LoadType(component.Service, configurationSection.DefaultAssembly);
                     if (!string.IsNullOrEmpty(component.Name))
                     {
                         services.Add(new KeyedService(component.Name, serviceType));
@@ -84,7 +78,7 @@ namespace Autofac.Configuration
 
                 foreach (ServiceElement service in component.Services)
                 {
-                    var serviceType = LoadType(service.Type, defaultAssembly);
+                    var serviceType = LoadType(service.Type, configurationSection.DefaultAssembly);
                     if (!string.IsNullOrEmpty(service.Name))
                     {
                         services.Add(new KeyedService(service.Name, serviceType));
@@ -122,11 +116,11 @@ namespace Autofac.Configuration
             }
         }
 
-        private static void RegisterConfiguredModules(ContainerBuilder builder, SectionHandler configurationSection, Assembly defaultAssembly)
+        private static void RegisterConfiguredModules(ContainerBuilder builder, SectionHandler configurationSection)
         {
             foreach (ModuleElement moduleElement in configurationSection.Modules)
             {
-                var moduleType = LoadType(moduleElement.Type, defaultAssembly);
+                var moduleType = LoadType(moduleElement.Type, configurationSection.DefaultAssembly);
                 var moduleActivator = new ReflectionActivator(
                     moduleType,
                     new BindingFlagsConstructorFinder(BindingFlags.Public),

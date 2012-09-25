@@ -81,6 +81,7 @@
     <Compile Include="..\..\..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AssemblyNameConverterFixture.cs" />
     <Compile Include="AssertionHelpers.cs" />
     <Compile Include="ConfigurationSettingsReaderFixture.cs" />
     <Compile Include="ContainerBuilderExtensionsFixture.cs" />

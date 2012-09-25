@@ -126,6 +126,9 @@
   <data name="ServiceTypeMustBeSpecified" xml:space="preserve">
     <value>If 'name' is specified, 'service' must also be specified (component name='{0}'.)</value>
   </data>
+  <data name="TypeConversionUnsupported" xml:space="preserve">
+    <value>Unable to convert object of type '{0}' to type '{1}'.</value>
+  </data>
   <data name="TypeNotFound" xml:space="preserve">
     <value>The type '{0}' could not be found. It may require assembly qualification, e.g. "MyType, MyAssembly".</value>
   </data>

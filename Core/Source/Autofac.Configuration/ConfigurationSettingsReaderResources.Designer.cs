@@ -88,6 +88,15 @@ namespace Autofac.Configuration {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to convert object of type &apos;{0}&apos; to type &apos;{1}&apos;..
+        /// </summary>
+        internal static string TypeConversionUnsupported {
+            get {
+                return ResourceManager.GetString("TypeConversionUnsupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The type &apos;{0}&apos; could not be found. It may require assembly qualification, e.g. &quot;MyType, MyAssembly&quot;..
         /// </summary>
         internal static string TypeNotFound {

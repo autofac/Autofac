@@ -73,6 +73,7 @@
     <Compile Include="..\..\..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AssemblyNameConverter.cs" />
     <Compile Include="ComponentElement.cs" />
     <Compile Include="ComponentElementCollection.cs" />
     <Compile Include="ConfigurationElementCollection.cs" />

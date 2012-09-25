@@ -24,39 +24,38 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.ComponentModel;
 using System.Configuration;
+using System.Reflection;
 using System.Xml;
 
 namespace Autofac.Configuration
 {
-
     /// <summary>
-    /// Section handler for Autofac configuration in app.config files.
+    /// Section handler for Autofac configuration.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This configuration section is used for XML-based configuration of an Autofac
+    /// container. While it is primarily used from inside <c>app.config</c> or <c>web.config</c>
+    /// files, you may also use it with other arbitrary XML files via the
+    /// <see cref="Autofac.Configuration.SectionHandler.Deserialize"/> helper method.
+    /// </para>
+    /// </remarks>
     public class SectionHandler : ConfigurationSection
     {
-		const string ModulesPropertyName = "modules";
-		const string ComponentsPropertyName = "components";
-        const string DefaultAssemblyPropertyName="defaultAssembly";
-        const string FilesPropertyName = "files";
-
-        /// <summary>
-        /// Gets the modules to be registered.
-        /// </summary>
-        /// <value>The modules.</value>
-		[ConfigurationProperty(ModulesPropertyName, IsRequired = false)]
-		public ModuleElementCollection Modules
-		{
-			get
-			{
-				return (ModuleElementCollection)this[ModulesPropertyName];
-			}
-		}
+        private const string ModulesPropertyName = "modules";
+        private const string ComponentsPropertyName = "components";
+        private const string DefaultAssemblyPropertyName = "defaultAssembly";
+        private const string FilesPropertyName = "files";
 
         /// <summary>
         /// Gets the components to be registered.
         /// </summary>
-        /// <value>The components.</value>
+        /// <value>
+        /// A <see cref="Autofac.Configuration.ComponentElementCollection"/> with the list
+        /// of individual service components that should be registered.
+        /// </value>
         [ConfigurationProperty(ComponentsPropertyName, IsRequired = false)]
         public ComponentElementCollection Components
         {
@@ -67,9 +66,30 @@ namespace Autofac.Configuration
         }
 
         /// <summary>
+        /// Gets the default assembly to search for types in when not explicitly
+        /// provided with the type name.
+        /// </summary>
+        /// <value>
+        /// An <see cref="System.Reflection.Assembly"/> that should be used as the default assembly
+        /// in type searches.
+        /// </value>
+        [ConfigurationProperty(DefaultAssemblyPropertyName, IsRequired = false)]
+        [TypeConverter(typeof(AssemblyNameConverter))]
+        public virtual Assembly DefaultAssembly
+        {
+            get
+            {
+                return (Assembly)this[DefaultAssemblyPropertyName];
+            }
+        }
+
+        /// <summary>
         /// Gets additional configuration files.
         /// </summary>
-        /// <value>The files.</value>
+        /// <value>
+        /// A <see cref="Autofac.Configuration.FileElementCollection"/> with the list
+        /// of external/referenced configuration files.
+        /// </value>
         [ConfigurationProperty(FilesPropertyName, IsRequired = false)]
         public FileElementCollection Files
         {
@@ -80,16 +100,18 @@ namespace Autofac.Configuration
         }
 
         /// <summary>
-        /// Gets the default assembly to search for types in when not explicitly
-        /// provided with the type name.
+        /// Gets the modules to be registered.
         /// </summary>
-        /// <value>The default assembly.</value>
-        [ConfigurationProperty(DefaultAssemblyPropertyName, IsRequired = false)]
-        public virtual string DefaultAssembly
+        /// <value>
+        /// A <see cref="Autofac.Configuration.ModuleElementCollection"/> with the list
+        /// of modules that should be registered.
+        /// </value>
+        [ConfigurationProperty(ModulesPropertyName, IsRequired = false)]
+        public ModuleElementCollection Modules
         {
             get
             {
-                return (string)this[DefaultAssemblyPropertyName];
+                return (ModuleElementCollection)this[ModulesPropertyName];
             }
         }
 
