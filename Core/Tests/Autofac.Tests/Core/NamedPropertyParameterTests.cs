@@ -72,7 +72,7 @@ namespace Autofac.Tests.Core
         {
             var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
             Func<object> vp;
-            Assert.IsTrue(cp.CanSupplyValue(PropertySetValueParameter(), Container.Empty, out vp));
+            Assert.IsTrue(cp.CanSupplyValue(PropertySetValueParameter(), new ContainerBuilder().Build(), out vp));
         }
 
         [Test]
@@ -80,7 +80,7 @@ namespace Autofac.Tests.Core
         {
             var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
             Func<object> vp;
-            Assert.IsFalse(cp.CanSupplyValue(WrongPropertySetValueParameter(), Container.Empty, out vp));
+            Assert.IsFalse(cp.CanSupplyValue(WrongPropertySetValueParameter(), new ContainerBuilder().Build(), out vp));
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace Autofac.Tests.Core
         {
             var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
             Func<object> vp;
-            Assert.IsFalse(cp.CanSupplyValue(ConstructorParameter(), Container.Empty, out vp));
+            Assert.IsFalse(cp.CanSupplyValue(ConstructorParameter(), new ContainerBuilder().Build(), out vp));
         }
 
         [Test]
@@ -96,7 +96,7 @@ namespace Autofac.Tests.Core
         {
             var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
             Func<object> vp;
-            Assert.IsFalse(cp.CanSupplyValue(MethodParameter(), Container.Empty, out vp));
+            Assert.IsFalse(cp.CanSupplyValue(MethodParameter(), new ContainerBuilder().Build(), out vp));
         }
     }
 }

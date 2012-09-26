@@ -169,7 +169,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
 
             var target = Factory.CreateReflectionActivator(typeof(AcceptsObjectParameter), parameters);
 
-            var instance = target.ActivateInstance(Container.Empty, Factory.NoParameters);
+            var instance = target.ActivateInstance(new ContainerBuilder().Build(), Factory.NoParameters);
 
             Assert.IsNotNull(instance);
             Assert.IsInstanceOf<AcceptsObjectParameter>(instance);
@@ -186,7 +186,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
 
             var target = Factory.CreateReflectionActivator(typeof(AcceptsObjectParameter), parameters);
 
-            var instance = target.ActivateInstance(Container.Empty, Factory.NoParameters);
+            var instance = target.ActivateInstance(new ContainerBuilder().Build(), Factory.NoParameters);
 
             Assert.IsNotNull(instance);
             Assert.IsInstanceOf<AcceptsObjectParameter>(instance);
@@ -333,7 +333,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
                 new NamedPropertyParameter("P2", p2)
             };
             var target = Factory.CreateReflectionActivator(typeof(R), Enumerable.Empty<Parameter>(), properties);
-            var instance = (R)target.ActivateInstance(Container.Empty, Enumerable.Empty<Parameter>());
+            var instance = (R)target.ActivateInstance(new ContainerBuilder().Build(), Enumerable.Empty<Parameter>());
             Assert.AreEqual(1, instance.P1);
             Assert.AreEqual(2, instance.P2);
         }

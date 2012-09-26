@@ -31,7 +31,7 @@ namespace Autofac.Tests.Component.Activation
             var target =
                 new DelegateActivator(typeof(object), (c, p) => instance);
 
-            Assert.AreSame(instance, target.ActivateInstance(Container.Empty, Enumerable.Empty<Parameter>()));
+            Assert.AreSame(instance, target.ActivateInstance(new ContainerBuilder().Build(), Enumerable.Empty<Parameter>()));
         }
 
         [Test]
@@ -40,7 +40,7 @@ namespace Autofac.Tests.Component.Activation
             var target = new DelegateActivator(typeof(string), (c, p) => null);
 
             var ex = Assert.Throws<DependencyResolutionException>(
-                () => target.ActivateInstance(Container.Empty, Enumerable.Empty<Parameter>()));
+                () => target.ActivateInstance(new ContainerBuilder().Build(), Enumerable.Empty<Parameter>()));
 
             Assert.That(ex.Message.Contains(typeof(string).ToString()));
         }

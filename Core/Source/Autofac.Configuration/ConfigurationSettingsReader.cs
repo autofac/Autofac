@@ -130,7 +130,7 @@ namespace Autofac.Configuration
                     new MostParametersConstructorSelector(),
                     moduleElement.Parameters.ToParameters(),
                     moduleElement.Properties.ToParameters());
-				var module = (IModule)moduleActivator.ActivateInstance(Container.Empty, Enumerable.Empty<Parameter>());
+				var module = (IModule)moduleActivator.ActivateInstance(new ContainerBuilder().Build(), Enumerable.Empty<Parameter>());
                 builder.RegisterModule(module);
 			}
 
