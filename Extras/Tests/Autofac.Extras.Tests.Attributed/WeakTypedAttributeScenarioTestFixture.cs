@@ -16,7 +16,7 @@ namespace Autofac.Extras.Tests.Attributed
         public void validate_wireup_of_generic_attributes_to_strongly_typed_metadata_on_resolve()
         {
             // arrange
-            var builder = new ContainerBuilder();
+            var builder = ContainerBuilderFactory.Create();
 
             builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
                 .As<IWeakTypedScenario>()

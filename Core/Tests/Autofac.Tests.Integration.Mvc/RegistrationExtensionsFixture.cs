@@ -333,7 +333,7 @@ namespace Autofac.Tests.Integration.Mvc
             Action<IRegistrationBuilder<TFilter, SimpleActivatorData, SingleRegistrationStyle>> configure)
                 where TFilter : new()
         {
-            var builder = new ContainerBuilder();
+            var builder = ContainerBuilderFactory.Create();
             configure(builder.Register(c => new TFilter()));
             var container = builder.Build();
 

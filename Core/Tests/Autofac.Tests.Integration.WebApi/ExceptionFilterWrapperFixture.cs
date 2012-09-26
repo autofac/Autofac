@@ -23,7 +23,7 @@ namespace Autofac.Tests.Integration.WebApi
         [Test]
         public void WrapperResolvesExceptionFilterFromDependencyScope()
         {
-            var builder = new ContainerBuilder();
+            var builder = ContainerBuilderFactory.Create();
             builder.Register<ILogger>(c => new Logger()).InstancePerDependency();
             var activationCount = 0;
             builder.Register<IAutofacExceptionFilter>(c => new TestExceptionFilter(c.Resolve<ILogger>()))

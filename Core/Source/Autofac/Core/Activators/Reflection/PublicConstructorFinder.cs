@@ -24,28 +24,15 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace Autofac.Core.Activators.Reflection
 {
     /// <summary>
-    /// Finds constructors based on their binding flags.
+    /// Finds all public instance constructors.
     /// </summary>
-    public class BindingFlagsConstructorFinder : IConstructorFinder
+    public class PublicConstructorFinder : IConstructorFinder
     {
-        readonly BindingFlags _bindingFlags;
-
-        /// <summary>
-        /// Create an instance matching constructors with the supplied binding flags.
-        /// </summary>
-        /// <param name="bindingFlags">Binding flags to match.</param>
-        public BindingFlagsConstructorFinder(BindingFlags bindingFlags)
-        {
-            _bindingFlags = bindingFlags;
-        }
-
         /// <summary>
         /// Finds suitable constructors on the target type.
         /// </summary>
@@ -53,7 +40,7 @@ namespace Autofac.Core.Activators.Reflection
         /// <returns>Suitable constructors.</returns>
         public ConstructorInfo[] FindConstructors(Type targetType)
         {
-            return targetType.GetConstructors(BindingFlags.Instance | _bindingFlags);
+            return targetType.GetConstructors();
         }
 
         /// <summary>
@@ -65,7 +52,7 @@ namespace Autofac.Core.Activators.Reflection
         /// <filterpriority>2</filterpriority>
         public override string ToString()
         {
-            return string.Format(BindingFlagsConstructorFinderResources.HasBindingFlags, _bindingFlags);
+            return string.Format(PublicConstructorFinderResources.PublicBindingFlags);
         }
     }
 }

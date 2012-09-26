@@ -14,7 +14,7 @@ namespace Autofac.Extras.Tests.Attributed
         public void verify_single_attribute_scan_results_from_test_fixture()
         {
             // arrange
-            var builder = new ContainerBuilder();
+            var builder = ContainerBuilderFactory.Create();
 
             builder.RegisterModule(new WeakTypedScenarioMetadataModule(true));
 
@@ -30,7 +30,7 @@ namespace Autofac.Extras.Tests.Attributed
         public void verify_single_attribute_scan_results_from_test_fixture_using_non_generic()
         {
             // arrange
-            var builder = new ContainerBuilder();
+            var builder = ContainerBuilderFactory.Create();
 
             builder.RegisterModule(new WeakTypedScenarioMetadataModule(false));
 

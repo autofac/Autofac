@@ -384,7 +384,7 @@ namespace Autofac.Tests.Integration.Mvc
             Action<IRegistrationBuilder<TFilter, SimpleActivatorData, SingleRegistrationStyle>> configure) 
             where TFilter : new()
         {
-            var builder = new ContainerBuilder();
+            var builder = ContainerBuilderFactory.Create();
             configure(builder.Register(c => new TFilter()));
             var container = builder.Build();
             SetupMockLifetimeScopeProvider(container);
@@ -402,7 +402,7 @@ namespace Autofac.Tests.Integration.Mvc
             Action<IRegistrationBuilder<TFilter2, SimpleActivatorData, SingleRegistrationStyle>> configure2)
             where TFilter1 : new() where TFilter2 : new()
         {
-            var builder = new ContainerBuilder();
+            var builder = ContainerBuilderFactory.Create();
             configure1(builder.Register(c => new TFilter1()));
             configure2(builder.Register(c => new TFilter2()));
             var container = builder.Build();

@@ -237,7 +237,7 @@ namespace Autofac.Tests.Integration.WebApi
             Func<IComponentContext, TFilter> registration,
             Action<IRegistrationBuilder<TFilter, SimpleActivatorData, SingleRegistrationStyle>> configure)
         {
-            var builder = new ContainerBuilder();
+            var builder = ContainerBuilderFactory.Create();
             builder.Register<ILogger>(c => new Logger()).InstancePerDependency();
             configure(builder.Register(registration).InstancePerApiRequest());
             var container = builder.Build();
@@ -257,7 +257,7 @@ namespace Autofac.Tests.Integration.WebApi
             Action<IRegistrationBuilder<TFilter1, SimpleActivatorData, SingleRegistrationStyle>> configure1,
             Action<IRegistrationBuilder<TFilter2, SimpleActivatorData, SingleRegistrationStyle>> configure2)
         {
-            var builder = new ContainerBuilder();
+            var builder = ContainerBuilderFactory.Create();
             builder.Register<ILogger>(c => new Logger()).InstancePerDependency();
             configure1(builder.Register(registration1).InstancePerApiRequest());
             configure2(builder.Register(registration2).InstancePerApiRequest());

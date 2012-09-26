@@ -102,6 +102,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Source\Autofac.Full\Autofac.Full.csproj">
+      <Project>{92a45114-c301-47a2-96c2-a7981affea3f}</Project>
+      <Name>Autofac.Full</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Source\Autofac.Integration.Mvc\Autofac.Integration.Mvc.csproj">
       <Project>{DD874E64-C7EC-464D-925F-CF4A709EDEEF}</Project>
       <Name>Autofac.Integration.Mvc</Name>

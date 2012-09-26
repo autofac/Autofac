@@ -126,7 +126,7 @@ namespace Autofac.Configuration
 				var moduleType = LoadType(moduleElement.Type, defaultAssembly);
                 var moduleActivator = new ReflectionActivator(
                     moduleType,
-                    new BindingFlagsConstructorFinder(BindingFlags.Public),
+                    new PublicConstructorFinder(),
                     new MostParametersConstructorSelector(),
                     moduleElement.Parameters.ToParameters(),
                     moduleElement.Properties.ToParameters());
