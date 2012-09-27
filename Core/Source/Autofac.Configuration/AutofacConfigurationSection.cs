@@ -26,6 +26,8 @@
 using System;
 using System.ComponentModel;
 using System.Configuration;
+using System.Globalization;
+using System.IO;
 using System.Reflection;
 using System.Xml;
 
@@ -48,6 +50,11 @@ namespace Autofac.Configuration
         private const string ComponentsPropertyName = "components";
         private const string DefaultAssemblyPropertyName = "defaultAssembly";
         private const string FilesPropertyName = "files";
+
+        /// <summary>
+        /// The default section name that will be searched for.
+        /// </summary>
+        public const string DefaultSectionName = "autofac";
 
         /// <summary>
         /// Gets the components to be registered.
@@ -145,6 +152,57 @@ namespace Autofac.Configuration
             var handler = new AutofacConfigurationSection();
             handler.DeserializeElement(reader, false);
             return handler;
+        }
+
+        public static AutofacConfigurationSection Deserialize(string configurationFile)
+        {
+            configurationFile = NormalizeConfigurationFilePath(configurationFile);
+            using (var reader = new XmlTextReader(File.OpenRead(configurationFile)))
+            {
+                return AutofacConfigurationSection.Deserialize(reader);
+            }
+        }
+
+        public static AutofacConfigurationSection Deserialize(string configurationFile, string configurationSection)
+        {
+            configurationFile = NormalizeConfigurationFilePath(configurationFile);
+            if (configurationSection == null || configurationSection.Length == 0)
+            {
+                configurationSection = AutofacConfigurationSection.DefaultSectionName;
+            }
+            var map = new ExeConfigurationFileMap();
+            map.ExeConfigFilename = configurationFile;
+
+            var configuration = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
+            var handler = (AutofacConfigurationSection)configuration.GetSection(configurationSection);
+
+            if (handler == null)
+            {
+                throw new ConfigurationErrorsException(String.Format(CultureInfo.CurrentCulture, ConfigurationSettingsReaderResources.SectionNotFound, configurationSection));
+            }
+            return handler;
+        }
+
+        private static string NormalizeConfigurationFilePath(string configurationFile)
+        {
+            if (configurationFile == null)
+            {
+                throw new ArgumentNullException("configurationFile");
+            }
+            if (configurationFile.Length == 0)
+            {
+                throw new ArgumentException("Configuration file path may not be empty.", "configurationFile");
+            }
+            if (!Path.IsPathRooted(configurationFile))
+            {
+                var configurationDirectory = Path.GetDirectoryName(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
+                configurationFile = Path.Combine(configurationDirectory, configurationFile);
+            }
+            if (!File.Exists(configurationFile))
+            {
+                throw new FileNotFoundException("Unable to find specified configuration file.", configurationFile);
+            }
+            return configurationFile;
         }
     }
 }

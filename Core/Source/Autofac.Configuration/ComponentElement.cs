@@ -36,7 +36,7 @@ namespace Autofac.Configuration
         const string TypeAttributeName = "type";
         const string ServiceAttributeName = "service";
         const string ServicesElementName = "services";
-		const string ParametersElementName = "parameters";
+        const string ParametersElementName = "parameters";
         const string PropertiesElementName = "properties";
         const string MetadataElementName = "metadata";
         const string MemberOfAttributeName = "member-of";
@@ -108,6 +108,7 @@ namespace Autofac.Configuration
         {
             get
             {
+                // TODO: Convert the instance scope specifier to an enumeration.
                 return (string)this[InstanceScopeAttributeName];
             }
         }
@@ -121,6 +122,7 @@ namespace Autofac.Configuration
         {
             get
             {
+                // TODO: Convert the ownership specifier to an enumeration.
                 return (string)this[InstanceOwnershipAttributeName];
             }
         }
@@ -135,6 +137,7 @@ namespace Autofac.Configuration
         {
             get
             {
+                // TODO: Convert property injection to a Boolean.
                 return (string)this[InjectPropertiesAttributeName];
             }
         }
@@ -156,14 +159,14 @@ namespace Autofac.Configuration
         /// Gets the parameters used to construct the component.
         /// </summary>
         /// <value>The parameters.</value>
-		[ConfigurationProperty(ParametersElementName, IsRequired = false)]
-		public ParameterElementCollection Parameters
-		{
-			get
-			{
-				return (ParameterElementCollection)this[ParametersElementName];
-			}
-		}
+        [ConfigurationProperty(ParametersElementName, IsRequired = false)]
+        public ParameterElementCollection Parameters
+        {
+            get
+            {
+                return (ParameterElementCollection)this[ParametersElementName];
+            }
+        }
 
         /// <summary>
         /// Gets the properties to be explicitly set on the component.

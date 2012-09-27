@@ -37,6 +37,8 @@ namespace Autofac.Configuration
         const string SectionAttributeName = "section";
         internal const string Key = FilenameAttributeName;
 
+        // TODO: Create an extension method on FileElement that gets an AutofacConfigurationSection based on the combination of properties populated.
+
         /// <summary>
         /// Gets the filename of the file.
         /// </summary>

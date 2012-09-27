@@ -16,11 +16,6 @@ namespace Autofac.Configuration
     public static class ContainerBuilderExtensions
     {
         /// <summary>
-        /// The default section name that will be searched for.
-        /// </summary>
-        public const string DefaultSectionName = "autofac";
-        
-        /// <summary>
         /// Registers the contents of a configuration section into a container builder.
         /// </summary>
         /// <param name="builder">
@@ -136,12 +131,15 @@ namespace Autofac.Configuration
         {
             foreach (FileElement file in configurationSection.Files)
             {
-                var section = DefaultSectionName;
-                if (!string.IsNullOrEmpty(file.Section))
-                    section = file.Section;
+                //var section = DefaultSectionName;
+                //if (!string.IsNullOrEmpty(file.Section))
+                //section = file.Section;
 
-                var reader = new ConfigurationSettingsReader(section, file.Name);
-                builder.RegisterModule(reader);
+                // TODO: Break the circular reference between ConfigurationSettingsReader and the parsing mechanism.
+                var handler = AutofacConfigurationSection.Deserialize(file.Name, file.Section);
+                builder.RegisterConfigurationSection(handler);
+                //var reader = new ConfigurationSettingsReader(section, file.Name);
+                //builder.RegisterModule(reader);
             }
         }
 
@@ -151,8 +149,8 @@ namespace Autofac.Configuration
         /// <param name="component">The component.</param>
         /// <param name="registrar">The registrar.</param>
         private static void SetInjectProperties<TReflectionActivatorData, TSingleRegistrationStyle>(ComponentElement component, IRegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar)
-            where TReflectionActivatorData: ReflectionActivatorData
-            where TSingleRegistrationStyle: SingleRegistrationStyle
+            where TReflectionActivatorData : ReflectionActivatorData
+            where TSingleRegistrationStyle : SingleRegistrationStyle
         {
             if (component == null)
             {
@@ -184,8 +182,8 @@ namespace Autofac.Configuration
         /// <param name="component">The component.</param>
         /// <param name="registrar">The registrar.</param>
         private static void SetOwnership<TReflectionActivatorData, TSingleRegistrationStyle>(ComponentElement component, IRegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar)
-            where TReflectionActivatorData: ReflectionActivatorData
-            where TSingleRegistrationStyle: SingleRegistrationStyle
+            where TReflectionActivatorData : ReflectionActivatorData
+            where TSingleRegistrationStyle : SingleRegistrationStyle
         {
             if (component == null)
             {
@@ -218,8 +216,8 @@ namespace Autofac.Configuration
         /// <param name="component">The component.</param>
         /// <param name="registrar">The registrar.</param>
         private static void SetScope<TReflectionActivatorData, TSingleRegistrationStyle>(ComponentElement component, IRegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar)
-            where TReflectionActivatorData: ReflectionActivatorData
-            where TSingleRegistrationStyle: SingleRegistrationStyle
+            where TReflectionActivatorData : ReflectionActivatorData
+            where TSingleRegistrationStyle : SingleRegistrationStyle
         {
             if (component == null)
             {
