@@ -22,12 +22,12 @@ namespace Autofac.Configuration
         /// The <see cref="Autofac.ContainerBuilder"/> that should receive the configured registrations.
         /// </param>
         /// <param name="configurationSection">
-        /// The <see cref="Autofac.Configuration.AutofacConfigurationSection"/> containing the configured registrations.
+        /// The <see cref="Autofac.Configuration.SectionHandler"/> containing the configured registrations.
         /// </param>
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="builder" /> or <paramref name="configurationSection" /> is <see langword="null" />.
         /// </exception>
-        public static void RegisterConfigurationSection(this ContainerBuilder builder, AutofacConfigurationSection configurationSection)
+        public static void RegisterConfigurationSection(this ContainerBuilder builder, SectionHandler configurationSection)
         {
             if (builder == null)
             {
@@ -43,7 +43,7 @@ namespace Autofac.Configuration
             RegisterReferencedFiles(builder, configurationSection);
         }
 
-        private static void RegisterConfiguredComponents(ContainerBuilder builder, AutofacConfigurationSection configurationSection)
+        private static void RegisterConfiguredComponents(ContainerBuilder builder, SectionHandler configurationSection)
         {
             foreach (ComponentElement component in configurationSection.Components)
             {
@@ -111,7 +111,7 @@ namespace Autofac.Configuration
             }
         }
 
-        private static void RegisterConfiguredModules(ContainerBuilder builder, AutofacConfigurationSection configurationSection)
+        private static void RegisterConfiguredModules(ContainerBuilder builder, SectionHandler configurationSection)
         {
             foreach (ModuleElement moduleElement in configurationSection.Modules)
             {
@@ -127,7 +127,7 @@ namespace Autofac.Configuration
             }
         }
 
-        private static void RegisterReferencedFiles(ContainerBuilder builder, AutofacConfigurationSection configurationSection)
+        private static void RegisterReferencedFiles(ContainerBuilder builder, SectionHandler configurationSection)
         {
             foreach (FileElement file in configurationSection.Files)
             {
@@ -136,7 +136,7 @@ namespace Autofac.Configuration
                 //section = file.Section;
 
                 // TODO: Break the circular reference between ConfigurationSettingsReader and the parsing mechanism.
-                var handler = AutofacConfigurationSection.Deserialize(file.Name, file.Section);
+                var handler = SectionHandler.Deserialize(file.Name, file.Section);
                 builder.RegisterConfigurationSection(handler);
                 //var reader = new ConfigurationSettingsReader(section, file.Name);
                 //builder.RegisterModule(reader);
