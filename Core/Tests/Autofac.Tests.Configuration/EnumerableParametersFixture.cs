@@ -95,7 +95,7 @@ namespace Autofac.Tests.Configuration
 
             Assert.IsTrue(poco.List.Count == 2);
             Assert.AreEqual(poco.List[0], 1);
-            Assert.AreEqual(poco.List[1], 2);            
+            Assert.AreEqual(poco.List[1], 2);
         }
 
         public class F
@@ -173,7 +173,7 @@ namespace Autofac.Tests.Configuration
         static ContainerBuilder ConfigureContainer(string configFile)
         {
             var cb = new ContainerBuilder();
-            var fullFilename = configFile + ".config";
+            var fullFilename = "Files/" + configFile + ".config";
             var csr = new ConfigurationSettingsReader(ConfigurationSettingsReader.DefaultSectionName, fullFilename);
             cb.RegisterModule(csr);
             return cb;

@@ -140,7 +140,7 @@ namespace Autofac.Tests.Configuration
         static ContainerBuilder ConfigureContainer(string configFile)
         {
             var cb = new ContainerBuilder();
-            var fullFilename = configFile + ".config";
+            var fullFilename = "Files/" + configFile + ".config";
             var csr = new ConfigurationSettingsReader(ConfigurationSettingsReader.DefaultSectionName, fullFilename);
             cb.RegisterModule(csr);
             return cb;

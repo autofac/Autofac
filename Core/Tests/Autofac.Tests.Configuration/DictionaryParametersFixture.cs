@@ -69,7 +69,7 @@ namespace Autofac.Tests.Configuration
             Assert.AreEqual("Val1", poco.Dictionary["1"]);
             Assert.AreEqual("Val2", poco.Dictionary["2"]);
         }
-        
+
         public class D
         {
             public Dictionary<string, string> Dictionary { get; set; }
@@ -146,7 +146,7 @@ namespace Autofac.Tests.Configuration
         static ContainerBuilder ConfigureContainer(string configFile)
         {
             var cb = new ContainerBuilder();
-            var fullFilename = configFile + ".config";
+            var fullFilename = "Files/" + configFile + ".config";
             var csr = new ConfigurationSettingsReader(ConfigurationSettingsReader.DefaultSectionName, fullFilename);
             cb.RegisterModule(csr);
             return cb;

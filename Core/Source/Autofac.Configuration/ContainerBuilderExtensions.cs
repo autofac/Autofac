@@ -131,15 +131,8 @@ namespace Autofac.Configuration
         {
             foreach (FileElement file in configurationSection.Files)
             {
-                //var section = DefaultSectionName;
-                //if (!string.IsNullOrEmpty(file.Section))
-                //section = file.Section;
-
-                // TODO: Break the circular reference between ConfigurationSettingsReader and the parsing mechanism.
                 var handler = SectionHandler.Deserialize(file.Name, file.Section);
                 builder.RegisterConfigurationSection(handler);
-                //var reader = new ConfigurationSettingsReader(section, file.Name);
-                //builder.RegisterModule(reader);
             }
         }
 
