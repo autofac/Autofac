@@ -128,7 +128,7 @@
     <None Include="Files\SingletonWithTwoServices.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Files\TypeMultipleTimes.config">
+    <None Include="Files\SameTypeRegisteredMultipleTimes.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />

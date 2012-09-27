@@ -13,6 +13,19 @@ namespace Autofac.Tests.Configuration
     public class ConfigurationSettingsReaderFixture
     {
         [Test]
+        public void Load_AllowsMultipleRegistrationsOfSameType()
+        {
+            var builder = ConfigureContainer("SameTypeRegisteredMultipleTimes");
+            var container = builder.Build();
+            var collection = container.Resolve<IEnumerable<SimpleComponent>>();
+            Assert.AreEqual(2, collection.Count(), "The wrong number of items were registered.");
+
+            // Test using Any() because we aren't necessarily guaranteed the order of resolution.
+            Assert.IsTrue(collection.Any(a => a.Input == 5), "The first registration (5) wasn't found.");
+            Assert.IsTrue(collection.Any(a => a.Input == 10), "The second registration (10) wasn't found.");
+        }
+
+        [Test]
         public void Load_IncludesFileReferences()
         {
             var container = ConfigureContainer("Referrer").Build();
@@ -26,33 +39,33 @@ namespace Autofac.Tests.Configuration
         {
             var container = ConfigureContainer("ComponentWithMetadata").Build();
             IComponentRegistration registration;
-            Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(new KeyedService("a", typeof(object)), out registration));
-            Assert.AreEqual(42, (int)registration.Metadata["answer"]);
+            Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(new KeyedService("a", typeof(object)), out registration), "The expected service wasn't registered.");
+            Assert.AreEqual(42, (int)registration.Metadata["answer"], "The metadata on the registered component was not properly parsed.");
         }
 
         [Test]
-        public void SingletonWithTwoServices()
+        public void Load_SingletonWithTwoServices()
         {
             var container = ConfigureContainer("SingletonWithTwoServices").Build();
-            container.AssertRegistered<IA>();
+            container.AssertRegistered<ITestComponent>();
             container.AssertRegistered<object>();
-            container.AssertNotRegistered<A>();
-            Assert.AreSame(container.Resolve<IA>(), container.Resolve<object>());
+            container.AssertNotRegistered<SimpleComponent>();
+            Assert.AreSame(container.Resolve<ITestComponent>(), container.Resolve<object>());
         }
 
         [Test]
         public void ParametersProvided()
         {
             var container = ConfigureContainer("SingletonWithTwoServices").Build();
-            var cpt = (A)container.Resolve<IA>();
-            Assert.AreEqual(1, cpt.I);
+            var cpt = (SimpleComponent)container.Resolve<ITestComponent>();
+            Assert.AreEqual(1, cpt.Input);
         }
 
         [Test]
         public void PropertiesProvided()
         {
             var container = ConfigureContainer("SingletonWithTwoServices").Build();
-            var cpt = (A)container.Resolve<IA>();
+            var cpt = (SimpleComponent)container.Resolve<ITestComponent>();
             Assert.AreEqual("hello", cpt.Message);
         }
 
@@ -94,23 +107,12 @@ namespace Autofac.Tests.Configuration
         public void ConfiguresMemberOf()
         {
             var builder = ConfigureContainer("MemberOf");
-            builder.RegisterCollection<IA>("ia")
-                    .As<IList<IA>>();
+            builder.RegisterCollection<ITestComponent>("ia")
+                    .As<IList<ITestComponent>>();
             var container = builder.Build();
-            var collection = container.Resolve<IList<IA>>();
+            var collection = container.Resolve<IList<ITestComponent>>();
             var first = collection[0];
             Assert.IsInstanceOf(typeof(D), first);
-        }
-
-        [Test]
-        public void AllowsMultipleRegistrationsOfSameType()
-        {
-            var builder = ConfigureContainer("TypeMultipleTimes");
-            var container = builder.Build();
-            var collection = container.Resolve<IEnumerable<X>>();
-            Assert.AreEqual(2, collection.Count());
-            Assert.AreEqual("Bar", collection.ElementAt(0).Name);
-            Assert.AreEqual("Foo", collection.ElementAt(1).Name);
         }
 
         [Test]
@@ -148,13 +150,13 @@ namespace Autofac.Tests.Configuration
             return cb;
         }
 
-        interface IA { }
+        interface ITestComponent { }
 
-        class A : IA
+        class SimpleComponent : ITestComponent
         {
-            public A(int i) { I = i; }
+            public SimpleComponent(int input) { Input = input; }
 
-            public int I { get; set; }
+            public int Input { get; set; }
 
             public string Message { get; set; }
         }
@@ -166,17 +168,11 @@ namespace Autofac.Tests.Configuration
             public bool ABool { get; set; }
         }
 
-        class D : IA { }
+        class D : ITestComponent { }
 
         class E
         {
             public B B { get; set; }
-        }
-
-        class X
-        {
-            public string Name { get; set; }
-            public X(string name) { Name = name; }
         }
     }
 }
