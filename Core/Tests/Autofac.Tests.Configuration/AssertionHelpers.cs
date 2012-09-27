@@ -14,9 +14,9 @@ namespace Autofac.Tests.Configuration
             Assert.IsFalse(context.IsRegistered<TService>());
         }
 
-        public static void AssertRegistered<TService>(this IComponentContext context, string service)
+        public static void AssertRegistered<TService>(this IComponentContext context, string service, string message = "Expected component was not registered.")
         {
-            Assert.IsTrue(context.IsRegisteredWithName(service, typeof(TService)));
+            Assert.IsTrue(context.IsRegisteredWithName(service, typeof(TService)), message);
         }
 
         public static void AssertNotRegistered<TService>(this IComponentContext context, string service)

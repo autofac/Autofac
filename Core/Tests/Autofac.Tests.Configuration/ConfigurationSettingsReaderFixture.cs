@@ -13,19 +13,21 @@ namespace Autofac.Tests.Configuration
     public class ConfigurationSettingsReaderFixture
     {
         [Test]
-        public void ReadsMetadata()
+        public void Load_IncludesFileReferences()
         {
-            var container = ConfigureContainer("Metadata").Build();
-            IComponentRegistration registration;
-            Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(new KeyedService("a", typeof(object)), out registration));
-            Assert.AreEqual(42, (int)registration.Metadata["answer"]);
+            var container = ConfigureContainer("Referrer").Build();
+            container.AssertRegistered<object>("a", "The component from the config file with the specified section name was not registered.");
+            container.AssertRegistered<object>("b", "The component from the config file with the default section name was not registered.");
+            container.AssertRegistered<object>("c", "The component from the referenced raw XML configuration file was not registered.");
         }
 
         [Test]
-        public void IncludesFileReferences()
+        public void Load_RegistersMetadata()
         {
-            var container = ConfigureContainer("Referrer").Build();
-            container.AssertRegistered<object>("a");
+            var container = ConfigureContainer("ComponentWithMetadata").Build();
+            IComponentRegistration registration;
+            Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(new KeyedService("a", typeof(object)), out registration));
+            Assert.AreEqual(42, (int)registration.Metadata["answer"]);
         }
 
         [Test]
@@ -137,10 +139,10 @@ namespace Autofac.Tests.Configuration
             Assert.AreEqual(42, (int)registration.Metadata["answer"]);
         }
 
-        static ContainerBuilder ConfigureContainer(string configFile)
+        private static ContainerBuilder ConfigureContainer(string configFileBaseName)
         {
             var cb = new ContainerBuilder();
-            var fullFilename = "Files/" + configFile + ".config";
+            var fullFilename = "Files/" + configFileBaseName + ".config";
             var csr = new ConfigurationSettingsReader(SectionHandler.DefaultSectionName, fullFilename);
             cb.RegisterModule(csr);
             return cb;

@@ -10,6 +10,18 @@ using Autofac.Core.Activators.Reflection;
 
 namespace Autofac.Configuration
 {
+    /// <summary>
+    /// Default service for adding configured registrations to a container.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This default implementation of <see cref="Autofac.Configuration.IConfigurationRegistrar"/>
+    /// processes <see cref="Autofac.Configuration.SectionHandler"/> contents into registrations into
+    /// a <see cref="Autofac.ContainerBuilder"/>. You may derive and override to extend the functionality
+    /// or you may implement your own <see cref="Autofac.Configuration.IConfigurationRegistrar"/>.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="Autofac.Configuration.IConfigurationRegistrar"/>
     public class ConfigurationRegistrar : IConfigurationRegistrar
     {
         /// <summary>
@@ -35,9 +47,9 @@ namespace Autofac.Configuration
                 throw new ArgumentNullException("configurationSection");
             }
 
-            RegisterConfiguredModules(builder, configurationSection);
-            RegisterConfiguredComponents(builder, configurationSection);
-            RegisterReferencedFiles(builder, configurationSection);
+            this.RegisterConfiguredModules(builder, configurationSection);
+            this.RegisterConfiguredComponents(builder, configurationSection);
+            this.RegisterReferencedFiles(builder, configurationSection);
         }
 
         protected virtual void RegisterConfiguredComponents(ContainerBuilder builder, SectionHandler configurationSection)

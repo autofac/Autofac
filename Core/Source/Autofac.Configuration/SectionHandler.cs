@@ -154,26 +154,32 @@ namespace Autofac.Configuration
             return handler;
         }
 
-        public static SectionHandler Deserialize(string configurationFile)
-        {
-            configurationFile = NormalizeConfigurationFilePath(configurationFile);
-            using (var reader = new XmlTextReader(File.OpenRead(configurationFile)))
-            {
-                return SectionHandler.Deserialize(reader);
-            }
-        }
-
         public static SectionHandler Deserialize(string configurationFile, string configurationSection)
         {
-            configurationFile = NormalizeConfigurationFilePath(configurationFile);
-            if (configurationSection == null || configurationSection.Length == 0)
+            if (String.IsNullOrWhiteSpace(configurationSection))
             {
                 configurationSection = SectionHandler.DefaultSectionName;
             }
+            configurationFile = NormalizeConfigurationFilePath(configurationFile);
             var map = new ExeConfigurationFileMap();
             map.ExeConfigFilename = configurationFile;
 
-            var configuration = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
+            System.Configuration.Configuration configuration = null;
+            try
+            {
+                configuration = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
+            }
+            catch (ConfigurationErrorsException)
+            {
+                // We have to fall back to "non-config XML file" like this to maintain some backwards-compatibility
+                // with previous configuration mechanisms. The original way was "the file is a config file and we
+                // can optionally pass a configuration section name." Thus, if there is no config section name passed,
+                // we have to assume the old behavior and, failing that, try the new behavior.
+                using (var reader = new XmlTextReader(File.OpenRead(configurationFile)))
+                {
+                    return SectionHandler.Deserialize(reader);
+                }
+            }
             var handler = (SectionHandler)configuration.GetSection(configurationSection);
 
             if (handler == null)

@@ -27,7 +27,6 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Xml;
 
@@ -39,6 +38,8 @@ namespace Autofac.Configuration
     public class ConfigurationSettingsReader : Module
     {
         private readonly SectionHandler _sectionHandler;
+
+        public IConfigurationRegistrar ConfigurationRegistrar { get; set; }
 
         /// <summary>
         /// Gets the section handler.
@@ -112,7 +113,7 @@ namespace Autofac.Configuration
             {
                 throw new ArgumentNullException("builder");
             }
-            var registrar = new ConfigurationRegistrar();
+            var registrar = this.ConfigurationRegistrar ?? new ConfigurationRegistrar();
             registrar.RegisterConfigurationSection(builder, this._sectionHandler);
         }
     }
