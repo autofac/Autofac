@@ -110,7 +110,8 @@ namespace Autofac.Integration.WebApi
             foreach (var filter in filters)
             {
                 var metadata = filter.Metadata;
-                if (filterContext.ControllerType.IsAssignableFrom(metadata.ControllerType)
+
+                if (metadata.ControllerType.IsAssignableFrom(filterContext.ControllerType)
                     && metadata.FilterScope == FilterScope.Controller
                     && metadata.MethodInfo == null)
                 {
@@ -129,7 +130,7 @@ namespace Autofac.Integration.WebApi
             foreach (var filter in filters)
             {
                 var metadata = filter.Metadata;
-                if (filterContext.ControllerType.IsAssignableFrom(metadata.ControllerType)
+                if (metadata.ControllerType.IsAssignableFrom(filterContext.ControllerType)
                     && metadata.FilterScope == FilterScope.Action
                     && metadata.MethodInfo.GetBaseDefinition() == methodInfo.GetBaseDefinition())
                 {

@@ -108,7 +108,7 @@ namespace Autofac.Integration.Mvc
             foreach (var actionFilter in actionFilters)
             {
                 var metadata = actionFilter.Metadata;
-                if (filterContext.ControllerType.IsAssignableFrom(metadata.ControllerType)
+                if (metadata.ControllerType.IsAssignableFrom(filterContext.ControllerType)
                     && metadata.FilterScope == FilterScope.Controller
                     && metadata.MethodInfo == null)
                 {
@@ -139,7 +139,7 @@ namespace Autofac.Integration.Mvc
             foreach (var actionFilter in actionFilters)
             {
                 var metadata = actionFilter.Metadata;
-                if (filterContext.ControllerType.IsAssignableFrom(metadata.ControllerType)
+                if (metadata.ControllerType.IsAssignableFrom(filterContext.ControllerType)
                     && metadata.FilterScope == FilterScope.Action
                     && metadata.MethodInfo.GetBaseDefinition() == methodInfo.GetBaseDefinition())
                 {

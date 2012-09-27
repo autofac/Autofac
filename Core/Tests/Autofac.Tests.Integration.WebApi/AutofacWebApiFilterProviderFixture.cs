@@ -54,7 +54,7 @@ namespace Autofac.Tests.Integration.WebApi
         [Test]
         public void ResolvesControllerScopedActionFilter()
         {
-            AssertSingleFilter<TestActionFilter, ActionFilterWrapper>(
+            AssertSingleFilter<TestActionFilter, ActionFilterWrapper, TestController>(
                 c => new TestActionFilter(c.Resolve<ILogger>()),
                 r => r.AsActionFilterFor<TestController>());
         }
@@ -62,7 +62,7 @@ namespace Autofac.Tests.Integration.WebApi
         [Test]
         public void ResolvesActionScopedActionFilter()
         {
-            AssertSingleFilter<TestActionFilter, ActionFilterWrapper>(
+            AssertSingleFilter<TestActionFilter, ActionFilterWrapper, TestController>(
                 c => new TestActionFilter(c.Resolve<ILogger>()), 
                 r => r.AsActionFilterFor<TestController>(c => c.Get()));
         }
@@ -70,17 +70,17 @@ namespace Autofac.Tests.Integration.WebApi
         [Test]
         public void ResolvesActionScopedActionFilterForImmediateBaseContoller()
         {
-            AssertSingleFilter<TestActionFilter, ActionFilterWrapper>(
+            AssertSingleFilter<TestActionFilter, ActionFilterWrapper, TestControllerA>(
                 c => new TestActionFilter(c.Resolve<ILogger>()),
-                r => r.AsActionFilterFor<TestControllerA>(c => c.Get()));
+                r => r.AsActionFilterFor<TestController>(c => c.Get()));
         }
 
         [Test]
         public void ResolvesActionScopedActionFilterForMostBaseContoller()
         {
-            AssertSingleFilter<TestActionFilter, ActionFilterWrapper>(
+            AssertSingleFilter<TestActionFilter, ActionFilterWrapper, TestControllerB>(
                 c => new TestActionFilter(c.Resolve<ILogger>()),
-                r => r.AsActionFilterFor<TestControllerB>(t => t.Get()));
+                r => r.AsActionFilterFor<TestController>(t => t.Get()));
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace Autofac.Tests.Integration.WebApi
         [Test]
         public void ResolvesControllerScopedAuthorizationFilter()
         {
-            AssertSingleFilter<TestAuthorizationFilter, AuthorizationFilterWrapper>(
+            AssertSingleFilter<TestAuthorizationFilter, AuthorizationFilterWrapper, TestController>(
                 c => new TestAuthorizationFilter(c.Resolve<ILogger>()),
                 r => r.AsAuthorizationFilterFor<TestController>());
         }
@@ -123,7 +123,7 @@ namespace Autofac.Tests.Integration.WebApi
         [Test]
         public void ResolvesActionScopedAuthorizationFilter()
         {
-            AssertSingleFilter<TestAuthorizationFilter, AuthorizationFilterWrapper>(
+            AssertSingleFilter<TestAuthorizationFilter, AuthorizationFilterWrapper, TestController>(
                 c => new TestAuthorizationFilter(c.Resolve<ILogger>()),
                 r => r.AsAuthorizationFilterFor<TestController>(c => c.Get()));
         }
@@ -131,17 +131,17 @@ namespace Autofac.Tests.Integration.WebApi
         [Test]
         public void ResolvesActionScopedAuthorizationFilterForImmediateBaseContoller()
         {
-            AssertSingleFilter<TestAuthorizationFilter, AuthorizationFilterWrapper>(
+            AssertSingleFilter<TestAuthorizationFilter, AuthorizationFilterWrapper, TestControllerA>(
                 c => new TestAuthorizationFilter(c.Resolve<ILogger>()),
-                r => r.AsAuthorizationFilterFor<TestControllerA>(c => c.Get()));
+                r => r.AsAuthorizationFilterFor<TestController>(c => c.Get()));
         }
 
         [Test]
         public void ResolvesActionScopedAuthorizationFilterForMostBaseContoller()
         {
-            AssertSingleFilter<TestAuthorizationFilter, AuthorizationFilterWrapper>(
+            AssertSingleFilter<TestAuthorizationFilter, AuthorizationFilterWrapper, TestControllerB>(
                 c => new TestAuthorizationFilter(c.Resolve<ILogger>()),
-                r => r.AsAuthorizationFilterFor<TestControllerB>(t => t.Get()));
+                r => r.AsAuthorizationFilterFor<TestController>(t => t.Get()));
         }
 
         [Test]
@@ -176,7 +176,7 @@ namespace Autofac.Tests.Integration.WebApi
         [Test]
         public void ResolvesControllerScopedExceptionFilter()
         {
-            AssertSingleFilter<TestExceptionFilter, ExceptionFilterWrapper>(
+            AssertSingleFilter<TestExceptionFilter, ExceptionFilterWrapper, TestController>(
                 c => new TestExceptionFilter(c.Resolve<ILogger>()),
                 r => r.AsExceptionFilterFor<TestController>());
         }
@@ -184,7 +184,7 @@ namespace Autofac.Tests.Integration.WebApi
         [Test]
         public void ResolvesActionScopedExceptionFilter()
         {
-            AssertSingleFilter<TestExceptionFilter, ExceptionFilterWrapper>(
+            AssertSingleFilter<TestExceptionFilter, ExceptionFilterWrapper, TestController>(
                 c => new TestExceptionFilter(c.Resolve<ILogger>()),
                 r => r.AsExceptionFilterFor<TestController>(c => c.Get()));
         }
@@ -192,17 +192,17 @@ namespace Autofac.Tests.Integration.WebApi
         [Test]
         public void ResolvesActionScopedExceptionFilterForImmediateBaseContoller()
         {
-            AssertSingleFilter<TestExceptionFilter, ExceptionFilterWrapper>(
+            AssertSingleFilter<TestExceptionFilter, ExceptionFilterWrapper, TestControllerA>(
                 c => new TestExceptionFilter(c.Resolve<ILogger>()),
-                r => r.AsExceptionFilterFor<TestControllerA>(c => c.Get()));
+                r => r.AsExceptionFilterFor<TestController>(c => c.Get()));
         }
 
         [Test]
         public void ResolvesActionScopedExceptionFilterForMostBaseContoller()
         {
-            AssertSingleFilter<TestExceptionFilter, ExceptionFilterWrapper>(
+            AssertSingleFilter<TestExceptionFilter, ExceptionFilterWrapper, TestControllerB>(
                 c => new TestExceptionFilter(c.Resolve<ILogger>()),
-                r => r.AsExceptionFilterFor<TestControllerB>(t => t.Get()));
+                r => r.AsExceptionFilterFor<TestController>(t => t.Get()));
         }
 
         [Test]
@@ -227,13 +227,18 @@ namespace Autofac.Tests.Integration.WebApi
 
         static ReflectedHttpActionDescriptor BuildActionDescriptorForGetMethod()
         {
-            var controllerDescriptor = new HttpControllerDescriptor {ControllerType = typeof(TestController)};
+            return BuildActionDescriptorForGetMethod(typeof(TestController));
+        }
+
+        static ReflectedHttpActionDescriptor BuildActionDescriptorForGetMethod(Type controllerType)
+        {
+            var controllerDescriptor = new HttpControllerDescriptor {ControllerType = controllerType};
             var methodInfo = typeof(TestController).GetMethod("Get");
             var actionDescriptor = new ReflectedHttpActionDescriptor(controllerDescriptor, methodInfo);
             return actionDescriptor;
         }
 
-        static void AssertSingleFilter<TFilter, TWrapper>(
+        static void AssertSingleFilter<TFilter, TWrapper, TController>(
             Func<IComponentContext, TFilter> registration,
             Action<IRegistrationBuilder<TFilter, SimpleActivatorData, SingleRegistrationStyle>> configure)
         {
@@ -243,7 +248,7 @@ namespace Autofac.Tests.Integration.WebApi
             var container = builder.Build();
             var provider = new AutofacWebApiFilterProvider(container);
             var configuration = new HttpConfiguration {DependencyResolver = new AutofacWebApiDependencyResolver(container)};
-            var actionDescriptor = BuildActionDescriptorForGetMethod();
+            var actionDescriptor = BuildActionDescriptorForGetMethod(typeof(TController));
 
             var filterInfos = provider.GetFilters(configuration, actionDescriptor).ToArray();
 

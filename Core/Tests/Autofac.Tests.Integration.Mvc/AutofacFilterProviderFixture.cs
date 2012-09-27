@@ -13,7 +13,9 @@ namespace Autofac.Tests.Integration.Mvc
     [TestFixture]
     public class AutofacFilterProviderFixture
     {
-        ControllerContext _controllerContext;
+        ControllerContext _baseControllerContext;
+        ControllerContext _derivedControllerContext;
+        ControllerContext _mostDerivedControllerContext;
         ControllerDescriptor _controllerDescriptor;
 
         MethodInfo _baseMethodInfo;
@@ -30,16 +32,16 @@ namespace Autofac.Tests.Integration.Mvc
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
-            var controllerContext = new Mock<ControllerContext>();
-            controllerContext.Setup(mock => mock.Controller).Returns(new TestController());
-            _controllerContext = controllerContext.Object;
-            _controllerDescriptor = new Mock<ControllerDescriptor>().Object;
+            _baseControllerContext = new ControllerContext {Controller = new TestController()};
+            _derivedControllerContext = new ControllerContext {Controller = new TestControllerA()};
+            _mostDerivedControllerContext = new ControllerContext {Controller = new TestControllerB()};
 
             _baseMethodInfo = TestController.GetAction1MethodInfo<TestController>();
             _derivedMethodInfo = TestController.GetAction1MethodInfo<TestControllerA>();
             _mostDerivedMethodInfo = TestController.GetAction1MethodInfo<TestControllerB>();
             _actionName = _baseMethodInfo.Name;
 
+            _controllerDescriptor = new Mock<ControllerDescriptor>().Object;
             _reflectedActionDescriptor = new ReflectedActionDescriptor(_baseMethodInfo, _actionName, _controllerDescriptor);
             _reflectedAsyncActionDescriptor = new ReflectedAsyncActionDescriptor(_baseMethodInfo, _baseMethodInfo, _actionName, _controllerDescriptor);
             _taskAsyncActionDescriptor = new TaskAsyncActionDescriptor(_baseMethodInfo, _actionName, _controllerDescriptor);
@@ -98,7 +100,8 @@ namespace Autofac.Tests.Integration.Mvc
             AssertSingleFilter<TestActionFilter>(
                 FilterScope.Action,
                 _derivedActionDescriptor,
-                r => r.AsActionFilterFor<TestController>(c => c.Action1(default(string))));
+                r => r.AsActionFilterFor<TestController>(c => c.Action1(default(string))),
+                _derivedControllerContext);
         }
 
         [Test]
@@ -107,7 +110,8 @@ namespace Autofac.Tests.Integration.Mvc
             AssertSingleFilter<TestActionFilter>(
                 FilterScope.Action,
                 _mostDerivedActionDescriptor,
-                r => r.AsActionFilterFor<TestController>(c => c.Action1(default(string))));
+                r => r.AsActionFilterFor<TestController>(c => c.Action1(default(string))),
+                _mostDerivedControllerContext);
         }
 
         [Test]
@@ -179,7 +183,8 @@ namespace Autofac.Tests.Integration.Mvc
             AssertSingleFilter<TestAuthorizationFilter>(
                 FilterScope.Action,
                 _derivedActionDescriptor,
-                r => r.AsAuthorizationFilterFor<TestController>(c => c.Action1(default(string))));
+                r => r.AsAuthorizationFilterFor<TestController>(c => c.Action1(default(string))),
+                _derivedControllerContext);
         }
 
         [Test]
@@ -188,7 +193,8 @@ namespace Autofac.Tests.Integration.Mvc
             AssertSingleFilter<TestAuthorizationFilter>(
                 FilterScope.Action,
                 _mostDerivedActionDescriptor,
-                r => r.AsAuthorizationFilterFor<TestController>(c => c.Action1(default(string))));
+                r => r.AsAuthorizationFilterFor<TestController>(c => c.Action1(default(string))),
+                _mostDerivedControllerContext);
         }
 
         [Test]
@@ -260,7 +266,8 @@ namespace Autofac.Tests.Integration.Mvc
             AssertSingleFilter<TestExceptionFilter>(
                 FilterScope.Action,
                 _derivedActionDescriptor,
-                r => r.AsExceptionFilterFor<TestController>(c => c.Action1(default(string))));
+                r => r.AsExceptionFilterFor<TestController>(c => c.Action1(default(string))),
+                _derivedControllerContext);
         }
 
         [Test]
@@ -269,7 +276,8 @@ namespace Autofac.Tests.Integration.Mvc
             AssertSingleFilter<TestExceptionFilter>(
                 FilterScope.Action,
                 _mostDerivedActionDescriptor,
-                r => r.AsExceptionFilterFor<TestController>(c => c.Action1(default(string))));
+                r => r.AsExceptionFilterFor<TestController>(c => c.Action1(default(string))),
+                _mostDerivedControllerContext);
         }
 
         [Test]
@@ -341,7 +349,8 @@ namespace Autofac.Tests.Integration.Mvc
             AssertSingleFilter<TestResultFilter>(
                 FilterScope.Action,
                 _derivedActionDescriptor,
-                r => r.AsResultFilterFor<TestController>(c => c.Action1(default(string))));
+                r => r.AsResultFilterFor<TestController>(c => c.Action1(default(string))),
+                _derivedControllerContext);
         }
 
         [Test]
@@ -350,7 +359,8 @@ namespace Autofac.Tests.Integration.Mvc
             AssertSingleFilter<TestResultFilter>(
                 FilterScope.Action,
                 _mostDerivedActionDescriptor,
-                r => r.AsResultFilterFor<TestController>(c => c.Action1(default(string))));
+                r => r.AsResultFilterFor<TestController>(c => c.Action1(default(string))),
+                _mostDerivedControllerContext);
         }
 
         [Test]
@@ -381,7 +391,15 @@ namespace Autofac.Tests.Integration.Mvc
         }
 
         void AssertSingleFilter<TFilter>(FilterScope filterScope, ActionDescriptor actionDescriptor,
-            Action<IRegistrationBuilder<TFilter, SimpleActivatorData, SingleRegistrationStyle>> configure) 
+            Action<IRegistrationBuilder<TFilter, SimpleActivatorData, SingleRegistrationStyle>> configure)
+            where TFilter : new()
+        {
+            AssertSingleFilter(filterScope, actionDescriptor, configure, _baseControllerContext);
+        }
+
+        static void AssertSingleFilter<TFilter>(FilterScope filterScope, ActionDescriptor actionDescriptor,
+            Action<IRegistrationBuilder<TFilter, SimpleActivatorData, SingleRegistrationStyle>> configure,
+            ControllerContext controllerContext)
             where TFilter : new()
         {
             var builder = ContainerBuilderFactory.Create();
@@ -390,7 +408,7 @@ namespace Autofac.Tests.Integration.Mvc
             SetupMockLifetimeScopeProvider(container);
             var provider = new AutofacFilterProvider();
 
-            var filters = provider.GetFilters(_controllerContext, actionDescriptor).ToList();
+            var filters = provider.GetFilters(controllerContext, actionDescriptor).ToList();
 
             Assert.That(filters, Has.Count.EqualTo(1));
             Assert.That(filters[0].Instance, Is.InstanceOf<TFilter>());
@@ -410,7 +428,7 @@ namespace Autofac.Tests.Integration.Mvc
             var actionDescriptor = new ReflectedActionDescriptor(_baseMethodInfo, _actionName, _controllerDescriptor);
             var provider = new AutofacFilterProvider();
 
-            var filters = provider.GetFilters(_controllerContext, actionDescriptor).ToList();
+            var filters = provider.GetFilters(_baseControllerContext, actionDescriptor).ToList();
 
             Assert.That(filters, Has.Count.EqualTo(2));
 
