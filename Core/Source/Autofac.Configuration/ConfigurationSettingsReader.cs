@@ -38,13 +38,7 @@ namespace Autofac.Configuration
     /// </summary>
     public class ConfigurationSettingsReader : Module
     {
-        /// <summary>
-        /// The default section name that will be searched for.
-        /// </summary>
-        public const string DefaultSectionName = "autofac";
-
         private readonly SectionHandler _sectionHandler;
-        private readonly string _configurationDirectory = Path.GetDirectoryName(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
 
         /// <summary>
         /// Gets the section handler.
@@ -63,7 +57,7 @@ namespace Autofac.Configuration
         /// The reader will look for a 'autofac' section.
         /// </summary>
         public ConfigurationSettingsReader()
-            : this(DefaultSectionName)
+            : this(SectionHandler.DefaultSectionName)
         {
         }
 
@@ -74,28 +68,7 @@ namespace Autofac.Configuration
         /// <param name="configurationFile">The configuration file.</param>
         public ConfigurationSettingsReader(string sectionName, string configurationFile)
         {
-            if (sectionName == null)
-            {
-                throw new ArgumentNullException("sectionName");
-            }
-            if (configurationFile == null)
-            {
-                throw new ArgumentNullException("configurationFile");
-            }
-            if (!Path.IsPathRooted(configurationFile))
-            {
-                configurationFile = Path.Combine(_configurationDirectory, configurationFile);
-            }
-            var map = new ExeConfigurationFileMap();
-            map.ExeConfigFilename = configurationFile;
-
-            var configuration = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
-            _sectionHandler = (SectionHandler)configuration.GetSection(sectionName);
-
-            if (_sectionHandler == null)
-            {
-                throw new ConfigurationErrorsException(String.Format(CultureInfo.CurrentCulture, ConfigurationSettingsReaderResources.SectionNotFound, sectionName));
-            }
+            _sectionHandler = SectionHandler.Deserialize(configurationFile, sectionName);
         }
 
         /// <summary>
@@ -139,7 +112,8 @@ namespace Autofac.Configuration
             {
                 throw new ArgumentNullException("builder");
             }
-            builder.RegisterConfigurationSection(this._sectionHandler);
+            var registrar = new ConfigurationRegistrar();
+            registrar.RegisterConfigurationSection(builder, this._sectionHandler);
         }
     }
 }

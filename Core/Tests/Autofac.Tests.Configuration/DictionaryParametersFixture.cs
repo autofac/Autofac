@@ -147,7 +147,7 @@ namespace Autofac.Tests.Configuration
         {
             var cb = new ContainerBuilder();
             var fullFilename = "Files/" + configFile + ".config";
-            var csr = new ConfigurationSettingsReader(ConfigurationSettingsReader.DefaultSectionName, fullFilename);
+            var csr = new ConfigurationSettingsReader(SectionHandler.DefaultSectionName, fullFilename);
             cb.RegisterModule(csr);
             return cb;
         }

@@ -84,7 +84,6 @@
     <Compile Include="AssemblyNameConverterFixture.cs" />
     <Compile Include="AssertionHelpers.cs" />
     <Compile Include="ConfigurationSettingsReaderFixture.cs" />
-    <Compile Include="ContainerBuilderExtensionsFixture.cs" />
     <Compile Include="DictionaryParametersFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EnumerableParametersFixture.cs" />

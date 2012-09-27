@@ -77,14 +77,15 @@
     <Compile Include="ComponentElement.cs" />
     <Compile Include="ComponentElementCollection.cs" />
     <Compile Include="ConfigurationElementCollection.cs" />
+    <Compile Include="ConfigurationRegistrar.cs" />
     <Compile Include="ConfigurationSettingsReader.cs" />
     <Compile Include="ConfigurationSettingsReaderResources.Designer.cs">
       <DependentUpon>ConfigurationSettingsReaderResources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="ContainerBuilderExtensions.cs" />
     <Compile Include="DictionaryElementCollection.cs" />
+    <Compile Include="IConfigurationRegistrar.cs" />
     <Compile Include="ListElementCollection.cs" />
     <Compile Include="Util\Enforce.cs" />
     <Compile Include="MetadataElement.cs" />

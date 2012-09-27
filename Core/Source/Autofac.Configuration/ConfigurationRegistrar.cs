@@ -10,10 +10,7 @@ using Autofac.Core.Activators.Reflection;
 
 namespace Autofac.Configuration
 {
-    /// <summary>
-    /// Extension methods for <see cref="Autofac.ContainerBuilder"/> used in parsing configuration.
-    /// </summary>
-    public static class ContainerBuilderExtensions
+    public class ConfigurationRegistrar : IConfigurationRegistrar
     {
         /// <summary>
         /// Registers the contents of a configuration section into a container builder.
@@ -25,9 +22,9 @@ namespace Autofac.Configuration
         /// The <see cref="Autofac.Configuration.SectionHandler"/> containing the configured registrations.
         /// </param>
         /// <exception cref="System.ArgumentNullException">
-        /// Thrown if <paramref name="builder" /> or <paramref name="configurationSection" /> is <see langword="null" />.
+        /// Thrown if <paramref name="builder"/> or <paramref name="configurationSection"/> is <see langword="null"/>.
         /// </exception>
-        public static void RegisterConfigurationSection(this ContainerBuilder builder, SectionHandler configurationSection)
+        public virtual void RegisterConfigurationSection(ContainerBuilder builder, SectionHandler configurationSection)
         {
             if (builder == null)
             {
@@ -43,7 +40,7 @@ namespace Autofac.Configuration
             RegisterReferencedFiles(builder, configurationSection);
         }
 
-        private static void RegisterConfiguredComponents(ContainerBuilder builder, SectionHandler configurationSection)
+        protected virtual void RegisterConfiguredComponents(ContainerBuilder builder, SectionHandler configurationSection)
         {
             foreach (ComponentElement component in configurationSection.Components)
             {
@@ -111,11 +108,11 @@ namespace Autofac.Configuration
             }
         }
 
-        private static void RegisterConfiguredModules(ContainerBuilder builder, SectionHandler configurationSection)
+        protected virtual void RegisterConfiguredModules(ContainerBuilder builder, SectionHandler configurationSection)
         {
             foreach (ModuleElement moduleElement in configurationSection.Modules)
             {
-                var moduleType = LoadType(moduleElement.Type, configurationSection.DefaultAssembly);
+                var moduleType = this.LoadType(moduleElement.Type, configurationSection.DefaultAssembly);
                 var moduleActivator = new ReflectionActivator(
                     moduleType,
                     new BindingFlagsConstructorFinder(BindingFlags.Public),
@@ -127,12 +124,12 @@ namespace Autofac.Configuration
             }
         }
 
-        private static void RegisterReferencedFiles(ContainerBuilder builder, SectionHandler configurationSection)
+        protected virtual void RegisterReferencedFiles(ContainerBuilder builder, SectionHandler configurationSection)
         {
             foreach (FileElement file in configurationSection.Files)
             {
                 var handler = SectionHandler.Deserialize(file.Name, file.Section);
-                builder.RegisterConfigurationSection(handler);
+                this.RegisterConfigurationSection(builder, handler);
             }
         }
 
@@ -141,7 +138,7 @@ namespace Autofac.Configuration
         /// </summary>
         /// <param name="component">The component.</param>
         /// <param name="registrar">The registrar.</param>
-        private static void SetInjectProperties<TReflectionActivatorData, TSingleRegistrationStyle>(ComponentElement component, IRegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar)
+        protected virtual void SetInjectProperties<TReflectionActivatorData, TSingleRegistrationStyle>(ComponentElement component, IRegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar)
             where TReflectionActivatorData : ReflectionActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
@@ -158,8 +155,10 @@ namespace Autofac.Configuration
                 switch (component.InjectProperties.ToLower())
                 {
                     case "no":
+                    case "false":
                         break;
                     case "yes":
+                    case "true":
                         registrar.PropertiesAutowired(PropertyWiringFlags.AllowCircularDependencies);
                         break;
                     default:
@@ -174,7 +173,7 @@ namespace Autofac.Configuration
         /// </summary>
         /// <param name="component">The component.</param>
         /// <param name="registrar">The registrar.</param>
-        private static void SetOwnership<TReflectionActivatorData, TSingleRegistrationStyle>(ComponentElement component, IRegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar)
+        protected virtual void SetOwnership<TReflectionActivatorData, TSingleRegistrationStyle>(ComponentElement component, IRegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar)
             where TReflectionActivatorData : ReflectionActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
@@ -208,7 +207,7 @@ namespace Autofac.Configuration
         /// </summary>
         /// <param name="component">The component.</param>
         /// <param name="registrar">The registrar.</param>
-        private static void SetScope<TReflectionActivatorData, TSingleRegistrationStyle>(ComponentElement component, IRegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar)
+        protected virtual void SetScope<TReflectionActivatorData, TSingleRegistrationStyle>(ComponentElement component, IRegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar)
             where TReflectionActivatorData : ReflectionActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
@@ -244,9 +243,8 @@ namespace Autofac.Configuration
         /// Loads the type.
         /// </summary>
         /// <param name="typeName">Name of the type.</param>
-        /// <param name="defaultAssembly">The default assembly.</param>
         /// <returns></returns>
-        private static Type LoadType(string typeName, Assembly defaultAssembly)
+        protected virtual Type LoadType(string typeName, Assembly defaultAssembly)
         {
             if (typeName == null)
             {
