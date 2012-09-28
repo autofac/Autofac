@@ -11,7 +11,7 @@ namespace Autofac.Extras.Tests.Attributed
         [Test]
         public void verify_automatic_scanning_with_the_attributed_metadata_module()
         {
-            var builder = new ContainerBuilder();
+            var builder = ContainerBuilderFactory.Create();
             builder.RegisterModule(new WeakTypeAttributedMetadataModule());
 
             var container = builder.Build();
@@ -24,7 +24,7 @@ namespace Autofac.Extras.Tests.Attributed
         [Test]
         public void verify_automatic_scanning_with_the_multiple_attributions_by_the_module()
         {
-            var builder = new ContainerBuilder();
+            var builder = ContainerBuilderFactory.Create();
             builder.RegisterModule(new WeakTypeAttributedMetadataModule());
 
             var container = builder.Build();

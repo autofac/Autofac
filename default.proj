@@ -106,17 +106,30 @@
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.pdb;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.xml;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.config"
-				Exclude="**\*.vshost.*;**\*.CodeAnalysisLog.*" />
-			<PortableOutputList
+				Exclude="**\*.vshost.*;**\*.CodeAnalysisLog.*;**\Autofac.WinRT.*;**\Autofac.SL5.*" />
+			<WinRTOutputList
 				Include="
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.dll;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.pdb;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.xml"
+					$(MSBuildProjectDirectory)\Core\Source\Autofac\bin\$(BuildConfiguration)\Autofac.dll;
+					$(MSBuildProjectDirectory)\Core\Source\Autofac\bin\$(BuildConfiguration)\Autofac.pdb;
+					$(MSBuildProjectDirectory)\Core\Source\Autofac\bin\$(BuildConfiguration)\Autofac.xml;
+					$(MSBuildProjectDirectory)\Core\Source\Autofac.WinRT\bin\$(BuildConfiguration)\Autofac.WinRT.dll;
+					$(MSBuildProjectDirectory)\Core\Source\Autofac.WinRT\bin\$(BuildConfiguration)\Autofac.WinRT.pdb;
+					$(MSBuildProjectDirectory)\Core\Source\Autofac.WinRT\bin\$(BuildConfiguration)\Autofac.WinRT.pri;
+					$(MSBuildProjectDirectory)\Core\Source\Autofac.WinRT\bin\$(BuildConfiguration)\Autofac.WinRT.xml"
+				Exclude="**\*.vshost.*;**\*.CodeAnalysisLog.*" />
+			<SL5OutputList
+				Include="
+					$(MSBuildProjectDirectory)\Core\Source\Autofac\bin\$(BuildConfiguration)\Autofac.dll;
+					$(MSBuildProjectDirectory)\Core\Source\Autofac\bin\$(BuildConfiguration)\Autofac.pdb;
+					$(MSBuildProjectDirectory)\Core\Source\Autofac\bin\$(BuildConfiguration)\Autofac.xml;
+					$(MSBuildProjectDirectory)\Core\Source\Autofac.SL5\bin\$(BuildConfiguration)\Autofac.SL5.dll;
+					$(MSBuildProjectDirectory)\Core\Source\Autofac.SL5\bin\$(BuildConfiguration)\Autofac.SL5.pdb;
+					$(MSBuildProjectDirectory)\Core\Source\Autofac.SL5\bin\$(BuildConfiguration)\Autofac.SL5.xml"
 				Exclude="**\*.vshost.*;**\*.CodeAnalysisLog.*" />
 		</ItemGroup>
 		<Copy SourceFiles="@(SourceOutputList)" DestinationFolder="$(BuildDirectory)\bin\net40" />
-		<Copy SourceFiles="@(PortableOutputList)" DestinationFolder="$(BuildDirectory)\bin\sl5" />
-		<Copy SourceFiles="@(PortableOutputList)" DestinationFolder="$(BuildDirectory)\bin\winrt45" />
+		<Copy SourceFiles="@(WinRTOutputList)" DestinationFolder="$(BuildDirectory)\bin\winrt45" />
+		<Copy SourceFiles="@(SL5OutputList)" DestinationFolder="$(BuildDirectory)\bin\sl5" />
 	</Target>
 
 	<Target Name="Document">
@@ -147,8 +160,9 @@
 		<ItemGroup>
 			<!-- One set of Extras and Core items should be created for each target zip file. -->
 			<NET40ExtrasPackageItems Include="$(BuildDirectory)\bin\net40\Autofac.Extras.*" />
-			<NET40CorePackageItems Include="$(BuildDirectory)\bin\net40\Autofac.*" Exclude="@(NET40ExtrasPackageItems)" />
-			<PortablePackageItems Include="$(BuildDirectory)\bin\winrt45\Autofac.*" />
+			<NET40CorePackageItems Include="$(BuildDirectory)\bin\net40\Autofac.*" Exclude="@(NET40ExtrasPackageItems);Autofac.WinRT.*;Autofac.SL5.*" />
+			<WinRTPackageItems Include="$(BuildDirectory)\bin\winrt45\Autofac.*" />
+			<SL5PackageItems Include="$(BuildDirectory)\bin\sl5\Autofac.*" />
 
 			<!-- The license file gets included with zip files; NuGet packages have a license URL. -->
 			<LicenseFile Include="$(MSBuildProjectDirectory)\License.txt" />
@@ -160,7 +174,8 @@
 		<Message Text="Packaging downloadable zip files..." />
 		<Zip Files="@(NET40CorePackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac-$(AssemblyVersion)-NET40.zip" Flatten="true" />
 		<Zip Files="@(NET40ExtrasPackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac.Extras-$(AssemblyVersion)-NET40.zip" Flatten="true" />
-		<Zip Files="@(PortablePackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac-$(AssemblyVersion)-Portable.zip" Flatten="true" />
+		<Zip Files="@(WinRTPackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac-$(AssemblyVersion)-WinRT.zip" Flatten="true" />
+		<Zip Files="@(SL5PackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac-$(AssemblyVersion)-SL5.zip" Flatten="true" />
 		
 		<!--
 			NuGet packaging is done by convention.
@@ -224,7 +239,7 @@
 		</ItemGroup>
 		<PropertyGroup>
 			<TestResultsFile>$(BuildDirectory)\log\TestResults.xml</TestResultsFile>
-			<NUnitCommandLineArgs>@(TestAssemblies->'%(FullPath)', ' ') /xml:$(TestResultsFile) /framework:net-4.0</NUnitCommandLineArgs>
+			<NUnitCommandLineArgs>@(TestAssemblies->'"%(FullPath)"', ' ') /xml:"$(TestResultsFile)" /framework:net-4.0</NUnitCommandLineArgs>
 		</PropertyGroup>
 		<MakeDir Directories="$(BuildDirectory)\log" Condition="!Exists('$(BuildDirectory)\log')" />
 		<Exec Command="&quot;%(NUnitConsole.FullPath)&quot; $(NUnitCommandLineArgs)" />

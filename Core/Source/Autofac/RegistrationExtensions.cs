@@ -653,25 +653,6 @@ namespace Autofac
         /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
         /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set policy on.</param>
-        /// <param name="bindingFlags">Binding flags used when searching for constructors.</param>
-        /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
-            FindConstructorsWith<TLimit, TReflectionActivatorData, TStyle>(
-                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
-                BindingFlags bindingFlags)
-            where TReflectionActivatorData : ReflectionActivatorData
-        {
-            if (registration == null) throw new ArgumentNullException("registration");
-            return registration.FindConstructorsWith(new BindingFlagsConstructorFinder(bindingFlags));
-        }
-
-        /// <summary>
-        /// Set the policy used to find candidate constructors on the implementation type.
-        /// </summary>
-        /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
-        /// <typeparam name="TStyle">Registration style.</typeparam>
-        /// <param name="registration">Registration to set policy on.</param>
         /// <param name="constructorFinder">Policy to be used when searching for constructors.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>

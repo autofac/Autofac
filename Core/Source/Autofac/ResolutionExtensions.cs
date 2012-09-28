@@ -29,7 +29,6 @@ using System.Linq;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
-using Autofac.Util;
 
 namespace Autofac
 {

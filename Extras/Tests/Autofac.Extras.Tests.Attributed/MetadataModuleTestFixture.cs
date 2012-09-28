@@ -15,7 +15,7 @@ namespace Autofac.Extras.Tests.Attributed
         public void metadata_module_scenario_validate_registration_content()
         {
             // arrange
-            var builder = new ContainerBuilder();
+            var builder = ContainerBuilderFactory.Create();
 
             builder.RegisterModule(new StrongTypedScenarioMetadataModule());
 
@@ -35,7 +35,7 @@ namespace Autofac.Extras.Tests.Attributed
         public void metadata_module_scenario_using_typeof_registration()
         {
             // arrange
-            var builder = new ContainerBuilder();
+            var builder = ContainerBuilderFactory.Create();
 
             builder.RegisterModule(new TypeOfScenarioMetadataModule());
 

@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Util;
@@ -38,7 +37,7 @@ namespace Autofac.Builder
     public class ReflectionActivatorData
     {
         Type _implementor;
-        IConstructorFinder _constructorFinder = new BindingFlagsConstructorFinder(BindingFlags.Public);
+        IConstructorFinder _constructorFinder = new PublicConstructorFinder();
         IConstructorSelector _constructorSelector = new MostParametersConstructorSelector();
         readonly IList<Parameter> _configuredParameters = new List<Parameter>();
         readonly IList<Parameter> _configuredProperties = new List<Parameter>();

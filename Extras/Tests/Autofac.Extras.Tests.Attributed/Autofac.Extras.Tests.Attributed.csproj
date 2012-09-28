@@ -73,6 +73,10 @@
     <Compile Include="WeakTypedScenarioMetadataModuleTestFixture.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\Source\Autofac.Full\Autofac.Full.csproj">
+      <Project>{92a45114-c301-47a2-96c2-a7981affea3f}</Project>
+      <Name>Autofac.Full</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Core\Source\Autofac\Autofac.csproj">
       <Project>{7d018b3e-34a3-423d-ac35-12731f4e0a2c}</Project>
       <Name>Autofac</Name>

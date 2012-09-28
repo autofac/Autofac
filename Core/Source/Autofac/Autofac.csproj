@@ -12,9 +12,10 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\SharedKey.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile14</TargetFrameworkProfile>
+    <TargetFrameworkProfile>Profile37</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,11 +38,16 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
+    <Compile Include="Core\Activators\Reflection\PublicConstructorFinderResources.Designer.cs">
+      <DependentUpon>PublicConstructorFinderResources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Core\Activators\Reflection\PublicConstructorFinder.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Features\LazyDependencies\LazyRegistrationSource.cs" />
-    <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSource.cs" />
-    <Compile Include="Features\Metadata\StronglyTypedMeta.cs" />
-    <Compile Include="Features\Metadata\StronglyTypedMetaRegistrationSource.cs" />
     <Compile Include="Features\GeneratedFactories\FactoryGenerator.cs" />
     <Compile Include="..\..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
@@ -76,11 +82,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>DelegateActivatorResources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Core\Activators\Reflection\BindingFlagsConstructorFinderResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>BindingFlagsConstructorFinderResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Core\Activators\Reflection\ConstructorParameterBindingResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -224,7 +225,6 @@
     </Compile>
     <Compile Include="Core\Activators\Reflection\AutowiringParameter.cs" />
     <Compile Include="Core\Activators\Reflection\AutowiringPropertyInjector.cs" />
-    <Compile Include="Core\Activators\Reflection\BindingFlagsConstructorFinder.cs" />
     <Compile Include="Core\Activators\Reflection\ConstructorParameterBinding.cs" />
     <Compile Include="Core\Activators\Reflection\IConstructorFinder.cs" />
     <Compile Include="Core\Activators\Reflection\IConstructorSelector.cs" />
@@ -346,6 +346,10 @@
     <Compile Include="Util\Traverse.cs" />
     <Compile Include="Util\TypeExtensions.cs" />
     <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSource.cs" />
+    <EmbeddedResource Include="Core\Activators\Reflection\PublicConstructorFinderResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PublicConstructorFinderResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSourceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>GeneratedFactoryRegistrationSourceResources.Designer.cs</LastGenOutput>
@@ -372,10 +376,6 @@
     <EmbeddedResource Include="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ProvidedInstanceActivatorResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Core\Activators\Reflection\BindingFlagsConstructorFinderResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>BindingFlagsConstructorFinderResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Core\Activators\Reflection\ConstructorParameterBindingResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

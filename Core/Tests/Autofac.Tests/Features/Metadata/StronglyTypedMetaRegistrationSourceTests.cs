@@ -27,7 +27,7 @@ namespace Autofac.Tests.Features.Metadata
         [SetUp]
         public void SetUp()
         {
-            var builder = new ContainerBuilder();
+            var builder = ContainerBuilderFactory.Create();
             builder.RegisterType<object>().WithMetadata("TheInt", SuppliedValue);
             _container = builder.Build();
         }
@@ -62,7 +62,7 @@ namespace Autofac.Tests.Features.Metadata
         [SetUp]
         public void SetUp()
         {
-            var builder = new ContainerBuilder();
+            var builder = ContainerBuilderFactory.Create();
             builder.RegisterType<object>();
             _container = builder.Build();
         }
