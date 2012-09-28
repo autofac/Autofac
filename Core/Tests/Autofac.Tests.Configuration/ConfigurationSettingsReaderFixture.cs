@@ -24,6 +24,20 @@ namespace Autofac.Tests.Configuration
         }
 
         [Test]
+        public void Load_AllowsMultipleModulesOfSameTypeWithDifferentParameters()
+        {
+            // Issue #271: Could not register more than one Moudle with the same type but different parameters in XmlConfiguration.
+            var builder = ConfigureContainer("SameModuleRegisteredMultipleTimes");
+            var container = builder.Build();
+            var collection = container.Resolve<IEnumerable<SimpleComponent>>();
+            Assert.AreEqual(2, collection.Count(), "The wrong number of items were registered.");
+
+            // Test using Any() because we aren't necessarily guaranteed the order of resolution.
+            Assert.IsTrue(collection.Any(a => a.Message == "First"), "The first registration wasn't found.");
+            Assert.IsTrue(collection.Any(a => a.Message == "Second"), "The second registration wasn't found.");
+        }
+
+        [Test]
         public void Load_ConstructorInjection()
         {
             var container = ConfigureContainer("SingletonWithTwoServices").Build();
@@ -139,6 +153,21 @@ namespace Autofac.Tests.Configuration
         class ComponentConsumer
         {
             public ITestComponent Component { get; set; }
+        }
+
+        class ParameterizedModule : Module
+        {
+            public string Message { get; private set; }
+
+            public ParameterizedModule(string message)
+            {
+                this.Message = message;
+            }
+
+            protected override void Load(ContainerBuilder builder)
+            {
+                builder.RegisterType<SimpleComponent>().WithProperty("Message", this.Message);
+            }
         }
     }
 }

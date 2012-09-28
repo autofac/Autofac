@@ -30,13 +30,17 @@ namespace Autofac.Configuration.Elements
     /// <summary>
     /// A collection of module elements.
     /// </summary>
-    public class ModuleElementCollection : NamedConfigurationElementCollection<ModuleElement>
+    public class ModuleElementCollection : ConfigurationElementCollection<ModuleElement>
     {
+        /* This is intentionally NOT a keyed collection so we can allow multiple modules of the same type
+         * but with different parameters to be registered. It does mean people have to be careful not to
+         * copy/paste the same module registration line or they will get duplicate entries. */
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ModuleElementCollection"/> class.
         /// </summary>
         public ModuleElementCollection()
-            : base("module", ModuleElement.Key)
+            : base("module")
         {
         }
     }

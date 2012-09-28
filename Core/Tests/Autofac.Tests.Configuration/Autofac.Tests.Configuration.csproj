@@ -90,6 +90,10 @@
     <Compile Include="XmlFileReaderFixture.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Files\SameModuleRegisteredMultipleTimes.config">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Files\ExternalOwnership.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -36,7 +36,6 @@ namespace Autofac.Configuration.Elements
         const string TypeAttributeName = "type";
         const string ParametersElementName = "parameters";
         const string PropertiesElementName = "properties";
-        internal const string Key = TypeAttributeName;
 
         /// <summary>
         /// Gets the type of the module. Must expose <see cref="IModule"/>.
