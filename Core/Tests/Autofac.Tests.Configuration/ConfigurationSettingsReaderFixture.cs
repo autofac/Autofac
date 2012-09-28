@@ -26,12 +26,73 @@ namespace Autofac.Tests.Configuration
         }
 
         [Test]
+        public void Load_ConstructorInjection()
+        {
+            var container = ConfigureContainer("SingletonWithTwoServices").Build();
+            var cpt = (SimpleComponent)container.Resolve<ITestComponent>();
+            Assert.AreEqual(1, cpt.Input);
+        }
+
+        [Test]
+        public void Load_ExternalOwnership()
+        {
+            var container = ConfigureContainer("ExternalOwnership").Build();
+            IComponentRegistration registration;
+            Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(new TypedService(typeof(SimpleComponent)), out registration), "The expected component was not registered.");
+            Assert.AreEqual(InstanceOwnership.ExternallyOwned, registration.Ownership, "The ownership was not set correctly.");
+        }
+
+        [Test]
         public void Load_IncludesFileReferences()
         {
             var container = ConfigureContainer("Referrer").Build();
-            container.AssertRegistered<object>("a", "The component from the config file with the specified section name was not registered.");
-            container.AssertRegistered<object>("b", "The component from the config file with the default section name was not registered.");
-            container.AssertRegistered<object>("c", "The component from the referenced raw XML configuration file was not registered.");
+            container.AssertRegisteredNamed<object>("a", "The component from the config file with the specified section name was not registered.");
+            container.AssertRegisteredNamed<object>("b", "The component from the config file with the default section name was not registered.");
+            container.AssertRegisteredNamed<object>("c", "The component from the referenced raw XML configuration file was not registered.");
+        }
+
+        [Test]
+        public void Load_LifetimeScope_InstancePerDependency()
+        {
+            var container = ConfigureContainer("InstancePerDependency").Build();
+            Assert.AreNotSame(container.Resolve<SimpleComponent>(), container.Resolve<SimpleComponent>(), "The component was not correctly registered with factory scope.");
+        }
+
+        [Test]
+        public void Load_LifetimeScope_Singleton()
+        {
+            var container = ConfigureContainer("SingletonWithTwoServices").Build();
+            Assert.AreSame(container.Resolve<ITestComponent>(), container.Resolve<ITestComponent>(), "The component was not correctly registered with singleton scope.");
+        }
+
+        [Test]
+        public void Load_MemberOf()
+        {
+            var builder = ConfigureContainer("MemberOf");
+            builder.RegisterCollection<ITestComponent>("named-collection").As<IList<ITestComponent>>();
+            var container = builder.Build();
+            var collection = container.Resolve<IList<ITestComponent>>();
+            var first = collection[0];
+            Assert.IsInstanceOf<SimpleComponent>(first, "The resolved collection member was the wrong type.");
+        }
+
+        [Test]
+        public void Load_PropertyInjectionEnabledOnComponent()
+        {
+            var builder = ConfigureContainer("EnablePropertyInjection");
+            builder.RegisterType<SimpleComponent>().As<ITestComponent>();
+            var container = builder.Build();
+            var e = container.Resolve<ComponentConsumer>();
+            Assert.IsNotNull(e.Component, "The component was not injected into the property.");
+        }
+
+        [Test]
+        public void Load_PropertyInjectionWithProvidedValues()
+        {
+            var container = ConfigureContainer("SingletonWithTwoServices").Build();
+            var cpt = (SimpleComponent)container.Resolve<ITestComponent>();
+            Assert.AreEqual("hello", cpt.Message, "The string property value was not populated.");
+            Assert.IsTrue(cpt.ABool, "The Boolean property value was not properly parsed/converted.");
         }
 
         [Test]
@@ -44,75 +105,13 @@ namespace Autofac.Tests.Configuration
         }
 
         [Test]
-        public void Load_SingletonWithTwoServices()
+        public void Load_SingleComponentWithTwoServices()
         {
             var container = ConfigureContainer("SingletonWithTwoServices").Build();
-            container.AssertRegistered<ITestComponent>();
-            container.AssertRegistered<object>();
-            container.AssertNotRegistered<SimpleComponent>();
-            Assert.AreSame(container.Resolve<ITestComponent>(), container.Resolve<object>());
-        }
-
-        [Test]
-        public void ParametersProvided()
-        {
-            var container = ConfigureContainer("SingletonWithTwoServices").Build();
-            var cpt = (SimpleComponent)container.Resolve<ITestComponent>();
-            Assert.AreEqual(1, cpt.Input);
-        }
-
-        [Test]
-        public void PropertiesProvided()
-        {
-            var container = ConfigureContainer("SingletonWithTwoServices").Build();
-            var cpt = (SimpleComponent)container.Resolve<ITestComponent>();
-            Assert.AreEqual("hello", cpt.Message);
-        }
-
-        [Test]
-        public void FactoryScope()
-        {
-            var container = ConfigureContainer("BPerDependency").Build();
-            Assert.AreNotSame(container.Resolve<B>(), container.Resolve<B>());
-        }
-
-        [Test]
-        public void ConfiguresBooleanProperties()
-        {
-            var container = ConfigureContainer("CWithBoolean").Build();
-            var c = container.Resolve<C>();
-            Assert.IsTrue(c.ABool);
-        }
-
-        [Test]
-        public void SetsExternalOwnership()
-        {
-            var container = ConfigureContainer("BExternal").Build();
-            IComponentRegistration forB;
-            container.ComponentRegistry.TryGetRegistration(new TypedService(typeof(B)), out forB);
-            Assert.AreEqual(InstanceOwnership.ExternallyOwned, forB.Ownership);
-        }
-
-        [Test]
-        public void SetsPropertyInjection()
-        {
-            var builder = ConfigureContainer("EWithPropertyInjection");
-            builder.RegisterType<B>();
-            var container = builder.Build();
-            var e = container.Resolve<E>();
-            Assert.IsNotNull(e.B);
-        }
-
-        [Test]
-        public void ConfiguresMemberOf()
-        {
-            var builder = ConfigureContainer("MemberOf");
-            builder.RegisterCollection<ITestComponent>("ia")
-                    .As<IList<ITestComponent>>();
-            var container = builder.Build();
-            var collection = container.Resolve<IList<ITestComponent>>();
-            var first = collection[0];
-            Assert.IsInstanceOf(typeof(D), first);
+            container.AssertRegistered<ITestComponent>("The ITestComponent wasn't registered.");
+            container.AssertRegistered<object>("The object wasn't registered.");
+            container.AssertNotRegistered<SimpleComponent>("The base SimpleComponent type was incorrectly registered.");
+            Assert.AreSame(container.Resolve<ITestComponent>(), container.Resolve<object>(), "Unable to resolve the singleton service on its two different registered interfaces.");
         }
 
         [Test]
@@ -154,25 +153,20 @@ namespace Autofac.Tests.Configuration
 
         class SimpleComponent : ITestComponent
         {
+            public SimpleComponent() { }
+
             public SimpleComponent(int input) { Input = input; }
 
             public int Input { get; set; }
 
             public string Message { get; set; }
-        }
 
-        class B { }
-
-        class C
-        {
             public bool ABool { get; set; }
         }
 
-        class D : ITestComponent { }
-
-        class E
+        class ComponentConsumer
         {
-            public B B { get; set; }
+            public ITestComponent Component { get; set; }
         }
     }
 }

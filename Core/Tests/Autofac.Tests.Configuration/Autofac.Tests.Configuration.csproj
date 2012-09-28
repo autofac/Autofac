@@ -89,10 +89,10 @@
     <Compile Include="EnumerableParametersFixture.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Files\BExternal.config">
+    <None Include="Files\ExternalOwnership.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Files\BPerDependency.config">
+    <None Include="Files\InstancePerDependency.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Files\RefereeConfigurationDefaultName.config">
@@ -101,16 +101,13 @@
     <None Include="Files\RefereeXml.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Files\CWithBoolean.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Files\DictionaryParameters.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Files\EnumerableParameters.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Files\EWithPropertyInjection.config">
+    <None Include="Files\EnablePropertyInjection.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Files\MemberOf.config">
@@ -130,6 +127,7 @@
     </None>
     <None Include="Files\SameTypeRegisteredMultipleTimes.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
