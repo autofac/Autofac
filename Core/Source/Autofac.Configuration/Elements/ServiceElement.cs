@@ -23,21 +23,44 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Configuration;
 
-namespace Autofac.Configuration
+namespace Autofac.Configuration.Elements
 {
 
     /// <summary>
-    /// A collection of file elements.
+    /// Element describing a service exposed by a component.
     /// </summary>
-    public class FileElementCollection : NamedConfigurationElementCollection<FileElement>
+    public class ServiceElement : ConfigurationElement
     {
+        const string TypeAttributeName = "type";
+        const string NameAttributeName = "name";
+        internal const string Key = TypeAttributeName;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileElementCollection"/> class.
+        /// Gets the service type.
         /// </summary>
-        public FileElementCollection()
-            : base("file", FileElement.Key)
+        /// <value>The type.</value>
+        [ConfigurationProperty(TypeAttributeName, IsRequired = true)]
+        public string Type
         {
+            get
+            {
+                return (string)this[TypeAttributeName];
+            }
+        }
+
+        /// <summary>
+        /// Gets the service name.
+        /// </summary>
+        /// <value>The name.</value>
+        [ConfigurationProperty(NameAttributeName, IsRequired = false)]
+        public string Name
+        {
+            get
+            {
+                return (string)this[NameAttributeName];
+            }
         }
     }
 

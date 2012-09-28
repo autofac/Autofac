@@ -24,21 +24,21 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 
-namespace Autofac.Configuration
+namespace Autofac.Configuration.Elements
 {
-	
+
     /// <summary>
-    /// A collection of component elements.
+    /// A collection of file elements.
     /// </summary>
-    public class ComponentElementCollection : ConfigurationElementCollection<ComponentElement>
+    public class FileElementCollection : NamedConfigurationElementCollection<FileElement>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ComponentElementCollection"/> class.
+        /// Initializes a new instance of the <see cref="FileElementCollection"/> class.
         /// </summary>
-        public ComponentElementCollection()
-            : base("component")
+        public FileElementCollection()
+            : base("file", FileElement.Key)
         {
         }
     }
-	
+
 }

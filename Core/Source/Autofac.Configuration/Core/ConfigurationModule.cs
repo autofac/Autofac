@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Autofac.Configuration
+namespace Autofac.Configuration.Core
 {
     /// <summary>
     /// Base class for a configuration parsing/execution module.

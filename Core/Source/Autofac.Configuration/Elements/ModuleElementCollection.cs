@@ -24,19 +24,19 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 
-namespace Autofac.Configuration
+namespace Autofac.Configuration.Elements
 {
 
     /// <summary>
-    /// Collection of extended property elements.
+    /// A collection of module elements.
     /// </summary>
-    public class MetadataElementCollection : NamedConfigurationElementCollection<MetadataElement>
+    public class ModuleElementCollection : NamedConfigurationElementCollection<ModuleElement>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PropertyElementCollection"/> class.
+        /// Initializes a new instance of the <see cref="ModuleElementCollection"/> class.
         /// </summary>
-        public MetadataElementCollection()
-            : base("item", MetadataElement.Key)
+        public ModuleElementCollection()
+            : base("module", ModuleElement.Key)
         {
         }
     }

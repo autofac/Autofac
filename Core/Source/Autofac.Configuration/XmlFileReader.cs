@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Autofac.Configuration.Core;
 
 namespace Autofac.Configuration
 {

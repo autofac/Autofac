@@ -27,7 +27,7 @@ using System.Collections.Generic;
 using Autofac.Configuration.Util;
 using Autofac.Core;
 
-namespace Autofac.Configuration
+namespace Autofac.Configuration.Elements
 {
 
     /// <summary>

@@ -30,6 +30,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Xml;
+using Autofac.Configuration.Elements;
 
 namespace Autofac.Configuration
 {

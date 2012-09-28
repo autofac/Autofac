@@ -23,46 +23,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Collections.Generic;
-using System.Reflection;
-using Autofac.Configuration.Util;
-using Autofac.Core;
 
-namespace Autofac.Configuration
+namespace Autofac.Configuration.Elements
 {
 
     /// <summary>
-    /// Collection of property elements.
+    /// A collection of component elements.
     /// </summary>
-    public class PropertyElementCollection : NamedConfigurationElementCollection<PropertyElement>
-	{
+    public class ComponentElementCollection : ConfigurationElementCollection<ComponentElement>
+    {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PropertyElementCollection"/> class.
+        /// Initializes a new instance of the <see cref="ComponentElementCollection"/> class.
         /// </summary>
-		public PropertyElementCollection()
-			: base("property", PropertyElement.Key)
-		{
-		}
-
-
-        /// <summary>
-        /// Convert to the Autofac parameter type.
-        /// </summary>
-        /// <returns>The parameters represented by this collection.</returns>
-        public IEnumerable<Parameter> ToParameters()
+        public ComponentElementCollection()
+            : base("component")
         {
-            foreach (var parameter in this)
-            {
-                var localParameter = parameter;
-                yield return new ResolvedParameter(
-                    (pi, c) =>
-                    {
-                        PropertyInfo prop;
-                        return pi.TryGetDeclaringProperty(out prop) &&
-                            prop.Name == localParameter.Name;
-                    },
-                    (pi, c) => TypeManipulation.ChangeToCompatibleType(localParameter.CoerceValue(), pi.ParameterType));
-            }
         }
     }
 

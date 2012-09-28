@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Configuration;
 using Autofac.Configuration.Util;
 
-namespace Autofac.Configuration
+namespace Autofac.Configuration.Elements
 {
     /// <summary>
     /// Holds a dictionary of values for those properties/parameters that are a dictionary

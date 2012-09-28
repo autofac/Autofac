@@ -25,47 +25,48 @@
 
 using System.Configuration;
 
-namespace Autofac.Configuration
+namespace Autofac.Configuration.Elements
 {
+
     /// <summary>
-    /// Element describing a component property.
+    /// Element describing a component constructor parameter.
     /// </summary>
-    public class PropertyElement : ConfigurationElement
-	{
-		const string NameAttributeName = "name";
-		const string ValueAttributeName = "value";
+    public class ParameterElement : ConfigurationElement
+    {
+        const string NameAttributeName = "name";
+        const string ValueAttributeName = "value";
         const string ListElementName = "list";
         const string DictionaryElementName = "dictionary";
-		internal const string Key = NameAttributeName;
+        internal const string Key = NameAttributeName;
 
         /// <summary>
-        /// Gets the name of the property.
+        /// Gets the name of the parameter.
         /// </summary>
         /// <value>The name.</value>
-		[ConfigurationProperty(NameAttributeName, IsRequired = true)]
-		public string Name
-		{
-			get
-			{
-				return (string)this[NameAttributeName];
-			}
-		}
+        [ConfigurationProperty(NameAttributeName, IsRequired = true)]
+        public string Name
+        {
+            get
+            {
+                return (string)this[NameAttributeName];
+            }
+        }
 
         /// <summary>
-        /// Gets the value to be set (will be converted.)
+        /// Gets the value used to set the parameter (type will be converted.)
         /// </summary>
         /// <value>The value.</value>
-		[ConfigurationProperty(ValueAttributeName, IsRequired = false)]
-		public string Value
-		{
-			get
-			{
+        [ConfigurationProperty(ValueAttributeName, IsRequired = false)]
+        public string Value
+        {
+            get
+            {
                 return (string)this[ValueAttributeName];
-			}
-		}
+            }
+        }
 
         /// <summary>
-        /// If this property's value is a list of values
+        /// If this parameter's value is a list of values
         /// </summary>
         [ConfigurationProperty(ListElementName, IsRequired = false, DefaultValue = null)]
         public ListElementCollection List
@@ -77,7 +78,7 @@ namespace Autofac.Configuration
         }
 
         /// <summary>
-        /// If this property's value is a dictionary
+        /// If this parameter's value is a dictionary
         /// </summary>
         [ConfigurationProperty(DictionaryElementName, IsRequired = false, DefaultValue = null)]
         public DictionaryElementCollection Dictionary
@@ -101,6 +102,6 @@ namespace Autofac.Configuration
 
             return Value;
         }
-	}
+    }
 
 }

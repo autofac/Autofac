@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace Autofac.Configuration
+namespace Autofac.Configuration.Elements
 {
     /// <summary>
     /// Configuration for values in a list
@@ -16,7 +16,7 @@ namespace Autofac.Configuration
         [ConfigurationProperty(KeyAttributeName, IsRequired = false)]
         public string Key
         {
-            get { return (string) this[KeyAttributeName]; }
+            get { return (string)this[KeyAttributeName]; }
         }
 
         /// <summary>

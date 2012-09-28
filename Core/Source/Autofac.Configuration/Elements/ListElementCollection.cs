@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Autofac.Configuration.Util;
 
-namespace Autofac.Configuration
+namespace Autofac.Configuration.Elements
 {
     /// <summary>
     /// Holds a list of values for those properties/parameters that are enumerable

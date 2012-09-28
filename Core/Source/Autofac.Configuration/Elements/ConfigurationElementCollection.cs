@@ -5,13 +5,13 @@ using System.Text;
 using System.Configuration;
 using System.Collections;
 
-namespace Autofac.Configuration
+namespace Autofac.Configuration.Elements
 {
-    public class ConfigurationElementCollection<TElementType> : ConfigurationElementCollection, IEnumerable<TElementType> 
+    public class ConfigurationElementCollection<TElementType> : ConfigurationElementCollection, IEnumerable<TElementType>
         where TElementType : ConfigurationElement
     {
         private string _elementName;
-        
+
         public ConfigurationElementCollection(string elementName)
         {
             _elementName = elementName;

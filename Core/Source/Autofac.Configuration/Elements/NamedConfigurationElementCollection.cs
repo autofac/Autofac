@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using Autofac.Configuration.Util;
 
-namespace Autofac.Configuration
+namespace Autofac.Configuration.Elements
 {
 
     /// <summary>

@@ -25,7 +25,7 @@
 
 using System.Configuration;
 
-namespace Autofac.Configuration
+namespace Autofac.Configuration.Elements
 {
 
     /// <summary>

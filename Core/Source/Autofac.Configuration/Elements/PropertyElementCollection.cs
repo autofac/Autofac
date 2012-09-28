@@ -23,21 +23,46 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Collections.Generic;
+using System.Reflection;
+using Autofac.Configuration.Util;
+using Autofac.Core;
 
-namespace Autofac.Configuration
+namespace Autofac.Configuration.Elements
 {
 
     /// <summary>
-    /// A collection of service elements.
+    /// Collection of property elements.
     /// </summary>
-    public class ServiceElementCollection : NamedConfigurationElementCollection<ServiceElement>
+    public class PropertyElementCollection : NamedConfigurationElementCollection<PropertyElement>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ServiceElementCollection"/> class.
+        /// Initializes a new instance of the <see cref="PropertyElementCollection"/> class.
         /// </summary>
-        public ServiceElementCollection()
-            : base("service", ServiceElement.Key)
+        public PropertyElementCollection()
+            : base("property", PropertyElement.Key)
         {
+        }
+
+
+        /// <summary>
+        /// Convert to the Autofac parameter type.
+        /// </summary>
+        /// <returns>The parameters represented by this collection.</returns>
+        public IEnumerable<Parameter> ToParameters()
+        {
+            foreach (var parameter in this)
+            {
+                var localParameter = parameter;
+                yield return new ResolvedParameter(
+                    (pi, c) =>
+                    {
+                        PropertyInfo prop;
+                        return pi.TryGetDeclaringProperty(out prop) &&
+                            prop.Name == localParameter.Name;
+                    },
+                    (pi, c) => TypeManipulation.ChangeToCompatibleType(localParameter.CoerceValue(), pi.ParameterType));
+            }
         }
     }
 

@@ -23,44 +23,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Configuration;
 
-namespace Autofac.Configuration
+namespace Autofac.Configuration.Elements
 {
 
     /// <summary>
-    /// Element describing a service exposed by a component.
+    /// A collection of service elements.
     /// </summary>
-    public class ServiceElement : ConfigurationElement
+    public class ServiceElementCollection : NamedConfigurationElementCollection<ServiceElement>
     {
-        const string TypeAttributeName = "type";
-        const string NameAttributeName = "name";
-        internal const string Key = TypeAttributeName;
-
         /// <summary>
-        /// Gets the service type.
+        /// Initializes a new instance of the <see cref="ServiceElementCollection"/> class.
         /// </summary>
-        /// <value>The type.</value>
-        [ConfigurationProperty(TypeAttributeName, IsRequired = true)]
-        public string Type
+        public ServiceElementCollection()
+            : base("service", ServiceElement.Key)
         {
-            get
-            {
-                return (string)this[TypeAttributeName];
-            }
-        }
-
-        /// <summary>
-        /// Gets the service name.
-        /// </summary>
-        /// <value>The name.</value>
-        [ConfigurationProperty(NameAttributeName, IsRequired = false)]
-        public string Name
-        {
-            get
-            {
-                return (string)this[NameAttributeName];
-            }
         }
     }
 

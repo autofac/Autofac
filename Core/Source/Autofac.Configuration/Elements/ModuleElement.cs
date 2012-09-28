@@ -25,15 +25,15 @@
 
 using System.Configuration;
 
-namespace Autofac.Configuration
+namespace Autofac.Configuration.Elements
 {
 
     /// <summary>
     /// Element describing a module registration.
     /// </summary>
     public class ModuleElement : ConfigurationElement
-	{
-		const string TypeAttributeName = "type";
+    {
+        const string TypeAttributeName = "type";
         const string ParametersElementName = "parameters";
         const string PropertiesElementName = "properties";
         internal const string Key = TypeAttributeName;
@@ -42,14 +42,14 @@ namespace Autofac.Configuration
         /// Gets the type of the module. Must expose <see cref="IModule"/>.
         /// </summary>
         /// <value>The type.</value>
-		[ConfigurationProperty(TypeAttributeName, IsRequired = true)]
-		public string Type
-		{
-			get
-			{
-				return (string)this[TypeAttributeName];
-			}
-		}
+        [ConfigurationProperty(TypeAttributeName, IsRequired = true)]
+        public string Type
+        {
+            get
+            {
+                return (string)this[TypeAttributeName];
+            }
+        }
 
         /// <summary>
         /// Gets the parameters used to construct the component.
