@@ -120,6 +120,15 @@
   <data name="ArgumentMayNotBeEmpty" xml:space="preserve">
     <value>The {0} may not be empty.</value>
   </data>
+  <data name="ConfigurationFileNotFound" xml:space="preserve">
+    <value>Unable to find specified configuration file.</value>
+  </data>
+  <data name="InitializeSectionHandler" xml:space="preserve">
+    <value>You must initialize the section handler on the module before executing the load operation.</value>
+  </data>
+  <data name="NoXmlInConfiguration" xml:space="preserve">
+    <value>No XML content nodes found in configuration. Check the XML reader to ensure configuration is in place.</value>
+  </data>
   <data name="SectionNotFound" xml:space="preserve">
     <value>The configuration section '{0}' could not be read.</value>
   </data>

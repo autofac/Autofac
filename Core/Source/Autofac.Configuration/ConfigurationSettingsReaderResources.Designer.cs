@@ -70,6 +70,33 @@ namespace Autofac.Configuration {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to find specified configuration file..
+        /// </summary>
+        internal static string ConfigurationFileNotFound {
+            get {
+                return ResourceManager.GetString("ConfigurationFileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must initialize the section handler on the module before executing the load operation..
+        /// </summary>
+        internal static string InitializeSectionHandler {
+            get {
+                return ResourceManager.GetString("InitializeSectionHandler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No XML content nodes found in configuration. Check the XML reader to ensure configuration is in place..
+        /// </summary>
+        internal static string NoXmlInConfiguration {
+            get {
+                return ResourceManager.GetString("NoXmlInConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The configuration section &apos;{0}&apos; could not be read..
         /// </summary>
         internal static string SectionNotFound {

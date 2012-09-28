@@ -28,34 +28,33 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.Linq;
-using System.Xml;
 
 namespace Autofac.Configuration
 {
     /// <summary>
-    /// Configures containers based upon app.config settings.
+    /// Configures containers based upon <c>app.config</c>/<c>web.config</c> settings.
     /// </summary>
-    public class ConfigurationSettingsReader : Module
+    /// <remarks>
+    /// <para>
+    /// This module type uses standard .NET application configuration format files to initialize configuration
+    /// settings. By default the standard <c>app.config</c>/<c>web.config</c> is used with a configuration
+    /// section named <c>autofac</c>, but you can use the various constructors to override the file location
+    /// or configuration section name.
+    /// </para>
+    /// <para>
+    /// If you are storing your configuration settings in a raw XML file (without the additional
+    /// <c>&lt;configuration /&gt;</c> wrapper and section definitions you normally see in .NET application
+    /// configuration) you can use the <see cref="Autofac.Configuration.XmlFileReader"/> module to specify
+    /// the XML file location directly.
+    /// </para>
+    /// </remarks>
+    /// <see cref="Autofac.Configuration.XmlFileReader"/>
+    /// <see cref="Autofac.Configuration.SectionHandler"/>
+    public class ConfigurationSettingsReader : ConfigurationModule
     {
-        private readonly SectionHandler _sectionHandler;
-
-        public IConfigurationRegistrar ConfigurationRegistrar { get; set; }
-
         /// <summary>
-        /// Gets the section handler.
-        /// </summary>
-        /// <value>The section handler.</value>
-        protected virtual SectionHandler SectionHandler
-        {
-            get
-            {
-                return _sectionHandler;
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConfigurationSettingsReader"/> class.
-        /// The reader will look for a 'autofac' section.
+        /// Initializes a new instance of the <see cref="ConfigurationSettingsReader"/> class
+        /// using the default application configuration file with a configuration section named <c>autofac</c>.
         /// </summary>
         public ConfigurationSettingsReader()
             : this(SectionHandler.DefaultSectionName)
@@ -63,58 +62,39 @@ namespace Autofac.Configuration
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConfigurationSettingsReader"/> class.
+        /// Initializes a new instance of the <see cref="ConfigurationSettingsReader"/> class
+        /// using the default application configuration file and a named section.
         /// </summary>
-        /// <param name="sectionName">Name of the configuration section.</param>
-        /// <param name="configurationFile">The configuration file.</param>
-        public ConfigurationSettingsReader(string sectionName, string configurationFile)
-        {
-            _sectionHandler = SectionHandler.Deserialize(configurationFile, sectionName);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConfigurationSettingsReader"/> class.
-        /// </summary>
-        /// <param name="sectionName">Name of the configuration section.</param>
+        /// <param name="sectionName">
+        /// The name of the configuration section corresponding to a <see cref="Autofac.Configuration.SectionHandler"/>.
+        /// </param>
         public ConfigurationSettingsReader(string sectionName)
         {
             if (sectionName == null)
             {
                 throw new ArgumentNullException("sectionName");
             }
-            _sectionHandler = (SectionHandler)ConfigurationManager.GetSection(sectionName);
-
-            if (_sectionHandler == null)
+            this.SectionHandler = (SectionHandler)ConfigurationManager.GetSection(sectionName);
+            if (this.SectionHandler == null)
             {
                 throw new ConfigurationErrorsException(String.Format(CultureInfo.CurrentCulture, ConfigurationSettingsReaderResources.SectionNotFound, sectionName));
             }
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConfigurationSettingsReader"/> class.
+        /// Initializes a new instance of the <see cref="ConfigurationSettingsReader"/> class
+        /// using a named configuration file and section.
         /// </summary>
-        /// <param name="reader">An <see cref="System.Xml.XmlReader"/> that contains the configuration.</param>
-        public ConfigurationSettingsReader(XmlReader reader)
+        /// <param name="sectionName">
+        /// The name of the configuration section corresponding to a <see cref="Autofac.Configuration.SectionHandler"/>.
+        /// </param>
+        /// <param name="configurationFile">
+        /// The <c>app.config</c>/<c>web.config</c> format configuration file containing the
+        /// named section.
+        /// </param>
+        public ConfigurationSettingsReader(string sectionName, string configurationFile)
         {
-            if (reader == null)
-            {
-                throw new ArgumentNullException("reader");
-            }
-            _sectionHandler = SectionHandler.Deserialize(reader);
-        }
-
-        /// <summary>
-        /// Override to add registrations to the container.
-        /// </summary>
-        /// <param name="builder">The builder.</param>
-        protected override void Load(ContainerBuilder builder)
-        {
-            if (builder == null)
-            {
-                throw new ArgumentNullException("builder");
-            }
-            var registrar = this.ConfigurationRegistrar ?? new ConfigurationRegistrar();
-            registrar.RegisterConfigurationSection(builder, this._sectionHandler);
+            this.SectionHandler = SectionHandler.Deserialize(configurationFile, sectionName);
         }
     }
 }

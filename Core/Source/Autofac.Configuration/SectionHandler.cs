@@ -147,19 +147,45 @@ namespace Autofac.Configuration
             reader.MoveToContent();
             if (reader.EOF)
             {
-                throw new ConfigurationErrorsException("No XML content nodes found in configuration. Check the XML reader to ensure configuration is in place.");
+                throw new ConfigurationErrorsException(ConfigurationSettingsReaderResources.NoXmlInConfiguration);
             }
             var handler = new SectionHandler();
             handler.DeserializeElement(reader, false);
             return handler;
         }
 
-        public static SectionHandler Deserialize(string configurationFile, string configurationSection)
+        /// <summary>
+        /// Deserializes a configuration section handler from an XML configuration file.
+        /// </summary>
+        /// <param name="configurationFile">The path to the configuration file to parse.</param>
+        /// <param name="configurationSection">
+        /// The name of the configuration section (if the <paramref name="configurationFile" /> is
+        /// application configuration format); or <see langword="null" /> to use the default configuration
+        /// section name <c>autofac</c> or try the <paramref name="configurationFile" /> as a raw XML file.
+        /// </param>
+        /// <returns>
+        /// A read/parsed <see cref="SectionHandler"/> based on the contents of the <paramref name="configurationFile"/>.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="configurationFile"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown if <paramref name="configurationFile"/> is empty.
+        /// </exception>
+        /// <exception cref="System.IO.FileNotFoundException">
+        /// Thrown if the file indicated by <paramref name="configurationFile" /> can't be found.
+        /// </exception>
+        /// <exception cref="System.Configuration.ConfigurationErrorsException">
+        /// Thrown if the configuration can't properly be deserialized from the file.
+        /// </exception>
+        public static SectionHandler Deserialize(string configurationFile, string configurationSection = null)
         {
             if (String.IsNullOrWhiteSpace(configurationSection))
             {
                 configurationSection = SectionHandler.DefaultSectionName;
             }
+
+            // Normalizing the configuration file path also checks for null/empty.
             configurationFile = NormalizeConfigurationFilePath(configurationFile);
             var map = new ExeConfigurationFileMap();
             map.ExeConfigFilename = configurationFile;
@@ -189,6 +215,25 @@ namespace Autofac.Configuration
             return handler;
         }
 
+        /// <summary>
+        /// Checks the validity of a configuration file path and converts relative paths to absolute.
+        /// </summary>
+        /// <param name="configurationFile">
+        /// The file path to check/normalize.
+        /// </param>
+        /// <returns>
+        /// If <paramref name="configurationFile" /> is an absolute path, it is returned unchanged; otherwise
+        /// it is made absolute relative to the current configuration location.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="configurationFile" /> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown if <paramref name="configurationFile" /> is empty.
+        /// </exception>
+        /// <exception cref="System.IO.FileNotFoundException">
+        /// Thrown if the file indicated by <paramref name="configurationFile" /> can't be found.
+        /// </exception>
         private static string NormalizeConfigurationFilePath(string configurationFile)
         {
             if (configurationFile == null)
@@ -197,7 +242,7 @@ namespace Autofac.Configuration
             }
             if (configurationFile.Length == 0)
             {
-                throw new ArgumentException("Configuration file path may not be empty.", "configurationFile");
+                throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, ConfigurationSettingsReaderResources.ArgumentMayNotBeEmpty, "configurationFile"), "configurationFile");
             }
             if (!Path.IsPathRooted(configurationFile))
             {
@@ -206,7 +251,7 @@ namespace Autofac.Configuration
             }
             if (!File.Exists(configurationFile))
             {
-                throw new FileNotFoundException("Unable to find specified configuration file.", configurationFile);
+                throw new FileNotFoundException(ConfigurationSettingsReaderResources.ConfigurationFileNotFound, configurationFile);
             }
             return configurationFile;
         }

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Xml;
 using Autofac.Builder;
 using Autofac.Configuration;
 using Autofac.Core;
@@ -112,32 +110,6 @@ namespace Autofac.Tests.Configuration
             container.AssertRegistered<object>("The object wasn't registered.");
             container.AssertNotRegistered<SimpleComponent>("The base SimpleComponent type was incorrectly registered.");
             Assert.AreSame(container.Resolve<ITestComponent>(), container.Resolve<object>(), "Unable to resolve the singleton service on its two different registered interfaces.");
-        }
-
-        [Test]
-        public void ConfigurationCanBeXmlReader()
-        {
-            // This is the same as the Metadata.config but without the app.config wrapper.
-            const string metadataConfiguration =
-@"<autofac defaultAssembly=""mscorlib"">
-  <components>
-    <component type=""System.Object"" service=""System.Object"" name=""a"">
-      <metadata>
-        <item name=""answer"" value=""42"" type=""System.Int32"" />
-      </metadata>
-    </component>
-  </components>
-</autofac>";
-            var cb = new ContainerBuilder();
-            using (var reader = new XmlTextReader(new StringReader(metadataConfiguration)))
-            {
-                var csr = new ConfigurationSettingsReader(reader);
-                cb.RegisterModule(csr);
-            }
-            var container = cb.Build();
-            IComponentRegistration registration;
-            Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(new KeyedService("a", typeof(object)), out registration));
-            Assert.AreEqual(42, (int)registration.Metadata["answer"]);
         }
 
         private static ContainerBuilder ConfigureContainer(string configFileBaseName)

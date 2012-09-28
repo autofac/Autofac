@@ -87,6 +87,7 @@
     <Compile Include="DictionaryParametersFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EnumerableParametersFixture.cs" />
+    <Compile Include="XmlFileReaderFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Files\ExternalOwnership.config">
