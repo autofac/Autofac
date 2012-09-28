@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
+using Autofac.Configuration.Util;
 
 namespace Autofac.Configuration
 {
@@ -26,7 +27,7 @@ namespace Autofac.Configuration
                 {
                     var dictionary = (IDictionary)Activator.CreateInstance(instantiatableType);
                     Type[] generics = instantiatableType.GetGenericArguments();
-                    
+
                     foreach (var item in (DictionaryElementCollection)value)
                     {
                         if (String.IsNullOrEmpty(item.Key))
@@ -72,7 +73,7 @@ namespace Autofac.Configuration
             }
         }
 
-        public DictionaryElementCollection() 
+        public DictionaryElementCollection()
             : base("item")
         {
         }

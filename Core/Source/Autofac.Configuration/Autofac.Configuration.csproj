@@ -103,7 +103,7 @@
     <Compile Include="SectionHandler.cs" />
     <Compile Include="ServiceElement.cs" />
     <Compile Include="ServiceElementCollection.cs" />
-    <Compile Include="TypeManipulation.cs" />
+    <Compile Include="Util\TypeManipulation.cs" />
     <Compile Include="ListItemElement.cs" />
     <Compile Include="XmlFileReader.cs" />
   </ItemGroup>

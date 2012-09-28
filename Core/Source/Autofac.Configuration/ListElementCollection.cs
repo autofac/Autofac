@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Autofac.Configuration.Util;
 
 namespace Autofac.Configuration
 {
@@ -63,7 +64,7 @@ namespace Autofac.Configuration
             }
         }
 
-        public ListElementCollection() 
+        public ListElementCollection()
             : base("item")
         {
         }
