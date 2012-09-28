@@ -27,7 +27,7 @@ using System;
 using System.ComponentModel;
 using System.Configuration;
 
-namespace Autofac.Configuration
+namespace Autofac.Configuration.Util
 {
     /// <summary>
     /// Some handy type conversion routines.
@@ -56,7 +56,7 @@ namespace Autofac.Configuration
 
             //is there an explicit conversion
             var converter = TypeDescriptor.GetConverter(value.GetType());
-            if(converter != null && converter.CanConvertTo(destinationType))
+            if (converter != null && converter.CanConvertTo(destinationType))
                 return converter.ConvertTo(value, destinationType);
 
             //is there an implicit conversion
@@ -65,9 +65,9 @@ namespace Autofac.Configuration
 
             //is there an opposite conversion
             converter = TypeDescriptor.GetConverter(destinationType);
-            if(converter == null)
+            if (converter == null)
                 throw new ConfigurationErrorsException(String.Format("Cannot convert type from {0} to {1}.", value.GetType(), destinationType));
-                
+
             return converter.ConvertFrom(value);
         }
     }
