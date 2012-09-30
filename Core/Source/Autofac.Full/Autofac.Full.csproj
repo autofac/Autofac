@@ -53,13 +53,13 @@
     <Compile Include="..\..\..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="ContainerBuilderFactory.cs" />
     <Compile Include="Core\Activators\Reflection\BindingFlagsConstructorFinder.cs" />
     <Compile Include="Core\Activators\Reflection\BindingFlagsConstructorFinderResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>BindingFlagsConstructorFinderResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Core\RegistrationSourceProvider.cs" />
     <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSource.cs" />
     <Compile Include="Features\Metadata\StronglyTypedMeta.cs" />
     <Compile Include="Features\Metadata\StronglyTypedMetaRegistrationSource.cs" />

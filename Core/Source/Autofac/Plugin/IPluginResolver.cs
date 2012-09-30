@@ -23,31 +23,27 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using Autofac.Features.LazyDependencies;
-using Autofac.Features.Metadata;
+using System;
 
-namespace Autofac
+namespace Autofac.Plugin
 {
     /// <summary>
-    /// A factory that creates <see cref="ContainerBuilder"/> instances 
-    /// with .NET Framework Full Profile specific defaults.
+    /// Resolves a plugin for a given <see cref="Type"/>.
     /// </summary>
-    public static class ContainerBuilderFactory
+    internal interface IPluginResolver
     {
         /// <summary>
-        /// Creates a new <see cref="ContainerBuilder"/> instance.
+        /// Resolves the specified plugin.
         /// </summary>
-        /// <returns>A new instance on every call.</returns>
-        public static ContainerBuilder Create()
-        {
-            var builder = new ContainerBuilder();
+        /// <param name="type">The type of the plugin.</param>
+        /// <returns>The plugin instance.</returns>
+        object Resolve(Type type);
 
-            builder.RegisterCallback(registry =>
-            {
-                registry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
-                registry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());
-            });
-            return builder;
-        }
+        /// <summary>
+        /// Resolves the specified plugin.
+        /// </summary>
+        /// <param name="type">The type of the plugin.</param>
+        /// <returns>The plugin instance if resolved; otherwise, <c>null</c>.</returns>
+        object ResolveOptional(Type type);
     }
 }

@@ -23,21 +23,19 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-namespace Autofac
+using System.Collections.Generic;
+
+namespace Autofac.Core
 {
     /// <summary>
-    /// A factory that creates <see cref="ContainerBuilder"/> instances 
-    /// with Silverlight 5 specific defaults.
+    /// 
     /// </summary>
-    public static class ContainerBuilderFactory
+    internal interface IRegistrationSourceProvider
     {
         /// <summary>
-        /// Creates a new <see cref="ContainerBuilder"/> instance.
+        /// Gets the sources.
         /// </summary>
-        /// <returns>A new instance on every call.</returns>
-        public static ContainerBuilder Create()
-        {
-            return new ContainerBuilder();
-        }
+        /// <returns></returns>
+        IEnumerable<IRegistrationSource> GetSources();
     }
 }

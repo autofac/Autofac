@@ -106,16 +106,12 @@
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.pdb;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.xml;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.config"
-				Exclude="**\*.vshost.*;**\*.CodeAnalysisLog.*;**\Autofac.WinRT.*;**\Autofac.SL5.*" />
+				Exclude="**\*.vshost.*;**\*.CodeAnalysisLog.*;%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.SL5.*" />
 			<WinRTOutputList
 				Include="
 					$(MSBuildProjectDirectory)\Core\Source\Autofac\bin\$(BuildConfiguration)\Autofac.dll;
 					$(MSBuildProjectDirectory)\Core\Source\Autofac\bin\$(BuildConfiguration)\Autofac.pdb;
-					$(MSBuildProjectDirectory)\Core\Source\Autofac\bin\$(BuildConfiguration)\Autofac.xml;
-					$(MSBuildProjectDirectory)\Core\Source\Autofac.WinRT\bin\$(BuildConfiguration)\Autofac.WinRT.dll;
-					$(MSBuildProjectDirectory)\Core\Source\Autofac.WinRT\bin\$(BuildConfiguration)\Autofac.WinRT.pdb;
-					$(MSBuildProjectDirectory)\Core\Source\Autofac.WinRT\bin\$(BuildConfiguration)\Autofac.WinRT.pri;
-					$(MSBuildProjectDirectory)\Core\Source\Autofac.WinRT\bin\$(BuildConfiguration)\Autofac.WinRT.xml"
+					$(MSBuildProjectDirectory)\Core\Source\Autofac\bin\$(BuildConfiguration)\Autofac.xml"
 				Exclude="**\*.vshost.*;**\*.CodeAnalysisLog.*" />
 			<SL5OutputList
 				Include="
@@ -160,7 +156,7 @@
 		<ItemGroup>
 			<!-- One set of Extras and Core items should be created for each target zip file. -->
 			<NET40ExtrasPackageItems Include="$(BuildDirectory)\bin\net40\Autofac.Extras.*" />
-			<NET40CorePackageItems Include="$(BuildDirectory)\bin\net40\Autofac.*" Exclude="@(NET40ExtrasPackageItems);Autofac.WinRT.*;Autofac.SL5.*" />
+			<NET40CorePackageItems Include="$(BuildDirectory)\bin\net40\Autofac.*" Exclude="@(NET40ExtrasPackageItems);Autofac.SL5.*" />
 			<WinRTPackageItems Include="$(BuildDirectory)\bin\winrt45\Autofac.*" />
 			<SL5PackageItems Include="$(BuildDirectory)\bin\sl5\Autofac.*" />
 

@@ -12,7 +12,7 @@ namespace Autofac.Tests.AppCert.Tests
         [Test]
         public void SimpleResolve()
         {
-            var builder = ContainerBuilderFactory.Create();
+            var builder = new ContainerBuilder();
             builder.RegisterType<SimpleService>().As<ISimpleService>();
             var container = builder.Build();
             var service = container.Resolve<ISimpleService>();

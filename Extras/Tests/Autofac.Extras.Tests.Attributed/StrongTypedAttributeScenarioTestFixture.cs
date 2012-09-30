@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Autofac;
 using Autofac.Extras.Attributed;
 using Autofac.Extras.Tests.Attributed.ScenarioTypes;
 using NUnit.Framework;
@@ -16,7 +15,7 @@ namespace Autofac.Extras.Tests.Attributed
         public void validate_wireup_of_typed_attributes_to_strongly_typed_metadata_on_resolve()
         {
             // arrange
-            var builder = ContainerBuilderFactory.Create();
+            var builder = new ContainerBuilder();
 
             builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
                 .As<IStrongTypedScenario>()
