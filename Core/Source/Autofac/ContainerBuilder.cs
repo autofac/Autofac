@@ -32,6 +32,7 @@ using Autofac.Features.Collections;
 using Autofac.Features.GeneratedFactories;
 using Autofac.Features.Indexed;
 using Autofac.Features.OwnedInstances;
+using Autofac.Plugin;
 using Autofac.Util;
 using Autofac.Features.Metadata;
 using Autofac.Features.LazyDependencies;
@@ -158,6 +159,12 @@ namespace Autofac
             componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
             componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
             componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
-        }
+
+	        var registrationSourceProvider = PlatformPlugin.ResolveOptional<IRegistrationSourceProvider>();
+            if (registrationSourceProvider == null) return;
+
+	        foreach (var registrationSource in registrationSourceProvider.GetSources())
+                componentRegistry.AddRegistrationSource(registrationSource);
+	    }
 	}
 }

@@ -23,21 +23,18 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-namespace Autofac
+using System.Collections.Generic;
+using Autofac.Features.LazyDependencies;
+using Autofac.Features.Metadata;
+
+namespace Autofac.Core
 {
-    /// <summary>
-    /// A factory that creates <see cref="ContainerBuilder"/> instances 
-    /// with Windows Runtime specific defaults.
-    /// </summary>
-    public static class ContainerBuilderFactory
+    internal class RegistrationSourceProvider : IRegistrationSourceProvider
     {
-        /// <summary>
-        /// Creates a new <see cref="ContainerBuilder"/> instance.
-        /// </summary>
-        /// <returns>A new instance on every call.</returns>
-        public static ContainerBuilder Create()
+        public IEnumerable<IRegistrationSource> GetSources()
         {
-            return new ContainerBuilder();
+            yield return new LazyWithMetadataRegistrationSource();
+            yield return new StronglyTypedMetaRegistrationSource();
         }
     }
 }

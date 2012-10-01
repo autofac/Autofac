@@ -70,7 +70,6 @@
     <Compile Include="..\..\..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="ContainerBuilderFactory.cs" />
     <Compile Include="Core\Activators\Reflection\BindingFlagsConstructorFinder.cs" />
     <Compile Include="Core\Activators\Reflection\BindingFlagsConstructorFinderResources.Designer.cs">
       <DependentUpon>BindingFlagsConstructorFinderResources.resx</DependentUpon>

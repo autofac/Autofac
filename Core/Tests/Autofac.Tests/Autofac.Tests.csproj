@@ -59,6 +59,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Plugin\PlatformPluginTests.cs" />
+    <Compile Include="Plugin\ProbingPluginResolverTests.cs" />
     <Compile Include="Core\Activators\Reflection\DefaultValueParameterTests.cs" />
     <Compile Include="Features\LazyDependencies\LazyRegistrationSourceTests.cs" />
     <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSourceTests.cs" />
@@ -158,6 +160,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

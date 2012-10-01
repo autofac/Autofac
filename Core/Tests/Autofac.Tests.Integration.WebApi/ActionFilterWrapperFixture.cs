@@ -24,7 +24,7 @@ namespace Autofac.Tests.Integration.WebApi
         [Test]
         public void WrapperResolvesActionFilterFromDependencyScope()
         {
-            var builder = ContainerBuilderFactory.Create();
+            var builder = new ContainerBuilder();
             builder.Register<ILogger>(c => new Logger()).InstancePerDependency();
             var activationCount = 0;
             builder.Register<IAutofacActionFilter>(c => new TestActionFilter(c.Resolve<ILogger>()))
