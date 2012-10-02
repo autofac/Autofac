@@ -27,7 +27,6 @@ using System;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core.Activators.Reflection;
-using Autofac.Features.Scanning;
 
 namespace Autofac
 {
@@ -55,36 +54,21 @@ namespace Autofac
             return registration.FindConstructorsWith(new BindingFlagsConstructorFinder(bindingFlags));
         }
 
-        ///// <summary>
-        ///// Associates data with the component.
-        ///// </summary>
-        ///// <typeparam name="TMetadata">A type with properties whose names correspond to the
-        ///// property names to configure.</typeparam>
-        ///// <returns>A registration builder allowing further configuration of the component.</returns>
-        //public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
-        //    WithMetadata<TMetadata>(this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> registration, Action<MetadataConfiguration<TMetadata>> configurationAction)
-        //{
-        //    if (configurationAction == null) throw new ArgumentNullException("configurationAction");
+        /// <summary>
+        /// Associates data with the component through a strongly typed interface.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+            WithMetadata<TLimit, TReflectionActivatorData, TStyle>(
+                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                    IMetadataConfiguration metadataConfiguration)
+        {
+            if (metadataConfiguration == null) throw new ArgumentNullException("metadataConfiguration");
 
-        //    var epConfiguration = new MetadataConfiguration<TMetadata>();
-        //    configurationAction(epConfiguration);
-        //    return registration.WithMetadata(epConfiguration.Properties);
-        //}
-
-        ///// <summary>
-        ///// Associates data with the component.
-        ///// </summary>
-        ///// <typeparam name="TMetadata">A type with properties whose names correspond to the
-        ///// property names to configure.</typeparam>
-        ///// <returns>A registration builder allowing further configuration of the component.</returns>
-        //public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
-        //    WithMetadata<TMetadata>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration, Action<MetadataConfiguration<TMetadata>> configurationAction)
-        //{
-        //    if (configurationAction == null) throw new ArgumentNullException("configurationAction");
-
-        //    var epConfiguration = new MetadataConfiguration<TMetadata>();
-        //    configurationAction(epConfiguration);
-        //    return registration.WithMetadata(epConfiguration.Properties);
-        //}
+            return registration.WithMetadata(metadataConfiguration.Properties);
+        }
     }
 }

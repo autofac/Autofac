@@ -38,11 +38,11 @@ namespace Autofac.Builder
     /// <typeparam name="TMetadata">Interface with properties whose names correspond to
     /// the property keys.</typeparam>
     /// <remarks>This feature was suggested by OJ Reeves (@TheColonial).</remarks>
-    public class MetadataConfiguration<TMetadata>
+    public class MetadataConfiguration<TMetadata> : IMetadataConfiguration
     {
         readonly IDictionary<string, object> _properties = new Dictionary<string, object>();
 
-        internal IEnumerable<KeyValuePair<string, object>> Properties { get { return _properties; } }
+        public IEnumerable<KeyValuePair<string, object>> Properties { get { return _properties; } }
 
         /// <summary>
         /// Set one of the property values.
@@ -50,7 +50,7 @@ namespace Autofac.Builder
         /// <typeparam name="TProperty">The type of the property.</typeparam>
         /// <param name="propertyAccessor">An expression that accesses the property to set.</param>
         /// <param name="value">The property value to set.</param>
-        public MetadataConfiguration<TMetadata> For<TProperty>(Expression<Func<TMetadata, TProperty>> propertyAccessor, TProperty value)
+        public MetadataConfiguration<TMetadata> Set<TProperty>(Expression<Func<TMetadata, TProperty>> propertyAccessor, TProperty value)
         {
             if (propertyAccessor == null) throw new ArgumentNullException("propertyAccessor");
             var pn = ReflectionExtensions.GetProperty(propertyAccessor).Name;

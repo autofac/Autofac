@@ -53,6 +53,9 @@
     <Compile Include="..\..\..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Builder\IMetadataConfiguration.cs" />
+    <Compile Include="Builder\Metadata.cs" />
+    <Compile Include="Builder\MetadataConfiguration.cs" />
     <Compile Include="Core\Activators\Reflection\BindingFlagsConstructorFinder.cs" />
     <Compile Include="Core\Activators\Reflection\BindingFlagsConstructorFinderResources.Designer.cs">
       <AutoGen>True</AutoGen>

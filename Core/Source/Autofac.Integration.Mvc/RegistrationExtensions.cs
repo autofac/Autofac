@@ -444,13 +444,12 @@ namespace Autofac.Integration.Mvc
             if (registration == null) throw new ArgumentNullException("registration");
             if (actionSelector == null) throw new ArgumentNullException("actionSelector");
 
-            return registration.As<TFilter>().WithMetadata<IFilterMetadata>(m =>
-                {
-                    m.For(f => f.ControllerType, typeof(TController));
-                    m.For(f => f.FilterScope, FilterScope.Action);
-                    m.For(f => f.MethodInfo, GetMethodInfo(actionSelector));
-                    m.For(f => f.Order, order);
-                });
+            return registration.As<TFilter>().WithMetadata(
+                Metadata.For<IFilterMetadata>()
+                    .Set(f => f.ControllerType, typeof(TController))
+                    .Set(f => f.FilterScope, FilterScope.Action)
+                    .Set(f => f.MethodInfo, GetMethodInfo(actionSelector))
+                    .Set(f => f.Order, order));
         }
 
         static IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle>
@@ -459,13 +458,12 @@ namespace Autofac.Integration.Mvc
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
-            return registration.As<TFilter>().WithMetadata<IFilterMetadata>(m =>
-                {
-                    m.For(f => f.ControllerType, typeof(TController));
-                    m.For(f => f.FilterScope, FilterScope.Controller);
-                    m.For(f => f.MethodInfo, null);
-                    m.For(f => f.Order, order);
-                });
+            return registration.As<TFilter>().WithMetadata(
+                Metadata.For<IFilterMetadata>()
+                    .Set(f => f.ControllerType, typeof(TController))
+                    .Set(f => f.FilterScope, FilterScope.Controller)
+                    .Set(f => f.MethodInfo, null)
+                    .Set(f => f.Order, order));
         }
 
         static MethodInfo GetMethodInfo(LambdaExpression expression)
