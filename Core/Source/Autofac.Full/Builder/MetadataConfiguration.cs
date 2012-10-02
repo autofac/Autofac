@@ -42,6 +42,9 @@ namespace Autofac.Builder
     {
         readonly IDictionary<string, object> _properties = new Dictionary<string, object>();
 
+        /// <summary>
+        /// Gets the metadata properties and values.
+        /// </summary>
         public IEnumerable<KeyValuePair<string, object>> Properties { get { return _properties; } }
 
         /// <summary>
