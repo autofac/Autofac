@@ -1,5 +1,6 @@
 # Build Output
 glob:*/bin/
+glob:*/Bin/
 glob:*/obj/
 glob:build_output
 

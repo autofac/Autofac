@@ -61,6 +61,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\GlobalAssemblyInfo.cs">
@@ -72,34 +73,39 @@
     <Compile Include="..\..\..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="ComponentElement.cs" />
-    <Compile Include="ComponentElementCollection.cs" />
-    <Compile Include="ConfigurationElementCollection.cs" />
+    <Compile Include="AssemblyNameConverter.cs" />
+    <Compile Include="Elements\ComponentElement.cs" />
+    <Compile Include="Elements\ComponentElementCollection.cs" />
+    <Compile Include="Elements\ConfigurationElementCollection.cs" />
+    <Compile Include="Core\ConfigurationModule.cs" />
+    <Compile Include="ConfigurationRegistrar.cs" />
     <Compile Include="ConfigurationSettingsReader.cs" />
     <Compile Include="ConfigurationSettingsReaderResources.Designer.cs">
       <DependentUpon>ConfigurationSettingsReaderResources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="DictionaryElementCollection.cs" />
-    <Compile Include="ListElementCollection.cs" />
+    <Compile Include="Elements\DictionaryElementCollection.cs" />
+    <Compile Include="IConfigurationRegistrar.cs" />
+    <Compile Include="Elements\ListElementCollection.cs" />
     <Compile Include="Util\Enforce.cs" />
-    <Compile Include="MetadataElement.cs" />
-    <Compile Include="MetadataElementCollection.cs" />
-    <Compile Include="FileElement.cs" />
-    <Compile Include="FileElementCollection.cs" />
-    <Compile Include="ModuleElement.cs" />
-    <Compile Include="ModuleElementCollection.cs" />
-    <Compile Include="NamedConfigurationElementCollection.cs" />
-    <Compile Include="ParameterElement.cs" />
-    <Compile Include="ParameterElementCollection.cs" />
-    <Compile Include="PropertyElement.cs" />
-    <Compile Include="PropertyElementCollection.cs" />
+    <Compile Include="Elements\MetadataElement.cs" />
+    <Compile Include="Elements\MetadataElementCollection.cs" />
+    <Compile Include="Elements\FileElement.cs" />
+    <Compile Include="Elements\FileElementCollection.cs" />
+    <Compile Include="Elements\ModuleElement.cs" />
+    <Compile Include="Elements\ModuleElementCollection.cs" />
+    <Compile Include="Elements\NamedConfigurationElementCollection.cs" />
+    <Compile Include="Elements\ParameterElement.cs" />
+    <Compile Include="Elements\ParameterElementCollection.cs" />
+    <Compile Include="Elements\PropertyElement.cs" />
+    <Compile Include="Elements\PropertyElementCollection.cs" />
     <Compile Include="SectionHandler.cs" />
-    <Compile Include="ServiceElement.cs" />
-    <Compile Include="ServiceElementCollection.cs" />
-    <Compile Include="TypeManipulation.cs" />
-    <Compile Include="ListItemElement.cs" />
+    <Compile Include="Elements\ServiceElement.cs" />
+    <Compile Include="Elements\ServiceElementCollection.cs" />
+    <Compile Include="Util\TypeManipulation.cs" />
+    <Compile Include="Elements\ListItemElement.cs" />
+    <Compile Include="XmlFileReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ConfigurationSettingsReaderResources.resx">

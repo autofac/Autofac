@@ -112,16 +112,31 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ArgumentMayNotBeEmpty" xml:space="preserve">
+    <value>The {0} may not be empty.</value>
+  </data>
+  <data name="ConfigurationFileNotFound" xml:space="preserve">
+    <value>Unable to find specified configuration file.</value>
+  </data>
+  <data name="InitializeSectionHandler" xml:space="preserve">
+    <value>You must initialize the section handler on the module before executing the load operation.</value>
+  </data>
+  <data name="NoXmlInConfiguration" xml:space="preserve">
+    <value>No XML content nodes found in configuration. Check the XML reader to ensure configuration is in place.</value>
+  </data>
   <data name="SectionNotFound" xml:space="preserve">
     <value>The configuration section '{0}' could not be read.</value>
   </data>
   <data name="ServiceTypeMustBeSpecified" xml:space="preserve">
     <value>If 'name' is specified, 'service' must also be specified (component name='{0}'.)</value>
+  </data>
+  <data name="TypeConversionUnsupported" xml:space="preserve">
+    <value>Unable to convert object of type '{0}' to type '{1}'.</value>
   </data>
   <data name="TypeNotFound" xml:space="preserve">
     <value>The type '{0}' could not be found. It may require assembly qualification, e.g. "MyType, MyAssembly".</value>
