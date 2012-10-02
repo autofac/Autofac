@@ -59,6 +59,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PartialTrust\PartialTrustTestExecutor.cs" />
+    <Compile Include="PartialTrust\PartialTrustTests.cs" />
     <Compile Include="Plugin\PlatformPluginTests.cs" />
     <Compile Include="Plugin\ProbingPluginResolverTests.cs" />
     <Compile Include="Core\Activators\Reflection\DefaultValueParameterTests.cs" />
