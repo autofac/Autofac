@@ -274,6 +274,6 @@ namespace Autofac.Builder
         /// property names to configure.</typeparam>
         /// <param name="instance">The metadata to associate with the component.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata<TMetadata>(TMetadata instance) where TMetadata
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata<TMetadata>(TMetadata instance);
     }
 }
