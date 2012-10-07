@@ -53,12 +53,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ProbingPluginResolverResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Core\Activators\Reflection\PublicConstructorFinderResources.Designer.cs">
-      <DependentUpon>PublicConstructorFinderResources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="Core\Activators\Reflection\PublicConstructorFinder.cs">
+    <Compile Include="Core\Activators\Reflection\DefaultConstructorFinder.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -367,10 +362,6 @@
     <EmbeddedResource Include="Plugin\ProbingPluginResolverResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ProbingPluginResolverResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Core\Activators\Reflection\PublicConstructorFinderResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>PublicConstructorFinderResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSourceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

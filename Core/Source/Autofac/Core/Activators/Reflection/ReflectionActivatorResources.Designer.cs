@@ -61,7 +61,7 @@ namespace Autofac.Core.Activators.Reflection {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No constructors on type &apos;{0}&apos; can be found with &apos;{1}&apos;..
+        ///   Looks up a localized string similar to No constructors on type &apos;{0}&apos; can be found with the constructor finder &apos;{1}&apos;..
         /// </summary>
         internal static string NoConstructorsAvailable {
             get {

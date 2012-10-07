@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builder\Properties.cs" />
+    <Compile Include="Core\Activators\Reflection\DefaultConstructorFinderTests.cs" />
     <Compile Include="PartialTrust\PartialTrustTestExecutor.cs" />
     <Compile Include="PartialTrust\PartialTrustTests.cs" />
     <Compile Include="Plugin\PlatformPluginTests.cs" />

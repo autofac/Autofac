@@ -210,7 +210,7 @@ namespace Autofac.Configuration
                 var moduleType = this.LoadType(moduleElement.Type, configurationSection.DefaultAssembly);
                 var moduleActivator = new ReflectionActivator(
                     moduleType,
-                    new PublicConstructorFinder(),
+                    new DefaultConstructorFinder(),
                     new MostParametersConstructorSelector(),
                     moduleElement.Parameters.ToParameters(),
                     moduleElement.Properties.ToParameters());

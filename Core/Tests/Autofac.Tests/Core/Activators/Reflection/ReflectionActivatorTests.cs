@@ -281,7 +281,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             var dx = Assert.Throws<DependencyResolutionException>(() =>
                 target.ActivateInstance(new Container(), Factory.NoParameters));
 
-            Assert.That(dx.Message.Contains("Public binding flags"));
+            Assert.That(dx.Message.Contains(typeof(DefaultConstructorFinder).Name));
         }
 
         public class WithGenericCtor<T>

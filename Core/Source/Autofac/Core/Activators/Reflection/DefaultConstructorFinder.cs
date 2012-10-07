@@ -29,10 +29,33 @@ using System.Reflection;
 namespace Autofac.Core.Activators.Reflection
 {
     /// <summary>
-    /// Finds all public instance constructors.
+    /// Finds constructors that match a finder function.
     /// </summary>
-    public class PublicConstructorFinder : IConstructorFinder
+    public class DefaultConstructorFinder : IConstructorFinder
     {
+        readonly Func<Type, ConstructorInfo[]> _finder;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultConstructorFinder" /> class.
+        /// </summary>
+        /// <remarks>
+        /// Default to selecting all public constructors.
+        /// </remarks>
+        public DefaultConstructorFinder() : this(type => type.GetConstructors())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultConstructorFinder" /> class.
+        /// </summary>
+        /// <param name="finder">The finder function.</param>
+        public DefaultConstructorFinder(Func<Type, ConstructorInfo[]> finder)
+        {
+            if (finder == null) throw new ArgumentNullException("finder");
+
+            _finder = finder;
+        }
+
         /// <summary>
         /// Finds suitable constructors on the target type.
         /// </summary>
@@ -40,19 +63,7 @@ namespace Autofac.Core.Activators.Reflection
         /// <returns>Suitable constructors.</returns>
         public ConstructorInfo[] FindConstructors(Type targetType)
         {
-            return targetType.GetConstructors();
-        }
-
-        /// <summary>
-        /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
-        /// </returns>
-        /// <filterpriority>2</filterpriority>
-        public override string ToString()
-        {
-            return string.Format(PublicConstructorFinderResources.PublicBindingFlags);
+            return _finder(targetType);
         }
     }
 }

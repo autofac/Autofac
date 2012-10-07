@@ -72,7 +72,7 @@ namespace Autofac.Tests
         {
             return new ReflectionActivator(
                 implementation,
-                new PublicConstructorFinder(),
+                new DefaultConstructorFinder(),
                 new MostParametersConstructorSelector(),
                 parameters,
                 properties);

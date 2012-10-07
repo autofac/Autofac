@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Reflection;
+using Autofac.Core.Activators.Reflection;
+using Moq;
 using NUnit.Framework;
 using Autofac.Core;
 
@@ -112,6 +115,57 @@ namespace Autofac.Tests.Builder
             var cb = new ContainerBuilder();
             var registration = cb.RegisterType<TwoCtors>();
             Assert.Throws<ArgumentNullException>(() => registration.UsingConstructor((Expression<Func<TwoCtors>>)null));
+        }
+
+        [Test]
+        public void FindConstructorsWith_CustomFinderProvided_AddedToRegistration()
+        {
+            var cb = new ContainerBuilder();
+            var constructorFinder = new Mock<IConstructorFinder>().Object;
+            var registration = cb.RegisterType<TwoCtors>().FindConstructorsWith(constructorFinder);
+
+            Assert.That(registration.ActivatorData.ConstructorFinder, Is.EqualTo(constructorFinder));
+        }
+
+        [Test]
+        public void FindConstructorsWith_NullCustomFinderProvided_ThrowsException()
+        {
+            var cb = new ContainerBuilder();
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => cb.RegisterType<TwoCtors>().FindConstructorsWith((IConstructorFinder)null));
+
+            Assert.That(exception.ParamName, Is.EqualTo("constructorFinder"));
+        }
+
+        [Test]
+        public void FindConstructorsWith_FinderFunctionProvided_PassedToConstructorFinder()
+        {
+            var cb = new ContainerBuilder();
+            var finderCalled = false;
+            Func<Type, ConstructorInfo[]> finder = type =>
+            {
+                finderCalled = true;
+                return type.GetConstructors();
+            };
+            cb.RegisterType<A1>();
+            cb.RegisterType<TwoCtors>().FindConstructorsWith(finder);
+            var container = cb.Build();
+
+            container.Resolve<TwoCtors>();
+
+            Assert.That(finderCalled, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void FindConstructorsWith_NullFinderFunctionProvided_ThrowsException()
+        {
+            var cb = new ContainerBuilder();
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => cb.RegisterType<TwoCtors>().FindConstructorsWith((Func<Type, ConstructorInfo[]>)null));
+
+            Assert.That(exception.ParamName, Is.EqualTo("finder"));
         }
 
         public class WithParam
