@@ -63,8 +63,6 @@
     <Compile Include="Core\Activators\Reflection\DefaultConstructorFinderTests.cs" />
     <Compile Include="PartialTrust\PartialTrustTestExecutor.cs" />
     <Compile Include="PartialTrust\PartialTrustTests.cs" />
-    <Compile Include="Plugin\PlatformPluginTests.cs" />
-    <Compile Include="Plugin\ProbingPluginResolverTests.cs" />
     <Compile Include="Core\Activators\Reflection\DefaultValueParameterTests.cs" />
     <Compile Include="Features\LazyDependencies\LazyRegistrationSourceTests.cs" />
     <Compile Include="Features\Metadata\StronglyTypedMetaRegistrationSourceTests.cs" />

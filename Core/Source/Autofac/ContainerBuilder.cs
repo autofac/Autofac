@@ -32,7 +32,6 @@ using Autofac.Features.Collections;
 using Autofac.Features.GeneratedFactories;
 using Autofac.Features.Indexed;
 using Autofac.Features.OwnedInstances;
-using Autofac.Plugin;
 using Autofac.Util;
 using Autofac.Features.Metadata;
 using Autofac.Features.LazyDependencies;

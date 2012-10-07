@@ -40,19 +40,6 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
     <Compile Include="Features\Metadata\StronglyTypedMeta.cs" />
     <Compile Include="Features\Metadata\StronglyTypedMetaRegistrationSource.cs" />
-    <Compile Include="Plugin\IPluginResolver.cs" />
-    <Compile Include="Plugin\PlatformPlugin.cs" />
-    <Compile Include="Plugin\PlatformPluginResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PlatformPluginResources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Plugin\ProbingPluginResolver.cs" />
-    <Compile Include="Plugin\ProbingPluginResolverResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ProbingPluginResolverResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Core\Activators\Reflection\DefaultConstructorFinder.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -355,14 +342,6 @@
     <Compile Include="Util\Traverse.cs" />
     <Compile Include="Util\TypeExtensions.cs" />
     <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSource.cs" />
-    <EmbeddedResource Include="Plugin\PlatformPluginResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>PlatformPluginResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Plugin\ProbingPluginResolverResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ProbingPluginResolverResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSourceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>GeneratedFactoryRegistrationSourceResources.Designer.cs</LastGenOutput>
