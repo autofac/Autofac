@@ -145,10 +145,6 @@
     <Compile Include="Util\EnforceTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Source\Autofac.Full\Autofac.Full.csproj">
-      <Project>{92a45114-c301-47a2-96c2-a7981affea3f}</Project>
-      <Name>Autofac.Full</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Source\Autofac\Autofac.csproj">
       <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
       <Name>Autofac</Name>
