@@ -19,12 +19,6 @@
 				$(BuildBinDirectory)\**\Autofac.dll;
 				$(BuildBinDirectory)\**\Autofac.xml;
 				$(BuildBinDirectory)\**\Autofac.pdb;
-				$(BuildBinDirectory)\**\Autofac.Full.dll;
-				$(BuildBinDirectory)\**\Autofac.Full.xml;
-				$(BuildBinDirectory)\**\Autofac.Full.pdb;
-				$(BuildBinDirectory)\**\Autofac.SL5.dll;
-				$(BuildBinDirectory)\**\Autofac.Sl5.xml;
-				$(BuildBinDirectory)\**\Autofac.Sl5.pdb;
 				$(BuildBinDirectory)\**\Autofac.Configuration.dll;
 				$(BuildBinDirectory)\**\Autofac.Configuration.xml;
 				$(BuildBinDirectory)\**\Autofac.Configuration.pdb;" />

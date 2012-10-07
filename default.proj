@@ -106,7 +106,7 @@
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.pdb;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.xml;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.config"
-				Exclude="**\*.vshost.*;**\*.CodeAnalysisLog.*;%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.SL5.*" />
+				Exclude="**\*.vshost.*;**\*.CodeAnalysisLog.*" />
 			<WinRTOutputList
 				Include="
 					$(MSBuildProjectDirectory)\Core\Source\Autofac\bin\$(BuildConfiguration)\Autofac.dll;
@@ -117,10 +117,7 @@
 				Include="
 					$(MSBuildProjectDirectory)\Core\Source\Autofac\bin\$(BuildConfiguration)\Autofac.dll;
 					$(MSBuildProjectDirectory)\Core\Source\Autofac\bin\$(BuildConfiguration)\Autofac.pdb;
-					$(MSBuildProjectDirectory)\Core\Source\Autofac\bin\$(BuildConfiguration)\Autofac.xml;
-					$(MSBuildProjectDirectory)\Core\Source\Autofac.SL5\bin\$(BuildConfiguration)\Autofac.SL5.dll;
-					$(MSBuildProjectDirectory)\Core\Source\Autofac.SL5\bin\$(BuildConfiguration)\Autofac.SL5.pdb;
-					$(MSBuildProjectDirectory)\Core\Source\Autofac.SL5\bin\$(BuildConfiguration)\Autofac.SL5.xml"
+					$(MSBuildProjectDirectory)\Core\Source\Autofac\bin\$(BuildConfiguration)\Autofac.xml"
 				Exclude="**\*.vshost.*;**\*.CodeAnalysisLog.*" />
 		</ItemGroup>
 		<Copy SourceFiles="@(SourceOutputList)" DestinationFolder="$(BuildDirectory)\bin\net40" />
@@ -156,7 +153,7 @@
 		<ItemGroup>
 			<!-- One set of Extras and Core items should be created for each target zip file. -->
 			<NET40ExtrasPackageItems Include="$(BuildDirectory)\bin\net40\Autofac.Extras.*" />
-			<NET40CorePackageItems Include="$(BuildDirectory)\bin\net40\Autofac.*" Exclude="@(NET40ExtrasPackageItems);Autofac.SL5.*" />
+			<NET40CorePackageItems Include="$(BuildDirectory)\bin\net40\Autofac.*" Exclude="@(NET40ExtrasPackageItems)" />
 			<WinRTPackageItems Include="$(BuildDirectory)\bin\winrt45\Autofac.*" />
 			<SL5PackageItems Include="$(BuildDirectory)\bin\sl5\Autofac.*" />
 
