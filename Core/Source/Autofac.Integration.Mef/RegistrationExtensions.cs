@@ -77,6 +77,23 @@ namespace Autofac.Integration.Mef
         }
 
         /// <summary>
+        /// Associates data with the component through a strongly typed interface.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+            WithMetadata<TLimit, TReflectionActivatorData, TStyle>(
+                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                    IMetadataConfiguration metadataConfiguration)
+        {
+            if (metadataConfiguration == null) throw new ArgumentNullException("metadataConfiguration");
+
+            return registration.WithMetadata(metadataConfiguration.Properties);
+        }
+
+        /// <summary>
         /// Expose the registered service to MEF parts as an export.
         /// </summary>
         /// <param name="registration">The component being registered.</param>

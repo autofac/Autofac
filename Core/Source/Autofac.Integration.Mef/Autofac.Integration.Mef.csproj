@@ -58,13 +58,22 @@
       <DependentUpon>ContractBasedServiceResources.resx</DependentUpon>
     </Compile>
     <Compile Include="ExportConfigurationBuilder.cs" />
+    <Compile Include="IMetadataConfiguration.cs" />
     <Compile Include="LazyWithMetadataRegistrationSourceResources.Designer.cs">
       <DependentUpon>LazyWithMetadataRegistrationSourceResources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="LazyWithMetadataRegistrationSource.cs" />
+    <Compile Include="Metadata.cs" />
+    <Compile Include="MetadataConfiguration.cs" />
     <Compile Include="StronglyTypedMetaRegistrationSource.cs" />
+    <Compile Include="Util\ReflectionExtensions.cs" />
+    <Compile Include="Util\ReflectionExtensionsResources.Designer.cs">
+      <DependentUpon>ReflectionExtensionsResources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Util\TypeExtensions.cs" />
     <Compile Include="StronglyTypedMetaRegistrationSourceResources.Designer.cs">
       <DependentUpon>StronglyTypedMetaRegistrationSourceResources.resx</DependentUpon>
@@ -101,6 +110,10 @@
     <EmbeddedResource Include="RegistrationExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RegistrationExtensionsResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Util\ReflectionExtensionsResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ReflectionExtensionsResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

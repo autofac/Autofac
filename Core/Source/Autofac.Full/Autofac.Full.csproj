@@ -53,9 +53,6 @@
     <Compile Include="..\..\..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Builder\IMetadataConfiguration.cs" />
-    <Compile Include="Builder\Metadata.cs" />
-    <Compile Include="Builder\MetadataConfiguration.cs" />
     <Compile Include="Core\Activators\Reflection\BindingFlagsConstructorFinder.cs" />
     <Compile Include="Core\Activators\Reflection\BindingFlagsConstructorFinderResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -77,7 +74,9 @@
       <LastGenOutput>BindingFlagsConstructorFinderResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Builder\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

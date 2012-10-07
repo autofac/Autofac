@@ -23,7 +23,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-namespace Autofac.Builder
+using Autofac.Builder;
+
+namespace Autofac.Integration.Mef
 {
     /// <summary>
     /// A builder to help with the creation of <see cref="IMetadataConfiguration"/> instances.

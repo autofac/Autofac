@@ -27,7 +27,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Autofac.Util
+namespace Autofac.Integration.Mef.Util
 {
     /// <summary>
     /// Extension methods for reflection-related types.
@@ -73,43 +73,6 @@ namespace Autofac.Util
                     ReflectionExtensionsResources.ExpressionNotPropertyAccessor,
                     propertyAccessor));
             return (PropertyInfo) mex.Member;
-        }
-
-        /// <summary>
-        /// Get the MethodInfo for a method called in the
-        /// expression.
-        /// </summary>
-        /// <typeparam name="TDeclaring">Type on which the method is called.</typeparam>
-        /// <param name="methodCallExpression">Expression demonstrating how the method appears.</param>
-        /// <returns>The method info for the called method.</returns>
-        public static MethodInfo GetMethod<TDeclaring>(
-            Expression<Action<TDeclaring>> methodCallExpression)
-        {
-            if (methodCallExpression == null) throw new ArgumentNullException("methodCallExpression");
-            var callExpression = methodCallExpression.Body as MethodCallExpression;
-            if (callExpression == null)
-                throw new ArgumentException(string.Format(
-                    ReflectionExtensionsResources.ExpressionNotMethodCall,
-                    methodCallExpression));
-            return callExpression.Method;
-        }
-
-        /// <summary>
-        /// Gets the <see cref="ConstructorInfo"/> for the new operation called in the expression.
-        /// </summary>
-        /// <typeparam name="TDeclaring">The type on which the constructor is called.</typeparam>
-        /// <param name="constructorCallExpression">Expression demonstrating how the constructor is called.</param>
-        /// <returns>The <see cref="ConstructorInfo"/> for the called constructor.</returns>
-        public static ConstructorInfo GetConstructor<TDeclaring>(
-            Expression<Func<TDeclaring>> constructorCallExpression)
-        {
-            if (constructorCallExpression == null) throw new ArgumentNullException("constructorCallExpression");
-            var callExpression = constructorCallExpression.Body as NewExpression;
-            if (callExpression == null)
-                throw new ArgumentException(string.Format(
-                    ReflectionExtensionsResources.ExpressionNotConstructorCall,
-                    constructorCallExpression));
-            return callExpression.Constructor;
         }
     }
 }
