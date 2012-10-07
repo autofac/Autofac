@@ -58,6 +58,19 @@
       <DependentUpon>ContractBasedServiceResources.resx</DependentUpon>
     </Compile>
     <Compile Include="ExportConfigurationBuilder.cs" />
+    <Compile Include="LazyWithMetadataRegistrationSourceResources.Designer.cs">
+      <DependentUpon>LazyWithMetadataRegistrationSourceResources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="LazyWithMetadataRegistrationSource.cs" />
+    <Compile Include="StronglyTypedMetaRegistrationSource.cs" />
+    <Compile Include="Util\TypeExtensions.cs" />
+    <Compile Include="StronglyTypedMetaRegistrationSourceResources.Designer.cs">
+      <DependentUpon>StronglyTypedMetaRegistrationSourceResources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationExtensions.cs" />
     <Compile Include="RegistrationExtensionsResources.Designer.cs">
@@ -77,11 +90,20 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ContractBasedServiceResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="LazyWithMetadataRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LazyWithMetadataRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="StronglyTypedMetaRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StronglyTypedMetaRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="RegistrationExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RegistrationExtensionsResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v4.0\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Silverlight 4.0'" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

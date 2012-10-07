@@ -266,5 +266,14 @@ namespace Autofac.Builder
         /// <param name="properties">The extended properties to associate with the component.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(IEnumerable<KeyValuePair<string, object>> properties);
+
+        /// <summary>
+        /// Associates data with the component.
+        /// </summary>
+        /// <typeparam name="TMetadata">A type with properties whose names correspond to the
+        /// property names to configure.</typeparam>
+        /// <param name="instance">The metadata to associate with the component.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata<TMetadata>(TMetadata instance) where TMetadata
     }
 }

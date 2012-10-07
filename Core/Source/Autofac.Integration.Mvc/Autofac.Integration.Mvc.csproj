@@ -87,7 +87,7 @@
     <Compile Include="AutofacFilterProvider.cs" />
     <Compile Include="AutofacModelBinderProvider.cs" />
     <Compile Include="AutofacWebTypesModule.cs" />
-    <Compile Include="IFilterMetadata.cs" />
+    <Compile Include="FilterMetadata.cs" />
     <Compile Include="RegistrationExtensionsResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -109,10 +109,6 @@
     <Compile Include="ViewRegistrationSource.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Autofac.Full\Autofac.Full.csproj">
-      <Project>{92a45114-c301-47a2-96c2-a7981affea3f}</Project>
-      <Name>Autofac.Full</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Autofac\Autofac.csproj">
       <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
       <Name>Autofac</Name>

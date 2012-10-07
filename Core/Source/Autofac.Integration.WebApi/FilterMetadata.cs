@@ -32,21 +32,28 @@ namespace Autofac.Integration.WebApi
     /// <summary>
     /// Metadata interface for filter registrations.
     /// </summary>
-    public interface IFilterMetadata
+    internal class FilterMetadata
     {
+        public FilterMetadata(Type controllerType, FilterScope filterScope, MethodInfo methodInfo)
+        {
+            ControllerType = controllerType;
+            FilterScope = filterScope;
+            MethodInfo = methodInfo;
+        }
+
         /// <summary>
         /// Gets the type of the controller.
         /// </summary>
-        Type ControllerType { get; }
+        internal Type ControllerType { get; private set; }
 
         /// <summary>
         /// Gets the filter scope.
         /// </summary>
-        FilterScope FilterScope { get; }
+        internal FilterScope FilterScope { get; private set; }
 
         /// <summary>
         /// Gets the method info.
         /// </summary>
-        MethodInfo MethodInfo { get; }
+        internal MethodInfo MethodInfo { get; private set; }
     }
 }

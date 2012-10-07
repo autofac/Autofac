@@ -337,7 +337,7 @@ namespace Autofac.Tests.Integration.Mvc
             configure(builder.Register(c => new TFilter()));
             var container = builder.Build();
 
-            var service = container.Resolve<Meta<TService, IFilterMetadata>>();
+            var service = container.Resolve<Meta<TService, FilterMetadata>>();
 
             Assert.That(service.Metadata.ControllerType, Is.EqualTo(typeof(TestController)));
             Assert.That(service.Metadata.FilterScope, Is.EqualTo(filterScope));

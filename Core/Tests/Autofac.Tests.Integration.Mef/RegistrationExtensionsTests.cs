@@ -267,6 +267,7 @@ namespace Autofac.Tests.Integration.Mef
 		public void IncludesExportsWithRequiredMetadata()
 		{
 			var builder = new ContainerBuilder();
+            builder.RegisterMetadataRegistrationSources();
 			var catalog = new TypeCatalog(typeof(RequiresMetadata), typeof(HasMetadata));
 			builder.RegisterComposablePartCatalog(catalog);
 			var container = builder.Build();
@@ -278,6 +279,7 @@ namespace Autofac.Tests.Integration.Mef
 		public void SupportsMetadataOnAutofacExports()
 		{
 			var builder = new ContainerBuilder();
+            builder.RegisterMetadataRegistrationSources();
 			var metadata = new Dictionary<string, object>
             {
                 { "Key", "Value" }
@@ -429,5 +431,31 @@ namespace Autofac.Tests.Integration.Mef
 			var exports = container.ResolveExports<IFoo>(n);
 			Assert.AreEqual(1, exports.Count());
 		}
+
+        [Test]
+        public void RegisterMetadataRegistrationSources_WhenContainerBuilt_AddsStronglyTypedMetaRegistrationSource()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterMetadataRegistrationSources();
+            var container = builder.Build();
+
+            var stronglyTypedMetaCount = container.ComponentRegistry.Sources
+                .Count(source => source is StronglyTypedMetaRegistrationSource);
+
+            Assert.That(stronglyTypedMetaCount, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void RegisterMetadataRegistrationSources_WhenContainerBuilt_AddsLazyWithMetadataRegistrationSource()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterMetadataRegistrationSources();
+            var container = builder.Build();
+
+            var lazyWithMetadataCount = container.ComponentRegistry.Sources.Count(
+                source => source is LazyWithMetadataRegistrationSource);
+
+            Assert.That(lazyWithMetadataCount, Is.EqualTo(1));
+        }
 	}
 }

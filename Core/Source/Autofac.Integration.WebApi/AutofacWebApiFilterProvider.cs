@@ -30,6 +30,7 @@ using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using System.Linq;
+using Autofac.Features.Metadata;
 
 namespace Autofac.Integration.WebApi
 {
@@ -102,11 +103,11 @@ namespace Autofac.Integration.WebApi
         }
 
         static void ResolveControllerScopedFilter<TFilter, TWrapper>(
-            FilterContext filterContext, Func<IFilterMetadata, TWrapper> wrapperFactory) 
+            FilterContext filterContext, Func<FilterMetadata, TWrapper> wrapperFactory) 
             where TFilter : class 
             where TWrapper : IFilter
         {
-            var filters = filterContext.LifetimeScope.Resolve<IEnumerable<Lazy<TFilter, IFilterMetadata>>>();
+            var filters = filterContext.LifetimeScope.Resolve<IEnumerable<Meta<Lazy<TFilter>, FilterMetadata>>>();
             foreach (var filter in filters)
             {
                 var metadata = filter.Metadata;
@@ -122,11 +123,11 @@ namespace Autofac.Integration.WebApi
         }
 
         static void ResolveActionScopedFilter<TFilter, TWrapper>(
-            FilterContext filterContext, MethodInfo methodInfo, Func<IFilterMetadata, TWrapper> wrapperFactory) 
+            FilterContext filterContext, MethodInfo methodInfo, Func<FilterMetadata, TWrapper> wrapperFactory) 
                 where TFilter : class 
                 where TWrapper : IFilter
         {
-            var filters = filterContext.LifetimeScope.Resolve<IEnumerable<Lazy<TFilter, IFilterMetadata>>>();
+            var filters = filterContext.LifetimeScope.Resolve<IEnumerable<Meta<Lazy<TFilter>, FilterMetadata>>>();
             foreach (var filter in filters)
             {
                 var metadata = filter.Metadata;

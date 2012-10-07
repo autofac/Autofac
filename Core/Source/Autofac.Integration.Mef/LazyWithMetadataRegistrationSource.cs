@@ -30,26 +30,28 @@ using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Util;
+using Autofac.Integration.Mef.Util;
 
-namespace Autofac.Features.Metadata
+namespace Autofac.Integration.Mef
 {
     /// <summary>
-    /// Support the <see cref="Meta{T, TMetadata}"/>
+    /// Support the <see cref="System.Lazy{T, TMetadata}"/>
     /// types automatically whenever type T is registered with the container.
     /// Metadata values come from the component registration's metadata.
+    /// When a dependency of a lazy type is used, the instantiation of the underlying
+    /// component will be delayed until the Value property is first accessed.
     /// </summary>
-    class StronglyTypedMetaRegistrationSource : IRegistrationSource
+    class LazyWithMetadataRegistrationSource : IRegistrationSource
     {
-        static readonly MethodInfo CreateMetaRegistrationMethod = typeof(StronglyTypedMetaRegistrationSource).GetMethod(
-            "CreateMetaRegistration", BindingFlags.Static | BindingFlags.NonPublic);
+        static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyWithMetadataRegistrationSource).GetMethod(
+            "CreateLazyRegistration", BindingFlags.Static | BindingFlags.NonPublic);
 
         delegate IComponentRegistration RegistrationCreator(Service service, IComponentRegistration valueRegistration);
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             var swt = service as IServiceWithType;
-            if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Meta<,>)))
+            if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Lazy<,>)))
                 return Enumerable.Empty<IComponentRegistration>();
 
             var valueType = swt.ServiceType.GetGenericArguments()[0];
@@ -59,10 +61,10 @@ namespace Autofac.Features.Metadata
 
             var registrationCreator = (RegistrationCreator)Delegate.CreateDelegate(
                 typeof(RegistrationCreator),
-                CreateMetaRegistrationMethod.MakeGenericMethod(valueType, metaType));
+                CreateLazyRegistrationMethod.MakeGenericMethod(valueType, metaType));
 
             return registrationAccessor(valueService)
-                .Select(v => registrationCreator.Invoke(service, v));
+                .Select(v => registrationCreator(service, v));
         }
 
         public bool IsAdapterForIndividualComponents
@@ -72,17 +74,21 @@ namespace Autofac.Features.Metadata
 
         public override string ToString()
         {
-            return MetaRegistrationSourceResources.StronglyTypedMetaRegistrationSourceDescription;
+            return LazyWithMetadataRegistrationSourceResources.LazyWithMetadataRegistrationSourceDescription;
         }
 
         // ReSharper disable UnusedMember.Local
-        static IComponentRegistration CreateMetaRegistration<T, TMetadata>(Service providedService, IComponentRegistration valueRegistration)
+        static IComponentRegistration CreateLazyRegistration<T, TMeta>(Service providedService, IComponentRegistration valueRegistration)
         // ReSharper restore UnusedMember.Local
         {
-            var rb = RegistrationBuilder
-                .ForDelegate((c, p) => new Meta<T, TMetadata>(
-                                           (T)c.ResolveComponent(valueRegistration, p),
-                                           AttributedModelServices.GetMetadataView<TMetadata>(valueRegistration.Target.Metadata)))
+            var rb = RegistrationBuilder.ForDelegate(
+                (c, p) =>
+                {
+                    var context = c.Resolve<IComponentContext>();
+                    return new Lazy<T, TMeta>(
+                        () => (T) context.ResolveComponent(valueRegistration, p),
+                        AttributedModelServices.GetMetadataView<TMeta>(valueRegistration.Target.Metadata));
+                })
                 .As(providedService)
                 .Targeting(valueRegistration);
 

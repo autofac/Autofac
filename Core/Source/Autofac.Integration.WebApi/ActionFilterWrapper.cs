@@ -29,6 +29,7 @@ using System.Linq;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using System.Net.Http;
+using Autofac.Features.Metadata;
 
 namespace Autofac.Integration.WebApi
 {
@@ -37,13 +38,13 @@ namespace Autofac.Integration.WebApi
     /// </summary>
     class ActionFilterWrapper : ActionFilterAttribute, IAutofacActionFilter
     {
-        readonly IFilterMetadata _filterMetadata;
+        readonly FilterMetadata _filterMetadata;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ActionFilterWrapper"/> class.
         /// </summary>
         /// <param name="filterMetadata">The filter metadata.</param>
-        public ActionFilterWrapper(IFilterMetadata filterMetadata)
+        public ActionFilterWrapper(FilterMetadata filterMetadata)
         {
             if (filterMetadata == null) throw new ArgumentNullException("filterMetadata");
 
@@ -59,10 +60,10 @@ namespace Autofac.Integration.WebApi
             var dependencyScope = actionContext.Request.GetDependencyScope();
             var lifetimeScope = dependencyScope.GetRequestLifetimeScope();
 
-            var filters = lifetimeScope.Resolve<IEnumerable<Lazy<IAutofacActionFilter, IFilterMetadata>>>();
+            var filters = lifetimeScope.Resolve<IEnumerable<Meta<Lazy<IAutofacActionFilter>, FilterMetadata>>>();
 
             foreach (var filter in filters.Where(FilterMatchesMetadata))
-                filter.Value.OnActionExecuting(actionContext);
+                filter.Value.Value.OnActionExecuting(actionContext);
         }
 
         /// <summary>
@@ -74,13 +75,13 @@ namespace Autofac.Integration.WebApi
             var dependencyScope = actionExecutedContext.Request.GetDependencyScope();
             var lifetimeScope = dependencyScope.GetRequestLifetimeScope();
 
-            var filters = lifetimeScope.Resolve<IEnumerable<Lazy<IAutofacActionFilter, IFilterMetadata>>>();
+            var filters = lifetimeScope.Resolve<IEnumerable<Meta<Lazy<IAutofacActionFilter>, FilterMetadata>>>();
 
             foreach (var filter in filters.Where(FilterMatchesMetadata))
-                filter.Value.OnActionExecuted(actionExecutedContext);
+                filter.Value.Value.OnActionExecuted(actionExecutedContext);
         }
 
-        bool FilterMatchesMetadata(Lazy<IAutofacActionFilter, IFilterMetadata> filter)
+        bool FilterMatchesMetadata(Meta<Lazy<IAutofacActionFilter>, FilterMetadata> filter)
         {
             return filter.Metadata.ControllerType == _filterMetadata.ControllerType
                    && filter.Metadata.FilterScope == _filterMetadata.FilterScope

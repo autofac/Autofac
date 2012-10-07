@@ -159,12 +159,7 @@ namespace Autofac
             componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
             componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
             componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
-
-	        var registrationSourceProvider = PlatformPlugin.ResolveOptional<IRegistrationSourceProvider>();
-            if (registrationSourceProvider == null) return;
-
-	        foreach (var registrationSource in registrationSourceProvider.GetSources())
-                componentRegistry.AddRegistrationSource(registrationSource);
+            componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());
 	    }
 	}
 }

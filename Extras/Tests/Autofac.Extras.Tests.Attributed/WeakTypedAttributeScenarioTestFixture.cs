@@ -5,6 +5,7 @@ using System.Reflection;
 using Autofac;
 using Autofac.Extras.Attributed;
 using Autofac.Extras.Tests.Attributed.ScenarioTypes;
+using Autofac.Integration.Mef;
 using NUnit.Framework;
 
 namespace Autofac.Extras.Tests.Attributed
@@ -17,6 +18,7 @@ namespace Autofac.Extras.Tests.Attributed
         {
             // arrange
             var builder = new ContainerBuilder();
+            builder.RegisterMetadataRegistrationSources();
 
             builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
                 .As<IWeakTypedScenario>()

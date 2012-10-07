@@ -30,6 +30,7 @@ using System.Linq;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
+using Autofac.Features.Metadata;
 
 namespace Autofac.Builder
 {
@@ -407,6 +408,18 @@ namespace Autofac.Builder
                 WithMetadata(prop.Key, prop.Value);
 
             return this;
+        }
+
+        /// <summary>
+        /// Associates data with the component.
+        /// </summary>
+        /// <typeparam name="TMetadata">A type with properties whose names correspond to the
+        /// property names to configure.</typeparam>
+        /// <param name="instance">The metadata to associate with the component.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata<TMetadata>(TMetadata instance)
+        {
+            return WithMetadata(StronglyTypedMetaRegistrationSource.DictionaryKey, instance);
         }
     }
 }

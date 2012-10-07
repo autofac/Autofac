@@ -59,6 +59,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\Source\Autofac.Integration.Mef\Autofac.Integration.Mef.csproj">
+      <Project>{def93d8f-91b1-42c4-967c-43db609447ca}</Project>
+      <Name>Autofac.Integration.Mef</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Core\Source\Autofac\Autofac.csproj">
       <Project>{7d018b3e-34a3-423d-ac35-12731f4e0a2c}</Project>
       <Name>Autofac</Name>

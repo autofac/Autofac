@@ -29,6 +29,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Mvc.Async;
+using Autofac.Features.Metadata;
 
 namespace Autofac.Integration.Mvc
 {
@@ -104,7 +105,7 @@ namespace Autofac.Integration.Mvc
         static void ResolveControllerScopedFilter<TFilter>(FilterContext filterContext) 
             where TFilter : class
         {
-            var actionFilters = filterContext.LifetimeScope.Resolve<IEnumerable<Lazy<TFilter, IFilterMetadata>>>();
+            var actionFilters = filterContext.LifetimeScope.Resolve<IEnumerable<Meta<Lazy<TFilter>, FilterMetadata>>>();
             foreach (var actionFilter in actionFilters)
             {
                 var metadata = actionFilter.Metadata;
@@ -112,7 +113,7 @@ namespace Autofac.Integration.Mvc
                     && metadata.FilterScope == FilterScope.Controller
                     && metadata.MethodInfo == null)
                 {
-                    var filter = new Filter(actionFilter.Value, FilterScope.Controller, metadata.Order);
+                    var filter = new Filter(actionFilter.Value.Value, FilterScope.Controller, metadata.Order);
                     filterContext.Filters.Add(filter);
                 }
             }
@@ -135,7 +136,7 @@ namespace Autofac.Integration.Mvc
         static void ResolveActionScopedFilter<TFilter>(FilterContext filterContext, MethodInfo methodInfo) 
             where TFilter : class
         {
-            var actionFilters = filterContext.LifetimeScope.Resolve<IEnumerable<Lazy<TFilter, IFilterMetadata>>>();
+            var actionFilters = filterContext.LifetimeScope.Resolve<IEnumerable<Meta<Lazy<TFilter>, FilterMetadata>>>();
             foreach (var actionFilter in actionFilters)
             {
                 var metadata = actionFilter.Metadata;
@@ -143,7 +144,7 @@ namespace Autofac.Integration.Mvc
                     && metadata.FilterScope == FilterScope.Action
                     && metadata.MethodInfo.GetBaseDefinition() == methodInfo.GetBaseDefinition())
                 {
-                    var filter = new Filter(actionFilter.Value, FilterScope.Action, metadata.Order);
+                    var filter = new Filter(actionFilter.Value.Value, FilterScope.Action, metadata.Order);
                     filterContext.Filters.Add(filter);
                 }
             }

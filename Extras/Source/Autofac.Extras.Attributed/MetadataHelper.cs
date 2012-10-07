@@ -20,7 +20,8 @@ namespace Autofac.Extras.Attributed
             return target.GetType()
                          .GetProperties()
                          .Where(propertyInfo => propertyInfo.CanRead &&
-                                 propertyInfo.DeclaringType.Name != typeof(Attribute).Name)
+                                propertyInfo.DeclaringType != null &&
+                                propertyInfo.DeclaringType.Name != typeof(Attribute).Name)
                          .Select(propertyInfo =>
                                   new KeyValuePair<string, object>(propertyInfo.Name, propertyInfo.GetValue(target, null)));
         }
@@ -36,7 +37,7 @@ namespace Autofac.Extras.Attributed
             var propertyList = new List<KeyValuePair<string, object>>();
 
             foreach (var attribute in targetType.GetCustomAttributes(true)
-                                                .Where(p => p.GetType().GetCustomAttributes(typeof(MetadataAttributeAttribute), false).Count() > 0))
+                                                .Where(p => p.GetType().GetCustomAttributes(typeof(MetadataAttributeAttribute), false).Any()))
                 propertyList.AddRange(GetProperties(attribute));
 
             return propertyList;

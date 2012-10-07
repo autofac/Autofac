@@ -29,6 +29,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
+using Autofac.Features.Metadata;
 
 namespace Autofac.Integration.WebApi
 {
@@ -37,13 +38,13 @@ namespace Autofac.Integration.WebApi
     /// </summary>
     class AuthorizationFilterWrapper : AuthorizationFilterAttribute, IAutofacAuthorizationFilter
     {
-        readonly IFilterMetadata _filterMetadata;
+        readonly FilterMetadata _filterMetadata;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthorizationFilterWrapper"/> class.
         /// </summary>
         /// <param name="filterMetadata">The filter metadata.</param>
-        public AuthorizationFilterWrapper(IFilterMetadata filterMetadata)
+        public AuthorizationFilterWrapper(FilterMetadata filterMetadata)
         {
             if (filterMetadata == null) throw new ArgumentNullException("filterMetadata");
 
@@ -59,13 +60,13 @@ namespace Autofac.Integration.WebApi
             var dependencyScope = actionContext.Request.GetDependencyScope();
             var lifetimeScope = dependencyScope.GetRequestLifetimeScope();
 
-            var filters = lifetimeScope.Resolve<IEnumerable<Lazy<IAutofacAuthorizationFilter, IFilterMetadata>>>();
+            var filters = lifetimeScope.Resolve<IEnumerable<Meta<Lazy<IAutofacAuthorizationFilter>, FilterMetadata>>>();
 
             foreach (var filter in filters.Where(FilterMatchesMetadata))
-                filter.Value.OnAuthorization(actionContext);
+                filter.Value.Value.OnAuthorization(actionContext);
         }
 
-        bool FilterMatchesMetadata(Lazy<IAutofacAuthorizationFilter, IFilterMetadata> filter)
+        bool FilterMatchesMetadata(Meta<Lazy<IAutofacAuthorizationFilter>, FilterMetadata> filter)
         {
             return filter.Metadata.ControllerType == _filterMetadata.ControllerType
                    && filter.Metadata.FilterScope == _filterMetadata.FilterScope

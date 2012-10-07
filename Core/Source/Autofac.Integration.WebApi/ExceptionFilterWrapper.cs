@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Web.Http.Filters;
+using Autofac.Features.Metadata;
 
 namespace Autofac.Integration.WebApi
 {
@@ -36,13 +37,13 @@ namespace Autofac.Integration.WebApi
     /// </summary>
     class ExceptionFilterWrapper : ExceptionFilterAttribute, IAutofacExceptionFilter
     {
-        readonly IFilterMetadata _filterMetadata;
+        readonly FilterMetadata _filterMetadata;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExceptionFilterWrapper"/> class.
         /// </summary>
         /// <param name="filterMetadata">The filter metadata.</param>
-        public ExceptionFilterWrapper(IFilterMetadata filterMetadata)
+        public ExceptionFilterWrapper(FilterMetadata filterMetadata)
         {
             if (filterMetadata == null) throw new ArgumentNullException("filterMetadata");
 
@@ -58,13 +59,13 @@ namespace Autofac.Integration.WebApi
             var dependencyScope = actionExecutedContext.Request.GetDependencyScope();
             var lifetimeScope = dependencyScope.GetRequestLifetimeScope();
 
-            var filters = lifetimeScope.Resolve<IEnumerable<Lazy<IAutofacExceptionFilter, IFilterMetadata>>>();
+            var filters = lifetimeScope.Resolve<IEnumerable<Meta<Lazy<IAutofacExceptionFilter>, FilterMetadata>>>();
 
             foreach (var filter in filters.Where(FilterMatchesMetadata))
-                filter.Value.OnException(actionExecutedContext);
+                filter.Value.Value.OnException(actionExecutedContext);
         }
 
-        bool FilterMatchesMetadata(Lazy<IAutofacExceptionFilter, IFilterMetadata> filter)
+        bool FilterMatchesMetadata(Meta<Lazy<IAutofacExceptionFilter>, FilterMetadata> filter)
         {
             return filter.Metadata.ControllerType == _filterMetadata.ControllerType
                    && filter.Metadata.FilterScope == _filterMetadata.FilterScope

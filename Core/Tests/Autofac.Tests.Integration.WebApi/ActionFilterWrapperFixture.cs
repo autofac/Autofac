@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using System.Web.Http.Hosting;
 using Autofac.Integration.WebApi;
-using Moq;
 using NUnit.Framework;
 
 namespace Autofac.Tests.Integration.WebApi
@@ -44,12 +42,8 @@ namespace Autofac.Tests.Integration.WebApi
             var httpActionContext = new HttpActionContext(contollerContext, actionDescriptor);
             var actionContext = new HttpActionContext(contollerContext, actionDescriptor);
             var httpActionExecutedContext = new HttpActionExecutedContext(actionContext, null);
-            var metadata = new Mock<IFilterMetadata>();
-            metadata.Setup(mock => mock.ControllerType).Returns(typeof(TestController));
-            metadata.Setup(mock => mock.FilterScope).Returns(FilterScope.Action);
-            metadata.Setup(mock => mock.MethodInfo).Returns(methodInfo);
-
-            var wrapper = new ActionFilterWrapper(metadata.Object);
+            var metadata = new FilterMetadata(typeof(TestController), FilterScope.Action, methodInfo);
+            var wrapper = new ActionFilterWrapper(metadata);
 
             wrapper.OnActionExecuting(httpActionContext);
             Assert.That(activationCount, Is.EqualTo(1));

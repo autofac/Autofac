@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac.Features.LazyDependencies {
+namespace Autofac.Integration.Mef {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Autofac.Features.LazyDependencies {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class LazyRegistrationSourceResources {
+    internal class StronglyTypedMetaRegistrationSourceResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal LazyRegistrationSourceResources() {
+        internal StronglyTypedMetaRegistrationSourceResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Autofac.Features.LazyDependencies {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Features.LazyDependencies.LazyRegistrationSourceResources", typeof(LazyRegistrationSourceResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Integration.Mef.StronglyTypedMetaRegistrationSourceResources", typeof(StronglyTypedMetaRegistrationSourceResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,11 +61,11 @@ namespace Autofac.Features.LazyDependencies {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Lazy&lt;T&gt; Support.
+        ///   Looks up a localized string similar to Meta&lt;T, TMetadata&gt; Support.
         /// </summary>
-        internal static string LazyRegistrationSourceDescription {
+        internal static string StronglyTypedMetaRegistrationSourceDescription {
             get {
-                return ResourceManager.GetString("LazyRegistrationSourceDescription", resourceCulture);
+                return ResourceManager.GetString("StronglyTypedMetaRegistrationSourceDescription", resourceCulture);
             }
         }
     }

@@ -1,21 +1,17 @@
 ﻿using System;
-using System.ComponentModel;
-using System.ComponentModel.Composition;
-using Autofac.Core;
 using Autofac.Features.Metadata;
 using NUnit.Framework;
 
 namespace Autofac.Tests.Features.Metadata
 {
-    public interface IMeta
+    class Metadata
     {
-        int TheInt { get; }
-    }
+        public Metadata(int theInt)
+        {
+            TheInt = theInt;
+        }
 
-    public interface IMetaWithDefault
-    {
-        [DefaultValue(42)]
-        int TheInt { get; }
+        public int TheInt { get; private set; }
     }
 
     [TestFixture]
@@ -23,62 +19,29 @@ namespace Autofac.Tests.Features.Metadata
     {
         const int SuppliedValue = 123;
         IContainer _container;
+        Metadata _metadata;
 
         [SetUp]
         public void SetUp()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<object>().WithMetadata("TheInt", SuppliedValue);
+            _metadata = new Metadata(SuppliedValue);
+            builder.RegisterType<object>().WithMetadata(_metadata);
             _container = builder.Build();
         }
 
         [Test]
-        public void ValuesAreProvidedFromMetadata()
+        public void ValueIsProvidedFromMetadata()
         {
-            var meta = _container.Resolve<Meta<object, IMeta>>();
-            Assert.AreEqual(SuppliedValue, meta.Metadata.TheInt);
+            var meta = _container.Resolve<Meta<object, Metadata>>();
+            Assert.That(meta.Metadata, Is.EqualTo(_metadata));
         }
 
         [Test]
-        public void ValuesProvidedFromMetadataOverrideDefaults()
+        public void ValueBubbleUpThroughAdapters()
         {
-            var meta = _container.Resolve<Meta<object, IMetaWithDefault>>();
-            Assert.AreEqual(SuppliedValue, meta.Metadata.TheInt);
-        }
-
-        [Test]
-        public void ValuesBubbleUpThroughAdapters()
-        {
-            var meta = _container.Resolve<Meta<Func<object>, IMeta>>();
-            Assert.AreEqual(SuppliedValue, meta.Metadata.TheInt);
-        }
-    }
-
-    [TestFixture]
-    public class WhenNoMatchingMetadataIsSupplied
-    {
-        IContainer _container;
-
-        [SetUp]
-        public void SetUp()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<object>();
-            _container = builder.Build();
-        }
-
-        [Test]
-        public void ResolvingStronglyTypedMetadataWithoutDefaultValueThrowsException()
-        {
-            var dx = Assert.Throws<DependencyResolutionException>(() => _container.Resolve<Meta<object, IMeta>>());
-            Assert.IsInstanceOf<CompositionContractMismatchException>(dx.InnerException);
-        }
-
-        [Test]
-        public void ResolvingStronglyTypedMetadataWithDefaultValueProvidesDefault()
-        {
-            var m = _container.Resolve<Meta<object, IMetaWithDefault>>();
-            Assert.AreEqual(42, m.Metadata.TheInt);
+            var meta = _container.Resolve<Meta<Func<object>, Metadata>>();
+            Assert.That(meta.Metadata, Is.EqualTo(_metadata));
         }
     }
 }

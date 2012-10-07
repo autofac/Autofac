@@ -6,6 +6,7 @@ using Autofac;
 using Autofac.Extras.Attributed;
 using Autofac.Extras.Tests.Attributed.ScenarioTypes;
 using NUnit.Framework;
+using Autofac.Integration.Mef;
 
 namespace Autofac.Extras.Tests.Attributed
 {
@@ -21,6 +22,7 @@ namespace Autofac.Extras.Tests.Attributed
         {
             // arrange
             var builder = new ContainerBuilder();
+            builder.RegisterMetadataRegistrationSources();
 
             builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
                 .As<ICombinationalWeakTypedScenario>()

@@ -1,6 +1,7 @@
 ﻿using System;
 using Autofac;
 using Autofac.Builder;
+using Autofac.Integration.Mef;
 
 namespace Autofac.Extras.Attributed
 {
@@ -44,6 +45,7 @@ namespace Autofac.Extras.Attributed
         sealed protected override void Load(ContainerBuilder builder)
         {
             ContainerBuilder = builder;
+            builder.RegisterMetadataRegistrationSources();
             Register(this);
         }
 

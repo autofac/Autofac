@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Extras.Attributed;
+using Autofac.Integration.Mef;
 
 namespace Autofac.Extras.Tests.Attributed.ScenarioTypes
 {
@@ -7,6 +8,7 @@ namespace Autofac.Extras.Tests.Attributed.ScenarioTypes
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterMetadataRegistrationSources();
             builder.RegisterType<WeakTypedScenario>().As<IWeakTypedScenario>();
             builder.RegisterType<CombinationalWeakTypedScenario>().As<ICombinationalWeakTypedScenario>();
         }

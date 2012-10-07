@@ -32,6 +32,8 @@ using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Registration;
+using Autofac.Features.LazyDependencies;
+using Autofac.Features.Metadata;
 
 namespace Autofac.Integration.Mef
 {
@@ -59,6 +61,19 @@ namespace Autofac.Integration.Mef
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             return assemblies.Select(a => a.GetType(exportTypeIdentity, false)).SingleOrDefault(t => t != null);
+        }
+
+        /// <summary>
+        /// Registers the <see cref="LazyWithMetadataRegistrationSource"/> and 
+        /// <see cref="StronglyTypedMetaRegistrationSource"/> registration sources.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        public static void RegisterMetadataRegistrationSources(this ContainerBuilder builder)
+        {
+            if (builder == null) throw new ArgumentNullException("builder");
+
+            builder.RegisterSource(new LazyWithMetadataRegistrationSource());
+            builder.RegisterSource(new StronglyTypedMetaRegistrationSource());
         }
 
         /// <summary>
@@ -219,7 +234,7 @@ namespace Autofac.Integration.Mef
                     })
                     .As(exportId, contractService)
                     .ExternallyOwned()
-                    .WithMetadata(exportDef.Metadata);
+                    .WithMetadata((IEnumerable<KeyValuePair<string,object>>)exportDef.Metadata);
 
                 var additionalServices = exposedServicesMapper(exportDef).ToArray();
 
@@ -228,7 +243,7 @@ namespace Autofac.Integration.Mef
                     builder.Register(c => ((Export)c.ResolveService(exportId)).Value)
                         .As(additionalServices)
                         .ExternallyOwned()
-                        .WithMetadata(exportDef.Metadata);
+                        .WithMetadata((IEnumerable<KeyValuePair<string, object>>)exportDef.Metadata);
                 }
             }
         }
@@ -301,7 +316,7 @@ namespace Autofac.Integration.Mef
                 })
                 .As(contractService)
                 .ExternallyOwned()
-                .WithMetadata(exportConfiguration.Metadata);
+                .WithMetadata((IEnumerable<KeyValuePair<string, object>>)exportConfiguration.Metadata);
 
             registry.Register(rb.CreateRegistration());
         }

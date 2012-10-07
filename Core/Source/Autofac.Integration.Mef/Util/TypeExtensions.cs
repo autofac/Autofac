@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2012 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -23,19 +23,19 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Collections.Generic;
+using System;
 
-namespace Autofac.Core
+namespace Autofac.Integration.Mef.Util
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    internal interface IRegistrationSourceProvider
+    static class TypeExtensions
     {
-        /// <summary>
-        /// Gets the sources.
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<IRegistrationSource> GetSources();
+        public static bool IsGenericTypeDefinedBy(this Type @this, Type openGeneric)
+        {
+            if (@this == null) throw new ArgumentNullException("this");
+            if (openGeneric == null) throw new ArgumentNullException("openGeneric");
+
+            return !@this.ContainsGenericParameters && @this.IsGenericType && @this.GetGenericTypeDefinition() == openGeneric;
+        }
     }
 }
+

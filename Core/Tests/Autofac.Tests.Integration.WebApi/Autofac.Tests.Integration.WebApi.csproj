@@ -79,10 +79,6 @@
     <Compile Include="TestTypes.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Source\Autofac.Full\Autofac.Full.csproj">
-      <Project>{92a45114-c301-47a2-96c2-a7981affea3f}</Project>
-      <Name>Autofac.Full</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Source\Autofac.Integration.WebApi\Autofac.Integration.WebApi.csproj">
       <Project>{8437DAE1-0F24-44A9-A187-B34F52858A58}</Project>
       <Name>Autofac.Integration.WebApi</Name>

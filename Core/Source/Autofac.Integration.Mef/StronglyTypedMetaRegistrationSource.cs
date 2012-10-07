@@ -25,39 +25,45 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Util;
+using Autofac.Integration.Mef.Util;
+using Autofac.Features.Metadata;
 
-namespace Autofac.Features.Metadata
+namespace Autofac.Integration.Mef
 {
     /// <summary>
-    /// Support the <see cref="Meta{T}"/>
+    /// Support the <see cref="Meta{T, TMetadata}"/>
     /// types automatically whenever type T is registered with the container.
     /// Metadata values come from the component registration's metadata.
     /// </summary>
-    class MetaRegistrationSource : IRegistrationSource
+    class StronglyTypedMetaRegistrationSource : IRegistrationSource
     {
-        static readonly MethodInfo CreateMetaRegistrationMethod = typeof(MetaRegistrationSource).GetMethod(
+        static readonly MethodInfo CreateMetaRegistrationMethod = typeof(StronglyTypedMetaRegistrationSource).GetMethod(
             "CreateMetaRegistration", BindingFlags.Static | BindingFlags.NonPublic);
+
+        delegate IComponentRegistration RegistrationCreator(Service service, IComponentRegistration valueRegistration);
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             var swt = service as IServiceWithType;
-            if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Meta<>)))
+            if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Meta<,>)))
                 return Enumerable.Empty<IComponentRegistration>();
 
             var valueType = swt.ServiceType.GetGenericArguments()[0];
+            var metaType = swt.ServiceType.GetGenericArguments()[1];
 
             var valueService = swt.ChangeType(valueType);
 
-            var registrationCreator = CreateMetaRegistrationMethod.MakeGenericMethod(valueType);
+            var registrationCreator = (RegistrationCreator)Delegate.CreateDelegate(
+                typeof(RegistrationCreator),
+                CreateMetaRegistrationMethod.MakeGenericMethod(valueType, metaType));
 
             return registrationAccessor(valueService)
-                .Select(v => registrationCreator.Invoke(null, new object[] { service, v }))
-                .Cast<IComponentRegistration>();
+                .Select(v => registrationCreator.Invoke(service, v));
         }
 
         public bool IsAdapterForIndividualComponents
@@ -67,17 +73,17 @@ namespace Autofac.Features.Metadata
 
         public override string ToString()
         {
-            return MetaRegistrationSourceResources.MetaRegistrationSourceDescription;
+            return StronglyTypedMetaRegistrationSourceResources.StronglyTypedMetaRegistrationSourceDescription;
         }
 
         // ReSharper disable UnusedMember.Local
-        static IComponentRegistration CreateMetaRegistration<T>(Service providedService, IComponentRegistration valueRegistration)
+        static IComponentRegistration CreateMetaRegistration<T, TMetadata>(Service providedService, IComponentRegistration valueRegistration)
         // ReSharper restore UnusedMember.Local
         {
             var rb = RegistrationBuilder
-                .ForDelegate((c, p) => new Meta<T>(
+                .ForDelegate((c, p) => new Meta<T, TMetadata>(
                     (T)c.ResolveComponent(valueRegistration, p),
-                    valueRegistration.Target.Metadata))
+                    AttributedModelServices.GetMetadataView<TMetadata>(valueRegistration.Target.Metadata)))
                 .As(providedService)
                 .Targeting(valueRegistration);
 
