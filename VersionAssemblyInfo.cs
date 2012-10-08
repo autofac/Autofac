@@ -16,6 +16,6 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("3.0.0.0")]
 [assembly: AssemblyFileVersion("3.0.0.0")]
-[assembly: AssemblyConfiguration("Release built on 2012-10-08 00:42")]
+[assembly: AssemblyConfiguration("Release built on 2012-10-08 23:36")]
 
 
