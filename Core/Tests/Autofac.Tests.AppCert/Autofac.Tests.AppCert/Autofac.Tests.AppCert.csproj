@@ -157,10 +157,9 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Autofac">
-      <HintPath>..\..\..\..\build_output\bin\winrt45\Autofac.dll</HintPath>
+      <HintPath>..\..\..\..\build_output\bin\portable-win+net40+sl50\Autofac.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
   </PropertyGroup>
