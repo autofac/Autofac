@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
+using Autofac.Core.Registration;
 using Autofac.Tests.AppCert.Testing;
 
 namespace Autofac.Tests.AppCert.Tests
@@ -9,6 +10,14 @@ namespace Autofac.Tests.AppCert.Tests
     [TestFixture]
     public class ResolveFixture
     {
+        [Test]
+        public void FailedResolve()
+        {
+            // Issue #376: MissingManifestResourceException thrown when a ComponentNotRegisteredException is thrown.
+            var container = new ContainerBuilder().Build();
+            Assert.Throws<ComponentNotRegisteredException>(() => container.Resolve<ISimpleService>());
+        }
+
         [Test]
         public void SimpleResolve()
         {
