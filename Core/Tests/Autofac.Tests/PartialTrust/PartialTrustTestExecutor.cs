@@ -23,20 +23,20 @@ namespace Autofac.Tests.PartialTrust
         [SetUp]
         public void SetUp()
         {
-            this._remoteDomain = CreateSandboxDomain();
+            _remoteDomain = CreateSandboxDomain();
         }
 
         [TearDown]
         public void TearDown()
         {
-            AppDomain.Unload(this._remoteDomain);
+            AppDomain.Unload(_remoteDomain);
         }
 
         [Test(Description = "Executes the partial trust tests.")]
         [TestCaseSource("ExecutePartialTrustTestsSource")]
         public void ExecutePartialTrustTests(MethodInfo testMethod)
         {
-            var fixture = this.CreateRemoteFixture();
+            var fixture = CreateRemoteFixture();
             try
             {
                 testMethod.Invoke(fixture, null);
@@ -63,7 +63,7 @@ namespace Autofac.Tests.PartialTrust
         {
             var assemblyName = typeof(PartialTrustTests).Assembly.FullName;
             var typeName = typeof(PartialTrustTests).FullName;
-            var executor = (PartialTrustTests)this._remoteDomain.CreateInstanceAndUnwrap(assemblyName, typeName);
+            var executor = (PartialTrustTests)_remoteDomain.CreateInstanceAndUnwrap(assemblyName, typeName);
             return executor;
         }
 
@@ -72,7 +72,7 @@ namespace Autofac.Tests.PartialTrust
             // Normally from a security perspective we'd put the sandboxed app in its own
             // base directory, but to make things easier (so we don't have to copy the NUnit
             // assembly, etc.) we'll just mirror the current test domain settings.
-            var info = new AppDomainSetup()
+            var info = new AppDomainSetup
             {
                 ApplicationBase = AppDomain.CurrentDomain.BaseDirectory,
                 PrivateBinPath = AppDomain.CurrentDomain.RelativeSearchPath
