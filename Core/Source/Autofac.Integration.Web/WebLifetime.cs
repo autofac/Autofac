@@ -40,6 +40,6 @@ namespace Autofac.Integration.Web
         /// <summary>
         /// HTTP Request lifetime
         /// </summary>
-        public static readonly object Request = "httpRequest";
+        public static readonly object Request = "AutofacWebRequest";
     }
 }
