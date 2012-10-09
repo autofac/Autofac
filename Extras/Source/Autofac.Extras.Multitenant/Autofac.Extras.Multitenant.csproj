@@ -27,7 +27,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\..\..\Full.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\Debug\Autofac.Extras.Multitenant.xml</DocumentationFile>
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
@@ -38,7 +38,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\..\..\Full.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\Release\Autofac.Extras.Multitenant.xml</DocumentationFile>
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
@@ -69,6 +69,9 @@
     <Compile Include="..\..\..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
+    <CodeAnalysisDictionary Include="..\..\..\CodeAnalysisDictionary.xml">
+      <Link>CodeAnalysisDictionary.xml</Link>
+    </CodeAnalysisDictionary>
     <Compile Include="ConfigurationActionBuilder.cs" />
     <Compile Include="DefaultTenantId.cs" />
     <Compile Include="GlobalSuppressions.cs" />
@@ -103,9 +106,6 @@
     <Compile Include="Wcf\TenantPropagationBehavior.cs" />
     <Compile Include="Wcf\TenantPropagationMessageInspector.cs" />
     <Compile Include="Web\RequestParameterTenantIdentificationStrategy.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <CodeAnalysisDictionary Include="CodeAnalysisDictionary.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
