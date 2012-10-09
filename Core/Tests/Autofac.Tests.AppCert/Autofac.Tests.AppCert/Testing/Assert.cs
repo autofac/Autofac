@@ -33,6 +33,24 @@ namespace Autofac.Tests.AppCert.Testing
             }
         }
 
+        public static void Throws<T>(Action testExpression, string message = null) where T : Exception
+        {
+            var exMessage = message == null ? null : message + Environment.NewLine;
+            try
+            {
+                testExpression();
+            }
+            catch (Exception ex)
+            {
+                if (ex.GetType() != typeof(T))
+                {
+                    throw new AssertionException(String.Format("{0}Expected exception type: {2}{1}Actual exception type: {3}{1}", exMessage, Environment.NewLine, typeof(T), ex.GetType(), ex));
+                }
+                return;
+            }
+            throw new AssertionException(String.Format("{0}Expected exception type {1} was not thrown.", exMessage, typeof(T)));
+        }
+
         private static bool ObjectsEqual(object x, object y)
         {
             if (x == null && y == null)

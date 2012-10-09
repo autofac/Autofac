@@ -1,18 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <!-- Dictionary format defined here: http://msdn.microsoft.com/en-us/library/bb514188.aspx -->
 <Dictionary>
-  <Words>
-    <!--
+	<Words>
+		<!--
     <Unrecognized>
       <Word></Word>
     </Unrecognized>
     -->
-    <Recognized>
-      <Word>Autofac</Word>
-      <Word>Contrib</Word>
-      <Word>multitenancy</Word>
-    </Recognized>
-    <!--
+		<Recognized>
+			<Word>Autofac</Word>
+			<Word>Contrib</Word>
+			<Word>configurator</Word>
+			<Word>multitenancy</Word>
+		</Recognized>
+		<!--
     <Deprecated>
       <Term PreferredAlternate=""></Term>
     </Deprecated>
@@ -23,8 +24,8 @@
       <Term></Term>
     </DiscreteExceptions>
     -->
-  </Words>
-  <!--
+	</Words>
+	<!--
   <Acronyms>
     <CasingExceptions>
       <Acronym></Acronym>
