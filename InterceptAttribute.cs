@@ -1,22 +1,23 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Security;
-using Autofac;
 using Autofac.Core;
 using Castle.DynamicProxy;
 
 namespace Autofac.Extras.DynamicProxy2
 {
+    [SuppressMessage("Microsoft.Design", "CA1019:DefineAccessorsForAttributeArguments")]
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
-    public class InterceptAttribute : Attribute
+    public sealed class InterceptAttribute : Attribute
     {
-        readonly Service _interceptorService;
+        public Service InterceptorService { get; private set; }
 
         public InterceptAttribute(Service interceptorService)
         {
             if (interceptorService == null)
                 throw new ArgumentNullException("interceptorService");
 
-            _interceptorService = interceptorService;
+            this.InterceptorService = interceptorService;
         }
 
         [SecuritySafeCritical]
@@ -28,14 +29,6 @@ namespace Autofac.Extras.DynamicProxy2
         public InterceptAttribute(Type interceptorServiceType)
             : this(new TypedService(interceptorServiceType))
         {
-        }
-
-        public Service InterceptorService
-        {
-            get
-            {
-                return _interceptorService;
-            }
         }
     }
 }
