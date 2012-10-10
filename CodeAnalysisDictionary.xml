@@ -10,7 +10,9 @@
 		<Recognized>
 			<Word>Autofac</Word>
 			<Word>Contrib</Word>
+      <Word>composable</Word>
 			<Word>configurator</Word>
+      <Word>Mef</Word>
 			<Word>multitenancy</Word>
 		</Recognized>
 		<!--
