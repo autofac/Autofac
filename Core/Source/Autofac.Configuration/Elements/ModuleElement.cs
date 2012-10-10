@@ -24,10 +24,10 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Configuration;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Autofac.Configuration.Elements
 {
-
     /// <summary>
     /// Element describing a module registration.
     /// </summary>
@@ -41,6 +41,7 @@ namespace Autofac.Configuration.Elements
         /// Gets the type of the module. Must expose <see cref="IModule"/>.
         /// </summary>
         /// <value>The type.</value>
+        [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods")]
         [ConfigurationProperty(TypeAttributeName, IsRequired = true)]
         public string Type
         {

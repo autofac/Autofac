@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Configuration;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Autofac.Configuration.Elements
 {
@@ -68,6 +69,7 @@ namespace Autofac.Configuration.Elements
         /// Gets the type of the value.
         /// </summary>
         /// <value>The type of the value. Defaults to string if not specified.</value>
+        [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods")]
         [ConfigurationProperty(TypeAttributeName, IsRequired = false)]
         public string Type
         {

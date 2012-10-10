@@ -26,6 +26,7 @@
 using System;
 using System.ComponentModel;
 using System.Configuration;
+using System.Globalization;
 
 namespace Autofac.Configuration.Util
 {
@@ -66,7 +67,7 @@ namespace Autofac.Configuration.Util
             //is there an opposite conversion
             converter = TypeDescriptor.GetConverter(destinationType);
             if (converter == null)
-                throw new ConfigurationErrorsException(String.Format("Cannot convert type from {0} to {1}.", value.GetType(), destinationType));
+                throw new ConfigurationErrorsException(String.Format(CultureInfo.CurrentCulture, ConfigurationSettingsReaderResources.TypeConversionUnsupported, value.GetType(), destinationType));
 
             return converter.ConvertFrom(value);
         }

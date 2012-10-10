@@ -15,19 +15,20 @@ namespace Autofac.Configuration.Elements
         /// <summary>
         /// Helps convert the configuration element into an actuall generic list
         /// </summary>
-        public class ListElementTypeConverter : TypeConverter
+        private class ListElementTypeConverter : TypeConverter
         {
             public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
             {
                 var instantiatableType = GetInstantiableType(destinationType);
 
-                if (value is ListElementCollection &&
+                var castValue = value as ListElementCollection;
+                if (castValue != null &&
                     instantiatableType != null)
                 {
                     Type[] generics = instantiatableType.GetGenericArguments();
 
                     var collection = (IList)Activator.CreateInstance(instantiatableType);
-                    foreach (var item in (ListElementCollection)value)
+                    foreach (var item in castValue)
                     {
                         collection.Add(TypeManipulation.ChangeToCompatibleType(item.Value, generics[0]));
                     }

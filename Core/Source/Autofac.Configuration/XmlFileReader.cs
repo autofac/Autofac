@@ -49,11 +49,11 @@ namespace Autofac.Configuration
         {
             if (fileName == null)
             {
-                throw new ArgumentNullException("sectionName");
+                throw new ArgumentNullException("fileName");
             }
             if (fileName.Length == 0)
             {
-                throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, ConfigurationSettingsReaderResources.ArgumentMayNotBeEmpty, "sectionName"), "sectionName");
+                throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, ConfigurationSettingsReaderResources.ArgumentMayNotBeEmpty, "fileName"), "fileName");
             }
             this.SectionHandler = SectionHandler.Deserialize(fileName);
         }
