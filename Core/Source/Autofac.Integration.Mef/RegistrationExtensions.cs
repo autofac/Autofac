@@ -28,6 +28,8 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
@@ -46,7 +48,7 @@ namespace Autofac.Integration.Mef
         {
             yield return MapService(ed);
         }
-    
+
         static Service MapService(ExportDefinition ed)
         {
             var ct = FindType(ed.ContractName);
@@ -88,7 +90,14 @@ namespace Autofac.Integration.Mef
                 this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
                     IMetadataConfiguration metadataConfiguration)
         {
-            if (metadataConfiguration == null) throw new ArgumentNullException("metadataConfiguration");
+            if (registration == null)
+            {
+                throw new ArgumentNullException("registration");
+            }
+            if (metadataConfiguration == null)
+            {
+                throw new ArgumentNullException("metadataConfiguration");
+            }
 
             return registration.WithMetadata(metadataConfiguration.Properties);
         }
@@ -251,7 +260,7 @@ namespace Autofac.Integration.Mef
                     })
                     .As(exportId, contractService)
                     .ExternallyOwned()
-                    .WithMetadata((IEnumerable<KeyValuePair<string,object>>)exportDef.Metadata);
+                    .WithMetadata((IEnumerable<KeyValuePair<string, object>>)exportDef.Metadata);
 
                 var additionalServices = exposedServicesMapper(exportDef).ToArray();
 
@@ -320,6 +329,7 @@ namespace Autofac.Integration.Mef
             return true;
         }
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The component registry is responsible for disposal of contained registrations.")]
         static void AttachExport(IComponentRegistry registry, IComponentRegistration registration, ExportConfigurationBuilder exportConfiguration)
         {
             var contractService = new ContractBasedService(exportConfiguration.ContractName, exportConfiguration.ExportTypeIdentity);
@@ -357,7 +367,7 @@ namespace Autofac.Integration.Mef
             {
                 var cbid = import as ContractBasedImportDefinition;
                 if (cbid == null)
-                    throw new NotSupportedException(string.Format(RegistrationExtensionsResources.ContractBasedOnly, import));
+                    throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.ContractBasedOnly, import));
 
                 var exportsForContract = context.ResolveExports(cbid);
                 composablePart.SetImport(import, exportsForContract);

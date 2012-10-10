@@ -25,7 +25,7 @@
 
 using System.Collections.Generic;
 
-namespace Autofac.Builder
+namespace Autofac.Integration.Mef
 {
     /// <summary>
     /// Implementors are able to provide metadata for a component.

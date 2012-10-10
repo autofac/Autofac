@@ -26,10 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Autofac.Builder;
-using Autofac.Core;
 using Autofac.Integration.Mef.Util;
-using Autofac.Util;
 
 namespace Autofac.Integration.Mef
 {
