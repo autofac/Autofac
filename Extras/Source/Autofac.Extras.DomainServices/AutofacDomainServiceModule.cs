@@ -26,6 +26,7 @@
 using Autofac;
 using Autofac.Core;
 using System.ServiceModel.DomainServices.Server;
+using System;
 
 namespace Autofac.Extras.DomainServices
 {
@@ -36,6 +37,10 @@ namespace Autofac.Extras.DomainServices
     {
         protected override void AttachToComponentRegistration(IComponentRegistry componentRegistry, IComponentRegistration registration)
         {
+            if (registration == null)
+            {
+                throw new ArgumentNullException("registration");
+            }
             registration.Activating += (sender, args) =>
             {
                 var ds = args.Instance as DomainService;

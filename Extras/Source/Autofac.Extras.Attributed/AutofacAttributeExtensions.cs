@@ -1,4 +1,5 @@
-﻿using Autofac.Builder;
+﻿using System;
+using Autofac.Builder;
 using Autofac.Features.Scanning;
 
 namespace Autofac.Extras.Attributed
@@ -15,11 +16,15 @@ namespace Autofac.Extras.Attributed
         /// <typeparam name="TRegistrationStyle">registration style type</typeparam>
         /// <param name="builder">container builder</param>
         /// <returns>registration builder allowing the registration to be configured</returns>
-        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> 
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             WithAttributedMetadata<TLimit, TScanningActivatorData, TRegistrationStyle>
                         (this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> builder)
                                         where TScanningActivatorData : ScanningActivatorData
         {
+            if (builder == null)
+            {
+                throw new ArgumentNullException("builder");
+            }
             builder.ActivatorData.ConfigurationActions.Add(
                 (t, rb) => rb.WithMetadata(MetadataHelper.GetMetadata(t)));
 
@@ -38,9 +43,13 @@ namespace Autofac.Extras.Attributed
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             WithAttributedMetadata<TMetadata>(this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> builder)
         {
+            if (builder == null)
+            {
+                throw new ArgumentNullException("builder");
+            }
             builder.ActivatorData.ConfigurationActions.Add(
                 (t, rb) => rb.WithMetadata(MetadataHelper.GetMetadata<TMetadata>(t)));
-            
+
             return builder;
         }
     }

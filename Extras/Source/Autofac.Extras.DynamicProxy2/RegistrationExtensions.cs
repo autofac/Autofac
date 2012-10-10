@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security;
 using Autofac;
@@ -51,6 +52,10 @@ namespace Autofac.Extras.DynamicProxy2
                 this IRegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle> registration)
             where TConcreteReflectionActivatorData : ConcreteReflectionActivatorData
         {
+            if (registration == null)
+            {
+                throw new ArgumentNullException("registration");
+            }
             registration.ActivatorData.ImplementationType =
                 ProxyGenerator.ProxyBuilder.CreateClassProxyType(
                     registration.ActivatorData.ImplementationType, new Type[0], ProxyGenerationOptions.Default);
@@ -81,6 +86,10 @@ namespace Autofac.Extras.DynamicProxy2
             EnableInterfaceInterceptors<TLimit, TActivatorData, TSingleRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration)
         {
+            if (registration == null)
+            {
+                throw new ArgumentNullException("registration");
+            }
             registration.RegistrationData.ActivatingHandlers.Add((sender, e) =>
             {
                 EnsureInterfaceInterceptionApplies(e.Component);
@@ -110,7 +119,7 @@ namespace Autofac.Extras.DynamicProxy2
                 .OfType<IServiceWithType>()
                 .Where(swt => !swt.ServiceType.IsInterface)
                 .Any())
-                throw new InvalidOperationException(string.Format(
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,
                     RegistrationExtensionsResources.InterfaceProxyingOnlySupportsInterfaceServices,
                     componentRegistration));
         }
