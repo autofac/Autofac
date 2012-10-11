@@ -37,6 +37,7 @@ namespace Autofac.Integration.Wcf
     public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable, IComponentContext
     {
         readonly ILifetimeScope _lifetime;
+        private bool _disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacInstanceContext"/> class.
@@ -48,6 +49,11 @@ namespace Autofac.Integration.Wcf
                 throw new ArgumentNullException("container");
 
             _lifetime = container.BeginLifetimeScope();
+        }
+
+        ~AutofacInstanceContext()
+        {
+            this.Dispose(false);
         }
 
         /// <summary>
@@ -76,7 +82,30 @@ namespace Autofac.Integration.Wcf
         /// </summary>
         public void Dispose()
         {
-            _lifetime.Dispose();
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Handles disposal of managed and unmanaged resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// <see langword="true" /> to dispose of managed resources (during a manual execution
+        /// of <see cref="Autofac.Integration.Wcf.AutofacInstanceContext.Dispose()"/>); or
+        /// <see langword="false" /> if this is getting run as part of finalization where
+        /// managed resources may have already been cleaned up.
+        /// </param>
+        private void Dispose(bool disposing)
+        {
+            if (!this._disposed)
+            {
+                if (disposing)
+                {
+                    // Free managed resources
+                    _lifetime.Dispose();
+                }
+                this._disposed = true;
+            }
         }
 
         /// <summary>
