@@ -28,7 +28,7 @@ using System;
 namespace Autofac.Integration.Web.Forms
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class InjectPropertiesAttribute : DependencyInjectionAttribute
+    public sealed class InjectPropertiesAttribute : DependencyInjectionAttribute
     {
     }
 }

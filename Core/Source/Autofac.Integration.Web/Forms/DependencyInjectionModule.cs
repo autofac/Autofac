@@ -35,11 +35,9 @@ namespace Autofac.Integration.Web.Forms
     {
         IContainerProviderAccessor _containerProviderAccessor;
         HttpApplication _httpApplication;
-        IInjectionBehaviour _noInjection = new NoInjection();
-        IInjectionBehaviour _propertyInjection = new PropertyInjection();
-        IInjectionBehaviour _unsetPropertyInjection = new UnsetPropertyInjection();
-
-        #region IHttpModule Members
+        IInjectionBehavior _noInjection = new NoInjection();
+        IInjectionBehavior _propertyInjection = new PropertyInjection();
+        IInjectionBehavior _unsetPropertyInjection = new UnsetPropertyInjection();
 
         /// <summary>
         /// Disposes of the resources (other than memory) used by the module that implements <see cref="T:System.Web.IHttpModule"/>.
@@ -66,8 +64,6 @@ namespace Autofac.Integration.Web.Forms
             context.PreRequestHandlerExecute += OnPreRequestHandlerExecute;
         }
 
-        #endregion
-
         /// <summary>
         /// Called before the request handler is executed so that dependencies
         /// can be injected.
@@ -79,11 +75,11 @@ namespace Autofac.Integration.Web.Forms
             var handler = _httpApplication.Context.CurrentHandler;
             if (handler != null)
             {
-                var injectionBehaviour = GetInjectionBehaviour(handler);
+                var injectionBehavior = GetInjectionBehavior(handler);
                 var cp = _containerProviderAccessor.ContainerProvider;
                 if (cp == null)
                     throw new InvalidOperationException(ContainerDisposalModuleResources.ContainerProviderNull);
-                injectionBehaviour.InjectDependencies(cp.RequestLifetime, handler);
+                injectionBehavior.InjectDependencies(cp.RequestLifetime, handler);
             }
         }
 
@@ -91,8 +87,8 @@ namespace Autofac.Integration.Web.Forms
         /// Internal for testability outside of a web application.
         /// </summary>
         /// <param name="handler"></param>
-        /// <returns>The injection behaviour.</returns>
-        protected internal IInjectionBehaviour GetInjectionBehaviour(IHttpHandler handler)
+        /// <returns>The injection behavior.</returns>
+        protected internal IInjectionBehavior GetInjectionBehavior(IHttpHandler handler)
         {
             if (handler == null)
                 throw new ArgumentNullException("handler");
@@ -104,40 +100,40 @@ namespace Autofac.Integration.Web.Forms
             else
             {
                 var handlerType = handler.GetType();
-                return GetInjectionBehaviourForHandlerType(handlerType);
+                return GetInjectionBehaviorForHandlerType(handlerType);
             }
         }
 
         /// <summary>
-        /// A behaviour that does not inject dependencies.
+        /// A behavior that does not inject dependencies.
         /// </summary>
-        protected IInjectionBehaviour NoInjection
+        protected IInjectionBehavior NoInjection
         {
             get { return _noInjection; }
         }
 
         /// <summary>
-        /// A behaviour that injects resolvable dependencies.
+        /// A behavior that injects resolvable dependencies.
         /// </summary>
-        protected IInjectionBehaviour PropertyInjection
+        protected IInjectionBehavior PropertyInjection
         {
             get { return _propertyInjection; }
         }
 
         /// <summary>
-        /// A behaviour that injects unset, resolvable dependencies.
+        /// A behavior that injects unset, resolvable dependencies.
         /// </summary>
-        protected IInjectionBehaviour UnsetPropertyInjection
+        protected IInjectionBehavior UnsetPropertyInjection
         {
             get { return _unsetPropertyInjection; }
         }
 
         /// <summary>
-        /// Override to customise injection behaviour based on HTTP Handler type.
+        /// Override to customize injection behavior based on HTTP Handler type.
         /// </summary>
         /// <param name="handlerType">Type of the handler.</param>
-        /// <returns>The injection behaviour.</returns>
-        protected abstract IInjectionBehaviour GetInjectionBehaviourForHandlerType(Type handlerType);
+        /// <returns>The injection behavior.</returns>
+        protected abstract IInjectionBehavior GetInjectionBehaviorForHandlerType(Type handlerType);
     }
 }
 

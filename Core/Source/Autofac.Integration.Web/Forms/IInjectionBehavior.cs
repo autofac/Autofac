@@ -28,7 +28,7 @@ namespace Autofac.Integration.Web.Forms
     /// <summary>
     /// Provides dependency injection for a request handler.
     /// </summary>
-    public interface IInjectionBehaviour
+    public interface IInjectionBehavior
     {
         /// <summary>
         /// Inject dependencies in the required fashion.

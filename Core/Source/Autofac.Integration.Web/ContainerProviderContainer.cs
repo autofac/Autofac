@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Resolving;
@@ -34,6 +35,7 @@ namespace Autofac.Integration.Web
     /// Provides an implementation of <see cref="Autofac.IContainer"/> which uses the configured
     /// <see cref="IContainerProvider"/> to route calls to the current request container.
     /// </summary>
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "Disposing of this wrapper container should not result in the whole application container being disposed.")]
     public class ContainerProviderContainer : IContainer
     {
         private readonly IContainerProvider _containerProvider;
@@ -114,6 +116,8 @@ namespace Autofac.Integration.Web
             return _containerProvider.RequestLifetime.ResolveComponent(registration, parameters);
         }
 
+        [SuppressMessage("Microsoft.Usage", "CA1816:CallGCSuppressFinalizeCorrectly", Justification = "Disposing of this wrapper container should not result in the whole application container being disposed.")]
+        [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "Disposing of this wrapper container should not result in the whole application container being disposed.")]
         public void Dispose()
         {
         }

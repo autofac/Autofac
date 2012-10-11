@@ -34,9 +34,6 @@ namespace Autofac.Integration.Web
     public class ContainerDisposalModule : IHttpModule
     {
         IContainerProviderAccessor _containerProviderAccessor;
-        HttpApplication _httpApplication;
-
-        #region IHttpModule Members
 
         /// <summary>
         /// Disposes of the resources (other than memory) used by the module that implements <see cref="T:System.Web.IHttpModule"/>.
@@ -54,16 +51,12 @@ namespace Autofac.Integration.Web
             if (context == null)
                 throw new ArgumentNullException("context");
 
-            _httpApplication = context;
-
             _containerProviderAccessor = context as IContainerProviderAccessor;
             if (_containerProviderAccessor == null)
                 throw new InvalidOperationException(ContainerDisposalModuleResources.ApplicationMustImplementAccessor);
 
             context.EndRequest += OnEndRequest;
         }
-
-        #endregion
 
         /// <summary>
         /// Dispose of the per-request container.

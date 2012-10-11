@@ -30,7 +30,7 @@ namespace Autofac.Integration.Web.Forms
     /// <summary>
     /// Injects resolvable properties that do not already have a value.
     /// </summary>
-    class UnsetPropertyInjection: PageInjectionBehaviour
+    class UnsetPropertyInjection: PageInjectionBehavior
     {
         /// <summary>
         /// Override to return a closure that injects properties into a target.

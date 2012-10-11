@@ -28,7 +28,7 @@ namespace Autofac.Integration.Web.Forms
     /// <summary>
     /// Does not inject properties.
     /// </summary>
-    class NoInjection : IInjectionBehaviour
+    class NoInjection : IInjectionBehavior
     {
         /// <summary>
         /// Inject dependencies in the required fashion.

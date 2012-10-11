@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Web;
 using Autofac.Builder;
@@ -66,6 +67,7 @@ namespace Autofac.Integration.Web
         /// <typeparam name="TActivatorData">Activator data type.</typeparam>
         /// <param name="registration">The registration to configure.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "It is the responsibility of the registry to dispose of registrations.")]
         public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             CacheInSession<TLimit, TActivatorData, TSingleRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration)
@@ -80,7 +82,8 @@ namespace Autofac.Integration.Web
             return registration
                 .ExternallyOwned()
                 .OnRegistered(e => e.ComponentRegistry.Register(RegistrationBuilder
-                    .ForDelegate((c, p) => {
+                    .ForDelegate((c, p) =>
+                    {
                         var session = HttpContext.Current.Session;
                         object result;
                         lock (session.SyncRoot)

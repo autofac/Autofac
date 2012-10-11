@@ -32,7 +32,7 @@ namespace Autofac.Integration.Web.Forms
     /// decorated with the [InjectProperties] or [InjectUnsetProperties]
     /// attributes.
     /// </summary>
-    class AttributedInjection : PageInjectionBehaviour
+    class AttributedInjection : PageInjectionBehavior
     {
         /// <summary>
         /// Override to return a closure that injects properties into a target.
