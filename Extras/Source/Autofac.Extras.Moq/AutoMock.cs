@@ -40,6 +40,8 @@ namespace Autofac.Extras.Moq
     [SecurityCritical]
     public class AutoMock : IDisposable
     {
+        private bool _disposed;
+
         /// <summary> 
         /// <see cref="MockRepository"/> instance responsible for expectations and mocks. 
         /// </summary>
@@ -114,22 +116,41 @@ namespace Autofac.Extras.Moq
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Handles disposal of managed and unmanaged resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// <see langword="true" /> to dispose of managed resources (during a manual execution
+        /// of <see cref="Autofac.Extras.Moq.AutoMock.Dispose()"/>); or
+        /// <see langword="false" /> if this is getting run as part of finalization where
+        /// managed resources may have already been cleaned up.
+        /// </param>
         private void Dispose(bool disposing)
         {
-            try
-            {
-                if (VerifyAll)
-                    MockRepository.VerifyAll();
-                else
-                    MockRepository.Verify();
-            }
-            finally
+            if (!this._disposed)
             {
                 if (disposing)
                 {
-                    // free managed resources
-                    Container.Dispose();
+                    // We can only verify things with the mock
+                    // repository if it hasn't already been garbage
+                    // collected during finalization.
+                    try
+                    {
+                        if (this.VerifyAll)
+                        {
+                            MockRepository.VerifyAll();
+                        }
+                        else
+                        {
+                            MockRepository.Verify();
+                        }
+                    }
+                    finally
+                    {
+                        Container.Dispose();
+                    }
                 }
+                this._disposed = true;
             }
         }
 
