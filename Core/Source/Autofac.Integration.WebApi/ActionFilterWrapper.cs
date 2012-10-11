@@ -36,7 +36,7 @@ namespace Autofac.Integration.WebApi
     /// <summary>
     /// Resolves a filter for the specified metadata for each controller request.
     /// </summary>
-    class ActionFilterWrapper : ActionFilterAttribute, IAutofacActionFilter
+    internal sealed class ActionFilterWrapper : ActionFilterAttribute, IAutofacActionFilter
     {
         readonly FilterMetadata _filterMetadata;
 
@@ -55,8 +55,15 @@ namespace Autofac.Integration.WebApi
         /// Occurs before the action method is invoked.
         /// </summary>
         /// <param name="actionContext">The context for the action.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="actionContext" /> is <see langword="null" />.
+        /// </exception>
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
+            if (actionContext == null)
+            {
+                throw new ArgumentNullException("actionContext");
+            }
             var dependencyScope = actionContext.Request.GetDependencyScope();
             var lifetimeScope = dependencyScope.GetRequestLifetimeScope();
 
@@ -70,8 +77,15 @@ namespace Autofac.Integration.WebApi
         /// Occurs after the action method is invoked.
         /// </summary>
         /// <param name="actionExecutedContext">The context for the action.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="actionExecutedContext" /> is <see langword="null" />.
+        /// </exception>
         public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
         {
+            if (actionExecutedContext == null)
+            {
+                throw new ArgumentNullException("actionExecutedContext");
+            }
             var dependencyScope = actionExecutedContext.Request.GetDependencyScope();
             var lifetimeScope = dependencyScope.GetRequestLifetimeScope();
 

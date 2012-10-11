@@ -35,6 +35,8 @@ namespace Autofac.Integration.WebApi
     /// </summary>
     public class AutofacWebApiDependencyScope : IDependencyScope
     {
+        private bool _disposed;
+
         readonly ILifetimeScope _lifetimeScope;
 
         /// <summary>
@@ -46,6 +48,11 @@ namespace Autofac.Integration.WebApi
             if (lifetimeScope == null) throw new ArgumentNullException("lifetimeScope");
 
             _lifetimeScope = lifetimeScope;
+        }
+
+        ~AutofacWebApiDependencyScope()
+        {
+            this.Dispose(false);
         }
 
         /// <summary>
@@ -86,8 +93,23 @@ namespace Autofac.Integration.WebApi
         /// </summary>
         public void Dispose()
         {
-            if (_lifetimeScope != null)
-                _lifetimeScope.Dispose();
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!this._disposed)
+            {
+                if (disposing)
+                {
+                    if (_lifetimeScope != null)
+                    {
+                        _lifetimeScope.Dispose();
+                    }
+                }
+                this._disposed = true;
+            }
         }
     }
 }

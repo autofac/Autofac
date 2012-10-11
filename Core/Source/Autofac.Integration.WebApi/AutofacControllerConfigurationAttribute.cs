@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http.Formatting;
 using System.Web.Http;
@@ -42,7 +43,7 @@ namespace Autofac.Integration.WebApi
     /// Configures the controller descriptor with per-controller services from the container.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public class AutofacControllerConfigurationAttribute : Attribute, IControllerConfiguration
+    public sealed class AutofacControllerConfigurationAttribute : Attribute, IControllerConfiguration
     {
         const string InitializedKey = "InjectControllerServicesAttributeInitialized";
 
@@ -56,15 +57,26 @@ namespace Autofac.Integration.WebApi
         /// <see cref="T:System.Web.Http.Controllers.HttpControllerDescriptor"/> can be 
         /// associated with the derived controller type given that <see cref="T:System.Web.Http.Controllers.IControllerConfiguration"/> 
         /// is inherited.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="controllerSettings" /> or <paramref name="controllerDescriptor" /> is <see langword="null" />.
+        /// </exception>
         public void Initialize(HttpControllerSettings controllerSettings, HttpControllerDescriptor controllerDescriptor)
         {
+            if (controllerSettings == null)
+            {
+                throw new ArgumentNullException("controllerSettings");
+            }
+            if (controllerDescriptor == null)
+            {
+                throw new ArgumentNullException("controllerDescriptor");
+            }
             if (controllerDescriptor.Configuration == null) return;
             if (!controllerDescriptor.Properties.TryAdd(InitializedKey, null)) return;
 
             var container = controllerDescriptor.Configuration.DependencyResolver.GetRootLifetimeScope();
             if (container == null)
                 throw new InvalidOperationException(
-                    string.Format(AutofacControllerConfigurationAttributeResources.DependencyResolverMissing,
+                    string.Format(CultureInfo.CurrentCulture, AutofacControllerConfigurationAttributeResources.DependencyResolverMissing,
                         typeof(AutofacWebApiDependencyResolver).Name, typeof(AutofacControllerConfigurationAttribute).Name));
 
             var controllerServices = controllerSettings.Services;

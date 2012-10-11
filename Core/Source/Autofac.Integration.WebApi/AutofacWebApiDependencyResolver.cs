@@ -34,6 +34,7 @@ namespace Autofac.Integration.WebApi
     /// </summary>
     public class AutofacWebApiDependencyResolver : IDependencyResolver
     {
+        private bool _disposed;
         readonly ILifetimeScope _container;
         readonly IDependencyScope _rootDependencyScope;
 
@@ -52,6 +53,11 @@ namespace Autofac.Integration.WebApi
 
             _container = container;
             _rootDependencyScope = new AutofacWebApiDependencyScope(container);
+        }
+
+        ~AutofacWebApiDependencyResolver()
+        {
+            this.Dispose(false);
         }
 
         /// <summary>
@@ -100,8 +106,23 @@ namespace Autofac.Integration.WebApi
         /// </summary>
         public void Dispose()
         {
-            if (_rootDependencyScope != null)
-                _rootDependencyScope.Dispose();
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!this._disposed)
+            {
+                if (disposing)
+                {
+                    if (_rootDependencyScope != null)
+                    {
+                        _rootDependencyScope.Dispose();
+                    }
+                }
+                this._disposed = true;
+            }
         }
     }
 }

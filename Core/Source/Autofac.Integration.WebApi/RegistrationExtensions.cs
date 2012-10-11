@@ -56,7 +56,7 @@ namespace Autofac.Integration.WebApi
             RegisterApiControllers(this ContainerBuilder builder, params Assembly[] controllerAssemblies)
         {
             return builder.RegisterAssemblyTypes(controllerAssemblies)
-                .Where(t => typeof(IHttpController).IsAssignableFrom(t) && t.Name.EndsWith("Controller"));
+                .Where(t => typeof(IHttpController).IsAssignableFrom(t) && t.Name.EndsWith("Controller", StringComparison.Ordinal));
         }
 
         /// <summary>
@@ -169,11 +169,11 @@ namespace Autofac.Integration.WebApi
         /// <exception cref="System.ArgumentException">
         /// Thrown if <paramref name="types" /> is empty or contains all <see langword="null" /> values.
         /// </exception>
-        public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> 
+        public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>
             AsModelBinderForTypes<TLimit, TActivatorData, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration, params Type[] types)
-                    where TActivatorData : IConcreteActivatorData
-                    where TRegistrationStyle : SingleRegistrationStyle
+            where TActivatorData : IConcreteActivatorData
+            where TRegistrationStyle : SingleRegistrationStyle
         {
             if (registration == null) throw new ArgumentNullException("registration");
             if (types == null) throw new ArgumentNullException("types");
@@ -190,9 +190,19 @@ namespace Autofac.Integration.WebApi
         /// </summary>
         /// <param name="configuration">Configuration of HttpServer instances.</param>
         /// <param name="builder">The container builder.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="builder" /> or <paramref name="configuration" /> is <see langword="null" />.
+        /// </exception>
         public static void RegisterWebApiFilterProvider(this ContainerBuilder builder, HttpConfiguration configuration)
         {
-            if (builder == null) throw new ArgumentNullException("builder");
+            if (builder == null)
+            {
+                throw new ArgumentNullException("builder");
+            }
+            if (configuration == null)
+            {
+                throw new ArgumentNullException("configuration");
+            }
 
             configuration.Services.RemoveAll(typeof(IFilterProvider), provider => provider is ActionDescriptorFilterProvider);
 

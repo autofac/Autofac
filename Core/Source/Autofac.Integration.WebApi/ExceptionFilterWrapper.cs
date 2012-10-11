@@ -35,7 +35,7 @@ namespace Autofac.Integration.WebApi
     /// <summary>
     /// Resolves a filter for the specified metadata for each controller request.
     /// </summary>
-    class ExceptionFilterWrapper : ExceptionFilterAttribute, IAutofacExceptionFilter
+    internal sealed class ExceptionFilterWrapper : ExceptionFilterAttribute, IAutofacExceptionFilter
     {
         readonly FilterMetadata _filterMetadata;
 
@@ -54,8 +54,15 @@ namespace Autofac.Integration.WebApi
         /// Called when an exception is thrown.
         /// </summary>
         /// <param name="actionExecutedContext">The context for the action.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="actionExecutedContext" /> is <see langword="null" />.
+        /// </exception>
         public override void OnException(HttpActionExecutedContext actionExecutedContext)
         {
+            if (actionExecutedContext == null)
+            {
+                throw new ArgumentNullException("actionExecutedContext");
+            }
             var dependencyScope = actionExecutedContext.Request.GetDependencyScope();
             var lifetimeScope = dependencyScope.GetRequestLifetimeScope();
 
