@@ -24,6 +24,8 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Web;
 
 namespace Autofac.Integration.Mvc
@@ -96,7 +98,7 @@ namespace Autofac.Integration.Mvc
             {
                 if ((LifetimeScope = GetLifetimeScopeCore()) == null)
                     throw new InvalidOperationException(
-                        string.Format(RequestLifetimeScopeProviderResources.NullLifetimeScopeReturned, GetType().FullName));
+                        string.Format(CultureInfo.CurrentCulture, RequestLifetimeScopeProviderResources.NullLifetimeScopeReturned, GetType().FullName));
             }
             return LifetimeScope;
         }
@@ -116,6 +118,7 @@ namespace Autofac.Integration.Mvc
         /// to alter the way that the life time scope is constructed.
         /// </summary>
         /// <returns>A new lifetime scope for the current HTTP request.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         protected virtual ILifetimeScope GetLifetimeScopeCore()
         {
             return (ConfigurationAction == null)

@@ -23,6 +23,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Autofac.Integration.Mvc
 {
     /// <summary>
@@ -34,6 +36,7 @@ namespace Autofac.Integration.Mvc
         /// Gets a nested lifetime scope that services can be resolved from.
         /// </summary>
         /// <returns>A new or existing nested lifetime scope.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         ILifetimeScope GetLifetimeScope();
 
         /// <summary>

@@ -116,8 +116,15 @@ namespace Autofac.Integration.Mvc
         /// <returns>
         /// The parameter value.
         /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="parameterDescriptor" /> is <see langword="null" />.
+        /// </exception>
         protected override object GetParameterValue(ControllerContext controllerContext, ParameterDescriptor parameterDescriptor)
         {
+            if (parameterDescriptor == null)
+            {
+                throw new ArgumentNullException("parameterDescriptor");
+            }
             object value = null;
 
             if (_injectActionMethodParameters)

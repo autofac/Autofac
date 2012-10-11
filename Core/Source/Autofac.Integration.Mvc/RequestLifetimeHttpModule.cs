@@ -44,8 +44,15 @@ namespace Autofac.Integration.Mvc
         /// </summary>
         /// <param name="context">An <see cref="T:System.Web.HttpApplication"/> that provides access to the 
         /// methods, properties, and events common to all application objects within an ASP.NET application</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="context" /> is <see langword="null" />.
+        /// </exception>
         public void Init(HttpApplication context)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
             context.EndRequest += OnEndRequest;
         }
 
