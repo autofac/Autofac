@@ -36,7 +36,7 @@ namespace Autofac.Integration.WebApi
     /// <summary>
     /// Resolves a filter for the specified metadata for each controller request.
     /// </summary>
-    class AuthorizationFilterWrapper : AuthorizationFilterAttribute, IAutofacAuthorizationFilter
+    internal sealed class AuthorizationFilterWrapper : AuthorizationFilterAttribute, IAutofacAuthorizationFilter
     {
         readonly FilterMetadata _filterMetadata;
 
@@ -55,8 +55,15 @@ namespace Autofac.Integration.WebApi
         /// Called when a process requests authorization.
         /// </summary>
         /// <param name="actionContext">The context for the action.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="actionContext" /> is <see langword="null" />.
+        /// </exception>
         public override void OnAuthorization(HttpActionContext actionContext)
         {
+            if (actionContext == null)
+            {
+                throw new ArgumentNullException("actionContext");
+            }
             var dependencyScope = actionContext.Request.GetDependencyScope();
             var lifetimeScope = dependencyScope.GetRequestLifetimeScope();
 

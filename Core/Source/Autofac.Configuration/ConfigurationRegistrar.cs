@@ -26,6 +26,43 @@ namespace Autofac.Configuration
     /// <seealso cref="Autofac.Configuration.IConfigurationRegistrar"/>
     public class ConfigurationRegistrar : IConfigurationRegistrar
     {
+        private IEnumerable<Service> EnumerateComponentServices(ComponentElement component, Assembly defaultAssembly)
+        {
+            if (!string.IsNullOrEmpty(component.Service))
+            {
+                var serviceType = LoadType(component.Service, defaultAssembly);
+                if (!string.IsNullOrEmpty(component.Name))
+                {
+                    yield return new KeyedService(component.Name, serviceType);
+                }
+                else
+                {
+                    yield return new TypedService(serviceType);
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(component.Name))
+                {
+                    throw new ConfigurationErrorsException(String.Format(CultureInfo.CurrentCulture,
+                        ConfigurationSettingsReaderResources.ServiceTypeMustBeSpecified, component.Name));
+                }
+            }
+
+            foreach (ServiceElement service in component.Services)
+            {
+                var serviceType = LoadType(service.Type, defaultAssembly);
+                if (!string.IsNullOrEmpty(service.Name))
+                {
+                    yield return new KeyedService(service.Name, serviceType);
+                }
+                else
+                {
+                    yield return new TypedService(serviceType);
+                }
+            }
+        }
+
         /// <summary>
         /// Registers the contents of a configuration section into a container builder.
         /// </summary>
@@ -112,41 +149,7 @@ namespace Autofac.Configuration
             {
                 var registrar = builder.RegisterType(LoadType(component.Type, configurationSection.DefaultAssembly));
 
-                IList<Service> services = new List<Service>();
-                if (!string.IsNullOrEmpty(component.Service))
-                {
-                    var serviceType = LoadType(component.Service, configurationSection.DefaultAssembly);
-                    if (!string.IsNullOrEmpty(component.Name))
-                    {
-                        services.Add(new KeyedService(component.Name, serviceType));
-                    }
-                    else
-                    {
-                        services.Add(new TypedService(serviceType));
-                    }
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(component.Name))
-                    {
-                        throw new ConfigurationErrorsException(String.Format(
-                            ConfigurationSettingsReaderResources.ServiceTypeMustBeSpecified, component.Name));
-                    }
-                }
-
-                foreach (ServiceElement service in component.Services)
-                {
-                    var serviceType = LoadType(service.Type, configurationSection.DefaultAssembly);
-                    if (!string.IsNullOrEmpty(service.Name))
-                    {
-                        services.Add(new KeyedService(service.Name, serviceType));
-                    }
-                    else
-                    {
-                        services.Add(new TypedService(serviceType));
-                    }
-                }
-
+                var services = this.EnumerateComponentServices(component, configurationSection.DefaultAssembly);
                 foreach (var service in services)
                 {
                     registrar.As(service);
@@ -208,13 +211,16 @@ namespace Autofac.Configuration
             foreach (ModuleElement moduleElement in configurationSection.Modules)
             {
                 var moduleType = this.LoadType(moduleElement.Type, configurationSection.DefaultAssembly);
-                var moduleActivator = new ReflectionActivator(
+                IModule module = null;
+                using (var moduleActivator = new ReflectionActivator(
                     moduleType,
                     new DefaultConstructorFinder(),
                     new MostParametersConstructorSelector(),
                     moduleElement.Parameters.ToParameters(),
-                    moduleElement.Properties.ToParameters());
-                var module = (IModule)moduleActivator.ActivateInstance(new ContainerBuilder().Build(), Enumerable.Empty<Parameter>());
+                    moduleElement.Properties.ToParameters()))
+                {
+                    module = (IModule)moduleActivator.ActivateInstance(new ContainerBuilder().Build(), Enumerable.Empty<Parameter>());
+                }
                 builder.RegisterModule(module);
             }
         }

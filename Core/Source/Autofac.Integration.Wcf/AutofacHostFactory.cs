@@ -64,16 +64,16 @@ namespace Autofac.Integration.Wcf
         public static Action<ServiceHostBase> HostConfigurationAction { get; set; }
 
         /// <summary>
-        /// Creates a <see cref="T:System.ServiceModel.ServiceHost"/> with specific base addresses and initializes it with specified data.
+        /// Creates a <see cref="System.ServiceModel.ServiceHost"/> with specific base addresses and initializes it with specified data.
         /// </summary>
-        /// <param name="constructorString">The initialization data passed to the <see cref="T:System.ServiceModel.ServiceHostBase"/> instance being constructed by the factory.</param>
-        /// <param name="baseAddresses">The <see cref="T:System.Array"/> of type <see cref="T:System.Uri"/> that contains the base addresses for the service hosted.</param>
+        /// <param name="constructorString">The initialization data passed to the <see cref="System.ServiceModel.ServiceHostBase"/> instance being constructed by the factory.</param>
+        /// <param name="baseAddresses">The <see cref="T:System.Array"/> of type <see cref="System.Uri"/> that contains the base addresses for the service hosted.</param>
         /// <returns>
-        /// A <see cref="T:System.ServiceModel.ServiceHost"/> with specific base addresses.
+        /// A <see cref="System.ServiceModel.ServiceHost"/> with specific base addresses.
         /// </returns>
-        /// <exception cref="T:System.ArgumentNullException">
+        /// <exception cref="System.ArgumentNullException">
         /// <paramref name="baseAddresses"/> is null.</exception>
-        /// <exception cref="T:System.InvalidOperationException">There is no hosting context provided or <paramref name="constructorString"/> is null or empty.</exception>
+        /// <exception cref="System.InvalidOperationException">There is no hosting context provided or <paramref name="constructorString"/> is null or empty.</exception>
         /// <remarks>
         /// <para>
         /// If <see cref="Autofac.Integration.Wcf.AutofacHostFactory.HostConfigurationAction"/>
@@ -88,7 +88,7 @@ namespace Autofac.Integration.Wcf
             if (constructorString == null)
                 throw new ArgumentNullException("constructorString");
 
-            if (constructorString == String.Empty)
+            if (constructorString.Length == 0)
                 throw new ArgumentOutOfRangeException("constructorString");
 
             if (Container == null)

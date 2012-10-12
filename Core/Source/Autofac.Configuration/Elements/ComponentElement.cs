@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Configuration;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Autofac.Configuration.Elements
 {
@@ -50,6 +51,7 @@ namespace Autofac.Configuration.Elements
         /// Gets the type of the component.
         /// </summary>
         /// <value>The type.</value>
+        [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods")]
         [ConfigurationProperty(TypeAttributeName, IsRequired = true)]
         public string Type
         {

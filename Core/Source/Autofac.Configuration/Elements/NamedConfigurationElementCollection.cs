@@ -51,12 +51,12 @@ namespace Autofac.Configuration.Elements
         {
             if (elementName == null) throw new ArgumentNullException("elementName");
 
-            if (elementName == "")
+            if (elementName.Length == 0)
                 throw new ArgumentOutOfRangeException(elementName);
 
             if (elementKey == null) throw new ArgumentNullException("elementKey");
 
-            if (elementKey == "")
+            if (elementKey.Length == 0)
                 throw new ArgumentOutOfRangeException(elementKey);
 
             _elementName = elementName;

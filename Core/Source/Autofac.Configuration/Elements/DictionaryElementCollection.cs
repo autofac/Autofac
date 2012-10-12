@@ -16,19 +16,20 @@ namespace Autofac.Configuration.Elements
         /// <summary>
         /// Helps convert the configuration element into an actuall generic list
         /// </summary>
-        public class DictionaryElementTypeConverter : TypeConverter
+        private class DictionaryElementTypeConverter : TypeConverter
         {
             public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
             {
                 var instantiatableType = GetInstantiableType(destinationType);
 
-                if (value is DictionaryElementCollection &&
+                var castValue = value as DictionaryElementCollection;
+                if (castValue != null &&
                     instantiatableType != null)
                 {
                     var dictionary = (IDictionary)Activator.CreateInstance(instantiatableType);
                     Type[] generics = instantiatableType.GetGenericArguments();
 
-                    foreach (var item in (DictionaryElementCollection)value)
+                    foreach (var item in castValue)
                     {
                         if (String.IsNullOrEmpty(item.Key))
                             throw new ConfigurationErrorsException("Key cannot be null in a dictionary element.");

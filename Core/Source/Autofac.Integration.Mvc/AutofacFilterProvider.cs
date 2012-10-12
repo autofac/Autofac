@@ -52,7 +52,8 @@ namespace Autofac.Integration.Mvc
         /// <remarks>
         /// The <c>false</c> constructor parameter passed to base here ensures that attribute instances are not cached.
         /// </remarks>
-        public AutofacFilterProvider() : base(false)
+        public AutofacFilterProvider()
+            : base(false)
         {
         }
 
@@ -64,8 +65,15 @@ namespace Autofac.Integration.Mvc
         /// <returns>
         /// The collection filters from all of the filter providers with properties injected.
         /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="controllerContext" /> is <see langword="null" />.
+        /// </exception>
         public override IEnumerable<Filter> GetFilters(ControllerContext controllerContext, ActionDescriptor actionDescriptor)
         {
+            if (controllerContext == null)
+            {
+                throw new ArgumentNullException("controllerContext");
+            }
             var filters = base.GetFilters(controllerContext, actionDescriptor).ToList();
             var lifetimeScope = AutofacDependencyResolver.Current.RequestLifetimeScope;
 
@@ -102,7 +110,7 @@ namespace Autofac.Integration.Mvc
             ResolveControllerScopedFilter<IResultFilter>(filterContext);
         }
 
-        static void ResolveControllerScopedFilter<TFilter>(FilterContext filterContext) 
+        static void ResolveControllerScopedFilter<TFilter>(FilterContext filterContext)
             where TFilter : class
         {
             var actionFilters = filterContext.LifetimeScope.Resolve<IEnumerable<Meta<Lazy<TFilter>, FilterMetadata>>>();
@@ -133,7 +141,7 @@ namespace Autofac.Integration.Mvc
             ResolveActionScopedFilter<IResultFilter>(filterContext, methodInfo);
         }
 
-        static void ResolveActionScopedFilter<TFilter>(FilterContext filterContext, MethodInfo methodInfo) 
+        static void ResolveActionScopedFilter<TFilter>(FilterContext filterContext, MethodInfo methodInfo)
             where TFilter : class
         {
             var actionFilters = filterContext.LifetimeScope.Resolve<IEnumerable<Meta<Lazy<TFilter>, FilterMetadata>>>();

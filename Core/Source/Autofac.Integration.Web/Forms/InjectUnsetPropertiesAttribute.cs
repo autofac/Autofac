@@ -28,9 +28,7 @@ using System;
 namespace Autofac.Integration.Web.Forms
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class InjectUnsetPropertiesAttribute : DependencyInjectionAttribute
+    public sealed class InjectUnsetPropertiesAttribute : DependencyInjectionAttribute
     {
     }
 }
-
-

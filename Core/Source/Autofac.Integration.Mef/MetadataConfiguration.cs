@@ -26,16 +26,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Autofac.Builder;
-using Autofac.Core;
 using Autofac.Integration.Mef.Util;
-using Autofac.Util;
 
 namespace Autofac.Integration.Mef
 {
     /// <summary>
     /// Used with the WithMetadata configuration method to
-    /// associate key-value pairs with an <see cref="IComponentRegistration"/>.
+    /// associate key-value pairs with an <see cref="Autofac.Core.IComponentRegistration"/>.
     /// </summary>
     /// <typeparam name="TMetadata">Interface with properties whose names correspond to
     /// the property keys.</typeparam>

@@ -31,7 +31,7 @@ namespace Autofac.Integration.Web.Forms
     /// <summary>
     /// Assists with the construction of page injectors.
     /// </summary>
-    abstract class PageInjectionBehaviour : IInjectionBehaviour
+    abstract class PageInjectionBehavior : IInjectionBehavior
     {
         /// <summary>
         /// Inject dependencies in the required fashion.
@@ -63,7 +63,7 @@ namespace Autofac.Integration.Web.Forms
         /// </summary>
         /// <param name="injector">The injector.</param>
         /// <param name="target">The target.</param>
-        void DoInjection(Func<object, object> injector, object target)
+        private static void DoInjection(Func<object, object> injector, object target)
         {
             if (injector == null)
                 throw new ArgumentNullException("injector");
@@ -86,7 +86,7 @@ namespace Autofac.Integration.Web.Forms
             if (parent == null)
                 throw new ArgumentNullException("parent");
 
-            if (parent.Controls == null) 
+            if (parent.Controls == null)
                 return;
 
             foreach (Control control in parent.Controls)

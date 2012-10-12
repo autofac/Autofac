@@ -7,11 +7,16 @@
       <Word></Word>
     </Unrecognized>
     -->
+    <!-- Capitalize proper nouns and acronyms; "regular words" just lowercase. -->
 		<Recognized>
+      <Word>Api</Word>
 			<Word>Autofac</Word>
-			<Word>Contrib</Word>
+      <Word>composable</Word>
 			<Word>configurator</Word>
+      <Word>Mef</Word>
+      <Word>Moq</Word>
 			<Word>multitenancy</Word>
+      <Word>Mvc</Word>
 		</Recognized>
 		<!--
     <Deprecated>

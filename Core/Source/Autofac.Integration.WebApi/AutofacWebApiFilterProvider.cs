@@ -63,8 +63,15 @@ namespace Autofac.Integration.WebApi
         /// <param name="configuration">The configuration.</param>
         /// <param name="actionDescriptor">The action descriptor.</param>
         /// <returns>A collection of filters with instances property injected.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="configuration" /> is <see langword="null" />.
+        /// </exception>
         public IEnumerable<FilterInfo> GetFilters(HttpConfiguration configuration, HttpActionDescriptor actionDescriptor)
         {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException("configuration");
+            }
             var filters = _filterProvider.GetFilters(configuration, actionDescriptor).ToList();
 
             foreach (var filterInfo in filters)
@@ -103,8 +110,8 @@ namespace Autofac.Integration.WebApi
         }
 
         static void ResolveControllerScopedFilter<TFilter, TWrapper>(
-            FilterContext filterContext, Func<FilterMetadata, TWrapper> wrapperFactory) 
-            where TFilter : class 
+            FilterContext filterContext, Func<FilterMetadata, TWrapper> wrapperFactory)
+            where TFilter : class
             where TWrapper : IFilter
         {
             var filters = filterContext.LifetimeScope.Resolve<IEnumerable<Meta<Lazy<TFilter>, FilterMetadata>>>();
@@ -123,9 +130,9 @@ namespace Autofac.Integration.WebApi
         }
 
         static void ResolveActionScopedFilter<TFilter, TWrapper>(
-            FilterContext filterContext, MethodInfo methodInfo, Func<FilterMetadata, TWrapper> wrapperFactory) 
-                where TFilter : class 
-                where TWrapper : IFilter
+            FilterContext filterContext, MethodInfo methodInfo, Func<FilterMetadata, TWrapper> wrapperFactory)
+            where TFilter : class
+            where TWrapper : IFilter
         {
             var filters = filterContext.LifetimeScope.Resolve<IEnumerable<Meta<Lazy<TFilter>, FilterMetadata>>>();
             foreach (var filter in filters)

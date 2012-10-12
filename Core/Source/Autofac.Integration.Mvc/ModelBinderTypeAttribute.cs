@@ -25,12 +25,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Autofac.Integration.Mvc
 {
     /// <summary>
     /// Indicates what types a model binder supports.
     /// </summary>
+    [SuppressMessage("Microsoft.Design", "CA1019:DefineAccessorsForAttributeArguments")]
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
     public sealed class ModelBinderTypeAttribute : Attribute
     {
@@ -56,7 +58,7 @@ namespace Autofac.Integration.Mvc
         public ModelBinderTypeAttribute(Type targetType)
         {
             if (targetType == null) throw new ArgumentNullException("targetType");
-            TargetTypes = new Type[] {targetType};
+            TargetTypes = new Type[] { targetType };
         }
     }
 }

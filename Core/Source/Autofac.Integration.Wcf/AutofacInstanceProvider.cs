@@ -73,8 +73,15 @@ namespace Autofac.Integration.Wcf
         /// <param name="instanceContext">The current <see cref="T:System.ServiceModel.InstanceContext"/> object.</param>
         /// <param name="message">The message that triggered the creation of a service object.</param>
         /// <returns>The service object.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="instanceContext" /> is <see langword="null" />.
+        /// </exception>
         public object GetInstance(InstanceContext instanceContext, Message message)
         {
+            if (instanceContext == null)
+            {
+                throw new ArgumentNullException("instanceContext");
+            }
             var extension = new AutofacInstanceContext(_rootLifetimeScope);
             instanceContext.Extensions.Add(extension);
             return extension.ResolveComponent(_registration, Enumerable.Empty<Parameter>());
@@ -85,8 +92,15 @@ namespace Autofac.Integration.Wcf
         /// </summary>
         /// <param name="instanceContext">The service's instance context.</param>
         /// <param name="instance">The service object to be recycled.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="instanceContext" /> is <see langword="null" />.
+        /// </exception>
         public void ReleaseInstance(InstanceContext instanceContext, object instance)
         {
+            if (instanceContext == null)
+            {
+                throw new ArgumentNullException("instanceContext");
+            }
             var extension = instanceContext.Extensions.Find<AutofacInstanceContext>();
             if (extension != null)
                 extension.Dispose();

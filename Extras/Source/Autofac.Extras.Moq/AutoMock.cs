@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Security;
 using Autofac;
 using Autofac.Builder;
@@ -39,6 +40,8 @@ namespace Autofac.Extras.Moq
     [SecurityCritical]
     public class AutoMock : IDisposable
     {
+        private bool _disposed;
+
         /// <summary> 
         /// <see cref="MockRepository"/> instance responsible for expectations and mocks. 
         /// </summary>
@@ -65,11 +68,18 @@ namespace Autofac.Extras.Moq
             VerifyAll = false;
         }
 
+        [SecuritySafeCritical]
+        ~AutoMock()
+        {
+            this.Dispose(false);
+        }
+
         /// <summary>
         /// Create new <see cref="AutoMock"/> instance with loose mock behavior.
         /// </summary>
         /// <seealso cref="MockRepository"/>
         /// <returns>Container initialized for loose behavior.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public static AutoMock GetLoose()
         {
             return new AutoMock(MockBehavior.Loose);
@@ -80,6 +90,7 @@ namespace Autofac.Extras.Moq
         /// </summary>
         /// <seealso cref="MockRepository"/>
         /// <returns>Container initialized for loose behavior.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public static AutoMock GetStrict()
         {
             return new AutoMock(MockBehavior.Strict);
@@ -101,16 +112,45 @@ namespace Autofac.Extras.Moq
         [SecuritySafeCritical]
         public void Dispose()
         {
-            try
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Handles disposal of managed and unmanaged resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// <see langword="true" /> to dispose of managed resources (during a manual execution
+        /// of <see cref="Autofac.Extras.Moq.AutoMock.Dispose()"/>); or
+        /// <see langword="false" /> if this is getting run as part of finalization where
+        /// managed resources may have already been cleaned up.
+        /// </param>
+        private void Dispose(bool disposing)
+        {
+            if (!this._disposed)
             {
-                if (VerifyAll)
-                    MockRepository.VerifyAll();
-                else
-                    MockRepository.Verify();
-            }
-            finally
-            {
-                Container.Dispose();
+                if (disposing)
+                {
+                    // We can only verify things with the mock
+                    // repository if it hasn't already been garbage
+                    // collected during finalization.
+                    try
+                    {
+                        if (this.VerifyAll)
+                        {
+                            MockRepository.VerifyAll();
+                        }
+                        else
+                        {
+                            MockRepository.Verify();
+                        }
+                    }
+                    finally
+                    {
+                        Container.Dispose();
+                    }
+                }
+                this._disposed = true;
             }
         }
 
@@ -126,9 +166,9 @@ namespace Autofac.Extras.Moq
         /// <typeparam name="T">Type to mock</typeparam>
         /// <param name="parameters">Optional parameters</param>
         /// <returns>Mock</returns>
-        public Mock<T> Mock<T>(params object[] parameters) where T : class
+        public Mock<T> Mock<T>(params Parameter[] parameters) where T : class
         {
-            var obj = (IMocked<T>)Create<T>();
+            var obj = (IMocked<T>)Create<T>(parameters);
             return obj.Mock;
         }
 
@@ -150,6 +190,7 @@ namespace Autofac.Extras.Moq
         /// <typeparam name="TImplementation">The implementation of the service.</typeparam>
         /// <param name="parameters">Optional parameters</param>
         /// <returns>The service.</returns>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The component registry is responsible for registration disposal.")]
         public TService Provide<TService, TImplementation>(params Parameter[] parameters)
         {
             Container.ComponentRegistry.Register(
@@ -163,6 +204,7 @@ namespace Autofac.Extras.Moq
         /// </summary>
         /// <typeparam name="TService">Service</typeparam>
         /// <returns>The instance resolved from container.</returns>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The component registry is responsible for registration disposal.")]
         public TService Provide<TService>(TService instance)
             where TService : class
         {

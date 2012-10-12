@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Security;
@@ -52,9 +53,19 @@ namespace Autofac.Extras.AggregateService
             _invocationMap = SetupInvocationMap(interfaceType);
         }
 
+        /// <summary>
+        /// Intercepts a method invocation.
+        /// </summary>
+        /// <param name="invocation">
+        /// The method invocation to intercept.
+        /// </param>
         [SecurityCritical]
-        void IInterceptor.Intercept(IInvocation invocation)
+        public void Intercept(IInvocation invocation)
         {
+            if (invocation == null)
+            {
+                throw new ArgumentNullException("invocation");
+            }
             var invocationHandler = _invocationMap[invocation.Method];
             invocationHandler(invocation);
         }
@@ -104,10 +115,10 @@ namespace Autofac.Extras.AggregateService
                     else
                     {
                         var methodWithoutParams = GetType()
-                            .GetMethod("MethodWithoutParams", BindingFlags.Instance|BindingFlags.NonPublic)
-                            .MakeGenericMethod(new[]{ returnType });
+                            .GetMethod("MethodWithoutParams", BindingFlags.Instance | BindingFlags.NonPublic)
+                            .MakeGenericMethod(new[] { returnType });
 
-                        var methodWithoutParamsDelegate = (Action<IInvocation>)Delegate.CreateDelegate(typeof (Action<IInvocation>), this, methodWithoutParams);
+                        var methodWithoutParamsDelegate = (Action<IInvocation>)Delegate.CreateDelegate(typeof(Action<IInvocation>), this, methodWithoutParams);
                         methodMap.Add(method, methodWithoutParamsDelegate);
                     }
                 }
@@ -116,9 +127,10 @@ namespace Autofac.Extras.AggregateService
             return methodMap;
         }
 
-// ReSharper disable UnusedMember.Local
+        // ReSharper disable UnusedMember.Local
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "This method gets called via reflection.")]
         private void MethodWithoutParams<TReturnType>(IInvocation invocation)
-// ReSharper restore UnusedMember.Local
+        // ReSharper restore UnusedMember.Local
         {
             invocation.ReturnValue = _context.Resolve<TReturnType>();
         }

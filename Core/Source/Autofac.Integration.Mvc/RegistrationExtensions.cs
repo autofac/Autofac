@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -71,7 +72,7 @@ namespace Autofac.Integration.Mvc
         {
             return builder.RegisterAssemblyTypes(controllerAssemblies)
                 .Where(t => typeof(IController).IsAssignableFrom(t) &&
-                    t.Name.EndsWith("Controller"));
+                    t.Name.EndsWith("Controller", StringComparison.Ordinal));
         }
 
         /// <summary>
@@ -286,6 +287,7 @@ namespace Autofac.Integration.Mvc
         /// <typeparam name="TActivatorData">Activator data type.</typeparam>
         /// <param name="registration">The registration to configure.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "It is the responsibility of the registry to dispose of registrations.")]
         public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             CacheInSession<TLimit, TActivatorData, TSingleRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration)
@@ -330,7 +332,7 @@ namespace Autofac.Integration.Mvc
         /// <param name="order">The order in which the filter is applied.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsActionFilterFor<TController>(this IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, 
+            AsActionFilterFor<TController>(this IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
                 Expression<Action<TController>> actionSelector, int order = Filter.DefaultOrder) where TController : IController
         {
             return AsFilterFor(registration, actionSelector, order);
@@ -344,7 +346,7 @@ namespace Autofac.Integration.Mvc
         /// <param name="order">The order in which the filter is applied.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsActionFilterFor<TController>(this IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, 
+            AsActionFilterFor<TController>(this IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
                 int order = Filter.DefaultOrder) where TController : IController
         {
             return AsFilterFor<IActionFilter, TController>(registration, order);
@@ -373,7 +375,7 @@ namespace Autofac.Integration.Mvc
         /// <param name="order">The order in which the filter is applied.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<IAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsAuthorizationFilterFor<TController>(this IRegistrationBuilder<IAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, 
+            AsAuthorizationFilterFor<TController>(this IRegistrationBuilder<IAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
                 int order = Filter.DefaultOrder) where TController : IController
         {
             return AsFilterFor<IAuthorizationFilter, TController>(registration, order);
@@ -438,7 +440,7 @@ namespace Autofac.Integration.Mvc
         }
 
         static IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsFilterFor<TFilter, TController>(IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, Expression<Action<TController>> actionSelector, int order) 
+            AsFilterFor<TFilter, TController>(IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, Expression<Action<TController>> actionSelector, int order)
             where TController : IController
         {
             if (registration == null) throw new ArgumentNullException("registration");

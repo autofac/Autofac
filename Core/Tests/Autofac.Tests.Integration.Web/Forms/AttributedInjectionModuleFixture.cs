@@ -51,7 +51,7 @@ namespace Autofac.Tests.Integration.Web.Forms
             var context = CreateContext();
             var page = new PropertyInjectedPage();
             var target = new AttributedInjectionModule();
-            var injector = target.GetInjectionBehaviour(page);
+            var injector = target.GetInjectionBehavior(page);
             Assert.IsNotNull(injector);
             injector.InjectDependencies(context, page);
             Assert.AreEqual(ContextSuppliedString, page.Property);
@@ -64,7 +64,7 @@ namespace Autofac.Tests.Integration.Web.Forms
             var page = new PropertyInjectedPage();
             page.Property = ExplicitlyProvidedString;
             var target = new AttributedInjectionModule();
-            var injector = target.GetInjectionBehaviour(page);
+            var injector = target.GetInjectionBehavior(page);
             Assert.IsNotNull(injector);
             injector.InjectDependencies(context, page);
             Assert.AreEqual(ContextSuppliedString, page.Property);
@@ -76,7 +76,7 @@ namespace Autofac.Tests.Integration.Web.Forms
             var context = CreateContext();
             var page = new UnsetPropertyInjectedPage();
             var target = new AttributedInjectionModule();
-            var injector = target.GetInjectionBehaviour(page);
+            var injector = target.GetInjectionBehavior(page);
             Assert.IsNotNull(injector);
             injector.InjectDependencies(context, page);
             Assert.AreEqual(ContextSuppliedString, page.Property);
@@ -89,7 +89,7 @@ namespace Autofac.Tests.Integration.Web.Forms
             var page = new UnsetPropertyInjectedPage();
             page.Property = ExplicitlyProvidedString;
             var target = new AttributedInjectionModule();
-            var injector = target.GetInjectionBehaviour(page);
+            var injector = target.GetInjectionBehavior(page);
             Assert.IsNotNull(injector);
             injector.InjectDependencies(context, page);
             Assert.AreEqual(ExplicitlyProvidedString, page.Property);
@@ -101,7 +101,7 @@ namespace Autofac.Tests.Integration.Web.Forms
             var context = CreateContext();
             var page = new NonInjectedPage();
             var target = new AttributedInjectionModule();
-            var injector = target.GetInjectionBehaviour(page);
+            var injector = target.GetInjectionBehavior(page);
             Assert.IsNotNull(injector);
             injector.InjectDependencies(context, page);
             Assert.IsNull(page.Property);

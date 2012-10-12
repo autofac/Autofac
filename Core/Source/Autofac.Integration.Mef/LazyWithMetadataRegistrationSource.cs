@@ -50,6 +50,10 @@ namespace Autofac.Integration.Mef
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
+            if (registrationAccessor == null)
+            {
+                throw new ArgumentNullException("registrationAccessor");
+            }
             var swt = service as IServiceWithType;
             if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Lazy<,>)))
                 return Enumerable.Empty<IComponentRegistration>();
@@ -86,7 +90,7 @@ namespace Autofac.Integration.Mef
                 {
                     var context = c.Resolve<IComponentContext>();
                     return new Lazy<T, TMeta>(
-                        () => (T) context.ResolveComponent(valueRegistration, p),
+                        () => (T)context.ResolveComponent(valueRegistration, p),
                         AttributedModelServices.GetMetadataView<TMeta>(valueRegistration.Target.Metadata));
                 })
                 .As(providedService)

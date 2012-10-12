@@ -26,6 +26,7 @@
 using System;
 using System.ComponentModel;
 using System.Configuration;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -159,6 +160,30 @@ namespace Autofac.Configuration
         /// Deserializes a configuration section handler from an XML configuration file.
         /// </summary>
         /// <param name="configurationFile">The path to the configuration file to parse.</param>
+        /// <returns>
+        /// A read/parsed <see cref="SectionHandler"/> based on the contents of the <paramref name="configurationFile"/>.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="configurationFile"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown if <paramref name="configurationFile"/> is empty.
+        /// </exception>
+        /// <exception cref="System.IO.FileNotFoundException">
+        /// Thrown if the file indicated by <paramref name="configurationFile" /> can't be found.
+        /// </exception>
+        /// <exception cref="System.Configuration.ConfigurationErrorsException">
+        /// Thrown if the configuration can't properly be deserialized from the file.
+        /// </exception>
+        public static SectionHandler Deserialize(string configurationFile)
+        {
+            return Deserialize(configurationFile, null);
+        }
+
+        /// <summary>
+        /// Deserializes a configuration section handler from an XML configuration file.
+        /// </summary>
+        /// <param name="configurationFile">The path to the configuration file to parse.</param>
         /// <param name="configurationSection">
         /// The name of the configuration section (if the <paramref name="configurationFile" /> is
         /// application configuration format); or <see langword="null" /> to use the default configuration
@@ -179,7 +204,8 @@ namespace Autofac.Configuration
         /// <exception cref="System.Configuration.ConfigurationErrorsException">
         /// Thrown if the configuration can't properly be deserialized from the file.
         /// </exception>
-        public static SectionHandler Deserialize(string configurationFile, string configurationSection = null)
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The XmlTextReader disposal will automatically dispose the stream.")]
+        public static SectionHandler Deserialize(string configurationFile, string configurationSection)
         {
             if (String.IsNullOrWhiteSpace(configurationSection))
             {

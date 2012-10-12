@@ -91,8 +91,15 @@ namespace Autofac.Integration.Mef
         /// </summary>
         /// <param name="metadata">Metadata.</param>
         /// <returns>Builder for additional configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="metadata" /> is <see langword="null" />.
+        /// </exception>
         public ExportConfigurationBuilder WithMetadata(IEnumerable<KeyValuePair<string, object>> metadata)
         {
+            if (metadata == null)
+            {
+                throw new ArgumentNullException("metadata");
+            }
             foreach (var m in metadata)
                 WithMetadata(m.Key, m.Value);
 

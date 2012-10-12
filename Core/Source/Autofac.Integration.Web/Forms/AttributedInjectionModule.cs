@@ -34,14 +34,14 @@ namespace Autofac.Integration.Web.Forms
     /// </summary>
     public class AttributedInjectionModule : DependencyInjectionModule
     {
-        private IInjectionBehaviour _attributedInjection = new AttributedInjection();
+        private IInjectionBehavior _attributedInjection = new AttributedInjection();
 
         /// <summary>
-        /// Override to customise injection behaviour based on HTTP Handler type.
+        /// Override to customise injection behavior based on HTTP Handler type.
         /// </summary>
         /// <param name="handlerType">Type of the handler.</param>
-        /// <returns>The injection behaviour.</returns>
-        protected override IInjectionBehaviour GetInjectionBehaviourForHandlerType(Type handlerType)
+        /// <returns>The injection behavior.</returns>
+        protected override IInjectionBehavior GetInjectionBehaviorForHandlerType(Type handlerType)
         {
             if (handlerType == null)
                 throw new ArgumentNullException("handlerType");

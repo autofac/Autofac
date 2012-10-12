@@ -30,7 +30,7 @@ namespace Autofac.Integration.Web.Forms
     /// <summary>
     /// Injects any resolvable properties.
     /// </summary>
-    class PropertyInjection : PageInjectionBehaviour
+    class PropertyInjection : PageInjectionBehavior
     {
         /// <summary>
         /// Override to return a closure that injects properties into a target.
