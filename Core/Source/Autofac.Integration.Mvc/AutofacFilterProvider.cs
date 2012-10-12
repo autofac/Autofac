@@ -114,7 +114,7 @@ namespace Autofac.Integration.Mvc
             where TFilter : class
         {
             var actionFilters = filterContext.LifetimeScope.Resolve<IEnumerable<Meta<Lazy<TFilter>, FilterMetadata>>>();
-            foreach (var actionFilter in actionFilters)
+            foreach (var actionFilter in actionFilters.Where(a => a.Metadata != null))
             {
                 var metadata = actionFilter.Metadata;
                 if (metadata.ControllerType.IsAssignableFrom(filterContext.ControllerType)
@@ -145,7 +145,7 @@ namespace Autofac.Integration.Mvc
             where TFilter : class
         {
             var actionFilters = filterContext.LifetimeScope.Resolve<IEnumerable<Meta<Lazy<TFilter>, FilterMetadata>>>();
-            foreach (var actionFilter in actionFilters)
+            foreach (var actionFilter in actionFilters.Where(a => a.Metadata != null))
             {
                 var metadata = actionFilter.Metadata;
                 if (metadata.ControllerType.IsAssignableFrom(filterContext.ControllerType)

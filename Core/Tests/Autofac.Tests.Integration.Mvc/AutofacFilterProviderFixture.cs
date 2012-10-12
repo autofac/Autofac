@@ -50,6 +50,19 @@ namespace Autofac.Tests.Integration.Mvc
         }
 
         [Test]
+        public void FilterRegistrationsWithoutMetadataIgnored()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<AuthorizeAttribute>().AsImplementedInterfaces();
+            var container = builder.Build();
+            SetupMockLifetimeScopeProvider(container);
+            var provider = new AutofacFilterProvider();
+
+            var filters = provider.GetFilters(_baseControllerContext, _reflectedActionDescriptor).ToList();
+            Assert.That(filters, Has.Count.EqualTo(0));
+        }
+
+        [Test]
         public void AsActionFilterForRequiresActionSelector()
         {
             var builder = new ContainerBuilder();
