@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
@@ -45,9 +46,9 @@ namespace Autofac.Features.LightweightAdapters
 
             _registrationData = registrationData;
             _activatorData = activatorData;
-            
+
             if (registrationData.Services.Contains(activatorData.FromService))
-                throw new ArgumentException(string.Format(
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
                     LightweightAdapterRegistrationSourceResources.FromAndToMustDiffer, activatorData.FromService));
         }
 
@@ -81,7 +82,8 @@ namespace Autofac.Features.LightweightAdapters
 
         public override string ToString()
         {
-            return string.Format(LightweightAdapterRegistrationSourceResources.AdapterFromToDescription, 
+            return string.Format(CultureInfo.CurrentCulture,
+                LightweightAdapterRegistrationSourceResources.AdapterFromToDescription,
                 _activatorData.FromService.Description,
                 string.Join(", ", _registrationData.Services.Select(s => s.Description).ToArray()));
         }

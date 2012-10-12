@@ -103,7 +103,7 @@ namespace Autofac.Features.GeneratedFactories
         static ParameterMapping GetParameterMapping(Type delegateType, ParameterMapping configuredParameterMapping)
         {
             if (configuredParameterMapping == ParameterMapping.Adaptive)
-                return delegateType.Name.StartsWith("Func`") ? ParameterMapping.ByType : ParameterMapping.ByName;
+                return delegateType.Name.StartsWith("Func`", StringComparison.Ordinal) ? ParameterMapping.ByType : ParameterMapping.ByName;
             return configuredParameterMapping;
         }
 
@@ -160,9 +160,9 @@ namespace Autofac.Features.GeneratedFactories
                             .OfType<Expression>()
                             .ToArray();
 
-// ReSharper disable RedundantCaseLabel
+                // ReSharper disable RedundantCaseLabel
                 case ParameterMapping.ByName:
-// ReSharper restore RedundantCaseLabel
+                // ReSharper restore RedundantCaseLabel
                 default:
                     return creatorParams
                             .Select(p => Expression.New(

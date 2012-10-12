@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MatchingScopeNotFound" xml:space="preserve">
-    <value>No scope with a Tag matching '{0}' is visible from the scope in which the instance was requested. This generally indicates that a component registered as per-HTTP request is being reqested by a SingleInstance() component (or a similar scenario.) Under the web integration always request dependencies from the DependencyResolver.Current or ILifetimeScopeProvider.RequestLifetime, never from the container itself.</value>
+    <value>No scope with a Tag matching '{0}' is visible from the scope in which the instance was requested. This generally indicates that a component registered as per-HTTP request is being requested by a SingleInstance() component (or a similar scenario.) Under the web integration always request dependencies from the DependencyResolver.Current or ILifetimeScopeProvider.RequestLifetime, never from the container itself.</value>
   </data>
 </root>

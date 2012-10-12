@@ -258,6 +258,10 @@ namespace Autofac.Core.Lifetime
         /// <returns>An instance.</returns>
         public object GetOrCreateAndShare(Guid id, Func<object> creator)
         {
+            if (creator == null)
+            {
+                throw new ArgumentNullException("creator");
+            }
             lock (_synchRoot)
             {
                 object result;
@@ -288,7 +292,7 @@ namespace Autofac.Core.Lifetime
         {
             get
             {
-                return _tag; 
+                return _tag;
             }
         }
 
@@ -332,7 +336,7 @@ namespace Autofac.Core.Lifetime
         /// A service object of type <paramref name="serviceType"/>.-or- null if there is 
         /// no service object of type <paramref name="serviceType"/>.
         /// </returns>
-        object IServiceProvider.GetService(Type serviceType)
+        public object GetService(Type serviceType)
         {
             if (serviceType == null) throw new ArgumentNullException("serviceType");
             return this.ResolveOptional(serviceType);

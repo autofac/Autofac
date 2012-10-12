@@ -25,6 +25,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -35,6 +37,7 @@ namespace Autofac.Core.Activators.Reflection
     /// <summary>
     /// Uses reflection to activate instances of a type.
     /// </summary>
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "There is nothing in the derived class to dispose so no override is necessary.")]
     public class ReflectionActivator : InstanceActivator, IInstanceActivator
     {
         readonly Type _implementationType;
@@ -100,7 +103,7 @@ namespace Autofac.Core.Activators.Reflection
             var availableConstructors = _constructorFinder.FindConstructors(_implementationType);
 
             if (availableConstructors.Length == 0)
-                throw new DependencyResolutionException(string.Format(ReflectionActivatorResources.NoConstructorsAvailable, _implementationType, _constructorFinder));
+                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, ReflectionActivatorResources.NoConstructorsAvailable, _implementationType, _constructorFinder));
 
             var constructorBindings = GetConstructorBindings(
                 context,
@@ -134,6 +137,7 @@ namespace Autofac.Core.Activators.Reflection
             }
 
             return string.Format(
+                CultureInfo.CurrentCulture,
                 ReflectionActivatorResources.NoConstructorsBindable,
                 _constructorFinder, _implementationType, reasons);
         }

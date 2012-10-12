@@ -23,6 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using Autofac.Core.Lifetime;
 
 namespace Autofac.Core.Registration
@@ -42,6 +43,10 @@ namespace Autofac.Core.Registration
 
         public override void Register(IComponentRegistration registration, bool preserveDefaults)
         {
+            if (registration == null)
+            {
+                throw new ArgumentNullException("registration");
+            }
             var toRegister = registration;
 
             if (registration.Lifetime is RootScopeLifetime)

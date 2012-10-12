@@ -22,14 +22,14 @@ namespace Autofac {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class RegistrationExtensionsResources {
+    internal class ModuleResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal RegistrationExtensionsResources() {
+        internal ModuleResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Autofac {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.RegistrationExtensionsResources", typeof(RegistrationExtensionsResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.ModuleResources", typeof(ModuleResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,38 +61,11 @@ namespace Autofac {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The instance  registration &apos;{0}&apos; can support SingleInstance() sharing only..
+        ///   Looks up a localized string similar to Module.ThisAssembly is only available in modules that inherit directly from Module..
         /// </summary>
-        internal static string InstanceRegistrationsAreSingleInstanceOnly {
+        internal static string ThisAssemblyUnavailable {
             get {
-                return ResourceManager.GetString("InstanceRegistrationsAreSingleInstanceOnly", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A metadata attribute of type {0} was not found on {1}..
-        /// </summary>
-        internal static string MetadataAttributeNotFound {
-            get {
-                return ResourceManager.GetString("MetadataAttributeNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to More than one metadata attribute of type {0} was found on {1}..
-        /// </summary>
-        internal static string MultipleMetadataAttributesSameType {
-            get {
-                return ResourceManager.GetString("MultipleMetadataAttributesSameType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No matching constructor exists on type &apos;{0}&apos;..
-        /// </summary>
-        internal static string NoMatchingConstructorExists {
-            get {
-                return ResourceManager.GetString("NoMatchingConstructorExists", resourceCulture);
+                return ResourceManager.GetString("ThisAssemblyUnavailable", resourceCulture);
             }
         }
     }

@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Globalization;
 using System.Linq;
 using Autofac.Util;
 
@@ -48,7 +49,7 @@ namespace Autofac
             if (@this == null) throw new ArgumentNullException("this");
             if (@namespace == null) throw new ArgumentNullException("namespace");
             return @this.Namespace != null &&
-                (@this.Namespace == @namespace || @this.Namespace.StartsWith(@namespace + "."));
+                (@this.Namespace == @namespace || @this.Namespace.StartsWith(@namespace + ".", StringComparison.Ordinal));
         }
 
         /// <summary>
@@ -61,7 +62,7 @@ namespace Autofac
         public static bool IsInNamespaceOf<T>(this Type @this)
         {
             if (@this == null) throw new ArgumentNullException("this");
-            return IsInNamespace(@this, typeof (T).Namespace);
+            return IsInNamespace(@this, typeof(T).Namespace);
         }
 
         /// <summary>Determines whether the candidate type supports any base or 
@@ -75,7 +76,7 @@ namespace Autofac
             if (openGeneric == null) throw new ArgumentNullException("openGeneric");
 
             if (!(openGeneric.IsGenericTypeDefinition || openGeneric.ContainsGenericParameters))
-                throw new ArgumentException(string.Format(TypeExtensionsResources.NotOpenGenericType, openGeneric.FullName));
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, TypeExtensionsResources.NotOpenGenericType, openGeneric.FullName));
 
             return @this.GetTypesThatClose(openGeneric).Any();
         }
@@ -89,7 +90,7 @@ namespace Autofac
         public static bool IsAssignableTo<T>(this Type @this)
         {
             if (@this == null) throw new ArgumentNullException("this");
-            return typeof (T).IsAssignableFrom(@this);
+            return typeof(T).IsAssignableFrom(@this);
         }
 
     }

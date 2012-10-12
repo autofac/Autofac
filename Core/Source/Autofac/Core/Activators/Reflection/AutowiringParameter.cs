@@ -43,8 +43,19 @@ namespace Autofac.Core.Activators.Reflection
         /// be set to a function that will lazily retrieve the parameter value. If the result is false,
         /// will be set to null.</param>
         /// <returns>True if a value can be supplied; otherwise, false.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="pi" /> or <paramref name="context" /> is <see langword="null" />.
+        /// </exception>
         public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<object> valueProvider)
         {
+            if (pi == null)
+            {
+                throw new ArgumentNullException("pi");
+            }
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
             IComponentRegistration registration;
             if (context.ComponentRegistry.TryGetRegistration(new TypedService(pi.ParameterType), out registration))
             {

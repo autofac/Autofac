@@ -68,7 +68,7 @@ namespace Autofac.Builder
         public IEnumerable<Service> Services
         {
             get
-            { 
+            {
                 if (_defaultServiceOverridden)
                     return _services;
 
@@ -122,7 +122,7 @@ namespace Autofac.Builder
         /// <summary>
         /// The sharing mode assigned to the component.
         /// </summary>
-        public InstanceSharing Sharing 
+        public InstanceSharing Sharing
         {
             get { return _sharing; }
             set { _sharing = value; }
@@ -154,8 +154,15 @@ namespace Autofac.Builder
         /// <param name="that">The data to copy.</param>
         /// <param name="includeDefaultService">When true, the default service
         /// will be changed to that of the other.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="that" /> is <see langword="null" />.
+        /// </exception>
         public void CopyFrom(RegistrationData that, bool includeDefaultService)
         {
+            if (that == null)
+            {
+                throw new ArgumentNullException("that");
+            }
             Ownership = that.Ownership;
             Sharing = that.Sharing;
             Lifetime = that.Lifetime;
@@ -164,7 +171,7 @@ namespace Autofac.Builder
             if (includeDefaultService)
                 _defaultService = that._defaultService;
 
-            AddAll(_services, that._services);            
+            AddAll(_services, that._services);
             AddAll(Metadata, that.Metadata);
             AddAll(PreparingHandlers, that.PreparingHandlers);
             AddAll(ActivatingHandlers, that.ActivatingHandlers);

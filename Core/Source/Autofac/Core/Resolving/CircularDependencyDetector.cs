@@ -55,7 +55,7 @@ namespace Autofac.Core.Resolving
             return registration.Activator.LimitType.FullName ?? string.Empty;
         }
 
-        public void CheckForCircularDependency(IComponentRegistration registration, Stack<InstanceLookup> activationStack, int callDepth)
+        public static void CheckForCircularDependency(IComponentRegistration registration, Stack<InstanceLookup> activationStack, int callDepth)
         {
             if (registration == null) throw new ArgumentNullException("registration");
             if (activationStack == null) throw new ArgumentNullException("activationStack");

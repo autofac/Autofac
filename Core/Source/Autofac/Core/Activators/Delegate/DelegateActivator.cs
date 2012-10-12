@@ -25,6 +25,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using Autofac.Util;
 
 namespace Autofac.Core.Activators.Delegate
@@ -32,10 +34,11 @@ namespace Autofac.Core.Activators.Delegate
     /// <summary>
     /// Activate instances using a delegate.
     /// </summary>
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "There is nothing in the derived class to dispose so no override is necessary.")]
     public class DelegateActivator : InstanceActivator, IInstanceActivator
     {
         readonly Func<IComponentContext, IEnumerable<Parameter>, object> _activationFunction;
-        
+
         /// <summary>
         /// Create a delegate activator.
         /// </summary>
@@ -64,7 +67,7 @@ namespace Autofac.Core.Activators.Delegate
 
             var result = _activationFunction(context, parameters);
             if (result == null)
-                throw new DependencyResolutionException(string.Format(
+                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture,
                     DelegateActivatorResources.NullFromActivationDelegateFor, LimitType));
 
             return result;

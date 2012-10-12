@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Autofac.Core
 {
@@ -52,23 +53,23 @@ namespace Autofac.Core
         /// <summary>
         /// Implements the operator ==.
         /// </summary>
-        /// <param name="lhs">The LHS.</param>
-        /// <param name="rhs">The RHS.</param>
+        /// <param name="left">The left operand.</param>
+        /// <param name="right">The right operand.</param>
         /// <returns>The result of the operator.</returns>
-        public static bool operator==(Service lhs, Service rhs)
+        public static bool operator ==(Service left, Service right)
         {
-            return object.Equals(lhs, rhs);
+            return object.Equals(left, right);
         }
 
         /// <summary>
         /// Implements the operator !=.
         /// </summary>
-        /// <param name="lhs">The LHS.</param>
-        /// <param name="rhs">The RHS.</param>
+        /// <param name="left">The left operand.</param>
+        /// <param name="right">The right operand.</param>
         /// <returns>The result of the operator.</returns>
-        public static bool operator !=(Service lhs, Service rhs)
+        public static bool operator !=(Service left, Service right)
         {
-            return !(lhs == rhs);
+            return !(left == right);
         }
 
         /// <summary>
@@ -79,6 +80,7 @@ namespace Autofac.Core
         /// true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.
         /// </returns>
         /// <exception cref="T:System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
+        [SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations", Justification = "This is an attempt to make Equals 'abstract' when it normally isn't.")]
         public override bool Equals(object obj)
         {
             throw new NotImplementedException(ServiceResources.MustOverrideEquals);
@@ -90,6 +92,7 @@ namespace Autofac.Core
         /// <returns>
         /// A hash code for the current <see cref="T:System.Object"/>.
         /// </returns>
+        [SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations", Justification = "This is an attempt to make GetHashCode 'abstract' when it normally isn't.")]
         public override int GetHashCode()
         {
             throw new NotImplementedException(ServiceResources.MustOverrideGetHashCode);

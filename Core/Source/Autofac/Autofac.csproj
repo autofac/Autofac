@@ -26,6 +26,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Autofac.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>..\..\..\Portable.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,13 +37,24 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Autofac.xml</DocumentationFile>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
+    <Compile Include="Core\Activators\Reflection\MostParametersConstructorSelectorResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MostParametersConstructorSelectorResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Features\Metadata\StronglyTypedMeta.cs" />
     <Compile Include="Features\Metadata\StronglyTypedMetaRegistrationSource.cs" />
     <Compile Include="Core\Activators\Reflection\DefaultConstructorFinder.cs">
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ModuleResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ModuleResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Features\LazyDependencies\LazyRegistrationSource.cs" />
@@ -55,13 +68,16 @@
     <Compile Include="..\..\..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
+    <CodeAnalysisDictionary Include="..\..\..\CodeAnalysisDictionary.xml">
+      <Link>CodeAnalysisDictionary.xml</Link>
+    </CodeAnalysisDictionary>
     <Compile Include="Builder\ConcreteReflectionActivatorData.cs" />
     <Compile Include="Builder\ContainerBuildOptions.cs" />
     <Compile Include="Builder\IRegistrationBuilder.cs" />
     <Compile Include="Builder\IConcreteActivatorData.cs" />
     <Compile Include="Core\Registration\CopyOnWriteRegistry.cs" />
     <Compile Include="Features\Variance\ContravariantRegistrationSource.cs" />
-    <Compile Include="PropertyWiringFlags.cs" />
+    <Compile Include="PropertyWiringOptions.cs" />
     <Compile Include="Builder\RegistrationBuilder.cs" />
     <Compile Include="Builder\RegistrationBuilderResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -342,6 +358,11 @@
     <Compile Include="Util\Traverse.cs" />
     <Compile Include="Util\TypeExtensions.cs" />
     <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSource.cs" />
+    <Compile Include="Util\ValidatedNotNullAttribute.cs" />
+    <EmbeddedResource Include="Core\Activators\Reflection\MostParametersConstructorSelectorResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MostParametersConstructorSelectorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSourceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>GeneratedFactoryRegistrationSourceResources.Designer.cs</LastGenOutput>
@@ -468,6 +489,10 @@
     <EmbeddedResource Include="Features\ResolveAnything\AnyConcreteTypeNotAlreadyRegisteredSourceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AnyConcreteTypeNotAlreadyRegisteredSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ModuleResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ModuleResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="RegistrationExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Autofac - Portable Class Library Rules" Description="This ruleset is for Autofac assemblies that build as Portable Class Libraries." ToolsVersion="11.0">
+  <IncludeAll Action="Warning" />
+  <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
+    <Rule Id="CA1004" Action="None" />
+    <Rule Id="CA1005" Action="None" />
+    <Rule Id="CA1006" Action="None" />
+    <Rule Id="CA1016" Action="None" />
+    <Rule Id="CA1020" Action="None" />
+    <Rule Id="CA1026" Action="None" />
+    <Rule Id="CA1032" Action="None" />
+    <Rule Id="CA1716" Action="None" />
+    <Rule Id="CA1724" Action="None" />
+    <Rule Id="CA2000" Action="None" />
+  </Rules>
+</RuleSet>

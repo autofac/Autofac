@@ -36,7 +36,7 @@ namespace Autofac.Builder
     /// </summary>
     public class ReflectionActivatorData
     {
-        Type _implementor;
+        Type _implementer;
         IConstructorFinder _constructorFinder = new DefaultConstructorFinder();
         IConstructorSelector _constructorSelector = new MostParametersConstructorSelector();
         readonly IList<Parameter> _configuredParameters = new List<Parameter>();
@@ -45,10 +45,10 @@ namespace Autofac.Builder
         /// <summary>
         /// Specify a reflection activator for the given type.
         /// </summary>
-        /// <param name="implementor">Type that will be activated.</param>
-        public ReflectionActivatorData(Type implementor)
+        /// <param name="implementer">Type that will be activated.</param>
+        public ReflectionActivatorData(Type implementer)
         {
-            ImplementationType = implementor;
+            ImplementationType = implementer;
         }
 
         /// <summary>
@@ -58,11 +58,11 @@ namespace Autofac.Builder
         {
             get
             {
-                return _implementor;
+                return _implementer;
             }
             set
             {
-                _implementor = Enforce.ArgumentNotNull(value, "value");
+                _implementer = Enforce.ArgumentNotNull(value, "value");
             }
         }
 

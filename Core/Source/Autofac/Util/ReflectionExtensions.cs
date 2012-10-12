@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -43,7 +44,7 @@ namespace Autofac.Util
         public static bool TryGetDeclaringProperty(this ParameterInfo pi, out PropertyInfo prop)
         {
             var mi = pi.Member as MethodInfo;
-            if (mi != null && mi.IsSpecialName && mi.Name.StartsWith("set_") && mi.DeclaringType != null)
+            if (mi != null && mi.IsSpecialName && mi.Name.StartsWith("set_", StringComparison.Ordinal) && mi.DeclaringType != null)
             {
                 prop = mi.DeclaringType.GetProperty(mi.Name.Substring(4));
                 return true;
@@ -70,9 +71,10 @@ namespace Autofac.Util
             if (mex == null ||
                 !(mex.Member is PropertyInfo))
                 throw new ArgumentException(string.Format(
+                    CultureInfo.CurrentCulture,
                     ReflectionExtensionsResources.ExpressionNotPropertyAccessor,
                     propertyAccessor));
-            return (PropertyInfo) mex.Member;
+            return (PropertyInfo)mex.Member;
         }
 
         /// <summary>
@@ -89,6 +91,7 @@ namespace Autofac.Util
             var callExpression = methodCallExpression.Body as MethodCallExpression;
             if (callExpression == null)
                 throw new ArgumentException(string.Format(
+                    CultureInfo.CurrentCulture,
                     ReflectionExtensionsResources.ExpressionNotMethodCall,
                     methodCallExpression));
             return callExpression.Method;
@@ -107,6 +110,7 @@ namespace Autofac.Util
             var callExpression = constructorCallExpression.Body as NewExpression;
             if (callExpression == null)
                 throw new ArgumentException(string.Format(
+                    CultureInfo.CurrentCulture,
                     ReflectionExtensionsResources.ExpressionNotConstructorCall,
                     constructorCallExpression));
             return callExpression.Constructor;

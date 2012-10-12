@@ -35,14 +35,9 @@ namespace Autofac.Builder
     public enum ContainerBuildOptions
     {
         /// <summary>
-        /// No options.
+        /// No options - the default behavior for container building.
         /// </summary>
         None = 0,
-
-        /// <summary>
-        /// Standard container construction.
-        /// </summary>
-        Default = None,
 
         /// <summary>
         /// Prevents inclusion of standard modules like support for

@@ -35,12 +35,13 @@ using Autofac.Features.OwnedInstances;
 using Autofac.Util;
 using Autofac.Features.Metadata;
 using Autofac.Features.LazyDependencies;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Autofac
 {
-	/// <summary>
-	/// Used to build an <see cref="IContainer"/> from component registrations.
-	/// </summary>
+    /// <summary>
+    /// Used to build an <see cref="IContainer"/> from component registrations.
+    /// </summary>
     /// <example>
     /// <code>
     /// var builder = new ContainerBuilder();
@@ -59,10 +60,10 @@ namespace Autofac
     /// via extension methods in <see cref="RegistrationExtensions"/>.</remarks>
     /// <seealso cref="IContainer"/>
     /// <see cref="RegistrationExtensions"/>
-	public class ContainerBuilder
-	{
+    public class ContainerBuilder
+    {
         private readonly IList<Action<IComponentRegistry>> _configurationCallbacks = new List<Action<IComponentRegistry>>();
-		private bool _wasBuilt;
+        private bool _wasBuilt;
 
         /// <summary>
         /// Register a callback that will be invoked when the container is configured.
@@ -74,37 +75,37 @@ namespace Autofac
             _configurationCallbacks.Add(Enforce.ArgumentNotNull(configurationCallback, "configurationCallback"));
         }
 
-		/// <summary>
-		/// Create a new container with the component registrations that have been made.
-		/// </summary>
-		/// <param name="options">Options that influence the way the container is initialised.</param>
-		/// <remarks>
+        /// <summary>
+        /// Create a new container with the component registrations that have been made.
+        /// </summary>
+        /// <param name="options">Options that influence the way the container is initialised.</param>
+        /// <remarks>
         /// Build can only be called once per <see cref="ContainerBuilder"/>
         /// - this prevents ownership issues for provided instances.
         /// Build enables support for the relationship types that come with Autofac (e.g.
         /// Func, Owned, Meta, Lazy, IEnumerable.) To exclude support for these types,
         /// first create the container, then call Update() on the builder.
-		/// </remarks>
-		/// <returns>A new container with the configured component registrations.</returns>
-		public IContainer Build(ContainerBuildOptions options = ContainerBuildOptions.Default)
-		{
-			var result = new Container();
-			Build(result.ComponentRegistry, (options & ContainerBuildOptions.ExcludeDefaultModules) != ContainerBuildOptions.None);
+        /// </remarks>
+        /// <returns>A new container with the configured component registrations.</returns>
+        public IContainer Build(ContainerBuildOptions options = ContainerBuildOptions.None)
+        {
+            var result = new Container();
+            Build(result.ComponentRegistry, (options & ContainerBuildOptions.ExcludeDefaultModules) != ContainerBuildOptions.None);
             if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
                 StartStartableComponents(result);
-		    return result;
-		}
+            return result;
+        }
 
-	    static void StartStartableComponents(IComponentContext componentContext)
-	    {
-	        foreach (var startable in componentContext.ComponentRegistry.RegistrationsFor(new TypedService(typeof (IStartable))))
-	        {
-	            var instance = (IStartable) componentContext.ResolveComponent(startable, Enumerable.Empty<Parameter>());
-	            instance.Start();
-	        }
-	    }
+        static void StartStartableComponents(IComponentContext componentContext)
+        {
+            foreach (var startable in componentContext.ComponentRegistry.RegistrationsFor(new TypedService(typeof(IStartable))))
+            {
+                var instance = (IStartable)componentContext.ResolveComponent(startable, Enumerable.Empty<Parameter>());
+                instance.Start();
+            }
+        }
 
-	    /// <summary>
+        /// <summary>
         /// Configure an existing container with the component registrations
         /// that have been made.
         /// </summary>
@@ -113,6 +114,7 @@ namespace Autofac
         /// - this prevents ownership issues for provided instances.
         /// </remarks>
         /// <param name="container">An existing container to make the registrations in.</param>
+        [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "You can't update any arbitrary context, only containers.")]
         public void Update(IContainer container)
         {
             if (container == null) throw new ArgumentNullException("container");
@@ -134,24 +136,24 @@ namespace Autofac
             Build(componentRegistry, true);
         }
 
-	    void Build(IComponentRegistry componentRegistry, bool excludeDefaultModules)
-		{
-	        if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
+        void Build(IComponentRegistry componentRegistry, bool excludeDefaultModules)
+        {
+            if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
 
-	        if (_wasBuilt)
-				throw new InvalidOperationException(ContainerBuilderResources.BuildCanOnlyBeCalledOnce);
+            if (_wasBuilt)
+                throw new InvalidOperationException(ContainerBuilderResources.BuildCanOnlyBeCalledOnce);
 
-			_wasBuilt = true;
+            _wasBuilt = true;
 
             if (!excludeDefaultModules)
                 RegisterDefaultAdapters(componentRegistry);
 
-	        foreach (var callback in _configurationCallbacks)
+            foreach (var callback in _configurationCallbacks)
                 callback(componentRegistry);
         }
 
-	    void RegisterDefaultAdapters(IComponentRegistry componentRegistry)
-	    {
+        void RegisterDefaultAdapters(IComponentRegistry componentRegistry)
+        {
             this.RegisterGeneric(typeof(KeyedServiceIndex<,>)).As(typeof(IIndex<,>)).InstancePerLifetimeScope();
             componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
             componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
@@ -159,6 +161,6 @@ namespace Autofac
             componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
             componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
             componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());
-	    }
-	}
+        }
+    }
 }

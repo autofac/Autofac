@@ -24,13 +24,14 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Autofac.Core;
 using Autofac.Util;
 
 namespace Autofac
 {
-	/// <summary>
-	/// A parameter that can supply values to sites that exactly
+    /// <summary>
+    /// A parameter that can supply values to sites that exactly
     /// match a specified type. When applied to a reflection-based
     /// component, <see cref="TypedParameter.Type"/> will be matched against
     /// the types of the component's constructor arguments. When applied to
@@ -58,6 +59,7 @@ namespace Autofac
         /// <summary>
         /// The type against which targets are matched.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods")]
         public Type Type { get; private set; }
 
         /// <summary>
@@ -72,16 +74,16 @@ namespace Autofac
         }
 
 
-		/// <summary>
-		/// Shortcut for creating <see cref="TypedParameter"/> 
-		/// by using the <typeparamref name="T"/>
-		/// </summary>
-		/// <typeparam name="T">type to be used for the parameter</typeparam>
-		/// <param name="value">The parameter value.</param>
-		/// <returns>new typed parameter</returns>
-		public static TypedParameter From<T>(T value)
-		{
-			return new TypedParameter(typeof(T), value);
-		}
+        /// <summary>
+        /// Shortcut for creating <see cref="TypedParameter"/> 
+        /// by using the <typeparamref name="T"/>
+        /// </summary>
+        /// <typeparam name="T">type to be used for the parameter</typeparam>
+        /// <param name="value">The parameter value.</param>
+        /// <returns>new typed parameter</returns>
+        public static TypedParameter From<T>(T value)
+        {
+            return new TypedParameter(typeof(T), value);
+        }
     }
 }

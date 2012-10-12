@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Autofac.Core
 {
@@ -31,6 +32,7 @@ namespace Autofac.Core
     /// Fired after the construction of an instance but before that instance
     /// is shared with any other or any members are invoked on it.
     /// </summary>
+    [SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]
     public interface IActivatingEventArgs<out T>
     {
         /// <summary>

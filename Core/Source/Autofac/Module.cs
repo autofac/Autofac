@@ -87,7 +87,7 @@ namespace Autofac
         /// <remarks>
         /// Note that the ContainerBuilder parameter is unique to this module.
         /// </remarks>
-		/// <param name="builder">The builder through which components can be
+        /// <param name="builder">The builder through which components can be
         /// registered.</param>
         protected virtual void Load(ContainerBuilder builder) { }
 
@@ -113,7 +113,7 @@ namespace Autofac
         /// <param name="componentRegistry">The component registry into which the source was added.</param>
         /// <param name="registrationSource">The registration source.</param>
         protected virtual void AttachToRegistrationSource(
-            IComponentRegistry componentRegistry, 
+            IComponentRegistry componentRegistry,
             IRegistrationSource registrationSource)
         {
         }
@@ -147,7 +147,7 @@ namespace Autofac
             {
                 var thisType = GetType();
                 if (thisType.BaseType != typeof(Module))
-                    throw new InvalidOperationException("Module.ThisAssembly is only available in modules that inherit directly from Module.");
+                    throw new InvalidOperationException(ModuleResources.ThisAssemblyUnavailable);
 
                 return thisType.Assembly;
             }

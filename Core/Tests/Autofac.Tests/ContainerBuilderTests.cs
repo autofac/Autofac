@@ -250,7 +250,7 @@ namespace Autofac.Tests
             var key = new object();
 
             var cb = new ContainerBuilder();
-            cb.RegisterType<object>().Keyed<object>( key );
+            cb.RegisterType<object>().Keyed<object>(key);
 
             var c = cb.Build();
 
@@ -409,7 +409,7 @@ namespace Autofac.Tests
             var builder = new ContainerBuilder();
             builder.RegisterInstance("s1");
             var container = builder.Build();
-            var scope = container.BeginLifetimeScope(b => 
+            var scope = container.BeginLifetimeScope(b =>
                 b.RegisterInstance("s2").PreserveExistingDefaults());
 
             Assert.AreEqual("s1", scope.Resolve<string>());
@@ -523,7 +523,7 @@ namespace Autofac.Tests
         [Test]
         public void WhenTheContainerIsBuilt_StartableComponentsAreStarted()
         {
-            const ContainerBuildOptions buildOptions = ContainerBuildOptions.Default;
+            const ContainerBuildOptions buildOptions = ContainerBuildOptions.None;
             var started = WasStartInvoked(buildOptions);
             Assert.IsTrue(started);
         }

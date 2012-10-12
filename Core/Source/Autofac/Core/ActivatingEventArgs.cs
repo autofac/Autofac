@@ -89,7 +89,7 @@ namespace Autofac.Core
         /// The instance can be replaced if needed, e.g. by an interface proxy.
         /// </summary>
         /// <param name="instance">The object to use instead of the activated instance.</param>
-        void IActivatingEventArgs<T>.ReplaceInstance(object instance)
+        public void ReplaceInstance(object instance)
         {
             Instance = (T)instance;
         }

@@ -11,12 +11,15 @@
 		<Recognized>
       <Word>Api</Word>
 			<Word>Autofac</Word>
+      <Word>autowired</Word>
+      <Word>autowiring</Word>
       <Word>composable</Word>
 			<Word>configurator</Word>
       <Word>Mef</Word>
       <Word>Moq</Word>
 			<Word>multitenancy</Word>
       <Word>Mvc</Word>
+      <Word>startable</Word>
 		</Recognized>
 		<!--
     <Deprecated>

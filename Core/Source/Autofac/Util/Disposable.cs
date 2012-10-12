@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
 namespace Autofac.Util
@@ -39,6 +40,7 @@ namespace Autofac.Util
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
+        [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "Dispose is implemented correctly, FxCop just doesn't see it.")]
         public void Dispose()
         {
             var isDisposed = _isDisposed;
@@ -63,7 +65,7 @@ namespace Autofac.Util
         /// </summary>
         protected bool IsDisposed
         {
-            get 
+            get
             {
                 Thread.MemoryBarrier();
                 return _isDisposed == DisposedFlag;

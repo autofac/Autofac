@@ -249,7 +249,7 @@ namespace Autofac.Builder
                 t.FullName != null
                 ? new TypedService(t)
                 : new TypedService(t.GetGenericTypeDefinition()))
-                .Cast<Service>().ToArray()); 
+                .Cast<Service>().ToArray());
         }
 
         /// <summary>
@@ -365,18 +365,16 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="wiringFlags">Set wiring options such as circular dependency wiring support.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> PropertiesAutowired(PropertyWiringFlags wiringFlags)
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> PropertiesAutowired(PropertyWiringOptions wiringFlags)
         {
-            var injector = new AutowiringPropertyInjector();
-
-            var allowCircularDependencies = 0 != (int)(wiringFlags & PropertyWiringFlags.AllowCircularDependencies);
-            var preserveSetValues = 0 != (int) (wiringFlags & PropertyWiringFlags.PreserveSetValues);
+            var allowCircularDependencies = 0 != (int)(wiringFlags & PropertyWiringOptions.AllowCircularDependencies);
+            var preserveSetValues = 0 != (int)(wiringFlags & PropertyWiringOptions.PreserveSetValues);
 
             if (allowCircularDependencies)
-                RegistrationData.ActivatedHandlers.Add((s, e) => injector.InjectProperties(e.Context, e.Instance, !preserveSetValues));
+                RegistrationData.ActivatedHandlers.Add((s, e) => AutowiringPropertyInjector.InjectProperties(e.Context, e.Instance, !preserveSetValues));
             else
-                RegistrationData.ActivatingHandlers.Add((s, e) => injector.InjectProperties(e.Context, e.Instance, !preserveSetValues));
-            
+                RegistrationData.ActivatingHandlers.Add((s, e) => AutowiringPropertyInjector.InjectProperties(e.Context, e.Instance, !preserveSetValues));
+
             return this;
         }
 
