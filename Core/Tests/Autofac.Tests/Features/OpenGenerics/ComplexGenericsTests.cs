@@ -117,7 +117,6 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
-        [Ignore("Requires Type.GUID that is not available in PCL")]
         public void CanResolveComponentWithNestedConstraintViaInterface()
         {
             var builder = new ContainerBuilder();

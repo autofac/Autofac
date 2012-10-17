@@ -129,11 +129,22 @@ namespace Autofac.Util
 
         static bool ParameterCompatibleWithTypeConstraint(Type parameter, Type constraint)
         {
-            // This previously used Type.GUID instead of FullName which is not available in PCL.
             return constraint.IsAssignableFrom(parameter) ||
                    Traverse.Across(parameter, p => p.BaseType)
                        .Concat(parameter.GetInterfaces())
-                       .Any(p => p.FullName != null && p.FullName.Equals(constraint.FullName));
+                       .Any(p => ParameterEqualsConstraint(p, constraint));
+        }
+
+        static bool ParameterEqualsConstraint(Type parameter, Type constraint)
+        {
+            var genericArguments = parameter.GetGenericArguments();
+            if (genericArguments.Length > 0 && constraint.IsGenericType)
+            {
+                var typeDefinition = constraint.GetGenericTypeDefinition();
+                var genericType = typeDefinition.MakeGenericType(genericArguments);
+                return genericType == parameter;
+            }
+            return false;
         }
 
         public static bool IsCompatibleWith(this Type type, Type that)

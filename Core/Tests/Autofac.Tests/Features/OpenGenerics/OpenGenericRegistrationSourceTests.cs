@@ -137,7 +137,6 @@ namespace Autofac.Tests.Features.OpenGenerics
         public class Repository<T, TId> where T : IEntity<TId> { }
 
         [Test]
-        [Ignore("Requires Type.GUID that is not available in PCL")]
         public void SupportsCodependentTypeConstraints()
         {
             var g = ConstructSource(typeof(Repository<,>));
