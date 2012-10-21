@@ -34,8 +34,6 @@ using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Registration;
-using Autofac.Features.LazyDependencies;
-using Autofac.Features.Metadata;
 
 namespace Autofac.Integration.Mef
 {
@@ -76,30 +74,6 @@ namespace Autofac.Integration.Mef
 
             builder.RegisterSource(new LazyWithMetadataRegistrationSource());
             builder.RegisterSource(new StronglyTypedMetaRegistrationSource());
-        }
-
-        /// <summary>
-        /// Associates data with the component through a strongly typed interface.
-        /// </summary>
-        /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
-        /// <typeparam name="TStyle">Registration style.</typeparam>
-        /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
-            WithMetadata<TLimit, TReflectionActivatorData, TStyle>(
-                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
-                    IMetadataConfiguration metadataConfiguration)
-        {
-            if (registration == null)
-            {
-                throw new ArgumentNullException("registration");
-            }
-            if (metadataConfiguration == null)
-            {
-                throw new ArgumentNullException("metadataConfiguration");
-            }
-
-            return registration.WithMetadata(metadataConfiguration.Properties);
         }
 
         /// <summary>

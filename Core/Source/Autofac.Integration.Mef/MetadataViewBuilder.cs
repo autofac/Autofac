@@ -23,22 +23,25 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Linq;
+
 namespace Autofac.Integration.Mef
 {
-    /// <summary>
-    /// A builder to help with the creation of <see cref="IMetadataConfiguration"/> instances.
-    /// </summary>
-    public static class Metadata
+    static class MetadataViewBuilder
     {
-        /// <summary>
-        /// Creates a metadata configuration instance for a particular type.
-        /// </summary>
-        /// <typeparam name="TMetadata">A type with properties whose names correspond to the
-        /// property names to configure.</typeparam>
-        /// <returns>A new metadata configuration instance.</returns>
-        public static MetadataConfiguration<TMetadata> For<TMetadata>()
-         {
-             return new MetadataConfiguration<TMetadata>();
-         }
+        public static TMetadata GetMetadataView<TMetadata>(IDictionary<string, object> metadata)
+        {
+            var metadataConfiguration = metadata.Values
+                .OfType<IMetadataConfiguration>().FirstOrDefault();
+
+            if (metadataConfiguration != null)
+            {
+                metadata = metadataConfiguration.Properties.ToDictionary(pair => pair.Key, pair => pair.Value);
+            }
+
+            return AttributedModelServices.GetMetadataView<TMetadata>(metadata);
+        }
     }
 }

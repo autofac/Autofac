@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac.Integration.Mef;
-using NUnit.Framework;
 using System.ComponentModel.Composition;
-using Autofac.Util;
 using System.ComponentModel.Composition.Hosting;
+using Autofac.Integration.Mef;
+using Autofac.Util;
 using Autofac.Core.Registration;
 using Autofac.Core;
+using Autofac.Features.Metadata;
+using NUnit.Framework;
 
 namespace Autofac.Tests.Integration.Mef
 {
@@ -453,6 +454,36 @@ namespace Autofac.Tests.Integration.Mef
                 source => source is LazyWithMetadataRegistrationSource);
 
             Assert.That(lazyWithMetadataCount, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void WithMetadata_InterfaceBasedMetadata_SupportLazyWithMetadata()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterMetadataRegistrationSources();
+            builder.Register(c => new object()).WithMetadata(
+                Metadata.For<IMeta>().Set(m => m.TheInt, 42));
+            var container = builder.Build();
+
+            var lazy = container.Resolve<Lazy<object, IMeta>>();
+
+            Assert.That(lazy.Metadata.TheInt, Is.EqualTo(42));
+            Assert.That(lazy.Value, Is.Not.Null);
+        }
+
+        [Test]
+        public void WithMetadata_InterfaceBasedMetadata_SupportMeta()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterMetadataRegistrationSources();
+            builder.Register(c => new object()).WithMetadata(
+                Metadata.For<IMeta>().Set(m => m.TheInt, 42));
+            var container = builder.Build();
+
+            var meta = container.Resolve<Meta<object, IMeta>>();
+
+            Assert.That(meta.Metadata.TheInt, Is.EqualTo(42));
+            Assert.That(meta.Value, Is.Not.Null);
         }
     }
 }
