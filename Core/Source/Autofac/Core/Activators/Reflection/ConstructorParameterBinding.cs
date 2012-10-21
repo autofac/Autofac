@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 using Autofac.Util;
@@ -129,12 +130,12 @@ namespace Autofac.Core.Activators.Reflection
             catch (TargetInvocationException ex)
             {
                 throw new DependencyResolutionException(
-                    string.Format(ConstructorParameterBindingResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType.Name), ex.InnerException);
+                    string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType.Name), ex.InnerException);
             }
             catch (Exception ex)
             {
                 throw new DependencyResolutionException(
-                    string.Format(ConstructorParameterBindingResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType.Name), ex);
+                    string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType.Name), ex);
             }
         }
 
@@ -146,8 +147,8 @@ namespace Autofac.Core.Activators.Reflection
             get
             {
                 return CanInstantiate
-                    ? string.Format(ConstructorParameterBindingResources.BoundConstructor, _ci)
-                    : string.Format(ConstructorParameterBindingResources.NonBindableConstructor, _ci, _firstNonBindableParameter);
+                    ? string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.BoundConstructor, _ci)
+                    : string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.NonBindableConstructor, _ci, _firstNonBindableParameter);
             }
         }
 

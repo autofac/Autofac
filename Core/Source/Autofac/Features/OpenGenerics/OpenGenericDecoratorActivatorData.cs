@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Globalization;
 using Autofac.Builder;
 using Autofac.Core;
 
@@ -39,14 +40,14 @@ namespace Autofac.Features.OpenGenerics
         /// <summary>
         /// Construct an <see cref="OpenGenericDecoratorActivatorData"/>.
         /// </summary>
-        /// <param name="implementor">The decorator type.</param>
+        /// <param name="implementer">The decorator type.</param>
         /// <param name="fromService">The open generic service type to decorate.</param>
-        public OpenGenericDecoratorActivatorData(Type implementor, IServiceWithType fromService)
-            : base(implementor)
+        public OpenGenericDecoratorActivatorData(Type implementer, IServiceWithType fromService)
+            : base(implementer)
         {
             if (fromService == null) throw new ArgumentNullException("fromService");
             if (!fromService.ServiceType.IsGenericTypeDefinition)
-                throw new ArgumentException(string.Format(OpenGenericDecoratorActivatorDataResources.DecoratedServiceIsNotOpenGeneric, fromService));
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, OpenGenericDecoratorActivatorDataResources.DecoratedServiceIsNotOpenGeneric, fromService));
 
             _fromService = fromService;
         }

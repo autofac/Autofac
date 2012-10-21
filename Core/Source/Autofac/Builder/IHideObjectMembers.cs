@@ -25,6 +25,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Autofac.Builder
 {
@@ -41,6 +42,7 @@ namespace Autofac.Builder
         /// Standard System.Object member.
         /// </summary>
         /// <returns>Standard result.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         [EditorBrowsable(EditorBrowsableState.Never)]
         Type GetType();
 

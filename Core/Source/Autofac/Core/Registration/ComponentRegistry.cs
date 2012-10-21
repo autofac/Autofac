@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using Autofac.Util;
 
@@ -141,7 +142,7 @@ namespace Autofac.Core.Registration
             if (adapterServices.Length == 0)
                 return;
 
-            Debug.WriteLine(String.Format(
+            Debug.WriteLine(String.Format(CultureInfo.InvariantCulture,
                 "[Autofac] Component '{0}' provides services that have already been adapted. Consider refactoring to ContainerBuilder.Build() rather than Update().",
                 registration));
 
@@ -234,7 +235,7 @@ namespace Autofac.Core.Registration
             {
                 lock (_synchRoot)
                 {
-                    return _dynamicRegistrationSources.ToArray();                    
+                    return _dynamicRegistrationSources.ToArray();
                 }
             }
         }

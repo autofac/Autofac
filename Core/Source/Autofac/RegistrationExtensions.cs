@@ -25,6 +25,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -43,6 +45,7 @@ namespace Autofac
     /// <summary>
     /// Adds registration syntax to the <see cref="ContainerBuilder"/> type.
     /// </summary>
+    [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
     public static class RegistrationExtensions
     {
         /// <summary>
@@ -165,7 +168,7 @@ namespace Autofac
                 if (!(rb.RegistrationData.Lifetime is RootScopeLifetime) ||
                     rb.RegistrationData.Sharing != InstanceSharing.Shared)
                     throw new InvalidOperationException(string.Format(
-                        RegistrationExtensionsResources.InstanceRegistrationsAreSingleInstanceOnly, instance));
+                        CultureInfo.CurrentCulture, RegistrationExtensionsResources.InstanceRegistrationsAreSingleInstanceOnly, instance));
 
                 activator.DisposeInstance = rb.RegistrationData.Ownership == InstanceOwnership.OwnedByLifetimeScope;
 
@@ -178,15 +181,15 @@ namespace Autofac
         /// <summary>
         /// Register a component to be created through reflection.
         /// </summary>
-        /// <typeparam name="TImplementor">The type of the component implementation.</typeparam>
+        /// <typeparam name="TImplementer">The type of the component implementation.</typeparam>
         /// <param name="builder">Container builder.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<TImplementor, ConcreteReflectionActivatorData, SingleRegistrationStyle>
-            RegisterType<TImplementor>(this ContainerBuilder builder)
+        public static IRegistrationBuilder<TImplementer, ConcreteReflectionActivatorData, SingleRegistrationStyle>
+            RegisterType<TImplementer>(this ContainerBuilder builder)
         {
             if (builder == null) throw new ArgumentNullException("builder");
 
-            var rb = RegistrationBuilder.ForType<TImplementor>();
+            var rb = RegistrationBuilder.ForType<TImplementer>();
 
             builder.RegisterCallback(cr => RegistrationBuilder.RegisterSingleComponent(cr, rb));
 
@@ -255,12 +258,12 @@ namespace Autofac
         /// Concrete types will be made as they are requested, e.g. with Resolve&lt;Repository&lt;int&gt;&gt;().
         /// </summary>
         /// <param name="builder">Container builder.</param>
-        /// <param name="implementor">The open generic implementation type.</param>
+        /// <param name="implementer">The open generic implementation type.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
-            RegisterGeneric(this ContainerBuilder builder, Type implementor)
+            RegisterGeneric(this ContainerBuilder builder, Type implementer)
         {
-            return OpenGenericRegistrationExtensions.RegisterGeneric(builder, implementor);
+            return OpenGenericRegistrationExtensions.RegisterGeneric(builder, implementer);
         }
 
         /// <summary>
@@ -481,7 +484,7 @@ namespace Autofac
             WithMetadataFrom<TAttribute>(
                 this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> registration)
         {
-            var attrType = typeof (TAttribute);
+            var attrType = typeof(TAttribute);
             var metadataProperties = attrType
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(pi => pi.CanRead);
@@ -490,9 +493,9 @@ namespace Autofac
             {
                 var attrs = t.GetCustomAttributes(true).OfType<TAttribute>().ToArray();
                 if (attrs.Length == 0)
-                    throw new ArgumentException(string.Format("A metadata attribute of type {0} was not found on {1}.", typeof(TAttribute), t));
+                    throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.MetadataAttributeNotFound, typeof(TAttribute), t));
                 if (attrs.Length != 1)
-                    throw new ArgumentException(string.Format("More than one metadata attribute of type {0} was found on {1}.", typeof(TAttribute), t));
+                    throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.MultipleMetadataAttributesSameType, typeof(TAttribute), t));
                 var attr = attrs[0];
                 return metadataProperties.Select(p => new KeyValuePair<string, object>(p.Name, p.GetValue(attr, null)));
             });
@@ -643,7 +646,7 @@ namespace Autofac
 
         static Type[] GetImplementedInterfaces(Type type)
         {
-            return type.GetInterfaces().Where(i => i != typeof (IDisposable)).ToArray();
+            return type.GetInterfaces().Where(i => i != typeof(IDisposable)).ToArray();
         }
 
         /// <summary>
@@ -710,7 +713,7 @@ namespace Autofac
 
             if (registration.ActivatorData.ImplementationType.GetConstructor(signature) == null)
                 throw new ArgumentException(
-                    string.Format(RegistrationExtensionsResources.NoMatchingConstructorExists, registration.ActivatorData.ImplementationType));
+                    string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.NoMatchingConstructorExists, registration.ActivatorData.ImplementationType));
 
             return registration.UsingConstructor(new MatchingSignatureConstructorSelector(signature));
         }
@@ -922,13 +925,23 @@ namespace Autofac
         /// <returns>
         /// Registration builder allowing the registration to be configured.
         /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="registration" /> or <paramref name="target" /> is <see langword="null" />.
+        /// </exception>
         public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             Targeting<TLimit, TActivatorData, TSingleRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
                 IComponentRegistration target)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
-            if (target == null) throw new ArgumentNullException("target");
+            if (registration == null)
+            {
+                throw new ArgumentNullException("registration");
+            }
+            if (target == null)
+            {
+                throw new ArgumentNullException("target");
+            }
             registration.RegistrationStyle.Target = target.Target;
             return registration;
         }
@@ -1044,20 +1057,20 @@ namespace Autofac
         /// the excluded type.
         /// </summary>
         /// <param name="registration">Registration to filter types from.</param>
-        /// <param name="customisedRegistration">Registration for the excepted type.</param>
+        /// <param name="customizedRegistration">Registration for the excepted type.</param>
         /// <typeparam name="T">The concrete type to exclude.</typeparam>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             Except<T>(
                 this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> registration,
-                Action<IRegistrationBuilder<T, ConcreteReflectionActivatorData, SingleRegistrationStyle>> customisedRegistration)
+                Action<IRegistrationBuilder<T, ConcreteReflectionActivatorData, SingleRegistrationStyle>> customizedRegistration)
         {
             var result = registration.Except<T>();
 
             result.ActivatorData.PostScanningCallbacks.Add(cr =>
             {
                 var rb = RegistrationBuilder.ForType<T>();
-                customisedRegistration(rb);
+                customizedRegistration(rb);
                 RegistrationBuilder.RegisterSingleComponent(cr, rb);
             });
 

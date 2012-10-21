@@ -39,10 +39,9 @@ namespace Autofac.Core.Resolving
         readonly Stack<InstanceLookup> _activationStack = new Stack<InstanceLookup>();
         ICollection<InstanceLookup> _successfulActivations;
         readonly ISharingLifetimeScope _mostNestedLifetimeScope;
-        readonly CircularDependencyDetector _circularDependencyDetector = new CircularDependencyDetector();
         int _callDepth;
         bool _ended;
-        
+
         /// <summary>
         /// Create an instance of <see cref="ResolveOperation"/> in the provided scope.
         /// </summary>
@@ -75,12 +74,12 @@ namespace Autofac.Core.Resolving
         public object Execute(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
             object result;
-            
+
             try
             {
                 result = ResolveComponent(registration, parameters);
             }
-            catch(DependencyResolutionException dependencyResolutionException)
+            catch (DependencyResolutionException dependencyResolutionException)
             {
                 End(dependencyResolutionException);
                 throw;
@@ -111,7 +110,7 @@ namespace Autofac.Core.Resolving
             if (parameters == null) throw new ArgumentNullException("parameters");
             if (_ended) throw new ObjectDisposedException(ResolveOperationResources.TemporaryContextDisposed, innerException: null);
 
-            _circularDependencyDetector.CheckForCircularDependency(registration, _activationStack, ++_callDepth);
+            CircularDependencyDetector.CheckForCircularDependency(registration, _activationStack, ++_callDepth);
 
             var activation = new InstanceLookup(registration, this, currentOperationScope, parameters);
 

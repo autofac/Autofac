@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
@@ -82,7 +83,8 @@ namespace Autofac.Features.OpenGenerics
 
         public override string ToString()
         {
-            return string.Format(OpenGenericRegistrationSourceResources.OpenGenericRegistrationSourceDescription,
+            return string.Format(CultureInfo.CurrentCulture,
+                OpenGenericRegistrationSourceResources.OpenGenericRegistrationSourceDescription,
                 _activatorData.ImplementationType.FullName,
                 string.Join(", ", _registrationData.Services.Select(s => s.Description).ToArray()));
         }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 
 namespace Autofac.Core.Registration
@@ -39,30 +41,30 @@ namespace Autofac.Core.Registration
         /// The known implementations.
         /// </summary>
         public IEnumerable<IComponentRegistration> Implementations
-        { 
+        {
             get
             {
                 RequiresInitialization();
-                return _implementations; 
+                return _implementations;
             }
         }
 
         void RequiresInitialization()
         {
             if (!IsInitialized)
-                throw new InvalidOperationException(ServiceRegistrationInfoResources.NotInitialised);
+                throw new InvalidOperationException(ServiceRegistrationInfoResources.NotInitialized);
         }
 
         /// <summary>
         /// True if any implementations are known.
         /// </summary>
         public bool IsRegistered
-        { 
-            get 
+        {
+            get
             {
                 RequiresInitialization();
-                return Any; 
-            } 
+                return Any;
+            }
         }
 
         bool Any { get { return _implementations.First != null; } }
@@ -77,6 +79,7 @@ namespace Autofac.Core.Registration
             {
                 if (Any)
                     Debug.WriteLine(String.Format(
+                        CultureInfo.InvariantCulture,
                         "[Autofac] Overriding default for: '{0}' with: '{1}' (was '{2}')",
                         _service, registration, _implementations.First.Value));
 
@@ -101,7 +104,7 @@ namespace Autofac.Core.Registration
         public void Include(IRegistrationSource source)
         {
             if (IsInitialized)
-                BeginInitialization(new[] { source });            
+                BeginInitialization(new[] { source });
             else if (IsInitializing)
                 _sourcesToQuery.Enqueue(source);
         }
@@ -132,7 +135,7 @@ namespace Autofac.Core.Registration
         void EnforceDuringInitialization()
         {
             if (!IsInitializing)
-                throw new InvalidOperationException(ServiceRegistrationInfoResources.NotDuringInitialisation);
+                throw new InvalidOperationException(ServiceRegistrationInfoResources.NotDuringInitialization);
         }
 
         public IRegistrationSource DequeueNextSource()
@@ -152,6 +155,7 @@ namespace Autofac.Core.Registration
             _sourcesToQuery = null;
         }
 
+        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "registration")]
         public bool ShouldRecalculateAdaptersOn(IComponentRegistration registration)
         {
             // The best optimisation we could make here is to track which services
@@ -160,6 +164,9 @@ namespace Autofac.Core.Registration
             // logic that performs the query then marks the service info as
             // an adapted on. Then only when registration supports services that
             // have been adapted do we need to do any querying at all.
+            //
+            // Once the optimization is in place, REMOVE THE SUPPRESSMESSAGE ATTRIBUTE
+            // as, ostensibly, the actual registration will be used at that time.
             return IsInitialized;
         }
     }

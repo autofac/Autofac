@@ -118,12 +118,19 @@ namespace Autofac.Builder
         /// <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
         /// <param name="registration">Registration to change parameter mapping mode of.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="registration" /> is <see langword="null" />.
+        /// </exception>
         public static IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>
             NamedParameterMapping<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>(
                 this IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle> registration)
             where TGeneratedFactoryActivatorData : GeneratedFactoryActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
+            if (registration == null)
+            {
+                throw new ArgumentNullException("registration");
+            }
             registration.ActivatorData.ParameterMapping = ParameterMapping.ByName;
             return registration;
         }
@@ -137,12 +144,19 @@ namespace Autofac.Builder
         /// <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
         /// <param name="registration">Registration to change parameter mapping mode of.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="registration" /> is <see langword="null" />.
+        /// </exception>
         public static IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>
             PositionalParameterMapping<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>(
                 this IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle> registration)
             where TGeneratedFactoryActivatorData : GeneratedFactoryActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
+            if (registration == null)
+            {
+                throw new ArgumentNullException("registration");
+            }
             registration.ActivatorData.ParameterMapping = ParameterMapping.ByPosition;
             return registration;
         }
@@ -156,12 +170,19 @@ namespace Autofac.Builder
         /// <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
         /// <param name="registration">Registration to change parameter mapping mode of.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="registration" /> is <see langword="null" />.
+        /// </exception>
         public static IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>
             TypedParameterMapping<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>(
                 this IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle> registration)
             where TGeneratedFactoryActivatorData : GeneratedFactoryActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
+            if (registration == null)
+            {
+                throw new ArgumentNullException("registration");
+            }
             registration.ActivatorData.ParameterMapping = ParameterMapping.ByType;
             return registration;
         }

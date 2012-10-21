@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Globalization;
 using System.Linq;
 
 namespace Autofac.Core.Activators.Reflection
@@ -61,7 +62,8 @@ namespace Autofac.Core.Activators.Reflection
                 return maximal[0];
 
             throw new DependencyResolutionException(string.Format(
-                "Cannot choose between multiple constructors with equal length {0} on type '{1}'. Select the constructor explicitly, with the UsingConstructor() configuration method, when the component is registered.",
+                CultureInfo.CurrentCulture,
+                MostParametersConstructorSelectorResources.UnableToChooseFromMultipleConstructors,
                 maxLength,
                 maximal[0].TargetConstructor.DeclaringType));
         }

@@ -60,6 +60,7 @@ namespace Autofac.Core
                     _items = null;
                 }
             }
+            base.Dispose(disposing);
         }
 
         /// <summary>

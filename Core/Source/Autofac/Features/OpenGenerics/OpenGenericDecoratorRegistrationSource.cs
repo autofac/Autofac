@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
@@ -48,7 +49,7 @@ namespace Autofac.Features.OpenGenerics
 
             if (registrationData.Services.Contains((Service)activatorData.FromService))
                 throw new ArgumentException(string.Format(
-                    OpenGenericDecoratorRegistrationSourceResources.FromAndToMustDiffer, activatorData.FromService));
+                    CultureInfo.CurrentCulture, OpenGenericDecoratorRegistrationSourceResources.FromAndToMustDiffer, activatorData.FromService));
 
             _registrationData = registrationData;
             _activatorData = activatorData;
@@ -98,7 +99,8 @@ namespace Autofac.Features.OpenGenerics
 
         public override string ToString()
         {
-            return string.Format(OpenGenericDecoratorRegistrationSourceResources.OpenGenericDecoratorRegistrationSourceImplFromTo,
+            return string.Format(CultureInfo.CurrentCulture,
+                OpenGenericDecoratorRegistrationSourceResources.OpenGenericDecoratorRegistrationSourceImplFromTo,
                 _activatorData.ImplementationType.FullName,
                 ((Service)_activatorData.FromService).Description,
                 string.Join(", ", _registrationData.Services.Select(s => s.Description).ToArray()));

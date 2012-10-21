@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Globalization;
 using System.Linq;
 
 namespace Autofac.Core.Activators.Reflection
@@ -53,7 +54,7 @@ namespace Autofac.Core.Activators.Reflection
         public ConstructorParameterBinding SelectConstructorBinding(ConstructorParameterBinding[] constructorBindings)
         {
             if (constructorBindings == null) throw new ArgumentNullException("constructorBindings");
-            
+
             var result = constructorBindings
                 .Where(b => b.TargetConstructor.GetParameters().Select(p => p.ParameterType).SequenceEqual(_signature))
                 .ToArray();
@@ -68,9 +69,9 @@ namespace Autofac.Core.Activators.Reflection
             var signature = string.Join(", ", _signature.Select(t => t.Name).ToArray());
 
             if (result.Length == 0)
-                throw new DependencyResolutionException(string.Format(MatchingSignatureConstructorSelectorResources.RequiredConstructorNotAvailable, targetTypeName, signature));
-            
-            throw new DependencyResolutionException(string.Format(MatchingSignatureConstructorSelectorResources.TooManyConstructorsMatch, signature));
+                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, MatchingSignatureConstructorSelectorResources.RequiredConstructorNotAvailable, targetTypeName, signature));
+
+            throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, MatchingSignatureConstructorSelectorResources.TooManyConstructorsMatch, signature));
         }
     }
 }

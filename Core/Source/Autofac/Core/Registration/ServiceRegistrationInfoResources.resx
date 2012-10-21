@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="NotDuringInitialisation" xml:space="preserve">
-    <value>The operation is only valid during intialisation.</value>
+  <data name="NotDuringInitialization" xml:space="preserve">
+    <value>The operation is only valid during initialization.</value>
   </data>
-  <data name="NotInitialised" xml:space="preserve">
-    <value>The operation is not valid until the object is initalised.</value>
+  <data name="NotInitialized" xml:space="preserve">
+    <value>The operation is not valid until the object is initialized.</value>
   </data>
 </root>

@@ -12,9 +12,9 @@ namespace Autofac.Builder
         /// <summary>
         /// Specify a reflection activator for the given type.
         /// </summary>
-        /// <param name="implementor">Type that will be activated.</param>
-        public ConcreteReflectionActivatorData(Type implementor)
-            : base(implementor)
+        /// <param name="implementer">Type that will be activated.</param>
+        public ConcreteReflectionActivatorData(Type implementer)
+            : base(implementer)
         {
         }
 

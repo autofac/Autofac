@@ -117,16 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="InstanceRegistrationsAreSingleInstanceOnly" xml:space="preserve">
-    <value>The instance  registration '{0}' can support SingleInstance() sharing only.</value>
-  </data>
-  <data name="MetadataAttributeNotFound" xml:space="preserve">
-    <value>A metadata attribute of type {0} was not found on {1}.</value>
-  </data>
-  <data name="MultipleMetadataAttributesSameType" xml:space="preserve">
-    <value>More than one metadata attribute of type {0} was found on {1}.</value>
-  </data>
-  <data name="NoMatchingConstructorExists" xml:space="preserve">
-    <value>No matching constructor exists on type '{0}'.</value>
+  <data name="ThisAssemblyUnavailable" xml:space="preserve">
+    <value>Module.ThisAssembly is only available in modules that inherit directly from Module.</value>
   </data>
 </root>

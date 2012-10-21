@@ -45,7 +45,7 @@ namespace Autofac.Features.ResolveAnything
         /// Initializes a new instance of the <see cref="AnyConcreteTypeNotAlreadyRegisteredSource"/> class.
         /// </summary>
         public AnyConcreteTypeNotAlreadyRegisteredSource()
-            : this (t => true)
+            : this(t => true)
         {
         }
 
@@ -69,6 +69,10 @@ namespace Autofac.Features.ResolveAnything
             Service service,
             Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
+            if (registrationAccessor == null)
+            {
+                throw new ArgumentNullException("registrationAccessor");
+            }
             var ts = service as TypedService;
             if (ts == null ||
                 !ts.ServiceType.IsClass ||

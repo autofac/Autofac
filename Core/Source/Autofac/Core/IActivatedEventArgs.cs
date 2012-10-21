@@ -24,12 +24,14 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Autofac.Core
 {
     /// <summary>
     /// Fired when the activation process for a new instance is complete.
     /// </summary>
+    [SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]
     public interface IActivatedEventArgs<out T>
     {
         /// <summary>

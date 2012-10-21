@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Autofac.Core;
 using Autofac.Util;
@@ -124,23 +125,23 @@ namespace Autofac.Features.OpenGenerics
 
             if (!implementationType.IsGenericTypeDefinition)
                 throw new ArgumentException(
-                    string.Format(OpenGenericServiceBinderResources.ImplementorMustBeOpenGenericTypeDefinition, implementationType));
+                    string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.ImplementorMustBeOpenGenericTypeDefinition, implementationType));
 
             foreach (IServiceWithType service in services)
             {
                 if (!service.ServiceType.IsGenericTypeDefinition)
                     throw new ArgumentException(
-                        string.Format(OpenGenericServiceBinderResources.ServiceTypeMustBeOpenGenericTypeDefinition, service));
+                        string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.ServiceTypeMustBeOpenGenericTypeDefinition, service));
 
                 if (service.ServiceType.IsInterface)
                 {
                     if (GetInterface(implementationType, service.ServiceType) == null)
-                        throw new ArgumentException(string.Format(OpenGenericServiceBinderResources.InterfaceIsNotImplemented, implementationType, service));
+                        throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.InterfaceIsNotImplemented, implementationType, service));
                 }
                 else
                 {
                     if (!Traverse.Across(implementationType, t => t.BaseType).Any(t => IsCompatibleGenericClassDefinition(t, service.ServiceType)))
-                        throw new ArgumentException(string.Format(OpenGenericServiceBinderResources.TypesAreNotConvertible, implementationType, service));
+                        throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.TypesAreNotConvertible, implementationType, service));
                 }
             }
         }

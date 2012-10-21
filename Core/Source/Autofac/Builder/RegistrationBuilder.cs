@@ -54,13 +54,13 @@ namespace Autofac.Builder
         /// <summary>
         /// Creates a registration builder for the provided type.
         /// </summary>
-        /// <typeparam name="TImplementor">Implementation type to register.</typeparam>
+        /// <typeparam name="TImplementer">Implementation type to register.</typeparam>
         /// <returns>A registration builder.</returns>
-        public static IRegistrationBuilder<TImplementor, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType<TImplementor>()
+        public static IRegistrationBuilder<TImplementer, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType<TImplementer>()
         {
-            return new RegistrationBuilder<TImplementor, ConcreteReflectionActivatorData, SingleRegistrationStyle>(
-                new TypedService(typeof(TImplementor)),
-                new ConcreteReflectionActivatorData(typeof(TImplementor)),
+            return new RegistrationBuilder<TImplementer, ConcreteReflectionActivatorData, SingleRegistrationStyle>(
+                new TypedService(typeof(TImplementer)),
+                new ConcreteReflectionActivatorData(typeof(TImplementer)),
                 new SingleRegistrationStyle());
         }
 
@@ -95,19 +95,26 @@ namespace Autofac.Builder
         /// <typeparam name="TLimit"></typeparam>
         /// <typeparam name="TActivatorData"></typeparam>
         /// <typeparam name="TSingleRegistrationStyle"></typeparam>
-        /// <param name="rb">The registration builder.</param>
+        /// <param name="builder">The registration builder.</param>
         /// <returns>An IComponentRegistration.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="builder" /> is <see langword="null" />.
+        /// </exception>
         public static IComponentRegistration CreateRegistration<TLimit, TActivatorData, TSingleRegistrationStyle>(
-            this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> rb)
+            this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> builder)
             where TSingleRegistrationStyle : SingleRegistrationStyle
             where TActivatorData : IConcreteActivatorData
         {
+            if (builder == null)
+            {
+                throw new ArgumentNullException("builder");
+            }
             return CreateRegistration(
-                rb.RegistrationStyle.Id,
-                rb.RegistrationData,
-                rb.ActivatorData.Activator,
-                rb.RegistrationData.Services,
-                rb.RegistrationStyle.Target);
+                builder.RegistrationStyle.Id,
+                builder.RegistrationData,
+                builder.ActivatorData.Activator,
+                builder.RegistrationData.Services,
+                builder.RegistrationStyle.Target);
         }
 
         /// <summary>
@@ -136,6 +143,9 @@ namespace Autofac.Builder
         /// <param name="services">Services provided by the registration.</param>
         /// <param name="target">Optional; target registration.</param>
         /// <returns>An IComponentRegistration.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="activator" /> or <paramref name="data" /> is <see langword="null" />.
+        /// </exception>
         public static IComponentRegistration CreateRegistration(
             Guid id,
             RegistrationData data,
@@ -143,6 +153,14 @@ namespace Autofac.Builder
             IEnumerable<Service> services,
             IComponentRegistration target)
         {
+            if (activator == null)
+            {
+                throw new ArgumentNullException("activator");
+            }
+            if (data == null)
+            {
+                throw new ArgumentNullException("data");
+            }
             var limitType = activator.LimitType;
             if (limitType != typeof(object))
                 foreach (var ts in services.OfType<IServiceWithType>())
@@ -192,19 +210,23 @@ namespace Autofac.Builder
         /// <typeparam name="TActivatorData"></typeparam>
         /// <typeparam name="TSingleRegistrationStyle"></typeparam>
         /// <param name="cr">Component registry to make registration in.</param>
-        /// <param name="rb">Registration builder with data for new registration.</param>
+        /// <param name="builder">Registration builder with data for new registration.</param>
         public static void RegisterSingleComponent<TLimit, TActivatorData, TSingleRegistrationStyle>(
             IComponentRegistry cr,
-            IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> rb)
+            IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> builder)
             where TSingleRegistrationStyle : SingleRegistrationStyle
             where TActivatorData : IConcreteActivatorData
         {
-            var registration = CreateRegistration(rb);
+            if (cr == null)
+            {
+                throw new ArgumentNullException("cr");
+            }
+            var registration = CreateRegistration(builder);
 
-            cr.Register(registration, rb.RegistrationStyle.PreserveDefaults);
+            cr.Register(registration, builder.RegistrationStyle.PreserveDefaults);
 
             var registeredEventArgs = new ComponentRegisteredEventArgs(cr, registration);
-            foreach (var rh in rb.RegistrationStyle.RegisteredHandlers)
+            foreach (var rh in builder.RegistrationStyle.RegisteredHandlers)
                 rh(cr, registeredEventArgs);
         }
     }

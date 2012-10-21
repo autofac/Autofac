@@ -88,7 +88,7 @@ namespace Autofac.Core.Registration
             IEnumerable<Service> services,
             IDictionary<string, object> metadata,
             IComponentRegistration target)
-         : this(id, activator, lifetime, sharing, ownership, services, metadata)
+            : this(id, activator, lifetime, sharing, ownership, services, metadata)
         {
             _target = Enforce.ArgumentNotNull(target, "target");
         }
@@ -228,6 +228,7 @@ namespace Autofac.Core.Registration
         {
             if (disposing)
                 Activator.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

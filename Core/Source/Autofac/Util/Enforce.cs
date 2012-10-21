@@ -31,11 +31,11 @@ using System.Reflection;
 
 namespace Autofac.Util
 {
-	/// <summary>
-	/// Helper methods used throughout the codebase.
-	/// </summary>
-	static class Enforce
-	{
+    /// <summary>
+    /// Helper methods used throughout the codebase.
+    /// </summary>
+    static class Enforce
+    {
         /// <summary>
         /// Enforce that an argument is not null. Returns the
         /// value if valid so that it can be used inline in
@@ -45,17 +45,17 @@ namespace Autofac.Util
         /// <param name="value"></param>
         /// <param name="name"></param>
         /// <returns><paramref name="value"/></returns>
-        public static T ArgumentNotNull<T>(T value, string name)
+        public static T ArgumentNotNull<T>([ValidatedNotNull]T value, string name)
             where T : class
-		{
-			if (name == null)
-				throw new ArgumentNullException("name");
-			
-			if (value == null)
-				throw new ArgumentNullException(name);
+        {
+            if (name == null)
+                throw new ArgumentNullException("name");
+
+            if (value == null)
+                throw new ArgumentNullException(name);
 
             return value;
-		}
+        }
 
         /// <summary>
         /// Enforce that sequence does not contain null. Returns the
@@ -84,7 +84,7 @@ namespace Autofac.Util
         /// <typeparam name="T"></typeparam>
         /// <param name="value">The value.</param>
         /// <returns><paramref name="value"/></returns>
-        public static T NotNull<T>(T value)
+        public static T NotNull<T>([ValidatedNotNull]T value)
             where T : class
         {
             if (value == null)
@@ -102,12 +102,12 @@ namespace Autofac.Util
         /// <param name="value">The value.</param>
         /// <param name="description">The description.</param>
         /// <returns><paramref name="value"/></returns>
-        public static string ArgumentNotNullOrEmpty(string value, string description)
+        public static string ArgumentNotNullOrEmpty([ValidatedNotNull]string value, string description)
         {
             if (description == null) throw new ArgumentNullException("description");
             if (value == null) throw new ArgumentNullException(description);
 
-            if (value == string.Empty)
+            if (value.Length == 0)
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
                     EnforceResources.CannotBeEmpty, description));
 

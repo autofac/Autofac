@@ -317,7 +317,7 @@ namespace Autofac.Configuration
                 case "Y":
                 case "TRUE":
                 case "1":
-                    registrar.PropertiesAutowired(PropertyWiringFlags.AllowCircularDependencies);
+                    registrar.PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
                     break;
                 default:
                     throw new ConfigurationErrorsException(string.Format(CultureInfo.CurrentCulture, ConfigurationSettingsReaderResources.UnrecognisedInjectProperties, injectProperties));

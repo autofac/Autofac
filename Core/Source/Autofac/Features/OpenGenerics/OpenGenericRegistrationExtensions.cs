@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Globalization;
 using Autofac.Builder;
 using Autofac.Core;
 
@@ -39,7 +40,7 @@ namespace Autofac.Features.OpenGenerics
 
             if (!implementor.IsGenericTypeDefinition)
                 throw new ArgumentException(string.Format(
-                    OpenGenericRegistrationExtensionsResources.ImplementorMustBeOpenGenericType, implementor));
+                    CultureInfo.CurrentCulture, OpenGenericRegistrationExtensionsResources.ImplementorMustBeOpenGenericType, implementor));
 
             var rb = new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(
                 new TypedService(implementor),
