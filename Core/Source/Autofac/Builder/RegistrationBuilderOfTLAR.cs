@@ -27,7 +27,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Linq.Expressions;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
@@ -129,36 +128,19 @@ namespace Autofac.Builder
         }
 
         /// <summary>
-        /// Configure the component so that every dependent component or call to Resolve()
-        /// within a ILifetimeScope tagged with the provided tag value gets the same, shared instance.
+        /// Configure the component so that every dependent component or call to Resolve() within
+        /// a ILifetimeScope tagged with any of the provided tags value gets the same, shared instance.
         /// Dependent components in lifetime scopes that are children of the tagged scope will
         /// share the parent's instance. If no appropriately tagged scope can be found in the
         /// hierarchy an <see cref="DependencyResolutionException"/> is thrown.
         /// </summary>
         /// <param name="lifetimeScopeTag">Tag applied to matching lifetime scopes.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerMatchingLifetimeScope(object lifetimeScopeTag)
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerMatchingLifetimeScope(params object[] lifetimeScopeTag)
         {
             if (lifetimeScopeTag == null) throw new ArgumentNullException("lifetimeScopeTag");
             RegistrationData.Sharing = InstanceSharing.Shared;
             RegistrationData.Lifetime = new MatchingScopeLifetime(lifetimeScopeTag);
-            return this;
-        }
-
-        /// <summary>
-        /// Configure the component so that every dependent component or call to Resolve()
-        /// within a ILifetimeScope with a tag matching the provided expression gets the same, shared instance.
-        /// Dependent components in lifetime scopes that are children of the tagged scope will
-        /// share the parent's instance. If no appropriately tagged scope can be found in the
-        /// hierarchy an <see cref="DependencyResolutionException"/> is thrown.
-        /// </summary>
-        /// <param name="matchExpression">Expression describing scopes that will match.</param>
-        /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerMatchingLifetimeScope(Expression<Func<object, bool>> matchExpression)
-        {
-            if (matchExpression == null) throw new ArgumentNullException("matchExpression");
-            RegistrationData.Sharing = InstanceSharing.Shared;
-            RegistrationData.Lifetime = new MatchingScopeLifetime(matchExpression);
             return this;
         }
 

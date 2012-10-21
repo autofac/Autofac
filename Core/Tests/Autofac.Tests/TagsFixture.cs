@@ -189,8 +189,7 @@ namespace Autofac.Tests
             const string tag2 = "Tag2";
 
             var builder = new ContainerBuilder();
-            builder.Register(c => new object()).InstancePerMatchingLifetimeScope(
-                tag => tag.Equals(tag1) || tag.Equals(tag2));
+            builder.Register(c => new object()).InstancePerMatchingLifetimeScope(tag1, tag2);
             var container = builder.Build();
 
             var lifetimeScope = container.BeginLifetimeScope(tag1);

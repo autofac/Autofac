@@ -9,7 +9,7 @@ namespace Autofac.Tests.Core.Lifetime
     public class MatchingScopeLifetimeTests
     {
         [Test]
-        public void ObjectBasedMatch_WhenNoMatchingScopeIsPresent_TheExceptionMessageIncludesTheTag()
+        public void WhenNoMatchingScopeIsPresent_TheExceptionMessageIncludesTheTag()
         {
             var container = new Container();
             const string tag = "abcdefg";
@@ -21,16 +21,29 @@ namespace Autofac.Tests.Core.Lifetime
         }
 
         [Test]
-        public void ObjectBasedMatch_WhenProvidedTagIsNull_ExceptionThrown()
+        public void WhenNoMatchingScopeIsPresent_TheExceptionMessageIncludesTheTags()
         {
-            var exception = Assert.Throws<ArgumentNullException>(
-                () => new MatchingScopeLifetime((object)null));
+            var container = new Container();
+            const string tag1 = "abc";
+            const string tag2 = "def";
+            var msl = new MatchingScopeLifetime(tag1, tag2);
+            var rootScope = (ISharingLifetimeScope)container.Resolve<ILifetimeScope>();
 
-            Assert.That(exception.ParamName, Is.EqualTo("lifetimeScopeTagToMatch"));
+            var ex = Assert.Throws<DependencyResolutionException>(() => msl.FindScope(rootScope));
+            Assert.That(ex.Message.Contains(string.Format("{0}, {1}", tag1, tag2)));
         }
 
         [Test]
-        public void ObjectBasedMatch_MatchesAgainstTaggedScope()
+        public void WhenTagsToMatchIsNull_ExceptionThrown()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => new MatchingScopeLifetime(null));
+
+            Assert.That(exception.ParamName, Is.EqualTo("lifetimeScopeTagsToMatch"));
+        }
+
+        [Test]
+        public void MatchesAgainstSingleTaggedScope()
         {
             const string tag = "Tag";
             var msl = new MatchingScopeLifetime(tag);
@@ -41,30 +54,12 @@ namespace Autofac.Tests.Core.Lifetime
         }
 
         [Test]
-        public void ExpressionBasedMatch_WhenNoMatchingScopeIsPresent_TheExceptionMessageIncludesTheExpression()
-        {
-            var container = new Container();
-            var msl = new MatchingScopeLifetime(tag => "ABC".Equals(tag));
-            var rootScope = (ISharingLifetimeScope)container.Resolve<ILifetimeScope>();
-
-            var ex = Assert.Throws<DependencyResolutionException>(() => msl.FindScope(rootScope));
-            Assert.That(ex.Message.Contains("\"ABC\".Equals(tag)"));
-        }
-
-        [Test]
-        public void ExpressionBasedMatch_WhenProvidedExpressionIsNull_ExceptionThrown()
-        {
-            var exception = Assert.Throws<ArgumentNullException>(() => new MatchingScopeLifetime(null));
-            Assert.That(exception.ParamName, Is.EqualTo("matchExpression"));
-        }
-
-        [Test]
-        public void ExpressionBasedMatch_MatchesAgainstMultipleScopes()
+        public void MatchesAgainstMultipleTaggedScopes()
         {
             const string tag1 = "Tag1";
             const string tag2 = "Tag2";
 
-            var msl = new MatchingScopeLifetime(tag => tag.Equals(tag1) || tag.Equals(tag2));
+            var msl = new MatchingScopeLifetime(tag1, tag2);
             var container = new Container();
 
             var tag1Scope = (ISharingLifetimeScope)container.BeginLifetimeScope(tag1);

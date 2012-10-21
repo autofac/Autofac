@@ -25,7 +25,7 @@
 
 using System;
 using System.Globalization;
-using System.Linq.Expressions;
+using System.Linq;
 
 namespace Autofac.Core.Lifetime
 {
@@ -34,29 +34,17 @@ namespace Autofac.Core.Lifetime
     /// </summary>
     public class MatchingScopeLifetime : IComponentLifetime
     {
-        readonly Func<object, bool> _matcher;
-        readonly string _matchExpressionCode;
-
-        /// <summary>
-        /// Match scopes based on the provided expression.
-        /// </summary>
-        /// <param name="matchExpression">Expression describing scopes that will match.</param>
-        public MatchingScopeLifetime(Expression<Func<object, bool>> matchExpression)
-        {
-            if (matchExpression == null) throw new ArgumentNullException("matchExpression");
-            _matcher = matchExpression.Compile();
-            _matchExpressionCode = matchExpression.Body.ToString();
-        }
+        readonly object[] _tagsToMatch;
 
         /// <summary>
         /// Match scopes by comparing tags for equality.
         /// </summary>
-        /// <param name="lifetimeScopeTagToMatch">The tag applied to matching scopes.</param>
-        public MatchingScopeLifetime(object lifetimeScopeTagToMatch)
+        /// <param name="lifetimeScopeTagsToMatch">The tags applied to matching scopes.</param>
+        public MatchingScopeLifetime(params object[] lifetimeScopeTagsToMatch)
         {
-            if (lifetimeScopeTagToMatch == null) throw new ArgumentNullException("lifetimeScopeTagToMatch");
-            _matcher = lifetimeScopeTagToMatch.Equals;
-            _matchExpressionCode = lifetimeScopeTagToMatch.ToString();
+            if (lifetimeScopeTagsToMatch == null) throw new ArgumentNullException("lifetimeScopeTagsToMatch");
+
+            _tagsToMatch = lifetimeScopeTagsToMatch;
         }
 
         /// <summary>
@@ -72,14 +60,14 @@ namespace Autofac.Core.Lifetime
             var next = mostNestedVisibleScope;
             while (next != null)
             {
-                if (_matcher(next.Tag))
+                if (_tagsToMatch.Contains(next.Tag))
                     return next;
 
                 next = next.ParentLifetimeScope;
             }
 
             throw new DependencyResolutionException(string.Format(
-                CultureInfo.CurrentCulture, MatchingScopeLifetimeResources.MatchingScopeNotFound, _matchExpressionCode));
+                CultureInfo.CurrentCulture, MatchingScopeLifetimeResources.MatchingScopeNotFound, string.Join(", ", _tagsToMatch)));
         }
     }
 }
