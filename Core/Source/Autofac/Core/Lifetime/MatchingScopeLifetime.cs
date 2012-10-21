@@ -34,14 +34,14 @@ namespace Autofac.Core.Lifetime
     /// </summary>
     public class MatchingScopeLifetime : IComponentLifetime
     {
-        readonly Func<ILifetimeScope, bool> _matcher;
+        readonly Func<object, bool> _matcher;
         readonly string _matchExpressionCode;
 
         /// <summary>
         /// Match scopes based on the provided expression.
         /// </summary>
         /// <param name="matchExpression">Expression describing scopes that will match.</param>
-        public MatchingScopeLifetime(Expression<Func<ILifetimeScope, bool>> matchExpression)
+        public MatchingScopeLifetime(Expression<Func<object, bool>> matchExpression)
         {
             if (matchExpression == null) throw new ArgumentNullException("matchExpression");
             _matcher = matchExpression.Compile();
@@ -55,7 +55,7 @@ namespace Autofac.Core.Lifetime
         public MatchingScopeLifetime(object lifetimeScopeTagToMatch)
         {
             if (lifetimeScopeTagToMatch == null) throw new ArgumentNullException("lifetimeScopeTagToMatch");
-            _matcher = ls => lifetimeScopeTagToMatch.Equals(ls.Tag);
+            _matcher = lifetimeScopeTagToMatch.Equals;
             _matchExpressionCode = lifetimeScopeTagToMatch.ToString();
         }
 
@@ -72,7 +72,7 @@ namespace Autofac.Core.Lifetime
             var next = mostNestedVisibleScope;
             while (next != null)
             {
-                if (_matcher(next))
+                if (_matcher(next.Tag))
                     return next;
 
                 next = next.ParentLifetimeScope;

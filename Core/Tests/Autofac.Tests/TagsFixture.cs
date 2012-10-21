@@ -181,5 +181,23 @@ namespace Autofac.Tests
 
             Assert.IsTrue(threw);
         }
+
+        [Test]
+        public void MatchesAgainstMultipleScopes()
+        {
+            const string tag1 = "Tag1";
+            const string tag2 = "Tag2";
+
+            var builder = new ContainerBuilder();
+            builder.Register(c => new object()).InstancePerMatchingLifetimeScope(
+                tag => tag.Equals(tag1) || tag.Equals(tag2));
+            var container = builder.Build();
+
+            var lifetimeScope = container.BeginLifetimeScope(tag1);
+            Assert.That(lifetimeScope.Resolve<object>(), Is.Not.Null);
+
+            lifetimeScope = container.BeginLifetimeScope(tag2);
+            Assert.That(lifetimeScope.Resolve<object>(), Is.Not.Null);
+        }
     }
 }
