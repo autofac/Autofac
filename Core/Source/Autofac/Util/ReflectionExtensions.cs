@@ -115,5 +115,18 @@ namespace Autofac.Util
                     constructorCallExpression));
             return callExpression.Constructor;
         }
+
+        /// <summary>
+        /// Retrieves a custom attribute of a specified type that is applied to a specified member,
+        /// and optionally inspects the ancestors of that member.
+        /// </summary>
+        /// <typeparam name="T">The type of attribute to search for.</typeparam>
+        /// <param name="element">The member to inspect.</param>
+        /// <param name="inherit"><c>true</c> to inspect the ancestors of element; otherwise, <c>false</c>.</param>
+        /// <returns>A custom attribute that matches <typeparamref name="T"/>, or <c>null</c> if no such attribute is found.</returns>
+        public static T GetCustomAttribute<T>(this MemberInfo element, bool inherit) where T : Attribute
+        {
+            return (T)Attribute.GetCustomAttribute(element, typeof(T), inherit);
+        }
     }
 }

@@ -29,7 +29,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
-using Autofac.Features.Metadata;
 
 namespace Autofac.Integration.WebApi
 {
@@ -67,13 +66,13 @@ namespace Autofac.Integration.WebApi
             var dependencyScope = actionContext.Request.GetDependencyScope();
             var lifetimeScope = dependencyScope.GetRequestLifetimeScope();
 
-            var filters = lifetimeScope.Resolve<IEnumerable<Meta<Lazy<IAutofacAuthorizationFilter>, FilterMetadata>>>();
+            var filters = lifetimeScope.Resolve<IEnumerable<Lazy<IAutofacAuthorizationFilter, FilterMetadata>>>();
 
             foreach (var filter in filters.Where(FilterMatchesMetadata))
-                filter.Value.Value.OnAuthorization(actionContext);
+                filter.Value.OnAuthorization(actionContext);
         }
 
-        bool FilterMatchesMetadata(Meta<Lazy<IAutofacAuthorizationFilter>, FilterMetadata> filter)
+        bool FilterMatchesMetadata(Lazy<IAutofacAuthorizationFilter, FilterMetadata> filter)
         {
             return filter.Metadata.ControllerType == _filterMetadata.ControllerType
                    && filter.Metadata.FilterScope == _filterMetadata.FilterScope

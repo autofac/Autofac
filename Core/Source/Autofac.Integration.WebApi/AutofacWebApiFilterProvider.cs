@@ -114,8 +114,8 @@ namespace Autofac.Integration.WebApi
             where TFilter : class
             where TWrapper : IFilter
         {
-            var filters = filterContext.LifetimeScope.Resolve<IEnumerable<Meta<Lazy<TFilter>, FilterMetadata>>>();
-            foreach (var filter in filters)
+            var filters = filterContext.LifetimeScope.Resolve<IEnumerable<Lazy<TFilter, FilterMetadata>>>();
+            foreach (var filter in filters.Where(f => f.Metadata != null && f.Metadata.ControllerType != null))
             {
                 var metadata = filter.Metadata;
 
@@ -134,8 +134,8 @@ namespace Autofac.Integration.WebApi
             where TFilter : class
             where TWrapper : IFilter
         {
-            var filters = filterContext.LifetimeScope.Resolve<IEnumerable<Meta<Lazy<TFilter>, FilterMetadata>>>();
-            foreach (var filter in filters)
+            var filters = filterContext.LifetimeScope.Resolve<IEnumerable<Lazy<TFilter, FilterMetadata>>>();
+            foreach (var filter in filters.Where(f => f.Metadata != null && f.Metadata.ControllerType != null))
             {
                 var metadata = filter.Metadata;
                 if (metadata.ControllerType.IsAssignableFrom(filterContext.ControllerType)

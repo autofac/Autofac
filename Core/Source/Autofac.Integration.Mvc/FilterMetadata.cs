@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.ComponentModel;
 using System.Reflection;
 using System.Web.Mvc;
 
@@ -34,32 +35,28 @@ namespace Autofac.Integration.Mvc
     /// </summary>
     internal class FilterMetadata
     {
-        public FilterMetadata(Type controllerType, FilterScope filterScope, MethodInfo methodInfo, int order)
-        {
-            ControllerType = controllerType;
-            FilterScope = filterScope;
-            MethodInfo = methodInfo;
-            Order = order;
-        }
-
         /// <summary>
         /// Gets the type of the controller.
         /// </summary>
-        internal Type ControllerType { get; private set; }
+        [DefaultValue(null)]
+        public Type ControllerType { get; set; }
 
         /// <summary>
         /// Gets the filter scope.
         /// </summary>
-        internal FilterScope FilterScope { get; private set; }
+        [DefaultValue(FilterScope.First)]
+        public FilterScope FilterScope { get; set; }
 
         /// <summary>
         /// Gets the method info.
         /// </summary>
-        internal MethodInfo MethodInfo { get; private set; }
+        [DefaultValue(null)]
+        public MethodInfo MethodInfo { get; set; }
 
         /// <summary>
         /// Gets the order in which the filter is applied.
         /// </summary>
-        internal int Order { get; private set; }
+        [DefaultValue(-1)]
+        public int Order { get; set; }
     }
 }

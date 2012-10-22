@@ -71,9 +71,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="LazyWithMetadataRegistrationSource.cs" />
-    <Compile Include="Metadata.cs" />
-    <Compile Include="MetadataConfiguration.cs" />
-    <Compile Include="MetadataViewBuilder.cs" />
     <Compile Include="StronglyTypedMetaRegistrationSource.cs" />
     <Compile Include="Util\ReflectionExtensions.cs" />
     <Compile Include="Util\ReflectionExtensionsResources.Designer.cs">

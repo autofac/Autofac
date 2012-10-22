@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.ComponentModel;
 using System.Reflection;
 using System.Web.Http.Filters;
 
@@ -34,26 +35,22 @@ namespace Autofac.Integration.WebApi
     /// </summary>
     internal class FilterMetadata
     {
-        public FilterMetadata(Type controllerType, FilterScope filterScope, MethodInfo methodInfo)
-        {
-            ControllerType = controllerType;
-            FilterScope = filterScope;
-            MethodInfo = methodInfo;
-        }
-
         /// <summary>
         /// Gets the type of the controller.
         /// </summary>
-        internal Type ControllerType { get; private set; }
+        [DefaultValue(null)]
+        public Type ControllerType { get; set; }
 
         /// <summary>
         /// Gets the filter scope.
         /// </summary>
-        internal FilterScope FilterScope { get; private set; }
+        [DefaultValue(FilterScope.Global)]
+        public FilterScope FilterScope { get; set; }
 
         /// <summary>
         /// Gets the method info.
         /// </summary>
-        internal MethodInfo MethodInfo { get; private set; }
+        [DefaultValue(null)]
+        public MethodInfo MethodInfo { get; set; }
     }
 }

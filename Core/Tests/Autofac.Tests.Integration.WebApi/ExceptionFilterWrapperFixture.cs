@@ -42,7 +42,10 @@ namespace Autofac.Tests.Integration.WebApi
             var actionDescriptor = new ReflectedHttpActionDescriptor(controllerDescriptor, methodInfo);
             var actionContext = new HttpActionContext(contollerContext, actionDescriptor);
             var actionExecutedContext = new HttpActionExecutedContext(actionContext, null);
-            var metadata = new FilterMetadata(typeof(TestController), FilterScope.Action, methodInfo);
+            var metadata = new FilterMetadata
+            {
+                ControllerType = typeof(TestController), FilterScope = FilterScope.Action, MethodInfo = methodInfo
+            };
             var wrapper = new ExceptionFilterWrapper(metadata);
 
             wrapper.OnException(actionExecutedContext);

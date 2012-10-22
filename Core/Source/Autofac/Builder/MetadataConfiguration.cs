@@ -26,25 +26,23 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Autofac.Integration.Mef.Util;
+using Autofac.Core;
+using Autofac.Util;
 
-namespace Autofac.Integration.Mef
+namespace Autofac.Builder
 {
     /// <summary>
     /// Used with the WithMetadata configuration method to
-    /// associate key-value pairs with an <see cref="Autofac.Core.IComponentRegistration"/>.
+    /// associate key-value pairs with an <see cref="IComponentRegistration"/>.
     /// </summary>
     /// <typeparam name="TMetadata">Interface with properties whose names correspond to
     /// the property keys.</typeparam>
     /// <remarks>This feature was suggested by OJ Reeves (@TheColonial).</remarks>
-    public class MetadataConfiguration<TMetadata> : IMetadataConfiguration
+    public class MetadataConfiguration<TMetadata>
     {
         readonly IDictionary<string, object> _properties = new Dictionary<string, object>();
 
-        /// <summary>
-        /// Gets the metadata properties and values.
-        /// </summary>
-        public IEnumerable<KeyValuePair<string, object>> Properties { get { return _properties; } }
+        internal IEnumerable<KeyValuePair<string, object>> Properties { get { return _properties; } }
 
         /// <summary>
         /// Set one of the property values.
@@ -52,7 +50,7 @@ namespace Autofac.Integration.Mef
         /// <typeparam name="TProperty">The type of the property.</typeparam>
         /// <param name="propertyAccessor">An expression that accesses the property to set.</param>
         /// <param name="value">The property value to set.</param>
-        public MetadataConfiguration<TMetadata> Set<TProperty>(Expression<Func<TMetadata, TProperty>> propertyAccessor, TProperty value)
+        public MetadataConfiguration<TMetadata> For<TProperty>(Expression<Func<TMetadata, TProperty>> propertyAccessor, TProperty value)
         {
             if (propertyAccessor == null) throw new ArgumentNullException("propertyAccessor");
             var pn = ReflectionExtensions.GetProperty(propertyAccessor).Name;

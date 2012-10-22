@@ -446,8 +446,11 @@ namespace Autofac.Integration.Mvc
             if (registration == null) throw new ArgumentNullException("registration");
             if (actionSelector == null) throw new ArgumentNullException("actionSelector");
 
-            return registration.As<TFilter>().WithMetadata(
-                new FilterMetadata(typeof(TController), FilterScope.Action, GetMethodInfo(actionSelector), order));
+            return registration.As<TFilter>().WithMetadata<FilterMetadata>(m => m
+                .For(f => f.ControllerType, typeof(TController))
+                .For(f => f.FilterScope, FilterScope.Action)
+                .For(f => f.MethodInfo, GetMethodInfo(actionSelector))
+                .For(f => f.Order, order));
         }
 
         static IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle>
@@ -456,8 +459,11 @@ namespace Autofac.Integration.Mvc
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
-            return registration.As<TFilter>().WithMetadata(
-                new FilterMetadata(typeof(TController), FilterScope.Controller, null, order));
+            return registration.As<TFilter>().WithMetadata<FilterMetadata>(m => m
+                .For(f => f.ControllerType, typeof(TController))
+                .For(f => f.FilterScope, FilterScope.Controller)
+                .For(f => f.MethodInfo, null)
+                .For(f => f.Order, order));
         }
 
         static MethodInfo GetMethodInfo(LambdaExpression expression)

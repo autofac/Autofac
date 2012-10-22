@@ -24,17 +24,13 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Net.Http.Formatting;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using System.Web.Http.ModelBinding;
-using System.Web.Http.Validation;
-using System.Web.Http.ValueProviders;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.Scanning;
@@ -298,8 +294,10 @@ namespace Autofac.Integration.WebApi
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
-            return registration.As<TFilter>().WithMetadata(
-                new FilterMetadata(typeof(TController), FilterScope.Controller, null));
+            return registration.As<TFilter>().WithMetadata<FilterMetadata>(m => m
+                .For(f => f.ControllerType, typeof(TController))
+                .For(f => f.FilterScope, FilterScope.Controller)
+                .For(f => f.MethodInfo, null));
         }
 
         static IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle>
@@ -309,8 +307,10 @@ namespace Autofac.Integration.WebApi
             if (registration == null) throw new ArgumentNullException("registration");
             if (actionSelector == null) throw new ArgumentNullException("actionSelector");
 
-            return registration.As<TFilter>().WithMetadata(
-                new FilterMetadata(typeof(TController), FilterScope.Action, GetMethodInfo(actionSelector)));
+            return registration.As<TFilter>().WithMetadata<FilterMetadata>(m => m
+                .For(f => f.ControllerType, typeof(TController))
+                .For(f => f.FilterScope, FilterScope.Action)
+                .For(f => f.MethodInfo, GetMethodInfo(actionSelector)));
         }
 
         static MethodInfo GetMethodInfo(LambdaExpression expression)

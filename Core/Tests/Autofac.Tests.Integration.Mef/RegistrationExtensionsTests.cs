@@ -461,8 +461,8 @@ namespace Autofac.Tests.Integration.Mef
         {
             var builder = new ContainerBuilder();
             builder.RegisterMetadataRegistrationSources();
-            builder.Register(c => new object()).WithMetadata(
-                Metadata.For<IMeta>().Set(m => m.TheInt, 42));
+            builder.Register(c => new object()).WithMetadata<IMeta>(m =>
+                m.For(value => value.TheInt, 42));
             var container = builder.Build();
 
             var lazy = container.Resolve<Lazy<object, IMeta>>();
@@ -476,8 +476,8 @@ namespace Autofac.Tests.Integration.Mef
         {
             var builder = new ContainerBuilder();
             builder.RegisterMetadataRegistrationSources();
-            builder.Register(c => new object()).WithMetadata(
-                Metadata.For<IMeta>().Set(m => m.TheInt, 42));
+            builder.Register(c => new object()).WithMetadata<IMeta>(m =>
+                m.For(value => value.TheInt, 42));
             var container = builder.Build();
 
             var meta = container.Resolve<Meta<object, IMeta>>();

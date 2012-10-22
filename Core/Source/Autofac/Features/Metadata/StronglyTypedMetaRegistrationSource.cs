@@ -45,11 +45,6 @@ namespace Autofac.Features.Metadata
 
         delegate IComponentRegistration RegistrationCreator(Service service, IComponentRegistration valueRegistration);
 
-        /// <summary>
-        /// A key used to find strongly typed metadata in the metadata dictionary.
-        /// </summary>
-        internal static readonly string DictionaryKey = "AutofacMetadata";
-
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             if (registrationAccessor == null)
@@ -62,6 +57,9 @@ namespace Autofac.Features.Metadata
 
             var valueType = swt.ServiceType.GetGenericArguments()[0];
             var metaType = swt.ServiceType.GetGenericArguments()[1];
+
+            if (!metaType.IsClass)
+                return Enumerable.Empty<IComponentRegistration>();
 
             var valueService = swt.ChangeType(valueType);
 
@@ -87,13 +85,10 @@ namespace Autofac.Features.Metadata
         static IComponentRegistration CreateMetaRegistration<T, TMetadata>(Service providedService, IComponentRegistration valueRegistration)
         // ReSharper restore UnusedMember.Local
         {
-            object instance;
-            valueRegistration.Target.Metadata.TryGetValue(DictionaryKey, out instance);
-
             var rb = RegistrationBuilder
                 .ForDelegate((c, p) => new Meta<T, TMetadata>(
                     (T)c.ResolveComponent(valueRegistration, p),
-                    instance is TMetadata ? (TMetadata)instance : default(TMetadata)))
+                    MetadataViewProvider.GetMetadataViewProvider<TMetadata>()(valueRegistration.Target.Metadata)))
                 .As(providedService)
                 .Targeting(valueRegistration);
 

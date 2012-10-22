@@ -40,7 +40,10 @@ namespace Autofac.Tests.Integration.WebApi
             var methodInfo = typeof(TestController).GetMethod("Get");
             var actionDescriptor = new ReflectedHttpActionDescriptor(controllerDescriptor, methodInfo);
             var actionContext = new HttpActionContext(contollerContext, actionDescriptor);
-            var metadata = new FilterMetadata(typeof(TestController), FilterScope.Action, methodInfo);
+            var metadata = new FilterMetadata
+            {
+                ControllerType = typeof(TestController), FilterScope = FilterScope.Action, MethodInfo = methodInfo
+            };
             var wrapper = new AuthorizationFilterWrapper(metadata);
 
             wrapper.OnAuthorization(actionContext);

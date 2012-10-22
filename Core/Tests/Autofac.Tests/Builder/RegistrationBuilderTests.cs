@@ -17,23 +17,25 @@ namespace Autofac.Tests.Builder
         }
 
         [Test]
-        public void StronglyTypedInstanceConfigured_ReflectedInComponentRegistration()
+        public void WhenPropetyFromStronglyTypedClassConfigured_ReflectedInComponentRegistration()
         {
             var builder = RegistrationBuilder.ForType<object>();
-            builder.WithMetadata(new TestMetadata {A = 42, B = "hello"});
-            
-            var reg = builder.CreateRegistration();
-            var metadata = (TestMetadata)reg.Metadata[StronglyTypedMetaRegistrationSource.DictionaryKey];
+            builder.WithMetadata<TestMetadata>(ep => ep
+                .For(p => p.A, 42)
+                .For(p => p.B, "hello"));
 
-            Assert.That(metadata.A, Is.EqualTo(42));
-            Assert.That(metadata.B, Is.EqualTo("hello"));
+            var reg = builder.CreateRegistration();
+
+            Assert.That(reg.Metadata["A"], Is.EqualTo(42));
+            Assert.That(reg.Metadata["B"], Is.EqualTo("hello"));
         }
 
         [Test]
-        public void WhenInstanceIsNull_ArgumentExceptionThrown()
+        public void WhenAccessorNotPropertyAccessExpression_ArgumentExceptionThrown()
         {
             var builder = RegistrationBuilder.ForType<object>();
-            Assert.Throws<ArgumentNullException>(() => builder.WithMetadata(null));
+            Assert.Throws<ArgumentException>(() =>
+                builder.WithMetadata<TestMetadata>(ep => ep.For(p => 42, 42)));
         }
 
         [Test]

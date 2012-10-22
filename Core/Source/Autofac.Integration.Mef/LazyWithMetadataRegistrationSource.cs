@@ -91,7 +91,7 @@ namespace Autofac.Integration.Mef
                     var context = c.Resolve<IComponentContext>();
                     return new Lazy<T, TMeta>(
                         () => (T)context.ResolveComponent(valueRegistration, p),
-                        MetadataViewBuilder.GetMetadataView<TMeta>(valueRegistration.Target.Metadata));
+                        AttributedModelServices.GetMetadataView<TMeta>(valueRegistration.Target.Metadata));
                 })
                 .As(providedService)
                 .Targeting(valueRegistration);

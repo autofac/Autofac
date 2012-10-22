@@ -12,6 +12,21 @@ namespace Autofac.Tests.Integration.WebApi
     public class AutofacWebApiFilterProviderFixture
     {
         [Test]
+        public void FilterRegistrationsWithoutMetadataIgnored()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<AuthorizeAttribute>().AsImplementedInterfaces();
+            var container = builder.Build();
+            var provider = new AutofacWebApiFilterProvider(container);
+            var configuration = new HttpConfiguration {DependencyResolver = new AutofacWebApiDependencyResolver(container)};
+            var actionDescriptor = BuildActionDescriptorForGetMethod();
+
+            var filterInfos = provider.GetFilters(configuration, actionDescriptor);
+
+            Assert.That(filterInfos.Select(f => f.Instance).OfType<AuthorizeAttribute>().Any(), Is.False);
+        }
+
+        [Test]
         public void InjectsFilterPropertiesForRegisteredDependencies()
         {
             var builder = new ContainerBuilder();

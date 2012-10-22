@@ -17,6 +17,10 @@
     <TargetFrameworkProfile />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <SccProjectName>&lt;Project Location In Database&gt;</SccProjectName>
+    <SccLocalPath>&lt;Local Binding Root of Project&gt;</SccLocalPath>
+    <SccAuxPath>&lt;Source Control Database&gt;</SccAuxPath>
+    <SccProvider>Mercurial Source Control Package</SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -61,6 +65,8 @@
   <ItemGroup>
     <Compile Include="Builder\Properties.cs" />
     <Compile Include="Core\Activators\Reflection\DefaultConstructorFinderTests.cs" />
+    <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSourceTests.cs" />
+    <Compile Include="Features\Metadata\TestTypes.cs" />
     <Compile Include="PartialTrust\PartialTrustTestExecutor.cs" />
     <Compile Include="PartialTrust\PartialTrustTests.cs" />
     <Compile Include="Core\Activators\Reflection\DefaultValueParameterTests.cs" />
