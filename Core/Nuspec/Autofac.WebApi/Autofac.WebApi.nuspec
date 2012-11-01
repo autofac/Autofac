@@ -6,10 +6,10 @@
     <authors>Autofac Contributors</authors>
     <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>ASP.NET Web API Integration for Autofac (Beta)</description>
+    <description>ASP.NET Web API Integration for Autofac</description>
     <summary>Provides an IControllerFactory implementation and other integration points for the ASP.NET Web API.</summary>
     <language>en-US</language>
-    <title>Autofac ASP.NET Web API Integration (Beta)</title>
+    <title>Autofac ASP.NET Web API Integration</title>
     <projectUrl>http://autofac.org</projectUrl>
     <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
     <dependencies>
