@@ -115,7 +115,7 @@
 				Exclude="**\*.vshost.*;%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.CodeAnalysisLog.*" />
 		</ItemGroup>
 		<Copy SourceFiles="@(SourceOutputList)" DestinationFolder="$(BuildDirectory)\bin\net40" />
-		<Copy SourceFiles="@(PortableOutputList)" DestinationFolder="$(BuildDirectory)\bin\portable-win+net40+sl50" />
+		<Copy SourceFiles="@(PortableOutputList)" DestinationFolder="$(BuildDirectory)\bin\portable-win+net40+sl50+wp8" />
 	</Target>
 
 	<Target Name="Document">
@@ -147,7 +147,7 @@
 			<!-- One set of Extras and Core items should be created for each target zip file. -->
 			<NET40ExtrasPackageItems Include="$(BuildDirectory)\bin\net40\Autofac.Extras.*" />
 			<NET40CorePackageItems Include="$(BuildDirectory)\bin\net40\Autofac.*" Exclude="@(NET40ExtrasPackageItems)" />
-			<PortablePackageItems Include="$(BuildDirectory)\bin\portable-win+net40+sl50\Autofac.*" />
+			<PortablePackageItems Include="$(BuildDirectory)\bin\portable-win+net40+sl50+wp8\Autofac.*" />
 
 			<!-- The license file gets included with zip files; NuGet packages have a license URL. -->
 			<LicenseFile Include="$(MSBuildProjectDirectory)\License.txt" />
