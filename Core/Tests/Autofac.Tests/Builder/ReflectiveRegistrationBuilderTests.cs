@@ -29,6 +29,16 @@ namespace Autofac.Tests.Builder
             }
         }
 
+        public class PrivateConstructor
+        {
+            public A1 A1 { get; set; }
+
+            private PrivateConstructor(A1 a1)
+            {
+                A1 = a1;
+            }
+        }
+
         [Test]
         public void ExplicitCtorCalled()
         {
@@ -43,7 +53,7 @@ namespace Autofac.Tests.Builder
             ResolveTwoCtorsWith(selected);
         }
 
-        void ResolveTwoCtorsWith(Type[] selected)
+        static void ResolveTwoCtorsWith(Type[] selected)
         {
             var cb = new ContainerBuilder();
             cb.RegisterType<A1>();
@@ -54,9 +64,9 @@ namespace Autofac.Tests.Builder
 
             var c = cb.Build();
             var result = c.Resolve<TwoCtors>();
-            Assert.IsNotNull(result);
-            Assert.AreEqual(typeof(TwoCtors).GetConstructor(selected),
-                typeof(TwoCtors).GetConstructor(result.CalledCtor));
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(typeof(TwoCtors).GetConstructor(result.CalledCtor), Is.EqualTo(typeof(TwoCtors).GetConstructor(selected)));
         }
 
         [Test]
@@ -158,6 +168,19 @@ namespace Autofac.Tests.Builder
         }
 
         [Test]
+        public void FindConstructorsWith_CanUseFunctionToFindPrivateConstructors()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterType<A1>();
+            cb.RegisterType<PrivateConstructor>().FindConstructorsWith(type => type.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic));
+            var container = cb.Build();
+
+            var instance = container.Resolve<PrivateConstructor>();
+
+            Assert.That(instance.A1, Is.Not.Null);
+        }
+
+        [Test]
         public void FindConstructorsWith_NullFinderFunctionProvided_ThrowsException()
         {
             var cb = new ContainerBuilder();
@@ -177,7 +200,7 @@ namespace Autofac.Tests.Builder
         [Test]
         public void ParametersProvided()
         {
-            var ival = 10;
+            const int ival = 10;
 
             var cb = new ContainerBuilder();
             cb.RegisterType<WithParam>()
@@ -186,8 +209,9 @@ namespace Autofac.Tests.Builder
 
             var c = cb.Build();
             var result = c.Resolve<WithParam>();
-            Assert.IsNotNull(result);
-            Assert.AreEqual(ival * 2, result.I);
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.I, Is.EqualTo(ival * 2));
         }
 
         public class WithProp
@@ -221,9 +245,9 @@ namespace Autofac.Tests.Builder
             cb.RegisterType(typeof(A1)).As<object>();
             var container = cb.Build();
             IComponentRegistration cr;
-            Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(
-                new TypedService(typeof(object)), out cr));
-            Assert.AreEqual(typeof(A1), cr.Activator.LimitType);
+            Assert.That(container.ComponentRegistry.TryGetRegistration(
+                new TypedService(typeof(object)), out cr), Is.True);
+            Assert.That(cr.Activator.LimitType, Is.EqualTo(typeof(A1)));
         }
     }
 }
