@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Autofac.Configuration.Core
 {
@@ -10,8 +8,8 @@ namespace Autofac.Configuration.Core
     /// <remarks>
     /// <para>
     /// Derived module classes are responsible for reading in configuration settings and populating
-    /// the <see cref="Autofac.Configuration.ConfigurationModule.SectionHandler"/> property. The
-    /// value there will be used in <see cref="Autofac.Configuration.ConfigurationModule.Load"/> to
+    /// the <see cref="ConfigurationModule.SectionHandler"/> property. The
+    /// value there will be used in <see cref="ConfigurationModule.Load"/> to
     /// convert the configuration into container registrations.
     /// </para>
     /// </remarks>
@@ -24,7 +22,7 @@ namespace Autofac.Configuration.Core
         /// </summary>
         /// <value>
         /// An <see cref="Autofac.Configuration.IConfigurationRegistrar"/> that will be used as the
-        /// strategy for converting the <see cref="Autofac.Configuration.ConfigurationModule.SectionHandler"/>
+        /// strategy for converting the <see cref="ConfigurationModule.SectionHandler"/>
         /// into component registrations. If this value is <see langword="null" />, the registrar
         /// will be a <see cref="Autofac.Configuration.ConfigurationRegistrar"/>.
         /// </value>
@@ -47,12 +45,12 @@ namespace Autofac.Configuration.Core
         /// </param>
         /// <remarks>
         /// <para>
-        /// This override uses the <see cref="Autofac.Configuration.ConfigurationModule.ConfigurationRegistrar"/>
-        /// to convert the <see cref="Autofac.Configuration.ConfigurationModule.SectionHandler"/>
+        /// This override uses the <see cref="ConfigurationModule.ConfigurationRegistrar"/>
+        /// to convert the <see cref="ConfigurationModule.SectionHandler"/>
         /// into component registrations in the provided <paramref name="builder" />.
         /// </para>
         /// <para>
-        /// If no specific <see cref="Autofac.Configuration.ConfigurationModule.ConfigurationRegistrar"/>
+        /// If no specific <see cref="ConfigurationModule.ConfigurationRegistrar"/>
         /// is set, the default <see cref="Autofac.Configuration.ConfigurationRegistrar"/> type will be used.
         /// </para>
         /// </remarks>
@@ -60,7 +58,7 @@ namespace Autofac.Configuration.Core
         /// Thrown if <paramref name="builder" /> is <see langword="null" />.
         /// </exception>
         /// <exception cref="System.InvalidOperationException">
-        /// Thrown if the <see cref="Autofac.Configuration.ConfigurationModule.SectionHandler"/> is <see langword="null" />.
+        /// Thrown if the <see cref="ConfigurationModule.SectionHandler"/> is <see langword="null" />.
         /// </exception>
         protected override void Load(ContainerBuilder builder)
         {
