@@ -1,7 +1,8 @@
 ﻿using System;
-using System.ComponentModel.Composition;
 using Autofac.Core;
+using Autofac.Core.Registration;
 using Autofac.Features.Metadata;
+using Autofac.Util;
 using NUnit.Framework;
 
 namespace Autofac.Tests.Features.Metadata
@@ -9,14 +10,18 @@ namespace Autofac.Tests.Features.Metadata
     [TestFixture]
     public class StronglyTypedMeta_WhenMetadataIsSupplied
     {
-        const int SuppliedValue = 123;
+        const int SuppliedIntValue = 123;
+        const string SuppliedNameValue = "Homer";
+
         IContainer _container;
 
         [SetUp]
         public void SetUp()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<object>().WithMetadata("TheInt", SuppliedValue);
+            builder.RegisterType<object>()
+                .WithMetadata("TheInt", SuppliedIntValue)
+                .WithMetadata("Name", SuppliedNameValue);
             _container = builder.Build();
         }
 
@@ -24,21 +29,54 @@ namespace Autofac.Tests.Features.Metadata
         public void ValuesAreProvidedFromMetadata()
         {
             var meta = _container.Resolve<Meta<object, MyMeta>>();
-            Assert.AreEqual((int) SuppliedValue, (int) meta.Metadata.TheInt);
+            Assert.That(meta.Metadata.TheInt, Is.EqualTo(SuppliedIntValue));
         }
 
         [Test]
         public void ValuesProvidedFromMetadataOverrideDefaults()
         {
             var meta = _container.Resolve<Meta<object, MyMetaWithDefault>>();
-            Assert.AreEqual((int) SuppliedValue, (int) meta.Metadata.TheInt);
+            Assert.That(meta.Metadata.TheInt, Is.EqualTo(SuppliedIntValue));
+        }
+
+        [Test]
+        public void ValuesProvidedToTypesWithDictionaryConstructor()
+        {
+            var meta = _container.Resolve<Meta<object, MyMetaWithDictionary>>();
+            Assert.That(meta.Metadata.TheName, Is.EqualTo(SuppliedNameValue));
+        }
+
+        [Test]
+        public void ReadOnlyPropertiesOnMetadataViewAreIgnored()
+        {
+            var meta = _container.Resolve<Meta<object, MyMetaWithReadOnlyProperty>>();
+            Assert.That(meta.Metadata.TheInt, Is.EqualTo(SuppliedIntValue));
+        }
+
+        [Test]
+        public void ResolvingStronglyTypedMetadataWithInvalidConstructorThrowsException()
+        {
+            var exception = Assert.Throws<DependencyResolutionException>(
+                () => _container.Resolve<Meta<object, MyMetaWithInvalidConstructor>>());
+
+            var typeName = typeof(MyMetaWithInvalidConstructor).Name;
+            var message = string.Format(MetadataViewProviderResources.InvalidViewImplementation, typeName);
+
+            Assert.That(exception.Message, Is.EqualTo(message));
+        }
+
+        [Test]
+        public void ResolvingStronglyTypedMetadataWithInterfaceThrowsException()
+        {
+            Assert.Throws<ComponentNotRegisteredException>(
+                () => _container.Resolve<Meta<object, IMyMetaInterface>>());
         }
 
         [Test]
         public void ValuesBubbleUpThroughAdapters()
         {
             var meta = _container.Resolve<Meta<Func<object>, MyMeta>>();
-            Assert.AreEqual((int) SuppliedValue, (int) meta.Metadata.TheInt);
+            Assert.That(meta.Metadata.TheInt, Is.EqualTo(SuppliedIntValue));
         }
     }
 
@@ -58,14 +96,20 @@ namespace Autofac.Tests.Features.Metadata
         [Test]
         public void ResolvingStronglyTypedMetadataWithoutDefaultValueThrowsException()
         {
-            Assert.Throws<DependencyResolutionException>(() => _container.Resolve<Meta<object, MyMeta>>());
+            var exception = Assert.Throws<DependencyResolutionException>(
+                () => _container.Resolve<Meta<object, MyMeta>>());
+
+            var propertyName = ReflectionExtensions.GetProperty<MyMeta, int>(x => x.TheInt).Name;
+            var message = string.Format(MetadataViewProviderResources.MissingMetadata, propertyName);
+
+            Assert.That(exception.Message, Is.EqualTo(message));
         }
 
         [Test]
         public void ResolvingStronglyTypedMetadataWithDefaultValueProvidesDefault()
         {
             var m = _container.Resolve<Meta<object, MyMetaWithDefault>>();
-            Assert.AreEqual((int) 42, (int) m.Metadata.TheInt);
+            Assert.That(m.Metadata.TheInt, Is.EqualTo(42));
         }
     }
 }
