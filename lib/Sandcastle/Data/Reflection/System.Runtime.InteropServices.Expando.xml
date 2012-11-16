@@ -1,0 +1,346 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies>
+    <assembly name="mscorlib">
+      <assemblydata version="4.0.0.0" culture="" key="00000000000000000400000000000000" hash="SHA1" />
+      <attributes>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\dd\Tools\devdiv\ecmapublickey.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.AllowPartiallyTrustedCallersAttribute" ref="true" />
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>BED7F4EA-1A96-11d2-8F08-00A0C9A6186D</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>mscorlib.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>mscorlib.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>mscorlib.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft® .NET Framework</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>© Microsoft Corporation.  All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.30319.1</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.30319.1</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.SecurityPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="RequestMinimum" />
+            </enumValue>
+          </argument>
+          <assignment name="SkipVerification">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </assembly>
+  </assemblies>
+  <apis>
+    <api id="N:System.Runtime.InteropServices.Expando">
+      <topicdata group="api" />
+      <apidata name="System.Runtime.InteropServices.Expando" group="namespace" />
+      <elements>
+        <element api="T:System.Runtime.InteropServices.Expando.IExpando" />
+      </elements>
+      <file name="67015d1c-8027-f414-d089-7a48d4b5c6ae" />
+    </api>
+    <api id="T:System.Runtime.InteropServices.Expando.IExpando">
+      <topicdata group="api" allMembersTopicId="AllMembers.T:System.Runtime.InteropServices.Expando.IExpando" />
+      <apidata name="IExpando" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" serializable="false" layout="auto" format="ansi" />
+      <implements>
+        <type api="T:System.Reflection.IReflect" ref="true" />
+      </implements>
+      <implementors>
+        <type api="T:Microsoft.JScript.JSObject" ref="true" />
+        <type api="T:Microsoft.JScript.GlobalScope" ref="true" />
+      </implementors>
+      <containers>
+        <library assembly="mscorlib" module="mscorlib" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Runtime.InteropServices.Expando" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>AFBF15E6-C37C-11d2-B88E-00A0C9B471B8</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="8ddf29f7-2a8c-f91e-13e0-b5fa378a1b37" />
+    </api>
+    <api id="AllMembers.T:System.Runtime.InteropServices.Expando.IExpando">
+      <topicdata name="IExpando" group="list" subgroup="members" typeTopicId="T:System.Runtime.InteropServices.Expando.IExpando" />
+      <apidata name="IExpando" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Reflection.IReflect.GetField(System.String,System.Reflection.BindingFlags)" />
+        <element api="M:System.Reflection.IReflect.GetFields(System.Reflection.BindingFlags)" />
+        <element api="M:System.Reflection.IReflect.GetMember(System.String,System.Reflection.BindingFlags)" />
+        <element api="M:System.Reflection.IReflect.GetMembers(System.Reflection.BindingFlags)" />
+        <element api="Overload:System.Runtime.InteropServices.Expando.IExpando.GetMethod">
+          <element api="M:System.Reflection.IReflect.GetMethod(System.String,System.Reflection.BindingFlags)" />
+          <element api="M:System.Reflection.IReflect.GetMethod(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Type[],System.Reflection.ParameterModifier[])" />
+        </element>
+        <element api="M:System.Reflection.IReflect.GetMethods(System.Reflection.BindingFlags)" />
+        <element api="M:System.Reflection.IReflect.GetProperties(System.Reflection.BindingFlags)" />
+        <element api="Overload:System.Runtime.InteropServices.Expando.IExpando.GetProperty">
+          <element api="M:System.Reflection.IReflect.GetProperty(System.String,System.Reflection.BindingFlags)" />
+          <element api="M:System.Reflection.IReflect.GetProperty(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Type,System.Type[],System.Reflection.ParameterModifier[])" />
+        </element>
+        <element api="M:System.Reflection.IReflect.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])" />
+        <element api="P:System.Reflection.IReflect.UnderlyingSystemType" />
+        <element api="M:System.Runtime.InteropServices.Expando.IExpando.AddField(System.String)" />
+        <element api="M:System.Runtime.InteropServices.Expando.IExpando.AddMethod(System.String,System.Delegate)" />
+        <element api="M:System.Runtime.InteropServices.Expando.IExpando.AddProperty(System.String)" />
+        <element api="M:System.Runtime.InteropServices.Expando.IExpando.RemoveMember(System.Reflection.MemberInfo)" />
+      </elements>
+      <containers>
+        <library assembly="mscorlib" module="mscorlib" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Runtime.InteropServices.Expando" />
+      </containers>
+      <file name="1452a04e-efb0-ab87-8ada-5229a617313e" />
+    </api>
+    <api id="Methods.T:System.Runtime.InteropServices.Expando.IExpando">
+      <topicdata name="IExpando" group="list" subgroup="Methods" typeTopicId="T:System.Runtime.InteropServices.Expando.IExpando" />
+      <apidata name="IExpando" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Reflection.IReflect.GetField(System.String,System.Reflection.BindingFlags)" />
+        <element api="M:System.Reflection.IReflect.GetFields(System.Reflection.BindingFlags)" />
+        <element api="M:System.Reflection.IReflect.GetMember(System.String,System.Reflection.BindingFlags)" />
+        <element api="M:System.Reflection.IReflect.GetMembers(System.Reflection.BindingFlags)" />
+        <element api="Overload:System.Runtime.InteropServices.Expando.IExpando.GetMethod">
+          <element api="M:System.Reflection.IReflect.GetMethod(System.String,System.Reflection.BindingFlags)" />
+          <element api="M:System.Reflection.IReflect.GetMethod(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Type[],System.Reflection.ParameterModifier[])" />
+        </element>
+        <element api="M:System.Reflection.IReflect.GetMethods(System.Reflection.BindingFlags)" />
+        <element api="M:System.Reflection.IReflect.GetProperties(System.Reflection.BindingFlags)" />
+        <element api="Overload:System.Runtime.InteropServices.Expando.IExpando.GetProperty">
+          <element api="M:System.Reflection.IReflect.GetProperty(System.String,System.Reflection.BindingFlags)" />
+          <element api="M:System.Reflection.IReflect.GetProperty(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Type,System.Type[],System.Reflection.ParameterModifier[])" />
+        </element>
+        <element api="M:System.Reflection.IReflect.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])" />
+        <element api="M:System.Runtime.InteropServices.Expando.IExpando.AddField(System.String)" />
+        <element api="M:System.Runtime.InteropServices.Expando.IExpando.AddMethod(System.String,System.Delegate)" />
+        <element api="M:System.Runtime.InteropServices.Expando.IExpando.AddProperty(System.String)" />
+        <element api="M:System.Runtime.InteropServices.Expando.IExpando.RemoveMember(System.Reflection.MemberInfo)" />
+      </elements>
+      <containers>
+        <library assembly="mscorlib" module="mscorlib" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Runtime.InteropServices.Expando" />
+      </containers>
+      <file name="31a9c2c9-0983-804f-a8c8-eb1062b33969" />
+    </api>
+    <api id="Properties.T:System.Runtime.InteropServices.Expando.IExpando">
+      <topicdata name="IExpando" group="list" subgroup="Properties" typeTopicId="T:System.Runtime.InteropServices.Expando.IExpando" />
+      <apidata name="IExpando" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="P:System.Reflection.IReflect.UnderlyingSystemType" />
+      </elements>
+      <containers>
+        <library assembly="mscorlib" module="mscorlib" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Runtime.InteropServices.Expando" />
+      </containers>
+      <file name="a4a7b9a3-36a0-1a14-fa50-d2bc9928afb1" />
+    </api>
+    <api id="M:System.Runtime.InteropServices.Expando.IExpando.AddField(System.String)">
+      <topicdata group="api" />
+      <apidata name="AddField" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata abstract="true" virtual="true" />
+      <parameters>
+        <parameter name="name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Reflection.FieldInfo" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="mscorlib" module="mscorlib" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Runtime.InteropServices.Expando" />
+        <type api="T:System.Runtime.InteropServices.Expando.IExpando" ref="true" />
+      </containers>
+      <file name="89e1c574-c574-71e6-3017-39a70843e5e4" />
+    </api>
+    <api id="M:System.Runtime.InteropServices.Expando.IExpando.AddMethod(System.String,System.Delegate)">
+      <topicdata group="api" />
+      <apidata name="AddMethod" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata abstract="true" virtual="true" />
+      <parameters>
+        <parameter name="name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="method">
+          <type api="T:System.Delegate" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Reflection.MethodInfo" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="mscorlib" module="mscorlib" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Runtime.InteropServices.Expando" />
+        <type api="T:System.Runtime.InteropServices.Expando.IExpando" ref="true" />
+      </containers>
+      <file name="2210dc52-3819-7171-6373-713dc1983405" />
+    </api>
+    <api id="M:System.Runtime.InteropServices.Expando.IExpando.AddProperty(System.String)">
+      <topicdata group="api" />
+      <apidata name="AddProperty" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata abstract="true" virtual="true" />
+      <parameters>
+        <parameter name="name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Reflection.PropertyInfo" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="mscorlib" module="mscorlib" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Runtime.InteropServices.Expando" />
+        <type api="T:System.Runtime.InteropServices.Expando.IExpando" ref="true" />
+      </containers>
+      <file name="57b9fdcf-3385-538d-ba15-2486ec37b7f4" />
+    </api>
+    <api id="M:System.Runtime.InteropServices.Expando.IExpando.RemoveMember(System.Reflection.MemberInfo)">
+      <topicdata group="api" />
+      <apidata name="RemoveMember" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata abstract="true" virtual="true" />
+      <parameters>
+        <parameter name="m">
+          <type api="T:System.Reflection.MemberInfo" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="mscorlib" module="mscorlib" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Runtime.InteropServices.Expando" />
+        <type api="T:System.Runtime.InteropServices.Expando.IExpando" ref="true" />
+      </containers>
+      <file name="df14e1c5-10d4-c3ba-4e7e-064e231ad4b4" />
+    </api>
+  </apis>
+</reflection>

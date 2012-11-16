@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Manifest>
+
+	<ItemGroup Label="transforms" Condition="$(noTransforms)!=true and $(onlyIcons)!=true">
+		<Content Include="body.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="head.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="CodeSnippet.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="CodeSnippet-??-??.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="CollapsibleArea.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="collapsiblearea-??-??.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="error.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="error-??-??.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="Identity.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="InstrumentedLink.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="instrumentedlink-??-??.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="LanguageSpecificText.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="LanguageSpecificText-??-??.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="MultiViewTable.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="MultiViewTable-??-??.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="index.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="index-??-??.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="search.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="search-??-??.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="toc.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="toc-??-??.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="UnsupportedControls.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+		<Content Include="Dev10Feedback*.xslt">
+			<SubType>text/richtext</SubType>
+		</Content>
+	</ItemGroup>
+</Manifest>

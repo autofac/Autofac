@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Translations provided by Alex Sherman, verifications Sergey Zhurikhin -->
+<content xml:space="preserve">
+
+  <!-- note text -->
+  <item id="notDocumentedText">Это API не документировано.</item>
+  <item id="preliminaryText">Это API является предварительным и может быть изменено.</item>
+
+  <!-- topic titles -->
+  <item id="tocTitle">{0}</item>
+  <item id="rlTitle">{0} ({1})</item>
+  <item id="rootTopicTitle">Пространства имён</item>
+  <item id="namespaceTopicTitle">{0} - пространство имён</item>
+  <item id="classTopicTitle">{0} - класс</item>
+  <item id="structureTopicTitle">{0} - структура</item>
+  <item id="interfaceTopicTitle">{0} - интерфейс</item>
+  <item id="DerivedTypeListTopicTitle">{0} - производные классы</item>
+  
+  <item id="delegateTopicTitle">{0} - делегат</item>
+  <item id="enumerationTopicTitle">{0} - перечисление</item>
+  <item id="fieldTopicTitle">{0} - поле</item>
+  <item id="methodTopicTitle">{0}{1} - метод</item>
+  <item id="constructorTopicTitle">{0}{1} - конструктор</item>
+  <item id="propertyTopicTitle">{0}{1} - свойство</item>
+  <item id="eventTopicTitle">{0} - событие</item>
+  
+  <!-- title for operator members -->
+  <item id="operatorTopicTitle">{0}{1} - оператор</item>
+
+  <!-- title for op_explicit and op_implicit members -->
+  <item id="typeConversionTopicTitle">{0} - преобразование {1}</item>
+  <!-- title for overload op_explicit and op_implicit topics -->
+  <item id="conversionOperatorTopicTitle">{0} - операторы преобразования</item>
+      
+  <item id="attachedPropertyTopicTitle">{0} - вложенное свойство</item>
+  <item id="attachedEventTopicTitle">{0} - вложенное событие</item>
+
+  <item id="generic"> generic</item>
+  <item id="generic_classTopicTitle">{0} - универсальный класс</item>
+  <item id="generic_structureTopicTitle">{0} - универсальная структура</item>
+  <item id="generic_interfaceTopicTitle">{0} - универсальный интерфейс</item>
+  <item id="generic_delegateTopicTitle">{0} - универсальный делегат</item>
+  <item id="generic_methodTopicTitle">{0}{1} - универсальный метод</item>
+  
+  <!-- list topic titles -->
+  <item id="FieldsTopicTitle">{0} - поля</item>
+  <item id="MethodsTopicTitle">{0} - методы</item>
+  
+  <!-- title for operator list topic that has [operators + no type conversions] -->
+  <item id="OperatorsTopicTitle">{0} - операторы</item>
+  <!-- title for operator list topic that has [operators + type conversions] -->
+  <item id="OperatorsAndTypeConversionsTopicTitle">{0} - операторы и преобразования типов</item>
+  <!-- title for operator list topic that has [no operators + type conversions] -->
+  <item id="TypeConversionsTopicTitle">{0} - преобразования типов</item>
+  
+  <item id="ConstructorsTopicTitle">{0} - конструкторы</item>
+  <item id="PropertiesTopicTitle">{0} - свойства</item>
+  <item id="EventsTopicTitle">{0} - события</item>
+  <item id="AttachedPropertiesTopicTitle">{0} - вложенные свойства</item>
+    <item id="AttachedEventsTopicTitle">{0} - вложенные события</item>
+  <item id="membersTopicTitle">{0} - члены</item>
+
+  <!-- member titles -->
+  <item id="enumMembersTitle">Члены</item>
+
+  <!-- index entries -->
+  <item id="rootIndexEntry">Пространства имён</item>
+  <item id="namespaceIndexEntry">{0} - пространство имён</item>
+  <item id="classIndexEntry">{0} - класс</item>
+  <item id="structureIndexEntry">{0} - структура</item>
+  <item id="interfaceIndexEntry">{0} - интерфейс</item>
+  <item id="delegateIndexEntry">{0} - делегат</item>
+  <item id="enumerationIndexEntry">{0} - перечисление</item>
+  <item id="enumerationMemberIndexEntry">{0} - член перечисления</item>
+  <item id="aboutTypeIndexEntry">{0}, о {0}</item>
+  <item id="derivedTypesIndexEntry">{0}, производные типы</item>
+  <item id="membersIndexEntry">{0}, все члены</item>
+  <item id="methodsIndexEntry">{0}, методы</item>
+  <!-- index entry for operator list topic that has [operators + no type conversions] -->
+  <item id="operatorsIndexEntry">{0}, операторы</item>
+  <!-- index entry for operator list topic that has [operators + type conversions] -->
+  <item id="operatorsAndTypeConversionsIndexEntry">{0}, операторы и преобразования типов</item>
+  <!-- index entry for operator list topic that has [no operators + type conversions] -->
+  <item id="typeConversionsIndexEntry">{0}, преобразования типов</item>
+  <!-- index entries for op_explicit and op_implicit members -->
+  <item id="conversionOperatorIndexEntry">{0} преобразования</item>
+  <item id="propertiesIndexEntry">{0}, свойства</item>
+  <item id="fieldsIndexEntry">{0}, поля</item>
+  <item id="eventsIndexEntry">{0}, события</item>
+  <item id="attachedPropertiesIndexEntry">{0}, вложенные свойства</item>
+  <item id="attachedEventsIndexEntry">{0}, вложенные события</item>
+  <item id="constructorsIndexEntry">{0}, конструкторы</item>
+  <item id="constructorIndexEntry">{0}, конструктор</item>
+<item id="constructorTypeIndexEntry">{0} конструктор</item>
+  <item id="methodIndexEntry">{0} метод</item>
+  <item id="propertyIndexEntry">{0} свойство</item>
+  <item id="eventIndexEntry">{0} событие</item>
+  <item id="fieldIndexEntry">{0} поле</item>
+  <item id="operatorIndexEntry">{0} оператор</item>
+  <item id="attachedPropertyIndexEntry">{0} вложенное свойство</item>
+  <item id="attachedEventIndexEntry">{0} вложенное событие</item>
+  <item id="methodExplicitIndexEntry">{0} явно реализованный метод</item>
+  <item id="propertyExplicitIndexEntry">{0} явно реализованное свойство</item>
+  <item id="eventExplicitIndexEntry">{0} явно реализованное событие</item>
+  <item id="fieldExplicitIndexEntry">{0} явно реализованное поле</item>
+  
+   <!-- index entries like: "FileClassifier class" or "Execute method" or "Microsoft.Build.Tasks.Windows.FileClassifier class"
+       {0} is API's name, which is shortname in some cases, or FQName in others
+       {1} is API's subgroup, e.g. 'class', 'method', etc.
+  <item id="nameSubgroupIndexEntry">{0} <include item="{1}IndexEntry"/></item>
+-->
+  <!-- index entries like: "FileClassifier class, about FileClassifier class"
+       {0} is API's name, which is shortname in some cases, or FQName in others
+       {1} is API's subgroup, e.g. 'class', 'method', etc.
+  <item id="aboutTypeIndexEntry">{0} <include item="{1}IndexEntry"/>, about {0} <include item="{1}IndexEntry"/></item>
+  -->
+  <!-- index entries like: "FileClassifier class, methods"
+       {0} is type's name; 
+       {1} is type's subgroup, e.g. 'class'; 
+       {2} is the kind of list, e.g. 'AllMembers', 'Methods', etc.
+  <item id="listTopicIndexEntry">{0} <include item="{1}IndexEntry"/>, <include item="{2}IndexEntry"/></item>
+ -->
+  <!-- main window stuff -->
+
+  <!-- body -->
+
+  <!-- section titles -->
+  <item id="syntaxTitle">Синтаксис</item>
+  <item id="templatesTitle">Параметры типа</item>
+  <item id="parametersTitle">Параметры</item>
+  <item id="valueTitle">Значение</item>
+  <item id="delegateValueTitle">Возвращаемое значение</item>
+  <item id="methodValueTitle">Возвращаемое значение</item>
+  <item id="propertyValueTitle">Значение свойства</item>
+  <item id="fieldValueTitle">Значение поля</item>
+  <item id="implementsTitle">Реализации</item>
+  <item id="examplesTitle">Примеры</item>
+  <item id="threadSafetyTitle">Потокобезопасность</item>
+  <item id="permissionsTitle">Безопасность платформы .NET Framework</item> 
+  <item id="namespacesTitle">Пространства имён</item>
+  <item id="typesTitle">Типы</item>
+  <item id="allMembersTitle">Члены</item>
+  <item id="membersTitle">Список перегрузки</item>
+  <item id="familyTitle">Иерархия наследования</item>
+  <item id="versionsTitle">Сведения о версии</item>
+  <item id="platformsTitle">Платформы</item>
+  <item id="relatedTitle">См. также</item>
+  <item id="ExtensionUsageTitle">Примечание об использовании</item>
+  <item id="ExtensionUsageText">В Visual Basic и C# этот метод можно вызывать как метод экземпляра для любого объекта типа {0}. При вызове метода для экземпляра следует опускать первый параметр. Дополнительные сведения см. в разделе <a href="http://msdn.microsoft.com/ru-ru/library/bb384936.aspx" target="_blank">Методы расширения (Visual Basic)</a> или <a href="http://msdn.microsoft.com/ru-ru/library/bb383977.aspx" target="_blank">Методы расширения (Руководство по программированию в C#)</a>.</item>
+
+  <!-- table headers -->
+  <item id="namespaceNameHeader">Пространство имён</item>
+  <item id="namespaceDescriptionHeader">Описание</item>
+  <item id="typeIconHeader">Значок</item>
+  <item id="classNameHeader">Класс</item>
+  <item id="structureNameHeader">Структура</item>
+  <item id="interfaceNameHeader">Интерфейс</item>
+  <item id="delegateNameHeader">Делегат</item>
+  <item id="enumerationNameHeader">Перечисление</item>
+  
+  <item id="typeNameHeader">Имя</item>
+  <item id="typeDescriptionHeader">Описание</item>
+  <item id="memberIconHeader">Значок</item>
+  <item id="memberNameHeader">Имя члена</item>
+  <item id="memberValueHeader">Значение</item>
+  <item id="memberDescriptionHeader">Описание</item>
+  <item id="exceptionNameHeader">Исключение</item>
+  <item id="exceptionConditionHeader">Условие</item>
+  <item id="permissionNameHeader">Разрешение</item>
+  <item id="permissionDescriptionHeader">Описание</item>
+  <item id="requiresNameHeader">Предусловия</item>
+  <item id="ensuresNameHeader">Постусловия</item>
+  <item id="ensuresOnThrowNameHeader">Постусловия при возникновении исключений</item>
+  <item id="invariantsNameHeader">Инварианты</item>
+
+  <!-- filter control text -->
+  <item id="allTypesFilterLabel">Все типы</item>
+  <item id="classTypesFilterLabel">Классы</item>
+  <item id="structureTypesFilterLabel">Структуры</item>
+  <item id="interfaceTypesFilterLabel">Интерфейсы</item>
+  <item id="delegateTypesFilterLabel">Делегаты</item>
+  <item id="enumerationTypesFilterLabel">Перечисления</item>
+  <item id="allMembersFilterLabel">Все члены</item>
+  <item id="constructorMembersFilterLabel">Конструкторы</item>
+  <item id="methodMembersFilterLabel">Методы</item>
+  <item id="propertyMembersFilterLabel">Свойства</item>
+  <item id="fieldMembersFilterLabel">Поля</item>
+  <item id="eventMembersFilterLabel">События</item>
+  <item id="publicMembersFilterLabel">Public</item>
+  <item id="protectedMembersFilterLabel">Protected</item>
+  <item id="instanceMembersFilterLabel">Instance</item>
+  <item id="staticMembersFilterLabel">Static</item>
+  <item id="declaredMembersFilterLabel">Declared</item>
+  <item id="inheritedMembersFilterLabel">Inherited</item>
+  
+  <!-- member list table headings -->
+  <item id="constructorTable">Конструкторы</item>
+  <item id="methodTable">Методы</item>
+  <item id="operatorTable">Операторы</item>
+  <item id="fieldTable">Поля</item>
+  <item id="propertyTable">Свойства</item>
+  <item id="eventTable">События</item>
+  <item id="attachedEventTable">Вложенные события</item>
+  <item id="attachedPropertyTable">Вложенные свойства</item>
+  <item id="ExplicitInterfaceImplementationTable">Явные&#160;реализации&#160;интерфейсов</item>
+  <item id="overloadMembersTable">Список&#160;перегрузок</item>
+  <item id="extensionMethodTable">Методы&#160;расширения</item>
+
+  <!-- Thread Safety -->
+  <item id="ThreadSafety">Потокобезопасность</item>
+  <item id="ThreadSafetyBP">Любые открытые члены этого типа, объявленные как <include item="staticKeyword"/>, являются потокобезопасными. Потокобезопасность членов экземпляров не гарантируется.</item>
+  
+  <item id="NotesForImplementers">Примечания для реализующих объектов</item>
+  <item id="NotesForCallers">Примечания для вызывающих объектов</item>
+  <item id="NotesForInheritors">Примечания для наследников</item>
+
+  <!-- Used for Platform Notes -->
+  <item id="PlatformNote">
+    <b>Примечание для платформы {0}:</b> {1}
+  </item>
+  <item id="Win95">Windows 95</item>
+  <item id="Win98Se">Windows 98 Second Edition</item>
+  
+  <item id="WinNT4">Windows NT 4.0</item>
+  <item id="WinNT4Svr">Windows NT Server 4.0</item>
+  <item id="WinNT4Wks">Windows NT Workstation 4.0</item>
+  
+  <item id="Win2kFamily">Windows 2000</item>
+  <item id="Win2kProfessional">Windows 2000 Professional</item>
+  <item id="Win2kServer">Windows 2000 Server</item>
+  <item id="Win2kDatacenter">Windows 2000 Advanced Server</item>
+  
+  <item id="WinXPPersonal">Windows XP Home Edition</item>
+  <item id="WinXPPro">Windows XP Professional x64 Edition</item>
+  <item id="WinXPSvr"><include item="WinSvr2003"/></item>
+  <item id="WinXpTablet">Windows XP Tablet PC Edition</item>
+  <item id="WinXpEmbedded">Windows XP Embedded</item>
+  
+  <item id="ECMACLI">Common Language Infrastructure (CLI) Standard</item>
+  
+  <item id="MSTV">Microsoft TV</item>
+    
+  <item id="Win9xFamily"><include item="Win95"/>, <include item="Win98"/>, <include item="Win98Se"/>, <include item="WinME"/></item>
+  <item id="WinNt4Family"><include item="WinNT4"/></item>
+  <item id="WinXpFamily"><include item="WinXPPersonal"/>, <include item="WinXPPro"/>, <include item="WinXPSvr"/></item>
+  <item id="WinCE"><include item="WindowsCE"/></item>
+  <item id="Win2K"><include item="WinSvr2000"/></item>
+  <item id="Win2KSvr"><include item="Win2kServer"/></item>
+  <item id="Win2KADC"><include item="Win2kDatacenter"/></item>
+  
+  <item id="WinNt4Server"><include item="WinNT4Svr"/></item>
+  <item id="WinNt4Workstation"><include item="WinNT4Wks"/></item>
+  <item id="Win2kAdvanced"><include item="Win2kDatacenter"/></item>
+  <item id="Win2kServerApplianceKit"></item>
+  <item id="WinXpHome"><include item="WinXPPersonal"/></item>
+  <item id="WinXpProfessional"><include item="WinXPPro"/></item>
+  <item id="Win2003Server"><include item="WinXPSvr"/></item>
+  <item id="NETCF"><include item="PocketPC"/>, <include item="SmartPhone"/>, <include item="WindowsCE"/></item>
+  
+  <item id="XNA"><include item="Xbox360"/>, <include item="Zune" /></item>
+  <!-- Platform Notes -->
+
+  <item id="Platforms">Платформы</item>
+  <!-- Platforms Information --> 
+  <item id="SystemRequirementsLinkBoilerplate">
+    <p/>
+    <span>
+      <include item="netfw"/> и <include item="netcfw"/> поддерживают не все версии каждой платформы. Поддерживаемые версии перечислены в разделе <a href="http://msdn.microsoft.com/ru-ru/library/8z6watww.aspx" target="_blank">Требования к системе для .NET Framework</a>.
+    </span>
+  </item>
+
+  <!-- inserted boilerplate -->
+  <item id="runningHeaderText">Библиотека классов .NET Framework</item>
+  <item id="rootLink"><referenceLink target="R:Project">Пространства имён</referenceLink></item>
+  <item id="obsoleteShort"><span class="obsolete">Устаревшее.</span></item>
+  <item id="obsoleteLong"><span class="obsolete">Данный API устарел.</span></item>
+  <item id="nonobsoleteAlternative">Поддерживаемый аналог: {0}.</item>
+  <item id="obsoleteRed"><font color="red"><b>Устарело. </b></font></item>
+  <item id="ObsoleteBoilerPlate">
+    <font color="red"><b>Примечание: Данный API устарел.</b></font>
+  </item>
+  <item id="definedBy">(Определяется {0}.)</item>
+  <item id="inheritedFrom">(Унаследован от {0}.)</item>
+  <item id="overridesMember">(Переопределяет {0}.)</item>
+  <item id="locationInformation">Сборка: {0} (Модуль: {1})</item>
+  <item id="hostProtectionAttributeShort">HostProtectionAttribute. </item>
+  <item id="hostProtectionAttributeLong">Примененный к данному типу или члену атрибут <referenceLink target="T:System.Security.Permissions.HostProtectionAttribute" prefer-overload="true" /> имеет следующее значение свойства <referenceLink target="P:System.Security.Permissions.HostProtectionAttribute.Resources" prefer-overload="true" />: {1}. Атрибут <referenceLink target="T:System.Security.Permissions.HostProtectionAttribute" prefer-overload="true" /> не оказывает влияния на настольные приложения (обычно запускаемые двойным щелчком значка, вводом команды или URL-адреса в обозревателе). Дополнительные сведения см. в описании класса <referenceLink target="T:System.Security.Permissions.HostProtectionAttribute" prefer-overload="true" /> или в разделе <a href="http://msdn.microsoft.com/ru-ru/library/ms172338.aspx" target="_blank">программирование SQL Server и атрибуты защиты основного приложения</a>.</item>
+
+  <item id="classLower">класс</item>
+  <item id="delegateLower">делегат</item>
+  <item id="structureLower">структура</item>
+  <item id="interfaceLower">интерфейс</item>
+  <item id="enumerationLower">перечисление</item>
+  <!-- thread safety boilerplate -->
+  <item id="staticThreadSafe">Статические члены этого типа, являются безопасными для многопоточных операций. </item>
+  <item id="staticNotThreadSafe">Статические члены этого типа, являются небезопасными для многопоточных операций. </item>
+  <item id="instanceThreadSafe">Члены экземпляра этого типа, являются безопасными для многопоточных операций. </item>
+  <item id="instanceNotThreadSafe">Члены экземпляра этого типа, являются небезопасными для многопоточных операций. </item>
+
+  <!-- alt text for images -->   
+  <item id="pubClassAltText">Открытый класс</item>
+  <item id="pubStructureAltText">Открытая структура</item>
+  <item id="pubInterfaceAltText">Открытый интерфейс</item>
+  <item id="pubDelegateAltText">Открытый делегат</item>
+  <item id="pubEnumerationAltText">Открытое перечисление</item>
+  <item id="protClassAltText">Защищённый класс</item>
+  <item id="protStructureAltText">Защищённая структура</item>
+  <item id="protInterfaceAltText">Защищённый интерфейс</item>
+  <item id="protDelegateAltText">Защищённый делегат</item>
+  <item id="protEnumerationAltText">Защищённое перечисление</item>
+  <item id="privClassAltText">Закрытый класс</item>
+  <item id="privStructureAltText">Закрытая структура</item>
+  <item id="privInterfaceAltText">Закрытый интерфейс</item>
+  <item id="privDelegateAltText">Закрытый делегат</item>
+  <item id="privEnumerationAltText">Закрытое перечисление</item>
+
+  <item id="pubConstructorAltText">Открытый конструктор</item>
+  <item id="pubMethodAltText">Открытый метод</item>
+  <item id="pubFieldAltText">Открытое поле</item>
+  <item id="pubPropertyAltText">Открытое свойство</item>
+  <item id="pubEventAltText">Открытое событие</item>
+  <item id="pubOperatorAltText">Открытый оператор</item>
+  <item id="pubAttachedPropertyAltText">Открытое вложенное свойство</item>
+  <item id="pubAttachedEventAltText">Открытое вложенное событие</item>
+  <item id="protConstructorAltText">Защищённый конструктор</item>
+  <item id="protMethodAltText">Защищённый метод</item>
+  <item id="protFieldAltText">Защищённое поле</item>
+  <item id="protPropertyAltText">Защищённое свойство</item>
+  <item id="protEventAltText">Защищённое событие</item>
+  <item id="protOperatorAltText">Защищённый оператор</item>
+  <item id="protAttachedPropertyAltText">Защищённое вложенное свойство</item>
+  <item id="protAttachedEventAltText">Защищённое вложенное событие</item>
+  <item id="privConstructorAltText">Закрытый конструктор</item>
+  <item id="privMethodAltText">Закрытый метод</item>
+  <item id="privFieldAltText">Закрытое поле</item>
+  <item id="privPropertyAltText">Закрытое свойство</item>
+  <item id="privEventAltText">Закрытое событие</item>
+  <item id="privOperatorAltText">Закрытый оператор</item>
+  <item id="privtAttachedPropertyAltText">Закрытое вложенное свойство</item>
+  <item id="privAttachedEventAltText">Закрытое вложенное событие</item>
+  <item id="staticAltText">Статический член</item>
+  <item id="pubextensionAltText">Открытый метод расширения</item>
+  <item id="protextensionAltText">Защищённый метод расширения</item>
+  <item id="privextensionAltText">Закрытый метод расширения</item>  
+
+  <!-- labels for links at the top of the All Members topic -->
+  <item id="constructorGroup">Конструкторы</item>
+  <item id="methodGroup">Методы</item>
+  <item id="propertyGroup">Свойства</item>
+  <item id="eventGroup">События</item>
+  <item id="fieldGroup">Поля</item>
+  <item id="operatorGroup">Операторы</item>
+  <item id="attachedPropertyGroup">Вложенные свойства</item>
+  <item id="attachedEventGroup">Вложенные события</item>
+  <item id="collapseAll">Свернуть всё</item>
+  <item id="expandAll">Показать всё</item>
+
+  <item id="Example">Пример</item>
+  <item id="nonScrollingTypeLinkText">{0} - <include item="{1}SubGroup"/></item>
+  <item id="SeeAlsoNamespaceLinkText">{0} - пространство имён</item>
+  <item id="SeeAlsoTypeLinkText">{0} - <include item="{1}SubGroup"/></item>
+  <item id="SeeAlsoMembersLinkText">{0} - члены</item>
+   <item id="SeeAlsoOverloadLinkText">{0} - перегрузка</item>
+  
+  <item id="classSubGroup">класс</item>
+  <item id="structureSubGroup">структура</item>
+  <item id="interfaceSubGroup">интерфейс</item>
+  <item id="delegateSubGroup">делегат</item>
+  <item id="enumerationSubGroup">перечисление</item>
+
+  <item id="memberOptionsShowAll">Члены: Показать всё</item>
+  <item id="memberOptionsFiltered">Члены: Отфильтрованные</item>
+  <item id="memberOptionsPublic">Члены: только открытые члены</item>
+  <item id="memberOptionsProtected">Члены: только защищённые члены</item>
+  <item id="memberOptionsInherited">Члены: только наследуемые члены</item>
+  <item id="memberOptionsDeclared">Члены: только объявленные члены</item>
+  <item id="includeDeclaredMembers">Включая объявленные члены</item>
+  <item id="includeInheritedMembers">Включая наследуемые члены</item>
+  <item id="includePublicMembers">Включая публичные члены</item>
+  <item id="includeProtectedMembers">Включая защищённые члены</item>
+  
+  <item id="IncludeNetfwMembers">Включая члены платформы .NET Framework</item>
+  <item id="IncludeNetcfwMembers">Включая члены платформы .NET Compact Framework</item>
+  <item id="IncludeXnafwMembers">Включая члены платформы XNA Framework</item>
+  <item id="IncludeSilverlightMembers">Включая члены платформы <include item="silverlight" /></item>
+  <item id="IncludeSilverlight_mobileMembers">Включая члены платформы <include item="silverlight_mobile"/></item>
+  <item id="memberFrameworksShowAll">Платформы: Показать всё</item>
+  <item id="memberFrameworksMultiple">Платформы: Несколько</item>
+  <item id="memberFrameworksNetfw">Платформы: только <include item="netfw"/></item>
+  <item id="memberFrameworksNetcfw">Платформы: только <include item="netcfw"/></item>
+  <item id="memberFrameworksXnafw">Платформы: только <include item="xnafw"/></item>
+  <item id="memberFrameworksSilverlight">Платформы: только <include item="silverlight"/></item>
+  <item id="memberFrameworksSilverlight_mobile">Платформы: только <include item="silverlight_mobile"/></item>
+
+  <item id="requirementsNamespaceLayout">
+    <b>Пространство имён:</b> 
+  </item>
+
+  <item id="requirementsPlatformsLayout">
+    <b>Платформы:</b> {0}
+  </item>
+
+  <item id="requirementsAssembliesLabel">
+    <b>Сборки:</b>
+  </item>
+
+  <item id="requirementsAssemblyLabel">
+    <b>Сборка:</b>
+  </item>
+
+  <item id="assemblyNameAndModule">{0} (в {1}.{2})</item>
+
+  <item id="requirementsAssemblyLayout">
+    <b>Сборка:</b> {0} (в {1}.dll)
+  </item>
+
+    <!-- Used for Version Information Section -->
+    <item id="supportedIn_1">Поддерживается в: {0}</item>
+    <item id="supportedIn_2">Поддерживается в: {0}, {1}</item>
+    <item id="supportedIn_3">Поддерживается в: {0}, {1}, {2}</item>
+    <item id="supportedIn_4">Поддерживается в: {0}, {1}, {2}, {3}</item>
+    <item id="supportedIn_5">Поддерживается в: {0}, {1}, {2}, {3}, {4}</item>
+    <item id="supportedIn_6">Поддерживается в: {0}, {1}, {2}, {3}, {4}, {5}</item>
+    <item id="supportedIn_7">Поддерживается в: {0}, {1}, {2}, {3}, {4}, {5}, {6}</item>
+    <item id="obsoleteWarning">Устарело (предупреждение компилятора) в {0}</item>
+    <item id="obsoleteError">Устарело (не компилируется) в {0} и более поздних версиях</item>
+    
+  <!-- APTCA Boilerplate text -->
+  <item id="aptca">Полное доверие для модуля немедленного вызова. Данный элемент не может использоваться кодом с частичным доверием. Дополнительные сведения см. в разделе <a href="http://msdn.microsoft.com/ru-ru/library/8skskf63.aspx" target="_blank">Использование библиотек из не вполне надежного кода</a>.</item>
+  
+  <item id="ReturnValue">Возвращаемое значение</item>
+  <item id="PropertyValue">Значение свойства</item>
+  <item id="FieldValue">Значение поля</item>
+ 
+  <item id="derivedClasses">Производные классы</item>
+  <item id="CompactFrameworkAltText">Поддерживается платформой .NET Compact Framework</item>
+  <item id="XNAFrameworkAltText">Поддерживается платформой XNA Framework</item>
+  <item id="SilverlightMobileAltText">Поддерживается платформой <include item="silverlight_mobile"/></item>
+  <item id="ExplicitInterfaceImplementation">Явные реализации интерфейса</item>
+  <item id="ExplicitInterfaceAltText">Явная реализация интерфейса</item>
+  
+  <!-- boilerplate intro to member list tables -->
+  <item id="genericExposedMembersTableText">{0} предоставляет следующие члены:</item>
+  <item id="exposedMembersTableText">{0} предоставляет следующие члены:</item>	
+  <item id="membersSubgroup">члены</item>
+  <item id="MethodsSubgroup">методы</item>
+  <item id="PropertiesSubgroup">свойства</item>
+  <item id="EventsSubgroup">события</item>
+  <item id="FieldsSubgroup">поля</item>
+  <item id="OperatorsSubgroup">операторы</item>
+  <item id="AttachedPropertiesSubgroup">вложенные свойства</item>
+  <item id="AttachedEventsSubgroup">вложенные события</item>
+
+  <item id="dependencyPropertyInfoHeading">Информация о свойстве зависимостей</item>
+  <item id="routedEventInfoHeading">Информация о перенаправленном событии</item>
+  <item id="mrefTaskMoreCodeHeading">Дополнительно</item>
+
+  <item id="Overloaded">Перегружен. </item>	
+  <item id="defaultNamespace">(пространство имён по-умолчанию)</item>
+  
+  <item id="typeLink">Тип: {0}</item>
+  <!-- First line of a param or retval description is a link to the type of the param or retval.
+       This boilerplate is used if the type is a type parameter of the member's type. -->
+  <item id="typeLinkToTypeParameter"><b>{0}</b> - параметр типа {1}.</item>
+  
+ <!-- Internal only Boilerplate text -->
+  <item id="internalOnly">Данный API разработан для поддержки инфраструктуры .NET Framework и не предназначен для использования непосредственно из кода.</item>
+  <item id="infraStructure">Инфраструктура. </item>
+  
+  
+  <!-- Variance boilerplate text -->
+  <item id="inKeyword"><span class="languageSpecificText"><span class="cs"><span class="keyword">in</span> </span><span class="vb"><span class="keyword">In</span> </span><span class="cpp"><span class="keyword">in</span> </span><span class="nu"><span class="keyword">in</span> </span><span class="fs"></span></span></item>
+  <item id="outKeyword"><span class="languageSpecificText"><span class="cs"><span class="keyword">out</span> </span><span class="vb"><span class="keyword">Out</span> </span><span class="cpp"><span class="keyword">out</span> </span><span class="nu"><span class="keyword">out</span> </span><span class="fs"></span></span></item>
+  
+  <item id="covariant">Этот параметр типа является ковариантным. Это означает, что можно использовать либо указанный тип, либо более производный тип. </item>
+  <item id="contravariant">Этот параметр типа является контрвариантным. Это означает, что можно использовать либо указанный тип, либо менее производный тип. </item>
+  <item id="variance">Дополнительные сведения о ковариации и контрвариации см. в разделе <a href="http://msdn.microsoft.com/ru-ru/library/ee207183.aspx" target="_blank">Ковариация и контравариация в универсальных шаблонах</a>.</item>
+
+  <!-- Non Cls Compliant boilerplate text-->
+  <item id="NotClsCompliant">Этот интерфейс API CLS-несовместим.</item>
+  <item id="AltClsCompliant">CLS-совместимая альтернатива - {0}.</item>
+  
+  <!-- Security Critical Boilerplate text-->
+  <item id="typeSecurityCriticalBoilerplate">Этот тип имеет атрибут SecurityCriticalAttribute, который делает его пригодным только для внутреннего использования библиотекой классов .NET Framework для Silverlight. При попытке обращения к любому члену этого типа из прикладного кода вызывается исключение MethodAccessException.</item>
+  <item id="memberSecurityCriticalBoilerplate">Этот член имеет атрибут SecurityCriticalAttribute, который делает его пригодным только для внутреннего использования библиотекой классов .NET Framework для Silverlight. При попытке обращения к этому члену из прикладного кода вызывается исключение MethodAccessException.</item>
+  <item id="securityCritical">[ВАЖНЫЙ ЭЛЕМЕНТ БЕЗОПАСНОСТИ] </item>
+  
+  <!-- Overload page boilerplate -->
+  <item id="overloadSummary">Этот член перегружен. Для получения полной информации о данном члене, включая синтаксис, использование и примеры, щелкните имя в списке перегрузок.</item>
+       
+  <!-- platform names that appear in the Platforms section on mref type and member pages 
+       The id values must be in sync with the platform/@name values used in the manifold  platformFilters.xml filter files.
+       These values are also used in <platformNotes>
+  -->
+  <item id="Win98">Windows 98</item>
+  <item id="WinME">Windows Millennium Edition</item>
+  <item id="WinSvr2000">Windows Server 2000 SP4</item>
+  <item id="WinXPPro64">Windows XP Professional x64 Edition</item>
+  <item id="WinXP">Windows XP SP3</item>
+  <item id="WindowsCE">Windows CE</item>
+  <item id="PocketPC">Windows Mobile for Pocket PC</item>
+  <item id="SmartPhone">Windows Mobile for Smartphone</item>
+  <item id="WinSvr2003">Windows Server 2003</item>
+  <item id="WinSvr2008">Windows Server 2008</item>
+  <item id="WinSvr2008R2">Windows Server 2008 R2</item>
+  <item id="WinXpMediaCenter">Windows XP Media Center Edition</item>
+  <item id="WinXPSE">Windows XP Starter Edition</item>
+  <item id="WinVista">Windows Vista</item>
+  <item id="Win7">Windows 7</item>
+  <item id="Xbox360">Xbox 360</item>
+  <item id="Zune">Zune</item>
+  
+  <!-- Platforms boilerplate for Silverlight mref builds --> 
+  <item id="silverlightplatforms">
+    Список операционных систем и браузеров, поддерживаемых <include item="silverlight"/>, см. в разделе <a href="http://msdn.microsoft.com/ru-ru/library/dd229102.aspx" target="_blank">Поддерживаемые операционные системы и браузеры</a>.
+  </item>
+
+  <!-- framework ids:  
+       These shared content item strings are used for the headings in the Version Information section 
+       These ids must be in sync with the ids used in the config file for VersionBuilder.
+  -->
+  <item id="netfw">.NET Framework</item>
+  <item id="netcfw">.NET Compact Framework</item>
+  <item id="xnafw">XNA Framework</item>
+  <item id="silverlight">Silverlight</item>
+  <item id="silverlight_mobile">Silverlight for Windows Phone</item>
+  
+  <!-- framework version ids
+       These shared content item strings are used in the Version Information section.
+       These ids must be in sync with the ids used in the config file for VersionBuilder.
+       The ids are also used in the platformFilters.xml filter files to indicate the framework version supported by each platform
+  -->
+  <item id="netfw40">4.0</item>
+  <item id="netfw35_1">3.5 SP1</item>
+  <item id="netfw35">3.5</item>
+  <item id="netfw30_1">3.0 SP1</item>
+  <item id="netfw30">3.0</item>
+  <item id="netfw20_1">2.0 SP1</item>
+  <item id="netfw20">2.0</item>
+  <item id="netfw11">1.1</item>
+  <item id="netfw10">1.0</item>
+
+  <item id="netcfw37">3.7</item>
+  <item id="netcfw35">3.5</item>
+  <item id="netcfw20">2.0</item>
+  <item id="netcfw10">1.0</item>
+
+  <item id="xnafw10">1.0</item>
+
+  <!-- silverlight version ids used in Version Information section. -->
+  <item id="silverlight10">1.0</item>
+  <item id="silverlight20">2.0</item>
+  <item id="silverlight_v3">3.0</item>
+  <item id="silverlight_v4">4.0</item>
+  
+  <item id="silverlight_mobile_v1">Windows Phone OS 7.0</item>
+  
+  
+
+  <!-- Used in the Requirements section to display an xmlns URI for apis that can be used in XAML -->
+  <item id="xamlXmlnsRequirementsLayout"><b>XMLNS для XAML:</b> {0}</item>
+  <item id="unmappedXamlXmlns">не имеет соответствия в xmlns.</item>
+
+  <item id="secondaryFrameworkOverride"><br/><br/>В <include item="{0}"/>, этот член переопределён как {1}.</item>
+  <item id="secondaryFrameworkInherited"><br/><br/>В <include item="{0}"/>&#160;<include item="{1}"/>, этот член унаследован от {2}<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>{3}.</item>
+  <item id="secondaryFrameworkMember"><br/><br/>В <include item="{0}"/>&#160;<include item="{1}"/>, этот метод является {2}.</item>
+  
+  <item id="useBaseSummary">Этот член переопределяет {0}.</item>
+  <item id="useBaseSee">См. {0}.</item>
+  <item id="useBaseBoilerplate">Этот член переопределяет {0}; по данной теме может быть доступна более полная документация.</item>
+
+  <item id="flagsSummary">Это перечисление имеет атрибут {0}, поддерживающий побитовое соединение составляющих его значений.</item>
+</content>

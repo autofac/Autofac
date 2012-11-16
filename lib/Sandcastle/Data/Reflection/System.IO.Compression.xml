@@ -1,0 +1,1578 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies>
+    <assembly name="System">
+      <assemblydata version="4.0.0.0" culture="" key="00000000000000000400000000000000" hash="SHA1" />
+      <attributes>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\dd\tools\devdiv\EcmaPublicKey.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.30319.1</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.AllowPartiallyTrustedCallersAttribute" ref="true" />
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft® .NET Framework</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>© Microsoft Corporation.  All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.30319.1</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.SecurityPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="RequestMinimum" />
+            </enumValue>
+          </argument>
+          <assignment name="SkipVerification">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </assembly>
+  </assemblies>
+  <apis>
+    <api id="N:System.IO.Compression">
+      <topicdata group="api" />
+      <apidata name="System.IO.Compression" group="namespace" />
+      <elements>
+        <element api="T:System.IO.Compression.CompressionMode" />
+        <element api="T:System.IO.Compression.DeflateStream" />
+        <element api="T:System.IO.Compression.GZipStream" />
+      </elements>
+      <file name="6906b236-71c1-528c-a8a5-217c81a88dd7" />
+    </api>
+    <api id="T:System.IO.Compression.CompressionMode">
+      <topicdata group="api" />
+      <apidata name="CompressionMode" group="type" subgroup="enumeration" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="F:System.IO.Compression.CompressionMode.Decompress" />
+        <element api="F:System.IO.Compression.CompressionMode.Compress" />
+      </elements>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+      </containers>
+      <file name="91287fe2-748e-c158-89d4-3c0bd6386364" />
+    </api>
+    <api id="F:System.IO.Compression.CompressionMode.Compress">
+      <topicdata group="api" notopic="" />
+      <apidata name="Compress" group="member" subgroup="field" />
+      <memberdata visibility="public" static="true" />
+      <fielddata literal="true" initonly="false" serialized="true" />
+      <returns>
+        <type api="T:System.IO.Compression.CompressionMode" ref="false" />
+      </returns>
+      <value>1</value>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.CompressionMode" ref="false" />
+      </containers>
+      <file name="704b6e24-2bcb-bc43-e1ee-6fcdd27fcc1f" />
+    </api>
+    <api id="F:System.IO.Compression.CompressionMode.Decompress">
+      <topicdata group="api" notopic="" />
+      <apidata name="Decompress" group="member" subgroup="field" />
+      <memberdata visibility="public" static="true" />
+      <fielddata literal="true" initonly="false" serialized="true" />
+      <returns>
+        <type api="T:System.IO.Compression.CompressionMode" ref="false" />
+      </returns>
+      <value>0</value>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.CompressionMode" ref="false" />
+      </containers>
+      <file name="de5ca435-d7eb-a779-1f91-a7cab1f3674f" />
+    </api>
+    <api id="T:System.IO.Compression.DeflateStream">
+      <topicdata group="api" allMembersTopicId="AllMembers.T:System.IO.Compression.DeflateStream" />
+      <apidata name="DeflateStream" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.IO.Stream" ref="true" />
+          <type api="T:System.MarshalByRefObject" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+      </containers>
+      <file name="447b540c-32a9-0138-a5e0-5ddd1e1c9ea4" />
+    </api>
+    <api id="AllMembers.T:System.IO.Compression.DeflateStream">
+      <topicdata name="DeflateStream" group="list" subgroup="members" typeTopicId="T:System.IO.Compression.DeflateStream" />
+      <apidata name="DeflateStream" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.MarshalByRefObject.CreateObjRef(System.Type)" />
+        <element api="M:System.MarshalByRefObject.GetLifetimeService" />
+        <element api="M:System.MarshalByRefObject.InitializeLifetimeService" />
+        <element api="Overload:System.IO.Compression.DeflateStream.MemberwiseClone">
+          <element api="M:System.Object.MemberwiseClone" />
+          <element api="M:System.MarshalByRefObject.MemberwiseClone(System.Boolean)" />
+        </element>
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.ToString" />
+        <element api="P:System.IO.Stream.CanTimeout" />
+        <element api="M:System.IO.Stream.Close" />
+        <element api="Overload:System.IO.Compression.DeflateStream.CopyTo">
+          <element api="M:System.IO.Stream.CopyTo(System.IO.Stream)" />
+          <element api="M:System.IO.Stream.CopyTo(System.IO.Stream,System.Int32)" />
+        </element>
+        <element api="M:System.IO.Stream.CreateWaitHandle" />
+        <element api="Overload:System.IO.Compression.DeflateStream.Dispose">
+          <element api="M:System.IO.Stream.Dispose" />
+          <element api="M:System.IO.Compression.DeflateStream.Dispose(System.Boolean)" />
+        </element>
+        <element api="M:System.IO.Stream.ObjectInvariant" />
+        <element api="M:System.IO.Stream.ReadByte" />
+        <element api="P:System.IO.Stream.ReadTimeout" />
+        <element api="M:System.IO.Stream.WriteByte(System.Byte)" />
+        <element api="P:System.IO.Stream.WriteTimeout" />
+        <element api="Overload:System.IO.Compression.DeflateStream.#ctor">
+          <element api="M:System.IO.Compression.DeflateStream.#ctor(System.IO.Stream,System.IO.Compression.CompressionMode)" />
+          <element api="M:System.IO.Compression.DeflateStream.#ctor(System.IO.Stream,System.IO.Compression.CompressionMode,System.Boolean)" />
+        </element>
+        <element api="P:System.IO.Compression.DeflateStream.BaseStream" />
+        <element api="M:System.IO.Compression.DeflateStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" />
+        <element api="M:System.IO.Compression.DeflateStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" />
+        <element api="P:System.IO.Compression.DeflateStream.CanRead" />
+        <element api="P:System.IO.Compression.DeflateStream.CanSeek" />
+        <element api="P:System.IO.Compression.DeflateStream.CanWrite" />
+        <element api="M:System.IO.Compression.DeflateStream.EndRead(System.IAsyncResult)" />
+        <element api="M:System.IO.Compression.DeflateStream.EndWrite(System.IAsyncResult)" />
+        <element api="M:System.IO.Compression.DeflateStream.Flush" />
+        <element api="P:System.IO.Compression.DeflateStream.Length" />
+        <element api="P:System.IO.Compression.DeflateStream.Position" />
+        <element api="M:System.IO.Compression.DeflateStream.Read(System.Byte[],System.Int32,System.Int32)" />
+        <element api="M:System.IO.Compression.DeflateStream.Seek(System.Int64,System.IO.SeekOrigin)" />
+        <element api="M:System.IO.Compression.DeflateStream.SetLength(System.Int64)" />
+        <element api="M:System.IO.Compression.DeflateStream.Write(System.Byte[],System.Int32,System.Int32)" />
+      </elements>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+      </containers>
+      <file name="90f35492-d304-0b80-2bdc-9e9e07bf5c7a" />
+    </api>
+    <api id="Methods.T:System.IO.Compression.DeflateStream">
+      <topicdata name="DeflateStream" group="list" subgroup="Methods" typeTopicId="T:System.IO.Compression.DeflateStream" />
+      <apidata name="DeflateStream" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.MarshalByRefObject.CreateObjRef(System.Type)" />
+        <element api="M:System.MarshalByRefObject.GetLifetimeService" />
+        <element api="M:System.MarshalByRefObject.InitializeLifetimeService" />
+        <element api="Overload:System.IO.Compression.DeflateStream.MemberwiseClone">
+          <element api="M:System.Object.MemberwiseClone" />
+          <element api="M:System.MarshalByRefObject.MemberwiseClone(System.Boolean)" />
+        </element>
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.IO.Stream.Close" />
+        <element api="Overload:System.IO.Compression.DeflateStream.CopyTo">
+          <element api="M:System.IO.Stream.CopyTo(System.IO.Stream)" />
+          <element api="M:System.IO.Stream.CopyTo(System.IO.Stream,System.Int32)" />
+        </element>
+        <element api="M:System.IO.Stream.CreateWaitHandle" />
+        <element api="Overload:System.IO.Compression.DeflateStream.Dispose">
+          <element api="M:System.IO.Stream.Dispose" />
+          <element api="M:System.IO.Compression.DeflateStream.Dispose(System.Boolean)" />
+        </element>
+        <element api="M:System.IO.Stream.ObjectInvariant" />
+        <element api="M:System.IO.Stream.ReadByte" />
+        <element api="M:System.IO.Stream.WriteByte(System.Byte)" />
+        <element api="M:System.IO.Compression.DeflateStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" />
+        <element api="M:System.IO.Compression.DeflateStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" />
+        <element api="M:System.IO.Compression.DeflateStream.EndRead(System.IAsyncResult)" />
+        <element api="M:System.IO.Compression.DeflateStream.EndWrite(System.IAsyncResult)" />
+        <element api="M:System.IO.Compression.DeflateStream.Flush" />
+        <element api="M:System.IO.Compression.DeflateStream.Read(System.Byte[],System.Int32,System.Int32)" />
+        <element api="M:System.IO.Compression.DeflateStream.Seek(System.Int64,System.IO.SeekOrigin)" />
+        <element api="M:System.IO.Compression.DeflateStream.SetLength(System.Int64)" />
+        <element api="M:System.IO.Compression.DeflateStream.Write(System.Byte[],System.Int32,System.Int32)" />
+      </elements>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+      </containers>
+      <file name="9feaef5b-c095-c220-2985-d46f2c7b6225" />
+    </api>
+    <api id="Properties.T:System.IO.Compression.DeflateStream">
+      <topicdata name="DeflateStream" group="list" subgroup="Properties" typeTopicId="T:System.IO.Compression.DeflateStream" />
+      <apidata name="DeflateStream" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="P:System.IO.Stream.CanTimeout" />
+        <element api="P:System.IO.Stream.ReadTimeout" />
+        <element api="P:System.IO.Stream.WriteTimeout" />
+        <element api="P:System.IO.Compression.DeflateStream.BaseStream" />
+        <element api="P:System.IO.Compression.DeflateStream.CanRead" />
+        <element api="P:System.IO.Compression.DeflateStream.CanSeek" />
+        <element api="P:System.IO.Compression.DeflateStream.CanWrite" />
+        <element api="P:System.IO.Compression.DeflateStream.Length" />
+        <element api="P:System.IO.Compression.DeflateStream.Position" />
+      </elements>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+      </containers>
+      <file name="312e50a1-d6ce-4f2d-fb73-d132ee674470" />
+    </api>
+    <api id="Overload:System.IO.Compression.DeflateStream.Dispose">
+      <topicdata name="Dispose" group="list" subgroup="overload" memberSubgroup="method" pseudo="true" allMembersTopicId="AllMembers.T:System.IO.Compression.DeflateStream" />
+      <apidata name="Dispose" group="member" subgroup="method" />
+      <elements>
+        <element api="M:System.IO.Stream.Dispose" />
+        <element api="M:System.IO.Compression.DeflateStream.Dispose(System.Boolean)" />
+      </elements>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <file name="84ab8537-9857-a6e7-0bed-70789d223f5a" />
+    </api>
+    <api id="Overload:System.IO.Compression.DeflateStream.#ctor">
+      <topicdata name=".ctor" group="list" subgroup="overload" memberSubgroup="constructor" pseudo="true" allMembersTopicId="AllMembers.T:System.IO.Compression.DeflateStream" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <elements>
+        <element api="M:System.IO.Compression.DeflateStream.#ctor(System.IO.Stream,System.IO.Compression.CompressionMode)" />
+        <element api="M:System.IO.Compression.DeflateStream.#ctor(System.IO.Stream,System.IO.Compression.CompressionMode,System.Boolean)" />
+      </elements>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <file name="d1755e72-e657-22f3-127f-475307e21913" />
+    </api>
+    <api id="M:System.IO.Compression.DeflateStream.#ctor(System.IO.Stream,System.IO.Compression.CompressionMode)">
+      <topicdata group="api" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" special="true" overload="Overload:System.IO.Compression.DeflateStream.#ctor" />
+      <parameters>
+        <parameter name="stream">
+          <type api="T:System.IO.Stream" ref="true" />
+        </parameter>
+        <parameter name="mode">
+          <type api="T:System.IO.Compression.CompressionMode" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <file name="626cfb52-6de0-7fb1-467f-a85758b7d6b0" />
+    </api>
+    <api id="M:System.IO.Compression.DeflateStream.#ctor(System.IO.Stream,System.IO.Compression.CompressionMode,System.Boolean)">
+      <topicdata group="api" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" special="true" overload="Overload:System.IO.Compression.DeflateStream.#ctor" />
+      <parameters>
+        <parameter name="stream">
+          <type api="T:System.IO.Stream" ref="true" />
+        </parameter>
+        <parameter name="mode">
+          <type api="T:System.IO.Compression.CompressionMode" ref="false" />
+        </parameter>
+        <parameter name="leaveOpen">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <file name="54a54305-3322-a828-7a47-61aa81cecf14" />
+    </api>
+    <api id="P:System.IO.Compression.DeflateStream.BaseStream">
+      <topicdata group="api" />
+      <apidata name="BaseStream" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" />
+      <getter name="get_BaseStream" />
+      <returns>
+        <type api="T:System.IO.Stream" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <file name="8a29df61-fa64-7151-6466-b8d1b111dd38" />
+    </api>
+    <api id="M:System.IO.Compression.DeflateStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+      <topicdata group="api" />
+      <apidata name="BeginRead" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="array">
+          <arrayOf rank="1">
+            <type api="T:System.Byte" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="offset">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="count">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="asyncCallback">
+          <type api="T:System.AsyncCallback" ref="true" />
+        </parameter>
+        <parameter name="asyncState">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.IAsyncResult" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Security.Permissions.HostProtectionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="LinkDemand" />
+            </enumValue>
+          </argument>
+          <assignment name="ExternalThreading">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="56e7ab05-4121-b0a7-db23-3248709a37ab" />
+    </api>
+    <api id="M:System.IO.Compression.DeflateStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+      <topicdata group="api" />
+      <apidata name="BeginWrite" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="array">
+          <arrayOf rank="1">
+            <type api="T:System.Byte" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="offset">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="count">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="asyncCallback">
+          <type api="T:System.AsyncCallback" ref="true" />
+        </parameter>
+        <parameter name="asyncState">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.IAsyncResult" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Security.Permissions.HostProtectionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="LinkDemand" />
+            </enumValue>
+          </argument>
+          <assignment name="ExternalThreading">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="d12a835d-e2d8-ba3d-6932-e410134b584e" />
+    </api>
+    <api id="P:System.IO.Compression.DeflateStream.CanRead">
+      <topicdata group="api" />
+      <apidata name="CanRead" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="P:System.IO.Stream.CanRead">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <propertydata get="true" />
+      <getter name="get_CanRead" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <file name="21538dee-4f46-744d-07c2-16cbc8b48c9f" />
+    </api>
+    <api id="P:System.IO.Compression.DeflateStream.CanSeek">
+      <topicdata group="api" />
+      <apidata name="CanSeek" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="P:System.IO.Stream.CanSeek">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <propertydata get="true" />
+      <getter name="get_CanSeek" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <file name="8b0faecb-11a9-4029-2b83-eb95edbeafed" />
+    </api>
+    <api id="P:System.IO.Compression.DeflateStream.CanWrite">
+      <topicdata group="api" />
+      <apidata name="CanWrite" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="P:System.IO.Stream.CanWrite">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <propertydata get="true" />
+      <getter name="get_CanWrite" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <file name="680a3076-c451-c11c-d4c1-19e4aceeba41" />
+    </api>
+    <api id="M:System.IO.Compression.DeflateStream.Dispose(System.Boolean)">
+      <topicdata group="api" />
+      <apidata name="Dispose" group="member" subgroup="method" />
+      <memberdata visibility="family" overload="Overload:System.IO.Compression.DeflateStream.Dispose" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.Dispose(System.Boolean)">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="disposing">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <file name="2ed1d7a6-1e52-9843-af3b-b767fdf3f64e" />
+    </api>
+    <api id="M:System.IO.Compression.DeflateStream.EndRead(System.IAsyncResult)">
+      <topicdata group="api" />
+      <apidata name="EndRead" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.EndRead(System.IAsyncResult)">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="asyncResult">
+          <type api="T:System.IAsyncResult" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <file name="f157e4f1-b7a9-18d9-c199-0f3ba86ccb27" />
+    </api>
+    <api id="M:System.IO.Compression.DeflateStream.EndWrite(System.IAsyncResult)">
+      <topicdata group="api" />
+      <apidata name="EndWrite" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.EndWrite(System.IAsyncResult)">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="asyncResult">
+          <type api="T:System.IAsyncResult" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <file name="7e70bbc6-7b19-f413-a98f-b743d70efe50" />
+    </api>
+    <api id="M:System.IO.Compression.DeflateStream.Flush">
+      <topicdata group="api" />
+      <apidata name="Flush" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.Flush">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <file name="034677cf-9d13-ea6f-d10d-4552f74f1608" />
+    </api>
+    <api id="P:System.IO.Compression.DeflateStream.Length">
+      <topicdata group="api" />
+      <apidata name="Length" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="P:System.IO.Stream.Length">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <propertydata get="true" />
+      <getter name="get_Length" />
+      <returns>
+        <type api="T:System.Int64" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <file name="d1eff7ee-5916-9851-ac31-54c3ac669bbf" />
+    </api>
+    <api id="P:System.IO.Compression.DeflateStream.Position">
+      <topicdata group="api" />
+      <apidata name="Position" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="P:System.IO.Stream.Position">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <propertydata get="true" set="true" />
+      <getter name="get_Position" />
+      <setter name="set_Position" />
+      <returns>
+        <type api="T:System.Int64" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <file name="2aad333f-d677-81b1-d1ac-8bdd88ebe506" />
+    </api>
+    <api id="M:System.IO.Compression.DeflateStream.Read(System.Byte[],System.Int32,System.Int32)">
+      <topicdata group="api" />
+      <apidata name="Read" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.Read(System.Byte[],System.Int32,System.Int32)">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="array">
+          <arrayOf rank="1">
+            <type api="T:System.Byte" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="offset">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="count">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <file name="68919d84-878f-d4c2-906a-b30a626585cb" />
+    </api>
+    <api id="M:System.IO.Compression.DeflateStream.Seek(System.Int64,System.IO.SeekOrigin)">
+      <topicdata group="api" />
+      <apidata name="Seek" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.Seek(System.Int64,System.IO.SeekOrigin)">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="offset">
+          <type api="T:System.Int64" ref="false" />
+        </parameter>
+        <parameter name="origin">
+          <type api="T:System.IO.SeekOrigin" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int64" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <file name="754a5791-b137-6480-4f4c-58d0fd6722dc" />
+    </api>
+    <api id="M:System.IO.Compression.DeflateStream.SetLength(System.Int64)">
+      <topicdata group="api" />
+      <apidata name="SetLength" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.SetLength(System.Int64)">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="value">
+          <type api="T:System.Int64" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <file name="d729fb96-4295-3ba9-ee0a-8e49e7a99f4f" />
+    </api>
+    <api id="M:System.IO.Compression.DeflateStream.Write(System.Byte[],System.Int32,System.Int32)">
+      <topicdata group="api" />
+      <apidata name="Write" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.Write(System.Byte[],System.Int32,System.Int32)">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="array">
+          <arrayOf rank="1">
+            <type api="T:System.Byte" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="offset">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="count">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.DeflateStream" ref="true" />
+      </containers>
+      <file name="da3c33d3-2717-4742-0021-6e0deea0453d" />
+    </api>
+    <api id="T:System.IO.Compression.GZipStream">
+      <topicdata group="api" allMembersTopicId="AllMembers.T:System.IO.Compression.GZipStream" />
+      <apidata name="GZipStream" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.IO.Stream" ref="true" />
+          <type api="T:System.MarshalByRefObject" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+      </containers>
+      <file name="b48a6518-2f8f-6173-061f-614af5ad45b3" />
+    </api>
+    <api id="AllMembers.T:System.IO.Compression.GZipStream">
+      <topicdata name="GZipStream" group="list" subgroup="members" typeTopicId="T:System.IO.Compression.GZipStream" />
+      <apidata name="GZipStream" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.MarshalByRefObject.CreateObjRef(System.Type)" />
+        <element api="M:System.MarshalByRefObject.GetLifetimeService" />
+        <element api="M:System.MarshalByRefObject.InitializeLifetimeService" />
+        <element api="Overload:System.IO.Compression.GZipStream.MemberwiseClone">
+          <element api="M:System.Object.MemberwiseClone" />
+          <element api="M:System.MarshalByRefObject.MemberwiseClone(System.Boolean)" />
+        </element>
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.ToString" />
+        <element api="P:System.IO.Stream.CanTimeout" />
+        <element api="M:System.IO.Stream.Close" />
+        <element api="Overload:System.IO.Compression.GZipStream.CopyTo">
+          <element api="M:System.IO.Stream.CopyTo(System.IO.Stream)" />
+          <element api="M:System.IO.Stream.CopyTo(System.IO.Stream,System.Int32)" />
+        </element>
+        <element api="M:System.IO.Stream.CreateWaitHandle" />
+        <element api="Overload:System.IO.Compression.GZipStream.Dispose">
+          <element api="M:System.IO.Stream.Dispose" />
+          <element api="M:System.IO.Compression.GZipStream.Dispose(System.Boolean)" />
+        </element>
+        <element api="M:System.IO.Stream.ObjectInvariant" />
+        <element api="M:System.IO.Stream.ReadByte" />
+        <element api="P:System.IO.Stream.ReadTimeout" />
+        <element api="M:System.IO.Stream.WriteByte(System.Byte)" />
+        <element api="P:System.IO.Stream.WriteTimeout" />
+        <element api="Overload:System.IO.Compression.GZipStream.#ctor">
+          <element api="M:System.IO.Compression.GZipStream.#ctor(System.IO.Stream,System.IO.Compression.CompressionMode)" />
+          <element api="M:System.IO.Compression.GZipStream.#ctor(System.IO.Stream,System.IO.Compression.CompressionMode,System.Boolean)" />
+        </element>
+        <element api="P:System.IO.Compression.GZipStream.BaseStream" />
+        <element api="M:System.IO.Compression.GZipStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" />
+        <element api="M:System.IO.Compression.GZipStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" />
+        <element api="P:System.IO.Compression.GZipStream.CanRead" />
+        <element api="P:System.IO.Compression.GZipStream.CanSeek" />
+        <element api="P:System.IO.Compression.GZipStream.CanWrite" />
+        <element api="M:System.IO.Compression.GZipStream.EndRead(System.IAsyncResult)" />
+        <element api="M:System.IO.Compression.GZipStream.EndWrite(System.IAsyncResult)" />
+        <element api="M:System.IO.Compression.GZipStream.Flush" />
+        <element api="P:System.IO.Compression.GZipStream.Length" />
+        <element api="P:System.IO.Compression.GZipStream.Position" />
+        <element api="M:System.IO.Compression.GZipStream.Read(System.Byte[],System.Int32,System.Int32)" />
+        <element api="M:System.IO.Compression.GZipStream.Seek(System.Int64,System.IO.SeekOrigin)" />
+        <element api="M:System.IO.Compression.GZipStream.SetLength(System.Int64)" />
+        <element api="M:System.IO.Compression.GZipStream.Write(System.Byte[],System.Int32,System.Int32)" />
+      </elements>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+      </containers>
+      <file name="7b49cb54-9e46-9237-6a5c-decbd91af16c" />
+    </api>
+    <api id="Methods.T:System.IO.Compression.GZipStream">
+      <topicdata name="GZipStream" group="list" subgroup="Methods" typeTopicId="T:System.IO.Compression.GZipStream" />
+      <apidata name="GZipStream" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.MarshalByRefObject.CreateObjRef(System.Type)" />
+        <element api="M:System.MarshalByRefObject.GetLifetimeService" />
+        <element api="M:System.MarshalByRefObject.InitializeLifetimeService" />
+        <element api="Overload:System.IO.Compression.GZipStream.MemberwiseClone">
+          <element api="M:System.Object.MemberwiseClone" />
+          <element api="M:System.MarshalByRefObject.MemberwiseClone(System.Boolean)" />
+        </element>
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.IO.Stream.Close" />
+        <element api="Overload:System.IO.Compression.GZipStream.CopyTo">
+          <element api="M:System.IO.Stream.CopyTo(System.IO.Stream)" />
+          <element api="M:System.IO.Stream.CopyTo(System.IO.Stream,System.Int32)" />
+        </element>
+        <element api="M:System.IO.Stream.CreateWaitHandle" />
+        <element api="Overload:System.IO.Compression.GZipStream.Dispose">
+          <element api="M:System.IO.Stream.Dispose" />
+          <element api="M:System.IO.Compression.GZipStream.Dispose(System.Boolean)" />
+        </element>
+        <element api="M:System.IO.Stream.ObjectInvariant" />
+        <element api="M:System.IO.Stream.ReadByte" />
+        <element api="M:System.IO.Stream.WriteByte(System.Byte)" />
+        <element api="M:System.IO.Compression.GZipStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" />
+        <element api="M:System.IO.Compression.GZipStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)" />
+        <element api="M:System.IO.Compression.GZipStream.EndRead(System.IAsyncResult)" />
+        <element api="M:System.IO.Compression.GZipStream.EndWrite(System.IAsyncResult)" />
+        <element api="M:System.IO.Compression.GZipStream.Flush" />
+        <element api="M:System.IO.Compression.GZipStream.Read(System.Byte[],System.Int32,System.Int32)" />
+        <element api="M:System.IO.Compression.GZipStream.Seek(System.Int64,System.IO.SeekOrigin)" />
+        <element api="M:System.IO.Compression.GZipStream.SetLength(System.Int64)" />
+        <element api="M:System.IO.Compression.GZipStream.Write(System.Byte[],System.Int32,System.Int32)" />
+      </elements>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+      </containers>
+      <file name="318fb2da-ae0b-889b-cc1d-858073235a6f" />
+    </api>
+    <api id="Properties.T:System.IO.Compression.GZipStream">
+      <topicdata name="GZipStream" group="list" subgroup="Properties" typeTopicId="T:System.IO.Compression.GZipStream" />
+      <apidata name="GZipStream" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="P:System.IO.Stream.CanTimeout" />
+        <element api="P:System.IO.Stream.ReadTimeout" />
+        <element api="P:System.IO.Stream.WriteTimeout" />
+        <element api="P:System.IO.Compression.GZipStream.BaseStream" />
+        <element api="P:System.IO.Compression.GZipStream.CanRead" />
+        <element api="P:System.IO.Compression.GZipStream.CanSeek" />
+        <element api="P:System.IO.Compression.GZipStream.CanWrite" />
+        <element api="P:System.IO.Compression.GZipStream.Length" />
+        <element api="P:System.IO.Compression.GZipStream.Position" />
+      </elements>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+      </containers>
+      <file name="7f7ed810-a77e-acc2-26b8-f7fdd021d098" />
+    </api>
+    <api id="Overload:System.IO.Compression.GZipStream.Dispose">
+      <topicdata name="Dispose" group="list" subgroup="overload" memberSubgroup="method" pseudo="true" allMembersTopicId="AllMembers.T:System.IO.Compression.GZipStream" />
+      <apidata name="Dispose" group="member" subgroup="method" />
+      <elements>
+        <element api="M:System.IO.Stream.Dispose" />
+        <element api="M:System.IO.Compression.GZipStream.Dispose(System.Boolean)" />
+      </elements>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <file name="908cd81f-45a5-978a-821c-7b9dc6bb60a1" />
+    </api>
+    <api id="Overload:System.IO.Compression.GZipStream.#ctor">
+      <topicdata name=".ctor" group="list" subgroup="overload" memberSubgroup="constructor" pseudo="true" allMembersTopicId="AllMembers.T:System.IO.Compression.GZipStream" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <elements>
+        <element api="M:System.IO.Compression.GZipStream.#ctor(System.IO.Stream,System.IO.Compression.CompressionMode)" />
+        <element api="M:System.IO.Compression.GZipStream.#ctor(System.IO.Stream,System.IO.Compression.CompressionMode,System.Boolean)" />
+      </elements>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <file name="c687601e-83eb-19fd-590f-fd2fcd9277a8" />
+    </api>
+    <api id="M:System.IO.Compression.GZipStream.#ctor(System.IO.Stream,System.IO.Compression.CompressionMode)">
+      <topicdata group="api" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" special="true" overload="Overload:System.IO.Compression.GZipStream.#ctor" />
+      <parameters>
+        <parameter name="stream">
+          <type api="T:System.IO.Stream" ref="true" />
+        </parameter>
+        <parameter name="mode">
+          <type api="T:System.IO.Compression.CompressionMode" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <file name="47147394-6549-d9d6-cc34-31f5f45d913d" />
+    </api>
+    <api id="M:System.IO.Compression.GZipStream.#ctor(System.IO.Stream,System.IO.Compression.CompressionMode,System.Boolean)">
+      <topicdata group="api" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" special="true" overload="Overload:System.IO.Compression.GZipStream.#ctor" />
+      <parameters>
+        <parameter name="stream">
+          <type api="T:System.IO.Stream" ref="true" />
+        </parameter>
+        <parameter name="mode">
+          <type api="T:System.IO.Compression.CompressionMode" ref="false" />
+        </parameter>
+        <parameter name="leaveOpen">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <file name="630509f3-7808-8d2a-de1f-d9c99ed99dcf" />
+    </api>
+    <api id="P:System.IO.Compression.GZipStream.BaseStream">
+      <topicdata group="api" />
+      <apidata name="BaseStream" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" />
+      <getter name="get_BaseStream" />
+      <returns>
+        <type api="T:System.IO.Stream" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <file name="9d3878f9-e6b6-225f-f812-91c47283aec8" />
+    </api>
+    <api id="M:System.IO.Compression.GZipStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+      <topicdata group="api" />
+      <apidata name="BeginRead" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="array">
+          <arrayOf rank="1">
+            <type api="T:System.Byte" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="offset">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="count">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="asyncCallback">
+          <type api="T:System.AsyncCallback" ref="true" />
+        </parameter>
+        <parameter name="asyncState">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.IAsyncResult" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Security.Permissions.HostProtectionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="LinkDemand" />
+            </enumValue>
+          </argument>
+          <assignment name="ExternalThreading">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="b3873f09-d554-ebc5-b29b-4026a156b8aa" />
+    </api>
+    <api id="M:System.IO.Compression.GZipStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+      <topicdata group="api" />
+      <apidata name="BeginWrite" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="array">
+          <arrayOf rank="1">
+            <type api="T:System.Byte" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="offset">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="count">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="asyncCallback">
+          <type api="T:System.AsyncCallback" ref="true" />
+        </parameter>
+        <parameter name="asyncState">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.IAsyncResult" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Security.Permissions.HostProtectionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="LinkDemand" />
+            </enumValue>
+          </argument>
+          <assignment name="ExternalThreading">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="802cb8d9-56c4-7f46-8575-e20bb571a5fd" />
+    </api>
+    <api id="P:System.IO.Compression.GZipStream.CanRead">
+      <topicdata group="api" />
+      <apidata name="CanRead" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="P:System.IO.Stream.CanRead">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <propertydata get="true" />
+      <getter name="get_CanRead" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <file name="7ae91b4b-e07b-c5ce-0ad6-986f08fe2033" />
+    </api>
+    <api id="P:System.IO.Compression.GZipStream.CanSeek">
+      <topicdata group="api" />
+      <apidata name="CanSeek" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="P:System.IO.Stream.CanSeek">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <propertydata get="true" />
+      <getter name="get_CanSeek" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <file name="70996ba0-866d-827e-f6de-6e7c5f0f79ac" />
+    </api>
+    <api id="P:System.IO.Compression.GZipStream.CanWrite">
+      <topicdata group="api" />
+      <apidata name="CanWrite" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="P:System.IO.Stream.CanWrite">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <propertydata get="true" />
+      <getter name="get_CanWrite" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <file name="fdf3d669-a8f0-5878-26a9-102bc220d8eb" />
+    </api>
+    <api id="M:System.IO.Compression.GZipStream.Dispose(System.Boolean)">
+      <topicdata group="api" />
+      <apidata name="Dispose" group="member" subgroup="method" />
+      <memberdata visibility="family" overload="Overload:System.IO.Compression.GZipStream.Dispose" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.Dispose(System.Boolean)">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="disposing">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <file name="dfd2a205-0dee-b47e-3bf3-a5bed0231a84" />
+    </api>
+    <api id="M:System.IO.Compression.GZipStream.EndRead(System.IAsyncResult)">
+      <topicdata group="api" />
+      <apidata name="EndRead" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.EndRead(System.IAsyncResult)">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="asyncResult">
+          <type api="T:System.IAsyncResult" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <file name="d3ac2e0c-14ef-6e19-bce0-d150ef053b13" />
+    </api>
+    <api id="M:System.IO.Compression.GZipStream.EndWrite(System.IAsyncResult)">
+      <topicdata group="api" />
+      <apidata name="EndWrite" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.EndWrite(System.IAsyncResult)">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="asyncResult">
+          <type api="T:System.IAsyncResult" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <file name="00c351c0-8779-b602-8c2f-808e2d9542ea" />
+    </api>
+    <api id="M:System.IO.Compression.GZipStream.Flush">
+      <topicdata group="api" />
+      <apidata name="Flush" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.Flush">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <file name="43ab5d74-a3f9-7a69-b238-4b33445e325c" />
+    </api>
+    <api id="P:System.IO.Compression.GZipStream.Length">
+      <topicdata group="api" />
+      <apidata name="Length" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="P:System.IO.Stream.Length">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <propertydata get="true" />
+      <getter name="get_Length" />
+      <returns>
+        <type api="T:System.Int64" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <file name="24a56500-f342-4b18-6235-fa885965a3a7" />
+    </api>
+    <api id="P:System.IO.Compression.GZipStream.Position">
+      <topicdata group="api" />
+      <apidata name="Position" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="P:System.IO.Stream.Position">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <propertydata get="true" set="true" />
+      <getter name="get_Position" />
+      <setter name="set_Position" />
+      <returns>
+        <type api="T:System.Int64" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <file name="468ed495-ab46-7fda-82cb-6c6087b25ca1" />
+    </api>
+    <api id="M:System.IO.Compression.GZipStream.Read(System.Byte[],System.Int32,System.Int32)">
+      <topicdata group="api" />
+      <apidata name="Read" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.Read(System.Byte[],System.Int32,System.Int32)">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="array">
+          <arrayOf rank="1">
+            <type api="T:System.Byte" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="offset">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="count">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <file name="c0fa4863-1444-e413-80d5-a1d2fcf331ba" />
+    </api>
+    <api id="M:System.IO.Compression.GZipStream.Seek(System.Int64,System.IO.SeekOrigin)">
+      <topicdata group="api" />
+      <apidata name="Seek" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.Seek(System.Int64,System.IO.SeekOrigin)">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="offset">
+          <type api="T:System.Int64" ref="false" />
+        </parameter>
+        <parameter name="origin">
+          <type api="T:System.IO.SeekOrigin" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int64" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <file name="5d45932d-3d3d-42c6-23e0-d35c08d68161" />
+    </api>
+    <api id="M:System.IO.Compression.GZipStream.SetLength(System.Int64)">
+      <topicdata group="api" />
+      <apidata name="SetLength" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.SetLength(System.Int64)">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="value">
+          <type api="T:System.Int64" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <file name="b7a76aac-2f15-1853-6063-dd90a9b82c7d" />
+    </api>
+    <api id="M:System.IO.Compression.GZipStream.Write(System.Byte[],System.Int32,System.Int32)">
+      <topicdata group="api" />
+      <apidata name="Write" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.IO.Stream.Write(System.Byte[],System.Int32,System.Int32)">
+          <type api="T:System.IO.Stream" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="array">
+          <arrayOf rank="1">
+            <type api="T:System.Byte" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="offset">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="count">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.IO.Compression" />
+        <type api="T:System.IO.Compression.GZipStream" ref="true" />
+      </containers>
+      <file name="91942dbf-99dc-e201-4908-0ca1f98888b0" />
+    </api>
+  </apis>
+</reflection>

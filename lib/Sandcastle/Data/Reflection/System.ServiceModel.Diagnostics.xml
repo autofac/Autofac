@@ -1,0 +1,230 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies>
+    <assembly name="System.ServiceModel">
+      <assemblydata version="4.0.0.0" culture="" key="00000000000000000400000000000000" hash="SHA1" />
+      <attributes>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.ServiceModel.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.ServiceModel.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.30319.1</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.ExtensionAttribute" ref="true" />
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\dd\tools\devdiv\EcmaPublicKey.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.AllowPartiallyTrustedCallersAttribute" ref="true" />
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.SecurityCriticalAttribute" ref="true" />
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.ServiceModel.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft® .NET Framework</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>© Microsoft Corporation.  All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.30319.1</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.SecurityPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="RequestMinimum" />
+            </enumValue>
+          </argument>
+          <assignment name="SkipVerification">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </assembly>
+  </assemblies>
+  <apis>
+    <api id="N:System.ServiceModel.Diagnostics">
+      <topicdata group="api" />
+      <apidata name="System.ServiceModel.Diagnostics" group="namespace" />
+      <elements>
+        <element api="T:System.ServiceModel.Diagnostics.PerformanceCounterScope" />
+      </elements>
+      <file name="612c72dd-6816-1c62-fc2c-c6e308b0eabc" />
+    </api>
+    <api id="T:System.ServiceModel.Diagnostics.PerformanceCounterScope">
+      <topicdata group="api" />
+      <apidata name="PerformanceCounterScope" group="type" subgroup="enumeration" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="F:System.ServiceModel.Diagnostics.PerformanceCounterScope.Off" />
+        <element api="F:System.ServiceModel.Diagnostics.PerformanceCounterScope.ServiceOnly" />
+        <element api="F:System.ServiceModel.Diagnostics.PerformanceCounterScope.All" />
+        <element api="F:System.ServiceModel.Diagnostics.PerformanceCounterScope.Default" />
+      </elements>
+      <containers>
+        <library assembly="System.ServiceModel" module="System.ServiceModel" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.ServiceModel.Diagnostics" />
+      </containers>
+      <file name="c59d1c8e-079f-a010-68a7-bb660f872223" />
+    </api>
+    <api id="F:System.ServiceModel.Diagnostics.PerformanceCounterScope.All">
+      <topicdata group="api" notopic="" />
+      <apidata name="All" group="member" subgroup="field" />
+      <memberdata visibility="public" static="true" />
+      <fielddata literal="true" initonly="false" serialized="true" />
+      <returns>
+        <type api="T:System.ServiceModel.Diagnostics.PerformanceCounterScope" ref="false" />
+      </returns>
+      <value>2</value>
+      <containers>
+        <library assembly="System.ServiceModel" module="System.ServiceModel" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.ServiceModel.Diagnostics" />
+        <type api="T:System.ServiceModel.Diagnostics.PerformanceCounterScope" ref="false" />
+      </containers>
+      <file name="b17b5384-d66f-5c22-884b-e894a72384f1" />
+    </api>
+    <api id="F:System.ServiceModel.Diagnostics.PerformanceCounterScope.Default">
+      <topicdata group="api" notopic="" />
+      <apidata name="Default" group="member" subgroup="field" />
+      <memberdata visibility="public" static="true" />
+      <fielddata literal="true" initonly="false" serialized="true" />
+      <returns>
+        <type api="T:System.ServiceModel.Diagnostics.PerformanceCounterScope" ref="false" />
+      </returns>
+      <value>3</value>
+      <containers>
+        <library assembly="System.ServiceModel" module="System.ServiceModel" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.ServiceModel.Diagnostics" />
+        <type api="T:System.ServiceModel.Diagnostics.PerformanceCounterScope" ref="false" />
+      </containers>
+      <file name="eb8e89f2-9e99-b292-d6ce-9eda5bd10b9a" />
+    </api>
+    <api id="F:System.ServiceModel.Diagnostics.PerformanceCounterScope.Off">
+      <topicdata group="api" notopic="" />
+      <apidata name="Off" group="member" subgroup="field" />
+      <memberdata visibility="public" static="true" />
+      <fielddata literal="true" initonly="false" serialized="true" />
+      <returns>
+        <type api="T:System.ServiceModel.Diagnostics.PerformanceCounterScope" ref="false" />
+      </returns>
+      <value>0</value>
+      <containers>
+        <library assembly="System.ServiceModel" module="System.ServiceModel" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.ServiceModel.Diagnostics" />
+        <type api="T:System.ServiceModel.Diagnostics.PerformanceCounterScope" ref="false" />
+      </containers>
+      <file name="05fc2f32-7a17-e76f-cf94-1cfaed09bf79" />
+    </api>
+    <api id="F:System.ServiceModel.Diagnostics.PerformanceCounterScope.ServiceOnly">
+      <topicdata group="api" notopic="" />
+      <apidata name="ServiceOnly" group="member" subgroup="field" />
+      <memberdata visibility="public" static="true" />
+      <fielddata literal="true" initonly="false" serialized="true" />
+      <returns>
+        <type api="T:System.ServiceModel.Diagnostics.PerformanceCounterScope" ref="false" />
+      </returns>
+      <value>1</value>
+      <containers>
+        <library assembly="System.ServiceModel" module="System.ServiceModel" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.ServiceModel.Diagnostics" />
+        <type api="T:System.ServiceModel.Diagnostics.PerformanceCounterScope" ref="false" />
+      </containers>
+      <file name="38f37504-eb46-7081-4fd6-3bad4df7c68f" />
+    </api>
+  </apis>
+</reflection>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Translations provided by Alex Sherman, verifications Sergey Zhurikhin -->
+<content xml:space="preserve">
+
+  <item id="fb_alias">DevDocs@Microsoft.com</item>
+  <item id="fb_product"></item>
+  <item id="fb_deliverable"></item>
+
+  <item id="fb_subject">Отзыв</item>
+  <item id="fb_body">Спасибо за ваш отзыв! Разработчики продукта используют ваши отзывы для улучшения документации. Во время рассмотрения вашего отзыва, мы можем отправить письмо по электронной почте, попросив уточнить отзыв или уведомив о нашем решении по нему. Мы не используем ваш адрес электронной почты для любых других целей, и мы удалим его после того, как мы закончим рассмотрение вашего отзыва. Для получения дополнительной информации о политике конфиденциальности Microsoft, см. http://privacy.microsoft.com/en-us/default.aspx.</item>
+ 
+   <item id="fb_headerFeedBack">Отправить отзыв</item>
+  
+
+   <!-- feedback values for sandcastle scenario -->
+
+   <item id="feedback_alias"></item>
+   <item id="feedback_product"></item>
+   <item id="feedback_deliverable"></item>
+   <item id="feedback_fileVersion"></item>
+   <item id="feedback_topicVersion"></item>
+   <item id="feedback_body"></item>
+   <item id="feedback_subject"></item>
+
+   <item id="fb_Introduction">Мы ценим ваше мнение. Чтобы оценить этот раздел и отправить отзыв в команду, ответственную за документацию, выберите рейтинг, а затем нажмите <b>Отправить отзыв</b>.</item>
+
+   <item id="fb_Send">Отправить отзыв</item>
+   <item id="fb_Poor">Плохо</item>
+   <item id="fb_Excellent">Отлично</item>
+   <item id="fb_EnterFeedbackText">Чтобы отправить Ваш отзыв, нажмите здесь:</item>
+   <item id="fb_Title">Отзыв о документации</item>
+   <item id="fb_altIcon">Показать сведения об обратной связи в нижней части страницы.</item>
+
+</content>

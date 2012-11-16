@@ -1,0 +1,649 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies>
+    <assembly name="System">
+      <assemblydata version="4.0.0.0" culture="" key="00000000000000000400000000000000" hash="SHA1" />
+      <attributes>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\dd\tools\devdiv\EcmaPublicKey.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.30319.1</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.AllowPartiallyTrustedCallersAttribute" ref="true" />
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft® .NET Framework</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>© Microsoft Corporation.  All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.30319.1</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.SecurityPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="RequestMinimum" />
+            </enumValue>
+          </argument>
+          <assignment name="SkipVerification">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </assembly>
+    <assembly name="mscorlib">
+      <assemblydata version="4.0.0.0" culture="" key="00000000000000000400000000000000" hash="SHA1" />
+      <attributes>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\dd\Tools\devdiv\ecmapublickey.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.AllowPartiallyTrustedCallersAttribute" ref="true" />
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>BED7F4EA-1A96-11d2-8F08-00A0C9A6186D</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>mscorlib.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>mscorlib.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>mscorlib.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft® .NET Framework</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>© Microsoft Corporation.  All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.30319.1</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.30319.1</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.SecurityPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="RequestMinimum" />
+            </enumValue>
+          </argument>
+          <assignment name="SkipVerification">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </assembly>
+  </assemblies>
+  <apis>
+    <api id="N:System.Diagnostics.CodeAnalysis">
+      <topicdata group="api" />
+      <apidata name="System.Diagnostics.CodeAnalysis" group="namespace" />
+      <elements>
+        <element api="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" />
+        <element api="T:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
+      </elements>
+      <file name="59e9ab2a-b59e-1fdf-dbcb-91d86c842bda" />
+    </api>
+    <api id="T:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute">
+      <topicdata group="api" allMembersTopicId="AllMembers.T:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
+      <apidata name="ExcludeFromCodeCoverageAttribute" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Attribute" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Diagnostics.CodeAnalysis" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.AttributeUsageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.AttributeTargets" ref="false" />
+            <enumValue>
+              <field name="Class" />
+              <field name="Struct" />
+              <field name="Constructor" />
+              <field name="Method" />
+              <field name="Property" />
+              <field name="Event" />
+            </enumValue>
+          </argument>
+          <assignment name="Inherited">
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </assignment>
+          <assignment name="AllowMultiple">
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="17c068b9-a682-bc40-6ecb-16c4942bbefa" />
+    </api>
+    <api id="AllMembers.T:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute">
+      <topicdata name="ExcludeFromCodeCoverageAttribute" group="list" subgroup="members" typeTopicId="T:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
+      <apidata name="ExcludeFromCodeCoverageAttribute" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Attribute.Equals(System.Object)" />
+        <element api="M:System.Attribute.GetHashCode" />
+        <element api="M:System.Attribute.IsDefaultAttribute" />
+        <element api="M:System.Attribute.Match(System.Object)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetIDsOfNames(System.Guid@,System.IntPtr,System.UInt32,System.UInt32,System.IntPtr)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetTypeInfo(System.UInt32,System.UInt32,System.IntPtr)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetTypeInfoCount(System.UInt32@)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#Invoke(System.UInt32,System.Guid@,System.UInt32,System.Int16,System.IntPtr,System.IntPtr,System.IntPtr,System.IntPtr)" />
+        <element api="P:System.Attribute.TypeId" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute.#ctor" />
+      </elements>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Diagnostics.CodeAnalysis" />
+      </containers>
+      <file name="c20c0e11-b9c8-b222-9107-2971da4e233c" />
+    </api>
+    <api id="Methods.T:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute">
+      <topicdata name="ExcludeFromCodeCoverageAttribute" group="list" subgroup="Methods" typeTopicId="T:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
+      <apidata name="ExcludeFromCodeCoverageAttribute" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Attribute.Equals(System.Object)" />
+        <element api="M:System.Attribute.GetHashCode" />
+        <element api="M:System.Attribute.IsDefaultAttribute" />
+        <element api="M:System.Attribute.Match(System.Object)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetIDsOfNames(System.Guid@,System.IntPtr,System.UInt32,System.UInt32,System.IntPtr)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetTypeInfo(System.UInt32,System.UInt32,System.IntPtr)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetTypeInfoCount(System.UInt32@)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#Invoke(System.UInt32,System.Guid@,System.UInt32,System.Int16,System.IntPtr,System.IntPtr,System.IntPtr,System.IntPtr)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+      </elements>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Diagnostics.CodeAnalysis" />
+      </containers>
+      <file name="817de7a1-ace1-78bc-e352-2bb70b9489d7" />
+    </api>
+    <api id="Properties.T:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute">
+      <topicdata name="ExcludeFromCodeCoverageAttribute" group="list" subgroup="Properties" typeTopicId="T:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
+      <apidata name="ExcludeFromCodeCoverageAttribute" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="P:System.Attribute.TypeId" />
+      </elements>
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Diagnostics.CodeAnalysis" />
+      </containers>
+      <file name="57b03e67-a80b-04f7-bbe5-42b032f996c9" />
+    </api>
+    <api id="M:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute.#ctor">
+      <topicdata group="api" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" special="true" />
+      <containers>
+        <library assembly="System" module="System" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Diagnostics.CodeAnalysis" />
+        <type api="T:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" ref="true" />
+      </containers>
+      <file name="9a16589b-be0f-3893-978e-6f4d60e18563" />
+    </api>
+    <api id="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute">
+      <topicdata group="api" allMembersTopicId="AllMembers.T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" />
+      <apidata name="SuppressMessageAttribute" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Attribute" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <containers>
+        <library assembly="mscorlib" module="mscorlib" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Diagnostics.CodeAnalysis" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Diagnostics.ConditionalAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>CODE_ANALYSIS</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.AttributeUsageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.AttributeTargets" ref="false" />
+            <enumValue>
+              <field name="All" />
+            </enumValue>
+          </argument>
+          <assignment name="Inherited">
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </assignment>
+          <assignment name="AllowMultiple">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="1119e18e-78d6-8ffb-fa48-ca34154828ff" />
+    </api>
+    <api id="AllMembers.T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute">
+      <topicdata name="SuppressMessageAttribute" group="list" subgroup="members" typeTopicId="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" />
+      <apidata name="SuppressMessageAttribute" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Attribute.Equals(System.Object)" />
+        <element api="M:System.Attribute.GetHashCode" />
+        <element api="M:System.Attribute.IsDefaultAttribute" />
+        <element api="M:System.Attribute.Match(System.Object)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetIDsOfNames(System.Guid@,System.IntPtr,System.UInt32,System.UInt32,System.IntPtr)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetTypeInfo(System.UInt32,System.UInt32,System.IntPtr)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetTypeInfoCount(System.UInt32@)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#Invoke(System.UInt32,System.Guid@,System.UInt32,System.Int16,System.IntPtr,System.IntPtr,System.IntPtr,System.IntPtr)" />
+        <element api="P:System.Attribute.TypeId" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.#ctor(System.String,System.String)" />
+        <element api="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Category" />
+        <element api="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.CheckId" />
+        <element api="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Justification" />
+        <element api="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.MessageId" />
+        <element api="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Scope" />
+        <element api="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Target" />
+      </elements>
+      <containers>
+        <library assembly="mscorlib" module="mscorlib" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Diagnostics.CodeAnalysis" />
+      </containers>
+      <file name="6f2aad3d-55d0-bbbd-75f0-ae00add2bfa8" />
+    </api>
+    <api id="Methods.T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute">
+      <topicdata name="SuppressMessageAttribute" group="list" subgroup="Methods" typeTopicId="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" />
+      <apidata name="SuppressMessageAttribute" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Attribute.Equals(System.Object)" />
+        <element api="M:System.Attribute.GetHashCode" />
+        <element api="M:System.Attribute.IsDefaultAttribute" />
+        <element api="M:System.Attribute.Match(System.Object)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetIDsOfNames(System.Guid@,System.IntPtr,System.UInt32,System.UInt32,System.IntPtr)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetTypeInfo(System.UInt32,System.UInt32,System.IntPtr)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetTypeInfoCount(System.UInt32@)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#Invoke(System.UInt32,System.Guid@,System.UInt32,System.Int16,System.IntPtr,System.IntPtr,System.IntPtr,System.IntPtr)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+      </elements>
+      <containers>
+        <library assembly="mscorlib" module="mscorlib" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Diagnostics.CodeAnalysis" />
+      </containers>
+      <file name="0e4b6284-f37b-aea4-a540-7cc02c08e90c" />
+    </api>
+    <api id="Properties.T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute">
+      <topicdata name="SuppressMessageAttribute" group="list" subgroup="Properties" typeTopicId="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" />
+      <apidata name="SuppressMessageAttribute" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="P:System.Attribute.TypeId" />
+        <element api="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Category" />
+        <element api="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.CheckId" />
+        <element api="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Justification" />
+        <element api="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.MessageId" />
+        <element api="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Scope" />
+        <element api="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Target" />
+      </elements>
+      <containers>
+        <library assembly="mscorlib" module="mscorlib" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Diagnostics.CodeAnalysis" />
+      </containers>
+      <file name="2daa03c4-4376-a377-339e-f1c232da2a0d" />
+    </api>
+    <api id="M:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.#ctor(System.String,System.String)">
+      <topicdata group="api" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" special="true" />
+      <parameters>
+        <parameter name="category">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="checkId">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="mscorlib" module="mscorlib" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Diagnostics.CodeAnalysis" />
+        <type api="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" ref="true" />
+      </containers>
+      <file name="694663ee-9237-5c71-e747-13e87c4f183a" />
+    </api>
+    <api id="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Category">
+      <topicdata group="api" />
+      <apidata name="Category" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" />
+      <getter name="get_Category" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="mscorlib" module="mscorlib" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Diagnostics.CodeAnalysis" />
+        <type api="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" ref="true" />
+      </containers>
+      <file name="50be684d-cf51-a8ba-e91b-3af9bdf73ea8" />
+    </api>
+    <api id="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.CheckId">
+      <topicdata group="api" />
+      <apidata name="CheckId" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" />
+      <getter name="get_CheckId" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="mscorlib" module="mscorlib" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Diagnostics.CodeAnalysis" />
+        <type api="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" ref="true" />
+      </containers>
+      <file name="44bc9ce2-b8c1-1d34-be47-1fdb05f27f58" />
+    </api>
+    <api id="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Justification">
+      <topicdata group="api" />
+      <apidata name="Justification" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_Justification" />
+      <setter name="set_Justification" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="mscorlib" module="mscorlib" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Diagnostics.CodeAnalysis" />
+        <type api="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" ref="true" />
+      </containers>
+      <file name="52a602ce-79a4-2a50-ea45-69e9a38d1f07" />
+    </api>
+    <api id="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.MessageId">
+      <topicdata group="api" />
+      <apidata name="MessageId" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_MessageId" />
+      <setter name="set_MessageId" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="mscorlib" module="mscorlib" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Diagnostics.CodeAnalysis" />
+        <type api="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" ref="true" />
+      </containers>
+      <file name="38bcd3f5-d49d-90c8-b8ca-00288c2a0e4e" />
+    </api>
+    <api id="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Scope">
+      <topicdata group="api" />
+      <apidata name="Scope" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_Scope" />
+      <setter name="set_Scope" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="mscorlib" module="mscorlib" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Diagnostics.CodeAnalysis" />
+        <type api="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" ref="true" />
+      </containers>
+      <file name="9bb6d9c0-a46b-a05e-5bab-62c46b3835e3" />
+    </api>
+    <api id="P:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute.Target">
+      <topicdata group="api" />
+      <apidata name="Target" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_Target" />
+      <setter name="set_Target" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="mscorlib" module="mscorlib" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Diagnostics.CodeAnalysis" />
+        <type api="T:System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" ref="true" />
+      </containers>
+      <file name="d4ad7725-1a0a-d171-d2d9-f8a55f039ba4" />
+    </api>
+  </apis>
+</reflection>
