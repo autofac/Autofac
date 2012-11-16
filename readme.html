@@ -114,7 +114,6 @@
 			<li><a href="http://www.microsoft.com/en-us/download/details.aspx?id=35471">Windows Phone 8 SDK</a></li>
 			<li><a href="http://nunit.org/index.php?p=vsTestAdapter&amp;r=2.6">NUnit Test Adapter for VS11</a> (optional - to run unit tests inside Visual Studio)</li>
 			<li><a href="http://www.microsoft.com/en-us/download/details.aspx?id=29062">SQL Server Express 2012</a> (for demo applications)</li>
-			<li><a href="http://sandcastle.codeplex.com/">Sandcastle</a> (for building documentation)</li>
 		</ul>
 
 		<h1>Building the Project</h1>
@@ -129,7 +128,7 @@
 			<li>Clean all build artifacts.</li>
 			<li>Build the solution.</li>
 			<li>Execute the unit tests.</li>
-			<li>Run code analysis (secannotate).</li>
+			<li>Run code analysis.</li>
 		</ul>
 
 		<p>The <strong>production/release build</strong> will do everything in the developer build <em>plus</em>...</p>
@@ -138,5 +137,7 @@
 			<li>Create NuGet packages for distribution.</li>
 			<li>Build the compiled API help documentation.</li>
 		</ul>
+
+		<p><strong>Note for developers:</strong> If you are working on the Autofac core, there is also a project in Core/Tests/Autofac.Tests.AppCert that should be built/run separately to verify changes will pass Windows App Store certification. This build is not chained into the standard developer build since it takes time to run. <a href="Core/Tests/Autofac.Tests.AppCert/readme.html">There is a readme in that folder explaining more about how to run that build and assess results</a>.</p>
 	</body>
 </html>
