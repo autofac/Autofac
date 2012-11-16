@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Document" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+	<!--
+		This script is required to enable the environment variable DXROOT to be set
+		prior to documentation building. Generally this should be executed from the
+		root default.proj file, not as a standalone script.
+	-->
+	<Target Name="Document">
+		<!--
+			Dynamically generate the list of Autofac assemblies to put in the documentation so we don't
+			have to modify the doc build when assemblies change.
+		-->
+		<ItemGroup>
+			<DocTarget Include="$(BuildDirectory)\bin\net40\*.dll;$(BuildDirectory)\bin\net40\*.xml" />
+		</ItemGroup>
+		<CreateProperty Value="@(DocTarget -> '&lt;DocumentationSource sourceFile=%27%(FullPath)%27 /&gt;', '')">
+			<Output TaskParameter="Value" PropertyName="DocumentationSources" />
+		</CreateProperty>
+		<MSBuild
+			ToolsVersion="4.0"
+			Projects="$(MSBuildProjectDirectory)\Documentation.shfbproj"
+			Properties="SHFBRoot=$(MSBuildProjectDirectory)\..\lib\SHFB;HelpFileVersion=$(AssemblyVersion);DocumentationSources=$(DocumentationSources)" />
+	</Target>
+</Project>

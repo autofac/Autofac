@@ -25,8 +25,9 @@
         <!-- SHFB properties -->
         <OutputPath>..\build_output\doc\</OutputPath>
         <HtmlHelpName>Autofac {%40HelpFileVersion}</HtmlHelpName>
-        <HelpFileFormat>MSHelpViewer, Website</HelpFileFormat>
         <Language>en-US</Language>
+        <FrameworkVersion>Silverlight 5</FrameworkVersion>
+        <HelpFileFormat>MSHelpViewer, Website</HelpFileFormat>
         <CopyrightHref>http://autofac.org</CopyrightHref>
         <CopyrightText>Copyright %28c%29 2007-2012 Autofac Contributors</CopyrightText>
         <FeedbackEMailAddress>autofac%40googlegroups.com</FeedbackEMailAddress>
@@ -42,7 +43,6 @@
               </DocumentationSources>
         -->
         <WorkingPath>..\build_output\doc\temp\</WorkingPath>
-        <SandcastlePath>..\lib\Sandcastle\</SandcastlePath>
         <PlugInConfigurations>
             <PlugInConfig id="Wildcard Assembly References"
                           enabled="True"
