@@ -12,10 +12,10 @@
     <item id="runningHeaderText">{@HtmlEncHelpTitle}</item>
 
     <item id="locationInformation">Assembly: {0} (Module: {1}) Version: {2}</item>
-    <item id="assemblyNameAndModule">{0} (in {1}.{2}) Version: {3}</item>
+    <item id="assemblyNameAndModule">{0} (dans {1}.{2}) Version: {3}</item>
 
     <!-- shared_content.xml overrides -->
-    <item id="copyCode">Copy</item>
+    <item id="copyCode">Copier</item>
 
     <item id="locale">{@Locale}</item>
 
@@ -36,12 +36,12 @@
     <item id="copyright">{@HtmlEncCopyrightInfo}</item>
 
     <!-- SHFB Show Missing Component messages -->
-    <item id="shfbAutoDocConstructor">Initializes a new instance of the &lt;see cref="T:{0}"/&gt; class</item>
-    <item id="shfbAutoDocStaticConstructor">Initializes the static fields of the &lt;see cref="T:{0}"/&gt; class</item>
-    <item id="shfbAutoDocDispose">Releases all resources used by the &lt;see cref="T:{0}"/&gt;</item>
-    <item id="shfbAutoDocDisposeBool">Releases the unmanaged resources used by the &lt;see cref="T:{0}"/&gt; and optionally releases the managed resources</item>
-    <item id="shfbAutoDocDisposeParam">True to release both managed and unmanaged resources; false to release only unmanaged resources</item>
-    <item id="shfbMissingTag">&lt;p style="color: #dc143c; font-size: 8.5pt; font-weight: bold;"&gt;[Missing &amp;lt;{0}&amp;gt; documentation for "{1}"]&lt;/p&gt;</item>
-    <item id="shfbMissingParamTag">&lt;p style="color: #dc143c; font-size: 8.5pt; font-weight: bold;"&gt;[Missing &amp;lt;{0} name="{1}"/&amp;gt; documentation for "{2}"]&lt;/p&gt;</item>
-    <item id="shfbMissingIncludeTarget">&lt;p style="color: #dc143c; font-size: 8.5pt; font-weight: bold;"&gt;[Missing &amp;lt;include&amp;gt; target documentation in '{0}'.  File: '{1}' Path: '{2}']&lt;/p&gt;</item>
+    <item id="shfbAutoDocConstructor">Initialise une nouvelle instance de la classe &lt;see cref="T:{0}"/&gt;</item>
+    <item id="shfbAutoDocStaticConstructor">Initialise les champs statiques de la classe &lt;see cref="T:{0}"/&gt;</item>
+    <item id="shfbAutoDocDispose">Libère toutes les ressources utilisées par le &lt;see cref="T:{0}"/&gt;</item>
+    <item id="shfbAutoDocDisposeBool">Libère toutes les ressources non managées utilisées par le &lt;see cref="T:{0}"/&gt; et libère optionnellement les ressources managées</item>
+    <item id="shfbAutoDocDisposeParam">True pour libérer les ressources managées et non managées; false pour libérer seulement les ressources non managées</item>
+    <item id="shfbMissingTag">&lt;p style="color: #dc143c; font-size: 8.5pt; font-weight: bold;"&gt;[Documentation &amp;lt;{0}&amp;gt; manquante pour "{1}"]&lt;/p&gt;</item>
+    <item id="shfbMissingParamTag">&lt;p style="color: #dc143c; font-size: 8.5pt; font-weight: bold;"&gt;[Documentation &amp;lt;{0} name="{1}"/&amp;gt; manquante pour "{2}"]&lt;/p&gt;</item>
+    <item id="shfbMissingIncludeTarget">&lt;p style="color: #dc143c; font-size: 8.5pt; font-weight: bold;"&gt;[Documentation cible &amp;lt;include&amp;gt; manquante dans '{0}'.  Fichier: '{1}' Chemin: '{2}']&lt;/p&gt;</item>
 </content>

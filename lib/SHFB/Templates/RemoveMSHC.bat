@@ -1,24 +1,23 @@
 @ECHO OFF
 CLS
 
-IF "%1%"=="H2" GOTO H2Viewer
+REM This is an example script to show how to use the Help Library Manager Launcher to remove an MS Help Viewer
+REM file.  You can use this as an example for creating a script to run from your product's uninstaller.
 
-REM This is an example script to show how to use the Help Library Manager
-REM Launcher to remove an MS Help Viewer file.  You can use this as an example
-REM for creating a script to run from your product's uninstaller.
+REM NOTE: If not executed from within the same folder as the executable, a full path is required on the
+REM executable.
 
-REM NOTE: If not executed from within the same folder as the executable, a
-REM full path is required on the executable.
+IF "%1%"=="H2" GOTO HelpViewer2
+IF "%1%"=="h2" GOTO HelpViewer2
 
-HelpLibraryManagerLauncher.exe /product "{@CatalogProductId}" /version "{@CatalogVersion}" /locale {@Locale} /uninstall /silent /vendor "{@VendorName}" /mediaBookList "{@HelpTitle}" /productName "{@ProductTitle}"
+REM Help Viewer 1.0
+HelpLibraryManagerLauncher.exe /product "{@CatalogProductId}" /version "{@CatalogVersion}" /locale {@Locale} /uninstall /silent /vendor "{@VendorName}" /productName "{@ProductTitle}" /mediaBookList "{@HelpTitle}"
 
 GOTO Exit
 
-:H2Viewer
+:HelpViewer2
 
-REM The Help Library Manager Launcher tool does not support MS Help Viewer 2 yet so this calls the tool directly
-REM for temporary support.
-
-"%SYSTEMDRIVE%\Program Files\Microsoft Help Viewer\v2.0\HlpCtntMgr.exe" /operation uninstall /catalogName VisualStudio11 /locale {@Locale} /vendor "{@VendorName}"  /productName "{@HtmlEncProductTitle}" /bookList "{@HtmlEncHelpTitle}"
+REM Help Viewer 2.0
+HelpLibraryManagerLauncher.exe /viewerVersion 2.0 /catalogName {@CatalogName} /locale {@Locale} /wait 0 /operation uninstall /vendor "{@VendorName}" /productName "{@ProductTitle}" /bookList "{@HelpTitle}" > NUL
 
 :Exit

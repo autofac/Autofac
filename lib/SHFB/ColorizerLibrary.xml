@@ -172,8 +172,8 @@
         </member>
         <member name="M:ColorizerLibrary.CodeColorizer.ReplaceByCode(System.Text.RegularExpressions.Match)">
             <summary>
-            This method is used as the match evaluator for the main colorizer
-            regular expression</summary>
+            This method is used as the match evaluator for the main colorizer regular expression
+            </summary>
             <param name="match">Full match</param>
         </member>
         <member name="M:ColorizerLibrary.CodeColorizer.OnSeeTagFound(System.Text.RegularExpressions.Match)">
@@ -400,6 +400,27 @@
             <exception cref="T:System.ArgumentException">This is thrown if a node
             parameter does not have an 'id' attribute.</exception>
         </member>
+        <member name="T:ColorizerLibrary.XmlHelper">
+            <summary>
+            Some basic function helpers for xml creation.
+            </summary>
+        </member>
+        <member name="M:ColorizerLibrary.XmlHelper.XmlAddChildCDATAElem(System.Xml.XmlNode,System.String,System.String)">
+            <summary>adds a CDATA child elem</summary>
+            <param name="node">node to append child</param>
+            <param name="nodeName">new child node name</param>
+            <param name="cdata">CDATA value</param>
+            <exception>If could not create child node</exception>
+            <exception>If could not create CDATA node</exception>
+        </member>
+        <member name="M:ColorizerLibrary.XmlHelper.XmlSetAttribute(System.Xml.XmlNode,System.String,System.String)">
+            <summary>
+            Adds or updates an attribute in the node
+            <param name="node">node to modify</param>
+            <param name="name">Attribute name</param>
+            <param name="text">Attribute value</param>
+            </summary>
+        </member>
         <member name="T:ColorizerLibrary.Controls.TextColorizerControl">
             <summary>
             A syntax colorizing control
@@ -427,27 +448,6 @@
         <member name="P:ColorizerLibrary.Controls.TextColorizerControl.Text">
             <summary>
             Get or set the text to colorize
-            </summary>
-        </member>
-        <member name="T:ColorizerLibrary.XmlHelper">
-            <summary>
-            Some basic function helpers for xml creation.
-            </summary>
-        </member>
-        <member name="M:ColorizerLibrary.XmlHelper.XmlAddChildCDATAElem(System.Xml.XmlNode,System.String,System.String)">
-            <summary>adds a CDATA child elem</summary>
-            <param name="node">node to append child</param>
-            <param name="nodeName">new child node name</param>
-            <param name="cdata">CDATA value</param>
-            <exception>If could not create child node</exception>
-            <exception>If could not create CDATA node</exception>
-        </member>
-        <member name="M:ColorizerLibrary.XmlHelper.XmlSetAttribute(System.Xml.XmlNode,System.String,System.String)">
-            <summary>
-            Adds or updates an attribute in the node
-            <param name="node">node to modify</param>
-            <param name="name">Attribute name</param>
-            <param name="text">Attribute value</param>
             </summary>
         </member>
     </members>
