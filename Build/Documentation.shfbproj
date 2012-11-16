@@ -24,13 +24,13 @@
         <Name>Documentation</Name>
         <!-- SHFB properties -->
         <OutputPath>..\build_output\doc\</OutputPath>
-        <HtmlHelpName>Autofac {%40HelpFileVersion}</HtmlHelpName>
+        <HtmlHelpName>Autofac</HtmlHelpName>
         <Language>en-US</Language>
         <FrameworkVersion>Silverlight 5</FrameworkVersion>
-        <HelpFileFormat>MSHelpViewer, Website</HelpFileFormat>
+        <HelpFileFormat>MSHelpViewer</HelpFileFormat>
         <CopyrightHref>http://autofac.org</CopyrightHref>
-        <CopyrightText>Copyright %28c%29 2007-2012 Autofac Contributors</CopyrightText>
-        <FeedbackEMailAddress>autofac%40googlegroups.com</FeedbackEMailAddress>
+        <CopyrightText>Copyright (c) 2007-2012 Autofac Contributors</CopyrightText>
+        <FeedbackEMailAddress>autofac@googlegroups.com</FeedbackEMailAddress>
         <HelpTitle>Autofac .NET Inversion of Control Container</HelpTitle>
         <PresentationStyle>vs2010</PresentationStyle>
         <BuildLogFile>..\build_output\log\DocumentationBuild.log</BuildLogFile>
