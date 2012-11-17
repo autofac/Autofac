@@ -96,16 +96,16 @@ namespace Autofac.Tests.Core.Lifetime
             var o2 = new object();
 
             var builder = new ContainerBuilder();
-            builder.Register( c => o1 );
+            builder.Register(c => o1);
             var scope1 = builder.Build();
-            var scope2 = scope1.BeginLifetimeScope( b => b.Register( c => o2 ) );
-            var scope3 = scope2.BeginLifetimeScope( b => { });
+            var scope2 = scope1.BeginLifetimeScope(b => b.Register(c => o2));
+            var scope3 = scope2.BeginLifetimeScope(b => { });
 
-            Assert.AreSame( o2, scope3.Resolve<object>() );
+            Assert.AreSame(o2, scope3.Resolve<object>());
         }
 
         [Test]
-        [Ignore("Limitation")]
+        [Ignore("Issue #272")]
         public void LocalRegistrationCanPreserveParentAsDefault()
         {
             var o = new object();
@@ -180,7 +180,7 @@ namespace Autofac.Tests.Core.Lifetime
         {
             var rootScope = new ContainerBuilder().Build();
 
-            var nestedScope = rootScope.BeginLifetimeScope(cb => 
+            var nestedScope = rootScope.BeginLifetimeScope(cb =>
                 cb.RegisterType<DisposeTracker>().SingleInstance());
 
             var dt = nestedScope.Resolve<DisposeTracker>();
