@@ -116,7 +116,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         // ReSharper disable UnusedTypeParameter
         public interface ITwoParams<T, U> { }
         // ReSharper restore UnusedTypeParameter
-        
+
         public class TwoParams<T, U> : ITwoParams<T, U> { }
 
         [Test]
@@ -128,13 +128,13 @@ namespace Autofac.Tests.Features.OpenGenerics
             c.Resolve<ITwoParams<int, string>>();
         }
 
-        [Test, Ignore("Not sure where to detect this but would be nice.")]
+        [Test]
         public void NonGenericServiceTypesAreRejected()
         {
             var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(IList<>)).As(typeof(object));
             Assert.Throws<ArgumentException>(() =>
             {
-                cb.RegisterGeneric(typeof(IList<>)).As(typeof(object));
                 cb.Build();
             });
         }
