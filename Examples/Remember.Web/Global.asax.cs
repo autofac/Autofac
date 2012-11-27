@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Reflection;
+using System.Web.Configuration;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Autofac;
 using Autofac.Integration.Mvc;
 using Remember.Persistence.NHibernate;
-using Autofac;
 using Remember.Service;
+using Remember.Web.Areas.Integration.Models;
 
 namespace Remember.Web
 {
@@ -21,12 +23,13 @@ namespace Remember.Web
             routes.MapRoute(
                 "Default",                              // Route Name
                 "{controller}/{action}/{id}",           // Route URL (pattern)
-                new {                                   // Route Detauls
-                    controller = "Home", 
-                    action = "Index", 
-                    id = UrlParameter.Optional 
-                }, 
-                new []{"Remember.Web.Controllers"}      // Route Namespaces that take preference
+                new
+                {                                   // Route Detauls
+                    controller = "Home",
+                    action = "Index",
+                    id = UrlParameter.Optional
+                },
+                new[] { "Remember.Web.Controllers" }      // Route Namespaces that take preference
             );
         }
 
@@ -40,10 +43,23 @@ namespace Remember.Web
             builder.RegisterType<AuthenticationService>().As<IAuthenticationService>();
             builder.RegisterModule(new NHibernateModule());
 
+            // Change controller action parameter injection by changing web.config.
+            builder.RegisterType<ExtensibleActionInvoker>().As<IActionInvoker>().WithParameter(new NamedParameter("injectActionMethodParameters", IsControllerActionParameterInjectionEnabled())).InstancePerHttpRequest();
+
+            // Integration test items
+            builder.RegisterType<InvokerDependency>().As<IInvokerDependency>();
+
             IContainer container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
 
             RegisterRoutes(RouteTable.Routes);
+        }
+
+        public static bool IsControllerActionParameterInjectionEnabled()
+        {
+            bool injectParameters = false;
+            Boolean.TryParse(WebConfigurationManager.AppSettings["EnableControllerActionParameterInjection"], out injectParameters);
+            return injectParameters;
         }
     }
 }

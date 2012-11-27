@@ -20,7 +20,7 @@
             <ul id="mainMenu">
                 <li>
                 
-                    <%= Html.ActionLink("Home","Index","Home")%>
+                    <%= Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)%>
                 </li>
                 
             </ul>

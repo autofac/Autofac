@@ -4,17 +4,9 @@
     <h2>Main Menu</h2>
 
     <ul>
-        <li>
-
-        
-            <%=Html.ActionLink("Login","Login","Account") %>
-        </li>
-
-        <li>
-            <%=Html.ActionLink("View Tasks","Index","Task") %>
-        </li>
-
-
+        <li><%:Html.ActionLink("Login","Login","Account") %></li>
+        <li><%:Html.ActionLink("View Tasks","Index","Task") %></li>
+        <li><%:Html.ActionLink("ExtensibleActionInvoker Integration Tests", "Index", "Invoker", new { area="Integration" }, null)  %></li>
     </ul>
 
 </asp:Content>

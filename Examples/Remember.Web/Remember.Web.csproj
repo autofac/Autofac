@@ -91,6 +91,10 @@
     </Compile>
     <Compile Include="Areas\Api\ApiAreaRegistration.cs" />
     <Compile Include="Areas\Api\Controllers\TaskController.cs" />
+    <Compile Include="Areas\Integration\Controllers\InvokerController.cs" />
+    <Compile Include="Areas\Integration\IntegrationAreaRegistration.cs" />
+    <Compile Include="Areas\Integration\Models\IInvokerDependency.cs" />
+    <Compile Include="Areas\Integration\Models\InvokerDependency.cs" />
     <Compile Include="Binders\LoginFormBinder.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -107,6 +111,8 @@
     <Content Include="App_Data\Remember_log.ldf">
       <DependentUpon>Remember.mdf</DependentUpon>
     </Content>
+    <Content Include="Areas\Integration\Views\Invoker\Index.aspx" />
+    <Content Include="Areas\Integration\Views\Invoker\ParameterInjection.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Views\Account\Login.aspx" />
@@ -150,6 +156,7 @@
   <ItemGroup>
     <Folder Include="Areas\Api\Models\" />
     <Folder Include="Areas\Api\Views\Shared\" />
+    <Folder Include="Areas\Integration\Views\Shared\" />
     <Folder Include="Filters\" />
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +164,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\Integration\Views\Web.config" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
