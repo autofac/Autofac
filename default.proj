@@ -84,21 +84,6 @@
 		-->
 		<MSBuild Projects="$(MSBuildProjectDirectory)\.nuget\NuGet.targets" Targets="RestorePackages" />
 		<MSBuild Projects="%(SolutionFile.FullPath)" Targets="Build" Properties="Configuration=$(BuildConfiguration)" />
-
-		<!--
-			The current build only targets .NET 4.0. It finds all the build output and puts
-			it in bin\NET40. (Note "NET40" is what NuGet uses as the framework ID for .NET 4.)
-
-			When more platforms are targeted, put the appropriate build output into bin\XYZ where
-			XYZ is the associated NuGet framework identifier. This will allow easier convention-based
-			NuGet packaging to occur.
-
-			Original build constants used for targeting:
-			* NET40 = .NET 4.0 (TargetFrameworkVersion = v4.0; AllowPartiallyTrustedCallers = true)
-			* NET35 = .NET 3.5 (TargetFrameworkVersion = v3.5; AllowPartiallyTrustedCallers = false)
-			* SILVERLIGHT;SL3;WINDOWS_PHONE = WP7 (TargetFrameworkVersion = v4.0; AllowPartiallyTrustedCallers = false)
-			* SILVERLIGHT;SL4 = SL4 (TargetFrameworkVersion = v4.0; TargetFrameworkIdentifier = Silverlight; AllowPartiallyTrustedCallers = false)
-		-->
 		<ItemGroup>
 			<SourceOutputList
 				Include="
@@ -111,7 +96,8 @@
 				Include="
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.dll;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.pdb;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.xml"
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.xml;
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Extras.CommonServiceLocator.*"
 				Exclude="**\*.vshost.*;%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.CodeAnalysisLog.*" />
 		</ItemGroup>
 		<Copy SourceFiles="@(SourceOutputList)" DestinationFolder="$(BuildDirectory)\bin\net40" />

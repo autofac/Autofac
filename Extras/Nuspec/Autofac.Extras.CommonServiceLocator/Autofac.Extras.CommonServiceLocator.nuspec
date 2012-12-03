@@ -13,8 +13,15 @@
     <projectUrl>http://autofac.org</projectUrl>
     <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
     <dependencies>
-      <dependency id="Autofac" version="$version$" />
-      <dependency id="CommonServiceLocator" version="$version_CommonServiceLocator$" />
+      <group>
+        <dependency id="Autofac" version="$version$" />
+      </group>
+      <group targetFramework="net40">
+        <dependency id="CommonServiceLocator" version="$version_CommonServiceLocator$" />
+      </group>
+      <group targetFramework="portable-win+sl50+wp8">
+        <dependency id="Portable.CommonServiceLocator" version="$version_Portable.CommonServiceLocator$" />
+      </group>
     </dependencies>
   </metadata>
 </package>
