@@ -107,6 +107,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.WebApi"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.WebApi", "Core\Tests\Autofac.Tests.Integration.WebApi\Autofac.Tests.Integration.WebApi.csproj", "{AD8D8B7A-184E-428D-AD9C-BE1CEA8225A8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainServicesExample", "Examples\DomainServicesExample\DomainServicesExample.csproj", "{4EAB58EC-EEA6-4183-90B6-847183C9A75F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E7BB91D2-EAB1-4E06-AC3A-AA865EFEF12B} = {E7BB91D2-EAB1-4E06-AC3A-AA865EFEF12B}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -897,6 +902,26 @@ Global
 		{AD8D8B7A-184E-428D-AD9C-BE1CEA8225A8}.ReleasePortable|ARM.ActiveCfg = Release|Any CPU
 		{AD8D8B7A-184E-428D-AD9C-BE1CEA8225A8}.ReleasePortable|x64.ActiveCfg = Release|Any CPU
 		{AD8D8B7A-184E-428D-AD9C-BE1CEA8225A8}.ReleasePortable|x86.ActiveCfg = Release|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.DebugPortable|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.DebugPortable|Any CPU.Build.0 = Debug|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.DebugPortable|ARM.ActiveCfg = Debug|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.DebugPortable|x64.ActiveCfg = Debug|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.DebugPortable|x86.ActiveCfg = Debug|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.Release|ARM.ActiveCfg = Release|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.Release|x64.ActiveCfg = Release|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.Release|x86.ActiveCfg = Release|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.ReleasePortable|Any CPU.ActiveCfg = Release|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.ReleasePortable|Any CPU.Build.0 = Release|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.ReleasePortable|ARM.ActiveCfg = Release|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.ReleasePortable|x64.ActiveCfg = Release|Any CPU
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F}.ReleasePortable|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -945,6 +970,7 @@ Global
 		{7DC9BFB3-8F43-437D-81E2-BE540A017E70} = {0822765A-6BFC-4509-ABC7-31443D56B2EF}
 		{6F1BD5E2-8195-40AD-85B5-CF1BFB3CCE7F} = {0822765A-6BFC-4509-ABC7-31443D56B2EF}
 		{637C4B18-56BE-4E75-A7CD-7B79C489D33C} = {0822765A-6BFC-4509-ABC7-31443D56B2EF}
+		{4EAB58EC-EEA6-4183-90B6-847183C9A75F} = {0822765A-6BFC-4509-ABC7-31443D56B2EF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.Interception.2.1.505.0\lib\NET35;packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35;packages\EnterpriseLibrary.ExceptionHandling.5.0.505.0\lib\NET35

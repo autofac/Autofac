@@ -26,26 +26,39 @@
 using System;
 using System.ServiceModel.DomainServices.Server;
 using Autofac;
+using Autofac.Integration.Web;
 
 namespace Autofac.Extras.DomainServices
 {
     public class AutofacDomainServiceFactory : IDomainServiceFactory
     {
-        private readonly ILifetimeScope container;
+        private readonly IContainerProvider _containerProvider;
 
-        public AutofacDomainServiceFactory(ILifetimeScope container)
+        private ILifetimeScope RequestLifetimeScope
         {
-            this.container = container;
+            get
+            {
+                return this._containerProvider.RequestLifetime;
+            }
+        }
+
+        public AutofacDomainServiceFactory(IContainerProvider containerProvider)
+        {
+            if (containerProvider == null)
+            {
+                throw new ArgumentNullException("containerProvider");
+            }
+            this._containerProvider = containerProvider;
         }
 
         public DomainService CreateDomainService(Type domainServiceType, DomainServiceContext context)
         {
-            return (DomainService)container.Resolve(domainServiceType, TypedParameter.From(context));            
+            return (DomainService)this.RequestLifetimeScope.Resolve(domainServiceType, TypedParameter.From(context));
         }
 
         public void ReleaseDomainService(DomainService domainService)
         {
-            container.Disposer.AddInstanceForDisposal(domainService);
+            this.RequestLifetimeScope.Disposer.AddInstanceForDisposal(domainService);
         }
     }
 }

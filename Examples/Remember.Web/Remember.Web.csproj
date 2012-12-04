@@ -27,6 +27,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <SilverlightApplicationList>{4EAB58EC-EEA6-4183-90B6-847183C9A75F}|..\DomainServicesExample\DomainServicesExample.csproj|Content|False</SilverlightApplicationList>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -53,9 +54,13 @@
       <HintPath>..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel.DomainServices.Hosting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.ServiceModel.DomainServices.Server, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -91,6 +96,8 @@
     </Compile>
     <Compile Include="Areas\Api\ApiAreaRegistration.cs" />
     <Compile Include="Areas\Api\Controllers\TaskController.cs" />
+    <Compile Include="Areas\DomainServices\Controllers\HomeController.cs" />
+    <Compile Include="Areas\DomainServices\DomainServicesAreaRegistration.cs" />
     <Compile Include="Areas\Integration\Controllers\InvokerController.cs" />
     <Compile Include="Areas\Integration\IntegrationAreaRegistration.cs" />
     <Compile Include="Areas\Integration\Models\IInvokerDependency.cs" />
@@ -102,6 +109,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="MvcContainerProvider.cs" />
+    <Compile Include="TaskDomainService.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -113,10 +122,13 @@
     </Content>
     <Content Include="Areas\Integration\Views\Invoker\Index.aspx" />
     <Content Include="Areas\Integration\Views\Invoker\ParameterInjection.aspx" />
+    <Content Include="Content\DomainServicesExample.xap" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="Scripts\Silverlight.js" />
     <Content Include="Views\Account\Login.aspx" />
     <Content Include="Views\Account\LoginSuccess.aspx" />
+    <Content Include="Areas\DomainServices\Views\Home\Index.aspx" />
     <Content Include="Views\Home\Index.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -131,9 +143,17 @@
       <Project>{DD874E64-C7EC-464D-925F-CF4A709EDEEF}</Project>
       <Name>Autofac.Integration.Mvc</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\Source\Autofac.Integration.Web\Autofac.Integration.Web.csproj">
+      <Project>{4bdd9d14-baca-416c-919e-e9ff100f8f5d}</Project>
+      <Name>Autofac.Integration.Web</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\Source\Autofac\Autofac.csproj">
       <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
       <Name>Autofac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Extras\Source\Autofac.Extras.DomainServices\Autofac.Extras.DomainServices.csproj">
+      <Project>{4a3a14bb-7eba-4326-aa38-966a74b34abf}</Project>
+      <Name>Autofac.Extras.DomainServices</Name>
     </ProjectReference>
     <ProjectReference Include="..\Remember.Model\Remember.Model.csproj">
       <Project>{225D06BB-05C9-4C2E-BE28-8E77DC0C67EE}</Project>
@@ -156,7 +176,10 @@
   <ItemGroup>
     <Folder Include="Areas\Api\Models\" />
     <Folder Include="Areas\Api\Views\Shared\" />
+    <Folder Include="Areas\DomainServices\Models\" />
+    <Folder Include="Areas\DomainServices\Views\Shared\" />
     <Folder Include="Areas\Integration\Views\Shared\" />
+    <Folder Include="ClientBin\" />
     <Folder Include="Filters\" />
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +190,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Integration\Views\Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\DomainServices\Views\Web.config" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

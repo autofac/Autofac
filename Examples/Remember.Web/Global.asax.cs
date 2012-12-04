@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Reflection;
+using System.ServiceModel.DomainServices.Server;
 using System.Web.Configuration;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Autofac;
+using Autofac.Extras.DomainServices;
 using Autofac.Integration.Mvc;
 using Remember.Persistence.NHibernate;
 using Remember.Service;
@@ -46,11 +48,16 @@ namespace Remember.Web
             // Change controller action parameter injection by changing web.config.
             builder.RegisterType<ExtensibleActionInvoker>().As<IActionInvoker>().WithParameter(new NamedParameter("injectActionMethodParameters", IsControllerActionParameterInjectionEnabled())).InstancePerHttpRequest();
 
-            // Integration test items
+            // MVC integration test items
             builder.RegisterType<InvokerDependency>().As<IInvokerDependency>();
+
+            // DomainServices
+            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).AssignableTo<DomainService>();
+            builder.RegisterModule<AutofacDomainServiceModule>();
 
             IContainer container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+            DomainService.Factory = new AutofacDomainServiceFactory(new MvcContainerProvider());
 
             RegisterRoutes(RouteTable.Routes);
         }
