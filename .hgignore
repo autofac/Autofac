@@ -3,6 +3,7 @@ glob:*/bin/
 glob:*/Bin/
 glob:*/obj/
 glob:build_output
+Examples/Remember.Web/Content/DomainServicesExample.xap
 
 # Per-User Development Artifacts
 glob:*/_ReSharper*
