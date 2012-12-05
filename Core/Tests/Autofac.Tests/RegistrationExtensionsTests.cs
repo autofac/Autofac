@@ -14,7 +14,7 @@ namespace Autofac.Tests
         interface IMyService { }
 
         public sealed class MyComponent : IMyService { }
-        public sealed class MyComponent2 {}
+        public sealed class MyComponent2 { }
 
         [Test]
         public void RegistrationsMadeInConfigureExpressionAreAddedToContainer()
@@ -27,10 +27,23 @@ namespace Autofac.Tests
         }
 
         [Test]
-        public void OnlyServicesAssignableToASpecificTypeIsRegistered()
+        public void OnlyServicesAssignableToASpecificTypeAreRegisteredFromAssemblies()
         {
             var container = new Container().BeginLifetimeScope(b =>
                 b.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
+                    .AssignableTo(typeof(IMyService)));
+
+            Assert.AreEqual(1, container.ComponentRegistry.Registrations.Count());
+            Object obj;
+            Assert.IsTrue(container.TryResolve(typeof(MyComponent), out obj));
+            Assert.IsFalse(container.TryResolve(typeof(MyComponent2), out obj));
+        }
+
+        [Test]
+        public void OnlyServicesAssignableToASpecificTypeAreRegisteredFromTypeList()
+        {
+            var container = new Container().BeginLifetimeScope(b =>
+                b.RegisterTypes(Assembly.GetExecutingAssembly().GetTypes())
                     .AssignableTo(typeof(IMyService)));
 
             Assert.AreEqual(1, container.ComponentRegistry.Registrations.Count());
@@ -107,9 +120,9 @@ namespace Autofac.Tests
             context.Resolve<SelfComponent>();
         }
 
-// ReSharper disable UnusedTypeParameter
+        // ReSharper disable UnusedTypeParameter
         public interface IImplementedInterface<T> { }
-// ReSharper restore UnusedTypeParameter
+        // ReSharper restore UnusedTypeParameter
         public class SelfComponent<T> : IImplementedInterface<T> { }
 
         [Test]

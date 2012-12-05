@@ -51,14 +51,34 @@ namespace Autofac.Features.Scanning
             return rb;
         }
 
+        public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
+            RegisterTypes(ContainerBuilder builder, params Type[] types)
+        {
+            if (builder == null) throw new ArgumentNullException("builder");
+            if (types == null) throw new ArgumentNullException("types");
+
+            var rb = new RegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>(
+                new TypedService(typeof(object)),
+                new ScanningActivatorData(),
+                new DynamicRegistrationStyle());
+
+            builder.RegisterCallback(cr => ScanTypes(types, cr, rb));
+
+            return rb;
+        }
+
         static void ScanAssemblies(IEnumerable<Assembly> assemblies, IComponentRegistry cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
+        {
+            ScanTypes(assemblies.SelectMany(a => a.GetTypes()), cr, rb);
+        }
+
+        static void ScanTypes(IEnumerable<Type> types, IComponentRegistry cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
         {
             rb.ActivatorData.Filters.Add(t =>
                 rb.RegistrationData.Services.OfType<IServiceWithType>().All(swt =>
                     swt.ServiceType.IsAssignableFrom(t)));
 
-            foreach (var t in assemblies
-                .SelectMany(a => a.GetTypes())
+            foreach (var t in types
                 .Where(t =>
                     t.IsClass &&
                     !t.IsAbstract &&
