@@ -79,6 +79,20 @@ namespace Autofac.Tests
             Assert.IsTrue(disposable.IsDisposed);
         }
 
+        [Test(Description = "Issue 383: Disposing a container should only dispose a provided instance one time.")]
+        public void ResolvedProvidedInstances_OnlyDisposedOnce()
+        {
+            var builder = new ContainerBuilder();
+            var count = 0;
+            var disposable = new DisposeTracker();
+            disposable.Disposing += (sender, e) => count++;
+            builder.RegisterInstance(disposable);
+            var container = builder.Build();
+            container.Resolve<DisposeTracker>();
+            container.Dispose();
+            Assert.AreEqual(1, count, "The disposable instance was disposed the wrong number of times.");
+        }
+
         [Test]
         public void UnresolvedProvidedInstances_NotOwnedByLifetimeScope_NeverDisposed()
         {

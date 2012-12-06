@@ -88,7 +88,10 @@ namespace Autofac.Core.Activators.ProvidedInstance
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && _disposeInstance && _instance is IDisposable)
+            // Only dispose of the instance here if it wasn't activated. If it was activated,
+            // then either the owning lifetime scope will dispose of it automatically
+            // (see InstanceLookup.Activate) or an OnRelease handler will take care of it.
+            if (disposing && _disposeInstance && _instance is IDisposable && !_activated)
                 ((IDisposable)_instance).Dispose();
 
             base.Dispose(disposing);
