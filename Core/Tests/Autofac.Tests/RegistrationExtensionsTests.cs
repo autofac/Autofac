@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using NUnit.Framework;
-using Autofac.Core;
 using System.Reflection;
+using Autofac.Core;
+using NUnit.Framework;
 
 namespace Autofac.Tests
 {
@@ -75,6 +75,21 @@ namespace Autofac.Tests
             var dt = container.Resolve<DisposeTracker>();
             container.Dispose();
             Assert.AreSame(dt, instance);
+        }
+
+        [Test]
+        public void WhenAReleaseActionIsSupplied_AnActivatedProvidedInstanceWillExecuteReleaseAction()
+        {
+            var builder = new ContainerBuilder();
+            var provided = new DisposeTracker();
+            bool executed = false;
+            builder.RegisterInstance(provided)
+                .OnRelease(i => executed = true);
+            var container = builder.Build();
+            container.Resolve<DisposeTracker>();
+            container.Dispose();
+            Assert.IsTrue(executed, "The release action should have executed.");
+            Assert.IsFalse(provided.IsDisposed, "The release action should have superseded the automatic call to IDisposable.Dispose.");
         }
 
         public interface IImplementedInterface { }
