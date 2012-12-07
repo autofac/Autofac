@@ -77,7 +77,7 @@ namespace Autofac.Core.Registration
                     lastRunServices.AddRange(registration.Services.Where(s => !seenServices.Contains(s)));
 
                     var r = registration;
-                    yield return RegistrationBuilder.ForDelegate((c, p) => c.ResolveComponent(r, p))
+                    yield return RegistrationBuilder.ForDelegate(r.Activator.LimitType, (c, p) => c.ResolveComponent(r, p))
                         .Targeting(r)
                         .As(r.Services.ToArray())
                         .ExternallyOwned()

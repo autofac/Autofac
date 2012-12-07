@@ -127,6 +127,27 @@ namespace Autofac.Tests.Core.Lifetime
             Assert.AreSame(obs, ls.Resolve<IEnumerable<object>>());
         }
 
+        [Test(Description = "Issue #365")]
+        public void NestedLifetimeScopesMaintainServiceLimitTypes()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterType<Person>();
+            var container = cb.Build();
+            var service = new TypedService(typeof(Person));
+            using (var unconfigured = container.BeginLifetimeScope())
+            {
+                IComponentRegistration reg = null;
+                Assert.IsTrue(unconfigured.ComponentRegistry.TryGetRegistration(service, out reg), "The registration should have been found in the unconfigured scope.");
+                Assert.AreEqual(typeof(Person), reg.Activator.LimitType, "The limit type on the registration in the unconfigured scope was changed.");
+            }
+            using (var configured = container.BeginLifetimeScope(b => { }))
+            {
+                IComponentRegistration reg = null;
+                Assert.IsTrue(configured.ComponentRegistry.TryGetRegistration(service, out reg), "The registration should have been found in the configured scope.");
+                Assert.AreEqual(typeof(Person), reg.Activator.LimitType, "The limit type on the registration in the configured scope was changed.");
+            }
+        }
+
         public class Person
         {
         }
