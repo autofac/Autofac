@@ -206,7 +206,8 @@ namespace Autofac.Tests.Integration.Mvc
             AssertFilterRegistration<TestActionFilter, IActionFilter>(
                 FilterScope.Controller, 
                 null,
-                r => r.AsActionFilterFor<TestController>(20));
+                r => r.AsActionFilterFor<TestController>(20),
+                AutofacFilterProvider.ActionFilterMetadataKey);
         }
 
         [Test]
@@ -215,7 +216,8 @@ namespace Autofac.Tests.Integration.Mvc
             AssertFilterRegistration<TestActionFilter, IActionFilter>(
                 FilterScope.Action,
                 TestController.GetAction1MethodInfo<TestController>(),
-                r => r.AsActionFilterFor<TestController>(c => c.Action1(default(string)), 20));
+                r => r.AsActionFilterFor<TestController>(c => c.Action1(default(string)), 20),
+                AutofacFilterProvider.ActionFilterMetadataKey);
         }
 
         [Test]
@@ -243,7 +245,8 @@ namespace Autofac.Tests.Integration.Mvc
             AssertFilterRegistration<TestAuthorizationFilter, IAuthorizationFilter>(
                 FilterScope.Controller,
                 null,
-                r => r.AsAuthorizationFilterFor<TestController>(20));
+                r => r.AsAuthorizationFilterFor<TestController>(20),
+                AutofacFilterProvider.AuthorizationFilterMetadataKey);
         }
 
         [Test]
@@ -252,7 +255,8 @@ namespace Autofac.Tests.Integration.Mvc
             AssertFilterRegistration<TestAuthorizationFilter, IAuthorizationFilter>(
                 FilterScope.Action,
                 TestController.GetAction1MethodInfo<TestController>(),
-                r => r.AsAuthorizationFilterFor<TestController>(c => c.Action1(default(string)), 20));
+                r => r.AsAuthorizationFilterFor<TestController>(c => c.Action1(default(string)), 20),
+                AutofacFilterProvider.AuthorizationFilterMetadataKey);
         }
 
         [Test]
@@ -280,7 +284,8 @@ namespace Autofac.Tests.Integration.Mvc
             AssertFilterRegistration<TestExceptionFilter, IExceptionFilter>(
                 FilterScope.Controller,
                 null,
-                r => r.AsExceptionFilterFor<TestController>(20));
+                r => r.AsExceptionFilterFor<TestController>(20),
+                AutofacFilterProvider.ExceptionFilterMetadataKey);
         }
 
         [Test]
@@ -289,7 +294,8 @@ namespace Autofac.Tests.Integration.Mvc
             AssertFilterRegistration<TestExceptionFilter, IExceptionFilter>(
                 FilterScope.Action,
                 TestController.GetAction1MethodInfo<TestController>(),
-                r => r.AsExceptionFilterFor<TestController>(c => c.Action1(default(string)), 20));
+                r => r.AsExceptionFilterFor<TestController>(c => c.Action1(default(string)), 20),
+                AutofacFilterProvider.ExceptionFilterMetadataKey);
         }
 
         [Test]
@@ -317,7 +323,8 @@ namespace Autofac.Tests.Integration.Mvc
             AssertFilterRegistration<TestResultFilter, IResultFilter>(
                 FilterScope.Controller,
                 null,
-                r => r.AsResultFilterFor<TestController>(20));
+                r => r.AsResultFilterFor<TestController>(20),
+                AutofacFilterProvider.ResultFilterMetadataKey);
         }
 
         [Test]
@@ -326,23 +333,26 @@ namespace Autofac.Tests.Integration.Mvc
             AssertFilterRegistration<TestResultFilter, IResultFilter>(
                 FilterScope.Action,
                 TestController.GetAction1MethodInfo<TestController>(),
-                r => r.AsResultFilterFor<TestController>(c => c.Action1(default(string)), 20));
+                r => r.AsResultFilterFor<TestController>(c => c.Action1(default(string)), 20),
+                AutofacFilterProvider.ResultFilterMetadataKey);
         }
 
         static void AssertFilterRegistration<TFilter, TService>(FilterScope filterScope, MethodInfo methodInfo,
-            Action<IRegistrationBuilder<TFilter, SimpleActivatorData, SingleRegistrationStyle>> configure)
+            Action<IRegistrationBuilder<TFilter, SimpleActivatorData, SingleRegistrationStyle>> configure, string metadataKey)
                 where TFilter : new()
         {
             var builder = new ContainerBuilder();
             configure(builder.Register(c => new TFilter()));
             var container = builder.Build();
 
-            var service = container.Resolve<Meta<TService, FilterMetadata>>();
+            var service = container.Resolve<Meta<TService>>();
 
-            Assert.That(service.Metadata.ControllerType, Is.EqualTo(typeof(TestController)));
-            Assert.That(service.Metadata.FilterScope, Is.EqualTo(filterScope));
-            Assert.That(service.Metadata.MethodInfo, Is.EqualTo(methodInfo));
-            Assert.That(service.Metadata.Order, Is.EqualTo(20));
+            var metadata = (FilterMetadata)service.Metadata[metadataKey];
+
+            Assert.That(metadata.ControllerType, Is.EqualTo(typeof(TestController)));
+            Assert.That(metadata.FilterScope, Is.EqualTo(filterScope));
+            Assert.That(metadata.MethodInfo, Is.EqualTo(methodInfo));
+            Assert.That(metadata.Order, Is.EqualTo(20));
             Assert.That(service.Value, Is.InstanceOf<TService>());
         }
     }

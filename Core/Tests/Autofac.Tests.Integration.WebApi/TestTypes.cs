@@ -218,4 +218,23 @@ namespace Autofac.Tests.Integration.WebApi
         {
         }
     }
+
+    public class TestCombinationFilter : IAutofacActionFilter, IAutofacAuthorizationFilter, IAutofacExceptionFilter
+    {
+        public void OnActionExecuting(HttpActionContext actionContext)
+        {
+        }
+
+        public void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
+        {
+        }
+
+        public void OnAuthorization(HttpActionContext actionContext)
+        {
+        }
+
+        public void OnException(HttpActionExecutedContext actionExecutedContext)
+        {
+        }
+    }
 }

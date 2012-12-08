@@ -25,6 +25,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -331,11 +332,12 @@ namespace Autofac.Integration.Mvc
         /// <param name="actionSelector">The action selector.</param>
         /// <param name="order">The order in which the filter is applied.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsActionFilterFor<TController>(this IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
-                Expression<Action<TController>> actionSelector, int order = Filter.DefaultOrder) where TController : IController
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsActionFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration,
+                Expression<Action<TController>> actionSelector, int order = Filter.DefaultOrder) 
+                    where TController : IController
         {
-            return AsFilterFor(registration, actionSelector, order);
+            return AsFilterFor<IActionFilter, TController>(registration, AutofacFilterProvider.ActionFilterMetadataKey, actionSelector, order);
         }
 
         /// <summary>
@@ -345,11 +347,11 @@ namespace Autofac.Integration.Mvc
         /// <param name="registration">The registration.</param>
         /// <param name="order">The order in which the filter is applied.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsActionFilterFor<TController>(this IRegistrationBuilder<IActionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
-                int order = Filter.DefaultOrder) where TController : IController
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsActionFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration, int order = Filter.DefaultOrder) 
+                where TController : IController
         {
-            return AsFilterFor<IActionFilter, TController>(registration, order);
+            return AsFilterFor<IActionFilter, TController>(registration, AutofacFilterProvider.ActionFilterMetadataKey, order);
         }
 
         /// <summary>
@@ -360,11 +362,12 @@ namespace Autofac.Integration.Mvc
         /// <param name="actionSelector">The action selector.</param>
         /// <param name="order">The order in which the filter is applied.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<IAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsAuthorizationFilterFor<TController>(this IRegistrationBuilder<IAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
-                Expression<Action<TController>> actionSelector, int order = Filter.DefaultOrder) where TController : IController
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsAuthorizationFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration,
+                Expression<Action<TController>> actionSelector, int order = Filter.DefaultOrder) 
+                    where TController : IController
         {
-            return AsFilterFor(registration, actionSelector, order);
+            return AsFilterFor<IAuthorizationFilter, TController>(registration, AutofacFilterProvider.AuthorizationFilterMetadataKey, actionSelector, order);
         }
 
         /// <summary>
@@ -374,11 +377,11 @@ namespace Autofac.Integration.Mvc
         /// <param name="registration">The registration.</param>
         /// <param name="order">The order in which the filter is applied.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<IAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsAuthorizationFilterFor<TController>(this IRegistrationBuilder<IAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
-                int order = Filter.DefaultOrder) where TController : IController
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsAuthorizationFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration, int order = Filter.DefaultOrder) 
+                where TController : IController
         {
-            return AsFilterFor<IAuthorizationFilter, TController>(registration, order);
+            return AsFilterFor<IAuthorizationFilter, TController>(registration, AutofacFilterProvider.AuthorizationFilterMetadataKey, order);
         }
 
         /// <summary>
@@ -389,11 +392,12 @@ namespace Autofac.Integration.Mvc
         /// <param name="actionSelector">The action selector.</param>
         /// <param name="order">The order in which the filter is applied.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<IExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsExceptionFilterFor<TController>(this IRegistrationBuilder<IExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
-                Expression<Action<TController>> actionSelector, int order = Filter.DefaultOrder) where TController : IController
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsExceptionFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration,
+                Expression<Action<TController>> actionSelector, int order = Filter.DefaultOrder) 
+                    where TController : IController
         {
-            return AsFilterFor(registration, actionSelector, order);
+            return AsFilterFor<IExceptionFilter, TController>(registration, AutofacFilterProvider.ExceptionFilterMetadataKey, actionSelector, order);
         }
 
         /// <summary>
@@ -403,11 +407,11 @@ namespace Autofac.Integration.Mvc
         /// <param name="registration">The registration.</param>
         /// <param name="order">The order in which the filter is applied.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<IExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsExceptionFilterFor<TController>(this IRegistrationBuilder<IExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
-                int order = Filter.DefaultOrder) where TController : IController
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsExceptionFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration, int order = Filter.DefaultOrder) 
+                where TController : IController
         {
-            return AsFilterFor<IExceptionFilter, TController>(registration, order);
+            return AsFilterFor<IExceptionFilter, TController>(registration, AutofacFilterProvider.ExceptionFilterMetadataKey, order);
         }
 
         /// <summary>
@@ -418,11 +422,12 @@ namespace Autofac.Integration.Mvc
         /// <param name="actionSelector">The action selector.</param>
         /// <param name="order">The order in which the filter is applied.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<IResultFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsResultFilterFor<TController>(this IRegistrationBuilder<IResultFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
-                Expression<Action<TController>> actionSelector, int order = Filter.DefaultOrder) where TController : IController
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsResultFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration,
+                Expression<Action<TController>> actionSelector, int order = Filter.DefaultOrder) 
+                    where TController : IController
         {
-            return AsFilterFor(registration, actionSelector, order);
+            return AsFilterFor<IResultFilter, TController>(registration, AutofacFilterProvider.ResultFilterMetadataKey, actionSelector, order);
         }
 
         /// <summary>
@@ -432,38 +437,64 @@ namespace Autofac.Integration.Mvc
         /// <param name="registration">The registration.</param>
         /// <param name="order">The order in which the filter is applied.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<IResultFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsResultFilterFor<TController>(this IRegistrationBuilder<IResultFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
-                int order = Filter.DefaultOrder) where TController : IController
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsResultFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration, int order = Filter.DefaultOrder) 
+                where TController : IController
         {
-            return AsFilterFor<IResultFilter, TController>(registration, order);
+            return AsFilterFor<IResultFilter, TController>(registration, AutofacFilterProvider.ResultFilterMetadataKey, order);
         }
 
-        static IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsFilterFor<TFilter, TController>(IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, Expression<Action<TController>> actionSelector, int order)
+        static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsFilterFor<TFilter, TController>(IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration, string metadataKey, Expression<Action<TController>> actionSelector, int order)
             where TController : IController
         {
             if (registration == null) throw new ArgumentNullException("registration");
             if (actionSelector == null) throw new ArgumentNullException("actionSelector");
 
-            return registration.As<TFilter>().WithMetadata<FilterMetadata>(m => m
-                .For(f => f.ControllerType, typeof(TController))
-                .For(f => f.FilterScope, FilterScope.Action)
-                .For(f => f.MethodInfo, GetMethodInfo(actionSelector))
-                .For(f => f.Order, order));
+            var limitType = registration.ActivatorData.Activator.LimitType;
+
+            if (!limitType.IsAssignableTo<TFilter>())
+            {
+                var message = string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.MustBeAssignableToFilterType, 
+                    limitType.FullName, typeof(TFilter).FullName);
+                throw new ArgumentException(message, "registration");
+            }
+
+            var metadata = new FilterMetadata
+            {
+                ControllerType = typeof(TController),
+                FilterScope = FilterScope.Action,
+                MethodInfo = GetMethodInfo(actionSelector),
+                Order = order
+            };
+
+            return registration.As<TFilter>().WithMetadata(metadataKey, metadata);
         }
 
-        static IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsFilterFor<TFilter, TController>(IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, int order)
+        static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsFilterFor<TFilter, TController>(IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration, string metadataKey, int order)
             where TController : IController
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
-            return registration.As<TFilter>().WithMetadata<FilterMetadata>(m => m
-                .For(f => f.ControllerType, typeof(TController))
-                .For(f => f.FilterScope, FilterScope.Controller)
-                .For(f => f.MethodInfo, null)
-                .For(f => f.Order, order));
+            var limitType = registration.ActivatorData.Activator.LimitType;
+
+            if (!limitType.IsAssignableTo<TFilter>())
+            {
+                var message = string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.MustBeAssignableToFilterType,
+                    limitType.FullName, typeof(TFilter).FullName);
+                throw new ArgumentException(message, "registration");
+            }
+
+            var metadata = new FilterMetadata
+            {
+                ControllerType = typeof(TController),
+                FilterScope = FilterScope.Controller,
+                MethodInfo = null,
+                Order = order
+            };
+
+            return registration.As<TFilter>().WithMetadata(metadataKey, metadata);
         }
 
         static MethodInfo GetMethodInfo(LambdaExpression expression)

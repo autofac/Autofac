@@ -149,4 +149,31 @@ namespace Autofac.Tests.Integration.Mvc
         {
         }
     }
+
+    public class TestCombinationFilter : IActionFilter, IAuthorizationFilter, IExceptionFilter, IResultFilter
+    {
+        public void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+        }
+
+        public void OnActionExecuted(ActionExecutedContext filterContext)
+        {
+        }
+
+        public void OnAuthorization(AuthorizationContext filterContext)
+        {
+        }
+
+        public void OnException(ExceptionContext filterContext)
+        {
+        }
+
+        public void OnResultExecuting(ResultExecutingContext filterContext)
+        {
+        }
+
+        public void OnResultExecuted(ResultExecutedContext filterContext)
+        {
+        }
+    }
 }

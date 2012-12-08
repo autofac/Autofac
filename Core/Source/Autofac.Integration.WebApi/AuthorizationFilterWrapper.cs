@@ -29,6 +29,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
+using Autofac.Features.Metadata;
 
 namespace Autofac.Integration.WebApi
 {
@@ -66,17 +67,20 @@ namespace Autofac.Integration.WebApi
             var dependencyScope = actionContext.Request.GetDependencyScope();
             var lifetimeScope = dependencyScope.GetRequestLifetimeScope();
 
-            var filters = lifetimeScope.Resolve<IEnumerable<Lazy<IAutofacAuthorizationFilter, FilterMetadata>>>();
+            var filters = lifetimeScope.Resolve<IEnumerable<Meta<Lazy<IAutofacAuthorizationFilter>>>>();
 
             foreach (var filter in filters.Where(FilterMatchesMetadata))
-                filter.Value.OnAuthorization(actionContext);
+                filter.Value.Value.OnAuthorization(actionContext);
         }
 
-        bool FilterMatchesMetadata(Lazy<IAutofacAuthorizationFilter, FilterMetadata> filter)
+        bool FilterMatchesMetadata(Meta<Lazy<IAutofacAuthorizationFilter>> filter)
         {
-            return filter.Metadata.ControllerType == _filterMetadata.ControllerType
-                   && filter.Metadata.FilterScope == _filterMetadata.FilterScope
-                   && filter.Metadata.MethodInfo == _filterMetadata.MethodInfo;
+            var metadata = filter.Metadata[AutofacWebApiFilterProvider.AuthorizationFilterMetadataKey] as FilterMetadata;
+
+            return metadata != null
+                && metadata.ControllerType == _filterMetadata.ControllerType
+                && metadata.FilterScope == _filterMetadata.FilterScope
+                && metadata.MethodInfo == _filterMetadata.MethodInfo;
         }
     }
 }

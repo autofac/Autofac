@@ -29,6 +29,7 @@ using System.Linq;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using System.Net.Http;
+using Autofac.Features.Metadata;
 
 namespace Autofac.Integration.WebApi
 {
@@ -66,10 +67,10 @@ namespace Autofac.Integration.WebApi
             var dependencyScope = actionContext.Request.GetDependencyScope();
             var lifetimeScope = dependencyScope.GetRequestLifetimeScope();
 
-            var filters = lifetimeScope.Resolve<IEnumerable<Lazy<IAutofacActionFilter, FilterMetadata>>>();
+            var filters = lifetimeScope.Resolve<IEnumerable<Meta<Lazy<IAutofacActionFilter>>>>();
 
             foreach (var filter in filters.Where(FilterMatchesMetadata))
-                filter.Value.OnActionExecuting(actionContext);
+                filter.Value.Value.OnActionExecuting(actionContext);
         }
 
         /// <summary>
@@ -88,17 +89,20 @@ namespace Autofac.Integration.WebApi
             var dependencyScope = actionExecutedContext.Request.GetDependencyScope();
             var lifetimeScope = dependencyScope.GetRequestLifetimeScope();
 
-            var filters = lifetimeScope.Resolve<IEnumerable<Lazy<IAutofacActionFilter, FilterMetadata>>>();
+            var filters = lifetimeScope.Resolve<IEnumerable<Meta<Lazy<IAutofacActionFilter>>>>();
 
             foreach (var filter in filters.Where(FilterMatchesMetadata))
-                filter.Value.OnActionExecuted(actionExecutedContext);
+                filter.Value.Value.OnActionExecuted(actionExecutedContext);
         }
 
-        bool FilterMatchesMetadata(Lazy<IAutofacActionFilter, FilterMetadata> filter)
+        bool FilterMatchesMetadata(Meta<Lazy<IAutofacActionFilter>> filter)
         {
-            return filter.Metadata.ControllerType == _filterMetadata.ControllerType
-                   && filter.Metadata.FilterScope == _filterMetadata.FilterScope
-                   && filter.Metadata.MethodInfo == _filterMetadata.MethodInfo;
+            var metadata = filter.Metadata[AutofacWebApiFilterProvider.ActionFilterMetadataKey] as FilterMetadata;
+
+            return metadata != null
+                && metadata.ControllerType == _filterMetadata.ControllerType
+                && metadata.FilterScope == _filterMetadata.FilterScope
+                && metadata.MethodInfo == _filterMetadata.MethodInfo;
         }
     }
 }

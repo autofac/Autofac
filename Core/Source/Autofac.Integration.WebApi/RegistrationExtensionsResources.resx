@@ -123,4 +123,7 @@
   <data name="ListMustNotBeEmptyOrContainNulls" xml:space="preserve">
     <value>Type list may not be empty or contain all null values.</value>
   </data>
+  <data name="MustBeAssignableToFilterType" xml:space="preserve">
+    <value>The type '{0}' must be assignable to '{1}'.</value>
+  </data>
 </root>

@@ -120,7 +120,10 @@
   <data name="InvalidActionExpress" xml:space="preserve">
     <value>The action method Expression is invalid. It should consist only of a Method call to a controller action method.</value>
   </data>
-  <data name="InvalidModelBinderType">
-    <value xml:space="preserve">Type list may not be empty or contain all null values.</value>
+  <data name="InvalidModelBinderType" xml:space="preserve">
+    <value>Type list may not be empty or contain all null values.</value>
+  </data>
+  <data name="MustBeAssignableToFilterType" xml:space="preserve">
+    <value>The type '{0}' must be assignable to the filter type '{1}'.</value>
   </data>
 </root>

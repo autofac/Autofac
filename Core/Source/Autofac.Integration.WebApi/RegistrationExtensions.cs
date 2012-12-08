@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -214,11 +215,12 @@ namespace Autofac.Integration.WebApi
         /// <param name="registration">The registration.</param>
         /// <param name="actionSelector">The action selector.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<IAutofacActionFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsActionFilterFor<TController>(this IRegistrationBuilder<IAutofacActionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
-                Expression<Action<TController>> actionSelector) where TController : IHttpController
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsWebApiActionFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration,
+                Expression<Action<TController>> actionSelector) 
+                    where TController : IHttpController
         {
-            return AsFilterFor(registration, actionSelector);
+            return AsFilterFor<IAutofacActionFilter, TController>(registration, AutofacWebApiFilterProvider.ActionFilterMetadataKey, actionSelector);
         }
 
         /// <summary>
@@ -227,11 +229,11 @@ namespace Autofac.Integration.WebApi
         /// <typeparam name="TController">The type of the controller.</typeparam>
         /// <param name="registration">The registration.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<IAutofacActionFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsActionFilterFor<TController>(this IRegistrationBuilder<IAutofacActionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration)
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsWebApiActionFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration)
                 where TController : IHttpController
         {
-            return AsFilterFor<IAutofacActionFilter, TController>(registration);
+            return AsFilterFor<IAutofacActionFilter, TController>(registration, AutofacWebApiFilterProvider.ActionFilterMetadataKey);
         }
 
         /// <summary>
@@ -241,11 +243,11 @@ namespace Autofac.Integration.WebApi
         /// <param name="registration">The registration.</param>
         /// <param name="actionSelector">The action selector.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<IAutofacAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsAuthorizationFilterFor<TController>(this IRegistrationBuilder<IAutofacAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsWebApiAuthorizationFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration,
                 Expression<Action<TController>> actionSelector) where TController : IHttpController
         {
-            return AsFilterFor(registration, actionSelector);
+            return AsFilterFor<IAutofacAuthorizationFilter, TController>(registration, AutofacWebApiFilterProvider.AuthorizationFilterMetadataKey, actionSelector);
         }
 
         /// <summary>
@@ -254,11 +256,11 @@ namespace Autofac.Integration.WebApi
         /// <typeparam name="TController">The type of the controller.</typeparam>
         /// <param name="registration">The registration.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<IAutofacAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsAuthorizationFilterFor<TController>(this IRegistrationBuilder<IAutofacAuthorizationFilter, IConcreteActivatorData, SingleRegistrationStyle> registration)
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsWebApiAuthorizationFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration)
                 where TController : IHttpController
         {
-            return AsFilterFor<IAutofacAuthorizationFilter, TController>(registration);
+            return AsFilterFor<IAutofacAuthorizationFilter, TController>(registration, AutofacWebApiFilterProvider.AuthorizationFilterMetadataKey);
         }
 
         /// <summary>
@@ -268,11 +270,11 @@ namespace Autofac.Integration.WebApi
         /// <param name="registration">The registration.</param>
         /// <param name="actionSelector">The action selector.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<IAutofacExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsExceptionFilterFor<TController>(this IRegistrationBuilder<IAutofacExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration,
-                Expression<Action<TController>> actionSelector) where TController : IHttpController
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsWebApiExceptionFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration, Expression<Action<TController>> actionSelector) 
+                where TController : IHttpController
         {
-            return AsFilterFor(registration, actionSelector);
+            return AsFilterFor<IAutofacExceptionFilter, TController>(registration, AutofacWebApiFilterProvider.ExceptionFilterMetadataKey, actionSelector);
         }
 
         /// <summary>
@@ -281,36 +283,62 @@ namespace Autofac.Integration.WebApi
         /// <typeparam name="TController">The type of the controller.</typeparam>
         /// <param name="registration">The registration.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<IAutofacExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsExceptionFilterFor<TController>(this IRegistrationBuilder<IAutofacExceptionFilter, IConcreteActivatorData, SingleRegistrationStyle> registration)
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsWebApiExceptionFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration)
                 where TController : IHttpController
         {
-            return AsFilterFor<IAutofacExceptionFilter, TController>(registration);
+            return AsFilterFor<IAutofacExceptionFilter, TController>(registration, AutofacWebApiFilterProvider.ExceptionFilterMetadataKey);
         }
 
-        static IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsFilterFor<TFilter, TController>(IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle> registration)
+        static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsFilterFor<TFilter, TController>(IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration, string metadataKey)
                 where TController : IHttpController
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
-            return registration.As<TFilter>().WithMetadata<FilterMetadata>(m => m
-                .For(f => f.ControllerType, typeof(TController))
-                .For(f => f.FilterScope, FilterScope.Controller)
-                .For(f => f.MethodInfo, null));
+            var limitType = registration.ActivatorData.Activator.LimitType;
+
+            if (!limitType.IsAssignableTo<TFilter>())
+            {
+                var message = string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.MustBeAssignableToFilterType,
+                    limitType.FullName, typeof(TFilter).FullName);
+                throw new ArgumentException(message, "registration");
+            }
+
+            var metadata = new FilterMetadata
+            {
+                ControllerType = typeof(TController),
+                FilterScope = FilterScope.Controller,
+                MethodInfo = null
+            };
+
+            return registration.As<TFilter>().WithMetadata(metadataKey, metadata);
         }
 
-        static IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle>
-            AsFilterFor<TFilter, TController>(IRegistrationBuilder<TFilter, IConcreteActivatorData, SingleRegistrationStyle> registration, Expression<Action<TController>> actionSelector)
+        static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsFilterFor<TFilter, TController>(IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration, string metadataKey, Expression<Action<TController>> actionSelector)
                 where TController : IHttpController
         {
             if (registration == null) throw new ArgumentNullException("registration");
             if (actionSelector == null) throw new ArgumentNullException("actionSelector");
 
-            return registration.As<TFilter>().WithMetadata<FilterMetadata>(m => m
-                .For(f => f.ControllerType, typeof(TController))
-                .For(f => f.FilterScope, FilterScope.Action)
-                .For(f => f.MethodInfo, GetMethodInfo(actionSelector)));
+            var limitType = registration.ActivatorData.Activator.LimitType;
+
+            if (!limitType.IsAssignableTo<TFilter>())
+            {
+                var message = string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.MustBeAssignableToFilterType,
+                    limitType.FullName, typeof(TFilter).FullName);
+                throw new ArgumentException(message, "registration");
+            }
+
+            var metadata = new FilterMetadata
+            {
+                ControllerType = typeof(TController),
+                FilterScope = FilterScope.Action,
+                MethodInfo = GetMethodInfo(actionSelector)
+            };
+
+            return registration.As<TFilter>().WithMetadata(metadataKey, metadata);
         }
 
         static MethodInfo GetMethodInfo(LambdaExpression expression)

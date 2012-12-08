@@ -27,7 +27,7 @@ namespace Autofac.Tests.Integration.WebApi
             builder.Register<ILogger>(c => new Logger()).InstancePerDependency();
             var activationCount = 0;
             builder.Register<IAutofacExceptionFilter>(c => new TestExceptionFilter(c.Resolve<ILogger>()))
-                .AsExceptionFilterFor<TestController>(c => c.Get())
+                .AsWebApiExceptionFilterFor<TestController>(c => c.Get())
                 .InstancePerApiRequest()
                 .OnActivated(e => activationCount++);
             var container = builder.Build();

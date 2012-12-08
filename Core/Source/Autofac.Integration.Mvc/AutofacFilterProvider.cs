@@ -29,6 +29,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Mvc.Async;
+using Autofac.Features.Metadata;
 
 namespace Autofac.Integration.Mvc
 {
@@ -45,14 +46,21 @@ namespace Autofac.Integration.Mvc
             public List<Filter> Filters { get; set; }
         }
 
+        internal static string ActionFilterMetadataKey = "AutofacMvcActionFilter";
+
+        internal static string AuthorizationFilterMetadataKey = "AutofacMvcAuthorizationFilter";
+
+        internal static string ExceptionFilterMetadataKey = "AutofacMvcExceptionFilter";
+
+        internal static string ResultFilterMetadataKey = "AutofacMvcResultFilter";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacFilterProvider"/> class.
         /// </summary>
         /// <remarks>
         /// The <c>false</c> constructor parameter passed to base here ensures that attribute instances are not cached.
         /// </remarks>
-        public AutofacFilterProvider()
-            : base(false)
+        public AutofacFilterProvider() : base(false)
         {
         }
 
@@ -103,24 +111,26 @@ namespace Autofac.Integration.Mvc
 
         static void ResolveControllerScopedFilters(FilterContext filterContext)
         {
-            ResolveControllerScopedFilter<IActionFilter>(filterContext);
-            ResolveControllerScopedFilter<IAuthorizationFilter>(filterContext);
-            ResolveControllerScopedFilter<IExceptionFilter>(filterContext);
-            ResolveControllerScopedFilter<IResultFilter>(filterContext);
+            ResolveControllerScopedFilter<IActionFilter>(filterContext, ActionFilterMetadataKey);
+            ResolveControllerScopedFilter<IAuthorizationFilter>(filterContext, AuthorizationFilterMetadataKey);
+            ResolveControllerScopedFilter<IExceptionFilter>(filterContext, ExceptionFilterMetadataKey);
+            ResolveControllerScopedFilter<IResultFilter>(filterContext, ResultFilterMetadataKey);
         }
 
-        static void ResolveControllerScopedFilter<TFilter>(FilterContext filterContext)
+        static void ResolveControllerScopedFilter<TFilter>(FilterContext filterContext, string metadataKey)
             where TFilter : class
         {
-            var actionFilters = filterContext.LifetimeScope.Resolve<IEnumerable<Lazy<TFilter, FilterMetadata>>>();
-            foreach (var actionFilter in actionFilters.Where(a => a.Metadata != null && a.Metadata.ControllerType != null))
+            var actionFilters = filterContext.LifetimeScope.Resolve<IEnumerable<Meta<Lazy<TFilter>>>>();
+
+            foreach (var actionFilter in actionFilters.Where(a => a.Metadata.ContainsKey(metadataKey) && a.Metadata[metadataKey] is FilterMetadata))
             {
-                var metadata = actionFilter.Metadata;
-                if (metadata.ControllerType.IsAssignableFrom(filterContext.ControllerType)
+                var metadata = (FilterMetadata)actionFilter.Metadata[metadataKey];
+                if (metadata.ControllerType != null 
+                    && metadata.ControllerType.IsAssignableFrom(filterContext.ControllerType)
                     && metadata.FilterScope == FilterScope.Controller
                     && metadata.MethodInfo == null)
                 {
-                    var filter = new Filter(actionFilter.Value, FilterScope.Controller, metadata.Order);
+                    var filter = new Filter(actionFilter.Value.Value, FilterScope.Controller, metadata.Order);
                     filterContext.Filters.Add(filter);
                 }
             }
@@ -134,24 +144,26 @@ namespace Autofac.Integration.Mvc
 
             var methodInfo = methodSelector(actionDescriptor);
 
-            ResolveActionScopedFilter<IActionFilter>(filterContext, methodInfo);
-            ResolveActionScopedFilter<IAuthorizationFilter>(filterContext, methodInfo);
-            ResolveActionScopedFilter<IExceptionFilter>(filterContext, methodInfo);
-            ResolveActionScopedFilter<IResultFilter>(filterContext, methodInfo);
+            ResolveActionScopedFilter<IActionFilter>(filterContext, methodInfo, ActionFilterMetadataKey);
+            ResolveActionScopedFilter<IAuthorizationFilter>(filterContext, methodInfo, AuthorizationFilterMetadataKey);
+            ResolveActionScopedFilter<IExceptionFilter>(filterContext, methodInfo, ExceptionFilterMetadataKey);
+            ResolveActionScopedFilter<IResultFilter>(filterContext, methodInfo, ResultFilterMetadataKey);
         }
 
-        static void ResolveActionScopedFilter<TFilter>(FilterContext filterContext, MethodInfo methodInfo)
+        static void ResolveActionScopedFilter<TFilter>(FilterContext filterContext, MethodInfo methodInfo, string metadataKey)
             where TFilter : class
         {
-            var actionFilters = filterContext.LifetimeScope.Resolve<IEnumerable<Lazy<TFilter, FilterMetadata>>>();
-            foreach (var actionFilter in actionFilters.Where(a => a.Metadata != null && a.Metadata.ControllerType != null))
+            var actionFilters = filterContext.LifetimeScope.Resolve<IEnumerable<Meta<Lazy<TFilter>>>>();
+
+            foreach (var actionFilter in actionFilters.Where(a => a.Metadata.ContainsKey(metadataKey) && a.Metadata[metadataKey] is FilterMetadata))
             {
-                var metadata = actionFilter.Metadata;
-                if (metadata.ControllerType.IsAssignableFrom(filterContext.ControllerType)
+                var metadata = (FilterMetadata)actionFilter.Metadata[metadataKey];
+                if (metadata.ControllerType != null
+                    && metadata.ControllerType.IsAssignableFrom(filterContext.ControllerType)
                     && metadata.FilterScope == FilterScope.Action
                     && metadata.MethodInfo.GetBaseDefinition() == methodInfo.GetBaseDefinition())
                 {
-                    var filter = new Filter(actionFilter.Value, FilterScope.Action, metadata.Order);
+                    var filter = new Filter(actionFilter.Value.Value, FilterScope.Action, metadata.Order);
                     filterContext.Filters.Add(filter);
                 }
             }
