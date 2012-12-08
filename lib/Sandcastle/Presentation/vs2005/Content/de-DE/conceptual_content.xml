@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Translations provided by Sebastian Spreng -->
+<content xml:space="preserve">
+
+	<!-- control window stuff -->
+	<item id="productTitle">.NET Framework Developer's Guide</item>
+
+	<!-- main window stuff -->
+
+	<!-- body -->
+
+	<!-- section titles -->
+	<item id="inThisSectionTitle">In diesem Abschnitt</item>
+	<item id="buildInstructionsTitle">Code-Kompilierung</item>
+	<item id="nextStepsTitle">Nächste Schritte</item>
+	<item id="requirementsTitle">Voraussetzungen</item>
+	<item id="relatedSectionsTitle">Verwandte Abschnitte</item>
+	<item id="relatedTopicsTitle">Siehe auch</item>
+	<item id="syntaxTitle">Syntax</item>
+	<item id="parametersTitle">Parameter</item>
+	<item id="returnValueTitle">Rückgabewert</item>
+  <item id="attributesAndElements">Attribute und Element</item>
+	<item id="attributes">Attribute</item>
+	<item id="childElement">Child Elemente</item>
+	<item id="parentElement">Parent Elemente</item>
+	<item id="elementInformation">Elementinformation</item>
+  <item id="textValue">Text Wert</item>
+  <item id="dotNetFrameworkEquivalent">.NET Framework Equivalent</item>
+  <item id="prerequisites">Voraussetzungen</item>
+  <item id="robustProgramming">Robuste Programmierung</item>
+	<item id="securitySection">Sicherheit</item>
+	<item id="externalResources">Externe Resourcen</item>
+	<item id="demonstrates">Zeigt</item>
+  <item id="appliesTo">Trifft zu auf</item>
+	<item id="conclusion">Schlussfolgerung</item>
+  <item id="background">Hintergrund</item>
+	<item id="whatsNew">Was ist neu</item>
+  <item id="reference">Referenz</item>
+  <item id="errorMessage">Fehlermeldung</item>
+  
+  <item id="collapseAll">Alles verstecken</item>
+  <item id="expandAll">Alles anzeigen</item>
+  <item id="Example">Beispiel</item>
+
+  <!-- Sample Topics -->
+  <item id="downloadSample">Download</item>
+  <item id="sampleFiles">Beispieldateien:</item>
+  <item id="viewSampleSource">Source Code anzeigen</item>
+
+  <!-- autoOutline boilerplate -->
+  <item id="autoOutlineTopLevelIntro">
+		<p>Dieses Thema enthält die folgenden Abschnitte.</p>
+	</item>
+	<item id="autoOutlineSubsectionIntro">
+		<p>Dieser Abschnitt enthält die folgenden Unterabschnitte.</p>
+	</item>
+	<item id="RelatedTopicsLinkText">Verwandte Themen</item>
+  <!-- resolve the autoOutline token -->
+  <item id="autoOutline">
+    <autoOutline/>
+  </item>
+
+  <!-- Copyright notice. {0} = Copyright text, {1} = Year(s), {2} = Holder(s) -->
+  <item id="copyrightNotice"><p>{0} &#169;{1}{2}. Alle Rechte vorbehalten.</p></item>
+
+  <!-- Glossary related entries -->
+  <item id="relatedEntries">Verwandte Themen:</item>
+</content>

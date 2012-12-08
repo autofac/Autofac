@@ -39,7 +39,7 @@ namespace Autofac.Integration.Web
         /// <summary>
         /// The global, application-wide container.
         /// </summary>
-        IContainer ApplicationContainer { get; }
+        ILifetimeScope ApplicationContainer { get; }
 
         /// <summary>
         /// The lifetime used to manage components for processing the

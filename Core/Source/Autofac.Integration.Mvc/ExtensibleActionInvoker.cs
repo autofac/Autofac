@@ -133,50 +133,27 @@ namespace Autofac.Integration.Mvc
                 value = _context.ResolveOptional(parameterDescriptor.ParameterType);
             }
 
-            if (value == null && CanBeActivated(parameterDescriptor.ParameterType))
+            if (value == null)
             {
                 // Issue #368
                 // If injection is enabled and the value can't be resolved, fall back to
-                // the default behavior. Or if injection isn't enabled, fall back... but
-                // only if it's not a type the consumer THINKS will be injected (like
-                // they put an interface in the constructor.) This will avoid the MissingMethodException
-                // happening when the resolution fails on an interface or some other
-                // type that can't go through Activator.CreateInstance.
-                value = base.GetParameterValue(controllerContext, parameterDescriptor);
+                // the default behavior. Or if injection isn't enabled, fall back.
+                // Unfortunately we can't do much to pre-determine if model binding will succeed
+                // because model binding "knows" about a lot of stuff like arrays, certain generic
+                // collection types, type converters, and other stuff that may or may not fail.
+                try
+                {
+                    value = base.GetParameterValue(controllerContext, parameterDescriptor);
+                }
+                catch (MissingMethodException)
+                {
+                    // Don't do anything - this means the default model binder couldn't
+                    // activate a new instance or figure out some other way to model
+                    // bind it.
+                }
             }
 
             return value;
-        }
-
-        /// <summary>
-        /// Indicates if a parameter value type can only be resolved, not activated or model-bound.
-        /// </summary>
-        /// <param name="type">The parameter type to check.</param>
-        /// <returns>
-        /// <see langword="true" /> if the <paramref name="type" /> can be activated using
-        /// <see cref="System.Activator.CreateInstance(Type)"/>; <see langword="false" /> if
-        /// not.
-        /// </returns>
-        private static bool CanBeActivated(Type type)
-        {
-            if (type.IsValueType)
-            {
-                // All value types can go through Activator.CreateInstance(type)
-                return true;
-            }
-            if (
-                type.ContainsGenericParameters ||
-                type.IsAbstract ||
-                type.IsInterface ||
-                (type.GetConstructor(new Type[0]) == null && !type.GetConstructors().Any(c => c.GetParameters().All(p => p.IsOptional))))
-            {
-                // You can't Activator.CreateInstance(typeof(GenericType<>)), abstract types, interfaces, or concrete types
-                // that don't have parameter-less constructors.
-                return false;
-            }
-
-            // All things being equal, assume we can run it through Activator.CreateInstance.
-            return true;
         }
 
         private static void SetFilters<T>(ICollection<T> existing, IEnumerable<T> additional)

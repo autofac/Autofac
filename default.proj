@@ -84,21 +84,6 @@
 		-->
 		<MSBuild Projects="$(MSBuildProjectDirectory)\.nuget\NuGet.targets" Targets="RestorePackages" />
 		<MSBuild Projects="%(SolutionFile.FullPath)" Targets="Build" Properties="Configuration=$(BuildConfiguration)" />
-
-		<!--
-			The current build only targets .NET 4.0. It finds all the build output and puts
-			it in bin\NET40. (Note "NET40" is what NuGet uses as the framework ID for .NET 4.)
-
-			When more platforms are targeted, put the appropriate build output into bin\XYZ where
-			XYZ is the associated NuGet framework identifier. This will allow easier convention-based
-			NuGet packaging to occur.
-
-			Original build constants used for targeting:
-			* NET40 = .NET 4.0 (TargetFrameworkVersion = v4.0; AllowPartiallyTrustedCallers = true)
-			* NET35 = .NET 3.5 (TargetFrameworkVersion = v3.5; AllowPartiallyTrustedCallers = false)
-			* SILVERLIGHT;SL3;WINDOWS_PHONE = WP7 (TargetFrameworkVersion = v4.0; AllowPartiallyTrustedCallers = false)
-			* SILVERLIGHT;SL4 = SL4 (TargetFrameworkVersion = v4.0; TargetFrameworkIdentifier = Silverlight; AllowPartiallyTrustedCallers = false)
-		-->
 		<ItemGroup>
 			<SourceOutputList
 				Include="
@@ -111,7 +96,8 @@
 				Include="
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.dll;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.pdb;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.xml"
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.xml;
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Extras.CommonServiceLocator.*"
 				Exclude="**\*.vshost.*;%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.CodeAnalysisLog.*" />
 		</ItemGroup>
 		<Copy SourceFiles="@(SourceOutputList)" DestinationFolder="$(BuildDirectory)\bin\net40" />
@@ -120,19 +106,17 @@
 
 	<Target Name="Document">
 		<!--
-			Dynamically generate the list of Autofac assemblies to put in the documentation so we don't
-			have to modify the doc build when assemblies change.
+			Sandcastle Help File Builder 1.9.5.0 requires the DXROOT environment variable
+			even if you manually provide a path to Sandcastle so we manually execute the
+			doc task in a small "wrapper" script after setting the environment variable.
 		-->
-		<ItemGroup>
-			<DocTarget Include="$(BuildDirectory)\bin\net40\*.dll;$(BuildDirectory)\bin\net40\*.xml" />
-		</ItemGroup>
-		<CreateProperty Value="@(DocTarget -> '&lt;DocumentationSource sourceFile=%27%(FullPath)%27 /&gt;', '')">
-			<Output TaskParameter="Value" PropertyName="DocumentationSources" />
-		</CreateProperty>
-		<MSBuild
-			ToolsVersion="4.0"
-			Projects="Documentation.shfbproj"
-			Properties="SHFBRoot=$(MSBuildProjectDirectory)\lib\SHFB;HelpFileVersion=$(AssemblyVersion);DocumentationSources=$(DocumentationSources)" />
+		<PropertyGroup>
+			<DocExec><![CDATA[
+set DXROOT=$(MSBuildProjectDirectory)\lib\Sandcastle
+MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:AssemblyVersion="$(AssemblyVersion)" /p:BuildDirectory="$(BuildDirectory)"
+			]]></DocExec>
+		</PropertyGroup>
+		<Exec Command="$(DocExec)" WorkingDirectory="$(MSBuildProjectDirectory)\Build" />
 	</Target>
 
 	<Target Name="Package">

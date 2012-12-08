@@ -3,9 +3,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 
-<head>
+<head runat="server">
 <title>{@HtmlEncHelpTitle} - Table of Content</title>
-<link rel="stylesheet" href="TOC.css">
+<link rel="stylesheet" href="TOC.css" />
 <link rel="shortcut icon" href="favicon.ico"/>
 <script type="text/javascript" src="TOC.js"></script>
 </head>

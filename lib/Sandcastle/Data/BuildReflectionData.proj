@@ -1,0 +1,46 @@
+﻿<Project DefaultTargets="Reflection" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+  <!-- Default project property values -->
+  <PropertyGroup>
+    <FrameworkPlatform Condition="'$(FrameworkPlatform)' == ''">.NETFramework</FrameworkPlatform>
+    <FrameworkVersion Condition="'$(FrameworkVersion)' == ''">4.0.30319</FrameworkVersion>
+    <ToolsRoot Condition="'$(ToolsRoot)' == ''">$(DXROOT)</ToolsRoot>
+    <ProductionTools>$(ToolsRoot)\ProductionTools</ProductionTools>
+    <ProductionTransforms>$(ToolsRoot)\ProductionTransforms</ProductionTransforms>
+    <TmpPath>.\Tmp</TmpPath>
+    <DestPath>.\$(FrameworkPlatform)_$(FrameworkVersion)</DestPath>
+  </PropertyGroup>
+
+  <Target Name="Reflection">
+    <!-- Remove the old folder -->
+    <RemoveDir Directories="$(TmpPath);$(DestPath)" />
+
+    <!-- Create the folders -->
+    <MakeDir Directories="$(TmpPath)" Condition="!Exists('$(TmpPath)')" />
+    <MakeDir Directories="$(DestPath)" Condition="!Exists('$(DestPath)')" />
+
+    <!-- Create a response file for MRefBuilder so that it can properly determine implementation details
+         by scanning all assemblies together in one pass. -->
+    <XslTransformation
+      XslInputPath="CreateResponseFile.xsl"
+      XmlInputPaths="..\ProductionTools\Frameworks.xml"
+      Parameters="&lt;Parameter Name='platform' Value='$(FrameworkPlatform)' /&gt;
+        &lt;Parameter Name='version' Value='$(FrameworkVersion)' /&gt;"
+      OutputPaths="MRefBuilder.rsp" />
+
+    <!-- Generate the reflection data file for the assemblies.  Use the VS2005 doc model transform.  It will work for all styles. -->
+    <Exec ContinueOnError="false" IgnoreExitCode="true"
+      Command="&quot;$(ProductionTools)\MRefBuilder.exe&quot; @MRefBuilder.rsp /out:&quot;$(TmpPath)\Reflection.org&quot;" />
+    <Exec ContinueOnError="true" IgnoreExitCode="true"
+      Command="&quot;$(ProductionTools)\XslTransform.exe&quot; /xsl:&quot;$(ProductionTransforms)\ApplyVSDocModel.xsl&quot; /xsl:&quot;$(ProductionTransforms)\AddGuidFilenames.xsl&quot; &quot;$(TmpPath)\Reflection.org&quot; /out:&quot;$(TmpPath)\Reflection.xml&quot; /arg:IncludeAllMembersTopic=true /arg:IncludeInheritedOverloadTopics=false" />
+
+    <!-- Segregate the reflection data by namespace -->
+    <Exec ContinueOnError="false" IgnoreExitCode="true"
+      Command="&quot;$(ProductionTools)\SegregateByNamespace.exe&quot; &quot;$(TmpPath)\Reflection.xml&quot; /out:&quot;$(DestPath)&quot;" />
+
+    <!-- Remove the temporary files and folders when done -->
+    <RemoveDir Directories="$(TmpPath)" />
+    <Delete Files="MRefBuilder.rsp" />
+
+  </Target>
+</Project>

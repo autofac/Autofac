@@ -42,7 +42,8 @@
         OutDir="$(OutDir)"
         Verbose="$(Verbose)"
         DumpLogOnFailure="$(DumpLogOnFailure)"
-        AlwaysLoadProject="$(AlwaysLoadProject)">
+        AlwaysLoadProject="$(AlwaysLoadProject)"
+				ComponentRoot="$(SHFBCOMPONENTROOT)">
       <Output TaskParameter="Help1Files" ItemName="Help1Files" />
       <Output TaskParameter="Help2Files" ItemName="Help2Files" />
       <Output TaskParameter="HelpViewerFiles" ItemName="HelpViewerFiles" />

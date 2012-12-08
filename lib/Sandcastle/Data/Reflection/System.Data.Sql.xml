@@ -1,0 +1,446 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies>
+    <assembly name="System.Data">
+      <assemblydata version="4.0.0.0" culture="" key="00000000000000000400000000000000" hash="SHA1" />
+      <attributes>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.Data.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.Data.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.Data.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.30319.1</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>© Microsoft Corporation.  All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\dd\Tools\devdiv\ecmapublickey.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.AllowPartiallyTrustedCallersAttribute" ref="true" />
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft® .NET Framework</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.30319.1</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.SecurityPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="RequestMinimum" />
+            </enumValue>
+          </argument>
+          <assignment name="SkipVerification">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </assembly>
+  </assemblies>
+  <apis>
+    <api id="N:System.Data.Sql">
+      <topicdata group="api" />
+      <apidata name="System.Data.Sql" group="namespace" />
+      <elements>
+        <element api="T:System.Data.Sql.SqlDataSourceEnumerator" />
+        <element api="T:System.Data.Sql.SqlNotificationRequest" />
+      </elements>
+      <file name="b143fc16-5945-b3f9-c151-4d3810ae6e37" />
+    </api>
+    <api id="T:System.Data.Sql.SqlDataSourceEnumerator">
+      <topicdata group="api" allMembersTopicId="AllMembers.T:System.Data.Sql.SqlDataSourceEnumerator" />
+      <apidata name="SqlDataSourceEnumerator" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Data.Common.DbDataSourceEnumerator" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <containers>
+        <library assembly="System.Data" module="System.Data" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Data.Sql" />
+      </containers>
+      <file name="c1baff8a-60f0-9089-1316-92e79f38b344" />
+    </api>
+    <api id="AllMembers.T:System.Data.Sql.SqlDataSourceEnumerator">
+      <topicdata name="SqlDataSourceEnumerator" group="list" subgroup="members" typeTopicId="T:System.Data.Sql.SqlDataSourceEnumerator" />
+      <apidata name="SqlDataSourceEnumerator" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Data.Sql.SqlDataSourceEnumerator.GetDataSources" />
+        <element api="P:System.Data.Sql.SqlDataSourceEnumerator.Instance" />
+      </elements>
+      <containers>
+        <library assembly="System.Data" module="System.Data" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Data.Sql" />
+      </containers>
+      <file name="a3700ad1-ea75-bb24-d3bd-71194d798712" />
+    </api>
+    <api id="Methods.T:System.Data.Sql.SqlDataSourceEnumerator">
+      <topicdata name="SqlDataSourceEnumerator" group="list" subgroup="Methods" typeTopicId="T:System.Data.Sql.SqlDataSourceEnumerator" />
+      <apidata name="SqlDataSourceEnumerator" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Data.Sql.SqlDataSourceEnumerator.GetDataSources" />
+      </elements>
+      <containers>
+        <library assembly="System.Data" module="System.Data" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Data.Sql" />
+      </containers>
+      <file name="c4738b3d-22db-5272-04b9-e2951033e5ec" />
+    </api>
+    <api id="Properties.T:System.Data.Sql.SqlDataSourceEnumerator">
+      <topicdata name="SqlDataSourceEnumerator" group="list" subgroup="Properties" typeTopicId="T:System.Data.Sql.SqlDataSourceEnumerator" />
+      <apidata name="SqlDataSourceEnumerator" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="P:System.Data.Sql.SqlDataSourceEnumerator.Instance" />
+      </elements>
+      <containers>
+        <library assembly="System.Data" module="System.Data" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Data.Sql" />
+      </containers>
+      <file name="0c027ad6-40a0-19e2-4765-7ac94cfc5fc1" />
+    </api>
+    <api id="M:System.Data.Sql.SqlDataSourceEnumerator.GetDataSources">
+      <topicdata group="api" />
+      <apidata name="GetDataSources" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:System.Data.Common.DbDataSourceEnumerator.GetDataSources">
+          <type api="T:System.Data.Common.DbDataSourceEnumerator" ref="true" />
+        </member>
+      </overrides>
+      <returns>
+        <type api="T:System.Data.DataTable" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Data" module="System.Data" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Data.Sql" />
+        <type api="T:System.Data.Sql.SqlDataSourceEnumerator" ref="true" />
+      </containers>
+      <file name="2801296e-ea99-dda3-ce64-15852e82a899" />
+    </api>
+    <api id="P:System.Data.Sql.SqlDataSourceEnumerator.Instance">
+      <topicdata group="api" />
+      <apidata name="Instance" group="member" subgroup="property" />
+      <memberdata visibility="public" static="true" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" />
+      <getter name="get_Instance" />
+      <returns>
+        <type api="T:System.Data.Sql.SqlDataSourceEnumerator" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Data" module="System.Data" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Data.Sql" />
+        <type api="T:System.Data.Sql.SqlDataSourceEnumerator" ref="true" />
+      </containers>
+      <file name="fdf9267b-3f1c-88a2-1e37-548183a2300e" />
+    </api>
+    <api id="T:System.Data.Sql.SqlNotificationRequest">
+      <topicdata group="api" allMembersTopicId="AllMembers.T:System.Data.Sql.SqlNotificationRequest" />
+      <apidata name="SqlNotificationRequest" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <containers>
+        <library assembly="System.Data" module="System.Data" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Data.Sql" />
+      </containers>
+      <file name="3d62e344-8a7d-d5b4-04af-49738a2f79cc" />
+    </api>
+    <api id="AllMembers.T:System.Data.Sql.SqlNotificationRequest">
+      <topicdata name="SqlNotificationRequest" group="list" subgroup="members" typeTopicId="T:System.Data.Sql.SqlNotificationRequest" />
+      <apidata name="SqlNotificationRequest" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+        <element api="Overload:System.Data.Sql.SqlNotificationRequest.#ctor">
+          <element api="M:System.Data.Sql.SqlNotificationRequest.#ctor" />
+          <element api="M:System.Data.Sql.SqlNotificationRequest.#ctor(System.String,System.String,System.Int32)" />
+        </element>
+        <element api="P:System.Data.Sql.SqlNotificationRequest.Options" />
+        <element api="P:System.Data.Sql.SqlNotificationRequest.Timeout" />
+        <element api="P:System.Data.Sql.SqlNotificationRequest.UserData" />
+      </elements>
+      <containers>
+        <library assembly="System.Data" module="System.Data" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Data.Sql" />
+      </containers>
+      <file name="d22ecc74-fc4c-346c-56e3-69cf993585c1" />
+    </api>
+    <api id="Methods.T:System.Data.Sql.SqlNotificationRequest">
+      <topicdata name="SqlNotificationRequest" group="list" subgroup="Methods" typeTopicId="T:System.Data.Sql.SqlNotificationRequest" />
+      <apidata name="SqlNotificationRequest" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+      </elements>
+      <containers>
+        <library assembly="System.Data" module="System.Data" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Data.Sql" />
+      </containers>
+      <file name="2cbf352b-317b-282e-ed96-41d3d5a0f5c1" />
+    </api>
+    <api id="Properties.T:System.Data.Sql.SqlNotificationRequest">
+      <topicdata name="SqlNotificationRequest" group="list" subgroup="Properties" typeTopicId="T:System.Data.Sql.SqlNotificationRequest" />
+      <apidata name="SqlNotificationRequest" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="P:System.Data.Sql.SqlNotificationRequest.Options" />
+        <element api="P:System.Data.Sql.SqlNotificationRequest.Timeout" />
+        <element api="P:System.Data.Sql.SqlNotificationRequest.UserData" />
+      </elements>
+      <containers>
+        <library assembly="System.Data" module="System.Data" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Data.Sql" />
+      </containers>
+      <file name="0808c1b6-bca9-2fb6-a62a-f91a574174bd" />
+    </api>
+    <api id="Overload:System.Data.Sql.SqlNotificationRequest.#ctor">
+      <topicdata name=".ctor" group="list" subgroup="overload" memberSubgroup="constructor" pseudo="true" allMembersTopicId="AllMembers.T:System.Data.Sql.SqlNotificationRequest" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <elements>
+        <element api="M:System.Data.Sql.SqlNotificationRequest.#ctor" />
+        <element api="M:System.Data.Sql.SqlNotificationRequest.#ctor(System.String,System.String,System.Int32)" />
+      </elements>
+      <containers>
+        <library assembly="System.Data" module="System.Data" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Data.Sql" />
+        <type api="T:System.Data.Sql.SqlNotificationRequest" ref="true" />
+      </containers>
+      <file name="79a576e0-6854-0ea1-e004-f212e5878a50" />
+    </api>
+    <api id="M:System.Data.Sql.SqlNotificationRequest.#ctor">
+      <topicdata group="api" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" special="true" overload="Overload:System.Data.Sql.SqlNotificationRequest.#ctor" />
+      <containers>
+        <library assembly="System.Data" module="System.Data" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Data.Sql" />
+        <type api="T:System.Data.Sql.SqlNotificationRequest" ref="true" />
+      </containers>
+      <file name="41e1e825-d549-74c1-9d0e-ca2e398be6ba" />
+    </api>
+    <api id="M:System.Data.Sql.SqlNotificationRequest.#ctor(System.String,System.String,System.Int32)">
+      <topicdata group="api" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" special="true" overload="Overload:System.Data.Sql.SqlNotificationRequest.#ctor" />
+      <parameters>
+        <parameter name="userData">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="options">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="timeout">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Data" module="System.Data" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Data.Sql" />
+        <type api="T:System.Data.Sql.SqlNotificationRequest" ref="true" />
+      </containers>
+      <file name="14e1f83c-efdb-92a3-d11d-77ad053831de" />
+    </api>
+    <api id="P:System.Data.Sql.SqlNotificationRequest.Options">
+      <topicdata group="api" />
+      <apidata name="Options" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_Options" />
+      <setter name="set_Options" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Data" module="System.Data" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Data.Sql" />
+        <type api="T:System.Data.Sql.SqlNotificationRequest" ref="true" />
+      </containers>
+      <file name="241b69a0-0e16-4887-9f28-8ee8cef9ed68" />
+    </api>
+    <api id="P:System.Data.Sql.SqlNotificationRequest.Timeout">
+      <topicdata group="api" />
+      <apidata name="Timeout" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_Timeout" />
+      <setter name="set_Timeout" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Data" module="System.Data" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Data.Sql" />
+        <type api="T:System.Data.Sql.SqlNotificationRequest" ref="true" />
+      </containers>
+      <file name="bec3eb27-ae2e-f1b1-8f84-0b38014dec30" />
+    </api>
+    <api id="P:System.Data.Sql.SqlNotificationRequest.UserData">
+      <topicdata group="api" />
+      <apidata name="UserData" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_UserData" />
+      <setter name="set_UserData" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Data" module="System.Data" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Data.Sql" />
+        <type api="T:System.Data.Sql.SqlNotificationRequest" ref="true" />
+      </containers>
+      <file name="3d3ed97f-b504-5b4a-4287-b45405a87ebe" />
+    </api>
+  </apis>
+</reflection>

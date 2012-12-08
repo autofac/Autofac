@@ -313,6 +313,18 @@ namespace Autofac
         }
 
         /// <summary>
+        /// Register the types in a list.
+        /// </summary>
+        /// <param name="builder">Container builder.</param>
+        /// <param name="types">The types to register.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
+            RegisterTypes(this ContainerBuilder builder, params Type[] types)
+        {
+            return ScanningRegistrationExtensions.RegisterTypes(builder, types);
+        }
+
+        /// <summary>
         /// Specifies a subset of types to register from a scanned assembly.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>

@@ -71,15 +71,16 @@
 							Language syntax configuration file (required)
 							XSLT style file (required)
 							"Copy" image file URL (required)
+							Disabled (optional)
 							Default language (optional)
 							Enable line numbering (optional)
 							Enable outlining (optional)
 							Keep XML comment "see" tags within the code (optional)
 							Tab size override (optional, 0 = Use syntax file setting)
 							Use language name as default title (optional) -->
-			<colorizer syntaxFile="{@SHFBFolder}Colorizer\highlight.xml"
-					styleFile="{@SHFBFolder}Colorizer\highlight.xsl" copyImageUrl="../icons/CopyCode.gif" language="cs"
-					numberLines="false" outlining="false" keepSeeTags="false" tabSize="0" defaultTitle="true" />
+			<colorizer syntaxFile="{@SHFBFolder}Colorizer\highlight.xml" styleFile="{@SHFBFolder}Colorizer\highlight.xsl"
+					copyImageUrl="../icons/CopyCode.gif" disabled="false" language="cs" numberLines="false"
+					outlining="false" keepSeeTags="false" tabSize="0" defaultTitle="true" />
 		</defaultConfiguration>
 	</component>
 

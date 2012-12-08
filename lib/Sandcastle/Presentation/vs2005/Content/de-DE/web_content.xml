@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Translations provided by Sebastian Spreng -->
+<content xml:space="preserve">
+
+<!-- Add content to this item to display a footer at the bottom of each topic. It receives two
+     parameters: the topic key and the plain topic title. -->
+<item id="footer">
+</item>
+
+</content>

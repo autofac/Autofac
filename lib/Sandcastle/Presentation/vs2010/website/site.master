@@ -1,0 +1,37 @@
+﻿<%@ Master Language="C#" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<script runat="server">
+
+</script>
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head id="Head1" runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>API Documentation</title>
+    <link href="Styles/branding.css" rel="stylesheet" type="text/css" />
+    <link href="site.css" rel="Stylesheet" type="text/css" />
+	<script src="../Scripts/branding.js" language=javascript type="text/javascript"><!------/></script>
+</head>
+<body>
+    <form id="SandcastleSampleSite" runat="server">
+
+	<table cellpadding="0" cellspacing="0" border="0" width=100%>
+		<tr>
+			<td id="Toc" align="left" valign="top">
+				<asp:TreeView ID="TocTree" DataSourceID="SiteMapSource" EnableClientScript="false"
+					runat="server">
+				</asp:TreeView>
+				<asp:SiteMapDataSource ID="SiteMapSource" ShowStartingNode="false" runat="server" />
+			</td>
+			<td id="Main" align="left" valign="top">
+				<asp:ContentPlaceHolder ID="MainBody" runat="server">
+				</asp:ContentPlaceHolder>
+			</td>
+		</tr>
+	</table>
+    
+    </form>
+</body>
+</html>

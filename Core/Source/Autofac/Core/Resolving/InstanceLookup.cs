@@ -54,7 +54,7 @@ namespace Autofac.Core.Resolving
         {
             if (_executed)
                 throw new InvalidOperationException(ComponentActivationResources.ActivationAlreadyExecuted);
-            
+
             _executed = true;
 
             object instance;
@@ -80,6 +80,10 @@ namespace Autofac.Core.Resolving
 
             if (_componentRegistration.Ownership == InstanceOwnership.OwnedByLifetimeScope)
             {
+                // The fact this adds instances for disposal agnostic of the activator is
+                // important. The ProvidedInstanceActivator will NOT dispose of the provided
+                // instance once the instance has been activated - assuming that it will be
+                // done during the lifetime scope's Disposer executing.
                 var instanceAsDisposable = _newInstance as IDisposable;
                 if (instanceAsDisposable != null)
                     _activationScope.Disposer.AddInstanceForDisposal(instanceAsDisposable);

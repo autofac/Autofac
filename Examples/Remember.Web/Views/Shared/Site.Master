@@ -10,6 +10,7 @@
     <title>Remember - Sample MVC App</title>
     <link href="../../Content/Site.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <asp:ContentPlaceHolder ID="HeadContentPlaceHolder" runat="server" />
 </head>
 <body>
     <div class="page">
@@ -20,7 +21,7 @@
             <ul id="mainMenu">
                 <li>
                 
-                    <%= Html.ActionLink("Home","Index","Home")%>
+                    <%= Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)%>
                 </li>
                 
             </ul>

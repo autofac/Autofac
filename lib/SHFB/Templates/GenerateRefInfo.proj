@@ -24,20 +24,6 @@
 	<!-- Import the common targets -->
 	<Import Project="$(MSBuildBinPath)\Microsoft.Common.targets" />
 
-	<!-- Import the Silverlight targets if needed so that the references are
-       resolved properly in Silverlight projects. -->
-	<PropertyGroup>
-		<FrameworkRegistryBase
-        Condition="'$(TargetFrameworkIdentifier)' == 'Silverlight'">Software\Microsoft\Microsoft SDKs\$(TargetFrameworkIdentifier)</FrameworkRegistryBase>
-	</PropertyGroup>
-	<Import Condition="'$(TargetFrameworkIdentifier)' == 'Silverlight'"
-    Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(TargetFrameworkVersion)\Microsoft.Silverlight.Common.targets" />
-
-	<!-- Import the .NET Portable Framework targets if needed so that the references are
-       resolved properly in .NET Portable Framework projects. -->
-	<Import Condition="'$(TargetFrameworkIdentifier)' == '.NETPortable'"
-    Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.Common.targets" />
-
 	<!-- This defines the dependencies for the Generate target -->
 	<PropertyGroup>
 		<GenerateDependsOn>

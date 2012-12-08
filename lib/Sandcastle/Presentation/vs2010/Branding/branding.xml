@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<branding xmlns="urn:FH-Branding">
+	<transform-parameters xml:lang="en-us" transform="branding-en-us.xslt" />
+	<transform-parameters xml:lang="ja-jp" transform="branding-ja-jp.xslt" />
+	<transform-parameters xml:lang="cs-cz" transform="branding-cs-cz.xslt" />
+	<transform-parameters xml:lang="de-de" transform="branding-de-de.xslt" />
+	<transform-parameters xml:lang="es-es" transform="branding-es-es.xslt" />
+	<transform-parameters xml:lang="fr-fr" transform="branding-fr-fr.xslt" />
+	<transform-parameters xml:lang="it-it" transform="branding-it-it.xslt" />
+	<transform-parameters xml:lang="ko-kr" transform="branding-ko-kr.xslt" />
+	<transform-parameters xml:lang="pl-pl" transform="branding-pl-pl.xslt" />
+	<transform-parameters xml:lang="pt-br" transform="branding-pt-br.xslt" />
+	<transform-parameters xml:lang="ru-ru" transform="branding-ru-ru.xslt" />
+	<transform-parameters xml:lang="tr-tr" transform="branding-tr-tr.xslt" />
+	<transform-parameters xml:lang="zh-cn" transform="branding-zh-cn.xslt" />
+	<transform-parameters xml:lang="zh-tw" transform="branding-zh-tw.xslt" />
+</branding>
