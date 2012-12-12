@@ -28,15 +28,24 @@ using System.Globalization;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
-using Autofac.Core;
-using Autofac.Core.Lifetime;
 
 namespace Autofac.Integration.Wcf
 {
     /// <summary>
-    /// Creates ServiceHost instances for WCF.
+    /// Creates service host instances for WCF.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// The Autofac service host factory allows you to change
+    /// the strategy by which service implementations are resolved. You do this by
+    /// setting the <see cref="Autofac.Integration.Wcf.AutofacHostFactory.ServiceImplementationDataProvider"/>
+    /// with a strategy implementation.
+    /// </para>
+    /// <para>
+    /// If <see cref="Autofac.Integration.Wcf.AutofacHostFactory.ServiceImplementationDataProvider"/>
+    /// is <see langword="null" /> a new instance of <see cref="Autofac.Integration.Wcf.DefaultServiceImplementationDataProvider"/>
+    /// will be used.
+    /// </para>
     /// <para>
     /// You may configure additional behaviors or other aspects of generated
     /// service instances by setting the <see cref="Autofac.Integration.Wcf.AutofacHostFactory.HostConfigurationAction"/>.
@@ -47,8 +56,12 @@ namespace Autofac.Integration.Wcf
     public abstract class AutofacHostFactory : ServiceHostFactory
     {
         /// <summary>
-        /// The container or lifetime scope from which service instances will be retrieved.
+        /// Gets or sets the container or lifetime scope from which service instances will be retrieved.
         /// </summary>
+        /// <value>
+        /// An <see cref="Autofac.ILifetimeScope"/> that will be used to resolve service
+        /// implementation instances.
+        /// </value>
         public static ILifetimeScope Container { get; set; }
 
         /// <summary>
@@ -64,16 +77,33 @@ namespace Autofac.Integration.Wcf
         public static Action<ServiceHostBase> HostConfigurationAction { get; set; }
 
         /// <summary>
+        /// Gets or sets the service implementation data strategy.
+        /// </summary>
+        /// <value>
+        /// An <see cref="Autofac.Integration.Wcf.IServiceImplementationDataProvider"/>
+        /// that will be used to determine the proper service implementation given
+        /// a service constructor string.
+        /// </value>
+        public static IServiceImplementationDataProvider ServiceImplementationDataProvider { get; set; }
+
+        /// <summary>
         /// Creates a <see cref="System.ServiceModel.ServiceHost"/> with specific base addresses and initializes it with specified data.
         /// </summary>
         /// <param name="constructorString">The initialization data passed to the <see cref="System.ServiceModel.ServiceHostBase"/> instance being constructed by the factory.</param>
-        /// <param name="baseAddresses">The <see cref="T:System.Array"/> of type <see cref="System.Uri"/> that contains the base addresses for the service hosted.</param>
+        /// <param name="baseAddresses">The <see cref="System.Array"/> of type <see cref="System.Uri"/> that contains the base addresses for the service hosted.</param>
         /// <returns>
         /// A <see cref="System.ServiceModel.ServiceHost"/> with specific base addresses.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
-        /// <paramref name="baseAddresses"/> is null.</exception>
-        /// <exception cref="System.InvalidOperationException">There is no hosting context provided or <paramref name="constructorString"/> is null or empty.</exception>
+        /// Thrown if <paramref name="constructorString" /> or <paramref name="baseAddresses"/> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown if <paramref name="constructorString" /> is empty.
+        /// </exception>
+        /// <exception cref="System.InvalidOperationException">
+        /// Thrown if the <see cref="Autofac.Integration.Wcf.AutofacHostFactory.Container"/>
+        /// is <see langword="null" />.
+        /// </exception>
         /// <remarks>
         /// <para>
         /// If <see cref="Autofac.Integration.Wcf.AutofacHostFactory.HostConfigurationAction"/>
@@ -86,51 +116,45 @@ namespace Autofac.Integration.Wcf
         public override ServiceHostBase CreateServiceHost(string constructorString, Uri[] baseAddresses)
         {
             if (constructorString == null)
-                throw new ArgumentNullException("constructorString");
-
-            if (constructorString.Length == 0)
-                throw new ArgumentOutOfRangeException("constructorString");
-
-            if (Container == null)
-                throw new InvalidOperationException(AutofacHostFactoryResources.ContainerIsNull);
-
-            IComponentRegistration registration;
-            if (!Container.ComponentRegistry.TryGetRegistration(new KeyedService(constructorString, typeof(object)), out registration))
             {
-                var serviceType = Type.GetType(constructorString, false);
-                if (serviceType != null)
-                    Container.ComponentRegistry.TryGetRegistration(new TypedService(serviceType), out registration);
+                throw new ArgumentNullException("constructorString");
+            }
+            if (constructorString.Length == 0)
+            {
+                throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, Properties.Resources.ArgumentException_StringEmpty, "constructorString"), "constructorString");
+            }
+            if (Container == null)
+            {
+                throw new InvalidOperationException(AutofacHostFactoryResources.ContainerIsNull);
             }
 
-            if (registration == null)
-                throw new InvalidOperationException(
-                    string.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ServiceNotRegistered, constructorString));
+            var dataProvider = AutofacHostFactory.ServiceImplementationDataProvider;
+            if (dataProvider == null)
+            {
+                dataProvider = new DefaultServiceImplementationDataProvider();
+            }
 
-            var implementationType = registration.Activator.LimitType;
+            var data = dataProvider.GetServiceImplementationData(constructorString);
 
-            if (!implementationType.IsClass)
-                throw new InvalidOperationException(
-                    string.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ImplementationTypeUnknown, constructorString, registration));
+            if (data.ServiceTypeToHost == null)
+            {
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentUICulture, AutofacHostFactoryResources.NoServiceTypeToHost, dataProvider.GetType(), constructorString));
+            }
+            if (!data.ServiceTypeToHost.IsClass)
+            {
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ImplementationTypeUnknown, constructorString, data.ServiceTypeToHost));
+            }
 
             ServiceHost host;
-            if (IsSingletonWcfService(implementationType))
+            if (data.HostAsSingleton)
             {
-                if (!IsRegistrationSingleInstance(registration))
-                    throw new InvalidOperationException(
-                        string.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ServiceMustBeSingleInstance, implementationType.FullName));
-
-                object singletonInstance = Container.Resolve(implementationType);
+                object singletonInstance = data.ImplementationResolver(Container);
                 host = CreateSingletonServiceHost(singletonInstance, baseAddresses);
             }
             else
             {
-                if (IsRegistrationSingleInstance(registration))
-                    throw new InvalidOperationException(
-                        string.Format(CultureInfo.CurrentCulture, AutofacHostFactoryResources.ServiceMustNotBeSingleInstance, implementationType.FullName));
-
-                host = CreateServiceHost(implementationType, baseAddresses);
-                host.Opening += (sender, args) => host.Description.Behaviors.Add(
-                    new AutofacDependencyInjectionServiceBehavior(Container, implementationType, registration));
+                host = CreateServiceHost(data.ServiceTypeToHost, baseAddresses);
+                host.Opening += (sender, args) => host.Description.Behaviors.Add(new AutofacDependencyInjectionServiceBehavior(Container, data));
             }
 
             ApplyHostConfigurationAction(host);
@@ -139,29 +163,14 @@ namespace Autofac.Integration.Wcf
         }
 
         /// <summary>
-        /// Creates a <see cref="T:System.ServiceModel.ServiceHost"/> for a specified type of service with a specific base address.
+        /// Creates a <see cref="System.ServiceModel.ServiceHost"/> for a specified type of service with a specific base address.
         /// </summary>
         /// <param name="singletonInstance">Specifies the singleton service instance to host.</param>
-        /// <param name="baseAddresses">The <see cref="T:System.Array"/> of type <see cref="T:System.Uri"/> that contains the base addresses for the service hosted.</param>
+        /// <param name="baseAddresses">The <see cref="System.Array"/> of type <see cref="System.Uri"/> that contains the base addresses for the service hosted.</param>
         /// <returns>
-        /// A <see cref="T:System.ServiceModel.ServiceHost"/> for the singleton service instance specified with a specific base address.
+        /// A <see cref="System.ServiceModel.ServiceHost"/> for the singleton service instance specified with a specific base address.
         /// </returns>
         protected abstract ServiceHost CreateSingletonServiceHost(object singletonInstance, Uri[] baseAddresses);
-
-        static bool IsRegistrationSingleInstance(IComponentRegistration registration)
-        {
-            return registration.Sharing == InstanceSharing.Shared && registration.Lifetime is RootScopeLifetime;
-        }
-
-        static bool IsSingletonWcfService(Type implementationType)
-        {
-            var behavior = implementationType
-                .GetCustomAttributes(typeof(ServiceBehaviorAttribute), true)
-                .OfType<ServiceBehaviorAttribute>()
-                .FirstOrDefault();
-
-            return behavior != null && behavior.InstanceContextMode == InstanceContextMode.Single;
-        }
 
         static void ApplyHostConfigurationAction(ServiceHostBase host)
         {

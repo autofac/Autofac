@@ -34,7 +34,17 @@ namespace Autofac.Integration.Wcf
     /// <summary>
     /// Manages instance lifecycle using an Autofac inner container.
     /// </summary>
-    public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable, IComponentContext
+    /// <remarks>
+    /// <para>
+    /// This instance context extension creates a child lifetime scope based
+    /// on a scope provided and resolves service instances from that child scope.
+    /// </para>
+    /// <para>
+    /// When this instance context is disposed, the lifetime scope it creates
+    /// (which contains the resolved service instance) is also disposed.
+    /// </para>
+    /// </remarks>
+    public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable
     {
         readonly ILifetimeScope _lifetime;
         private bool _disposed;
@@ -42,7 +52,10 @@ namespace Autofac.Integration.Wcf
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacInstanceContext"/> class.
         /// </summary>
-        /// <param name="container">The outer container.</param>
+        /// <param name="container">
+        /// The outer container/lifetime scope from which the instance scope
+        /// will be created.
+        /// </param>
         public AutofacInstanceContext(ILifetimeScope container)
         {
             if (container == null)
@@ -59,7 +72,7 @@ namespace Autofac.Integration.Wcf
         /// <summary>
         /// Enables an extension object to find out when it has been aggregated.
         /// Called when the extension is added to the
-        /// <see cref="P:System.ServiceModel.IExtensibleObject`1.Extensions"/> property.
+        /// <see cref="System.ServiceModel.IExtensibleObject{T}.Extensions"/> property.
         /// </summary>
         /// <param name="owner">The extensible object that aggregates this extension.</param>
         public void Attach(InstanceContext owner)
@@ -69,7 +82,7 @@ namespace Autofac.Integration.Wcf
         /// <summary>
         /// Enables an object to find out when it is no longer aggregated.
         /// Called when an extension is removed from the
-        /// <see cref="P:System.ServiceModel.IExtensibleObject`1.Extensions"/> property.
+        /// <see cref="System.ServiceModel.IExtensibleObject{T}.Extensions"/> property.
         /// </summary>
         /// <param name="owner">The extensible object that aggregates this extension.</param>
         public void Detach(InstanceContext owner)
@@ -129,6 +142,26 @@ namespace Autofac.Integration.Wcf
         public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
             return _lifetime.ResolveComponent(registration, parameters);
+        }
+
+        /// <summary>
+        /// Retrieve a service instance from the context.
+        /// </summary>
+        /// <param name="serviceData">
+        /// Data object containing information about how to resolve the service
+        /// implementation instance.
+        /// </param>
+        /// <returns>The service instance.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="serviceData" /> is <see langword="null" />.
+        /// </exception>
+        public object Resolve(ServiceImplementationData serviceData)
+        {
+            if (serviceData == null)
+            {
+                throw new ArgumentNullException("serviceData");
+            }
+            return serviceData.ImplementationResolver(_lifetime);
         }
     }
 }

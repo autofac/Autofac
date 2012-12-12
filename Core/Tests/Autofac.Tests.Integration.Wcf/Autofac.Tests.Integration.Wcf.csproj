@@ -65,6 +65,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -80,8 +81,10 @@
     <Compile Include="..\..\..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AutofacDependencyInjectionServiceBehaviorFixture.cs" />
     <Compile Include="AutofacHostFactoryFixtureBase.cs" />
     <Compile Include="AutofacInstanceContextFixture.cs" />
+    <Compile Include="AutofacInstanceProviderFixture.cs" />
     <Compile Include="AutofacServiceHostFactoryFixture.cs" />
     <Compile Include="AutofacWebServiceHostFactoryFixture.cs" />
     <Compile Include="ITestService.cs" />

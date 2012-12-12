@@ -75,12 +75,6 @@
     <Compile Include="Stubs\StubDependency2Impl1.cs" />
     <Compile Include="Stubs\StubDependency2Impl2.cs" />
     <Compile Include="Stubs\StubTenantIdentificationStrategy.cs" />
-    <Compile Include="Wcf\AutofacDependencyInjectionServiceBehaviorFixture.cs" />
-    <Compile Include="Wcf\AutofacHostFactoryFixture.cs" />
-    <Compile Include="Wcf\AutofacInstanceContextFixture.cs" />
-    <Compile Include="Wcf\AutofacInstanceProviderFixture.cs" />
-    <Compile Include="Wcf\AutofacServiceHostFactoryFixture.cs" />
-    <Compile Include="Wcf\AutofacWebServiceHostFactoryFixture.cs" />
     <Compile Include="Wcf\DynamicProxy\ServiceHostProxyBuilderFixture.cs" />
     <Compile Include="Wcf\DynamicProxy\ServiceHostProxyGeneratorFixture.cs" />
     <Compile Include="Wcf\MultitenantServiceImplementationDataProviderFixture.cs" />
@@ -92,6 +86,10 @@
     <Compile Include="Web\RequestParameterTenantIdentificationStrategyFixture.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\Source\Autofac.Integration.Wcf\Autofac.Integration.Wcf.csproj">
+      <Project>{4d5c02d1-c10a-4448-9d7b-8f2a5cca1d13}</Project>
+      <Name>Autofac.Integration.Wcf</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Core\Source\Autofac\Autofac.csproj">
       <Project>{7d018b3e-34a3-423d-ac35-12731f4e0a2c}</Project>
       <Name>Autofac</Name>

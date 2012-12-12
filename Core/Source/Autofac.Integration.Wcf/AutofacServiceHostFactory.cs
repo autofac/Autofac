@@ -29,7 +29,7 @@ using System.ServiceModel;
 namespace Autofac.Integration.Wcf
 {
     /// <summary>
-    /// Creates ServiceHost instances for WCF.
+    /// Creates <see cref="System.ServiceModel.ServiceHost"/> instances for WCF.
     /// </summary>
     public class AutofacServiceHostFactory : AutofacHostFactory
     {
@@ -41,6 +41,9 @@ namespace Autofac.Integration.Wcf
         /// <returns>
         /// A <see cref="T:System.ServiceModel.ServiceHost"/> for the type of service specified with a specific base address.
         /// </returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="serviceType" /> or <paramref name="baseAddresses" /> is <see langword="null" />.
+        /// </exception>
         protected override ServiceHost CreateServiceHost(Type serviceType, Uri[] baseAddresses)
         {
             if (serviceType == null)

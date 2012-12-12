@@ -30,7 +30,6 @@ using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
-using Autofac.Core;
 
 namespace Autofac.Integration.Wcf
 {
@@ -40,32 +39,36 @@ namespace Autofac.Integration.Wcf
     public class AutofacDependencyInjectionServiceBehavior : IServiceBehavior
     {
         private readonly ILifetimeScope _rootLifetimeScope;
-        private readonly Type _implementationType;
-        private readonly IComponentRegistration _registration;
+        private readonly ServiceImplementationData _serviceData;
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacDependencyInjectionServiceBehavior"/> class.
         /// </summary>
-        /// <param name="rootLifetimeScope">The container.</param>
-        /// <param name="implementationType"></param>
-        /// <param name="registration"></param>
-        public AutofacDependencyInjectionServiceBehavior(ILifetimeScope rootLifetimeScope, Type implementationType, IComponentRegistration registration)
+        /// <param name="rootLifetimeScope">
+        /// The container from which service implementations should be resolved.
+        /// </param>
+        /// <param name="serviceData">
+        /// Data about which service type should be hosted and how to resolve
+        /// the type to use for the service implementation.
+        /// </param>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="rootLifetimeScope" /> or <paramref name="serviceData" /> is <see langword="null" />.
+        /// </exception>
+        public AutofacDependencyInjectionServiceBehavior(ILifetimeScope rootLifetimeScope, ServiceImplementationData serviceData)
         {
             if (rootLifetimeScope == null)
+            {
                 throw new ArgumentNullException("rootLifetimeScope");
-
-            if (implementationType == null)
-                throw new ArgumentNullException("implementationType");
-
-            if (registration == null)
-                throw new ArgumentNullException("registration");
+            }
+            if (serviceData == null)
+            {
+                throw new ArgumentNullException("serviceData");
+            }
 
             _rootLifetimeScope = rootLifetimeScope;
-            _implementationType = implementationType;
-            _registration = registration;
+            _serviceData = serviceData;
         }
-
-        #region IServiceBehavior Members
 
         /// <summary>
         /// Provides the ability to inspect the service host and the service description to confirm that the service can run successfully.
@@ -94,25 +97,32 @@ namespace Autofac.Integration.Wcf
         /// </summary>
         /// <param name="serviceDescription">The service description.</param>
         /// <param name="serviceHostBase">The host that is currently being built.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="serviceDescription" /> or
+        /// <paramref name="serviceHostBase" /> is <see langword="null" />.
+        /// </exception>
         public void ApplyDispatchBehavior(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase)
         {
             if (serviceDescription == null)
+            {
                 throw new ArgumentNullException("serviceDescription");
-
+            }
             if (serviceHostBase == null)
+            {
                 throw new ArgumentNullException("serviceHostBase");
+            }
 
             var implementedContracts =
                 (from ep in serviceDescription.Endpoints
-                where ep.Contract.ContractType.IsAssignableFrom(_implementationType)
-                select ep.Contract.Name).ToArray();
+                 where ep.Contract.ContractType.IsAssignableFrom(_serviceData.ServiceTypeToHost)
+                 select ep.Contract.Name).ToArray();
 
-            var instanceProvider = new AutofacInstanceProvider(_rootLifetimeScope, _registration);
+            var instanceProvider = new AutofacInstanceProvider(_rootLifetimeScope, _serviceData);
 
-            var endpointDispatchers = 
-                from cd in serviceHostBase.ChannelDispatchers.OfType<ChannelDispatcher>() 
-                from ed in cd.Endpoints 
-                where implementedContracts.Contains(ed.ContractName) 
+            var endpointDispatchers =
+                from cd in serviceHostBase.ChannelDispatchers.OfType<ChannelDispatcher>()
+                from ed in cd.Endpoints
+                where implementedContracts.Contains(ed.ContractName)
                 select ed;
 
             foreach (var ed in endpointDispatchers)
@@ -120,7 +130,5 @@ namespace Autofac.Integration.Wcf
                 ed.DispatchRuntime.InstanceProvider = instanceProvider;
             }
         }
-
-        #endregion
     }
 }

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.ServiceModel.Channels;
 using Autofac;
-using Autofac.Extras.Multitenant.Wcf;
+using Autofac.Integration.Wcf;
 using NUnit.Framework;
 
-namespace Autofac.Extras.Tests.Multitenant.Wcf
+namespace Autofac.Tests.Integration.Wcf
 {
     [TestFixture]
     public class AutofacInstanceProviderFixture
@@ -21,16 +21,6 @@ namespace Autofac.Extras.Tests.Multitenant.Wcf
         {
             var container = new ContainerBuilder().Build();
             Assert.Throws<ArgumentNullException>(() => new AutofacInstanceProvider(container, null));
-        }
-
-        [Test(Description = "Verifies that the constructor parameters are properly stored for later use.")]
-        public void Ctor_StoresParameters()
-        {
-            var data = new ServiceImplementationData();
-            var container = new ContainerBuilder().Build();
-            var provider = new AutofacInstanceProvider(container, data);
-            Assert.AreSame(data, provider.ServiceData, "The service implementation data was not stored.");
-            Assert.AreSame(container, provider.Container, "The container was not stored.");
         }
 
         [Test(Description = "Ensures you have to provide an instance context to get an instance.")]

@@ -10,7 +10,7 @@ namespace Autofac.Extras.Multitenant.Wcf
     /// </summary>
     /// <remarks>
     /// <para>
-    /// When hosting a service in a multitenant environment using <see cref="Autofac.Extras.Multitenant.Wcf.AutofacHostFactory"/>
+    /// When hosting a service in a multitenant environment using <see cref="Autofac.Integration.Wcf.AutofacHostFactory"/>
     /// and the dynamic proxy generation that occurs therein, you can't really
     /// mark your "service implementation class" with metadata attributes like
     /// the <see cref="System.ServiceModel.ServiceBehaviorAttribute"/>. Also,

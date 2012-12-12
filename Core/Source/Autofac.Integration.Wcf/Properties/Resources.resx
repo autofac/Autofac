@@ -117,22 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ContainerIsNull" xml:space="preserve">
-    <value>The AutofacServiceHost.Container static property must be set before services can be instantiated.</value>
-  </data>
-  <data name="ImplementationTypeUnknown" xml:space="preserve">
-    <value>Service '{0}' is registered in such a way that its implementation type could not be derived. This is required for WCF integration. Consider using a reflection-based registration or an expression-based registration where the return value is a class type. The current default registration is '{1}'.</value>
-  </data>
-  <data name="NoServiceTypeToHost" xml:space="preserve">
-    <value>No type to host was provided by the '{0}' for the service '{1}'.</value>
-  </data>
-  <data name="ServiceMustBeSingleInstance" xml:space="preserve">
-    <value>The WCF service '{0}' has an InstanceContextMode of Single and is not registered as SingleInstance with the Autofac container.</value>
-  </data>
-  <data name="ServiceMustNotBeSingleInstance" xml:space="preserve">
-    <value>The WCF service '{0}' does not have an InstanceContextMode of Single and is registered as SingleInstance with the Autofac container.</value>
-  </data>
-  <data name="ServiceNotRegistered" xml:space="preserve">
-    <value>The service '{0}' configured for WCF is not registered with the Autofac container.</value>
+  <data name="ArgumentException_StringEmpty" xml:space="preserve">
+    <value>'{0}' may not be empty.</value>
   </data>
 </root>

@@ -5,6 +5,7 @@ using System.ServiceModel;
 using Autofac;
 using Autofac.Extras.Multitenant.Properties;
 using Autofac.Extras.Multitenant.Wcf.DynamicProxy;
+using Autofac.Integration.Wcf;
 
 namespace Autofac.Extras.Multitenant.Wcf
 {
@@ -30,7 +31,7 @@ namespace Autofac.Extras.Multitenant.Wcf
         /// implementation.
         /// </param>
         /// <returns>
-        /// A <see cref="Autofac.Extras.Multitenant.Wcf.ServiceImplementationData"/>
+        /// A <see cref="Autofac.Integration.Wcf.ServiceImplementationData"/>
         /// object containing information about which type to use in
         /// the service host and how to resolve the implementation.
         /// </returns>

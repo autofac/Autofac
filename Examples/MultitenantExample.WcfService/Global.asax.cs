@@ -2,6 +2,7 @@
 using Autofac;
 using Autofac.Extras.Multitenant;
 using Autofac.Extras.Multitenant.Wcf;
+using Autofac.Integration.Wcf;
 using MultitenantExample.WcfService.Dependencies;
 using MultitenantExample.WcfService.ServiceImplementations;
 
@@ -70,6 +71,11 @@ namespace MultitenantExample.WcfService
             // tenant will have some different dependencies than other unconfigured
             // tenants.
             mtc.ConfigureTenant(null, b => b.RegisterType<DefaultTenantDependency>().As<IDependency>().SingleInstance());
+
+            // Multitenant service hosting requires use of a different service implementation
+            // data provider that will allow you to define a metadata buddy class that isn't
+            // tenant-specific.
+            AutofacHostFactory.ServiceImplementationDataProvider = new MultitenantServiceImplementationDataProvider();
 
             // Add a behavior to service hosts that get created so incoming messages
             // get inspected and the tenant ID can be parsed from message headers.

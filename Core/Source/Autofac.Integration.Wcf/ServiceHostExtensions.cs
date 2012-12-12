@@ -25,13 +25,14 @@
 
 using System;
 using System.Globalization;
+using System.Linq;
 using System.ServiceModel;
 using Autofac.Core;
 
 namespace Autofac.Integration.Wcf
 {
     /// <summary>
-    ///		Adds dependency injection related methods to service hosts.
+    /// Adds dependency injection related methods to service hosts.
     /// </summary>
     public static class ServiceHostExtensions
     {
@@ -79,8 +80,14 @@ namespace Autofac.Integration.Wcf
                 var message = string.Format(CultureInfo.CurrentCulture, ServiceHostExtensionsResources.ContractTypeNotRegistered, contractType.FullName);
                 throw new ArgumentException(message, "contractType");
             }
+            var data = new ServiceImplementationData
+            {
+                ConstructorString = contractType.AssemblyQualifiedName,
+                ServiceTypeToHost = contractType,
+                ImplementationResolver = l => l.ResolveComponent(registration, Enumerable.Empty<Parameter>())
+            };
 
-            var behavior = new AutofacDependencyInjectionServiceBehavior(container, serviceHost.Description.ServiceType, registration);
+            var behavior = new AutofacDependencyInjectionServiceBehavior(container, data);
             serviceHost.Description.Behaviors.Add(behavior);
         }
     }

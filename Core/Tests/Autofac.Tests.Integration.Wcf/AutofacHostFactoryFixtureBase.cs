@@ -8,7 +8,7 @@ namespace Autofac.Tests.Integration.Wcf
     [TestFixture]
     public abstract class AutofacHostFactoryFixtureBase<T> where T : AutofacHostFactory, new()
     {
-        readonly Uri[] _dummyEndpoints = new[] {new Uri("http://localhost")};
+        readonly Uri[] _dummyEndpoints = new[] { new Uri("http://localhost") };
 
         [Test]
         public void NullConstructorStringThrowsException()
@@ -22,7 +22,7 @@ namespace Autofac.Tests.Integration.Wcf
         public void EmptyConstructorStringThrowsException()
         {
             var factory = new T();
-            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => factory.CreateServiceHost(string.Empty, _dummyEndpoints));
+            var exception = Assert.Throws<ArgumentException>(() => factory.CreateServiceHost(string.Empty, _dummyEndpoints));
             Assert.That(exception.ParamName, Is.EqualTo("constructorString"));
         }
 

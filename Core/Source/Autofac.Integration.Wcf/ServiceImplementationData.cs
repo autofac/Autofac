@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Security;
-using Autofac;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace Autofac.Extras.Multitenant.Wcf
+namespace Autofac.Integration.Wcf
 {
     /// <summary>
     /// Contains data about a WCF service implementation.
@@ -10,11 +10,11 @@ namespace Autofac.Extras.Multitenant.Wcf
     /// <remarks>
     /// <para>
     /// This data transfer object class is used in conjunction with
-    /// <see cref="Autofac.Extras.Multitenant.Wcf.IServiceImplementationDataProvider"/>
+    /// <see cref="Autofac.Integration.Wcf.IServiceImplementationDataProvider"/>
     /// implementations for resolving service implementation instance information.
     /// </para>
     /// </remarks>
-    /// <seealso cref="Autofac.Extras.Multitenant.Wcf.IServiceImplementationDataProvider"/>
+    /// <seealso cref="Autofac.Integration.Wcf.IServiceImplementationDataProvider"/>
     public class ServiceImplementationData
     {
         /// <summary>
@@ -25,6 +25,14 @@ namespace Autofac.Extras.Multitenant.Wcf
         /// implementation data.
         /// </value>
         public string ConstructorString { get; set; }
+
+        /// <summary>
+        /// Gets or sets an indicator of whether the service should be hosted as a singleton.
+        /// </summary>
+        /// <value>
+        /// <see langword="true" /> if this service should be a singleton; <see langword="false" /> if not.
+        /// </value>
+        public bool HostAsSingleton { get; set; }
 
         /// <summary>
         /// Gets or sets the concrete type to host.
@@ -44,7 +52,7 @@ namespace Autofac.Extras.Multitenant.Wcf
         /// An <see cref="System.Func{T,U}"/> that takes in a lifetime scope returns
         /// an <see cref="System.Object"/> that is the implementation type for the
         /// given service. This is the object that the service host will use
-        /// and should be assignable from the <see cref="Autofac.Extras.Multitenant.Wcf.ServiceImplementationData.ServiceTypeToHost"/>.
+        /// and should be assignable from the <see cref="Autofac.Integration.Wcf.ServiceImplementationData.ServiceTypeToHost"/>.
         /// </value>
         public Func<ILifetimeScope, object> ImplementationResolver
         {

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using Autofac;
-using Autofac.Extras.Multitenant.Wcf;
+using Autofac.Integration.Wcf;
 using NUnit.Framework;
 
-namespace Autofac.Extras.Tests.Multitenant.Wcf
+namespace Autofac.Tests.Integration.Wcf
 {
     [TestFixture]
     public class AutofacDependencyInjectionServiceBehaviorFixture
@@ -23,16 +23,6 @@ namespace Autofac.Extras.Tests.Multitenant.Wcf
         {
             var container = new ContainerBuilder().Build();
             Assert.Throws<ArgumentNullException>(() => new AutofacDependencyInjectionServiceBehavior(container, null));
-        }
-
-        [Test(Description = "Verifies that the constructor parameters are properly stored for later use.")]
-        public void Ctor_StoresParameters()
-        {
-            var data = new ServiceImplementationData();
-            var container = new ContainerBuilder().Build();
-            var provider = new AutofacDependencyInjectionServiceBehavior(container, data);
-            Assert.AreSame(data, provider.ServiceData, "The service implementation data was not stored.");
-            Assert.AreSame(container, provider.Container, "The container was not stored.");
         }
 
         [Test(Description = "Attempts to apply the behavior without a service description.")]

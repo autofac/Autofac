@@ -84,12 +84,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RegistrationExtensions.cs" />
-    <Compile Include="Wcf\AutofacDependencyInjectionServiceBehavior.cs" />
-    <Compile Include="Wcf\AutofacHostFactory.cs" />
-    <Compile Include="Wcf\AutofacInstanceContext.cs" />
-    <Compile Include="Wcf\AutofacInstanceProvider.cs" />
-    <Compile Include="Wcf\AutofacServiceHostFactory.cs" />
-    <Compile Include="Wcf\AutofacWebServiceHostFactory.cs" />
     <Compile Include="Wcf\DynamicProxy\CustomAttributeDataExtensions.cs" />
     <Compile Include="Wcf\DynamicProxy\IgnoreAttributeInterfaceProxyInstanceContributor.cs" />
     <Compile Include="Wcf\DynamicProxy\ServiceHostInterfaceProxyGenerator.cs" />
@@ -98,10 +92,7 @@
     <Compile Include="Wcf\DynamicProxy\TypeExtensions.cs" />
     <Compile Include="Wcf\MultitenantServiceImplementationDataProvider.cs" />
     <Compile Include="Wcf\ServiceMetadataTypeAttribute.cs" />
-    <Compile Include="Wcf\SimpleServiceImplementationDataProvider.cs" />
-    <Compile Include="Wcf\IServiceImplementationDataProvider.cs" />
     <Compile Include="Wcf\OperationContextTenantIdentificationStrategy.cs" />
-    <Compile Include="Wcf\ServiceImplementationData.cs" />
     <Compile Include="Wcf\TenantIdentificationContextExtension.cs" />
     <Compile Include="Wcf\TenantPropagationBehavior.cs" />
     <Compile Include="Wcf\TenantPropagationMessageInspector.cs" />
@@ -114,6 +105,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\Source\Autofac.Integration.Wcf\Autofac.Integration.Wcf.csproj">
+      <Project>{4d5c02d1-c10a-4448-9d7b-8f2a5cca1d13}</Project>
+      <Name>Autofac.Integration.Wcf</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Core\Source\Autofac\Autofac.csproj">
       <Project>{7d018b3e-34a3-423d-ac35-12731f4e0a2c}</Project>
       <Name>Autofac</Name>

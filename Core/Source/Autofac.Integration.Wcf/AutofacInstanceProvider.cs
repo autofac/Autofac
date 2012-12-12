@@ -28,7 +28,6 @@ using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Dispatcher;
-using Autofac.Core;
 
 namespace Autofac.Integration.Wcf
 {
@@ -38,23 +37,35 @@ namespace Autofac.Integration.Wcf
     public class AutofacInstanceProvider : IInstanceProvider
     {
         readonly ILifetimeScope _rootLifetimeScope;
-        readonly IComponentRegistration _registration;
+        readonly ServiceImplementationData _serviceData;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacInstanceProvider"/> class.
         /// </summary>
-        /// <param name="rootLifetimeScope">The container.</param>
-        /// <param name="registration">The component to resolve from the container.</param>
-        public AutofacInstanceProvider(ILifetimeScope rootLifetimeScope, IComponentRegistration registration)
+        /// <param name="rootLifetimeScope">
+        /// The lifetime scope from which service instances should be resolved.
+        /// </param>
+        /// <param name="serviceData">
+        /// Data object containing information about how to resolve the service
+        /// implementation instance.
+        /// </param>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="rootLifetimeScope" /> or <paramref name="serviceData" /> is <see langword="null" />.
+        /// </exception>
+        public AutofacInstanceProvider(ILifetimeScope rootLifetimeScope, ServiceImplementationData serviceData)
         {
             if (rootLifetimeScope == null)
+            {
                 throw new ArgumentNullException("rootLifetimeScope");
+            }
 
-            if (registration == null)
-                throw new ArgumentNullException("registration");
+            if (serviceData == null)
+            {
+                throw new ArgumentNullException("serviceData");
+            }
 
             _rootLifetimeScope = rootLifetimeScope;
-            _registration = registration;
+            _serviceData = serviceData;
         }
 
         /// <summary>
@@ -84,11 +95,11 @@ namespace Autofac.Integration.Wcf
             }
             var extension = new AutofacInstanceContext(_rootLifetimeScope);
             instanceContext.Extensions.Add(extension);
-            return extension.ResolveComponent(_registration, Enumerable.Empty<Parameter>());
+            return extension.Resolve(_serviceData);
         }
 
         /// <summary>
-        /// Called when an <see cref="T:System.ServiceModel.InstanceContext"/> object recycles a service object.
+        /// Called when an <see cref="System.ServiceModel.InstanceContext"/> object recycles a service object.
         /// </summary>
         /// <param name="instanceContext">The service's instance context.</param>
         /// <param name="instance">The service object to be recycled.</param>
@@ -103,7 +114,9 @@ namespace Autofac.Integration.Wcf
             }
             var extension = instanceContext.Extensions.Find<AutofacInstanceContext>();
             if (extension != null)
+            {
                 extension.Dispose();
+            }
         }
     }
 }
