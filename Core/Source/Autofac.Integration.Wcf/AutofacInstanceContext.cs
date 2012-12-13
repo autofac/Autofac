@@ -44,10 +44,51 @@ namespace Autofac.Integration.Wcf
     /// (which contains the resolved service instance) is also disposed.
     /// </para>
     /// </remarks>
-    public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable
+    public class AutofacInstanceContext : IExtension<InstanceContext>, IDisposable, IComponentContext
     {
-        readonly ILifetimeScope _lifetime;
         private bool _disposed;
+
+        /// <summary>
+        /// Gets the current <see cref="Autofac.Integration.Wcf.AutofacInstanceContext"/>
+        /// for the operation.
+        /// </summary>
+        /// <value>
+        /// The <see cref="Autofac.Integration.Wcf.AutofacInstanceContext"/> associated
+        /// with the current <see cref="System.ServiceModel.OperationContext"/> if
+        /// one exists; or <see langword="null" /> if there isn't one.
+        /// </value>
+        /// <remarks>
+        /// <para>
+        /// In a singleton service, there won't be a current <see cref="Autofac.Integration.Wcf.AutofacInstanceContext"/>
+        /// because singleton services are resolved at the time the service host begins
+        /// rather than on each operation.
+        /// </para>
+        /// </remarks>
+        public static AutofacInstanceContext Current
+        {
+            get
+            {
+                var operationContext = OperationContext.Current;
+                if (operationContext != null)
+                {
+                    var instanceContext = operationContext.InstanceContext;
+                    if (instanceContext != null)
+                    {
+                        return instanceContext.Extensions.Find<AutofacInstanceContext>();
+                    }
+                }
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the request/operation lifetime.
+        /// </summary>
+        /// <value>
+        /// An <see cref="Autofac.ILifetimeScope"/> that this instance
+        /// context will use to resolve service instances.
+        /// </value>
+        public ILifetimeScope OperationLifetime { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacInstanceContext"/> class.
@@ -59,9 +100,10 @@ namespace Autofac.Integration.Wcf
         public AutofacInstanceContext(ILifetimeScope container)
         {
             if (container == null)
+            {
                 throw new ArgumentNullException("container");
-
-            _lifetime = container.BeginLifetimeScope();
+            }
+            this.OperationLifetime = container.BeginLifetimeScope();
         }
 
         ~AutofacInstanceContext()
@@ -115,7 +157,7 @@ namespace Autofac.Integration.Wcf
                 if (disposing)
                 {
                     // Free managed resources
-                    _lifetime.Dispose();
+                    this.OperationLifetime.Dispose();
                 }
                 this._disposed = true;
             }
@@ -126,7 +168,7 @@ namespace Autofac.Integration.Wcf
         /// </summary>
         public IComponentRegistry ComponentRegistry
         {
-            get { return _lifetime.ComponentRegistry; }
+            get { return this.OperationLifetime.ComponentRegistry; }
         }
 
         /// <summary>
@@ -141,7 +183,7 @@ namespace Autofac.Integration.Wcf
         /// <exception cref="Autofac.Core.DependencyResolutionException"/>
         public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
-            return _lifetime.ResolveComponent(registration, parameters);
+            return this.OperationLifetime.ResolveComponent(registration, parameters);
         }
 
         /// <summary>
@@ -161,7 +203,7 @@ namespace Autofac.Integration.Wcf
             {
                 throw new ArgumentNullException("serviceData");
             }
-            return serviceData.ImplementationResolver(_lifetime);
+            return serviceData.ImplementationResolver(this.OperationLifetime);
         }
     }
 }
