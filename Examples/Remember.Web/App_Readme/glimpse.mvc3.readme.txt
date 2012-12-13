@@ -1,0 +1,30 @@
+Glimpse.Mvc3 adds the following Glimpse plugins:
+
+Binding
+Execution
+Model Metadata
+Routes
+Views
+
+See glimpse.readme.txt or http://getglimpse.com for more info
+
+Release Notes
+-------------
+11/18/2011 - 0.87
+- Update dependency on Glimpse 0.87
+
+11/01/2011 - 0.86
+- Updates to support Timeline plugin
+
+08/16/2011 - 0.85
+- Moved IControllerFactory implementation from wrapper to proxy, fixing several bugs
+- Fixed bug where logger could cause a null reference exception
+
+07/22/2011 - 0.84
+- Fixed bug that caused the execution tab to always be disabled
+
+06/29/2011 - 0.83
+- Swapped GlimpseView to be public rather than internal. This is a workaround for certain situations until further development.
+
+05/30/2011 - 0.82
+- Glimpse.Mvc3 split from old Glimpse package to better support WebForms and Mvc

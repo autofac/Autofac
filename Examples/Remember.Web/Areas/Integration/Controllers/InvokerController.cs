@@ -13,7 +13,6 @@ namespace Remember.Web.Areas.Integration.Controllers
     {
         public ActionResult Index()
         {
-            this.ViewData["InjectionEnabled"] = GlobalApplication.IsControllerActionParameterInjectionEnabled() ? "enabled" : "disabled";
             return View();
         }
 

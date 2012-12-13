@@ -7,17 +7,10 @@ namespace Autofac.Tests.Integration.Mvc
     {
         ILifetimeScope _lifetimeScope;
         readonly ILifetimeScope _container;
-        readonly Action<ContainerBuilder> _configurationAction;
 
         public StubLifetimeScopeProvider(ILifetimeScope container)
         {
             _container = container;
-        }
-
-        public StubLifetimeScopeProvider(ILifetimeScope container, Action<ContainerBuilder> configurationAction)
-        {
-            _container = container;
-            _configurationAction = configurationAction;
         }
 
         public ILifetimeScope ApplicationContainer
@@ -25,9 +18,9 @@ namespace Autofac.Tests.Integration.Mvc
             get { return _container; }
         }
 
-        public ILifetimeScope GetLifetimeScope()
+        public ILifetimeScope GetLifetimeScope(Action<ContainerBuilder> configurationAction)
         {
-            return _lifetimeScope ?? (_lifetimeScope = BuildLifetimeScope());
+            return _lifetimeScope ?? (_lifetimeScope = BuildLifetimeScope(configurationAction));
         }
 
         public void EndLifetimeScope()
@@ -36,11 +29,11 @@ namespace Autofac.Tests.Integration.Mvc
                 _lifetimeScope.Dispose();
         }
 
-        ILifetimeScope BuildLifetimeScope()
+        ILifetimeScope BuildLifetimeScope(Action<ContainerBuilder> configurationAction)
         {
-            return (_configurationAction == null)
+            return (configurationAction == null)
                        ? _container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag)
-                       : _container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag, _configurationAction);
+                       : _container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag, configurationAction);
         }
     }
 }

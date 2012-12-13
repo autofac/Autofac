@@ -119,7 +119,7 @@ namespace Autofac.Tests.Integration.Mvc
         {
             var container = new ContainerBuilder().Build();
             Action<ContainerBuilder> configurationAction = builder => builder.Register(c => new object());
-            var lifetimeScopeProvider = new StubLifetimeScopeProvider(container, configurationAction);
+            var lifetimeScopeProvider = new StubLifetimeScopeProvider(container);
             var resolver = new AutofacDependencyResolver(container, lifetimeScopeProvider, configurationAction);
 
             var service = resolver.GetService(typeof(object));

@@ -14,6 +14,7 @@ namespace Autofac.Tests.Integration.Mvc
         IContainer _container;
         ControllerContext _context;
         TestController _controller;
+        IDependencyResolver _originalResolver;
 
         [SetUp]
         public void Setup()
@@ -23,19 +24,23 @@ namespace Autofac.Tests.Integration.Mvc
             builder.Register(c => new ActionDependency()).As<IActionDependency>();
             _container = builder.Build();
 
-            var httpRequestScope = _container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag);
-            var lifetimeScopeProvider = new Mock<ILifetimeScopeProvider>();
-            lifetimeScopeProvider.Setup(mock => mock.GetLifetimeScope()).Returns(httpRequestScope);
-            DependencyResolver.SetResolver(new AutofacDependencyResolver(_container, lifetimeScopeProvider.Object));
+            this._originalResolver = DependencyResolver.Current;
+            DependencyResolver.SetResolver(new AutofacDependencyResolver(_container, new StubLifetimeScopeProvider(_container)));
 
             var request = new Mock<HttpRequestBase>();
             var httpContext = new Mock<HttpContextBase>();
             httpContext.Setup(mock => mock.Request).Returns(request.Object);
 
-            _controller = new TestController {ValidateRequest = false};
-            _context = new ControllerContext {Controller = _controller, HttpContext = httpContext.Object};
+            _controller = new TestController { ValidateRequest = false };
+            _context = new ControllerContext { Controller = _controller, HttpContext = httpContext.Object };
             _controller.ControllerContext = _context;
             _controller.ValueProvider = new NameValueCollectionValueProvider(new NameValueCollection(), CultureInfo.InvariantCulture);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            DependencyResolver.SetResolver(this._originalResolver);
         }
 
         [Test]

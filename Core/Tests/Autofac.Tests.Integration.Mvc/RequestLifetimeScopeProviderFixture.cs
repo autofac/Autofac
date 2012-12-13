@@ -10,7 +10,7 @@ namespace Autofac.Tests.Integration.Mvc
         [Test]
         public void ContainerMustBeProvided()
         {
-            var exception = Assert.Throws<ArgumentNullException>(() => new RequestLifetimeScopeProvider(null, null));
+            var exception = Assert.Throws<ArgumentNullException>(() => new RequestLifetimeScopeProvider(null));
             Assert.That(exception.ParamName, Is.EqualTo("container"));
         }
 
@@ -18,8 +18,8 @@ namespace Autofac.Tests.Integration.Mvc
         public void MeaningfulExceptionThrowWhenHttpContextNotAvailable()
         {
             var container = new ContainerBuilder().Build();
-            var provider = new RequestLifetimeScopeProvider(container, null);
-            var exception = Assert.Throws<InvalidOperationException>(() => provider.GetLifetimeScope());
+            var provider = new RequestLifetimeScopeProvider(container);
+            var exception = Assert.Throws<InvalidOperationException>(() => provider.GetLifetimeScope(b => { }));
             Assert.That(exception.Message, Is.EqualTo(RequestLifetimeScopeProviderResources.HttpContextNotAvailable));
         }
 
@@ -27,7 +27,7 @@ namespace Autofac.Tests.Integration.Mvc
         public void ProviderRegisteredWithHttpModule()
         {
             var container = new ContainerBuilder().Build();
-            var provider = new RequestLifetimeScopeProvider(container, null);
+            var provider = new RequestLifetimeScopeProvider(container);
             Assert.That(RequestLifetimeHttpModule.LifetimeScopeProvider, Is.EqualTo(provider));
         }
     }

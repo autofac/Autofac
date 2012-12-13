@@ -32,9 +32,9 @@ namespace Autofac.Tests.Integration.Mvc
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
-            _baseControllerContext = new ControllerContext {Controller = new TestController()};
-            _derivedControllerContext = new ControllerContext {Controller = new TestControllerA()};
-            _mostDerivedControllerContext = new ControllerContext {Controller = new TestControllerB()};
+            _baseControllerContext = new ControllerContext { Controller = new TestController() };
+            _derivedControllerContext = new ControllerContext { Controller = new TestControllerA() };
+            _mostDerivedControllerContext = new ControllerContext { Controller = new TestControllerB() };
 
             _baseMethodInfo = TestController.GetAction1MethodInfo<TestController>();
             _derivedMethodInfo = TestController.GetAction1MethodInfo<TestControllerA>();
@@ -457,10 +457,7 @@ namespace Autofac.Tests.Integration.Mvc
 
         static void SetupMockLifetimeScopeProvider(ILifetimeScope container)
         {
-            var lifetimeScope = container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag);
-            var lifetimeScopeProvider = new Mock<ILifetimeScopeProvider>();
-            lifetimeScopeProvider.Setup(mock => mock.GetLifetimeScope()).Returns(lifetimeScope);
-            var resolver = new AutofacDependencyResolver(container, lifetimeScopeProvider.Object);
+            var resolver = new AutofacDependencyResolver(container, new StubLifetimeScopeProvider(container));
             DependencyResolver.SetResolver(resolver);
         }
 
@@ -492,7 +489,8 @@ namespace Autofac.Tests.Integration.Mvc
         void AssertMultipleFilters<TFilter1, TFilter2>(FilterScope filterScope,
             Action<IRegistrationBuilder<TFilter1, SimpleActivatorData, SingleRegistrationStyle>> configure1,
             Action<IRegistrationBuilder<TFilter2, SimpleActivatorData, SingleRegistrationStyle>> configure2)
-            where TFilter1 : new() where TFilter2 : new()
+            where TFilter1 : new()
+            where TFilter2 : new()
         {
             var builder = new ContainerBuilder();
             configure1(builder.Register(c => new TFilter1()));

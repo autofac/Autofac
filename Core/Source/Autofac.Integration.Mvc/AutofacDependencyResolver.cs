@@ -67,7 +67,7 @@ namespace Autofac.Integration.Mvc
         /// <param name="container">The container that nested lifetime scopes will be create from.</param>
         /// <param name="lifetimeScopeProvider">A <see cref="ILifetimeScopeProvider"/> implementation for 
         /// creating new lifetime scopes.</param>
-        public AutofacDependencyResolver(ILifetimeScope container, ILifetimeScopeProvider lifetimeScopeProvider) : 
+        public AutofacDependencyResolver(ILifetimeScope container, ILifetimeScopeProvider lifetimeScopeProvider) :
             this(container)
         {
             if (lifetimeScopeProvider == null) throw new ArgumentNullException("lifetimeScopeProvider");
@@ -94,7 +94,14 @@ namespace Autofac.Integration.Mvc
         /// </summary>
         public static AutofacDependencyResolver Current
         {
-            get { return DependencyResolver.Current as AutofacDependencyResolver; }
+            get
+            {
+                // Issue 351: We can't necessarily cast the current dependency resolver
+                // to AutofacDependencyResolver because diagnostic systems like Glimpse
+                // will wrap/proxy the resolver. Instead we need to register the resolver
+                // on the fly with the request lifetime scope and resolve it accordingly.
+                return DependencyResolver.Current.GetService<AutofacDependencyResolver>();
+            }
         }
 
         /// <summary>
@@ -104,11 +111,23 @@ namespace Autofac.Integration.Mvc
         {
             get
             {
+                // Issue 351: Register the AutofacDependencyResolver with
+                // the request lifetime scope so the current resolver can
+                // be retrieved without having to cast it directly to
+                // this specific type.
+                Action<ContainerBuilder> composite = builder =>
+                {
+                    if (this._configurationAction != null)
+                    {
+                        this._configurationAction(builder);
+                    }
+                    builder.RegisterInstance(this).AsSelf();
+                };
                 if (_lifetimeScopeProvider == null)
                 {
-                    _lifetimeScopeProvider = new RequestLifetimeScopeProvider(_container, _configurationAction);
+                    _lifetimeScopeProvider = new RequestLifetimeScopeProvider(_container);
                 }
-                return _lifetimeScopeProvider.GetLifetimeScope();
+                return _lifetimeScopeProvider.GetLifetimeScope(composite);
             }
         }
 
