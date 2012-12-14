@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
+    <Compile Include="Core\AutoStartService.cs" />
     <Compile Include="Builder\MetadataConfiguration.cs" />
     <Compile Include="Core\Activators\Reflection\MostParametersConstructorSelectorResources.Designer.cs">
       <AutoGen>True</AutoGen>

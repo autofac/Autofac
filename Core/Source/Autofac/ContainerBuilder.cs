@@ -36,6 +36,7 @@ using Autofac.Util;
 using Autofac.Features.Metadata;
 using Autofac.Features.LazyDependencies;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 
 namespace Autofac
 {
@@ -102,6 +103,17 @@ namespace Autofac
             {
                 var instance = (IStartable)componentContext.ResolveComponent(startable, Enumerable.Empty<Parameter>());
                 instance.Start();
+            }
+            foreach (var startable in componentContext.ComponentRegistry.RegistrationsFor(new AutoStartService()))
+            {
+                try
+                {
+                    componentContext.ResolveComponent(startable, Enumerable.Empty<Parameter>());
+                }
+                catch (DependencyResolutionException ex)
+                {
+                    throw new DependencyResolutionException(String.Format(CultureInfo.CurrentCulture, ContainerBuilderResources.ErrorAutoStarting, startable), ex);
+                }
             }
         }
 
