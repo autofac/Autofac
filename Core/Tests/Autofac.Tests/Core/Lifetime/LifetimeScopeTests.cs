@@ -148,6 +148,20 @@ namespace Autofac.Tests.Core.Lifetime
             }
         }
 
+        [Test(Description = "Issue #397")]
+        public void NestedLifetimeScopesGetDisposedWhenParentIsDisposed()
+        {
+            var builder = new ContainerBuilder();
+            var container = builder.Build();
+            var l1 = container.BeginLifetimeScope();
+            var l2 = l1.BeginLifetimeScope();
+            var L3 = l2.BeginLifetimeScope(b => b.RegisterType<DisposeTracker>());
+            var tracker = L3.Resolve<DisposeTracker>();
+            Assert.IsFalse(tracker.IsDisposed, "The tracker should not yet be disposed.");
+            container.Dispose();
+            Assert.IsTrue(tracker.IsDisposed, "The tracker should have been disposed along with the lifetime scope chain.");
+        }
+
         public class Person
         {
         }
