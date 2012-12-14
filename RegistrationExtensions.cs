@@ -117,7 +117,7 @@ namespace Autofac.Extras.DynamicProxy2
         {
             if (componentRegistration.Services
                 .OfType<IServiceWithType>()
-                .Where(swt => !swt.ServiceType.IsInterface)
+                .Where(swt => !swt.ServiceType.IsInterface || !swt.ServiceType.IsVisible)
                 .Any())
                 throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,
                     RegistrationExtensionsResources.InterfaceProxyingOnlySupportsInterfaceServices,
