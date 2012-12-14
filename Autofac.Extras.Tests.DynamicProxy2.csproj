@@ -69,6 +69,8 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Activation" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -90,6 +92,7 @@
     <Compile Include="ClassInterceptorsFixture.cs" />
     <Compile Include="InterfaceInterceptorsFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WcfInterceptorFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -109,6 +112,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\Source\Autofac.Integration.Wcf\Autofac.Integration.Wcf.csproj">
+      <Project>{4d5c02d1-c10a-4448-9d7b-8f2a5cca1d13}</Project>
+      <Name>Autofac.Integration.Wcf</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Core\Source\Autofac\Autofac.csproj">
       <Project>{7d018b3e-34a3-423d-ac35-12731f4e0a2c}</Project>
       <Name>Autofac</Name>
