@@ -61,11 +61,38 @@ namespace Autofac.Extras.DynamicProxy2 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The transparent proxy does not support the additional interface(s): {0}..
+        /// </summary>
+        internal static string InterfaceNotSupportedByTransparentProxy {
+            get {
+                return ResourceManager.GetString("InterfaceNotSupportedByTransparentProxy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The component {0} cannot use interface interception as it provides services that are not publicly visible interfaces. Check your registration of the component to ensure you&apos;re not enabling interception and registering it as an internal/private interface type..
         /// </summary>
         internal static string InterfaceProxyingOnlySupportsInterfaceServices {
             get {
                 return ResourceManager.GetString("InterfaceProxyingOnlySupportsInterfaceServices", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The transparent proxy of type &apos;{0}&apos; must be an interface..
+        /// </summary>
+        internal static string TransparentProxyIsNotInterface {
+            get {
+                return ResourceManager.GetString("TransparentProxyIsNotInterface", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The instance of type &apos;{0}&apos; is not a transparent proxy..
+        /// </summary>
+        internal static string TypeIsNotTransparentProxy {
+            get {
+                return ResourceManager.GetString("TypeIsNotTransparentProxy", resourceCulture);
             }
         }
     }

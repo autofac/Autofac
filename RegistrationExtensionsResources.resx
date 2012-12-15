@@ -117,7 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="InterfaceNotSupportedByTransparentProxy" xml:space="preserve">
+    <value>The transparent proxy does not support the additional interface(s): {0}.</value>
+  </data>
   <data name="InterfaceProxyingOnlySupportsInterfaceServices" xml:space="preserve">
     <value>The component {0} cannot use interface interception as it provides services that are not publicly visible interfaces. Check your registration of the component to ensure you're not enabling interception and registering it as an internal/private interface type.</value>
+  </data>
+  <data name="TransparentProxyIsNotInterface" xml:space="preserve">
+    <value>The transparent proxy of type '{0}' must be an interface.</value>
+  </data>
+  <data name="TypeIsNotTransparentProxy" xml:space="preserve">
+    <value>The instance of type '{0}' is not a transparent proxy.</value>
   </data>
 </root>

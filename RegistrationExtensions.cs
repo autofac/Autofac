@@ -1,9 +1,34 @@
-﻿using System;
+﻿// This software is part of the Autofac IoC container
+// Copyright © 2012 Autofac Contributors
+// http://autofac.org
+//
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.Remoting;
 using System.Security;
-using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.Scanning;
@@ -77,11 +102,11 @@ namespace Autofac.Extras.DynamicProxy2
         /// Enable interface interception on the target type. Interceptors will be determined
         /// via Intercept attributes on the class or interface, or added with InterceptedBy() calls.
         /// </summary>
-        /// <typeparam name="TLimit"></typeparam>
-        /// <typeparam name="TActivatorData"></typeparam>
-        /// <typeparam name="TSingleRegistrationStyle"></typeparam>
-        /// <param name="registration"></param>
-        /// <returns></returns>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to apply interception to.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             EnableInterfaceInterceptors<TLimit, TActivatorData, TSingleRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration)
@@ -113,12 +138,72 @@ namespace Autofac.Extras.DynamicProxy2
             return registration;
         }
 
+        /// <summary>
+        /// Intercepts the interface of a transparent proxy (such as WCF channel factory based clients).
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to apply interception to.</param>
+        /// <param name="additionalInterfacesToProxy">Additional interface types. Calls to their members will be proxied as well.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+            InterceptTransparentProxy<TLimit, TActivatorData, TSingleRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration, params Type[] additionalInterfacesToProxy)
+        {
+            if (registration == null)
+            {
+                throw new ArgumentNullException("registration");
+            }
+            registration.RegistrationData.ActivatingHandlers.Add((sender, e) =>
+            {
+                EnsureInterfaceInterceptionApplies(e.Component);
+
+                if (!RemotingServices.IsTransparentProxy(e.Instance))
+                {
+                    throw new DependencyResolutionException(string.Format(
+                        CultureInfo.CurrentCulture, RegistrationExtensionsResources.TypeIsNotTransparentProxy, e.Instance.GetType().FullName));
+                }
+
+                if (!e.Instance.GetType().IsInterface)
+                {
+                    throw new DependencyResolutionException(string.Format(
+                        CultureInfo.CurrentCulture, RegistrationExtensionsResources.TransparentProxyIsNotInterface, e.Instance.GetType().FullName));
+                }
+
+                if (additionalInterfacesToProxy.Any())
+                {
+                    var remotingTypeInfo = (IRemotingTypeInfo)RemotingServices.GetRealProxy(e.Instance);
+
+                    var invalidInterfaces = additionalInterfacesToProxy
+                        .Where(i => !remotingTypeInfo.CanCastTo(i, e.Instance))
+                        .ToArray();
+
+                    if (invalidInterfaces.Any())
+                    {
+                        var message = string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.InterfaceNotSupportedByTransparentProxy, 
+                            string.Join(", ", invalidInterfaces.Select(i => i.FullName)));
+                        throw new DependencyResolutionException(message);
+                    }
+                }
+
+                var interceptors = GetInterceptorServices(e.Component, e.Instance.GetType())
+                    .Select(s => e.Context.ResolveService(s))
+                    .Cast<IInterceptor>()
+                    .ToArray();
+
+                e.Instance = ProxyGenerator.CreateInterfaceProxyWithTargetInterface(
+                    e.Instance.GetType(), additionalInterfacesToProxy, e.Instance, interceptors);
+            });
+
+            return registration;
+        }
+
         static void EnsureInterfaceInterceptionApplies(IComponentRegistration componentRegistration)
         {
             if (componentRegistration.Services
                 .OfType<IServiceWithType>()
-                .Where(swt => !swt.ServiceType.IsInterface || !swt.ServiceType.IsVisible)
-                .Any())
+                .Any(swt => !swt.ServiceType.IsInterface || !swt.ServiceType.IsVisible))
                 throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,
                     RegistrationExtensionsResources.InterfaceProxyingOnlySupportsInterfaceServices,
                     componentRegistration));
