@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Description;
+using Autofac.Core;
 using Autofac.Extras.DynamicProxy2;
 using Autofac.Integration.Wcf;
 using Castle.DynamicProxy;
@@ -11,30 +10,52 @@ using NUnit.Framework;
 namespace Autofac.Extras.Tests.DynamicProxy2
 {
     [TestFixture]
-    public class WcfInterceptorFixture
+    public class InterceptTransparentProxyFixture
     {
         private static readonly Uri TestServiceAddress = new Uri("http://localhost:80/Temporary_Listen_Addresses/ITestService");
 
+        [Test(Description = "The service being intercepted must be registered as an interface.")]
+        public void ServiceMustBeInterface()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(c => new object()).InterceptTransparentProxy();
+            var container = builder.Build();
+
+            Assert.Throws<DependencyResolutionException>(() => container.Resolve<object>());
+        }
+
+        [Test(Description = "The instance being intercepted must be a transparent proxy.")]
+        public void ServiceMustBeTransparentProxy()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(c => new object()).As<ITestService>().InterceptTransparentProxy();
+            var container = builder.Build();
+
+            var exception = Assert.Throws<DependencyResolutionException>(() => container.Resolve<ITestService>());
+
+            Assert.That(exception.Message, Is.StringContaining(typeof(object).FullName));
+        }
+
+        [Test(Description = "The instance must implement the additional interfaces provided.")]
+        public void ProxyMustImplementAdditionalInterfaces()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(c => CreateChannelFactory()).SingleInstance();
+            builder.Register(c => c.Resolve<ChannelFactory<ITestService>>().CreateChannel())
+                .SingleInstance()
+                .InterceptTransparentProxy(typeof(ICloneable), typeof(IFormattable));
+            
+            var container = builder.Build();
+
+            var exception = Assert.Throws<DependencyResolutionException>(() => container.Resolve<ITestService>());
+
+            Assert.That(exception.Message, Is.StringContaining(typeof(ICloneable).FullName));
+            Assert.That(exception.Message, Is.StringContaining(typeof(IFormattable).FullName));
+        }
+
         [Test(Description = "Issue 361: WCF service client code should allow interception to occur.")]
-        [Ignore("Issue #361")]
         public void ServiceClientInterceptionIsPossible()
         {
-            /* The root cause of Issue #361 is that when you call CreateChannel on
-             * the ChannelFactory<T> you end up getting a System.Runtime.Remoting.Proxies.RealProxy
-             * object that, when you call GetType, reports itself as being a concrete instance
-             * of the service interface. That is...
-             * typeof(ITestService) == proxy.GetType();
-             * In any other circumstance, GetType would return a concrete class because you
-             * can't have an instance of an interface - you have an instance of a concrete type
-             * that implements an interface.
-             * 
-             * This causes all nature of trouble.
-             * 
-             * You can generate a DynamicProxy around the RealProxy without issue, but
-             * Autofac itself will complain during resolution that "this" when resolved
-             * can't actually be an instance of an interface. The problem appears to be
-             * fairly deeply rooted and very special-case around service clients. */
-
             // Build the service-side container
             var sb = new ContainerBuilder();
             sb.RegisterType<TestService>().As<ITestService>();
@@ -44,10 +65,10 @@ namespace Autofac.Extras.Tests.DynamicProxy2
             // seemed to be trouble around getting this to work.
             var cb = new ContainerBuilder();
             cb.RegisterType<TestServiceInterceptor>();
-            cb.Register(c => new ChannelFactory<ITestService>(new BasicHttpBinding(), new EndpointAddress(TestServiceAddress))).SingleInstance();
+            cb.Register(c => CreateChannelFactory()).SingleInstance();
             cb
                 .Register(c => c.Resolve<ChannelFactory<ITestService>>().CreateChannel())
-                .EnableInterfaceInterceptors()
+                .InterceptTransparentProxy(typeof(IClientChannel))
                 .InterceptedBy(typeof(TestServiceInterceptor))
                 .UseWcfSafeRelease();
 
@@ -80,6 +101,11 @@ namespace Autofac.Extras.Tests.DynamicProxy2
             host.AddDependencyInjectionBehavior<ITestService>(container);
             host.Description.Behaviors.Add(new ServiceMetadataBehavior { HttpGetEnabled = true, HttpGetUrl = TestServiceAddress });
             return host;
+        }
+
+        static ChannelFactory<ITestService> CreateChannelFactory()
+        {
+            return new ChannelFactory<ITestService>(new BasicHttpBinding(), new EndpointAddress(TestServiceAddress));
         }
 
         [ServiceContract]

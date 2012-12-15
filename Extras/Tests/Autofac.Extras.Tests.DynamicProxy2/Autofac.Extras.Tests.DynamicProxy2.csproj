@@ -92,7 +92,7 @@
     <Compile Include="ClassInterceptorsFixture.cs" />
     <Compile Include="InterfaceInterceptorsFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WcfInterceptorFixture.cs" />
+    <Compile Include="InterceptTransparentProxyFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
