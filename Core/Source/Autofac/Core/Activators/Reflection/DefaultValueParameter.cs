@@ -53,7 +53,10 @@ namespace Autofac.Core.Activators.Reflection
                 throw new ArgumentNullException("pi");
             }
             // System.DBNull is not included in PCL even though it seems to be available in the selected targets.
-            // TODO:Make sure the documentation for Metro Style apps is correct and that System.DBNull is available.
+            // Verified through experimentation 12/14/2012 - PCL initial release in VS 2012 does not support System.DBNull
+            // even though the documentation claims it's available. It doesn't appear to matter what the target
+            // framework combination is - .NET for Windows Store apps, Windows Phone, Silverlight... it's never
+            // available.
             // http://msdn.microsoft.com/en-us/library/windows/apps/system.dbnull(v=vs.110).aspx
 
             var hasDefaultValue = pi.DefaultValue == null || pi.DefaultValue.GetType().FullName != "System.DBNull";

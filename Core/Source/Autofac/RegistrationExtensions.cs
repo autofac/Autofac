@@ -1314,5 +1314,43 @@ namespace Autofac
                     e.Context.Resolve<ILifetimeScope>().Disposer.AddInstanceForDisposal(ra);
                 });
         }
+
+        /// <summary>
+        /// Wraps a registration in an implicit <see cref="Autofac.IStartable"/> and automatically
+        /// activates the registration after the container is built.
+        /// </summary>
+        /// <param name="registration">Registration to set release action for.</param>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        /// <remarks>
+        /// <para>
+        /// While you can implement an <see cref="Autofac.IStartable"/> to perform some logic at
+        /// container build time, sometimes you need to just activate a registered component and
+        /// that's it. This extension allows you to autostart/autoactivate a registration on
+        /// container build. No additional logic is executed and the resolved instance is not held
+        /// so container disposal will end up disposing of the instance.
+        /// </para>
+        /// <para>
+        /// Depending on how you register the lifetime of the component, you may get an exception
+        /// when you build the container - components that are scoped to specific lifetimes (like
+        /// ASP.NET components scoped to a request lifetime) will fail to resolve because the
+        /// appropriate lifetime is not available.
+        /// </para>
+        /// </remarks>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>
+            AutoStart<TLimit, TActivatorData, TRegistrationStyle>(
+            this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration)
+        {
+            // The AutoStartService serves as a flag to the container that it
+            // should be auto-resolved on build.
+            if (registration == null)
+            {
+                throw new ArgumentNullException("registration");
+            }
+            registration.RegistrationData.AddService(new AutoStartService());
+            return registration;
+        }
     }
 }

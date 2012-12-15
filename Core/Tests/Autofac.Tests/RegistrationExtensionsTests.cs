@@ -159,5 +159,36 @@ namespace Autofac.Tests
 
             context.Resolve<SelfComponent<object>>();
         }
+
+        [Test]
+        public void AutoStart_ResolvesComponentsAutomatically()
+        {
+            int singletonCount = 0;
+            int instanceCount = 0;
+            var builder = new ContainerBuilder();
+            builder.RegisterType<MyComponent>().As<IMyService>().SingleInstance().AutoStart().OnActivated(e => singletonCount++);
+            builder.RegisterType<MyComponent2>().AutoStart().OnActivated(e => instanceCount++);
+            builder.Build();
+            Assert.AreEqual(1, singletonCount, "The singleton component wasn't autostarted.");
+            Assert.AreEqual(1, instanceCount, "The instance component wasn't autostarted.");
+        }
+
+        [Test]
+        public void AutoStart_MultipleAutoStartFlagsOnlyStartTheComponentOnce()
+        {
+            int instanceCount = 0;
+            var builder = new ContainerBuilder();
+            builder.RegisterType<MyComponent2>().AutoStart().AutoStart().AutoStart().OnActivated(e => instanceCount++);
+            builder.Build();
+            Assert.AreEqual(1, instanceCount, "The instance component wasn't properly autostarted.");
+        }
+
+        [Test]
+        public void AutoStart_InvalidLifetimeConflictsWithAutoStart()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<MyComponent2>().InstancePerMatchingLifetimeScope("foo").AutoStart();
+            Assert.Throws<DependencyResolutionException>(() => builder.Build());
+        }
     }
 }

@@ -68,5 +68,14 @@ namespace Autofac {
                 return ResourceManager.GetString("BuildCanOnlyBeCalledOnce", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while attempting to auto start registration &apos;{0}&apos;. See the inner exception for information on the source of the failure..
+        /// </summary>
+        internal static string ErrorAutoStarting {
+            get {
+                return ResourceManager.GetString("ErrorAutoStarting", resourceCulture);
+            }
+        }
     }
 }
