@@ -1328,7 +1328,7 @@ namespace Autofac
         /// <para>
         /// While you can implement an <see cref="Autofac.IStartable"/> to perform some logic at
         /// container build time, sometimes you need to just activate a registered component and
-        /// that's it. This extension allows you to autostart/autoactivate a registration on
+        /// that's it. This extension allows you to automatically activate a registration on
         /// container build. No additional logic is executed and the resolved instance is not held
         /// so container disposal will end up disposing of the instance.
         /// </para>
@@ -1340,16 +1340,14 @@ namespace Autofac
         /// </para>
         /// </remarks>
         public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>
-            AutoStart<TLimit, TActivatorData, TRegistrationStyle>(
+            AutoActivate<TLimit, TActivatorData, TRegistrationStyle>(
             this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration)
         {
-            // The AutoStartService serves as a flag to the container that it
-            // should be auto-resolved on build.
             if (registration == null)
             {
                 throw new ArgumentNullException("registration");
             }
-            registration.RegistrationData.AddService(new AutoStartService());
+            registration.RegistrationData.AddService(new AutoActivateService());
             return registration;
         }
     }

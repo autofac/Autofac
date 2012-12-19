@@ -161,33 +161,33 @@ namespace Autofac.Tests
         }
 
         [Test]
-        public void AutoStart_ResolvesComponentsAutomatically()
+        public void AutoActivate_ResolvesComponentsAutomatically()
         {
             int singletonCount = 0;
             int instanceCount = 0;
             var builder = new ContainerBuilder();
-            builder.RegisterType<MyComponent>().As<IMyService>().SingleInstance().AutoStart().OnActivated(e => singletonCount++);
-            builder.RegisterType<MyComponent2>().AutoStart().OnActivated(e => instanceCount++);
+            builder.RegisterType<MyComponent>().As<IMyService>().SingleInstance().AutoActivate().OnActivated(e => singletonCount++);
+            builder.RegisterType<MyComponent2>().AutoActivate().OnActivated(e => instanceCount++);
             builder.Build();
-            Assert.AreEqual(1, singletonCount, "The singleton component wasn't autostarted.");
-            Assert.AreEqual(1, instanceCount, "The instance component wasn't autostarted.");
+            Assert.AreEqual(1, singletonCount, "The singleton component wasn't auto activated.");
+            Assert.AreEqual(1, instanceCount, "The instance component wasn't auto activated.");
         }
 
         [Test]
-        public void AutoStart_MultipleAutoStartFlagsOnlyStartTheComponentOnce()
+        public void AutoActivate_MultipleAutoStartFlagsOnlyStartTheComponentOnce()
         {
             int instanceCount = 0;
             var builder = new ContainerBuilder();
-            builder.RegisterType<MyComponent2>().AutoStart().AutoStart().AutoStart().OnActivated(e => instanceCount++);
+            builder.RegisterType<MyComponent2>().AutoActivate().AutoActivate().AutoActivate().OnActivated(e => instanceCount++);
             builder.Build();
-            Assert.AreEqual(1, instanceCount, "The instance component wasn't properly autostarted.");
+            Assert.AreEqual(1, instanceCount, "The instance component wasn't properly auto activated.");
         }
 
         [Test]
-        public void AutoStart_InvalidLifetimeConflictsWithAutoStart()
+        public void AutoActivate_InvalidLifetimeConflictsWithAutoStart()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<MyComponent2>().InstancePerMatchingLifetimeScope("foo").AutoStart();
+            builder.RegisterType<MyComponent2>().InstancePerMatchingLifetimeScope("foo").AutoActivate();
             Assert.Throws<DependencyResolutionException>(() => builder.Build());
         }
     }

@@ -120,7 +120,7 @@
   <data name="BuildCanOnlyBeCalledOnce" xml:space="preserve">
     <value>Build() or Update() can only be called once on a ContainerBuilder.</value>
   </data>
-  <data name="ErrorAutoStarting" xml:space="preserve">
-    <value>An error occurred while attempting to auto start registration '{0}'. See the inner exception for information on the source of the failure.</value>
+  <data name="ErrorAutoActivating" xml:space="preserve">
+    <value>An error occurred while attempting to automatically activate registration '{0}'. See the inner exception for information on the source of the failure.</value>
   </data>
 </root>

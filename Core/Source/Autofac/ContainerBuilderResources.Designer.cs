@@ -70,11 +70,11 @@ namespace Autofac {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An error occurred while attempting to auto start registration &apos;{0}&apos;. See the inner exception for information on the source of the failure..
+        ///   Looks up a localized string similar to An error occurred while attempting to automatically activate registration &apos;{0}&apos;. See the inner exception for information on the source of the failure..
         /// </summary>
-        internal static string ErrorAutoStarting {
+        internal static string ErrorAutoActivating {
             get {
-                return ResourceManager.GetString("ErrorAutoStarting", resourceCulture);
+                return ResourceManager.GetString("ErrorAutoActivating", resourceCulture);
             }
         }
     }

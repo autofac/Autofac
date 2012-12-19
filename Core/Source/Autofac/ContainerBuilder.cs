@@ -104,15 +104,15 @@ namespace Autofac
                 var instance = (IStartable)componentContext.ResolveComponent(startable, Enumerable.Empty<Parameter>());
                 instance.Start();
             }
-            foreach (var startable in componentContext.ComponentRegistry.RegistrationsFor(new AutoStartService()))
+            foreach (var registration in componentContext.ComponentRegistry.RegistrationsFor(new AutoActivateService()))
             {
                 try
                 {
-                    componentContext.ResolveComponent(startable, Enumerable.Empty<Parameter>());
+                    componentContext.ResolveComponent(registration, Enumerable.Empty<Parameter>());
                 }
                 catch (DependencyResolutionException ex)
                 {
-                    throw new DependencyResolutionException(String.Format(CultureInfo.CurrentCulture, ContainerBuilderResources.ErrorAutoStarting, startable), ex);
+                    throw new DependencyResolutionException(String.Format(CultureInfo.CurrentCulture, ContainerBuilderResources.ErrorAutoActivating, registration), ex);
                 }
             }
         }
