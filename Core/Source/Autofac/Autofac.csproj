@@ -360,6 +360,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>TypeExtensionsResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Util\AssemblyExtensions.cs" />
     <Compile Include="Util\Disposable.cs" />
     <Compile Include="Util\Enforce.cs" />
     <Compile Include="Util\EnforceResources.Designer.cs">

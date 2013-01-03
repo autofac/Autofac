@@ -162,6 +162,22 @@ namespace Autofac.Tests.Integration.Mef
         public string Dependency { get; set; }
     }
 
+    namespace GenericExports
+    {
+        [InheritedExport]
+        public interface ITest<T> { }
+
+        public interface IT1 { }
+
+        public class Test : ITest<IT1> { }
+
+        public class TestConsumer
+        {
+            [Import]
+            public ITest<IT1> Property { get; set; }
+        }
+    }
+
     [TestFixture]
     public class RegistrationExtensionsTests
     {
@@ -239,6 +255,15 @@ namespace Autofac.Tests.Integration.Mef
             Assert.IsNotNull(b.A);
             Assert.AreSame(b, b.A.B);
             Assert.AreSame(b.A, b.A.B.A);
+        }
+
+        [Test(Description = "Issue 326: Generic interfaces should be supported.")]
+        public void RegisterComposablePartCatalog_GenericExport()
+        {
+            var container = RegisterTypeCatalogContaining(typeof(GenericExports.IT1), typeof(GenericExports.ITest<>), typeof(GenericExports.Test));
+            var b = container.Resolve<GenericExports.ITest<GenericExports.IT1>>();
+            Assert.IsNotNull(b);
+            Assert.IsInstanceOf<GenericExports.Test>(b);
         }
 
         private static IContainer RegisterTypeCatalogContaining(params Type[] types)
