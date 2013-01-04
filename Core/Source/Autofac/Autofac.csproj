@@ -49,6 +49,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>MostParametersConstructorSelectorResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Core\DependencyResolutionExceptionResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DependencyResolutionExceptionResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSource.cs" />
     <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSourceResources.Designer.cs">
       <DependentUpon>LazyWithMetadataRegistrationSourceResources.resx</DependentUpon>
@@ -355,6 +360,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>TypeExtensionsResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Util\AssemblyExtensions.cs" />
     <Compile Include="Util\Disposable.cs" />
     <Compile Include="Util\Enforce.cs" />
     <Compile Include="Util\EnforceResources.Designer.cs">
@@ -377,6 +383,10 @@
     <EmbeddedResource Include="Core\Activators\Reflection\MostParametersConstructorSelectorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MostParametersConstructorSelectorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\DependencyResolutionExceptionResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DependencyResolutionExceptionResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSourceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

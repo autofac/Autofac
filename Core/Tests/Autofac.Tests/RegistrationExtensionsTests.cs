@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using Autofac.Core;
+using Autofac.Util;
 using NUnit.Framework;
 
 namespace Autofac.Tests
@@ -43,7 +44,7 @@ namespace Autofac.Tests
         public void OnlyServicesAssignableToASpecificTypeAreRegisteredFromTypeList()
         {
             var container = new Container().BeginLifetimeScope(b =>
-                b.RegisterTypes(Assembly.GetExecutingAssembly().GetTypes())
+                b.RegisterTypes(Assembly.GetExecutingAssembly().GetLoadableTypes().ToArray())
                     .AssignableTo(typeof(IMyService)));
 
             Assert.AreEqual(1, container.ComponentRegistry.Registrations.Count());

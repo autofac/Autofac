@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="Builder\Properties.cs" />
     <Compile Include="Core\Activators\Reflection\DefaultConstructorFinderTests.cs" />
+    <Compile Include="Core\DependencyResolutionExceptionTests.cs" />
     <Compile Include="Core\PreserveExistingDefaultsTests.cs" />
     <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSourceTests.cs" />
     <Compile Include="Features\Metadata\TestTypes.cs" />
