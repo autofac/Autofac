@@ -35,6 +35,20 @@ namespace Autofac.Tests.Integration.Mvc
     [TestFixture]
     public class AutofacDependencyResolverFixture
     {
+        private IDependencyResolver _originalResolver = null;
+
+        [SetUp]
+        public void SetUp()
+        {
+            this._originalResolver = DependencyResolver.Current;
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            DependencyResolver.SetResolver(this._originalResolver);
+        }
+
         [Test]
         public void CurrentPropertyExposesTheCorrectResolver()
         {
@@ -130,6 +144,15 @@ namespace Autofac.Tests.Integration.Mvc
         }
 
         [Test]
+        public void DerivedResolverTypesCanStillBeCurrentResolver()
+        {
+            var container = new ContainerBuilder().Build();
+            var provider = new DerivedAutofacDependencyResolver(container);
+            DependencyResolver.SetResolver(provider);
+            Assert.AreEqual(provider, AutofacDependencyResolver.Current, "You should be able to derive from AutofacDependencyResolver and still use the Current property.");
+        }
+
+        [Test]
         public void GetServiceReturnsNullForUnregisteredService()
         {
             var container = new ContainerBuilder().Build();
@@ -179,6 +202,14 @@ namespace Autofac.Tests.Integration.Mvc
             var services = resolver.GetServices(typeof(object));
 
             Assert.That(services.Count(), Is.EqualTo(1));
+        }
+
+        private class DerivedAutofacDependencyResolver : AutofacDependencyResolver
+        {
+            public DerivedAutofacDependencyResolver(IContainer container)
+                : base(container, new StubLifetimeScopeProvider(container))
+            {
+            }
         }
     }
 }
