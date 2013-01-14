@@ -40,7 +40,7 @@ namespace Autofac.Core.Activators.Reflection
         readonly ConstructorInfo _ci;
         readonly Func<object>[] _valueRetrievers;
         readonly bool _canInstantiate;
-        readonly static Dictionary<ConstructorInfo, ConstructorInvoker> _constructorInvokers = new Dictionary<ConstructorInfo, ConstructorInvoker>();
+        readonly static Dictionary<ConstructorInfo, Func<object[], object>> _constructorInvokers = new Dictionary<ConstructorInfo, Func<object[], object>>();
 
         // We really need to report all non-bindable parameters, howevers some refactoring
         // will be necessary before this is possible. Adding this now to ease the
@@ -113,7 +113,7 @@ namespace Autofac.Core.Activators.Reflection
             for (var i = 0; i < _valueRetrievers.Length; ++i)
                 values[i] = _valueRetrievers[i].Invoke();
 
-            ConstructorInvoker constructorInvoker;
+            Func<object[], object> constructorInvoker;
             lock (_constructorInvokers)
             {
                 if (!_constructorInvokers.TryGetValue(TargetConstructor, out constructorInvoker))
@@ -159,9 +159,7 @@ namespace Autofac.Core.Activators.Reflection
             return Description;
         }
 
-        delegate object ConstructorInvoker(params object[] args);
-
-        static ConstructorInvoker GetConstructorInvoker(ConstructorInfo constructorInfo)
+        static Func<object[], object> GetConstructorInvoker(ConstructorInfo constructorInfo)
         {
             var paramsInfo = constructorInfo.GetParameters();
 
@@ -187,9 +185,9 @@ namespace Autofac.Core.Activators.Reflection
 
             var newExpression = Expression.New(constructorInfo, argumentsExpression);
             var lambdaExpression = Expression.Lambda(
-                typeof(ConstructorInvoker), newExpression, parametersExpression);
+                typeof(Func<object[], object>), newExpression, parametersExpression);
 
-            return (ConstructorInvoker)lambdaExpression.Compile();
+            return (Func<object[], object>)lambdaExpression.Compile();
         }
     }
 }
