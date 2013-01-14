@@ -121,7 +121,7 @@ namespace Autofac.Integration.Mvc
                     {
                         this._configurationAction(builder);
                     }
-                    builder.RegisterInstance(this).AsSelf();
+                    builder.RegisterInstance(this).As<AutofacDependencyResolver>();
                 };
                 if (_lifetimeScopeProvider == null)
                 {

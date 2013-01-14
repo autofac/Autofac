@@ -333,7 +333,7 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:AssemblyVersion="
 					// Match package folders like Castle.Core.3.0.0.4001
 					// Groups[1] = "Castle.Core"
 					// Groups[2] = "3.0.0.4001"
-					var re = new Regex(@"^(.+?)\.([0-9\.]+)$");
+					var re = new Regex(@"^(.+?)\.(([0-9]+)[A-Za-z0-9\.\-]*)$");
 
 					try
 					{
