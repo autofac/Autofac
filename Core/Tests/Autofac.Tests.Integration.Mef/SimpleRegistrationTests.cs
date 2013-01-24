@@ -80,6 +80,17 @@ namespace Autofac.Tests.Integration.Mef
             Assert.AreEqual(1, exports.Count());
         }
 
+        [Test(Description = "Issue #310: Resolve fails on MEF export of type object.")]
+        public void ObjectExportsSupportedByName()
+        {
+            var builder = new ContainerBuilder();
+            var catalog = new TypeCatalog(typeof(ObjectExportDerivedClass), typeof(ObjectExportImporter));
+            builder.RegisterComposablePartCatalog(catalog);
+            var container = builder.Build();
+            var importer = container.Resolve<ObjectExportImporter>();
+            Assert.IsNotNull(importer.Item);
+        }
+
         public interface IFoo { }
 
         [Export(typeof(IFoo))]
@@ -111,6 +122,7 @@ namespace Autofac.Tests.Integration.Mef
         [Export("contract-name", typeof(object))]
         public class ObjectExportDerivedClass : ObjectExportBaseClass { }
 
+        [Export]
         public class ObjectExportImporter
         {
             [Import("contract-name")]

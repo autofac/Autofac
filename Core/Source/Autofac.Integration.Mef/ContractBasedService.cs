@@ -44,10 +44,18 @@ namespace Autofac.Integration.Mef
         /// <param name="exportTypeIdentity">Type identity of the objects exported under the contract.</param>
         public ContractBasedService(string contractName, string exportTypeIdentity)
         {
-            if (exportTypeIdentity == null) throw new ArgumentNullException("exportTypeIdentity");
-
             if (string.IsNullOrEmpty(contractName))
+            {
                 throw new ArgumentOutOfRangeException("contractName");
+            }
+
+            if (exportTypeIdentity == null)
+            {
+                // Issue 310: System.ComponentModel.Composition.Hosting.ExportProvider.BuildImportDefinition
+                // has a special clause where it will only build the type identity for an import if the type
+                // is not System.Object. We need to put that back to handle object export/import.
+                exportTypeIdentity = "System.Object";
+            }
 
             _exportTypeIdentity = exportTypeIdentity;
 
