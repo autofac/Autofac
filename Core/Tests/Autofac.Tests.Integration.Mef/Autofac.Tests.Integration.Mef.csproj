@@ -55,11 +55,16 @@
     <Compile Include="..\..\..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="DisposalRegistrationTests.cs" />
+    <Compile Include="CircularDependencyRegistrationTests.cs" />
+    <Compile Include="GenericExportRegistrationTests.cs" />
     <Compile Include="LazyWithMetadataRegistrationSourceTests.cs" />
+    <Compile Include="MetadataRegistrationTests.cs" />
+    <Compile Include="MultipleExportRegistrationTests.cs" />
+    <Compile Include="SimpleRegistrationTests.cs" />
     <Compile Include="StronglyTypedMetaRegistrationSourceTests.cs" />
     <Compile Include="LifetimeScenariosTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegistrationExtensionsTests.cs" />
     <Compile Include="TestTypes.cs" />
   </ItemGroup>
   <ItemGroup>
