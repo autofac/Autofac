@@ -177,7 +177,7 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:AssemblyVersion="
 		<GetSemanticVersion AssemblyVersion="$(AssemblyVersion)">
 			<Output TaskParameter="SemanticVersion" PropertyName="SemanticVersion" />
 		</GetSemanticVersion>
-		<FileUpdate Files="@(NuspecFiles)" Regex="\$version\$" ReplacementText="$(SemanticVersion)-beta2" />
+		<FileUpdate Files="@(NuspecFiles)" Regex="\$version\$" ReplacementText="$(SemanticVersion)" />
 
 		<Message Text="Updating NuGet package dependency version info..." />
 		<GetNuGetDependencyVersions PackageInstallDirectory="$(PackageInstallDirectory)">
