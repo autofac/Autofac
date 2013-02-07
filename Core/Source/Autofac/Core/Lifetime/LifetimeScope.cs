@@ -120,7 +120,6 @@ namespace Autofac.Core.Lifetime
             CheckNotDisposed();
             var registry = new CopyOnWriteRegistry(_componentRegistry, () => CreateScopeRestrictedRegistry(tag, NoConfiguration));
             var scope = new LifetimeScope(registry, this, tag);
-            this.Disposer.AddInstanceForDisposal(scope);
             RaiseBeginning(scope);
             return scope;
         }
@@ -180,7 +179,6 @@ namespace Autofac.Core.Lifetime
             var locals = CreateScopeRestrictedRegistry(tag, configurationAction);
             var scope = new LifetimeScope(locals, this, tag);
 
-            this.Disposer.AddInstanceForDisposal(scope);
             RaiseBeginning(scope);
 
             return scope;
