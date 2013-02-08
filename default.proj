@@ -11,6 +11,8 @@
 		<!-- 0.0.0.0 == developer build; a.b.c.d == production/release build -->
 		<AssemblyVersion Condition="'$(AssemblyVersion)' == ''">0.0.0.0</AssemblyVersion>
 
+		<AssemblyFileVersion Condition="'$(AssemblyFileVersion)' == ''">$(AssemblyVersion)</AssemblyFileVersion>
+
 		<!-- BuildDirectory is the root of where build output goes. -->
 		<BuildDirectory>$(MSBuildProjectDirectory)\build_output</BuildDirectory>
 
@@ -140,10 +142,14 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:AssemblyVersion="
 			<NuspecStagingScripts Include="$(MSBuildProjectDirectory)\**\NuspecStaging.proj" />
 		</ItemGroup>
 
+		<GetSemanticVersion AssemblyVersion="$(AssemblyFileVersion)">
+			<Output TaskParameter="SemanticVersion" PropertyName="SemanticVersion" />
+		</GetSemanticVersion>
+
 		<Message Text="Packaging downloadable zip files..." />
-		<Zip Files="@(NET40CorePackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac-$(AssemblyVersion)-NET40.zip" Flatten="true" />
-		<Zip Files="@(NET40ExtrasPackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac.Extras-$(AssemblyVersion)-NET40.zip" Flatten="true" />
-		<Zip Files="@(PortablePackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac-$(AssemblyVersion)-Portable.zip" Flatten="true" />
+		<Zip Files="@(NET40CorePackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac-$(SemanticVersion)-NET40.zip" Flatten="true" />
+		<Zip Files="@(NET40ExtrasPackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac.Extras-$(SemanticVersion)-NET40.zip" Flatten="true" />
+		<Zip Files="@(PortablePackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac-$(SemanticVersion)-Portable.zip" Flatten="true" />
 		
 		<!--
 			NuGet packaging is done by convention.
@@ -174,9 +180,6 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:AssemblyVersion="
 		</ItemGroup>
 
 		<Message Text="Updating NuGet package version info..." />
-		<GetSemanticVersion AssemblyVersion="$(AssemblyVersion)">
-			<Output TaskParameter="SemanticVersion" PropertyName="SemanticVersion" />
-		</GetSemanticVersion>
 		<FileUpdate Files="@(NuspecFiles)" Regex="\$version\$" ReplacementText="$(SemanticVersion)" />
 
 		<Message Text="Updating NuGet package dependency version info..." />
@@ -218,8 +221,9 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:AssemblyVersion="
 			OutputFile="$(MSBuildProjectDirectory)\VersionAssemblyInfo.cs"
 			CodeLanguage="CS"
 			AssemblyVersion="$(AssemblyVersion)"
-			AssemblyFileVersion="$(AssemblyVersion)"
-			AssemblyConfiguration="$(BuildConfiguration) built on $(BuildTime)" />
+			AssemblyFileVersion="$(AssemblyFileVersion)"
+			AssemblyConfiguration="$(BuildConfiguration) built on $(BuildTime)"
+			AssemblyCopyright="Copyright © $(BuildYear) Autofac Contributors" />
 	</Target>
 
 	<Target Name="__EnvironmentSetup">
@@ -231,6 +235,9 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:AssemblyVersion="
 		</ItemGroup>
 		<Time Format="yyyy-MM-dd HH:mm">
 			<Output TaskParameter="FormattedTime" PropertyName="BuildTime" />
+		</Time>
+		<Time Format="yyyy">
+			<Output TaskParameter="FormattedTime" PropertyName="BuildYear" />
 		</Time>
 		<Message Text="Environment Setup:" />
 		<Message Text="Assembly Version:    $(AssemblyVersion)" />
