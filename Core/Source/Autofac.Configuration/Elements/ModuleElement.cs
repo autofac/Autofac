@@ -25,6 +25,7 @@
 
 using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
+using Autofac.Core;
 
 namespace Autofac.Configuration.Elements
 {

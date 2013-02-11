@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
+// Copyright © 2013 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -43,7 +43,7 @@ namespace Autofac.Configuration
     /// This configuration section is used for XML-based configuration of an Autofac
     /// container. While it is primarily used from inside <c>app.config</c> or <c>web.config</c>
     /// files, you may also use it with other arbitrary XML files via the
-    /// <see cref="Autofac.Configuration.SectionHandler.Deserialize"/> helper method.
+    /// <see cref="Deserialize(System.Xml.XmlReader)"/> helper method.
     /// </para>
     /// </remarks>
     public class SectionHandler : ConfigurationSection
@@ -62,7 +62,7 @@ namespace Autofac.Configuration
         /// Gets the components to be registered.
         /// </summary>
         /// <value>
-        /// A <see cref="Autofac.Configuration.ComponentElementCollection"/> with the list
+        /// A <see cref="ComponentElementCollection"/> with the list
         /// of individual service components that should be registered.
         /// </value>
         [ConfigurationProperty(ComponentsPropertyName, IsRequired = false)]
@@ -96,7 +96,7 @@ namespace Autofac.Configuration
         /// Gets additional configuration files.
         /// </summary>
         /// <value>
-        /// A <see cref="Autofac.Configuration.FileElementCollection"/> with the list
+        /// A <see cref="FileElementCollection"/> with the list
         /// of external/referenced configuration files.
         /// </value>
         [ConfigurationProperty(FilesPropertyName, IsRequired = false)]
@@ -112,7 +112,7 @@ namespace Autofac.Configuration
         /// Gets the modules to be registered.
         /// </summary>
         /// <value>
-        /// A <see cref="Autofac.Configuration.ModuleElementCollection"/> with the list
+        /// A <see cref="ModuleElementCollection"/> with the list
         /// of modules that should be registered.
         /// </value>
         [ConfigurationProperty(ModulesPropertyName, IsRequired = false)]
