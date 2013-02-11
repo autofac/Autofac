@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2012 Autofac Contributors
+// Copyright © 2013 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -36,6 +36,9 @@ using Castle.DynamicProxy;
 
 namespace Autofac.Extras.DynamicProxy2
 {
+    /// <summary>
+    /// Adds registration syntax to the <see cref="ContainerBuilder"/> type.
+    /// </summary>
     [SecuritySafeCritical]
     public static class RegistrationExtensions
     {
@@ -236,6 +239,16 @@ namespace Autofac.Extras.DynamicProxy2
             return result.ToArray();
         }
 
+        /// <summary>
+        /// Allows a list of interceptor services to be assigned to the registration.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
+        /// <param name="builder">Registration to apply interception to.</param>
+        /// <param name="interceptorServices">The interceptor services.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        /// <exception cref="System.ArgumentNullException">builder or interceptorServices</exception>
         public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
             InterceptedBy<TLimit, TActivatorData, TStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TStyle> builder,
@@ -257,6 +270,16 @@ namespace Autofac.Extras.DynamicProxy2
             return builder;
         }
 
+        /// <summary>
+        /// Allows a list of interceptor services to be assigned to the registration.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
+        /// <param name="builder">Registration to apply interception to.</param>
+        /// <param name="interceptorServiceNames">The names of the interceptor services.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        /// <exception cref="System.ArgumentNullException">builder or interceptorServices</exception>
         public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
             InterceptedBy<TLimit, TActivatorData, TStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TStyle> builder,
@@ -268,6 +291,16 @@ namespace Autofac.Extras.DynamicProxy2
             return InterceptedBy(builder, interceptorServiceNames.Select(n => new KeyedService(n, typeof(IInterceptor))).ToArray());
         }
 
+        /// <summary>
+        /// Allows a list of interceptor services to be assigned to the registration.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
+        /// <param name="builder">Registration to apply interception to.</param>
+        /// <param name="interceptorServiceTypes">The types of the interceptor services.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        /// <exception cref="System.ArgumentNullException">builder or interceptorServices</exception>
         public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
             InterceptedBy<TLimit, TActivatorData, TStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TStyle> builder,

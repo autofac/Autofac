@@ -1,5 +1,5 @@
 // This software is part of the Autofac IoC container
-// Copyright (c) 2007 - 2010 Autofac Contributors
+// Copyright (c) 2007 - 2013 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -23,7 +23,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using Autofac;
 using Autofac.Core;
 using System.ServiceModel.DomainServices.Server;
 using System;
@@ -35,6 +34,14 @@ namespace Autofac.Extras.DomainServices
     /// </summary>
     public class AutofacDomainServiceModule : Module
     {
+        /// <summary>
+        /// Override to attach module-specific functionality to a
+        /// component registration.
+        /// </summary>
+        /// <remarks>This method will be called for all existing <i>and future</i> component
+        /// registrations - ordering is not important.</remarks>
+        /// <param name="componentRegistry">The component registry.</param>
+        /// <param name="registration">The registration to attach functionality to.</param>
         protected override void AttachToComponentRegistration(IComponentRegistry componentRegistry, IComponentRegistration registration)
         {
             if (registration == null)

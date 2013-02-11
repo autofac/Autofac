@@ -1,5 +1,5 @@
 // This software is part of the Autofac IoC container
-// Copyright (c) 2007 - 2010 Autofac Contributors
+// Copyright (c) 2007 - 2013 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -25,11 +25,13 @@
 
 using System;
 using System.ServiceModel.DomainServices.Server;
-using Autofac;
 using Autofac.Integration.Web;
 
 namespace Autofac.Extras.DomainServices
 {
+    /// <summary>
+    /// Provides an interface for <see cref="DomainService"/> factory implementations.
+    /// </summary>
     public class AutofacDomainServiceFactory : IDomainServiceFactory
     {
         private readonly IContainerProvider _containerProvider;
@@ -38,27 +40,44 @@ namespace Autofac.Extras.DomainServices
         {
             get
             {
-                return this._containerProvider.RequestLifetime;
+                return _containerProvider.RequestLifetime;
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AutofacDomainServiceFactory"/> class.
+        /// </summary>
+        /// <param name="containerProvider">The container provider.</param>
+        /// <exception cref="System.ArgumentNullException">containerProvider</exception>
         public AutofacDomainServiceFactory(IContainerProvider containerProvider)
         {
             if (containerProvider == null)
             {
                 throw new ArgumentNullException("containerProvider");
             }
-            this._containerProvider = containerProvider;
+            _containerProvider = containerProvider;
         }
 
+        /// <summary>
+        /// Creates a new <see cref="DomainService" /> instance.
+        /// </summary>
+        /// <param name="domainServiceType">The <see cref="Type" /> of <see cref="DomainService" /> to create.</param>
+        /// <param name="context">The current <see cref="DomainServiceContext" />.</param>
+        /// <returns>
+        /// A <see cref="DomainService" /> instance.
+        /// </returns>
         public DomainService CreateDomainService(Type domainServiceType, DomainServiceContext context)
         {
-            return (DomainService)this.RequestLifetimeScope.Resolve(domainServiceType, TypedParameter.From(context));
+            return (DomainService)RequestLifetimeScope.Resolve(domainServiceType, TypedParameter.From(context));
         }
 
+        /// <summary>
+        /// Releases an existing <see cref="DomainService" /> instance.
+        /// </summary>
+        /// <param name="domainService">The <see cref="DomainService" /> instance to release.</param>
         public void ReleaseDomainService(DomainService domainService)
         {
-            this.RequestLifetimeScope.Disposer.AddInstanceForDisposal(domainService);
+            RequestLifetimeScope.Disposer.AddInstanceForDisposal(domainService);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2012 Autofac Contributors
+// Copyright (c) 2013 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -50,9 +50,12 @@ namespace Autofac.Integration.WebApi
             _lifetimeScope = lifetimeScope;
         }
 
+        /// <summary>
+        /// Finalizes an instance of the <see cref="AutofacWebApiDependencyScope"/> class.
+        /// </summary>
         ~AutofacWebApiDependencyScope()
         {
-            this.Dispose(false);
+            Dispose(false);
         }
 
         /// <summary>
@@ -93,13 +96,13 @@ namespace Autofac.Integration.WebApi
         /// </summary>
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         private void Dispose(bool disposing)
         {
-            if (!this._disposed)
+            if (!_disposed)
             {
                 if (disposing)
                 {
@@ -108,7 +111,7 @@ namespace Autofac.Integration.WebApi
                         _lifetimeScope.Dispose();
                     }
                 }
-                this._disposed = true;
+                _disposed = true;
             }
         }
     }

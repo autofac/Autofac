@@ -55,9 +55,12 @@ namespace Autofac.Integration.WebApi
             _rootDependencyScope = new AutofacWebApiDependencyScope(container);
         }
 
+        /// <summary>
+        /// Finalizes an instance of the <see cref="AutofacWebApiDependencyResolver"/> class.
+        /// </summary>
         ~AutofacWebApiDependencyResolver()
         {
-            this.Dispose(false);
+            Dispose(false);
         }
 
         /// <summary>

@@ -27,6 +27,9 @@ using System;
 
 namespace Autofac.Integration.Web.Forms
 {
+    /// <summary>
+    /// Indicates that property injection should be performed on the instance when it is instantiated.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class InjectPropertiesAttribute : DependencyInjectionAttribute
     {

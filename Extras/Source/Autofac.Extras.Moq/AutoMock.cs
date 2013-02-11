@@ -1,5 +1,5 @@
 // This software is part of the Autofac IoC container
-// Copyright (c) 2007 - 2008 Autofac Contributors
+// Copyright (c) 2013 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -26,7 +26,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Security;
-using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.ResolveAnything;
@@ -68,10 +67,13 @@ namespace Autofac.Extras.Moq
             VerifyAll = false;
         }
 
+        /// <summary>
+        /// Finalizes an instance of the <see cref="AutoMock"/> class.
+        /// </summary>
         [SecuritySafeCritical]
         ~AutoMock()
         {
-            this.Dispose(false);
+            Dispose(false);
         }
 
         /// <summary>
@@ -112,7 +114,7 @@ namespace Autofac.Extras.Moq
         [SecuritySafeCritical]
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -127,7 +129,7 @@ namespace Autofac.Extras.Moq
         /// </param>
         private void Dispose(bool disposing)
         {
-            if (!this._disposed)
+            if (!_disposed)
             {
                 if (disposing)
                 {
@@ -136,7 +138,7 @@ namespace Autofac.Extras.Moq
                     // collected during finalization.
                     try
                     {
-                        if (this.VerifyAll)
+                        if (VerifyAll)
                         {
                             MockRepository.VerifyAll();
                         }
@@ -150,7 +152,7 @@ namespace Autofac.Extras.Moq
                         Container.Dispose();
                     }
                 }
-                this._disposed = true;
+                _disposed = true;
             }
         }
 
