@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="AutofacDependencyResolverFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegistrationExtensionsFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
