@@ -29,7 +29,7 @@
         <FrameworkVersion>Silverlight 5</FrameworkVersion>
         <HelpFileFormat>MSHelpViewer</HelpFileFormat>
         <CopyrightHref>http://autofac.org</CopyrightHref>
-        <CopyrightText>Copyright (c) 2007-2012 Autofac Contributors</CopyrightText>
+        <CopyrightText>Copyright (c) 2007-2013 Autofac Contributors</CopyrightText>
         <FeedbackEMailAddress>autofac@googlegroups.com</FeedbackEMailAddress>
         <HelpTitle>Autofac .NET Inversion of Control Container</HelpTitle>
         <PresentationStyle>vs2010</PresentationStyle>
