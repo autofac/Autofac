@@ -85,9 +85,6 @@
     <Compile Include="..\..\..\ProductAssemblyInfo.cs">
       <Link>Properties\ProductAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\VersionAssemblyInfo.cs">
-      <Link>Properties\VersionAssemblyInfo.cs</Link>
-    </Compile>
     <CodeAnalysisDictionary Include="..\..\..\Build\CodeAnalysisDictionary.xml">
       <Link>CodeAnalysisDictionary.xml</Link>
     </CodeAnalysisDictionary>
@@ -97,6 +94,7 @@
     <Compile Include="Builder\IConcreteActivatorData.cs" />
     <Compile Include="Core\Registration\CopyOnWriteRegistry.cs" />
     <Compile Include="Features\Variance\ContravariantRegistrationSource.cs" />
+    <Compile Include="Properties\VersionAssemblyInfo.cs" />
     <Compile Include="PropertyWiringOptions.cs" />
     <Compile Include="Builder\RegistrationBuilder.cs" />
     <Compile Include="Builder\RegistrationBuilderResources.Designer.cs">

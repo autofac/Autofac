@@ -64,6 +64,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Source\Autofac\Properties\VersionAssemblyInfo.cs">
+      <Link>Properties\VersionAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Builder\Properties.cs" />
     <Compile Include="Core\Activators\Reflection\DefaultConstructorFinderTests.cs" />
     <Compile Include="Core\DependencyResolutionExceptionTests.cs" />
@@ -78,9 +81,6 @@
     <Compile Include="ConcurrentTests.cs" />
     <Compile Include="..\..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\VersionAssemblyInfo.cs">
-      <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Assertions.cs" />
     <Compile Include="Builder\InstancePerOwnedRegistrationBuilderTests.cs" />

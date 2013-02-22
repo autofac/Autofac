@@ -52,9 +52,6 @@
     <Compile Include="..\..\..\ProductAssemblyInfo.cs">
       <Link>Properties\ProductAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\VersionAssemblyInfo.cs">
-      <Link>Properties\VersionAssemblyInfo.cs</Link>
-    </Compile>
     <CodeAnalysisDictionary Include="..\..\..\Build\CodeAnalysisDictionary.xml">
       <Link>CodeAnalysisDictionary.xml</Link>
     </CodeAnalysisDictionary>
@@ -72,6 +69,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="LazyWithMetadataRegistrationSource.cs" />
+    <Compile Include="Properties\VersionAssemblyInfo.cs" />
     <Compile Include="StronglyTypedMetaRegistrationSource.cs" />
     <Compile Include="Util\ReflectionExtensions.cs" />
     <Compile Include="Util\ReflectionExtensionsResources.Designer.cs">

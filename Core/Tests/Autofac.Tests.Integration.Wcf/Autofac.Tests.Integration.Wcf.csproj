@@ -79,7 +79,7 @@
     <Compile Include="..\..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\VersionAssemblyInfo.cs">
+    <Compile Include="..\..\Source\Autofac.Integration.Wcf\Properties\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AutofacDependencyInjectionServiceBehaviorFixture.cs" />

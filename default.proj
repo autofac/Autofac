@@ -5,14 +5,11 @@
 		msbuild default.proj
 
 		Production/Release Build
-		msbuild default.proj /p:AssemblyVersion=1.2.3.4
+		msbuild default.proj /p:Production=true
+
+		Control version numbers through PackageVersions.proj
 	-->
 	<PropertyGroup>
-		<!-- 0.0.0.0 == developer build; a.b.c.d == production/release build -->
-		<AssemblyVersion Condition="'$(AssemblyVersion)' == ''">0.0.0.0</AssemblyVersion>
-
-		<AssemblyFileVersion Condition="'$(AssemblyFileVersion)' == ''">$(AssemblyVersion)</AssemblyFileVersion>
-
 		<!-- BuildDirectory is the root of where build output goes. -->
 		<BuildDirectory>$(MSBuildProjectDirectory)\build_output</BuildDirectory>
 
@@ -25,20 +22,20 @@
 
 	<PropertyGroup Condition="'$(BuildConfiguration)' == ''">
 		<!-- Unless otherwise specified, dev build is Debug, production build is Release. -->
-		<BuildConfiguration Condition="'$(AssemblyVersion)' == '0.0.0.0'">Debug</BuildConfiguration>
-		<BuildConfiguration Condition="'$(AssemblyVersion)' != '0.0.0.0'">Release</BuildConfiguration>
+		<BuildConfiguration Condition="'$(Production)' == 'true'">Release</BuildConfiguration>
+		<BuildConfiguration Condition="'$(Production)' != 'true'">Debug</BuildConfiguration>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Package)' == ''">
 		<!-- Unless otherwise specified, dev build will not run packaging, production build will. -->
-		<Package Condition="'$(AssemblyVersion)' == '0.0.0.0'">false</Package>
-		<Package Condition="'$(AssemblyVersion)' != '0.0.0.0'">true</Package>
+		<Package Condition="'$(Production)' == 'true'">true</Package>
+		<Package Condition="'$(Production)' != 'true'">false</Package>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Document)' == ''">
 		<!-- Unless otherwise specified, dev build will not build documentation, production build will. -->
-		<Document Condition="'$(AssemblyVersion)' == '0.0.0.0'">Debug</Document>
-		<Document Condition="'$(AssemblyVersion)' != '0.0.0.0'">Release</Document>
+		<Document Condition="'$(Production)' == 'true'">true</Document>
+		<Document Condition="'$(Production)' != 'true'">false</Document>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -47,7 +44,7 @@
 	</ItemGroup>
 
 	<Import Project="$(MSBuildProjectDirectory)\lib\BuildTasks\MSBuild.Community.Tasks.targets" />
-
+	<Import Project="$(MSBuildProjectDirectory)\PackageVersions.proj" />
 
 	<!--
 	-
@@ -56,7 +53,7 @@
 	-
 	-->
 	<Target Name="All">
-		<CallTarget Targets="UpdateVersion" Condition="'$(AssemblyVersion)' !='0.0.0.0'" />
+		<CallTarget Targets="UpdateVersion" Condition="'$(Production)' == 'true'" />
 		<CallTarget Targets="Clean;Compile;Test;Analyze" />
 		<CallTarget Targets="Package" Condition="'$(Package)' == 'true'" />
 		<CallTarget Targets="Document" Condition="'$(Document)' == 'true'" />
@@ -122,6 +119,7 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:AssemblyVersion="
 	</Target>
 
 	<Target Name="Package">
+		<Error Text="Packaging has not yet been updated for the new version scheme." />
 		<PropertyGroup>
 			<!-- All packages will end up in the package directory. -->
 			<PackageDirectory>$(BuildDirectory)\package</PackageDirectory>
@@ -142,10 +140,7 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:AssemblyVersion="
 			<NuspecStagingScripts Include="$(MSBuildProjectDirectory)\**\NuspecStaging.proj" />
 		</ItemGroup>
 
-		<GetSemanticVersion AssemblyVersion="$(AssemblyFileVersion)">
-			<Output TaskParameter="SemanticVersion" PropertyName="SemanticVersion" />
-		</GetSemanticVersion>
-
+		<Warning Text="TODO: Handle semantic version for zip packages." />
 		<Message Text="Packaging downloadable zip files..." />
 		<Zip Files="@(NET40CorePackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac-$(SemanticVersion)-NET40.zip" Flatten="true" />
 		<Zip Files="@(NET40ExtrasPackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac.Extras-$(SemanticVersion)-NET40.zip" Flatten="true" />
@@ -173,6 +168,7 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:AssemblyVersion="
 			* Move the .nupkg file to the package folder.
 			* Remove the temporary staging area.
 		-->
+		<Warning Text="TODO: Handle nuspec staging updates to Autofac versions." />
 		<Message Text="Staging NuGet package contents..." />
 		<MSBuild Projects="%(NuspecStagingScripts.FullPath)" Properties="BuildBinDirectory=$(BuildDirectory)\bin;StagingDirectory=$(StagingDirectory)" />
 		<ItemGroup>
@@ -218,10 +214,10 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:AssemblyVersion="
 
 	<Target Name="UpdateVersion">
 		<AssemblyInfo
-			OutputFile="$(MSBuildProjectDirectory)\VersionAssemblyInfo.cs"
+			OutputFile="%(AutofacProject.RootDir)%(AutofacProject.Directory)Properties\VersionAssemblyInfo.cs"
 			CodeLanguage="CS"
-			AssemblyVersion="$(AssemblyVersion)"
-			AssemblyFileVersion="$(AssemblyFileVersion)"
+			AssemblyVersion="%(AutofacProject.AssemblyVersion)"
+			AssemblyFileVersion="%(AutofacProject.FileVersion)"
 			AssemblyConfiguration="$(BuildConfiguration) built on $(BuildTime)"
 			AssemblyCopyright="Copyright © $(BuildYear) Autofac Contributors" />
 	</Target>
@@ -365,34 +361,6 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:AssemblyVersion="
 							returnItems.Add(item);
 						}
 						Dependencies = returnItems.ToArray();
-						return true;
-					}
-					catch(Exception ex)
-					{
-						Log.LogErrorFromException(ex);
-						return false;
-					}
-				]]>
-			</Code>
-		</Task>
-	</UsingTask>
-	<UsingTask TaskName="GetSemanticVersion" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
-		<ParameterGroup>
-			<AssemblyVersion Required="true" />
-			<SemanticVersion ParameterType="System.String" Output="true" />
-		</ParameterGroup>
-		<Task>
-			<Using Namespace="System" />
-			<Using Namespace="Microsoft.Build.Framework" />
-			<Using Namespace="Microsoft.Build.Utilities" />
-			<Code Type="Fragment" Language="cs">
-				<![CDATA[
-					try
-					{
-						// The package version is a three-digit X.Y.Z semantic
-						// version, not a four-digit assembly version, per semver.org.
-						var parsedVersion = new Version(AssemblyVersion);
-						SemanticVersion = String.Format("{0}.{1}.{2}", parsedVersion.Major, parsedVersion.Minor, parsedVersion.Build);
 						return true;
 					}
 					catch(Exception ex)

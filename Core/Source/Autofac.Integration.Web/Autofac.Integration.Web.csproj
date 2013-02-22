@@ -51,9 +51,6 @@
     <Compile Include="..\..\..\ProductAssemblyInfo.cs">
       <Link>Properties\ProductAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\VersionAssemblyInfo.cs">
-      <Link>Properties\VersionAssemblyInfo.cs</Link>
-    </Compile>
     <CodeAnalysisDictionary Include="..\..\..\Build\CodeAnalysisDictionary.xml">
       <Link>CodeAnalysisDictionary.xml</Link>
     </CodeAnalysisDictionary>
@@ -84,6 +81,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Forms\PropertyInjection.cs" />
     <Compile Include="Forms\PropertyInjectionModule.cs" />
+    <Compile Include="Properties\VersionAssemblyInfo.cs" />
     <Compile Include="RegistrationExtensions.cs" />
     <Compile Include="Forms\UnsetPropertyInjection.cs" />
     <Compile Include="Forms\UnsetPropertyInjectionModule.cs" />
