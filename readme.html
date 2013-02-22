@@ -121,7 +121,7 @@
 			<code>msbuild default.proj</code></p>
 
 		<p>Production/Release build:<br />
-			<code>msbuild default.proj /p:AssemblyVersion=1.2.3.4</code></p>
+			<code>msbuild default.proj /p:Production=true</code></p>
 
 		<p>The <strong>developer build</strong> will...</p>
 		<ul>
@@ -139,5 +139,8 @@
 		</ul>
 
 		<p><strong>Note for developers:</strong> If you are working on the Autofac core, there is also a project in Core/Tests/Autofac.Tests.AppCert that should be built/run separately to verify changes will pass Windows App Store certification. This build is not chained into the standard developer build since it takes time to run. <a href="Core/Tests/Autofac.Tests.AppCert/readme.html">There is a readme in that folder explaining more about how to run that build and assess results</a>.</p>
+
+		<p>Production package versions are centrally controlled through the <code>PackageVersions.proj</code>. Documentation in that
+		file explains how to use it. Before releasing new versions for consumption, be sure to update the appropriate version(s).</p>
 	</body>
 </html>
