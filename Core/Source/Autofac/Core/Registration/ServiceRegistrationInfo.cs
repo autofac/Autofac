@@ -12,6 +12,7 @@ namespace Autofac.Core.Registration
     /// </summary>
     class ServiceRegistrationInfo
     {
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields", Justification="The _service field is useful in debugging and diagnostics.")]
         readonly Service _service;
 
         readonly LinkedList<IComponentRegistration> _implementations = new LinkedList<IComponentRegistration>();
