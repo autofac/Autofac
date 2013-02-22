@@ -112,11 +112,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainServicesExample", "Ex
 		{E7BB91D2-EAB1-4E06-AC3A-AA865EFEF12B} = {E7BB91D2-EAB1-4E06-AC3A-AA865EFEF12B}
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{27889853-A9BC-48C2-9156-9295536698DE}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.SignalR", "Core\Source\Autofac.Integration.SignalR\Autofac.Integration.SignalR.csproj", "{CCC12CB7-6753-4772-9B04-83A0B2554991}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.SignalR", "Core\Tests\Autofac.Tests.Integration.SignalR\Autofac.Tests.Integration.SignalR.csproj", "{C2B5131B-97A1-44D1-9378-0BF3CA3E9513}"
