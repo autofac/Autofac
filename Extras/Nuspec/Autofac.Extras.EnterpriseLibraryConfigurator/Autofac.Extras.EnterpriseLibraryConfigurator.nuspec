@@ -2,7 +2,7 @@
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <id>Autofac.Extras.EnterpriseLibraryConfigurator</id>
-    <version>$version$</version>
+    <version>$AFversion_Autofac.Extras.EnterpriseLibraryConfigurator$</version>
     <authors>Autofac Contributors</authors>
     <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -13,8 +13,8 @@
     <projectUrl>http://autofac.org</projectUrl>
     <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
     <dependencies>
-      <dependency id="Autofac" version="$version$" />
-      <dependency id="Autofac.Extras.CommonServiceLocator" version="$version$" />
+      <dependency id="Autofac" version="$AFversion_Autofac$" />
+      <dependency id="Autofac.Extras.CommonServiceLocator" version="$AFversion_Autofac.Extras.CommonServiceLocator$" />
       <dependency id="CommonServiceLocator" version="$version_CommonServiceLocator$" />
       <dependency id="EnterpriseLibrary.Common" version="$version_EnterpriseLibrary.Common$" />
     </dependencies>

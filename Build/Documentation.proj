@@ -19,6 +19,6 @@
 		<MSBuild
 			ToolsVersion="4.0"
 			Projects="$(MSBuildProjectDirectory)\Documentation.shfbproj"
-			Properties="SHFBRoot=$(MSBuildProjectDirectory)\..\lib\SHFB;HelpFileVersion=$(AssemblyVersion);DocumentationSources=$(DocumentationSources)" />
+			Properties="SHFBRoot=$(MSBuildProjectDirectory)\..\lib\SHFB;HelpFileVersion=$(DocumentationVersion);DocumentationSources=$(DocumentationSources)" />
 	</Target>
 </Project>

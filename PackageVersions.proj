@@ -1,6 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+	<!--
+		CENTRAL VERSION CONTROL METADATA
+
+		This is where the assembly and package versions get controlled
+		when building the solution for release. In a standard dev
+		build, version updates don't happen.
+	-->
+	<PropertyGroup>
+		<!-- The unified ZIP download of the core/integration components. -->
+		<CoreZipVersion>3.0.1</CoreZipVersion>
+		<!-- The unified ZIP download of the extras projects. -->
+		<ExtrasZipVersion>3.0.0</ExtrasZipVersion>
+		<!-- The version of the combined core + integration + extras HTML help documentation. -->
+		<DocumentationVersion>3.0.0.0</DocumentationVersion>
+	</PropertyGroup>
 	<ItemGroup>
+		<!--
+			Each item here represents an individual project that is released
+			as a NuGet package and separately versioned. Items that get combined
+			with others don't get their own entries - e.g., Autofac is versioned;
+			Autofac.Configuration always comes along for the ride so it references
+			the main Autofac version instead.
+
+			AssemblyVersion - the AssemblyVersionAttribute value (slow rev)
+			FileVersion - the FileVersionAttribute value (rev every release)
+			PackageName - the NuGet package name
+			PackageVersion - the NuGet package semantic version (rev every release)
+
+			New "primary projects" should be added to this list so they can
+			be released and versioned. Doing this will automatically generate
+			a VersionAssemblyInfo.cs for the project. Unit tests for a project should
+			add a "link" to the VersionAssemblyInfo.cs for the owning primary project.
+
+			NuSpec definitions may use $AFversion_PackageName$ placeholders to insert
+			Autofac package versions in the file at build time.
+		-->
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac\Autofac.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
 			<FileVersion>3.0.1.0</FileVersion>
