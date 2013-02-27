@@ -8,10 +8,6 @@
 		build, version updates don't happen.
 	-->
 	<PropertyGroup>
-		<!-- The unified ZIP download of the core/integration components. -->
-		<CoreZipVersion>3.0.1</CoreZipVersion>
-		<!-- The unified ZIP download of the extras projects. -->
-		<ExtrasZipVersion>3.0.0</ExtrasZipVersion>
 		<!-- The version of the combined core + integration + extras HTML help documentation. -->
 		<DocumentationVersion>3.0.0.0</DocumentationVersion>
 	</PropertyGroup>

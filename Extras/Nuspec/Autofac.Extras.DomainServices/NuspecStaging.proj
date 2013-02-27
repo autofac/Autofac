@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Stage" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+	<PropertyGroup>
+		<!-- Setting the path to MSBuildCommunityTasks to . allows you to check them in; otherwise you must install them. -->
+		<MSBuildCommunityTasksPath>.</MSBuildCommunityTasksPath>
+		<SolutionDirectory>$(MSBuildProjectDirectory)\..\..\..\</SolutionDirectory>
+	</PropertyGroup>
+	<Import Project="$(SolutionDirectory)\lib\BuildTasks\MSBuild.Community.Tasks.targets" />
+
 	<Target Name="Stage">
 		<Error Text="You must specify the project binary output directory." Condition="'$(BuildBinDirectory)' == ''" />
 		<Error Text="You must specify the Nuspec staging directory." Condition="'$(StagingDirectory)' == ''" />
@@ -19,6 +26,11 @@
 				$(BuildBinDirectory)\**\Autofac.Extras.DomainServices.dll;
 				$(BuildBinDirectory)\**\Autofac.Extras.DomainServices.xml;
 				$(BuildBinDirectory)\**\Autofac.Extras.DomainServices.pdb" />
+			<ZipFiles Include="
+				$(BuildBinDirectory)\..\..\License.txt;
+				$(BuildBinDirectory)\net40\Autofac.Extras.DomainServices.dll;
+				$(BuildBinDirectory)\net40\Autofac.Extras.DomainServices.xml;
+				$(BuildBinDirectory)\net40\Autofac.Extras.DomainServices.pdb" />
 			<SourceFiles
 				Include="$(MSBuildProjectDirectory)\..\..\Source\Autofac.Extras.DomainServices\**\*.*"
 				Exclude="
@@ -28,6 +40,11 @@
 					$(MSBuildProjectDirectory)\..\..\Source\**\*.user" />
 			<ProjectFiles Include="$(MSBuildProjectDirectory)\**\*.*" Exclude="$(MSBuildProjectDirectory)\NuspecStaging.proj;$(MSBuildProjectDirectory)\*.nuspec" />
 		</ItemGroup>
+
+		<XmlPeek XmlInputPath="$(SolutionDirectory)\PackageVersions.proj" Query="//msb:AutofacProject[msb:PackageName='$(NuspecName)']/msb:PackageVersion/text()" Namespaces="&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003'/&gt;">
+			<Output TaskParameter="Result" ItemName="PackageVersion" />
+		</XmlPeek>
+		<Zip Files="@(ZipFiles)" ZipFileName="$(StagingDirectory)\$(NuspecName)\$(NuspecName).%(PackageVersion.Identity).zip" Flatten="true" />
 
 		<!-- Copy the .nuspec, other project files in this folder, and requisite lib files into a staging area for packaging. -->
 		<MakeDir Directories="$(StagingDirectory)\$(NuspecName)" />

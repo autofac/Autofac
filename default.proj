@@ -127,22 +127,9 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 			<StagingDirectory>$(PackageDirectory)\nuspec-staging</StagingDirectory>
 		</PropertyGroup>
 		<ItemGroup>
-			<!-- One set of Extras and Core items should be created for each target zip file. -->
-			<NET40ExtrasPackageItems Include="$(BuildDirectory)\bin\net40\Autofac.Extras.*" />
-			<NET40CorePackageItems Include="$(BuildDirectory)\bin\net40\Autofac.*" Exclude="@(NET40ExtrasPackageItems)" />
-			<PortablePackageItems Include="$(BuildDirectory)\bin\portable-win+net40+sl50+wp8\Autofac.*" />
-
-			<!-- The license file gets included with zip files; NuGet packages have a license URL. -->
-			<LicenseFile Include="$(MSBuildProjectDirectory)\License.txt" />
-
 			<!-- Nuspec/NuGet packages get staged using these scripts. -->
 			<NuspecStagingScripts Include="$(MSBuildProjectDirectory)\**\NuspecStaging.proj" />
 		</ItemGroup>
-
-		<Message Text="Packaging downloadable zip files..." />
-		<Zip Files="@(NET40CorePackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac-$(CoreZipVersion)-NET40.zip" Flatten="true" />
-		<Zip Files="@(NET40ExtrasPackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac.Extras-$(ExtrasZipVersion)-NET40.zip" Flatten="true" />
-		<Zip Files="@(PortablePackageItems);@(LicenseFile)" ZipFileName="$(PackageDirectory)\Autofac-$(CoreZipVersion)-Portable.zip" Flatten="true" />
 		
 		<!--
 			NuGet packaging is done by convention.
@@ -157,6 +144,7 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 			* Copy the .nuspec file into the folder.
 			* Create the lib/XYZ folder structure using compiled binaries from BuildBinDirectory.
 			* Copy any additional files required.
+			* Create a zip package from the appropriate lib folder.
 
 			After all Nuspec staging is done, this script will find all .nuspec files in the staging area and:
 			* Replace any instances of $AFversion_PackageName$ with the corresponding Autofac package version value.
@@ -171,6 +159,13 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 		<ItemGroup>
 			<NuspecFiles Include="$(StagingDirectory)\**\*.nuspec" />
 		</ItemGroup>
+
+		<!--Move the zip file out before NuGet packaging. -->
+		<Message Text="Packaging downloadable zip files..." />
+		<ItemGroup>
+			<ZipFiles Include="$(StagingDirectory)\**\*.zip" />
+		</ItemGroup>
+		<Move SourceFiles="@(ZipFiles)" DestinationFolder="$(PackageDirectory)" />
 
 		<Message Text="Updating NuGet package version info..." />
 		<FileUpdate Files="@(NuspecFiles)" Regex="\$AFversion_%(AutofacProject.PackageName)\$" ReplacementText="%(AutofacProject.PackageVersion)" />
