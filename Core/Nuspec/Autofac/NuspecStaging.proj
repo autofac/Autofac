@@ -6,6 +6,7 @@
 		<SolutionDirectory>$(MSBuildProjectDirectory)\..\..\..\</SolutionDirectory>
 	</PropertyGroup>
 	<Import Project="$(SolutionDirectory)\lib\BuildTasks\MSBuild.Community.Tasks.targets" />
+	<Import Project="$(SolutionDirectory)\PackageVersions.proj" />
 
 	<Target Name="Stage">
 		<Error Text="You must specify the project binary output directory." Condition="'$(BuildBinDirectory)' == ''" />
@@ -13,6 +14,9 @@
 		<PropertyGroup>
 			<!-- The name of the .nuspec file being staged, minus extension. -->
 			<NuspecName>Autofac</NuspecName>
+		</PropertyGroup>
+		<PropertyGroup>
+			<PackageVersion>@(AutofacProject->WithMetadataValue('PackageName', $(NuspecName))->Metadata('PackageVersion'))</PackageVersion>
 		</PropertyGroup>
 		<ItemGroup>
 			<!--
@@ -54,10 +58,7 @@
 			<ProjectFiles Include="$(MSBuildProjectDirectory)\**\*.*" Exclude="$(MSBuildProjectDirectory)\NuspecStaging.proj;$(MSBuildProjectDirectory)\*.nuspec" />
 		</ItemGroup>
 
-		<XmlPeek XmlInputPath="$(SolutionDirectory)\PackageVersions.proj" Query="//msb:AutofacProject[msb:PackageName='$(NuspecName)']/msb:PackageVersion/text()" Namespaces="&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003'/&gt;">
-			<Output TaskParameter="Result" ItemName="PackageVersion" />
-		</XmlPeek>
-		<Zip Files="@(ZipFiles)" ZipFileName="$(StagingDirectory)\$(NuspecName)\$(NuspecName).%(PackageVersion.Identity).zip" Flatten="true" />
+		<Zip Files="@(ZipFiles)" ZipFileName="$(StagingDirectory)\$(NuspecName)\$(NuspecName).$(PackageVersion).zip" Flatten="true" />
 
 		<!-- Copy the .nuspec, other project files in this folder, and requisite lib files into a staging area for packaging. -->
 		<MakeDir Directories="$(StagingDirectory)\$(NuspecName)" />
