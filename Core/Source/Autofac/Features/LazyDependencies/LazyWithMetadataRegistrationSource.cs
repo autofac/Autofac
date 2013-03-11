@@ -89,14 +89,15 @@ namespace Autofac.Features.LazyDependencies
         static IComponentRegistration CreateLazyRegistration<T, TMeta>(Service providedService, IComponentRegistration valueRegistration)
         // ReSharper restore UnusedMember.Local
         {
+            var metadataProvider = MetadataViewProvider.GetMetadataViewProvider<TMeta>();
+            var metadata = metadataProvider(valueRegistration.Target.Metadata);
+
             var rb = RegistrationBuilder.ForDelegate(
                 (c, p) =>
                 {
                     var context = c.Resolve<IComponentContext>();
                     var lazyType = ((IServiceWithType)providedService).ServiceType;
                     var valueFactory = new Func<T>(() => (T)context.ResolveComponent(valueRegistration, p));
-                    var metadataProvider = MetadataViewProvider.GetMetadataViewProvider<TMeta>();
-                    var metadata = metadataProvider(valueRegistration.Target.Metadata);
                     return Activator.CreateInstance(lazyType, valueFactory, metadata);
                 })
                 .As(providedService)

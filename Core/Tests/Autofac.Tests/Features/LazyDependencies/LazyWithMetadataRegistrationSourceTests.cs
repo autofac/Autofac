@@ -1,5 +1,6 @@
 ﻿﻿using System;
 ﻿using Autofac.Core;
+﻿using Autofac.Tests.Builder;
 ﻿using Autofac.Tests.Features.Metadata;
 ﻿using NUnit.Framework;
 
@@ -24,6 +25,21 @@ namespace Autofac.Tests.Features.LazyDependencies
         {
             var meta = _container.Resolve<Lazy<object, MyMeta>>();
             Assert.AreEqual(SuppliedValue, meta.Metadata.TheInt);
+        }
+
+        [Test]
+        public void ValuesProvidedAreUniqueToEachRegistration()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<object>().WithMetadata("TheInt", 123);
+            builder.RegisterType<string>().WithMetadata("TheInt", 321);
+            _container = builder.Build();
+
+            var meta1 = _container.Resolve<Lazy<object, MyMeta>>();
+            Assert.That(meta1.Metadata.TheInt, Is.EqualTo(123));
+
+            var meta2 = _container.Resolve<Lazy<string, MyMeta>>();
+            Assert.That(meta2.Metadata.TheInt, Is.EqualTo(321));
         }
 
         [Test]
