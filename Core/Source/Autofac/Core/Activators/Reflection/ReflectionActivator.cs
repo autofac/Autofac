@@ -45,6 +45,7 @@ namespace Autofac.Core.Activators.Reflection
         readonly IConstructorFinder _constructorFinder;
         readonly IEnumerable<Parameter> _configuredParameters;
         readonly IEnumerable<Parameter> _configuredProperties;
+        readonly ConstructorInfo[] _availableConstructors;
 
         /// <summary>
         /// Create an activator for the provided type.
@@ -67,6 +68,12 @@ namespace Autofac.Core.Activators.Reflection
             _constructorSelector = Enforce.ArgumentNotNull(constructorSelector, "constructorSelector");
             _configuredParameters = Enforce.ArgumentNotNull(configuredParameters, "configuredParameters");
             _configuredProperties = Enforce.ArgumentNotNull(configuredProperties, "configuredProperties");
+
+            _availableConstructors = _constructorFinder.FindConstructors(_implementationType);
+
+            if (_availableConstructors.Length == 0)
+                throw new DependencyResolutionException(string.Format(
+                    CultureInfo.CurrentCulture, ReflectionActivatorResources.NoConstructorsAvailable, _implementationType, _constructorFinder));
         }
 
         /// <summary>
@@ -100,15 +107,10 @@ namespace Autofac.Core.Activators.Reflection
             if (context == null) throw new ArgumentNullException("context");
             if (parameters == null) throw new ArgumentNullException("parameters");
 
-            var availableConstructors = _constructorFinder.FindConstructors(_implementationType);
-
-            if (availableConstructors.Length == 0)
-                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, ReflectionActivatorResources.NoConstructorsAvailable, _implementationType, _constructorFinder));
-
             var constructorBindings = GetConstructorBindings(
                 context,
                 parameters,
-                availableConstructors);
+                _availableConstructors);
 
             var validBindings = constructorBindings
                 .Where(cb => cb.CanInstantiate)
