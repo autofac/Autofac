@@ -45,6 +45,7 @@ namespace Autofac.Core.Activators.Reflection
         readonly IConstructorFinder _constructorFinder;
         readonly IEnumerable<Parameter> _configuredParameters;
         readonly IEnumerable<Parameter> _configuredProperties;
+        readonly IEnumerable<Parameter> _defaultParameters;
         readonly ConstructorInfo[] _availableConstructors;
 
         /// <summary>
@@ -68,6 +69,9 @@ namespace Autofac.Core.Activators.Reflection
             _constructorSelector = Enforce.ArgumentNotNull(constructorSelector, "constructorSelector");
             _configuredParameters = Enforce.ArgumentNotNull(configuredParameters, "configuredParameters");
             _configuredProperties = Enforce.ArgumentNotNull(configuredProperties, "configuredProperties");
+
+            _defaultParameters = _configuredParameters.Concat(
+                new Parameter[] {new AutowiringParameter(), new DefaultValueParameter()});
 
             _availableConstructors = _constructorFinder.FindConstructors(_implementationType);
 
@@ -153,10 +157,7 @@ namespace Autofac.Core.Activators.Reflection
             if (parameters == null) throw new ArgumentNullException("parameters");
             if (constructorInfo == null) throw new ArgumentNullException("constructorInfo");
 
-            var prioritisedParameters =
-                parameters.Concat(
-                    _configuredParameters.Concat(
-                        new Parameter[] { new AutowiringParameter(), new DefaultValueParameter() }));
+            var prioritisedParameters = parameters.Concat(_defaultParameters);
 
             return constructorInfo.Select(ci => new ConstructorParameterBinding(ci, prioritisedParameters, context));
         }
