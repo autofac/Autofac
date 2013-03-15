@@ -74,10 +74,6 @@ namespace Autofac.Core.Activators.Reflection
                 new Parameter[] {new AutowiringParameter(), new DefaultValueParameter()});
 
             _availableConstructors = _constructorFinder.FindConstructors(_implementationType);
-
-            if (_availableConstructors.Length == 0)
-                throw new DependencyResolutionException(string.Format(
-                    CultureInfo.CurrentCulture, ReflectionActivatorResources.NoConstructorsAvailable, _implementationType, _constructorFinder));
         }
 
         /// <summary>
@@ -110,6 +106,10 @@ namespace Autofac.Core.Activators.Reflection
         {
             if (context == null) throw new ArgumentNullException("context");
             if (parameters == null) throw new ArgumentNullException("parameters");
+
+            if (_availableConstructors.Length == 0)
+                throw new DependencyResolutionException(string.Format(
+                    CultureInfo.CurrentCulture, ReflectionActivatorResources.NoConstructorsAvailable, _implementationType, _constructorFinder));
 
             var constructorBindings = GetConstructorBindings(
                 context,
