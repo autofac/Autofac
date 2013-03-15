@@ -373,6 +373,7 @@
       <DependentUpon>ReflectionExtensionsResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Util\ReleaseAction.cs" />
+    <Compile Include="Util\SafeDictionary.cs" />
     <Compile Include="Util\SequenceExtensions.cs" />
     <Compile Include="Util\Traverse.cs" />
     <Compile Include="Util\TypeExtensions.cs" />

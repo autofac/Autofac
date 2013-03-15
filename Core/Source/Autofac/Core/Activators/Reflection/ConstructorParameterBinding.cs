@@ -40,7 +40,7 @@ namespace Autofac.Core.Activators.Reflection
         readonly ConstructorInfo _ci;
         readonly Func<object>[] _valueRetrievers;
         readonly bool _canInstantiate;
-        readonly static Dictionary<ConstructorInfo, Func<object[], object>> _constructorInvokers = new Dictionary<ConstructorInfo, Func<object[], object>>();
+        readonly static SafeDictionary<ConstructorInfo, Func<object[], object>> _constructorInvokers = new SafeDictionary<ConstructorInfo, Func<object[], object>>();
 
         // We really need to report all non-bindable parameters, howevers some refactoring
         // will be necessary before this is possible. Adding this now to ease the
@@ -114,13 +114,10 @@ namespace Autofac.Core.Activators.Reflection
                 values[i] = _valueRetrievers[i].Invoke();
 
             Func<object[], object> constructorInvoker;
-            lock (_constructorInvokers)
+            if (!_constructorInvokers.TryGetValue(TargetConstructor, out constructorInvoker))
             {
-                if (!_constructorInvokers.TryGetValue(TargetConstructor, out constructorInvoker))
-                {
-                    constructorInvoker = GetConstructorInvoker(TargetConstructor);
-                    _constructorInvokers.Add(TargetConstructor, constructorInvoker);
-                }
+                constructorInvoker = GetConstructorInvoker(TargetConstructor);
+                _constructorInvokers[TargetConstructor] = constructorInvoker;
             }
 
             try
