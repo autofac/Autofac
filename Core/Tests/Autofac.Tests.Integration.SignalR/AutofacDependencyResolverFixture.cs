@@ -88,14 +88,14 @@ namespace Autofac.Tests.Integration.SignalR
         }
 
         [Test]
-        public void GetServicesReturnsEmptyEnumerableForUnregisteredService()
+        public void GetServicesReturnsNullForUnregisteredService()
         {
             var container = new ContainerBuilder().Build();
             var resolver = new AutofacDependencyResolver(container);
 
             var services = resolver.GetServices(typeof(object));
 
-            Assert.That(services.Count(), Is.EqualTo(0));
+            Assert.That(services, Is.EqualTo(null));
         }
 
         [Test]
