@@ -153,10 +153,6 @@ namespace Autofac.Core.Activators.Reflection
             IEnumerable<Parameter> parameters,
             IEnumerable<ConstructorInfo> constructorInfo)
         {
-            if (context == null) throw new ArgumentNullException("context");
-            if (parameters == null) throw new ArgumentNullException("parameters");
-            if (constructorInfo == null) throw new ArgumentNullException("constructorInfo");
-
             var prioritisedParameters = parameters.Concat(_defaultParameters);
 
             return constructorInfo.Select(ci => new ConstructorParameterBinding(ci, prioritisedParameters, context));

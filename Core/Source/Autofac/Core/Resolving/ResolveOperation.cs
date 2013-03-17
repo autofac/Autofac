@@ -26,7 +26,6 @@
 using System;
 using System.Collections.Generic;
 using Autofac.Core.Registration;
-using Autofac.Util;
 
 namespace Autofac.Core.Resolving
 {
@@ -105,9 +104,6 @@ namespace Autofac.Core.Resolving
         /// <exception cref="ArgumentNullException"/>
         public object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
-            if (currentOperationScope == null) throw new ArgumentNullException("currentOperationScope");
-            if (registration == null) throw new ArgumentNullException("registration");
-            if (parameters == null) throw new ArgumentNullException("parameters");
             if (_ended) throw new ObjectDisposedException(ResolveOperationResources.TemporaryContextDisposed, innerException: null);
 
             CircularDependencyDetector.CheckForCircularDependency(registration, _activationStack, ++_callDepth);
