@@ -45,7 +45,8 @@ namespace Autofac.Integration.SignalR
             RegisterHubs(this ContainerBuilder builder, params Assembly[] controllerAssemblies)
         {
             return builder.RegisterAssemblyTypes(controllerAssemblies)
-                .Where(t => typeof(IHub).IsAssignableFrom(t));
+                .Where(t => typeof(IHub).IsAssignableFrom(t))
+                .ExternallyOwned();
         }
     }
 }

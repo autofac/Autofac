@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
-using Microsoft.AspNet.SignalR;
+using Autofac.Core;
+using Autofac.Integration.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
 using NUnit.Framework;
-using Autofac.Integration.SignalR;
 
 namespace Autofac.Tests.Integration.SignalR
 {
@@ -19,6 +19,20 @@ namespace Autofac.Tests.Integration.SignalR
             var container = builder.Build();
 
             Assert.That(container.IsRegistered<TestHub>(), Is.True);
+        }
+
+        [Test]
+        public void HubRegistrationsAreExternallyOwned()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterHubs(Assembly.GetExecutingAssembly());
+            var container = builder.Build();
+
+            var service = new TypedService(typeof(TestHub));
+            IComponentRegistration registration;
+            container.ComponentRegistry.TryGetRegistration(service, out registration);
+
+            Assert.That(registration.Ownership, Is.EqualTo(InstanceOwnership.ExternallyOwned));
         }
     }
 
