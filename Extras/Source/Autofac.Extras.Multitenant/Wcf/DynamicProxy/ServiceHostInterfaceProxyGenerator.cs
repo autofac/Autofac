@@ -4,6 +4,7 @@ using Castle.DynamicProxy;
 using Castle.DynamicProxy.Contributors;
 using Castle.DynamicProxy.Generators;
 using Castle.DynamicProxy.Generators.Emitters;
+using Castle.DynamicProxy.Internal;
 
 namespace Autofac.Extras.Multitenant.Wcf.DynamicProxy
 {

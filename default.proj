@@ -18,6 +18,9 @@
 
 		<!-- PackageInstallDirectory is where NuGet installs the set of dependencies. -->
 		<PackageInstallDirectory>$(MSBuildProjectDirectory)\packages</PackageInstallDirectory>
+
+		<!-- Set this to false via command-line when debugging/troubleshooting NuGet packaging. -->
+		<DeleteNuGetStaging Condition="'$(DeleteNuGetStaging)' == ''">true</DeleteNuGetStaging>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(BuildConfiguration)' == ''">
@@ -186,7 +189,7 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 		<Move SourceFiles="@(NupkgFiles)" DestinationFolder="$(PackageDirectory)" />
 
 		<Message Text="Cleaning NuGet staging..." />
-		<RemoveDir Directories="$(StagingDirectory)" />
+		<RemoveDir Directories="$(StagingDirectory)" Condition="'$(DeleteNuGetStaging)' == 'true'" />
 		
 		<Message Text="Packaging complete." />
 	</Target>

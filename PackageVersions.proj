@@ -76,9 +76,9 @@
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.AggregateService\Autofac.Extras.AggregateService.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.0.0</FileVersion>
+			<FileVersion>3.0.1.0</FileVersion>
 			<PackageName>Autofac.Extras.AggregateService</PackageName>
-			<PackageVersion>3.0.0</PackageVersion>
+			<PackageVersion>3.0.1</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.Attributed\Autofac.Extras.Attributed.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
@@ -100,9 +100,9 @@
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.DynamicProxy2\Autofac.Extras.DynamicProxy2.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.0.0</FileVersion>
+			<FileVersion>3.0.1.0</FileVersion>
 			<PackageName>Autofac.Extras.DynamicProxy2</PackageName>
-			<PackageVersion>3.0.0</PackageVersion>
+			<PackageVersion>3.0.1</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.EnterpriseLibraryConfigurator\Autofac.Extras.EnterpriseLibraryConfigurator.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
@@ -117,10 +117,10 @@
 			<PackageVersion>3.0.0</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.Multitenant\Autofac.Extras.Multitenant.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.0.0</FileVersion>
+			<AssemblyVersion>3.0.1.0</AssemblyVersion>
+			<FileVersion>3.0.1.0</FileVersion>
 			<PackageName>Autofac.Extras.Multitenant</PackageName>
-			<PackageVersion>3.0.0</PackageVersion>
+			<PackageVersion>3.0.1</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.NHibernate\Autofac.Extras.NHibernate.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
