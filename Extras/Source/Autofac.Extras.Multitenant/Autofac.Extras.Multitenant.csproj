@@ -83,6 +83,7 @@
     </Compile>
     <Compile Include="Properties\VersionAssemblyInfo.cs" />
     <Compile Include="RegistrationExtensions.cs" />
+    <Compile Include="TenantIdentificationStrategyExtensions.cs" />
     <Compile Include="Wcf\DynamicProxy\CustomAttributeDataExtensions.cs" />
     <Compile Include="Wcf\DynamicProxy\IgnoreAttributeInterfaceProxyInstanceContributor.cs" />
     <Compile Include="Wcf\DynamicProxy\ServiceHostInterfaceProxyGenerator.cs" />

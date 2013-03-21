@@ -77,6 +77,7 @@
     <Compile Include="Stubs\StubDependency2Impl1.cs" />
     <Compile Include="Stubs\StubDependency2Impl2.cs" />
     <Compile Include="Stubs\StubTenantIdentificationStrategy.cs" />
+    <Compile Include="TenantIdentificationStrategyExtensionsFixture.cs" />
     <Compile Include="Wcf\DynamicProxy\ServiceHostProxyBuilderFixture.cs" />
     <Compile Include="Wcf\DynamicProxy\ServiceHostProxyGeneratorFixture.cs" />
     <Compile Include="Wcf\MultitenantServiceImplementationDataProviderFixture.cs" />
