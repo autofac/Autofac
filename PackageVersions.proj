@@ -117,7 +117,7 @@
 			<PackageVersion>3.0.0</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.Multitenant\Autofac.Extras.Multitenant.csproj">
-			<AssemblyVersion>3.0.1.0</AssemblyVersion>
+			<AssemblyVersion>3.0.0.0</AssemblyVersion>
 			<FileVersion>3.0.1.0</FileVersion>
 			<PackageName>Autofac.Extras.Multitenant</PackageName>
 			<PackageVersion>3.0.1</PackageVersion>
