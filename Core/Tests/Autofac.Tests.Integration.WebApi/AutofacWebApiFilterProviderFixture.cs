@@ -337,9 +337,8 @@ namespace Autofac.Tests.Integration.WebApi
             var filterInfos = provider.GetFilters(configuration, actionDescriptor).ToArray();
 
             var filters = filterInfos.Select(info => info.Instance).OfType<TWrapper>().ToArray();
-            Assert.That(filters, Has.Length.EqualTo(2));
+            Assert.That(filters, Has.Length.EqualTo(1));
             Assert.That(filters[0], Is.InstanceOf<TWrapper>());
-            Assert.That(filters[1], Is.InstanceOf<TWrapper>());
         }
     }
 }

@@ -44,6 +44,7 @@ namespace Autofac.Integration.WebApi
             public ILifetimeScope LifetimeScope { get; set; }
             public Type ControllerType { get; set; }
             public List<FilterInfo> Filters { get; set; }
+            public List<FilterMetadata> AddedFilters { get; set; }
         }
 
         readonly ILifetimeScope _rootLifetimeScope;
@@ -94,7 +95,8 @@ namespace Autofac.Integration.WebApi
                 {
                     LifetimeScope = lifetimeScope,
                     ControllerType = actionDescriptor.ControllerDescriptor.ControllerType,
-                    Filters = filters
+                    Filters = filters,
+                    AddedFilters = new List<FilterMetadata>()
                 };
 
                 ResolveControllerScopedFilter<IAutofacActionFilter, ActionFilterWrapper>(
@@ -129,10 +131,12 @@ namespace Autofac.Integration.WebApi
                 if (metadata.ControllerType != null
                     && metadata.ControllerType.IsAssignableFrom(filterContext.ControllerType)
                     && metadata.FilterScope == FilterScope.Controller
-                    && metadata.MethodInfo == null)
+                    && metadata.MethodInfo == null
+                    && !MatchingFilterAdded(filterContext.AddedFilters, metadata))
                 {
                     var wrapper = wrapperFactory(metadata);
                     filterContext.Filters.Add(new FilterInfo(wrapper, metadata.FilterScope));
+                    filterContext.AddedFilters.Add(metadata);
                 }
             }
         }
@@ -151,12 +155,21 @@ namespace Autofac.Integration.WebApi
                 if (metadata.ControllerType != null
                     && metadata.ControllerType.IsAssignableFrom(filterContext.ControllerType)
                     && metadata.FilterScope == FilterScope.Action
-                    && metadata.MethodInfo.GetBaseDefinition() == methodInfo.GetBaseDefinition())
+                    && metadata.MethodInfo.GetBaseDefinition() == methodInfo.GetBaseDefinition()
+                    && !MatchingFilterAdded(filterContext.AddedFilters, metadata))
                 {
                     var wrapper = wrapperFactory(metadata);
                     filterContext.Filters.Add(new FilterInfo(wrapper, metadata.FilterScope));
+                    filterContext.AddedFilters.Add(metadata);
                 }
             }
+        }
+
+        static bool MatchingFilterAdded(IEnumerable<FilterMetadata> filters, FilterMetadata metadata)
+        {
+            return filters.Any(filter => filter.ControllerType == metadata.ControllerType
+                && filter.FilterScope == metadata.FilterScope
+                && filter.MethodInfo == metadata.MethodInfo);
         }
     }
 }
