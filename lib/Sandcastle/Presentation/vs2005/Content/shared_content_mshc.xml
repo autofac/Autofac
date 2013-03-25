@@ -64,6 +64,7 @@
   <item id="XAMLLabel">XAML</item>
 
   <!-- section titles -->
+  <item id="eventsTitle">Events</item>
   <item id="exceptionsTitle">Exceptions</item>
   <item id="contractsTitle">Contracts</item>
   <item id="setterTitle">Set</item>
@@ -124,7 +125,10 @@
   <item id="AspNet">ASP.NET</item>
   <item id="VisualBasicDeclaration"><include item="VisualBasic"/></item>
   <item id="VisualBasicUsage"><include item="VisualBasic"/> (<include item="usage"/>)</item>
-  
+  <item id="pshell">PowerShell</item>
+  <item id="sql">SQL</item>
+  <item id="Python">Python</item>
+
   <item id="dropdownSeparator"><span>&#160;&#160;&#160;&#160;</span></item>
   <item id="nsrLinkSeparator"> </item>
   

@@ -18,20 +18,16 @@
 	<xsl:import href="seealso_dduexml.xsl"/>
 	<xsl:import href="conceptualMetadataHelp30.xsl"/>
 	<xsl:import href="conceptualMetadataHelp20.xsl"/>
-	<xsl:import href="../../shared/transforms/utilities_bibliography.xsl"/>
+	<xsl:import href="utilities_bibliography.xsl"/>
 
-	<xsl:output method="xml"
-							omit-xml-declaration="yes"
-							indent="no"
-							encoding="utf-8"/>
+	<xsl:output method="xml" omit-xml-declaration="yes" indent="no" encoding="utf-8"/>
 
 	<!-- ============================================================================================
 	Parameters - key parameter is the api identifier string - see globalTemplates for others
 	============================================================================================= -->
 
 	<xsl:param name="key"/>
-	<xsl:param name="bibliographyData"
-						 select="'../data/bibliography.xml'"/>
+	<xsl:param name="bibliographyData" select="'../data/bibliography.xml'"/>
 	<xsl:param name="changeHistoryOptions"/>
 
 	<!-- ============================================================================================

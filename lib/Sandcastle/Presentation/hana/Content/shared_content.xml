@@ -38,8 +38,8 @@
 	<item id="visualBasicAltText">Visual Basic note</item>
 	<item id="visualC#AltText">C# note</item>
 	<item id="visualC++AltText">C++ note</item>
-	<item id="visualJ#AltText">J# note</item>	
-	
+	<item id="visualJ#AltText">J# note</item>
+
 	<!-- code labels -->
 	<item id="CSharpLabel">C#</item>
 	<item id="VisualBasicLabel">Visual Basic</item>
@@ -59,6 +59,28 @@
   	<item id="SeeAlsoReference">Reference</item>
   	<item id="SeeAlsoConcepts">Concepts</item>
   	<item id="SeeAlsoOtherResources">Other Resources</item>
+
+  <!-- devlangs filter -->
+  <item id="VisualBasic">Visual Basic</item>
+  <item id="VBScript">Visual Basic Script</item>
+  <item id="CSharp">C#</item>
+  <item id="ManagedCPlusPlus">Visual C++</item>
+  <item id="JSharp">J#</item>
+  <item id="JScript">JScript</item>
+  <item id="xmlLang">Xml</item>
+  <item id="JavaScript">JavaScript</item>
+  <item id="FSharp">F#</item>
+  <item id="html">Html</item>
+  <item id="visualbasicANDcsharp"><include item="VisualBasic"/> and <include item="CSharp"/></item>
+  <item id="other"></item>
+  <item id="XAML">XAML</item>
+  <item id="usage">Usage</item>
+  <item id="AspNet">ASP.NET</item>
+  <item id="VisualBasicDeclaration"><include item="VisualBasic"/></item>
+  <item id="VisualBasicUsage"><include item="VisualBasic"/> (<include item="usage"/>)</item>
+  <item id="pshell">PowerShell</item>
+  <item id="sql">SQL</item>
+  <item id="Python">Python</item>
 
 	<!-- tool tips -->
 	<item id="collapseAllImage">CollapseAll image</item>

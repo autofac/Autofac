@@ -45,32 +45,35 @@
 			<xsl:when test="$v_codeLangLC = 'j#' or $v_codeLangLC = 'jsharp'">
 				<xsl:text>JSharp</xsl:text>
 			</xsl:when>
-			<xsl:when test="$v_codeLangLC = 'f#' or $v_codeLangLC = 'fs' or $v_codeLangLC = 'fsharp'">
+			<xsl:when test="$v_codeLangLC = 'f#' or $v_codeLangLC = 'fs' or $v_codeLangLC = 'fsharp' or $v_codeLangLC = 'fsscript'">
 				<xsl:text>FSharp</xsl:text>
 			</xsl:when>
-			<xsl:when test="$v_codeLangLC = 'js' or $v_codeLangLC = 'jscript#' or $v_codeLangLC = 'jscript' or $v_codeLangLC = 'kbjscript'">
+			<xsl:when test="$v_codeLangLC = 'jscript#' or $v_codeLangLC = 'jscript' or $v_codeLangLC = 'kbjscript' or $v_codeLangLC = 'jscript.net'">
 				<xsl:text>JScript</xsl:text>
 			</xsl:when>
-			<xsl:when test="$v_codeLangLC = 'javascript'">
+			<xsl:when test="$v_codeLangLC = 'js' or $v_codeLangLC = 'javascript' or $v_codeLangLC = 'ecmascript'">
 				<xsl:text>JavaScript</xsl:text>
 			</xsl:when>
-			<xsl:when test="$v_codeLangLC = 'xml' or $v_codeLangLC = 'xmllang'">
+			<xsl:when test="$v_codeLangLC = 'xml' or $v_codeLangLC = 'xmllang' or $v_codeLangLC = 'xsl'">
 				<xsl:text>xmlLang</xsl:text>
 			</xsl:when>
-			<xsl:when test="$v_codeLangLC = 'html'">
+			<xsl:when test="$v_codeLangLC = 'html' or $v_codeLangLC = 'htm'">
 				<xsl:text>html</xsl:text>
 			</xsl:when>
 			<xsl:when test="$v_codeLangLC = 'xaml'">
 				<xsl:text>XAML</xsl:text>
 			</xsl:when>
-			<xsl:when test="$v_codeLangLC = 'aspnet'">
+			<xsl:when test="$v_codeLangLC = 'aspnet' or $v_codeLangLC = 'asp.net'">
 				<xsl:text>AspNet</xsl:text>
 			</xsl:when>
-			<xsl:when test="$v_codeLangLC = 'pshell'">
+			<xsl:when test="$v_codeLangLC = 'pshell' or $v_codeLangLC = 'powershell' or $v_codeLangLC = 'ps1'">
 				<xsl:text>pshell</xsl:text>
 			</xsl:when>
-			<xsl:when test="$v_codeLangLC = 'sql'">
+			<xsl:when test="$v_codeLangLC = 'sql' or $v_codeLangLC = 'sqlserver' or $v_codeLangLC = 'sql server'">
 				<xsl:text>sql</xsl:text>
+			</xsl:when>
+			<xsl:when test="$v_codeLangLC = 'py'">
+				<xsl:text>Python</xsl:text>
 			</xsl:when>
 			<xsl:when test="$v_codeLangLC = 'none'">
 				<xsl:value-of select="$v_codeLangLC"/>
@@ -135,6 +138,9 @@
 			<xsl:when test="$v_codeLangUnique = 'sql'">
 				<xsl:text>SQL</xsl:text>
 			</xsl:when>
+			<xsl:when test="$v_codeLangUnique = 'Python'">
+				<xsl:text>Python</xsl:text>
+			</xsl:when>
 			<xsl:otherwise/>
 		</xsl:choose>
 	</xsl:template>
@@ -198,6 +204,9 @@
 			</xsl:when>
 			<xsl:when test="$v_codeLangUnique = 'sql'">
 				<xsl:value-of select="'devlang_sql'"/>
+			</xsl:when>
+			<xsl:when test="$v_codeLangUnique = 'Python'">
+				<xsl:value-of select="'devlang_Python'"/>
 			</xsl:when>
 			<xsl:otherwise/>
 		</xsl:choose>
@@ -435,24 +444,21 @@
 			<xsl:choose>
 				<xsl:when test="starts-with(normalize-space(.),'@@_')">
 					<!-- MS Help Viewer has code to show the code colorized or plain.  We'll ignore their colorizer and insert our own colorized text later. -->
-					<xsl:element name="div">
+<!--					<xsl:element name="div">
 						<xsl:attribute name="class">
 							<xsl:value-of select="'code'"/>
 						</xsl:attribute>
 						<xsl:value-of select="."/>
-					</xsl:element>
+					</xsl:element> -->
+					<xsl:element name="pre" namespace="{$xhtml}" xml:space="preserve"><xsl:value-of select="."/></xsl:element>
 				</xsl:when>
 				<xsl:otherwise>
 						<xsl:choose>
 						<xsl:when test="$p_transformCode">
-							<xsl:element name="pre"
-													 namespace="{$xhtml}"
-													 xml:space="preserve"><xsl:call-template name="t_tranformCodeContainer"/></xsl:element>
+							<xsl:element name="pre" namespace="{$xhtml}" xml:space="preserve"><xsl:call-template name="t_tranformCodeContainer"/></xsl:element>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:element name="pre"
-													 namespace="{$xhtml}"
-													 xml:space="preserve"><xsl:call-template name="t_copyCodeContainer"/></xsl:element>
+							<xsl:element name="pre" namespace="{$xhtml}" xml:space="preserve"><xsl:call-template name="t_copyCodeContainer"/></xsl:element>
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:otherwise>

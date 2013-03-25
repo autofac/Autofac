@@ -159,6 +159,8 @@
 	<item id="header_memberName">Имя члена</item>
 	<item id="header_memberValue">Значение</item>
 	<item id="header_memberDescription">Описание</item>
+	<item id="header_eventTypeHeader">Event Type</item>
+	<item id="header_eventReasonHeader">Reason</item>
 	<item id="header_exceptionName">Исключение</item>
 	<item id="header_exceptionCondition">Условие</item>
 	<item id="header_permissionName">Разрешение</item>
@@ -349,7 +351,7 @@
     <b>Сборка:</b>
   </item>
 
-  <item id="assemblyNameAndModule">{0} (в {1}.{2})</item>
+	<item id="assemblyNameAndModule">{0} (в {1}.{2}) Версия: {3}</item>
 
   <item id="boilerplate_requirementsAssembly">
     <b>Сборка:</b> {0} (в {1}.dll)

@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- This file defines the presentation styles that can be used with Sandcastle. -->
+<PresentationStyles>
+	<!-- This defines a presentation style.  The ID attribute uniquely identifies the presentation style.  The
+			 Title attribute defines a friendly name that can be used in development tools.  The BasePath attribute
+			 defines the base base folder location for the presentation style's files.
+
+			 Throughout the file, all file and folder path values support environment variables which will be expanded
+			 at runtime.  If relative, the BasePath value will be considered relative to the presentation style file's
+			 location.  Relative paths within a presentation style element are considered to be relative to the
+			 presentation style's base path.
+			 
+			 Values in the form "{@Name}" will be replaced at build time with the named project property value or
+			 replacement tag value by the build engine. -->
+	<PresentationStyle ID="VS2005" Title="VS2005" BasePath="%DXROOT%\Presentation\VS2005">
+		<!-- This provides a description of the presentation style -->
+		<Description>This is the style used by Visual Studio 2005 and Visual Studio 2008.</Description>
+
+		<!-- This defines the help file formats supported by this presentation style. -->
+		<SupportedFormats>
+			<!-- These defines the individual formats supported.  The Type attribute should be set to HtmlHelp1,
+					 MSHelp2, MSHelpViewer, or Website.  If a presentation style does not support a particular help format,
+					 it can be omitted. -->
+			<Format Type="HtmlHelp1" />
+			<Format Type="MSHelp2" />
+			<Format Type="MSHelpViewer" />
+			<Format Type="Website" />
+		</SupportedFormats>
+
+		<!-- This defines the content from the presentation style that should be embedded in the compiled help file. -->
+		<HelpContent>
+			<!-- These define the files to copy and their destination in the compiled help file.  The Source attribute
+					 defines the source location relative to the presentation style base path.  The Destination attribute,
+					 if specified, defines the relative location of the files in the compiled help file.  If omitted, the
+					 files are copied to a like-named folder relative to the root of the compiled help file.  If the
+					 Destination attribute is set to an empty string, the files are copied to the root of the compiled
+					 help file.  Unlike all other path values, the Destination value must always be a relative path.
+					 Note that UNIX based web servers may be case-sensitive with regard to folder and filenames so match
+					 the case of the folder and filenames in the elements to their actual casing on the file system. -->
+			<Files Source="icons\*.*" Destination="icons" />
+			<Files Source="scripts\*.*" />
+			<Files Source="styles\*.*" />
+		</HelpContent>
+
+		<!-- This defines the path to the shared content resource items. -->
+		<ResourceItems Path="Content">
+			<!-- This defines a location for additional resource item files specific to the Sandcastle Help File
+					 Builder.  Files in the folder should be named using the format [ID]BuilderContent_[Language].xml
+					 where ID is the presentation style ID and Language is the language code for the resources
+					 (i.e. VS2005BuilderContent_en-US.xml). -->
+			<ToolResourceItems Path="%SHFBROOT%\SharedContent" />
+		</ResourceItems>
+		
+		<!-- This defines the document model XSL transformation to use on the reflection data to prepare it for
+				 use with BuildAssembler in order to generate topics.  The File attribute specifies the path to the
+				 XSL transformation. -->
+		<DocumentModelTransformation File="%DXROOT%\ProductionTransforms\ApplyVSDocModel.xsl">
+			<!-- These can be used to define parameters passed to the XSL transformation to define how it should
+					 affect the transformed reflection data. -->
+			<Parameter Name="IncludeAllMembersTopic" Value="true" />
+			<Parameter Name="IncludeInheritedOverloadTopics" Value="false" />
+			<Parameter Name="project" Value="{@ProjectNodeIDOptional}" />
+		</DocumentModelTransformation>
+
+		<!-- This defines the XSL transformation to use on the reflection data to generate the intermediate table of
+				 contents XML file used by help formats that require a table of contents.  As above, parameter elements
+				 can be specified if necessary to define any parameters required by the transformation file. -->
+		<IntermediateTOCTransformation File="%DXROOT%\ProductionTransforms\CreateVSToc.xsl" />
+
+		<!-- This defines the BuildAssembler configuration file to use for conceptual content builds. -->
+		<ConceptualBuildConfiguration File="%SHFBROOT%\Templates\Conceptual.config" />
+
+		<!-- This defines the BuildAssembler configuration file to use for API content builds. -->
+		<ReferenceBuildConfiguration File="%SHFBROOT%\Templates\VS2005.config" />
+
+		<!-- This defines a set of TransformComponent parameters that can be used by third-party build tools such
+				 as the Sandcastle Help File Builder to modify them for the build.  It is up to the build tool to insert
+				 the modified values into the appropriate configuration file at build time. -->
+		<TransformComponentArguments>
+			<!-- This defines a single argument.  The Key attribute defines the argument key name.  The
+					 ForConceptualBuild attribute specifies whether or not to include the parameter in the conceptual
+					 build.  The ForReferenceBuild attribute specifies whether or not to include the parameter in the
+					 reference build.  The Value attribute allows you to specify a simple value to use for the default.
+					 If present, any argument element content is ignored.  If a Value attribute is missing, it is assumed
+					 that the element content will serve as the value.  This allows for complex values such as XML to be
+					 used (i.e. the syntax filter language definitions).  The Description attribute provides a description
+					 of the parameter that can be displayed by build tools. -->
+			<Argument Key="logoFile" ForConceptualBuild="true" ForReferenceBuild="true" Value=""
+					Description="An optional logo file to insert into the topic headers.  Specify the filename only, omit the path.  Place the file in your project in an Icons\ folder and set the Build Action to Content.  If blank, no logo will appear in the topic headers."/>
+			<Argument Key="logoHeight" ForConceptualBuild="true" ForReferenceBuild="true" Value=""
+					Description="An optional logo height.  If left blank, the actual logo image height is used."/>
+			<Argument Key="logoWidth" ForConceptualBuild="true" ForReferenceBuild="true" Value=""
+					Description="An optional logo width.  If left blank, the actual logo image width is used."/>
+			<Argument Key="logoAltText" ForConceptualBuild="true" ForReferenceBuild="true" Value=""
+					Description="Optional logo alternate text.  If left blank, no alternate text is added."/>
+			<Argument Key="logoPlacement" ForConceptualBuild="true" ForReferenceBuild="true" Value="left"
+					Description="An optional logo placement.  Specify left, right, or above.  If not specified, the default is left."/>
+			<Argument Key="logoAlignment" ForConceptualBuild="true" ForReferenceBuild="true" Value="left"
+					Description="An optional logo alignment when using the 'above' placement option.  Specify left, right, or center.  If not specified, the default is left."/>
+
+			<!-- An example of a complex content argument for reference builds only:
+			<Argument Key="complexParameter" ForConceptualBuild="false" ForReferenceBuild="true"
+					Description="An example argument containing XML content">
+				<extraInfo name="intValue" value="1" />
+				<extraInfo name="stringValue" value="XYZ" />
+			</Argument>
+			-->
+		</TransformComponentArguments>
+	</PresentationStyle>
+
+	<PresentationStyle ID="VS2010" Title="VS2010" BasePath="%DXROOT%\Presentation\VS2010">
+		<Description>This is the style used by Visual Studio 2010 and later in the Microsoft Help Viewer.</Description>
+
+		<SupportedFormats>
+			<Format Type="HtmlHelp1" />
+			<Format Type="MSHelp2" />
+			<Format Type="MSHelpViewer" />
+			<Format Type="Website" />
+		</SupportedFormats>
+
+		<HelpContent>
+			<Files Source="icons\*.*" />
+			<Files Source="scripts\*.*" />
+			<Files Source="styles\*.*" />
+		</HelpContent>
+
+		<ResourceItems Path="Content">
+			<ToolResourceItems Path="%SHFBROOT%\SharedContent" />
+		</ResourceItems>
+
+		<DocumentModelTransformation File="%DXROOT%\ProductionTransforms\ApplyVSDocModel.xsl">
+			<Parameter Name="IncludeAllMembersTopic" Value="true" />
+			<Parameter Name="IncludeInheritedOverloadTopics" Value="false" />
+			<Parameter Name="project" Value="{@ProjectNodeIDOptional}" />
+		</DocumentModelTransformation>
+
+		<IntermediateTOCTransformation File="%DXROOT%\ProductionTransforms\CreateVSToc.xsl" />
+
+		<ConceptualBuildConfiguration File="%SHFBROOT%\Templates\Conceptual.config" />
+
+		<ReferenceBuildConfiguration File="%SHFBROOT%\Templates\VS2010.config" />
+
+		<TransformComponentArguments>
+			<Argument Key="logoFile" ForConceptualBuild="true" ForReferenceBuild="true" Value=""
+					Description="An optional logo file to insert into the topic headers.  Specify the filename only, omit the path.  Place the file in your project in an Icons\ folder and set the Build Action to Content.  If blank, no logo will appear in the topic headers."/>
+			<Argument Key="logoHeight" ForConceptualBuild="true" ForReferenceBuild="true" Value=""
+					Description="An optional logo height.  If left blank, the actual logo image height is used."/>
+			<Argument Key="logoWidth" ForConceptualBuild="true" ForReferenceBuild="true" Value=""
+					Description="An optional logo width.  If left blank, the actual logo image width is used."/>
+			<Argument Key="logoAltText" ForConceptualBuild="true" ForReferenceBuild="true" Value=""
+					Description="Optional logo alternate text.  If left blank, no alternate text is added."/>
+			<Argument Key="logoPlacement" ForConceptualBuild="true" ForReferenceBuild="true" Value="left"
+					Description="An optional logo placement.  Specify left, right, or above.  If not specified, the default is left."/>
+			<Argument Key="logoAlignment" ForConceptualBuild="true" ForReferenceBuild="true" Value="left"
+					Description="An optional logo alignment when using the 'above' placement option.  Specify left, right, or center.  If not specified, the default is left."/>
+		</TransformComponentArguments>
+	</PresentationStyle>
+
+	<PresentationStyle ID="Hana" Title="Hana (Deprecated)" BasePath="%DXROOT%\Presentation\Hana">
+		<Description>This style has been deprecated and is no longer supported.  It was an experimental style that was never used in production by Microsoft.</Description>
+
+		<!-- This deprecated style does not support the MS Help Viewer format -->
+		<SupportedFormats>
+			<Format Type="HtmlHelp1" />
+			<Format Type="MSHelp2" />
+			<Format Type="Website" />
+		</SupportedFormats>
+
+		<HelpContent>
+			<Files Source="icons\*.*" />
+			<Files Source="scripts\*.*" />
+			<Files Source="styles\*.*" />
+		</HelpContent>
+
+		<ResourceItems Path="Content">
+			<ToolResourceItems Path="%SHFBROOT%\SharedContent" />
+		</ResourceItems>
+
+		<DocumentModelTransformation File="%DXROOT%\ProductionTransforms\ApplyVSDocModel.xsl">
+			<Parameter Name="IncludeAllMembersTopic" Value="false" />
+			<Parameter Name="IncludeInheritedOverloadTopics" Value="false" />
+			<Parameter Name="project" Value="{@ProjectNodeIDOptional}" />
+		</DocumentModelTransformation>
+
+		<IntermediateTOCTransformation File="%DXROOT%\ProductionTransforms\CreateVSToc.xsl" />
+
+		<ConceptualBuildConfiguration File="%SHFBROOT%\Templates\Conceptual.config" />
+
+		<ReferenceBuildConfiguration File="%SHFBROOT%\Templates\Hana.config" />
+
+		<TransformComponentArguments>
+			<Argument Key="logoFile" ForConceptualBuild="true" ForReferenceBuild="true" Value=""
+					Description="An optional logo file to insert into the topic headers.  Specify the filename only, omit the path.  Place the file in your project in an Icons\ folder and set the Build Action to Content.  If blank, no logo will appear in the topic headers."/>
+			<Argument Key="logoHeight" ForConceptualBuild="true" ForReferenceBuild="true" Value=""
+					Description="An optional logo height.  If left blank, the actual logo image height is used."/>
+			<Argument Key="logoWidth" ForConceptualBuild="true" ForReferenceBuild="true" Value=""
+					Description="An optional logo width.  If left blank, the actual logo image width is used."/>
+			<Argument Key="logoAltText" ForConceptualBuild="true" ForReferenceBuild="true" Value=""
+					Description="Optional logo alternate text.  If left blank, no alternate text is added."/>
+			<Argument Key="logoPlacement" ForConceptualBuild="true" ForReferenceBuild="true" Value="left"
+					Description="An optional logo placement.  Specify left, right, or above.  If not specified, the default is left."/>
+			<Argument Key="logoAlignment" ForConceptualBuild="true" ForReferenceBuild="true" Value="left"
+					Description="An optional logo alignment when using the 'above' placement option.  Specify left, right, or center.  If not specified, the default is left."/>
+		</TransformComponentArguments>
+	</PresentationStyle>
+
+	<PresentationStyle ID="Prototype" Title="Prototype (Deprecated)" BasePath="%DXROOT%\Presentation\Prototype">
+		<Description>This style has been deprecated and is no longer supported.  It was the first style provided with Sandcastle.</Description>
+
+		<!-- This deprecated style does not support the MS Help Viewer format -->
+		<SupportedFormats>
+			<Format Type="HtmlHelp1" />
+			<Format Type="MSHelp2" />
+			<Format Type="Website" />
+		</SupportedFormats>
+
+		<HelpContent>
+			<Files Source="icons\*.*" />
+			<Files Source="scripts\*.*" />
+			<Files Source="styles\*.*" />
+		</HelpContent>
+
+		<ResourceItems Path="Content">
+			<ToolResourceItems Path="%SHFBROOT%\SharedContent" />
+		</ResourceItems>
+
+		<DocumentModelTransformation File="%DXROOT%\ProductionTransforms\ApplyPrototypeDocModel.xsl">
+			<!-- This presentation style requires a project node ID in order to generate the root namespaces node
+					 which is used to generate the root namespaces topic page. -->
+			<Parameter Name="project" Value="{@ProjectNodeIDRequired}" />
+		</DocumentModelTransformation>
+
+		<IntermediateTOCTransformation File="%DXROOT%\ProductionTransforms\CreatePrototypeToc.xsl">
+			<Parameter Name="rootNamespaceContainer" Value="{@RootNamespaceContainer}" />
+		</IntermediateTOCTransformation>
+
+		<ConceptualBuildConfiguration File="%SHFBROOT%\Templates\Conceptual.config" />
+
+		<ReferenceBuildConfiguration File="%SHFBROOT%\Templates\Prototype.config" />
+
+		<TransformComponentArguments>
+			<Argument Key="logoFile" ForConceptualBuild="true" ForReferenceBuild="true" Value=""
+					Description="An optional logo file to insert into the topic headers.  Specify the filename only, omit the path.  Place the file in your project in an Icons\ folder and set the Build Action to Content.  If blank, no logo will appear in the topic headers."/>
+			<Argument Key="logoHeight" ForConceptualBuild="true" ForReferenceBuild="true" Value=""
+					Description="An optional logo height.  If left blank, the actual logo image height is used."/>
+			<Argument Key="logoWidth" ForConceptualBuild="true" ForReferenceBuild="true" Value=""
+					Description="An optional logo width.  If left blank, the actual logo image width is used."/>
+			<Argument Key="logoAltText" ForConceptualBuild="true" ForReferenceBuild="true" Value=""
+					Description="Optional logo alternate text.  If left blank, no alternate text is added."/>
+			<Argument Key="logoPlacement" ForConceptualBuild="true" ForReferenceBuild="true" Value="left"
+					Description="An optional logo placement.  Specify left, right, or above.  If not specified, the default is left."/>
+			<Argument Key="logoAlignment" ForConceptualBuild="true" ForReferenceBuild="true" Value="left"
+					Description="An optional logo alignment when using the 'above' placement option.  Specify left, right, or center.  If not specified, the default is left."/>
+		</TransformComponentArguments>
+	</PresentationStyle>
+
+</PresentationStyles>

@@ -11,9 +11,6 @@
     <item id="productTitle">{@HtmlEncHelpTitle}</item>
     <item id="runningHeaderText">{@HtmlEncHelpTitle}</item>
 
-    <item id="locationInformation">Assembly: {0} (Módulo: {1}) Versión: {2}</item>
-    <item id="assemblyNameAndModule">{0} (in {1}.{2}) Versión: {3}</item>
-
     <!-- shared_content.xml overrides -->
     <item id="copyCode">Copy</item>
 

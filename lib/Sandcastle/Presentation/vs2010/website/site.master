@@ -10,9 +10,9 @@
 <head id="Head1" runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>API Documentation</title>
-    <link href="Styles/branding.css" rel="stylesheet" type="text/css" />
+    <link href="styles/branding.css" rel="stylesheet" type="text/css" />
     <link href="site.css" rel="Stylesheet" type="text/css" />
-	<script src="../Scripts/branding.js" language=javascript type="text/javascript"><!------/></script>
+	<script src="../scripts/branding.js" language=javascript type="text/javascript"><!------/></script>
 </head>
 <body>
     <form id="SandcastleSampleSite" runat="server">

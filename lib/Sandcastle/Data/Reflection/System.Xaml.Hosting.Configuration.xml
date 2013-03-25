@@ -1,0 +1,1339 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies>
+    <assembly name="System.Xaml.Hosting">
+      <assemblydata version="4.0.0.0" culture="" key="0024000004800000940000000602000000240000525341310004000001000100B5FC90E7027F67871E773A8FDE8938C81DD402BA65B9201D60593E96C492651E889CC13F1415EBB53FAC1131AE0BD333C5EE6021672D9718EA31A8AEBD0DA0072F25D87DBA6FC90FFD598ED4DA35E44C398C454307E8E33B8426143DAEC9F596836F97C8F74750E5975C64E2189F45DEF46B2A2B1247ADC3652BF5C308055DA9" hash="SHA1" />
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.Xaml.Hosting.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.Xaml.Hosting.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.Xaml.Hosting.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft® .NET Framework</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>© Microsoft Corporation.  All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.30319.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.30319.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\dd\tools\devdiv\35MSSharedLib1024.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.AssemblyTargetedPatchBandAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>1.0.21-0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.SecurityPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="RequestMinimum" />
+            </enumValue>
+          </argument>
+          <assignment name="Execution">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </assembly>
+  </assemblies>
+  <apis>
+    <api id="N:System.Xaml.Hosting.Configuration">
+      <topicdata group="api" />
+      <apidata name="System.Xaml.Hosting.Configuration" group="namespace" />
+      <elements>
+        <element api="T:System.Xaml.Hosting.Configuration.HandlerElement" />
+        <element api="T:System.Xaml.Hosting.Configuration.HandlerElementCollection" />
+        <element api="T:System.Xaml.Hosting.Configuration.XamlHostingSection" />
+        <element api="T:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup" />
+      </elements>
+      <file name="e1dc26b5-a193-dddb-fd0f-38bd5d5dda35" />
+    </api>
+    <api id="T:System.Xaml.Hosting.Configuration.HandlerElement">
+      <topicdata group="api" allMembersTopicId="AllMembers.T:System.Xaml.Hosting.Configuration.HandlerElement" />
+      <apidata name="HandlerElement" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Configuration.ConfigurationElement" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+      </containers>
+      <file name="d4cdd2ab-4d98-cb88-7655-8ca34fffa12b" />
+    </api>
+    <api id="AllMembers.T:System.Xaml.Hosting.Configuration.HandlerElement">
+      <topicdata name="HandlerElement" group="list" subgroup="members" typeTopicId="T:System.Xaml.Hosting.Configuration.HandlerElement" />
+      <apidata name="HandlerElement" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+        <element api="P:System.Configuration.ConfigurationElement.CurrentConfiguration" />
+        <element api="M:System.Configuration.ConfigurationElement.DeserializeElement(System.Xml.XmlReader,System.Boolean)" />
+        <element api="P:System.Configuration.ConfigurationElement.ElementInformation" />
+        <element api="P:System.Configuration.ConfigurationElement.ElementProperty" />
+        <element api="M:System.Configuration.ConfigurationElement.Equals(System.Object)" />
+        <element api="P:System.Configuration.ConfigurationElement.EvaluationContext" />
+        <element api="M:System.Configuration.ConfigurationElement.GetHashCode" />
+        <element api="M:System.Configuration.ConfigurationElement.GetTransformedAssemblyString(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.GetTransformedTypeString(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.Init" />
+        <element api="M:System.Configuration.ConfigurationElement.InitializeDefault" />
+        <element api="M:System.Configuration.ConfigurationElement.IsModified" />
+        <element api="M:System.Configuration.ConfigurationElement.IsReadOnly" />
+        <element api="Overload:System.Xaml.Hosting.Configuration.HandlerElement.Item">
+          <element api="P:System.Configuration.ConfigurationElement.Item(System.Configuration.ConfigurationProperty)" />
+          <element api="P:System.Configuration.ConfigurationElement.Item(System.String)" />
+        </element>
+        <element api="M:System.Configuration.ConfigurationElement.ListErrors(System.Collections.IList)" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAllAttributesExcept" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAllElementsExcept" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAttributes" />
+        <element api="P:System.Configuration.ConfigurationElement.LockElements" />
+        <element api="P:System.Configuration.ConfigurationElement.LockItem" />
+        <element api="M:System.Configuration.ConfigurationElement.OnDeserializeUnrecognizedAttribute(System.String,System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.OnDeserializeUnrecognizedElement(System.String,System.Xml.XmlReader)" />
+        <element api="M:System.Configuration.ConfigurationElement.OnRequiredPropertyNotFound(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.PostDeserialize" />
+        <element api="M:System.Configuration.ConfigurationElement.PreSerialize(System.Xml.XmlWriter)" />
+        <element api="P:System.Configuration.ConfigurationElement.Properties" />
+        <element api="M:System.Configuration.ConfigurationElement.Reset(System.Configuration.ConfigurationElement)" />
+        <element api="M:System.Configuration.ConfigurationElement.ResetModified" />
+        <element api="M:System.Configuration.ConfigurationElement.SerializeElement(System.Xml.XmlWriter,System.Boolean)" />
+        <element api="M:System.Configuration.ConfigurationElement.SerializeToXmlElement(System.Xml.XmlWriter,System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.SetPropertyValue(System.Configuration.ConfigurationProperty,System.Object,System.Boolean)" />
+        <element api="M:System.Configuration.ConfigurationElement.SetReadOnly" />
+        <element api="M:System.Configuration.ConfigurationElement.Unmerge(System.Configuration.ConfigurationElement,System.Configuration.ConfigurationElement,System.Configuration.ConfigurationSaveMode)" />
+        <element api="Overload:System.Xaml.Hosting.Configuration.HandlerElement.#ctor">
+          <element api="M:System.Xaml.Hosting.Configuration.HandlerElement.#ctor" />
+          <element api="M:System.Xaml.Hosting.Configuration.HandlerElement.#ctor(System.String,System.String)" />
+        </element>
+        <element api="P:System.Xaml.Hosting.Configuration.HandlerElement.HttpHandlerType" />
+        <element api="P:System.Xaml.Hosting.Configuration.HandlerElement.XamlRootElementType" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+      </containers>
+      <file name="76bb360e-962a-2d25-895f-bd2d6b3695e0" />
+    </api>
+    <api id="Methods.T:System.Xaml.Hosting.Configuration.HandlerElement">
+      <topicdata name="HandlerElement" group="list" subgroup="Methods" typeTopicId="T:System.Xaml.Hosting.Configuration.HandlerElement" />
+      <apidata name="HandlerElement" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Configuration.ConfigurationElement.DeserializeElement(System.Xml.XmlReader,System.Boolean)" />
+        <element api="M:System.Configuration.ConfigurationElement.Equals(System.Object)" />
+        <element api="M:System.Configuration.ConfigurationElement.GetHashCode" />
+        <element api="M:System.Configuration.ConfigurationElement.GetTransformedAssemblyString(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.GetTransformedTypeString(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.Init" />
+        <element api="M:System.Configuration.ConfigurationElement.InitializeDefault" />
+        <element api="M:System.Configuration.ConfigurationElement.IsModified" />
+        <element api="M:System.Configuration.ConfigurationElement.IsReadOnly" />
+        <element api="M:System.Configuration.ConfigurationElement.ListErrors(System.Collections.IList)" />
+        <element api="M:System.Configuration.ConfigurationElement.OnDeserializeUnrecognizedAttribute(System.String,System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.OnDeserializeUnrecognizedElement(System.String,System.Xml.XmlReader)" />
+        <element api="M:System.Configuration.ConfigurationElement.OnRequiredPropertyNotFound(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.PostDeserialize" />
+        <element api="M:System.Configuration.ConfigurationElement.PreSerialize(System.Xml.XmlWriter)" />
+        <element api="M:System.Configuration.ConfigurationElement.Reset(System.Configuration.ConfigurationElement)" />
+        <element api="M:System.Configuration.ConfigurationElement.ResetModified" />
+        <element api="M:System.Configuration.ConfigurationElement.SerializeElement(System.Xml.XmlWriter,System.Boolean)" />
+        <element api="M:System.Configuration.ConfigurationElement.SerializeToXmlElement(System.Xml.XmlWriter,System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.SetPropertyValue(System.Configuration.ConfigurationProperty,System.Object,System.Boolean)" />
+        <element api="M:System.Configuration.ConfigurationElement.SetReadOnly" />
+        <element api="M:System.Configuration.ConfigurationElement.Unmerge(System.Configuration.ConfigurationElement,System.Configuration.ConfigurationElement,System.Configuration.ConfigurationSaveMode)" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+      </containers>
+      <file name="c94326a1-4f10-0fd7-ef8b-66d3c2a7cd11" />
+    </api>
+    <api id="Properties.T:System.Xaml.Hosting.Configuration.HandlerElement">
+      <topicdata name="HandlerElement" group="list" subgroup="Properties" typeTopicId="T:System.Xaml.Hosting.Configuration.HandlerElement" />
+      <apidata name="HandlerElement" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="P:System.Configuration.ConfigurationElement.CurrentConfiguration" />
+        <element api="P:System.Configuration.ConfigurationElement.ElementInformation" />
+        <element api="P:System.Configuration.ConfigurationElement.ElementProperty" />
+        <element api="P:System.Configuration.ConfigurationElement.EvaluationContext" />
+        <element api="Overload:System.Xaml.Hosting.Configuration.HandlerElement.Item">
+          <element api="P:System.Configuration.ConfigurationElement.Item(System.Configuration.ConfigurationProperty)" />
+          <element api="P:System.Configuration.ConfigurationElement.Item(System.String)" />
+        </element>
+        <element api="P:System.Configuration.ConfigurationElement.LockAllAttributesExcept" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAllElementsExcept" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAttributes" />
+        <element api="P:System.Configuration.ConfigurationElement.LockElements" />
+        <element api="P:System.Configuration.ConfigurationElement.LockItem" />
+        <element api="P:System.Configuration.ConfigurationElement.Properties" />
+        <element api="P:System.Xaml.Hosting.Configuration.HandlerElement.HttpHandlerType" />
+        <element api="P:System.Xaml.Hosting.Configuration.HandlerElement.XamlRootElementType" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+      </containers>
+      <file name="237336c0-7fcc-8329-f024-c4879b1a8150" />
+    </api>
+    <api id="Overload:System.Xaml.Hosting.Configuration.HandlerElement.Item">
+      <topicdata name="Item" group="list" subgroup="overload" memberSubgroup="property" pseudo="true" allMembersTopicId="AllMembers.T:System.Xaml.Hosting.Configuration.HandlerElement" allInherited="true" parentTopicId="Overload:System.Configuration.ConfigurationElement.Item" />
+      <apidata name="Item" group="member" subgroup="property" />
+      <elements>
+        <element api="P:System.Configuration.ConfigurationElement.Item(System.Configuration.ConfigurationProperty)" />
+        <element api="P:System.Configuration.ConfigurationElement.Item(System.String)" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElement" />
+      </containers>
+      <file name="e1adc804-7429-e9c3-187c-c2236412bc0d" />
+    </api>
+    <api id="Overload:System.Xaml.Hosting.Configuration.HandlerElement.#ctor">
+      <topicdata name=".ctor" group="list" subgroup="overload" memberSubgroup="constructor" pseudo="true" allMembersTopicId="AllMembers.T:System.Xaml.Hosting.Configuration.HandlerElement" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <elements>
+        <element api="M:System.Xaml.Hosting.Configuration.HandlerElement.#ctor" />
+        <element api="M:System.Xaml.Hosting.Configuration.HandlerElement.#ctor(System.String,System.String)" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElement" ref="true" />
+      </containers>
+      <file name="21c19d67-a47b-ec98-bc1b-203367d97532" />
+    </api>
+    <api id="M:System.Xaml.Hosting.Configuration.HandlerElement.#ctor">
+      <topicdata group="api" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" special="true" overload="Overload:System.Xaml.Hosting.Configuration.HandlerElement.#ctor" />
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElement" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Performance critical to inline this type of method across NGen image boundaries</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="0c712573-7b79-8f11-a981-19afa84ac2c4" />
+    </api>
+    <api id="M:System.Xaml.Hosting.Configuration.HandlerElement.#ctor(System.String,System.String)">
+      <topicdata group="api" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" special="true" overload="Overload:System.Xaml.Hosting.Configuration.HandlerElement.#ctor" />
+      <parameters>
+        <parameter name="xamlType">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="handlerType">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElement" ref="true" />
+      </containers>
+      <file name="f9560f6a-011d-2473-c2e1-c40f907ba7ba" />
+    </api>
+    <api id="P:System.Xaml.Hosting.Configuration.HandlerElement.HttpHandlerType">
+      <topicdata group="api" />
+      <apidata name="HttpHandlerType" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_HttpHandlerType" />
+      <setter name="set_HttpHandlerType" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElement" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Configuration.ConfigurationPropertyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>httpHandlerType</value>
+          </argument>
+          <assignment name="DefaultValue">
+            <type api="T:System.String" ref="true" />
+            <value />
+          </assignment>
+          <assignment name="Options">
+            <type api="T:System.Configuration.ConfigurationPropertyOptions" ref="false" />
+            <enumValue>
+              <field name="IsRequired" />
+            </enumValue>
+          </assignment>
+        </attribute>
+        <attribute>
+          <type api="T:System.Configuration.StringValidatorAttribute" ref="true" />
+          <assignment name="MinLength">
+            <type api="T:System.Int32" ref="false" />
+            <value>1</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="21647460-b3ff-387b-5f46-bc0b4937d2a6" />
+    </api>
+    <api id="P:System.Xaml.Hosting.Configuration.HandlerElement.XamlRootElementType">
+      <topicdata group="api" />
+      <apidata name="XamlRootElementType" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_XamlRootElementType" />
+      <setter name="set_XamlRootElementType" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElement" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Configuration.ConfigurationPropertyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>xamlRootElementType</value>
+          </argument>
+          <assignment name="DefaultValue">
+            <type api="T:System.String" ref="true" />
+            <value />
+          </assignment>
+          <assignment name="Options">
+            <type api="T:System.Configuration.ConfigurationPropertyOptions" ref="false" />
+            <enumValue>
+              <field name="None" />
+              <field name="IsRequired" />
+              <field name="IsKey" />
+            </enumValue>
+          </assignment>
+        </attribute>
+        <attribute>
+          <type api="T:System.Configuration.StringValidatorAttribute" ref="true" />
+          <assignment name="MinLength">
+            <type api="T:System.Int32" ref="false" />
+            <value>1</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="07fe1781-f6c2-f801-3f6a-e2a7907b8a18" />
+    </api>
+    <api id="T:System.Xaml.Hosting.Configuration.HandlerElementCollection">
+      <topicdata group="api" allMembersTopicId="AllMembers.T:System.Xaml.Hosting.Configuration.HandlerElementCollection" />
+      <apidata name="HandlerElementCollection" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Configuration.ConfigurationElementCollection" ref="true" />
+          <type api="T:System.Configuration.ConfigurationElement" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Configuration.ConfigurationCollectionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Type" ref="true" />
+            <typeValue>
+              <type api="T:System.Xaml.Hosting.Configuration.HandlerElement" ref="true" />
+            </typeValue>
+          </argument>
+          <assignment name="CollectionType">
+            <type api="T:System.Configuration.ConfigurationElementCollectionType" ref="false" />
+            <enumValue>
+              <field name="AddRemoveClearMapAlternate" />
+            </enumValue>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="4ba9bc2a-d4fc-d9d6-4c08-134e19236ad8" />
+    </api>
+    <api id="AllMembers.T:System.Xaml.Hosting.Configuration.HandlerElementCollection">
+      <topicdata name="HandlerElementCollection" group="list" subgroup="members" typeTopicId="T:System.Xaml.Hosting.Configuration.HandlerElementCollection" />
+      <apidata name="HandlerElementCollection" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+        <element api="P:System.Configuration.ConfigurationElement.CurrentConfiguration" />
+        <element api="M:System.Configuration.ConfigurationElement.DeserializeElement(System.Xml.XmlReader,System.Boolean)" />
+        <element api="P:System.Configuration.ConfigurationElement.ElementInformation" />
+        <element api="P:System.Configuration.ConfigurationElement.ElementProperty" />
+        <element api="P:System.Configuration.ConfigurationElement.EvaluationContext" />
+        <element api="M:System.Configuration.ConfigurationElement.GetTransformedAssemblyString(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.GetTransformedTypeString(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.Init" />
+        <element api="M:System.Configuration.ConfigurationElement.InitializeDefault" />
+        <element api="Overload:System.Xaml.Hosting.Configuration.HandlerElementCollection.Item">
+          <element api="P:System.Configuration.ConfigurationElement.Item(System.Configuration.ConfigurationProperty)" />
+          <element api="P:System.Xaml.Hosting.Configuration.HandlerElementCollection.Item(System.Int32)" />
+          <element api="P:System.Configuration.ConfigurationElement.Item(System.String)" />
+        </element>
+        <element api="M:System.Configuration.ConfigurationElement.ListErrors(System.Collections.IList)" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAllAttributesExcept" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAllElementsExcept" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAttributes" />
+        <element api="P:System.Configuration.ConfigurationElement.LockElements" />
+        <element api="P:System.Configuration.ConfigurationElement.LockItem" />
+        <element api="M:System.Configuration.ConfigurationElement.OnDeserializeUnrecognizedAttribute(System.String,System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.OnRequiredPropertyNotFound(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.PostDeserialize" />
+        <element api="M:System.Configuration.ConfigurationElement.PreSerialize(System.Xml.XmlWriter)" />
+        <element api="P:System.Configuration.ConfigurationElement.Properties" />
+        <element api="M:System.Configuration.ConfigurationElement.SerializeToXmlElement(System.Xml.XmlWriter,System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.SetPropertyValue(System.Configuration.ConfigurationProperty,System.Object,System.Boolean)" />
+        <element api="P:System.Configuration.ConfigurationElementCollection.AddElementName" />
+        <element api="Overload:System.Xaml.Hosting.Configuration.HandlerElementCollection.BaseAdd">
+          <element api="M:System.Configuration.ConfigurationElementCollection.BaseAdd(System.Configuration.ConfigurationElement)" />
+          <element api="M:System.Configuration.ConfigurationElementCollection.BaseAdd(System.Configuration.ConfigurationElement,System.Boolean)" />
+          <element api="M:System.Configuration.ConfigurationElementCollection.BaseAdd(System.Int32,System.Configuration.ConfigurationElement)" />
+        </element>
+        <element api="M:System.Configuration.ConfigurationElementCollection.BaseClear" />
+        <element api="Overload:System.Xaml.Hosting.Configuration.HandlerElementCollection.BaseGet">
+          <element api="M:System.Configuration.ConfigurationElementCollection.BaseGet(System.Int32)" />
+          <element api="M:System.Configuration.ConfigurationElementCollection.BaseGet(System.Object)" />
+        </element>
+        <element api="M:System.Configuration.ConfigurationElementCollection.BaseGetAllKeys" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.BaseGetKey(System.Int32)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.BaseIndexOf(System.Configuration.ConfigurationElement)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.BaseIsRemoved(System.Object)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.BaseRemove(System.Object)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.BaseRemoveAt(System.Int32)" />
+        <element api="P:System.Configuration.ConfigurationElementCollection.ClearElementName" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.CopyTo(System.Configuration.ConfigurationElement[],System.Int32)" />
+        <element api="P:System.Configuration.ConfigurationElementCollection.Count" />
+        <element api="Overload:System.Xaml.Hosting.Configuration.HandlerElementCollection.CreateNewElement">
+          <element api="M:System.Configuration.ConfigurationElementCollection.CreateNewElement" />
+          <element api="M:System.Configuration.ConfigurationElementCollection.CreateNewElement(System.String)" />
+        </element>
+        <element api="P:System.Configuration.ConfigurationElementCollection.ElementName" />
+        <element api="P:System.Configuration.ConfigurationElementCollection.EmitClear" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.Equals(System.Object)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.GetElementKey(System.Configuration.ConfigurationElement)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.GetEnumerator" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.GetHashCode" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.IsElementName(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.IsElementRemovable(System.Configuration.ConfigurationElement)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.IsModified" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.IsReadOnly" />
+        <element api="P:System.Configuration.ConfigurationElementCollection.IsSynchronized" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.OnDeserializeUnrecognizedElement(System.String,System.Xml.XmlReader)" />
+        <element api="P:System.Configuration.ConfigurationElementCollection.RemoveElementName" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.Reset(System.Configuration.ConfigurationElement)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.ResetModified" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.SerializeElement(System.Xml.XmlWriter,System.Boolean)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.SetReadOnly" />
+        <element api="P:System.Configuration.ConfigurationElementCollection.SyncRoot" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)" />
+        <element api="P:System.Configuration.ConfigurationElementCollection.ThrowOnDuplicate" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.Unmerge(System.Configuration.ConfigurationElement,System.Configuration.ConfigurationElement,System.Configuration.ConfigurationSaveMode)" />
+        <element api="M:System.Xaml.Hosting.Configuration.HandlerElementCollection.#ctor" />
+        <element api="M:System.Xaml.Hosting.Configuration.HandlerElementCollection.Add(System.Xaml.Hosting.Configuration.HandlerElement)" />
+        <element api="M:System.Xaml.Hosting.Configuration.HandlerElementCollection.Clear" />
+        <element api="P:System.Xaml.Hosting.Configuration.HandlerElementCollection.CollectionType" />
+        <element api="Overload:System.Xaml.Hosting.Configuration.HandlerElementCollection.Remove">
+          <element api="M:System.Xaml.Hosting.Configuration.HandlerElementCollection.Remove(System.Xaml.Hosting.Configuration.HandlerElement)" />
+          <element api="M:System.Xaml.Hosting.Configuration.HandlerElementCollection.Remove(System.String)" />
+        </element>
+        <element api="M:System.Xaml.Hosting.Configuration.HandlerElementCollection.RemoveAt(System.Int32)" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+      </containers>
+      <file name="3c466ccd-87d8-5c68-076f-bef4d3c0a5b1" />
+    </api>
+    <api id="Methods.T:System.Xaml.Hosting.Configuration.HandlerElementCollection">
+      <topicdata name="HandlerElementCollection" group="list" subgroup="Methods" typeTopicId="T:System.Xaml.Hosting.Configuration.HandlerElementCollection" />
+      <apidata name="HandlerElementCollection" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Configuration.ConfigurationElement.DeserializeElement(System.Xml.XmlReader,System.Boolean)" />
+        <element api="M:System.Configuration.ConfigurationElement.GetTransformedAssemblyString(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.GetTransformedTypeString(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.Init" />
+        <element api="M:System.Configuration.ConfigurationElement.InitializeDefault" />
+        <element api="M:System.Configuration.ConfigurationElement.ListErrors(System.Collections.IList)" />
+        <element api="M:System.Configuration.ConfigurationElement.OnDeserializeUnrecognizedAttribute(System.String,System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.OnRequiredPropertyNotFound(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.PostDeserialize" />
+        <element api="M:System.Configuration.ConfigurationElement.PreSerialize(System.Xml.XmlWriter)" />
+        <element api="M:System.Configuration.ConfigurationElement.SerializeToXmlElement(System.Xml.XmlWriter,System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.SetPropertyValue(System.Configuration.ConfigurationProperty,System.Object,System.Boolean)" />
+        <element api="Overload:System.Xaml.Hosting.Configuration.HandlerElementCollection.BaseAdd">
+          <element api="M:System.Configuration.ConfigurationElementCollection.BaseAdd(System.Configuration.ConfigurationElement)" />
+          <element api="M:System.Configuration.ConfigurationElementCollection.BaseAdd(System.Configuration.ConfigurationElement,System.Boolean)" />
+          <element api="M:System.Configuration.ConfigurationElementCollection.BaseAdd(System.Int32,System.Configuration.ConfigurationElement)" />
+        </element>
+        <element api="M:System.Configuration.ConfigurationElementCollection.BaseClear" />
+        <element api="Overload:System.Xaml.Hosting.Configuration.HandlerElementCollection.BaseGet">
+          <element api="M:System.Configuration.ConfigurationElementCollection.BaseGet(System.Int32)" />
+          <element api="M:System.Configuration.ConfigurationElementCollection.BaseGet(System.Object)" />
+        </element>
+        <element api="M:System.Configuration.ConfigurationElementCollection.BaseGetAllKeys" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.BaseGetKey(System.Int32)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.BaseIndexOf(System.Configuration.ConfigurationElement)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.BaseIsRemoved(System.Object)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.BaseRemove(System.Object)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.BaseRemoveAt(System.Int32)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.CopyTo(System.Configuration.ConfigurationElement[],System.Int32)" />
+        <element api="Overload:System.Xaml.Hosting.Configuration.HandlerElementCollection.CreateNewElement">
+          <element api="M:System.Configuration.ConfigurationElementCollection.CreateNewElement" />
+          <element api="M:System.Configuration.ConfigurationElementCollection.CreateNewElement(System.String)" />
+        </element>
+        <element api="M:System.Configuration.ConfigurationElementCollection.Equals(System.Object)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.GetElementKey(System.Configuration.ConfigurationElement)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.GetEnumerator" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.GetHashCode" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.IsElementName(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.IsElementRemovable(System.Configuration.ConfigurationElement)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.IsModified" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.IsReadOnly" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.OnDeserializeUnrecognizedElement(System.String,System.Xml.XmlReader)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.Reset(System.Configuration.ConfigurationElement)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.ResetModified" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.SerializeElement(System.Xml.XmlWriter,System.Boolean)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.SetReadOnly" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.Unmerge(System.Configuration.ConfigurationElement,System.Configuration.ConfigurationElement,System.Configuration.ConfigurationSaveMode)" />
+        <element api="M:System.Xaml.Hosting.Configuration.HandlerElementCollection.Add(System.Xaml.Hosting.Configuration.HandlerElement)" />
+        <element api="M:System.Xaml.Hosting.Configuration.HandlerElementCollection.Clear" />
+        <element api="Overload:System.Xaml.Hosting.Configuration.HandlerElementCollection.Remove">
+          <element api="M:System.Xaml.Hosting.Configuration.HandlerElementCollection.Remove(System.Xaml.Hosting.Configuration.HandlerElement)" />
+          <element api="M:System.Xaml.Hosting.Configuration.HandlerElementCollection.Remove(System.String)" />
+        </element>
+        <element api="M:System.Xaml.Hosting.Configuration.HandlerElementCollection.RemoveAt(System.Int32)" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+      </containers>
+      <file name="a5bfde3a-6925-383f-5c72-d0dd24b7a15f" />
+    </api>
+    <api id="Properties.T:System.Xaml.Hosting.Configuration.HandlerElementCollection">
+      <topicdata name="HandlerElementCollection" group="list" subgroup="Properties" typeTopicId="T:System.Xaml.Hosting.Configuration.HandlerElementCollection" />
+      <apidata name="HandlerElementCollection" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="P:System.Configuration.ConfigurationElement.CurrentConfiguration" />
+        <element api="P:System.Configuration.ConfigurationElement.ElementInformation" />
+        <element api="P:System.Configuration.ConfigurationElement.ElementProperty" />
+        <element api="P:System.Configuration.ConfigurationElement.EvaluationContext" />
+        <element api="Overload:System.Xaml.Hosting.Configuration.HandlerElementCollection.Item">
+          <element api="P:System.Configuration.ConfigurationElement.Item(System.Configuration.ConfigurationProperty)" />
+          <element api="P:System.Xaml.Hosting.Configuration.HandlerElementCollection.Item(System.Int32)" />
+          <element api="P:System.Configuration.ConfigurationElement.Item(System.String)" />
+        </element>
+        <element api="P:System.Configuration.ConfigurationElement.LockAllAttributesExcept" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAllElementsExcept" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAttributes" />
+        <element api="P:System.Configuration.ConfigurationElement.LockElements" />
+        <element api="P:System.Configuration.ConfigurationElement.LockItem" />
+        <element api="P:System.Configuration.ConfigurationElement.Properties" />
+        <element api="P:System.Configuration.ConfigurationElementCollection.AddElementName" />
+        <element api="P:System.Configuration.ConfigurationElementCollection.ClearElementName" />
+        <element api="P:System.Configuration.ConfigurationElementCollection.Count" />
+        <element api="P:System.Configuration.ConfigurationElementCollection.ElementName" />
+        <element api="P:System.Configuration.ConfigurationElementCollection.EmitClear" />
+        <element api="P:System.Configuration.ConfigurationElementCollection.IsSynchronized" />
+        <element api="P:System.Configuration.ConfigurationElementCollection.RemoveElementName" />
+        <element api="P:System.Configuration.ConfigurationElementCollection.SyncRoot" />
+        <element api="P:System.Configuration.ConfigurationElementCollection.ThrowOnDuplicate" />
+        <element api="P:System.Xaml.Hosting.Configuration.HandlerElementCollection.CollectionType" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+      </containers>
+      <file name="972bf097-7cf9-9c13-5661-16b62a3ee83d" />
+    </api>
+    <api id="Overload:System.Xaml.Hosting.Configuration.HandlerElementCollection.Item">
+      <topicdata name="Item" group="list" subgroup="overload" memberSubgroup="property" pseudo="true" allMembersTopicId="AllMembers.T:System.Xaml.Hosting.Configuration.HandlerElementCollection" />
+      <apidata name="Item" group="member" subgroup="property" />
+      <elements>
+        <element api="P:System.Configuration.ConfigurationElement.Item(System.Configuration.ConfigurationProperty)" />
+        <element api="P:System.Xaml.Hosting.Configuration.HandlerElementCollection.Item(System.Int32)" />
+        <element api="P:System.Configuration.ConfigurationElement.Item(System.String)" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElementCollection" ref="true" />
+      </containers>
+      <file name="4dc04fab-a2ee-e2b1-00ae-72f49a67aa59" />
+    </api>
+    <api id="Overload:System.Xaml.Hosting.Configuration.HandlerElementCollection.BaseAdd">
+      <topicdata name="BaseAdd" group="list" subgroup="overload" memberSubgroup="method" pseudo="true" allMembersTopicId="AllMembers.T:System.Xaml.Hosting.Configuration.HandlerElementCollection" allInherited="true" parentTopicId="Overload:System.Configuration.ConfigurationElementCollection.BaseAdd" />
+      <apidata name="BaseAdd" group="member" subgroup="method" />
+      <elements>
+        <element api="M:System.Configuration.ConfigurationElementCollection.BaseAdd(System.Configuration.ConfigurationElement)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.BaseAdd(System.Configuration.ConfigurationElement,System.Boolean)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.BaseAdd(System.Int32,System.Configuration.ConfigurationElement)" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElementCollection" />
+      </containers>
+      <file name="88ea5c47-0f7c-cffc-edb0-c87cbaed042f" />
+    </api>
+    <api id="Overload:System.Xaml.Hosting.Configuration.HandlerElementCollection.BaseGet">
+      <topicdata name="BaseGet" group="list" subgroup="overload" memberSubgroup="method" pseudo="true" allMembersTopicId="AllMembers.T:System.Xaml.Hosting.Configuration.HandlerElementCollection" allInherited="true" parentTopicId="Overload:System.Configuration.ConfigurationElementCollection.BaseGet" />
+      <apidata name="BaseGet" group="member" subgroup="method" />
+      <elements>
+        <element api="M:System.Configuration.ConfigurationElementCollection.BaseGet(System.Int32)" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.BaseGet(System.Object)" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElementCollection" />
+      </containers>
+      <file name="b85c92c5-979e-fd81-b14d-9166b81662dc" />
+    </api>
+    <api id="Overload:System.Xaml.Hosting.Configuration.HandlerElementCollection.CreateNewElement">
+      <topicdata name="CreateNewElement" group="list" subgroup="overload" memberSubgroup="method" pseudo="true" allMembersTopicId="AllMembers.T:System.Xaml.Hosting.Configuration.HandlerElementCollection" allInherited="true" parentTopicId="Overload:System.Configuration.ConfigurationElementCollection.CreateNewElement" />
+      <apidata name="CreateNewElement" group="member" subgroup="method" />
+      <elements>
+        <element api="M:System.Configuration.ConfigurationElementCollection.CreateNewElement" />
+        <element api="M:System.Configuration.ConfigurationElementCollection.CreateNewElement(System.String)" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElementCollection" />
+      </containers>
+      <file name="e58b1679-f8c2-663e-45a1-5497eef84a39" />
+    </api>
+    <api id="Overload:System.Xaml.Hosting.Configuration.HandlerElementCollection.Remove">
+      <topicdata name="Remove" group="list" subgroup="overload" memberSubgroup="method" pseudo="true" allMembersTopicId="AllMembers.T:System.Xaml.Hosting.Configuration.HandlerElementCollection" />
+      <apidata name="Remove" group="member" subgroup="method" />
+      <elements>
+        <element api="M:System.Xaml.Hosting.Configuration.HandlerElementCollection.Remove(System.Xaml.Hosting.Configuration.HandlerElement)" />
+        <element api="M:System.Xaml.Hosting.Configuration.HandlerElementCollection.Remove(System.String)" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElementCollection" ref="true" />
+      </containers>
+      <file name="6b3a751c-9ef2-7944-aec1-adc197b411d3" />
+    </api>
+    <api id="M:System.Xaml.Hosting.Configuration.HandlerElementCollection.#ctor">
+      <topicdata group="api" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" special="true" />
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElementCollection" ref="true" />
+      </containers>
+      <file name="9adf223f-d845-a6c3-dac8-75f6deef8eba" />
+    </api>
+    <api id="M:System.Xaml.Hosting.Configuration.HandlerElementCollection.Add(System.Xaml.Hosting.Configuration.HandlerElement)">
+      <topicdata group="api" />
+      <apidata name="Add" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <parameters>
+        <parameter name="handlerElement">
+          <type api="T:System.Xaml.Hosting.Configuration.HandlerElement" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElementCollection" ref="true" />
+      </containers>
+      <file name="2d56917b-6157-0a9e-8e91-1bd18ea33c79" />
+    </api>
+    <api id="M:System.Xaml.Hosting.Configuration.HandlerElementCollection.Clear">
+      <topicdata group="api" />
+      <apidata name="Clear" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElementCollection" ref="true" />
+      </containers>
+      <file name="b3f34e8d-6954-2dbe-2473-4f380c27909d" />
+    </api>
+    <api id="P:System.Xaml.Hosting.Configuration.HandlerElementCollection.CollectionType">
+      <topicdata group="api" />
+      <apidata name="CollectionType" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="P:System.Configuration.ConfigurationElementCollection.CollectionType">
+          <type api="T:System.Configuration.ConfigurationElementCollection" ref="true" />
+        </member>
+      </overrides>
+      <propertydata get="true" />
+      <getter name="get_CollectionType" />
+      <returns>
+        <type api="T:System.Configuration.ConfigurationElementCollectionType" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElementCollection" ref="true" />
+      </containers>
+      <file name="eb6ad795-2db7-cb43-c208-05223131a8d0" />
+    </api>
+    <api id="P:System.Xaml.Hosting.Configuration.HandlerElementCollection.Item(System.Int32)">
+      <topicdata group="api" />
+      <apidata name="Item" group="member" subgroup="property" />
+      <memberdata visibility="public" overload="Overload:System.Xaml.Hosting.Configuration.HandlerElementCollection.Item" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_Item" />
+      <setter name="set_Item" />
+      <parameters>
+        <parameter name="index">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElement" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElementCollection" ref="true" />
+      </containers>
+      <file name="1e865e68-1f65-b116-5e79-5e57d63922e2" />
+    </api>
+    <api id="M:System.Xaml.Hosting.Configuration.HandlerElementCollection.Remove(System.String)">
+      <topicdata group="api" />
+      <apidata name="Remove" group="member" subgroup="method" />
+      <memberdata visibility="public" overload="Overload:System.Xaml.Hosting.Configuration.HandlerElementCollection.Remove" />
+      <proceduredata virtual="false" />
+      <parameters>
+        <parameter name="xamlRootElementType">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElementCollection" ref="true" />
+      </containers>
+      <file name="a7c60e5b-d364-ab87-058d-e16414b2b976" />
+    </api>
+    <api id="M:System.Xaml.Hosting.Configuration.HandlerElementCollection.Remove(System.Xaml.Hosting.Configuration.HandlerElement)">
+      <topicdata group="api" />
+      <apidata name="Remove" group="member" subgroup="method" />
+      <memberdata visibility="public" overload="Overload:System.Xaml.Hosting.Configuration.HandlerElementCollection.Remove" />
+      <proceduredata virtual="false" />
+      <parameters>
+        <parameter name="handlerElement">
+          <type api="T:System.Xaml.Hosting.Configuration.HandlerElement" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElementCollection" ref="true" />
+      </containers>
+      <file name="6bc4dcd6-082b-b313-e478-da00dd2e4bde" />
+    </api>
+    <api id="M:System.Xaml.Hosting.Configuration.HandlerElementCollection.RemoveAt(System.Int32)">
+      <topicdata group="api" />
+      <apidata name="RemoveAt" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <parameters>
+        <parameter name="index">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElementCollection" ref="true" />
+      </containers>
+      <file name="cdaa4fce-e459-6a00-d622-c805bf503314" />
+    </api>
+    <api id="T:System.Xaml.Hosting.Configuration.XamlHostingSection">
+      <topicdata group="api" allMembersTopicId="AllMembers.T:System.Xaml.Hosting.Configuration.XamlHostingSection" />
+      <apidata name="XamlHostingSection" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Configuration.ConfigurationSection" ref="true" />
+          <type api="T:System.Configuration.ConfigurationElement" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+      </containers>
+      <file name="2c7e15dd-93b8-d5c0-87a5-7f92d657e31c" />
+    </api>
+    <api id="AllMembers.T:System.Xaml.Hosting.Configuration.XamlHostingSection">
+      <topicdata name="XamlHostingSection" group="list" subgroup="members" typeTopicId="T:System.Xaml.Hosting.Configuration.XamlHostingSection" />
+      <apidata name="XamlHostingSection" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+        <element api="P:System.Configuration.ConfigurationElement.CurrentConfiguration" />
+        <element api="M:System.Configuration.ConfigurationElement.DeserializeElement(System.Xml.XmlReader,System.Boolean)" />
+        <element api="P:System.Configuration.ConfigurationElement.ElementInformation" />
+        <element api="P:System.Configuration.ConfigurationElement.ElementProperty" />
+        <element api="M:System.Configuration.ConfigurationElement.Equals(System.Object)" />
+        <element api="P:System.Configuration.ConfigurationElement.EvaluationContext" />
+        <element api="M:System.Configuration.ConfigurationElement.GetHashCode" />
+        <element api="M:System.Configuration.ConfigurationElement.GetTransformedAssemblyString(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.GetTransformedTypeString(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.Init" />
+        <element api="M:System.Configuration.ConfigurationElement.InitializeDefault" />
+        <element api="M:System.Configuration.ConfigurationElement.IsReadOnly" />
+        <element api="Overload:System.Xaml.Hosting.Configuration.XamlHostingSection.Item">
+          <element api="P:System.Configuration.ConfigurationElement.Item(System.Configuration.ConfigurationProperty)" />
+          <element api="P:System.Configuration.ConfigurationElement.Item(System.String)" />
+        </element>
+        <element api="M:System.Configuration.ConfigurationElement.ListErrors(System.Collections.IList)" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAllAttributesExcept" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAllElementsExcept" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAttributes" />
+        <element api="P:System.Configuration.ConfigurationElement.LockElements" />
+        <element api="P:System.Configuration.ConfigurationElement.LockItem" />
+        <element api="M:System.Configuration.ConfigurationElement.OnDeserializeUnrecognizedAttribute(System.String,System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.OnDeserializeUnrecognizedElement(System.String,System.Xml.XmlReader)" />
+        <element api="M:System.Configuration.ConfigurationElement.OnRequiredPropertyNotFound(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.PostDeserialize" />
+        <element api="M:System.Configuration.ConfigurationElement.PreSerialize(System.Xml.XmlWriter)" />
+        <element api="P:System.Configuration.ConfigurationElement.Properties" />
+        <element api="M:System.Configuration.ConfigurationElement.Reset(System.Configuration.ConfigurationElement)" />
+        <element api="M:System.Configuration.ConfigurationElement.SerializeElement(System.Xml.XmlWriter,System.Boolean)" />
+        <element api="M:System.Configuration.ConfigurationElement.SerializeToXmlElement(System.Xml.XmlWriter,System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.SetPropertyValue(System.Configuration.ConfigurationProperty,System.Object,System.Boolean)" />
+        <element api="M:System.Configuration.ConfigurationElement.SetReadOnly" />
+        <element api="M:System.Configuration.ConfigurationElement.Unmerge(System.Configuration.ConfigurationElement,System.Configuration.ConfigurationElement,System.Configuration.ConfigurationSaveMode)" />
+        <element api="M:System.Configuration.ConfigurationSection.DeserializeSection(System.Xml.XmlReader)" />
+        <element api="M:System.Configuration.ConfigurationSection.GetRuntimeObject" />
+        <element api="M:System.Configuration.ConfigurationSection.IsModified" />
+        <element api="M:System.Configuration.ConfigurationSection.ResetModified" />
+        <element api="P:System.Configuration.ConfigurationSection.SectionInformation" />
+        <element api="M:System.Configuration.ConfigurationSection.SerializeSection(System.Configuration.ConfigurationElement,System.String,System.Configuration.ConfigurationSaveMode)" />
+        <element api="M:System.Configuration.ConfigurationSection.ShouldSerializeElementInTargetVersion(System.Configuration.ConfigurationElement,System.String,System.Runtime.Versioning.FrameworkName)" />
+        <element api="M:System.Configuration.ConfigurationSection.ShouldSerializePropertyInTargetVersion(System.Configuration.ConfigurationProperty,System.String,System.Runtime.Versioning.FrameworkName,System.Configuration.ConfigurationElement)" />
+        <element api="M:System.Configuration.ConfigurationSection.ShouldSerializeSectionInTargetVersion(System.Runtime.Versioning.FrameworkName)" />
+        <element api="M:System.Xaml.Hosting.Configuration.XamlHostingSection.#ctor" />
+        <element api="P:System.Xaml.Hosting.Configuration.XamlHostingSection.Handlers" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+      </containers>
+      <file name="32a881e6-591d-c446-070a-ee45bf5ffc05" />
+    </api>
+    <api id="Methods.T:System.Xaml.Hosting.Configuration.XamlHostingSection">
+      <topicdata name="XamlHostingSection" group="list" subgroup="Methods" typeTopicId="T:System.Xaml.Hosting.Configuration.XamlHostingSection" />
+      <apidata name="XamlHostingSection" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Configuration.ConfigurationElement.DeserializeElement(System.Xml.XmlReader,System.Boolean)" />
+        <element api="M:System.Configuration.ConfigurationElement.Equals(System.Object)" />
+        <element api="M:System.Configuration.ConfigurationElement.GetHashCode" />
+        <element api="M:System.Configuration.ConfigurationElement.GetTransformedAssemblyString(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.GetTransformedTypeString(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.Init" />
+        <element api="M:System.Configuration.ConfigurationElement.InitializeDefault" />
+        <element api="M:System.Configuration.ConfigurationElement.IsReadOnly" />
+        <element api="M:System.Configuration.ConfigurationElement.ListErrors(System.Collections.IList)" />
+        <element api="M:System.Configuration.ConfigurationElement.OnDeserializeUnrecognizedAttribute(System.String,System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.OnDeserializeUnrecognizedElement(System.String,System.Xml.XmlReader)" />
+        <element api="M:System.Configuration.ConfigurationElement.OnRequiredPropertyNotFound(System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.PostDeserialize" />
+        <element api="M:System.Configuration.ConfigurationElement.PreSerialize(System.Xml.XmlWriter)" />
+        <element api="M:System.Configuration.ConfigurationElement.Reset(System.Configuration.ConfigurationElement)" />
+        <element api="M:System.Configuration.ConfigurationElement.SerializeElement(System.Xml.XmlWriter,System.Boolean)" />
+        <element api="M:System.Configuration.ConfigurationElement.SerializeToXmlElement(System.Xml.XmlWriter,System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.SetPropertyValue(System.Configuration.ConfigurationProperty,System.Object,System.Boolean)" />
+        <element api="M:System.Configuration.ConfigurationElement.SetReadOnly" />
+        <element api="M:System.Configuration.ConfigurationElement.Unmerge(System.Configuration.ConfigurationElement,System.Configuration.ConfigurationElement,System.Configuration.ConfigurationSaveMode)" />
+        <element api="M:System.Configuration.ConfigurationSection.DeserializeSection(System.Xml.XmlReader)" />
+        <element api="M:System.Configuration.ConfigurationSection.GetRuntimeObject" />
+        <element api="M:System.Configuration.ConfigurationSection.IsModified" />
+        <element api="M:System.Configuration.ConfigurationSection.ResetModified" />
+        <element api="M:System.Configuration.ConfigurationSection.SerializeSection(System.Configuration.ConfigurationElement,System.String,System.Configuration.ConfigurationSaveMode)" />
+        <element api="M:System.Configuration.ConfigurationSection.ShouldSerializeElementInTargetVersion(System.Configuration.ConfigurationElement,System.String,System.Runtime.Versioning.FrameworkName)" />
+        <element api="M:System.Configuration.ConfigurationSection.ShouldSerializePropertyInTargetVersion(System.Configuration.ConfigurationProperty,System.String,System.Runtime.Versioning.FrameworkName,System.Configuration.ConfigurationElement)" />
+        <element api="M:System.Configuration.ConfigurationSection.ShouldSerializeSectionInTargetVersion(System.Runtime.Versioning.FrameworkName)" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+      </containers>
+      <file name="957e26ef-4b9b-2ed6-d12b-5173a67386a7" />
+    </api>
+    <api id="Properties.T:System.Xaml.Hosting.Configuration.XamlHostingSection">
+      <topicdata name="XamlHostingSection" group="list" subgroup="Properties" typeTopicId="T:System.Xaml.Hosting.Configuration.XamlHostingSection" />
+      <apidata name="XamlHostingSection" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="P:System.Configuration.ConfigurationElement.CurrentConfiguration" />
+        <element api="P:System.Configuration.ConfigurationElement.ElementInformation" />
+        <element api="P:System.Configuration.ConfigurationElement.ElementProperty" />
+        <element api="P:System.Configuration.ConfigurationElement.EvaluationContext" />
+        <element api="Overload:System.Xaml.Hosting.Configuration.XamlHostingSection.Item">
+          <element api="P:System.Configuration.ConfigurationElement.Item(System.Configuration.ConfigurationProperty)" />
+          <element api="P:System.Configuration.ConfigurationElement.Item(System.String)" />
+        </element>
+        <element api="P:System.Configuration.ConfigurationElement.LockAllAttributesExcept" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAllElementsExcept" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAttributes" />
+        <element api="P:System.Configuration.ConfigurationElement.LockElements" />
+        <element api="P:System.Configuration.ConfigurationElement.LockItem" />
+        <element api="P:System.Configuration.ConfigurationElement.Properties" />
+        <element api="P:System.Configuration.ConfigurationSection.SectionInformation" />
+        <element api="P:System.Xaml.Hosting.Configuration.XamlHostingSection.Handlers" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+      </containers>
+      <file name="2b0f3e06-1f91-7c71-55b2-8052ce32b51f" />
+    </api>
+    <api id="Overload:System.Xaml.Hosting.Configuration.XamlHostingSection.Item">
+      <topicdata name="Item" group="list" subgroup="overload" memberSubgroup="property" pseudo="true" allMembersTopicId="AllMembers.T:System.Xaml.Hosting.Configuration.XamlHostingSection" allInherited="true" parentTopicId="Overload:System.Configuration.ConfigurationElement.Item" />
+      <apidata name="Item" group="member" subgroup="property" />
+      <elements>
+        <element api="P:System.Configuration.ConfigurationElement.Item(System.Configuration.ConfigurationProperty)" />
+        <element api="P:System.Configuration.ConfigurationElement.Item(System.String)" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.XamlHostingSection" />
+      </containers>
+      <file name="c7a55fbc-eccc-9696-7019-e24e97ad4e70" />
+    </api>
+    <api id="M:System.Xaml.Hosting.Configuration.XamlHostingSection.#ctor">
+      <topicdata group="api" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" special="true" />
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.XamlHostingSection" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Performance critical to inline this type of method across NGen image boundaries</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="ea04aa96-c8f4-f49f-829c-93cd576178e5" />
+    </api>
+    <api id="P:System.Xaml.Hosting.Configuration.XamlHostingSection.Handlers">
+      <topicdata group="api" />
+      <apidata name="Handlers" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" />
+      <getter name="get_Handlers" />
+      <returns>
+        <type api="T:System.Xaml.Hosting.Configuration.HandlerElementCollection" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.XamlHostingSection" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Configuration.ConfigurationPropertyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value />
+          </argument>
+          <assignment name="IsDefaultCollection">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="7121c387-2a3e-25a8-e9aa-b3b91d42a46a" />
+    </api>
+    <api id="T:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup">
+      <topicdata group="api" allMembersTopicId="AllMembers.T:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup" />
+      <apidata name="XamlHostingSectionGroup" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Configuration.ConfigurationSectionGroup" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+      </containers>
+      <file name="798f0e5f-83df-5034-b2f6-84593ba0fe00" />
+    </api>
+    <api id="AllMembers.T:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup">
+      <topicdata name="XamlHostingSectionGroup" group="list" subgroup="members" typeTopicId="T:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup" />
+      <apidata name="XamlHostingSectionGroup" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+        <element api="Overload:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup.ForceDeclaration">
+          <element api="M:System.Configuration.ConfigurationSectionGroup.ForceDeclaration" />
+          <element api="M:System.Configuration.ConfigurationSectionGroup.ForceDeclaration(System.Boolean)" />
+        </element>
+        <element api="P:System.Configuration.ConfigurationSectionGroup.IsDeclarationRequired" />
+        <element api="P:System.Configuration.ConfigurationSectionGroup.IsDeclared" />
+        <element api="P:System.Configuration.ConfigurationSectionGroup.Name" />
+        <element api="P:System.Configuration.ConfigurationSectionGroup.SectionGroupName" />
+        <element api="P:System.Configuration.ConfigurationSectionGroup.SectionGroups" />
+        <element api="P:System.Configuration.ConfigurationSectionGroup.Sections" />
+        <element api="M:System.Configuration.ConfigurationSectionGroup.ShouldSerializeSectionGroupInTargetVersion(System.Runtime.Versioning.FrameworkName)" />
+        <element api="P:System.Configuration.ConfigurationSectionGroup.Type" />
+        <element api="M:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup.#ctor" />
+        <element api="P:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup.XamlHostingSection" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+      </containers>
+      <file name="c4fd1476-6309-7f6d-23c1-4fba439a6e7a" />
+    </api>
+    <api id="Methods.T:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup">
+      <topicdata name="XamlHostingSectionGroup" group="list" subgroup="Methods" typeTopicId="T:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup" />
+      <apidata name="XamlHostingSectionGroup" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+        <element api="Overload:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup.ForceDeclaration">
+          <element api="M:System.Configuration.ConfigurationSectionGroup.ForceDeclaration" />
+          <element api="M:System.Configuration.ConfigurationSectionGroup.ForceDeclaration(System.Boolean)" />
+        </element>
+        <element api="M:System.Configuration.ConfigurationSectionGroup.ShouldSerializeSectionGroupInTargetVersion(System.Runtime.Versioning.FrameworkName)" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+      </containers>
+      <file name="22e9466d-3b61-a597-1260-df19298e3685" />
+    </api>
+    <api id="Properties.T:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup">
+      <topicdata name="XamlHostingSectionGroup" group="list" subgroup="Properties" typeTopicId="T:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup" />
+      <apidata name="XamlHostingSectionGroup" group="type" subgroup="class" />
+      <typedata visibility="public" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="P:System.Configuration.ConfigurationSectionGroup.IsDeclarationRequired" />
+        <element api="P:System.Configuration.ConfigurationSectionGroup.IsDeclared" />
+        <element api="P:System.Configuration.ConfigurationSectionGroup.Name" />
+        <element api="P:System.Configuration.ConfigurationSectionGroup.SectionGroupName" />
+        <element api="P:System.Configuration.ConfigurationSectionGroup.SectionGroups" />
+        <element api="P:System.Configuration.ConfigurationSectionGroup.Sections" />
+        <element api="P:System.Configuration.ConfigurationSectionGroup.Type" />
+        <element api="P:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup.XamlHostingSection" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+      </containers>
+      <file name="9c9f52a5-224e-eb0f-d777-0e68b4dade6b" />
+    </api>
+    <api id="Overload:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup.ForceDeclaration">
+      <topicdata name="ForceDeclaration" group="list" subgroup="overload" memberSubgroup="method" pseudo="true" allMembersTopicId="AllMembers.T:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup" allInherited="true" parentTopicId="Overload:System.Configuration.ConfigurationSectionGroup.ForceDeclaration" />
+      <apidata name="ForceDeclaration" group="member" subgroup="method" />
+      <elements>
+        <element api="M:System.Configuration.ConfigurationSectionGroup.ForceDeclaration" />
+        <element api="M:System.Configuration.ConfigurationSectionGroup.ForceDeclaration(System.Boolean)" />
+      </elements>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup" />
+      </containers>
+      <file name="b43d6130-6492-8a0d-0ced-71aa1b55f177" />
+    </api>
+    <api id="M:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup.#ctor">
+      <topicdata group="api" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" special="true" />
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Performance critical to inline this type of method across NGen image boundaries</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="1404b2de-92bd-4feb-9c7a-d104580cde04" />
+    </api>
+    <api id="P:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup.XamlHostingSection">
+      <topicdata group="api" />
+      <apidata name="XamlHostingSection" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" />
+      <getter name="get_XamlHostingSection" />
+      <returns>
+        <type api="T:System.Xaml.Hosting.Configuration.XamlHostingSection" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Xaml.Hosting" module="System.Xaml.Hosting" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:System.Xaml.Hosting.Configuration" />
+        <type api="T:System.Xaml.Hosting.Configuration.XamlHostingSectionGroup" ref="true" />
+      </containers>
+      <file name="216dde65-6c71-ced3-92dd-28c9da796a5e" />
+    </api>
+  </apis>
+</reflection>

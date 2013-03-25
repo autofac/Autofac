@@ -8,33 +8,28 @@
 	<xsl:import href="globalTemplates.xsl"/>
 	<xsl:import href="codeTemplates.xsl"/>
 	<xsl:import href="utilities_reference.xsl"/>
-	<xsl:import href="../../shared/transforms/utilities_bibliography.xsl"/>
+	<xsl:import href="utilities_bibliography.xsl"/>
 
-	<xsl:output method="xml"
-							omit-xml-declaration="yes"
-							indent="no"
-							encoding="utf-8"/>
+	<xsl:output method="xml" omit-xml-declaration="yes" indent="no" encoding="utf-8"/>
 
 	<!-- ============================================================================================
 	Parameters
 	============================================================================================= -->
 
-	<xsl:param name="bibliographyData"
-						 select="'../Data/bibliography.xml'"/>
-	<xsl:param name="omitXmlnsBoilerplate"
-						 select="'false'"/>
-	<xsl:param name="omitVersionInformation"
-						 select="'false'"/>
+	<xsl:param name="bibliographyData" select="'../Data/bibliography.xml'"/>
+	<xsl:param name="omitXmlnsBoilerplate" select="'false'"/>
+	<xsl:param name="omitVersionInformation" select="'false'"/>
 
 	<!-- ============================================================================================
 	Global Variables
 	============================================================================================= -->
 
-	<xsl:variable name="g_abstractSummary"
-								select="/document/comments/summary"/>
+	<xsl:variable name="g_abstractSummary" select="/document/comments/summary"/>
 	<xsl:variable name="g_hasSeeAlsoSection"
-								select="boolean((count(/document/comments//seealso | /document/reference/elements/element/overloads//seealso) > 0)  or 
-                           ($g_apiTopicGroup='type' or $g_apiTopicGroup='member' or $g_apiTopicGroup='list'))"/>
+		select="boolean((count(/document/comments//seealso[not(ancestor::overloads)] |
+		/document/comments/conceptualLink |
+		/document/reference/elements/element/overloads//seealso) > 0)  or 
+    ($g_apiTopicGroup='type' or $g_apiTopicGroup='member' or $g_apiTopicGroup='list'))"/>
 
 	<!-- ============================================================================================
 	Body
@@ -46,8 +41,7 @@
 		<xsl:apply-templates select="/document/comments/preliminary"/>
 		<xsl:apply-templates select="/document/comments/summary"/>
 		<xsl:if test="$g_apiTopicSubGroup='overload'">
-			<xsl:apply-templates select="/document/reference/elements"
-													 mode="overloadSummary"/>
+			<xsl:apply-templates select="/document/reference/elements" mode="overloadSummary"/>
 		</xsl:if>
 
 		<!-- inheritance -->
@@ -99,6 +93,8 @@
 			</xsl:when>
 		</xsl:choose>
 
+		<!-- events -->
+		<xsl:call-template name="t_events"/>
 		<!-- exceptions -->
 		<xsl:call-template name="t_exceptions"/>
 		<!-- remarks -->
@@ -150,10 +146,16 @@
 		</span>
 	</xsl:template>
 
-	<xsl:template match="preliminary"
-								name="t_preliminary">
-		<div>
-			<include item="preliminary"/>
+	<xsl:template match="preliminary" name="t_preliminary">
+		<div class="preliminary">
+			<xsl:choose>
+				<xsl:when test="normalize-space(.)">
+					<xsl:apply-templates/>
+				</xsl:when>
+				<xsl:otherwise>
+					<include item="preliminaryText" />
+				</xsl:otherwise>
+			</xsl:choose>
 		</div>
 	</xsl:template>
 
@@ -372,6 +374,38 @@
 	</xsl:template>
 
 	<!-- ======================================================================================== -->
+
+	<xsl:template name="t_events">
+		<xsl:if test="count(/document/comments/event) &gt; 0">
+			<xsl:call-template name="t_putSectionInclude">
+				<xsl:with-param name="p_titleInclude" select="'title_events'"/>
+				<xsl:with-param name="p_content">
+					<div class="tableSection">
+						<table>
+							<tr>
+								<th>
+									<include item="header_eventType"/>
+								</th>
+								<th>
+									<include item="header_eventReason"/>
+								</th>
+							</tr>
+							<xsl:for-each select="/document/comments/event">
+								<tr>
+									<td>
+										<referenceLink target="{@cref}" qualified="true"/>
+									</td>
+									<td>
+										<xsl:apply-templates select="."/>
+									</td>
+								</tr>
+							</xsl:for-each>
+						</table>
+					</div>
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
 
 	<xsl:template name="t_exceptions">
 		<xsl:if test="count(/document/comments/exception) &gt; 0">
@@ -650,8 +684,7 @@
 					<td>
 						<div class="code"
 								 style="margin-bottom: 0pt; white-space: pre-wrap;">
-							<pre xml:space="preserve"
-									 style="margin-bottom: 0pt"><xsl:value-of select="."/></pre>
+							<pre xml:space="preserve" style="margin-bottom: 0pt"><xsl:value-of select="."/></pre>
 						</div>
 						<xsl:if test="@description or @inheritedFrom or @exception">
 							<div style="font-size:95%; margin-left: 10pt;
@@ -722,8 +755,7 @@
 				<xsl:attribute name="name">seeAlsoSection</xsl:attribute>
 			</xsl:element>
 			<xsl:call-template name="t_putSectionInclude">
-				<xsl:with-param name="p_titleInclude"
-												select="'title_relatedTopics'"/>
+				<xsl:with-param name="p_titleInclude" select="'title_relatedTopics'"/>
 				<xsl:with-param name="p_content">
 					<xsl:call-template name="t_autogenSeeAlsoLinks"/>
 					<xsl:for-each select="/document/comments//seealso[not(ancestor::overloads)] | /document/reference/elements/element/overloads//seealso">
@@ -732,6 +764,12 @@
 								<xsl:with-param name="displaySeeAlso"
 																select="true()"/>
 							</xsl:apply-templates>
+						</div>
+					</xsl:for-each>
+					<!-- Copy conceptualLink elements as-is -->
+					<xsl:for-each select="/document/comments/conceptualLink">
+						<div class="seeAlsoStyle">
+							<xsl:copy-of select="."/>
 						</div>
 					</xsl:for-each>
 				</xsl:with-param>
@@ -1059,8 +1097,7 @@
 	</xsl:template>
 
 	<xsl:template match="see[@langword]">
-		<span sdata="langKeyword"
-					value="{@langword}">
+		<span sdata="langKeyword" value="{@langword}">
 			<xsl:variable name="v_syntaxKeyword">
 				<xsl:if test="/document/syntax">
 					<xsl:value-of select="'true'"/>
@@ -1069,38 +1106,32 @@
 			<xsl:choose>
 				<xsl:when test="@langword='null' or @langword='Nothing' or @langword='nullptr'">
 					<xsl:call-template name="t_nullKeyword">
-						<xsl:with-param name="p_syntaxKeyword"
-														select="$v_syntaxKeyword"/>
+						<xsl:with-param name="p_syntaxKeyword" select="$v_syntaxKeyword"/>
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:when test="@langword='static' or @langword='Shared'">
 					<xsl:call-template name="t_staticKeyword">
-						<xsl:with-param name="p_syntaxKeyword"
-														select="$v_syntaxKeyword"/>
+						<xsl:with-param name="p_syntaxKeyword" select="$v_syntaxKeyword"/>
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:when test="@langword='virtual' or @langword='Overridable'">
 					<xsl:call-template name="t_virtualKeyword">
-						<xsl:with-param name="p_syntaxKeyword"
-														select="$v_syntaxKeyword"/>
+						<xsl:with-param name="p_syntaxKeyword" select="$v_syntaxKeyword"/>
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:when test="@langword='true' or @langword='True'">
 					<xsl:call-template name="t_trueKeyword">
-						<xsl:with-param name="p_syntaxKeyword"
-														select="$v_syntaxKeyword"/>
+						<xsl:with-param name="p_syntaxKeyword" select="$v_syntaxKeyword"/>
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:when test="@langword='false' or @langword='False'">
 					<xsl:call-template name="t_falseKeyword">
-						<xsl:with-param name="p_syntaxKeyword"
-														select="$v_syntaxKeyword"/>
+						<xsl:with-param name="p_syntaxKeyword" select="$v_syntaxKeyword"/>
 					</xsl:call-template>
 				</xsl:when>
-				<xsl:when test="@langword='abstract'">
+				<xsl:when test="@langword='abstract' or @langword='MustInherit'">
 					<xsl:call-template name="t_abstractKeyword">
-						<xsl:with-param name="p_syntaxKeyword"
-														select="$v_syntaxKeyword"/>
+						<xsl:with-param name="p_syntaxKeyword" select="$v_syntaxKeyword"/>
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:otherwise>

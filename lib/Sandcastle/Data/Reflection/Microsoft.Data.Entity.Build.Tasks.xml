@@ -1,0 +1,1207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies>
+    <assembly name="Microsoft.Data.Entity.Build.Tasks">
+      <assemblydata version="4.0.0.0" culture="" key="002400000480000094000000060200000024000052534131000400000100010007D1FA57C4AED9F0A32E84AA0FAEFD0DE9E8FD6AEC8F87FB03766C834C99921EB23BE79AD9D5DCC1DD9AD236132102900B723CF980957FC4E177108FC607774F29E8320E92EA05ECE4E821C0A5EFE8F1645C4C0C93C1AB99285D622CAA652C1DFAD63D745D6F2DE5F17E5EAF0FC4963D261C8A12436518206DC093344D5AD293" hash="SHA1" />
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft.Data.Entity.Build.Tasks.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.30319.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft.Data.Entity.Build.Tasks.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft® .NET Framework</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>© Microsoft Corporation.  All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.30319.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft.Data.Entity.Build.Tasks.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\dd\tools\devdiv\FinalPublicKey.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2f03b481-c62c-4c99-95be-936f193e043c</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.AssemblyTargetedPatchBandAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>1.0.21-0</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </assembly>
+  </assemblies>
+  <apis>
+    <api id="N:Microsoft.Data.Entity.Build.Tasks">
+      <topicdata group="api" />
+      <apidata name="Microsoft.Data.Entity.Build.Tasks" group="namespace" />
+      <elements>
+        <element api="T:Microsoft.Data.Entity.Build.Tasks.EntityClean" />
+        <element api="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploy" />
+        <element api="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames" />
+        <element api="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit" />
+      </elements>
+      <file name="925376bf-d8bf-836a-acc1-dee66fa9fc78" />
+    </api>
+    <api id="T:Microsoft.Data.Entity.Build.Tasks.EntityClean">
+      <topicdata group="api" allMembersTopicId="AllMembers.T:Microsoft.Data.Entity.Build.Tasks.EntityClean" />
+      <apidata name="EntityClean" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+      </containers>
+      <file name="c05ce132-4d59-7eaf-c4a3-93dfde3aab28" />
+    </api>
+    <api id="AllMembers.T:Microsoft.Data.Entity.Build.Tasks.EntityClean">
+      <topicdata name="EntityClean" group="list" subgroup="members" typeTopicId="T:Microsoft.Data.Entity.Build.Tasks.EntityClean" />
+      <apidata name="EntityClean" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine" />
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine2" />
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine3" />
+        <element api="P:Microsoft.Build.Utilities.Task.HelpKeywordPrefix" />
+        <element api="P:Microsoft.Build.Utilities.Task.HostObject" />
+        <element api="P:Microsoft.Build.Utilities.Task.Log" />
+        <element api="P:Microsoft.Build.Utilities.Task.TaskResources" />
+        <element api="M:Microsoft.Data.Entity.Build.Tasks.EntityClean.#ctor" />
+        <element api="M:Microsoft.Data.Entity.Build.Tasks.EntityClean.Execute" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityClean.OutputPath" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityClean.ResourceOutputPath" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityClean.Sources" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+      </containers>
+      <file name="29f38026-5d0c-90e1-c316-8e45338b016e" />
+    </api>
+    <api id="Methods.T:Microsoft.Data.Entity.Build.Tasks.EntityClean">
+      <topicdata name="EntityClean" group="list" subgroup="Methods" typeTopicId="T:Microsoft.Data.Entity.Build.Tasks.EntityClean" />
+      <apidata name="EntityClean" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Data.Entity.Build.Tasks.EntityClean.Execute" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+      </containers>
+      <file name="51608925-da29-79e4-adad-176a105d879f" />
+    </api>
+    <api id="Properties.T:Microsoft.Data.Entity.Build.Tasks.EntityClean">
+      <topicdata name="EntityClean" group="list" subgroup="Properties" typeTopicId="T:Microsoft.Data.Entity.Build.Tasks.EntityClean" />
+      <apidata name="EntityClean" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine" />
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine2" />
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine3" />
+        <element api="P:Microsoft.Build.Utilities.Task.HelpKeywordPrefix" />
+        <element api="P:Microsoft.Build.Utilities.Task.HostObject" />
+        <element api="P:Microsoft.Build.Utilities.Task.Log" />
+        <element api="P:Microsoft.Build.Utilities.Task.TaskResources" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityClean.OutputPath" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityClean.ResourceOutputPath" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityClean.Sources" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+      </containers>
+      <file name="da4e603c-6993-3ecb-ac56-edefb58a32bb" />
+    </api>
+    <api id="M:Microsoft.Data.Entity.Build.Tasks.EntityClean.#ctor">
+      <topicdata group="api" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" special="true" />
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+        <type api="T:Microsoft.Data.Entity.Build.Tasks.EntityClean" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Performance critical to inline this type of method across NGen image boundaries</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="b48d3a9b-ebaa-5208-e252-7dac0e54064f" />
+    </api>
+    <api id="M:Microsoft.Data.Entity.Build.Tasks.EntityClean.Execute">
+      <topicdata group="api" />
+      <apidata name="Execute" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:Microsoft.Build.Utilities.Task.Execute">
+          <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+        </member>
+      </overrides>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <implements>
+        <member api="M:Microsoft.Build.Framework.ITask.Execute">
+          <type api="T:Microsoft.Build.Framework.ITask" ref="true" />
+        </member>
+      </implements>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+        <type api="T:Microsoft.Data.Entity.Build.Tasks.EntityClean" ref="true" />
+      </containers>
+      <file name="21b52053-011f-dd03-55cd-60832b131116" />
+    </api>
+    <api id="P:Microsoft.Data.Entity.Build.Tasks.EntityClean.OutputPath">
+      <topicdata group="api" />
+      <apidata name="OutputPath" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_OutputPath">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </getter>
+      <setter name="set_OutputPath">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </setter>
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+        <type api="T:Microsoft.Data.Entity.Build.Tasks.EntityClean" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:Microsoft.Build.Framework.RequiredAttribute" ref="true" />
+        </attribute>
+      </attributes>
+      <file name="596307a8-5b59-a7f9-adfa-0389d3a12287" />
+    </api>
+    <api id="P:Microsoft.Data.Entity.Build.Tasks.EntityClean.ResourceOutputPath">
+      <topicdata group="api" />
+      <apidata name="ResourceOutputPath" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_ResourceOutputPath">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </getter>
+      <setter name="set_ResourceOutputPath">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </setter>
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+        <type api="T:Microsoft.Data.Entity.Build.Tasks.EntityClean" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:Microsoft.Build.Framework.RequiredAttribute" ref="true" />
+        </attribute>
+      </attributes>
+      <file name="6935cc40-fe46-ca3f-171e-3f32a97f8954" />
+    </api>
+    <api id="P:Microsoft.Data.Entity.Build.Tasks.EntityClean.Sources">
+      <topicdata group="api" />
+      <apidata name="Sources" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_Sources">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </getter>
+      <setter name="set_Sources">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </setter>
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+        <type api="T:Microsoft.Data.Entity.Build.Tasks.EntityClean" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:Microsoft.Build.Framework.RequiredAttribute" ref="true" />
+        </attribute>
+      </attributes>
+      <file name="33e58eff-0ce5-9097-9cb0-b2cff817a750" />
+    </api>
+    <api id="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploy">
+      <topicdata group="api" allMembersTopicId="AllMembers.T:Microsoft.Data.Entity.Build.Tasks.EntityDeploy" />
+      <apidata name="EntityDeploy" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+      </containers>
+      <file name="3a545c16-342a-b765-8013-e773de626cb8" />
+    </api>
+    <api id="AllMembers.T:Microsoft.Data.Entity.Build.Tasks.EntityDeploy">
+      <topicdata name="EntityDeploy" group="list" subgroup="members" typeTopicId="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploy" />
+      <apidata name="EntityDeploy" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine" />
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine2" />
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine3" />
+        <element api="P:Microsoft.Build.Utilities.Task.HelpKeywordPrefix" />
+        <element api="P:Microsoft.Build.Utilities.Task.HostObject" />
+        <element api="P:Microsoft.Build.Utilities.Task.Log" />
+        <element api="P:Microsoft.Build.Utilities.Task.TaskResources" />
+        <element api="M:Microsoft.Data.Entity.Build.Tasks.EntityDeploy.#ctor" />
+        <element api="M:Microsoft.Data.Entity.Build.Tasks.EntityDeploy.Execute" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploy.OutputPath" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploy.Sources" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+      </containers>
+      <file name="32e2d1e2-8610-cd9d-2423-984c85cba8af" />
+    </api>
+    <api id="Methods.T:Microsoft.Data.Entity.Build.Tasks.EntityDeploy">
+      <topicdata name="EntityDeploy" group="list" subgroup="Methods" typeTopicId="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploy" />
+      <apidata name="EntityDeploy" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Data.Entity.Build.Tasks.EntityDeploy.Execute" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+      </containers>
+      <file name="1775de41-aa37-b7ac-fd28-570cae910166" />
+    </api>
+    <api id="Properties.T:Microsoft.Data.Entity.Build.Tasks.EntityDeploy">
+      <topicdata name="EntityDeploy" group="list" subgroup="Properties" typeTopicId="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploy" />
+      <apidata name="EntityDeploy" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine" />
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine2" />
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine3" />
+        <element api="P:Microsoft.Build.Utilities.Task.HelpKeywordPrefix" />
+        <element api="P:Microsoft.Build.Utilities.Task.HostObject" />
+        <element api="P:Microsoft.Build.Utilities.Task.Log" />
+        <element api="P:Microsoft.Build.Utilities.Task.TaskResources" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploy.OutputPath" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploy.Sources" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+      </containers>
+      <file name="c567856d-6949-093d-51b8-54a967b99a75" />
+    </api>
+    <api id="M:Microsoft.Data.Entity.Build.Tasks.EntityDeploy.#ctor">
+      <topicdata group="api" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" special="true" />
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+        <type api="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploy" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Performance critical to inline this type of method across NGen image boundaries</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="7e35d9e9-b2bf-c641-5fb3-4fae2b8676d5" />
+    </api>
+    <api id="M:Microsoft.Data.Entity.Build.Tasks.EntityDeploy.Execute">
+      <topicdata group="api" />
+      <apidata name="Execute" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:Microsoft.Build.Utilities.Task.Execute">
+          <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+        </member>
+      </overrides>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <implements>
+        <member api="M:Microsoft.Build.Framework.ITask.Execute">
+          <type api="T:Microsoft.Build.Framework.ITask" ref="true" />
+        </member>
+      </implements>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+        <type api="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploy" ref="true" />
+      </containers>
+      <file name="4cb5c93d-7808-ec1e-46d1-07cc65305663" />
+    </api>
+    <api id="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploy.OutputPath">
+      <topicdata group="api" />
+      <apidata name="OutputPath" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_OutputPath">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </getter>
+      <setter name="set_OutputPath">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </setter>
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+        <type api="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploy" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:Microsoft.Build.Framework.RequiredAttribute" ref="true" />
+        </attribute>
+      </attributes>
+      <file name="1b13c0c2-5ec4-322d-039d-36eb8e3fc7c5" />
+    </api>
+    <api id="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploy.Sources">
+      <topicdata group="api" />
+      <apidata name="Sources" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_Sources">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </getter>
+      <setter name="set_Sources">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </setter>
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+        <type api="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploy" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:Microsoft.Build.Framework.RequiredAttribute" ref="true" />
+        </attribute>
+      </attributes>
+      <file name="d66046e1-7144-44cd-93e0-5fa344b70bae" />
+    </api>
+    <api id="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames">
+      <topicdata group="api" allMembersTopicId="AllMembers.T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames" />
+      <apidata name="EntityDeploySetLogicalNames" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+      </containers>
+      <file name="f4adb326-6f08-9d85-0478-c0bb9b5a1e4a" />
+    </api>
+    <api id="AllMembers.T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames">
+      <topicdata name="EntityDeploySetLogicalNames" group="list" subgroup="members" typeTopicId="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames" />
+      <apidata name="EntityDeploySetLogicalNames" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine" />
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine2" />
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine3" />
+        <element api="P:Microsoft.Build.Utilities.Task.HelpKeywordPrefix" />
+        <element api="P:Microsoft.Build.Utilities.Task.HostObject" />
+        <element api="P:Microsoft.Build.Utilities.Task.Log" />
+        <element api="P:Microsoft.Build.Utilities.Task.TaskResources" />
+        <element api="M:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames.#ctor" />
+        <element api="M:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames.Execute" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames.ResourceOutputPath" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames.ResourcesToEmbed" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames.Sources" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+      </containers>
+      <file name="37158768-e0a8-e2a7-bc29-d8454bfd55a5" />
+    </api>
+    <api id="Methods.T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames">
+      <topicdata name="EntityDeploySetLogicalNames" group="list" subgroup="Methods" typeTopicId="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames" />
+      <apidata name="EntityDeploySetLogicalNames" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames.Execute" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+      </containers>
+      <file name="158cc26b-3e81-6d07-7056-3e25137fb51e" />
+    </api>
+    <api id="Properties.T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames">
+      <topicdata name="EntityDeploySetLogicalNames" group="list" subgroup="Properties" typeTopicId="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames" />
+      <apidata name="EntityDeploySetLogicalNames" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine" />
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine2" />
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine3" />
+        <element api="P:Microsoft.Build.Utilities.Task.HelpKeywordPrefix" />
+        <element api="P:Microsoft.Build.Utilities.Task.HostObject" />
+        <element api="P:Microsoft.Build.Utilities.Task.Log" />
+        <element api="P:Microsoft.Build.Utilities.Task.TaskResources" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames.ResourceOutputPath" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames.ResourcesToEmbed" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames.Sources" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+      </containers>
+      <file name="3c428a19-d21a-b144-eeec-d5c70367d23d" />
+    </api>
+    <api id="M:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames.#ctor">
+      <topicdata group="api" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" special="true" />
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+        <type api="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames" ref="true" />
+      </containers>
+      <file name="e89969e8-2e06-1cab-8fbe-a58668ec605e" />
+    </api>
+    <api id="M:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames.Execute">
+      <topicdata group="api" />
+      <apidata name="Execute" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:Microsoft.Build.Utilities.Task.Execute">
+          <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+        </member>
+      </overrides>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <implements>
+        <member api="M:Microsoft.Build.Framework.ITask.Execute">
+          <type api="T:Microsoft.Build.Framework.ITask" ref="true" />
+        </member>
+      </implements>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+        <type api="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames" ref="true" />
+      </containers>
+      <file name="6f92a1fe-ca89-9cdc-3735-d64691f1de0d" />
+    </api>
+    <api id="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames.ResourceOutputPath">
+      <topicdata group="api" />
+      <apidata name="ResourceOutputPath" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_ResourceOutputPath">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </getter>
+      <setter name="set_ResourceOutputPath">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </setter>
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+        <type api="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:Microsoft.Build.Framework.RequiredAttribute" ref="true" />
+        </attribute>
+      </attributes>
+      <file name="c688575f-6401-e656-283b-754d5ec75c91" />
+    </api>
+    <api id="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames.ResourcesToEmbed">
+      <topicdata group="api" />
+      <apidata name="ResourcesToEmbed" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" />
+      <getter name="get_ResourcesToEmbed" />
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+        <type api="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:Microsoft.Build.Framework.OutputAttribute" ref="true" />
+        </attribute>
+      </attributes>
+      <file name="255d9c2e-41be-8c20-2f7a-e213cf4c8790" />
+    </api>
+    <api id="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames.Sources">
+      <topicdata group="api" />
+      <apidata name="Sources" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_Sources">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </getter>
+      <setter name="set_Sources">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </setter>
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+        <type api="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySetLogicalNames" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:Microsoft.Build.Framework.RequiredAttribute" ref="true" />
+        </attribute>
+      </attributes>
+      <file name="90fbc5c2-a306-6397-fb98-e1ec58b9f0fb" />
+    </api>
+    <api id="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit">
+      <topicdata group="api" allMembersTopicId="AllMembers.T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit" />
+      <apidata name="EntityDeploySplit" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+      </containers>
+      <file name="7d007534-7b3f-0434-c612-051dd49a7e6f" />
+    </api>
+    <api id="AllMembers.T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit">
+      <topicdata name="EntityDeploySplit" group="list" subgroup="members" typeTopicId="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit" />
+      <apidata name="EntityDeploySplit" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine" />
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine2" />
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine3" />
+        <element api="P:Microsoft.Build.Utilities.Task.HelpKeywordPrefix" />
+        <element api="P:Microsoft.Build.Utilities.Task.HostObject" />
+        <element api="P:Microsoft.Build.Utilities.Task.Log" />
+        <element api="P:Microsoft.Build.Utilities.Task.TaskResources" />
+        <element api="M:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit.#ctor" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit.EmbeddingItems" />
+        <element api="M:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit.Execute" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit.NonEmbeddingItems" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit.Sources" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+      </containers>
+      <file name="f1d064ba-2689-d4cc-ac48-fe05461f72d4" />
+    </api>
+    <api id="Methods.T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit">
+      <topicdata name="EntityDeploySplit" group="list" subgroup="Methods" typeTopicId="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit" />
+      <apidata name="EntityDeploySplit" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit.Execute" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+        <element api="M:System.Object.ToString" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+      </containers>
+      <file name="77c81d3e-115f-f42d-5584-da257e7dbfa7" />
+    </api>
+    <api id="Properties.T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit">
+      <topicdata name="EntityDeploySplit" group="list" subgroup="Properties" typeTopicId="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit" />
+      <apidata name="EntityDeploySplit" group="type" subgroup="class" />
+      <typedata visibility="public" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine" />
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine2" />
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine3" />
+        <element api="P:Microsoft.Build.Utilities.Task.HelpKeywordPrefix" />
+        <element api="P:Microsoft.Build.Utilities.Task.HostObject" />
+        <element api="P:Microsoft.Build.Utilities.Task.Log" />
+        <element api="P:Microsoft.Build.Utilities.Task.TaskResources" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit.EmbeddingItems" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit.NonEmbeddingItems" />
+        <element api="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit.Sources" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+      </containers>
+      <file name="b31ff465-269f-665f-1f1c-1c0801f637fe" />
+    </api>
+    <api id="M:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit.#ctor">
+      <topicdata group="api" />
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" special="true" />
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+        <type api="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Performance critical to inline this type of method across NGen image boundaries</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="6c77983c-9b89-4c9b-86be-9fb1ddf71348" />
+    </api>
+    <api id="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit.EmbeddingItems">
+      <topicdata group="api" />
+      <apidata name="EmbeddingItems" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_EmbeddingItems">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </getter>
+      <setter name="set_EmbeddingItems">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </setter>
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+        <type api="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:Microsoft.Build.Framework.OutputAttribute" ref="true" />
+        </attribute>
+      </attributes>
+      <file name="b8ec8dac-fcb5-f953-9e4d-1c8d993c8d1c" />
+    </api>
+    <api id="M:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit.Execute">
+      <topicdata group="api" />
+      <apidata name="Execute" group="member" subgroup="method" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="true" />
+      <overrides>
+        <member api="M:Microsoft.Build.Utilities.Task.Execute">
+          <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+        </member>
+      </overrides>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <implements>
+        <member api="M:Microsoft.Build.Framework.ITask.Execute">
+          <type api="T:Microsoft.Build.Framework.ITask" ref="true" />
+        </member>
+      </implements>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+        <type api="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit" ref="true" />
+      </containers>
+      <file name="5804370b-0ef0-6e2f-42a3-6a99578e4e16" />
+    </api>
+    <api id="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit.NonEmbeddingItems">
+      <topicdata group="api" />
+      <apidata name="NonEmbeddingItems" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_NonEmbeddingItems">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </getter>
+      <setter name="set_NonEmbeddingItems">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </setter>
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+        <type api="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:Microsoft.Build.Framework.OutputAttribute" ref="true" />
+        </attribute>
+      </attributes>
+      <file name="5988bf91-20f6-e070-3304-f703b0525990" />
+    </api>
+    <api id="P:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit.Sources">
+      <topicdata group="api" />
+      <apidata name="Sources" group="member" subgroup="property" />
+      <memberdata visibility="public" />
+      <proceduredata virtual="false" />
+      <propertydata get="true" set="true" />
+      <getter name="get_Sources">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </getter>
+      <setter name="set_Sources">
+        <attributes>
+          <attribute>
+            <type api="T:System.Runtime.TargetedPatchingOptOutAttribute" ref="true" />
+            <argument>
+              <type api="T:System.String" ref="true" />
+              <value>Performance critical to inline this type of method across NGen image boundaries</value>
+            </argument>
+          </attribute>
+        </attributes>
+      </setter>
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Data.Entity.Build.Tasks" module="Microsoft.Data.Entity.Build.Tasks" kind="DynamicallyLinkedLibrary">
+          <assemblydata version="4.0.0.0" />
+          <noAptca />
+        </library>
+        <namespace api="N:Microsoft.Data.Entity.Build.Tasks" />
+        <type api="T:Microsoft.Data.Entity.Build.Tasks.EntityDeploySplit" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:Microsoft.Build.Framework.RequiredAttribute" ref="true" />
+        </attribute>
+      </attributes>
+      <file name="44fc04d2-5100-6170-22b0-82e26f013f21" />
+    </api>
+  </apis>
+</reflection>

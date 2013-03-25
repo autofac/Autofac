@@ -74,10 +74,10 @@
 			<xsl:attribute name="href">
         		<xsl:choose>
         			<xsl:when test="$downscale-browser">
-        				<xsl:value-of select="branding:BackslashesToFrontslashes(concat($contentFolder,'/../Styles/branding.css'))"/>
+        				<xsl:value-of select="branding:BackslashesToFrontslashes(concat($contentFolder,'/../styles/branding.css'))"/>
         			</xsl:when>
         			<xsl:when test="$pre-branding">
-        				<xsl:value-of select="branding:BackslashesToFrontslashes('Styles/branding.css')"/>
+        				<xsl:value-of select="branding:BackslashesToFrontslashes('styles/branding.css')"/>
         			</xsl:when>
         			<xsl:otherwise>
         				<xsl:value-of select="concat($brandingPath,branding:BackslashesToFrontslashes('branding.css'))"/>
@@ -95,10 +95,10 @@
 			<xsl:attribute name="href">
         		<xsl:choose>
         			<xsl:when test="$downscale-browser">
-        				<xsl:value-of select="branding:BackslashesToFrontslashes(concat($contentFolder,'/../Styles/',$css-file))"/>
+        				<xsl:value-of select="branding:BackslashesToFrontslashes(concat($contentFolder,'/../styles/',$css-file))"/>
         			</xsl:when>
         			<xsl:when test="$pre-branding">
-        				<xsl:value-of select="branding:BackslashesToFrontslashes(concat('Styles/',$css-file))"/>
+        				<xsl:value-of select="branding:BackslashesToFrontslashes(concat('styles/',$css-file))"/>
         			</xsl:when>
         			<xsl:otherwise>
         				<xsl:value-of select="concat($brandingPath,branding:BackslashesToFrontslashes($css-file))"/>
@@ -136,10 +136,10 @@
 			<xsl:attribute name="src">
         		<xsl:choose>
         			<xsl:when test="$downscale-browser">
-        				<xsl:value-of select="branding:BackslashesToFrontslashes(concat($contentFolder,'/../Scripts/',$js-file))"/>
+        				<xsl:value-of select="branding:BackslashesToFrontslashes(concat($contentFolder,'/../scripts/',$js-file))"/>
         			</xsl:when>
         			<xsl:when test="$pre-branding">
-        				<xsl:value-of select="branding:BackslashesToFrontslashes(concat('Scripts/',$js-file))"/>
+        				<xsl:value-of select="branding:BackslashesToFrontslashes(concat('scripts/',$js-file))"/>
         			</xsl:when>
         			<xsl:otherwise>
         				<xsl:value-of select="concat($brandingPath,branding:BackslashesToFrontslashes($js-file))"/>

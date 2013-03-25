@@ -7,8 +7,6 @@
         xmlns:msxsl="urn:schemas-microsoft-com:xslt"
    >
 
-	<xsl:import href="../../shared/transforms/utilities_metadata.xsl" />
-
 	<xsl:template name="insertMetadata">
 		<xsl:if test="$metadata='true'">
 			<xml>
@@ -36,10 +34,10 @@
 
 				<!-- Abstract -->
 				<xsl:choose>
-					<xsl:when test="string-length($abstractSummary) &gt; 254">
-						<MSHelp:Attr Name="Abstract" Value="{normalize-space(concat(substring($abstractSummary,1,250), ' ...'))}" />
+					<xsl:when test="string-length(normalize-space($abstractSummary)) &gt; 254">
+						<MSHelp:Attr Name="Abstract" Value="{concat(substring(normalize-space($abstractSummary),1,250), ' ...')}" />
 					</xsl:when>
-					<xsl:when test="string-length($abstractSummary) &gt; 0">
+					<xsl:when test="string-length(normalize-space($abstractSummary)) &gt; 0 and $abstractSummary != '&#160;'">
 						<MSHelp:Attr Name="Abstract" Value="{normalize-space($abstractSummary)}" />
 					</xsl:when>
 				</xsl:choose>

@@ -85,13 +85,13 @@
   <item id="methodIndexEntry">{0} method</item>
 	<item id="propertyIndexEntry">{0} property</item>
 	<item id="eventIndexEntry">{0} event</item>
-    <item id="attachedPropertiesIndexEntry">{0}, attached properties</item>
-    <item id="attachedEventsIndexEntry">{0}, attached events</item>
+	<item id="attachedPropertiesIndexEntry">{0}, attached properties</item>
+	<item id="attachedEventsIndexEntry">{0}, attached events</item>
 	<item id="fieldIndexEntry">{0} field</item>
 	<item id="operatorIndexEntry">{0} operator</item>
 	<item id="attachedPropertyIndexEntry">{0} attached property</item>
 	<item id="attachedEventIndexEntry">{0} attached event</item>
-	
+
    <!-- index entries like: "FileClassifier class" or "Execute method" or "Microsoft.Build.Tasks.Windows.FileClassifier class"
        {0} is API's name, which is shortname in some cases, or FQName in others
        {1} is API's subgroup, e.g. 'class', 'method', etc.
@@ -124,6 +124,7 @@
   <item id="implementsTitle">Implements</item>
 	<item id="examplesTitle">Examples</item>
 	<item id="threadSafetyTitle">Thread Safety</item>
+  <item id="eventsTitle">Events</item>
   <item id="exceptionsTitle">Exceptions</item>
 	<item id="permissionsTitle">.NET Framework Security</item> 
 	<item id="namespacesTitle">Namespaces</item>
@@ -133,9 +134,9 @@
 	<item id="familyTitle">Inheritance Hierarchy</item>
 	<item id="versionsTitle">Version Information</item>
 	<item id="platformsTitle">Platforms</item>
-    <item id="relatedTitle">See Also</item>
-    <item id="ExtensionUsageTitle">Usage Note</item>
-    <item id="ExtensionUsageText">In Visual Basic and C#, you can call this method as an instance method on any object of type {0}. When you use instance method syntax to call this method, omit the first parameter.</item>
+	<item id="relatedTitle">See Also</item>
+	<item id="ExtensionUsageTitle">Usage Note</item>
+	<item id="ExtensionUsageText">In Visual Basic and C#, you can call this method as an instance method on any object of type {0}. When you use instance method syntax to call this method, omit the first parameter.</item>
 
 	<!-- table headers -->
 	<item id="namespaceNameHeader">Namespace</item>
@@ -152,6 +153,8 @@
 	<item id="memberNameHeader">Member</item>
 	<item id="memberValueHeader">Value</item>
 	<item id="memberDescriptionHeader">Description</item>
+	<item id="eventTypeHeader">Event Type</item>
+	<item id="eventReasonHeader">Reason</item>
 	<item id="exceptionNameHeader">Exception</item>
 	<item id="exceptionConditionHeader">Condition</item>
 	<item id="permissionNameHeader">Permission</item>
@@ -180,7 +183,7 @@
 	<item id="staticMembersFilterLabel">Static</item>
 	<item id="declaredMembersFilterLabel">Declared</item>
 	<item id="inheritedMembersFilterLabel">Inherited</item>
-  	<item id=".NETCompactFilterLabel">.NET Compact Framework Only</item>
+	<item id=".NETCompactFilterLabel">.NET Compact Framework Only</item>
 	<item id="XNAFilterLabel">XNA Framework Only</item>
 	<item id="extensionMembersFilterLabel">Methods</item>
   <!-- member list stuff -->
@@ -281,7 +284,6 @@
   </item>
 	<item id="inheritedFrom">(Inherited from {0}.)</item>
 	<item id="overridesMember">(Overrides {0}.)</item>
-	<item id="locationInformation">Assembly: {0} (Module: {1})</item>
   <item id="hostProtectionAttributeShort">HostProtectionAttribute.</item>
 	<item id="hostProtectionAttributeLong">The <referenceLink target="T:System.Security.Permissions.HostProtectionAttribute" prefer-overload="true" /> attribute applied to this <include item="{0}"/> has the following <referenceLink target="P:System.Security.Permissions.HostProtectionAttribute.Resources" prefer-overload="true" /> property value: {1}. The <referenceLink target="T:System.Security.Permissions.HostProtectionAttribute" prefer-overload="true" /> does not affect desktop applications (which are typically started by double-clicking an icon, typing a command, or entering a URL in a browser). For more information, see the <referenceLink target="T:System.Security.Permissions.HostProtectionAttribute" prefer-overload="true" /> class or <a href="http://msdn.microsoft.com/en-us/library/ms172338.aspx" target="_blank">SQL Server Programming and Host Protection Attributes</a>.</item>
   <item id="classLower">class</item>
@@ -406,7 +408,7 @@
     <b>Assembly:</b>
   </item>
 
-   <item id="assemblyNameAndModule">{0} (in {1}.{2})</item>
+	<item id="assemblyNameAndModule">{0} (in {1}.{2}) Version: {3}</item>
 
   <item id="requirementsAssemblyLayout">
     <b>Assembly:</b> {0} (in {1}.dll)

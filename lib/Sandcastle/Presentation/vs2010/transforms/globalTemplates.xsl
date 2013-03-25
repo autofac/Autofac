@@ -16,6 +16,14 @@
 	<xsl:param name="languages">false</xsl:param>
 	<xsl:param name="minimal-spacing">code;alert;listItem;table;tableHeader;definedTerm;definition;</xsl:param>
 
+	<!-- Topic header logo parameters -->
+	<xsl:param name="logoFile" />
+	<xsl:param name="logoHeight" />
+	<xsl:param name="logoWidth" />
+	<xsl:param name="logoAltText" />
+	<xsl:param name="logoPlacement" />
+	<xsl:param name="logoAlignment" />
+
 	<!-- ============================================================================================
 	Globals
 	============================================================================================= -->
@@ -510,32 +518,74 @@
 	============================================================================================= -->
 
 	<xsl:template name="t_bodyTitle">
-		<div class="majorTitle">
-			<!---->
-		</div>
-		<div class="title">
-			<include item="boilerplate_pageTitle">
-				<parameter>
-					<xsl:call-template name="t_topicTitleDecorated"/>
-				</parameter>
-			</include>
-		</div>
-
-		<!-- This table is required for runningHeader/logo placement. It will be used and removed during branding. -->
-		<!-- It basically fakes the formatting of older presentation styles so common logic can be used in -->
-		<!-- the PostTransformComponent. -->
-		<table id="topTable"
-					 style="display:none">
+		<xsl:variable name="placementLC" select="translate($logoPlacement, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"/>
+		<xsl:variable name="alignmentLC" select="translate($logoAlignment, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"/>
+		<table class="TitleTable">
+			<xsl:if test="normalize-space($logoFile) and $placementLC = 'above'">
+				<tr>
+					<td colspan="2" class="OH_tdLogoColumnAbove">
+						<xsl:attribute name="align">
+							<xsl:choose>
+								<xsl:when test="normalize-space($alignmentLC)">
+									<xsl:value-of select="$alignmentLC"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:text>left</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
+						<xsl:call-template name="logoImage" />
+					</td>
+				</tr>
+			</xsl:if>
 			<tr>
-				<td id="titleColumn"></td>
-			</tr>
-			<tr>
-				<td id="runningHeaderColumn"
-						align="right">
+				<xsl:if test="normalize-space($logoFile) and $placementLC = 'left'">
+					<td class="OH_tdLogoColumn">
+						<xsl:call-template name="logoImage" />
+					</td>
+				</xsl:if>
+				<td class="OH_tdTitleColumn">
+					<include item="boilerplate_pageTitle">
+						<parameter>
+							<xsl:call-template name="t_topicTitleDecorated"/>
+						</parameter>
+					</include>
+				</td>
+				<td class="OH_tdRunningTitleColumn">
 					<xsl:call-template name="t_runningHeader" />
 				</td>
+				<xsl:if test="normalize-space($logoFile) and $placementLC = 'right'">
+					<td class="OH_tdLogoColumn">
+						<xsl:call-template name="logoImage" />
+					</td>
+				</xsl:if>
 			</tr>
 		</table>
+	</xsl:template>
+
+	<xsl:template name="logoImage">
+		<img>
+			<xsl:if test="normalize-space($logoAltText)">
+				<xsl:attribute name="alt">
+					<xsl:value-of select="$logoAltText" />
+				</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="normalize-space($logoWidth) and $logoWidth != '0'">
+				<xsl:attribute name="width">
+					<xsl:value-of select="$logoWidth" />
+				</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="normalize-space($logoHeight) and $logoHeight != '0'">
+				<xsl:attribute name="height">
+					<xsl:value-of select="$logoHeight" />
+				</xsl:attribute>
+			</xsl:if>
+			<includeAttribute name='src' item='iconPath'>
+				<parameter>
+					<xsl:value-of select="$logoFile"/>
+				</parameter>
+			</includeAttribute>
+		</img>
 	</xsl:template>
 
 	<!-- ============================================================================================

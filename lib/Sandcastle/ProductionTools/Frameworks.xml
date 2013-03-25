@@ -888,17 +888,19 @@
 			<Location Path="%ProgramFiles(x86)%\Microsoft SDKs\Silverlight\v5.0\Libraries\Server">
 				<AssemblyDetails Filename="System.ServiceModel.PollingDuplex.dll" Name="System.ServiceModel.PollingDuplex" Version="5.0.0.0" PublicKeyToken="31bf3856ad364e35" />
 			</Location>
-			<Location Path="%ProgramFiles(x86)%\Microsoft SDKs\Silverlight\v4.0\Toolkit\Apr10\Bin">
-				<AssemblyDetails Filename="System.Windows.Controls.Data.DataForm.Toolkit.dll" Name="System.Windows.Controls.Data.DataForm.Toolkit" Version="4.0.5.0" PublicKeyToken="31bf3856ad364e35" />
-				<AssemblyDetails Filename="System.Windows.Controls.Data.Toolkit.dll" Name="System.Windows.Controls.Data.Toolkit" Version="4.0.5.0" PublicKeyToken="31bf3856ad364e35" />
-				<AssemblyDetails Filename="System.Windows.Controls.DataVisualization.Toolkit.dll" Name="System.Windows.Controls.DataVisualization.Toolkit" Version="4.0.5.0" PublicKeyToken="31bf3856ad364e35" />
-				<AssemblyDetails Filename="System.Windows.Controls.Input.Toolkit.dll" Name="System.Windows.Controls.Input.Toolkit" Version="4.0.5.0" PublicKeyToken="31bf3856ad364e35" />
-				<AssemblyDetails Filename="System.Windows.Controls.Layout.Toolkit.dll" Name="System.Windows.Controls.Layout.Toolkit" Version="4.0.5.0" PublicKeyToken="31bf3856ad364e35" />
-				<AssemblyDetails Filename="System.Windows.Controls.Theming.Toolkit.dll" Name="System.Windows.Controls.Theming.Toolkit" Version="4.0.5.0" PublicKeyToken="31bf3856ad364e35" />
-				<AssemblyDetails Filename="System.Windows.Controls.Toolkit.dll" Name="System.Windows.Controls.Toolkit" Version="4.0.5.0" PublicKeyToken="31bf3856ad364e35" />
-				<AssemblyDetails Filename="System.Windows.Controls.Toolkit.Internals.dll" Name="System.Windows.Controls.Toolkit.Internals" Version="4.0.5.0" PublicKeyToken="2c5c654d367bf4a7" />
+			<Location Path="%ProgramFiles(x86)%\Microsoft SDKs\Silverlight\v5.0\Toolkit\Dec11\Bin">
+				<AssemblyDetails Filename="Microsoft.Xna.Framework.Content.dll" Name="Microsoft.Xna.Framework.Content" Version="1.0.0.0" PublicKeyToken="31bf3856ad364e35" />
+				<AssemblyDetails Filename="Microsoft.Xna.Framework.Toolkit.dll" Name="Microsoft.Xna.Framework.Toolkit" Version="1.0.0.0" PublicKeyToken="2c5c654d367bf4a7" />
+				<AssemblyDetails Filename="System.Windows.Controls.Data.DataForm.Toolkit.dll" Name="System.Windows.Controls.Data.DataForm.Toolkit" Version="5.0.5.0" PublicKeyToken="31bf3856ad364e35" />
+				<AssemblyDetails Filename="System.Windows.Controls.Data.Toolkit.dll" Name="System.Windows.Controls.Data.Toolkit" Version="5.0.5.0" PublicKeyToken="31bf3856ad364e35" />
+				<AssemblyDetails Filename="System.Windows.Controls.DataVisualization.Toolkit.dll" Name="System.Windows.Controls.DataVisualization.Toolkit" Version="5.0.5.0" PublicKeyToken="31bf3856ad364e35" />
+				<AssemblyDetails Filename="System.Windows.Controls.Input.Toolkit.dll" Name="System.Windows.Controls.Input.Toolkit" Version="5.0.5.0" PublicKeyToken="31bf3856ad364e35" />
+				<AssemblyDetails Filename="System.Windows.Controls.Layout.Toolkit.dll" Name="System.Windows.Controls.Layout.Toolkit" Version="5.0.5.0" PublicKeyToken="31bf3856ad364e35" />
+				<AssemblyDetails Filename="System.Windows.Controls.Theming.Toolkit.dll" Name="System.Windows.Controls.Theming.Toolkit" Version="5.0.5.0" PublicKeyToken="31bf3856ad364e35" />
+				<AssemblyDetails Filename="System.Windows.Controls.Toolkit.dll" Name="System.Windows.Controls.Toolkit" Version="5.0.5.0" PublicKeyToken="31bf3856ad364e35" />
+				<AssemblyDetails Filename="System.Windows.Controls.Toolkit.Internals.dll" Name="System.Windows.Controls.Toolkit.Internals" Version="4.0.5.0" PublicKeyToken="31bf3856ad364e35" />
 			</Location>
-			<Location Path="%ProgramFiles(x86)%\Microsoft SDKs\Silverlight\v4.0\Toolkit\Apr10\Bin\Design">
+			<Location Path="%ProgramFiles(x86)%\Microsoft SDKs\Silverlight\v5.0\Toolkit\Dec11\Bin\Design">
 				<AssemblyDetails Filename="System.Windows.Controls.Data.DataForm.Toolkit.Design.dll" Name="System.Windows.Controls.Data.DataForm.Toolkit.Design" Version="4.0.5.0" PublicKeyToken="31bf3856ad364e35" />
 				<AssemblyDetails Filename="System.Windows.Controls.Data.DataForm.Toolkit.Expression.Design.dll" Name="System.Windows.Controls.Data.DataForm.Toolkit.Expression.Design" Version="4.0.5.0" PublicKeyToken="31bf3856ad364e35" />
 				<AssemblyDetails Filename="System.Windows.Controls.Data.DataForm.Toolkit.VisualStudio.Design.dll" Name="System.Windows.Controls.Data.DataForm.Toolkit.VisualStudio.Design" Version="4.0.5.0" PublicKeyToken="31bf3856ad364e35" />
@@ -917,6 +919,20 @@
 				<AssemblyDetails Filename="System.Windows.Controls.Toolkit.Design.dll" Name="System.Windows.Controls.Toolkit.Design" Version="4.0.5.0" PublicKeyToken="31bf3856ad364e35" />
 				<AssemblyDetails Filename="System.Windows.Controls.Toolkit.Expression.Design.dll" Name="System.Windows.Controls.Toolkit.Expression.Design" Version="4.0.5.0" PublicKeyToken="31bf3856ad364e35" />
 				<AssemblyDetails Filename="System.Windows.Controls.Toolkit.VisualStudio.Design.dll" Name="System.Windows.Controls.Toolkit.VisualStudio.Design" Version="4.0.5.0" PublicKeyToken="31bf3856ad364e35" />
+			</Location>
+			<Location Path="%ProgramFiles(x86)%\Microsoft SDKs\Silverlight\v5.0\Toolkit\Dec11\Themes">
+				<AssemblyDetails Filename="System.Windows.Controls.Theming.BubbleCreme.dll" Name="System.Windows.Controls.Theming.BubbleCreme" Version="5.0.5.0" PublicKeyToken="31bf3856ad364e35" />
+				<AssemblyDetails Filename="System.Windows.Controls.Theming.BureauBlack.dll" Name="System.Windows.Controls.Theming.BureauBlack" Version="5.0.5.0" PublicKeyToken="31bf3856ad364e35" />
+				<AssemblyDetails Filename="System.Windows.Controls.Theming.BureauBlue.dll" Name="System.Windows.Controls.Theming.BureauBlue" Version="5.0.5.0" PublicKeyToken="31bf3856ad364e35" />
+				<AssemblyDetails Filename="System.Windows.Controls.Theming.ExpressionDark.dll" Name="System.Windows.Controls.Theming.ExpressionDark" Version="5.0.5.0" PublicKeyToken="31bf3856ad364e35" />
+				<AssemblyDetails Filename="System.Windows.Controls.Theming.ExpressionLight.dll" Name="System.Windows.Controls.Theming.ExpressionLight" Version="5.0.5.0" PublicKeyToken="31bf3856ad364e35" />
+				<AssemblyDetails Filename="System.Windows.Controls.Theming.RainierOrange.dll" Name="System.Windows.Controls.Theming.RainierOrange" Version="5.0.5.0" PublicKeyToken="31bf3856ad364e35" />
+				<AssemblyDetails Filename="System.Windows.Controls.Theming.RainierPurple.dll" Name="System.Windows.Controls.Theming.RainierPurple" Version="5.0.5.0" PublicKeyToken="31bf3856ad364e35" />
+				<AssemblyDetails Filename="System.Windows.Controls.Theming.ShinyBlue.dll" Name="System.Windows.Controls.Theming.ShinyBlue" Version="5.0.5.0" PublicKeyToken="31bf3856ad364e35" />
+				<AssemblyDetails Filename="System.Windows.Controls.Theming.ShinyRed.dll" Name="System.Windows.Controls.Theming.ShinyRed" Version="5.0.5.0" PublicKeyToken="31bf3856ad364e35" />
+				<AssemblyDetails Filename="System.Windows.Controls.Theming.SystemColors.dll" Name="System.Windows.Controls.Theming.SystemColors" Version="5.0.5.0" PublicKeyToken="31bf3856ad364e35" />
+				<AssemblyDetails Filename="System.Windows.Controls.Theming.TwilightBlue.dll" Name="System.Windows.Controls.Theming.TwilightBlue" Version="5.0.5.0" PublicKeyToken="31bf3856ad364e35" />
+				<AssemblyDetails Filename="System.Windows.Controls.Theming.WhistlerBlue.dll" Name="System.Windows.Controls.Theming.WhistlerBlue" Version="5.0.5.0" PublicKeyToken="31bf3856ad364e35" />
 			</Location>
 			<Location Path="%ProgramFiles(x86)%\Microsoft SDKs\RIA Services\v1.0\Libraries\Server">
 				<AssemblyDetails Filename="Microsoft.ServiceModel.DomainServices.Tools.dll" Name="Microsoft.ServiceModel.DomainServices.Tools" Version="4.0.0.0" PublicKeyToken="31bf3856ad364e35" />

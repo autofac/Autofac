@@ -118,7 +118,7 @@
           <xsl:when test="string-length($abstract) &gt; 254">
             <MSHelp:Attr Name="Abstract" Value="{concat(substring($abstract,1,250), ' ...')}" />
           </xsl:when>
-          <xsl:when test="string-length($abstract) &gt; 0">
+          <xsl:when test="string-length($abstract) &gt; 0 and $abstract != '&#160;'">
             <MSHelp:Attr Name="Abstract" Value="{$abstract}" />
           </xsl:when>
         </xsl:choose>

@@ -60,6 +60,7 @@
 	<item id="notesForImplementersTitle">Notes to Implementers</item>
 	<item id="NotesForCallers">Notes to Callers</item>
 	<item id="notesForInheritorsTitle">Notes to Inheritors</item>
+  <item id="eventsTitle">Events</item>
 	<item id="exceptionsTitle">Exceptions</item>
 	<item id="permissionsTitle">.NET Framework Security</item> 
 	<item id="namespacesTitle">Namespaces</item>
@@ -81,6 +82,8 @@
 	<item id="memberIconHeader">Icon</item>
 	<item id="memberNameHeader">Member</item>
 	<item id="memberDescriptionHeader">Description</item>
+	<item id="eventTypeHeader">Event Type</item>
+	<item id="eventReasonHeader">Reason</item>
 	<item id="exceptionNameHeader">Exception</item>
 	<item id="exceptionConditionHeader">Condition</item>
 	<item id="permissionNameHeader">Permission</item>
@@ -114,7 +117,7 @@
 	<item id="nonobsoleteAlternative">A non-obsolete alternative is {0}.</item>
 	<item id="inheritedFrom">(Inherited from {0}.)</item>
 	<item id="overridesMember">(Overrides {0}.)</item>
-	<item id="locationInformation">Assembly: {0} (Module: {1})</item>
+	<item id="locationInformation">Assembly: {0} (Module: {1}.{2}) Version: {3}</item>
 	 <item id="hostProtectionAttributeShort">HostProtectionAttribute.</item>
 	<item id="hostProtectionAttributeLong">This API is protected by HostProtectionAttribute.</item>
   

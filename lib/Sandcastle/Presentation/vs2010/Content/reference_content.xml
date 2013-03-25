@@ -2,7 +2,7 @@
 
   <!-- note text -->
   <item id="notDocumented">This API is not documented.</item>
-  <item id="preliminary">This API is preliminary and subject to change.</item>
+  <item id="preliminaryText">This API is preliminary and subject to change.</item>
 	
 	<!-- main window stuff -->
 	<item id="productTitle">.NET Framework Class Library</item>
@@ -158,6 +158,8 @@
 	<item id="header_memberName">Member name</item>
 	<item id="header_memberValue">Value</item>
 	<item id="header_memberDescription">Description</item>
+	<item id="header_eventType">Event Type</item>
+	<item id="header_eventReason">Reason</item>
 	<item id="header_exceptionName">Exception</item>
 	<item id="header_exceptionCondition">Condition</item>
 	<item id="header_permissionName">Permission</item>
@@ -348,7 +350,7 @@
     <b>Assembly:</b>
   </item>
 
-  <item id="assemblyNameAndModule">{0} (in {1}.{2})</item>
+	<item id="assemblyNameAndModule">{0} (in {1}.{2}) Version: {3}</item>
 
   <item id="boilerplate_requirementsAssembly">
     <b>Assembly:</b> {0} (in {1}.dll)

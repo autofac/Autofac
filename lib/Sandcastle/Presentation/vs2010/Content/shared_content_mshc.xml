@@ -54,6 +54,7 @@
   <!-- section titles -->
   <item id="title_remarks">Remarks</item>
   <item id="title_changeHistory">Change History</item>
+  <item id="title_events">Events</item>
   <item id="title_exceptions">Exceptions</item>
   <item id="title_contracts">Contracts</item>
   <item id="title_setter">Set</item>
@@ -92,7 +93,8 @@
   <item id="devlang_AspNet">ASP.NET</item>
   <item id="devlang_pshell">PowerShell</item>
   <item id="devlang_sql">SQL</item>
-  
+  <item id="devlang_Python">Python</item>
+
   <!-- language keywords -->
   <item id="devlang_nullKeyword">a null reference (<span class="keyword">Nothing</span> in Visual Basic)</item>
   <item id="devlang_staticKeyword"><span class="keyword">static</span> (<span class="keyword">Shared</span> in Visual Basic)</item>

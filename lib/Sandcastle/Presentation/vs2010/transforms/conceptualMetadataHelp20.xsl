@@ -125,16 +125,13 @@
 										 Value="{/document/topic/@id}" />
 
 				<!-- Abstract -->
-				<xsl:variable name="v_abstract"
-											select="normalize-space(string(/document/topic//ddue:para[1]))" />
+				<xsl:variable name="v_abstract" select="normalize-space(string(/document/topic//ddue:para[1]))" />
 				<xsl:choose>
 					<xsl:when test="string-length($v_abstract) &gt; 254">
-						<MSHelp:Attr Name="Abstract"
-												 Value="{concat(substring($v_abstract,1,250), ' ...')}" />
+						<MSHelp:Attr Name="Abstract" Value="{concat(substring($v_abstract,1,250), ' ...')}" />
 					</xsl:when>
-					<xsl:when test="string-length($v_abstract) &gt; 0">
-						<MSHelp:Attr Name="Abstract"
-												 Value="{$v_abstract}" />
+					<xsl:when test="string-length($v_abstract) &gt; 0 and $v_abstract != '&#160;'">
+						<MSHelp:Attr Name="Abstract" Value="{$v_abstract}" />
 					</xsl:when>
 				</xsl:choose>
 

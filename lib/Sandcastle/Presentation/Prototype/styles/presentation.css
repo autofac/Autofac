@@ -149,7 +149,7 @@ ul.nobullet
     list-style-type: none;
 }
 
-div.code
+div#syntaxBlocks div.code
 {
 	clear: both;
 	width: 100%;
@@ -157,13 +157,54 @@ div.code
 	padding: 0.4em;
     font-family: Consolas, "Courier New", Courier, monospace;
     font-size: 9pt;
-	margin-bottom: 1em;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+div.code
+{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+div.code table
+{
+	border: 0;
+	font-size: 9pt;
+	margin-bottom: 5px;
+	width: 100%
+}
+
+div.code table th
+{
+	border-bottom-color: #C8CDDE;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	font-weight: bold;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	text-align: left;
+	vertical-align: middle;
+}
+
+div.code table td
+{
+	background:	#F7F7FF;
+	border-top-color: #FFFFFF;
+	border-top-style: solid;
+	border-top-width: 1px;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 5px;
 }
 
 pre {
-	margin: 0;
-	padding: 0;
+    margin: 0px;
+    padding: 2px;
     font-family: Consolas, "Courier New", Courier, monospace;
+	font-size: 105%;
 }
 
 table.authoredTable {
@@ -245,6 +286,15 @@ div.mediaCenter {
 	text-align: center;
 	margin-top: 1em;
 	margin-bottom: 1em;
+}
+
+div.preliminary
+{
+	margin-top: 1em;
+	margin-bottom: 1em;
+	font-weight: bold;
+	font-size: 110%;
+	color: #333333;
 }
 
 div.caption
@@ -691,3 +741,34 @@ div.outlineSectionEntrySummary
 {
 }
 
+/* Copy Code text and image styles */
+img.copyCodeImage
+{
+	border: 0;
+	margin: 1;
+	margin-right: 3;
+}
+
+span.copyCode
+{
+	color: #0000ff;
+	font-size: 90%;
+	font-weight: normal;
+	cursor: pointer;
+	float: right;
+	display: inline;
+	text-align: right;
+	text-decoration: underline;
+}
+
+span.copyCodeOnHover
+{
+	color: #E85F17;
+	font-size: 90%;
+	font-weight: normal;
+	cursor: pointer;
+	float: right;
+	display: inline;
+	text-align: right;
+	text-decoration: underline;
+}

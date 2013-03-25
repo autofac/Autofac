@@ -11,6 +11,7 @@
     >
 	<!-- ======================================================================================== -->
 
+	<xsl:import href="utilities_metadata.xsl" />
 	<xsl:import href="metadataHelp30.xsl"/>
 	<xsl:import href="metadataHelp20.xsl"/>
 	<xsl:import href="xamlSyntax.xsl"/>
@@ -2028,8 +2029,7 @@
 	</xsl:template>
 
 	<xsl:template name="t_putAssemblyNameAndModule">
-		<xsl:param name="library"
-							 select="/document/reference/containers/library"/>
+		<xsl:param name="library" select="/document/reference/containers/library"/>
 		<include item="assemblyNameAndModule">
 			<parameter>
 				<span sdata="assembly">
@@ -2048,6 +2048,9 @@
 						<xsl:text>exe</xsl:text>
 					</xsl:otherwise>
 				</xsl:choose>
+			</parameter>
+			<parameter>
+				<xsl:value-of select="$library/assemblydata/@version"/>
 			</parameter>
 		</include>
 	</xsl:template>

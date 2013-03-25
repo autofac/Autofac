@@ -7,8 +7,8 @@
 // System  : Sandcastle Help File Builder Utilities
 // File    : Prototype.xsl
 // Author  : Eric Woodruff
-// Updated : 03/15/2008
-// Note    : Copyright 2007-2008, Eric Woodruff, All rights reserved
+// Updated : 12/15/2012
+// Note    : Copyright 2007-2012, Eric Woodruff, All rights reserved
 //
 // This is used to convert *.topic additional content files into *.html files
 // that have the same appearance as API topics using the Prototype presentation
@@ -46,7 +46,7 @@
 
 <!-- Stylesheet and script for colorized code blocks -->
 <link type="text/css" rel="stylesheet" href="{$pathToRoot}styles/highlight.css" />
-<script type="text/javascript" src="{$pathToRoot}scripts/highlight.js"></script>
+<script type="text/javascript" src="{$pathToRoot}scripts/highlight_ac.js"></script>
 
 <xml>
     <MSHelp:Attr Name="DocSet" Value="NetFramework" />

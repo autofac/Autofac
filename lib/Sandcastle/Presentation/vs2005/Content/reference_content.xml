@@ -162,6 +162,8 @@
 	<item id="memberNameHeader">Member name</item>
 	<item id="memberValueHeader">Value</item>
 	<item id="memberDescriptionHeader">Description</item>
+	<item id="eventTypeHeader">Event Type</item>
+	<item id="eventReasonHeader">Reason</item>
 	<item id="exceptionNameHeader">Exception</item>
 	<item id="exceptionConditionHeader">Condition</item>
 	<item id="permissionNameHeader">Permission</item>
@@ -406,7 +408,7 @@
     <b>Assembly:</b>
   </item>
 
-  <item id="assemblyNameAndModule">{0} (in {1}.{2})</item>
+	<item id="assemblyNameAndModule">{0} (in {1}.{2}) Version: {3}</item>
 
   <item id="requirementsAssemblyLayout">
     <b>Assembly:</b> {0} (in {1}.dll)

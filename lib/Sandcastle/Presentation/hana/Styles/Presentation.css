@@ -581,10 +581,10 @@ span.copyCode
 	font-size: 75%;
 	font-weight: normal;
 	cursor: pointer;
-	float: left;
+	float: right;
 	display: inline;
-	text-align: left;
-	padding-bottom:10px;
+	text-align: right;
+	text-decoration: underline;
 }
 span.copyCodeOnHover
 {
@@ -592,10 +592,9 @@ span.copyCodeOnHover
 	font-size: 75%;
 	font-weight: normal;
 	cursor: pointer;
-	float: left;
+	float: right;
 	display: inline;
-	text-align: left;
-	padding-bottom:10px;
+	text-align: right;
 	text-decoration: underline;
 }
 
@@ -827,6 +826,15 @@ div.mediaCenter {
 	margin-bottom: 1em;
 }
 
+div.preliminary
+{
+	margin-top: 1em;
+	margin-bottom: 1em;
+	font-weight: bold;
+	font-size: 110%;
+	color: #333333;
+}
+
 div.caption
 {
 	margin-top: 1em;
@@ -841,7 +849,7 @@ span.captionLead
   margin-right: .5em;
 }
 
-div.code
+div#syntaxBlocks div.code
 {
 	clear: both;
 	width: 100%;
@@ -849,6 +857,7 @@ div.code
 	padding: 0.4em;
     font-family: Consolas, "Courier New", Courier, monospace;
     font-size: 9pt;
+	margin-top: 0px;
 	margin-bottom: 1em;
 	border-bottom:solid 1px #bfc2c7;
 	border-right:solid 1px #bfc2c7;
@@ -857,9 +866,60 @@ div.code
 	background-repeat:repeat-y;
 }
 
+div.code
+{
+	clear: both;
+	width: 100%;
+	background: #E3E6EB;
+	padding: 0.4em;
+    font-size: 9pt;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	border-bottom:solid 1px #bfc2c7;
+	border-right:solid 1px #bfc2c7;
+	display:block;
+	background-image:url(../icons/tab_sel_lft_grad.gif);
+	background-repeat:repeat-y;
+}
+
+div.code table
+{
+	border: 0;
+	font-size: 9pt;
+	margin-bottom: 5px;
+	width: 100%
+}
+
+div.code table th
+{
+	border-bottom-color: #C8CDDE;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	font-weight: bold;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	text-align: left;
+	vertical-align: middle;
+}
+
+div.code table td
+{
+	border-top-color: #FFFFFF;
+	border-top-style: solid;
+	border-top-width: 1px;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 5px;
+}
+
 pre
 {
+    margin: 0px;
+    padding: 2px;
     font-family: Consolas, "Courier New", Courier, monospace;
+	font-size: 105%;
 }
 
 div.memberSection

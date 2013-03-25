@@ -7,8 +7,6 @@
    >
 	<!-- ======================================================================================== -->
 
-	<xsl:import href="../../shared/transforms/utilities_metadata.xsl" />
-
 	<xsl:template name="t_insertMetadataHelp30">
 
 		<!-- System.Language -->

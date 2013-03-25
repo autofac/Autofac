@@ -55,6 +55,7 @@
   <!-- section titles -->
   <item id="title_remarks">Заметки</item>
   <item id="title_changeHistory">История изменений</item>
+  <item id="title_events">Events</item>
   <item id="title_exceptions">Исключения</item>
   <item id="title_contracts">Контракты</item>
   <item id="title_setter">Set</item>
@@ -93,7 +94,8 @@
   <item id="devlang_AspNet">ASP.NET</item>
   <item id="devlang_pshell">PowerShell</item>
   <item id="devlang_sql">SQL</item>
-  
+  <item id="devlang_Python">Python</item>
+
   <!-- language keywords -->
   <item id="devlang_nullKeyword">null (<span class="keyword">Nothing</span> в Visual Basic)</item>
   <item id="devlang_staticKeyword"><span class="keyword">static</span> (<span class="keyword">Shared</span> в Visual Basic)</item>

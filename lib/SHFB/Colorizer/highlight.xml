@@ -1114,7 +1114,7 @@
 				<!-- Code context -->
 				<context id="code" attribute="code">
 					<!-- Single line of comment -->
-					<regexp id="vb-comment" attribute="comment" context="code" expression="(?&lt;=\W|^)('.*|Rem(\t| ).*|Rem)([\r\n]{1,2}|$)" />
+					<regexp id="vb-comment" attribute="comment" context="code" expression="(?&lt;=\W|^)('.*?|Rem(\t| ).*?|Rem)([\r\n]{1,2}|$)" />
 					<!-- literal -->
 					<regexp id="literal" attribute="literal" context="code" expression="&quot;(.|&quot;&quot;)*?&quot;" />
 					<!-- preprocessor (#XXXX) -->
@@ -1134,7 +1134,7 @@
 				<!-- Code context -->
 				<context id="code" attribute="code">
 					<!-- Single line of comment -->
-					<regexp id="vb-comment" attribute="comment" context="code" expression="(?&lt;=\W|^)('.*|Rem(\t| ).*|Rem)([\r\n]{1,2}|$)" />
+					<regexp id="vb-comment" attribute="comment" context="code" expression="(?&lt;=\W|^)('.*?|Rem(\t| ).*?|Rem)([\r\n]{1,2}|$)" />
 					<!-- literal -->
 					<regexp id="literal" attribute="literal" context="code" expression="&quot;(.|&quot;&quot;)*?&quot;" />
 					<!-- numbers -->
@@ -1437,7 +1437,7 @@
 				<!-- basic source code context -->
 				<context id="code" attribute="code">
 					<!-- Single line of comment -->
-					<regexp id="python-comment" attribute="comment" context="code" expression="(?&lt;=\W|^)(#.*)([\r\n]{1,2}|$)" />
+					<regexp id="python-comment" attribute="comment" context="code" expression="(?&lt;=\W|^)(#.*?)([\r\n]{1,2}|$)" />
 					<!-- " " literals -->
 					<regexp id="dqliteral" attribute="literal" context="code" expression="(&quot;&quot;)|(@&quot;(.|[\r\n])*?&quot;|&quot;(.|\\&quot;|\\\r\n)*?((\\\\)+&quot;|[^\\]{1}&quot;))" />
 					<!-- ' ' literals -->

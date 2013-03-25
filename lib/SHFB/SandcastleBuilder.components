@@ -20,9 +20,17 @@
 		<!-- A list of build components on which this component depends.  If the indicated component does not exist
 				 in the project settings or in the configuration file already, it will be added automatically with its
 				 default configuration.  This element can be omitted if there are no dependencies. -->
+		<!--
 		<dependencies>
-			<component id="Post-transform Component" />
+			<component id="Dependent Component ID 1" />
+			<component id="Dependent Component ID 2" />
 		</dependencies>
+		-->
+
+		<!-- To prevent a component from showing up in the list of selectable components add a "hidden" element like
+				 this.  This is useful for preventing edits to components that already appear in the configuration file
+				 that you do not want to allow to be edited. -->
+		<!-- <hidden /> -->
 
 		<!-- This defines where the component configuration is inserted when placed in the reference build
 				 configuration file (sandcastle.config).  The "placement" attribute defines whether it is inserted before
@@ -55,11 +63,14 @@
 			<!-- Base path for relative filenames in source attributes (optional) -->
 			<basePath value="{@HtmlEncProjectFolder}" />
 
-			<!-- Connect to language filter (optional).  If omitted, language filtering is enabled by default. -->
-			<languageFilter value="true" />
+			<!-- Base output paths for the files (required).  These should match the parent folder of the output path
+					 of the HTML files (see each of the SaveComponent instances in the configuration files). -->
+			<outputPaths>
+				{@HelpFormatOutputPaths}
+			</outputPaths>
 
 			<!-- Allow missing source files (Optional).  If omitted, it will generate errors if referenced source files
-           are missing. -->
+				 are missing. -->
 			<allowMissingSource value="false" />
 
 			<!-- Remove region markers from imported code blocks.  If omitted, region markers in imported code blocks
@@ -69,9 +80,10 @@
 			<!-- Code colorizer options (required).
 					 Attributes:
 							Language syntax configuration file (required)
-							XSLT style file (required)
-							"Copy" image file URL (required)
-							Disabled (optional)
+							XSLT stylesheet file (required)
+							CSS stylesheet file (required)
+							Script file (required)
+							Disabled (optional, leading whitespace normalization only)
 							Default language (optional)
 							Enable line numbering (optional)
 							Enable outlining (optional)
@@ -79,35 +91,9 @@
 							Tab size override (optional, 0 = Use syntax file setting)
 							Use language name as default title (optional) -->
 			<colorizer syntaxFile="{@SHFBFolder}Colorizer\highlight.xml" styleFile="{@SHFBFolder}Colorizer\highlight.xsl"
-					copyImageUrl="../icons/CopyCode.gif" disabled="false" language="cs" numberLines="false"
-					outlining="false" keepSeeTags="false" tabSize="0" defaultTitle="true" />
-		</defaultConfiguration>
-	</component>
-
-	<!-- ****************************************************************** -->
-
-	<component id="Version Information Component"
-		type="SandcastleBuilder.Components.VersionInfoComponent"
-		assembly="{@SHFBFolder}SandcastleBuilder.Components.dll">
-		<description>This build component is used to obtain version information for each topic so that it can be placed in the footer by the Post-transform Component.</description>
-
-		<insert placement="before" type="Microsoft.Ddue.Tools.TransformComponent" />
-
-		<dependencies>
-			<component id="Post-transform Component" />
-		</dependencies>
-
-		<!-- To prevent a component from showing up in the list of selectable components add a "hidden" element like
-				 this.  This is useful for preventing edits to components that already appear in the configuration file
-				 that you do not want to allow to be edited. -->
-		<hidden />
-
-		<!-- Not editable at all -->
-		<configureMethod name="-" />
-
-		<defaultConfiguration>
-			<!-- Reflection information file for version info (required) -->
-			<reflectionFile filename="reflection.xml" />
+				stylesheet="{@SHFBFolder}Colorizer\highlight.css" scriptFile="{@SHFBFolder}Colorizer\highlight.js"
+				disabled="{@DisableCodeBlockComponent}" language="cs" numberLines="false" outlining="false"
+				keepSeeTags="false" tabSize="0" defaultTitle="true" />
 		</defaultConfiguration>
 	</component>
 
@@ -116,31 +102,21 @@
 	<component id="Post-transform Component"
 		type="SandcastleBuilder.Components.PostTransformComponent"
 		assembly="{@SHFBFolder}SandcastleBuilder.Components.dll">
-		<description>This build component is a companion to the Code Block Component and Version Information Component.  With those, or used by itself, it can also insert a logo image into the header of each API reference and conceptual content topic.</description>
+		<description>This component is obsolete and will be removed in a future release.</description>
 
 		<insert placement="after" type="Microsoft.Ddue.Tools.TransformComponent" />
 		<insertConceptual placement="after" type="Microsoft.Ddue.Tools.TransformComponent" />
 
 		<configureMethod name="ConfigureComponent" />
 
-		<defaultConfiguration>
-			<!-- Code colorizer files (required).
-					 Attributes:
-							Stylesheet file (required)
-							Script file (required)
-							"Copy" image file (required) -->
-			<colorizer stylesheet="{@SHFBFolder}Colorizer\highlight.css"
-					scriptFile="{@SHFBFolder}Colorizer\highlight.js"
-					copyImage="{@SHFBFolder}Colorizer\CopyCode.gif" />
+		<!-- This component is obsolete and will be removed in a future release. -->
+		<hidden />
 
-			<!-- Base output paths for the files (required).  These should match the parent folder of the output path
-					 of the HTML files (see each of the SaveComponent instances in the configuration files). -->
+		<defaultConfiguration>
 			<outputPaths>
 				{@HelpFormatOutputPaths}
 			</outputPaths>
 
-			<!-- Logo image file (optional).  Filename is required. The height, width, altText, placement, and
-					 alignment attributes are optional. -->
 			<logoFile filename="" height="0" width="0" altText="" placement="left" alignment="left" />
 		</defaultConfiguration>
 	</component>

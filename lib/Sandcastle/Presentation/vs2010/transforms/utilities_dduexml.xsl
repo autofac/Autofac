@@ -1224,52 +1224,43 @@
 		</xsl:choose>
 	</xsl:template>
 
-	<xsl:template match="ddue:languageKeyword"
-								name="t_ddue_languageKeyword">
-		<xsl:variable name="v_keyword"
-									select="."/>
-		<span sdata="langKeyword"
-					value="{$v_keyword}">
+	<xsl:template match="ddue:languageKeyword" name="t_ddue_languageKeyword">
+		<xsl:variable name="v_keyword" select="."/>
+		<span sdata="langKeyword" value="{$v_keyword}">
 			<xsl:variable name="v_syntaxKeyword">
 				<xsl:if test="/document/syntax">
 					<xsl:value-of select="'true'"/>
 				</xsl:if>
 			</xsl:variable>
 			<xsl:choose>
-				<xsl:when test="$v_keyword='null'">
+				<xsl:when test="$v_keyword='null' or $v_keyword='Nothing' or $v_keyword='nullptr'">
 					<xsl:call-template name="t_nullKeyword">
-						<xsl:with-param name="p_syntaxKeyword"
-														select="$v_syntaxKeyword"/>
+						<xsl:with-param name="p_syntaxKeyword" select="$v_syntaxKeyword"/>
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:when test="$v_keyword='static' or $v_keyword='Shared'">
 					<xsl:call-template name="t_staticKeyword">
-						<xsl:with-param name="p_syntaxKeyword"
-														select="$v_syntaxKeyword"/>
+						<xsl:with-param name="p_syntaxKeyword" select="$v_syntaxKeyword"/>
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:when test="$v_keyword='virtual' or $v_keyword='Overridable'">
 					<xsl:call-template name="t_virtualKeyword">
-						<xsl:with-param name="p_syntaxKeyword"
-														select="$v_syntaxKeyword"/>
+						<xsl:with-param name="p_syntaxKeyword" select="$v_syntaxKeyword"/>
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:when test="$v_keyword='true' or $v_keyword='True'">
 					<xsl:call-template name="t_trueKeyword">
-						<xsl:with-param name="p_syntaxKeyword"
-														select="$v_syntaxKeyword"/>
+						<xsl:with-param name="p_syntaxKeyword" select="$v_syntaxKeyword"/>
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:when test="$v_keyword='false' or $v_keyword='False'">
 					<xsl:call-template name="t_falseKeyword">
-						<xsl:with-param name="p_syntaxKeyword"
-														select="$v_syntaxKeyword"/>
+						<xsl:with-param name="p_syntaxKeyword" select="$v_syntaxKeyword"/>
 					</xsl:call-template>
 				</xsl:when>
-				<xsl:when test="$v_keyword='abstract'">
+				<xsl:when test="$v_keyword='abstract' or $v_keyword='MustInherit'">
 					<xsl:call-template name="t_abstractKeyword">
-						<xsl:with-param name="p_syntaxKeyword"
-														select="$v_syntaxKeyword"/>
+						<xsl:with-param name="p_syntaxKeyword" select="$v_syntaxKeyword"/>
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:otherwise>

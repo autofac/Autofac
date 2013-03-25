@@ -18,6 +18,6 @@ GOTO Exit
 :HelpViewer2
 
 REM Help Viewer 2.0
-HelpLibraryManagerLauncher.exe /viewerVersion 2.0 /catalogName {@CatalogName} /locale {@Locale} /wait 0 /operation uninstall /vendor "{@VendorName}" /productName "{@ProductTitle}" /bookList "{@HelpTitle}" > NUL
+HelpLibraryManagerLauncher.exe /viewerVersion 2.0 /catalogName {@CatalogName} /locale {@Locale} /wait 0 /operation uninstall /vendor "{@VendorName}" /productName "{@ProductTitle}" /bookList "{@HelpTitle}"
 
 :Exit

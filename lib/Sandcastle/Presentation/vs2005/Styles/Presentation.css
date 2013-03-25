@@ -325,40 +325,8 @@ div.section dd p
 }
 /*------------------------------ End General Table Styles -------------------------------*/
 
+/*------------------------------ Begin Non-scrolling Header Region Styles -------------------------------*/
 
-
-/*------------------------------ Begin Syntax and Snipper Code Block Styles -------------------------------*/
-div.code table
-{
-	border: 0;
-	font-size: 95%;
-	margin-bottom: 5;
-	margin-top:-.4em;
-	width: 100%
-}
-
-div.code table th
-{	
-	background:	#EFEFF7;
-	border-bottom-color: #C8CDDE;
-	border-bottom-style: solid;
-	border-bottom-width: 1;
-	color: #000066;
-	font-weight: bold;
-	padding-left: 5;
-	padding-right: 5;
-}
-
-div.code table td
-{
-	background:	#F7F7FF;
-	border-top-color: #FFFFFF;
-	border-top-style: solid;
-	border-top-width: 1;
-	padding-left: 5;
-	padding-right: 5;
-	padding-top: 5;
-}
 /* Applies to the running header text in the first row of the upper table in the
    non-scrolling header region. */
 span#runningHeaderText
@@ -620,24 +588,27 @@ div#mainSection table td.imageCell, div#mainSectionMHS table td.imageCell
 
 
 /*------------------------------ Begin Syntax and Snipper Code Block Styles -------------------------------*/
+
 div.code table
 {
-	border: 0;
+	border: 0 none;
 	font-size: 95%;
-	margin-bottom: 5;
+	margin-bottom: 5px;
 	width: 100%
 }
 
 div.code table th
-{	
-	background:	#EFEFF7;
+{
+    border: 0 none;
 	border-bottom-color: #C8CDDE;
 	border-bottom-style: solid;
-	border-bottom-width: 1;
-	color: #000066;
+	border-bottom-width: 1px;
 	font-weight: bold;
-	padding-left: 5;
-	padding-right: 5;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	vertical-align: middle;
 }
 
 div.code table td
@@ -645,10 +616,10 @@ div.code table td
 	background:	#F7F7FF;
 	border-top-color: #FFFFFF;
 	border-top-style: solid;
-	border-top-width: 1;
-	padding-left: 5;
-	padding-right: 5;
-	padding-top: 5;
+	border-top-width: 1px;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 5px;
 }
 /*------------------------------ End Syntax and Snipper Code Block Styles -------------------------------*/
 
@@ -734,6 +705,7 @@ div.code pre
 	font-size: 105%;
 	color:	#000066;
 	background: #F7F7FF;
+    margin-bottom: 5px;
 }
 
 /* Formats parameter tooltips. */
@@ -987,6 +959,15 @@ div.mediaCenter {
 	text-align: center;
 	margin-top: 1em;
 	margin-bottom: 1em;
+}
+
+div.preliminary
+{
+	margin-top: 1em;
+	margin-bottom: 1em;
+	font-weight: bold;
+	font-size: 110%;
+	color: #333333;
 }
 
 div.caption
@@ -1275,4 +1256,18 @@ table.members th.valueColumn {
 
 table.members th.descriptionColumn {
 /*	No fixed width, use whatever is left over */
+}
+
+/* These two entries were added by ComponentOne to fix MS Help Viewer 1.0 display issues */
+table#bottomTable, table#bottomTable tr, table#bottomTable td,
+	table#topTable, table#topTable tr, table#topTable td,
+	table#gradientTable, table#gradientTable tr, table#gradientTable td,
+	table#logoTable, table#logoTable tr, table#logoTable td
+{
+	border: 0 none;
+}
+
+body
+{
+	overflow: auto;
 }

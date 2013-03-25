@@ -49,6 +49,28 @@
 	<item id="FSharpLabel">F#</item>
     <item id="AspNetLabel">ASP.NET</item>
 
+  <!-- devlangs filter -->
+  <item id="VisualBasic">Visual Basic</item>
+  <item id="VBScript">Visual Basic Script</item>
+  <item id="CSharp">C#</item>
+  <item id="ManagedCPlusPlus">Visual C++</item>
+  <item id="JSharp">J#</item>
+  <item id="JScript">JScript</item>
+  <item id="xmlLang">Xml</item>
+  <item id="JavaScript">JavaScript</item>
+  <item id="FSharp">F#</item>
+  <item id="html">Html</item>
+  <item id="visualbasicANDcsharp"><include item="VisualBasic"/> and <include item="CSharp"/></item>
+  <item id="other"></item>
+  <item id="XAML">XAML</item>
+  <item id="usage">Usage</item>
+  <item id="AspNet">ASP.NET</item>
+  <item id="VisualBasicDeclaration"><include item="VisualBasic"/></item>
+  <item id="VisualBasicUsage"><include item="VisualBasic"/> (<include item="usage"/>)</item>
+  <item id="pshell">PowerShell</item>
+  <item id="sql">SQL</item>
+  <item id="Python">Python</item>
+
   <!-- product labels -->
   <item id="framework">.NET Framework</item>
   <item id="compact">.NET Compact Framework</item>
@@ -68,4 +90,9 @@
 
     <!-- Bibliography -->
     <item id="bibliographyTitle">Bibliography</item>
+
+
+	<item id="copyHoverImage">CopyHover image</item>
+	<item id="copyImage">Copy image</item>
+	<item id="copyCode">Copy Code</item>
 </content>

@@ -20,5 +20,11 @@
 			ToolsVersion="4.0"
 			Projects="$(MSBuildProjectDirectory)\Documentation.shfbproj"
 			Properties="SHFBRoot=$(MSBuildProjectDirectory)\..\lib\SHFB;HelpFileVersion=$(DocumentationVersion);DocumentationSources=$(DocumentationSources)" />
+		<ItemGroup>
+			<MicrosoftHelp Include="..\build_output\doc\Website\*.exe;..\build_output\doc\Website\*.msh*;..\build_output\doc\Website\*.bat;" />
+		</ItemGroup>
+		<!-- SHFB puts everything into one big folder, so move the MSHelp stuff into a separate folder. -->
+		<MakeDir Directories="..\build_output\doc\MSHelp" />
+		<Move SourceFiles="@(MicrosoftHelp)" DestinationFolder="..\build_output\doc\MSHelp" />
 	</Target>
 </Project>
