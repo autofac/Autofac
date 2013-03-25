@@ -19,7 +19,7 @@
 		<MSBuild
 			ToolsVersion="4.0"
 			Projects="$(MSBuildProjectDirectory)\Documentation.shfbproj"
-			Properties="SHFBRoot=$(MSBuildProjectDirectory)\..\lib\SHFB;HelpFileVersion=$(DocumentationVersion);DocumentationSources=$(DocumentationSources)" />
+			Properties="SHFBRoot=$(MSBuildProjectDirectory)\..\lib\SHFB;SandcastlePath=$(MSBuildProjectDirectory)\..\lib\Sandcastle;HelpFileVersion=$(DocumentationVersion);DocumentationSources=$(DocumentationSources)" />
 		<ItemGroup>
 			<MicrosoftHelp Include="..\build_output\doc\Website\*.exe;..\build_output\doc\Website\*.msh*;..\build_output\doc\Website\*.bat;" />
 		</ItemGroup>
