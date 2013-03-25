@@ -44,6 +44,7 @@
     <CopyrightText>Copyright (c) 2007-2013 Autofac Contributors</CopyrightText>
     <CopyrightHref>http://autofac.org</CopyrightHref>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
+    <FeedbackEMailAddress>autofac@googlegroups.com</FeedbackEMailAddress>
     <CatalogName>VisualStudio11</CatalogName>
     <TocParentId>-1</TocParentId>
     <TocParentVersion>100</TocParentVersion>
