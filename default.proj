@@ -295,7 +295,7 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 
 				But only the ones that point to the actual target frameworks we're using.
 			-->
-			<SecAnnotateReferenceAssemblies Include="%(DetectedDependencies.HintPath)" />
+			<SecAnnotateReferenceAssemblies Include="%(DetectedDependencies.HintPath);$(ProgramFiles)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.0\*.dll" />
 			<SecAnnotateReferenceDirectories Include="%(SecAnnotateReferenceAssemblies.RootDir)%(SecAnnotateReferenceAssemblies.Directory)" />
 		</ItemGroup>
 
@@ -310,8 +310,16 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 			File="$(SecAnnotateReferenceResponseFile)"
 			Lines="/d:%(SecAnnotateReferenceDirectories.FullPath)"
 			Overwrite="false" />
+		<!--
+			SecAnnotate will issue a warning like this because of the PCL library references. There's
+			nothing we can do, but it's NOT A PROBLEM.
+
+			EXEC : warning : Unifying desktop and CoreCLR mscorlib references together.  Make sure
+			that all assemblies being loaded are desktop assemblies, or all assemblies are CoreCLR
+			assemblies. [C:\autofac\trunk\default.proj]
+		-->
 		<Exec
-			Command="SecAnnotate.exe /o:&quot;$(BuildDirectory)\log\SecAnnotateResults.xml&quot; @&quot;$(SecAnnotateReferenceResponseFile)&quot; @&quot;$(SecAnnotateAnalyzeResponseFile)&quot;"
+			Command="SecAnnotate.exe /q /o:&quot;$(BuildDirectory)\log\SecAnnotateResults.xml&quot; @&quot;$(SecAnnotateReferenceResponseFile)&quot; @&quot;$(SecAnnotateAnalyzeResponseFile)&quot;"
 			WorkingDirectory="$(BuildDirectory)\bin\net40\" />
 	</Target>
 	<UsingTask TaskName="GetNuGetDependencyVersions" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
