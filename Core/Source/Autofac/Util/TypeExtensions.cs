@@ -135,14 +135,26 @@ namespace Autofac.Util
                        .Any(p => ParameterEqualsConstraint(p, constraint));
         }
 
-        static bool ParameterEqualsConstraint(Type parameter, Type constraint)
+        static bool ParameterEqualsConstraint( Type parameter, Type constraint )
         {
             var genericArguments = parameter.GetGenericArguments();
             if (genericArguments.Length > 0 && constraint.IsGenericType)
             {
                 var typeDefinition = constraint.GetGenericTypeDefinition();
-                var genericType = typeDefinition.MakeGenericType(genericArguments);
-                return genericType == parameter;
+                if (typeDefinition.GetGenericArguments().Length == genericArguments.Length)
+                {
+                    try
+                    {
+                        var genericType = typeDefinition.MakeGenericType(genericArguments);
+                        return genericType == parameter;
+                    }
+                    // ReSharper disable EmptyGeneralCatchClause
+                    catch (Exception)
+                    // ReSharper restore EmptyGeneralCatchClause
+                    {
+                        // Nothing to see here, move along!
+                    }
+                }
             }
             return false;
         }

@@ -1,6 +1,6 @@
 ﻿using Autofac.Core.Registration;
 using NUnit.Framework;
-using Autofac.Tests.Util;
+using System;
 
 namespace Autofac.Tests.Features.OpenGenerics
 {
@@ -109,23 +109,60 @@ namespace Autofac.Tests.Features.OpenGenerics
                 container.Resolve<IDouble<decimal, INested<IDouble<string, int>>>>());
         }
 
+        // ReSharper disable UnusedTypeParameter
         public interface IConstraint<T> { }
 
-        public class Constrained<T1, T2>
-            where T2 : IConstraint<T1>
-        {
-        }
+        public class Constrained<T1, T2> where T2 : IConstraint<T1> { }
+        // ReSharper restore UnusedTypeParameter
 
         [Test]
         public void CanResolveComponentWithNestedConstraintViaInterface()
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterGeneric(typeof (Constrained<,>));
+            builder.RegisterGeneric(typeof(Constrained<,>));
 
             var container = builder.Build();
 
             Assert.That(container.IsRegistered<Constrained<int, IConstraint<int>>>());
+        }
+
+        // ReSharper disable UnusedTypeParameter
+        public interface IConstraintWithAddedArgument<T2, T1> : IConstraint<T1> { }
+        // ReSharper restore UnusedTypeParameter
+
+        [Test]
+        public void CanResolveComponentWhenConstrainedArgumentIsGenericTypeWithMoreArgumentsThanGenericConstraint()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterGeneric(typeof(Constrained<,>));
+
+            var container = builder.Build();
+
+            Assert.That(container.IsRegistered<Constrained<int, IConstraintWithAddedArgument<string, int>>>());
+        }
+
+        // ReSharper disable UnusedTypeParameter
+        public interface IConstrainedConstraint<T> where T : IEquatable<int> { }
+
+        public interface IConstrainedConstraintWithAddedArgument<T1, T2> : IConstrainedConstraint<T2> where T2 : IEquatable<int> { }
+
+        public interface IConstrainedConstraintWithOnlyAddedArgument<T1> : IConstrainedConstraintWithAddedArgument<T1, int> { }
+
+        public class MultiConstrained<T1, T2> where T1 : IEquatable<int> where T2 : IConstrainedConstraint<T1> { }
+        // ReSharper restore UnusedTypeParameter
+
+        [Test]
+        public void CanResolveComponentWhenConstraintsAreNested()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterGeneric(typeof(MultiConstrained<,>));
+
+            var container = builder.Build();
+
+            Assert.That(container.IsRegistered<MultiConstrained<int, IConstrainedConstraintWithOnlyAddedArgument<string>>>());
         }
     }
 }
