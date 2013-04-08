@@ -135,7 +135,7 @@ namespace Autofac.Util
                        .Any(p => ParameterEqualsConstraint(p, constraint));
         }
 
-        static bool ParameterEqualsConstraint( Type parameter, Type constraint )
+        static bool ParameterEqualsConstraint(Type parameter, Type constraint)
         {
             var genericArguments = parameter.GetGenericArguments();
             if (genericArguments.Length > 0 && constraint.IsGenericType)
@@ -148,11 +148,9 @@ namespace Autofac.Util
                         var genericType = typeDefinition.MakeGenericType(genericArguments);
                         return genericType == parameter;
                     }
-                    // ReSharper disable EmptyGeneralCatchClause
                     catch (Exception)
-                    // ReSharper restore EmptyGeneralCatchClause
                     {
-                        // Nothing to see here, move along!
+                        return false;
                     }
                 }
             }
