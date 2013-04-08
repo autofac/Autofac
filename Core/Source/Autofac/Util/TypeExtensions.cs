@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -135,6 +136,7 @@ namespace Autofac.Util
                        .Any(p => ParameterEqualsConstraint(p, constraint));
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031", Justification = "Implementing a real TryMakeGenericType is not worth the effort.")]
         static bool ParameterEqualsConstraint(Type parameter, Type constraint)
         {
             var genericArguments = parameter.GetGenericArguments();
