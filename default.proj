@@ -85,7 +85,7 @@
 		<Message Text="Removing NuGet packages for clean package retrieval." />
 		<ItemGroup>
 			<NuGetRepositoryConfig Include="$(MSBuildProjectDirectory)/**/packages/repositories.config" />
-			<NuGetPackageFolders Include="$(MSBuildProjectDirectory[System.IO.Directory]::GetDirectories(&quot;%(NuGetRepositoryConfig.RootDir)%(NuGetRepositoryConfig.Directory)&quot;))" />
+			<NuGetPackageFolders Include="$([System.IO.Directory]::GetDirectories(&quot;%(NuGetRepositoryConfig.RootDir)%(NuGetRepositoryConfig.Directory)&quot;))" />
 		</ItemGroup>
 		<RemoveDir Directories="%(NuGetPackageFolders.Identity)" />
 	</Target>
