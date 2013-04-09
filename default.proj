@@ -65,8 +65,10 @@
 
 	<Target Name="Analyze">
 		<!--
-		<CallTarget Targets="__SecAnnotate" />
+			SecAnnotate generates a ton of false warnings so it only runs in production
+			builds. Other analysis can run in regular builds.
 		-->
+		<CallTarget Targets="__SecAnnotate" Condition="'$(Production)' == 'true'" />
 	</Target>
 
 	<Target Name="Clean">
@@ -259,7 +261,6 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 				* .NET 4.0 Client Profile
 				* .NET 3.5
 			-->
-
 			<DetectedDependencies40 Include="$(PackageInstallDirectory)\**\net40\*.dll;$(PackageInstallDirectory)\**\40\*.dll" />
 			<DetectedDependencies40Client Include="$(PackageInstallDirectory)\**\net40-client\*.dll;$(PackageInstallDirectory)\**\40-client\*.dll" />
 			<DetectedDependencies35 Include="$(PackageInstallDirectory)\**\net35\*.dll;$(PackageInstallDirectory)\**\35\*.dll" />
