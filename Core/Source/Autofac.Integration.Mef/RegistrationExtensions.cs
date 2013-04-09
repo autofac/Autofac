@@ -57,10 +57,12 @@ namespace Autofac.Integration.Mef
         
         static IEnumerable<Service> DefaultExposedServicesMapper(ExportDefinition ed)
         {
-            yield return MapService(ed);
+            Service service;
+            if (TryMapService(ed, out service))
+                yield return service;
         }
 
-        static Service MapService(ExportDefinition ed)
+        static bool TryMapService(ExportDefinition ed, out Service service)
         {
             /* Issue 326: MEF is string based, not type-based, so when an export and
              * an import line up on contract (or type identity) it's always based on a
@@ -85,19 +87,26 @@ namespace Autofac.Integration.Mef
              * still won't get registered. */
             var ct = FindType(ed.ContractName);
             if (ct != null)
-                return new TypedService(ct);
+            {
+                service = new TypedService(ct);
+                return true;
+            }
 
             var et = FindType((string)ed.Metadata[CompositionConstants.ExportTypeIdentityMetadataName]);
-            if(et != null)
-                return new KeyedService(ed.ContractName, et);
+            if (et != null)
+            {
+                service = new KeyedService(ed.ContractName, et);
+                return true;
+            }
 
-            return null;
+            service = null;
+            return false;
         }
 
         static Type FindType(string exportTypeIdentity)
         {
             var cache = (Dictionary<Type, string>)_typeIdentityCache.GetValue(null, null);
-            return cache.Where(kvp => kvp.Value == exportTypeIdentity).FirstOrDefault().Key;
+            return cache.FirstOrDefault(kvp => kvp.Value == exportTypeIdentity).Key;
         }
 
         /// <summary>
@@ -271,7 +280,7 @@ namespace Autofac.Integration.Mef
                     })
                     .As(exportId, contractService)
                     .ExternallyOwned()
-                    .WithMetadata((IEnumerable<KeyValuePair<string, object>>)exportDef.Metadata);
+                    .WithMetadata(exportDef.Metadata);
 
                 var additionalServices = exposedServicesMapper(exportDef).ToArray();
 
@@ -280,7 +289,7 @@ namespace Autofac.Integration.Mef
                     builder.Register(c => ((Export)c.ResolveService(exportId)).Value)
                         .As(additionalServices)
                         .ExternallyOwned()
-                        .WithMetadata((IEnumerable<KeyValuePair<string, object>>)exportDef.Metadata);
+                        .WithMetadata(exportDef.Metadata);
                 }
             }
         }
