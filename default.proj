@@ -56,7 +56,7 @@
 	-
 	-->
 	<Target Name="All">
-		<CallTarget Targets="UpdateVersion" Condition="'$(Production)' == 'true'" />
+		<CallTarget Targets="UpdateVersion;CleanNuGet" Condition="'$(Production)' == 'true'" />
 		<CallTarget Targets="Clean;Compile;Test;Analyze" />
 		<CallTarget Targets="Package" Condition="'$(Package)' == 'true'" />
 		<CallTarget Targets="Document" Condition="'$(Document)' == 'true'" />
@@ -79,6 +79,15 @@
 		<RemoveDir
 			Directories="%(AllProject.RootDir)%(AllProject.Directory)obj"
 			Condition="Exists('%(AllProject.RootDir)%(AllProject.Directory)obj')" />
+	</Target>
+
+	<Target Name="CleanNuGet">
+		<Message Text="Removing NuGet packages for clean package retrieval." />
+		<ItemGroup>
+			<NuGetRepositoryConfig Include="$(MSBuildProjectDirectory)/**/packages/repositories.config" />
+			<NuGetPackageFolders Include="$(MSBuildProjectDirectory[System.IO.Directory]::GetDirectories(&quot;%(NuGetRepositoryConfig.RootDir)%(NuGetRepositoryConfig.Directory)&quot;))" />
+		</ItemGroup>
+		<RemoveDir Directories="%(NuGetPackageFolders.Identity)" />
 	</Target>
 
 	<Target Name="Compile">
@@ -349,6 +358,7 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 						// the name of the package ("Castle.Core") and they'll have
 						// a "Version" metadata item with the package version.
 						var returnItems = new List<ITaskItem>();
+						var seen = new List<string>();
 						foreach(var directory in Directory.EnumerateDirectories(PackageInstallDirectory))
 						{
 							var directoryName = Path.GetFileName(directory);
@@ -358,6 +368,15 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 								continue;
 							}
 							var name = match.Groups[1].Value;
+							if(seen.Contains(name))
+							{
+								// If there are duplicate NuGet package names, that's a problem
+								// because the .nuspecs will potentially get the wrong version
+								// inserted. Err out so cleanup can happen.
+								throw new InvalidOperationException(String.Format("Multiple copies of component {0} found in NuGet package folder {1}. Update projects and clean up so only one version of the package exists.", name, PackageInstallDirectory));
+							}
+							seen.Add(name);
+
 							var version = match.Groups[2].Value;
 							var metadata = new Dictionary<string, string>();
 							metadata["Version"] = version;
