@@ -111,7 +111,7 @@ namespace Autofac.Core.Activators.Reflection
 
             var values = new object[_valueRetrievers.Length];
             for (var i = 0; i < _valueRetrievers.Length; ++i)
-                values[i] = _valueRetrievers[i].Invoke();
+                values[i] = _valueRetrievers[i]();
 
             Func<object[], object> constructorInvoker;
             if (!_constructorInvokers.TryGetValue(TargetConstructor, out constructorInvoker))
@@ -181,10 +181,9 @@ namespace Autofac.Core.Activators.Reflection
             }
 
             var newExpression = Expression.New(constructorInfo, argumentsExpression);
-            var lambdaExpression = Expression.Lambda(
-                typeof(Func<object[], object>), newExpression, parametersExpression);
+            var lambdaExpression = Expression.Lambda<Func<object[], object>>(newExpression, parametersExpression);
 
-            return (Func<object[], object>)lambdaExpression.Compile();
+            return lambdaExpression.Compile();
         }
     }
 }
