@@ -219,7 +219,15 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 	</Target>
 
 	<Target Name="UpdateVersion">
-		<AssemblyInfo
+		<AssemblyInfo Condition="'%(AutofacProject.PackageName)' != ''"
+			OutputFile="%(AutofacProject.RootDir)%(AutofacProject.Directory)Properties\VersionAssemblyInfo.cs"
+			CodeLanguage="CS"
+			AssemblyVersion="%(AutofacProject.AssemblyVersion)"
+			AssemblyFileVersion="%(AutofacProject.FileVersion)"
+			AssemblyConfiguration="$(BuildConfiguration) built on $(BuildTime)"
+			AssemblyCopyright="Copyright © $(BuildYear) Autofac Contributors"
+			AssemblyDescription="%(AutofacProject.PackageName) %(AutofacProject.PackageVersion)" />
+		<AssemblyInfo Condition="'%(AutofacProject.PackageName)' == ''"
 			OutputFile="%(AutofacProject.RootDir)%(AutofacProject.Directory)Properties\VersionAssemblyInfo.cs"
 			CodeLanguage="CS"
 			AssemblyVersion="%(AutofacProject.AssemblyVersion)"
