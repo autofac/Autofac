@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac.Core;
 using NUnit.Framework;
 
 namespace Autofac.Tests
@@ -104,6 +105,32 @@ namespace Autofac.Tests
             {
                 container.Resolve<object>();
             }
+        }
+
+        [Test, MaxTime(1000)]
+        public void NoLockWhenResolvingExistingSingleInstance()
+        {
+            var builder = new ContainerBuilder();
+            Func<IContainer> containerProvider = null;
+            builder.Register(c => new Int32()).SingleInstance();
+            builder.Register(c =>
+            {
+                using (var mres = new ManualResetEventSlim())
+                {
+                    ThreadPool.QueueUserWorkItem(state =>
+                    {
+                        containerProvider().Resolve<Int32>();
+                        mres.Set();
+                    });
+                    mres.Wait(1250);
+                }
+                return new object();
+            });
+
+            IContainer container = builder.Build();
+            containerProvider = () => container;
+            container.Resolve<Int32>();
+            container.Resolve<object>();
         }
     }
 }

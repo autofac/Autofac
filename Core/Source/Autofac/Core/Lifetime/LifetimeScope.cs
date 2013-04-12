@@ -223,14 +223,11 @@ namespace Autofac.Core.Lifetime
             if (parameters == null) throw new ArgumentNullException("parameters");
             CheckNotDisposed();
 
-            lock (_synchRoot)
-            {
-                var operation = new ResolveOperation(this);
-                var handler = ResolveOperationBeginning;
-                if (handler != null)
-                    handler(this, new ResolveOperationBeginningEventArgs(operation));
-                return operation.Execute(registration, parameters);
-            }
+            var operation = new ResolveOperation(this);
+            var handler = ResolveOperationBeginning;
+            if (handler != null)
+                handler(this, new ResolveOperationBeginningEventArgs(operation));
+            return operation.Execute(registration, parameters);
         }
 
         /// <summary>
