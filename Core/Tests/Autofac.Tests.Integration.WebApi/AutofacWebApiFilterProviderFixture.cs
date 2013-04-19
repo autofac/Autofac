@@ -288,6 +288,41 @@ namespace Autofac.Tests.Integration.WebApi
                 r => r.AsWebApiExceptionFilterFor<TestController>(c => c.Get()));
         }
 
+        [Test]
+        public void ResolvesMultipleFiltersOfDifferentTypes()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register<ILogger>(c => new Logger()).InstancePerDependency();
+
+            builder.Register(c => new TestAuthorizationFilter(c.Resolve<ILogger>()))
+                .AsWebApiAuthorizationFilterFor<TestController>()
+                .InstancePerApiRequest();
+
+            builder.Register(c => new TestExceptionFilter(c.Resolve<ILogger>()))
+                .AsWebApiExceptionFilterFor<TestController>()
+                .InstancePerApiRequest();
+
+            builder.Register(c => new TestActionFilter(c.Resolve<ILogger>()))
+                .AsWebApiActionFilterFor<TestController>()
+                .InstancePerApiRequest();
+
+            var container = builder.Build();
+            var provider = new AutofacWebApiFilterProvider(container);
+            var configuration = new HttpConfiguration
+            {
+                DependencyResolver = new AutofacWebApiDependencyResolver(container)
+            };
+            var actionDescriptor = BuildActionDescriptorForGetMethod();
+
+            var filterInfos = provider.GetFilters(configuration, actionDescriptor).ToArray();
+            var filters = filterInfos.Select(info => info.Instance).ToArray();
+
+            Assert.That(filters.OfType<AuthorizationFilterWrapper>().Count(), Is.EqualTo(1));
+            Assert.That(filters.OfType<ExceptionFilterWrapper>().Count(), Is.EqualTo(1));
+            Assert.That(filters.OfType<ActionFilterWrapper>().Count(), Is.EqualTo(1));
+        }
+
+
         static ReflectedHttpActionDescriptor BuildActionDescriptorForGetMethod()
         {
             return BuildActionDescriptorForGetMethod(typeof(TestController));

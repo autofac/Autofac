@@ -44,7 +44,7 @@ namespace Autofac.Integration.WebApi
             public ILifetimeScope LifetimeScope { get; set; }
             public Type ControllerType { get; set; }
             public List<FilterInfo> Filters { get; set; }
-            public List<FilterMetadata> AddedFilters { get; set; }
+            public Dictionary<string, List<FilterMetadata>> AddedFilters { get; set; }
         }
 
         readonly ILifetimeScope _rootLifetimeScope;
@@ -96,7 +96,12 @@ namespace Autofac.Integration.WebApi
                     LifetimeScope = lifetimeScope,
                     ControllerType = actionDescriptor.ControllerDescriptor.ControllerType,
                     Filters = filters,
-                    AddedFilters = new List<FilterMetadata>()
+                    AddedFilters = new Dictionary<string, List<FilterMetadata>>
+                    {
+                        {ActionFilterMetadataKey, new List<FilterMetadata>()},
+                        {AuthorizationFilterMetadataKey, new List<FilterMetadata>()},
+                        {ExceptionFilterMetadataKey, new List<FilterMetadata>()}
+                    }
                 };
 
                 ResolveControllerScopedFilter<IAutofacActionFilter, ActionFilterWrapper>(
@@ -132,11 +137,11 @@ namespace Autofac.Integration.WebApi
                     && metadata.ControllerType.IsAssignableFrom(filterContext.ControllerType)
                     && metadata.FilterScope == FilterScope.Controller
                     && metadata.MethodInfo == null
-                    && !MatchingFilterAdded(filterContext.AddedFilters, metadata))
+                    && !MatchingFilterAdded(filterContext.AddedFilters[metadataKey], metadata))
                 {
                     var wrapper = wrapperFactory(metadata);
                     filterContext.Filters.Add(new FilterInfo(wrapper, metadata.FilterScope));
-                    filterContext.AddedFilters.Add(metadata);
+                    filterContext.AddedFilters[metadataKey].Add(metadata);
                 }
             }
         }
@@ -156,11 +161,11 @@ namespace Autofac.Integration.WebApi
                     && metadata.ControllerType.IsAssignableFrom(filterContext.ControllerType)
                     && metadata.FilterScope == FilterScope.Action
                     && metadata.MethodInfo.GetBaseDefinition() == methodInfo.GetBaseDefinition()
-                    && !MatchingFilterAdded(filterContext.AddedFilters, metadata))
+                    && !MatchingFilterAdded(filterContext.AddedFilters[metadataKey], metadata))
                 {
                     var wrapper = wrapperFactory(metadata);
                     filterContext.Filters.Add(new FilterInfo(wrapper, metadata.FilterScope));
-                    filterContext.AddedFilters.Add(metadata);
+                    filterContext.AddedFilters[metadataKey].Add(metadata);
                 }
             }
         }
