@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Moq;
 using NUnit.Framework;
-using Autofac.Core;
 
 namespace Autofac.Tests.Builder
 {
@@ -189,6 +189,30 @@ namespace Autofac.Tests.Builder
                 () => cb.RegisterType<TwoCtors>().FindConstructorsWith((Func<Type, ConstructorInfo[]>)null));
 
             Assert.That(exception.ParamName, Is.EqualTo("finder"));
+        }
+
+        public class CustomConstructorFinder : IConstructorFinder
+        {
+            public bool FindConstructorsCalled { get; private set; }
+
+            public ConstructorInfo[] FindConstructors(Type targetType)
+            {
+                FindConstructorsCalled = true;
+                return new DefaultConstructorFinder().FindConstructors(targetType);
+            }
+        }
+
+        [Test]
+        public void FindConstructorsWith_CustomFinderProvided_CustomFinderInvoked()
+        {
+            var builder = new ContainerBuilder();
+            var finder = new CustomConstructorFinder();
+            builder.RegisterType<object>().FindConstructorsWith(finder);
+            var container = builder.Build();
+
+            container.Resolve<object>();
+
+            Assert.That(finder.FindConstructorsCalled, Is.True);
         }
 
         public class WithParam
