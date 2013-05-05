@@ -29,87 +29,59 @@ using System.Security;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.ResolveAnything;
-using Moq;
 
-namespace Autofac.Extras.Moq
+namespace Autofac.Extras.FakeItEasy
 {
     /// <summary>
-    /// Wrapper around <see cref="Autofac"/> and <see cref="Moq"/>
+    /// Wrapper around <see cref="Autofac"/> and <see cref="FakeItEasy"/>
     /// </summary>
     [SecurityCritical]
-    public class AutoMock : IDisposable
+    public class AutoFake : IDisposable
     {
         private bool _disposed;
-
-        /// <summary> 
-        /// <see cref="MockRepository"/> instance responsible for expectations and mocks. 
-        /// </summary>
-        public MockRepository MockRepository { [SecurityCritical]get; [SecurityCritical]private set; }
 
         /// <summary>
         /// <see cref="IContainer"/> that handles the component resolution.
         /// </summary>
         public IContainer Container { get; private set; }
 
-        private AutoMock(MockBehavior behavior)
-            : this(new MockRepository(behavior))
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AutoFake" /> class.
+        /// </summary>
+        /// <param name="strict">
+        /// <see langword="true" /> to create strict fakes.
+        /// This means that any calls to the fakes that have not been explicitly configured will throw an exception.
+        /// </param>
+        /// <param name="callsBaseMethods">
+        /// <see langword="true" /> to delegate configured method calls to the base method of the faked method.
+        /// </param>
+        /// <param name="callsDoNothing">
+        /// <see langword="true" /> to configure fake calls to do nothing when called.
+        /// </param>
+        /// <param name="onFakeCreated">Specifies an action that should be run over a fake object once it's created.</param>
+        public AutoFake(
+            bool strict = false,
+            bool callsBaseMethods = false,
+            bool callsDoNothing = false,
+            Action<object> onFakeCreated = null)
         {
-        }
-
-        private AutoMock(MockRepository repository)
-        {
-            MockRepository = repository;
             var builder = new ContainerBuilder();
-            builder.RegisterInstance(MockRepository);
             builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
-            builder.RegisterSource(new MoqRegistrationHandler());
+            builder.RegisterSource(new FakeRegistrationHandler(strict, callsBaseMethods, callsDoNothing, onFakeCreated));
             Container = builder.Build();
-            VerifyAll = false;
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="AutoMock"/> class.
+        /// Finalizes an instance of the <see cref="AutoFake"/> class.
         /// </summary>
         [SecuritySafeCritical]
-        ~AutoMock()
+        ~AutoFake()
         {
             Dispose(false);
         }
 
         /// <summary>
-        /// Create new <see cref="AutoMock"/> instance with loose mock behavior.
-        /// </summary>
-        /// <seealso cref="MockRepository"/>
-        /// <returns>Container initialized for loose behavior.</returns>
-        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public static AutoMock GetLoose()
-        {
-            return new AutoMock(MockBehavior.Loose);
-        }
-
-        /// <summary>
-        /// Create new <see cref="AutoMock"/> instance with strict mock behavior.
-        /// </summary>
-        /// <seealso cref="MockRepository"/>
-        /// <returns>Container initialized for loose behavior.</returns>
-        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public static AutoMock GetStrict()
-        {
-            return new AutoMock(MockBehavior.Strict);
-        }
-
-        /// <summary>
-        /// Create new <see cref="AutoMock"/> instance that will create mocks with behavior defined by <c>repository</c>.
-        /// </summary>
-        /// <param name="repository"></param>
-        /// <returns></returns>
-        public static AutoMock GetFromRepository(MockRepository repository)
-        {
-            return new AutoMock(repository);
-        }
-
-        /// <summary>
-        /// Verifies mocks and disposes internal container.
+        /// Disposes internal container.
         /// </summary>
         [SecuritySafeCritical]
         public void Dispose()
@@ -123,7 +95,7 @@ namespace Autofac.Extras.Moq
         /// </summary>
         /// <param name="disposing">
         /// <see langword="true" /> to dispose of managed resources (during a manual execution
-        /// of <see cref="Autofac.Extras.Moq.AutoMock.Dispose()"/>); or
+        /// of <see cref="Autofac.Extras.FakeItEasy.AutoFake.Dispose()"/>); or
         /// <see langword="false" /> if this is getting run as part of finalization where
         /// managed resources may have already been cleaned up.
         /// </param>
@@ -133,45 +105,10 @@ namespace Autofac.Extras.Moq
             {
                 if (disposing)
                 {
-                    // We can only verify things with the mock
-                    // repository if it hasn't already been garbage
-                    // collected during finalization.
-                    try
-                    {
-                        if (VerifyAll)
-                        {
-                            MockRepository.VerifyAll();
-                        }
-                        else
-                        {
-                            MockRepository.Verify();
-                        }
-                    }
-                    finally
-                    {
-                        Container.Dispose();
-                    }
+                    Container.Dispose();
                 }
                 _disposed = true;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether all mocks are verified.
-        /// </summary>
-        /// <value><c>true</c> to verify all mocks. <c>false</c> (default) to verify only mocks marked Verifiable.</value>
-        public bool VerifyAll { get; set; }
-
-        /// <summary>
-        /// Finds (creating if needed) the actual mock for the provided type
-        /// </summary>
-        /// <typeparam name="T">Type to mock</typeparam>
-        /// <param name="parameters">Optional parameters</param>
-        /// <returns>Mock</returns>
-        public Mock<T> Mock<T>(params Parameter[] parameters) where T : class
-        {
-            var obj = (IMocked<T>)Create<T>(parameters);
-            return obj.Mock;
         }
 
         /// <summary>

@@ -1,223 +1,186 @@
-using Autofac.Extras.Moq;
-using Moq;
+using System;
+using System.Reflection.Emit;
+using Autofac.Extras.FakeItEasy;
+using FakeItEasy;
 using NUnit.Framework;
 
-namespace Autofac.Extras.Tests.Moq
+namespace Autofac.Extras.Tests.FakeItEasy
 {
     [TestFixture]
-    public sealed class AutoMockFixture
+    public sealed class AutoFakeFixture
     {
-        #region stubs
-        public interface IServiceA
-        {
-            void RunA();
-        }
-
-        public interface IServiceB
-        {
-            void RunB();
-        }
-
-        public class ServiceA : IServiceA
-        {
-            public void RunA() { }
-        }
-
-        public sealed class TestComponent
-        {
-            private readonly IServiceA _serviceA;
-            private readonly IServiceB _serviceB;
-
-            public TestComponent(IServiceA serviceA, IServiceB serviceB)
-            {
-                this._serviceA = serviceA;
-                this._serviceB = serviceB;
-            }
-
-            public void RunAll()
-            {
-                this._serviceA.RunA();
-                this._serviceB.RunB();
-            }
-        }
-        #endregion
-
-        /// <summary>
-        /// Defaults the constructor is loose.
-        /// </summary>
         [Test]
-        public void DefaultConstructorIsLoose()
+        public void ByDefaultFakesAreNotStrict()
         {
-            using (var mock = AutoMock.GetLoose())
+            using (var fake = new AutoFake())
             {
-                RunWithSingleSetupationTest(mock);
+                var foo = fake.Create<Foo>();
+                Assert.DoesNotThrow(() => foo.Go());
             }
         }
 
         [Test]
-        public void GetFromRepositoryUsesLooseBehaviorSetOnRepository()
+        public void CanCreateStrictFakes()
         {
-            using (var mock = AutoMock.GetFromRepository(new MockRepository(MockBehavior.Loose)))
+            using (var fake = new AutoFake(strict: true))
             {
-                RunWithSingleSetupationTest(mock);
+                var foo = fake.Create<Foo>();
+                Assert.Throws<ExpectationException>(() => foo.Go());
             }
         }
 
         [Test]
-        [ExpectedException(typeof(MockException))]
-        public void GetFromRepositoryUsesStrictBehaviorSetOnRepository()
+        public void ByDefaultFakesDoNotCallBaseMethods()
         {
-            using (var mock = AutoMock.GetFromRepository(new MockRepository(MockBehavior.Strict)))
+            using (var fake = new AutoFake())
             {
-                RunWithSingleSetupationTest(mock);
-            }
-        }
-
-
-        [Test]
-        public void ProvideInstance()
-        {
-            using (var mock = AutoMock.GetLoose())
-            {
-                var mockA = new Mock<IServiceA>();
-                mockA.Setup(x => x.RunA());
-                mock.Provide(mockA.Object);
-
-                var component = mock.Create<TestComponent>();
-                component.RunAll();
-
-                mockA.VerifyAll();
+                var bar = fake.Create<Bar>();
+                bar.Go();
+                Assert.False(bar.Gone);
             }
         }
 
         [Test]
-        public void ProvideImplementation()
+        public void CanCreateFakesWhichCallsBaseMethods()
         {
-            using (var mock = AutoMock.GetLoose())
+            using (var fake = new AutoFake(callsBaseMethods: true))
             {
-                var serviceA = mock.Provide<IServiceA, ServiceA>();
-
-                Assert.IsNotNull(serviceA);
-                Assert.IsFalse(serviceA is IMocked<IServiceA>);
+                var bar = fake.Create<Bar>();
+                bar.Go();
+                Assert.True(bar.Gone);
             }
         }
 
         [Test]
-        public void DefaultConstructorWorksWithAllTests()
+        public void ByDefaultFakesRespondToCalls()
         {
-            using (var mock = AutoMock.GetLoose())
+            using (var fake = new AutoFake())
             {
-                RunTest(mock);
+                var bar = fake.Create<IBar>();
+                var result = bar.Spawn();
+                Assert.NotNull(result);
             }
         }
 
         [Test]
-        [ExpectedException(typeof(MockException))]
-        public void UnmetSetupationWithStrictMocksThrowsException()
+        public void CanCreateFakesWhichDoNotRespondToCalls()
         {
-            using (var mock = AutoMock.GetStrict())
+            using (var fake = new AutoFake(callsDoNothing: true))
             {
-                RunWithSingleSetupationTest(mock);
+                var bar = fake.Create<IBar>();
+                var result = bar.Spawn();
+                Assert.Null(result);
             }
         }
 
         [Test]
-        public void LooseWorksWithUnmetSetupations()
+        public void CanCreateFakesWhichInvokeActionsWhenCreated()
         {
-            using (var loose = AutoMock.GetLoose())
+            object createdFake = null;
+            using (var fake = new AutoFake(onFakeCreated: obj => createdFake = obj))
             {
-                RunWithSingleSetupationTest(loose);
+                var bar = fake.Create<IBar>();
+                Assert.AreSame(bar, createdFake);
             }
         }
 
         [Test]
-        public void StrictWorksWithAllSetupationsMet()
+        public void ProvidesInstances()
         {
-            using (var strict = AutoMock.GetStrict())
+            using (var fake = new AutoFake())
             {
-                RunTest(strict);
+                var bar = A.Fake<IBar>();
+                fake.Provide(bar);
+
+                var foo = fake.Create<Foo>();
+                foo.Go();
+
+                A.CallTo(() => bar.Go()).MustHaveHappened();
             }
         }
 
         [Test]
-        public void NormalSetupationsAreNotVerifiedByDefault()
+        public void ProvidesImplementations()
         {
-            using (var mock = AutoMock.GetLoose())
+            using (var fake = new AutoFake())
             {
-                SetUpSetupations(mock);
+                var baz = fake.Provide<IBaz, Baz>();
+
+                Assert.IsNotNull(baz);
+                Assert.IsTrue(baz is Baz);
             }
         }
 
-        [Test]
-        [ExpectedException(typeof(MockException))]
-        public void UnmetVerifiableSetupationsCauseExceptionByDefault()
+        public interface IBar
         {
-            using (var mock = AutoMock.GetLoose())
+            bool Gone { get; }
+
+            void Go();
+
+            IBar Spawn();
+        }
+
+        public abstract class Bar : IBar
+        {
+            private bool _gone;
+
+            public bool Gone
             {
-                SetUpVerifableSetupations(mock);
+                get { return _gone; }
+            }
+
+            public virtual void Go()
+            {
+                _gone = true;
+            }
+
+            public IBar Spawn()
+            {
+                throw new NotImplementedException();
             }
         }
 
-        [Test]
-        public void VerifyAllSetTrue_SetupationsAreVerified()
+        public interface IBaz
         {
-            using (var mock = AutoMock.GetLoose())
+            void Go();
+        }
+
+        public class Baz : IBaz
+        {
+            private bool _gone;
+
+            public bool Gone
             {
-                mock.VerifyAll = true;
-                RunTest(mock);
+                get { return _gone; }
+            }
+
+            public virtual void Go()
+            {
+                _gone = true;
             }
         }
 
-        [Test]
-        [ExpectedException(typeof(MockException))]
-        public void VerifyAllSetTrue_UnmetSetupationsCauseException()
+        public class Foo
         {
-            using (var mock = AutoMock.GetLoose())
+            private readonly IBar _bar;
+            private readonly IBaz _baz;
+
+            public Foo(IBar bar, IBaz baz)
             {
-                mock.VerifyAll = true;
-                SetUpSetupations(mock);
+                this._bar = bar;
+                this._baz = baz;
+            }
+
+            public virtual void Go()
+            {
+                this._bar.Go();
+                this._baz.Go();
             }
         }
 
-        [Test]
-        public void ProperInitializationIsPerformed()
+        [AttributeUsage(AttributeTargets.Class)]
+        public class ForTestAttribute : Attribute
         {
-            AssertProperties(AutoMock.GetLoose());
-            AssertProperties(AutoMock.GetStrict());
-        }
-
-        private static void AssertProperties(AutoMock mock)
-        {
-            Assert.IsNotNull(mock.Container);
-            Assert.IsNotNull(mock.MockRepository);
-        }
-
-        private static void RunTest(AutoMock mock)
-        {
-            SetUpSetupations(mock);
-
-            var component = mock.Create<TestComponent>();
-            component.RunAll();
-        }
-
-        private static void SetUpSetupations(AutoMock mock)
-        {
-            mock.Mock<IServiceB>().Setup(x => x.RunB());
-            mock.Mock<IServiceA>().Setup(x => x.RunA());
-        }
-
-        private static void SetUpVerifableSetupations(AutoMock mock)
-        {
-            mock.Mock<IServiceB>().Setup(x => x.RunB()).Verifiable();
-            mock.Mock<IServiceA>().Setup(x => x.RunA()).Verifiable();
-        }
-
-        private static void RunWithSingleSetupationTest(AutoMock mock)
-        {
-            mock.Mock<IServiceB>().Setup(x => x.RunB());
-
-            var component = mock.Create<TestComponent>();
-            component.RunAll();
         }
     }
 }
