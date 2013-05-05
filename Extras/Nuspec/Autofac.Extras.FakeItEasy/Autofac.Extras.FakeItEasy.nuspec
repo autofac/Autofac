@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <id>Autofac.Extras.FakeItEasy</id>
+    <version>$AFversion_Autofac.Extras.FakeItEasy$</version>
+    <authors>Autofac Contributors</authors>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This extension provides support for autofaking and creation of fake objects in FakeItEasy using Autofac.</description>
+    <summary>Autofac extension supporting generation of FakeItEasy objects.</summary>
+    <language>en-US</language>
+    <title>Autofac Extras: FakeItEasy Faking Support</title>
+    <projectUrl>http://autofac.org</projectUrl>
+    <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
+    <dependencies>
+      <dependency id="Autofac" version="$AFversion_Autofac$" />
+      <dependency id="FakeItEasy" version="$version_FakeItEasy$" />
+    </dependencies>
+  </metadata>
+</package>
