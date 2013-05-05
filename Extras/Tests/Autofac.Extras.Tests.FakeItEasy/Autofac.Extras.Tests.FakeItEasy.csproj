@@ -78,7 +78,7 @@
     <Compile Include="..\..\Source\Autofac.Extras.Moq\Properties\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AutoMockFixture.cs" />
+    <Compile Include="AutoFakeFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
