@@ -16,7 +16,8 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("3.0.0.0")]
 [assembly: AssemblyFileVersion("3.0.0.0")]
-[assembly: AssemblyConfiguration("Release built on 2013-02-28 02:03")]
+[assembly: AssemblyConfiguration("Release built on 2013-05-06 22:26")]
 [assembly: AssemblyCopyright("Copyright © 2013 Autofac Contributors")]
+[assembly: AssemblyDescription("Autofac.Extras.FakeItEasy 3.0.0-beta")]
 
 

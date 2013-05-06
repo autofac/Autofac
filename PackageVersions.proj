@@ -114,7 +114,7 @@
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
 			<FileVersion>3.0.0.0</FileVersion>
 			<PackageName>Autofac.Extras.FakeItEasy</PackageName>
-			<PackageVersion>3.0.0</PackageVersion>
+			<PackageVersion>3.0.0-beta</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.Moq\Autofac.Extras.Moq.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
