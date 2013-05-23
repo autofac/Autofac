@@ -71,6 +71,7 @@
     <Compile Include="Core\Activators\Reflection\DefaultConstructorFinder.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Features\ResolveAnything\AnyConcreteTypeNotAlreadyRegisteredSourceExtensions.cs" />
     <Compile Include="ModuleResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

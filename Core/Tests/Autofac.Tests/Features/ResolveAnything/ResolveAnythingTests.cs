@@ -92,6 +92,42 @@ namespace Autofac.Tests.Features.ResolveAnything
             Assert.That(container.IsRegistered<string>(), Is.False);
         }
 
+        [Test]
+        public void LifetimeCanBeInstancePerLifetimeScope()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource().WithRegistrationsAs(rb => rb.InstancePerLifetimeScope()));
+            var container = cb.Build();
+
+            var first = container.Resolve<NotRegisteredType>();
+            var second = container.Resolve<NotRegisteredType>();
+            Assert.AreSame(first, second);
+            using (var scope = container.BeginLifetimeScope())
+            {
+                var third = scope.Resolve<NotRegisteredType>();
+                Assert.AreNotSame(first, third);
+                var fourth = scope.Resolve<NotRegisteredType>();
+                Assert.AreSame(third, fourth);
+            }
+        }
+
+        [Test]
+        public void LifetimeCanBeSingleInstance()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource().WithRegistrationsAs(rb => rb.SingleInstance()));
+            var container = cb.Build();
+
+            var first = container.Resolve<NotRegisteredType>();
+            var second = container.Resolve<NotRegisteredType>();
+            Assert.AreSame(first, second);
+            using (var scope = container.BeginLifetimeScope())
+            {
+                var third = scope.Resolve<NotRegisteredType>();
+                Assert.AreSame(first, third);
+            }
+        }
+
         static IContainer CreateResolveAnythingContainer()
         {
             var cb = new ContainerBuilder();
