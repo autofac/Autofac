@@ -72,6 +72,7 @@
     <Compile Include="WeakTypeAttributedMetadataModuleTestFixture.cs" />
     <Compile Include="WeakTypedAttributeScenarioTestFixture.cs" />
     <Compile Include="WeakTypedScenarioMetadataModuleTestFixture.cs" />
+    <Compile Include="WithMetadataFilterTestFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Core\Source\Autofac.Integration.Mef\Autofac.Integration.Mef.csproj">
