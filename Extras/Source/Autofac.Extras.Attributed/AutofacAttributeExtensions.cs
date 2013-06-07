@@ -26,9 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Autofac.Builder;
-using Autofac.Features.Metadata;
 using Autofac.Features.Scanning;
 
 namespace Autofac.Extras.Attributed
@@ -38,18 +36,6 @@ namespace Autofac.Extras.Attributed
     /// </summary>
     public static class AutofacAttributeExtensions
     {
-        /// <summary>
-        /// Reference to the <see cref="Autofac.Extras.Attributed.AutofacAttributeExtensions.FilterOne{T}"/>
-        /// method used in creating a closed generic reference during registration.
-        /// </summary>
-        private static readonly MethodInfo filterOne = typeof(AutofacAttributeExtensions).GetMethod("FilterOne", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.InvokeMethod);
-
-        /// <summary>
-        /// Reference to the <see cref="Autofac.Extras.Attributed.AutofacAttributeExtensions.FilterAll{T}"/>
-        /// method used in creating a closed generic reference during registration.
-        /// </summary>
-        private static readonly MethodInfo filterAll = typeof(AutofacAttributeExtensions).GetMethod("FilterAll", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.InvokeMethod);
-
         /// <summary>
         /// This method can be invoked with the assembly scanner to register metadata that is declared loosely using
         /// attributes marked with the MetadataAttributeAttribute. All of the marked attributes are used together to create
@@ -104,8 +90,8 @@ namespace Autofac.Extras.Attributed
         }
 
         /// <summary>
-        /// Applies metadata filtering on constructor dependencies for use with the
-        /// <see cref="Autofac.Extras.Attributed.WithMetadataAttribute"/>.
+        /// Applies attribute-based filtering on constructor dependencies for use with attributes
+        /// derived from the <see cref="Autofac.Extras.Attributed.ParameterFilterAttribute"/>.
         /// </summary>
         /// <typeparam name="TLimit">The type of the registration limit.</typeparam>
         /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
@@ -117,16 +103,17 @@ namespace Autofac.Extras.Attributed
         /// </exception>
         /// <remarks>
         /// <para>
-        /// Apply this metadata filter to component registrations that use the
-        /// <see cref="Autofac.Extras.Attributed.WithMetadataAttribute"/> in their constructors.
-        /// Doing so will allow the metadata filtering to occur. See
+        /// Apply this extension to component registrations that use attributes
+        /// that derive from the <see cref="Autofac.Extras.Attributed.ParameterFilterAttribute"/>
+        /// like the <see cref="Autofac.Extras.Attributed.WithMetadataAttribute"/>
+        /// in their constructors. Doing so will allow the attribute-based filtering to occur. See
         /// <see cref="Autofac.Extras.Attributed.WithMetadataAttribute"/> for an
         /// example on how to use the filter and attribute together.
         /// </para>
         /// </remarks>
         /// <seealso cref="Autofac.Extras.Attributed.WithMetadataAttribute"/>
         public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TRegistrationStyle>
-            WithMetadataFilter<TLimit, TReflectionActivatorData, TRegistrationStyle>(
+            WithAttributeFilter<TLimit, TReflectionActivatorData, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TReflectionActivatorData, TRegistrationStyle> builder)
             where TReflectionActivatorData : ReflectionActivatorData
         {
@@ -135,51 +122,12 @@ namespace Autofac.Extras.Attributed
                 throw new ArgumentNullException("builder");
             }
             return builder.WithParameter(
-                (p, c) => p.GetCustomAttributes(true).OfType<WithMetadataAttribute>().Any(),
+                (p, c) => p.GetCustomAttributes(true).OfType<ParameterFilterAttribute>().Any(),
                 (p, c) =>
                 {
-                    var filter = p.GetCustomAttributes(true).OfType<WithMetadataAttribute>().First();
-
-                    // GetElementType currently is the effective equivalent of "Determine if the type
-                    // is in IEnumerable and if it is, get the type being enumerated." This doesn't support
-                    // the other relationship types like Lazy<T>, Func<T>, etc. If we need to add that,
-                    // this is the place to do it.
-                    var elementType = GetElementType(p.ParameterType);
-                    var hasMany = elementType != p.ParameterType;
-
-                    if (hasMany)
-                    {
-                        return filterAll.MakeGenericMethod(elementType).Invoke(null, new object[] { c, filter });
-                    }
-
-                    return filterOne.MakeGenericMethod(elementType).Invoke(null, new object[] { c, filter });
+                    var filter = p.GetCustomAttributes(true).OfType<ParameterFilterAttribute>().First();
+                    return filter.ResolveParameter(p, c);
                 });
-        }
-
-        private static Type GetElementType(Type type)
-        {
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                return type.GetGenericArguments()[0];
-
-            return type;
-        }
-
-        private static T FilterOne<T>(IComponentContext context, WithMetadataAttribute filter)
-        {
-            // Using Lazy<T> to ensure components that aren't actually used won't get activated.
-            return context.Resolve<IEnumerable<Meta<Lazy<T>>>>()
-                .Where(m => m.Metadata.ContainsKey(filter.Key) && filter.Value.Equals(m.Metadata[filter.Key]))
-                .Select(m => m.Value.Value)
-                .FirstOrDefault();
-        }
-
-        private static IEnumerable<T> FilterAll<T>(IComponentContext context, WithMetadataAttribute filter)
-        {
-            // Using Lazy<T> to ensure components that aren't actually used won't get activated.
-            return context.Resolve<IEnumerable<Meta<Lazy<T>>>>()
-                .Where(m => m.Metadata.ContainsKey(filter.Key) && filter.Value.Equals(m.Metadata[filter.Key]))
-                .Select(m => m.Value.Value)
-                .ToArray();
         }
     }
 }
