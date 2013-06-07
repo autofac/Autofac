@@ -6,15 +6,18 @@ using System.Linq;
 namespace Autofac.Extras.Attributed
 {
     /// <summary>
-    /// this class is responsible for translating a types attribute properties into a set consumable by autofac
+    /// Translates a type's attribute properties into a set consumable by Autofac.
     /// </summary>
     public static class MetadataHelper
     {
         /// <summary>
-        /// given a target object, returns a set of properties and associated values
+        /// Given a target object, returns a set of properties and associated values.
         /// </summary>
-        /// <param name="target">target instance to be scanned</param>
-        /// <returns>enumerable set of properties and associated values</returns>
+        /// <param name="target">Target instance to be scanned.</param>
+        /// <returns>Enumerable set of properties and associated values.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="target" /> is <see langword="null" />.
+        /// </exception>
         public static IEnumerable<KeyValuePair<string, object>> GetProperties(object target)
         {
             if (target == null)
@@ -32,10 +35,13 @@ namespace Autofac.Extras.Attributed
 
 
         /// <summary>
-        /// given a type, interrogate the attribution to retrieve an enumerable set property names
+        /// Given a type, interrogate the attribution to retrieve an enumerable set property names.
         /// </summary>
-        /// <param name="targetType">type to interrogate for metdata attribute attributes</param>
-        /// <returns>enumerable set of properties found</returns>
+        /// <param name="targetType">Type to interrogate for metdata attribute attributes.</param>
+        /// <returns>Enumerable set of properties found.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="targetType" /> is <see langword="null" />.
+        /// </exception>
         public static IEnumerable<KeyValuePair<string, object>> GetMetadata(Type targetType)
         {
             if (targetType == null)
@@ -45,18 +51,21 @@ namespace Autofac.Extras.Attributed
             var propertyList = new List<KeyValuePair<string, object>>();
 
             foreach (var attribute in targetType.GetCustomAttributes(true)
-                                                .Where(p => p.GetType().GetCustomAttributes(typeof(MetadataAttributeAttribute), false).Any()))
+                                                .Where(p => p.GetType().GetCustomAttributes(typeof(MetadataAttributeAttribute), true).Any()))
                 propertyList.AddRange(GetProperties(attribute));
 
             return propertyList;
         }
 
         /// <summary>
-        /// given a strong type, interrogate the attribution to retrieve an enumerable set of property names
+        /// Given a strong type, interrogate the attribution to retrieve an enumerable set of property names.
         /// </summary>
-        /// <typeparam name="TMetadataType">metadata type to look for in the list of attributes</typeparam>
-        /// <param name="targetType">type to interrogate</param>
-        /// <returns>enumerable set of properties found</returns>
+        /// <typeparam name="TMetadataType">Metadata type to look for in the list of attributes.</typeparam>
+        /// <param name="targetType">Type to interrogate.</param>
+        /// <returns>Enumerable set of properties found.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="targetType" /> is <see langword="null" />.
+        /// </exception>
         public static IEnumerable<KeyValuePair<string, object>> GetMetadata<TMetadataType>(Type targetType)
         {
             if (targetType == null)
