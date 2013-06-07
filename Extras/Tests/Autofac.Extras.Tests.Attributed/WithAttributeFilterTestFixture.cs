@@ -13,6 +13,28 @@ namespace Autofac.Extras.Tests.Attributed
     public class WithAttributeFilterTestFixture
     {
         [Test]
+        public void multiple_filter_types_can_be_used_on_one_component()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterModule(new AttributedMetadataModule());
+            builder.RegisterType<MsBuildAdapter>().As<IAdapter>();
+            builder.RegisterType<DteAdapter>().As<IAdapter>();
+            builder.RegisterType<ToolWindowAdapter>().As<IAdapter>();
+            builder.RegisterType<ConsoleLogger>().Keyed<ILogger>("Solution");
+            builder.RegisterType<FileLogger>().Keyed<ILogger>("Other");
+            builder.RegisterType<SolutionExplorerMixed>().WithAttributeFilter();
+
+            var container = builder.Build();
+
+            var allAdapters = container.Resolve<IEnumerable<IAdapter>>().Count();
+            Assert.AreEqual(3, allAdapters, "The wrong number of adapters were registered.");
+
+            var explorer = container.Resolve<SolutionExplorerMixed>();
+            Assert.AreEqual(2, explorer.Adapters.Count, "The wrong number of adapters were actually filtered into the consuming component.");
+            Assert.IsInstanceOf<ConsoleLogger>(explorer.Logger, "The logger was not the expected type.");
+        }
+
+        [Test]
         public void verify_key_filter_is_applied_on_constructor_dependency_single()
         {
             var builder = new ContainerBuilder();
@@ -280,6 +302,20 @@ namespace Autofac.Extras.Tests.Attributed
             public SolutionExplorerMetadata(
                 [WithMetadata("Target", "Solution")] IEnumerable<IAdapter> adapters,
                 [WithMetadata("LoggerName", "Solution")] ILogger logger)
+            {
+                this.Adapters = adapters.ToList();
+                this.Logger = logger;
+            }
+
+            public List<IAdapter> Adapters { get; set; }
+            public ILogger Logger { get; set; }
+        }
+
+        public class SolutionExplorerMixed
+        {
+            public SolutionExplorerMixed(
+                [WithMetadata("Target", "Solution")] IEnumerable<IAdapter> adapters,
+                [WithKey("Solution")] ILogger logger)
             {
                 this.Adapters = adapters.ToList();
                 this.Logger = logger;
