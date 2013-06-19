@@ -13,7 +13,7 @@
 		<Error Text="You must specify the Nuspec staging directory." Condition="'$(StagingDirectory)' == ''" />
 		<PropertyGroup>
 			<!-- The name of the .nuspec file being staged, minus extension. -->
-			<NuspecName>Autofac</NuspecName>
+			<NuspecName>Autofac.Configuration</NuspecName>
 		</PropertyGroup>
 		<PropertyGroup>
 			<PackageVersion>@(AutofacProject->WithMetadataValue('PackageName', $(NuspecName))->Metadata('PackageVersion'))</PackageVersion>
@@ -27,16 +27,16 @@
 				Everything else will get staged automatically.
 			-->
 			<LibFiles Include="
-				$(BuildBinDirectory)\**\Autofac.dll;
-				$(BuildBinDirectory)\**\Autofac.xml;
-				$(BuildBinDirectory)\**\Autofac.pdb;" />
+				$(BuildBinDirectory)\**\Autofac.Configuration.dll;
+				$(BuildBinDirectory)\**\Autofac.Configuration.xml;
+				$(BuildBinDirectory)\**\Autofac.Configuration.pdb" />
 			<ZipFiles Include="
 				$(BuildBinDirectory)\..\..\License.txt;
-				$(BuildBinDirectory)\net40\Autofac.dll;
-				$(BuildBinDirectory)\net40\Autofac.xml;
-				$(BuildBinDirectory)\net40\Autofac.pdb;" />
-			<AutofacSourceFiles
-				Include="$(MSBuildProjectDirectory)\..\..\Source\Autofac\**\*.*"
+				$(BuildBinDirectory)\net40\Autofac.Configuration.dll;
+				$(BuildBinDirectory)\net40\Autofac.Configuration.xml;
+				$(BuildBinDirectory)\net40\Autofac.Configuration.pdb" />
+			<SourceFiles
+				Include="$(MSBuildProjectDirectory)\..\..\Source\Autofac.Configuration\**\*.*"
 				Exclude="
 					$(MSBuildProjectDirectory)\..\..\Source\**\bin\**\*.*;
 					$(MSBuildProjectDirectory)\..\..\Source\**\obj\**\*.*;
@@ -52,6 +52,6 @@
 		<Copy SourceFiles="$(MSBuildProjectDirectory)\$(NuspecName).nuspec" DestinationFolder="$(StagingDirectory)\$(NuspecName)" />
 		<Copy SourceFiles="%(ProjectFiles.FullPath)" DestinationFiles="$(StagingDirectory)\$(NuspecName)\%(ProjectFiles.RecursiveDir)%(ProjectFiles.Filename)%(ProjectFiles.Extension)" />
 		<Copy SourceFiles="%(LibFiles.FullPath)" DestinationFiles="$(StagingDirectory)\$(NuspecName)\lib\%(LibFiles.RecursiveDir)%(LibFiles.Filename)%(LibFiles.Extension)" />
-		<Copy SourceFiles="%(AutofacSourceFiles.FullPath)" DestinationFiles="$(StagingDirectory)\$(NuspecName)\src\Autofac\%(AutofacSourceFiles.RecursiveDir)%(AutofacSourceFiles.Filename)%(AutofacSourceFiles.Extension)" />
+		<Copy SourceFiles="%(SourceFiles.FullPath)" DestinationFiles="$(StagingDirectory)\$(NuspecName)\src\%(SourceFiles.RecursiveDir)%(SourceFiles.Filename)%(SourceFiles.Extension)" />
 	</Target>
 </Project>

@@ -57,9 +57,7 @@
     <CodeAnalysisDictionary Include="..\..\..\Build\CodeAnalysisDictionary.xml">
       <Link>CodeAnalysisDictionary.xml</Link>
     </CodeAnalysisDictionary>
-    <Compile Include="..\Autofac\Properties\VersionAssemblyInfo.cs">
-      <Link>Properties\VersionAssemblyInfo.cs</Link>
-    </Compile>
+    <Compile Include="Properties\VersionAssemblyInfo.cs" />
     <Compile Include="AssemblyNameConverter.cs" />
     <Compile Include="Elements\ComponentElement.cs" />
     <Compile Include="Elements\ComponentElementCollection.cs" />
