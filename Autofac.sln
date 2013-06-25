@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extras.Tests", "Extras.Test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A08F3DAB-E605-4245-A54F-A46A573C0225}"
 	ProjectSection(SolutionItems) = preProject
+		default.proj = default.proj
+		PackageVersions.proj = PackageVersions.proj
 		SharedKey.snk = SharedKey.snk
 	EndProjectSection
 EndProject

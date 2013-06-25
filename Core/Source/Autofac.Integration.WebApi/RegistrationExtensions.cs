@@ -27,6 +27,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Http;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Controllers;
@@ -115,6 +116,22 @@ namespace Autofac.Integration.WebApi
 
             return registration.Keyed<TLimit>(new ControllerTypeKey(controllerType))
                 .WithMetadata(AutofacControllerConfigurationAttribute.ClearServiceListKey, clearExistingServices);
+        }
+
+        /// <summary>
+        /// Makes the current <see cref="HttpRequestMessage"/> resolvable through the dependency scope.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        /// <param name="config">The HTTP server configuration.</param>
+        public static void RegisterHttpRequestMessage(this ContainerBuilder builder, HttpConfiguration config)
+        {
+            if (builder == null) throw new ArgumentNullException("builder");
+            if (config == null) throw new ArgumentNullException("config");
+
+            if (!config.MessageHandlers.OfType<CurrentRequestHandler>().Any())
+            {
+                config.MessageHandlers.Add(new CurrentRequestHandler());
+            }
         }
 
         /// <summary>

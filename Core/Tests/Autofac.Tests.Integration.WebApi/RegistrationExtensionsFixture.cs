@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
@@ -216,6 +217,38 @@ namespace Autofac.Tests.Integration.WebApi
             var container = builder.Build();
             
             Assert.That(container.IsRegisteredWithKey<object>(serviceKey), Is.True);
+        }
+
+        [Test]
+        public void RegisterHttpRequestMessageAddsHandler()
+        {
+            var config = new HttpConfiguration();
+            var builder = new ContainerBuilder();
+            builder.RegisterHttpRequestMessage(config);
+
+            Assert.That(config.MessageHandlers.OfType<CurrentRequestHandler>().Count(), Is.EqualTo(1));
+        }
+
+        [Test]
+        public void RegisterHttpRequestMessageThrowsGivenNullConfig()
+        {
+            var builder = new ContainerBuilder();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => builder.RegisterHttpRequestMessage(null));
+
+            Assert.That(exception.ParamName, Is.EqualTo("config"));
+        }
+
+        [Test]
+        public void RegisterHttpRequestMessageEnsuresHandlerAddedOnlyOnce()
+        {
+            var config = new HttpConfiguration();
+            var builder = new ContainerBuilder();
+
+            builder.RegisterHttpRequestMessage(config);
+            builder.RegisterHttpRequestMessage(config);
+
+            Assert.That(config.MessageHandlers.OfType<CurrentRequestHandler>().Count(), Is.EqualTo(1));
         }
     }
 }

@@ -80,6 +80,7 @@
     <Compile Include="AutofacWebApiDependencyScopeFixture.cs" />
     <Compile Include="AuthorizationFilterWrapperFixture.cs" />
     <Compile Include="ControllerTypeKeyFixture.cs" />
+    <Compile Include="CurrentRequestHandlerFixture.cs" />
     <Compile Include="ExceptionFilterWrapperFixture.cs" />
     <Compile Include="AutofacControllerConfigurationAttributeFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
