@@ -314,15 +314,50 @@ namespace Autofac
         /// Retrieve a service from the context.
         /// </summary>
         /// <param name="context">The context from which to resolve the service.</param>
-        /// <param name="service">The service to resolve.</param>
+        /// <param name="serviceKey">Key of the service.</param>
+        /// <param name="serviceType">Type of the service.</param>
         /// <returns>
         /// The component instance that provides the service.
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        public static object ResolveService(this IComponentContext context, Service service)
+        public static object ResolveKeyed(this IComponentContext context, object serviceKey, Type serviceType)
         {
-            return ResolveService(context, service, NoParameters);
+            return ResolveKeyed(context, serviceKey, serviceType, NoParameters);
+        }
+
+        /// <summary>
+        /// Retrieve a service from the context.
+        /// </summary>
+        /// <param name="context">The context from which to resolve the service.</param>
+        /// <param name="serviceKey">Key of the service.</param>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>
+        /// The component instance that provides the service.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="DependencyResolutionException"/>
+        public static object ResolveKeyed(this IComponentContext context, object serviceKey, Type serviceType, IEnumerable<Parameter> parameters)
+        {
+            return ResolveService(context, new KeyedService(serviceKey, serviceType), parameters);
+        }
+
+        /// <summary>
+        /// Retrieve a service from the context.
+        /// </summary>
+        /// <param name="context">The context from which to resolve the service.</param>
+        /// <param name="serviceKey">Key of the service.</param>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>
+        /// The component instance that provides the service.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="DependencyResolutionException"/>
+        public static object ResolveKeyed(this IComponentContext context, object serviceKey, Type serviceType, params Parameter[] parameters)
+        {
+            return context.ResolveKeyed(serviceKey, serviceType, (IEnumerable<Parameter>)parameters);
         }
 
         /// <summary>
