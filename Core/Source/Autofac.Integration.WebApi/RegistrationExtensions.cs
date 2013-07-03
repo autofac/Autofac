@@ -65,14 +65,16 @@ namespace Autofac.Integration.WebApi
         /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <typeparam name="TActivatorData">Activator data type.</typeparam>
         /// <param name="registration">The registration to configure.</param>
+        /// <param name="lifetimeScopeTags">Additional tags applied for matching lifetime scopes.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
             InstancePerApiRequest<TLimit, TActivatorData, TStyle>(
-                this IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration)
+                this IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration, params object[] lifetimeScopeTags)
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
-            return registration.InstancePerMatchingLifetimeScope(AutofacWebApiDependencyResolver.ApiRequestTag);
+            var tags = new[] {AutofacWebApiDependencyResolver.ApiRequestTag}.Concat(lifetimeScopeTags).ToArray();
+            return registration.InstancePerMatchingLifetimeScope(tags);
         }
 
         /// <summary>

@@ -39,6 +39,26 @@ namespace Autofac.Tests.Integration.WebApi
     public class RegistrationExtensionsFixture
     {
         [Test]
+        public void AdditionalLifetimeScopeTagsCanBeProvidedToInstancePerHttpRequest()
+        {
+            var builder = new ContainerBuilder();
+            const string tag1 = "Tag1";
+            const string tag2 = "Tag2";
+            builder.Register(c => new object()).InstancePerApiRequest(tag1, tag2);
+
+            var container = builder.Build();
+
+            var scope1 = container.BeginLifetimeScope(tag1);
+            Assert.That(scope1.Resolve<object>(), Is.Not.Null);
+
+            var scope2 = container.BeginLifetimeScope(tag2);
+            Assert.That(scope2.Resolve<object>(), Is.Not.Null);
+
+            var requestScope = container.BeginLifetimeScope(AutofacWebApiDependencyResolver.ApiRequestTag);
+            Assert.That(requestScope.Resolve<object>(), Is.Not.Null);
+        }
+
+        [Test]
         public void RegisterApiControllersRegistersTypesWithControllerSuffix()
         {
             var builder = new ContainerBuilder();

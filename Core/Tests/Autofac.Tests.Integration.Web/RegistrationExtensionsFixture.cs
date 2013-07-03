@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using NUnit.Framework;
-using Autofac.Builder;
 using Autofac.Integration.Web;
 using Autofac.Core.Lifetime;
 using Autofac.Core;
@@ -13,6 +9,26 @@ namespace Autofac.Tests.Integration.Web
     [TestFixture]
     public class RegistrationExtensionsFixture
     {
+        [Test]
+        public void AdditionalLifetimeScopeTagsCanBeProvidedToInstancePerHttpRequest()
+        {
+            var builder = new ContainerBuilder();
+            const string tag1 = "Tag1";
+            const string tag2 = "Tag2";
+            builder.Register(c => new object()).InstancePerHttpRequest(tag1, tag2);
+
+            var container = builder.Build();
+
+            var scope1 = container.BeginLifetimeScope(tag1);
+            Assert.That(scope1.Resolve<object>(), Is.Not.Null);
+
+            var scope2 = container.BeginLifetimeScope(tag2);
+            Assert.That(scope2.Resolve<object>(), Is.Not.Null);
+
+            var requestScope = container.BeginLifetimeScope(WebLifetime.Request);
+            Assert.That(requestScope.Resolve<object>(), Is.Not.Null);
+        }
+
         [Test]
         public void HttpRequestScopedIsASynonymForMatchingRequestLifetime()
         {
