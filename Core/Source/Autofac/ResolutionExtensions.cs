@@ -364,6 +364,21 @@ namespace Autofac
         /// Retrieve a service from the context.
         /// </summary>
         /// <param name="context">The context from which to resolve the service.</param>
+        /// <param name="service">The service to resolve.</param>
+        /// <returns>
+        /// The component instance that provides the service.
+        /// </returns>
+        /// <exception cref="ComponentNotRegisteredException"/>
+        /// <exception cref="DependencyResolutionException"/>
+        public static object ResolveService(this IComponentContext context, Service service)
+        {
+            return ResolveService(context, service, NoParameters);
+        }
+
+        /// <summary>
+        /// Retrieve a service from the context.
+        /// </summary>
+        /// <param name="context">The context from which to resolve the service.</param>
         /// <param name="parameters">Parameters for the service.</param>
         /// <param name="service">The service to resolve.</param>
         /// <returns>
