@@ -26,6 +26,21 @@ namespace Autofac.Extras.Tests.DynamicProxy2
             }
         }
 
+        public class D
+        {
+            public int I { get; set; }
+
+            public D(int i)
+            {
+                I = i;
+            }
+
+            public virtual int GetI()
+            {
+                return I;
+            }
+        }
+
         class AddOneInterceptor : IInterceptor
         {
             public void Intercept(IInvocation invocation)
@@ -45,6 +60,21 @@ namespace Autofac.Extras.Tests.DynamicProxy2
             var container = builder.Build();
             var i = 10;
             var c = container.Resolve<C>(TypedParameter.From(i));
+            var got = c.GetI();
+            Assert.AreEqual(i + 1, got);
+        }
+
+        [Test]
+        public void InterceptorCanBeWiredUsingInterceptedBy()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<D>()
+                .EnableClassInterceptors()
+                .InterceptedBy(typeof(AddOneInterceptor));
+            builder.RegisterType<AddOneInterceptor>();
+            var container = builder.Build();
+            var i = 10;
+            var c = container.Resolve<D>(TypedParameter.From(i));
             var got = c.GetI();
             Assert.AreEqual(i + 1, got);
         }
