@@ -46,9 +46,9 @@
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Mef\Autofac.Integration.Mef.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.1.0</FileVersion>
+			<FileVersion>3.0.2.0</FileVersion>
 			<PackageName>Autofac.Mef</PackageName>
-			<PackageVersion>3.0.1</PackageVersion>
+			<PackageVersion>3.0.2</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Mvc\Autofac.Integration.Mvc.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>

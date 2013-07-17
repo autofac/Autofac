@@ -54,7 +54,7 @@ namespace Autofac.Integration.Mef
         /// which holds the dictionary of <see cref="System.Type"/> to <see cref="System.String"/> contract name mappings.
         /// </summary>
         private static readonly PropertyInfo _typeIdentityCache = _contractNameServices.GetProperty("TypeIdentityCache", BindingFlags.GetProperty | BindingFlags.Static | BindingFlags.NonPublic);
-        
+
         static IEnumerable<Service> DefaultExposedServicesMapper(ExportDefinition ed)
         {
             Service service;
@@ -276,6 +276,18 @@ namespace Autofac.Integration.Mef
                 builder.Register(c =>
                     {
                         var p = ((ComposablePart)c.ResolveService(partId));
+
+                        // Issue #348: When a constructor takes in a duplicate dependency like:
+                        //   public ImportsDuplicateMefClass(ImportsMefDependency first, ImportsMefDependency second)
+                        // and each of those dependencies also take in the same thing:
+                        //   public ImportsMefDependency(IDependency dependency)
+                        // Then when the chained-in duplicate dependency (IDependency) gets resolved
+                        // you get an exception because the imports haven't been set on the IDependency.
+                        // The OnActivating from above in the original part registration doesn't
+                        // run, the chained-in prerequisite imports never get populated, and
+                        // everything fails. Setting the imports here, as the part is converted
+                        // to an export, fixes the issue.
+                        SetPrerequisiteImports(c, p);
                         return new Export(exportDef, () => p.GetExportedValue(exportDef));
                     })
                     .As(exportId, contractService)
