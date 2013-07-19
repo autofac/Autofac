@@ -265,43 +265,54 @@ namespace Autofac.Integration.Mef
                 .As(partId);
 
             if (IsSharedInstance(partDefinition))
+            {
                 partRegistration.SingleInstance();
+            }
 
             foreach (var iterExportDef in partDefinition.ExportDefinitions)
             {
                 var exportDef = iterExportDef;
                 var contractService = new ContractBasedService(exportDef.ContractName, GetTypeIdentity(exportDef));
+                var exportIsShared = IsSharedInstance(exportDef);
 
                 var exportId = new UniqueService();
-                builder.Register(c =>
+                var exportReg = builder.Register(c =>
                     {
                         var p = ((ComposablePart)c.ResolveService(partId));
-
-                        // Issue #348: When a constructor takes in a duplicate dependency like:
-                        //   public ImportsDuplicateMefClass(ImportsMefDependency first, ImportsMefDependency second)
-                        // and each of those dependencies also take in the same thing:
-                        //   public ImportsMefDependency(IDependency dependency)
-                        // Then when the chained-in duplicate dependency (IDependency) gets resolved
-                        // you get an exception because the imports haven't been set on the IDependency.
-                        // The OnActivating from above in the original part registration doesn't
-                        // run, the chained-in prerequisite imports never get populated, and
-                        // everything fails. Setting the imports here, as the part is converted
-                        // to an export, fixes the issue.
-                        SetPrerequisiteImports(c, p);
                         return new Export(exportDef, () => p.GetExportedValue(exportDef));
                     })
                     .As(exportId, contractService)
                     .ExternallyOwned()
                     .WithMetadata(exportDef.Metadata);
 
+                // Issue #348: When a constructor takes in a duplicate dependency like:
+                //   public ImportsDuplicateMefClass(ImportsMefDependency first, ImportsMefDependency second)
+                // and each of those dependencies also take in the same thing:
+                //   public ImportsMefDependency(IDependency dependency)
+                // Then when the export/import process gets run, if the export doesn't have
+                // the same lifetime scope sharing (per-instance vs. singleton) you
+                // have trouble because the OnActivating from above in the original part
+                // registration doesn't run, the chained-in prerequisite imports never get
+                // populated, and everything fails. Setting the export registrations to be
+                // the same lifetime scope as the part they correspond to fixes the issue.
+                if (exportIsShared)
+                {
+                    exportReg.SingleInstance();
+                }
+
                 var additionalServices = exposedServicesMapper(exportDef).ToArray();
 
                 if (additionalServices.Length > 0)
                 {
-                    builder.Register(c => ((Export)c.ResolveService(exportId)).Value)
+                    var addlReg = builder.Register(c => ((Export)c.ResolveService(exportId)).Value)
                         .As(additionalServices)
                         .ExternallyOwned()
                         .WithMetadata(exportDef.Metadata);
+
+                    if (exportIsShared)
+                    {
+                        addlReg.SingleInstance();
+                    }
                 }
             }
         }
@@ -344,17 +355,29 @@ namespace Autofac.Integration.Mef
                 .Cast<Export>();
         }
 
-        // Here we use the MEF default of Shared, but using the Autofac default may make more sense.
         static bool IsSharedInstance(ComposablePartDefinition part)
         {
-            if (part.Metadata != null)
+            return IsSharedInstance(part.Metadata);
+        }
+
+        static bool IsSharedInstance(ExportDefinition export)
+        {
+            return IsSharedInstance(export.Metadata);
+        }
+
+        static bool IsSharedInstance(IDictionary<string, object> metadata)
+        {
+            if (metadata != null)
             {
                 object pcp;
 
-                if (part.Metadata.TryGetValue(CompositionConstants.PartCreationPolicyMetadataName, out pcp))
+                if (metadata.TryGetValue(CompositionConstants.PartCreationPolicyMetadataName, out pcp))
                 {
+                    // Here we use the MEF default of Shared, but using the Autofac default may make more sense.
                     if (pcp != null && (CreationPolicy)pcp == CreationPolicy.NonShared)
+                    {
                         return false;
+                    }
                 }
             }
 
