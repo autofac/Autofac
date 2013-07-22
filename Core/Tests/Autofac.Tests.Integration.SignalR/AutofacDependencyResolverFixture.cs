@@ -27,6 +27,7 @@ using System;
 using System.Linq;
 using Autofac.Integration.SignalR;
 using Microsoft.AspNet.SignalR;
+using Microsoft.AspNet.SignalR.Messaging;
 using Moq;
 using NUnit.Framework;
 

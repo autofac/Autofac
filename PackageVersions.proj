@@ -58,9 +58,9 @@
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.SignalR\Autofac.Integration.SignalR.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.1.0</FileVersion>
+			<FileVersion>3.0.2.0</FileVersion>
 			<PackageName>Autofac.SignalR</PackageName>
-			<PackageVersion>3.0.1</PackageVersion>
+			<PackageVersion>3.0.2</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Wcf\Autofac.Integration.Wcf.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>

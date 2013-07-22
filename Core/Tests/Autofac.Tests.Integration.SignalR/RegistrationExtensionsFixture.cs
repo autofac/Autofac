@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Autofac.Core;
 using Autofac.Integration.SignalR;
-using Microsoft.AspNet.SignalR.Hubs;
+using Microsoft.AspNet.SignalR;
 using NUnit.Framework;
 
 namespace Autofac.Tests.Integration.SignalR
