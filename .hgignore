@@ -14,9 +14,6 @@ glob:*.docstates
 glob:Index.dat
 glob:Storage.dat
 glob:TestResults
-glob:mscorlib.pdb
-glob:System.pdb
-glob:pingme.txt
 
 # NuGet Packages
 glob:packages/Castle*
