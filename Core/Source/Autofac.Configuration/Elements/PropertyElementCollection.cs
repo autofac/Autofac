@@ -61,7 +61,12 @@ namespace Autofac.Configuration.Elements
                         return pi.TryGetDeclaringProperty(out prop) &&
                             prop.Name == localParameter.Name;
                     },
-                    (pi, c) => TypeManipulation.ChangeToCompatibleType(localParameter.CoerceValue(), pi.ParameterType));
+                    (pi, c) =>
+                    {
+                        PropertyInfo prop = null;
+                        pi.TryGetDeclaringProperty(out prop);
+                        return TypeManipulation.ChangeToCompatibleType(localParameter.CoerceValue(), pi.ParameterType, prop);
+                    });
             }
         }
     }

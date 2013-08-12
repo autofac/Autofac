@@ -59,8 +59,8 @@ namespace Autofac.Configuration.Elements
                         if (String.IsNullOrEmpty(item.Key))
                             throw new ConfigurationErrorsException("Key cannot be null in a dictionary element.");
 
-                        var convertedKey = TypeManipulation.ChangeToCompatibleType(item.Key, generics[0]);
-                        var convertedValue = TypeManipulation.ChangeToCompatibleType(item.Value, generics[1]);
+                        var convertedKey = TypeManipulation.ChangeToCompatibleType(item.Key, generics[0], null);
+                        var convertedValue = TypeManipulation.ChangeToCompatibleType(item.Value, generics[1], null);
 
                         dictionary.Add(convertedKey, convertedValue);
                     }
@@ -102,7 +102,8 @@ namespace Autofac.Configuration.Elements
         /// <summary>
         /// Initializes a new instance of the <see cref="DictionaryElementCollection"/> class.
         /// </summary>
-        public DictionaryElementCollection() : base("item")
+        public DictionaryElementCollection()
+            : base("item")
         {
         }
     }

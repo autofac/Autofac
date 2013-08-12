@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Linq;
 using System.ComponentModel;
 using System.Configuration;
 using System.Globalization;
@@ -43,29 +44,56 @@ namespace Autofac.Configuration.Util
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="destinationType">Type of the destination.</param>
+        /// <param name="memberInfo">Reflected property or member info for the destination, if available, for retrieving custom type converter information.</param>
         /// <returns>An object of the destination type.</returns>
-        public static object ChangeToCompatibleType(object value, Type destinationType)
+        public static object ChangeToCompatibleType(object value, Type destinationType, ICustomAttributeProvider memberInfo)
         {
-            if (destinationType == null) throw new ArgumentNullException("destinationType");
+            if (destinationType == null)
+            {
+                throw new ArgumentNullException("destinationType");
+            }
 
             if (value == null)
+            {
                 return destinationType.IsValueType ? Activator.CreateInstance(destinationType) : null;
+            }
 
-            //is there an explicit conversion
-            var converter = TypeDescriptor.GetConverter(value.GetType());
+            TypeConverter converter = null;
+            if (memberInfo != null)
+            {
+                // Try to get custom type converter information.
+                var attrib = memberInfo.GetCustomAttributes(typeof(TypeConverterAttribute), true).Cast<TypeConverterAttribute>().FirstOrDefault();
+                if (attrib != null && !String.IsNullOrEmpty(attrib.ConverterTypeName))
+                {
+                    converter = GetTypeConverterFromName(attrib.ConverterTypeName);
+                    if (converter.CanConvertFrom(value.GetType()))
+                    {
+                        return converter.ConvertFrom(value);
+                    }
+                }
+            }
+
+            // If there's not a custom converter specified via attribute, try for a default.
+            converter = TypeDescriptor.GetConverter(value.GetType());
             if (converter.CanConvertTo(destinationType))
+            {
                 return converter.ConvertTo(value, destinationType);
+            }
 
-            //is there an implicit conversion
+            // Try implicit conversion.
             if (destinationType.IsInstanceOfType(value))
+            {
                 return value;
+            }
 
-            //is there an opposite conversion
+            // Try explicit opposite conversion.
             converter = TypeDescriptor.GetConverter(destinationType);
             if (converter.CanConvertFrom(value.GetType()))
+            {
                 return converter.ConvertFrom(value);
+            }
 
-            //is there a TryParse method
+            // Try a TryParse method.
             if (value is string)
             {
                 var parser = destinationType.GetMethod("TryParse", BindingFlags.Static | BindingFlags.Public);
@@ -73,11 +101,24 @@ namespace Autofac.Configuration.Util
                 {
                     var parameters = new[] { value, null };
                     if ((bool)parser.Invoke(null, parameters))
+                    {
                         return parameters[1];
+                    }
                 }
             }
 
             throw new ConfigurationErrorsException(String.Format(CultureInfo.CurrentCulture, ConfigurationSettingsReaderResources.TypeConversionUnsupported, value.GetType(), destinationType));
+        }
+
+        private static TypeConverter GetTypeConverterFromName(string converterTypeName)
+        {
+            var converterType = Type.GetType(converterTypeName, true);
+            var converter = Activator.CreateInstance(converterType) as TypeConverter;
+            if (converter == null)
+            {
+                throw new ConfigurationErrorsException(String.Format(CultureInfo.CurrentCulture, ConfigurationSettingsReaderResources.TypeConverterAttributeTypeNotConverter, converterTypeName));
+            }
+            return converter;
         }
     }
 }

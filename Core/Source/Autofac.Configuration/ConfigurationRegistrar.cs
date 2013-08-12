@@ -189,7 +189,7 @@ namespace Autofac.Configuration
                 }
                 foreach (var ep in component.Metadata)
                 {
-                    registrar.WithMetadata(ep.Name, TypeManipulation.ChangeToCompatibleType(ep.Value, Type.GetType(ep.Type)));
+                    registrar.WithMetadata(ep.Name, TypeManipulation.ChangeToCompatibleType(ep.Value, Type.GetType(ep.Type), null));
                 }
                 if (!string.IsNullOrEmpty(component.MemberOf))
                 {

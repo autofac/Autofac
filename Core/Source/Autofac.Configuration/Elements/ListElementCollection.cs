@@ -38,7 +38,7 @@ namespace Autofac.Configuration.Elements
     public class ListElementCollection : ConfigurationElementCollection<ListItemElement>
     {
         /// <summary>
-        /// Helps convert the configuration element into an actuall generic list
+        /// Helps convert the configuration element into an actual generic list
         /// </summary>
         private class ListElementTypeConverter : TypeConverter
         {
@@ -55,7 +55,7 @@ namespace Autofac.Configuration.Elements
                     var collection = (IList)Activator.CreateInstance(instantiatableType);
                     foreach (var item in castValue)
                     {
-                        collection.Add(TypeManipulation.ChangeToCompatibleType(item.Value, generics[0]));
+                        collection.Add(TypeManipulation.ChangeToCompatibleType(item.Value, generics[0], null));
                     }
                     return collection;
                 }
@@ -93,7 +93,8 @@ namespace Autofac.Configuration.Elements
         /// <summary>
         /// Initializes a new instance of the <see cref="ListElementCollection"/> class.
         /// </summary>
-        public ListElementCollection() : base("item")
+        public ListElementCollection()
+            : base("item")
         {
         }
     }
