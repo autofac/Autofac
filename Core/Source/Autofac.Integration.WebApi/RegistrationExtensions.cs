@@ -29,6 +29,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Http;
 using System.Reflection;
+using System.Security;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
@@ -42,6 +43,7 @@ namespace Autofac.Integration.WebApi
     /// <summary>
     /// Adds registration syntax to the <see cref="ContainerBuilder"/> type.
     /// </summary>
+    [SecurityCritical]
     public static class RegistrationExtensions
     {
         /// <summary>

@@ -26,6 +26,7 @@
 using System;
 using System.ComponentModel;
 using System.Reflection;
+using System.Security;
 using System.Web.Http.Filters;
 
 namespace Autofac.Integration.WebApi
@@ -33,6 +34,7 @@ namespace Autofac.Integration.WebApi
     /// <summary>
     /// Metadata interface for filter registrations.
     /// </summary>
+    [SecurityCritical]
     internal class FilterMetadata
     {
         /// <summary>

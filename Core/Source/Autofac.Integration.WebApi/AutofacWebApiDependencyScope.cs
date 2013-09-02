@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Security;
 using System.Web.Http.Dependencies;
 using System.Linq;
 
@@ -33,6 +34,7 @@ namespace Autofac.Integration.WebApi
     /// <summary>
     /// Autofac implementation of the <see cref="IDependencyScope"/> interface.
     /// </summary>
+    [SecurityCritical]
     public class AutofacWebApiDependencyScope : IDependencyScope
     {
         private bool _disposed;
@@ -53,6 +55,7 @@ namespace Autofac.Integration.WebApi
         /// <summary>
         /// Finalizes an instance of the <see cref="AutofacWebApiDependencyScope"/> class.
         /// </summary>
+        [SecuritySafeCritical]
         ~AutofacWebApiDependencyScope()
         {
             Dispose(false);
@@ -71,6 +74,7 @@ namespace Autofac.Integration.WebApi
         /// </summary>
         /// <param name="serviceType">ControllerType of service to request.</param>
         /// <returns>An instance of the service, or null if the service is not found.</returns>
+        [SecurityCritical]
         public object GetService(Type serviceType)
         {
             return _lifetimeScope.ResolveOptional(serviceType);
@@ -81,6 +85,7 @@ namespace Autofac.Integration.WebApi
         /// </summary>
         /// <param name="serviceType">ControllerType of services to request.</param>
         /// <returns>An enumeration (possibly empty) of the service.</returns>
+        [SecurityCritical]
         public IEnumerable<object> GetServices(Type serviceType)
         {
             if (!_lifetimeScope.IsRegistered(serviceType))
@@ -94,6 +99,7 @@ namespace Autofac.Integration.WebApi
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
+        [SecuritySafeCritical]
         public void Dispose()
         {
             Dispose(true);

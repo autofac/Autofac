@@ -104,16 +104,32 @@
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.pdb;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.xml;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.config"
-				Exclude="**\*.vshost.*;%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.CodeAnalysisLog.*" />
+				Exclude="
+					**\*.vshost.*;
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.CodeAnalysisLog.*;
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.lastcodeanalysissucceeded;
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.WebApi.*" />
+			<Source45OutputList
+				Include="
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.WebApi.*"
+				Exclude="
+					**\*.vshost.*;
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.CodeAnalysisLog.*;
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.lastcodeanalysissucceeded" />
 			<PortableOutputList
 				Include="
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.dll;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.pdb;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.xml;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Extras.CommonServiceLocator.*"
-				Exclude="**\*.vshost.*;%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.CodeAnalysisLog.*" />
+				Exclude="
+					**\*.vshost.*;
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.CodeAnalysisLog.*;
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.lastcodeanalysissucceeded;
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.WebApi.*" />
 		</ItemGroup>
 		<Copy SourceFiles="@(SourceOutputList)" DestinationFolder="$(BuildDirectory)\bin\net40" />
+		<Copy SourceFiles="@(Source45OutputList)" DestinationFolder="$(BuildDirectory)\bin\net45" />
 		<Copy SourceFiles="@(PortableOutputList)" DestinationFolder="$(BuildDirectory)\bin\portable-win+net40+sl50+wp8" />
 	</Target>
 

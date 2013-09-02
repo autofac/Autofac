@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using System.Net.Http;
@@ -36,6 +37,7 @@ namespace Autofac.Integration.WebApi
     /// <summary>
     /// Resolves a filter for the specified metadata for each controller request.
     /// </summary>
+    [SecurityCritical]
     internal sealed class ActionFilterWrapper : ActionFilterAttribute, IAutofacActionFilter
     {
         readonly FilterMetadata _filterMetadata;
@@ -58,6 +60,7 @@ namespace Autofac.Integration.WebApi
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="actionContext" /> is <see langword="null" />.
         /// </exception>
+        [SecurityCritical]
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
             if (actionContext == null)
@@ -80,6 +83,7 @@ namespace Autofac.Integration.WebApi
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="actionExecutedContext" /> is <see langword="null" />.
         /// </exception>
+        [SecurityCritical]
         public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
         {
             if (actionExecutedContext == null)
