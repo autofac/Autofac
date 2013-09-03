@@ -29,6 +29,7 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Security;
 using System.Web;
 using System.Web.Mvc;
 using Autofac.Builder;
@@ -40,6 +41,7 @@ namespace Autofac.Integration.Mvc
     /// <summary>
     /// Extends <see cref="ContainerBuilder"/> with methods to support ASP.NET MVC.
     /// </summary>
+    [SecurityCritical]
     public static class RegistrationExtensions
     {
         /// <summary>

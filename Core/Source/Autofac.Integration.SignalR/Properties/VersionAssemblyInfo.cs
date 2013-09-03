@@ -15,9 +15,9 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("3.0.0.0")]
-[assembly: AssemblyFileVersion("3.0.1.0")]
-[assembly: AssemblyConfiguration("Release built on 2013-07-15 22:03")]
+[assembly: AssemblyFileVersion("3.0.2.0")]
+[assembly: AssemblyConfiguration("Release built on 2013-09-03 13:30")]
 [assembly: AssemblyCopyright("Copyright © 2013 Autofac Contributors")]
-[assembly: AssemblyDescription("Autofac.SignalR 3.0.1")]
+[assembly: AssemblyDescription("Autofac.SignalR 3.0.2")]
 
 

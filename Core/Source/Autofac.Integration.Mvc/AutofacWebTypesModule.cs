@@ -23,6 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Security;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
@@ -102,6 +103,7 @@ namespace Autofac.Integration.Mvc
     /// The lifetime for each of these items is one web request.
     /// </para>
     /// </remarks>
+    [SecuritySafeCritical]
     public class AutofacWebTypesModule : Module
     {
         /// <summary>
@@ -119,6 +121,7 @@ namespace Autofac.Integration.Mvc
         /// list of mappings that get registered.
         /// </para>
         /// </remarks>
+        [SecuritySafeCritical]
         protected override void Load(ContainerBuilder builder)
         {
             builder.Register(c => new HttpContextWrapper(HttpContext.Current))
