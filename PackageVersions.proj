@@ -34,9 +34,9 @@
 		-->
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac\Autofac.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.1.1.0</FileVersion>
+			<FileVersion>3.1.2.0</FileVersion>
 			<PackageName>Autofac</PackageName>
-			<PackageVersion>3.1.1</PackageVersion>
+			<PackageVersion>3.1.2</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Configuration\Autofac.Configuration.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>

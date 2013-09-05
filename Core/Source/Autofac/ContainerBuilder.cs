@@ -99,12 +99,26 @@ namespace Autofac
 
         static void StartStartableComponents(IComponentContext componentContext)
         {
-            foreach (var startable in componentContext.ComponentRegistry.RegistrationsFor(new TypedService(typeof(IStartable))))
+            // We track which registrations have already been auto-activated by adding
+            // a metadata value. If the value is present, we won't re-activate. This helps
+            // in the container update situation.
+            const string started = "__AutoActivated";
+            object meta = null;
+
+            foreach (var startable in componentContext.ComponentRegistry.RegistrationsFor(new TypedService(typeof(IStartable))).Where(r => !r.Metadata.TryGetValue(started, out meta)))
             {
-                var instance = (IStartable)componentContext.ResolveComponent(startable, Enumerable.Empty<Parameter>());
-                instance.Start();
+                try
+                {
+                    var instance = (IStartable)componentContext.ResolveComponent(startable, Enumerable.Empty<Parameter>());
+                    instance.Start();
+                }
+                finally
+                {
+                    startable.Metadata[started] = true;
+                }
             }
-            foreach (var registration in componentContext.ComponentRegistry.RegistrationsFor(new AutoActivateService()))
+
+            foreach (var registration in componentContext.ComponentRegistry.RegistrationsFor(new AutoActivateService()).Where(r => !r.Metadata.TryGetValue(started, out meta)))
             {
                 try
                 {
@@ -113,6 +127,10 @@ namespace Autofac
                 catch (DependencyResolutionException ex)
                 {
                     throw new DependencyResolutionException(String.Format(CultureInfo.CurrentCulture, ContainerBuilderResources.ErrorAutoActivating, registration), ex);
+                }
+                finally
+                {
+                    registration.Metadata[started] = true;
                 }
             }
         }
@@ -126,11 +144,14 @@ namespace Autofac
         /// - this prevents ownership issues for provided instances.
         /// </remarks>
         /// <param name="container">An existing container to make the registrations in.</param>
+        /// <param name="options">Options that influence the way the container is updated.</param>
         [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "You can't update any arbitrary context, only containers.")]
-        public void Update(IContainer container)
+        public void Update(IContainer container, ContainerBuildOptions options = ContainerBuildOptions.None)
         {
             if (container == null) throw new ArgumentNullException("container");
             Update(container.ComponentRegistry);
+            if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
+                StartStartableComponents(container);
         }
 
         /// <summary>

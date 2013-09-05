@@ -191,5 +191,33 @@ namespace Autofac.Tests
             builder.RegisterType<MyComponent2>().InstancePerMatchingLifetimeScope("foo").AutoActivate();
             Assert.Throws<DependencyResolutionException>(() => builder.Build());
         }
+
+        [Test(Description = "Issue #454: ContainerBuilder.Update() doesn't activate AutoActivate components.")]
+        public void AutoActivate_ContainerUpdateAutoActivatesNewComponents()
+        {
+            int instanceCount = 0;
+            var container = new ContainerBuilder().Build();
+            var builder = new ContainerBuilder();
+            builder.RegisterType<MyComponent2>().AutoActivate().OnActivated(e => instanceCount++);
+            builder.Update(container);
+            Assert.AreEqual(1, instanceCount, "The instance component wasn't properly auto activated.");
+        }
+
+        [Test(Description = "Issue #454: ContainerBuilder.Update() shouldn't re-activate existing AutoActivate components.")]
+        public void AutoActivate_ContainerUpdateDoesNotAutoActivateExistingComponents()
+        {
+            int firstCount = 0;
+            var builder = new ContainerBuilder();
+            builder.RegisterType<MyComponent2>().AutoActivate().OnActivated(e => firstCount++);
+            var container = builder.Build();
+            Assert.AreEqual(1, firstCount, "The instance component wasn't properly auto activated.");
+
+            int secondCount = 0;
+            var builder2 = new ContainerBuilder();
+            builder2.RegisterType<MyComponent>().AutoActivate().OnActivated(e => secondCount++);
+            builder2.Update(container);
+            Assert.AreEqual(1, firstCount, "The first instance component was incorrectly re-activated.");
+            Assert.AreEqual(1, secondCount, "The second instance component wasn't properly auto activated.");
+        }
     }
 }

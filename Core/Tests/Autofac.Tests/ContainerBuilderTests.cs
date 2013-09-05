@@ -498,6 +498,47 @@ namespace Autofac.Tests
             Assert.IsTrue(started);
         }
 
+        [Test(Description = "Issue #454: ContainerBuilder.Update() doesn't re-activate existing startable components.")]
+        public void WhenTheContainerIsUpdated_ExistingStartableComponentsAreNotReStarted()
+        {
+            var firstStartableInit = 0;
+            var secondStartableInit = 0;
+
+            var startable1 = new Mock<IStartable>();
+            startable1.Setup(s => s.Start()).Callback(() => firstStartableInit++);
+            var startable2 = new Mock<IStartable>();
+            startable2.Setup(s => s.Start()).Callback(() => secondStartableInit++);
+
+            var builder1 = new ContainerBuilder();
+            builder1.RegisterInstance(startable1.Object);
+            var container = builder1.Build();
+
+            Assert.AreEqual(1, firstStartableInit, "The original container build did not start the first startable component.");
+
+            var builder2 = new ContainerBuilder();
+            builder2.RegisterInstance(startable2.Object);
+            builder2.Update(container);
+
+            Assert.AreEqual(1, firstStartableInit, "The container update incorrectly re-started the first startable component.");
+            Assert.AreEqual(1, secondStartableInit, "The container update did not start the second startable component.");
+        }
+
+        [Test(Description = "Issue #454: ContainerBuilder.Update() doesn't activate startable components.")]
+        public void WhenTheContainerIsUpdated_NewStartableComponentsAreStarted()
+        {
+            var started = false;
+            var container = new ContainerBuilder().Build();
+
+            var startable = new Mock<IStartable>();
+            startable.Setup(s => s.Start()).Callback(() => started = true);
+
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(startable.Object);
+            builder.Update(container);
+
+            Assert.IsTrue(started, "The container update did not start the new startable component.");
+        }
+
         [Test]
         public void WhenNoStartIsSpecified_StartableComponentsAreIgnored()
         {
