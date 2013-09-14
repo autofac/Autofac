@@ -37,7 +37,7 @@
 
 	<PropertyGroup Condition="'$(Document)' == ''">
 		<!-- Unless otherwise specified, dev build will not build documentation, production build will. -->
-		<Document Condition="'$(Production)' == 'true'">true</Document>
+		<Document Condition="'$(Production)' == 'true' And '$(BuildRunner)' != 'MyGet'">true</Document>
 		<Document Condition="'$(Production)' != 'true'">false</Document>
 	</PropertyGroup>
 
@@ -57,7 +57,8 @@
 	-->
 	<Target Name="All">
 		<CallTarget Targets="UpdateVersion;CleanNuGet" Condition="'$(Production)' == 'true'" />
-		<CallTarget Targets="Clean;Compile;Test;Analyze" />
+		<CallTarget Targets="Clean;Compile;Test" />
+		<CallTarget Targets="Analyze" Condition="'$(BuildRunner)' != 'MyGet'" />
 		<CallTarget Targets="Package" Condition="'$(Package)' == 'true'" />
 		<CallTarget Targets="Document" Condition="'$(Document)' == 'true'" />
 		<Message Importance="high" Text="IMPORTANT: If you are planning to release this build, be sure to run the AppCert tests in Core/Tests/Autofac.Tests.AppCert to ensure Windows Store compatibility." />
