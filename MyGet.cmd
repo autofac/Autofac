@@ -1,1 +1,1 @@
-msbuild default.proj /p:Production=true
+%SystemRoot%\Microsoft.NET\Framework\v4.0.30319\msbuild default.proj /p:Production=true
