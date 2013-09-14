@@ -1,0 +1,1 @@
+msbuild default.proj /p:Production=true
