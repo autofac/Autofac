@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project InitialTargets="__EnvironmentSetup" DefaultTargets="All" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
 	<!--
-		Standard Build
+		[Standard Build]
 		msbuild default.proj
 
-		Production/Release Build
+		[Production/Release Build]
 		msbuild default.proj /p:Production=true
+		
+		[Mock MyGet CI Build]
+		msbuild default.proj /p:Production=true /p:MyGetBuild=true /p:BuildCounter=1
 
 		Control version numbers through PackageVersions.proj
 	-->
@@ -23,6 +26,12 @@
 		<DeleteNuGetStaging Condition="'$(DeleteNuGetStaging)' == ''">true</DeleteNuGetStaging>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(MyGetBuild)' == ''">
+		<!-- Determines if the build is running under MyGet Build Services. -->
+		<BuildConfiguration Condition="'$(BuildRunner)' == 'MyGet'">true</BuildConfiguration>
+		<BuildConfiguration Condition="'$(BuildRunner)' != 'MyGet'">false</BuildConfiguration>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(BuildConfiguration)' == ''">
 		<!-- Unless otherwise specified, dev build is Debug, production build is Release. -->
 		<BuildConfiguration Condition="'$(Production)' == 'true'">Release</BuildConfiguration>
@@ -37,7 +46,7 @@
 
 	<PropertyGroup Condition="'$(Document)' == ''">
 		<!-- Unless otherwise specified, dev build will not build documentation, production build will. -->
-		<Document Condition="'$(Production)' == 'true' And '$(BuildRunner)' != 'MyGet'">true</Document>
+		<Document Condition="'$(Production)' == 'true' And '$(MyGetBuild)' == 'false'">true</Document>
 		<Document Condition="'$(Production)' != 'true'">false</Document>
 	</PropertyGroup>
 
@@ -58,7 +67,7 @@
 	<Target Name="All">
 		<CallTarget Targets="UpdateVersion;CleanNuGet" Condition="'$(Production)' == 'true'" />
 		<CallTarget Targets="Clean;Compile;Test" />
-		<CallTarget Targets="Analyze" Condition="'$(BuildRunner)' != 'MyGet'" />
+		<CallTarget Targets="Analyze" Condition="'$(MyGetBuild)' == 'false'" />
 		<CallTarget Targets="Package" Condition="'$(Package)' == 'true'" />
 		<CallTarget Targets="Document" Condition="'$(Document)' == 'true'" />
 		<Message Importance="high" Text="IMPORTANT: If you are planning to release this build, be sure to run the AppCert tests in Core/Tests/Autofac.Tests.AppCert to ensure Windows Store compatibility." />
@@ -183,7 +192,8 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 		<Move SourceFiles="@(ZipFiles)" DestinationFolder="$(PackageDirectory)" />
 
 		<Message Text="Updating NuGet package version info..." />
-		<FileUpdate Files="@(NuspecFiles)" Regex="\$AFversion_%(AutofacProject.PackageName)\$" ReplacementText="%(AutofacProject.PackageVersion)" />
+		<FileUpdate Condition="'$(MyGetBuild)' == 'true'" Files="@(NuspecFiles)" Regex="\$AFversion_%(AutofacProject.PackageName)\$" ReplacementText="$([System.String]::Format('%(AutofacProject.PackageVersion)-CI-{0:000}', $([MSBuild]::Add($(BuildCounter), 0))))" />
+		<FileUpdate Condition="'$(MyGetBuild)' == 'false'" Files="@(NuspecFiles)" Regex="\$AFversion_%(AutofacProject.PackageName)\$" ReplacementText="%(AutofacProject.PackageVersion)" />
 
 		<Message Text="Updating NuGet package dependency version info..." />
 		<GetNuGetDependencyVersions PackageInstallDirectory="$(PackageInstallDirectory)">
