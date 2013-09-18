@@ -28,8 +28,8 @@
 
 	<PropertyGroup Condition="'$(MyGetBuild)' == ''">
 		<!-- Determines if the build is running under MyGet Build Services. -->
-		<BuildConfiguration Condition="'$(BuildRunner)' == 'MyGet'">true</BuildConfiguration>
-		<BuildConfiguration Condition="'$(BuildRunner)' != 'MyGet'">false</BuildConfiguration>
+		<MyGetBuild Condition="'$(BuildRunner)' == 'MyGet'">true</MyGetBuild>
+		<MyGetBuild Condition="'$(BuildRunner)' != 'MyGet'">false</MyGetBuild>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(BuildConfiguration)' == ''">
