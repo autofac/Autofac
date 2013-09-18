@@ -26,3 +26,4 @@ glob:packages/NUnit*
 glob:packages/Unity*
 syntax: glob
 packages/*
+*.orig
