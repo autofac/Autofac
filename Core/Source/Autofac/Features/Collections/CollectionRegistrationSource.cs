@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core;
@@ -54,7 +55,7 @@ namespace Autofac.Features.Collections
                 var serviceType = swt.ServiceType;
                 Type elementType = null;
 
-                if (serviceType.IsGenericTypeDefinedBy(typeof(IEnumerable<>)))
+                if (IsGenericEnumerableType(serviceType))
                 {
                     elementType = serviceType.GetGenericArguments()[0];
                 }
@@ -67,12 +68,26 @@ namespace Autofac.Features.Collections
                 {
                     var elementTypeService = swt.ChangeType(elementType);
                     var elementArrayType = elementType.MakeArrayType();
+                    var listType = typeof(List<>).MakeGenericType(elementType);
+                    var serviceTypeIsList = serviceType.IsGenericTypeDefinedBy(typeof(IList<>)) ||
+                                            serviceType.IsGenericTypeDefinedBy(typeof(ICollection<>));
                     var registration = new ComponentRegistration(
                         Guid.NewGuid(),
                         new DelegateActivator(elementArrayType, (c, p) =>
                         {
                             var elements = c.ComponentRegistry.RegistrationsFor(elementTypeService);
                             var items = elements.Select(cr => c.ResolveComponent(cr, p)).ToArray();
+
+                            if (serviceTypeIsList)
+                            {
+                                // Activator.CreateInstance doesn't like 'items' as a constructor parameter
+                                // even when cast to (object)item. Manually adding resolved items for now.
+                                var list = (IList)Activator.CreateInstance(listType, items.Length);
+                                foreach (var item in items)
+                                    list.Add(item);
+                                return list;
+                            }
+
                             var result = Array.CreateInstance(elementType, items.Length);
                             items.CopyTo(result, 0);
                             return result;
@@ -83,7 +98,7 @@ namespace Autofac.Features.Collections
                         new[] { service },
                         new Dictionary<string, object>());
 
-                    return new IComponentRegistration[] { registration };
+                    return new IComponentRegistration[] {registration};
                 }
             }
 
@@ -98,6 +113,14 @@ namespace Autofac.Features.Collections
         public override string ToString()
         {
             return CollectionRegistrationSourceResources.CollectionRegistrationSourceDescription;
+        }
+
+        static bool IsGenericEnumerableType(Type source)
+        {
+            if (!source.IsGenericType) return false;
+
+            var arguments = source.GetGenericArguments();
+            return arguments.Length == 1 && typeof(IEnumerable<>).MakeGenericType(arguments).IsAssignableFrom(source);
         }
     }
 }

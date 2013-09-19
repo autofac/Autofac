@@ -97,5 +97,75 @@ namespace Autofac.Tests.Features.Collections
             Assert.That(arrayB, Has.Some.TypeOf<Foo1>());
             Assert.That(arrayB, Has.Some.TypeOf<Foo3>());
         }
+
+        [Test]
+        public void ResolvesAllAvailableElementsWhenReadOnlyCollectionIsRequested()
+        {
+            var cb = new ContainerBuilder();
+            const string s1 = "Hello";
+            const string s2 = "World";
+            cb.RegisterInstance(s1);
+            cb.RegisterInstance(s2);
+            var c = cb.Build();
+
+            var strings = c.Resolve<IReadOnlyCollection<string>>();
+
+            Assert.That(strings.Count, Is.EqualTo(2));
+            Assert.That(strings, Has.Member(s1));
+            Assert.That(strings, Has.Member(s2));
+        }
+
+        [Test]
+        public void ResolvesAllAvailableElementsWhenReadOnlyListIsRequested()
+        {
+            var cb = new ContainerBuilder();
+            const string s1 = "Hello";
+            const string s2 = "World";
+            cb.RegisterInstance(s1);
+            cb.RegisterInstance(s2);
+            var c = cb.Build();
+
+            var strings = c.Resolve<IReadOnlyList<string>>();
+
+            Assert.That(strings.Count, Is.EqualTo(2));
+            Assert.That(strings, Has.Member(s1));
+            Assert.That(strings, Has.Member(s2));
+        }
+
+        [Test]
+        public void ResolvesAllAvailableElementsWhenListIsRequested()
+        {
+            var cb = new ContainerBuilder();
+            const string s1 = "Hello";
+            const string s2 = "World";
+            cb.RegisterInstance(s1);
+            cb.RegisterInstance(s2);
+            var c = cb.Build();
+
+            var strings = c.Resolve<IList<string>>();
+
+            Assert.That(strings.Count, Is.EqualTo(2));
+            Assert.That(strings, Has.Member(s1));
+            Assert.That(strings, Has.Member(s2));
+            Assert.That(strings, Is.InstanceOf<List<string>>());
+        }
+
+        [Test]
+        public void ResolvesAllAvailableElementsWhenCollectionIsRequested()
+        {
+            var cb = new ContainerBuilder();
+            const string s1 = "Hello";
+            const string s2 = "World";
+            cb.RegisterInstance(s1);
+            cb.RegisterInstance(s2);
+            var c = cb.Build();
+
+            var strings = c.Resolve<ICollection<string>>();
+
+            Assert.That(strings.Count, Is.EqualTo(2));
+            Assert.That(strings, Has.Member(s1));
+            Assert.That(strings, Has.Member(s2));
+            Assert.That(strings, Is.InstanceOf<List<string>>());
+        }
     }
 }
