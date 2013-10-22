@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Web.Mvc;
+using System.Web.Mvc.Filters;
 
 namespace Autofac.Tests.Integration.Mvc
 {
@@ -150,7 +151,29 @@ namespace Autofac.Tests.Integration.Mvc
         }
     }
 
-    public class TestCombinationFilter : IActionFilter, IAuthorizationFilter, IExceptionFilter, IResultFilter
+    public class TestAuthenticationFilter : IAuthenticationFilter
+    {
+        public void OnAuthentication(AuthenticationContext filterContext)
+        {
+        }
+
+        public void OnAuthenticationChallenge(AuthenticationChallengeContext filterContext)
+        {
+        }
+    }
+
+    public class TestAuthenticationFilter2 : IAuthenticationFilter
+    {
+        public void OnAuthentication(AuthenticationContext filterContext)
+        {
+        }
+
+        public void OnAuthenticationChallenge(AuthenticationChallengeContext filterContext)
+        {
+        }
+    }
+
+    public class TestCombinationFilter : IActionFilter, IAuthenticationFilter, IAuthorizationFilter, IExceptionFilter, IResultFilter
     {
         public void OnActionExecuting(ActionExecutingContext filterContext)
         {
@@ -173,6 +196,14 @@ namespace Autofac.Tests.Integration.Mvc
         }
 
         public void OnResultExecuted(ResultExecutedContext filterContext)
+        {
+        }
+
+        public void OnAuthentication(AuthenticationContext filterContext)
+        {
+        }
+
+        public void OnAuthenticationChallenge(AuthenticationChallengeContext filterContext)
         {
         }
     }

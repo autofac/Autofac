@@ -32,6 +32,7 @@ using System.Reflection;
 using System.Security;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Mvc.Filters;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.Scanning;
@@ -446,6 +447,36 @@ namespace Autofac.Integration.Mvc
                 where TController : IController
         {
             return AsFilterFor<IResultFilter, TController>(registration, AutofacFilterProvider.ResultFilterMetadataKey, order);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAuthenticationFilter"/> for the specified controller action.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <param name="actionSelector">The action selector.</param>
+        /// <param name="order">The order in which the filter is applied.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsAuthenticationFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration,
+                Expression<Action<TController>> actionSelector, int order = Filter.DefaultOrder) 
+                    where TController : IController
+        {
+            return AsFilterFor<IAuthenticationFilter, TController>(registration, AutofacFilterProvider.AuthenticationFilterMetadataKey, actionSelector, order);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAuthenticationFilter"/> for the specified controller.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <param name="order">The order in which the filter is applied.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsAuthenticationFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration, int order = Filter.DefaultOrder) 
+                where TController : IController
+        {
+            return AsFilterFor<IAuthenticationFilter, TController>(registration, AutofacFilterProvider.AuthenticationFilterMetadataKey, order);
         }
 
         static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
