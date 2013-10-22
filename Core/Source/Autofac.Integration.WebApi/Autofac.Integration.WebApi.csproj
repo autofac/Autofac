@@ -84,6 +84,8 @@
     <Compile Include="AutofacWebApiFilterProvider.cs" />
     <Compile Include="AutofacWebApiModelBinderProvider.cs" />
     <Compile Include="ControllerTypeKey.cs" />
+    <Compile Include="AuthenticationFilterWrapper.cs" />
+    <Compile Include="IAutofacAuthenticationFilter.cs" />
     <Compile Include="CurrentRequestHandler.cs" />
     <Compile Include="DependencyResolverExtensions.cs" />
     <Compile Include="ExceptionFilterWrapper.cs" />

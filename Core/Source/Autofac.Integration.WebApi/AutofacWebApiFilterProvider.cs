@@ -56,6 +56,8 @@ namespace Autofac.Integration.WebApi
 
         internal static string AuthorizationFilterMetadataKey = "AutofacWebApiAuthorizationFilter";
 
+        internal static string AuthenticationFilterMetadataKey = "AutofacWebApiAuthenticationFilter";
+
         internal static string ExceptionFilterMetadataKey = "AutofacWebApiExceptionFilter";
 
         /// <summary>
@@ -102,6 +104,7 @@ namespace Autofac.Integration.WebApi
                     AddedFilters = new Dictionary<string, List<FilterMetadata>>
                     {
                         {ActionFilterMetadataKey, new List<FilterMetadata>()},
+                        {AuthenticationFilterMetadataKey, new List<FilterMetadata>()},
                         {AuthorizationFilterMetadataKey, new List<FilterMetadata>()},
                         {ExceptionFilterMetadataKey, new List<FilterMetadata>()}
                     }
@@ -109,6 +112,8 @@ namespace Autofac.Integration.WebApi
 
                 ResolveControllerScopedFilter<IAutofacActionFilter, ActionFilterWrapper>(
                     filterContext, m => new ActionFilterWrapper(m), ActionFilterMetadataKey);
+                ResolveControllerScopedFilter<IAutofacAuthenticationFilter, AuthenticationFilterWrapper>(
+                    filterContext, m => new AuthenticationFilterWrapper(m), AuthenticationFilterMetadataKey);
                 ResolveControllerScopedFilter<IAutofacAuthorizationFilter, AuthorizationFilterWrapper>(
                     filterContext, m => new AuthorizationFilterWrapper(m), AuthorizationFilterMetadataKey);
                 ResolveControllerScopedFilter<IAutofacExceptionFilter, ExceptionFilterWrapper>(
@@ -116,6 +121,8 @@ namespace Autofac.Integration.WebApi
 
                 ResolveActionScopedFilter<IAutofacActionFilter, ActionFilterWrapper>(
                     filterContext, descriptor.MethodInfo, m => new ActionFilterWrapper(m), ActionFilterMetadataKey);
+                ResolveActionScopedFilter<IAutofacAuthenticationFilter, AuthenticationFilterWrapper>(
+                    filterContext, descriptor.MethodInfo, m => new AuthenticationFilterWrapper(m), AuthenticationFilterMetadataKey);
                 ResolveActionScopedFilter<IAutofacAuthorizationFilter, AuthorizationFilterWrapper>(
                     filterContext, descriptor.MethodInfo, m => new AuthorizationFilterWrapper(m), AuthorizationFilterMetadataKey);
                 ResolveActionScopedFilter<IAutofacExceptionFilter, ExceptionFilterWrapper>(

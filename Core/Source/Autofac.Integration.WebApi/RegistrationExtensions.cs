@@ -311,6 +311,33 @@ namespace Autofac.Integration.WebApi
             return AsFilterFor<IAutofacExceptionFilter, TController>(registration, AutofacWebApiFilterProvider.ExceptionFilterMetadataKey);
         }
 
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAutofacAuthenticationFilter"/> for the specified controller action.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <param name="actionSelector">The action selector.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsWebApiAuthenticationFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration, Expression<Action<TController>> actionSelector)
+                where TController : IHttpController
+        {
+            return AsFilterFor<IAutofacAuthenticationFilter, TController>(registration, AutofacWebApiFilterProvider.AuthenticationFilterMetadataKey, actionSelector);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAutofacAuthenticationFilter"/> for the specified controller.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsWebApiAuthenticationFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration)
+                where TController : IHttpController
+        {
+            return AsFilterFor<IAutofacAuthenticationFilter, TController>(registration, AutofacWebApiFilterProvider.AuthenticationFilterMetadataKey);
+        }
+
         static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
             AsFilterFor<TFilter, TController>(IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration, string metadataKey)
                 where TController : IHttpController
