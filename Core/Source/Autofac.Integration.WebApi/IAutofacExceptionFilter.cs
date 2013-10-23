@@ -23,6 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Security;
 using System.Web.Http.Filters;
 
 namespace Autofac.Integration.WebApi
@@ -30,6 +31,7 @@ namespace Autofac.Integration.WebApi
     /// <summary>
     /// An exception filter that will be created for each controller request.
     /// </summary>
+    [SecurityCritical]
     public interface IAutofacExceptionFilter
     {
         /// <summary>

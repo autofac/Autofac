@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Security;
 using System.Web.Mvc;
 
 namespace Autofac.Integration.Mvc
@@ -32,6 +33,7 @@ namespace Autofac.Integration.Mvc
     /// <summary>
     /// Autofac implementation of the <see cref="IDependencyResolver"/> interface.
     /// </summary>
+    [SecurityCritical]
     public class AutofacDependencyResolver : IDependencyResolver
     {
         readonly ILifetimeScope _container;
@@ -144,6 +146,7 @@ namespace Autofac.Integration.Mvc
         /// </summary>
         /// <param name="serviceType">Type of the service.</param>
         /// <returns>The single instance if resolved; otherwise, <c>null</c>.</returns>
+        [SecurityCritical]
         public object GetService(Type serviceType)
         {
             return RequestLifetimeScope.ResolveOptional(serviceType);
@@ -154,6 +157,7 @@ namespace Autofac.Integration.Mvc
         /// </summary>
         /// <param name="serviceType">Type of the service.</param>
         /// <returns>The list of instances if any were resolved; otherwise, an empty list.</returns>
+        [SecurityCritical]
         public IEnumerable<object> GetServices(Type serviceType)
         {
             var enumerableServiceType = typeof(IEnumerable<>).MakeGenericType(serviceType);

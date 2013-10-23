@@ -29,6 +29,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Http;
 using System.Reflection;
+using System.Security;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
@@ -42,6 +43,7 @@ namespace Autofac.Integration.WebApi
     /// <summary>
     /// Adds registration syntax to the <see cref="ContainerBuilder"/> type.
     /// </summary>
+    [SecurityCritical]
     public static class RegistrationExtensions
     {
         /// <summary>
@@ -307,6 +309,33 @@ namespace Autofac.Integration.WebApi
                 where TController : IHttpController
         {
             return AsFilterFor<IAutofacExceptionFilter, TController>(registration, AutofacWebApiFilterProvider.ExceptionFilterMetadataKey);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAutofacAuthenticationFilter"/> for the specified controller action.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <param name="actionSelector">The action selector.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsWebApiAuthenticationFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration, Expression<Action<TController>> actionSelector)
+                where TController : IHttpController
+        {
+            return AsFilterFor<IAutofacAuthenticationFilter, TController>(registration, AutofacWebApiFilterProvider.AuthenticationFilterMetadataKey, actionSelector);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAutofacAuthenticationFilter"/> for the specified controller.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsWebApiAuthenticationFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration)
+                where TController : IHttpController
+        {
+            return AsFilterFor<IAutofacAuthenticationFilter, TController>(registration, AutofacWebApiFilterProvider.AuthenticationFilterMetadataKey);
         }
 
         static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>

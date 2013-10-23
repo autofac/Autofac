@@ -13,7 +13,7 @@
 		<Error Text="You must specify the Nuspec staging directory." Condition="'$(StagingDirectory)' == ''" />
 		<PropertyGroup>
 			<!-- The name of the .nuspec file being staged, minus extension. -->
-			<NuspecName>Autofac.SignalR</NuspecName>
+			<NuspecName>Autofac.SignalR2</NuspecName>
 		</PropertyGroup>
 		<PropertyGroup>
 			<PackageVersion>@(AutofacProject->WithMetadataValue('PackageName', $(NuspecName))->Metadata('PackageVersion'))</PackageVersion>
@@ -32,9 +32,9 @@
 				$(BuildBinDirectory)\**\Autofac.Integration.SignalR.pdb" />
 			<ZipFiles Include="
 				$(BuildBinDirectory)\..\..\License.txt;
-				$(BuildBinDirectory)\net40\Autofac.Integration.SignalR.dll;
-				$(BuildBinDirectory)\net40\Autofac.Integration.SignalR.xml;
-				$(BuildBinDirectory)\net40\Autofac.Integration.SignalR.pdb" />
+				$(BuildBinDirectory)\net45\Autofac.Integration.SignalR.dll;
+				$(BuildBinDirectory)\net45\Autofac.Integration.SignalR.xml;
+				$(BuildBinDirectory)\net45\Autofac.Integration.SignalR.pdb" />
 			<SourceFiles
 				Include="$(MSBuildProjectDirectory)\..\..\Source\Autofac.Integration.SignalR\**\*.*"
 				Exclude="

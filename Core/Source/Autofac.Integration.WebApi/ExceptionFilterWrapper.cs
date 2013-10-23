@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security;
 using System.Web.Http.Filters;
 using Autofac.Features.Metadata;
 
@@ -35,6 +36,7 @@ namespace Autofac.Integration.WebApi
     /// <summary>
     /// Resolves a filter for the specified metadata for each controller request.
     /// </summary>
+    [SecurityCritical]
     internal sealed class ExceptionFilterWrapper : ExceptionFilterAttribute, IAutofacExceptionFilter
     {
         readonly FilterMetadata _filterMetadata;
@@ -57,6 +59,7 @@ namespace Autofac.Integration.WebApi
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="actionExecutedContext" /> is <see langword="null" />.
         /// </exception>
+        [SecurityCritical]
         public override void OnException(HttpActionExecutedContext actionExecutedContext)
         {
             if (actionExecutedContext == null)

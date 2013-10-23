@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 using System.Web.Mvc.Async;
+using System.Web.Mvc.Filters;
 using Autofac.Builder;
 using Autofac.Integration.Mvc;
 using Moq;
@@ -68,12 +69,14 @@ namespace Autofac.Tests.Integration.Mvc
             var builder = new ContainerBuilder();
             builder.RegisterInstance(new TestCombinationFilter())
                 .AsActionFilterFor<TestController>()
+                .AsAuthenticationFilterFor<TestController>()
                 .AsAuthorizationFilterFor<TestController>()
                 .AsExceptionFilterFor<TestController>()
                 .AsResultFilterFor<TestController>();
             var container = builder.Build();
 
             Assert.That(container.Resolve<IActionFilter>(), Is.Not.Null);
+            Assert.That(container.Resolve<IAuthenticationFilter>(), Is.Not.Null);
             Assert.That(container.Resolve<IAuthorizationFilter>(), Is.Not.Null);
             Assert.That(container.Resolve<IExceptionFilter>(), Is.Not.Null);
             Assert.That(container.Resolve<IResultFilter>(), Is.Not.Null);
@@ -453,6 +456,100 @@ namespace Autofac.Tests.Integration.Mvc
                 FilterScope.Action,
                 r => r.AsResultFilterFor<TestController>(c => c.Action1(default(string))),
                 r => r.AsResultFilterFor<TestController>(c => c.Action1(default(string)), 20));
+        }
+
+        [Test]
+        public void AsAuthenticationFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.Register(c => new TestAuthenticationFilter()).AsAuthenticationFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        [Test]
+        public void ServiceTypeMustBeAuthenticationFilter()
+        {
+            var builder = new ContainerBuilder();
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => builder.RegisterInstance(new object()).AsAuthenticationFilterFor<TestController>());
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
+        }
+
+        [Test]
+        public void ResolvesControllerScopedAuthenticationFilterForReflectedActionDescriptor()
+        {
+            AssertSingleFilter<TestAuthenticationFilter>(
+                FilterScope.Controller,
+                _reflectedActionDescriptor,
+                r => r.AsAuthenticationFilterFor<TestController>());
+        }
+
+        [Test]
+        public void ResolvesActionScopedAuthenticationFilterForReflectedActionDescriptor()
+        {
+            AssertSingleFilter<TestAuthenticationFilter>(
+                FilterScope.Action,
+                _reflectedActionDescriptor,
+                r => r.AsAuthenticationFilterFor<TestController>(c => c.Action1(default(string))));
+        }
+
+        [Test]
+        public void ResolvesActionScopedAuthenticationFilterForReflectedAsyncActionDescriptor()
+        {
+            AssertSingleFilter<TestAuthenticationFilter>(
+                FilterScope.Action,
+                _reflectedAsyncActionDescriptor,
+                r => r.AsAuthenticationFilterFor<TestController>(c => c.Action1(default(string))));
+        }
+
+        [Test]
+        public void ResolvesActionScopedAuthenticationFilterForTaskAsyncActionDescriptor()
+        {
+            AssertSingleFilter<TestAuthenticationFilter>(
+                FilterScope.Action,
+                _taskAsyncActionDescriptor,
+                r => r.AsAuthenticationFilterFor<TestController>(c => c.Action1(default(string))));
+        }
+
+        [Test]
+        public void ResolvesActionScopedAuthenticationFilterForImmediateBaseContoller()
+        {
+            AssertSingleFilter<TestAuthenticationFilter>(
+                FilterScope.Action,
+                _derivedActionDescriptor,
+                r => r.AsAuthenticationFilterFor<TestController>(c => c.Action1(default(string))),
+                _derivedControllerContext);
+        }
+
+        [Test]
+        public void ResolvesActionScopedAuthenticationFilterForMostBaseContoller()
+        {
+            AssertSingleFilter<TestAuthenticationFilter>(
+                FilterScope.Action,
+                _mostDerivedActionDescriptor,
+                r => r.AsAuthenticationFilterFor<TestController>(c => c.Action1(default(string))),
+                _mostDerivedControllerContext);
+        }
+
+        [Test]
+        public void ResolvesMultipleControllerScopedAuthenticationFilters()
+        {
+            AssertMultipleFilters<TestAuthenticationFilter, TestAuthenticationFilter2>(
+                FilterScope.Controller,
+                r => r.AsAuthenticationFilterFor<TestController>(),
+                r => r.AsAuthenticationFilterFor<TestController>(20));
+        }
+
+        [Test]
+        public void ResolvesMultipleActionScopedAuthenticationFilters()
+        {
+            AssertMultipleFilters<TestAuthenticationFilter, TestAuthenticationFilter2>(
+                FilterScope.Action,
+                r => r.AsAuthenticationFilterFor<TestController>(c => c.Action1(default(string))),
+                r => r.AsAuthenticationFilterFor<TestController>(c => c.Action1(default(string)), 20));
         }
 
         static void SetupMockLifetimeScopeProvider(ILifetimeScope container)

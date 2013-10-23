@@ -1,5 +1,5 @@
-// This software is part of the Autofac IoC container
-// Copyright (c) 2012 Autofac Contributors
+﻿// This software is part of the Autofac IoC container
+// Copyright (c) 2013 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -24,27 +24,26 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Security;
-using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 
 namespace Autofac.Integration.WebApi
 {
     /// <summary>
-    /// An action filter that will be created for each controller request.
+    /// An authentication filter that will be created for each controller request.
     /// </summary>
     [SecurityCritical]
-    public interface IAutofacActionFilter
+    public interface IAutofacAuthenticationFilter
     {
         /// <summary>
-        /// Occurs before the action method is invoked.
+        /// Called when a request requires authentication.
         /// </summary>
-        /// <param name="actionContext">The context for the action.</param>
-        void OnActionExecuting(HttpActionContext actionContext);
+        /// <param name="context">The context for the authentication.</param>
+        void OnAuthenticate(HttpAuthenticationContext context);
 
         /// <summary>
-        /// Occurs after the action method is invoked.
+        /// Called when an authentication challenge is required.
         /// </summary>
-        /// <param name="actionExecutedContext">The context for the action.</param>
-        void OnActionExecuted(HttpActionExecutedContext actionExecutedContext);
+        /// <param name="context">The context for the authentication challenge.</param>
+        void OnChallenge(HttpAuthenticationChallengeContext context);
     }
 }

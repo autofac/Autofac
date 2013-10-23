@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Web.Mvc;
 using Autofac.Features.Metadata;
 
@@ -34,6 +35,7 @@ namespace Autofac.Integration.Mvc
     /// <summary>
     /// Autofac implementation of the <see cref="IModelBinderProvider"/> interface.
     /// </summary>
+    [SecurityCritical]
     public class AutofacModelBinderProvider : IModelBinderProvider
     {
         /// <summary>
@@ -46,6 +48,7 @@ namespace Autofac.Integration.Mvc
         /// </summary>
         /// <param name="modelType">Type of the model.</param>
         /// <returns>An <see cref="IModelBinder"/> instance if found; otherwise, <c>null</c>.</returns>
+        [SecurityCritical]
         public IModelBinder GetBinder(Type modelType)
         {
             var modelBinders = DependencyResolver.Current.GetServices<Meta<Lazy<IModelBinder>>>();

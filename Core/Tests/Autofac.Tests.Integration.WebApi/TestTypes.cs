@@ -163,6 +163,42 @@ namespace Autofac.Tests.Integration.WebApi
         }
     }
 
+    public class TestAuthenticationFilter : IAutofacAuthenticationFilter
+    {
+        public ILogger Logger { get; private set; }
+
+        public TestAuthenticationFilter(ILogger logger)
+        {
+            Logger = logger;
+        }
+
+        public void OnAuthenticate(HttpAuthenticationContext context)
+        {
+        }
+
+        public void OnChallenge(HttpAuthenticationChallengeContext context)
+        {
+        }
+    }
+
+    public class TestAuthenticationFilter2 : IAutofacAuthenticationFilter
+    {
+        public ILogger Logger { get; private set; }
+
+        public TestAuthenticationFilter2(ILogger logger)
+        {
+            Logger = logger;
+        }
+
+        public void OnAuthenticate(HttpAuthenticationContext context)
+        {
+        }
+
+        public void OnChallenge(HttpAuthenticationChallengeContext context)
+        {
+        }
+    }
+
     public class TestAuthorizationFilter : IAutofacAuthorizationFilter
     {
         public ILogger Logger { get; private set; }
@@ -219,7 +255,7 @@ namespace Autofac.Tests.Integration.WebApi
         }
     }
 
-    public class TestCombinationFilter : IAutofacActionFilter, IAutofacAuthorizationFilter, IAutofacExceptionFilter
+    public class TestCombinationFilter : IAutofacActionFilter, IAutofacAuthenticationFilter, IAutofacAuthorizationFilter, IAutofacExceptionFilter
     {
         public void OnActionExecuting(HttpActionContext actionContext)
         {
@@ -234,6 +270,14 @@ namespace Autofac.Tests.Integration.WebApi
         }
 
         public void OnException(HttpActionExecutedContext actionExecutedContext)
+        {
+        }
+
+        public void OnAuthenticate(HttpAuthenticationContext context)
+        {
+        }
+
+        public void OnChallenge(HttpAuthenticationChallengeContext context)
         {
         }
     }

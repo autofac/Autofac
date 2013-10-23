@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http.Formatting;
+using System.Security;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Dispatcher;
@@ -42,6 +43,7 @@ namespace Autofac.Integration.WebApi
     /// <summary>
     /// Configures the controller descriptor with per-controller services from the container.
     /// </summary>
+    [SecurityCritical]
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public sealed class AutofacControllerConfigurationAttribute : Attribute, IControllerConfiguration
     {
@@ -60,6 +62,7 @@ namespace Autofac.Integration.WebApi
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="controllerSettings" /> or <paramref name="controllerDescriptor" /> is <see langword="null" />.
         /// </exception>
+        [SecurityCritical]
         public void Initialize(HttpControllerSettings controllerSettings, HttpControllerDescriptor controllerDescriptor)
         {
             if (controllerSettings == null)

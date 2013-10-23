@@ -27,8 +27,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security;
 using System.Web.Mvc;
 using System.Web.Mvc.Async;
+using System.Web.Mvc.Filters;
 using Autofac.Features.Metadata;
 
 namespace Autofac.Integration.Mvc
@@ -36,6 +38,7 @@ namespace Autofac.Integration.Mvc
     /// <summary>
     /// Defines a filter provider for filter attributes that performs property injection.
     /// </summary>
+    [SecurityCritical]
     public class AutofacFilterProvider : FilterAttributeFilterProvider
     {
         class FilterContext
@@ -49,6 +52,8 @@ namespace Autofac.Integration.Mvc
         internal static string ActionFilterMetadataKey = "AutofacMvcActionFilter";
 
         internal static string AuthorizationFilterMetadataKey = "AutofacMvcAuthorizationFilter";
+
+        internal static string AuthenticationFilterMetadataKey = "AutofacMvcAuthenticationFilter";
 
         internal static string ExceptionFilterMetadataKey = "AutofacMvcExceptionFilter";
 
@@ -75,6 +80,7 @@ namespace Autofac.Integration.Mvc
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="controllerContext" /> is <see langword="null" />.
         /// </exception>
+        [SecurityCritical]
         public override IEnumerable<Filter> GetFilters(ControllerContext controllerContext, ActionDescriptor actionDescriptor)
         {
             if (controllerContext == null)
@@ -112,6 +118,7 @@ namespace Autofac.Integration.Mvc
         static void ResolveControllerScopedFilters(FilterContext filterContext)
         {
             ResolveControllerScopedFilter<IActionFilter>(filterContext, ActionFilterMetadataKey);
+            ResolveControllerScopedFilter<IAuthenticationFilter>(filterContext, AuthenticationFilterMetadataKey);
             ResolveControllerScopedFilter<IAuthorizationFilter>(filterContext, AuthorizationFilterMetadataKey);
             ResolveControllerScopedFilter<IExceptionFilter>(filterContext, ExceptionFilterMetadataKey);
             ResolveControllerScopedFilter<IResultFilter>(filterContext, ResultFilterMetadataKey);
@@ -145,6 +152,7 @@ namespace Autofac.Integration.Mvc
             var methodInfo = methodSelector(actionDescriptor);
 
             ResolveActionScopedFilter<IActionFilter>(filterContext, methodInfo, ActionFilterMetadataKey);
+            ResolveActionScopedFilter<IAuthenticationFilter>(filterContext, methodInfo, AuthenticationFilterMetadataKey);
             ResolveActionScopedFilter<IAuthorizationFilter>(filterContext, methodInfo, AuthorizationFilterMetadataKey);
             ResolveActionScopedFilter<IExceptionFilter>(filterContext, methodInfo, ExceptionFilterMetadataKey);
             ResolveActionScopedFilter<IResultFilter>(filterContext, methodInfo, ResultFilterMetadataKey);

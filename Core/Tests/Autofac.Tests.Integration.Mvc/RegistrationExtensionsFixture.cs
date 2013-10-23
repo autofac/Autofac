@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
+using System.Web.Mvc.Filters;
 using Autofac.Builder;
 using Autofac.Features.Metadata;
 using Autofac.Integration.Mvc;
@@ -355,6 +356,45 @@ namespace Autofac.Tests.Integration.Mvc
                 TestController.GetAction1MethodInfo<TestController>(),
                 r => r.AsResultFilterFor<TestController>(c => c.Action1(default(string)), 20),
                 AutofacFilterProvider.ResultFilterMetadataKey);
+        }
+
+        [Test]
+        public void AsAuthenticationFilterForControllerScopedFilterThrowsExceptionForNullRegistration()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => Autofac.Integration.Mvc.RegistrationExtensions.AsAuthenticationFilterFor<TestController>(null));
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
+        }
+
+        [Test]
+        public void AsAuthenticationFilterForActionScopedFilterThrowsExceptionForNullRegistration()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => Autofac.Integration.Mvc.RegistrationExtensions.AsAuthenticationFilterFor<TestController>
+                    (null, c => c.Action1(default(string))));
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
+        }
+
+        [Test]
+        public void AsAuthenticationFilterForControllerScopedFilterAddsCorrectMetadata()
+        {
+            AssertFilterRegistration<TestAuthenticationFilter, IAuthenticationFilter>(
+                FilterScope.Controller,
+                null,
+                r => r.AsAuthenticationFilterFor<TestController>(20),
+                AutofacFilterProvider.AuthenticationFilterMetadataKey);
+        }
+
+        [Test]
+        public void AsAuthenticationFilterForActionScopedFilterAddsCorrectMetadata()
+        {
+            AssertFilterRegistration<TestAuthenticationFilter, IAuthenticationFilter>(
+                FilterScope.Action,
+                TestController.GetAction1MethodInfo<TestController>(),
+                r => r.AsAuthenticationFilterFor<TestController>(c => c.Action1(default(string)), 20),
+                AutofacFilterProvider.AuthenticationFilterMetadataKey);
         }
 
         static void AssertFilterRegistration<TFilter, TService>(FilterScope filterScope, MethodInfo methodInfo,

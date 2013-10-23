@@ -23,6 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Security;
 using System.Web.Http.Dependencies;
 
 namespace Autofac.Integration.WebApi
@@ -35,6 +36,7 @@ namespace Autofac.Integration.WebApi
         /// <summary>
         /// Gets the root lifetime scope from the Autofac dependency resolver.
         /// </summary>
+        [SecurityCritical]
         public static ILifetimeScope GetRootLifetimeScope(this IDependencyResolver dependencyResolver)
         {
             var resolver = dependencyResolver as AutofacWebApiDependencyResolver;
@@ -44,6 +46,7 @@ namespace Autofac.Integration.WebApi
         /// <summary>
         /// Gets the request lifetime scope from the Autofac dependency scope.
         /// </summary>
+        [SecurityCritical]
         public static ILifetimeScope GetRequestLifetimeScope(this IDependencyScope dependencyScope)
         {
             var scope = dependencyScope as AutofacWebApiDependencyScope;
