@@ -170,6 +170,14 @@ namespace Autofac.Util
         {
             return type.GetHashCode();
         }
+
+		public static bool IsGenericEnumerableType(this Type type)
+		{
+			if (!type.IsGenericType) return false;
+
+			var arguments = type.GetGenericArguments();
+			return arguments.Length == 1 && typeof(IEnumerable<>).MakeGenericType(arguments).IsAssignableFrom(type);
+		}
     }
 }
 

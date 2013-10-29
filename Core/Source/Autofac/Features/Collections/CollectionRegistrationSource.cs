@@ -55,7 +55,7 @@ namespace Autofac.Features.Collections
                 var serviceType = swt.ServiceType;
                 Type elementType = null;
 
-                if (IsGenericEnumerableType(serviceType))
+                if (serviceType.IsGenericEnumerableType())
                 {
                     elementType = serviceType.GetGenericArguments()[0];
                 }
@@ -113,14 +113,6 @@ namespace Autofac.Features.Collections
         public override string ToString()
         {
             return CollectionRegistrationSourceResources.CollectionRegistrationSourceDescription;
-        }
-
-        static bool IsGenericEnumerableType(Type source)
-        {
-            if (!source.IsGenericType) return false;
-
-            var arguments = source.GetGenericArguments();
-            return arguments.Length == 1 && typeof(IEnumerable<>).MakeGenericType(arguments).IsAssignableFrom(source);
         }
     }
 }

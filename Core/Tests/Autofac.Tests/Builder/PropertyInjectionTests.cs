@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using NUnit.Framework;
 
 namespace Autofac.Tests.Builder
 {
@@ -321,6 +323,95 @@ namespace Autofac.Tests.Builder
             var instance = container.Resolve<HasNullableValueTypeArray>();
 
             Assert.That(instance.DoubleArray, Is.EqualTo(new double?[] {null, 0.1, null}));
+        }
+
+        public class HasValueTypeList
+        {
+            public IList<byte> ByteList { get; set; }
+
+            public HasValueTypeList()
+            {
+                ByteList = new List<byte> {1, 2, 3};
+            }
+        }
+
+        [Test]
+        public void SetterInjectionIgnoresListsOfValueTypes()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<HasValueTypeList>().PropertiesAutowired();
+            var container = builder.Build();
+
+            var instance = container.Resolve<HasValueTypeList>();
+
+            Assert.That(instance.ByteList, Is.EqualTo(new List<byte> {1, 2, 3}));
+        }
+
+        public class HasNullableValueTypeList
+        {
+            public IList<double?> DoubleList { get; set; }
+
+            public HasNullableValueTypeList()
+            {
+                DoubleList = new List<double?> {null, 0.1, null};
+            }
+        }
+
+        [Test]
+        public void SetterInjectionIgnoresListsOfNullableValueTypes()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<HasNullableValueTypeList>().PropertiesAutowired();
+            var container = builder.Build();
+
+            var instance = container.Resolve<HasNullableValueTypeList>();
+
+            Assert.That(instance.DoubleList, Is.EqualTo(new List<double?> {null, 0.1, null}));
+        }
+
+        public class HasValueTypeCollection
+        {
+            public ICollection<byte> ByteCollection { get; set; }
+
+            public HasValueTypeCollection()
+            {
+                ByteCollection = new Collection<byte> {1, 2, 3};
+            }
+        }
+
+        [Test]
+        public void SetterInjectionIgnoresCollectionsOfValueTypes()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<HasValueTypeCollection>().PropertiesAutowired();
+            var container = builder.Build();
+
+            var instance = container.Resolve<HasValueTypeCollection>();
+
+            Assert.That(instance.ByteCollection, Is.EqualTo(new Collection<byte> {1, 2, 3}));
+        }
+
+        public class HasNullableValueTypeCollection
+        {
+            public IReadOnlyCollection<double?> DoubleCollection { get; set; }
+
+            public HasNullableValueTypeCollection()
+            {
+                DoubleCollection = new ReadOnlyCollection<double?>(new double?[] {null, 0.1, null});
+            }
+        }
+
+        [Test]
+        public void SetterInjectionIgnoresCollectionsOfNullableValueTypes()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<HasNullableValueTypeCollection>().PropertiesAutowired();
+            var container = builder.Build();
+
+            var instance = container.Resolve<HasNullableValueTypeCollection>();
+
+            var collection = new ReadOnlyCollection<double?>(new double?[] {null, 0.1, null});
+            Assert.That(instance.DoubleCollection, Is.EqualTo(collection));
         }
     }
 }

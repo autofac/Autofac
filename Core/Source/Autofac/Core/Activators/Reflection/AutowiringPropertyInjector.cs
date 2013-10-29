@@ -26,6 +26,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using Autofac.Util;
 
 namespace Autofac.Core.Activators.Reflection
 {
@@ -48,6 +49,9 @@ namespace Autofac.Core.Activators.Reflection
                     continue;
 
                 if (propertyType.IsArray && propertyType.GetElementType().IsValueType)
+                    continue;
+
+                if (propertyType.IsGenericEnumerableType() && propertyType.GetGenericArguments()[0].IsValueType)
                     continue;
 
                 if (property.GetIndexParameters().Length != 0)
