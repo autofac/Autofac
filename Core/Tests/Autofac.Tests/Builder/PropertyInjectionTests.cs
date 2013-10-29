@@ -327,11 +327,14 @@ namespace Autofac.Tests.Builder
 
         public class HasValueTypeList
         {
-            public IList<byte> ByteList { get; set; }
+            public IList<byte> ByteListInterface { get; set; }
+
+            public List<byte> ByteList { get; set; }
 
             public HasValueTypeList()
             {
                 ByteList = new List<byte> {1, 2, 3};
+                ByteListInterface = ByteList;
             }
         }
 
@@ -344,16 +347,21 @@ namespace Autofac.Tests.Builder
 
             var instance = container.Resolve<HasValueTypeList>();
 
-            Assert.That(instance.ByteList, Is.EqualTo(new List<byte> {1, 2, 3}));
+            var expected = new List<byte> {1, 2, 3};
+            Assert.That(instance.ByteListInterface, Is.EqualTo(expected));
+            Assert.That(instance.ByteList, Is.EqualTo(expected));
         }
 
         public class HasNullableValueTypeList
         {
-            public IList<double?> DoubleList { get; set; }
+            public IList<double?> DoubleListInterface { get; set; }
+
+            public List<double?> DoubleList { get; set; }
 
             public HasNullableValueTypeList()
             {
                 DoubleList = new List<double?> {null, 0.1, null};
+                DoubleListInterface = DoubleList;
             }
         }
 
@@ -366,16 +374,21 @@ namespace Autofac.Tests.Builder
 
             var instance = container.Resolve<HasNullableValueTypeList>();
 
-            Assert.That(instance.DoubleList, Is.EqualTo(new List<double?> {null, 0.1, null}));
+            var expected = new List<double?> {null, 0.1, null};
+            Assert.That(instance.DoubleListInterface, Is.EqualTo(expected));
+            Assert.That(instance.DoubleList, Is.EqualTo(expected));
         }
 
         public class HasValueTypeCollection
         {
-            public ICollection<byte> ByteCollection { get; set; }
+            public ICollection<byte> ByteCollectionInterface { get; set; }
+
+            public Collection<byte> ByteCollection { get; set; }
 
             public HasValueTypeCollection()
             {
                 ByteCollection = new Collection<byte> {1, 2, 3};
+                ByteCollectionInterface = ByteCollection;
             }
         }
 
@@ -388,16 +401,21 @@ namespace Autofac.Tests.Builder
 
             var instance = container.Resolve<HasValueTypeCollection>();
 
-            Assert.That(instance.ByteCollection, Is.EqualTo(new Collection<byte> {1, 2, 3}));
+            var expected = new Collection<byte> {1, 2, 3};
+            Assert.That(instance.ByteCollectionInterface, Is.EqualTo(expected));
+            Assert.That(instance.ByteCollection, Is.EqualTo(expected));
         }
 
         public class HasNullableValueTypeCollection
         {
-            public IReadOnlyCollection<double?> DoubleCollection { get; set; }
+            public IReadOnlyCollection<double?> DoubleCollectionInterface { get; set; }
+
+            public ReadOnlyCollection<double?> DoubleCollection { get; set; }
 
             public HasNullableValueTypeCollection()
             {
                 DoubleCollection = new ReadOnlyCollection<double?>(new double?[] {null, 0.1, null});
+                DoubleCollectionInterface = DoubleCollection;
             }
         }
 
@@ -410,8 +428,9 @@ namespace Autofac.Tests.Builder
 
             var instance = container.Resolve<HasNullableValueTypeCollection>();
 
-            var collection = new ReadOnlyCollection<double?>(new double?[] {null, 0.1, null});
-            Assert.That(instance.DoubleCollection, Is.EqualTo(collection));
+            var expected = new ReadOnlyCollection<double?>(new double?[] {null, 0.1, null});
+            Assert.That(instance.DoubleCollectionInterface, Is.EqualTo(expected));
+            Assert.That(instance.DoubleCollection, Is.EqualTo(expected));
         }
     }
 }
