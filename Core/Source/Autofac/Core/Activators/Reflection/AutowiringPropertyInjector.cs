@@ -51,7 +51,7 @@ namespace Autofac.Core.Activators.Reflection
                 if (propertyType.IsArray && propertyType.GetElementType().IsValueType)
                     continue;
 
-                if (propertyType.IsGenericEnumerableType() && propertyType.GetGenericArguments()[0].IsValueType)
+                if (propertyType.IsGenericEnumerableInterfaceType() && propertyType.GetGenericArguments()[0].IsValueType)
                     continue;
 
                 if (property.GetIndexParameters().Length != 0)

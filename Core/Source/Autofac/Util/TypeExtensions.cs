@@ -35,6 +35,10 @@ namespace Autofac.Util
     {
         public static readonly Type[] EmptyTypes = new Type[0];
 
+        static readonly Type ReadOnlyCollectionType = Type.GetType("System.Collections.Generic.IReadOnlyCollection`1", false);
+
+        static readonly Type ReadOnlyListType = Type.GetType("System.Collections.Generic.IReadOnlyList`1", false);
+
         /// <summary>Returns the first concrete interface supported by the candidate type that
         /// closes the provided open generic service type.</summary>
         /// <param name="this">The type that is being checked for the interface.</param>
@@ -171,13 +175,19 @@ namespace Autofac.Util
             return type.GetHashCode();
         }
 
-		public static bool IsGenericEnumerableType(this Type type)
-		{
-			if (!type.IsGenericType) return false;
+        public static bool IsGenericEnumerableInterfaceType(this Type type)
+        {
+            return (type.IsGenericTypeDefinedBy(typeof(IEnumerable<>))
+                || type.IsGenericListOrCollectionInterfaceType());
+        }
 
-			var arguments = type.GetGenericArguments();
-			return arguments.Length == 1 && typeof(IEnumerable<>).MakeGenericType(arguments).IsAssignableFrom(type);
-		}
+        public static bool IsGenericListOrCollectionInterfaceType(this Type type)
+        {
+            return type.IsGenericTypeDefinedBy(typeof(IList<>))
+                   || type.IsGenericTypeDefinedBy(typeof(ICollection<>))
+                   || (ReadOnlyCollectionType != null && type.IsGenericTypeDefinedBy(ReadOnlyCollectionType))
+                   || (ReadOnlyListType != null && type.IsGenericTypeDefinedBy(ReadOnlyListType));
+        }
     }
 }
 

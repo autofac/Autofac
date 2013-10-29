@@ -24,7 +24,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core;
@@ -55,7 +54,7 @@ namespace Autofac.Features.Collections
                 var serviceType = swt.ServiceType;
                 Type elementType = null;
 
-                if (serviceType.IsGenericEnumerableType())
+                if (serviceType.IsGenericEnumerableInterfaceType())
                 {
                     elementType = serviceType.GetGenericArguments()[0];
                 }
@@ -68,9 +67,10 @@ namespace Autofac.Features.Collections
                 {
                     var elementTypeService = swt.ChangeType(elementType);
                     var elementArrayType = elementType.MakeArrayType();
+
                     var listType = typeof(List<>).MakeGenericType(elementType);
-                    var serviceTypeIsList = serviceType.IsGenericTypeDefinedBy(typeof(IList<>)) ||
-                                            serviceType.IsGenericTypeDefinedBy(typeof(ICollection<>));
+                    var serviceTypeIsList = serviceType.IsGenericListOrCollectionInterfaceType();
+
                     var registration = new ComponentRegistration(
                         Guid.NewGuid(),
                         new DelegateActivator(elementArrayType, (c, p) =>
@@ -78,19 +78,10 @@ namespace Autofac.Features.Collections
                             var elements = c.ComponentRegistry.RegistrationsFor(elementTypeService);
                             var items = elements.Select(cr => c.ResolveComponent(cr, p)).ToArray();
 
-                            if (serviceTypeIsList)
-                            {
-                                // Activator.CreateInstance doesn't like 'items' as a constructor parameter
-                                // even when cast to (object)item. Manually adding resolved items for now.
-                                var list = (IList)Activator.CreateInstance(listType, items.Length);
-                                foreach (var item in items)
-                                    list.Add(item);
-                                return list;
-                            }
-
                             var result = Array.CreateInstance(elementType, items.Length);
                             items.CopyTo(result, 0);
-                            return result;
+
+                            return serviceTypeIsList ? Activator.CreateInstance(listType, result) : result;
                         }),
                         new CurrentScopeLifetime(),
                         InstanceSharing.None,

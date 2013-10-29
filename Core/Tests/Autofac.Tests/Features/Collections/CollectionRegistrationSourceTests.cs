@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using NUnit.Framework;
 using Autofac.Builder;
+using Autofac.Core.Registration;
+using NUnit.Framework;
 
 namespace Autofac.Tests.Features.Collections
 {
@@ -166,6 +168,45 @@ namespace Autofac.Tests.Features.Collections
             Assert.That(strings, Has.Member(s1));
             Assert.That(strings, Has.Member(s2));
             Assert.That(strings, Is.InstanceOf<List<string>>());
+        }
+
+        [Test]
+        public void ResolvingClosedListTypeThrowsException()
+        {
+            var cb = new ContainerBuilder();
+            const string s1 = "Hello";
+            const string s2 = "World";
+            cb.RegisterInstance(s1);
+            cb.RegisterInstance(s2);
+            var c = cb.Build();
+
+            Assert.Throws<ComponentNotRegisteredException>(() => c.Resolve<List<string>>());
+        }
+
+        [Test]
+        public void ResolvingClosedCollectionTypeThrowsException()
+        {
+            var cb = new ContainerBuilder();
+            const string s1 = "Hello";
+            const string s2 = "World";
+            cb.RegisterInstance(s1);
+            cb.RegisterInstance(s2);
+            var c = cb.Build();
+
+            Assert.Throws<ComponentNotRegisteredException>(() => c.Resolve<Collection<string>>());
+        }
+
+        [Test]
+        public void ResolvingClosedReadOnlyCollectionTypeThrowsException()
+        {
+            var cb = new ContainerBuilder();
+            const string s1 = "Hello";
+            const string s2 = "World";
+            cb.RegisterInstance(s1);
+            cb.RegisterInstance(s2);
+            var c = cb.Build();
+
+            Assert.Throws<ComponentNotRegisteredException>(() => c.Resolve<ReadOnlyCollection<string>>());
         }
     }
 }
