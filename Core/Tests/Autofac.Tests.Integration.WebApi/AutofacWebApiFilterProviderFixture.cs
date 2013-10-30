@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Controllers;
+using System.Web.Http.Filters;
 using Autofac.Builder;
 using Autofac.Integration.WebApi;
 using NUnit.Framework;
@@ -75,6 +76,47 @@ namespace Autofac.Tests.Integration.WebApi
         }
 
         [Test]
+        public void ResolvesMultipleFiltersOfDifferentTypes()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register<ILogger>(c => new Logger()).InstancePerDependency();
+
+            builder.Register(c => new TestAuthenticationFilter(c.Resolve<ILogger>()))
+                .AsWebApiAuthenticationFilterFor<TestController>()
+                .InstancePerApiRequest();
+
+            builder.Register(c => new TestAuthorizationFilter(c.Resolve<ILogger>()))
+                .AsWebApiAuthorizationFilterFor<TestController>()
+                .InstancePerApiRequest();
+
+            builder.Register(c => new TestExceptionFilter(c.Resolve<ILogger>()))
+                .AsWebApiExceptionFilterFor<TestController>()
+                .InstancePerApiRequest();
+
+            builder.Register(c => new TestActionFilter(c.Resolve<ILogger>()))
+                .AsWebApiActionFilterFor<TestController>()
+                .InstancePerApiRequest();
+
+            var container = builder.Build();
+            var provider = new AutofacWebApiFilterProvider(container);
+            var configuration = new HttpConfiguration
+            {
+                DependencyResolver = new AutofacWebApiDependencyResolver(container)
+            };
+            var actionDescriptor = BuildActionDescriptorForGetMethod();
+
+            var filterInfos = provider.GetFilters(configuration, actionDescriptor).ToArray();
+            var filters = filterInfos.Select(info => info.Instance).ToArray();
+
+            Assert.That(filters.OfType<AuthenticationFilterWrapper>().Count(), Is.EqualTo(1));
+            Assert.That(filters.OfType<AuthorizationFilterWrapper>().Count(), Is.EqualTo(1));
+            Assert.That(filters.OfType<ExceptionFilterWrapper>().Count(), Is.EqualTo(1));
+            Assert.That(filters.OfType<ActionFilterWrapper>().Count(), Is.EqualTo(1));
+        }
+
+        // Action filters
+
+        [Test]
         public void AsActionFilterForRequiresActionSelector()
         {
             var builder = new ContainerBuilder();
@@ -145,6 +187,8 @@ namespace Autofac.Tests.Integration.WebApi
                 r => r.AsWebApiActionFilterFor<TestController>(c => c.Get()),
                 r => r.AsWebApiActionFilterFor<TestController>(c => c.Get()));
         }
+
+        // Authorization filter
 
         [Test]
         public void AsAuthorizationFilterForRequiresActionSelector()
@@ -218,6 +262,8 @@ namespace Autofac.Tests.Integration.WebApi
                 r => r.AsWebApiAuthorizationFilterFor<TestController>(c => c.Get()));
         }
 
+        // Exception filters
+
         [Test]
         public void AsExceptionFilterForRequiresActionSelector()
         {
@@ -289,6 +335,8 @@ namespace Autofac.Tests.Integration.WebApi
                 r => r.AsWebApiExceptionFilterFor<TestController>(c => c.Get()),
                 r => r.AsWebApiExceptionFilterFor<TestController>(c => c.Get()));
         }
+
+        // Authentication filters
 
         [Test]
         public void AsAuthenticationFilterForRequiresActionSelector()
@@ -362,45 +410,217 @@ namespace Autofac.Tests.Integration.WebApi
                 r => r.AsWebApiAuthenticationFilterFor<TestController>(c => c.Get()));
         }
 
+        // Action filter override
+
         [Test]
-        public void ResolvesMultipleFiltersOfDifferentTypes()
+        public void OverrideActionFilterForRequiresActionSelector()
         {
             var builder = new ContainerBuilder();
-            builder.Register<ILogger>(c => new Logger()).InstancePerDependency();
-
-            builder.Register(c => new TestAuthenticationFilter(c.Resolve<ILogger>()))
-                .AsWebApiAuthenticationFilterFor<TestController>()
-                .InstancePerApiRequest();
-
-            builder.Register(c => new TestAuthorizationFilter(c.Resolve<ILogger>()))
-                .AsWebApiAuthorizationFilterFor<TestController>()
-                .InstancePerApiRequest();
-
-            builder.Register(c => new TestExceptionFilter(c.Resolve<ILogger>()))
-                .AsWebApiExceptionFilterFor<TestController>()
-                .InstancePerApiRequest();
-
-            builder.Register(c => new TestActionFilter(c.Resolve<ILogger>()))
-                .AsWebApiActionFilterFor<TestController>()
-                .InstancePerApiRequest();
-
-            var container = builder.Build();
-            var provider = new AutofacWebApiFilterProvider(container);
-            var configuration = new HttpConfiguration
-            {
-                DependencyResolver = new AutofacWebApiDependencyResolver(container)
-            };
-            var actionDescriptor = BuildActionDescriptorForGetMethod();
-
-            var filterInfos = provider.GetFilters(configuration, actionDescriptor).ToArray();
-            var filters = filterInfos.Select(info => info.Instance).ToArray();
-
-            Assert.That(filters.OfType<AuthenticationFilterWrapper>().Count(), Is.EqualTo(1));
-            Assert.That(filters.OfType<AuthorizationFilterWrapper>().Count(), Is.EqualTo(1));
-            Assert.That(filters.OfType<ExceptionFilterWrapper>().Count(), Is.EqualTo(1));
-            Assert.That(filters.OfType<ActionFilterWrapper>().Count(), Is.EqualTo(1));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.OverrideActionFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
         }
 
+        [Test]
+        public void ResolvesControllerScopedOverrideActionFilter()
+        {
+            AssertOverrideFilter<IActionFilter, TestController>(
+                builder => builder.OverrideActionFilterFor<TestController>());
+        }
+
+        [Test]
+        public void ResolvesActionScopedOverrideActionFilter()
+        {
+            AssertOverrideFilter<IActionFilter, TestController>(
+                builder => builder.OverrideActionFilterFor<TestController>(c => c.Get()));
+        }
+
+        [Test]
+        public void ResolvesActionScopedActionOverrideFilterForImmediateBaseContoller()
+        {
+            AssertOverrideFilter<IActionFilter, TestControllerA>(
+                builder => builder.OverrideActionFilterFor<TestController>(c => c.Get()));
+        }
+
+        [Test]
+        public void ResolvesActionScopedActionOverrideFilterForMostBaseContoller()
+        {
+            AssertOverrideFilter<IActionFilter, TestControllerB>(
+                builder => builder.OverrideActionFilterFor<TestController>(c => c.Get()));
+        }
+
+        [Test]
+        public void ResolvesControllerScopedActionOverrideFilterForImmediateBaseContoller()
+        {
+            AssertOverrideFilter<IActionFilter, TestControllerA>(
+                builder => builder.OverrideActionFilterFor<TestController>());
+        }
+
+        [Test]
+        public void ResolvesControllerScopedActionOverrideFilterForMostBaseContoller()
+        {
+            AssertOverrideFilter<IActionFilter, TestControllerB>(
+                builder => builder.OverrideActionFilterFor<TestController>());
+        }
+
+        // Authorization filter override
+
+        [Test]
+        public void OverrideAuthorizationFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.OverrideAuthorizationFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        [Test]
+        public void ResolvesControllerScopedOverrideAuthorizationFilter()
+        {
+            AssertOverrideFilter<IAuthorizationFilter, TestController>(
+                builder => builder.OverrideAuthorizationFilterFor<TestController>());
+        }
+
+        [Test]
+        public void ResolvesActionScopedOverrideAuthorizationFilter()
+        {
+            AssertOverrideFilter<IAuthorizationFilter, TestController>(
+                builder => builder.OverrideAuthorizationFilterFor<TestController>(c => c.Get()));
+        }
+
+        [Test]
+        public void ResolvesActionScopedAuthorizationOverrideFilterForImmediateBaseContoller()
+        {
+            AssertOverrideFilter<IAuthorizationFilter, TestControllerA>(
+                builder => builder.OverrideAuthorizationFilterFor<TestController>(c => c.Get()));
+        }
+
+        [Test]
+        public void ResolvesActionScopedAuthorizationOverrideFilterForMostBaseContoller()
+        {
+            AssertOverrideFilter<IAuthorizationFilter, TestControllerB>(
+                builder => builder.OverrideAuthorizationFilterFor<TestController>(c => c.Get()));
+        }
+
+        [Test]
+        public void ResolvesControllerScopedAuthorizationOverrideFilterForImmediateBaseContoller()
+        {
+            AssertOverrideFilter<IAuthorizationFilter, TestControllerA>(
+                builder => builder.OverrideAuthorizationFilterFor<TestController>());
+        }
+
+        [Test]
+        public void ResolvesControllerScopedAuthorizationOverrideFilterForMostBaseContoller()
+        {
+            AssertOverrideFilter<IAuthorizationFilter, TestControllerB>(
+                builder => builder.OverrideAuthorizationFilterFor<TestController>());
+        }
+
+        // Exception filter override
+
+        [Test]
+        public void OverrideExceptionFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.OverrideExceptionFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        [Test]
+        public void ResolvesControllerScopedOverrideExceptionFilter()
+        {
+            AssertOverrideFilter<IExceptionFilter, TestController>(
+                builder => builder.OverrideExceptionFilterFor<TestController>());
+        }
+
+        [Test]
+        public void ResolvesActionScopedOverrideExceptionFilter()
+        {
+            AssertOverrideFilter<IExceptionFilter, TestController>(
+                builder => builder.OverrideExceptionFilterFor<TestController>(c => c.Get()));
+        }
+
+        [Test]
+        public void ResolvesActionScopedExceptionOverrideFilterForImmediateBaseContoller()
+        {
+            AssertOverrideFilter<IExceptionFilter, TestControllerA>(
+                builder => builder.OverrideExceptionFilterFor<TestController>(c => c.Get()));
+        }
+
+        [Test]
+        public void ResolvesActionScopedExceptionOverrideFilterForMostBaseContoller()
+        {
+            AssertOverrideFilter<IExceptionFilter, TestControllerB>(
+                builder => builder.OverrideExceptionFilterFor<TestController>(c => c.Get()));
+        }
+
+        [Test]
+        public void ResolvesControllerScopedExceptionOverrideFilterForImmediateBaseContoller()
+        {
+            AssertOverrideFilter<IExceptionFilter, TestControllerA>(
+                builder => builder.OverrideExceptionFilterFor<TestController>());
+        }
+
+        [Test]
+        public void ResolvesControllerScopedExceptionOverrideFilterForMostBaseContoller()
+        {
+            AssertOverrideFilter<IExceptionFilter, TestControllerB>(
+                builder => builder.OverrideExceptionFilterFor<TestController>());
+        }
+
+        // Authentication filter override
+
+        [Test]
+        public void OverrideAuthenticationFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.OverrideAuthenticationFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        [Test]
+        public void ResolvesControllerScopedOverrideAuthenticationFilter()
+        {
+            AssertOverrideFilter<IAuthenticationFilter, TestController>(
+                builder => builder.OverrideAuthenticationFilterFor<TestController>());
+        }
+
+        [Test]
+        public void ResolvesActionScopedOverrideAuthenticationFilter()
+        {
+            AssertOverrideFilter<IAuthenticationFilter, TestController>(
+                builder => builder.OverrideAuthenticationFilterFor<TestController>(c => c.Get()));
+        }
+
+        [Test]
+        public void ResolvesActionScopedAuthenticationOverrideFilterForImmediateBaseContoller()
+        {
+            AssertOverrideFilter<IAuthenticationFilter, TestControllerA>(
+                builder => builder.OverrideAuthenticationFilterFor<TestController>(c => c.Get()));
+        }
+
+        [Test]
+        public void ResolvesActionScopedAuthenticationOverrideFilterForMostBaseContoller()
+        {
+            AssertOverrideFilter<IAuthenticationFilter, TestControllerB>(
+                builder => builder.OverrideAuthenticationFilterFor<TestController>(c => c.Get()));
+        }
+
+        [Test]
+        public void ResolvesControllerScopedAuthenticationOverrideFilterForImmediateBaseContoller()
+        {
+            AssertOverrideFilter<IAuthenticationFilter, TestControllerA>(
+                builder => builder.OverrideAuthenticationFilterFor<TestController>());
+        }
+
+        [Test]
+        public void ResolvesControllerScopedAuthenticationOverrideFilterForMostBaseContoller()
+        {
+            AssertOverrideFilter<IAuthenticationFilter, TestControllerB>(
+                builder => builder.OverrideAuthenticationFilterFor<TestController>());
+        }
 
         static ReflectedHttpActionDescriptor BuildActionDescriptorForGetMethod()
         {
@@ -453,6 +673,23 @@ namespace Autofac.Tests.Integration.WebApi
             var filters = filterInfos.Select(info => info.Instance).OfType<TWrapper>().ToArray();
             Assert.That(filters, Has.Length.EqualTo(1));
             Assert.That(filters[0], Is.InstanceOf<TWrapper>());
+        }
+
+        static void AssertOverrideFilter<TFilterType, TController>(Action<ContainerBuilder> registration)
+        {
+            var builder = new ContainerBuilder();
+            registration(builder);
+            var container = builder.Build();
+            var provider = new AutofacWebApiFilterProvider(container);
+            var configuration = new HttpConfiguration {DependencyResolver = new AutofacWebApiDependencyResolver(container)};
+            var actionDescriptor = BuildActionDescriptorForGetMethod(typeof(TController));
+
+            var filterInfos = provider.GetFilters(configuration, actionDescriptor).ToArray();
+
+            var filter = filterInfos.Select(info => info.Instance).OfType<AutofacOverrideFilter>().Single();
+            Assert.That(filter, Is.InstanceOf<AutofacOverrideFilter>());
+            Assert.That(filter.AllowMultiple, Is.False);
+            Assert.That(filter.FiltersToOverride, Is.EqualTo(typeof(TFilterType)));
         }
     }
 }

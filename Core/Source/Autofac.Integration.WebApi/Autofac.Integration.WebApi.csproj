@@ -79,6 +79,7 @@
     </CodeAnalysisDictionary>
     <Compile Include="ActionFilterWrapper.cs" />
     <Compile Include="AuthorizationFilterWrapper.cs" />
+    <Compile Include="AutofacOverrideFilter.cs" />
     <Compile Include="AutofacWebApiDependencyResolver.cs" />
     <Compile Include="AutofacWebApiDependencyScope.cs" />
     <Compile Include="AutofacWebApiFilterProvider.cs" />
