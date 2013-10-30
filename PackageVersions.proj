@@ -34,9 +34,9 @@
 		-->
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac\Autofac.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.1.4.0</FileVersion>
+			<FileVersion>3.1.5.0</FileVersion>
 			<PackageName>Autofac</PackageName>
-			<PackageVersion>3.1.4</PackageVersion>
+			<PackageVersion>3.1.5</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Configuration\Autofac.Configuration.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
@@ -54,13 +54,13 @@
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
 			<FileVersion>3.0.0.0</FileVersion>
 			<PackageName>Autofac.Mvc5</PackageName>
-			<PackageVersion>3.0.0-rc2</PackageVersion>
+			<PackageVersion>3.0.0</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.SignalR\Autofac.Integration.SignalR.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
 			<FileVersion>3.0.0.0</FileVersion>
 			<PackageName>Autofac.SignalR2</PackageName>
-			<PackageVersion>3.0.0-rc1</PackageVersion>
+			<PackageVersion>3.0.0</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Wcf\Autofac.Integration.Wcf.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
@@ -78,7 +78,7 @@
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
 			<FileVersion>3.0.0.0</FileVersion>
 			<PackageName>Autofac.WebApi2</PackageName>
-			<PackageVersion>3.0.0-rc2</PackageVersion>
+			<PackageVersion>3.0.0</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.AggregateService\Autofac.Extras.AggregateService.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
