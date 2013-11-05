@@ -73,6 +73,7 @@
     <Compile Include="..\..\Source\Autofac.Integration.WebApi\Properties\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="ActionFilterFixture.cs" />
     <Compile Include="ActionFilterWrapperFixture.cs" />
     <Compile Include="AutofacWebApiDependencyResolverFixture.cs" />
     <Compile Include="AutofacWebApiFilterProviderFixture.cs" />
@@ -81,9 +82,13 @@
     <Compile Include="AuthorizationFilterWrapperFixture.cs" />
     <Compile Include="ControllerTypeKeyFixture.cs" />
     <Compile Include="AuthenticationFilterWrapperFixture.cs" />
+    <Compile Include="AuthorizationFilterFixture.cs" />
+    <Compile Include="AuthenticationFilterFixture.cs" />
+    <Compile Include="ExceptionFilterFixture.cs" />
     <Compile Include="CurrentRequestHandlerFixture.cs" />
     <Compile Include="ExceptionFilterWrapperFixture.cs" />
     <Compile Include="AutofacControllerConfigurationAttributeFixture.cs" />
+    <Compile Include="AutofacFilterBaseFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationExtensionsFixture.cs" />
     <Compile Include="TestTypes.cs" />

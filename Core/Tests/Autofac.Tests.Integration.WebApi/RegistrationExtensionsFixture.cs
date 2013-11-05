@@ -270,5 +270,138 @@ namespace Autofac.Tests.Integration.WebApi
 
             Assert.That(config.MessageHandlers.OfType<CurrentRequestHandler>().Count(), Is.EqualTo(1));
         }
+
+
+        // Action filters
+
+        [Test]
+        public void AsActionFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.Register(c => new TestActionFilter(c.Resolve<ILogger>())).AsWebApiActionFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        [Test]
+        public void AsActionFilterForServiceTypeMustBeActionFilter()
+        {
+            var builder = new ContainerBuilder();
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => builder.RegisterInstance(new object()).AsWebApiActionFilterFor<TestController>());
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
+        }
+
+        // Authorization filter
+
+        [Test]
+        public void AsAuthorizationFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.Register(c => new TestAuthorizationFilter(c.Resolve<ILogger>())).AsWebApiAuthorizationFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        [Test]
+        public void AsWebApiAuthorizationFilterForServiceTypeMustBeAuthorizationFilter()
+        {
+            var builder = new ContainerBuilder();
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => builder.RegisterInstance(new object()).AsWebApiAuthorizationFilterFor<TestController>());
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
+        }
+
+        // Exception filters
+
+        [Test]
+        public void AsExceptionFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.Register(c => new TestExceptionFilter(c.Resolve<ILogger>())).AsWebApiExceptionFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        [Test]
+        public void AsWebApiAuthorizationFilterForServiceTypeMustBeExceptionFilter()
+        {
+            var builder = new ContainerBuilder();
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => builder.RegisterInstance(new object()).AsWebApiAuthorizationFilterFor<TestController>());
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
+        }
+
+        // Authentication filters
+
+        [Test]
+        public void AsAuthenticationFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.Register(c => new TestAuthenticationFilter(c.Resolve<ILogger>())).AsWebApiAuthenticationFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        [Test]
+        public void AsWebApiAuthenticationFilterForServiceTypeMustBeAuthenticationFilter()
+        {
+            var builder = new ContainerBuilder();
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => builder.RegisterInstance(new object()).AsWebApiAuthenticationFilterFor<TestController>());
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
+        }
+
+        // Action filter override
+
+        [Test]
+        public void OverrideActionFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.OverrideWebApiActionFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        // Authorization filter override
+
+        [Test]
+        public void OverrideAuthorizationFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.OverrideWebApiAuthorizationFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        // Exception filter override
+
+        [Test]
+        public void OverrideExceptionFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.OverrideWebApiExceptionFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        // Authentication filter override
+
+        [Test]
+        public void OverrideAuthenticationFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.OverrideWebApiAuthenticationFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
     }
 }
