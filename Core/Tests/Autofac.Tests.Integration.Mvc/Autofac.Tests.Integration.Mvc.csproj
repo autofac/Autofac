@@ -91,9 +91,15 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AutofacDependencyResolverFixture.cs" />
+    <Compile Include="AutofacFilterBaseFixture.cs" />
+    <Compile Include="ActionFilterFixture.cs" />
     <Compile Include="AutofacFilterProviderFixture.cs" />
     <Compile Include="AutofacModelBinderProviderFixture.cs" />
     <Compile Include="AutofacWebTypesModuleFixture.cs" />
+    <Compile Include="AuthorizationFilterFixture.cs" />
+    <Compile Include="AuthenticationFilterFixture.cs" />
+    <Compile Include="ResultFilterFixture.cs" />
+    <Compile Include="ExceptionFilterFixture.cs" />
     <Compile Include="ExtensibleActionInvokerFixture.cs" />
     <Compile Include="ModelBinderTypeAttributeFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

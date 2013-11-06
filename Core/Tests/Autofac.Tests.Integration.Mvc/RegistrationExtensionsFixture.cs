@@ -242,6 +242,26 @@ namespace Autofac.Tests.Integration.Mvc
         }
 
         [Test]
+        public void AsActionFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.Register(c => new TestActionFilter()).AsActionFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        [Test]
+        public void AsActionFilterForServiceTypeMustBeActionFilter()
+        {
+            var builder = new ContainerBuilder();
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => builder.RegisterInstance(new object()).AsActionFilterFor<TestController>());
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
+        }
+
+        [Test]
         public void AsAuthorizationFilterForControllerScopedFilterThrowsExceptionForNullRegistration()
         {
             var exception = Assert.Throws<ArgumentNullException>(
@@ -278,6 +298,26 @@ namespace Autofac.Tests.Integration.Mvc
                 TestController.GetAction1MethodInfo<TestController>(),
                 r => r.AsAuthorizationFilterFor<TestController>(c => c.Action1(default(string)), 20),
                 AutofacFilterProvider.AuthorizationFilterMetadataKey);
+        }
+
+        [Test]
+        public void AsAuthorizationFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.Register(c => new TestAuthorizationFilter()).AsAuthorizationFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        [Test]
+        public void AsAuthorizationFilterForServiceTypeMustBeAuthorizationFilter()
+        {
+            var builder = new ContainerBuilder();
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => builder.RegisterInstance(new object()).AsAuthorizationFilterFor<TestController>());
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
         }
 
         [Test]
@@ -320,6 +360,26 @@ namespace Autofac.Tests.Integration.Mvc
         }
 
         [Test]
+        public void AsExceptionFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.Register(c => new TestExceptionFilter()).AsExceptionFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        [Test]
+        public void AsExceptionFilterForServiceTypeMustBeExceptionFilter()
+        {
+            var builder = new ContainerBuilder();
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => builder.RegisterInstance(new object()).AsExceptionFilterFor<TestController>());
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
+        }
+
+        [Test]
         public void AsResultFilterForControllerScopedFilterThrowsExceptionForNullRegistration()
         {
             var exception = Assert.Throws<ArgumentNullException>(
@@ -359,6 +419,26 @@ namespace Autofac.Tests.Integration.Mvc
         }
 
         [Test]
+        public void AsResultFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.Register(c => new TestResultFilter()).AsResultFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        [Test]
+        public void AsResultFilterForServiceTypeMustBeResultFilter()
+        {
+            var builder = new ContainerBuilder();
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => builder.RegisterInstance(new object()).AsResultFilterFor<TestController>());
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
+        }
+
+        [Test]
         public void AsAuthenticationFilterForControllerScopedFilterThrowsExceptionForNullRegistration()
         {
             var exception = Assert.Throws<ArgumentNullException>(
@@ -387,6 +467,7 @@ namespace Autofac.Tests.Integration.Mvc
                 AutofacFilterProvider.AuthenticationFilterMetadataKey);
         }
 
+
         [Test]
         public void AsAuthenticationFilterForActionScopedFilterAddsCorrectMetadata()
         {
@@ -395,6 +476,26 @@ namespace Autofac.Tests.Integration.Mvc
                 TestController.GetAction1MethodInfo<TestController>(),
                 r => r.AsAuthenticationFilterFor<TestController>(c => c.Action1(default(string)), 20),
                 AutofacFilterProvider.AuthenticationFilterMetadataKey);
+        }
+
+        [Test]
+        public void AsAuthenticationFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.Register(c => new TestAuthenticationFilter()).AsAuthenticationFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        [Test]
+        public void AsAuthenticationFilterForServiceTypeMustBeAuthenticationFilter()
+        {
+            var builder = new ContainerBuilder();
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => builder.RegisterInstance(new object()).AsAuthenticationFilterFor<TestController>());
+
+            Assert.That(exception.ParamName, Is.EqualTo("registration"));
         }
 
         static void AssertFilterRegistration<TFilter, TService>(FilterScope filterScope, MethodInfo methodInfo,
