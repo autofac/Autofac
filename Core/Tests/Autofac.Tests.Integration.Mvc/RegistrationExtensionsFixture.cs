@@ -498,6 +498,51 @@ namespace Autofac.Tests.Integration.Mvc
             Assert.That(exception.ParamName, Is.EqualTo("registration"));
         }
 
+
+        // Action filter override
+
+        [Test]
+        public void OverrideActionFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.OverrideActionFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        // Authorization filter override
+
+        [Test]
+        public void OverrideAuthorizationFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.OverrideAuthorizationFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        // Exception filter override
+
+        [Test]
+        public void OverrideExceptionFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.OverrideExceptionFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
+        // Authentication filter override
+
+        [Test]
+        public void OverrideAuthenticationFilterForRequiresActionSelector()
+        {
+            var builder = new ContainerBuilder();
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => builder.OverrideAuthenticationFilterFor<TestController>(null));
+            Assert.That(exception.ParamName, Is.EqualTo("actionSelector"));
+        }
+
         static void AssertFilterRegistration<TFilter, TService>(FilterScope filterScope, MethodInfo methodInfo,
             Action<IRegistrationBuilder<TFilter, SimpleActivatorData, SingleRegistrationStyle>> configure, string metadataKey)
                 where TFilter : new()

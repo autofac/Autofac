@@ -50,14 +50,19 @@ namespace Autofac.Integration.Mvc
         }
 
         internal static string ActionFilterMetadataKey = "AutofacMvcActionFilter";
+        internal static string OverrideActionFilterMetadataKey = "AutofacMvcOverrideActionFilter";
 
         internal static string AuthorizationFilterMetadataKey = "AutofacMvcAuthorizationFilter";
+        internal static string OverrideAuthorizationFilterMetadataKey = "AutofacMvcOverrideAuthorizationFilter";
 
         internal static string AuthenticationFilterMetadataKey = "AutofacMvcAuthenticationFilter";
+        internal static string OverrideAuthenticationFilterMetadataKey = "AutofacMvcOverrideAuthenticationFilter";
 
         internal static string ExceptionFilterMetadataKey = "AutofacMvcExceptionFilter";
+        internal static string OverrideExceptionFilterMetadataKey = "AutofacMvcOverrideExceptionFilter";
 
         internal static string ResultFilterMetadataKey = "AutofacMvcResultFilter";
+        internal static string OverrideResultFilterMetadataKey = "AutofacMvcOverrideResultFilter";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacFilterProvider"/> class.
@@ -110,6 +115,12 @@ namespace Autofac.Integration.Mvc
                 ResolveActionScopedFilters<ReflectedActionDescriptor>(filterContext, d => d.MethodInfo);
                 ResolveActionScopedFilters<ReflectedAsyncActionDescriptor>(filterContext, d => d.AsyncMethodInfo);
                 ResolveActionScopedFilters<TaskAsyncActionDescriptor>(filterContext, d => d.TaskMethodInfo);
+
+                ResolveControllerScopedOverrideFilters(filterContext);
+
+                ResolveActionScopedOverrideFilters<ReflectedActionDescriptor>(filterContext, d => d.MethodInfo);
+                ResolveActionScopedOverrideFilters<ReflectedAsyncActionDescriptor>(filterContext, d => d.AsyncMethodInfo);
+                ResolveActionScopedOverrideFilters<TaskAsyncActionDescriptor>(filterContext, d => d.TaskMethodInfo);
             }
 
             return filters.ToArray();
@@ -132,14 +143,10 @@ namespace Autofac.Integration.Mvc
             foreach (var actionFilter in actionFilters.Where(a => a.Metadata.ContainsKey(metadataKey) && a.Metadata[metadataKey] is FilterMetadata))
             {
                 var metadata = (FilterMetadata)actionFilter.Metadata[metadataKey];
-                if (metadata.ControllerType != null 
-                    && metadata.ControllerType.IsAssignableFrom(filterContext.ControllerType)
-                    && metadata.FilterScope == FilterScope.Controller
-                    && metadata.MethodInfo == null)
-                {
-                    var filter = new Filter(actionFilter.Value.Value, FilterScope.Controller, metadata.Order);
-                    filterContext.Filters.Add(filter);
-                }
+                if (!FilterMatchesController(filterContext, metadata)) continue;
+
+                var filter = new Filter(actionFilter.Value.Value, FilterScope.Controller, metadata.Order);
+                filterContext.Filters.Add(filter);
             }
         }
 
@@ -166,15 +173,79 @@ namespace Autofac.Integration.Mvc
             foreach (var actionFilter in actionFilters.Where(a => a.Metadata.ContainsKey(metadataKey) && a.Metadata[metadataKey] is FilterMetadata))
             {
                 var metadata = (FilterMetadata)actionFilter.Metadata[metadataKey];
-                if (metadata.ControllerType != null
-                    && metadata.ControllerType.IsAssignableFrom(filterContext.ControllerType)
-                    && metadata.FilterScope == FilterScope.Action
-                    && metadata.MethodInfo.GetBaseDefinition() == methodInfo.GetBaseDefinition())
-                {
-                    var filter = new Filter(actionFilter.Value.Value, FilterScope.Action, metadata.Order);
-                    filterContext.Filters.Add(filter);
-                }
+                if (!FilterMatchesAction(filterContext, methodInfo, metadata)) continue;
+
+                var filter = new Filter(actionFilter.Value.Value, FilterScope.Action, metadata.Order);
+                filterContext.Filters.Add(filter);
             }
+        }
+
+        static void ResolveControllerScopedOverrideFilters(FilterContext filterContext)
+        {
+            ResolveControllerScopedOverrideFilter(filterContext, OverrideActionFilterMetadataKey);
+            ResolveControllerScopedOverrideFilter(filterContext, OverrideAuthenticationFilterMetadataKey);
+            ResolveControllerScopedOverrideFilter(filterContext, OverrideAuthorizationFilterMetadataKey);
+            ResolveControllerScopedOverrideFilter(filterContext, OverrideExceptionFilterMetadataKey);
+            ResolveControllerScopedOverrideFilter(filterContext, OverrideResultFilterMetadataKey);
+        }
+
+        static void ResolveControllerScopedOverrideFilter(FilterContext filterContext, string metadataKey)
+        {
+            var actionFilters = filterContext.LifetimeScope.Resolve<IEnumerable<Meta<IOverrideFilter>>>();
+
+            foreach (var actionFilter in actionFilters.Where(a => a.Metadata.ContainsKey(metadataKey) && a.Metadata[metadataKey] is FilterMetadata))
+            {
+                var metadata = (FilterMetadata)actionFilter.Metadata[metadataKey];
+                if (!FilterMatchesController(filterContext, metadata)) continue;
+
+                var filter = new Filter(actionFilter.Value, FilterScope.Controller, metadata.Order);
+                filterContext.Filters.Add(filter);
+            }
+        }
+
+        static void ResolveActionScopedOverrideFilters<T>(FilterContext filterContext, Func<T, MethodInfo> methodSelector)
+            where T : ActionDescriptor
+        {
+            var actionDescriptor = filterContext.ActionDescriptor as T;
+            if (actionDescriptor == null) return;
+
+            var methodInfo = methodSelector(actionDescriptor);
+
+            ResolveActionScopedOverrideFilter(filterContext, methodInfo, OverrideActionFilterMetadataKey);
+            ResolveActionScopedOverrideFilter(filterContext, methodInfo, OverrideAuthenticationFilterMetadataKey);
+            ResolveActionScopedOverrideFilter(filterContext, methodInfo, OverrideAuthorizationFilterMetadataKey);
+            ResolveActionScopedOverrideFilter(filterContext, methodInfo, OverrideExceptionFilterMetadataKey);
+            ResolveActionScopedOverrideFilter(filterContext, methodInfo, OverrideResultFilterMetadataKey);
+        }
+
+        static void ResolveActionScopedOverrideFilter(FilterContext filterContext, MethodInfo methodInfo, string metadataKey)
+        {
+            var actionFilters = filterContext.LifetimeScope.Resolve<IEnumerable<Meta<IOverrideFilter>>>();
+
+            foreach (var actionFilter in actionFilters.Where(a => a.Metadata.ContainsKey(metadataKey) && a.Metadata[metadataKey] is FilterMetadata))
+            {
+                var metadata = (FilterMetadata)actionFilter.Metadata[metadataKey];
+                if (!FilterMatchesAction(filterContext, methodInfo, metadata)) continue;
+
+                var filter = new Filter(actionFilter.Value, FilterScope.Action, metadata.Order);
+                filterContext.Filters.Add(filter);
+            }
+        }
+
+        static bool FilterMatchesController(FilterContext filterContext, FilterMetadata metadata)
+        {
+            return metadata.ControllerType != null
+                   && metadata.ControllerType.IsAssignableFrom(filterContext.ControllerType)
+                   && metadata.FilterScope == FilterScope.Controller
+                   && metadata.MethodInfo == null;
+        }
+
+        static bool FilterMatchesAction(FilterContext filterContext, MethodInfo methodInfo, FilterMetadata metadata)
+        {
+            return metadata.ControllerType != null
+                   && metadata.ControllerType.IsAssignableFrom(filterContext.ControllerType)
+                   && metadata.FilterScope == FilterScope.Action
+                   && metadata.MethodInfo.GetBaseDefinition() == methodInfo.GetBaseDefinition();
         }
     }
 }

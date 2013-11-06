@@ -11,7 +11,9 @@ using NUnit.Framework;
 namespace Autofac.Tests.Integration.Mvc
 {
     [TestFixture]
-    public abstract class AutofacFilterBaseFixture<TFilter1, TFilter2> where TFilter1 : new() where TFilter2 : new()
+    public abstract class AutofacFilterBaseFixture<TFilter1, TFilter2, TFilterType>
+        where TFilter1 : new()
+        where TFilter2 : new()
     {
         ControllerContext _baseControllerContext;
         ControllerContext _derivedControllerContext;
@@ -123,6 +125,74 @@ namespace Autofac.Tests.Integration.Mvc
                 ConfigureSecondActionRegistration());
         }
 
+        [Test]
+        public void ResolvesControllerScopedOverrideFilter()
+        {
+            AssertOverrideFilter(
+                _reflectedActionDescriptor,
+                ConfigureControllerFilterOverride());
+        }
+
+        [Test]
+        public void ResolvesActionScopedOverrideFilterForReflectedActionDescriptor()
+        {
+            AssertOverrideFilter(
+                _reflectedActionDescriptor,
+                ConfigureActionFilterOverride());
+        }
+
+        [Test]
+        public void ResolvesActionScopedOverrideFilterForReflectedAsyncActionDescriptor()
+        {
+            AssertOverrideFilter(
+                _reflectedAsyncActionDescriptor,
+                ConfigureActionFilterOverride());
+        }
+
+        [Test]
+        public void ResolvesActionScopedOverrideFilterForTaskAsyncActionDescriptor()
+        {
+            AssertOverrideFilter(
+                _taskAsyncActionDescriptor,
+                ConfigureActionFilterOverride());
+        }
+
+        [Test]
+        public void ResolvesActionScopedOverrideFilterForImmediateBaseContoller()
+        {
+            AssertOverrideFilter(
+                _reflectedActionDescriptor,
+                ConfigureActionFilterOverride(),
+                _derivedControllerContext);
+        }
+
+        [Test]
+        public void ResolvesActionScopedOverrideFilterForMostBaseContoller()
+        {
+            AssertOverrideFilter(
+                _reflectedActionDescriptor,
+                ConfigureActionFilterOverride(),
+                _mostDerivedControllerContext);
+        }
+
+        [Test]
+        public void ResolvesControllerScopedOverrideFilterForImmediateBaseContoller()
+        {
+            AssertOverrideFilter(
+                _reflectedActionDescriptor,
+                ConfigureControllerFilterOverride(),
+                _derivedControllerContext);
+        }
+
+        [Test]
+        public void ResolvesControllerScopedOverrideFilterForMostBaseContoller()
+        {
+            AssertOverrideFilter(
+                _reflectedActionDescriptor,
+                ConfigureControllerFilterOverride(),
+                _mostDerivedControllerContext);
+        }
+
         protected abstract Action<IRegistrationBuilder<TFilter1, SimpleActivatorData, SingleRegistrationStyle>> ConfigureFirstControllerRegistration();
 
         protected abstract Action<IRegistrationBuilder<TFilter1, SimpleActivatorData, SingleRegistrationStyle>> ConfigureFirstActionRegistration();
@@ -130,6 +200,10 @@ namespace Autofac.Tests.Integration.Mvc
         protected abstract Action<IRegistrationBuilder<TFilter2, SimpleActivatorData, SingleRegistrationStyle>> ConfigureSecondControllerRegistration();
 
         protected abstract Action<IRegistrationBuilder<TFilter2, SimpleActivatorData, SingleRegistrationStyle>> ConfigureSecondActionRegistration();
+
+        protected abstract Action<ContainerBuilder> ConfigureControllerFilterOverride();
+
+        protected abstract Action<ContainerBuilder> ConfigureActionFilterOverride();
 
         static void SetupMockLifetimeScopeProvider(ILifetimeScope container)
         {
@@ -183,6 +257,27 @@ namespace Autofac.Tests.Integration.Mvc
             filter = filters.Single(f => f.Instance is TFilter2);
             Assert.That(filter.Scope, Is.EqualTo(filterScope));
             Assert.That(filter.Order, Is.EqualTo(20));
+        }
+
+        void AssertOverrideFilter(ActionDescriptor actionDescriptor, Action<ContainerBuilder> registration)
+        {
+            AssertOverrideFilter(actionDescriptor, registration, _baseControllerContext);
+        }
+
+        static void AssertOverrideFilter(ActionDescriptor actionDescriptor, 
+            Action<ContainerBuilder> registration, ControllerContext controllerContext)
+        {
+            var builder = new ContainerBuilder();
+            registration(builder);
+            var container = builder.Build();
+            SetupMockLifetimeScopeProvider(container);
+            var provider = new AutofacFilterProvider();
+
+            var filters = provider.GetFilters(controllerContext, actionDescriptor).ToList();
+
+            var filter = filters.Select(info => info.Instance).OfType<AutofacOverrideFilter>().Single();
+            Assert.That(filter, Is.InstanceOf<AutofacOverrideFilter>());
+            Assert.That(filter.FiltersToOverride, Is.EqualTo(typeof(TFilterType)));
         }
     }
 }

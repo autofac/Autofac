@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Web.Mvc;
 using Autofac.Builder;
 using Autofac.Integration.Mvc;
 
 namespace Autofac.Tests.Integration.Mvc
 {
-    public class ExceptionFilterFixture : AutofacFilterBaseFixture<TestExceptionFilter, TestExceptionFilter2>
+    public class ExceptionFilterFixture : AutofacFilterBaseFixture<TestExceptionFilter, TestExceptionFilter2, IExceptionFilter>
     {
         protected override Action<IRegistrationBuilder<TestExceptionFilter, SimpleActivatorData, SingleRegistrationStyle>> ConfigureFirstControllerRegistration()
         {
@@ -24,6 +25,16 @@ namespace Autofac.Tests.Integration.Mvc
         protected override Action<IRegistrationBuilder<TestExceptionFilter2, SimpleActivatorData, SingleRegistrationStyle>> ConfigureSecondActionRegistration()
         {
             return r => r.AsExceptionFilterFor<TestController>(c => c.Action1(default(string)), 20);
+        }
+
+        protected override Action<ContainerBuilder> ConfigureControllerFilterOverride()
+        {
+            return builder => builder.OverrideExceptionFilterFor<TestController>();
+        }
+
+        protected override Action<ContainerBuilder> ConfigureActionFilterOverride()
+        {
+            return builder => builder.OverrideExceptionFilterFor<TestController>(c => c.Action1(default(string)));
         }
     }
 }

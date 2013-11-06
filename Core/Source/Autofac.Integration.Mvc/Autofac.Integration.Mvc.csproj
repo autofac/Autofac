@@ -95,6 +95,7 @@
     <Compile Include="AutofacDependencyResolver.cs" />
     <Compile Include="AutofacFilterProvider.cs" />
     <Compile Include="AutofacModelBinderProvider.cs" />
+    <Compile Include="AutofacOverrideFilter.cs" />
     <Compile Include="AutofacWebTypesModule.cs" />
     <Compile Include="FilterMetadata.cs" />
     <Compile Include="Properties\VersionAssemblyInfo.cs" />

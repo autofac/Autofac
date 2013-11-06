@@ -479,6 +479,122 @@ namespace Autofac.Integration.Mvc
             return AsFilterFor<IAuthenticationFilter, TController>(registration, AutofacFilterProvider.AuthenticationFilterMetadataKey, order);
         }
 
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IOverrideFilter"/> for the specified controller action.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        /// <param name="actionSelector">The action selector.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static void OverrideActionFilterFor<TController>(this ContainerBuilder builder, Expression<Action<TController>> actionSelector)
+                where TController : IController
+        {
+            AsOverrideFor<IActionFilter, TController>(builder, AutofacFilterProvider.OverrideActionFilterMetadataKey, actionSelector);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IOverrideFilter"/> for the specified controller.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static void OverrideActionFilterFor<TController>(this ContainerBuilder builder)
+                where TController : IController
+        {
+            AsOverrideFor<IActionFilter, TController>(builder, AutofacFilterProvider.OverrideActionFilterMetadataKey);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IOverrideFilter"/> for the specified controller action.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        /// <param name="actionSelector">The action selector.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static void OverrideAuthorizationFilterFor<TController>(this ContainerBuilder builder, Expression<Action<TController>> actionSelector)
+                where TController : IController
+        {
+            AsOverrideFor<IAuthorizationFilter, TController>(builder, AutofacFilterProvider.OverrideAuthorizationFilterMetadataKey, actionSelector);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IOverrideFilter"/> for the specified controller.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static void OverrideAuthorizationFilterFor<TController>(this ContainerBuilder builder)
+                where TController : IController
+        {
+            AsOverrideFor<IAuthorizationFilter, TController>(builder, AutofacFilterProvider.OverrideAuthorizationFilterMetadataKey);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IOverrideFilter"/> for the specified controller action.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        /// <param name="actionSelector">The action selector.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static void OverrideExceptionFilterFor<TController>(this ContainerBuilder builder, Expression<Action<TController>> actionSelector)
+                where TController : IController
+        {
+            AsOverrideFor<IExceptionFilter, TController>(builder, AutofacFilterProvider.OverrideExceptionFilterMetadataKey, actionSelector);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IOverrideFilter"/> for the specified controller.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static void OverrideExceptionFilterFor<TController>(this ContainerBuilder builder)
+                where TController : IController
+        {
+            AsOverrideFor<IExceptionFilter, TController>(builder, AutofacFilterProvider.OverrideExceptionFilterMetadataKey);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IOverrideFilter"/> for the specified controller action.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        /// <param name="actionSelector">The action selector.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static void OverrideAuthenticationFilterFor<TController>(this ContainerBuilder builder, Expression<Action<TController>> actionSelector)
+                where TController : IController
+        {
+            AsOverrideFor<IAuthenticationFilter, TController>(builder, AutofacFilterProvider.OverrideAuthenticationFilterMetadataKey, actionSelector);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IOverrideFilter"/> for the specified controller.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static void OverrideAuthenticationFilterFor<TController>(this ContainerBuilder builder)
+                where TController : IController
+        {
+            AsOverrideFor<IAuthenticationFilter, TController>(builder, AutofacFilterProvider.OverrideAuthenticationFilterMetadataKey);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IOverrideFilter"/> for the specified controller action.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        /// <param name="actionSelector">The action selector.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static void OverrideResultFilterFor<TController>(this ContainerBuilder builder, Expression<Action<TController>> actionSelector)
+                where TController : IController
+        {
+            AsOverrideFor<IResultFilter, TController>(builder, AutofacFilterProvider.OverrideResultFilterMetadataKey, actionSelector);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IOverrideFilter"/> for the specified controller.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static void OverrideResultFilterFor<TController>(this ContainerBuilder builder)
+                where TController : IController
+        {
+            AsOverrideFor<IResultFilter, TController>(builder, AutofacFilterProvider.OverrideResultFilterMetadataKey);
+        }
+
         static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
             AsFilterFor<TFilter, TController>(IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration, string metadataKey, Expression<Action<TController>> actionSelector, int order)
             where TController : IController
@@ -530,6 +646,36 @@ namespace Autofac.Integration.Mvc
             };
 
             return registration.As<TFilter>().WithMetadata(metadataKey, metadata);
+        }
+
+        static void AsOverrideFor<TFilter, TController>(ContainerBuilder builder, string metadataKey)
+        {
+            var metadata = new FilterMetadata
+            {
+                ControllerType = typeof(TController),
+                FilterScope = FilterScope.Controller,
+                MethodInfo = null
+            };
+
+            builder.RegisterInstance(new AutofacOverrideFilter(typeof(TFilter)))
+                .As<IOverrideFilter>()
+                .WithMetadata(metadataKey, metadata);
+        }
+
+        static void AsOverrideFor<TFilter, TController>(ContainerBuilder builder, string metadataKey, Expression<Action<TController>> actionSelector)
+        {
+            if (actionSelector == null) throw new ArgumentNullException("actionSelector");
+
+            var metadata = new FilterMetadata
+            {
+                ControllerType = typeof(TController),
+                FilterScope = FilterScope.Action,
+                MethodInfo = GetMethodInfo(actionSelector)
+            };
+
+            builder.RegisterInstance(new AutofacOverrideFilter(typeof(TFilter)))
+                .As<IOverrideFilter>()
+                .WithMetadata(metadataKey, metadata);
         }
 
         static MethodInfo GetMethodInfo(LambdaExpression expression)
