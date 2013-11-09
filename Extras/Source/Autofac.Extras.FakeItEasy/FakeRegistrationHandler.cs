@@ -46,7 +46,12 @@ namespace Autofac.Extras.FakeItEasy
         private readonly Action<object> _onFakeCreated;
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="FakeRegistrationHandler" /> class.
         /// </summary>
+        /// <param name="strict">Whether fakes should be created with strict semantics.</param>
+        /// <param name="callsBaseMethods">Whether fakes should call base methods.</param>
+        /// <param name="callsDoNothing">Whether calls to fakes should do nothing.</param>
+        /// <param name="onFakeCreated">An action to perform on a fake when it is created.</param>
         [SecurityCritical]
         public FakeRegistrationHandler(bool strict, bool callsBaseMethods, bool callsDoNothing, Action<object> onFakeCreated)
         {
@@ -56,25 +61,34 @@ namespace Autofac.Extras.FakeItEasy
             this._onFakeCreated = onFakeCreated;
 
             // NOTE (adamralph): inspired by http://blog.functionalfun.net/2009/10/getting-methodinfo-of-generic-method.html
-            Expression<Action> create = () => CreateFake<object>();
-            _createMethod = (create.Body as MethodCallExpression).Method.GetGenericMethodDefinition();
+            Expression<Action> create = () => this.CreateFake<object>();
+            this._createMethod = (create.Body as MethodCallExpression).Method.GetGenericMethodDefinition();
         }
 
         /// <summary>
-        /// Retrieve a registration for an unregistered service, to be used
+        /// Gets whether the registrations provided by this source are 1:1 adapters on top
+        /// of other components (I.e. like Meta, Func or Owned.)
+        /// </summary>
+        public bool IsAdapterForIndividualComponents
+        {
+            get { return false; }
+        }
+
+        /// <summary>
+        /// Retrieve registrations for an unregistered service, to be used
         /// by the container.
         /// </summary>
         /// <param name="service">The service that was requested.</param>
-        /// <param name="registrationAccessor"></param>
-        /// <returns>
-        /// Registrations for the service.
-        /// </returns>
+        /// <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
+        /// <returns>Registrations providing the service.</returns>
         [SecuritySafeCritical]
-        public IEnumerable<IComponentRegistration> RegistrationsFor
-            (Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+        public IEnumerable<IComponentRegistration> RegistrationsFor(
+            Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             if (service == null)
+            {
                 throw new ArgumentNullException("service");
+            }
 
             var typedService = service as TypedService;
             if (typedService == null ||
@@ -82,44 +96,39 @@ namespace Autofac.Extras.FakeItEasy
                 (typedService.ServiceType.IsGenericType && typedService.ServiceType.GetGenericTypeDefinition() == typeof(IEnumerable<>)) ||
                 typedService.ServiceType.IsArray ||
                 typeof(IStartable).IsAssignableFrom(typedService.ServiceType))
+            {
                 return Enumerable.Empty<IComponentRegistration>();
+            }
 
-            var rb = RegistrationBuilder.ForDelegate((c, p) => CreateFake(typedService))
+            var rb = RegistrationBuilder.ForDelegate((c, p) => this.CreateFake(typedService))
                 .As(service)
                 .InstancePerLifetimeScope();
 
             return new[] { rb.CreateRegistration() };
         }
 
-        public bool IsAdapterForIndividualComponents
-        {
-            get { return false; }
-        }
-
         /// <summary>
         /// Creates a fake object.
         /// </summary>
         /// <param name="typedService">The typed service.</param>
-        /// <returns></returns>
+        /// <returns>A fake object.</returns>
         [SecuritySafeCritical]
         private object CreateFake(TypedService typedService)
         {
-            var specificCreateMethod =
-                        _createMethod.MakeGenericMethod(new[] { typedService.ServiceType });
-            return specificCreateMethod.Invoke(this, null);
+            return this._createMethod.MakeGenericMethod(new[] { typedService.ServiceType }).Invoke(this, null);
         }
 
         [SecuritySafeCritical]
         private T CreateFake<T>()
         {
-            var fake = A.Fake<T>(ApplyOptions);
+            var fake = A.Fake<T>(this.ApplyOptions);
 
-            if (_callsBaseMethods)
+            if (this._callsBaseMethods)
             {
                 A.CallTo(fake).CallsBaseMethod();
             }
 
-            if (_callsDoNothing)
+            if (this._callsDoNothing)
             {
                 A.CallTo(fake).DoesNothing();
             }
@@ -130,14 +139,14 @@ namespace Autofac.Extras.FakeItEasy
         [SecuritySafeCritical]
         private void ApplyOptions<T>(IFakeOptionsBuilder<T> options)
         {
-            if (_strict)
+            if (this._strict)
             {
                 options.Strict();
             }
 
-            if (_onFakeCreated != null)
+            if (this._onFakeCreated != null)
             {
-                options.OnFakeCreated(x => _onFakeCreated(x));
+                options.OnFakeCreated(x => this._onFakeCreated(x));
             }
         }
     }

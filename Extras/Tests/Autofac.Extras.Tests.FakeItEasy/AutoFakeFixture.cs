@@ -126,12 +126,12 @@ namespace Autofac.Extras.Tests.FakeItEasy
 
             public bool Gone
             {
-                get { return _gone; }
+                get { return this._gone; }
             }
 
             public virtual void Go()
             {
-                _gone = true;
+                this._gone = true;
             }
 
             public IBar Spawn()
@@ -151,12 +151,12 @@ namespace Autofac.Extras.Tests.FakeItEasy
 
             public bool Gone
             {
-                get { return _gone; }
+                get { return this._gone; }
             }
 
             public virtual void Go()
             {
-                _gone = true;
+                this._gone = true;
             }
         }
 
