@@ -14,17 +14,17 @@ namespace Autofac.Extras.Tests.FakeItEasy
         {
             using (var fake = new AutoFake())
             {
-                var foo = fake.Create<Foo>();
+                var foo = fake.Resolve<Foo>();
                 Assert.DoesNotThrow(() => foo.Go());
             }
         }
 
         [Test]
-        public void CanCreateStrictFakes()
+        public void CanResolveStrictFakes()
         {
             using (var fake = new AutoFake(strict: true))
             {
-                var foo = fake.Create<Foo>();
+                var foo = fake.Resolve<Foo>();
                 Assert.Throws<ExpectationException>(() => foo.Go());
             }
         }
@@ -34,18 +34,18 @@ namespace Autofac.Extras.Tests.FakeItEasy
         {
             using (var fake = new AutoFake())
             {
-                var bar = fake.Create<Bar>();
+                var bar = fake.Resolve<Bar>();
                 bar.Go();
                 Assert.False(bar.Gone);
             }
         }
 
         [Test]
-        public void CanCreateFakesWhichCallsBaseMethods()
+        public void CanResolveFakesWhichCallsBaseMethods()
         {
             using (var fake = new AutoFake(callsBaseMethods: true))
             {
-                var bar = fake.Create<Bar>();
+                var bar = fake.Resolve<Bar>();
                 bar.Go();
                 Assert.True(bar.Gone);
             }
@@ -56,31 +56,31 @@ namespace Autofac.Extras.Tests.FakeItEasy
         {
             using (var fake = new AutoFake())
             {
-                var bar = fake.Create<IBar>();
+                var bar = fake.Resolve<IBar>();
                 var result = bar.Spawn();
                 Assert.NotNull(result);
             }
         }
 
         [Test]
-        public void CanCreateFakesWhichDoNotRespondToCalls()
+        public void CanResolveFakesWhichDoNotRespondToCalls()
         {
             using (var fake = new AutoFake(callsDoNothing: true))
             {
-                var bar = fake.Create<IBar>();
+                var bar = fake.Resolve<IBar>();
                 var result = bar.Spawn();
                 Assert.Null(result);
             }
         }
 
         [Test]
-        public void CanCreateFakesWhichInvokeActionsWhenCreated()
+        public void CanResolveFakesWhichInvokeActionsWhenResolved()
         {
-            object createdFake = null;
-            using (var fake = new AutoFake(onFakeCreated: obj => createdFake = obj))
+            object resolvedFake = null;
+            using (var fake = new AutoFake(onFakeCreated: obj => resolvedFake = obj))
             {
-                var bar = fake.Create<IBar>();
-                Assert.AreSame(bar, createdFake);
+                var bar = fake.Resolve<IBar>();
+                Assert.AreSame(bar, resolvedFake);
             }
         }
 
@@ -92,7 +92,7 @@ namespace Autofac.Extras.Tests.FakeItEasy
                 var bar = A.Fake<IBar>();
                 fake.Provide(bar);
 
-                var foo = fake.Create<Foo>();
+                var foo = fake.Resolve<Foo>();
                 foo.Go();
 
                 A.CallTo(() => bar.Go()).MustHaveHappened();
@@ -108,6 +108,30 @@ namespace Autofac.Extras.Tests.FakeItEasy
 
                 Assert.IsNotNull(baz);
                 Assert.IsTrue(baz is Baz);
+            }
+        }
+
+        [Test]
+        public void ByDefaultAbstractTypesAreResolvedToTheSameSharedInstance()
+        {
+            using (var fake = new AutoFake())
+            {
+                var bar1 = fake.Resolve<IBar>();
+                var bar2 = fake.Resolve<IBar>();
+
+                Assert.AreSame(bar1, bar2);
+            }
+        }
+
+        [Test]
+        public void ByDefaultConcreteTypesAreResolvedToTheSameSharedInstance()
+        {
+            using (var fake = new AutoFake())
+            {
+                var baz1 = fake.Resolve<Baz>();
+                var baz2 = fake.Resolve<Baz>();
+
+                Assert.AreSame(baz1, baz2);
             }
         }
 

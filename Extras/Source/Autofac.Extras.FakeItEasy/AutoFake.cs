@@ -54,17 +54,24 @@ namespace Autofac.Extras.FakeItEasy
         /// <param name="callsDoNothing">
         /// <see langword="true" /> to configure fake calls to do nothing when called.
         /// </param>
+        /// <param name="builder">The container builder to use to build the container.</param>
         /// <param name="onFakeCreated">Specifies an action that should be run over a fake object once it's created.</param>
         public AutoFake(
             bool strict = false,
             bool callsBaseMethods = false,
             bool callsDoNothing = false,
-            Action<object> onFakeCreated = null)
+            Action<object> onFakeCreated = null,
+            ContainerBuilder builder = null)
         {
-            var builder = new ContainerBuilder();
-            builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+            if (builder == null)
+            {
+                builder = new ContainerBuilder();
+            }
+
+            builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource().WithRegistrationsAs(b => b.InstancePerLifetimeScope()));
             builder.RegisterSource(new FakeRegistrationHandler(strict, callsBaseMethods, callsDoNothing, onFakeCreated));
             this._container = builder.Build();
+            this._container.BeginLifetimeScope();
         }
 
         /// <summary>
@@ -100,9 +107,15 @@ namespace Autofac.Extras.FakeItEasy
         /// <typeparam name="T">The type of the service.</typeparam>
         /// <param name="parameters">Optional parameters</param>
         /// <returns>The service.</returns>
-        public T Create<T>(params Parameter[] parameters)
+        public T Resolve<T>(params Parameter[] parameters)
         {
             return this.Container.Resolve<T>(parameters);
+        }
+
+        [Obsolete("Use Resolve<T>() instead")]
+        public T Create<T>(params Parameter[] parameters)
+        {
+            return this.Resolve<T>(parameters);
         }
 
         /// <summary>
