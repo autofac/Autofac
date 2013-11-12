@@ -38,12 +38,8 @@ namespace Autofac.Extras.FakeItEasy
     [SecurityCritical]
     public class AutoFake : IDisposable
     {
+        private readonly IContainer _container;
         private bool _disposed;
-
-        /// <summary>
-        /// <see cref="IContainer"/> that handles the component resolution.
-        /// </summary>
-        public IContainer Container { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutoFake" /> class.
@@ -58,17 +54,24 @@ namespace Autofac.Extras.FakeItEasy
         /// <param name="callsDoNothing">
         /// <see langword="true" /> to configure fake calls to do nothing when called.
         /// </param>
+        /// <param name="builder">The container builder to use to build the container.</param>
         /// <param name="onFakeCreated">Specifies an action that should be run over a fake object once it's created.</param>
         public AutoFake(
             bool strict = false,
             bool callsBaseMethods = false,
             bool callsDoNothing = false,
-            Action<object> onFakeCreated = null)
+            Action<object> onFakeCreated = null,
+            ContainerBuilder builder = null)
         {
-            var builder = new ContainerBuilder();
-            builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+            if (builder == null)
+            {
+                builder = new ContainerBuilder();
+            }
+
+            builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource().WithRegistrationsAs(b => b.InstancePerLifetimeScope()));
             builder.RegisterSource(new FakeRegistrationHandler(strict, callsBaseMethods, callsDoNothing, onFakeCreated));
-            Container = builder.Build();
+            this._container = builder.Build();
+            this._container.BeginLifetimeScope();
         }
 
         /// <summary>
@@ -77,7 +80,15 @@ namespace Autofac.Extras.FakeItEasy
         [SecuritySafeCritical]
         ~AutoFake()
         {
-            Dispose(false);
+            this.Dispose(false);
+        }
+
+        /// <summary>
+        /// Gets the <see cref="IContainer"/> that handles the component resolution.
+        /// </summary>
+        public IContainer Container
+        {
+            get { return this._container; }
         }
 
         /// <summary>
@@ -86,8 +97,57 @@ namespace Autofac.Extras.FakeItEasy
         [SecuritySafeCritical]
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Resolve the specified type in the container (register it if needed)
+        /// </summary>
+        /// <typeparam name="T">The type of the service.</typeparam>
+        /// <param name="parameters">Optional parameters</param>
+        /// <returns>The service.</returns>
+        public T Resolve<T>(params Parameter[] parameters)
+        {
+            return this.Container.Resolve<T>(parameters);
+        }
+
+        [Obsolete("Use Resolve<T>() instead")]
+        public T Create<T>(params Parameter[] parameters)
+        {
+            return this.Resolve<T>(parameters);
+        }
+
+        /// <summary>
+        /// Resolve the specified type in the container (register it if needed)
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <typeparam name="TImplementation">The implementation of the service.</typeparam>
+        /// <param name="parameters">Optional parameters</param>
+        /// <returns>The service.</returns>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The component registry is responsible for registration disposal.")]
+        public TService Provide<TService, TImplementation>(params Parameter[] parameters)
+        {
+            this.Container.ComponentRegistry.Register(
+                RegistrationBuilder.ForType<TImplementation>().As<TService>().InstancePerLifetimeScope().CreateRegistration());
+
+            return this.Container.Resolve<TService>(parameters);
+        }
+
+        /// <summary>
+        /// Resolve the specified type in the container (register specified instance if needed)
+        /// </summary>
+        /// <typeparam name="TService">The type of the service.</typeparam>
+        /// <param name="instance">The instance to register if needed.</param>
+        /// <returns>The instance resolved from container.</returns>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The component registry is responsible for registration disposal.")]
+        public TService Provide<TService>(TService instance)
+            where TService : class
+        {
+            this.Container.ComponentRegistry.Register(
+                RegistrationBuilder.ForDelegate((c, p) => instance).InstancePerLifetimeScope().CreateRegistration());
+
+            return this.Container.Resolve<TService>();
         }
 
         /// <summary>
@@ -101,56 +161,15 @@ namespace Autofac.Extras.FakeItEasy
         /// </param>
         private void Dispose(bool disposing)
         {
-            if (!_disposed)
+            if (!this._disposed)
             {
                 if (disposing)
                 {
-                    Container.Dispose();
+                    this.Container.Dispose();
                 }
-                _disposed = true;
+
+                this._disposed = true;
             }
-        }
-
-        /// <summary>
-        /// Resolve the specified type in the container (register it if needed)
-        /// </summary>
-        /// <typeparam name="T">Service</typeparam>
-        /// <param name="parameters">Optional parameters</param>
-        /// <returns>The service.</returns>
-        public T Create<T>(params Parameter[] parameters)
-        {
-            return Container.Resolve<T>(parameters);
-        }
-
-        /// <summary>
-        /// Resolve the specified type in the container (register it if needed)
-        /// </summary>
-        /// <typeparam name="TService">Service</typeparam>
-        /// <typeparam name="TImplementation">The implementation of the service.</typeparam>
-        /// <param name="parameters">Optional parameters</param>
-        /// <returns>The service.</returns>
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The component registry is responsible for registration disposal.")]
-        public TService Provide<TService, TImplementation>(params Parameter[] parameters)
-        {
-            Container.ComponentRegistry.Register(
-                RegistrationBuilder.ForType<TImplementation>().As<TService>().InstancePerLifetimeScope().CreateRegistration());
-
-            return Container.Resolve<TService>(parameters);
-        }
-
-        /// <summary>
-        /// Resolve the specified type in the container (register specified instance if needed)
-        /// </summary>
-        /// <typeparam name="TService">Service</typeparam>
-        /// <returns>The instance resolved from container.</returns>
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The component registry is responsible for registration disposal.")]
-        public TService Provide<TService>(TService instance)
-            where TService : class
-        {
-            Container.ComponentRegistry.Register(
-                RegistrationBuilder.ForDelegate((c, p) => instance).InstancePerLifetimeScope().CreateRegistration());
-
-            return Container.Resolve<TService>();
         }
     }
 }
