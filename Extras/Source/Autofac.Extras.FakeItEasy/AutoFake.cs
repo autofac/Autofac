@@ -112,6 +112,12 @@ namespace Autofac.Extras.FakeItEasy
             return this.Container.Resolve<T>(parameters);
         }
 
+        /// <summary>
+        /// Resolve the specified type in the container (register it if needed)
+        /// </summary>
+        /// <typeparam name="T">The type of the service.</typeparam>
+        /// <param name="parameters">Optional parameters</param>
+        /// <returns>The service.</returns>
         [Obsolete("Use Resolve<T>() instead")]
         public T Create<T>(params Parameter[] parameters)
         {
