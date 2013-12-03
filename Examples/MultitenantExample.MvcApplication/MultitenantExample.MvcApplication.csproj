@@ -196,6 +196,10 @@
       <Project>{7d018b3e-34a3-423d-ac35-12731f4e0a2c}</Project>
       <Name>Autofac</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Extras\Source\Autofac.Extras.Multitenant.Wcf\Autofac.Extras.Multitenant.Wcf.csproj">
+      <Project>{760cfe4c-3320-4d33-a812-66728ef0b30a}</Project>
+      <Name>Autofac.Extras.Multitenant.Wcf</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Extras\Source\Autofac.Extras.Multitenant\Autofac.Extras.Multitenant.csproj">
       <Project>{321cef70-1c21-4cf0-be04-4f72427a88d6}</Project>
       <Name>Autofac.Extras.Multitenant</Name>

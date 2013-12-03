@@ -15,9 +15,9 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("3.0.0.0")]
-[assembly: AssemblyFileVersion("3.0.2.0")]
+[assembly: AssemblyFileVersion("3.1.0.0")]
 [assembly: AssemblyConfiguration("Release built on 2013-12-03 10:23")]
 [assembly: AssemblyCopyright("Copyright © 2013 Autofac Contributors")]
-[assembly: AssemblyDescription("Autofac.Extras.DynamicProxy2 3.0.2")]
+[assembly: AssemblyDescription("Autofac.Extras.Multitenant.Wcf 3.1.0")]
 
 

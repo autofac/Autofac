@@ -120,10 +120,40 @@
   <data name="ArgumentException_StringEmpty" xml:space="preserve">
     <value>'{0}' may not be empty.</value>
   </data>
-  <data name="DefaultTenantId_ToString" xml:space="preserve">
-    <value>Default Tenant</value>
+  <data name="AutofacHostFactory_ContainerIsNull" xml:space="preserve">
+    <value>The AutofacHostFactory.Container static property must be set before services can be instantiated.</value>
   </data>
-  <data name="MultitenantContainer_TenantAlreadyConfigured" xml:space="preserve">
-    <value>The tenant with ID '{0}' has already been configured. It cannot be reconfigured.</value>
+  <data name="AutofacHostFactory_NoServiceHostType" xml:space="preserve">
+    <value>No type to host was provided by the '{0}' for the service '{1}'.</value>
+  </data>
+  <data name="AutofacHostFactory_ServiceHostTypeNotClass" xml:space="preserve">
+    <value>The '{0}' did not provide a type to be hosted by WCF that was a concrete implementation type. WCF requires a service host to host a class, not an interface. Consider using a reflection-based registration or an expression-based registration where the return value is a class type. The current service type being returned by '{0}' for constructor string '{1}' is '{2}'.</value>
+  </data>
+  <data name="AutofacHostFactory_ServiceNotRegistered" xml:space="preserve">
+    <value>The service '{0}' configured for WCF is not registered with the Autofac container.</value>
+  </data>
+  <data name="DynamicProxy_InterfaceTypeToProxyIsGeneric" xml:space="preserve">
+    <value>Interface type '{0}' is a generic type definition. You may not create WCF dynamic proxies from open generic interfaces.</value>
+  </data>
+  <data name="DynamicProxy_InterfaceTypeToProxyNotInterface" xml:space="preserve">
+    <value>The type '{0}' cannot be turned into a proxy type for WCF hosting because it is not an interface. Multitenant WCF hosting requires you to implement a separate interface for your service contract.</value>
+  </data>
+  <data name="DynamicProxy_InterfaceTypeToProxyNotPublic" xml:space="preserve">
+    <value>Interface type '{0}' is not public. It must be accessible so a dynamic proxy object can be created from it.</value>
+  </data>
+  <data name="DynamicProxy_InterfaceTypeToProxyNotServiceContract" xml:space="preserve">
+    <value>The type '{0}' cannot be turned into a proxy type for WCF hosting because it is not marked with System.ServiceModel.ServiceContractAttribute. Multitenant WCF hosting requires you to implement a separate interface for your service contract.</value>
+  </data>
+  <data name="DynamicProxy_ProxyTargetDoesNotImplementInterface" xml:space="preserve">
+    <value>The service implementation to proxy, type '{0}', does not implement the service interface '{1}' that the proxy will implement. Check your Autofac registrations to make sure the service implementation type isn't somehow tied to the service interface.</value>
+  </data>
+  <data name="MultitenantServiceImplementationDataProvider_ServiceInterfaceTypeNotInterface" xml:space="preserve">
+    <value>The string '{0}' resolved to type '{1}' which is not an interface. For multitenancy to work, the service type to host should be the service interface rather than the concrete implementation type. You then register the concrete implementation type as the interface with Autofac, like: builder.RegisterType&lt;ImplementationType&gt;().As&lt;InterfaceType&gt;();</value>
+  </data>
+  <data name="MultitenantServiceImplementationDataProvider_ServiceInterfaceTypeNotResolvable" xml:space="preserve">
+    <value>The string '{0}' could not be resolved to a type. Make sure you specify the fully qualified type name, like "Namespace.TypeName, AssemblyName" and not just the type name.</value>
+  </data>
+  <data name="MultitenantServiceImplementationDataProvider_ServiceInterfaceTypeNotServiceContract" xml:space="preserve">
+    <value>The string '{0}' resolved to type '{1}' which is not marked with the System.ServiceModel.ServiceContractAttribute. For multitenancy to work, the service type to host should be the service contract interface. You then register the concrete implementation type as the interface with Autofac, like: builder.RegisterType&lt;ImplementationType&gt;().As&lt;InterfaceType&gt;();</value>
   </data>
 </root>

@@ -3,8 +3,8 @@ using System.Globalization;
 using System.Security;
 using System.ServiceModel;
 using Autofac;
-using Autofac.Extras.Multitenant.Properties;
 using Autofac.Extras.Multitenant.Wcf.DynamicProxy;
+using Autofac.Extras.Multitenant.Wcf.Properties;
 using Autofac.Integration.Wcf;
 
 namespace Autofac.Extras.Multitenant.Wcf

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <id>Autofac.Extras.Multitenant.Wcf</id>
+    <version>$AFversion_Autofac.Extras.Multitenant.Wcf$</version>
+    <authors>Autofac Contributors</authors>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Multitenant applications allow individual tenants to override dependencies rather than having a simple root container for everyone. This extension provides support for an application container and tenant-specific overrides using Autofac when hosting WCF services.</description>
+    <summary>Autofac extension for multitenant application support in WCF services.</summary>
+    <language>en-US</language>
+    <title>Autofac Extras: Multitenant Application Support for WCF</title>
+    <projectUrl>http://autofac.org</projectUrl>
+    <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
+    <dependencies>
+      <dependency id="Autofac" version="$AFversion_Autofac$" />
+      <dependency id="Autofac.Extras.Multitenant" version="$AFversion_Autofac.Extras.Multitenant$" />
+      <dependency id="Autofac.Wcf" version="$AFversion_Autofac.Wcf$" />
+      <dependency id="Castle.Core" version="$version_Castle.Core$" />
+    </dependencies>
+  </metadata>
+</package>

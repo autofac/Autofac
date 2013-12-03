@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ServiceModel.Channels;
 using Autofac.Extras.Multitenant.Wcf;
-using Autofac.Extras.Tests.Multitenant.Stubs;
+using Autofac.Extras.Tests.Multitenant.Wcf.Stubs;
 using NUnit.Framework;
 
 namespace Autofac.Extras.Tests.Multitenant.Wcf

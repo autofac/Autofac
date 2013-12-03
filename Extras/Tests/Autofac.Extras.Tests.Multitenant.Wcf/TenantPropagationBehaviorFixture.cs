@@ -3,7 +3,7 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
 using Autofac.Extras.Multitenant.Wcf;
-using Autofac.Extras.Tests.Multitenant.Stubs;
+using Autofac.Extras.Tests.Multitenant.Wcf.Stubs;
 using NUnit.Framework;
 
 namespace Autofac.Extras.Tests.Multitenant.Wcf

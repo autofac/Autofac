@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Security;
 using System.ServiceModel;
-using Autofac.Extras.Multitenant.Properties;
+using Autofac.Extras.Multitenant.Wcf.Properties;
 using Castle.DynamicProxy;
 
 namespace Autofac.Extras.Multitenant.Wcf.DynamicProxy

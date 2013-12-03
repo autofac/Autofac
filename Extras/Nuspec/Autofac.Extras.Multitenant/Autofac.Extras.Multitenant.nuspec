@@ -14,8 +14,6 @@
     <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
     <dependencies>
       <dependency id="Autofac" version="$AFversion_Autofac$" />
-      <dependency id="Autofac.Wcf" version="$AFversion_Autofac.Wcf$" />
-      <dependency id="Castle.Core" version="$version_Castle.Core$" />
     </dependencies>
   </metadata>
 </package>

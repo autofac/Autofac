@@ -130,9 +130,15 @@
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.Multitenant\Autofac.Extras.Multitenant.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.2.0</FileVersion>
+			<FileVersion>3.1.0.0</FileVersion>
 			<PackageName>Autofac.Extras.Multitenant</PackageName>
-			<PackageVersion>3.0.2</PackageVersion>
+			<PackageVersion>3.1.0</PackageVersion>
+		</AutofacProject>
+		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.Multitenant.Wcf\Autofac.Extras.Multitenant.Wcf.csproj">
+			<AssemblyVersion>3.0.0.0</AssemblyVersion>
+			<FileVersion>3.1.0.0</FileVersion>
+			<PackageName>Autofac.Extras.Multitenant.Wcf</PackageName>
+			<PackageVersion>3.1.0</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.NHibernate\Autofac.Extras.NHibernate.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
