@@ -25,18 +25,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.Collections;
 using Autofac.Features.GeneratedFactories;
 using Autofac.Features.Indexed;
+using Autofac.Features.LazyDependencies;
+using Autofac.Features.Metadata;
 using Autofac.Features.OwnedInstances;
 using Autofac.Util;
-using Autofac.Features.Metadata;
-using Autofac.Features.LazyDependencies;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 
 namespace Autofac
 {
@@ -144,10 +144,28 @@ namespace Autofac
         /// - this prevents ownership issues for provided instances.
         /// </remarks>
         /// <param name="container">An existing container to make the registrations in.</param>
+        [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "You can't update any arbitrary context, only containers.")]
+        public void Update(IContainer container)
+        {
+            this.Update(container, ContainerBuildOptions.None);
+        }
+
+        /// <summary>
+        /// Configure an existing container with the component registrations
+        /// that have been made and allows additional build options to be specified.
+        /// </summary>
+        /// <remarks>
+        /// Update can only be called once per <see cref="ContainerBuilder"/>
+        /// - this prevents ownership issues for provided instances.
+        /// </remarks>
+        /// <param name="container">An existing container to make the registrations in.</param>
         /// <param name="options">Options that influence the way the container is updated.</param>
         [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "You can't update any arbitrary context, only containers.")]
-        public void Update(IContainer container, ContainerBuildOptions options = ContainerBuildOptions.None)
+        public void Update(IContainer container, ContainerBuildOptions options)
         {
+            // Issue #462: The ContainerBuildOptions parameter is added here as an overload
+            // rather than an optional parameter to avoid method binding issues. In version
+            // 4.0 or later we should refactor this to be an optional parameter.
             if (container == null) throw new ArgumentNullException("container");
             Update(container.ComponentRegistry);
             if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
