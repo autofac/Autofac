@@ -194,6 +194,7 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 
 			After all Nuspec staging is done, this script will find all .nuspec files in the staging area and:
 			* Replace any instances of $AFversion_PackageName$ with the corresponding Autofac package version value.
+			    Note we only do this for the main package version, not internal Autofac-to-Autofac dependencies.
 			* Replace any instances of $version_DependencyName$ with the version found referenced in the
 			    "packages" folder. (eg: $version_Castle.Core$ -> 3.0.0.4001)
 			* Run nuget pack to create the .nupkg file.
@@ -234,7 +235,7 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 
 		<Message Text="Cleaning NuGet staging..." />
 		<RemoveDir Directories="$(StagingDirectory)" Condition="'$(DeleteNuGetStaging)' == 'true'" />
-		
+
 		<Message Text="Packaging complete." />
 	</Target>
 

@@ -13,10 +13,10 @@
     <projectUrl>http://autofac.org</projectUrl>
     <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
     <dependencies>
-      <dependency id="Autofac" version="$AFversion_Autofac$" />
-      <dependency id="Autofac.Extras.CommonServiceLocator" version="$AFversion_Autofac.Extras.CommonServiceLocator$" />
+      <dependency id="Autofac" version="[3.0.0,4.0.0)" />
+      <dependency id="Autofac.Extras.CommonServiceLocator" version="[3.0.0,4.0.0)" />
       <dependency id="CommonServiceLocator" version="$version_CommonServiceLocator$" />
-      <dependency id="EnterpriseLibrary.Common" version="$version_EnterpriseLibrary.Common$" />
+      <dependency id="EnterpriseLibrary.Common" version="[$version_EnterpriseLibrary.Common$]" />
     </dependencies>
   </metadata>
 </package>

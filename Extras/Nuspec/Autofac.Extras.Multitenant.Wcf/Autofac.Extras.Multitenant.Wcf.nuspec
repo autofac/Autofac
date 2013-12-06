@@ -13,9 +13,9 @@
     <projectUrl>http://autofac.org</projectUrl>
     <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
     <dependencies>
-      <dependency id="Autofac" version="$AFversion_Autofac$" />
-      <dependency id="Autofac.Extras.Multitenant" version="$AFversion_Autofac.Extras.Multitenant$" />
-      <dependency id="Autofac.Wcf" version="$AFversion_Autofac.Wcf$" />
+      <dependency id="Autofac" version="[3.0.2,4.0.0)" />
+      <dependency id="Autofac.Extras.Multitenant" version="[3.1.0,4.0.0)" />
+      <dependency id="Autofac.Wcf" version="[3.0.0,4.0.0)" />
       <dependency id="Castle.Core" version="$version_Castle.Core$" />
     </dependencies>
   </metadata>

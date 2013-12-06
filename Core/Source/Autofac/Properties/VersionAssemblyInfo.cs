@@ -15,9 +15,9 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("3.0.0.0")]
-[assembly: AssemblyFileVersion("3.1.5.0")]
-[assembly: AssemblyConfiguration("Release built on 2013-12-05 16:05")]
+[assembly: AssemblyFileVersion("3.1.6.0")]
+[assembly: AssemblyConfiguration("Release built on 2013-12-05 17:03")]
 [assembly: AssemblyCopyright("Copyright © 2013 Autofac Contributors")]
-[assembly: AssemblyDescription("Autofac 3.1.5")]
+[assembly: AssemblyDescription("Autofac 3.1.6")]
 
 

@@ -28,9 +28,6 @@
 			be released and versioned. Doing this will automatically generate
 			a VersionAssemblyInfo.cs for the project. Unit tests for a project should
 			add a "link" to the VersionAssemblyInfo.cs for the owning primary project.
-
-			NuSpec definitions may use $AFversion_PackageName$ placeholders to insert
-			Autofac package versions in the file at build time.
 		-->
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac\Autofac.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
