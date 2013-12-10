@@ -54,6 +54,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DependencyResolutionExceptionResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Core\Registration\IModuleRegistrar.cs" />
+    <Compile Include="Core\Registration\ModuleRegistrar.cs" />
     <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSource.cs" />
     <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSourceResources.Designer.cs">
       <DependentUpon>LazyWithMetadataRegistrationSourceResources.resx</DependentUpon>
@@ -72,6 +74,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Features\ResolveAnything\AnyConcreteTypeNotAlreadyRegisteredSourceExtensions.cs" />
+    <Compile Include="ModuleRegistrationExtensions.cs" />
     <Compile Include="ModuleResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

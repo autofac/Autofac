@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using Autofac.Builder;
-using Autofac.Features.Indexed;
-using Autofac.Tests.Scenarios.ScannedAssembly;
-using Moq;
-
-using NUnit.Framework;
-using Autofac.Core;
 using System.Linq;
+using Autofac.Builder;
+using Autofac.Core;
+using Autofac.Features.Indexed;
+using Moq;
+using NUnit.Framework;
 
 namespace Autofac.Tests
 {
@@ -110,97 +108,6 @@ namespace Autofac.Tests
             target.RegisterInstance(inst2);
             Assert.AreSame(inst2, target.Build().Resolve<object>());
         }
-
-        class ObjectModule : Module
-        {
-            public bool ConfigureCalled { get; private set; }
-
-            #region IModule Members
-
-            protected override void Load(ContainerBuilder builder)
-            {
-                if (builder == null) throw new ArgumentNullException("builder");
-                ConfigureCalled = true;
-                builder.RegisterType<object>().SingleInstance();
-            }
-
-            #endregion
-        }
-
-        [Test]
-        public void RegisterModule()
-        {
-            var mod = new ObjectModule();
-            var target = new ContainerBuilder();
-            target.RegisterModule(mod);
-            Assert.IsFalse(mod.ConfigureCalled);
-            var container = target.Build();
-            Assert.IsTrue(mod.ConfigureCalled);
-            Assert.IsTrue(container.IsRegistered<object>());
-        }
-
-#if !WINDOWS_PHONE
-
-        [Test]
-        public void RegisterAssemblyModules()
-        {
-            var assembly = typeof(AComponent).Assembly;
-            var builder = new ContainerBuilder();
-            builder.RegisterAssemblyModules(assembly);
-            var container = builder.Build();
-
-            Assert.That(container.IsRegistered<AComponent>(), Is.True);
-            Assert.That(container.IsRegistered<BComponent>(), Is.True);
-        }
-
-        [Test]
-        public void RegisterAssemblyModulesOfGenericType()
-        {
-            var assembly = typeof(AComponent).Assembly;
-            var builder = new ContainerBuilder();
-            builder.RegisterAssemblyModules<AModule>(assembly);
-            var container = builder.Build();
-
-            Assert.That(container.IsRegistered<AComponent>(), Is.True);
-            Assert.That(container.IsRegistered<BComponent>(), Is.False);
-        }
-
-        [Test]
-        public void RegisterAssemblyModulesOfBaseGenericType()
-        {
-            var assembly = typeof(AComponent).Assembly;
-            var builder = new ContainerBuilder();
-            builder.RegisterAssemblyModules<ModuleBase>(assembly);
-            var container = builder.Build();
-
-            Assert.That(container.IsRegistered<AComponent>(), Is.True);
-            Assert.That(container.IsRegistered<BComponent>(), Is.True);
-        }
-
-        [Test]
-        public void RegisterAssemblyModulesOfType()
-        {
-            var assembly = typeof(AComponent).Assembly;
-            var builder = new ContainerBuilder();
-            builder.RegisterAssemblyModules(typeof(AModule), assembly);
-            var container = builder.Build();
-
-            Assert.That(container.IsRegistered<AComponent>(), Is.True);
-            Assert.That(container.IsRegistered<BComponent>(), Is.False);
-        }
-
-        [Test]
-        public void RegisterAssemblyModulesOfBaseType()
-        {
-            var assembly = typeof(AComponent).Assembly;
-            var builder = new ContainerBuilder();
-            builder.RegisterAssemblyModules(typeof(ModuleBase), assembly);
-            var container = builder.Build();
-
-            Assert.That(container.IsRegistered<AComponent>(), Is.True);
-            Assert.That(container.IsRegistered<BComponent>(), Is.True);
-        }
-#endif
 
         [Test]
         [ExpectedException(typeof(InvalidOperationException))]

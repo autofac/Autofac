@@ -72,8 +72,10 @@
     <Compile Include="Core\Activators\Reflection\DefaultConstructorFinderTests.cs" />
     <Compile Include="Core\DependencyResolutionExceptionTests.cs" />
     <Compile Include="Core\PreserveExistingDefaultsTests.cs" />
+    <Compile Include="Core\Registration\ModuleRegistrarTests.cs" />
     <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSourceTests.cs" />
     <Compile Include="Features\Metadata\TestTypes.cs" />
+    <Compile Include="ModuleRegistrationExtensionsTests.cs" />
     <Compile Include="PartialTrust\PartialTrustTestExecutor.cs" />
     <Compile Include="PartialTrust\PartialTrustTests.cs" />
     <Compile Include="Core\Activators\Reflection\DefaultValueParameterTests.cs" />
