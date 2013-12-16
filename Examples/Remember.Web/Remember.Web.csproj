@@ -141,10 +141,12 @@
     </Content>
     <Content Include="Areas\Integration\Views\Invoker\Index.aspx" />
     <Content Include="Areas\Integration\Views\Invoker\ParameterInjection.aspx" />
+    <Content Include="Areas\Integration\Views\Invoker\ProcessFileUploads.aspx" />
     <Content Include="Content\DomainServicesExample.xap" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\Silverlight.js" />
+    <Content Include="Areas\Integration\Views\Invoker\FileUpload.aspx" />
     <Content Include="Views\Account\Login.aspx" />
     <Content Include="Views\Account\LoginSuccess.aspx" />
     <Content Include="Areas\DomainServices\Views\Home\Index.aspx" />

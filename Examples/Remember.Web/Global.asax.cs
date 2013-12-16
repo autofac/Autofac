@@ -43,7 +43,8 @@ namespace Remember.Web
             builder.RegisterModelBinderProvider();
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
             builder.RegisterType<AuthenticationService>().As<IAuthenticationService>();
-            builder.RegisterModule(new NHibernateModule());
+            builder.RegisterModule<AutofacWebTypesModule>();
+            builder.RegisterModule<NHibernateModule>();
 
             // Change controller action parameter injection by changing web.config.
             builder.RegisterType<ExtensibleActionInvoker>().As<IActionInvoker>().WithParameter(new NamedParameter("injectActionMethodParameters", IsControllerActionParameterInjectionEnabled())).InstancePerHttpRequest();

@@ -23,6 +23,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Security;
 using System.Web;
 using System.Web.Hosting;
@@ -121,6 +124,7 @@ namespace Autofac.Integration.Mvc
         /// list of mappings that get registered.
         /// </para>
         /// </remarks>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "The complexity is in the registration lambdas. They're not actually hard to maintain.")]
         [SecuritySafeCritical]
         protected override void Load(ContainerBuilder builder)
         {
@@ -156,6 +160,22 @@ namespace Autofac.Integration.Mvc
 
             builder.Register(c => c.Resolve<HttpRequestBase>().Files)
                 .As<HttpFileCollectionBase>()
+                .InstancePerHttpRequest();
+
+            builder.Register(
+                c =>
+                {
+                    // Issue #430: This works around the CollectionRegistrationSource
+                    // not returning null for IEnumerable<HttpPostedFileBase> resolutions
+                    // even though HttpPostedFileBase itself isn't registered. This
+                    // causes the ExtensibleActionInvoker to bypass the default
+                    // model binder and not allow standard file uploads to work.
+                    var files = c.Resolve<HttpFileCollectionBase>();
+                    var postedFiles = new HttpPostedFile[files.Count];
+                    files.CopyTo(postedFiles, 0);
+                    return postedFiles.Select(f => new HttpPostedFileWrapper(f)).ToArray();
+                })
+                .As<IEnumerable<HttpPostedFileBase>>()
                 .InstancePerHttpRequest();
 
             builder.Register(c => c.Resolve<HttpRequestBase>().RequestContext)
