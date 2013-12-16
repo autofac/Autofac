@@ -9,6 +9,7 @@
         <li>System.String <code>value</code>: <%:this.ViewData["Value"] %></li>
         <li>System.Int32 <code>id</code>: <%:this.ViewData["Id"] %></li>
         <li>The injected dependency <strong><%:this.ViewData["Resolved"] %></strong>.</li>
+        <li>The unregistered/unresolved dependency <strong><%:this.ViewData["NotRegistered"] %></strong>.</li>
     </ul>
 
 </asp:Content>

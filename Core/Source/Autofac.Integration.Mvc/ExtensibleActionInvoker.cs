@@ -60,28 +60,40 @@ namespace Autofac.Integration.Mvc
                 throw new ArgumentNullException("parameterDescriptor");
             }
 
-            // Only resolve parameter values if injection is enabled.
-            var context = AutofacDependencyResolver.Current.RequestLifetimeScope;
-            var value = context.ResolveOptional(parameterDescriptor.ParameterType);
+            // Issue #430
+            // Model binding to collections (specifically IEnumerable<HttpPostedFileBase>
+            // as used in multiple file upload scenarios) breaks if you try to
+            // resolve before allowing default model binding to give it a shot.
+            // You also can't send in an object that needs to be model bound if
+            // it's registered in the container because the container will ignore
+            // the POSTed in values.
+            //
+            // Issue #368
+            // The original solution to issue #368 was to fall back to default
+            // model binding if the ExtensibleActionInvoker was unable to resolve
+            // a parameter AND if parameter injection was enabled. You can no longer
+            // disable parameter injection, and it turns out for issue #430 that
+            // we need to try model binding first. Unfortunately there's no way
+            // to determine if default model binding will fail, so we give it
+            // a shot and handle what we can.
+            object value = null;
+            try
+            {
+                value = base.GetParameterValue(controllerContext, parameterDescriptor);
+            }
+            catch (MissingMethodException)
+            {
+                // Don't do anything - this means the default model binder couldn't
+                // activate a new instance (like if it's an interface) or figure
+                // out some other way to model bind it.
+            }
 
             if (value == null)
             {
-                // Issue #368
-                // If injection is enabled and the value can't be resolved, fall back to
-                // the default behavior. Or if injection isn't enabled, fall back.
-                // Unfortunately we can't do much to pre-determine if model binding will succeed
-                // because model binding "knows" about a lot of stuff like arrays, certain generic
-                // collection types, type converters, and other stuff that may or may not fail.
-                try
-                {
-                    value = base.GetParameterValue(controllerContext, parameterDescriptor);
-                }
-                catch (MissingMethodException)
-                {
-                    // Don't do anything - this means the default model binder couldn't
-                    // activate a new instance or figure out some other way to model
-                    // bind it.
-                }
+                // We got nothing from the default model binding, so try to
+                // resolve it.
+                var context = AutofacDependencyResolver.Current.RequestLifetimeScope;
+                value = context.ResolveOptional(parameterDescriptor.ParameterType);
             }
 
             return value;

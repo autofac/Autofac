@@ -120,6 +120,7 @@
     <Compile Include="Areas\Integration\IntegrationAreaRegistration.cs" />
     <Compile Include="Areas\Integration\Models\IInvokerDependency.cs" />
     <Compile Include="Areas\Integration\Models\InvokerDependency.cs" />
+    <Compile Include="Areas\Integration\Models\NotRegistered.cs" />
     <Compile Include="Binders\LoginFormBinder.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
