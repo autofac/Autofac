@@ -6,5 +6,6 @@
     <p>This lets you test various aspects of the <code>Autofac.Integration.Mvc.ExtensibleActionInvoker</code> in a runtime environment where it can really work alongside things like the DefaultModelBinder.</p>
     <ul>
         <li><%:Html.ActionLink("Simple Controller Action Parameter Injection", "ParameterInjection", new{ value="StringValue", id= 17}) %></li>
+        <li><%:Html.ActionLink("Multiple File Upload", "FileUpload") %></li>
     </ul>
 </asp:Content>

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.ServiceModel.DomainServices.Server;
-using System.Web.Configuration;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Autofac;
@@ -43,10 +42,11 @@ namespace Remember.Web
             builder.RegisterModelBinderProvider();
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
             builder.RegisterType<AuthenticationService>().As<IAuthenticationService>();
-            builder.RegisterModule(new NHibernateModule());
+            builder.RegisterModule<AutofacWebTypesModule>();
+            builder.RegisterModule<NHibernateModule>();
 
             // Change controller action parameter injection by changing web.config.
-            builder.RegisterType<ExtensibleActionInvoker>().As<IActionInvoker>().WithParameter(new NamedParameter("injectActionMethodParameters", IsControllerActionParameterInjectionEnabled())).InstancePerHttpRequest();
+            builder.RegisterType<ExtensibleActionInvoker>().As<IActionInvoker>().InstancePerHttpRequest();
 
             // MVC integration test items
             builder.RegisterType<InvokerDependency>().As<IInvokerDependency>();
@@ -60,13 +60,6 @@ namespace Remember.Web
             DomainService.Factory = new AutofacDomainServiceFactory(new MvcContainerProvider());
 
             RegisterRoutes(RouteTable.Routes);
-        }
-
-        public static bool IsControllerActionParameterInjectionEnabled()
-        {
-            bool injectParameters = false;
-            Boolean.TryParse(WebConfigurationManager.AppSettings["EnableControllerActionParameterInjection"], out injectParameters);
-            return injectParameters;
         }
     }
 }

@@ -34,6 +34,33 @@ using Autofac.Util;
 
 namespace Autofac.Features.Collections
 {
+    /// <summary>
+    /// Registration source providing implicit collection/list/enumerable support.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This registration source provides enumerable support to allow resolving
+    /// the set of all registered services of a given type.
+    /// </para>
+    /// <para>
+    /// What may not be immediately apparent is that it also means any time there
+    /// are no items of a particular type registered, it will always return an
+    /// empty set rather than <see langword="null" /> or throwing an exception.
+    /// This is by design.
+    /// </para>
+    /// <para>
+    /// Consider the [possibly majority] use case where you're resolving a set
+    /// of message handlers or event handlers from the container. If there aren't
+    /// any handlers, you want an empty set - not <see langword="null" /> or
+    /// an exception. It's valid to have no handlers registered.
+    /// </para>
+    /// <para>
+    /// This implicit support means other areas (like MVC support or manual
+    /// property injection) must take care to only request enumerable values they
+    /// expect to get something back for. In other words, "Don't ask the container
+    /// for something you don't expect to resolve."
+    /// </para>
+    /// </remarks>
     class CollectionRegistrationSource : IRegistrationSource
     {
         /// <summary>
@@ -89,7 +116,7 @@ namespace Autofac.Features.Collections
                         new[] { service },
                         new Dictionary<string, object>());
 
-                    return new IComponentRegistration[] {registration};
+                    return new IComponentRegistration[] { registration };
                 }
             }
 

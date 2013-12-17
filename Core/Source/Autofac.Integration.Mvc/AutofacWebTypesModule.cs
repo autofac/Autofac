@@ -23,6 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Security;
 using System.Web;
 using System.Web.Hosting;
@@ -121,6 +122,8 @@ namespace Autofac.Integration.Mvc
         /// list of mappings that get registered.
         /// </para>
         /// </remarks>
+        [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "A lot of types get registered, but there isn't much complexity.")]
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "The complexity is in the registration lambdas. They're not actually hard to maintain.")]
         [SecuritySafeCritical]
         protected override void Load(ContainerBuilder builder)
         {
