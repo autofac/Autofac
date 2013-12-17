@@ -53,16 +53,16 @@ namespace Autofac.Integration.WebApi
         readonly ActionDescriptorFilterProvider _filterProvider = new ActionDescriptorFilterProvider();
 
         internal static string ActionFilterMetadataKey = "AutofacWebApiActionFilter";
-        internal static string OverrideActionFilterMetadataKey = "AutofacWebApiOverrideActionFilter";
+        internal static string ActionFilterOverrideMetadataKey = "AutofacWebApiActionFilterOverride";
 
         internal static string AuthorizationFilterMetadataKey = "AutofacWebApiAuthorizationFilter";
-        internal static string OverrideAuthorizationFilterMetadataKey = "AutofacWebApiOverrideAuthorizationFilter";
+        internal static string AuthorizationFilterOverrideMetadataKey = "AutofacWebApiAuthorizationFilterOverride";
 
         internal static string AuthenticationFilterMetadataKey = "AutofacWebApiAuthenticationFilter";
-        internal static string OverrideAuthenticationFilterMetadataKey = "AutofacWebApiOverrideAuthenticationFilter";
+        internal static string AuthenticationFilterOverrideMetadataKey = "AutofacWebApiAuthenticationFilterOverride";
 
         internal static string ExceptionFilterMetadataKey = "AutofacWebApiExceptionFilter";
-        internal static string OverrideExceptionFilterMetadataKey = "AutofacWebApiOverrideExceptionFilter";
+        internal static string ExceptionFilterOverrideMetadataKey = "AutofacWebApiExceptionFilterOverride";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacWebApiFilterProvider"/> class.
@@ -108,57 +108,106 @@ namespace Autofac.Integration.WebApi
                     AddedFilters = new Dictionary<string, List<FilterMetadata>>
                     {
                         {ActionFilterMetadataKey, new List<FilterMetadata>()},
-                        {OverrideActionFilterMetadataKey, new List<FilterMetadata>()},
+                        {ActionFilterOverrideMetadataKey, new List<FilterMetadata>()},
 
                         {AuthenticationFilterMetadataKey, new List<FilterMetadata>()},
-                        {OverrideAuthenticationFilterMetadataKey, new List<FilterMetadata>()},
+                        {AuthenticationFilterOverrideMetadataKey, new List<FilterMetadata>()},
 
                         {AuthorizationFilterMetadataKey, new List<FilterMetadata>()},
-                        {OverrideAuthorizationFilterMetadataKey, new List<FilterMetadata>()},
+                        {AuthorizationFilterOverrideMetadataKey, new List<FilterMetadata>()},
 
                         {ExceptionFilterMetadataKey, new List<FilterMetadata>()},
-                        {OverrideExceptionFilterMetadataKey, new List<FilterMetadata>()}
+                        {ExceptionFilterOverrideMetadataKey, new List<FilterMetadata>()}
                     }
                 };
 
-                // Controller scoped filters.
+                // Controller scoped override filters (NOOP kind).
+                ResolveControllerScopedNoopFilterOverrides(filterContext);
 
-                ResolveControllerScopedFilter<IAutofacActionFilter, ActionFilterWrapper>(
-                    filterContext, m => new ActionFilterWrapper(m), ActionFilterMetadataKey);
-                ResolveControllerScopedFilter<IAutofacAuthenticationFilter, AuthenticationFilterWrapper>(
-                    filterContext, m => new AuthenticationFilterWrapper(m), AuthenticationFilterMetadataKey);
-                ResolveControllerScopedFilter<IAutofacAuthorizationFilter, AuthorizationFilterWrapper>(
-                    filterContext, m => new AuthorizationFilterWrapper(m), AuthorizationFilterMetadataKey);
-                ResolveControllerScopedFilter<IAutofacExceptionFilter, ExceptionFilterWrapper>(
-                    filterContext, m => new ExceptionFilterWrapper(m), ExceptionFilterMetadataKey);
-
-                // Action scoped filters.
-
-                ResolveActionScopedFilter<IAutofacActionFilter, ActionFilterWrapper>(
-                    filterContext, descriptor.MethodInfo, m => new ActionFilterWrapper(m), ActionFilterMetadataKey);
-                ResolveActionScopedFilter<IAutofacAuthenticationFilter, AuthenticationFilterWrapper>(
-                    filterContext, descriptor.MethodInfo, m => new AuthenticationFilterWrapper(m), AuthenticationFilterMetadataKey);
-                ResolveActionScopedFilter<IAutofacAuthorizationFilter, AuthorizationFilterWrapper>(
-                    filterContext, descriptor.MethodInfo, m => new AuthorizationFilterWrapper(m), AuthorizationFilterMetadataKey);
-                ResolveActionScopedFilter<IAutofacExceptionFilter, ExceptionFilterWrapper>(
-                    filterContext, descriptor.MethodInfo, m => new ExceptionFilterWrapper(m), ExceptionFilterMetadataKey);
+                // Action scoped override filters (NOOP kind).
+                ResolveActionScopedNoopFilterOverrides(filterContext, descriptor);
 
                 // Controller scoped override filters.
-
-                ResolveControllerScopedOverrideFilter(filterContext, OverrideActionFilterMetadataKey);
-                ResolveControllerScopedOverrideFilter(filterContext, OverrideAuthenticationFilterMetadataKey);
-                ResolveControllerScopedOverrideFilter(filterContext, OverrideAuthorizationFilterMetadataKey);
-                ResolveControllerScopedOverrideFilter(filterContext, OverrideExceptionFilterMetadataKey);
+                ResolveControllerScopedFilterOverrides(filterContext);
 
                 // Action scoped override filters.
+                ResolveActionScopedFilterOverrides(filterContext, descriptor);
 
-                ResolveActionScopedOverrideFilter(filterContext, descriptor.MethodInfo, OverrideActionFilterMetadataKey);
-                ResolveActionScopedOverrideFilter(filterContext, descriptor.MethodInfo, OverrideAuthenticationFilterMetadataKey);
-                ResolveActionScopedOverrideFilter(filterContext, descriptor.MethodInfo, OverrideAuthorizationFilterMetadataKey);
-                ResolveActionScopedOverrideFilter(filterContext, descriptor.MethodInfo, OverrideExceptionFilterMetadataKey);
+                // Controller scoped filters.
+                ResolveControllerScopedFilters(filterContext);
+
+                // Action scoped filters.
+                ResolveActionScopedFilters(filterContext, descriptor);
             }
 
             return filters;
+        }
+
+        static void ResolveControllerScopedNoopFilterOverrides(FilterContext filterContext)
+        {
+            ResolveControllerScopedOverrideFilter(filterContext, ActionFilterOverrideMetadataKey);
+            ResolveControllerScopedOverrideFilter(filterContext, AuthenticationFilterOverrideMetadataKey);
+            ResolveControllerScopedOverrideFilter(filterContext, AuthorizationFilterOverrideMetadataKey);
+            ResolveControllerScopedOverrideFilter(filterContext, ExceptionFilterOverrideMetadataKey);
+        }
+
+        static void ResolveActionScopedNoopFilterOverrides(FilterContext filterContext, ReflectedHttpActionDescriptor descriptor)
+        {
+            ResolveActionScopedOverrideFilter(filterContext, descriptor.MethodInfo, ActionFilterOverrideMetadataKey);
+            ResolveActionScopedOverrideFilter(filterContext, descriptor.MethodInfo, AuthenticationFilterOverrideMetadataKey);
+            ResolveActionScopedOverrideFilter(filterContext, descriptor.MethodInfo, AuthorizationFilterOverrideMetadataKey);
+            ResolveActionScopedOverrideFilter(filterContext, descriptor.MethodInfo, ExceptionFilterOverrideMetadataKey);
+        }
+
+        static void ResolveControllerScopedFilterOverrides(FilterContext filterContext)
+        {
+            ResolveControllerScopedFilter<IAutofacActionFilter, ActionFilterOverrideWrapper>(
+                filterContext, m => new ActionFilterOverrideWrapper(m), ActionFilterOverrideMetadataKey);
+            ResolveControllerScopedFilter<IAutofacAuthenticationFilter, AuthenticationFilterOverrideWrapper>(
+                filterContext, m => new AuthenticationFilterOverrideWrapper(m), AuthenticationFilterOverrideMetadataKey);
+            ResolveControllerScopedFilter<IAutofacAuthorizationFilter, AuthorizationFilterOverrideWrapper>(
+                filterContext, m => new AuthorizationFilterOverrideWrapper(m), AuthorizationFilterOverrideMetadataKey);
+            ResolveControllerScopedFilter<IAutofacExceptionFilter, ExceptionFilterOverrideWrapper>(
+                filterContext, m => new ExceptionFilterOverrideWrapper(m), ExceptionFilterOverrideMetadataKey);
+        }
+
+        static void ResolveActionScopedFilterOverrides(FilterContext filterContext, ReflectedHttpActionDescriptor descriptor)
+        {
+            ResolveActionScopedFilter<IAutofacActionFilter, ActionFilterOverrideWrapper>(
+                filterContext, descriptor.MethodInfo, m => new ActionFilterOverrideWrapper(m), ActionFilterOverrideMetadataKey);
+            ResolveActionScopedFilter<IAutofacAuthenticationFilter, AuthenticationFilterOverrideWrapper>(
+                filterContext, descriptor.MethodInfo, m => new AuthenticationFilterOverrideWrapper(m),
+                AuthenticationFilterOverrideMetadataKey);
+            ResolveActionScopedFilter<IAutofacAuthorizationFilter, AuthorizationFilterOverrideWrapper>(
+                filterContext, descriptor.MethodInfo, m => new AuthorizationFilterOverrideWrapper(m),
+                AuthorizationFilterOverrideMetadataKey);
+            ResolveActionScopedFilter<IAutofacExceptionFilter, ExceptionFilterOverrideWrapper>(
+                filterContext, descriptor.MethodInfo, m => new ExceptionFilterOverrideWrapper(m),
+                ExceptionFilterOverrideMetadataKey);
+        }
+
+        static void ResolveControllerScopedFilters(FilterContext filterContext)
+        {
+            ResolveControllerScopedFilter<IAutofacActionFilter, ActionFilterWrapper>(
+                filterContext, m => new ActionFilterWrapper(m), ActionFilterMetadataKey);
+            ResolveControllerScopedFilter<IAutofacAuthenticationFilter, AuthenticationFilterWrapper>(
+                filterContext, m => new AuthenticationFilterWrapper(m), AuthenticationFilterMetadataKey);
+            ResolveControllerScopedFilter<IAutofacAuthorizationFilter, AuthorizationFilterWrapper>(
+                filterContext, m => new AuthorizationFilterWrapper(m), AuthorizationFilterMetadataKey);
+            ResolveControllerScopedFilter<IAutofacExceptionFilter, ExceptionFilterWrapper>(
+                filterContext, m => new ExceptionFilterWrapper(m), ExceptionFilterMetadataKey);
+        }
+
+        static void ResolveActionScopedFilters(FilterContext filterContext, ReflectedHttpActionDescriptor descriptor)
+        {
+            ResolveActionScopedFilter<IAutofacActionFilter, ActionFilterWrapper>(
+                filterContext, descriptor.MethodInfo, m => new ActionFilterWrapper(m), ActionFilterMetadataKey);
+            ResolveActionScopedFilter<IAutofacAuthenticationFilter, AuthenticationFilterWrapper>(
+                filterContext, descriptor.MethodInfo, m => new AuthenticationFilterWrapper(m), AuthenticationFilterMetadataKey);
+            ResolveActionScopedFilter<IAutofacAuthorizationFilter, AuthorizationFilterWrapper>(
+                filterContext, descriptor.MethodInfo, m => new AuthorizationFilterWrapper(m), AuthorizationFilterMetadataKey);
+            ResolveActionScopedFilter<IAutofacExceptionFilter, ExceptionFilterWrapper>(
+                filterContext, descriptor.MethodInfo, m => new ExceptionFilterWrapper(m), ExceptionFilterMetadataKey);
         }
 
         static void ResolveControllerScopedFilter<TFilter, TWrapper>(

@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.Http;
 using System.Security;
@@ -37,7 +38,8 @@ namespace Autofac.Integration.WebApi
     /// Resolves a filter for the specified metadata for each controller request.
     /// </summary>
     [SecurityCritical]
-    internal sealed class ExceptionFilterWrapper : ExceptionFilterAttribute, IAutofacExceptionFilter
+    [SuppressMessage("Microsoft.Performance", "CA1813:AvoidUnsealedAttributes", Justification = "Derived attribute adds filter override support")]
+    internal class ExceptionFilterWrapper : ExceptionFilterAttribute, IAutofacExceptionFilter
     {
         readonly FilterMetadata _filterMetadata;
 

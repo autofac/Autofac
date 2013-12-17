@@ -105,6 +105,22 @@ namespace Autofac.Tests.Integration.WebApi
                 ConfigureControllerFilterOverride());
         }
 
+        [Test]
+        public void ResolvesRegisteredActionFilterOverrideForAction()
+        {
+            AssertOverrideFilter<TestController>(
+                GetFirstRegistration(),
+                ConfigureActionOverrideRegistration());
+        }
+
+        [Test]
+        public void ResolvesRegisteredActionFilterOverrideForController()
+        {
+            AssertOverrideFilter<TestController>(
+                GetFirstRegistration(),
+                ConfigureControllerOverrideRegistration());
+        }
+
         protected abstract Func<IComponentContext, TFilter1> GetFirstRegistration();
 
         protected abstract Func<IComponentContext, TFilter2> GetSecondRegistration();
@@ -119,9 +135,15 @@ namespace Autofac.Tests.Integration.WebApi
 
         protected abstract Type GetWrapperType();
 
+        protected abstract Type GetOverrideWrapperType();
+
         protected abstract Action<ContainerBuilder> ConfigureControllerFilterOverride();
 
         protected abstract Action<ContainerBuilder> ConfigureActionFilterOverride();
+
+        protected abstract Action<IRegistrationBuilder<TFilter1, SimpleActivatorData, SingleRegistrationStyle>> ConfigureActionOverrideRegistration();
+
+        protected abstract Action<IRegistrationBuilder<TFilter1, SimpleActivatorData, SingleRegistrationStyle>> ConfigureControllerOverrideRegistration();
 
         static ReflectedHttpActionDescriptor BuildActionDescriptorForGetMethod()
         {
@@ -130,10 +152,9 @@ namespace Autofac.Tests.Integration.WebApi
 
         static ReflectedHttpActionDescriptor BuildActionDescriptorForGetMethod(Type controllerType)
         {
-            var controllerDescriptor = new HttpControllerDescriptor { ControllerType = controllerType };
+            var controllerDescriptor = new HttpControllerDescriptor {ControllerType = controllerType};
             var methodInfo = typeof(TestController).GetMethod("Get");
-            var actionDescriptor = new ReflectedHttpActionDescriptor(controllerDescriptor, methodInfo);
-            return actionDescriptor;
+            return new ReflectedHttpActionDescriptor(controllerDescriptor, methodInfo);
         }
 
         void AssertSingleFilter<TController>(
@@ -193,6 +214,26 @@ namespace Autofac.Tests.Integration.WebApi
             Assert.That(filter, Is.InstanceOf<AutofacOverrideFilter>());
             Assert.That(filter.AllowMultiple, Is.False);
             Assert.That(filter.FiltersToOverride, Is.EqualTo(typeof(TFilterType)));
+        }
+
+        void AssertOverrideFilter<TController>(
+            Func<IComponentContext, TFilter1> registration,
+            Action<IRegistrationBuilder<TFilter1, SimpleActivatorData, SingleRegistrationStyle>> configure)
+        {
+            var builder = new ContainerBuilder();
+            builder.Register<ILogger>(c => new Logger()).InstancePerDependency();
+            configure(builder.Register(registration).InstancePerApiRequest());
+            var container = builder.Build();
+            var provider = new AutofacWebApiFilterProvider(container);
+            var configuration = new HttpConfiguration {DependencyResolver = new AutofacWebApiDependencyResolver(container)};
+            var actionDescriptor = BuildActionDescriptorForGetMethod(typeof(TController));
+
+            var filterInfos = provider.GetFilters(configuration, actionDescriptor).ToArray();
+
+            var wrapperType = GetOverrideWrapperType();
+            var filters = filterInfos.Select(info => info.Instance).Where(i => i.GetType() == wrapperType).ToArray();
+            Assert.That(filters, Has.Length.EqualTo(1));
+            Assert.That(filters[0], Is.InstanceOf(wrapperType));
         }
     }
 }

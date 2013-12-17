@@ -39,7 +39,7 @@ namespace Autofac.Integration.WebApi
     /// Resolves a filter for the specified metadata for each controller request.
     /// </summary>
     [SecurityCritical]
-    internal sealed class AuthenticationFilterWrapper : IAuthenticationFilter, IAutofacAuthenticationFilter
+    internal class AuthenticationFilterWrapper : IAuthenticationFilter, IAutofacAuthenticationFilter
     {
         readonly FilterMetadata _filterMetadata;
 

@@ -258,6 +258,34 @@ namespace Autofac.Integration.WebApi
         }
 
         /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAutofacActionFilter"/> override for the specified controller action.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <param name="actionSelector">The action selector.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsWebApiActionFilterOverrideFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration,
+                Expression<Action<TController>> actionSelector)
+                    where TController : IHttpController
+        {
+            return AsFilterFor<IAutofacActionFilter, TController>(registration, AutofacWebApiFilterProvider.ActionFilterOverrideMetadataKey, actionSelector);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAutofacActionFilter"/> override for the specified controller.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsWebApiActionFilterOverrideFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration)
+                where TController : IHttpController
+        {
+            return AsFilterFor<IAutofacActionFilter, TController>(registration, AutofacWebApiFilterProvider.ActionFilterOverrideMetadataKey);
+        }
+
+        /// <summary>
         /// Sets the provided registration to act as an <see cref="IAutofacAuthorizationFilter"/> for the specified controller action.
         /// </summary>
         /// <typeparam name="TController">The type of the controller.</typeparam>
@@ -282,6 +310,33 @@ namespace Autofac.Integration.WebApi
                 where TController : IHttpController
         {
             return AsFilterFor<IAutofacAuthorizationFilter, TController>(registration, AutofacWebApiFilterProvider.AuthorizationFilterMetadataKey);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAutofacAuthorizationFilter"/> override for the specified controller action.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <param name="actionSelector">The action selector.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsWebApiAuthorizationFilterOverrideFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration,
+                Expression<Action<TController>> actionSelector) where TController : IHttpController
+        {
+            return AsFilterFor<IAutofacAuthorizationFilter, TController>(registration, AutofacWebApiFilterProvider.AuthorizationFilterOverrideMetadataKey, actionSelector);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAutofacAuthorizationFilter"/> override for the specified controller.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsWebApiAuthorizationFilterOverrideFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration)
+                where TController : IHttpController
+        {
+            return AsFilterFor<IAutofacAuthorizationFilter, TController>(registration, AutofacWebApiFilterProvider.AuthorizationFilterOverrideMetadataKey);
         }
 
         /// <summary>
@@ -312,6 +367,33 @@ namespace Autofac.Integration.WebApi
         }
 
         /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAutofacExceptionFilter"/> override for the specified controller action.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <param name="actionSelector">The action selector.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsWebApiExceptionFilterOverrideFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration, Expression<Action<TController>> actionSelector)
+                where TController : IHttpController
+        {
+            return AsFilterFor<IAutofacExceptionFilter, TController>(registration, AutofacWebApiFilterProvider.ExceptionFilterOverrideMetadataKey, actionSelector);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAutofacExceptionFilter"/> override for the specified controller.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsWebApiExceptionFilterOverrideFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration)
+                where TController : IHttpController
+        {
+            return AsFilterFor<IAutofacExceptionFilter, TController>(registration, AutofacWebApiFilterProvider.ExceptionFilterOverrideMetadataKey);
+        }
+
+        /// <summary>
         /// Sets the provided registration to act as an <see cref="IAutofacAuthenticationFilter"/> for the specified controller action.
         /// </summary>
         /// <typeparam name="TController">The type of the controller.</typeparam>
@@ -339,6 +421,33 @@ namespace Autofac.Integration.WebApi
         }
 
         /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAutofacAuthenticationFilter"/> override for the specified controller action.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <param name="actionSelector">The action selector.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsWebApiAuthenticationFilterOverrideFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration, Expression<Action<TController>> actionSelector)
+                where TController : IHttpController
+        {
+            return AsFilterFor<IAutofacAuthenticationFilter, TController>(registration, AutofacWebApiFilterProvider.AuthenticationFilterOverrideMetadataKey, actionSelector);
+        }
+
+        /// <summary>
+        /// Sets the provided registration to act as an <see cref="IAutofacAuthenticationFilter"/> override for the specified controller.
+        /// </summary>
+        /// <typeparam name="TController">The type of the controller.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
+            AsWebApiAuthenticationFilterOverrideFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration)
+                where TController : IHttpController
+        {
+            return AsFilterFor<IAutofacAuthenticationFilter, TController>(registration, AutofacWebApiFilterProvider.AuthenticationFilterOverrideMetadataKey);
+        }
+
+        /// <summary>
         /// Sets the provided registration to act as an <see cref="IOverrideFilter"/> for the specified controller action.
         /// </summary>
         /// <param name="builder">The container builder.</param>
@@ -347,7 +456,7 @@ namespace Autofac.Integration.WebApi
         public static void OverrideWebApiActionFilterFor<TController>(this ContainerBuilder builder, Expression<Action<TController>> actionSelector)
                 where TController : IHttpController
         {
-            AsOverrideFor<IActionFilter, TController>(builder, AutofacWebApiFilterProvider.OverrideActionFilterMetadataKey, actionSelector);
+            AsOverrideFor<IActionFilter, TController>(builder, AutofacWebApiFilterProvider.ActionFilterOverrideMetadataKey, actionSelector);
         }
 
         /// <summary>
@@ -358,7 +467,7 @@ namespace Autofac.Integration.WebApi
         public static void OverrideWebApiActionFilterFor<TController>(this ContainerBuilder builder)
                 where TController : IHttpController
         {
-            AsOverrideFor<IActionFilter, TController>(builder, AutofacWebApiFilterProvider.OverrideActionFilterMetadataKey);
+            AsOverrideFor<IActionFilter, TController>(builder, AutofacWebApiFilterProvider.ActionFilterOverrideMetadataKey);
         }
 
         /// <summary>
@@ -370,7 +479,7 @@ namespace Autofac.Integration.WebApi
         public static void OverrideWebApiAuthorizationFilterFor<TController>(this ContainerBuilder builder, Expression<Action<TController>> actionSelector)
                 where TController : IHttpController
         {
-            AsOverrideFor<IAuthorizationFilter, TController>(builder, AutofacWebApiFilterProvider.OverrideAuthorizationFilterMetadataKey, actionSelector);
+            AsOverrideFor<IAuthorizationFilter, TController>(builder, AutofacWebApiFilterProvider.AuthorizationFilterOverrideMetadataKey, actionSelector);
         }
 
         /// <summary>
@@ -381,7 +490,7 @@ namespace Autofac.Integration.WebApi
         public static void OverrideWebApiAuthorizationFilterFor<TController>(this ContainerBuilder builder)
                 where TController : IHttpController
         {
-            AsOverrideFor<IAuthorizationFilter, TController>(builder, AutofacWebApiFilterProvider.OverrideAuthorizationFilterMetadataKey);
+            AsOverrideFor<IAuthorizationFilter, TController>(builder, AutofacWebApiFilterProvider.AuthorizationFilterOverrideMetadataKey);
         }
 
         /// <summary>
@@ -393,7 +502,7 @@ namespace Autofac.Integration.WebApi
         public static void OverrideWebApiExceptionFilterFor<TController>(this ContainerBuilder builder, Expression<Action<TController>> actionSelector)
                 where TController : IHttpController
         {
-            AsOverrideFor<IExceptionFilter, TController>(builder, AutofacWebApiFilterProvider.OverrideExceptionFilterMetadataKey, actionSelector);
+            AsOverrideFor<IExceptionFilter, TController>(builder, AutofacWebApiFilterProvider.ExceptionFilterOverrideMetadataKey, actionSelector);
         }
 
         /// <summary>
@@ -404,7 +513,7 @@ namespace Autofac.Integration.WebApi
         public static void OverrideWebApiExceptionFilterFor<TController>(this ContainerBuilder builder)
                 where TController : IHttpController
         {
-            AsOverrideFor<IExceptionFilter, TController>(builder, AutofacWebApiFilterProvider.OverrideExceptionFilterMetadataKey);
+            AsOverrideFor<IExceptionFilter, TController>(builder, AutofacWebApiFilterProvider.ExceptionFilterOverrideMetadataKey);
         }
 
         /// <summary>
@@ -416,7 +525,7 @@ namespace Autofac.Integration.WebApi
         public static void OverrideWebApiAuthenticationFilterFor<TController>(this ContainerBuilder builder, Expression<Action<TController>> actionSelector)
                 where TController : IHttpController
         {
-            AsOverrideFor<IAuthenticationFilter, TController>(builder, AutofacWebApiFilterProvider.OverrideAuthenticationFilterMetadataKey, actionSelector);
+            AsOverrideFor<IAuthenticationFilter, TController>(builder, AutofacWebApiFilterProvider.AuthenticationFilterOverrideMetadataKey, actionSelector);
         }
 
         /// <summary>
@@ -427,7 +536,7 @@ namespace Autofac.Integration.WebApi
         public static void OverrideWebApiAuthenticationFilterFor<TController>(this ContainerBuilder builder)
                 where TController : IHttpController
         {
-            AsOverrideFor<IAuthenticationFilter, TController>(builder, AutofacWebApiFilterProvider.OverrideAuthenticationFilterMetadataKey);
+            AsOverrideFor<IAuthenticationFilter, TController>(builder, AutofacWebApiFilterProvider.AuthenticationFilterOverrideMetadataKey);
         }
 
         static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>

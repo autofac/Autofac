@@ -42,6 +42,11 @@ namespace Autofac.Tests.Integration.WebApi
             return typeof(ActionFilterWrapper);
         }
 
+        protected override Type GetOverrideWrapperType()
+        {
+            return typeof(ActionFilterOverrideWrapper);
+        }
+
         protected override Action<ContainerBuilder> ConfigureControllerFilterOverride()
         {
             return builder => builder.OverrideWebApiActionFilterFor<TestController>();
@@ -50,6 +55,16 @@ namespace Autofac.Tests.Integration.WebApi
         protected override Action<ContainerBuilder> ConfigureActionFilterOverride()
         {
             return builder => builder.OverrideWebApiActionFilterFor<TestController>(c => c.Get());
+        }
+
+        protected override Action<IRegistrationBuilder<TestActionFilter, SimpleActivatorData, SingleRegistrationStyle>> ConfigureActionOverrideRegistration()
+        {
+            return r => r.AsWebApiActionFilterOverrideFor<TestController>(c => c.Get());
+        }
+
+        protected override Action<IRegistrationBuilder<TestActionFilter, SimpleActivatorData, SingleRegistrationStyle>> ConfigureControllerOverrideRegistration()
+        {
+            return r => r.AsWebApiActionFilterOverrideFor<TestController>();
         }
     }
 }
