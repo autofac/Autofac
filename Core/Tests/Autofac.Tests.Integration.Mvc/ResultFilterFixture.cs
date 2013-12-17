@@ -36,5 +36,20 @@ namespace Autofac.Tests.Integration.Mvc
         {
             return builder => builder.OverrideResultFilterFor<TestController>(c => c.Action1(default(string)));
         }
+
+        protected override Action<IRegistrationBuilder<TestResultFilter, SimpleActivatorData, SingleRegistrationStyle>> ConfigureActionOverrideRegistration()
+        {
+            return r => r.AsResultFilterOverrideFor<TestController>(c => c.Action1(default(string)));
+        }
+
+        protected override Action<IRegistrationBuilder<TestResultFilter, SimpleActivatorData, SingleRegistrationStyle>> ConfigureControllerOverrideRegistration()
+        {
+            return r => r.AsResultFilterOverrideFor<TestController>();
+        }
+
+        protected override Type GetWrapperType()
+        {
+            return typeof(ResultFilterOverride);
+        }
     }
 }

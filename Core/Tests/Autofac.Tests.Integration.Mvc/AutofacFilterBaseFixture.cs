@@ -193,6 +193,26 @@ namespace Autofac.Tests.Integration.Mvc
                 _mostDerivedControllerContext);
         }
 
+        [Test]
+        public void ResolvesRegisteredActionFilterOverrideForAction()
+        {
+            AssertFilterOverrideRegistration(
+                FilterScope.Action,
+                _reflectedActionDescriptor,
+                ConfigureActionOverrideRegistration(),
+                _baseControllerContext);
+        }
+
+        [Test]
+        public void ResolvesRegisteredActionFilterOverrideForController()
+        {
+            AssertFilterOverrideRegistration(
+                FilterScope.Controller,
+                _reflectedActionDescriptor,
+                ConfigureControllerOverrideRegistration(),
+                _baseControllerContext);
+        }
+
         protected abstract Action<IRegistrationBuilder<TFilter1, SimpleActivatorData, SingleRegistrationStyle>> ConfigureFirstControllerRegistration();
 
         protected abstract Action<IRegistrationBuilder<TFilter1, SimpleActivatorData, SingleRegistrationStyle>> ConfigureFirstActionRegistration();
@@ -204,6 +224,12 @@ namespace Autofac.Tests.Integration.Mvc
         protected abstract Action<ContainerBuilder> ConfigureControllerFilterOverride();
 
         protected abstract Action<ContainerBuilder> ConfigureActionFilterOverride();
+
+        protected abstract Action<IRegistrationBuilder<TFilter1, SimpleActivatorData, SingleRegistrationStyle>> ConfigureActionOverrideRegistration();
+
+        protected abstract Action<IRegistrationBuilder<TFilter1, SimpleActivatorData, SingleRegistrationStyle>> ConfigureControllerOverrideRegistration();
+
+        protected abstract Type GetWrapperType();
 
         static void SetupMockLifetimeScopeProvider(ILifetimeScope container)
         {
@@ -278,6 +304,23 @@ namespace Autofac.Tests.Integration.Mvc
             var filter = filters.Select(info => info.Instance).OfType<AutofacOverrideFilter>().Single();
             Assert.That(filter, Is.InstanceOf<AutofacOverrideFilter>());
             Assert.That(filter.FiltersToOverride, Is.EqualTo(typeof(TFilterType)));
+        }
+
+        void AssertFilterOverrideRegistration(FilterScope filterScope, ActionDescriptor actionDescriptor,
+            Action<IRegistrationBuilder<TFilter1, SimpleActivatorData, SingleRegistrationStyle>> configure,
+            ControllerContext controllerContext)
+        {
+            var builder = new ContainerBuilder();
+            configure(builder.Register(c => new TFilter1()));
+            var container = builder.Build();
+            SetupMockLifetimeScopeProvider(container);
+            var provider = new AutofacFilterProvider();
+
+            var filters = provider.GetFilters(controllerContext, actionDescriptor).ToList();
+
+            Assert.That(filters, Has.Count.EqualTo(1));
+            Assert.That(filters[0].Instance, Is.InstanceOf(GetWrapperType()));
+            Assert.That(filters[0].Scope, Is.EqualTo(filterScope));
         }
     }
 }

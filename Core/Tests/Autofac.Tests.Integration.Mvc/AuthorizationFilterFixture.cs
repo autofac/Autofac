@@ -36,5 +36,20 @@ namespace Autofac.Tests.Integration.Mvc
         {
             return builder => builder.OverrideAuthorizationFilterFor<TestController>(c => c.Action1(default(string)));
         }
+
+        protected override Action<IRegistrationBuilder<TestAuthorizationFilter, SimpleActivatorData, SingleRegistrationStyle>> ConfigureActionOverrideRegistration()
+        {
+            return r => r.AsAuthorizationFilterOverrideFor<TestController>(c => c.Action1(default(string)));
+        }
+
+        protected override Action<IRegistrationBuilder<TestAuthorizationFilter, SimpleActivatorData, SingleRegistrationStyle>> ConfigureControllerOverrideRegistration()
+        {
+            return r => r.AsAuthorizationFilterOverrideFor<TestController>();
+        }
+
+        protected override Type GetWrapperType()
+        {
+            return typeof(AuthorizationFilterOverride);
+        }
     }
 }

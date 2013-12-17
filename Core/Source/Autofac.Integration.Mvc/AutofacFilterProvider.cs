@@ -50,19 +50,19 @@ namespace Autofac.Integration.Mvc
         }
 
         internal static string ActionFilterMetadataKey = "AutofacMvcActionFilter";
-        internal static string OverrideActionFilterMetadataKey = "AutofacMvcOverrideActionFilter";
+        internal static string ActionFilterOverrideMetadataKey = "AutofacMvcActionFilterOverride";
 
         internal static string AuthorizationFilterMetadataKey = "AutofacMvcAuthorizationFilter";
-        internal static string OverrideAuthorizationFilterMetadataKey = "AutofacMvcOverrideAuthorizationFilter";
+        internal static string AuthorizationFilterOverrideMetadataKey = "AutofacMvcAuthorizationFilterOverride";
 
         internal static string AuthenticationFilterMetadataKey = "AutofacMvcAuthenticationFilter";
-        internal static string OverrideAuthenticationFilterMetadataKey = "AutofacMvcOverrideAuthenticationFilter";
+        internal static string AuthenticationFilterOverrideMetadataKey = "AutofacMvcAuthenticationFilterOverride";
 
         internal static string ExceptionFilterMetadataKey = "AutofacMvcExceptionFilter";
-        internal static string OverrideExceptionFilterMetadataKey = "AutofacMvcOverrideExceptionFilter";
+        internal static string ExceptionFilterOverrideMetadataKey = "AutofacMvcExceptionFilterOverride";
 
         internal static string ResultFilterMetadataKey = "AutofacMvcResultFilter";
-        internal static string OverrideResultFilterMetadataKey = "AutofacMvcOverrideResultFilter";
+        internal static string ResultFilterOverrideMetadataKey = "AutofacMvcResultFilterOverride";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacFilterProvider"/> class.
@@ -116,11 +116,17 @@ namespace Autofac.Integration.Mvc
                 ResolveActionScopedFilters<ReflectedAsyncActionDescriptor>(filterContext, d => d.AsyncMethodInfo);
                 ResolveActionScopedFilters<TaskAsyncActionDescriptor>(filterContext, d => d.TaskMethodInfo);
 
-                ResolveControllerScopedOverrideFilters(filterContext);
+                ResolveControllerScopedFilterOverrides(filterContext);
 
-                ResolveActionScopedOverrideFilters<ReflectedActionDescriptor>(filterContext, d => d.MethodInfo);
-                ResolveActionScopedOverrideFilters<ReflectedAsyncActionDescriptor>(filterContext, d => d.AsyncMethodInfo);
-                ResolveActionScopedOverrideFilters<TaskAsyncActionDescriptor>(filterContext, d => d.TaskMethodInfo);
+                ResolveActionScopedFilterOverrides<ReflectedActionDescriptor>(filterContext, d => d.MethodInfo);
+                ResolveActionScopedFilterOverrides<ReflectedAsyncActionDescriptor>(filterContext, d => d.AsyncMethodInfo);
+                ResolveActionScopedFilterOverrides<TaskAsyncActionDescriptor>(filterContext, d => d.TaskMethodInfo);
+
+                ResolveControllerScopedEmptyOverrideFilters(filterContext);
+
+                ResolveActionScopedEmptyOverrideFilters<ReflectedActionDescriptor>(filterContext, d => d.MethodInfo);
+                ResolveActionScopedEmptyOverrideFilters<ReflectedAsyncActionDescriptor>(filterContext, d => d.AsyncMethodInfo);
+                ResolveActionScopedEmptyOverrideFilters<TaskAsyncActionDescriptor>(filterContext, d => d.TaskMethodInfo);
             }
 
             return filters.ToArray();
@@ -135,7 +141,16 @@ namespace Autofac.Integration.Mvc
             ResolveControllerScopedFilter<IResultFilter>(filterContext, ResultFilterMetadataKey);
         }
 
-        static void ResolveControllerScopedFilter<TFilter>(FilterContext filterContext, string metadataKey)
+        static void ResolveControllerScopedFilterOverrides(FilterContext filterContext)
+        {
+            ResolveControllerScopedFilter<IActionFilter>(filterContext, ActionFilterOverrideMetadataKey, filter => new ActionFilterOverride(filter));
+            ResolveControllerScopedFilter<IAuthenticationFilter>(filterContext, AuthenticationFilterOverrideMetadataKey, filter => new AuthenticationFilterOverride(filter));
+            ResolveControllerScopedFilter<IAuthorizationFilter>(filterContext, AuthorizationFilterOverrideMetadataKey, filter => new AuthorizationFilterOverride(filter));
+            ResolveControllerScopedFilter<IExceptionFilter>(filterContext, ExceptionFilterOverrideMetadataKey, filter => new ExceptionFilterOverride(filter));
+            ResolveControllerScopedFilter<IResultFilter>(filterContext, ResultFilterOverrideMetadataKey, filter => new ResultFilterOverride(filter));
+        }
+
+        static void ResolveControllerScopedFilter<TFilter>(FilterContext filterContext, string metadataKey, Func<TFilter, TFilter> wrapperFactory = null)
             where TFilter : class
         {
             var actionFilters = filterContext.LifetimeScope.Resolve<IEnumerable<Meta<Lazy<TFilter>>>>();
@@ -145,7 +160,12 @@ namespace Autofac.Integration.Mvc
                 var metadata = (FilterMetadata)actionFilter.Metadata[metadataKey];
                 if (!FilterMatchesController(filterContext, metadata)) continue;
 
-                var filter = new Filter(actionFilter.Value.Value, FilterScope.Controller, metadata.Order);
+                var instance = actionFilter.Value.Value;
+
+                if (wrapperFactory != null)
+                    instance = wrapperFactory(instance);
+
+                var filter = new Filter(instance, FilterScope.Controller, metadata.Order);
                 filterContext.Filters.Add(filter);
             }
         }
@@ -165,7 +185,22 @@ namespace Autofac.Integration.Mvc
             ResolveActionScopedFilter<IResultFilter>(filterContext, methodInfo, ResultFilterMetadataKey);
         }
 
-        static void ResolveActionScopedFilter<TFilter>(FilterContext filterContext, MethodInfo methodInfo, string metadataKey)
+        static void ResolveActionScopedFilterOverrides<T>(FilterContext filterContext, Func<T, MethodInfo> methodSelector)
+            where T : ActionDescriptor
+        {
+            var actionDescriptor = filterContext.ActionDescriptor as T;
+            if (actionDescriptor == null) return;
+
+            var methodInfo = methodSelector(actionDescriptor);
+
+            ResolveActionScopedFilter<IActionFilter>(filterContext, methodInfo, ActionFilterOverrideMetadataKey, filter => new ActionFilterOverride(filter));
+            ResolveActionScopedFilter<IAuthenticationFilter>(filterContext, methodInfo, AuthenticationFilterOverrideMetadataKey, filter => new AuthenticationFilterOverride(filter));
+            ResolveActionScopedFilter<IAuthorizationFilter>(filterContext, methodInfo, AuthorizationFilterOverrideMetadataKey, filter => new AuthorizationFilterOverride(filter));
+            ResolveActionScopedFilter<IExceptionFilter>(filterContext, methodInfo, ExceptionFilterOverrideMetadataKey, filter => new ExceptionFilterOverride(filter));
+            ResolveActionScopedFilter<IResultFilter>(filterContext, methodInfo, ResultFilterOverrideMetadataKey, filter => new ResultFilterOverride(filter));
+        }
+
+        static void ResolveActionScopedFilter<TFilter>(FilterContext filterContext, MethodInfo methodInfo, string metadataKey, Func<TFilter, TFilter> wrapperFactory = null)
             where TFilter : class
         {
             var actionFilters = filterContext.LifetimeScope.Resolve<IEnumerable<Meta<Lazy<TFilter>>>>();
@@ -175,18 +210,23 @@ namespace Autofac.Integration.Mvc
                 var metadata = (FilterMetadata)actionFilter.Metadata[metadataKey];
                 if (!FilterMatchesAction(filterContext, methodInfo, metadata)) continue;
 
-                var filter = new Filter(actionFilter.Value.Value, FilterScope.Action, metadata.Order);
+                var instance = actionFilter.Value.Value;
+
+                if (wrapperFactory != null)
+                    instance = wrapperFactory(instance);
+
+                var filter = new Filter(instance, FilterScope.Action, metadata.Order);
                 filterContext.Filters.Add(filter);
             }
         }
 
-        static void ResolveControllerScopedOverrideFilters(FilterContext filterContext)
+        static void ResolveControllerScopedEmptyOverrideFilters(FilterContext filterContext)
         {
-            ResolveControllerScopedOverrideFilter(filterContext, OverrideActionFilterMetadataKey);
-            ResolveControllerScopedOverrideFilter(filterContext, OverrideAuthenticationFilterMetadataKey);
-            ResolveControllerScopedOverrideFilter(filterContext, OverrideAuthorizationFilterMetadataKey);
-            ResolveControllerScopedOverrideFilter(filterContext, OverrideExceptionFilterMetadataKey);
-            ResolveControllerScopedOverrideFilter(filterContext, OverrideResultFilterMetadataKey);
+            ResolveControllerScopedOverrideFilter(filterContext, ActionFilterOverrideMetadataKey);
+            ResolveControllerScopedOverrideFilter(filterContext, AuthenticationFilterOverrideMetadataKey);
+            ResolveControllerScopedOverrideFilter(filterContext, AuthorizationFilterOverrideMetadataKey);
+            ResolveControllerScopedOverrideFilter(filterContext, ExceptionFilterOverrideMetadataKey);
+            ResolveControllerScopedOverrideFilter(filterContext, ResultFilterOverrideMetadataKey);
         }
 
         static void ResolveControllerScopedOverrideFilter(FilterContext filterContext, string metadataKey)
@@ -203,7 +243,7 @@ namespace Autofac.Integration.Mvc
             }
         }
 
-        static void ResolveActionScopedOverrideFilters<T>(FilterContext filterContext, Func<T, MethodInfo> methodSelector)
+        static void ResolveActionScopedEmptyOverrideFilters<T>(FilterContext filterContext, Func<T, MethodInfo> methodSelector)
             where T : ActionDescriptor
         {
             var actionDescriptor = filterContext.ActionDescriptor as T;
@@ -211,11 +251,11 @@ namespace Autofac.Integration.Mvc
 
             var methodInfo = methodSelector(actionDescriptor);
 
-            ResolveActionScopedOverrideFilter(filterContext, methodInfo, OverrideActionFilterMetadataKey);
-            ResolveActionScopedOverrideFilter(filterContext, methodInfo, OverrideAuthenticationFilterMetadataKey);
-            ResolveActionScopedOverrideFilter(filterContext, methodInfo, OverrideAuthorizationFilterMetadataKey);
-            ResolveActionScopedOverrideFilter(filterContext, methodInfo, OverrideExceptionFilterMetadataKey);
-            ResolveActionScopedOverrideFilter(filterContext, methodInfo, OverrideResultFilterMetadataKey);
+            ResolveActionScopedOverrideFilter(filterContext, methodInfo, ActionFilterOverrideMetadataKey);
+            ResolveActionScopedOverrideFilter(filterContext, methodInfo, AuthenticationFilterOverrideMetadataKey);
+            ResolveActionScopedOverrideFilter(filterContext, methodInfo, AuthorizationFilterOverrideMetadataKey);
+            ResolveActionScopedOverrideFilter(filterContext, methodInfo, ExceptionFilterOverrideMetadataKey);
+            ResolveActionScopedOverrideFilter(filterContext, methodInfo, ResultFilterOverrideMetadataKey);
         }
 
         static void ResolveActionScopedOverrideFilter(FilterContext filterContext, MethodInfo methodInfo, string metadataKey)

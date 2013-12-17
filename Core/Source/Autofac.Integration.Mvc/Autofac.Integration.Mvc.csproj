@@ -92,11 +92,16 @@
     <CodeAnalysisDictionary Include="..\..\..\Build\CodeAnalysisDictionary.xml">
       <Link>CodeAnalysisDictionary.xml</Link>
     </CodeAnalysisDictionary>
+    <Compile Include="ActionFilterOverride.cs" />
     <Compile Include="AutofacDependencyResolver.cs" />
     <Compile Include="AutofacFilterProvider.cs" />
     <Compile Include="AutofacModelBinderProvider.cs" />
     <Compile Include="AutofacOverrideFilter.cs" />
     <Compile Include="AutofacWebTypesModule.cs" />
+    <Compile Include="AuthenticationFilterOverride.cs" />
+    <Compile Include="AuthorizationFilterOverride.cs" />
+    <Compile Include="ResultFilterOverride.cs" />
+    <Compile Include="ExceptionFilterOverride.cs" />
     <Compile Include="FilterMetadata.cs" />
     <Compile Include="Properties\VersionAssemblyInfo.cs" />
     <Compile Include="RegistrationExtensionsResources.Designer.cs">
