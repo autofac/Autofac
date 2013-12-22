@@ -1,12 +1,9 @@
-﻿using Autofac;
-using NUnit.Framework;
-using System;
-using Autofac.Features.GeneratedFactories;
-using Autofac.Builder;
-using Autofac.Core;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac.Tests.Util;
+using Autofac.Builder;
+using Autofac.Core;
+using NUnit.Framework;
 
 namespace Autofac.Tests.Features.GeneratedFactories
 {
@@ -299,7 +296,7 @@ namespace Autofac.Tests.Features.GeneratedFactories
             var a = factory(s);
             Assert.IsNotNull(a);
             Assert.AreEqual(s, a.P);
-    		
+
         }
 
         [Test]
@@ -331,6 +328,64 @@ namespace Autofac.Tests.Features.GeneratedFactories
             var fac = container.ResolveNamed<Func<object>>("o");
 
             Assert.AreSame(o, fac());
+        }
+
+        [Test(Description = "Issue #269: An object with duplicate constructor parameter types should fail Func resolution from an auto-generated factory.")]
+        public void DuplicateConstructorParameterTypesDoNotResolve()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<DuplicateConstructorParameterTypes>();
+            var container = builder.Build();
+            var func = container.Resolve<Func<int, int, string, DuplicateConstructorParameterTypes>>();
+            Assert.Throws<DependencyResolutionException>(() => func(1, 2, "3"));
+        }
+
+        [Test(Description = "Issue #269: If you register a custom Func for an object with duplicate parameters it should override the auto-generated factory.")]
+        public void FactoryOverrideCanBeRegisteredForDuplicateParameterTypes()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<DuplicateConstructorParameterTypes>();
+            builder.Register<Func<int, int, string, DuplicateConstructorParameterTypes>>(ctx => (a, b, c) => new DuplicateConstructorParameterTypes(a, b, c));
+            var container = builder.Build();
+            var func = container.Resolve<Func<int, int, string, DuplicateConstructorParameterTypes>>();
+            var obj = func(1, 2, "3");
+            Assert.AreEqual(1, obj.A);
+            Assert.AreEqual(2, obj.B);
+            Assert.AreEqual("3", obj.C);
+        }
+
+        [Test(Description = "Issue #269: If you register a specific delegate type for an object with duplicate parameters it should work and not throw an exception.")]
+        public void SpecificDelegateCanBeRegisteredForDuplicateParameterTypes()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<DuplicateConstructorParameterTypes>();
+            builder.RegisterGeneratedFactory<DuplicateConstructorParameterTypes.Factory>(new TypedService(typeof(DuplicateConstructorParameterTypes)));
+            var container = builder.Build();
+            var func = container.Resolve<DuplicateConstructorParameterTypes.Factory>();
+            var obj = func(1, 2, "3");
+            Assert.AreEqual(1, obj.A);
+            Assert.AreEqual(2, obj.B);
+            Assert.AreEqual("3", obj.C);
+        }
+
+        private class DuplicateConstructorParameterTypes
+        {
+            public delegate DuplicateConstructorParameterTypes Factory(int a, int b, string c);
+
+            public int A { get; set; }
+
+            public int B { get; set; }
+
+            public string C { get; set; }
+
+            // This constructor should not be able to be resolved into a Func<int, int, string, DuplicateConstructorParameterTypes>
+            // because of the redundant types in the constructor.
+            public DuplicateConstructorParameterTypes(int a, int b, string c)
+            {
+                this.A = a;
+                this.B = b;
+                this.C = c;
+            }
         }
     }
 }

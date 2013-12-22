@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using Autofac.Core;
@@ -103,8 +104,13 @@ namespace Autofac.Features.GeneratedFactories
         static ParameterMapping GetParameterMapping(Type delegateType, ParameterMapping configuredParameterMapping)
         {
             if (configuredParameterMapping == ParameterMapping.Adaptive)
-                return delegateType.Name.StartsWith("Func`", StringComparison.Ordinal) ? ParameterMapping.ByType : ParameterMapping.ByName;
+                return DelegateTypeIsFunc(delegateType) ? ParameterMapping.ByType : ParameterMapping.ByName;
             return configuredParameterMapping;
+        }
+
+        private static bool DelegateTypeIsFunc(Type delegateType)
+        {
+            return delegateType.Name.StartsWith("Func`", StringComparison.Ordinal);
         }
 
         static Func<IComponentContext, IEnumerable<Parameter>, Delegate> CreateGenerator(Func<Expression, Expression[], Expression> makeResolveCall, Type delegateType, ParameterMapping pm)
@@ -124,12 +130,39 @@ namespace Autofac.Features.GeneratedFactories
                 .Select(pi => Expression.Parameter(pi.ParameterType, pi.Name))
                 .ToList();
 
-            var resolveParameterArray = MapParameters(creatorParams, pm);
+            Expression resolveCast = null;
+            if (DelegateTypeIsFunc(delegateType) && pm == ParameterMapping.ByType)
+            {
+                // Issue #269:
+                // If we're resolving a Func<X1...XN>() and there are duplicate input parameter types
+                // and the parameter mapping is by type, we shouldn't be able to resolve it.
+                var arguments = delegateType.GetGenericArguments();
+                var returnType = arguments.Last();
 
-            var resolveCall = makeResolveCall(activatorContextParam, resolveParameterArray);
+                // Remove the return type to check the list of input types only.
+                Array.Resize(ref arguments, arguments.Length - 1);
+                if (arguments.Distinct().Count() != arguments.Length)
+                {
+                    // There are duplicate input types - that's a problem. Throw
+                    // when the function is invoked.
+                    var message = String.Format(CultureInfo.CurrentCulture, GeneratedFactoryRegistrationSourceResources.DuplicateTypesInTypeMappedFuncParameterList, returnType.AssemblyQualifiedName, String.Join(", ", arguments.Cast<object>().ToArray()));
+                    resolveCast = Expression.Throw(Expression.Constant(new DependencyResolutionException(message)), invoke.ReturnType);
+                }
+            }
 
-            // (drt)
-            var resolveCast = Expression.Convert(resolveCall, invoke.ReturnType);
+            if (resolveCast == null)
+            {
+                // Issue #269: There aren't duplicate parameter types in the generated
+                // factory, so in the case of Func<X1...XN>() typed parameter mapping,
+                // if there are duplicate types in the target constructor, both constructor
+                // parameters will get the same value passed in. (We don't know
+                // the activator, so we can't do much more about it than that.)
+                //
+                // (drt)
+                var resolveParameterArray = MapParameters(creatorParams, pm);
+                var resolveCall = makeResolveCall(activatorContextParam, resolveParameterArray);
+                resolveCast = Expression.Convert(resolveCall, invoke.ReturnType);
+            }
 
             // ([dps]*) => c.Resolve(service, [new Parameter(name, dps)]*)
             var creator = Expression.Lambda(delegateType, resolveCast, creatorParams);
@@ -139,6 +172,8 @@ namespace Autofac.Features.GeneratedFactories
 
             return activator.Compile();
         }
+
+
 
         static Expression[] MapParameters(IEnumerable<ParameterExpression> creatorParams, ParameterMapping pm)
         {
