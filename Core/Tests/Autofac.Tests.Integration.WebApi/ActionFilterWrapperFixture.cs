@@ -54,5 +54,12 @@ namespace Autofac.Tests.Integration.WebApi
             wrapper.OnActionExecuted(httpActionExecutedContext);
             Assert.That(activationCount, Is.EqualTo(1));
         }
+
+        [Test]
+        public void ReturnsCorrectMetadataKey()
+        {
+            var wrapper = new ActionFilterWrapper(new FilterMetadata());
+            Assert.That(wrapper.MetadataKey, Is.EqualTo(AutofacWebApiFilterProvider.ActionFilterMetadataKey));
+        }
     }
 }

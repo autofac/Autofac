@@ -5,7 +5,6 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using System.Web.Http.Hosting;
 using Autofac.Integration.WebApi;
-using Moq;
 using NUnit.Framework;
 
 namespace Autofac.Tests.Integration.WebApi

@@ -40,7 +40,7 @@ namespace Autofac.Integration.WebApi
     /// </summary>
     [SecurityCritical]
     [SuppressMessage("Microsoft.Performance", "CA1813:AvoidUnsealedAttributes", Justification = "Derived attribute adds filter override support")]
-    internal class AuthorizationFilterWrapper : AuthorizationFilterAttribute, IAutofacAuthorizationFilter
+    internal class AuthorizationFilterWrapper : AuthorizationFilterAttribute, IAutofacAuthorizationFilter, IFilterWrapper
     {
         readonly FilterMetadata _filterMetadata;
 
@@ -53,6 +53,15 @@ namespace Autofac.Integration.WebApi
             if (filterMetadata == null) throw new ArgumentNullException("filterMetadata");
 
             _filterMetadata = filterMetadata;
+        }
+
+        /// <summary>
+        /// Gets the metadata key used to retrieve the filter metadata.
+        /// </summary>
+        public virtual string MetadataKey
+        {
+            [SecurityCritical]
+            get { return AutofacWebApiFilterProvider.AuthorizationFilterMetadataKey; }
         }
 
         /// <summary>
@@ -80,7 +89,8 @@ namespace Autofac.Integration.WebApi
 
         bool FilterMatchesMetadata(Meta<Lazy<IAutofacAuthorizationFilter>> filter)
         {
-            var metadata = filter.Metadata[AutofacWebApiFilterProvider.AuthorizationFilterMetadataKey] as FilterMetadata;
+            var metadata = filter.Metadata.ContainsKey(MetadataKey)
+                ? filter.Metadata[MetadataKey] as FilterMetadata : null;
 
             return metadata != null
                 && metadata.ControllerType == _filterMetadata.ControllerType

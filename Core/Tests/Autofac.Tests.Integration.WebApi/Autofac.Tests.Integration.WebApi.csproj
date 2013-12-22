@@ -84,6 +84,10 @@
     <Compile Include="AuthenticationFilterWrapperFixture.cs" />
     <Compile Include="AuthorizationFilterFixture.cs" />
     <Compile Include="AuthenticationFilterFixture.cs" />
+    <Compile Include="ActionFilterOverrideWrapperFixture.cs" />
+    <Compile Include="AuthenticationFilterOverrideWrapperFixture.cs" />
+    <Compile Include="AuthorizationFilterOverrideWrapperFixture.cs" />
+    <Compile Include="ExceptionFilterOverrideWrapperFixture.cs" />
     <Compile Include="ExceptionFilterFixture.cs" />
     <Compile Include="CurrentRequestHandlerFixture.cs" />
     <Compile Include="ExceptionFilterWrapperFixture.cs" />

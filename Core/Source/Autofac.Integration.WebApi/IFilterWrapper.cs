@@ -23,42 +23,18 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
 using System.Security;
-using System.Web.Http.Filters;
 
 namespace Autofac.Integration.WebApi
 {
     /// <summary>
-    /// Resolves a filter override for the specified metadata for each controller request.
+    /// Common behaviour required for filter wrappers.
     /// </summary>
-    [SecurityCritical]
-    internal sealed class ExceptionFilterOverrideWrapper : ExceptionFilterWrapper, IOverrideFilter
+    internal interface IFilterWrapper
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ExceptionFilterOverrideWrapper"/> class.
-        /// </summary>
-        /// <param name="filterMetadata">The filter metadata.</param>
-        public ExceptionFilterOverrideWrapper(FilterMetadata filterMetadata) : base(filterMetadata)
-        {
-        }
-
         /// <summary>
         /// Gets the metadata key used to retrieve the filter metadata.
         /// </summary>
-        public override string MetadataKey
-        {
-            [SecurityCritical]
-            get { return AutofacWebApiFilterProvider.ExceptionFilterOverrideMetadataKey; }
-        }
-
-        /// <summary>
-        /// Gets the filters to override.
-        /// </summary>
-        public Type FiltersToOverride
-        {
-            [SecurityCritical]
-            get { return typeof(IExceptionFilter); }
-        }
+        string MetadataKey { [SecurityCritical]get; }
     }
 }

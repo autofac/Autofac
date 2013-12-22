@@ -44,6 +44,15 @@ namespace Autofac.Integration.WebApi
         }
 
         /// <summary>
+        /// Gets the metadata key used to retrieve the filter metadata.
+        /// </summary>
+        public override string MetadataKey
+        {
+            [SecurityCritical]
+            get { return AutofacWebApiFilterProvider.AuthorizationFilterOverrideMetadataKey; }
+        }
+
+        /// <summary>
         /// Gets the filters to override.
         /// </summary>
         public Type FiltersToOverride

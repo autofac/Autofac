@@ -39,7 +39,7 @@ namespace Autofac.Integration.WebApi
     /// Resolves a filter for the specified metadata for each controller request.
     /// </summary>
     [SecurityCritical]
-    internal class AuthenticationFilterWrapper : IAuthenticationFilter, IAutofacAuthenticationFilter
+    internal class AuthenticationFilterWrapper : IAuthenticationFilter, IAutofacAuthenticationFilter, IFilterWrapper
     {
         readonly FilterMetadata _filterMetadata;
 
@@ -52,6 +52,15 @@ namespace Autofac.Integration.WebApi
             if (filterMetadata == null) throw new ArgumentNullException("filterMetadata");
 
             _filterMetadata = filterMetadata;
+        }
+
+        /// <summary>
+        /// Gets the metadata key used to retrieve the filter metadata.
+        /// </summary>
+        public virtual string MetadataKey
+        {
+            [SecurityCritical]
+            get { return AutofacWebApiFilterProvider.AuthenticationFilterMetadataKey; }
         }
 
         [SecurityCritical]
@@ -102,7 +111,8 @@ namespace Autofac.Integration.WebApi
 
         bool FilterMatchesMetadata(Meta<Lazy<IAutofacAuthenticationFilter>> filter)
         {
-            var metadata = filter.Metadata[AutofacWebApiFilterProvider.AuthenticationFilterMetadataKey] as FilterMetadata;
+            var metadata = filter.Metadata.ContainsKey(MetadataKey)
+                ? filter.Metadata[MetadataKey] as FilterMetadata : null;
 
             return metadata != null
                    && metadata.ControllerType == _filterMetadata.ControllerType
