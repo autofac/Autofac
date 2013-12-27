@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("3.0.0.0")]
 [assembly: AssemblyFileVersion("3.0.0.0")]
-[assembly: AssemblyConfiguration("Release built on 2013-12-05 16:05")]
+[assembly: AssemblyConfiguration("Release built on 2013-12-27 15:23")]
 [assembly: AssemblyCopyright("Copyright © 2013 Autofac Contributors")]
 [assembly: AssemblyDescription("Autofac.Wcf 3.0.0")]
 
