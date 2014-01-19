@@ -20,6 +20,7 @@
 			<Word>multitenancy</Word>
       <Word>Mvc</Word>
       <Word>startable</Word>
+      <Word>Owin</Word>
 		</Recognized>
 		<!--
     <Deprecated>

@@ -118,11 +118,13 @@
 					**\*.vshost.*;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.CodeAnalysisLog.*;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.lastcodeanalysissucceeded;
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.Owin.*;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.WebApi.*;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.Mvc.*;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.SignalR.*" />
 			<Source45OutputList
 				Include="
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.Owin.*;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.WebApi.*;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.Mvc.*;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.SignalR.*"
@@ -140,6 +142,7 @@
 					**\*.vshost.*;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.CodeAnalysisLog.*;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.lastcodeanalysissucceeded;
+					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.Owin.*;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.WebApi.*;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.Mvc.*;
 					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.SignalR.*" />
