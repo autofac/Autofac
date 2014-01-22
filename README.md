@@ -19,13 +19,13 @@ Our [Getting Started](https://github.com/autofac/Autofac/wiki/Getting-Started) t
 
 _[Components are registered](https://github.com/autofac/Autofac/wiki/Component-Creation)_ with a `ContainerBuilder`:
 
-```
+```C#
 var builder = new ContainerBuilder();
 ```
 
 Autofac can use [a Linq expression, a .NET type, or a pre-built instance](https://github.com/autofac/Autofac/wiki/Component-Creation) as a component:
 
-```
+```C#
 builder.Register(c => new TaskController(c.Resolve<ITaskRepository>()));
 
 builder.RegisterType<TaskController>();
@@ -35,25 +35,25 @@ builder.RegisterInstance(new TaskController());
 
 Or, Autofac can find and register the component types in an assembly:
 
-```
+```C#
 builder.RegisterAssemblyTypes(controllerAssembly);
 ```
 
 Calling `Build()` creates a _container_:
 
-```
+```C#
 var container = builder.Build();
 ```
 
 To retrieve a _component instance_ from a container, a _[service](https://github.com/autofac/Autofac/wiki/Domain-Model)_ is requested. By default, components provide their concrete type as a service:
 
-```
+```C#
 var taskController = container.Resolve<TaskController>();
 ```
 
 To specify that the component’s service is an interface, the `As()` method is used at registration time:
 
-```
+```C#
 builder.RegisterType<TaskController>().As<IController>();
 // enabling
 var taskController = container.Resolve<IController>();
@@ -65,7 +65,7 @@ When Autofac instantiates a component, it satisfies the component's _dependencie
 
 Components express their dependencies to Autofac as constructor parameters:
 
-```
+```C#
 public class TaskController : IController
 {
     public TaskController(ITaskRepository tasks) { ... }
@@ -76,20 +76,20 @@ In this case Autofac will look for another component that provides the `ITaskRep
 
 If there is more than one constructor on a component type, Autofac will use the constructor with the most resolvable parameters.
 
-```
+```C#
 public TaskController(ITaskRepository tasks)
 public TaskController(ITaskRepository tasks, ILog log)
 ```
 
 Default parameter values can be used to express optional dependencies (properties can be used instead if you prefer):
 
-```
+```C#
 public TaskController(ITaskRepository tasks, ILog log = null)
 ```
 
 [Circular references](https://github.com/autofac/Autofac/wiki/Circular-Dependencies) can be constructed by declaring one of the parameters to be of type `Lazy<T>`.
 
-```
+```C#
 public TaskController(Lazy<ITaskRepository> tasks)
 ```
 
@@ -107,7 +107,7 @@ Autofac keeps out of your way and places as few constraints on your design as po
 
 ## Status
 
-*Autofac moved to GitHub on the 22nd January, 2013. The process of cleaning up the issues list and wiki content has only just started. You may stumble across some invalid links while we sort out problems from the migration. The code and NuGet packages all remain in a consistent state.*
+> Autofac moved to GitHub on the 22nd January, 2013. The process of cleaning up the issues list and wiki content has only just started. You may stumble across some invalid links while we sort out problems from the migration. The code and NuGet packages all remain in a consistent state.
 
 You can get the latest releases [from this site](https://code.google.com/p/autofac/downloads/list) or from [NuGet](https://www.nuget.org/packages?q=Author%3A%22Autofac+Contributors%22+Owner%3A%22alexmg%22+Autofac*). [Release notes are available on the wiki](https://github.com/autofac/Autofac/wiki/Release-Notes).
 
