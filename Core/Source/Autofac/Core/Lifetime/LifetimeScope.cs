@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
@@ -35,6 +36,7 @@ namespace Autofac.Core.Lifetime
     /// <summary>
     /// Lifetime scope implementation.
     /// </summary>
+    [DebuggerDisplay("{DebuggerDisplay()}")]
     public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     {
         /// <summary>
@@ -353,5 +355,11 @@ namespace Autofac.Core.Lifetime
         /// Fired when a resolve operation is beginning in this scope.
         /// </summary>
         public event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning;
+
+
+        string DebuggerDisplay()
+        {
+            return Tag.ToString();
+        }
     }
 }
