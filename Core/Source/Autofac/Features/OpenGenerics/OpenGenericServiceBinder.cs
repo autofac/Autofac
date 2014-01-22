@@ -98,7 +98,15 @@ namespace Autofac.Features.OpenGenerics
 
         static Type GetInterface(Type implementationType, Type serviceType)
         {
-            return implementationType.GetInterfaces().Single(i => i.Name == serviceType.Name);
+            try
+            {
+                return implementationType.GetInterfaces().Single(i => i.Name == serviceType.Name);
+            }
+            catch (InvalidOperationException)
+            {
+                var message = string.Format("The type '{0}' does not implement the interface '{1}'", implementationType.FullName, serviceType.FullName);
+                throw new DependencyResolutionException(message);
+            }
         }
 
         static Type TryFindServiceArgumentForImplementationArgumentDefinition(Type implementationGenericArgumentDefinition, IEnumerable<KeyValuePair<Type, Type>> serviceArgumentDefinitionToArgument)

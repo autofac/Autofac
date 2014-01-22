@@ -165,5 +165,22 @@ namespace Autofac.Tests.Features.OpenGenerics
             var c = cb.Build();
             Assert.AreEqual(1, c.Resolve<IEnumerable<IG<int>>>().Count());
         }
+
+        public class FG<T>
+        {
+        }
+
+        [Test]
+        public void WhenAnOpenGenericIsRegisteredAndItProvidesNoImplementationItShouldHaveAGoodError()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(FG<>)).As(typeof(IG<>));
+           
+            Assert.Throws<DependencyResolutionException>(() =>
+            { 
+                cb.Build();
+            });
+            
+        }
     }
 }
