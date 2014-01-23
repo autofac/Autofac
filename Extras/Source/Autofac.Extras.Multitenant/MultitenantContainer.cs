@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Autofac;
@@ -48,6 +49,7 @@ namespace Autofac.Extras.Multitenant
     /// </para>
     /// </remarks>
     /// <seealso cref="Autofac.Extras.Multitenant.ConfigurationActionBuilder"/>
+    [DebuggerDisplay("{DebuggerDisplay()}")]
     public class MultitenantContainer : Disposable, IContainer
     {
         /// <summary>
@@ -417,6 +419,11 @@ namespace Autofac.Extras.Multitenant
         public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
             return this.GetCurrentTenantScope().ResolveComponent(registration, parameters);
+        }
+
+        string DebuggerDisplay()
+        {
+            return Tag.ToString();
         }
     }
 }

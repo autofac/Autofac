@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
@@ -36,6 +37,7 @@ namespace Autofac.Core
     /// <summary>
     /// Standard container implementation.
     /// </summary>
+    [DebuggerDisplay("{DebuggerDisplay()}")]
     public class Container : Disposable, IContainer, IServiceProvider
     {
         readonly IComponentRegistry _componentRegistry;
@@ -208,6 +210,11 @@ namespace Autofac.Core
         public object GetService(Type serviceType)
         {
             return ((IServiceProvider)_rootLifetimeScope).GetService(serviceType);
+        }
+
+        string DebuggerDisplay()
+        {
+            return Tag.ToString();
         }
     }
 }

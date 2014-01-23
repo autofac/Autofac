@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Autofac.Builder;
 using Autofac.Core;
@@ -37,6 +38,7 @@ namespace Autofac.Integration.Web
     /// Provides an implementation of <see cref="Autofac.IContainer"/> which uses the configured
     /// <see cref="IContainerProvider"/> to route calls to the current request container.
     /// </summary>
+    [DebuggerDisplay("{DebuggerDisplay()}")]
     [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "Disposing of this wrapper container should not result in the whole application container being disposed.")]
     public class ContainerProviderContainer : IContainer
     {
@@ -197,6 +199,11 @@ namespace Autofac.Integration.Web
         [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "Disposing of this wrapper container should not result in the whole application container being disposed.")]
         public void Dispose()
         {
+        }
+
+        string DebuggerDisplay()
+        {
+            return Tag.ToString();
         }
     }
 }
