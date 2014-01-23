@@ -104,7 +104,7 @@ namespace Autofac.Features.OpenGenerics
             }
             catch (InvalidOperationException)
             {
-                var message = string.Format("The type '{0}' does not implement the interface '{1}'", implementationType.FullName, serviceType.FullName);
+                var message = string.Format(OpenGenericServiceBinderResources.ImplementorDoesntImplementService, implementationType.FullName, serviceType.FullName);
                 throw new DependencyResolutionException(message);
             }
         }
