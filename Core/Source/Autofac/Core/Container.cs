@@ -37,7 +37,7 @@ namespace Autofac.Core
     /// <summary>
     /// Standard container implementation.
     /// </summary>
-    [DebuggerDisplay("{DebuggerDisplay()}")]
+    [DebuggerDisplay("Tag = {Tag}, IsDisposed = {IsDisposed}")]
     public class Container : Disposable, IContainer, IServiceProvider
     {
         readonly IComponentRegistry _componentRegistry;
@@ -210,11 +210,6 @@ namespace Autofac.Core
         public object GetService(Type serviceType)
         {
             return ((IServiceProvider)_rootLifetimeScope).GetService(serviceType);
-        }
-
-        string DebuggerDisplay()
-        {
-            return Tag.ToString();
         }
     }
 }
