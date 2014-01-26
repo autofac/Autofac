@@ -24,6 +24,8 @@
 
 		<!-- Set this to false via command-line when debugging/troubleshooting NuGet packaging. -->
 		<DeleteNuGetStaging Condition="'$(DeleteNuGetStaging)' == ''">true</DeleteNuGetStaging>
+		
+		<NuGetCommandLinePath>$(MSBuildProjectDirectory)\lib\NuGet\NuGet.exe</NuGetCommandLinePath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(MyGetBuild)' == ''">
@@ -93,11 +95,7 @@
 
 	<Target Name="CleanNuGet">
 		<Message Text="Removing NuGet packages for clean package retrieval." />
-		<ItemGroup>
-			<NuGetRepositoryConfig Include="$(MSBuildProjectDirectory)/**/packages/repositories.config" />
-			<NuGetPackageFolders Include="$([System.IO.Directory]::GetDirectories(&quot;%(NuGetRepositoryConfig.RootDir)%(NuGetRepositoryConfig.Directory)&quot;))" />
-		</ItemGroup>
-		<RemoveDir Directories="%(NuGetPackageFolders.Identity)" />
+		<RemoveDir Directories="$(PackageInstallDirectory)" ContinueOnError="false" />
 	</Target>
 
 	<Target Name="Compile">
@@ -105,7 +103,7 @@
 			Manually restore solution-level packages before build. NuGet doesn't do this automatically
 			"by design": http://nuget.codeplex.com/workitem/1880
 		-->
-		<MSBuild Projects="$(MSBuildProjectDirectory)\.nuget\NuGet.targets" Targets="RestorePackages" />
+		<Exec Command="&quot;$(NuGetCommandLinePath)&quot; restore &quot;%(SolutionFile.FullPath)&quot;" />
 		<MSBuild Projects="%(SolutionFile.FullPath)" Targets="Build" Properties="Configuration=$(BuildConfiguration)" />
 		<ItemGroup>
 			<SourceOutputList
@@ -229,7 +227,7 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 
 		<Message Text="Packaging NuGet packages..." />
 		<Exec
-			Command="&quot;$(MSBuildProjectDirectory)\.nuget\nuget.exe&quot; pack %(NuspecFiles.Filename)%(NuspecFiles.Extension) -symbols"
+			Command="&quot;$(NuGetCommandLinePath)&quot; pack %(NuspecFiles.Filename)%(NuspecFiles.Extension) -symbols"
 			WorkingDirectory="%(NuspecFiles.RootDir)%(NuspecFiles.Directory)" />
 		<ItemGroup>
 			<NupkgFiles Include="$(StagingDirectory)\**\*.nupkg" />
