@@ -104,7 +104,7 @@ namespace Autofac.Features.OpenGenerics
             }
             catch (InvalidOperationException)
             {
-                var message = string.Format(OpenGenericServiceBinderResources.ImplementorDoesntImplementService, implementationType.FullName, serviceType.FullName);
+                var message = string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.ImplementorDoesntImplementService, implementationType.FullName, serviceType.FullName);
                 throw new DependencyResolutionException(message);
             }
         }

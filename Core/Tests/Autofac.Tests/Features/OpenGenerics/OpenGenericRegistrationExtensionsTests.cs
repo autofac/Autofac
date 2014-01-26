@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Autofac.Features.OpenGenerics;
 using NUnit.Framework;
 using Autofac.Core;
 using System.Collections.Generic;
@@ -175,12 +176,11 @@ namespace Autofac.Tests.Features.OpenGenerics
         {
             var cb = new ContainerBuilder();
             cb.RegisterGeneric(typeof(FG<>)).As(typeof(IG<>));
-           
-            Assert.Throws<DependencyResolutionException>(() =>
-            { 
-                cb.Build();
-            });
-            
+
+            var exception = Assert.Throws<DependencyResolutionException>(() => cb.Build());
+
+            var message = string.Format(OpenGenericServiceBinderResources.ImplementorDoesntImplementService, typeof(FG<>).FullName, typeof(IG<>).FullName);
+            Assert.That(exception.Message, Is.EqualTo(message));
         }
     }
 }
