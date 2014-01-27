@@ -16,8 +16,8 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("3.0.0.0")]
 [assembly: AssemblyFileVersion("3.0.0.0")]
-[assembly: AssemblyConfiguration("Release built on 2014-01-20 00:40")]
+[assembly: AssemblyConfiguration("Release built on 2014-01-27 23:01")]
 [assembly: AssemblyCopyright("Copyright © 2014 Autofac Contributors")]
-[assembly: AssemblyDescription("Autofac.Owin 3.0.0")]
+[assembly: AssemblyDescription("Autofac.Owin 3.0.0-alpha")]
 
 
