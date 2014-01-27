@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("3.0.0.0")]
 [assembly: AssemblyFileVersion("3.0.0.0")]
-[assembly: AssemblyConfiguration("Release built on 2014-01-27 23:01")]
+[assembly: AssemblyConfiguration("Release built on 2014-01-28 00:18")]
 [assembly: AssemblyCopyright("Copyright © 2014 Autofac Contributors")]
 [assembly: AssemblyDescription("Autofac.WebApi2.Owin 3.0.0-alpha")]
 

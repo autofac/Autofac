@@ -14,6 +14,7 @@
     <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
     <dependencies>
       <dependency id="Autofac" version="[3.2.0,4.0.0)" />
+      <dependency id="Microsoft.AspNet.SignalR.Core" version="2.0.2" />
     </dependencies>
   </metadata>
 </package>
