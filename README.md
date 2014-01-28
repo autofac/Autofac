@@ -113,6 +113,8 @@ You can get the latest releases [from this site](https://code.google.com/p/autof
 
 If you're feeling bold, you can get [continuous integration builds from MyGet](https://www.myget.org/gallery/autofac).
 
+![](https://www.myget.org/BuildSource/Badge/autofac?identifier=e0f25040-634c-4b7d-aebe-0f62b9c465a8)
+
 There is a growing number of [integrations](https://github.com/autofac/Autofac/wiki/Integration) that make using Autofac with your application a snap. Support for several popular frameworks is also available through the "Extras" packages.
 
 Our friendly and open [community](http://groups.google.com/group/autofac) will help you to get the best from the project. You can also ask questions on [Stack Overflow](http://stackoverflow.com/questions/tagged/autofac).
