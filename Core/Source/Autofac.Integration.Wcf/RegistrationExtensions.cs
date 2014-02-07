@@ -53,7 +53,7 @@ namespace Autofac.Integration.Wcf
 
         static void CloseChannel<T>(T channel)
         {
-            var disp = (IClientChannel) channel;
+            var disp = (ICommunicationObject) channel;
             try
             {
                 if (disp.State == CommunicationState.Faulted)
