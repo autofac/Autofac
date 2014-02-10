@@ -129,6 +129,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Integration.WebApi.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.WebApi.Owin", "Core\Tests\Autofac.Tests.Integration.WebApi.Owin\Autofac.Tests.Integration.WebApi.Owin.csproj", "{2EF2FBB2-77D0-4D85-936E-5A00881CF5F6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{995BD3EE-8464-4AA0-874D-85BBCC9DD7E7}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
