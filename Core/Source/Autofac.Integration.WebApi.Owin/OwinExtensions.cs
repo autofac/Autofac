@@ -46,15 +46,12 @@ namespace Autofac.Integration.WebApi.Owin
         /// </summary>
         /// <param name="app">The application builder.</param>
         /// <param name="configuration">The HTTP server configuration.</param>
-        /// <param name="container">The Autofac container.</param>
         /// <returns>The application builder.</returns>
         [SecuritySafeCritical]
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public static IAppBuilder UseAutofacWebApi(this IAppBuilder app, HttpConfiguration configuration, IContainer container)
+        public static IAppBuilder UseAutofacWebApi(this IAppBuilder app, HttpConfiguration configuration)
         {
             if (configuration == null) throw new ArgumentNullException("configuration");
-
-            app.UseAutofacMiddleware(container);
 
             if (!configuration.MessageHandlers.OfType<DependencyScopeHandler>().Any())
                 configuration.MessageHandlers.Insert(0, new DependencyScopeHandler());

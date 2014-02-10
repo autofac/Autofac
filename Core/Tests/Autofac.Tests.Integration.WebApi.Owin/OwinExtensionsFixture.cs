@@ -15,7 +15,7 @@ namespace Autofac.Tests.Integration.WebApi.Owin
             var app = new AppBuilder();
             var configuration = new HttpConfiguration();
 
-            app.UseAutofacWebApi(configuration, new ContainerBuilder().Build());
+            app.UseAutofacWebApi(configuration);
 
             Assert.That(configuration.MessageHandlers.OfType<DependencyScopeHandler>().Count(), Is.EqualTo(1));
         }
@@ -25,10 +25,9 @@ namespace Autofac.Tests.Integration.WebApi.Owin
         {
             var app = new AppBuilder();
             var configuration = new HttpConfiguration();
-            var container = new ContainerBuilder().Build();
 
-            app.UseAutofacWebApi(configuration, container);
-            app.UseAutofacWebApi(configuration, container);
+            app.UseAutofacWebApi(configuration);
+            app.UseAutofacWebApi(configuration);
 
             Assert.That(configuration.MessageHandlers.OfType<DependencyScopeHandler>().Count(), Is.EqualTo(1));
         }
