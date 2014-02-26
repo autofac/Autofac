@@ -404,12 +404,22 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 			EXEC : warning : Unifying desktop and CoreCLR mscorlib references together.  Make sure
 			that all assemblies being loaded are desktop assemblies, or all assemblies are CoreCLR
 			assemblies. [C:\autofac\trunk\default.proj]
+
+			We're also ignoring the "TransparencyAnnotationsShouldNotConflict" rule because this
+			conflicts with FxCop recommendations and is only something that has to do with "people
+			being confused in code reviews." The security should still work right, and it's usually
+			better to err on the side of FxCop in these cases. You usually actually don't want
+			to change security in method overrides.
+
+			For example, for a method that registers UrlHelper in the container...
+			* SecAnnotate: "This is a security critical method so must be marked SecurityCritical or SecuritySafeCritical"
+			* FxCop: "This is an override of a transparent method so don't mark it SecurityCritical or SecuritySafeCritical"
 		-->
 		<Exec
-			Command="SecAnnotate.exe /q /o:&quot;$(BuildDirectory)\log\SecAnnotateResults40.xml&quot; @&quot;$(SecAnnotateReferenceResponseFile40)&quot; @&quot;$(SecAnnotateAnalyzeResponseFile40)&quot;"
+			Command="SecAnnotate.exe /q /s:TransparencyAnnotationsShouldNotConflict /o:&quot;$(BuildDirectory)\log\SecAnnotateResults40.xml&quot; @&quot;$(SecAnnotateReferenceResponseFile40)&quot; @&quot;$(SecAnnotateAnalyzeResponseFile40)&quot;"
 			WorkingDirectory="$(BuildDirectory)\bin\net40\" />
 		<Exec
-			Command="SecAnnotate.exe /q /o:&quot;$(BuildDirectory)\log\SecAnnotateResults45.xml&quot; @&quot;$(SecAnnotateReferenceResponseFile45)&quot; @&quot;$(SecAnnotateAnalyzeResponseFile45)&quot;"
+			Command="SecAnnotate.exe /q /s:TransparencyAnnotationsShouldNotConflict /o:&quot;$(BuildDirectory)\log\SecAnnotateResults45.xml&quot; @&quot;$(SecAnnotateReferenceResponseFile45)&quot; @&quot;$(SecAnnotateAnalyzeResponseFile45)&quot;"
 			WorkingDirectory="$(BuildDirectory)\bin\net45\" />
 	</Target>
 	<UsingTask TaskName="GetNuGetDependencyVersions" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
