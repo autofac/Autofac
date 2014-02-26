@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security;
-using Autofac;
 using Microsoft.Practices.ServiceLocation;
 
 namespace Autofac.Extras.CommonServiceLocator
@@ -22,16 +20,6 @@ namespace Autofac.Extras.CommonServiceLocator
         /// <summary>
         /// Initializes a new instance of the <see cref="Autofac.Extras.CommonServiceLocator.AutofacServiceLocator" /> class.
         /// </summary>
-        [SecuritySafeCritical]
-        protected AutofacServiceLocator()
-        {
-            // This constructor needs to be here for SecAnnotate/CoreCLR security purposes
-            // but doesn't get used in standard situations.
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Autofac.Extras.CommonServiceLocator.AutofacServiceLocator" /> class.
-        /// </summary>
         /// <param name="container">
         /// The <see cref="Autofac.IComponentContext"/> from which services
         /// should be located.
@@ -39,7 +27,6 @@ namespace Autofac.Extras.CommonServiceLocator
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="container" /> is <see langword="null" />.
         /// </exception>
-        [SecuritySafeCritical]
         public AutofacServiceLocator(IComponentContext container)
         {
             if (container == null)
