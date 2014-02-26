@@ -6,7 +6,7 @@
 
 		[Production/Release Build]
 		msbuild default.proj /p:Production=true
-		
+
 		[Mock MyGet CI Build]
 		msbuild default.proj /p:Production=true /p:MyGetBuild=true /p:BuildCounter=1
 
@@ -24,7 +24,7 @@
 
 		<!-- Set this to false via command-line when debugging/troubleshooting NuGet packaging. -->
 		<DeleteNuGetStaging Condition="'$(DeleteNuGetStaging)' == ''">true</DeleteNuGetStaging>
-		
+
 		<NuGetCommandLinePath>$(MSBuildProjectDirectory)\lib\NuGet\NuGet.exe</NuGetCommandLinePath>
 	</PropertyGroup>
 
@@ -80,7 +80,7 @@
 			SecAnnotate generates a ton of false warnings so it only runs in production
 			builds. Other analysis can run in regular builds.
 		-->
-		<!--<CallTarget Targets="__SecAnnotate" Condition="'$(Production)' == 'true'" />-->
+		<CallTarget Targets="__SecAnnotate" Condition="'$(Production)' == 'true'" />
 	</Target>
 
 	<Target Name="Clean">
@@ -177,7 +177,7 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 			<!-- Nuspec/NuGet packages get staged using these scripts. -->
 			<NuspecStagingScripts Include="$(MSBuildProjectDirectory)\**\NuspecStaging.proj" />
 		</ItemGroup>
-		
+
 		<!--
 			NuGet packaging is done by convention.
 
@@ -292,48 +292,70 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 	</Target>
 
 	<Target Name="__SecAnnotate">
+		<!--
+			Dependency detection and working directory is different between .NET 4.0 and 4.5 so
+			there's some complexity here to split the analysis up.
+		-->
 		<PropertyGroup>
 			<!-- Too many parameters for the comand line, so parameters get written to response files. -->
-			<SecAnnotateAnalyzeResponseFile>$(BuildDirectory)\log\SecAnnotateAnalyzeList.txt</SecAnnotateAnalyzeResponseFile>
-			<SecAnnotateReferenceResponseFile>$(BuildDirectory)\log\SecAnnotateReferenceList.txt</SecAnnotateReferenceResponseFile>
+			<SecAnnotateAnalyzeResponseFile40>$(BuildDirectory)\log\SecAnnotateAnalyzeList40.txt</SecAnnotateAnalyzeResponseFile40>
+			<SecAnnotateReferenceResponseFile40>$(BuildDirectory)\log\SecAnnotateReferenceList40.txt</SecAnnotateReferenceResponseFile40>
+			<SecAnnotateAnalyzeResponseFile45>$(BuildDirectory)\log\SecAnnotateAnalyzeList45.txt</SecAnnotateAnalyzeResponseFile45>
+			<SecAnnotateReferenceResponseFile45>$(BuildDirectory)\log\SecAnnotateReferenceList45.txt</SecAnnotateReferenceResponseFile45>
 		</PropertyGroup>
 		<ItemGroup>
 			<!--
-				Only analyze the .NET 4.0 assemblies. This shouldn't change if multi-targeting because
+				Only analyze the .NET 4.0/4.5 assemblies. This shouldn't change if multi-targeting because
 				Silverlight, Windows Phone, etc. don't have the same security model as .NET 4.0.
 			-->
-			<SecAnnotateAnalyzeAssemblies Include="$(BuildDirectory)\bin\net40\*.dll" />
+			<SecAnnotateAnalyzeAssemblies40 Include="$(BuildDirectory)\bin\net40\*.dll" />
+			<SecAnnotateAnalyzeAssemblies45 Include="$(BuildDirectory)\bin\net45\*.dll" />
 
 			<!--
 				We need to dynamically determine which assemblies/versions are being used so SecAnnotate can do
 				its job. Without correct references, SecAnnotate fails or analyzes incorrectly.
 
 				The first block here finds - in groups - the set of dependencies from NuGet that are...
+				* .NET 4.5
 				* .NET 4.0
 				* .NET 4.0 Client Profile
 				* .NET 3.5
 			-->
-			<DetectedDependencies40 Include="$(PackageInstallDirectory)\**\net40\*.dll;$(PackageInstallDirectory)\**\40\*.dll" />
-			<DetectedDependencies40Client Include="$(PackageInstallDirectory)\**\net40-client\*.dll;$(PackageInstallDirectory)\**\40-client\*.dll" />
+			<DetectedDependencies45 Include="$(BuildDirectory)\bin\net40\*.dll;$(PackageInstallDirectory)\**\*net45*\*.dll;$(PackageInstallDirectory)\**\45\*.dll" />
+			<DetectedDependencies40 Include="$(PackageInstallDirectory)\**\*net40*\*.dll;$(PackageInstallDirectory)\**\40\*.dll" />
+			<DetectedDependencies40Client Include="$(PackageInstallDirectory)\**\*net40-client*\*.dll;$(PackageInstallDirectory)\**\40-client\*.dll" />
 			<DetectedDependencies35 Include="$(PackageInstallDirectory)\**\net35\*.dll;$(PackageInstallDirectory)\**\35\*.dll" />
 
 			<!--
 				This block of items aggregates the set of grouped dependencies from above. We need UNIQUE
 				dependencies by name (e.g., you can't include two "Castle.Core" references) so we fall
-				back, first opting for the .NET 4.0, then 4.0 client profile, then 3.5 assemblies.
+				back, first opting for the .NET 4.5, then 4.0, then 4.0 client profile, then 3.5 assemblies.
 
 				In the end, DetectedDependencies will be a list of names ("Castle.Core"), each with a metadata
 				item "HintPath" that points to the full path of the detected assembly.
 			-->
-			<DetectedDependencies Include="%(DetectedDependencies40.Filename)">
+			<ResolvedDependencies45 Include="%(DetectedDependencies45.Filename)">
+				<HintPath>%(DetectedDependencies45.FullPath)</HintPath>
+			</ResolvedDependencies45>
+			<ResolvedDependencies45 Include="%(DetectedDependencies40.Filename)" Exclude="@(ResolvedDependencies45)">
 				<HintPath>%(DetectedDependencies40.FullPath)</HintPath>
-			</DetectedDependencies>
-			<DetectedDependencies Include="%(DetectedDependencies40Client.Filename)" Exclude="@(DetectedDependencies)">
+			</ResolvedDependencies45>
+			<ResolvedDependencies45 Include="%(DetectedDependencies40Client.Filename)" Exclude="@(ResolvedDependencies45)">
 				<HintPath>%(DetectedDependencies40Client.FullPath)</HintPath>
-			</DetectedDependencies>
-			<DetectedDependencies Include="%(DetectedDependencies35.Filename)" Exclude="@(DetectedDependencies)">
+			</ResolvedDependencies45>
+			<ResolvedDependencies45 Include="%(DetectedDependencies35.Filename)" Exclude="@(ResolvedDependencies45)">
 				<HintPath>%(DetectedDependencies35.FullPath)</HintPath>
-			</DetectedDependencies>
+			</ResolvedDependencies45>
+
+			<ResolvedDependencies40 Include="%(DetectedDependencies40.Filename)">
+				<HintPath>%(DetectedDependencies40.FullPath)</HintPath>
+			</ResolvedDependencies40>
+			<ResolvedDependencies40 Include="%(DetectedDependencies40Client.Filename)" Exclude="@(DetectedDependencies)">
+				<HintPath>%(DetectedDependencies40Client.FullPath)</HintPath>
+			</ResolvedDependencies40>
+			<ResolvedDependencies40 Include="%(DetectedDependencies35.Filename)" Exclude="@(DetectedDependencies)">
+				<HintPath>%(DetectedDependencies35.FullPath)</HintPath>
+			</ResolvedDependencies40>
 
 			<!--
 				Finally, switch the list of detected dependencies to actually point to the
@@ -348,20 +370,32 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 
 				But only the ones that point to the actual target frameworks we're using.
 			-->
-			<SecAnnotateReferenceAssemblies Include="%(DetectedDependencies.HintPath);$(ProgramFiles)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.0\*.dll" />
-			<SecAnnotateReferenceDirectories Include="%(SecAnnotateReferenceAssemblies.RootDir)%(SecAnnotateReferenceAssemblies.Directory)" />
+			<SecAnnotateReferenceAssemblies40 Include="%(ResolvedDependencies40.HintPath);$(ProgramFiles)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.0\*.dll" />
+			<SecAnnotateReferenceDirectories40 Include="%(SecAnnotateReferenceAssemblies40.RootDir)%(SecAnnotateReferenceAssemblies40.Directory)" />
+			<SecAnnotateReferenceAssemblies45 Include="%(ResolvedDependencies45.HintPath);$(ProgramFiles)\Reference Assemblies\Microsoft\Framework\.NETPortable\v4.5\*.dll" />
+			<SecAnnotateReferenceDirectories45 Include="%(SecAnnotateReferenceAssemblies45.RootDir)%(SecAnnotateReferenceAssemblies45.Directory)" />
 		</ItemGroup>
 
 		<!-- Files get written using batching so we always append. Delete existing ones first to start clean. -->
-		<Delete Files="$(SecAnnotateAnalyzeResponseFile)" Condition="Exists('$(SecAnnotateAnalyzeResponseFile)')" />
-		<Delete Files="$(SecAnnotateReferenceResponseFile)" Condition="Exists('$(SecAnnotateReferenceResponseFile)')" />
+		<Delete Files="$(SecAnnotateAnalyzeResponseFile40)" Condition="Exists('$(SecAnnotateAnalyzeResponseFile40)')" />
+		<Delete Files="$(SecAnnotateReferenceResponseFile40)" Condition="Exists('$(SecAnnotateReferenceResponseFile40)')" />
+		<Delete Files="$(SecAnnotateAnalyzeResponseFile45)" Condition="Exists('$(SecAnnotateAnalyzeResponseFile45)')" />
+		<Delete Files="$(SecAnnotateReferenceResponseFile45)" Condition="Exists('$(SecAnnotateReferenceResponseFile45)')" />
 		<WriteLinesToFile
-			File="$(SecAnnotateAnalyzeResponseFile)"
-			Lines="%(SecAnnotateAnalyzeAssemblies.FullPath)"
+			File="$(SecAnnotateAnalyzeResponseFile40)"
+			Lines="%(SecAnnotateAnalyzeAssemblies40.FullPath)"
 			Overwrite="false" />
 		<WriteLinesToFile
-			File="$(SecAnnotateReferenceResponseFile)"
-			Lines="/d:%(SecAnnotateReferenceDirectories.FullPath)"
+			File="$(SecAnnotateReferenceResponseFile40)"
+			Lines="/d:%(SecAnnotateReferenceDirectories40.FullPath)"
+			Overwrite="false" />
+		<WriteLinesToFile
+			File="$(SecAnnotateAnalyzeResponseFile45)"
+			Lines="%(SecAnnotateAnalyzeAssemblies45.FullPath)"
+			Overwrite="false" />
+		<WriteLinesToFile
+			File="$(SecAnnotateReferenceResponseFile45)"
+			Lines="/d:%(SecAnnotateReferenceDirectories45.FullPath)"
 			Overwrite="false" />
 		<!--
 			SecAnnotate will issue a warning like this because of the PCL library references. There's
@@ -372,8 +406,11 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 			assemblies. [C:\autofac\trunk\default.proj]
 		-->
 		<Exec
-			Command="SecAnnotate.exe /q /o:&quot;$(BuildDirectory)\log\SecAnnotateResults.xml&quot; @&quot;$(SecAnnotateReferenceResponseFile)&quot; @&quot;$(SecAnnotateAnalyzeResponseFile)&quot;"
+			Command="SecAnnotate.exe /q /o:&quot;$(BuildDirectory)\log\SecAnnotateResults40.xml&quot; @&quot;$(SecAnnotateReferenceResponseFile40)&quot; @&quot;$(SecAnnotateAnalyzeResponseFile40)&quot;"
 			WorkingDirectory="$(BuildDirectory)\bin\net40\" />
+		<Exec
+			Command="SecAnnotate.exe /q /o:&quot;$(BuildDirectory)\log\SecAnnotateResults45.xml&quot; @&quot;$(SecAnnotateReferenceResponseFile45)&quot; @&quot;$(SecAnnotateAnalyzeResponseFile45)&quot;"
+			WorkingDirectory="$(BuildDirectory)\bin\net45\" />
 	</Target>
 	<UsingTask TaskName="GetNuGetDependencyVersions" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
 		<ParameterGroup>
