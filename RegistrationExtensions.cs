@@ -1,4 +1,4 @@
-﻿// This software is part of the Autofac IoC container
+// This software is part of the Autofac IoC container
 // Copyright © 2013 Autofac Contributors
 // http://autofac.org
 //
@@ -36,280 +36,460 @@ using Castle.DynamicProxy;
 
 namespace Autofac.Extras.DynamicProxy2
 {
-    /// <summary>
-    /// Adds registration syntax to the <see cref="ContainerBuilder"/> type.
-    /// </summary>
-    [SecuritySafeCritical]
-    public static class RegistrationExtensions
-    {
-        static readonly ProxyGenerator ProxyGenerator = new ProxyGenerator();
-        const string InterceptorsPropertyName = "Autofac.Extras.DynamicProxy2.RegistrationExtensions.InterceptorsPropertyName";
-        static readonly IEnumerable<Service> EmptyServices = new Service[0];
+	/// <summary>
+	/// Adds registration syntax to the <see cref="ContainerBuilder"/> type.
+	/// </summary>
+	[SecuritySafeCritical]
+	public static class RegistrationExtensions
+	{
+		static readonly ProxyGenerator ProxyGenerator = new ProxyGenerator();
+		const string InterceptorsPropertyName = "Autofac.Extras.DynamicProxy2.RegistrationExtensions.InterceptorsPropertyName";
+		static readonly IEnumerable<Service> EmptyServices = new Service[0];
 
-        /// <summary>
-        /// Enable class interception on the target type. Interceptors will be determined
-        /// via Intercept attributes on the class or added with InterceptedBy().
-        /// Only virtual methods can be intercepted this way.
-        /// </summary>
-        /// <typeparam name="TLimit"></typeparam>
-        /// <typeparam name="TRegistrationStyle"></typeparam>
-        /// <param name="registration"></param>
-        /// <returns></returns>
-        public static IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle>
-            EnableClassInterceptors<TLimit, TRegistrationStyle>(
-                this IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle> registration)
-        {
-            if (registration == null) throw new ArgumentNullException("registration");
-            registration.ActivatorData.ConfigurationActions.Add(
-                (t, rb) => rb.EnableClassInterceptors());
-            return registration;
-        }
+		/// <summary>
+		/// Enable class interception on the target type. Interceptors will be determined
+		/// via Intercept attributes on the class or added with InterceptedBy().
+		/// Only virtual methods can be intercepted this way.
+		/// </summary>
+		/// <typeparam name="TLimit"></typeparam>
+		/// <typeparam name="TRegistrationStyle"></typeparam>
+		/// <param name="registration"></param>
+		/// <returns></returns>
+		public static IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle>
+			EnableClassInterceptors<TLimit, TRegistrationStyle>(
+				this IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle> registration)
+		{
+			if (registration == null) throw new ArgumentNullException("registration");
+			registration.ActivatorData.ConfigurationActions.Add(
+				(t, rb) => rb.EnableClassInterceptors());
+			return registration;
+		}
 
-        /// <summary>
-        /// Enable class interception on the target type. Interceptors will be determined
-        /// via Intercept attributes on the class or added with InterceptedBy().
-        /// Only virtual methods can be intercepted this way.
-        /// </summary>
-        /// <typeparam name="TLimit"></typeparam>
-        /// <typeparam name="TRegistrationStyle"></typeparam>
-        /// <typeparam name="TConcreteReflectionActivatorData"></typeparam>
-        /// <param name="registration"></param>
-        /// <returns></returns>
-        public static IRegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle>
-            EnableClassInterceptors<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle>(
-                this IRegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle> registration)
-            where TConcreteReflectionActivatorData : ConcreteReflectionActivatorData
-        {
-            if (registration == null)
-            {
-                throw new ArgumentNullException("registration");
-            }
-            registration.ActivatorData.ImplementationType =
-                ProxyGenerator.ProxyBuilder.CreateClassProxyType(
-                    registration.ActivatorData.ImplementationType, new Type[0], ProxyGenerationOptions.Default);
+		/// <summary>
+		/// Enable class interception on the target type. Interceptors will be determined
+		/// via Intercept attributes on the class or added with InterceptedBy().
+		/// Only virtual methods can be intercepted this way.
+		/// </summary>
+		/// <typeparam name="TLimit"></typeparam>
+		/// <typeparam name="TRegistrationStyle"></typeparam>
+		/// <param name="registration"></param>
+		/// <param name="options"></param>
+		/// <param name="additionalInterfaces"></param>
+		/// <returns></returns>
+		public static IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle>
+			EnableClassInterceptors<TLimit, TRegistrationStyle>(
+				this IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle> registration,
+				ProxyGenerationOptions options, params Type[] additionalInterfaces)
+		{
+			if (registration == null) throw new ArgumentNullException("registration");
+			registration.ActivatorData.ConfigurationActions.Add(
+				(t, rb) => rb.EnableClassInterceptors(options, additionalInterfaces));
+			return registration;
+		}
 
-            registration.OnPreparing(e =>
-            {
-                e.Parameters = new Parameter[] {
+		/// <summary>
+		/// Enable class interception on the target type. Interceptors will be determined
+		/// via Intercept attributes on the class or added with InterceptedBy().
+		/// Only virtual methods can be intercepted this way.
+		/// </summary>
+		/// <typeparam name="TLimit"></typeparam>
+		/// <typeparam name="TRegistrationStyle"></typeparam>
+		/// <typeparam name="TConcreteReflectionActivatorData"></typeparam>
+		/// <param name="registration"></param>
+		/// <returns></returns>
+		public static IRegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle>
+			EnableClassInterceptors<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle>(
+				this IRegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle> registration)
+			where TConcreteReflectionActivatorData : ConcreteReflectionActivatorData
+		{
+			if (registration == null)
+			{
+				throw new ArgumentNullException("registration");
+			}
+			registration.ActivatorData.ImplementationType =
+				ProxyGenerator.ProxyBuilder.CreateClassProxyType(
+					registration.ActivatorData.ImplementationType, new Type[0], ProxyGenerationOptions.Default);
+
+			registration.OnPreparing(e =>
+			{
+				e.Parameters = new Parameter[] {
                     new PositionalParameter(0, GetInterceptorServices(e.Component, registration.ActivatorData.ImplementationType)
                         .Select(s => e.Context.ResolveService(s))
                         .Cast<IInterceptor>()
                         .ToArray())
                 }.Concat(e.Parameters).ToArray();
-            });
+			});
 
-            return registration;
-        }
+			return registration;
+		}
 
-        /// <summary>
-        /// Enable interface interception on the target type. Interceptors will be determined
-        /// via Intercept attributes on the class or interface, or added with InterceptedBy() calls.
-        /// </summary>
-        /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
-        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
-        /// <param name="registration">Registration to apply interception to.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
-            EnableInterfaceInterceptors<TLimit, TActivatorData, TSingleRegistrationStyle>(
-                this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration)
-        {
-            if (registration == null)
-            {
-                throw new ArgumentNullException("registration");
-            }
-            registration.RegistrationData.ActivatingHandlers.Add((sender, e) =>
-            {
-                EnsureInterfaceInterceptionApplies(e.Component);
+		/// <summary>
+		/// Enable class interception on the target type. Interceptors will be determined
+		/// via Intercept attributes on the class or added with InterceptedBy().
+		/// Only virtual methods can be intercepted this way.
+		/// </summary>
+		/// <typeparam name="TLimit"></typeparam>
+		/// <typeparam name="TRegistrationStyle"></typeparam>
+		/// <typeparam name="TConcreteReflectionActivatorData"></typeparam>
+		/// <param name="registration"></param>
+		/// <param name="options"></param>
+		/// <param name="additionalInterfaces"></param>
+		/// <returns></returns>
+		public static IRegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle>
+			EnableClassInterceptors<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle>(
+				this IRegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle> registration,
+				ProxyGenerationOptions options, params Type[] additionalInterfaces)
+			where TConcreteReflectionActivatorData : ConcreteReflectionActivatorData
+		{
+			if (registration == null)
+			{
+				throw new ArgumentNullException("registration");
+			}
+			registration.ActivatorData.ImplementationType =
+				ProxyGenerator.ProxyBuilder.CreateClassProxyType(
+					registration.ActivatorData.ImplementationType, additionalInterfaces ?? new Type[0], options);
 
-                var proxiedInterfaces = e.Instance.GetType().GetInterfaces().Where(i => i.IsVisible).ToArray();
+			registration.OnPreparing(e =>
+			{
+				var proxyParameters = new List<Parameter>();
+				var index = 0;
 
-                if (!proxiedInterfaces.Any())
-                    return;
+				if (options.HasMixins)
+				{
+					foreach (var mixin in options.MixinData.Mixins)
+					{
+						proxyParameters.Add(new PositionalParameter(index++, mixin));
+					}
+				}
 
-                var theInterface = proxiedInterfaces.First();
-                var interfaces = proxiedInterfaces.Skip(1).ToArray();
+				proxyParameters.Add(new PositionalParameter(index++, GetInterceptorServices(e.Component, registration.ActivatorData.ImplementationType)
+							.Select(s => e.Context.ResolveService(s))
+							.Cast<IInterceptor>()
+							.ToArray()));
 
-                var interceptors = GetInterceptorServices(e.Component, e.Instance.GetType())
-                    .Select(s => e.Context.ResolveService(s))
-                    .Cast<IInterceptor>()
-                    .ToArray();
+				if (options.Selector != null)
+				{
+					proxyParameters.Add(new PositionalParameter(index, options.Selector));
+				}
 
-                e.Instance = ProxyGenerator.CreateInterfaceProxyWithTarget(theInterface, interfaces, e.Instance, interceptors);
-            });
+				e.Parameters = proxyParameters.Concat(e.Parameters).ToArray();
+			});
 
-            return registration;
-        }
+			return registration;
+		}
 
-        /// <summary>
-        /// Intercepts the interface of a transparent proxy (such as WCF channel factory based clients).
-        /// </summary>
-        /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
-        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
-        /// <param name="registration">Registration to apply interception to.</param>
-        /// <param name="additionalInterfacesToProxy">Additional interface types. Calls to their members will be proxied as well.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
-            InterceptTransparentProxy<TLimit, TActivatorData, TSingleRegistrationStyle>(
-                this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration, params Type[] additionalInterfacesToProxy)
-        {
-            if (registration == null)
-            {
-                throw new ArgumentNullException("registration");
-            }
-            registration.RegistrationData.ActivatingHandlers.Add((sender, e) =>
-            {
-                EnsureInterfaceInterceptionApplies(e.Component);
+		/// <summary>
+		/// Enable interface interception on the target type. Interceptors will be determined
+		/// via Intercept attributes on the class or interface, or added with InterceptedBy() calls.
+		/// </summary>
+		/// <typeparam name="TLimit">Registration limit type.</typeparam>
+		/// <typeparam name="TActivatorData">Activator data type.</typeparam>
+		/// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
+		/// <param name="registration">Registration to apply interception to.</param>
+		/// <returns>Registration builder allowing the registration to be configured.</returns>
+		public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+			EnableInterfaceInterceptors<TLimit, TActivatorData, TSingleRegistrationStyle>(
+				this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration)
+		{
+			if (registration == null)
+			{
+				throw new ArgumentNullException("registration");
+			}
+			registration.RegistrationData.ActivatingHandlers.Add((sender, e) =>
+			{
+				EnsureInterfaceInterceptionApplies(e.Component);
 
-                if (!RemotingServices.IsTransparentProxy(e.Instance))
-                {
-                    throw new DependencyResolutionException(string.Format(
-                        CultureInfo.CurrentCulture, RegistrationExtensionsResources.TypeIsNotTransparentProxy, e.Instance.GetType().FullName));
-                }
+				var proxiedInterfaces = e.Instance.GetType().GetInterfaces().Where(i => i.IsVisible).ToArray();
 
-                if (!e.Instance.GetType().IsInterface)
-                {
-                    throw new DependencyResolutionException(string.Format(
-                        CultureInfo.CurrentCulture, RegistrationExtensionsResources.TransparentProxyIsNotInterface, e.Instance.GetType().FullName));
-                }
+				if (!proxiedInterfaces.Any())
+					return;
 
-                if (additionalInterfacesToProxy.Any())
-                {
-                    var remotingTypeInfo = (IRemotingTypeInfo)RemotingServices.GetRealProxy(e.Instance);
+				var theInterface = proxiedInterfaces.First();
+				var interfaces = proxiedInterfaces.Skip(1).ToArray();
 
-                    var invalidInterfaces = additionalInterfacesToProxy
-                        .Where(i => !remotingTypeInfo.CanCastTo(i, e.Instance))
-                        .ToArray();
+				var interceptors = GetInterceptorServices(e.Component, e.Instance.GetType())
+					.Select(s => e.Context.ResolveService(s))
+					.Cast<IInterceptor>()
+					.ToArray();
 
-                    if (invalidInterfaces.Any())
-                    {
-                        var message = string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.InterfaceNotSupportedByTransparentProxy, 
-                            string.Join(", ", invalidInterfaces.Select(i => i.FullName)));
-                        throw new DependencyResolutionException(message);
-                    }
-                }
+				e.Instance = ProxyGenerator.CreateInterfaceProxyWithTarget(theInterface, interfaces, e.Instance, interceptors);
+			});
 
-                var interceptors = GetInterceptorServices(e.Component, e.Instance.GetType())
-                    .Select(s => e.Context.ResolveService(s))
-                    .Cast<IInterceptor>()
-                    .ToArray();
+			return registration;
+		}
 
-                e.Instance = ProxyGenerator.CreateInterfaceProxyWithTargetInterface(
-                    e.Instance.GetType(), additionalInterfacesToProxy, e.Instance, interceptors);
-            });
+		/// <summary>
+		/// Enable interface interception on the target type. Interceptors will be determined
+		/// via Intercept attributes on the class or interface, or added with InterceptedBy() calls.
+		/// </summary>
+		/// <typeparam name="TLimit">Registration limit type.</typeparam>
+		/// <typeparam name="TActivatorData">Activator data type.</typeparam>
+		/// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
+		/// <param name="registration">Registration to apply interception to.</param>
+		/// <param name="options">Proxy generation options to apply</param>
+		/// <returns>Registration builder allowing the registration to be configured.</returns>
+		public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+			EnableInterfaceInterceptors<TLimit, TActivatorData, TSingleRegistrationStyle>(
+				this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration, ProxyGenerationOptions options)
+		{
+			if (registration == null)
+			{
+				throw new ArgumentNullException("registration");
+			}
+			registration.RegistrationData.ActivatingHandlers.Add((sender, e) =>
+			{
+				EnsureInterfaceInterceptionApplies(e.Component);
 
-            return registration;
-        }
+				var proxiedInterfaces = e.Instance.GetType().GetInterfaces().Where(i => i.IsVisible).ToArray();
 
-        static void EnsureInterfaceInterceptionApplies(IComponentRegistration componentRegistration)
-        {
-            if (componentRegistration.Services
-                .OfType<IServiceWithType>()
-                .Any(swt => !swt.ServiceType.IsInterface || !swt.ServiceType.IsVisible))
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,
-                    RegistrationExtensionsResources.InterfaceProxyingOnlySupportsInterfaceServices,
-                    componentRegistration));
-        }
+				if (!proxiedInterfaces.Any())
+					return;
 
-        static IEnumerable<Service> GetInterceptorServices(IComponentRegistration registration, Type implType)
-        {
-            if (registration == null) throw new ArgumentNullException("registration");
-            if (implType == null) throw new ArgumentNullException("implType");
+				var theInterface = proxiedInterfaces.First();
+				var interfaces = proxiedInterfaces.Skip(1).ToArray();
 
-            var result = EmptyServices;
+				var interceptors = GetInterceptorServices(e.Component, e.Instance.GetType())
+					.Select(s => e.Context.ResolveService(s))
+					.Cast<IInterceptor>()
+					.ToArray();
 
-            object services;
-            if (registration.Metadata.TryGetValue(InterceptorsPropertyName, out services))
-                result = result.Concat((IEnumerable<Service>)services);
+				e.Instance = ProxyGenerator.CreateInterfaceProxyWithTarget(theInterface, interfaces, e.Instance, options, interceptors);
+			});
 
-            if (implType.IsClass)
-            {
-                result = result.Concat(implType
-                    .GetCustomAttributes(typeof(InterceptAttribute), true)
-                    .Cast<InterceptAttribute>()
-                    .Select(att => att.InterceptorService));
+			return registration;
+		}
 
-                result = result.Concat(implType.GetInterfaces()
-                    .SelectMany(i => i.GetCustomAttributes(typeof(InterceptAttribute), true))
-                    .Cast<InterceptAttribute>()
-                    .Select(att => att.InterceptorService));
-            }
+		/// <summary>
+		/// Intercepts the interface of a transparent proxy (such as WCF channel factory based clients).
+		/// </summary>
+		/// <typeparam name="TLimit">Registration limit type.</typeparam>
+		/// <typeparam name="TActivatorData">Activator data type.</typeparam>
+		/// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
+		/// <param name="registration">Registration to apply interception to.</param>
+		/// <param name="additionalInterfacesToProxy">Additional interface types. Calls to their members will be proxied as well.</param>
+		/// <returns>Registration builder allowing the registration to be configured.</returns>
+		public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+			InterceptTransparentProxy<TLimit, TActivatorData, TSingleRegistrationStyle>(
+				this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration, params Type[] additionalInterfacesToProxy)
+		{
+			if (registration == null)
+			{
+				throw new ArgumentNullException("registration");
+			}
+			registration.RegistrationData.ActivatingHandlers.Add((sender, e) =>
+			{
+				EnsureInterfaceInterceptionApplies(e.Component);
 
-            return result.ToArray();
-        }
+				if (!RemotingServices.IsTransparentProxy(e.Instance))
+				{
+					throw new DependencyResolutionException(string.Format(
+						CultureInfo.CurrentCulture, RegistrationExtensionsResources.TypeIsNotTransparentProxy, e.Instance.GetType().FullName));
+				}
 
-        /// <summary>
-        /// Allows a list of interceptor services to be assigned to the registration.
-        /// </summary>
-        /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
-        /// <typeparam name="TStyle">Registration style.</typeparam>
-        /// <param name="builder">Registration to apply interception to.</param>
-        /// <param name="interceptorServices">The interceptor services.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        /// <exception cref="System.ArgumentNullException">builder or interceptorServices</exception>
-        public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
-            InterceptedBy<TLimit, TActivatorData, TStyle>(
-                this IRegistrationBuilder<TLimit, TActivatorData, TStyle> builder,
-                params Service[] interceptorServices)
-        {
-            if (builder == null)
-                throw new ArgumentNullException("builder");
+				if (!e.Instance.GetType().IsInterface)
+				{
+					throw new DependencyResolutionException(string.Format(
+						CultureInfo.CurrentCulture, RegistrationExtensionsResources.TransparentProxyIsNotInterface, e.Instance.GetType().FullName));
+				}
 
-            if (interceptorServices == null || interceptorServices.Any(s => s == null))
-                throw new ArgumentNullException("interceptorServices");
+				if (additionalInterfacesToProxy.Any())
+				{
+					var remotingTypeInfo = (IRemotingTypeInfo)RemotingServices.GetRealProxy(e.Instance);
 
-            object existing;
-            if (builder.RegistrationData.Metadata.TryGetValue(InterceptorsPropertyName, out existing))
-                builder.RegistrationData.Metadata[InterceptorsPropertyName] =
-                    ((IEnumerable<Service>)existing).Concat(interceptorServices).Distinct();
-            else
-                builder.RegistrationData.Metadata.Add(InterceptorsPropertyName, interceptorServices);
+					var invalidInterfaces = additionalInterfacesToProxy
+						.Where(i => !remotingTypeInfo.CanCastTo(i, e.Instance))
+						.ToArray();
 
-            return builder;
-        }
+					if (invalidInterfaces.Any())
+					{
+						var message = string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.InterfaceNotSupportedByTransparentProxy,
+							string.Join(", ", invalidInterfaces.Select(i => i.FullName)));
+						throw new DependencyResolutionException(message);
+					}
+				}
 
-        /// <summary>
-        /// Allows a list of interceptor services to be assigned to the registration.
-        /// </summary>
-        /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
-        /// <typeparam name="TStyle">Registration style.</typeparam>
-        /// <param name="builder">Registration to apply interception to.</param>
-        /// <param name="interceptorServiceNames">The names of the interceptor services.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        /// <exception cref="System.ArgumentNullException">builder or interceptorServices</exception>
-        public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
-            InterceptedBy<TLimit, TActivatorData, TStyle>(
-                this IRegistrationBuilder<TLimit, TActivatorData, TStyle> builder,
-                params string[] interceptorServiceNames)
-        {
-            if (interceptorServiceNames == null || interceptorServiceNames.Any(n => n == null))
-                throw new ArgumentNullException("interceptorServiceNames");
+				var interceptors = GetInterceptorServices(e.Component, e.Instance.GetType())
+					.Select(s => e.Context.ResolveService(s))
+					.Cast<IInterceptor>()
+					.ToArray();
 
-            return InterceptedBy(builder, interceptorServiceNames.Select(n => new KeyedService(n, typeof(IInterceptor))).ToArray());
-        }
+				e.Instance = ProxyGenerator.CreateInterfaceProxyWithTargetInterface(
+					e.Instance.GetType(), additionalInterfacesToProxy, e.Instance, interceptors);
+			});
 
-        /// <summary>
-        /// Allows a list of interceptor services to be assigned to the registration.
-        /// </summary>
-        /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
-        /// <typeparam name="TStyle">Registration style.</typeparam>
-        /// <param name="builder">Registration to apply interception to.</param>
-        /// <param name="interceptorServiceTypes">The types of the interceptor services.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        /// <exception cref="System.ArgumentNullException">builder or interceptorServices</exception>
-        public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
-            InterceptedBy<TLimit, TActivatorData, TStyle>(
-                this IRegistrationBuilder<TLimit, TActivatorData, TStyle> builder,
-                params Type[] interceptorServiceTypes)
-        {
-            if (interceptorServiceTypes == null || interceptorServiceTypes.Any(t => t == null))
-                throw new ArgumentNullException("interceptorServiceTypes");
+			return registration;
+		}
 
-            return InterceptedBy(builder, interceptorServiceTypes.Select(t => new TypedService(t)).ToArray());
-        }
-    }
+		/// <summary>
+		/// Intercepts the interface of a transparent proxy (such as WCF channel factory based clients).
+		/// </summary>
+		/// <typeparam name="TLimit">Registration limit type.</typeparam>
+		/// <typeparam name="TActivatorData">Activator data type.</typeparam>
+		/// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
+		/// <param name="registration">Registration to apply interception to.</param>
+		/// <param name="options">Proxy generation options to apply</param>
+		/// <param name="additionalInterfacesToProxy">Additional interface types. Calls to their members will be proxied as well.</param>
+		/// <returns>Registration builder allowing the registration to be configured.</returns>
+		public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+			InterceptTransparentProxy<TLimit, TActivatorData, TSingleRegistrationStyle>(
+				this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration, ProxyGenerationOptions options, params Type[] additionalInterfacesToProxy)
+		{
+			if (registration == null)
+			{
+				throw new ArgumentNullException("registration");
+			}
+			registration.RegistrationData.ActivatingHandlers.Add((sender, e) =>
+			{
+				EnsureInterfaceInterceptionApplies(e.Component);
+
+				if (!RemotingServices.IsTransparentProxy(e.Instance))
+				{
+					throw new DependencyResolutionException(string.Format(
+						CultureInfo.CurrentCulture, RegistrationExtensionsResources.TypeIsNotTransparentProxy, e.Instance.GetType().FullName));
+				}
+
+				if (!e.Instance.GetType().IsInterface)
+				{
+					throw new DependencyResolutionException(string.Format(
+						CultureInfo.CurrentCulture, RegistrationExtensionsResources.TransparentProxyIsNotInterface, e.Instance.GetType().FullName));
+				}
+
+				if (additionalInterfacesToProxy.Any())
+				{
+					var remotingTypeInfo = (IRemotingTypeInfo)RemotingServices.GetRealProxy(e.Instance);
+
+					var invalidInterfaces = additionalInterfacesToProxy
+						.Where(i => !remotingTypeInfo.CanCastTo(i, e.Instance))
+						.ToArray();
+
+					if (invalidInterfaces.Any())
+					{
+						var message = string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.InterfaceNotSupportedByTransparentProxy,
+							string.Join(", ", invalidInterfaces.Select(i => i.FullName)));
+						throw new DependencyResolutionException(message);
+					}
+				}
+
+				var interceptors = GetInterceptorServices(e.Component, e.Instance.GetType())
+					.Select(s => e.Context.ResolveService(s))
+					.Cast<IInterceptor>()
+					.ToArray();
+
+				e.Instance = ProxyGenerator.CreateInterfaceProxyWithTargetInterface(
+					e.Instance.GetType(), additionalInterfacesToProxy, e.Instance, options, interceptors);
+			});
+
+			return registration;
+		}
+
+		static void EnsureInterfaceInterceptionApplies(IComponentRegistration componentRegistration)
+		{
+			if (componentRegistration.Services
+				.OfType<IServiceWithType>()
+				.Any(swt => !swt.ServiceType.IsInterface || !swt.ServiceType.IsVisible))
+				throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,
+					RegistrationExtensionsResources.InterfaceProxyingOnlySupportsInterfaceServices,
+					componentRegistration));
+		}
+
+		static IEnumerable<Service> GetInterceptorServices(IComponentRegistration registration, Type implType)
+		{
+			if (registration == null) throw new ArgumentNullException("registration");
+			if (implType == null) throw new ArgumentNullException("implType");
+
+			var result = EmptyServices;
+
+			object services;
+			if (registration.Metadata.TryGetValue(InterceptorsPropertyName, out services))
+				result = result.Concat((IEnumerable<Service>)services);
+
+			if (implType.IsClass)
+			{
+				result = result.Concat(implType
+					.GetCustomAttributes(typeof(InterceptAttribute), true)
+					.Cast<InterceptAttribute>()
+					.Select(att => att.InterceptorService));
+
+				result = result.Concat(implType.GetInterfaces()
+					.SelectMany(i => i.GetCustomAttributes(typeof(InterceptAttribute), true))
+					.Cast<InterceptAttribute>()
+					.Select(att => att.InterceptorService));
+			}
+
+			return result.ToArray();
+		}
+
+		/// <summary>
+		/// Allows a list of interceptor services to be assigned to the registration.
+		/// </summary>
+		/// <typeparam name="TLimit">Registration limit type.</typeparam>
+		/// <typeparam name="TActivatorData">Activator data type.</typeparam>
+		/// <typeparam name="TStyle">Registration style.</typeparam>
+		/// <param name="builder">Registration to apply interception to.</param>
+		/// <param name="interceptorServices">The interceptor services.</param>
+		/// <returns>Registration builder allowing the registration to be configured.</returns>
+		/// <exception cref="System.ArgumentNullException">builder or interceptorServices</exception>
+		public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
+			InterceptedBy<TLimit, TActivatorData, TStyle>(
+				this IRegistrationBuilder<TLimit, TActivatorData, TStyle> builder,
+				params Service[] interceptorServices)
+		{
+			if (builder == null)
+				throw new ArgumentNullException("builder");
+
+			if (interceptorServices == null || interceptorServices.Any(s => s == null))
+				throw new ArgumentNullException("interceptorServices");
+
+			object existing;
+			if (builder.RegistrationData.Metadata.TryGetValue(InterceptorsPropertyName, out existing))
+				builder.RegistrationData.Metadata[InterceptorsPropertyName] =
+					((IEnumerable<Service>)existing).Concat(interceptorServices).Distinct();
+			else
+				builder.RegistrationData.Metadata.Add(InterceptorsPropertyName, interceptorServices);
+
+			return builder;
+		}
+
+		/// <summary>
+		/// Allows a list of interceptor services to be assigned to the registration.
+		/// </summary>
+		/// <typeparam name="TLimit">Registration limit type.</typeparam>
+		/// <typeparam name="TActivatorData">Activator data type.</typeparam>
+		/// <typeparam name="TStyle">Registration style.</typeparam>
+		/// <param name="builder">Registration to apply interception to.</param>
+		/// <param name="interceptorServiceNames">The names of the interceptor services.</param>
+		/// <returns>Registration builder allowing the registration to be configured.</returns>
+		/// <exception cref="System.ArgumentNullException">builder or interceptorServices</exception>
+		public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
+			InterceptedBy<TLimit, TActivatorData, TStyle>(
+				this IRegistrationBuilder<TLimit, TActivatorData, TStyle> builder,
+				params string[] interceptorServiceNames)
+		{
+			if (interceptorServiceNames == null || interceptorServiceNames.Any(n => n == null))
+				throw new ArgumentNullException("interceptorServiceNames");
+
+			return InterceptedBy(builder, interceptorServiceNames.Select(n => new KeyedService(n, typeof(IInterceptor))).ToArray());
+		}
+
+		/// <summary>
+		/// Allows a list of interceptor services to be assigned to the registration.
+		/// </summary>
+		/// <typeparam name="TLimit">Registration limit type.</typeparam>
+		/// <typeparam name="TActivatorData">Activator data type.</typeparam>
+		/// <typeparam name="TStyle">Registration style.</typeparam>
+		/// <param name="builder">Registration to apply interception to.</param>
+		/// <param name="interceptorServiceTypes">The types of the interceptor services.</param>
+		/// <returns>Registration builder allowing the registration to be configured.</returns>
+		/// <exception cref="System.ArgumentNullException">builder or interceptorServices</exception>
+		public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
+			InterceptedBy<TLimit, TActivatorData, TStyle>(
+				this IRegistrationBuilder<TLimit, TActivatorData, TStyle> builder,
+				params Type[] interceptorServiceTypes)
+		{
+			if (interceptorServiceTypes == null || interceptorServiceTypes.Any(t => t == null))
+				throw new ArgumentNullException("interceptorServiceTypes");
+
+			return InterceptedBy(builder, interceptorServiceTypes.Select(t => new TypedService(t)).ToArray());
+		}
+	}
 }
