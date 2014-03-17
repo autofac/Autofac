@@ -35,7 +35,7 @@ namespace Autofac.Extras.DynamicProxy2
     /// Indicates that a type should be intercepted.
     /// </summary>
     [SuppressMessage("Microsoft.Design", "CA1019:DefineAccessorsForAttributeArguments")]
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true)]
     public sealed class InterceptAttribute : Attribute
     {
         /// <summary>
