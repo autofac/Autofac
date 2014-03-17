@@ -13,12 +13,12 @@ namespace Autofac.Extras.Tests.DynamicProxy2
     [TestFixture]
     public class ClassInterceptorsFixture
     {
-		[Intercept(typeof(AddOneInterceptor))]
-		[Intercept(typeof(AddTenInterceptor))]
+        [Intercept(typeof(AddOneInterceptor))]
+        [Intercept(typeof(AddTenInterceptor))]
         public class C
         {
-			public int I { get; set; }
-			public int J { get; set; }
+            public int I { get; set; }
+            public int J { get; set; }
 
             public C(int i)
             {
@@ -30,16 +30,16 @@ namespace Autofac.Extras.Tests.DynamicProxy2
                 return I;
             }
 
-			public virtual int GetJ()
-			{
-				return J;
-			}
+            public virtual int GetJ()
+            {
+                return J;
+            }
         }
 
         public class D
         {
-			public int I { get; set; }
-			public int J { get; set; }
+            public int I { get; set; }
+            public int J { get; set; }
 
             public D(int i)
             {
@@ -51,72 +51,71 @@ namespace Autofac.Extras.Tests.DynamicProxy2
                 return I;
             }
 
-			public virtual int GetJ()
-			{
-				return J;
-			}
-		}
+            public virtual int GetJ()
+            {
+                return J;
+            }
+        }
 
-		class InterceptOnlyJ : IProxyGenerationHook
-		{
+        class InterceptOnlyJ : IProxyGenerationHook
+        {
+            public void MethodsInspected()
+            {
+            }
 
-			public void MethodsInspected()
-			{
-			}
+            public void NonProxyableMemberNotification(Type type, MemberInfo memberInfo)
+            {
+            }
 
-			public void NonProxyableMemberNotification(Type type, MemberInfo memberInfo)
-			{
-			}
+            public bool ShouldInterceptMethod(Type type, MethodInfo methodInfo)
+            {
+                return methodInfo.Name.Equals("GetJ");
+            }
 
-			public bool ShouldInterceptMethod(Type type, MethodInfo methodInfo)
-			{
-				return methodInfo.Name.Equals("GetJ");
-			}
+        }
 
-		}
+        class MyInterceptorSelector : IInterceptorSelector
+        {
+            public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
+            {
+                var result = method.Name == "GetI"
+                    ? interceptors.OfType<AddOneInterceptor>().ToArray<IInterceptor>()
+                    : interceptors.OfType<AddTenInterceptor>().ToArray<IInterceptor>();
 
-		class MyInterceptorSelector : IInterceptorSelector
-		{
-			public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
-			{
-				var result = method.Name == "GetI"
-					? interceptors.OfType<AddOneInterceptor>().ToArray<IInterceptor>()
-					: interceptors.OfType<AddTenInterceptor>().ToArray<IInterceptor>();
+                if (result.Length == 0)
+                    throw new InvalidOperationException("No interceptors for method " + method.Name);
 
-				if (result.Length == 0)
-					throw new InvalidOperationException("No interceptors for method " + method.Name);
-
-				return result;
-			}
-		}
+                return result;
+            }
+        }
 
         class AddOneInterceptor : IInterceptor
         {
             public void Intercept(IInvocation invocation)
             {
                 invocation.Proceed();
-				if (invocation.Method.Name == "GetI" || invocation.Method.Name == "GetJ")
+                if (invocation.Method.Name == "GetI" || invocation.Method.Name == "GetJ")
                     invocation.ReturnValue = 1 + (int)invocation.ReturnValue;
             }
         }
 
-		class AddTenInterceptor : IInterceptor
-		{
-			public void Intercept(IInvocation invocation)
-			{
-				invocation.Proceed();
-				if (invocation.Method.Name == "GetJ")
-					invocation.ReturnValue = 10 + (int)invocation.ReturnValue;
-			}
-		}
+        class AddTenInterceptor : IInterceptor
+        {
+            public void Intercept(IInvocation invocation)
+            {
+                invocation.Proceed();
+                if (invocation.Method.Name == "GetJ")
+                    invocation.ReturnValue = 10 + (int)invocation.ReturnValue;
+            }
+        }
 
         [Test]
         public void InterceptsReflectionBasedComponent()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<C>().EnableClassInterceptors();
-			builder.RegisterType<AddOneInterceptor>();
-			builder.RegisterType<AddTenInterceptor>();
+            builder.RegisterType<AddOneInterceptor>();
+            builder.RegisterType<AddTenInterceptor>();
             var container = builder.Build();
             var i = 10;
             var c = container.Resolve<C>(TypedParameter.From(i));
@@ -131,73 +130,73 @@ namespace Autofac.Extras.Tests.DynamicProxy2
             builder.RegisterType<D>()
                 .EnableClassInterceptors()
                 .InterceptedBy(typeof(AddOneInterceptor));
-			builder.RegisterType<AddOneInterceptor>();
+            builder.RegisterType<AddOneInterceptor>();
             var container = builder.Build();
             var i = 10;
             var c = container.Resolve<D>(TypedParameter.From(i));
-			var gotI = c.GetI();
-			Assert.AreEqual(i + 1, gotI);
-		}
+            var gotI = c.GetI();
+            Assert.AreEqual(i + 1, gotI);
+        }
 
-		[Test]
-		public void CanCreateMixinWithClassInterceptors()
-		{
-			var options = new ProxyGenerationOptions();
-			options.AddMixinInstance(new Dictionary<int, int>());
+        [Test]
+        public void CanCreateMixinWithClassInterceptors()
+        {
+            var options = new ProxyGenerationOptions();
+            options.AddMixinInstance(new Dictionary<int, int>());
 
-			var builder = new ContainerBuilder();
-			builder.RegisterType<C>().EnableClassInterceptors(options);
-			builder.RegisterType<AddOneInterceptor>();
-			builder.RegisterType<AddTenInterceptor>();
-			var container = builder.Build();
-			var i = 10;
-			var cpt = container.Resolve<C>(TypedParameter.From(i));
+            var builder = new ContainerBuilder();
+            builder.RegisterType<C>().EnableClassInterceptors(options);
+            builder.RegisterType<AddOneInterceptor>();
+            builder.RegisterType<AddTenInterceptor>();
+            var container = builder.Build();
+            var i = 10;
+            var cpt = container.Resolve<C>(TypedParameter.From(i));
 
-			var dict = cpt as IDictionary<int, int>;
+            var dict = cpt as IDictionary<int, int>;
 
-			Assert.IsNotNull(dict);
+            Assert.IsNotNull(dict);
 
-			dict.Add(1, 2);
+            dict.Add(1, 2);
 
-			Assert.AreEqual(2, dict[1]);
+            Assert.AreEqual(2, dict[1]);
 
-			dict.Clear();
+            dict.Clear();
 
-			Assert.IsEmpty(dict);
-		}
+            Assert.IsEmpty(dict);
+        }
 
-		[Test]
-		public void CanInterceptOnlySpecificMethods()
-		{
-			var options = new ProxyGenerationOptions(new InterceptOnlyJ());
+        [Test]
+        public void CanInterceptOnlySpecificMethods()
+        {
+            var options = new ProxyGenerationOptions(new InterceptOnlyJ());
 
-			var builder = new ContainerBuilder();
-			builder.RegisterType<C>().EnableClassInterceptors(options);
-			builder.RegisterType<AddOneInterceptor>();
-			builder.RegisterType<AddTenInterceptor>();
-			var container = builder.Build();
-			var i = 10;
-			var cpt = container.Resolve<C>(TypedParameter.From(i));
+            var builder = new ContainerBuilder();
+            builder.RegisterType<C>().EnableClassInterceptors(options);
+            builder.RegisterType<AddOneInterceptor>();
+            builder.RegisterType<AddTenInterceptor>();
+            var container = builder.Build();
+            var i = 10;
+            var cpt = container.Resolve<C>(TypedParameter.From(i));
 
-			Assert.AreEqual(i, cpt.GetI());
-			Assert.AreEqual(i + 11, cpt.GetJ());
-		}
+            Assert.AreEqual(i, cpt.GetI());
+            Assert.AreEqual(i + 11, cpt.GetJ());
+        }
 
-		[Test]
-		public void CanInterceptMethodsWithSpecificInterceptors()
-		{
-			var options = new ProxyGenerationOptions { Selector = new MyInterceptorSelector() };
+        [Test]
+        public void CanInterceptMethodsWithSpecificInterceptors()
+        {
+            var options = new ProxyGenerationOptions { Selector = new MyInterceptorSelector() };
 
-			var builder = new ContainerBuilder();
-			builder.RegisterType<C>().EnableClassInterceptors(options);
-			builder.RegisterType<AddOneInterceptor>();
-			builder.RegisterType<AddTenInterceptor>();
-			var container = builder.Build();
-			var i = 10;
-			var cpt = container.Resolve<C>(TypedParameter.From(i));
+            var builder = new ContainerBuilder();
+            builder.RegisterType<C>().EnableClassInterceptors(options);
+            builder.RegisterType<AddOneInterceptor>();
+            builder.RegisterType<AddTenInterceptor>();
+            var container = builder.Build();
+            var i = 10;
+            var cpt = container.Resolve<C>(TypedParameter.From(i));
 
-			Assert.AreEqual(i + 1, cpt.GetI());
-			Assert.AreEqual(i + 10, cpt.GetJ());
-		}
+            Assert.AreEqual(i + 1, cpt.GetI());
+            Assert.AreEqual(i + 10, cpt.GetJ());
+        }
     }
 }
