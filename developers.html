@@ -142,5 +142,19 @@
 
 		<p>Production package versions are centrally controlled through the <code>PackageVersions.proj</code>. Documentation in that
 		file explains how to use it. Before releasing new versions for consumption, be sure to update the appropriate version(s).</p>
+
+		<h1>Updating the API Documentation Site</h1>
+		<p>The API docs are viewable at <a href="http://api.autofac.org">http://api.autofac.org</a>. This is hosted on GitHub pages in the <a href="https://github.com/autofac/autofac.github.com">https://github.com/autofac/autofac.github.com</a> repository.</p>
+		<ol>
+			<li>Build the API documentation.</li>
+			<li>Update the contents in the <code>/apidoc</code> folder with the new docs (add/remove/update).</li>
+			<li>Make sure the index page in the <code>/apidoc</code> is <code>index.html</code> - lower case, full <code>html</code> extension. (By default, Sandcastle makes it <code>Index.htm</code> which doesn't work.)</li>
+		</ol>
+
+		<h1>Updating the User Documentation Site</h1>
+		<p>User documentation is viewable at <a href="https://docs.autofac.org">https://docs.autofac.org</a> (a CNAME to <a href="https://autofac.readthedocs.org">https://autofac.readthedocs.org</a>). It is stored in the <code>/docs</code> folder in this source repo.</p>
+		<p>To build the docs and see them locally, you need to follow the <a href="https://docs.readthedocs.org/en/latest/getting_started.html">Getting Started</a> docs on Read The Docs so you get Python and Sphinx installed.</p>
+		<p>The docs are written in <a href="http://sphinx-doc.org/rest.html">reStructuredText</a>, which is very similar to Markdown but not quite. Check that out for a primer.</p>
+		<p>Updates to the documentation checked into the <code>/docs</code> folder will automatically propagate to Read The Docs. No build or separate push is required.</p>
 	</body>
 </html>
