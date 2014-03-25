@@ -13,7 +13,7 @@ The basic pattern for integrating Autofac into your application is:
 - Create a lifetime scope from the container.
 - Use the lifetime scope to resolve instances of the components.
 
-This getting started guide walks you through these steps for a simple console application. Once you have the basics down, you can check out the rest of the wiki for more advanced usage and :doc:`integration information for WCF, ASP.NET, and other application types <integration/index>`.
+This getting started guide walks you through these steps for a simple console application. Once you have the basics down, you can check out the rest of the wiki for more advanced usage and :doc:`integration information for WCF, ASP.NET, and other application types <../integration/index>`.
 
 Structuring the Application
 ===========================
@@ -87,16 +87,16 @@ Now that we have a reasonably structured (if contrived) set of dependencies, let
 Add Autofac References
 ======================
 
-The first step is to add Autofac references to your project. For this example, we're only using core Autofac. :doc:`Other application types may use additional Autofac integration libraries. <integration/index>`.
+The first step is to add Autofac references to your project. For this example, we're only using core Autofac. :doc:`Other application types may use additional Autofac integration libraries. <../integration/index>`.
 
 The easiest way to do this is through NuGet. The "Autofac" package has all the core functionality you'll need.
 
-.. image:: images/gsnuget.png
+.. image:: gsnuget.png
 
 Application Startup
 ===================
 
-At application startup, you need to create a `ContainerBuilder` and register your :doc:`components <glossary>` with it. A *component* is an expression, .NET type, or other bit of code that exposes one or more *services* and can take in other *dependencies*.
+At application startup, you need to create a `ContainerBuilder` and register your :doc:`components <../glossary>` with it. A *component* is an expression, .NET type, or other bit of code that exposes one or more *services* and can take in other *dependencies*.
 
 In simple terms, think about a .NET type that implements an interface, like this::
 
@@ -162,13 +162,13 @@ During application execution, you'll need to make use of the components you regi
 
 The container itself *is* a lifetime scope, and you can technically just resolve things right from the container. **It is not recommended to resolve from the container directly**, however.
 
-When you resolve a component, depending on the :doc:`instance scope you define <lifetime/instance-scope>`, a new instance of the object gets created. (Resolving a component is roughly equivalent to calling "new" to instantiate a class. That's really, really oversimplifying it, but from an analogy perspective it's fine.) Some components may need to be disposed (like they implement ``IDisposable``) - :doc:`Autofac can handle disposing those components for you <lifetime/disposal>` when the lifetime scope is disposed.
+When you resolve a component, depending on the :doc:`instance scope you define <../lifetime/instance-scope>`, a new instance of the object gets created. (Resolving a component is roughly equivalent to calling "new" to instantiate a class. That's really, really oversimplifying it, but from an analogy perspective it's fine.) Some components may need to be disposed (like they implement ``IDisposable``) - :doc:`Autofac can handle disposing those components for you <../lifetime/disposal>` when the lifetime scope is disposed.
 
 However, the container lives for the lifetime of your application. If you resolve a lot of stuff directly from the container, you may end up with a lot of things hanging around waiting to be disposed. That's not good (and you may see a "memory leak" doing that).
 
 Instead, create a *child lifetime scope* from the container and resolve from that. When you're done resolving components, dispose of the child scope and everything gets cleaned up for you.
 
-(When you're working with the :doc:`Autofac integration libraries <integration/index>`, this child scope creation is largely done for you so you don't have to think about it.)
+(When you're working with the :doc:`Autofac integration libraries <../integration/index>`, this child scope creation is largely done for you so you don't have to think about it.)
 
 For our sample app, we'll implement the "WriteDate" method to get the writer from a scope and dispose of the scope when we're done.
 
@@ -208,16 +208,16 @@ Now when you run your program...
 
 Later, if you want your application to write a different date, you could implement a different ``IDateWriter`` and then change the registration at app startup. You don't have to change any other classes. Yay, inversion of control!
 
-**Note: generally speaking, service location is largely considered an anti-pattern** `(see article) <http://blog.ploeh.dk/2010/02/03/ServiceLocatorIsAnAntiPattern.aspx>`_. That is, manually creating scopes everywhere and sprinkling use of the container through your code is not necessarily the best way to go. Using the :doc:`Autofac integration libraries <integration/index>` you usually won't have to do what we did in the sample app above. Instead, things get resolved from a central, "top level" location in the application and manual resolution is rare. Of course, how you design your app is up to you.
+**Note: generally speaking, service location is largely considered an anti-pattern** `(see article) <http://blog.ploeh.dk/2010/02/03/ServiceLocatorIsAnAntiPattern.aspx>`_. That is, manually creating scopes everywhere and sprinkling use of the container through your code is not necessarily the best way to go. Using the :doc:`Autofac integration libraries <../integration/index>` you usually won't have to do what we did in the sample app above. Instead, things get resolved from a central, "top level" location in the application and manual resolution is rare. Of course, how you design your app is up to you.
 
 Going Further
 =============
 
 The sample app gives you an idea of how to use Autofac, but there's a lot more you can do.
 
-- Check out the list of :doc:`integration libraries <integration/index>` to see how to integrate Autofac with your application.
-- Learn about the :doc:`ways to register components <register/index>` that add flexibility.
-- Learn about :doc:`Autofac configuration options <configuration/index>` that allow you to better manage your component registrations.
+- Check out the list of :doc:`integration libraries <../integration/index>` to see how to integrate Autofac with your application.
+- Learn about the :doc:`ways to register components <../register/index>` that add flexibility.
+- Learn about :doc:`Autofac configuration options <../configuration/index>` that allow you to better manage your component registrations.
 
 Need Help?
 ==========
@@ -229,4 +229,4 @@ Need Help?
 Building from Source
 ====================
 
-The source code along with Visual Studio project files is available `on GitHub <https://github.com/autofac/Autofac>`_. Build instructions are in a README in the root of the code, and more information about the project is in the :doc:`Contributor Guide <contributors>`.
+The source code along with Visual Studio project files is available `on GitHub <https://github.com/autofac/Autofac>`_. Build instructions are in a README in the root of the code, and more information about the project is in the :doc:`Contributor Guide <../contributors>`.

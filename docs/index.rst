@@ -11,11 +11,12 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   getting-started.rst
+   getting-started/index.rst
    register/index.rst
    lifetime/index.rst
    configuration/index.rst
    integration/index.rst
+   advanced/index.rst
    glossary.rst
    contributors.rst
 
