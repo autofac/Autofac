@@ -23,38 +23,59 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security;
-using System.Web.Http;
+using Autofac;
+using Autofac.Core;
 using Autofac.Integration.Owin;
-using Owin;
+using Microsoft.Owin;
 
-namespace Autofac.Integration.WebApi.Owin
+namespace Owin
 {
     /// <summary>
-    /// Extension methods for configuring the OWIN pipeline.
+    /// Extension methods for configuring Autofac within the OWIN pipeline.
     /// </summary>
     [SecuritySafeCritical]
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class OwinExtensions
     {
         /// <summary>
-        /// Extends the Autofac lifetime scope added from the OWIN pipeline through to the Web API dependency scope.
+        /// Adds a component to the OWIN pipeline for using Autofac dependency injection with middleware.
         /// </summary>
         /// <param name="app">The application builder.</param>
-        /// <param name="configuration">The HTTP server configuration.</param>
+        /// <param name="container">The Autofac application lifetime scope/container.</param>
         /// <returns>The application builder.</returns>
         [SecuritySafeCritical]
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public static IAppBuilder UseAutofacWebApi(this IAppBuilder app, HttpConfiguration configuration)
+        public static IAppBuilder UseAutofacMiddleware(this IAppBuilder app, ILifetimeScope container)
         {
-            if (configuration == null) throw new ArgumentNullException("configuration");
+            app.Use(async (context, next) =>
+            {
+                using (var lifetimeScope = container.BeginLifetimeScope(Constants.LifetimeScopeTag,
+                    b => b.RegisterInstance(context).As<IOwinContext>()))
+                {
+                    context.Set(Constants.OwinLifetimeScopeKey, lifetimeScope);
+                    await next();
+                }
+            });
 
-            if (!configuration.MessageHandlers.OfType<DependencyScopeHandler>().Any())
-                configuration.MessageHandlers.Insert(0, new DependencyScopeHandler());
+            return UseMiddlewareFromContainer(app, container);
+        }
+
+        [SecuritySafeCritical]
+        static IAppBuilder UseMiddlewareFromContainer(this IAppBuilder app, IComponentContext container)
+        {
+            var services = container.ComponentRegistry.Registrations.SelectMany(r => r.Services)
+                .OfType<TypedService>()
+                .Where(s => s.ServiceType.IsAssignableTo<OwinMiddleware>() && !s.ServiceType.IsAbstract)
+                .Select(service => typeof(AutofacMiddleware<>).MakeGenericType(service.ServiceType))
+                .Where(serviceType => !container.IsRegistered(serviceType));
+
+            var typedServices = services.ToArray();
+            if (!typedServices.Any()) return app;
+
+            foreach (var typedService in typedServices)
+                app.Use(typedService);
 
             return app;
         }
