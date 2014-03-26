@@ -30,13 +30,13 @@
 			add a "link" to the VersionAssemblyInfo.cs for the owning primary project.
 		-->
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac\Autofac.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
+			<AssemblyVersion>3.3.0.0</AssemblyVersion>
 			<FileVersion>3.3.0.0</FileVersion>
 			<PackageName>Autofac</PackageName>
 			<PackageVersion>3.3.0</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Configuration\Autofac.Configuration.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
+			<AssemblyVersion>3.2.0.0</AssemblyVersion>
 			<FileVersion>3.2.0.0</FileVersion>
 			<PackageName>Autofac.Configuration</PackageName>
 			<PackageVersion>3.2.0</PackageVersion>
@@ -48,7 +48,7 @@
 			<PackageVersion>3.0.2</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Mvc\Autofac.Integration.Mvc.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
+			<AssemblyVersion>3.2.0.0</AssemblyVersion>
 			<FileVersion>3.2.0.0</FileVersion>
 			<PackageName>Autofac.Mvc5</PackageName>
 			<PackageVersion>3.2.0</PackageVersion>
@@ -84,13 +84,13 @@
 			<PackageVersion>3.0.0-alpha2</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Web\Autofac.Integration.Web.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
+			<AssemblyVersion>3.1.0.0</AssemblyVersion>
 			<FileVersion>3.1.0.0</FileVersion>
 			<PackageName>Autofac.Web</PackageName>
 			<PackageVersion>3.1.0</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.WebApi\Autofac.Integration.WebApi.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
+			<AssemblyVersion>3.2.0.0</AssemblyVersion>
 			<FileVersion>3.2.0.0</FileVersion>
 			<PackageName>Autofac.WebApi2</PackageName>
 			<PackageVersion>3.2.0</PackageVersion>
@@ -102,13 +102,13 @@
 			<PackageVersion>3.0.3</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.Attributed\Autofac.Extras.Attributed.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
+			<AssemblyVersion>3.1.0.0</AssemblyVersion>
 			<FileVersion>3.1.0.0</FileVersion>
 			<PackageName>Autofac.Extras.Attributed</PackageName>
 			<PackageVersion>3.1.0</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.CommonServiceLocator\Autofac.Extras.CommonServiceLocator.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
+			<AssemblyVersion>3.1.0.0</AssemblyVersion>
 			<FileVersion>3.1.0.0</FileVersion>
 			<PackageName>Autofac.Extras.CommonServiceLocator</PackageName>
 			<PackageVersion>3.1.0</PackageVersion>
