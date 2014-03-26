@@ -69,19 +69,19 @@
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
 			<FileVersion>3.0.0.0</FileVersion>
 			<PackageName>Autofac.Owin</PackageName>
-			<PackageVersion>3.0.0-alpha</PackageVersion>
+			<PackageVersion>3.0.0-alpha2</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.WebApi.Owin\Autofac.Integration.WebApi.Owin.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
 			<FileVersion>3.0.0.0</FileVersion>
 			<PackageName>Autofac.WebApi2.Owin</PackageName>
-			<PackageVersion>3.0.0-alpha</PackageVersion>
+			<PackageVersion>3.0.0-alpha2</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Mvc.Owin\Autofac.Integration.Mvc.Owin.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
 			<FileVersion>3.0.0.0</FileVersion>
 			<PackageName>Autofac.Mvc5.Owin</PackageName>
-			<PackageVersion>3.0.0-alpha</PackageVersion>
+			<PackageVersion>3.0.0-alpha2</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Web\Autofac.Integration.Web.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
