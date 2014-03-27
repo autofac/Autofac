@@ -59,10 +59,7 @@ namespace Autofac.Extras.DynamicProxy2
             EnableClassInterceptors<TLimit, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle> registration)
         {
-            if (registration == null) throw new ArgumentNullException("registration");
-            registration.ActivatorData.ConfigurationActions.Add(
-                (t, rb) => rb.EnableClassInterceptors());
-            return registration;
+            return EnableClassInterceptors(registration, ProxyGenerationOptions.Default);
         }
 
         /// <summary>
@@ -102,25 +99,7 @@ namespace Autofac.Extras.DynamicProxy2
                 this IRegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle> registration)
             where TConcreteReflectionActivatorData : ConcreteReflectionActivatorData
         {
-            if (registration == null)
-            {
-                throw new ArgumentNullException("registration");
-            }
-            registration.ActivatorData.ImplementationType =
-                ProxyGenerator.ProxyBuilder.CreateClassProxyType(
-                    registration.ActivatorData.ImplementationType, new Type[0], ProxyGenerationOptions.Default);
-
-            registration.OnPreparing(e =>
-            {
-                e.Parameters = new Parameter[] {
-                    new PositionalParameter(0, GetInterceptorServices(e.Component, registration.ActivatorData.ImplementationType)
-                        .Select(s => e.Context.ResolveService(s))
-                        .Cast<IInterceptor>()
-                        .ToArray())
-                }.Concat(e.Parameters).ToArray();
-            });
-
-            return registration;
+            return EnableClassInterceptors(registration, ProxyGenerationOptions.Default);
         }
 
         /// <summary>
@@ -191,31 +170,7 @@ namespace Autofac.Extras.DynamicProxy2
             EnableInterfaceInterceptors<TLimit, TActivatorData, TSingleRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration)
         {
-            if (registration == null)
-            {
-                throw new ArgumentNullException("registration");
-            }
-            registration.RegistrationData.ActivatingHandlers.Add((sender, e) =>
-            {
-                EnsureInterfaceInterceptionApplies(e.Component);
-
-                var proxiedInterfaces = e.Instance.GetType().GetInterfaces().Where(i => i.IsVisible).ToArray();
-
-                if (!proxiedInterfaces.Any())
-                    return;
-
-                var theInterface = proxiedInterfaces.First();
-                var interfaces = proxiedInterfaces.Skip(1).ToArray();
-
-                var interceptors = GetInterceptorServices(e.Component, e.Instance.GetType())
-                    .Select(s => e.Context.ResolveService(s))
-                    .Cast<IInterceptor>()
-                    .ToArray();
-
-                e.Instance = ProxyGenerator.CreateInterfaceProxyWithTarget(theInterface, interfaces, e.Instance, interceptors);
-            });
-
-            return registration;
+            return EnableInterfaceInterceptors(registration, null);
         }
 
         /// <summary>
@@ -253,7 +208,9 @@ namespace Autofac.Extras.DynamicProxy2
                     .Cast<IInterceptor>()
                     .ToArray();
 
-                e.Instance = ProxyGenerator.CreateInterfaceProxyWithTarget(theInterface, interfaces, e.Instance, options, interceptors);
+                e.Instance = options == null
+                    ? ProxyGenerator.CreateInterfaceProxyWithTarget(theInterface, interfaces, e.Instance, interceptors)
+                    : ProxyGenerator.CreateInterfaceProxyWithTarget(theInterface, interfaces, e.Instance, options, interceptors);
             });
 
             return registration;
@@ -272,52 +229,7 @@ namespace Autofac.Extras.DynamicProxy2
             InterceptTransparentProxy<TLimit, TActivatorData, TSingleRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration, params Type[] additionalInterfacesToProxy)
         {
-            if (registration == null)
-            {
-                throw new ArgumentNullException("registration");
-            }
-            registration.RegistrationData.ActivatingHandlers.Add((sender, e) =>
-            {
-                EnsureInterfaceInterceptionApplies(e.Component);
-
-                if (!RemotingServices.IsTransparentProxy(e.Instance))
-                {
-                    throw new DependencyResolutionException(string.Format(
-                        CultureInfo.CurrentCulture, RegistrationExtensionsResources.TypeIsNotTransparentProxy, e.Instance.GetType().FullName));
-                }
-
-                if (!e.Instance.GetType().IsInterface)
-                {
-                    throw new DependencyResolutionException(string.Format(
-                        CultureInfo.CurrentCulture, RegistrationExtensionsResources.TransparentProxyIsNotInterface, e.Instance.GetType().FullName));
-                }
-
-                if (additionalInterfacesToProxy.Any())
-                {
-                    var remotingTypeInfo = (IRemotingTypeInfo)RemotingServices.GetRealProxy(e.Instance);
-
-                    var invalidInterfaces = additionalInterfacesToProxy
-                        .Where(i => !remotingTypeInfo.CanCastTo(i, e.Instance))
-                        .ToArray();
-
-                    if (invalidInterfaces.Any())
-                    {
-                        var message = string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.InterfaceNotSupportedByTransparentProxy,
-                            string.Join(", ", invalidInterfaces.Select(i => i.FullName)));
-                        throw new DependencyResolutionException(message);
-                    }
-                }
-
-                var interceptors = GetInterceptorServices(e.Component, e.Instance.GetType())
-                    .Select(s => e.Context.ResolveService(s))
-                    .Cast<IInterceptor>()
-                    .ToArray();
-
-                e.Instance = ProxyGenerator.CreateInterfaceProxyWithTargetInterface(
-                    e.Instance.GetType(), additionalInterfacesToProxy, e.Instance, interceptors);
-            });
-
-            return registration;
+            return InterceptTransparentProxy(registration, null, additionalInterfacesToProxy);
         }
 
         /// <summary>
@@ -375,8 +287,9 @@ namespace Autofac.Extras.DynamicProxy2
                     .Cast<IInterceptor>()
                     .ToArray();
 
-                e.Instance = ProxyGenerator.CreateInterfaceProxyWithTargetInterface(
-                    e.Instance.GetType(), additionalInterfacesToProxy, e.Instance, options, interceptors);
+                e.Instance = options == null
+                    ? ProxyGenerator.CreateInterfaceProxyWithTargetInterface(e.Instance.GetType(), additionalInterfacesToProxy, e.Instance, interceptors)
+                    : ProxyGenerator.CreateInterfaceProxyWithTargetInterface(e.Instance.GetType(), additionalInterfacesToProxy, e.Instance, options, interceptors);
             });
 
             return registration;
