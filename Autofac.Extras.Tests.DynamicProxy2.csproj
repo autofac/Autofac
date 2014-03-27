@@ -86,12 +86,16 @@
     <Compile Include="..\..\Source\Autofac.Extras.DynamicProxy2\Properties\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="InterceptorsChosenByMetadataFixture.cs" />
     <Compile Include="AttributedInterfaceInterceptionFixture.cs" />
     <Compile Include="ClassInterceptorsFixture.cs" />
+    <Compile Include="InterceptorsChosenByMetadataFixture.cs" />
+    <Compile Include="InterceptorsChosenByMetadataWithOptionsFixture.cs" />
+    <Compile Include="AttributedInterfaceInterceptionWithOptionsFixture.cs" />
+    <Compile Include="ClassInterceptorsWithOptionsFixture.cs" />
+    <Compile Include="InterceptTransparentProxyFixture.cs" />
     <Compile Include="InterfaceInterceptorsFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="InterceptTransparentProxyFixture.cs" />
+    <Compile Include="InterceptTransparentProxyWithOptionsFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
