@@ -40,6 +40,8 @@ namespace Autofac.Integration.Owin
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class OwinExtensions
     {
+        const string MiddlewareRegisteredKey = "AutofacMiddelwareRegistered";
+
         /// <summary>
         /// Adds a component to the OWIN pipeline for using Autofac dependency injection with middleware.
         /// </summary>
@@ -49,6 +51,8 @@ namespace Autofac.Integration.Owin
         [SecuritySafeCritical]
         public static IAppBuilder UseAutofacMiddleware(this IAppBuilder app, IContainer container)
         {
+            if (app.Properties.ContainsKey(MiddlewareRegisteredKey)) return app;
+
             app.Use(async (context, next) =>
             {
                 using (var lifetimeScope = container.BeginLifetimeScope(Constants.LifetimeScopeTag,
@@ -59,7 +63,11 @@ namespace Autofac.Integration.Owin
                 }
             });
 
-            return UseMiddlewareFromContainer(app, container);
+            UseMiddlewareFromContainer(app, container);
+
+            app.Properties.Add(MiddlewareRegisteredKey, true);
+
+            return app;
         }
 
         /// <summary>
@@ -76,7 +84,7 @@ namespace Autofac.Integration.Owin
         }
 
         [SecuritySafeCritical]
-        static IAppBuilder UseMiddlewareFromContainer(this IAppBuilder app, IComponentContext container)
+        static void UseMiddlewareFromContainer(this IAppBuilder app, IComponentContext container)
         {
             var services = container.ComponentRegistry.Registrations.SelectMany(r => r.Services)
                 .OfType<TypedService>()
@@ -85,12 +93,10 @@ namespace Autofac.Integration.Owin
                 .Where(serviceType => !container.IsRegistered(serviceType));
 
             var typedServices = services.ToArray();
-            if (!typedServices.Any()) return app;
+            if (!typedServices.Any()) return;
 
             foreach (var typedService in typedServices)
                 app.Use(typedService);
-
-            return app;
         }
     }
 }
