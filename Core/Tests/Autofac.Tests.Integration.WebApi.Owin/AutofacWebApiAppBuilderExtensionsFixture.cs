@@ -3,11 +3,12 @@ using System.Web.Http;
 using Autofac.Integration.WebApi.Owin;
 using Microsoft.Owin.Builder;
 using NUnit.Framework;
+using Owin;
 
 namespace Autofac.Tests.Integration.WebApi.Owin
 {
     [TestFixture]
-    public class OwinExtensionsFixture
+    public class AutofacWebApiAppBuilderExtensionsFixture
     {
         [Test]
         public void UseAutofacWebApiAddsDelegatingHandler()

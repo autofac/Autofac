@@ -30,136 +30,136 @@
 			add a "link" to the VersionAssemblyInfo.cs for the owning primary project.
 		-->
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac\Autofac.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.3.0.0</FileVersion>
+			<AssemblyVersion>3.3.0.0</AssemblyVersion>
+			<FileVersion>3.3.1.0</FileVersion>
 			<PackageName>Autofac</PackageName>
-			<PackageVersion>3.3.0</PackageVersion>
+			<PackageVersion>3.3.1</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Configuration\Autofac.Configuration.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.2.0.0</FileVersion>
+			<AssemblyVersion>3.2.0.0</AssemblyVersion>
+			<FileVersion>3.2.1.0</FileVersion>
 			<PackageName>Autofac.Configuration</PackageName>
-			<PackageVersion>3.2.0</PackageVersion>
+			<PackageVersion>3.2.1</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Mef\Autofac.Integration.Mef.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.2.0</FileVersion>
+			<FileVersion>3.0.3.0</FileVersion>
 			<PackageName>Autofac.Mef</PackageName>
-			<PackageVersion>3.0.2</PackageVersion>
+			<PackageVersion>3.0.3</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Mvc\Autofac.Integration.Mvc.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.2.0.0</FileVersion>
+			<AssemblyVersion>3.2.0.0</AssemblyVersion>
+			<FileVersion>3.2.1.0</FileVersion>
 			<PackageName>Autofac.Mvc5</PackageName>
-			<PackageVersion>3.2.0</PackageVersion>
+			<PackageVersion>3.2.1</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.SignalR\Autofac.Integration.SignalR.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.1.0</FileVersion>
+			<FileVersion>3.0.2.0</FileVersion>
 			<PackageName>Autofac.SignalR2</PackageName>
-			<PackageVersion>3.0.1</PackageVersion>
+			<PackageVersion>3.0.2</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Wcf\Autofac.Integration.Wcf.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.0.0</FileVersion>
+			<FileVersion>3.0.1.0</FileVersion>
 			<PackageName>Autofac.Wcf</PackageName>
-			<PackageVersion>3.0.0</PackageVersion>
+			<PackageVersion>3.0.1</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Owin\Autofac.Integration.Owin.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
 			<FileVersion>3.0.0.0</FileVersion>
 			<PackageName>Autofac.Owin</PackageName>
-			<PackageVersion>3.0.0-alpha</PackageVersion>
+			<PackageVersion>3.0.0-alpha3</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.WebApi.Owin\Autofac.Integration.WebApi.Owin.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
 			<FileVersion>3.0.0.0</FileVersion>
 			<PackageName>Autofac.WebApi2.Owin</PackageName>
-			<PackageVersion>3.0.0-alpha</PackageVersion>
+			<PackageVersion>3.0.0-alpha3</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Mvc.Owin\Autofac.Integration.Mvc.Owin.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
 			<FileVersion>3.0.0.0</FileVersion>
 			<PackageName>Autofac.Mvc5.Owin</PackageName>
-			<PackageVersion>3.0.0-alpha</PackageVersion>
+			<PackageVersion>3.0.0-alpha3</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Web\Autofac.Integration.Web.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.1.0.0</FileVersion>
+			<AssemblyVersion>3.1.0.0</AssemblyVersion>
+			<FileVersion>3.1.1.0</FileVersion>
 			<PackageName>Autofac.Web</PackageName>
-			<PackageVersion>3.1.0</PackageVersion>
+			<PackageVersion>3.1.1</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.WebApi\Autofac.Integration.WebApi.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.2.0.0</FileVersion>
+			<AssemblyVersion>3.2.0.0</AssemblyVersion>
+			<FileVersion>3.2.1.0</FileVersion>
 			<PackageName>Autofac.WebApi2</PackageName>
-			<PackageVersion>3.2.0</PackageVersion>
+			<PackageVersion>3.2.1</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.AggregateService\Autofac.Extras.AggregateService.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.3.0</FileVersion>
+			<FileVersion>3.0.4.0</FileVersion>
 			<PackageName>Autofac.Extras.AggregateService</PackageName>
-			<PackageVersion>3.0.3</PackageVersion>
+			<PackageVersion>3.0.4</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.Attributed\Autofac.Extras.Attributed.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.1.0.0</FileVersion>
+			<AssemblyVersion>3.1.0.0</AssemblyVersion>
+			<FileVersion>3.1.1.0</FileVersion>
 			<PackageName>Autofac.Extras.Attributed</PackageName>
-			<PackageVersion>3.1.0</PackageVersion>
+			<PackageVersion>3.1.1</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.CommonServiceLocator\Autofac.Extras.CommonServiceLocator.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.1.0</FileVersion>
+			<AssemblyVersion>3.1.0.0</AssemblyVersion>
+			<FileVersion>3.1.1.0</FileVersion>
 			<PackageName>Autofac.Extras.CommonServiceLocator</PackageName>
-			<PackageVersion>3.0.1</PackageVersion>
+			<PackageVersion>3.1.1</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.DomainServices\Autofac.Extras.DomainServices.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.0.0</FileVersion>
+			<FileVersion>3.0.1.0</FileVersion>
 			<PackageName>Autofac.Extras.DomainServices</PackageName>
-			<PackageVersion>3.0.0</PackageVersion>
+			<PackageVersion>3.0.1</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.DynamicProxy2\Autofac.Extras.DynamicProxy2.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.3.0</FileVersion>
+			<FileVersion>3.0.4.0</FileVersion>
 			<PackageName>Autofac.Extras.DynamicProxy2</PackageName>
-			<PackageVersion>3.0.3</PackageVersion>
+			<PackageVersion>3.0.4</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.EnterpriseLibraryConfigurator\Autofac.Extras.EnterpriseLibraryConfigurator.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.0.0</FileVersion>
+			<FileVersion>3.0.1.0</FileVersion>
 			<PackageName>Autofac.Extras.EnterpriseLibraryConfigurator</PackageName>
-			<PackageVersion>3.0.0</PackageVersion>
+			<PackageVersion>3.0.1</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.FakeItEasy\Autofac.Extras.FakeItEasy.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.0.0</FileVersion>
+			<FileVersion>3.0.2.0</FileVersion>
 			<PackageName>Autofac.Extras.FakeItEasy</PackageName>
-			<PackageVersion>3.0.0</PackageVersion>
+			<PackageVersion>3.0.2</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.Moq\Autofac.Extras.Moq.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.1.0</FileVersion>
+			<FileVersion>3.0.2.0</FileVersion>
 			<PackageName>Autofac.Extras.Moq</PackageName>
-			<PackageVersion>3.0.1</PackageVersion>
+			<PackageVersion>3.0.2</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.Multitenant\Autofac.Extras.Multitenant.csproj">
 			<AssemblyVersion>3.1.0.0</AssemblyVersion>
-			<FileVersion>3.1.0.0</FileVersion>
+			<FileVersion>3.1.1.0</FileVersion>
 			<PackageName>Autofac.Extras.Multitenant</PackageName>
-			<PackageVersion>3.1.0</PackageVersion>
+			<PackageVersion>3.1.1</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.Multitenant.Wcf\Autofac.Extras.Multitenant.Wcf.csproj">
 			<AssemblyVersion>3.1.0.0</AssemblyVersion>
-			<FileVersion>3.1.0.0</FileVersion>
+			<FileVersion>3.1.1.0</FileVersion>
 			<PackageName>Autofac.Extras.Multitenant.Wcf</PackageName>
-			<PackageVersion>3.1.0</PackageVersion>
+			<PackageVersion>3.1.1</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.NHibernate\Autofac.Extras.NHibernate.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.0.0</FileVersion>
+			<FileVersion>3.0.1.0</FileVersion>
 			<PackageName>Autofac.Extras.NHibernate</PackageName>
-			<PackageVersion>3.0.0</PackageVersion>
+			<PackageVersion>3.0.1</PackageVersion>
 		</AutofacProject>
 	</ItemGroup>
 </Project>

@@ -73,7 +73,8 @@
     <Compile Include="..\..\..\ProductAssemblyInfo.cs">
       <Link>Properties\ProductAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="OwinExtensionsFixture.cs" />
+    <Compile Include="OwinContextExtensionsFixture.cs" />
+    <Compile Include="AutofacAppBuilderExtensionsFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

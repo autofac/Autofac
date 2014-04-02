@@ -81,7 +81,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DependencyScopeHandlerFixture.cs" />
-    <Compile Include="OwinExtensionsFixture.cs" />
+    <Compile Include="AutofacWebApiAppBuilderExtensionsFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\Autofac.Integration.Owin\Autofac.Integration.Owin.csproj">

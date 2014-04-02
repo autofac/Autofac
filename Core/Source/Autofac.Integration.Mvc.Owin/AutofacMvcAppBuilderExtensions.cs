@@ -26,37 +26,41 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Security;
-using System.Web.Http;
+using System.Web;
+using Autofac;
 using Autofac.Integration.Owin;
-using Owin;
 
-namespace Autofac.Integration.WebApi.Owin
+namespace Owin
 {
     /// <summary>
     /// Extension methods for configuring the OWIN pipeline.
     /// </summary>
     [SecuritySafeCritical]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static class OwinExtensions
+    public static class AutofacMvcAppBuilderExtensions
     {
+        internal static Func<HttpContextBase> CurrentHttpContext = () => new HttpContextWrapper(HttpContext.Current);
+
         /// <summary>
-        /// Extends the Autofac lifetime scope added from the OWIN pipeline through to the Web API dependency scope.
+        /// Extends the Autofac lifetime scope added from the OWIN pipeline through to the MVC request lifetime scope.
         /// </summary>
         /// <param name="app">The application builder.</param>
-        /// <param name="configuration">The HTTP server configuration.</param>
         /// <returns>The application builder.</returns>
         [SecuritySafeCritical]
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public static IAppBuilder UseAutofacWebApi(this IAppBuilder app, HttpConfiguration configuration)
+        public static IAppBuilder UseAutofacMvc(this IAppBuilder app)
         {
-            if (configuration == null) throw new ArgumentNullException("configuration");
+            return app.Use(async (context, next) =>
+            {
+                var lifetimeScope = context.GetAutofacLifetimeScope();
+                var httpContext = CurrentHttpContext();
 
-            if (!configuration.MessageHandlers.OfType<DependencyScopeHandler>().Any())
-                configuration.MessageHandlers.Insert(0, new DependencyScopeHandler());
+                if (lifetimeScope != null && httpContext != null)
+                    httpContext.Items[typeof(ILifetimeScope)] = lifetimeScope;
 
-            return app;
+                await next();
+            });
         }
     }
 }

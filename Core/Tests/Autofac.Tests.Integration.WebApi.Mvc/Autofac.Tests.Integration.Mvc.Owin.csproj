@@ -76,7 +76,7 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="OwinExtensionsFixture.cs" />
+    <Compile Include="AutofacMvcAppBuilderExtensionsFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\Autofac.Integration.Mvc.Owin\Autofac.Integration.Mvc.Owin.csproj">
