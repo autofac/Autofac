@@ -23,7 +23,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -32,9 +31,9 @@ using Autofac.Configuration.Util;
 namespace Autofac.Configuration
 {
     /// <summary>
-    /// Configures properties on other modules using settings from 
-    /// the appSettings section of the configuration file. These can
-    /// then be provided to component constructors as parameters.
+    /// Configures properties on other modules using settings from the appSettings section of 
+    /// the configuration file. These can then be provided to component constructors as parameters
+    /// during registrations within the module.
     /// </summary>
     /// <remarks>
     /// The convention for the appSettings key is "Module.PropertyName" (e.g. Email.Pop3Host).
@@ -47,8 +46,8 @@ namespace Autofac.Configuration
         /// <summary>
         /// Initializes a new instance of the <see cref="AppSettingsModule"/> class.
         /// </summary>
-        /// <param name="modules">The modules to configure using settings from 
-        /// the appSettings section of the configuration file.</param>
+        /// <param name="modules">The modules whose properties should be configured 
+        /// using settings from the appSettings section of the configuration file.</param>
         public AppSettingsModule(IEnumerable<Module> modules)
         {
             _modules = modules;
