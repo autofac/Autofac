@@ -51,10 +51,10 @@ namespace Autofac.Extras.DynamicProxy2
         /// via Intercept attributes on the class or added with InterceptedBy().
         /// Only virtual methods can be intercepted this way.
         /// </summary>
-        /// <typeparam name="TLimit"></typeparam>
-        /// <typeparam name="TRegistrationStyle"></typeparam>
-        /// <param name="registration"></param>
-        /// <returns></returns>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to apply interception to.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle>
             EnableClassInterceptors<TLimit, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle> registration)
@@ -67,12 +67,12 @@ namespace Autofac.Extras.DynamicProxy2
         /// via Intercept attributes on the class or added with InterceptedBy().
         /// Only virtual methods can be intercepted this way.
         /// </summary>
-        /// <typeparam name="TLimit"></typeparam>
-        /// <typeparam name="TRegistrationStyle"></typeparam>
-        /// <param name="registration"></param>
-        /// <param name="options"></param>
-        /// <param name="additionalInterfaces"></param>
-        /// <returns></returns>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to apply interception to.</param>
+        /// <param name="options">Proxy generation options to apply.</param>
+        /// <param name="additionalInterfaces">Additional interface types. Calls to their members will be proxied as well.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle>
             EnableClassInterceptors<TLimit, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle> registration,
@@ -89,11 +89,11 @@ namespace Autofac.Extras.DynamicProxy2
         /// via Intercept attributes on the class or added with InterceptedBy().
         /// Only virtual methods can be intercepted this way.
         /// </summary>
-        /// <typeparam name="TLimit"></typeparam>
-        /// <typeparam name="TRegistrationStyle"></typeparam>
-        /// <typeparam name="TConcreteReflectionActivatorData"></typeparam>
-        /// <param name="registration"></param>
-        /// <returns></returns>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TConcreteReflectionActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to apply interception to.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle>
             EnableClassInterceptors<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle> registration)
@@ -107,13 +107,13 @@ namespace Autofac.Extras.DynamicProxy2
         /// via Intercept attributes on the class or added with InterceptedBy().
         /// Only virtual methods can be intercepted this way.
         /// </summary>
-        /// <typeparam name="TLimit"></typeparam>
-        /// <typeparam name="TRegistrationStyle"></typeparam>
-        /// <typeparam name="TConcreteReflectionActivatorData"></typeparam>
-        /// <param name="registration"></param>
-        /// <param name="options"></param>
-        /// <param name="additionalInterfaces"></param>
-        /// <returns></returns>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle"><Registration style./typeparam>
+        /// <typeparam name="TConcreteReflectionActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to apply interception to.</param>
+        /// <param name="options">Proxy generation options to apply.</param>
+        /// <param name="additionalInterfaces">Additional interface types. Calls to their members will be proxied as well.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle>
             EnableClassInterceptors<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle> registration,
@@ -181,7 +181,7 @@ namespace Autofac.Extras.DynamicProxy2
         /// <typeparam name="TActivatorData">Activator data type.</typeparam>
         /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to apply interception to.</param>
-        /// <param name="options">Proxy generation options to apply</param>
+        /// <param name="options">Proxy generation options to apply.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             EnableInterfaceInterceptors<TLimit, TActivatorData, TSingleRegistrationStyle>(
@@ -239,7 +239,7 @@ namespace Autofac.Extras.DynamicProxy2
         /// <typeparam name="TActivatorData">Activator data type.</typeparam>
         /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to apply interception to.</param>
-        /// <param name="options">Proxy generation options to apply</param>
+        /// <param name="options">Proxy generation options to apply.</param>
         /// <param name="additionalInterfacesToProxy">Additional interface types. Calls to their members will be proxied as well.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
