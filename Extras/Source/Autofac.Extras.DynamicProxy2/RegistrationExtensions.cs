@@ -1,4 +1,4 @@
-﻿// This software is part of the Autofac IoC container
+// This software is part of the Autofac IoC container
 // Copyright © 2013 Autofac Contributors
 // http://autofac.org
 //
@@ -51,17 +51,36 @@ namespace Autofac.Extras.DynamicProxy2
         /// via Intercept attributes on the class or added with InterceptedBy().
         /// Only virtual methods can be intercepted this way.
         /// </summary>
-        /// <typeparam name="TLimit"></typeparam>
-        /// <typeparam name="TRegistrationStyle"></typeparam>
-        /// <param name="registration"></param>
-        /// <returns></returns>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to apply interception to.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle>
             EnableClassInterceptors<TLimit, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle> registration)
         {
+            return EnableClassInterceptors(registration, ProxyGenerationOptions.Default);
+        }
+
+        /// <summary>
+        /// Enable class interception on the target type. Interceptors will be determined
+        /// via Intercept attributes on the class or added with InterceptedBy().
+        /// Only virtual methods can be intercepted this way.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to apply interception to.</param>
+        /// <param name="options">Proxy generation options to apply.</param>
+        /// <param name="additionalInterfaces">Additional interface types. Calls to their members will be proxied as well.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle>
+            EnableClassInterceptors<TLimit, TRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle> registration,
+                ProxyGenerationOptions options, params Type[] additionalInterfaces)
+        {
             if (registration == null) throw new ArgumentNullException("registration");
             registration.ActivatorData.ConfigurationActions.Add(
-                (t, rb) => rb.EnableClassInterceptors());
+                (t, rb) => rb.EnableClassInterceptors(options, additionalInterfaces));
             return registration;
         }
 
@@ -70,14 +89,35 @@ namespace Autofac.Extras.DynamicProxy2
         /// via Intercept attributes on the class or added with InterceptedBy().
         /// Only virtual methods can be intercepted this way.
         /// </summary>
-        /// <typeparam name="TLimit"></typeparam>
-        /// <typeparam name="TRegistrationStyle"></typeparam>
-        /// <typeparam name="TConcreteReflectionActivatorData"></typeparam>
-        /// <param name="registration"></param>
-        /// <returns></returns>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <typeparam name="TConcreteReflectionActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to apply interception to.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle>
             EnableClassInterceptors<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle> registration)
+            where TConcreteReflectionActivatorData : ConcreteReflectionActivatorData
+        {
+            return EnableClassInterceptors(registration, ProxyGenerationOptions.Default);
+        }
+
+        /// <summary>
+        /// Enable class interception on the target type. Interceptors will be determined
+        /// via Intercept attributes on the class or added with InterceptedBy().
+        /// Only virtual methods can be intercepted this way.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle"><Registration style./typeparam>
+        /// <typeparam name="TConcreteReflectionActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">Registration to apply interception to.</param>
+        /// <param name="options">Proxy generation options to apply.</param>
+        /// <param name="additionalInterfaces">Additional interface types. Calls to their members will be proxied as well.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle>
+            EnableClassInterceptors<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, TConcreteReflectionActivatorData, TRegistrationStyle> registration,
+                ProxyGenerationOptions options, params Type[] additionalInterfaces)
             where TConcreteReflectionActivatorData : ConcreteReflectionActivatorData
         {
             if (registration == null)
@@ -86,16 +126,32 @@ namespace Autofac.Extras.DynamicProxy2
             }
             registration.ActivatorData.ImplementationType =
                 ProxyGenerator.ProxyBuilder.CreateClassProxyType(
-                    registration.ActivatorData.ImplementationType, new Type[0], ProxyGenerationOptions.Default);
+                    registration.ActivatorData.ImplementationType, additionalInterfaces ?? new Type[0], options);
 
             registration.OnPreparing(e =>
             {
-                e.Parameters = new Parameter[] {
-                    new PositionalParameter(0, GetInterceptorServices(e.Component, registration.ActivatorData.ImplementationType)
-                        .Select(s => e.Context.ResolveService(s))
-                        .Cast<IInterceptor>()
-                        .ToArray())
-                }.Concat(e.Parameters).ToArray();
+                var proxyParameters = new List<Parameter>();
+                var index = 0;
+
+                if (options.HasMixins)
+                {
+                    foreach (var mixin in options.MixinData.Mixins)
+                    {
+                        proxyParameters.Add(new PositionalParameter(index++, mixin));
+                    }
+                }
+
+                proxyParameters.Add(new PositionalParameter(index++, GetInterceptorServices(e.Component, registration.ActivatorData.ImplementationType)
+                            .Select(s => e.Context.ResolveService(s))
+                            .Cast<IInterceptor>()
+                            .ToArray()));
+
+                if (options.Selector != null)
+                {
+                    proxyParameters.Add(new PositionalParameter(index, options.Selector));
+                }
+
+                e.Parameters = proxyParameters.Concat(e.Parameters).ToArray();
             });
 
             return registration;
@@ -113,6 +169,23 @@ namespace Autofac.Extras.DynamicProxy2
         public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             EnableInterfaceInterceptors<TLimit, TActivatorData, TSingleRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration)
+        {
+            return EnableInterfaceInterceptors(registration, null);
+        }
+
+        /// <summary>
+        /// Enable interface interception on the target type. Interceptors will be determined
+        /// via Intercept attributes on the class or interface, or added with InterceptedBy() calls.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to apply interception to.</param>
+        /// <param name="options">Proxy generation options to apply.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+            EnableInterfaceInterceptors<TLimit, TActivatorData, TSingleRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration, ProxyGenerationOptions options)
         {
             if (registration == null)
             {
@@ -135,7 +208,9 @@ namespace Autofac.Extras.DynamicProxy2
                     .Cast<IInterceptor>()
                     .ToArray();
 
-                e.Instance = ProxyGenerator.CreateInterfaceProxyWithTarget(theInterface, interfaces, e.Instance, interceptors);
+                e.Instance = options == null
+                    ? ProxyGenerator.CreateInterfaceProxyWithTarget(theInterface, interfaces, e.Instance, interceptors)
+                    : ProxyGenerator.CreateInterfaceProxyWithTarget(theInterface, interfaces, e.Instance, options, interceptors);
             });
 
             return registration;
@@ -153,6 +228,23 @@ namespace Autofac.Extras.DynamicProxy2
         public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             InterceptTransparentProxy<TLimit, TActivatorData, TSingleRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration, params Type[] additionalInterfacesToProxy)
+        {
+            return InterceptTransparentProxy(registration, null, additionalInterfacesToProxy);
+        }
+
+        /// <summary>
+        /// Intercepts the interface of a transparent proxy (such as WCF channel factory based clients).
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to apply interception to.</param>
+        /// <param name="options">Proxy generation options to apply.</param>
+        /// <param name="additionalInterfacesToProxy">Additional interface types. Calls to their members will be proxied as well.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
+            InterceptTransparentProxy<TLimit, TActivatorData, TSingleRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration, ProxyGenerationOptions options, params Type[] additionalInterfacesToProxy)
         {
             if (registration == null)
             {
@@ -184,7 +276,7 @@ namespace Autofac.Extras.DynamicProxy2
 
                     if (invalidInterfaces.Any())
                     {
-                        var message = string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.InterfaceNotSupportedByTransparentProxy, 
+                        var message = string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.InterfaceNotSupportedByTransparentProxy,
                             string.Join(", ", invalidInterfaces.Select(i => i.FullName)));
                         throw new DependencyResolutionException(message);
                     }
@@ -195,8 +287,9 @@ namespace Autofac.Extras.DynamicProxy2
                     .Cast<IInterceptor>()
                     .ToArray();
 
-                e.Instance = ProxyGenerator.CreateInterfaceProxyWithTargetInterface(
-                    e.Instance.GetType(), additionalInterfacesToProxy, e.Instance, interceptors);
+                e.Instance = options == null
+                    ? ProxyGenerator.CreateInterfaceProxyWithTargetInterface(e.Instance.GetType(), additionalInterfacesToProxy, e.Instance, interceptors)
+                    : ProxyGenerator.CreateInterfaceProxyWithTargetInterface(e.Instance.GetType(), additionalInterfacesToProxy, e.Instance, options, interceptors);
             });
 
             return registration;

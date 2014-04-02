@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using Autofac.Core;
@@ -44,7 +44,7 @@ namespace Autofac.Extras.Tests.DynamicProxy2
             builder.Register(c => c.Resolve<ChannelFactory<ITestService>>().CreateChannel())
                 .SingleInstance()
                 .InterceptTransparentProxy(typeof(ICloneable), typeof(IFormattable));
-            
+
             var container = builder.Build();
 
             var exception = Assert.Throws<DependencyResolutionException>(() => container.Resolve<ITestService>());

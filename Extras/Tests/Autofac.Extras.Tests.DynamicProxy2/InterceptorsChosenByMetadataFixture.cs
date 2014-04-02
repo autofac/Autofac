@@ -1,4 +1,4 @@
-﻿using Castle.DynamicProxy;
+﻿﻿using Castle.DynamicProxy;
 using NUnit.Framework;
 using Autofac;
 using Autofac.Extras.DynamicProxy2;
