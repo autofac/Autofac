@@ -57,6 +57,7 @@
     <CodeAnalysisDictionary Include="..\..\..\Build\CodeAnalysisDictionary.xml">
       <Link>CodeAnalysisDictionary.xml</Link>
     </CodeAnalysisDictionary>
+    <Compile Include="AppSettingsModule.cs" />
     <Compile Include="Properties\VersionAssemblyInfo.cs" />
     <Compile Include="AssemblyNameConverter.cs" />
     <Compile Include="Elements\ComponentElement.cs" />

@@ -81,6 +81,7 @@
     <Compile Include="..\..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AppSettingsModuleFixture.cs" />
     <Compile Include="AssemblyNameConverterFixture.cs" />
     <Compile Include="AssertionHelpers.cs" />
     <Compile Include="ConfigurationSettingsReaderFixture.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="XmlFileReaderFixture.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="Files\TypeManipulation.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

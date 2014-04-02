@@ -36,10 +36,10 @@
 			<PackageVersion>3.3.1</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Configuration\Autofac.Configuration.csproj">
-			<AssemblyVersion>3.2.0.0</AssemblyVersion>
-			<FileVersion>3.2.1.0</FileVersion>
+			<AssemblyVersion>3.3.0.0</AssemblyVersion>
+			<FileVersion>3.3.0.0</FileVersion>
 			<PackageName>Autofac.Configuration</PackageName>
-			<PackageVersion>3.2.1</PackageVersion>
+			<PackageVersion>3.3.0</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Mef\Autofac.Integration.Mef.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
