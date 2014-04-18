@@ -17,6 +17,7 @@ Contents:
    :maxdepth: 3
 
    getting-started/index.rst
+   whats-new/index.rst
    register/index.rst
    resolve/index.rst
    lifetime/index.rst
