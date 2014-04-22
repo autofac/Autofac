@@ -1,4 +1,5 @@
-﻿using System.Security;
+﻿using System.Collections.Generic;
+using System.Security;
 using System.Threading.Tasks;
 using Autofac.Integration.Owin;
 using Microsoft.Owin;
@@ -19,9 +20,10 @@ namespace Autofac.Tests.Integration.Owin
             builder.RegisterType<TestMiddleware>();
             var container = builder.Build();
             var app = new Mock<IAppBuilder>();
+            app.Setup(mock => mock.Properties).Returns(new Dictionary<string, object>());
             app.Setup(mock => mock.Use(typeof(AutofacMiddleware<TestMiddleware>)));
 
-            app.Object.UseAutofacMiddleware(container);
+            OwinExtensions.UseAutofacMiddleware(app.Object, container);
 
             app.VerifyAll();
         }
