@@ -108,7 +108,7 @@ namespace Autofac.Extras.DynamicProxy2
         /// Only virtual methods can be intercepted this way.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TRegistrationStyle"><Registration style./typeparam>
+        /// <typeparam name="TRegistrationStyle"><Registration style.</typeparam>
         /// <typeparam name="TConcreteReflectionActivatorData">Activator data type.</typeparam>
         /// <param name="registration">Registration to apply interception to.</param>
         /// <param name="options">Proxy generation options to apply.</param>
