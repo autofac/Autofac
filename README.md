@@ -120,3 +120,10 @@ There is a growing number of [integrations](https://github.com/autofac/Autofac/w
 Our friendly and open [community](http://groups.google.com/group/autofac) will help you to get the best from the project. You can also ask questions on [Stack Overflow](http://stackoverflow.com/questions/tagged/autofac).
 
 Autofac is licensed under the MIT license, so you can comfortably use it in commercial applications (we still love [contributions](https://github.com/autofac/Autofac/wiki/Contribution-Guidelines) though).
+
+## Contributing
+
+Refer to the [Readme for Autofac Developers](https://github.com/autofac/Autofac/blob/master/developers.md)
+for setting up, building Autofac and generating the related documentation.
+
+
