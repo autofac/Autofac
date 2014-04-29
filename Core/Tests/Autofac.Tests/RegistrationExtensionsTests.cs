@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using Autofac.Core;
+using Autofac.Core.Lifetime;
 using Autofac.Util;
 using NUnit.Framework;
 
@@ -218,6 +219,40 @@ namespace Autofac.Tests
             builder2.Update(container);
             Assert.AreEqual(1, firstCount, "The first instance component was incorrectly re-activated.");
             Assert.AreEqual(1, secondCount, "The second instance component wasn't properly auto activated.");
+        }
+        [Test]
+        public void InstancePerRequest_AdditionalLifetimeScopeTagsCanBeProvided()
+        {
+            var builder = new ContainerBuilder();
+            const string tag1 = "Tag1";
+            const string tag2 = "Tag2";
+            builder.Register(c => new object()).InstancePerRequest(tag1, tag2);
+
+            var container = builder.Build();
+
+            var scope1 = container.BeginLifetimeScope(tag1);
+            Assert.That(scope1.Resolve<object>(), Is.Not.Null);
+
+            var scope2 = container.BeginLifetimeScope(tag2);
+            Assert.That(scope2.Resolve<object>(), Is.Not.Null);
+
+            var requestScope = container.BeginLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag);
+            Assert.That(requestScope.Resolve<object>(), Is.Not.Null);
+        }
+
+        [Test]
+        public void InstancePerRequest_ResolutionSucceedsInRequestLifetime()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType(typeof(object)).InstancePerRequest();
+
+            var container = builder.Build();
+            Assert.Throws<DependencyResolutionException>(() => container.Resolve<object>());
+            Assert.Throws<DependencyResolutionException>(() => container.BeginLifetimeScope().Resolve<object>());
+
+            var apiRequestScope = container.BeginLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag);
+            Assert.That(apiRequestScope.Resolve<object>(), Is.Not.Null);
         }
     }
 }

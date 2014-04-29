@@ -29,6 +29,7 @@ using System.Linq;
 using System.Security;
 using Autofac;
 using Autofac.Core;
+using Autofac.Core.Lifetime;
 using Autofac.Integration.Owin;
 using Microsoft.Owin;
 
@@ -58,7 +59,7 @@ namespace Owin
 
             app.Use(async (context, next) =>
             {
-                using (var lifetimeScope = container.BeginLifetimeScope(Constants.LifetimeScopeTag,
+                using (var lifetimeScope = container.BeginLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag,
                     b => b.RegisterInstance(context).As<IOwinContext>()))
                 {
                     context.Set(Constants.OwinLifetimeScopeKey, lifetimeScope);

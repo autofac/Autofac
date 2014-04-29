@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Security;
 using System.Threading.Tasks;
+using Autofac.Core.Lifetime;
 using Autofac.Integration.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Testing;
@@ -42,7 +43,7 @@ namespace Autofac.Tests.Integration.Owin
             }))
             {
                 server.HttpClient.GetAsync("/").Wait();
-                Assert.That(TestMiddleware.LifetimeScope.Tag, Is.EqualTo(Constants.LifetimeScopeTag));
+                Assert.That(TestMiddleware.LifetimeScope.Tag, Is.EqualTo(MatchingScopeLifetimeTags.RequestLifetimeScopeTag));
             }
         }
     }

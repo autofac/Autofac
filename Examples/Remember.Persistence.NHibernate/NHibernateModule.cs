@@ -1,8 +1,7 @@
 ﻿using System;
+using Autofac;
 using NHibernate;
 using NHibernate.Cfg;
-using Autofac;
-using Autofac.Integration.Mvc;
 
 namespace Remember.Persistence.NHibernate
 {
@@ -15,13 +14,13 @@ namespace Remember.Persistence.NHibernate
 
             builder.RegisterGeneric(typeof(NHibernateRepository<>))
                 .As(typeof(IRepository<>))
-                .InstancePerHttpRequest();
+                .InstancePerRequest();
 
             builder.Register(c => new TransactionTracker())
-                .InstancePerHttpRequest();
+                .InstancePerRequest();
 
             builder.Register(c => c.Resolve<ISessionFactory>().OpenSession())
-                .InstancePerHttpRequest()
+                .InstancePerRequest()
                 .OnActivated(e => e.Context.Resolve<TransactionTracker>().CurrentTransaction =
                     e.Instance.BeginTransaction());
 

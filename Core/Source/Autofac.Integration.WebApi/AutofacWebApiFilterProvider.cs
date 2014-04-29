@@ -25,12 +25,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Security;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
-using System.Linq;
+using Autofac.Core.Lifetime;
 using Autofac.Features.Metadata;
 
 namespace Autofac.Integration.WebApi
@@ -98,7 +99,7 @@ namespace Autofac.Integration.WebApi
 
             // Use a fake scope to resolve the metadata for the filter.
             var rootLifetimeScope = configuration.DependencyResolver.GetRootLifetimeScope();
-            using (var lifetimeScope = rootLifetimeScope.BeginLifetimeScope(AutofacWebApiDependencyResolver.ApiRequestTag))
+            using (var lifetimeScope = rootLifetimeScope.BeginLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag))
             {
                 var filterContext = new FilterContext
                 {

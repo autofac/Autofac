@@ -1284,5 +1284,29 @@ namespace Autofac
             registration.RegistrationData.AddService(new AutoActivateService());
             return registration;
         }
+
+        /// <summary>
+        /// Share one instance of the component within the context of a single
+        /// web/HTTP/API request. Only available for integration that supports
+        /// per-request dependencies (e.g., MVC, Web API, web forms, etc.).
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
+        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <param name="registration">The registration to configure.</param>
+        /// <param name="lifetimeScopeTags">Additional tags applied for matching lifetime scopes.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="registration" /> is <see langword="null" />.
+        /// </exception>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
+            InstancePerRequest<TLimit, TActivatorData, TStyle>(
+                this IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration, params object[] lifetimeScopeTags)
+        {
+            if (registration == null) throw new ArgumentNullException("registration");
+
+            var tags = new[] { MatchingScopeLifetimeTags.RequestLifetimeScopeTag }.Concat(lifetimeScopeTags).ToArray();
+            return registration.InstancePerMatchingLifetimeScope(tags);
+        }
     }
 }

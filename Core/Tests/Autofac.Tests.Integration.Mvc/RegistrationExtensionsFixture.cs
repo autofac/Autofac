@@ -14,26 +14,6 @@ namespace Autofac.Tests.Integration.Mvc
     public class RegistrationExtensionsFixture
     {
         [Test]
-        public void AdditionalLifetimeScopeTagsCanBeProvidedToInstancePerHttpRequest()
-        {
-            var builder = new ContainerBuilder();
-            const string tag1 = "Tag1";
-            const string tag2 = "Tag2";
-            builder.Register(c => new object()).InstancePerHttpRequest(tag1, tag2);
-
-            var container = builder.Build();
-
-            var scope1 = container.BeginLifetimeScope(tag1);
-            Assert.That(scope1.Resolve<object>(), Is.Not.Null);
-
-            var scope2 = container.BeginLifetimeScope(tag2);
-            Assert.That(scope2.Resolve<object>(), Is.Not.Null);
-
-            var requestScope = container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag);
-            Assert.That(requestScope.Resolve<object>(), Is.Not.Null);
-        }
-
-        [Test]
         public void RegisterModelBinderProviderThrowsExceptionForNullBuilder()
         {
             var exception = Assert.Throws<ArgumentNullException>(
@@ -225,7 +205,7 @@ namespace Autofac.Tests.Integration.Mvc
         public void AsActionFilterForControllerScopedFilterAddsCorrectMetadata()
         {
             AssertFilterRegistration<TestActionFilter, IActionFilter>(
-                FilterScope.Controller, 
+                FilterScope.Controller,
                 null,
                 r => r.AsActionFilterFor<TestController>(20),
                 AutofacFilterProvider.ActionFilterMetadataKey);

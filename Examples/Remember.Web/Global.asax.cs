@@ -46,7 +46,7 @@ namespace Remember.Web
             builder.RegisterModule<NHibernateModule>();
 
             // Change controller action parameter injection by changing web.config.
-            builder.RegisterType<ExtensibleActionInvoker>().As<IActionInvoker>().InstancePerHttpRequest();
+            builder.RegisterType<ExtensibleActionInvoker>().As<IActionInvoker>().InstancePerRequest();
 
             // MVC integration test items
             builder.RegisterType<InvokerDependency>().As<IInvokerDependency>();

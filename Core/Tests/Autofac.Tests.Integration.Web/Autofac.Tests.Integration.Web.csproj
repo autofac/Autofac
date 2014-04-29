@@ -83,7 +83,6 @@
     </Compile>
     <Compile Include="Forms\AttributedInjectionModuleFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegistrationExtensionsFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\Autofac.Integration.Web\Autofac.Integration.Web.csproj">

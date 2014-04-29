@@ -28,11 +28,6 @@ namespace Autofac.Integration.Owin
     static class Constants
     {
         /// <summary>
-        /// The tag applied to per-request lifetime scopes.
-        /// </summary>
-        internal const string LifetimeScopeTag = "AutofacWebRequest";
-
-        /// <summary>
         /// The OWIN key for the current lifetime scope.
         /// </summary>
         internal const string OwinLifetimeScopeKey = "autofac:OwinLifetimeScope";

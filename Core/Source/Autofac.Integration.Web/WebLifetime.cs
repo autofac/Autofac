@@ -36,10 +36,5 @@ namespace Autofac.Integration.Web
         /// Application lifetime
         /// </summary>
         public static readonly object Application = LifetimeScope.RootTag;
-
-        /// <summary>
-        /// HTTP Request lifetime
-        /// </summary>
-        public static readonly object Request = "AutofacWebRequest";
     }
 }

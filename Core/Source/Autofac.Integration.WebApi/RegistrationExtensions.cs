@@ -69,14 +69,15 @@ namespace Autofac.Integration.WebApi
         /// <param name="registration">The registration to configure.</param>
         /// <param name="lifetimeScopeTags">Additional tags applied for matching lifetime scopes.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="registration" /> is <see langword="null" />.
+        /// </exception>
+        [Obsolete("Instead of using the Web-API-specific InstancePerApiRequest, please switch to the InstancePerRequest shared registration extension from Autofac core.")]
         public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
             InstancePerApiRequest<TLimit, TActivatorData, TStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration, params object[] lifetimeScopeTags)
         {
-            if (registration == null) throw new ArgumentNullException("registration");
-
-            var tags = new[] {AutofacWebApiDependencyResolver.ApiRequestTag}.Concat(lifetimeScopeTags).ToArray();
-            return registration.InstancePerMatchingLifetimeScope(tags);
+            return registration.InstancePerRequest(lifetimeScopeTags);
         }
 
         /// <summary>
@@ -238,7 +239,7 @@ namespace Autofac.Integration.WebApi
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
             AsWebApiActionFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration,
-                Expression<Action<TController>> actionSelector) 
+                Expression<Action<TController>> actionSelector)
                     where TController : IHttpController
         {
             return AsFilterFor<IAutofacActionFilter, TController>(registration, AutofacWebApiFilterProvider.ActionFilterMetadataKey, actionSelector);
@@ -347,7 +348,7 @@ namespace Autofac.Integration.WebApi
         /// <param name="actionSelector">The action selector.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle>
-            AsWebApiExceptionFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration, Expression<Action<TController>> actionSelector) 
+            AsWebApiExceptionFilterFor<TController>(this IRegistrationBuilder<object, IConcreteActivatorData, SingleRegistrationStyle> registration, Expression<Action<TController>> actionSelector)
                 where TController : IHttpController
         {
             return AsFilterFor<IAutofacExceptionFilter, TController>(registration, AutofacWebApiFilterProvider.ExceptionFilterMetadataKey, actionSelector);

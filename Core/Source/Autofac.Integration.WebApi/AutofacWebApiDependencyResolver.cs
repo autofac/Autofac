@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Security;
 using System.Web.Http.Dependencies;
+using Autofac.Core.Lifetime;
 
 namespace Autofac.Integration.WebApi
 {
@@ -39,11 +40,6 @@ namespace Autofac.Integration.WebApi
         private bool _disposed;
         readonly ILifetimeScope _container;
         readonly IDependencyScope _rootDependencyScope;
-
-        /// <summary>
-        /// Tag used to identify registrations that are scoped to the API request level.
-        /// </summary>
-        public static readonly string ApiRequestTag = "AutofacWebRequest";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacWebApiDependencyResolver"/> class.
@@ -106,7 +102,7 @@ namespace Autofac.Integration.WebApi
         [SecurityCritical]
         public IDependencyScope BeginScope()
         {
-            var lifetimeScope = _container.BeginLifetimeScope(ApiRequestTag);
+            var lifetimeScope = _container.BeginLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag);
             return new AutofacWebApiDependencyScope(lifetimeScope);
         }
 

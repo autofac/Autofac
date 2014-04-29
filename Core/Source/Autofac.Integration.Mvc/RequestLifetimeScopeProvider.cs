@@ -27,6 +27,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Web;
+using Autofac.Core.Lifetime;
 
 namespace Autofac.Integration.Mvc
 {
@@ -39,11 +40,6 @@ namespace Autofac.Integration.Mvc
     public class RequestLifetimeScopeProvider : ILifetimeScopeProvider
     {
         readonly ILifetimeScope _container;
-
-        /// <summary>
-        /// Tag used to identify registrations that are scoped to the HTTP request level.
-        /// </summary>
-        internal static readonly object HttpRequestTag = "AutofacWebRequest";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestLifetimeScopeProvider"/> class.
@@ -115,8 +111,8 @@ namespace Autofac.Integration.Mvc
         protected virtual ILifetimeScope GetLifetimeScopeCore(Action<ContainerBuilder> configurationAction)
         {
             return (configurationAction == null)
-                       ? ApplicationContainer.BeginLifetimeScope(HttpRequestTag)
-                       : ApplicationContainer.BeginLifetimeScope(HttpRequestTag, configurationAction);
+                       ? ApplicationContainer.BeginLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag)
+                       : ApplicationContainer.BeginLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag, configurationAction);
         }
     }
 }

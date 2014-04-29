@@ -65,7 +65,7 @@ namespace Autofac.Integration.WebApi
 
             var registry = requestScope.ComponentRegistry;
             var builder = new ContainerBuilder();
-            builder.Register(c => request).InstancePerApiRequest();
+            builder.Register(c => request).InstancePerRequest();
             builder.Update(registry);
         }
     }

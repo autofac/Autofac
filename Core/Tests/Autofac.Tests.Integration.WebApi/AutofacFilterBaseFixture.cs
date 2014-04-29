@@ -152,7 +152,7 @@ namespace Autofac.Tests.Integration.WebApi
 
         static ReflectedHttpActionDescriptor BuildActionDescriptorForGetMethod(Type controllerType)
         {
-            var controllerDescriptor = new HttpControllerDescriptor {ControllerType = controllerType};
+            var controllerDescriptor = new HttpControllerDescriptor { ControllerType = controllerType };
             var methodInfo = typeof(TestController).GetMethod("Get");
             return new ReflectedHttpActionDescriptor(controllerDescriptor, methodInfo);
         }
@@ -163,7 +163,7 @@ namespace Autofac.Tests.Integration.WebApi
         {
             var builder = new ContainerBuilder();
             builder.Register<ILogger>(c => new Logger()).InstancePerDependency();
-            configure(builder.Register(registration).InstancePerApiRequest());
+            configure(builder.Register(registration).InstancePerRequest());
             var container = builder.Build();
             var provider = new AutofacWebApiFilterProvider(container);
             var configuration = new HttpConfiguration { DependencyResolver = new AutofacWebApiDependencyResolver(container) };
@@ -184,8 +184,8 @@ namespace Autofac.Tests.Integration.WebApi
         {
             var builder = new ContainerBuilder();
             builder.Register<ILogger>(c => new Logger()).InstancePerDependency();
-            configure1(builder.Register(registration1).InstancePerApiRequest());
-            configure2(builder.Register(registration2).InstancePerApiRequest());
+            configure1(builder.Register(registration1).InstancePerRequest());
+            configure2(builder.Register(registration2).InstancePerRequest());
             var container = builder.Build();
             var provider = new AutofacWebApiFilterProvider(container);
             var configuration = new HttpConfiguration { DependencyResolver = new AutofacWebApiDependencyResolver(container) };
@@ -222,10 +222,10 @@ namespace Autofac.Tests.Integration.WebApi
         {
             var builder = new ContainerBuilder();
             builder.Register<ILogger>(c => new Logger()).InstancePerDependency();
-            configure(builder.Register(registration).InstancePerApiRequest());
+            configure(builder.Register(registration).InstancePerRequest());
             var container = builder.Build();
             var provider = new AutofacWebApiFilterProvider(container);
-            var configuration = new HttpConfiguration {DependencyResolver = new AutofacWebApiDependencyResolver(container)};
+            var configuration = new HttpConfiguration { DependencyResolver = new AutofacWebApiDependencyResolver(container) };
             var actionDescriptor = BuildActionDescriptorForGetMethod(typeof(TController));
 
             var filterInfos = provider.GetFilters(configuration, actionDescriptor).ToArray();

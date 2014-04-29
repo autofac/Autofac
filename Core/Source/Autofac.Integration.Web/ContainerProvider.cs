@@ -24,6 +24,7 @@
 
 using System;
 using System.Web;
+using Autofac.Core.Lifetime;
 
 namespace Autofac.Integration.Web
 {
@@ -95,8 +96,8 @@ namespace Autofac.Integration.Web
                 if (result == null)
                 {
                     result = _requestLifetimeConfiguration == null ?
-                        ApplicationContainer.BeginLifetimeScope(WebLifetime.Request) :
-                        ApplicationContainer.BeginLifetimeScope(WebLifetime.Request, _requestLifetimeConfiguration);
+                        ApplicationContainer.BeginLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag) :
+                        ApplicationContainer.BeginLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag, _requestLifetimeConfiguration);
 
                     AmbientRequestLifetime = result;
                 }

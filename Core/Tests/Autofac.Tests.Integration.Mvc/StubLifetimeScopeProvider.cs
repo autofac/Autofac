@@ -1,4 +1,5 @@
 ﻿using System;
+using Autofac.Core.Lifetime;
 using Autofac.Integration.Mvc;
 
 namespace Autofac.Tests.Integration.Mvc
@@ -32,8 +33,8 @@ namespace Autofac.Tests.Integration.Mvc
         ILifetimeScope BuildLifetimeScope(Action<ContainerBuilder> configurationAction)
         {
             return (configurationAction == null)
-                       ? _container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag)
-                       : _container.BeginLifetimeScope(RequestLifetimeScopeProvider.HttpRequestTag, configurationAction);
+                       ? _container.BeginLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag)
+                       : _container.BeginLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag, configurationAction);
         }
     }
 }

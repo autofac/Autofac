@@ -25,6 +25,7 @@
 
 using System;
 using System.Linq;
+using Autofac.Core.Lifetime;
 using Autofac.Integration.WebApi;
 using NUnit.Framework;
 
@@ -45,7 +46,7 @@ namespace Autofac.Tests.Integration.WebApi
         [Test]
         public void GetServiceReturnsNullForUnregisteredService()
         {
-            var lifetimeScope = new ContainerBuilder().Build().BeginLifetimeScope(AutofacWebApiDependencyResolver.ApiRequestTag);
+            var lifetimeScope = new ContainerBuilder().Build().BeginLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag);
             var dependencyScope = new AutofacWebApiDependencyScope(lifetimeScope);
 
             var service = dependencyScope.GetService(typeof(object));
@@ -57,8 +58,8 @@ namespace Autofac.Tests.Integration.WebApi
         public void GetServiceReturnsRegisteredService()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new object()).InstancePerApiRequest();
-            var lifetimeScope = builder.Build().BeginLifetimeScope(AutofacWebApiDependencyResolver.ApiRequestTag);
+            builder.Register(c => new object()).InstancePerRequest();
+            var lifetimeScope = builder.Build().BeginLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag);
             var dependencyScope = new AutofacWebApiDependencyScope(lifetimeScope);
 
             var service = dependencyScope.GetService(typeof(object));
@@ -70,9 +71,9 @@ namespace Autofac.Tests.Integration.WebApi
         public void GetServicesReturnsRegisteredServices()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new object()).InstancePerApiRequest();
-            builder.Register(c => new object()).InstancePerApiRequest();
-            var lifetimeScope = builder.Build().BeginLifetimeScope(AutofacWebApiDependencyResolver.ApiRequestTag);
+            builder.Register(c => new object()).InstancePerRequest();
+            builder.Register(c => new object()).InstancePerRequest();
+            var lifetimeScope = builder.Build().BeginLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag);
             var resolver = new AutofacWebApiDependencyScope(lifetimeScope);
 
             var services = resolver.GetServices(typeof(object));
@@ -83,7 +84,7 @@ namespace Autofac.Tests.Integration.WebApi
         [Test]
         public void GetServicesReturnsEmptyEnumerableForUnregisteredService()
         {
-            var lifetimeScope = new ContainerBuilder().Build().BeginLifetimeScope(AutofacWebApiDependencyResolver.ApiRequestTag);
+            var lifetimeScope = new ContainerBuilder().Build().BeginLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag);
             var dependencyScope = new AutofacWebApiDependencyScope(lifetimeScope);
 
             var services = dependencyScope.GetServices(typeof(object));
@@ -95,8 +96,8 @@ namespace Autofac.Tests.Integration.WebApi
         public void GetServicesReturnsRegisteredService()
         {
             var builder = new ContainerBuilder();
-            builder.Register(c => new object()).InstancePerApiRequest();
-            var lifetimeScope = builder.Build().BeginLifetimeScope(AutofacWebApiDependencyResolver.ApiRequestTag);
+            builder.Register(c => new object()).InstancePerRequest();
+            var lifetimeScope = builder.Build().BeginLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag);
             var dependencyScope = new AutofacWebApiDependencyScope(lifetimeScope);
 
             var services = dependencyScope.GetServices(typeof(object));

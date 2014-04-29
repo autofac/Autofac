@@ -29,35 +29,14 @@ using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
 using Autofac.Builder;
-using Autofac.Core;
-using NUnit.Framework;
 using Autofac.Integration.WebApi;
+using NUnit.Framework;
 
 namespace Autofac.Tests.Integration.WebApi
 {
     [TestFixture]
     public class RegistrationExtensionsFixture
     {
-        [Test]
-        public void AdditionalLifetimeScopeTagsCanBeProvidedToInstancePerHttpRequest()
-        {
-            var builder = new ContainerBuilder();
-            const string tag1 = "Tag1";
-            const string tag2 = "Tag2";
-            builder.Register(c => new object()).InstancePerApiRequest(tag1, tag2);
-
-            var container = builder.Build();
-
-            var scope1 = container.BeginLifetimeScope(tag1);
-            Assert.That(scope1.Resolve<object>(), Is.Not.Null);
-
-            var scope2 = container.BeginLifetimeScope(tag2);
-            Assert.That(scope2.Resolve<object>(), Is.Not.Null);
-
-            var requestScope = container.BeginLifetimeScope(AutofacWebApiDependencyResolver.ApiRequestTag);
-            Assert.That(requestScope.Resolve<object>(), Is.Not.Null);
-        }
-
         [Test]
         public void RegisterApiControllersRegistersTypesWithControllerSuffix()
         {
@@ -92,7 +71,7 @@ namespace Autofac.Tests.Integration.WebApi
         }
 
         [Test]
-        public void InstancePerApiRequestRequiresControllerTypeParameter()
+        public void InstancePerApiControllerTypeRequiresControllerTypeParameter()
         {
             var builder = new ContainerBuilder();
 
@@ -100,21 +79,6 @@ namespace Autofac.Tests.Integration.WebApi
                 () => builder.RegisterType<object>().InstancePerApiControllerType(null));
 
             Assert.That(exception.ParamName, Is.EqualTo("controllerType"));
-        }
-
-        [Test]
-        public void InstancePerApiRequestTagsRegistrations()
-        {
-            var builder = new ContainerBuilder();
-
-            builder.RegisterType(typeof(object)).InstancePerApiRequest();
-
-            var container = builder.Build();
-            Assert.Throws<DependencyResolutionException>(() => container.Resolve<object>());
-            Assert.Throws<DependencyResolutionException>(() => container.BeginLifetimeScope().Resolve<object>());
-
-            var apiRequestScope = container.BeginLifetimeScope(AutofacWebApiDependencyResolver.ApiRequestTag);
-            Assert.That(apiRequestScope.Resolve<object>(), Is.Not.Null);
         }
 
         [Test]
@@ -193,7 +157,7 @@ namespace Autofac.Tests.Integration.WebApi
             builder.RegisterType<TestModelBinder>().AsModelBinderForTypes(typeof(TestModel1), typeof(TestModel2));
             var container = builder.Build();
             var resolver = new AutofacWebApiDependencyResolver(container);
-            var configuration = new HttpConfiguration {DependencyResolver = resolver};
+            var configuration = new HttpConfiguration { DependencyResolver = resolver };
             var provider = new AutofacWebApiModelBinderProvider();
 
             Assert.That(provider.GetBinder(configuration, typeof(TestModel1)), Is.InstanceOf<TestModelBinder>());
@@ -235,7 +199,7 @@ namespace Autofac.Tests.Integration.WebApi
             var builder = new ContainerBuilder();
             builder.RegisterType<object>().InstancePerApiControllerType(controllerType);
             var container = builder.Build();
-            
+
             Assert.That(container.IsRegisteredWithKey<object>(serviceKey), Is.True);
         }
 

@@ -46,14 +46,15 @@ namespace Autofac.Integration.Web
         /// <param name="registration">The registration to configure.</param>
         /// <param name="lifetimeScopeTags">Additional tags applied for matching lifetime scopes.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="registration" /> is <see langword="null" />.
+        /// </exception>
+        [Obsolete("Instead of using the web-forms-specific InstancePerHttpRequest, please switch to the InstancePerRequest shared registration extension from Autofac core.")]
         public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
             InstancePerHttpRequest<TLimit, TActivatorData, TStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration, params object[] lifetimeScopeTags)
         {
-            if (registration == null) throw new ArgumentNullException("registration");
-
-            var tags = new[] {WebLifetime.Request}.Concat(lifetimeScopeTags).ToArray();
-            return registration.InstancePerMatchingLifetimeScope(tags);
+            return registration.InstancePerRequest(lifetimeScopeTags);
         }
 
         /// <summary>

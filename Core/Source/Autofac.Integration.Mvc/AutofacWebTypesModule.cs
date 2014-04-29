@@ -129,56 +129,56 @@ namespace Autofac.Integration.Mvc
         {
             builder.Register(c => new HttpContextWrapper(HttpContext.Current))
                 .As<HttpContextBase>()
-                .InstancePerHttpRequest();
+                .InstancePerRequest();
 
             // HttpContext properties
             builder.Register(c => c.Resolve<HttpContextBase>().Request)
                 .As<HttpRequestBase>()
-                .InstancePerHttpRequest();
+                .InstancePerRequest();
 
             builder.Register(c => c.Resolve<HttpContextBase>().Response)
                 .As<HttpResponseBase>()
-                .InstancePerHttpRequest();
+                .InstancePerRequest();
 
             builder.Register(c => c.Resolve<HttpContextBase>().Server)
                 .As<HttpServerUtilityBase>()
-                .InstancePerHttpRequest();
+                .InstancePerRequest();
 
             builder.Register(c => c.Resolve<HttpContextBase>().Session)
                 .As<HttpSessionStateBase>()
-                .InstancePerHttpRequest();
+                .InstancePerRequest();
 
             builder.Register(c => c.Resolve<HttpContextBase>().Application)
                 .As<HttpApplicationStateBase>()
-                .InstancePerHttpRequest();
+                .InstancePerRequest();
 
             // HttpRequest properties
             builder.Register(c => c.Resolve<HttpRequestBase>().Browser)
                 .As<HttpBrowserCapabilitiesBase>()
-                .InstancePerHttpRequest();
+                .InstancePerRequest();
 
             builder.Register(c => c.Resolve<HttpRequestBase>().Files)
                 .As<HttpFileCollectionBase>()
-                .InstancePerHttpRequest();
+                .InstancePerRequest();
 
             builder.Register(c => c.Resolve<HttpRequestBase>().RequestContext)
                 .As<RequestContext>()
-                .InstancePerHttpRequest();
+                .InstancePerRequest();
 
             // HttpResponse properties
             builder.Register(c => c.Resolve<HttpResponseBase>().Cache)
                 .As<HttpCachePolicyBase>()
-                .InstancePerHttpRequest();
+                .InstancePerRequest();
 
             // HostingEnvironment properties
             builder.Register(c => HostingEnvironment.VirtualPathProvider)
                 .As<VirtualPathProvider>()
-                .InstancePerHttpRequest();
+                .InstancePerRequest();
 
             // MVC types
             builder.Register(c => new UrlHelper(c.Resolve<RequestContext>()))
                 .As<UrlHelper>()
-                .InstancePerHttpRequest();
+                .InstancePerRequest();
         }
     }
 }

@@ -30,10 +30,10 @@
 			add a "link" to the VersionAssemblyInfo.cs for the owning primary project.
 		-->
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac\Autofac.csproj">
-			<AssemblyVersion>3.3.0.0</AssemblyVersion>
-			<FileVersion>3.3.1.0</FileVersion>
+			<AssemblyVersion>3.4.0.0</AssemblyVersion>
+			<FileVersion>3.4.0.0</FileVersion>
 			<PackageName>Autofac</PackageName>
-			<PackageVersion>3.3.1</PackageVersion>
+			<PackageVersion>3.4.0</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Configuration\Autofac.Configuration.csproj">
 			<AssemblyVersion>3.3.0.0</AssemblyVersion>
@@ -48,10 +48,10 @@
 			<PackageVersion>3.0.3</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Mvc\Autofac.Integration.Mvc.csproj">
-			<AssemblyVersion>3.2.0.0</AssemblyVersion>
-			<FileVersion>3.2.1.0</FileVersion>
+			<AssemblyVersion>3.3.0.0</AssemblyVersion>
+			<FileVersion>3.3.0.0</FileVersion>
 			<PackageName>Autofac.Mvc5</PackageName>
-			<PackageVersion>3.2.1</PackageVersion>
+			<PackageVersion>3.3.0</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.SignalR\Autofac.Integration.SignalR.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
@@ -69,7 +69,7 @@
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
 			<FileVersion>3.0.0.0</FileVersion>
 			<PackageName>Autofac.Owin</PackageName>
-			<PackageVersion>3.0.0-alpha3</PackageVersion>
+			<PackageVersion>3.0.0-alpha4</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.WebApi.Owin\Autofac.Integration.WebApi.Owin.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
@@ -84,16 +84,16 @@
 			<PackageVersion>3.0.0-alpha3</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Web\Autofac.Integration.Web.csproj">
-			<AssemblyVersion>3.1.0.0</AssemblyVersion>
-			<FileVersion>3.1.1.0</FileVersion>
+			<AssemblyVersion>3.2.0.0</AssemblyVersion>
+			<FileVersion>3.2.0.0</FileVersion>
 			<PackageName>Autofac.Web</PackageName>
-			<PackageVersion>3.1.1</PackageVersion>
+			<PackageVersion>3.2.0</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.WebApi\Autofac.Integration.WebApi.csproj">
-			<AssemblyVersion>3.2.0.0</AssemblyVersion>
-			<FileVersion>3.2.1.0</FileVersion>
+			<AssemblyVersion>3.3.0.0</AssemblyVersion>
+			<FileVersion>3.3.0.0</FileVersion>
 			<PackageName>Autofac.WebApi2</PackageName>
-			<PackageVersion>3.2.1</PackageVersion>
+			<PackageVersion>3.3.0</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.AggregateService\Autofac.Extras.AggregateService.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
