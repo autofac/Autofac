@@ -32,6 +32,8 @@ Each component exposes one or more **services** that are wired up using the ``As
     // to the IConfigReader service.
     var reader = container.Resolve<IConfigReader>();
 
+.. _register-registration-reflection-components:
+
 Reflection Components
 =====================
 
@@ -95,6 +97,8 @@ This ensures that the static singleton can eventually be eliminated and replaced
 
 The default service exposed by an instance is the concrete type of the instance. See "Services vs. Components," below.
 
+.. _register-registration-lambda-expression-components:
+
 Lambda Expression Components
 ============================
 
@@ -126,7 +130,7 @@ While Autofac offers :doc:`a more first-class approach to property injection <pr
 
     builder.Register(c => new A(){ MyB = c.ResolveOptional<B>() });
 
-The ``ResolveOptional`` method will try to resolve the value but won't throw an exception if it's unable to. This is one of the options for :doc:`resolving a service <..\resolve\index>`.
+The ``ResolveOptional`` method will try to resolve the value but won't throw an exception if it's unable to. This is one of the options for :doc:`resolving a service <../resolve/index>`.
 
 **Property injection is not recommended in the majority of cases.** Alternatives like `the Null Object pattern <http://en.wikipedia.org/wiki/Null_Object_pattern>`_, overloaded constructors or constructor parameter default values make it possible to create cleaner, "immutable" components with optional dependencies using constructor injection.
 

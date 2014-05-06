@@ -6,3 +6,4 @@ Controlling Scope and Lifetime
 
     instance-scope.rst
     disposal.rst
+    events.rst

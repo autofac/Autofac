@@ -1,3 +1,7 @@
 =============
 Configuration
 =============
+
+.. toctree::
+
+    modules.rst
