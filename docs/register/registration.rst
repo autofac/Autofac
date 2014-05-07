@@ -30,7 +30,10 @@ Each component exposes one or more **services** that are wired up using the ``As
     // Now you can resolve services using Autofac. For example,
     // this line will execute the lambda expression registered
     // to the IConfigReader service.
-    var reader = container.Resolve<IConfigReader>();
+    using(var scope = container.BeginLifetimeScope())
+    {
+      var reader = container.Resolve<IConfigReader>();
+    }
 
 .. _register-registration-reflection-components:
 
@@ -61,7 +64,10 @@ Now say you register components and services in your container like this::
     builder.RegisterType<ConsoleLogger>().As<ILogger>();
     var container = builder.Build();
 
-    var component = container.Resolve<MyComponent>();
+    using(var scope = container.BeginLifetimeScope())
+    {
+      var component = container.Resolve<MyComponent>();
+    }
 
 When you resolve your component, Autofac will see that you have an ``ILogger`` registered, but you don't have an ``IConfigReader`` registered. In that case, the second constructor will be chosen since that's the one with the most parameters that can be found in the container.
 
@@ -191,12 +197,12 @@ Components can only be :doc:`resolved <../resolve/index>` by the services they e
 
     // This will work because the component
     // exposes the type by default:
-    container.Resolve<CallLogger>();
+    scope.Resolve<CallLogger>();
 
     // This will NOT work because we didn't
     // tell the registration to also expose
     // the ILogger interface on CallLogger:
-    container.Resolve<ILogger>();
+    scope.Resolve<ILogger>();
 
 You can expose a component with any number of services you like::
 
@@ -208,12 +214,12 @@ Once you expose a service, you can resolve the component based on that service. 
 
     // These will both work because we exposed
     // the appropriate services in the registration:
-    container.Resolve<ILogger>();
-    container.Resolve<ICallInterceptor>();
+    scope.Resolve<ILogger>();
+    scope.Resolve<ICallInterceptor>();
 
     // This WON'T WORK anymore because we specified
     // service overrides on the component:
-    container.Resolve<CallLogger>();
+    scope.Resolve<CallLogger>();
 
 If you want to expose a component as a set of services as well as using the default service, use the ``AsSelf`` method::
 
@@ -226,9 +232,9 @@ Now all of these will work::
 
     // These will all work because we exposed
     // the appropriate services in the registration:
-    container.Resolve<ILogger>();
-    container.Resolve<ICallInterceptor>();
-    container.Resolve<CallLogger>();
+    scope.Resolve<ILogger>();
+    scope.Resolve<ICallInterceptor>();
+    scope.Resolve<CallLogger>();
 
 Default Registrations
 =====================
@@ -245,3 +251,13 @@ To override this behavior, use the ``PreserveExistingDefaults()`` modifier::
     builder.Register<FileLogger>().As<ILogger>().PreserveExistingDefaults();
 
 In this scenario, ``ConsoleLogger`` will be the default for ``ILogger`` because the later registration for ``FileLogger`` used ``PreserveExistingDefaults()``.
+
+Configuration of Registrations
+==============================
+You can :doc:`use XML or programmatic configuration ("modules") <../configuration/index>` to provide groups of registrations together or change registrations at runtime. You can also use :doc:`use Autofac modules <../configuration/modules>` for some dynamic registration generation or conditional registration logic.
+
+Dynamically-Provided Registrations
+==================================
+:doc:`Autofac modules <../configuration/modules>` are the simplest way to introduce dynamic registration logic or simple cross-cutting features. For example, you can use a module to :doc:`dynamically attach a log4net logger instance to a service being resolved <../examples/log4net>`.
+
+If you find that you need even more dynamic behavior, such as adding support for a new :doc:`implicit relationship type <../resolve/relationships>`, you might want to :doc:`check out the registration sources section in the advanced concepts area <../advanced/registration-sources>`.
