@@ -1,10 +1,7 @@
-﻿using Autofac.Extras.Attributed;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
+using Autofac.Extras.Attributed;
 
 namespace Autofac.Extras.Tests.Attributed.ScenarioTypes
 {
