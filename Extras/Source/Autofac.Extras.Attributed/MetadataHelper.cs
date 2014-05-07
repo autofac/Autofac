@@ -14,16 +14,31 @@ namespace Autofac.Extras.Attributed
         /// Given a target object, returns a set of properties and associated values.
         /// </summary>
         /// <param name="target">Target instance to be scanned.</param>
+        /// <param name="instanceType">Type that the target is being scanned for (not the type of <paramref name="target"/>)</param>
         /// <returns>Enumerable set of properties and associated values.</returns>
         /// <exception cref="System.ArgumentNullException">
-        /// Thrown if <paramref name="target" /> is <see langword="null" />.
+        /// Thrown if <paramref name="target" /> or <paramref name="instanceType"/> is <see langword="null" />.
         /// </exception>
-        public static IEnumerable<KeyValuePair<string, object>> GetProperties(object target)
+        public static IEnumerable<KeyValuePair<string, object>> GetProperties(object target, Type instanceType)
         {
             if (target == null)
             {
                 throw new ArgumentNullException("target");
             }
+
+            if (instanceType == null)
+            {
+                throw new ArgumentNullException("instanceType");
+            }
+
+            var asProvider = target as IMetadataProvider;
+
+            if (asProvider != null)
+            {
+                //this instance decides its own properties
+                return asProvider.GetMetadata(instanceType);
+            }
+
             return target.GetType()
                          .GetProperties()
                          .Where(propertyInfo => propertyInfo.CanRead &&
@@ -52,7 +67,7 @@ namespace Autofac.Extras.Attributed
 
             foreach (var attribute in targetType.GetCustomAttributes(true)
                                                 .Where(p => p.GetType().GetCustomAttributes(typeof(MetadataAttributeAttribute), true).Any()))
-                propertyList.AddRange(GetProperties(attribute));
+                propertyList.AddRange(GetProperties(attribute, targetType));
 
             return propertyList;
         }
@@ -75,7 +90,7 @@ namespace Autofac.Extras.Attributed
             var attribute =
                 (from p in targetType.GetCustomAttributes(typeof(TMetadataType), true) select p).FirstOrDefault();
 
-            return attribute != null ? GetProperties(attribute) : new List<KeyValuePair<string, object>>();
+            return attribute != null ? GetProperties(attribute, targetType) : new List<KeyValuePair<string, object>>();
         }
     }
 }
