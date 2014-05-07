@@ -57,10 +57,12 @@
     <Compile Include="CombinationalWeakTypedAttributeScenarioTestFixture.cs" />
     <Compile Include="MetadataHelperTestFixture.cs" />
     <Compile Include="MetadataModuleTestFixture.cs" />
+    <Compile Include="MetadataProviderTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScenarioTypes\CombinationalWeakTypedAttributeScenario.cs" />
     <Compile Include="ScenarioTypes\MetadataModuleScenarioDiscoveryTargets.cs" />
     <Compile Include="ScenarioTypes\MetadataModuleScenarioInterfaces.cs" />
+    <Compile Include="ScenarioTypes\MetadataProviderScenario.cs" />
     <Compile Include="ScenarioTypes\StrongTypedScenarioMetadataModule.cs" />
     <Compile Include="ScenarioTypes\StrongTypedMetadataAttributeScenario.cs" />
     <Compile Include="ScenarioTypes\TypeOfScenarioMetadataModule.cs" />
