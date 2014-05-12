@@ -31,7 +31,7 @@ namespace Autofac.Core
     /// <summary>
     /// Identifies a service according to a type to which it can be assigned.
     /// </summary>
-    public sealed class TypedService : Service, IServiceWithType
+    public sealed class TypedService : Service, IServiceWithType, IEquatable<TypedService>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TypedService"/> class.
@@ -61,6 +61,21 @@ namespace Autofac.Core
         }
 
         /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>
+        /// true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
+        /// </returns>
+        public bool Equals(TypedService other)
+        {
+            if (other == null)
+                return false;
+
+            return ServiceType == other.ServiceType;
+        }
+
+        /// <summary>
         /// Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
         /// </summary>
         /// <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>.</param>
@@ -70,12 +85,7 @@ namespace Autofac.Core
         /// <exception cref="T:System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
         public override bool Equals(object obj)
         {
-            var that = obj as TypedService;
-
-            if (that == null)
-                return false;
-
-            return ServiceType.IsCompatibleWith(that.ServiceType);
+            return Equals(obj as TypedService);
         }
 
         /// <summary>
@@ -86,7 +96,7 @@ namespace Autofac.Core
         /// </returns>
         public override int GetHashCode()
         {
-            return ServiceType.GetCompatibleHashCode();
+            return ServiceType.GetHashCode();
         }
 
         /// <summary>

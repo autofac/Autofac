@@ -31,7 +31,7 @@ namespace Autofac.Core
     /// <summary>
     /// Identifies a service using a key in addition to its type.
     /// </summary>
-    public sealed class KeyedService : Service, IServiceWithType
+    public sealed class KeyedService : Service, IServiceWithType, IEquatable<KeyedService>
     {
         readonly object _serviceKey;
         readonly Type _serviceType;
@@ -78,6 +78,21 @@ namespace Autofac.Core
         }
 
         /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>
+        /// true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
+        /// </returns>
+        public bool Equals(KeyedService other)
+        {
+            if (other == null)
+                return false;
+
+            return ServiceKey.Equals(other.ServiceKey) && ServiceType == other.ServiceType;
+        }
+
+        /// <summary>
         /// Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
         /// </summary>
         /// <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>.</param>
@@ -87,12 +102,7 @@ namespace Autofac.Core
         /// <exception cref="T:System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
         public override bool Equals(object obj)
         {
-            var that = obj as KeyedService;
-
-            if (that == null)
-                return false;
-
-            return ServiceKey.Equals(that.ServiceKey) && ServiceType.IsCompatibleWith(that.ServiceType);
+            return Equals(obj as KeyedService);
         }
 
         /// <summary>
@@ -103,7 +113,7 @@ namespace Autofac.Core
         /// </returns>
         public override int GetHashCode()
         {
-            return ServiceKey.GetHashCode() ^ ServiceType.GetCompatibleHashCode();
+            return ServiceKey.GetHashCode() ^ ServiceType.GetHashCode();
         }
 
         /// <summary>

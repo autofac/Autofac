@@ -163,18 +163,6 @@ namespace Autofac.Util
             return false;
         }
 
-        public static bool IsCompatibleWith(this Type type, Type that)
-        {
-            // This previously used Type.GUID which is not available in PCL.
-            // Leaving this method here for now because it is public and could have been used by others.
-            return type.Equals(that);
-        }
-
-        public static int GetCompatibleHashCode(this Type type)
-        {
-            return type.GetHashCode();
-        }
-
         public static bool IsGenericEnumerableInterfaceType(this Type type)
         {
             return (type.IsGenericTypeDefinedBy(typeof(IEnumerable<>))

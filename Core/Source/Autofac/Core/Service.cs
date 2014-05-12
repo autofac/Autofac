@@ -58,7 +58,7 @@ namespace Autofac.Core
         /// <returns>The result of the operator.</returns>
         public static bool operator ==(Service left, Service right)
         {
-            return object.Equals(left, right);
+            return Equals(left, right);
         }
 
         /// <summary>
