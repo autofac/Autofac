@@ -24,6 +24,7 @@ Contents:
    configuration/index.rst
    integration/index.rst
    advanced/index.rst
+   examples/index.rst
    glossary.rst
    contributors.rst
    API Documentation <http://autofac.org/apidoc/>

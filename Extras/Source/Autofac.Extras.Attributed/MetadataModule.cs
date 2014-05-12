@@ -113,7 +113,7 @@ namespace Autofac.Extras.Attributed
         {
             return
                 ContainerBuilder.RegisterType<TInstance>().As<TInterface>().WithMetadata(
-                    MetadataHelper.GetProperties(metadata));
+                    MetadataHelper.GetProperties(metadata, typeof(TInstance)));
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace Autofac.Extras.Attributed
         {
             return
                 ContainerBuilder.RegisterType(instanceType).As<TInterface>().WithMetadata(
-                    MetadataHelper.GetProperties(metadata));
+                    MetadataHelper.GetProperties(metadata, instanceType));
         }
 
         /// <summary>

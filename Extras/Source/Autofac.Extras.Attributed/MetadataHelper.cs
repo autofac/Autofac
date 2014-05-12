@@ -11,19 +11,37 @@ namespace Autofac.Extras.Attributed
     public static class MetadataHelper
     {
         /// <summary>
-        /// Given a target object, returns a set of properties and associated values.
+        /// Given a target attribute object, returns a set of public readable properties and associated values.
         /// </summary>
-        /// <param name="target">Target instance to be scanned.</param>
-        /// <returns>Enumerable set of properties and associated values.</returns>
+        /// <param name="target">Target attribute instance to be scanned.</param>
+        /// <param name="instanceType">
+        /// The <see cref="Type"/> on which the <paramref name="target" /> attribute
+        /// is associated. Used when the <paramref name="target" /> is an
+        /// <see cref="IMetadataProvider"/>.
+        /// </param>
+        /// <returns>Enumerable set of property names and associated values.</returns>
         /// <exception cref="System.ArgumentNullException">
-        /// Thrown if <paramref name="target" /> is <see langword="null" />.
+        /// Thrown if <paramref name="target" /> or <paramref name="instanceType"/> is <see langword="null" />.
         /// </exception>
-        public static IEnumerable<KeyValuePair<string, object>> GetProperties(object target)
+        public static IEnumerable<KeyValuePair<string, object>> GetProperties(object target, Type instanceType)
         {
             if (target == null)
             {
                 throw new ArgumentNullException("target");
             }
+
+            if (instanceType == null)
+            {
+                throw new ArgumentNullException("instanceType");
+            }
+
+            var asProvider = target as IMetadataProvider;
+            if (asProvider != null)
+            {
+                // This attribute instance decides its own properties.
+                return asProvider.GetMetadata(instanceType);
+            }
+
             return target.GetType()
                          .GetProperties()
                          .Where(propertyInfo => propertyInfo.CanRead &&
@@ -35,10 +53,10 @@ namespace Autofac.Extras.Attributed
 
 
         /// <summary>
-        /// Given a type, interrogate the attribution to retrieve an enumerable set property names.
+        /// Given a component type, interrogates the metadata attributes to retrieve a set of property name/value metadata pairs.
         /// </summary>
-        /// <param name="targetType">Type to interrogate for metdata attribute attributes.</param>
-        /// <returns>Enumerable set of properties found.</returns>
+        /// <param name="targetType">Type to interrogate for metdata attributes.</param>
+        /// <returns>Enumerable set of property names and associated values found.</returns>
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="targetType" /> is <see langword="null" />.
         /// </exception>
@@ -52,17 +70,19 @@ namespace Autofac.Extras.Attributed
 
             foreach (var attribute in targetType.GetCustomAttributes(true)
                                                 .Where(p => p.GetType().GetCustomAttributes(typeof(MetadataAttributeAttribute), true).Any()))
-                propertyList.AddRange(GetProperties(attribute));
+                propertyList.AddRange(GetProperties(attribute, targetType));
 
             return propertyList;
         }
 
         /// <summary>
-        /// Given a strong type, interrogate the attribution to retrieve an enumerable set of property names.
+        /// Given a component type, interrogates the metadata attributes to retrieve
+        /// a set of property name/value metadata pairs provided by a specific
+        /// metadata provider.
         /// </summary>
         /// <typeparam name="TMetadataType">Metadata type to look for in the list of attributes.</typeparam>
         /// <param name="targetType">Type to interrogate.</param>
-        /// <returns>Enumerable set of properties found.</returns>
+        /// <returns>Enumerable set of property names and associated values found.</returns>
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="targetType" /> is <see langword="null" />.
         /// </exception>
@@ -75,7 +95,7 @@ namespace Autofac.Extras.Attributed
             var attribute =
                 (from p in targetType.GetCustomAttributes(typeof(TMetadataType), true) select p).FirstOrDefault();
 
-            return attribute != null ? GetProperties(attribute) : new List<KeyValuePair<string, object>>();
+            return attribute != null ? GetProperties(attribute, targetType) : new List<KeyValuePair<string, object>>();
         }
     }
 }

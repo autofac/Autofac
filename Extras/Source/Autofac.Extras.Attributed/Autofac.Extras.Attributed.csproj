@@ -60,6 +60,7 @@
     </CodeAnalysisDictionary>
     <Compile Include="AttributedMetadataModule.cs" />
     <Compile Include="AutofacAttributeExtensions.cs" />
+    <Compile Include="IMetadataProvider.cs" />
     <Compile Include="MetadataHelper.cs" />
     <Compile Include="MetadataModule.cs" />
     <Compile Include="ParameterFilterAttribute.cs" />
