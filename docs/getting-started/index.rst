@@ -3,6 +3,7 @@ Getting Started
 ===============
 
 The basic pattern for integrating Autofac into your application is:
+
 - Structure your app with *inversion of control* (IoC) in mind.
 - Add Autofac references.
 - At application startup...
@@ -199,6 +200,7 @@ For our sample app, we'll implement the "WriteDate" method to get the writer fro
     }
 
 Now when you run your program...
+
 - The "WriteDate" method asks Autofac for an ``IDateWriter``.
 - Autofac sees that ``IDateWriter`` maps to ``TodayWriter`` so starts creating a ``TodayWriter``.
 - Autofac sees that the ``TodayWriter`` needs an ``IOutput`` in its constructor.
