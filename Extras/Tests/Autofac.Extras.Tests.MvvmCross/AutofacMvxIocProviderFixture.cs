@@ -42,6 +42,12 @@ namespace Autofac.Extras.Tests.MvvmCross
         }
 
         [Test]
+        public void CanResolveThrowsArgumentNullExceptionWhenCalledWithNoTypeArgument()
+        {
+            Assert.That(() => provider.CanResolve(null), Throws.TypeOf<ArgumentNullException>());
+        }
+
+        [Test]
         public void ResolveCreateAndIoCConstructReturnsRegisteredType()
         {
             var builder = new ContainerBuilder();
@@ -59,6 +65,14 @@ namespace Autofac.Extras.Tests.MvvmCross
             Assert.That(() => provider.Resolve<object>(), Throws.TypeOf<ComponentNotRegisteredException>());
             Assert.That(() => provider.Create<object>(), Throws.TypeOf<ComponentNotRegisteredException>());
             Assert.That(() => provider.IoCConstruct<object>(), Throws.TypeOf<ComponentNotRegisteredException>());
+        }
+
+        [Test]
+        public void ResolveCreateAndIoCConstructThrowsArgumentNullExceptionWhenCalledWithNoTypeArgument()
+        {
+            Assert.That(() => provider.Resolve(null), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => provider.Create(null), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => provider.IoCConstruct(null), Throws.TypeOf<ArgumentNullException>());
         }
 
         [Test]
@@ -89,6 +103,12 @@ namespace Autofac.Extras.Tests.MvvmCross
         }
 
         [Test]
+        public void GetSingletonThrowsArgumentNullExceptionWhenCalledWithNoTypeArgument()
+        {
+            Assert.That(() => provider.GetSingleton(null), Throws.TypeOf<ArgumentNullException>());
+        }
+
+        [Test]
         public void TryResolveResolvesOutParameterWhenMatchingTypeRegistered()
         {
             var builder = new ContainerBuilder();
@@ -111,6 +131,13 @@ namespace Autofac.Extras.Tests.MvvmCross
         }
 
         [Test]
+        public void RegisterTypeThrowsArgumentNullExceptionWhenCalledWithNoFromOrToTypeArgument()
+        {
+            Assert.That(() => provider.RegisterType(null, typeof(object)), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => provider.RegisterType(typeof(object), null), Throws.TypeOf<ArgumentNullException>());
+        }
+
+        [Test]
         public void RegisterSingletonRegistersConcreteTypeAsSingletonAgainstInterface()
         {
             var concreteViaFunc = new Concrete();
@@ -125,6 +152,19 @@ namespace Autofac.Extras.Tests.MvvmCross
         }
 
         [Test]
+        public void RegisterSingletoneThrowsArgumentNullExceptionWhenCalledWithNoTypeInstanceOrConstructorArgument()
+        {
+            Interface nullInterface = null;
+            Func<Interface> nullConstructor = null;
+            Assert.That(() => provider.RegisterSingleton<Interface>(nullInterface), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => provider.RegisterSingleton<Interface>(nullConstructor), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => provider.RegisterSingleton(null, new object()), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => provider.RegisterSingleton(null, () => new object()), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => provider.RegisterSingleton(typeof(object), null), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => provider.RegisterSingleton(typeof(object), nullConstructor), Throws.TypeOf<ArgumentNullException>());
+        }
+
+        [Test]
         public void CallbackWhenRegisteredFiresSuccessfully()
         {
             var called = false;
@@ -132,6 +172,13 @@ namespace Autofac.Extras.Tests.MvvmCross
 
             provider.RegisterType<Interface,Concrete>();
             Assert.That(called, Is.True);
+        }
+
+        [Test]
+        public void CallbackWhenRegisteredThrowsArgumentNullExceptionWhenCalledWithNoTypeOrActionArgument()
+        {
+            Assert.That(() => provider.CallbackWhenRegistered(null, () => new object()), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => provider.CallbackWhenRegistered(typeof(object), null), Throws.TypeOf<ArgumentNullException>());
         }
 
         private interface Interface
