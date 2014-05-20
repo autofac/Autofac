@@ -47,12 +47,14 @@
     <Compile Include="BComponent.cs" />
     <Compile Include="A2Component.cs" />
     <Compile Include="BModule.cs" />
+    <Compile Include="CloseCommand.cs" />
     <Compile Include="CommandBase.cs" />
     <Compile Include="DeleteCommand.cs" />
     <Compile Include="DeleteCommandData.cs" />
     <Compile Include="HasNestedFactoryDelegate.cs" />
     <Compile Include="IAService.cs" />
     <Compile Include="IBService.cs" />
+    <Compile Include="ICloseCommand.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MetadataAttributeScanningScenario.cs" />
