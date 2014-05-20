@@ -58,7 +58,7 @@ namespace Autofac.Util
         static IEnumerable<Type> FindAssignableTypesThatClose(Type candidateType, Type openGenericServiceType)
         {
             return TypesAssignableFrom(candidateType)
-                .Where(t => IsGenericTypeDefinedBy(t, openGenericServiceType));
+                .Where(t => t.IsClosedTypeOf(openGenericServiceType));
         }
 
         static IEnumerable<Type> TypesAssignableFrom(Type candidateType)
@@ -73,6 +73,14 @@ namespace Autofac.Util
             if (openGeneric == null) throw new ArgumentNullException("openGeneric");
 
             return !@this.ContainsGenericParameters && @this.IsGenericType && @this.GetGenericTypeDefinition() == openGeneric;
+        }
+
+        public static bool IsClosedTypeOf(this Type @this, Type openGeneric)
+        {
+            if (@this == null) throw new ArgumentNullException("this");
+            if (openGeneric == null) throw new ArgumentNullException("openGeneric");
+
+            return TypesAssignableFrom(@this).Any(t => t.IsGenericType && !@this.ContainsGenericParameters && t.GetGenericTypeDefinition() == openGeneric);
         }
 
         public static bool IsDelegate(this Type type)
