@@ -196,6 +196,17 @@ namespace Autofac.Tests.Features.Scanning
         }
 
         [Test]
+        public void AsClosedTypesOfClosingInterfaceTypeRegistered()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyTypes(typeof(ICloseCommand).Assembly)
+                .AsClosedTypesOf(typeof(ICommand<>));
+            var c = cb.Build();
+
+            Assert.That(c.Resolve<ICloseCommand>(), Is.TypeOf<CloseCommand>());
+        }
+
+        [Test]
         public void AsSelfExposesConcreteTypeAsService()
         {
             var cb = new ContainerBuilder();
