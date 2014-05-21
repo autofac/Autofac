@@ -117,6 +117,20 @@ namespace Autofac.Tests.Integration.WebApi
             var exception = Assert.Throws<ArgumentNullException>(
                 () => new ContainerBuilder().RegisterWebApiModelBinders(null));
             Assert.That(exception.ParamName, Is.EqualTo("modelBinderAssemblies"));
+        }        
+        
+        [Test]
+        public void RegisterWebApiModelBindersRegisterModelBinderSetViaAttributeCorrectly()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<Dependency>();
+            builder.RegisterWebApiModelBinders(typeof(TestModelBinder).Assembly);
+            var container = builder.Build();
+            var resolver = new AutofacWebApiDependencyResolver(container);
+            var configuration = new HttpConfiguration { DependencyResolver = resolver };
+            var provider = new AutofacWebApiModelBinderProvider();
+
+            Assert.That(provider.GetBinder(configuration, typeof(TestModel3)), Is.InstanceOf<TestModelBinder>());
         }
 
         [Test]

@@ -112,6 +112,11 @@ namespace Autofac.Tests.Integration.WebApi
     {
     }
 
+    [ModelBinder(typeof(TestModelBinder))]
+    public class TestModel3
+    {
+    }
+
     public class TestModelBinder : IModelBinder
     {
         public Dependency Dependency { get; private set; }
