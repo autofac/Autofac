@@ -120,7 +120,7 @@ namespace Autofac.Tests.Integration.WebApi
         }        
         
         [Test]
-        public void RegisterWebApiModelBindersRegisterModelBinderSetViaAttributeCorrectly()
+        public void RegisterWebApiModelBindersRegisterModelBinderSetViaClassAttributeCorrectly()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<Dependency>();
@@ -131,6 +131,20 @@ namespace Autofac.Tests.Integration.WebApi
             var provider = new AutofacWebApiModelBinderProvider();
 
             Assert.That(provider.GetBinder(configuration, typeof(TestModel3)), Is.InstanceOf<TestModelBinder>());
+        }
+
+        [Test]
+        public void RegisterWebApiModelBindersRegisterModelBinderSetViaParameterAttributeCorrectly()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<Dependency>();
+            builder.RegisterWebApiModelBinders(typeof(TestModelBinder).Assembly);
+            var container = builder.Build();
+            var resolver = new AutofacWebApiDependencyResolver(container);
+            var configuration = new HttpConfiguration { DependencyResolver = resolver };
+            var provider = new AutofacWebApiModelBinderProvider();
+
+            Assert.That(provider.GetBinder(configuration, typeof(TestModel2)), Is.InstanceOf<TestModelBinder>());
         }
 
         [Test]

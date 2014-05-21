@@ -47,6 +47,11 @@ namespace Autofac.Tests.Integration.WebApi
         {
             return new[] {"value1", "value2"};
         }
+
+        public string GetWithModelBinding([ModelBinder(typeof(TestModelBinder))] TestModel2 model)
+        {
+            return string.Empty;
+        }
     }
 
     public class TestControllerA : TestController
