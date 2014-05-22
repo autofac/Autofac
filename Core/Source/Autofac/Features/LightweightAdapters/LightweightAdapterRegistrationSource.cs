@@ -72,6 +72,36 @@ namespace Autofac.Features.LightweightAdapters
                     });
             }
 
+            var requestedServiceWithType = service as IServiceWithType;
+            var adapteeServiceWithType = _activatorData.FromService as IServiceWithType;
+
+            if (
+                // requested and adaptee are services with type
+                (requestedServiceWithType != null && adapteeServiceWithType != null) && 
+                // avoiding decorators here
+                (requestedServiceWithType.ServiceType != adapteeServiceWithType.ServiceType) &&
+                // if this registration source contains requested service's type
+                (_registrationData.Services.Where(s => s is IServiceWithType).Cast<IServiceWithType>().Any(s => s.ServiceType == requestedServiceWithType.ServiceType)))
+            {
+                // we try to find registrations for the adaptee service but preserve info from the requested service e.g. keys
+                var serviceToFind = requestedServiceWithType.ChangeType(adapteeServiceWithType.ServiceType);
+
+                return registrationAccessor(serviceToFind)
+                    .Select(r =>
+                    {
+                        var rb = RegistrationBuilder
+                            .ForDelegate((c, p) => _activatorData.Adapter(c, p, c.ResolveComponent(r, Enumerable.Empty<Parameter>())))
+                            .Targeting(r);
+
+                        rb.RegistrationData.CopyFrom(_registrationData, true);
+                        
+                        // we explicitly add requested service to the RegistrationData
+                        rb.RegistrationData.AddService(service);
+
+                        return rb.CreateRegistration();
+                    });
+            }
+
             return new IComponentRegistration[0];
         }
 
