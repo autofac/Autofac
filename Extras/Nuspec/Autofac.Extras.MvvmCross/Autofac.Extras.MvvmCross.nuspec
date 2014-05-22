@@ -6,7 +6,7 @@
     <authors>Autofac Contributors</authors>
     <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>This extension provides support for using Autofac as the DI framework in MvvmCross</description>
+    <description>This extension provides support for using Autofac as the DI framework in MvvmCross.</description>
     <summary>Autofac extension supporting MvvmCross dependency injection.</summary>
     <language>en-US</language>
     <title>Autofac Extras: MvvmCross Mocking Support</title>
@@ -14,7 +14,7 @@
     <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
     <dependencies>
       <dependency id="Autofac" version="[3.3.1,4.0.0)" />
-      <dependency id="MvvmCross" version="[3.0.14,4.0.0)" />
+      <dependency id="MvvmCross" version="[3.1.1,4.0.0)" />
     </dependencies>
   </metadata>
 </package>
