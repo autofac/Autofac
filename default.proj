@@ -322,9 +322,9 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 				* .NET 4.0 Client Profile
 				* .NET 3.5
 			-->
-			<DetectedDependencies45 Include="$(BuildDirectory)\bin\net40\*.dll;$(PackageInstallDirectory)\**\*net45*\*.dll;$(PackageInstallDirectory)\**\45\*.dll" />
-			<DetectedDependencies40 Include="$(PackageInstallDirectory)\**\*net40*\*.dll;$(PackageInstallDirectory)\**\40\*.dll" />
-			<DetectedDependencies40Client Include="$(PackageInstallDirectory)\**\*net40-client*\*.dll;$(PackageInstallDirectory)\**\40-client\*.dll" />
+			<DetectedDependencies45 Include="$(BuildDirectory)\bin\net40\*.dll;$(PackageInstallDirectory)\**\*net45*\*.dll;$(PackageInstallDirectory)\**\45\*.dll;$(PackageInstallDirectory)\**\*portable*\*.dll" />
+			<DetectedDependencies40 Include="$(PackageInstallDirectory)\**\*net40*\*.dll;$(PackageInstallDirectory)\**\40\*.dll;$(PackageInstallDirectory)\**\*portable*\*.dll" />
+			<DetectedDependencies40Client Include="$(PackageInstallDirectory)\**\*net40-client*\*.dll;$(PackageInstallDirectory)\**\40-client\*.dll;$(PackageInstallDirectory)\**\*portable*\*.dll" />
 			<DetectedDependencies35 Include="$(PackageInstallDirectory)\**\net35\*.dll;$(PackageInstallDirectory)\**\35\*.dll" />
 
 			<!--
