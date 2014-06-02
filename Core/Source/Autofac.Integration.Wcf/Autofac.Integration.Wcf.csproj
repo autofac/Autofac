@@ -41,6 +41,10 @@
     <DocumentationFile>bin\Release\Autofac.Integration.Wcf.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=3.3.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Autofac.3.3.1\lib\net40\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -97,12 +101,6 @@
     <Compile Include="ServiceImplementationData.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Autofac\Autofac.csproj">
-      <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
-      <Name>Autofac</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="AutofacHostFactoryResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AutofacHostFactoryResources.Designer.cs</LastGenOutput>
@@ -134,6 +132,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

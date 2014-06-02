@@ -57,6 +57,10 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=3.3.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Autofac.3.3.1\lib\net40\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="FakeItEasy, Version=1.18.0.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\packages\FakeItEasy.1.18.0\lib\net40\FakeItEasy.dll</HintPath>
@@ -102,10 +106,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\Source\Autofac\Autofac.csproj">
-      <Project>{7d018b3e-34a3-423d-ac35-12731f4e0a2c}</Project>
-      <Name>Autofac</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Source\Autofac.Extras.FakeItEasy\Autofac.Extras.FakeItEasy.csproj">
       <Project>{2bfdbab2-e2da-4588-ae2d-133896ff8861}</Project>
       <Name>Autofac.Extras.FakeItEasy</Name>

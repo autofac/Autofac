@@ -42,6 +42,18 @@
     <AssemblyOriginatorKeyFile>..\..\..\Build\SharedKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=3.3.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Autofac.3.3.1\lib\net40\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.Owin, Version=3.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Autofac.Owin.3.0.0-alpha3\lib\net45\Autofac.Integration.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.WebApi, Version=3.2.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Autofac.WebApi2.3.2.1\lib\net45\Autofac.Integration.WebApi.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Owin">
       <HintPath>..\..\..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
@@ -84,21 +96,9 @@
     <Compile Include="AutofacWebApiAppBuilderExtensionsFixture.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Source\Autofac.Integration.Owin\Autofac.Integration.Owin.csproj">
-      <Project>{726d9f07-4e72-4b6c-8a38-f2ae56f91616}</Project>
-      <Name>Autofac.Integration.Owin</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Source\Autofac.Integration.WebApi.Owin\Autofac.Integration.WebApi.Owin.csproj">
       <Project>{1a3e68cf-e1d5-4e30-96c3-9b8687df9283}</Project>
       <Name>Autofac.Integration.WebApi.Owin</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Source\Autofac.Integration.WebApi\Autofac.Integration.WebApi.csproj">
-      <Project>{8437dae1-0f24-44a9-a187-b34f52858a58}</Project>
-      <Name>Autofac.Integration.WebApi</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Source\Autofac\Autofac.csproj">
-      <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
-      <Name>Autofac</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

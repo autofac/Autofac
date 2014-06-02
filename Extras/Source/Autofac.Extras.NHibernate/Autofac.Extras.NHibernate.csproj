@@ -45,6 +45,10 @@
     <DocumentationFile>bin\Release\Autofac.Extras.NHibernate.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=3.3.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Autofac.3.3.1\lib\net40\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="Iesi.Collections">
       <HintPath>..\..\..\packages\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
     </Reference>
@@ -74,12 +78,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Bytecode\AutofacReflectionOptimizer.cs" />
     <Compile Include="Properties\VersionAssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\Source\Autofac\Autofac.csproj">
-      <Project>{7d018b3e-34a3-423d-ac35-12731f4e0a2c}</Project>
-      <Name>Autofac</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

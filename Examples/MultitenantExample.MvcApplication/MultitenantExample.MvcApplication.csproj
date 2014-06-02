@@ -49,6 +49,30 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=3.4.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Autofac.3.4.1\lib\net40\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Extras.Multitenant, Version=3.1.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Autofac.Extras.Multitenant.3.1.1\lib\net40\Autofac.Extras.Multitenant.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Extras.Multitenant.Wcf, Version=3.1.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Autofac.Extras.Multitenant.Wcf.3.1.1\lib\net40\Autofac.Extras.Multitenant.Wcf.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.Mvc, Version=3.3.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Autofac.Mvc5.3.3.0\lib\net45\Autofac.Integration.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.Wcf, Version=3.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Autofac.Wcf.3.0.1\lib\net40\Autofac.Integration.Wcf.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Core, Version=3.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Castle.Core.3.2.2\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -186,24 +210,6 @@
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\WcfMetadataConsumer\" />
     <WCFMetadataStorage Include="Service References\WcfService\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Core\Source\Autofac.Integration.Mvc\Autofac.Integration.Mvc.csproj">
-      <Project>{dd874e64-c7ec-464d-925f-cf4a709edeef}</Project>
-      <Name>Autofac.Integration.Mvc</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Source\Autofac\Autofac.csproj">
-      <Project>{7d018b3e-34a3-423d-ac35-12731f4e0a2c}</Project>
-      <Name>Autofac</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Extras\Source\Autofac.Extras.Multitenant.Wcf\Autofac.Extras.Multitenant.Wcf.csproj">
-      <Project>{760cfe4c-3320-4d33-a812-66728ef0b30a}</Project>
-      <Name>Autofac.Extras.Multitenant.Wcf</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Extras\Source\Autofac.Extras.Multitenant\Autofac.Extras.Multitenant.csproj">
-      <Project>{321cef70-1c21-4cf0-be04-4f72427a88d6}</Project>
-      <Name>Autofac.Extras.Multitenant</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

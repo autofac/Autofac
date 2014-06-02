@@ -57,6 +57,10 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=3.3.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Autofac.3.3.1\lib\net40\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\packages\CommonServiceLocator.1.2\lib\portable-windows8+net40+sl5+windowsphone8\Microsoft.Practices.ServiceLocation.dll</HintPath>
@@ -109,10 +113,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\Source\Autofac\Autofac.csproj">
-      <Project>{7d018b3e-34a3-423d-ac35-12731f4e0a2c}</Project>
-      <Name>Autofac</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Source\Autofac.Extras.CommonServiceLocator\Autofac.Extras.CommonServiceLocator.csproj">
       <Project>{7a6db23d-117e-4742-a9fa-8a6956df6829}</Project>
       <Name>Autofac.Extras.CommonServiceLocator</Name>

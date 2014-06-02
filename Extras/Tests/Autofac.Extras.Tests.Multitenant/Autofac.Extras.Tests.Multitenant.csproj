@@ -37,6 +37,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=3.3.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Autofac.3.3.1\lib\net40\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -76,14 +80,6 @@
     <Compile Include="Web\RequestParameterTenantIdentificationStrategyFixture.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\Source\Autofac.Integration.Wcf\Autofac.Integration.Wcf.csproj">
-      <Project>{4d5c02d1-c10a-4448-9d7b-8f2a5cca1d13}</Project>
-      <Name>Autofac.Integration.Wcf</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Core\Source\Autofac\Autofac.csproj">
-      <Project>{7d018b3e-34a3-423d-ac35-12731f4e0a2c}</Project>
-      <Name>Autofac</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Source\Autofac.Extras.Multitenant\Autofac.Extras.Multitenant.csproj">
       <Project>{321cef70-1c21-4cf0-be04-4f72427a88d6}</Project>
       <Name>Autofac.Extras.Multitenant</Name>

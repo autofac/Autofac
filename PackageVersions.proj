@@ -81,7 +81,7 @@
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
 			<FileVersion>3.0.0.0</FileVersion>
 			<PackageName>Autofac.Mvc5.Owin</PackageName>
-			<PackageVersion>3.0.0-alpha3</PackageVersion>
+			<PackageVersion>3.0.0-alpha4</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Web\Autofac.Integration.Web.csproj">
 			<AssemblyVersion>3.2.0.0</AssemblyVersion>
@@ -102,10 +102,10 @@
 			<PackageVersion>3.0.4</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.Attributed\Autofac.Extras.Attributed.csproj">
-			<AssemblyVersion>3.2.0.0</AssemblyVersion>
-			<FileVersion>3.2.1.0</FileVersion>
+			<AssemblyVersion>3.3.0.0</AssemblyVersion>
+			<FileVersion>3.3.0.0</FileVersion>
 			<PackageName>Autofac.Extras.Attributed</PackageName>
-			<PackageVersion>3.2.1</PackageVersion>
+			<PackageVersion>3.3.0</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.CommonServiceLocator\Autofac.Extras.CommonServiceLocator.csproj">
 			<AssemblyVersion>3.1.0.0</AssemblyVersion>
@@ -114,10 +114,10 @@
 			<PackageVersion>3.1.1</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.DomainServices\Autofac.Extras.DomainServices.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.1.0</FileVersion>
+			<AssemblyVersion>3.1.0.0</AssemblyVersion>
+			<FileVersion>3.1.0.0</FileVersion>
 			<PackageName>Autofac.Extras.DomainServices</PackageName>
-			<PackageVersion>3.0.1</PackageVersion>
+			<PackageVersion>3.1.0</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.DynamicProxy2\Autofac.Extras.DynamicProxy2.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
@@ -127,9 +127,9 @@
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.EnterpriseLibraryConfigurator\Autofac.Extras.EnterpriseLibraryConfigurator.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.1.0</FileVersion>
+			<FileVersion>3.0.2.0</FileVersion>
 			<PackageName>Autofac.Extras.EnterpriseLibraryConfigurator</PackageName>
-			<PackageVersion>3.0.1</PackageVersion>
+			<PackageVersion>3.0.2</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.FakeItEasy\Autofac.Extras.FakeItEasy.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>

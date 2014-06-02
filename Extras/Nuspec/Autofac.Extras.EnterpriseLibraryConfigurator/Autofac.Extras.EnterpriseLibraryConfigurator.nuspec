@@ -14,7 +14,6 @@
     <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
     <dependencies>
       <dependency id="Autofac" version="[3.3.1,4.0.0)" />
-      <dependency id="Autofac.Extras.CommonServiceLocator" version="[3.1.1,4.0.0)" />
       <dependency id="CommonServiceLocator" version="$version_CommonServiceLocator$" />
       <dependency id="EnterpriseLibrary.Common" version="[$version_EnterpriseLibrary.Common$]" />
     </dependencies>

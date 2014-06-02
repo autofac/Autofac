@@ -57,6 +57,10 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=3.3.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Autofac.3.3.1\lib\net40\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -97,10 +101,6 @@
     <ProjectReference Include="..\..\Source\Autofac.Integration.Wcf\Autofac.Integration.Wcf.csproj">
       <Project>{4D5C02D1-C10A-4448-9D7B-8F2A5CCA1D13}</Project>
       <Name>Autofac.Integration.Wcf</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Source\Autofac\Autofac.csproj">
-      <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
-      <Name>Autofac</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

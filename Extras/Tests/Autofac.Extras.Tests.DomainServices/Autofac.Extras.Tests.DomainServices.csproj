@@ -40,6 +40,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac">
+      <HintPath>..\..\..\packages\Autofac.3.4.0\lib\net40\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.Web">
+      <HintPath>..\..\..\packages\Autofac.Web.3.2.0\lib\net40\Autofac.Integration.Web.dll</HintPath>
+    </Reference>
     <Reference Include="Moq">
       <HintPath>..\..\..\packages\Moq.4.2.1312.1622\lib\net40\Moq.dll</HintPath>
     </Reference>
@@ -63,14 +69,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\Source\Autofac.Integration.Web\Autofac.Integration.Web.csproj">
-      <Project>{4bdd9d14-baca-416c-919e-e9ff100f8f5d}</Project>
-      <Name>Autofac.Integration.Web</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Core\Source\Autofac\Autofac.csproj">
-      <Project>{7d018b3e-34a3-423d-ac35-12731f4e0a2c}</Project>
-      <Name>Autofac</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Source\Autofac.Extras.DomainServices\Autofac.Extras.DomainServices.csproj">
       <Project>{4a3a14bb-7eba-4326-aa38-966a74b34abf}</Project>
       <Name>Autofac.Extras.DomainServices</Name>

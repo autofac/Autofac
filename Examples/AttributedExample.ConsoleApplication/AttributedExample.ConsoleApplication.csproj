@@ -67,6 +67,12 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac">
+      <HintPath>..\..\packages\Autofac.3.4.1\lib\net40\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Extras.Attributed">
+      <HintPath>..\..\packages\Autofac.Extras.Attributed.3.2.1\lib\net40\Autofac.Extras.Attributed.dll</HintPath>
+    </Reference>
     <Reference Include="Stateless">
       <HintPath>..\..\lib\Stateless\Stateless.dll</HintPath>
     </Reference>
@@ -100,14 +106,8 @@
     <Compile Include="StateTypes\WorkflowTrigger.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Source\Autofac\Autofac.csproj">
-      <Project>{7d018b3e-34a3-423d-ac35-12731f4e0a2c}</Project>
-      <Name>Autofac</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Extras\Source\Autofac.Extras.Attributed\Autofac.Extras.Attributed.csproj">
-      <Project>{d8715248-94c1-4556-8a81-7e338d68fe96}</Project>
-      <Name>Autofac.Extras.Attributed</Name>
-    </ProjectReference>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -49,6 +49,22 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=3.4.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Autofac.3.4.1\lib\net40\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Extras.CommonServiceLocator, Version=3.1.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Autofac.Extras.CommonServiceLocator.3.1.1\lib\net40\Autofac.Extras.CommonServiceLocator.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Extras.EnterpriseLibraryConfigurator, Version=3.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Autofac.Extras.EnterpriseLibraryConfigurator.3.0.1\lib\net40\Autofac.Extras.EnterpriseLibraryConfigurator.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.Mvc, Version=3.3.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Autofac.Mvc5.3.3.0\lib\net45\Autofac.Integration.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common">
       <HintPath>..\..\packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
     </Reference>
@@ -182,24 +198,6 @@
     <Content Include="Scripts\MicrosoftMvcValidation.debug.js" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Shared\Error.aspx" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Core\Source\Autofac.Integration.Mvc\Autofac.Integration.Mvc.csproj">
-      <Project>{dd874e64-c7ec-464d-925f-cf4a709edeef}</Project>
-      <Name>Autofac.Integration.Mvc</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Source\Autofac\Autofac.csproj">
-      <Project>{7d018b3e-34a3-423d-ac35-12731f4e0a2c}</Project>
-      <Name>Autofac</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Extras\Source\Autofac.Extras.CommonServiceLocator\Autofac.Extras.CommonServiceLocator.csproj">
-      <Project>{7a6db23d-117e-4742-a9fa-8a6956df6829}</Project>
-      <Name>Autofac.Extras.CommonServiceLocator</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Extras\Source\Autofac.Extras.EnterpriseLibraryConfigurator\Autofac.Extras.EnterpriseLibraryConfigurator.csproj">
-      <Project>{97bc9d7b-a233-4109-afb7-1f2f0c137ccf}</Project>
-      <Name>Autofac.Extras.EnterpriseLibraryConfigurator</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Security;
-using System.Threading.Tasks;
 using Autofac.Core.Lifetime;
 using Autofac.Integration.Owin;
-using Microsoft.Owin;
 using Microsoft.Owin.Testing;
 using Moq;
 using NUnit.Framework;
@@ -45,24 +42,6 @@ namespace Autofac.Tests.Integration.Owin
                 server.HttpClient.GetAsync("/").Wait();
                 Assert.That(TestMiddleware.LifetimeScope.Tag, Is.EqualTo(MatchingScopeLifetimeTags.RequestLifetimeScopeTag));
             }
-        }
-    }
-
-    public class TestMiddleware : OwinMiddleware
-    {
-        public static ILifetimeScope LifetimeScope { get; set; }
-
-        public TestMiddleware(OwinMiddleware next)
-            : base(next)
-        {
-            LifetimeScope = null;
-        }
-
-        [SecurityCritical]
-        public override Task Invoke(IOwinContext context)
-        {
-            LifetimeScope = context.GetAutofacLifetimeScope();
-            return Next.Invoke(context);
         }
     }
 }

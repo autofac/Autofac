@@ -51,6 +51,22 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=3.4.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Autofac.3.4.1\lib\net40\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Extras.DomainServices, Version=3.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Autofac.Extras.DomainServices.3.0.1\lib\net40\Autofac.Extras.DomainServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.Mvc, Version=3.3.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Autofac.Mvc5.3.3.0\lib\net45\Autofac.Integration.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.Web, Version=3.2.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Autofac.Web.3.2.0\lib\net40\Autofac.Integration.Web.dll</HintPath>
+    </Reference>
     <Reference Include="Glimpse.AspNet, Version=1.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Glimpse.AspNet.1.7.0\lib\net45\Glimpse.AspNet.dll</HintPath>
@@ -163,22 +179,6 @@
     <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Source\Autofac.Integration.Mvc\Autofac.Integration.Mvc.csproj">
-      <Project>{DD874E64-C7EC-464D-925F-CF4A709EDEEF}</Project>
-      <Name>Autofac.Integration.Mvc</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Source\Autofac.Integration.Web\Autofac.Integration.Web.csproj">
-      <Project>{4bdd9d14-baca-416c-919e-e9ff100f8f5d}</Project>
-      <Name>Autofac.Integration.Web</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Source\Autofac\Autofac.csproj">
-      <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
-      <Name>Autofac</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Extras\Source\Autofac.Extras.DomainServices\Autofac.Extras.DomainServices.csproj">
-      <Project>{4a3a14bb-7eba-4326-aa38-966a74b34abf}</Project>
-      <Name>Autofac.Extras.DomainServices</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Remember.Model\Remember.Model.csproj">
       <Project>{225D06BB-05C9-4C2E-BE28-8E77DC0C67EE}</Project>
       <Name>Remember.Model</Name>

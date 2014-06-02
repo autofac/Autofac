@@ -1,5 +1,4 @@
 ﻿using System.Web;
-using Autofac.Tests.Integration.Owin;
 using Microsoft.Owin.Testing;
 using Moq;
 using NUnit.Framework;

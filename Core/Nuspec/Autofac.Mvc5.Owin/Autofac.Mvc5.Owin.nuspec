@@ -14,7 +14,6 @@
     <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
     <dependencies>
       <dependency id="Autofac" version="[3.3.1,4.0.0)" />
-      <dependency id="Autofac.Mvc5" version="[3.2.1,4.0.0)" />
       <dependency id="Autofac.Owin" version="[3.0.0-alpha3,4.0.0)" />
     </dependencies>
   </metadata>
