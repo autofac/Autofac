@@ -52,12 +52,6 @@
 		<Document Condition="'$(Production)' != 'true'">false</Document>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(BuildInParallel)' == ''">
-		<!-- Unless otherwise specified, dev build will build in parallel but MyGet won't. There's an FxCop issue where MyGet running in parallel won't find all the assemblies when running parallel builds. -->
-		<BuildInParallel Condition="'$(MyGetBuild)' == 'false'">true</BuildInParallel>
-		<BuildInParallel Condition="'$(MyGetBuild)' != 'true'">false</BuildInParallel>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<!-- SolutionFile is the solution to build. Technically we could add more if needed. -->
 		<SolutionFile Include="$(MSBuildProjectDirectory)\Autofac.sln" />
@@ -113,7 +107,7 @@
 			"by design": http://nuget.codeplex.com/workitem/1880
 		-->
 		<Exec Command="&quot;$(NuGetCommandLinePath)&quot; restore &quot;%(SolutionFile.FullPath)&quot;" />
-		<MSBuild Projects="%(SolutionFile.FullPath)" BuildInParallel="$(BuildInParallel)" Targets="Build" Properties="Configuration=$(BuildConfiguration);BuildInParallel=$(BuildInParallel)" />
+		<MSBuild Projects="%(SolutionFile.FullPath)" Targets="Build" Properties="Configuration=$(BuildConfiguration)" />
 		<PropertyGroup>
 			<CoreSourceDir>$(MSBuildProjectDirectory)\Core\Source</CoreSourceDir>
 			<ExtrasSourceDir>$(MSBuildProjectDirectory)\Extras\Source</ExtrasSourceDir>
