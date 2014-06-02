@@ -116,7 +116,7 @@ Autofac can accept a delegate or lambda expression to be used as a component cre
 
 The parameter ``c`` provided to the expression is the *component context* (an ``IComponentContext`` object) in which the component is being created. You can use this to resolve other values from the container to assist in creating your component. **It is important to use this rather than a closure to access the container** so that :doc:`deterministic disposal <../lifetime/disposal>` and nested containers can be supported correctly.
 
-Additional dependencies can be satisfied using this context parameter - in the example, ``A``requires a constructor parameter of type ``B`` that may have additional dependencies.
+Additional dependencies can be satisfied using this context parameter - in the example, ``A`` requires a constructor parameter of type ``B`` that may have additional dependencies.
 
 The default service provided by an expression-created component is the inferred return type of the expression.
 
@@ -136,7 +136,7 @@ While Autofac offers :doc:`a more first-class approach to property injection <pr
 
     builder.Register(c => new A(){ MyB = c.ResolveOptional<B>() });
 
-The ``ResolveOptional`` method will try to resolve the value but won't throw an exception if it's unable to. This is one of the options for :doc:`resolving a service <../resolve/index>`.
+The ``ResolveOptional`` method will try to resolve the value but won't throw an exception if the service isn't registered. (You will still get an exception if the service is registered but can't properly be resolved.) This is one of the options for :doc:`resolving a service <../resolve/index>`.
 
 **Property injection is not recommended in the majority of cases.** Alternatives like `the Null Object pattern <http://en.wikipedia.org/wiki/Null_Object_pattern>`_, overloaded constructors or constructor parameter default values make it possible to create cleaner, "immutable" components with optional dependencies using constructor injection.
 
