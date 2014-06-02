@@ -448,6 +448,12 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 								continue;
 							}
 							var name = match.Groups[1].Value;
+							if(name.StartsWith("Autofac"))
+							{
+								// Ignore Autofac components because we manually specify
+								// those versions right in the .nuspec.
+								continue;
+							}
 							if(seen.Contains(name))
 							{
 								// If there are duplicate NuGet package names, that's a problem
