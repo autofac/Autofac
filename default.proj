@@ -84,6 +84,9 @@
 	</Target>
 
 	<Target Name="Clean">
+		<ItemGroup>
+			<AllProject Include="$(MSBuildProjectDirectory)\**\*.csproj" />
+		</ItemGroup>
 		<RemoveDir Directories="$(BuildDirectory)" ContinueOnError="true" />
 		<RemoveDir
 			Directories="%(AllProject.RootDir)%(AllProject.Directory)bin"
@@ -105,48 +108,39 @@
 		-->
 		<Exec Command="&quot;$(NuGetCommandLinePath)&quot; restore &quot;%(SolutionFile.FullPath)&quot;" />
 		<MSBuild Projects="%(SolutionFile.FullPath)" Targets="Build" Properties="Configuration=$(BuildConfiguration)" />
+		<PropertyGroup>
+			<CoreSourceDir>$(MSBuildProjectDirectory)\Core\Source</CoreSourceDir>
+			<ExtrasSourceDir>$(MSBuildProjectDirectory)\Extras\Source</ExtrasSourceDir>
+		</PropertyGroup>
 		<ItemGroup>
-			<SourceOutputList
+			<BuildArtifactExcludeList Include="$(MSBuildProjectDirectory)\**\*.vshost.*;$(MSBuildProjectDirectory)\**\*.CodeAnalysisLog.*;$(MSBuildProjectDirectory)\**\*.lastcodeanalysissucceeded" />
+			<Source45Project
 				Include="
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.dll;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.pdb;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac*.xml;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.config"
-				Exclude="
-					**\*.vshost.*;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.CodeAnalysisLog.*;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.lastcodeanalysissucceeded;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.Owin.*;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.WebApi.*;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.Mvc.*;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.SignalR.*" />
+					$(CoreSourceDir)\Autofac.Integration.Owin\**\*.csproj;
+					$(CoreSourceDir)\Autofac.Integration.WebApi\**\*.csproj;
+					$(CoreSourceDir)\Autofac.Integration.Mvc\**\*.csproj;
+					$(CoreSourceDir)\Autofac.Integration.SignalR\**\*.csproj" />
+			<Source40Project
+				Include="
+					$(CoreSourceDir)\**\*.csproj;
+					$(ExtrasSourceDir)\**\*.csproj;"
+				Exclude="@(Source45Project)" />
+			<PortableProject
+				Include="
+					$(CoreSourceDir)\Autofac\**\*.csproj;
+					$(ExtrasSourceDir)\Autofac.Extras.CommonServiceLocator\**\*.csproj;
+					$(ExtrasSourceDir)\Autofac.Extras.MvvmCross\**\*.csproj" />
 			<Source45OutputList
-				Include="
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.Owin.*;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.WebApi.*;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.Mvc.*;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.SignalR.*"
-				Exclude="
-					**\*.vshost.*;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.CodeAnalysisLog.*;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.lastcodeanalysissucceeded" />
+				Include="%(Source45Project.RootDir)%(Source45Project.Directory)bin\$(BuildConfiguration)\%(Source45Project.Filename).*"
+				Exclude="@(BuildArtifactExcludeList)" />
+			<Source40OutputList
+				Include="%(Source40Project.RootDir)%(Source40Project.Directory)bin\$(BuildConfiguration)\%(Source40Project.Filename).*"
+				Exclude="@(BuildArtifactExcludeList)" />
 			<PortableOutputList
-				Include="
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.dll;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.pdb;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.xml;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Extras.CommonServiceLocator.*;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Extras.MvvmCross.*"
-				Exclude="
-					**\*.vshost.*;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.CodeAnalysisLog.*;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\*.lastcodeanalysissucceeded;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.Owin.*;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.WebApi.*;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.Mvc.*;
-					%(SourceProject.RootDir)%(SourceProject.Directory)bin\$(BuildConfiguration)\Autofac.Integration.SignalR.*" />
+				Include="%(PortableProject.RootDir)%(PortableProject.Directory)bin\$(BuildConfiguration)\%(PortableProject.Filename).*"
+				Exclude="@(BuildArtifactExcludeList)" />
 		</ItemGroup>
-		<Copy SourceFiles="@(SourceOutputList)" DestinationFolder="$(BuildDirectory)\bin\net40" />
+		<Copy SourceFiles="@(Source40OutputList)" DestinationFolder="$(BuildDirectory)\bin\net40" />
 		<Copy SourceFiles="@(Source45OutputList)" DestinationFolder="$(BuildDirectory)\bin\net45" />
 		<Copy SourceFiles="@(PortableOutputList)" DestinationFolder="$(BuildDirectory)\bin\portable-win+net40+sl50+wp8" />
 	</Target>
@@ -243,6 +237,7 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 
 	<Target Name="Test">
 		<ItemGroup>
+			<TestProject Include="$(MSBuildProjectDirectory)\**\Tests\**\*.csproj" />
 			<TestAssemblies Include="%(TestProject.RootDir)%(TestProject.Directory)\bin\$(BuildConfiguration)\Autofac*.Tests*.dll" />
 			<NUnitConsole Include="$(PackageInstallDirectory)\NUnit.Runners.*\tools\nunit-console.exe" />
 		</ItemGroup>
@@ -273,12 +268,6 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 	</Target>
 
 	<Target Name="__EnvironmentSetup">
-		<ItemGroup>
-			<AllProject Include="$(MSBuildProjectDirectory)\**\*.csproj" />
-			<TestProject Include="$(MSBuildProjectDirectory)\**\Tests\**\*.csproj" />
-			<SourceProject Include="$(MSBuildProjectDirectory)\**\Source\**\*.csproj" />
-			<ExampleProject Include="$(MSBuildProjectDirectory)\**\Examples\**\*.csproj" />
-		</ItemGroup>
 		<Time Format="yyyy-MM-dd HH:mm">
 			<Output TaskParameter="FormattedTime" PropertyName="BuildTime" />
 		</Time>
