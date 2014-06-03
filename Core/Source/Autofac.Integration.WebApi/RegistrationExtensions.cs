@@ -170,6 +170,7 @@ namespace Autofac.Integration.WebApi
             return builder.RegisterAssemblyTypes(modelBinderAssemblies)
                 .Where(type => type.IsAssignableTo<IModelBinder>())
                 .As<IModelBinder>()
+                .AsSelf()
                 .SingleInstance();
         }
 
