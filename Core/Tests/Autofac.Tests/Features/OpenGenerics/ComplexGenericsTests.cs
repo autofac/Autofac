@@ -166,3 +166,40 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
     }
 }
+
+namespace FluentValidation
+{
+    interface IValidator<T> { }
+    class AbstractValidator<T> : IValidator<T> { }
+}
+
+namespace CompanyA
+{
+    interface IValidator<T> { } // Please note that this name is the same as FluentValidation's IValidator<T>
+    class CompositeValidator<T> : FluentValidation.AbstractValidator<T>, IValidator<T> { }
+}
+
+namespace CompanyB
+{
+    interface IValidatorSomeOtherName<T> { } // This is NOT the same name.
+    class CompositeValidator<T> : FluentValidation.AbstractValidator<T>, IValidatorSomeOtherName<T> { }
+}
+
+namespace Autofac.Tests.Features.OpenGenerics
+{
+    [TestFixture]
+    public class ComplexGenericsWithNamepsaceTests
+    {
+        [Test]
+        public void CanResolveByGenericInterface()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterGeneric(typeof(CompanyA.CompositeValidator<>)).As(typeof(CompanyA.IValidator<>));
+
+            var container = builder.Build();
+
+            Assert.That(container.IsRegistered<CompanyA.CompositeValidator<int>>());
+        }
+    }
+}
