@@ -199,7 +199,8 @@ namespace Autofac.Tests.Features.OpenGenerics
 
             var container = builder.Build();
 
-            Assert.That(container.IsRegistered<CompanyA.CompositeValidator<int>>());
+            var validator = container.Resolve<CompanyA.IValidator<int>>();
+            Assert.That(validator, Is.InstanceOf<CompanyA.CompositeValidator<int>>());
         }
     }
 }
