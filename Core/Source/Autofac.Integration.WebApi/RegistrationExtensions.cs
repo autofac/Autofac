@@ -170,6 +170,28 @@ namespace Autofac.Integration.WebApi
             return builder.RegisterAssemblyTypes(modelBinderAssemblies)
                 .Where(type => type.IsAssignableTo<IModelBinder>())
                 .As<IModelBinder>()
+                .WithMetadata(
+                    AutofacWebApiModelBinderProvider.MetadataKey,
+                    modelBinderType =>
+
+                        // scaning for models marked with ModelBinderAttribute
+                        modelBinderAssemblies.SelectMany(assembly => assembly.GetTypes())
+                        .Where(potentialModel => potentialModel.GetCustomAttributes(typeof(ModelBinderAttribute))
+                            .Cast<ModelBinderAttribute>()
+                            .Any(x => x.BinderType == modelBinderType))
+                        
+                        // unioning with actions' parameters that could also be marked with ModelBinderAttribute
+                        .Union(modelBinderAssemblies.SelectMany(assembly => assembly.GetTypes())
+                            .Where(type => type.IsAssignableTo<ApiController>())
+                            .SelectMany(controller => controller.GetMethods())
+                            .SelectMany(potentialAction => potentialAction.GetParameters())
+                            .Where(potentialModel => potentialModel.GetCustomAttributes(typeof(ModelBinderAttribute))
+                                .Cast<ModelBinderAttribute>()
+                                .Any(x => x.BinderType == modelBinderType))
+                            .Select(p => p.ParameterType))
+
+                        .Distinct()
+                        .ToList())
                 .SingleInstance();
         }
 
