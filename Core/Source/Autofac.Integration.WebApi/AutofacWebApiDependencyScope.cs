@@ -53,15 +53,6 @@ namespace Autofac.Integration.WebApi
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="AutofacWebApiDependencyScope"/> class.
-        /// </summary>
-        [SecuritySafeCritical]
-        ~AutofacWebApiDependencyScope()
-        {
-            Dispose(false);
-        }
-
-        /// <summary>
         /// Gets the lifetime scope for the current dependency scope.
         /// </summary>
         public ILifetimeScope LifetimeScope

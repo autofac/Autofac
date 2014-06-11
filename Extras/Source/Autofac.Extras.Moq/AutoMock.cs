@@ -68,15 +68,6 @@ namespace Autofac.Extras.Moq
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="AutoMock"/> class.
-        /// </summary>
-        [SecuritySafeCritical]
-        ~AutoMock()
-        {
-            Dispose(false);
-        }
-
-        /// <summary>
         /// Create new <see cref="AutoMock"/> instance with loose mock behavior.
         /// </summary>
         /// <seealso cref="MockRepository"/>

@@ -54,15 +54,6 @@ namespace Autofac.Integration.WebApi
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="AutofacWebApiDependencyResolver"/> class.
-        /// </summary>
-        [SecuritySafeCritical]
-        ~AutofacWebApiDependencyResolver()
-        {
-            Dispose(false);
-        }
-
-        /// <summary>
         /// Gets the root container provided to the dependency resolver.
         /// </summary>
         public ILifetimeScope Container
