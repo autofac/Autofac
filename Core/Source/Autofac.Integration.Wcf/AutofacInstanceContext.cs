@@ -106,14 +106,6 @@ namespace Autofac.Integration.Wcf
             this.OperationLifetime = container.BeginLifetimeScope();
         }
 
-		/// <summary>
-		/// Finalizes an instance of the <see cref="AutofacInstanceContext"/> class.
-		/// </summary>
-        ~AutofacInstanceContext()
-        {
-            this.Dispose(false);
-        }
-
         /// <summary>
         /// Enables an extension object to find out when it has been aggregated.
         /// Called when the extension is added to the

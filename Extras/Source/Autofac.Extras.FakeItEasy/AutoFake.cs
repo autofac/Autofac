@@ -75,15 +75,6 @@ namespace Autofac.Extras.FakeItEasy
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="AutoFake"/> class.
-        /// </summary>
-        [SecuritySafeCritical]
-        ~AutoFake()
-        {
-            this.Dispose(false);
-        }
-
-        /// <summary>
         /// Gets the <see cref="IContainer"/> that handles the component resolution.
         /// </summary>
         public IContainer Container
