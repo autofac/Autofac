@@ -116,10 +116,12 @@
 			<BuildArtifactExcludeList Include="$(MSBuildProjectDirectory)\**\*.vshost.*;$(MSBuildProjectDirectory)\**\*.CodeAnalysisLog.*;$(MSBuildProjectDirectory)\**\*.lastcodeanalysissucceeded" />
 			<Source45Project
 				Include="
-					$(CoreSourceDir)\Autofac.Integration.Owin\**\*.csproj;
-					$(CoreSourceDir)\Autofac.Integration.WebApi\**\*.csproj;
 					$(CoreSourceDir)\Autofac.Integration.Mvc\**\*.csproj;
-					$(CoreSourceDir)\Autofac.Integration.SignalR\**\*.csproj" />
+					$(CoreSourceDir)\Autofac.Integration.Mvc.Owin\**\*.csproj;
+					$(CoreSourceDir)\Autofac.Integration.Owin\**\*.csproj;
+					$(CoreSourceDir)\Autofac.Integration.SignalR\**\*.csproj;
+					$(CoreSourceDir)\Autofac.Integration.WebApi\**\*.csproj;
+					$(CoreSourceDir)\Autofac.Integration.WebApi.Owin\**\*.csproj" />
 			<Source40Project
 				Include="
 					$(CoreSourceDir)\**\*.csproj;
