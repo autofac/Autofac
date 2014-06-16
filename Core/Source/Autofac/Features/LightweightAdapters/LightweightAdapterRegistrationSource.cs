@@ -81,7 +81,7 @@ namespace Autofac.Features.LightweightAdapters
                 // avoiding decorators here
                 (requestedServiceWithType.ServiceType != adapteeServiceWithType.ServiceType) &&
                 // if this registration source contains requested service's type
-                (_registrationData.Services.Where(s => s is IServiceWithType).Cast<IServiceWithType>().Any(s => s.ServiceType == requestedServiceWithType.ServiceType)))
+                (_registrationData.Services.OfType<IServiceWithType>().Any(s => s.ServiceType == requestedServiceWithType.ServiceType)))
             {
                 // we try to find registrations for the adaptee service but preserve info from the requested service e.g. keys
                 var serviceToFind = requestedServiceWithType.ChangeType(adapteeServiceWithType.ServiceType);
