@@ -9,11 +9,11 @@
     <description>This extension provides support for using Autofac as the DI framework in MvvmCross.</description>
     <summary>Autofac extension supporting MvvmCross dependency injection.</summary>
     <language>en-US</language>
-    <title>Autofac Extras: MvvmCross Mocking Support</title>
+    <title>Autofac Extras: MvvmCross IoC Support</title>
     <projectUrl>http://autofac.org</projectUrl>
     <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
     <dependencies>
-      <dependency id="Autofac" version="[3.3.1,4.0.0)" />
+      <dependency id="Autofac" version="[3.5.0,4.0.0)" />
       <dependency id="MvvmCross" version="[3.1.1,4.0.0)" />
     </dependencies>
   </metadata>
