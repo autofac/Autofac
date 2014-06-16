@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Autofac.Features.Indexed;
 using Autofac.Features.Metadata;
 using Autofac.Tests.Scenarios.Adapters;
 using NUnit.Framework;
@@ -29,6 +30,27 @@ namespace Autofac.Tests.Features.LightweightAdapters
                 var container = builder.Build();
                 _toolbarButtons = container.Resolve<IEnumerable<IToolbarButton>>();
             }
+
+            [Test]
+            public void AdaptingTypeSeesKeysOfAdapteeType()
+            {
+                var builder = new ContainerBuilder();
+
+                builder.RegisterType<Command>().Keyed<Command>("Command");
+                builder.RegisterType<AnotherCommand>().Keyed<AnotherCommand>("AnotherCommand");
+                builder.RegisterAdapter<Command, AnotherCommand>(c => new AnotherCommand());
+
+                var container = builder.Build();
+
+                var command = container.Resolve<IIndex<string, AnotherCommand>>()["Command"];
+                Assert.IsNotNull(command);
+                Assert.That(command, Is.InstanceOf<AnotherCommand>());
+
+                var anotherCommand = container.Resolve<IIndex<string, AnotherCommand>>()["AnotherCommand"];
+                Assert.IsNotNull(anotherCommand);
+                Assert.That(anotherCommand, Is.InstanceOf<AnotherCommand>());
+            }
+
 
             [Test]
             public void EachInstanceOfTheTargetTypeIsAdapted()
