@@ -67,9 +67,9 @@
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Owin\Autofac.Integration.Owin.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.0.0</FileVersion>
+			<FileVersion>3.0.1.0</FileVersion>
 			<PackageName>Autofac.Owin</PackageName>
-			<PackageVersion>3.0.0-alpha4</PackageVersion>
+			<PackageVersion>3.0.1</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.WebApi.Owin\Autofac.Integration.WebApi.Owin.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
