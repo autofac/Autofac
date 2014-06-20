@@ -23,8 +23,10 @@ Contents:
    lifetime/index.rst
    configuration/index.rst
    integration/index.rst
+   best-practices/index.rst
    advanced/index.rst
    examples/index.rst
+   faq/index.rst
    glossary.rst
    contributors.rst
    API Documentation <http://autofac.org/apidoc/>
