@@ -48,7 +48,7 @@
     </Reference>
     <Reference Include="Autofac.Integration.Owin, Version=3.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\Autofac.Owin.3.0.0-alpha3\lib\net45\Autofac.Integration.Owin.dll</HintPath>
+      <HintPath>..\..\..\packages\Autofac.Owin.3.0.1\lib\net45\Autofac.Integration.Owin.dll</HintPath>
     </Reference>
     <Reference Include="Autofac.Integration.WebApi, Version=3.2.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
