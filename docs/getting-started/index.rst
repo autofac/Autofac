@@ -25,7 +25,9 @@ For our sample app, we'll define a class that writes the current date out. Howev
 
 We'll also go as far as allowing the mechanism writing the date to be abstracted, so if we want to, later, swap in a version that writes *tomorrow's* date, it'll be a snap.
 
-We'll do something like this::
+We'll do something like this:
+
+.. sourcecode:: csharp
 
     using System;
 
@@ -99,7 +101,9 @@ Application Startup
 
 At application startup, you need to create a `ContainerBuilder` and register your :doc:`components <../glossary>` with it. A *component* is an expression, .NET type, or other bit of code that exposes one or more *services* and can take in other *dependencies*.
 
-In simple terms, think about a .NET type that implements an interface, like this::
+In simple terms, think about a .NET type that implements an interface, like this:
+
+.. sourcecode:: csharp
 
     public class SomeType : IService
     {
@@ -111,7 +115,9 @@ You could address that type in one of two ways:
 
 In this case, the *component* is ``SomeType`` and the *services* it exposes are ``SomeType`` and ``IService``.
 
-In Autofac, you'd register that with a ``ContainerBuilder`` something like this::
+In Autofac, you'd register that with a ``ContainerBuilder`` something like this:
+
+.. sourcecode:: csharp
 
     // Create your builder.
     var builder = new ContainerBuilder();
@@ -128,7 +134,7 @@ For our sample app, we need to register all of our components (classes) and expo
 
 We also need to store the container so it can be used to resolve types later.
 
-::
+.. sourcecode:: csharp
 
     using System;
     using Autofac;
@@ -173,7 +179,7 @@ Instead, create a *child lifetime scope* from the container and resolve from tha
 
 For our sample app, we'll implement the "WriteDate" method to get the writer from a scope and dispose of the scope when we're done.
 
-::
+.. sourcecode:: csharp
 
     namespace DemoApp
     {

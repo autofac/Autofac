@@ -2,7 +2,9 @@
 Resolving Services
 ==================
 
-After you have your :doc:`components registered with appropriate services exposed <../register/index>`, you can resolve services from the built container and child :doc:`lifetime scopes <../lifetime/index>`. You do this using the ``Resolve()`` method::
+After you have your :doc:`components registered with appropriate services exposed <../register/index>`, you can resolve services from the built container and child :doc:`lifetime scopes <../lifetime/index>`. You do this using the ``Resolve()`` method:
+
+.. sourcecode:: csharp
 
     var builder = new ContainerBuilder();
     builder.RegisterType<MyComponent>().As<IService>();
@@ -19,7 +21,9 @@ You will notice the example resolves the service from a lifetime scope rather th
 
 When resolving a service, Autofac will automatically chain down the entire dependency hierarchy of the service and resolve any dependencies required to fully construct the service. If you have :doc:`circular dependencies <../advanced/circular-dependencies>` that are improperly handled or if there are missing required dependencies, you will get a ``DependencyResolutionException``.
 
-If you have a service that may or may not be registered, you can attempt conditional resolution of the service using ``ResolveOptional()`` or ``TryResolve()``::
+If you have a service that may or may not be registered, you can attempt conditional resolution of the service using ``ResolveOptional()`` or ``TryResolve()``:
+
+.. sourcecode:: csharp
 
     // If IService is registered, it will be resolved; if
     // it isn't registered, the return value will be null.

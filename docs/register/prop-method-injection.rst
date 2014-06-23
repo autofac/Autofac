@@ -9,26 +9,36 @@ While constructor parameter injection is the preferred method of passing values 
 Property Injection
 ==================
 
-If the component is a :ref:`lambda expression component <register-registration-lambda-expression-components>`, use an object initializer::
+If the component is a :ref:`lambda expression component <register-registration-lambda-expression-components>`, use an object initializer:
+
+.. sourcecode:: csharp
 
     builder.Register(c => new A { B = c.Resolve<B>() });
 
-To support :doc:`circular dependencies <../advanced/circular-dependencies>`, use an :doc:`activated event handler <../lifetime/events>`::
+To support :doc:`circular dependencies <../advanced/circular-dependencies>`, use an :doc:`activated event handler <../lifetime/events>`:
+
+.. sourcecode:: csharp
 
     builder.Register(c => new A()).OnActivated(e => e.Instance.B = e.Context.Resolve<B>());
 
-If the component is a :ref:`reflection component <register-registration-reflection-components>`, use the ``PropertiesAutowired()`` modifier to inject properties::
+If the component is a :ref:`reflection component <register-registration-reflection-components>`, use the ``PropertiesAutowired()`` modifier to inject properties:
+
+.. sourcecode:: csharp
 
     builder.RegisterType<A>().PropertiesAutowired();
 
-If you have one specific property and value to wire up, you can use the ``WithProperty()`` modifier::
+If you have one specific property and value to wire up, you can use the ``WithProperty()`` modifier:
+
+.. sourcecode:: csharp
 
     builder.RegisterType<A>().WithProperty("PropertyName", propertyValue);
 
 Method Injection
 ================
 
-The simplest way to call a method to set a value on a component is to use a :ref:`lambda expression component <register-registration-lambda-expression-components>` and handle the method call right in the activator::
+The simplest way to call a method to set a value on a component is to use a :ref:`lambda expression component <register-registration-lambda-expression-components>` and handle the method call right in the activator:
+
+.. sourcecode:: csharp
 
     builder.Register(c => {
       var result = new MyObjectType();
@@ -37,7 +47,9 @@ The simplest way to call a method to set a value on a component is to use a :ref
       return result;
     });
 
-If you can't use a registration lambda, you can add an :doc:`activating event handler <../lifetime/events>`::
+If you can't use a registration lambda, you can add an :doc:`activating event handler <../lifetime/events>`:
+
+.. sourcecode:: csharp
 
     builder
       .Register<MyObjectType>()

@@ -22,7 +22,9 @@ Parameters with Reflection Components
 
 When you register a reflection-based component, the constructor of the type may require a parameter that can't be resolved from the container. You can use a parameter on the registration to provide that value.
 
-Say you have a configuration reader that needs a configuration section name passed in::
+Say you have a configuration reader that needs a configuration section name passed in:
+
+.. sourcecode:: csharp
 
     public class ConfigReader : IConfigReader
     {
@@ -34,11 +36,15 @@ Say you have a configuration reader that needs a configuration section name pass
       // ...read configuration based on the section name.
     }
 
-You could use a lambda expression component for that::
+You could use a lambda expression component for that:
+
+.. sourcecode:: csharp
 
     builder.Register(c => new ConfigReader("sectionName")).As<IConfigReader>();
 
-Or you could pass a parameter to a reflection component registration::
+Or you could pass a parameter to a reflection component registration:
+
+.. sourcecode:: csharp
 
     // Using a NAMED parameter:
     builder.RegisterType<ConfigReader>()
@@ -63,7 +69,9 @@ Parameters with Lambda Expression Components
 
 With lambda expression component registrations, rather than passing the parameter value *at registration time* you enable the ability to pass the value *at service resolution time*. (:doc:`Read more about resolving with parameters. <../resolve/parameters>`)
 
-In the component registration expression, you can make use of the incoming parameters by changing the delegate signature you use for registration. Instead of just taking in an ``IComponentContext`` parameter, take in an ``IComponentContext`` and an ``IEnumerable<Parameter>`` ::
+In the component registration expression, you can make use of the incoming parameters by changing the delegate signature you use for registration. Instead of just taking in an ``IComponentContext`` parameter, take in an ``IComponentContext`` and an ``IEnumerable<Parameter>``:
+
+.. sourcecode:: csharp
 
     // Use TWO parameters to the registration delegate:
     // c = The current IComponentContext to dynamically resolve dependencies
@@ -72,6 +80,8 @@ In the component registration expression, you can make use of the incoming param
                      new ConfigReader(p.Named<string>("configSectionName")))
            .As<IConfigReader>();
 
-When :doc:`resolving with parameters <../resolve/parameters>`, your lambda will use the parameters passed in::
+When :doc:`resolving with parameters <../resolve/parameters>`, your lambda will use the parameters passed in:
+
+.. sourcecode:: csharp
 
     var reader = scope.Resolve<IConfigReader>(new NamedParameter("configSectionName", "sectionName"));

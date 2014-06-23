@@ -7,7 +7,9 @@ Autofac can use conventions to find and register components in assemblies. You c
 Scanning for Types
 ==================
 
-Otherwise known as convention-driven registration or scanning, Autofac can register a set of types from an assembly according to user-specified rules::
+Otherwise known as convention-driven registration or scanning, Autofac can register a set of types from an assembly according to user-specified rules:
+
+.. sourcecode:: csharp
 
     var dataAccess = Assembly.GetExecutingAssembly();
 
@@ -22,17 +24,23 @@ Filtering Types
 
 ``RegisterAssemblyTypes()`` accepts a parameter array of one or more assemblies. By default, all public, concrete classes in the assembly will be registered. You can filter the set of types to register using some provided LINQ-style predicates.
 
-To filter the types that are registered, use the ``Where()`` predicate::
+To filter the types that are registered, use the ``Where()`` predicate:
+
+.. sourcecode:: csharp
 
     builder.RegisterAssemblyTypes(asm)
            .Where(t => t.Name.EndsWith("Repository"));
 
-To exclude types from scanning, use the ``Except()`` predicate::
+To exclude types from scanning, use the ``Except()`` predicate:
+
+.. sourcecode:: csharp
 
     builder.RegisterAssemblyTypes(asm)
            .Except<MyUnwantedType>();
 
-The ``Except()`` predicate also allows you to customize the registration for the specific excluded type::
+The ``Except()`` predicate also allows you to customize the registration for the specific excluded type:
+
+.. sourcecode:: csharp
 
     builder.RegisterAssemblyTypes(asm)
            .Except<MyCustomisedType>(ct =>
@@ -43,13 +51,17 @@ Multiple filters can be used, in which case they will be applied with logical AN
 Specifying Services
 -------------------
 
-The registration syntax for ``RegisterAssemblyTypes()`` is a superset of :doc:`the registration syntax for single types <index>`, so methods like ``As()`` all work with assemblies as well::
+The registration syntax for ``RegisterAssemblyTypes()`` is a superset of :doc:`the registration syntax for single types <index>`, so methods like ``As()`` all work with assemblies as well:
+
+.. sourcecode:: csharp
 
     builder.RegisterAssemblyTypes(asm)
            .Where(t => t.Name.EndsWith("Repository"))
            .As<IRepository>();
 
-Additional overloads to ``As()`` and ``Named()`` accept lambda expressions that determine, for a type, which services it will provide::
+Additional overloads to ``As()`` and ``Named()`` accept lambda expressions that determine, for a type, which services it will provide:
+
+.. sourcecode:: csharp
 
     builder.RegisterAssemblyTypes(asm)
            .As(t => t.GetInterfaces()[0]);
@@ -84,7 +96,9 @@ Scanning for Modules
 
 Module scanning is performed with the ``RegisterAssemblyModules()`` registration method, which does exactly what its name suggests. It scans through the provided assemblies for :doc:`Autofac modules <../configuration/modules>`, creates instances of the modules, and then registers them with the current container builder.
 
-For example, say the two simple module classes below live in the same assembly and each register a single component::
+For example, say the two simple module classes below live in the same assembly and each register a single component:
+
+.. sourcecode:: csharp
 
     public class AModule : Module
     {
@@ -102,7 +116,9 @@ For example, say the two simple module classes below live in the same assembly a
       }
     }
 
-The overload of ``RegisterAssemblyModules()`` that *does not accept a type parameter* will register all classes implementing ``IModule`` found in the provided list of assemblies. In the example below **both modules** get registered::
+The overload of ``RegisterAssemblyModules()`` that *does not accept a type parameter* will register all classes implementing ``IModule`` found in the provided list of assemblies. In the example below **both modules** get registered:
+
+.. sourcecode:: csharp
 
     var assembly = typeof(AComponent).Assembly;
     var builder = new ContainerBuilder();
@@ -110,7 +126,9 @@ The overload of ``RegisterAssemblyModules()`` that *does not accept a type param
     // Registers both modules
     builder.RegisterAssemblyModules(assembly);
 
-The overload of ``RegisterAssemblyModules()`` with *the generic type parameter* allows you to specify a base type that the modules must derive from. In the example below **only one module** is registered because the scanning is restricted::
+The overload of ``RegisterAssemblyModules()`` with *the generic type parameter* allows you to specify a base type that the modules must derive from. In the example below **only one module** is registered because the scanning is restricted:
+
+.. sourcecode:: csharp
 
     var assembly = typeof(AComponent).Assembly;
     var builder = new ContainerBuilder();
@@ -118,7 +136,9 @@ The overload of ``RegisterAssemblyModules()`` with *the generic type parameter* 
     // Registers AModule but not BModule
     builder.RegisterAssemblyModules<AModule>(assembly);
 
-The overload of ``RegisterAssemblyModules()`` with *a Type object parameter* works like the generic type parameter overload but allows you to specify a type that might be determined at runtime. In the example below **only one module** is registered because the scanning is restricted::
+The overload of ``RegisterAssemblyModules()`` with *a Type object parameter* works like the generic type parameter overload but allows you to specify a type that might be determined at runtime. In the example below **only one module** is registered because the scanning is restricted:
+
+.. sourcecode:: csharp
 
     var assembly = typeof(AComponent).Assembly;
     var builder = new ContainerBuilder();
@@ -130,7 +150,9 @@ IIS Hosted Web Applications
 ===========================
 When hosting applications in IIS all assemblies are loaded into the ``AppDomain`` when the application first starts, but **when the AppDomain is recycled by IIS the assemblies are then only loaded on demand.**
 
-To avoid this issue use the `GetReferencedAssemblies() <http://msdn.microsoft.com/en-us/library/system.web.compilation.buildmanager.getreferencedassemblies.aspx>`_ method on `System.Web.Compilation.BuildManager <http://msdn.microsoft.com/en-us/library/system.web.compilation.buildmanager.aspx>`_ to get a list of the referenced assemblies instead::
+To avoid this issue use the `GetReferencedAssemblies() <http://msdn.microsoft.com/en-us/library/system.web.compilation.buildmanager.getreferencedassemblies.aspx>`_ method on `System.Web.Compilation.BuildManager <http://msdn.microsoft.com/en-us/library/system.web.compilation.buildmanager.aspx>`_ to get a list of the referenced assemblies instead:
+
+.. sourcecode:: csharp
 
     var assemblies = BuildManager.GetReferencedAssemblies().Cast<Assembly>();
 
