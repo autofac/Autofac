@@ -10,6 +10,7 @@ Advanced Topics
     metadata.rst
     keyed-services.rst
     delegate-factories.rst
+    owned-instances.rst
     concurrency.rst
     multitenant.rst
     aggregate-services.rst
