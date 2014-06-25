@@ -94,7 +94,9 @@ Configuring the Container
 
 First, you must **reference Autofac.Configuration.dll in from your project**.
 
-To configure the container use a ``ConfigurationSettingsReader`` initialised with the name you gave to your XML configuration section::
+To configure the container use a ``ConfigurationSettingsReader`` initialised with the name you gave to your XML configuration section:
+
+.. sourcecode:: csharp
 
     var builder = new ContainerBuilder();
     builder.RegisterModule(new ConfigurationSettingsReader("mycomponents"));
