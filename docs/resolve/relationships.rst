@@ -51,7 +51,7 @@ Standard Composite Relationships
 ``ExportFactory<T,M>`` ``Meta<Func<Owned<T>>>``
 ====================== ========================
 
-*Note, the ``ExportFactory`` types are included in Silverlight 4 but not yet .NET. These aren't supported in Autofac yet.*
+*Note, the* ``ExportFactory`` *types are included in Silverlight 4 but not yet .NET. These aren't supported in Autofac yet.*
 
 Relationship Types and Container Independence
 ---------------------------------------------
