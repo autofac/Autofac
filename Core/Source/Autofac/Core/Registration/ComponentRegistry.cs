@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using Autofac.Features.LightweightAdapters;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
@@ -268,7 +269,20 @@ namespace Autofac.Core.Registration
             while (info.HasSourcesToQuery)
             {
                 var next = info.DequeueNextSource();
-                foreach (var provided in next.RegistrationsFor(service, RegistrationsFor))
+                var providedRegistrations = next.RegistrationsFor(service, RegistrationsFor);
+                var preserveDefaults = true;
+
+                // Issue #529: This is a quick and dirty fix to make #529 work, we need a better solution.
+                if (next is LightweightAdapterRegistrationSource)
+                {
+                    // We override existing registrations of adaptee services with adapters
+                    preserveDefaults = false;
+
+                    // we reverse all found adaptee registrations to preserve registration order
+                    providedRegistrations = providedRegistrations.Reverse();
+                }
+
+                foreach (var provided in providedRegistrations)
                 {
                     // This ensures that multiple services provided by the same
                     // component share a single component (we don't re-query for them)
@@ -282,8 +296,8 @@ namespace Autofac.Core.Registration
                         else
                             additionalInfo.SkipSource(next);
                     }
-
-                    AddRegistration(provided, true);
+                    
+                    AddRegistration(provided, preserveDefaults);
                 }
             }
 

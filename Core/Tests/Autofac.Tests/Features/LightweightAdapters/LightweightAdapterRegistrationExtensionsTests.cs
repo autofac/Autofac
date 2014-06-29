@@ -162,7 +162,6 @@ namespace Autofac.Tests.Features.LightweightAdapters
             }
 
             [Test]
-            [Ignore("Issue #529")]
             public void InstanceWithDefaultImplementationIsDecorated()
             {
                 var decorator = _container.Resolve<IService>();
