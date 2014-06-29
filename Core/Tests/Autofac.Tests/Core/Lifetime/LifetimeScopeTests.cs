@@ -274,5 +274,47 @@ namespace Autofac.Tests.Core.Lifetime
             var child2 = child1.BeginLifetimeScope(b => b.RegisterType<object>());
             Assert.AreEqual(1, child2.Resolve<IEnumerable<string>>().Count());
         }
+
+
+        public interface IServiceA { }
+        public interface IServiceB { }
+        public interface IServiceCommon { }
+
+        public class ServiceA : IServiceA, IServiceCommon { }
+        public class ServiceB1 : IServiceB, IServiceCommon { }
+        public class ServiceB2 : IServiceB { }
+
+        [Test]
+        [Ignore("Issue #475")]
+        public void ServiceOverrideThroughIntermediateScopeIsCorrect()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType(typeof(ServiceA)).AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType(typeof(ServiceB1)).AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            var scope1 = builder.Build();
+            {
+                var serviceA = scope1.Resolve<IServiceA>();
+                var serviceB = scope1.Resolve<IServiceB>();
+                Assert.IsInstanceOf<ServiceA>(serviceA);
+                Assert.IsInstanceOf<ServiceB1>(serviceB);
+            }
+
+            var scope2 = scope1.BeginLifetimeScope(cb => cb.RegisterType(typeof(ServiceB2)).AsImplementedInterfaces().InstancePerLifetimeScope());
+            {
+                var serviceA = scope2.Resolve<IServiceA>();
+                var serviceB = scope2.Resolve<IServiceB>();
+                Assert.IsInstanceOf<ServiceA>(serviceA);
+                Assert.IsInstanceOf<ServiceB2>(serviceB);
+            }
+
+            var scope3 = scope2.BeginLifetimeScope(cb => { });
+            {
+                var serviceA = scope3.Resolve<IServiceA>();
+                var serviceB = scope3.Resolve<IServiceB>();
+                Assert.IsInstanceOf<ServiceA>(serviceA);
+                Assert.IsInstanceOf<ServiceB2>(serviceB);
+            }
+        }
     }
 }
