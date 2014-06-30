@@ -285,7 +285,6 @@ namespace Autofac.Tests.Core.Lifetime
         public class ServiceB2 : IServiceB { }
 
         [Test]
-        [Ignore("Issue #475")]
         public void ServiceOverrideThroughIntermediateScopeIsCorrect()
         {
             var builder = new ContainerBuilder();
