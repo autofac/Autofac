@@ -64,7 +64,7 @@ namespace Autofac.Core.Registration
                 var r = registration;
                 yield return RegistrationBuilder.ForDelegate(r.Activator.LimitType, (c, p) => c.ResolveComponent(r, p))
                     .Targeting(r)
-                    .As(r.Services.ToArray())
+                    .As(service)
                     .ExternallyOwned()
                     .CreateRegistration();
             }
