@@ -6,15 +6,15 @@
     <authors>Autofac Contributors</authors>
     <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>ASP.NET MVC 5.1 Integration for Autofac</description>
-    <summary>Provides an IControllerFactory implementation and other integration points for System.Web.Mvc.</summary>
+    <description>ASP.NET MVC 5 Integration for Autofac</description>
+    <summary>Provides an IDependencyResolver implementation and other integration points for System.Web.Mvc.</summary>
     <language>en-US</language>
-    <title>Autofac ASP.NET MVC 5.1 Integration</title>
+    <title>Autofac ASP.NET MVC 5 Integration</title>
     <projectUrl>http://autofac.org</projectUrl>
     <iconUrl>http://code.google.com/p/autofac/logo</iconUrl>
     <dependencies>
       <dependency id="Autofac" version="[3.4.0,4.0.0)" />
-	  <dependency id="Microsoft.AspNet.Mvc" version="[5.1.0,5.2.0)" />
+	  <dependency id="Microsoft.AspNet.Mvc" version="[5.1.0,6.0.0)" />
     </dependencies>
   </metadata>
 </package>
