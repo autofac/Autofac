@@ -148,7 +148,7 @@ namespace Autofac.Configuration.Elements
         /// <summary>
         /// Sets up auto activation for the component instances.
         /// </summary>
-        /// <value>never (default,) all, unset.</value>
+        /// <value>no(default,) yes.</value>
         [ConfigurationProperty(AutoActivateAttibuteName, IsRequired = false)]
         public string AutoActivate
         {
