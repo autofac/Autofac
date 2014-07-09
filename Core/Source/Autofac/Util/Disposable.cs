@@ -43,13 +43,12 @@ namespace Autofac.Util
         [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "Dispose is implemented correctly, FxCop just doesn't see it.")]
         public void Dispose()
         {
-            var isDisposed = _isDisposed;
-            Interlocked.CompareExchange(ref _isDisposed, DisposedFlag, isDisposed);
-            if (isDisposed == 0)
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-            }
+            var wasDisposed = Interlocked.Exchange(ref _isDisposed, DisposedFlag);
+            if (wasDisposed == DisposedFlag)
+                return;
+
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>

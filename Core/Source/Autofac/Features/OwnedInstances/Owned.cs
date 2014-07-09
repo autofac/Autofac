@@ -120,8 +120,7 @@ namespace Autofac.Features.OwnedInstances
         {
             if (disposing)
             {
-                var lt = _lifetime;
-                Interlocked.CompareExchange(ref _lifetime, null, lt);
+                var lt = Interlocked.Exchange(ref _lifetime, null);
                 if (lt != null)
                 {
                     _value = default(T);
