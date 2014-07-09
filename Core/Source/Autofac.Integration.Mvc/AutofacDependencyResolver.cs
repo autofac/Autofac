@@ -36,9 +36,11 @@ namespace Autofac.Integration.Mvc
     [SecurityCritical]
     public class AutofacDependencyResolver : IDependencyResolver
     {
+        static AutofacDependencyResolver _currentAutofacDependencyResolver;
+
         readonly ILifetimeScope _container;
         readonly Action<ContainerBuilder> _configurationAction;
-        ILifetimeScopeProvider _lifetimeScopeProvider;
+        readonly ILifetimeScopeProvider _lifetimeScopeProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacDependencyResolver"/> class.
@@ -48,6 +50,13 @@ namespace Autofac.Integration.Mvc
         {
             if (container == null) throw new ArgumentNullException("container");
             _container = container;
+
+            if (_lifetimeScopeProvider == null)
+            {
+                _lifetimeScopeProvider = new RequestLifetimeScopeProvider(_container);
+            }
+
+            _currentAutofacDependencyResolver = this;
         }
 
         /// <summary>
@@ -98,11 +107,7 @@ namespace Autofac.Integration.Mvc
         {
             get
             {
-                // Issue 351: We can't necessarily cast the current dependency resolver
-                // to AutofacDependencyResolver because diagnostic systems like Glimpse
-                // will wrap/proxy the resolver. Instead we need to register the resolver
-                // on the fly with the request lifetime scope and resolve it accordingly.
-                return DependencyResolver.Current.GetService<AutofacDependencyResolver>();
+                return _currentAutofacDependencyResolver;
             }
         }
 
@@ -113,23 +118,7 @@ namespace Autofac.Integration.Mvc
         {
             get
             {
-                // Issue 351: Register the AutofacDependencyResolver with
-                // the request lifetime scope so the current resolver can
-                // be retrieved without having to cast it directly to
-                // this specific type.
-                Action<ContainerBuilder> composite = builder =>
-                {
-                    if (this._configurationAction != null)
-                    {
-                        this._configurationAction(builder);
-                    }
-                    builder.RegisterInstance(this).As<AutofacDependencyResolver>();
-                };
-                if (_lifetimeScopeProvider == null)
-                {
-                    _lifetimeScopeProvider = new RequestLifetimeScopeProvider(_container);
-                }
-                return _lifetimeScopeProvider.GetLifetimeScope(composite);
+                return _lifetimeScopeProvider.GetLifetimeScope(_configurationAction);
             }
         }
 
