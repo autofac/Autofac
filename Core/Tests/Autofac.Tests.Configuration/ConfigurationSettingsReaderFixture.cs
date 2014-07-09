@@ -3,6 +3,7 @@ using System.Linq;
 using Autofac.Builder;
 using Autofac.Configuration;
 using Autofac.Core;
+using Autofac.Core.Activators.Reflection;
 using NUnit.Framework;
 
 namespace Autofac.Tests.Configuration
@@ -105,6 +106,28 @@ namespace Autofac.Tests.Configuration
             var cpt = (SimpleComponent)container.Resolve<ITestComponent>();
             Assert.AreEqual("hello", cpt.Message, "The string property value was not populated.");
             Assert.IsTrue(cpt.ABool, "The Boolean property value was not properly parsed/converted.");
+        }
+
+        [Test]
+        public void Load_AutoActivationEnabledOnComponent()
+        {
+            var builder = ConfigureContainer("EnableAutoActivation");
+            var container = builder.Build();
+
+            IComponentRegistration registration;
+            Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(new KeyedService("a", typeof(object)), out registration), "The expected component was not registered.");
+            Assert.IsTrue(registration.Services.Any(a => a.GetType().Name == "AutoActivateService"), "Auto activate service was not registered on the component");
+        }
+
+        [Test]
+        public void Load_AutoActivationNotEnabledOnComponent()
+        {
+            var builder = ConfigureContainer("EnableAutoActivation");
+            var container = builder.Build();
+
+            IComponentRegistration registration;
+            Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(new KeyedService("b", typeof(object)), out registration), "The expected component was not registered.");
+            Assert.IsFalse(registration.Services.Any(a => a.GetType().Name == "AutoActivateService"), "Auto activate service was registered on the component when it shouldn't be.");
         }
 
         [Test]

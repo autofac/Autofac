@@ -198,6 +198,7 @@ namespace Autofac.Configuration
                 this.SetLifetimeScope(registrar, component.InstanceScope);
                 this.SetComponentOwnership(registrar, component.Ownership);
                 this.SetInjectProperties(registrar, component.InjectProperties);
+                this.SetAutoActivate(registrar, component.AutoActivate);
             }
         }
 
@@ -346,6 +347,65 @@ namespace Autofac.Configuration
                     break;
                 default:
                     throw new ConfigurationErrorsException(string.Format(CultureInfo.CurrentCulture, ConfigurationSettingsReaderResources.UnrecognisedInjectProperties, injectProperties));
+            }
+        }
+
+        /// <summary>
+        /// Sets the auto activation mode for the component.
+        /// </summary>
+        /// <param name="registrar">
+        /// The component registration on which auto activation mode is being set.
+        /// </param>
+        /// <param name="autoActivate">
+        /// The <see cref="System.String"/> configuration value associated with auto
+        /// activate for this component registration.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// By default, this implementation understands <see langword="null" />, empty,
+        /// or <see langword="false" /> values (<c>false</c>, <c>0</c>, <c>no</c>)
+        /// to mean "no property injection should occur" and <see langword="true" />
+        /// values (<c>true</c>, <c>1</c>, <c>yes</c>) to mean "auto activation
+        /// should occur."
+        /// </para>
+        /// <para>
+        /// You may override this method to extend the available grammar for auto activation settings.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown if <paramref name="registrar" /> is <see langword="null" />.
+        /// </exception>
+        /// <exception cref="System.Configuration.ConfigurationErrorsException">
+        /// Thrown if the value for <paramref name="autoActivate" /> is not part of the
+        /// recognized grammar.
+        /// </exception>
+        protected virtual void SetAutoActivate<TReflectionActivatorData, TSingleRegistrationStyle>(IRegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar, string autoActivate)
+            where TReflectionActivatorData : ReflectionActivatorData
+            where TSingleRegistrationStyle : SingleRegistrationStyle
+        {
+            if (registrar == null)
+            {
+                throw new ArgumentNullException("registrar");
+            }
+            if (String.IsNullOrWhiteSpace(autoActivate))
+            {
+                return;
+            }
+            switch (autoActivate.Trim().ToUpperInvariant())
+            {
+                case "NO":
+                case "N":
+                case "FALSE":
+                case "0":
+                    break;
+                case "YES":
+                case "Y":
+                case "TRUE":
+                case "1":
+                    registrar.AutoActivate();
+                    break;
+                default:
+                    throw new ConfigurationErrorsException(string.Format(CultureInfo.CurrentCulture, ConfigurationSettingsReaderResources.UnrecognisedAutoActivate, autoActivate));
             }
         }
 
