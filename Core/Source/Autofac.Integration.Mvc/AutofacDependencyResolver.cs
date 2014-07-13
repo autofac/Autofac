@@ -36,6 +36,9 @@ namespace Autofac.Integration.Mvc
     [SecurityCritical]
     public class AutofacDependencyResolver : IDependencyResolver
     {
+        static int _numberOfAutofacDependencyResolverInstances;
+        static AutofacDependencyResolver _currentAutofacDependencyResolver;
+
         readonly ILifetimeScope _container;
         readonly Action<ContainerBuilder> _configurationAction;
         ILifetimeScopeProvider _lifetimeScopeProvider;
@@ -48,6 +51,8 @@ namespace Autofac.Integration.Mvc
         {
             if (container == null) throw new ArgumentNullException("container");
             _container = container;
+            _currentAutofacDependencyResolver = this;
+            _numberOfAutofacDependencyResolverInstances++;
         }
 
         /// <summary>
@@ -98,11 +103,23 @@ namespace Autofac.Integration.Mvc
         {
             get
             {
+                var currentAutofacDependencyResolver = DependencyResolver.Current as AutofacDependencyResolver;
+
                 // Issue 351: We can't necessarily cast the current dependency resolver
                 // to AutofacDependencyResolver because diagnostic systems like Glimpse
                 // will wrap/proxy the resolver. Instead we need to register the resolver
                 // on the fly with the request lifetime scope and resolve it accordingly.
-                return DependencyResolver.Current.GetService<AutofacDependencyResolver>();
+                if (currentAutofacDependencyResolver == null)
+                {
+                    currentAutofacDependencyResolver = DependencyResolver.Current.GetService<AutofacDependencyResolver>();
+                }
+
+                if (currentAutofacDependencyResolver == null && _numberOfAutofacDependencyResolverInstances == 1)
+                {
+                    currentAutofacDependencyResolver = _currentAutofacDependencyResolver;
+                }
+
+                return currentAutofacDependencyResolver;
             }
         }
 
