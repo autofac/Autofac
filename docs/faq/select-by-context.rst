@@ -156,9 +156,6 @@ OK, there are our animals. Obviously we can't treat them all equally, so if we m
 
     // A parakeet is a pet bird, so we change the base class.
     public class Parakeet : PetBird { }
-    {
-      public override AnimalSize { get { return AnimalSize.Small; } }
-    }
 
     // Bald eagles aren't generally pets, so we don't change the base class.
     public class BaldEagle : Bird
@@ -469,6 +466,6 @@ If your consuming components use the attribute, you need to register them ``With
       }
     }
 
-Again, the metadata mechanism is very flexible. You can mix and match the way you associate metadata with components and service consumers - attributes, parameters, and so on. You can read more about :doc:`registration metadata <../advanced/metadata>`, :doc:`registration parameters <../register/parameters>`, and :doc:`registration parameters <../resolve/parameters>` on their respective pages.
+Again, the metadata mechanism is very flexible. You can mix and match the way you associate metadata with components and service consumers - attributes, parameters, and so on. You can read more about :doc:`registration metadata <../advanced/metadata>`, :doc:`registration parameters <../register/parameters>`, :doc:`resolution parameters <../resolve/parameters>`, and :doc:`implicitly supported relationships <../resolve/relationships>` (like the ``Meta<T>`` relationship) on their respective pages.
 
 **If you are already using metadata or need the flexibility metadata offers, this is the recommended option.**
