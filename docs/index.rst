@@ -10,6 +10,7 @@ Welcome to Autofac's documentation!
 
 Autofac is an addictive `IoC container <http://martinfowler.com/articles/injection.html>`_ for Microsoft .NET 4.5, Silverlight 5, Windows Store apps, and Windows Phone 8 apps. It manages the dependencies between classes so that **applications stay easy to change as they grow** in size and complexity. This is achieved by treating regular .NET classes as :doc:`components <glossary>`.
 
+**We are moving the wiki documentation over to this ReadTheDocs site!** However, that means things are a little divided. `If you find docs here missing, check the wiki <https://github.com/autofac/Autofac/wiki>`_ - it might still be there. Thanks for your patience!
 
 Contents:
 
