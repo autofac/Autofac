@@ -48,6 +48,18 @@ namespace Autofac.Integration.Mvc
         {
             if (container == null) throw new ArgumentNullException("container");
             _container = container;
+
+            // Issue 351: Register the AutofacDependencyResolver with
+            // the request lifetime scope so the current resolver can
+            // be retrieved without having to cast it directly to
+            // this specific type.
+            // Issue 554: Register the AutofacDependencyResolver here
+            // because when using the OWIN pipeline there is no other
+            // chance to do so before a per-request lifetime scope is
+            // created.
+            var updateBuilder = new ContainerBuilder();
+            updateBuilder.RegisterInstance(this).As<AutofacDependencyResolver>();
+            updateBuilder.Update(container.ComponentRegistry);
         }
 
         /// <summary>
@@ -113,23 +125,11 @@ namespace Autofac.Integration.Mvc
         {
             get
             {
-                // Issue 351: Register the AutofacDependencyResolver with
-                // the request lifetime scope so the current resolver can
-                // be retrieved without having to cast it directly to
-                // this specific type.
-                Action<ContainerBuilder> composite = builder =>
-                {
-                    if (this._configurationAction != null)
-                    {
-                        this._configurationAction(builder);
-                    }
-                    builder.RegisterInstance(this).As<AutofacDependencyResolver>();
-                };
                 if (_lifetimeScopeProvider == null)
                 {
                     _lifetimeScopeProvider = new RequestLifetimeScopeProvider(_container);
                 }
-                return _lifetimeScopeProvider.GetLifetimeScope(composite);
+                return _lifetimeScopeProvider.GetLifetimeScope(_configurationAction);
             }
         }
 
