@@ -2,7 +2,7 @@
 Passing Parameters to Register
 ==============================
 
-When you :doc:`register components <registration>` you have the ability to provide a set of parameters that can be used during the :doc:`resolution of services <../resolve/index>` based on that component.
+When you :doc:`register components <registration>` you have the ability to provide a set of parameters that can be used during the :doc:`resolution of services <../resolve/index>` based on that component. (If you'd rather provide the parameters at resolution time, :doc:`you can do that instead <../resolve/parameters>`.)
 
 Available Parameter Types
 =========================
