@@ -34,7 +34,7 @@ Configuration Parameters are Explicit
 
 Configuring an application directly through its components creates a large surface area that will need to be considered when upgrading the application. When it is possible to set potentially any property of any class through a configuration file that will differ at every site, refactoring is no longer safe.
 
-Creating modules limits the configuration parameters that a user can configure, and makes it explicit to the maintenance programmer which parameters these are. 
+Creating modules limits the configuration parameters that a user can configure, and makes it explicit to the maintenance programmer which parameters these are.
 
 You can also avoid a trade-off between what makes a good program element and what makes a good configuration parameter.
 
