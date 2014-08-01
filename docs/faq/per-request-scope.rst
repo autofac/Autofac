@@ -4,7 +4,7 @@ How do I work with per-request lifetime scope?
 
 In applications that have a request/response semantic (e.g., :doc:`ASP.NET MVC <../integration/mvc>` or :doc:`Web API <../integration/webapi>`), you can register dependencies to be "instance-per-request," meaning you will get a one instance of the given dependency for each request handled by the application and that instance will be tied to the individual request lifecycle.
 
-In order to understand per-request lifetime, you should have a good general understanding of :doc:`how dependency lifetime scopes work in general <../lifetime/instance-scope>`. Once you understand how dependency lifetime scopes work, per-request lifetime scope are easy.
+In order to understand per-request lifetime, you should have a good general understanding of :doc:`how dependency lifetime scopes work in general <../lifetime/instance-scope>`. Once you understand how dependency lifetime scopes work, per-request lifetime scope is easy.
 
 .. contents::
   :local:
@@ -31,7 +31,7 @@ How Per-Request Lifetime Works
 
 Per-request lifetime makes use of :doc:`tagged lifetime scopes and the "Instance Per Matching Lifetime Scope" mechanism <../lifetime/instance-scope>`.
 
-:doc:`Autofac application integration libraries <../integration/index>` hook into different application types and on an inbound request, they create a nested lifetime scope with a "tag" that identifies it as a request lifetime scope::
+:doc:`Autofac application integration libraries <../integration/index>` hook into different application types and, on an inbound request, they create a nested lifetime scope with a "tag" that identifies it as a request lifetime scope::
 
     +--------------------------+
     |    Autofac Container     |
@@ -70,7 +70,7 @@ A common situation you might see is that you have a single :doc:`Autofac module 
 
 There are a couple of potential solutions to this problem.
 
-The first option is that you could change your ``InstancePerRequest()`` registrations to be ``InstancePerLifetimeScope()``. *Most* applications don't create their own nested unit-of-work lifetime scopes; instead, the only real child lifetime scope that gets created *is the request lifetime*. If this is the case for your application, then ``InstancePerRequest()`` and ``InstancePerLifetimeScope()`` become effectively identical. You will get the same behavior. In the application that doesn't support per-request semantics, you can create child lifetime scopes as needed for component sharing.
+**Option 1**: Change your ``InstancePerRequest()`` registrations to be ``InstancePerLifetimeScope()``. *Most* applications don't create their own nested unit-of-work lifetime scopes; instead, the only real child lifetime scope that gets created *is the request lifetime*. If this is the case for your application, then ``InstancePerRequest()`` and ``InstancePerLifetimeScope()`` become effectively identical. You will get the same behavior. In the application that doesn't support per-request semantics, you can create child lifetime scopes as needed for component sharing.
 
 .. sourcecode:: csharp
 
@@ -89,7 +89,7 @@ The first option is that you could change your ``InstancePerRequest()`` registra
            .InstancePerLifetimeScope();
     var container = builder.Build();
 
-The second option is that you could set up your registration module to take a parameter and indicate which lifetime scope registration type to use.
+**Option 2**: Set up your registration module to take a parameter and indicate which lifetime scope registration type to use.
 
 .. sourcecode:: csharp
 
@@ -120,7 +120,7 @@ The second option is that you could set up your registration module to take a pa
     // per-request or not, like this:
     // builder.RegisterModule(new LoggerModule(true));
 
-A third, but more complex, option is to implement custom per-request semantics in the application that doesn't naturally have these semantics. For example, a Windows Service doesn't necessarily have per-request semantics, but if it's self-hosting a custom service that takes requests and provides responses, you could add per-request lifetime scopes around each request and enable support of per-request dependencies. You can read more about this in the :ref:`custom-semantics` section.
+**Option 3**: A third, but more complex, option is to implement custom per-request semantics in the application that doesn't naturally have these semantics. For example, a Windows Service doesn't necessarily have per-request semantics, but if it's self-hosting a custom service that takes requests and provides responses, you could add per-request lifetime scopes around each request and enable support of per-request dependencies. You can read more about this in the :ref:`custom-semantics` section.
 
 
 .. _testing:
@@ -130,11 +130,11 @@ Testing with Per-Request Dependencies
 
 If you have an application that registers per-request dependencies, you may want to re-use the registration logic to set up dependencies in unit tests. Of course, you'll find that your unit tests don't have request lifetime scopes available, so you'll end up with a ``DependencyResolutionException`` that indicates the ``AutofacWebRequest`` scope can't be found. How do you use the registrations in a testing environment?
 
-One option is to create some custom registrations for each specific test fixture. Particularly if you're in a unit test environment, you probably shouldn't be wiring up the whole real runtime environment for the test - you should have test doubles for all the external required dependencies instead. Consider mocking out the dependencies and not actually doing the full shared set of registrations in the unit test environment.
+**Option 1**: Create some custom registrations for each specific test fixture. Particularly if you're in a unit test environment, you probably shouldn't be wiring up the whole real runtime environment for the test - you should have test doubles for all the external required dependencies instead. Consider mocking out the dependencies and not actually doing the full shared set of registrations in the unit test environment.
 
-Another option is to look at the methods for sharing registrations in the :ref:`sharing-dependencies` section. Your unit test could be considered "an application that doesn't support per-request registrations" so using a mechanism that allows sharing between application types might be appropriate.
+**Option 2**: Look at the choices for sharing registrations in the :ref:`sharing-dependencies` section. Your unit test could be considered "an application that doesn't support per-request registrations" so using a mechanism that allows sharing between application types might be appropriate.
 
-A third option is to implement a fake "request" in the test. The intent here would be that before the test runs, a real Autofac lifetime scope with the ``AutofacWebRequest`` label is created, the test is run, and then the fake "request" scope is disposed - as though a full request was actually run. This is a little more complex and the method differs based on application type.
+**Option 3**: Implement a fake "request" in the test. The intent here would be that before the test runs, a real Autofac lifetime scope with the ``AutofacWebRequest`` label is created, the test is run, and then the fake "request" scope is disposed - as though a full request was actually run. This is a little more complex and the method differs based on application type.
 
 Faking an MVC Request Scope
 ---------------------------
@@ -271,7 +271,14 @@ No Scope with a Tag Matching 'AutofacWebRequest'
 
 A very common exception people see when they start working with per-request lifetime scope is:
 
-    ``DependencyResolutionException: No scope with a Tag matching 'AutofacWebRequest' is visible from the scope in which the instance was requested. This generally indicates that a component registered as per-HTTP request is being requested by a SingleInstance() component (or a similar scenario.) Under the web integration always request dependencies from the DependencyResolver.Current or ILifetimeScopeProvider.RequestLifetime, never from the container itself.``
+``DependencyResolutionException: No scope with a Tag matching
+'AutofacWebRequest' is visible from the scope in which the instance
+was requested. This generally indicates that a component registered
+as per-HTTP request is being requested by a SingleInstance()
+component (or a similar scenario.) Under the web integration always
+request dependencies from the DependencyResolver.Current or
+ILifetimeScopeProvider.RequestLifetime, never from the container
+itself.``
 
 What this means is that the application tried to resolve a dependency that is registered as ``InstancePerRequest()`` but there wasn't any request lifetime in place.
 
