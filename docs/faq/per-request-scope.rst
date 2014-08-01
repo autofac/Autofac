@@ -286,12 +286,15 @@ Common causes for this include:
 
   * Application registrations are being shared across application types.
   * A unit test is running with real application registrations but isn't simulating per-request lifetimes.
+  * You have a component that *lives longer than one request* but it takes a dependency that *only lives for one request*. For example, a singleton component that takes a service registered as per-request.
   * Code is running during application startup (e.g., in an ASP.NET ``Global.asax``) that uses dependency resolution when there isn't an active request yet.
   * Code is running in a "background thread" (where there's no request semantics) but is trying to call the ASP.NET MVC ``DependencyResolver`` to do service location.
 
 Tracking down the source of the issue can be troublesome. In many cases, you might look at what is being resolved and see that the component being resolved is *not registered as per-request* and the dependencies that component uses are also *not registered as per-request*. In cases like this, you may need to go all the way down the dependency chain. The exception could be coming from something deep in the dependency chain. Usually a close examination of the call stack can help you. In cases where you are doing :doc:`dynamic assembly scanning <../register/scanning>` to locate :doc:`modules <../configuration/modules>` to register, the source of the troublesome registration may not be immediately obvious.
 
-Regardless, somewhere along the line, *something* is looking for a per-request lifetime scope and it's not being found.
+As you analyze the registrations in the problem dependency chain, look at the lifetime scopes for which they're registered. If you have a component registered as ``SingleInstance()`` but it (maybe indirectly) consumes a component registered as ``InstancePerRequest()``, that's a problem. The ``SingleInstance()`` component will grab its dependencies when it's resolved the first time and never let go. If that happens at app startup or in a background thread where there's no current request, you'll see this exception. You may need to adjust some component lifetime scopes. Again, it's really good to know :doc:`how dependency lifetime scopes work in general <../lifetime/instance-scope>`.
+
+Anyway, somewhere along the line, *something* is looking for a per-request lifetime scope and it's not being found.
 
 If you are trying to share registrations across application types, check out the :ref:`sharing-dependencies` section.
 
