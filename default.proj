@@ -460,7 +460,6 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 								// those versions right in the .nuspec.
 								continue;
 							}
-							/*
 							if(seen.Contains(name))
 							{
 								// If there are duplicate NuGet package names, that's a problem
@@ -468,7 +467,6 @@ MSBuild $(MSBuildProjectDirectory)\Build\Documentation.proj /p:DocumentationVers
 								// inserted. Err out so cleanup can happen.
 								throw new InvalidOperationException(String.Format("Multiple copies of component {0} found in NuGet package folder {1}. Update projects and clean up so only one version of the package exists.", name, PackageInstallDirectory));
 							}
-							*/
 							seen.Add(name);
 
 							var version = match.Groups[2].Value;
