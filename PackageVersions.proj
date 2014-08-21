@@ -54,10 +54,10 @@
 			<PackageVersion>3.3.2</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.SignalR\Autofac.Integration.SignalR.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.2.0</FileVersion>
+			<AssemblyVersion>3.1.0.0</AssemblyVersion>
+			<FileVersion>3.1.0.0</FileVersion>
 			<PackageName>Autofac.SignalR2</PackageName>
-			<PackageVersion>3.0.2</PackageVersion>
+			<PackageVersion>3.1.0</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Wcf\Autofac.Integration.Wcf.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
@@ -78,10 +78,10 @@
 			<PackageVersion>3.2.0</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Mvc.Owin\Autofac.Integration.Mvc.Owin.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.1.0</FileVersion>
+			<AssemblyVersion>3.1.0.0</AssemblyVersion>
+			<FileVersion>3.1.0.0</FileVersion>
 			<PackageName>Autofac.Mvc5.Owin</PackageName>
-			<PackageVersion>3.0.1</PackageVersion>
+			<PackageVersion>3.1.0</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Web\Autofac.Integration.Web.csproj">
 			<AssemblyVersion>3.2.0.0</AssemblyVersion>
