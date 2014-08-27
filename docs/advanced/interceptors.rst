@@ -185,3 +185,8 @@ WCF Proxies
 -----------
 
 As mentioned earlier, WCF proxies and other remoting types are special cases and can't use standard interface or class interception. You must use ``InterceptTransparentProxy()`` on those types.
+
+Class Interceptors and UsingConstructor
+---------------------------------------
+
+If you are using class interceptors via ``EnableClassInterceptors()`` then avoid using the constructor selector ``UsingConstructor()`` with it. When class interception is enabled, the generated proxy adds some new constructors that also take the set of interceptors you want to use. When you specify ``UsingConstructor()`` you'll bypass this logic and your interceptors won't be used.
