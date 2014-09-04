@@ -48,18 +48,6 @@ namespace Autofac.Integration.Mvc
         {
             if (container == null) throw new ArgumentNullException("container");
             _container = container;
-
-            // Issue 351: Register the AutofacDependencyResolver with
-            // the request lifetime scope so the current resolver can
-            // be retrieved without having to cast it directly to
-            // this specific type.
-            // Issue 554: Register the AutofacDependencyResolver here
-            // because when using the OWIN pipeline there is no other
-            // chance to do so before a per-request lifetime scope is
-            // created.
-            var updateBuilder = new ContainerBuilder();
-            updateBuilder.RegisterInstance(this).As<AutofacDependencyResolver>();
-            updateBuilder.Update(container.ComponentRegistry);
         }
 
         /// <summary>
@@ -110,11 +98,23 @@ namespace Autofac.Integration.Mvc
         {
             get
             {
+                var currentResolver = DependencyResolver.Current;
+                var autofacResolver = currentResolver as AutofacDependencyResolver;
+                if (autofacResolver != null)
+                    return autofacResolver;
+
                 // Issue 351: We can't necessarily cast the current dependency resolver
                 // to AutofacDependencyResolver because diagnostic systems like Glimpse
-                // will wrap/proxy the resolver. Instead we need to register the resolver
-                // on the fly with the request lifetime scope and resolve it accordingly.
-                return DependencyResolver.Current.GetService<AutofacDependencyResolver>();
+                // will wrap/proxy the resolver. Here we check to see if the resolver
+                // has been wrapped with DynamicProxy and unwrap the target if we can.
+
+                var targetType = currentResolver.GetType().GetField("__target");
+                if (targetType != null && targetType.FieldType == typeof(AutofacDependencyResolver))
+                    return (AutofacDependencyResolver)targetType.GetValue(currentResolver);
+
+                throw new InvalidOperationException(string.Format(
+                    AutofacDependencyResolverResources.AutofacDependencyResolverNotFound, 
+                        typeof(AutofacDependencyResolver).FullName));
             }
         }
 

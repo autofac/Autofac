@@ -98,6 +98,11 @@
     </CodeAnalysisDictionary>
     <Compile Include="ActionFilterOverride.cs" />
     <Compile Include="AutofacDependencyResolver.cs" />
+    <Compile Include="AutofacDependencyResolverResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AutofacDependencyResolverResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="AutofacFilterProvider.cs" />
     <Compile Include="AutofacModelBinderProvider.cs" />
     <Compile Include="AutofacOverrideFilter.cs" />
@@ -129,6 +134,10 @@
     <Compile Include="ViewRegistrationSource.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AutofacDependencyResolverResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AutofacDependencyResolverResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="RegistrationExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RegistrationExtensionsResources.Designer.cs</LastGenOutput>
