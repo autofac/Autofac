@@ -198,6 +198,9 @@ namespace Autofac.Builder
             foreach (var ad in data.ActivatedHandlers)
                 registration.Activated += ad;
 
+            foreach (var ij in data.InjectPropertiesHandlers)
+                registration.InjectProperties += ij;
+
             return registration;
         }
 

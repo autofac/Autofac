@@ -54,6 +54,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DependencyResolutionExceptionResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Core\InjectPropertiesEventArgs.cs" />
     <Compile Include="Core\Lifetime\MatchingScopeLifetimeTags.cs" />
     <Compile Include="Core\Registration\IModuleRegistrar.cs" />
     <Compile Include="Core\Registration\ModuleRegistrar.cs" />

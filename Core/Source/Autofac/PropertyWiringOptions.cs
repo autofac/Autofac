@@ -35,14 +35,14 @@ namespace Autofac
     public enum PropertyWiringOptions
     {
         /// <summary>
-        /// Default behavior. Circular dependencies are not allowed; existing non-default
-        /// property values are overwritten.
+        /// Default behavior. Circular dependencies are only allowed with property-property dependency
+        /// wiring; existing non-default property values are overwritten.
         /// </summary>
         None = 0,
 
         /// <summary>
         /// Allows property-property and property-constructor circular dependency wiring.
-        /// This flag moves property wiring from the Activating to the Activated event.
+        /// This flag moves property wiring from the InjectProperties to the Activated event.
         /// </summary>
         AllowCircularDependencies = 1,
 

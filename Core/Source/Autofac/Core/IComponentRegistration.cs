@@ -123,5 +123,18 @@ namespace Autofac.Core
         /// <param name="instance">The instance.</param>
         [SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate", Justification = "This is the method that would raise the event.")]
         void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, object instance);
+
+        /// <summary>
+        /// Fired when the activation process is injecting properties when a new instance is created
+        /// </summary>
+        event EventHandler<InjectPropertiesEventArgs<object>> InjectProperties;
+
+        /// <summary>
+        /// Called by the container to inject properties when the object is fully constructed
+        /// </summary>
+        /// <param name="context">The context in which the instance was activated.</param>
+        /// <param name="instance">The instance.</param>
+        [SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate", Justification = "This is the method that would raise the event.")]
+        void RaiseInjectProperties(IComponentContext context, object instance);
     }
 }
