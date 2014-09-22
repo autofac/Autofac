@@ -30,7 +30,7 @@ namespace OwinWebApi.ConsoleApplication
 
             var container = builder.Build();
 
-            // Create an assign a dependency resolver for Web API to use.
+            // Create and assign a dependency resolver for Web API to use.
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
 
             // This should be the first middleware added to the IAppBuilder.
