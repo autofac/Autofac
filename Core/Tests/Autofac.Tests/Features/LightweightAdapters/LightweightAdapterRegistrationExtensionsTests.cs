@@ -140,5 +140,34 @@ namespace Autofac.Tests.Features.LightweightAdapters
                 Assert.That(all.Any(i => i is Implementer2));
             }
         }
+
+        [TestFixture]
+        public class DecoratingServiceThatHasDefaultImplementation
+        {
+            readonly IContainer _container;
+
+            public DecoratingServiceThatHasDefaultImplementation()
+            {
+                const string from = "from";
+                var builder = new ContainerBuilder();
+                
+                // Implementer1 is the default implementation for IService
+                builder.RegisterType<Implementer1>().As<IService>();
+
+                // Decorating IService
+                builder.RegisterType<Implementer1>().Named<IService>(from);
+                builder.RegisterDecorator<IService>(s => new Decorator(s), from);
+                
+                _container = builder.Build();
+            }
+
+            [Test]
+            public void InstanceWithDefaultImplementationIsDecorated()
+            {
+                var decorator = _container.Resolve<IService>();
+                Assert.IsInstanceOf<Decorator>(decorator);
+                Assert.IsInstanceOf<Implementer1>(((Decorator)decorator).Decorated);
+            }
+        }
     }
 }
