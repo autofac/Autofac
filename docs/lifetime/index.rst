@@ -48,10 +48,12 @@ When each request ends, the request lifetime scope ends and the respective order
 
 You can dive deeper on lifetime scopes in `Nick Blumhardt's Autofac lifetime primer <http://nblumhardt.com/2011/01/an-autofac-lifetime-primer/>`_.
 
+
 **Additional lifetime scope topics to explore:**
 
 .. toctree::
 
+    working-with-scopes.rst
     instance-scope.rst
     disposal.rst
     events.rst
