@@ -124,7 +124,7 @@ namespace Autofac.Features.OpenGenerics
                 .Where(argdef => argdef.Key.IsGenericType && argdef.Value.GetGenericArguments().Length > 0)
                 .Select(argdef => TryFindServiceArgumentForImplementationArgumentDefinition(
                     implementationGenericArgumentDefinition, argdef.Key.GetGenericArguments().Zip(argdef.Value.GetGenericArguments(), (a, b) => new KeyValuePair<Type, Type>(a, b))))
-                .FirstOrDefault();
+                .FirstOrDefault(x => x != null);
         }
 
         public static void EnforceBindable(Type implementationType, IEnumerable<Service> services)
