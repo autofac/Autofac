@@ -31,27 +31,29 @@ Owned of T
 
 An owned dependency can be released by the owner when it is no longer required. Owned dependencies usually correspond to some unit of work performed by the dependent component.
 
-
 .. sourcecode:: csharp
 
-    class A
+    public class Consumer
     {
-      Owned<B> _b;
+      private Owned<DisposableComponent> _service;
 
-      public A(Owned<B> b) { _b = b }
-
-      public void M()
+      public Consumer(Owned<DisposableComponent> service)
       {
-        // _b is used for some task
-        _b.Value.DoSomething();
+        _service = service;
+      }
 
-        // Here _b is no longer needed, so
+      public void DoWork()
+      {
+        // _service is used for some task
+        _service.Value.DoSomething();
+
+        // Here _service is no longer needed, so
         // it is released
-        _b.Dispose();
+        _service.Dispose();
       }
     }
 
-When ``A`` is created by the container, the ``Owned<B>`` that it depends upon will be created inside its own lifetime scope. When ``A`` is finished using the ``B``, disposing the ``Owned<B>`` reference will end the lifetime scope that contains ``B``. This means that all of ``B``'s non-shared, disposable dependencies will also be released.
+When ``Consumer`` is created by the container, the ``Owned<DisposableComponent>`` that it depends upon will be created inside its own lifetime scope. When ``Consumer`` is finished using the ``DisposableComponent``, disposing the ``Owned<DisposableComponent>`` reference will end the lifetime scope that contains ``DisposableComponent``. This means that all of ``DisposableComponent``'s non-shared, disposable dependencies will also be released.
 
 Combining Owned with Func
 -------------------------
