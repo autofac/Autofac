@@ -59,30 +59,14 @@ namespace Autofac.Core.Registration
         /// <returns>Registrations providing the service.</returns>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
-            var seenRegistrations = new HashSet<IComponentRegistration>();
-            var seenServices = new HashSet<Service>();
-            var lastRunServices = new List<Service> { service };
-
-            while (lastRunServices.Any())
+            foreach (var registration in _registry.RegistrationsFor(service).Where(r => !r.IsAdapting()))
             {
-                var nextService = lastRunServices.First();
-                lastRunServices.Remove(nextService);
-                seenServices.Add(nextService);
-                foreach (var registration in _registry.RegistrationsFor(nextService).Where(r => !r.IsAdapting()))
-                {
-                    if (seenRegistrations.Contains(registration))
-                        continue;
-
-                    seenRegistrations.Add(registration);
-                    lastRunServices.AddRange(registration.Services.Where(s => !seenServices.Contains(s)));
-
-                    var r = registration;
-                    yield return RegistrationBuilder.ForDelegate(r.Activator.LimitType, (c, p) => c.ResolveComponent(r, p))
-                        .Targeting(r)
-                        .As(r.Services.ToArray())
-                        .ExternallyOwned()
-                        .CreateRegistration();
-                }
+                var r = registration;
+                yield return RegistrationBuilder.ForDelegate(r.Activator.LimitType, (c, p) => c.ResolveComponent(r, p))
+                    .Targeting(r)
+                    .As(service)
+                    .ExternallyOwned()
+                    .CreateRegistration();
             }
         }
 
