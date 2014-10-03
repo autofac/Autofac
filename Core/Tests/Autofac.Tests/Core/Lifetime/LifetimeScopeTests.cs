@@ -210,7 +210,6 @@ namespace Autofac.Tests.Core.Lifetime
             Assert.AreSame(dt, dt1);
         }
 
-
         [Test]
         public void SingletonsRegisteredInNestedScopeAreTiedToThatScope()
         {
@@ -275,7 +274,6 @@ namespace Autofac.Tests.Core.Lifetime
             Assert.AreEqual(1, child2.Resolve<IEnumerable<string>>().Count());
         }
 
-
         public interface IServiceA { }
         public interface IServiceB { }
         public interface IServiceCommon { }
@@ -284,35 +282,43 @@ namespace Autofac.Tests.Core.Lifetime
         public class ServiceB1 : IServiceB, IServiceCommon { }
         public class ServiceB2 : IServiceB { }
 
-        [Test]
+        [Test(Description = "Issue #475")]
         public void ServiceOverrideThroughIntermediateScopeIsCorrect()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType(typeof(ServiceA)).AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType(typeof(ServiceB1)).AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType(typeof(ServiceA)).AsImplementedInterfaces();
+            builder.RegisterType(typeof(ServiceB1)).AsImplementedInterfaces();
 
-            var scope1 = builder.Build();
+            using (var scope1 = builder.Build())
             {
-                var serviceA = scope1.Resolve<IServiceA>();
-                var serviceB = scope1.Resolve<IServiceB>();
-                Assert.IsInstanceOf<ServiceA>(serviceA);
-                Assert.IsInstanceOf<ServiceB1>(serviceB);
-            }
+                // Scope 1 (Container) resolves default values.
+                var service1A = scope1.Resolve<IServiceA>();
+                var service1B = scope1.Resolve<IServiceB>();
+                Assert.IsInstanceOf<ServiceA>(service1A, "Default component type for IServiceA service in container was wrong type.");
+                Assert.IsInstanceOf<ServiceB1>(service1B, "Default component type for IServiceB service in container was wrong type.");
 
-            var scope2 = scope1.BeginLifetimeScope(cb => cb.RegisterType(typeof(ServiceB2)).AsImplementedInterfaces().InstancePerLifetimeScope());
-            {
-                var serviceA = scope2.Resolve<IServiceA>();
-                var serviceB = scope2.Resolve<IServiceB>();
-                Assert.IsInstanceOf<ServiceA>(serviceA);
-                Assert.IsInstanceOf<ServiceB2>(serviceB);
-            }
+                using (var scope2 = scope1.BeginLifetimeScope(cb =>
+                    cb.RegisterType(typeof(ServiceB2))
+                        .AsImplementedInterfaces()
+                        .InstancePerLifetimeScope()))
+                {
+                    // Scope 2 overrides the registration for one service
+                    // but leaves the other in place.
+                    var service2A = scope2.Resolve<IServiceA>();
+                    var service2B = scope2.Resolve<IServiceB>();
+                    Assert.IsInstanceOf<ServiceA>(service2A, "Component type for IServiceA service in first child scope should have been default.");
+                    Assert.IsInstanceOf<ServiceB2>(service2B, "Component type for IServiceB service in first child scope should have been override.");
 
-            var scope3 = scope2.BeginLifetimeScope(cb => { });
-            {
-                var serviceA = scope3.Resolve<IServiceA>();
-                var serviceB = scope3.Resolve<IServiceB>();
-                Assert.IsInstanceOf<ServiceA>(serviceA);
-                Assert.IsInstanceOf<ServiceB2>(serviceB);
+                    using (var scope3 = scope2.BeginLifetimeScope(cb => { }))
+                    {
+                        // Scope 3 provides an empty set of registrations
+                        // and should retain the overrides from scope 2.
+                        var service3A = scope3.Resolve<IServiceA>();
+                        var service3B = scope3.Resolve<IServiceB>();
+                        Assert.IsInstanceOf<ServiceA>(service3A, "Component type for IServiceA service in second child scope should have been default.");
+                        Assert.IsInstanceOf<ServiceB2>(service3B, "Component type for IServiceB service in second child scope should have been override.");
+                    }
+                }
             }
         }
     }

@@ -59,6 +59,9 @@ namespace Autofac.Core.Registration
         /// <returns>Registrations providing the service.</returns>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
+            // Issue #475: This method was refactored significantly to handle
+            // registrations made on the fly in parent lifetime scopes to correctly
+            // pass to child lifetime scopes.
             foreach (var registration in _registry.RegistrationsFor(service).Where(r => !r.IsAdapting()))
             {
                 var r = registration;
