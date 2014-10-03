@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Security;
 using System.Web.Mvc;
 
@@ -67,7 +68,7 @@ namespace Autofac.Integration.Mvc
         /// Initializes a new instance of the <see cref="AutofacDependencyResolver"/> class.
         /// </summary>
         /// <param name="container">The container that nested lifetime scopes will be create from.</param>
-        /// <param name="lifetimeScopeProvider">A <see cref="ILifetimeScopeProvider"/> implementation for 
+        /// <param name="lifetimeScopeProvider">A <see cref="ILifetimeScopeProvider"/> implementation for
         /// creating new lifetime scopes.</param>
         public AutofacDependencyResolver(ILifetimeScope container, ILifetimeScopeProvider lifetimeScopeProvider) :
             this(container)
@@ -80,7 +81,7 @@ namespace Autofac.Integration.Mvc
         /// Initializes a new instance of the <see cref="AutofacDependencyResolver"/> class.
         /// </summary>
         /// <param name="container">The container that nested lifetime scopes will be create from.</param>
-        /// <param name="lifetimeScopeProvider">A <see cref="ILifetimeScopeProvider"/> implementation for 
+        /// <param name="lifetimeScopeProvider">A <see cref="ILifetimeScopeProvider"/> implementation for
         /// creating new lifetime scopes.</param>
         /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
         /// that adds component registations visible only in nested lifetime scopes.</param>
@@ -113,7 +114,8 @@ namespace Autofac.Integration.Mvc
                     return (AutofacDependencyResolver)targetType.GetValue(currentResolver);
 
                 throw new InvalidOperationException(string.Format(
-                    AutofacDependencyResolverResources.AutofacDependencyResolverNotFound, 
+                    CultureInfo.CurrentCulture,
+                    AutofacDependencyResolverResources.AutofacDependencyResolverNotFound,
                         typeof(AutofacDependencyResolver).FullName));
             }
         }
