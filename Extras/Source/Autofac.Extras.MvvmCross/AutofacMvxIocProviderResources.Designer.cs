@@ -10,6 +10,7 @@
 
 namespace Autofac.Extras.MvvmCross {
     using System;
+    using System.Reflection;
     
     
     /// <summary>
@@ -39,7 +40,7 @@ namespace Autofac.Extras.MvvmCross {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Extras.MvvmCross.AutofacMvxIocProviderResources", typeof(AutofacMvxIocProviderResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Extras.MvvmCross.AutofacMvxIocProviderResources", typeof(AutofacMvxIocProviderResources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

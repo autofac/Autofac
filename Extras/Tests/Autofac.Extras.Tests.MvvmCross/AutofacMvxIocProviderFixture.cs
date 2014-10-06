@@ -1,8 +1,8 @@
 ﻿using System;
-using NUnit.Framework;
 using Autofac.Extras.MvvmCross;
 using Autofac.Core.Registration;
 using Autofac.Core;
+using NUnit.Framework;
 
 namespace Autofac.Extras.Tests.MvvmCross
 {
@@ -126,15 +126,46 @@ namespace Autofac.Extras.Tests.MvvmCross
         [Test]
         public void RegisterTypeRegistersConcreteTypeAgainstInterface()
         {
-            provider.RegisterType<Interface,Concrete>();
-            Assert.That(provider.Resolve<Interface>(), Is.TypeOf<Concrete>());
+            provider.RegisterType<Interface, Concrete>();
+            var instance = provider.Resolve<Interface>();
+            Assert.That(instance, Is.TypeOf<Concrete>());
+            Assert.That(instance, Is.Not.SameAs(provider.Resolve<Interface>()));
+        }
+
+        [Test]
+        public void RegisterTypeWithDelegateRegistersConcreteTypeAgainstInterface()
+        {
+            provider.RegisterType<Interface>(() => new Concrete());
+            var instance = provider.Resolve<Interface>();
+            Assert.That(instance, Is.TypeOf<Concrete>());
+            Assert.That(instance, Is.Not.SameAs(provider.Resolve<Interface>()));
+
+            provider.RegisterType(typeof(Interface), () => new Concrete());
+            Assert.That(provider.Resolve<Interface>(), Is.Not.SameAs(provider.Resolve<Interface>()));
+        }
+
+        [Test]
+        public void RegisterTypeWithDelegateAndTypeParameterRegistersConcreteTypeAgainstInterface()
+        {
+            provider.RegisterType(typeof(Interface), () => new Concrete());
+            var instance = provider.Resolve<Interface>();
+            Assert.That(instance, Is.TypeOf<Concrete>());
+            Assert.That(instance, Is.Not.SameAs(provider.Resolve<Interface>()));
         }
 
         [Test]
         public void RegisterTypeThrowsArgumentNullExceptionWhenCalledWithNoFromOrToTypeArgument()
         {
             Assert.That(() => provider.RegisterType(null, typeof(object)), Throws.TypeOf<ArgumentNullException>());
-            Assert.That(() => provider.RegisterType(typeof(object), null), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => provider.RegisterType(typeof(object), (Type)null), Throws.TypeOf<ArgumentNullException>());
+        }
+
+        [Test]
+        public void RegisterTypeThrowsArgumentNullExceptionWhenCalledWithNoTypeInstanceOrConstructorArgument()
+        {
+            Assert.That(() => provider.RegisterType((Func<object>)null), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => provider.RegisterType(null, () => new object()), Throws.TypeOf<ArgumentNullException>());
+            Assert.That(() => provider.RegisterType(typeof(object), (Func<object>)null), Throws.TypeOf<ArgumentNullException>());
         }
 
         [Test]
