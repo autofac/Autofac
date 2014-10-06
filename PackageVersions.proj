@@ -157,9 +157,9 @@
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.MvvmCross\Autofac.Extras.MvvmCross.csproj">
 			<AssemblyVersion>3.2.0.0</AssemblyVersion>
-			<FileVersion>3.2.0.0</FileVersion>
+			<FileVersion>3.2.1.0</FileVersion>
 			<PackageName>Autofac.Extras.MvvmCross</PackageName>
-			<PackageVersion>3.2.0</PackageVersion>
+			<PackageVersion>3.2.1</PackageVersion>
 		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.NHibernate\Autofac.Extras.NHibernate.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
