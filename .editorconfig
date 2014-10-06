@@ -13,7 +13,7 @@ indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
 
-[{*.proj,*.targets}]
+[*.proj]
 indent_style = tab
 trim_trailing_whitespace = true
 
@@ -25,4 +25,8 @@ trim_trailing_whitespace = true
 [*.rst]
 indent_style = space
 indent_size = 2
+trim_trailing_whitespace = true
+
+[*.targets]
+indent_style = tab
 trim_trailing_whitespace = true
