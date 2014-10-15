@@ -146,6 +146,8 @@ Dynamic Instantiation (Func<B>)
 -------------------------------
 Using an *auto-generated factory* can let you effectively call ``Resolve<T>()`` without tying your component to Autofac. Use this relationship type if you need to create more than one instance of a given service, or if you're not sure if you're going to need a service and want to make the decision at runtime. This relationship is also useful in cases like :doc:`WCF integration <../integration/wcf>` where you need to create a new service proxy after faulting the channel.
 
+**Lifetime scopes are respected** using this relationship type. If you register an object as ``InstancePerDependency()`` and call the ``Func<B>`` multiple times, you'll get a new instance each time. However, if you register an object as ``SingleInstance()`` and call the ``Func<B>`` to resolve the object more than once, you will get *the same object instance every time*.
+
 An example of this relationship looks like:
 
 .. sourcecode:: csharp
@@ -237,6 +239,8 @@ Should you decide to use the built-in auto-generated factory behavior (``Func<X,
     var obj = func(1, "three");
 
 You can read more about delegate factories and the ``RegisterGeneratedFactory()`` method :doc:`in the advanced topics section <../advanced/delegate-factories>`.
+
+**Lifetime scopes are respected** using this relationship type as well as when using delegate factories. If you register an object as ``InstancePerDependency()`` and call the ``Func<X, Y, B>`` multiple times, you'll get a new instance each time. However, if you register an object as ``SingleInstance()`` and call the ``Func<X, Y, B>`` to resolve the object more than once, you will get *the same object instance every time regardless of the different parameters you pass in.* Just passing different parameters will not break the respect for the lifetime scope.
 
 
 Enumeration (IEnumerable<B>, IList<B>, ICollection<B>)

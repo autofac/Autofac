@@ -6,7 +6,9 @@ Delegate Factories
 
 Factory adapters provide the instantiation features of the container to managed components without exposing the container itself to them.
 
-If type ``T`` is registered with the container, Autofac will :doc:`automatically resolve dependencies <../resolve/relationships>` on ``Func<T>`` as factories  that create ``T`` instances through the container.
+If type ``T`` is registered with the container, Autofac will :doc:`automatically resolve dependencies <../resolve/relationships>` on ``Func<T>`` as factories that create ``T`` instances through the container.
+
+**Lifetime scopes are respected** using delegate factories as well as when using ``Func<T>`` or the parameterized ``Func<X,Y,T>`` relationshps. If you register an object as ``InstancePerDependency()`` and call the delegate factory multiple times, you'll get a new instance each time. However, if you register an object as ``SingleInstance()`` and call the delegate factory to resolve the object more than once, you will get *the same object instance every time regardless of the different parameters you pass in.* Just passing different parameters will not break the respect for the lifetime scope.
 
 Creation through Factories
 ==========================
