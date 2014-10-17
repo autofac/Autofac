@@ -112,11 +112,14 @@ You can also configure the ``AutoFake`` to provide a specific implementation typ
       {
         // Configure a component type that doesn't require
         // constructor parameters.
-        fake.Provide<IFoo, ConcreteFoo>();
+        fake.Provide<IDependency, Dependency>();
 
         // Configure a component type that has some
-        // constructor parameters passed in.
-        fake.Provide<IBar, ConcreteBar>("baz", 123, false);
+        // constructor parameters passed in. Use Autofac
+        // parameters in the list.
+        fake.Provide<IOtherDependency, OtherDependency>(
+                    new NamedParameter("id", "service-identifier"),
+                    new TypedParameter(typeof(Guid), Guid.NewGuid()));
 
         // ...and the rest of the test.
       }
