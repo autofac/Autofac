@@ -148,6 +148,9 @@ The overload of ``RegisterAssemblyModules()`` with *a Type object parameter* wor
 
 IIS Hosted Web Applications
 ===========================
+
+When using assembly scanning with IIS applications, you can run into a little trouble depending on how you do the assembly location. (:doc:`This is one of our FAQs <../faq/iis-restart>`)
+
 When hosting applications in IIS all assemblies are loaded into the ``AppDomain`` when the application first starts, but **when the AppDomain is recycled by IIS the assemblies are then only loaded on demand.**
 
 To avoid this issue use the `GetReferencedAssemblies() <http://msdn.microsoft.com/en-us/library/system.web.compilation.buildmanager.getreferencedassemblies.aspx>`_ method on `System.Web.Compilation.BuildManager <http://msdn.microsoft.com/en-us/library/system.web.compilation.buildmanager.aspx>`_ to get a list of the referenced assemblies instead:
