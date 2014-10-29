@@ -12,6 +12,8 @@ namespace Autofac.Tests.Features.OpenGenerics
         public class CReversed<T2, T1> : IDouble<T1, T2> { }
 
         public interface INested<T> { }
+
+        public interface INested<T, D> { }
         public class Wrapper<T> { }
         public class CNested<T> : INested<Wrapper<T>> { }
 
@@ -19,6 +21,8 @@ namespace Autofac.Tests.Features.OpenGenerics
 
         public class CNestedDerivedReversed<TX, TY> : IDouble<TY, INested<Wrapper<TX>>> { }
         public class SameTypes<TA, TB> : IDouble<TA, INested<IDouble<TB, TA>>> { }
+
+        public class SameTypes<TA, TB, TC> : IDouble<INested<TA>, INested<IDouble<TB, TC>>> { }
         // ReSharper restore UnusedTypeParameter, InconsistentNaming
 
         [Test]
@@ -85,6 +89,17 @@ namespace Autofac.Tests.Features.OpenGenerics
 
             var compl = container.Resolve<IDouble<int, INested<Wrapper<string>>>>();
             Assert.IsInstanceOf<CReversed<INested<Wrapper<string>>, int>>(compl);
+        }
+
+        [Test]
+        public void TheSameaceholderWithThreeGenericParametersTypeCanAppearMultipleTimesInTheService()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(SameTypes<,,>)).As(typeof(SameTypes<,,>).GetInterfaces());
+            var container = cb.Build();
+
+            var compl = container.Resolve<IDouble<INested<string>, INested<IDouble<int, long>>>>();
+            Assert.IsInstanceOf<SameTypes<string, int, long>>(compl);
         }
 
         [Test]
