@@ -41,8 +41,7 @@ namespace Autofac.Features.LazyDependencies
     /// </summary>
     class LazyRegistrationSource : IRegistrationSource
     {
-        static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyRegistrationSource).GetMethod(
-            "CreateLazyRegistration", BindingFlags.Static | BindingFlags.NonPublic);
+        static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyRegistrationSource).GetTypeInfo().GetDeclaredMethod("CreateLazyRegistration");
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
@@ -54,7 +53,7 @@ namespace Autofac.Features.LazyDependencies
             if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Lazy<>)))
                 return Enumerable.Empty<IComponentRegistration>();
 
-            var valueType = swt.ServiceType.GetGenericArguments()[0];
+            var valueType = swt.ServiceType.GetTypeInfo().GenericTypeArguments.First();
             var valueService = swt.ChangeType(valueType);
 
             var registrationCreator = CreateLazyRegistrationMethod.MakeGenericMethod(valueType);

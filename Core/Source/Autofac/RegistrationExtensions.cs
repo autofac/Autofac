@@ -432,12 +432,13 @@ namespace Autofac
         {
             var attrType = typeof(TAttribute);
             var metadataProperties = attrType
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .GetTypeInfo().DeclaredProperties
                 .Where(pi => pi.CanRead);
 
             return registration.WithMetadata(t =>
             {
-                var attrs = t.GetCustomAttributes(true).OfType<TAttribute>().ToArray();
+                var attrs = t.GetTypeInfo().GetCustomAttributes(true).OfType<TAttribute>().ToArray();
+
                 if (attrs.Length == 0)
                     throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.MetadataAttributeNotFound, typeof(TAttribute), t));
                 if (attrs.Length != 1)
@@ -592,7 +593,7 @@ namespace Autofac
 
         static Type[] GetImplementedInterfaces(Type type)
         {
-            return type.GetInterfaces().Where(i => i != typeof(IDisposable)).ToArray();
+            return type.GetTypeInfo().ImplementedInterfaces.Where(i => i != typeof(IDisposable)).ToArray();
         }
 
         /// <summary>
@@ -657,7 +658,7 @@ namespace Autofac
             // Unfortunately this could cause some false positives in rare AOP/dynamic subclassing
             // scenarios. If it becomes a problem we'll address it then.
 
-            if (registration.ActivatorData.ImplementationType.GetConstructor(signature) == null)
+            if (registration.ActivatorData.ImplementationType.GetMatchingConstructor(signature) == null)
                 throw new ArgumentException(
                     string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.NoMatchingConstructorExists, registration.ActivatorData.ImplementationType));
 

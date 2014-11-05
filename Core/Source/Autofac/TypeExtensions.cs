@@ -26,6 +26,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using Autofac.Util;
 
 namespace Autofac
@@ -75,7 +76,7 @@ namespace Autofac
             if (@this == null) throw new ArgumentNullException("this");
             if (openGeneric == null) throw new ArgumentNullException("openGeneric");
 
-            if (!(openGeneric.IsGenericTypeDefinition || openGeneric.ContainsGenericParameters))
+            if (!(openGeneric.GetTypeInfo().IsGenericTypeDefinition || openGeneric.GetTypeInfo().ContainsGenericParameters))
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, TypeExtensionsResources.NotOpenGenericType, openGeneric.FullName));
 
             return @this.GetTypesThatClose(openGeneric).Any();
@@ -90,8 +91,19 @@ namespace Autofac
         public static bool IsAssignableTo<T>(this Type @this)
         {
             if (@this == null) throw new ArgumentNullException("this");
-            return typeof(T).IsAssignableFrom(@this);
+            return typeof(T).GetTypeInfo().IsAssignableFrom(@this.GetTypeInfo());
         }
 
+        /// <summary>
+        /// Finds a constructor with the matching type parameters.
+        /// </summary>
+        /// <param name="type">The type being tested.</param>
+        /// <param name="constructorParameterTypes">The types of the contractor to find.</param>
+        /// <returns>The <see cref="ConstructorInfo"/> is a match is found; otherwise, <c>null</c>.</returns>
+        public static ConstructorInfo GetMatchingConstructor(this Type type, Type[] constructorParameterTypes)
+        {
+            return type.GetTypeInfo().DeclaredConstructors.FirstOrDefault(
+                c => c.GetParameters().Select(p => p.ParameterType).SequenceEqual(constructorParameterTypes));
+        }
     }
 }

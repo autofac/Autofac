@@ -163,8 +163,7 @@ namespace Autofac.Core.Activators.Reflection
                 return;
 
             var actualProps = instance
-                .GetType()
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .GetType().GetTypeInfo().DeclaredProperties
                 .Where(pi => pi.CanWrite)
                 .ToList();
 
@@ -172,7 +171,7 @@ namespace Autofac.Core.Activators.Reflection
             {
                 foreach (var actual in actualProps)
                 {
-                    var setter = actual.GetSetMethod();
+                    var setter = actual.SetMethod;
                     Func<object> vp;
                     if (setter != null &&
                         prop.CanSupplyValue(setter.GetParameters().First(), context, out vp))

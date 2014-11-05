@@ -25,6 +25,7 @@
 
 using System;
 using System.Globalization;
+using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
 
@@ -38,7 +39,7 @@ namespace Autofac.Features.OpenGenerics
             if (builder == null) throw new ArgumentNullException("builder");
             if (implementor == null) throw new ArgumentNullException("implementor");
 
-            if (!implementor.IsGenericTypeDefinition)
+            if (!implementor.GetTypeInfo().IsGenericTypeDefinition)
                 throw new ArgumentException(string.Format(
                     CultureInfo.CurrentCulture, OpenGenericRegistrationExtensionsResources.ImplementorMustBeOpenGenericType, implementor));
 

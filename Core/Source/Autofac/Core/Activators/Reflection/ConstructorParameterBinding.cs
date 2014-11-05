@@ -172,7 +172,7 @@ namespace Autofac.Core.Activators.Reflection
                 var convertExpression = Expression.Convert(parameterIndexExpression, parameterType);
                 argumentsExpression[paramIndex] = convertExpression;
 
-                if (!parameterType.IsValueType) continue;
+                if (!parameterType.GetTypeInfo().IsValueType) continue;
 
                 var nullConditionExpression = Expression.Equal(
                     parameterIndexExpression, Expression.Constant(null));

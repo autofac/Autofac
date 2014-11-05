@@ -146,10 +146,10 @@ namespace Autofac
             get
             {
                 var thisType = GetType();
-                if (thisType.BaseType != typeof(Module))
+                if (thisType.GetTypeInfo().BaseType != typeof(Module))
                     throw new InvalidOperationException(ModuleResources.ThisAssemblyUnavailable);
 
-                return thisType.Assembly;
+                return thisType.GetTypeInfo().Assembly;
             }
         }
     }

@@ -76,13 +76,13 @@ namespace Autofac.Features.Scanning
         {
             rb.ActivatorData.Filters.Add(t =>
                 rb.RegistrationData.Services.OfType<IServiceWithType>().All(swt =>
-                    swt.ServiceType.IsAssignableFrom(t)));
+                    swt.ServiceType.GetTypeInfo().IsAssignableFrom(t.GetTypeInfo())));
 
             foreach (var t in types
                 .Where(t =>
-                    t.IsClass &&
-                    !t.IsAbstract &&
-                    !t.IsGenericTypeDefinition &&
+                    t.GetTypeInfo().IsClass &&
+                    !t.GetTypeInfo().IsAbstract &&
+                    !t.GetTypeInfo().IsGenericTypeDefinition &&
                     !t.IsDelegate() &&
                     rb.ActivatorData.Filters.All(p => p(t))))
             {
@@ -127,7 +127,7 @@ namespace Autofac.Features.Scanning
         {
             if (registration == null) throw new ArgumentNullException("registration");
 
-            registration.ActivatorData.Filters.Add(type.IsAssignableFrom);
+            registration.ActivatorData.Filters.Add(t => type.GetTypeInfo().IsAssignableFrom(t.GetTypeInfo()));
             return registration;
         }
 
@@ -149,7 +149,7 @@ namespace Autofac.Features.Scanning
                         var c = s as IServiceWithType;
                         return
                             (c == null && s != null) || // s is not an IServiceWithType
-                            c.ServiceType.IsAssignableFrom(impl);
+                            c.ServiceType.GetTypeInfo().IsAssignableFrom(impl.GetTypeInfo());
                     });
                 rb.As(applied.ToArray());
             });

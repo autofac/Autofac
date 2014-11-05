@@ -26,7 +26,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Autofac.Core;
 using Autofac.Builder;
 using System.Reflection;
@@ -88,7 +87,7 @@ namespace Autofac.Features.Variance
             if (swt == null || !IsCompatibleInterfaceType(swt.ServiceType, out contravariantParameterIndex))
                 return Enumerable.Empty<IComponentRegistration>();
 
-            var args = swt.ServiceType.GetGenericArguments();
+            var args = swt.ServiceType.GetTypeInfo().GenericTypeArguments;
             var definition = swt.ServiceType.GetGenericTypeDefinition();
             var contravariantParameter = args[contravariantParameterIndex];
             var possibleSubstitutions = GetTypesAssignableFrom(contravariantParameter);
@@ -124,10 +123,10 @@ namespace Autofac.Features.Variance
 
         static IEnumerable<Type> GetBagOfTypesAssignableFrom(Type type)
         {
-            if (type.BaseType != null)
+            if (type.GetTypeInfo().BaseType != null)
             {
-                yield return type.BaseType;
-                foreach (var fromBase in GetBagOfTypesAssignableFrom(type.BaseType))
+                yield return type.GetTypeInfo().BaseType;
+                foreach (var fromBase in GetBagOfTypesAssignableFrom(type.GetTypeInfo().BaseType))
                     yield return fromBase;
             }
             else
@@ -136,7 +135,7 @@ namespace Autofac.Features.Variance
                     yield return typeof(object);
             }
 
-            foreach (var ifce in type.GetInterfaces())
+            foreach (var ifce in type.GetTypeInfo().ImplementedInterfaces)
             {
                 if (ifce != type)
                 {
@@ -149,15 +148,15 @@ namespace Autofac.Features.Variance
 
         static bool IsCompatibleInterfaceType(Type type, out int contravariantParameterIndex)
         {
-            if (type.IsGenericType && type.IsInterface)
+            if (type.GetTypeInfo().IsGenericType && type.GetTypeInfo().IsInterface)
             {
                 var contravariantWithIndex = type
                     .GetGenericTypeDefinition()
-                    .GetGenericArguments()
+                    .GetTypeInfo().GenericTypeParameters
                     .Select((c, i) => new 
                     {
-                        IsContravariant = (c.GenericParameterAttributes & GenericParameterAttributes.Contravariant) !=
-                            GenericParameterAttributes.None,
+                        IsContravariant = (c.GetTypeInfo().GenericParameterAttributes & GenericParameterAttributes.Contravariant) !=
+                        GenericParameterAttributes.None,
                         Index = i
                     })
                     .Where(cwi => cwi.IsContravariant)

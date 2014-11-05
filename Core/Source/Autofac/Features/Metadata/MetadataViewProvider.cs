@@ -37,20 +37,19 @@ namespace Autofac.Features.Metadata
 {
     static class MetadataViewProvider
     {
-        static readonly MethodInfo GetMetadataValueMethod = typeof(MetadataViewProvider).GetMethod(
-            "GetMetadataValue", BindingFlags.Static | BindingFlags.NonPublic);
+        static readonly MethodInfo GetMetadataValueMethod = typeof(MetadataViewProvider).GetTypeInfo().GetDeclaredMethod("GetMetadataValue");
 
         public static Func<IDictionary<string,object>, TMetadata> GetMetadataViewProvider<TMetadata>()
         {
             if (typeof(TMetadata) == typeof(IDictionary<string, object>))
                 return m => (TMetadata)m;
 
-            if (!typeof(TMetadata).IsClass)
+            if (!typeof(TMetadata).GetTypeInfo().IsClass)
                 throw new DependencyResolutionException(
                     string.Format(CultureInfo.CurrentCulture, MetadataViewProviderResources.InvalidViewImplementation, typeof(TMetadata).Name));
 
             var ti = typeof(TMetadata);
-            var dictionaryConstructor = ti.GetConstructors().SingleOrDefault(ci =>
+            var dictionaryConstructor = ti.GetTypeInfo().DeclaredConstructors.SingleOrDefault(ci =>
             {
                 var ps = ci.GetParameters();
                 return ci.IsPublic && ps.Length == 1 && ps[0].ParameterType == typeof(IDictionary<string, object>);
@@ -65,7 +64,7 @@ namespace Autofac.Features.Metadata
                     .Compile();
             }
 
-            var parameterlessConstructor = ti.GetConstructors().SingleOrDefault(ci => ci.IsPublic && ci.GetParameters().Length == 0);
+            var parameterlessConstructor = ti.GetTypeInfo().DeclaredConstructors.SingleOrDefault(ci => ci.IsPublic && ci.GetParameters().Length == 0);
             if (parameterlessConstructor != null)
             {
                 var providerArg = Expression.Parameter(typeof(IDictionary<string, object>), "metadata");
@@ -74,10 +73,10 @@ namespace Autofac.Features.Metadata
                 var resultAssignment = Expression.Assign(resultVar, Expression.New(parameterlessConstructor));
                 var blockExprs = new List<Expression> {resultAssignment};
 
-                foreach (var prop in typeof(TMetadata).GetProperties()
+                foreach (var prop in typeof(TMetadata).GetTypeInfo().DeclaredProperties
                     .Where(prop =>
-                        prop.GetGetMethod(false) != null && !prop.GetGetMethod().IsStatic &&
-                        prop.GetSetMethod(false) != null && !prop.GetSetMethod().IsStatic))
+                        prop.GetMethod != null && !prop.GetMethod.IsStatic &&
+                        prop.SetMethod != null && !prop.SetMethod.IsStatic))
                 {
                     var dva = Expression.Constant(prop.GetCustomAttribute<DefaultValueAttribute>(false), typeof(DefaultValueAttribute));
                     var name = Expression.Constant(prop.Name, typeof(string));

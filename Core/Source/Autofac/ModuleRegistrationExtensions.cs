@@ -187,7 +187,7 @@ namespace Autofac
             var moduleFinder = new ContainerBuilder();
 
             moduleFinder.RegisterAssemblyTypes(assemblies)
-                .Where(moduleType.IsAssignableFrom)
+                .Where(t => moduleType.GetTypeInfo().IsAssignableFrom(t.GetTypeInfo()))
                 .As<IModule>();
 
             using (var moduleContainer = moduleFinder.Build())

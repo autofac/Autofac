@@ -40,8 +40,7 @@ namespace Autofac.Features.Metadata
     /// </summary>
     class StronglyTypedMetaRegistrationSource : IRegistrationSource
     {
-        static readonly MethodInfo CreateMetaRegistrationMethod = typeof(StronglyTypedMetaRegistrationSource).GetMethod(
-            "CreateMetaRegistration", BindingFlags.Static | BindingFlags.NonPublic);
+        static readonly MethodInfo CreateMetaRegistrationMethod = typeof(StronglyTypedMetaRegistrationSource).GetTypeInfo().GetDeclaredMethod("CreateMetaRegistration");
 
         delegate IComponentRegistration RegistrationCreator(Service service, IComponentRegistration valueRegistration);
 
@@ -55,17 +54,17 @@ namespace Autofac.Features.Metadata
             if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Meta<,>)))
                 return Enumerable.Empty<IComponentRegistration>();
 
-            var valueType = swt.ServiceType.GetGenericArguments()[0];
-            var metaType = swt.ServiceType.GetGenericArguments()[1];
+            var genericArguments = swt.ServiceType.GetTypeInfo().GenericTypeArguments.ToArray();
+            var valueType = genericArguments[0];
+            var metaType = genericArguments[1];
 
-            if (!metaType.IsClass)
+            if (!metaType.GetTypeInfo().IsClass)
                 return Enumerable.Empty<IComponentRegistration>();
 
             var valueService = swt.ChangeType(valueType);
-
-            var registrationCreator = (RegistrationCreator)Delegate.CreateDelegate(
-                typeof(RegistrationCreator),
-                CreateMetaRegistrationMethod.MakeGenericMethod(valueType, metaType));
+            var methodInfo = CreateMetaRegistrationMethod.MakeGenericMethod(valueType, metaType);
+            var registrationCreator = (RegistrationCreator) methodInfo.CreateDelegate(
+                typeof(RegistrationCreator), null);
 
             return registrationAccessor(valueService)
                 .Select(v => registrationCreator.Invoke(service, v));

@@ -10,6 +10,7 @@
 
 namespace Autofac.Core.Activators.Delegate {
     using System;
+    using System.Reflection;
     
     
     /// <summary>
@@ -39,7 +40,7 @@ namespace Autofac.Core.Activators.Delegate {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Activators.Delegate.DelegateActivatorResources", typeof(DelegateActivatorResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Activators.Delegate.DelegateActivatorResources", typeof(DelegateActivatorResources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

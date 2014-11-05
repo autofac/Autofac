@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Util;
@@ -54,7 +55,7 @@ namespace Autofac.Features.OwnedInstances
             if (ts == null || !ts.ServiceType.IsGenericTypeDefinedBy(typeof(Owned<>)))
                 return Enumerable.Empty<IComponentRegistration>();
 
-            var ownedInstanceType = ts.ServiceType.GetGenericArguments()[0];
+            var ownedInstanceType = ts.ServiceType.GetTypeInfo().GenericTypeArguments.First();
             var ownedInstanceService = ts.ChangeType(ownedInstanceType);
 
             return registrationAccessor(ownedInstanceService)

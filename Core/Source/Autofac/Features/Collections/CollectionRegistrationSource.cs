@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
@@ -83,7 +84,7 @@ namespace Autofac.Features.Collections
 
                 if (serviceType.IsGenericEnumerableInterfaceType())
                 {
-                    elementType = serviceType.GetGenericArguments()[0];
+                    elementType = serviceType.GetTypeInfo().GenericTypeArguments.First();
                 }
                 else if (serviceType.IsArray)
                 {
