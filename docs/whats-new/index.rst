@@ -13,13 +13,13 @@ What's New / Release Notes
 
   + `Web Forms <https://github.com/autofac/Autofac/wiki/Web-Forms-Integration-Release-Notes>`_
   + `MVC <https://github.com/autofac/Autofac/wiki/Mvc-Integration-Release-Notes>`_
-  + `WebAPI <https://github.com/autofac/Autofac/wiki/Web-Api-Integration-Release-Notes>`_
+  + `Web API <https://github.com/autofac/Autofac/wiki/Web-Api-Integration-Release-Notes>`_
   + `SignalR <https://github.com/autofac/Autofac/wiki/SignalR-Integration-Release-Notes>`_
   + RIA/Domain Services
   + OWIN
 
     * OWIN Core
-    * OWIN / WebAPI
+    * OWIN / Web API
     * OWIN / MVC
 
  - WCF
