@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -494,6 +495,7 @@ namespace Autofac.Configuration
         /// Thrown if the value for <paramref name="lifetimeScope" /> is not part of the
         /// recognized grammar.
         /// </exception>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "The cyclomatic complexity is in extension methods. This method is actually pretty simple.")]
         protected virtual void SetLifetimeScope<TReflectionActivatorData, TSingleRegistrationStyle>(IRegistrationBuilder<object, TReflectionActivatorData, TSingleRegistrationStyle> registrar, string lifetimeScope)
             where TReflectionActivatorData : ReflectionActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
