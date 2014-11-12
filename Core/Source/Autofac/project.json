@@ -1,6 +1,8 @@
 ﻿{
     "metadata": {
-        "version": "4.0-alpha1"
+        "version": "4.0-alpha1",
+        "authors": [ "Autofac Contributors" ],
+        "description": "Core assembly for the Autofac Inversion of Control container."
     },
     "resources": "**/**/*.resx",
     "dependencies": {
