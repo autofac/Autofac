@@ -25,5 +25,10 @@ namespace AspNet50Example.WebApplication.Controllers
 
             return View();
         }
+
+        public IActionResult Error()
+        {
+            return View("~/Views/Shared/Error.cshtml");
+        }
     }
 }

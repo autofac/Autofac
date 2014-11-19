@@ -4,7 +4,6 @@ using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Authentication;
 using Microsoft.AspNet.Mvc;
 using AspNet50Example.WebApplication.Models;
 

@@ -1,5 +1,8 @@
 ﻿using System;
 using Microsoft.AspNet.Builder;
+using Microsoft.AspNet.Diagnostics;
+using Microsoft.AspNet.Diagnostics.Entity;
+using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Routing;
@@ -7,6 +10,8 @@ using Microsoft.AspNet.Security.Cookies;
 using Microsoft.Data.Entity;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
+using Microsoft.Framework.Logging;
+using Microsoft.Framework.Logging.Console;
 using AspNet50Example.WebApplication.Models;
 using Autofac;
 using Autofac.Integration.AspNet;
@@ -15,72 +20,87 @@ namespace AspNet50Example.WebApplication
 {
     public class Startup
     {
-        public void Configure(IApplicationBuilder app)
+        public Startup(IHostingEnvironment env)
         {
-            // Setup configuration sources
-            var configuration = new Configuration();
-            configuration.AddJsonFile("config.json");
-            configuration.AddEnvironmentVariables();
+            // Setup configuration sources.
+            Configuration = new Configuration()
+                .AddJsonFile("config.json")
+                .AddEnvironmentVariables();
+        }
 
-            // Set up application services
-            app.UseServices(services =>
+        public IConfiguration Configuration { get; set; }
+
+        // This method gets called by the runtime.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            // Add EF services to the services container.
+            services.AddEntityFramework(Configuration)
+                .AddSqlServer()
+                .AddDbContext<ApplicationDbContext>();
+
+            // Add Identity services to the services container.
+            services.AddDefaultIdentity<ApplicationDbContext, ApplicationUser, IdentityRole>(Configuration);
+
+            // Add MVC services to the services container.
+            services.AddMvc();
+
+            // Uncomment the following line to add Web API servcies which makes it easier to port Web API 2 controllers.
+            // You need to add Microsoft.AspNet.Mvc.WebApiCompatShim package to project.json
+            // services.AddWebApiConventions();
+        }
+
+        // Configure is called after ConfigureServices is called.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerfactory)
+        {
+            //app.UseServices(services =>
+            //{
+            //    // Create the Autofac container.
+            //    ContainerBuilder builder = new ContainerBuilder();
+
+            //    // Create the container and use the default application services as a fallback.
+            //    builder.Populate(services, fallbackServiceProvider: app.ApplicationServices);
+
+            //    // Build the container.
+            //    IContainer container = builder.Build();
+
+            //    // Resolve the service provider.
+            //    return container.Resolve<IServiceProvider>();
+            //});
+
+            // Configure the HTTP request pipeline.
+            // Add the console logger.
+            loggerfactory.AddConsole();
+
+            // Add the following to the request pipeline only in development environment.
+            if (string.Equals(env.EnvironmentName, "Development", StringComparison.OrdinalIgnoreCase))
             {
-                // Add EF services to the services container
-                services.AddEntityFramework()
-                    .AddSqlServer();
+                app.UseBrowserLink();
+                app.UseErrorPage(ErrorPageOptions.ShowAll);
+                app.UseDatabaseErrorPage(DatabaseErrorPageOptions.ShowAll);
+            }
+            else
+            {
+                // Add Error handling middleware which catches all application specific errors and
+                // send the request to the following path or controller action.
+                app.UseErrorHandler("/Home/Error");
+            }
 
-                // Configure DbContext
-                services.SetupOptions<DbContextOptions>(options =>
-                {
-                    options.UseSqlServer(configuration.Get("Data:DefaultConnection:ConnectionString"));
-                });
-                
-                // Add Identity services to the services container
-                services.AddIdentitySqlServer<ApplicationDbContext, ApplicationUser>()
-                    .AddAuthentication();
-
-                // Add MVC services to the services container
-                services.AddMvc();
-
-                // Create the autofac container 
-                ContainerBuilder builder = new ContainerBuilder();
-
-                // Create the container and use the default application services as a fallback 
-                builder.Populate(
-                    services,
-                    fallbackServiceProvider: app.ApplicationServices);
-
-                // Build the container.
-                IContainer container = builder.Build();
-
-                // Resolve the service provider.
-                return container.Resolve<IServiceProvider>();
-            });
-
-            // Enable Browser Link support
-            app.UseBrowserLink();
-
-            // Add static files to the request pipeline
+            // Add static files to the request pipeline.
             app.UseStaticFiles();
 
-            // Add cookie-based authentication to the request pipeline
-            app.UseCookieAuthentication(new CookieAuthenticationOptions
-            {
-                AuthenticationType = ClaimsIdentityOptions.DefaultAuthenticationType,
-                LoginPath = new PathString("/Account/Login"),
-            });
+            // Add cookie-based authentication to the request pipeline.
+            app.UseIdentity();
 
-            // Add MVC to the request pipeline
+            // Add MVC to the request pipeline.
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "default", 
+                    name: "default",
                     template: "{controller}/{action}/{id?}",
                     defaults: new { controller = "Home", action = "Index" });
 
-                routes.MapRoute(
-                    name: "api",
-                    template: "{controller}/{id?}");
+                // Uncomment the following line to add a route for porting Web API 2 controllers.
+                // routes.MapWebApiRoute("DefaultApi", "api/{controller}/{id?}");
             });
         }
     }

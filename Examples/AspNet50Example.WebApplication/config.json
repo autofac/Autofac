@@ -1,7 +1,12 @@
 ﻿{
     "Data": {
         "DefaultConnection": { 
-            "ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=aspnetvnext-AspNet50Example.WebApplication-03082483-60c6-4c08-9f0d-714571f9e9de;Trusted_Connection=True;MultipleActiveResultSets=true"
+            "ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=aspnet5-AspNet50Example.WebApplication-4370d246-3d97-4d15-b7f6-9130186a72a3;Trusted_Connection=True;MultipleActiveResultSets=true"
+        }
+    },
+    "EntityFramework": {
+        "ApplicationDbContext": {
+            "ConnectionStringKey": "Data:DefaultConnection:ConnectionString"
         }
     }
 }

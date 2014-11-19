@@ -1,22 +1,15 @@
 ﻿{
-    "metadata": {
-        "version": "4.0-alpha1",
-        "authors": [ "Autofac Contributors" ],
-        "description": "Autofac integration for ASP.NET 5.0 and MVC 6.0."
-    },
+    "version": "4.0.0-alpha1",
+    "authors": [ "Autofac Contributors" ],
+    "description": "Autofac integration for ASP.NET 5.0 and MVC 6.0.",
     "dependencies": {
-        "Autofac": "",
-        "Microsoft.Framework.DependencyInjection": "1.0.0-alpha4"
+        "Autofac": "4.0.0-alpha1",
+        "Microsoft.Framework.DependencyInjection": ""
     },
-
     "frameworks": {
-        "aspnet50": {
-            "dependencies": {
-            }
-        },
         "aspnetcore50": {
             "dependencies": {
-                "System.Runtime": "4.0.20.0"
+                "System.Runtime": "4.0.20-beta-22231"
             }
         }
     }

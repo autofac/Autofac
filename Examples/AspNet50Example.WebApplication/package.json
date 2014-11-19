@@ -1,0 +1,8 @@
+﻿{
+    "version": "0.0.0",
+    "name": "AspNet50Example.WebApplication",
+    "devDependencies": {
+        "grunt": "^0.4.5",
+        "grunt-bower-task": "^0.4.0"
+    }
+}

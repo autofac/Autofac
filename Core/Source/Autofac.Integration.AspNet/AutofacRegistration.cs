@@ -81,6 +81,18 @@ namespace Autofac.Integration.AspNet
                             .ConfigureLifecycle(descriptor.Lifecycle);
                     }
                 }
+                else if (descriptor.ImplementationFactory != null)
+                {
+                    var registration = RegistrationBuilder.ForDelegate(descriptor.ServiceType, (context, parameters) =>
+                    {
+                        var serviceProvider = context.Resolve<IServiceProvider>();
+                        return descriptor.ImplementationFactory(serviceProvider);
+                    })
+                    .ConfigureLifecycle(descriptor.Lifecycle)
+                    .CreateRegistration();
+
+                    builder.RegisterComponent(registration);
+                }
                 else
                 {
                     builder
@@ -122,7 +134,7 @@ namespace Autofac.Integration.AspNet
 
             public object GetService(Type serviceType)
             {
-                return _componentContext.Resolve(serviceType);
+                return _componentContext.ResolveOptional(serviceType);
             }
         }
 

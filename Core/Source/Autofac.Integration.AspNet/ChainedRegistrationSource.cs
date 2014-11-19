@@ -48,7 +48,7 @@ namespace Autofac.Integration.AspNet
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(
                 Service service,
-                Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+                Func<Service, IEnumerable<IComponentRegistration>> registrationAcessor)
         {
             var serviceWithType = service as IServiceWithType;
             if (serviceWithType == null)
@@ -57,7 +57,7 @@ namespace Autofac.Integration.AspNet
             }
 
             // Only introduce services that are not already registered
-            if (registrationAccessor(service).Any())
+            if (registrationAcessor(service).Any())
             {
                 yield break;
             }
@@ -80,8 +80,7 @@ namespace Autofac.Integration.AspNet
                         if (parentLifetime != null &&
                             parentLifetime.TryResolve<FallbackScope>(out parentFallback))
                         {
-                            var scopeFactory = parentFallback.ServiceProvider
-                                .GetServiceOrDefault<IServiceScopeFactory>();
+                            var scopeFactory = parentFallback.ServiceProvider.GetService<IServiceScopeFactory>();
 
                             if (scopeFactory != null)
                             {
@@ -95,7 +94,7 @@ namespace Autofac.Integration.AspNet
                 .InstancePerLifetimeScope()
                 .CreateRegistration();
             }
-            else if (_fallbackServiceProvider.GetServiceOrNull(serviceType) != null)
+            else if (_fallbackServiceProvider.GetService(serviceType) != null)
             {
                 yield return RegistrationBuilder.ForDelegate(serviceType, (context, p) =>
                 {
