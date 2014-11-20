@@ -53,6 +53,7 @@ Register Components from Least-to-Most Specific
 Autofac overrides component registrations by default. This means that an application can register all of its default components, then read an associated configuration file to override any that have been customized for the deployment environment.
 
 Use Profilers for Performance Checking
+======================================
 
 Before doing any performance optimization or making assumptions about potential memory leaks, **always run a profiler** like `SlimTune <http://code.google.com/p/slimtune/>`_, `dotTrace <http://www.jetbrains.com/profiler/>`_, or `ANTS <http://www.red-gate.com/products/dotnet-development/ants-performance-profiler/>`_ to see where time is truly being spent. It might not be where you think.
 
