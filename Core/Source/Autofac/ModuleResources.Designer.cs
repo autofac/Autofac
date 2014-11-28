@@ -40,7 +40,11 @@ namespace Autofac {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
+#if !ASPNETCORE50
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.ModuleResources", typeof(ModuleResources).GetTypeInfo().Assembly);
+#else
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.ModuleResources", typeof(ModuleResources).GetTypeInfo().Assembly);
+#endif
                     resourceMan = temp;
                 }
                 return resourceMan;
