@@ -116,7 +116,7 @@ namespace Autofac.Integration.Mvc
                 throw new InvalidOperationException(string.Format(
                     CultureInfo.CurrentCulture,
                     AutofacDependencyResolverResources.AutofacDependencyResolverNotFound,
-                        typeof(AutofacDependencyResolver).FullName));
+                        currentResolver.GetType().FullName, typeof(AutofacDependencyResolver).FullName));
             }
         }
 
