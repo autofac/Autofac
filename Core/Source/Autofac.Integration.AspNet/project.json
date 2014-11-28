@@ -4,7 +4,7 @@
     "description": "Autofac integration for ASP.NET 5.0 and MVC 6.0.",
     "dependencies": {
         "Autofac": "4.0.0-alpha1",
-        "Microsoft.Framework.DependencyInjection": ""
+        "Microsoft.Framework.DependencyInjection": "1.0.0-beta1"
     },
     "frameworks": {
         "aspnetcore50": {
