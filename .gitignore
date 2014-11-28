@@ -9,6 +9,7 @@ build_output/
 *.suo
 *.user
 *.sln.docstates
+*.ide
 
 # Build results
 
@@ -122,6 +123,9 @@ ClientBin/
 *.[Pp]ublish.xml
 *.pfx
 *.publishsettings
+node_modules/
+bower_components/
+wwwroot/
 
 # RIA/Silverlight projects
 Generated_Code/

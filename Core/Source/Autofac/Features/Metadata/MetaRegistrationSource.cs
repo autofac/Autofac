@@ -40,8 +40,7 @@ namespace Autofac.Features.Metadata
     /// </summary>
     class MetaRegistrationSource : IRegistrationSource
     {
-        static readonly MethodInfo CreateMetaRegistrationMethod = typeof(MetaRegistrationSource).GetMethod(
-            "CreateMetaRegistration", BindingFlags.Static | BindingFlags.NonPublic);
+        static readonly MethodInfo CreateMetaRegistrationMethod = typeof(MetaRegistrationSource).GetTypeInfo().GetDeclaredMethod("CreateMetaRegistration");
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
@@ -53,7 +52,7 @@ namespace Autofac.Features.Metadata
             if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Meta<>)))
                 return Enumerable.Empty<IComponentRegistration>();
 
-            var valueType = swt.ServiceType.GetGenericArguments()[0];
+            var valueType = swt.ServiceType.GetTypeInfo().GenericTypeArguments.First();
 
             var valueService = swt.ChangeType(valueType);
 

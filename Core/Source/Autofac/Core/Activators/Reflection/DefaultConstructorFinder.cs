@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Linq;
 using System.Reflection;
 
 namespace Autofac.Core.Activators.Reflection
@@ -41,7 +42,8 @@ namespace Autofac.Core.Activators.Reflection
         /// <remarks>
         /// Default to selecting all public constructors.
         /// </remarks>
-        public DefaultConstructorFinder() : this(type => type.GetConstructors())
+        public DefaultConstructorFinder() : this(type => 
+            type.GetTypeInfo().DeclaredConstructors.Where(c => c.IsPublic).ToArray())
         {
         }
 

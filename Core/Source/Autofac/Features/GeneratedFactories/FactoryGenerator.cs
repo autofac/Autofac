@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Autofac.Core;
 using Autofac.Util;
 
@@ -122,7 +123,7 @@ namespace Autofac.Features.GeneratedFactories
             var activatorParamsParam = Expression.Parameter(typeof(IEnumerable<Parameter>), "p");
             var activatorParams = new[] { activatorContextParam, activatorParamsParam };
 
-            var invoke = delegateType.GetMethod("Invoke");
+            var invoke = delegateType.GetTypeInfo().GetDeclaredMethod("Invoke");
 
             // [dps]*
             var creatorParams = invoke
@@ -136,7 +137,7 @@ namespace Autofac.Features.GeneratedFactories
                 // Issue #269:
                 // If we're resolving a Func<X1...XN>() and there are duplicate input parameter types
                 // and the parameter mapping is by type, we shouldn't be able to resolve it.
-                var arguments = delegateType.GetGenericArguments();
+                var arguments = delegateType.GetTypeInfo().GenericTypeArguments;
                 var returnType = arguments.Last();
 
                 // Remove the return type to check the list of input types only.
@@ -182,7 +183,7 @@ namespace Autofac.Features.GeneratedFactories
                 case ParameterMapping.ByType:
                     return creatorParams
                             .Select(p => Expression.New(
-                                typeof(TypedParameter).GetConstructor(new[] { typeof(Type), typeof(object) }),
+                                typeof(TypedParameter).GetMatchingConstructor(new[] { typeof(Type), typeof(object) }),
                                 Expression.Constant(p.Type, typeof(Type)), Expression.Convert(p, typeof(object))))
                             .OfType<Expression>()
                             .ToArray();
@@ -190,7 +191,7 @@ namespace Autofac.Features.GeneratedFactories
                 case ParameterMapping.ByPosition:
                     return creatorParams
                         .Select((p, i) => Expression.New(
-                                typeof(PositionalParameter).GetConstructor(new[] { typeof(int), typeof(object) }),
+                                typeof(PositionalParameter).GetMatchingConstructor(new[] { typeof(int), typeof(object) }),
                                 Expression.Constant(i, typeof(int)), Expression.Convert(p, typeof(object))))
                             .OfType<Expression>()
                             .ToArray();
@@ -201,7 +202,7 @@ namespace Autofac.Features.GeneratedFactories
                 default:
                     return creatorParams
                             .Select(p => Expression.New(
-                                typeof(NamedParameter).GetConstructor(new[] { typeof(string), typeof(object) }),
+                                typeof(NamedParameter).GetMatchingConstructor(new[] { typeof(string), typeof(object) }),
                                 Expression.Constant(p.Name, typeof(string)), Expression.Convert(p, typeof(object))))
                             .OfType<Expression>()
                             .ToArray();

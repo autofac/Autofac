@@ -110,9 +110,7 @@
     <Compile Include="RequestLifetimeScopeProviderFixture.cs" />
     <Compile Include="StubLifetimeScopeProvider.cs" />
     <Compile Include="TestTypes.cs" />
-    <Compile Include="ViewRegistrationSourceFixture.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
+    <Compile Include="ViewRegistrationSourceFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\Autofac.Integration.Mvc\Autofac.Integration.Mvc.csproj">

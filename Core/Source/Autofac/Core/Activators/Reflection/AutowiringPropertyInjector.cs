@@ -40,18 +40,18 @@ namespace Autofac.Core.Activators.Reflection
             var instanceType = instance.GetType();
 
             foreach (var property in instanceType
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .GetTypeInfo().DeclaredProperties
                 .Where(pi => pi.CanWrite))
             {
                 var propertyType = property.PropertyType;
 
-                if (propertyType.IsValueType && !propertyType.IsEnum)
+                if (propertyType.GetTypeInfo().IsValueType && !propertyType.GetTypeInfo().IsEnum)
                     continue;
 
-                if (propertyType.IsArray && propertyType.GetElementType().IsValueType)
+                if (propertyType.IsArray && propertyType.GetElementType().GetTypeInfo().IsValueType)
                     continue;
 
-                if (propertyType.IsGenericEnumerableInterfaceType() && propertyType.GetGenericArguments()[0].IsValueType)
+                if (propertyType.IsGenericEnumerableInterfaceType() && propertyType.GetTypeInfo().GenericTypeArguments.ToArray()[0].GetTypeInfo().IsValueType)
                     continue;
 
                 if (property.GetIndexParameters().Length != 0)
@@ -60,12 +60,11 @@ namespace Autofac.Core.Activators.Reflection
                 if (!context.IsRegistered(propertyType))
                     continue;
 
-                var accessors = property.GetAccessors(false);
-                if (accessors.Length == 1 && accessors[0].ReturnType != typeof(void))
+                if (!property.SetMethod.IsPublic)
                     continue;
 
                 if (!overrideSetValues &&
-                    accessors.Length == 2 &&
+                    property.CanRead && property.CanWrite &&
                     (property.GetValue(instance, null) != null))
                     continue;
 

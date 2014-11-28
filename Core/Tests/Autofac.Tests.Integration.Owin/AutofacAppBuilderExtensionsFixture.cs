@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using Autofac.Core.Lifetime;
 using Autofac.Integration.Owin;
 using Microsoft.Owin.Testing;
@@ -42,6 +43,38 @@ namespace Autofac.Tests.Integration.Owin
                 server.HttpClient.GetAsync("/").Wait();
                 Assert.That(TestMiddleware.LifetimeScope.Tag, Is.EqualTo(MatchingScopeLifetimeTags.RequestLifetimeScopeTag));
             }
+        }
+
+        [Test]
+        public void DisposeContainerOnAppDisposing()
+        {
+            var container = new Mock<ILifetimeScope>();
+            var app = new Mock<IAppBuilder>();
+            var cts = new CancellationTokenSource();
+            var props = new Dictionary<string, object> {{Constants.OwinHostOnAppDisposingKey, cts.Token}};
+            app.Setup(mock => mock.Properties).Returns(props);
+
+            OwinExtensions.DisposeContainerOnAppDisposing(app.Object, container.Object);
+
+            app.VerifyAll();
+
+            cts.Cancel();
+
+            container.Verify(c => c.Dispose(), Times.Once);
+        }
+
+        [Test]
+        public void DisposeContainerOnAppDisposing_IgnoresDefaultToken()
+        {
+            var container = new Mock<ILifetimeScope>();
+            var app = new Mock<IAppBuilder>();
+            app.Setup(mock => mock.Properties).Returns(new Dictionary<string, object>());
+
+            OwinExtensions.DisposeContainerOnAppDisposing(app.Object, container.Object);
+
+            app.VerifyAll();
+
+            container.Verify(c => c.Dispose(), Times.Never);
         }
     }
 }

@@ -27,6 +27,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Security;
+using System.Threading;
 using Autofac;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
@@ -88,6 +89,28 @@ namespace Owin
 
             foreach (var typedService in typedServices)
                 app.Use(typedService);
+        }
+
+        /// <summary>
+        /// Registers an event handler on the OWIN <c>host.OnAppDisposing</c> property
+        /// that will dispose <paramref name="container"/> when the OWIN application is
+        /// shutting down.
+        /// </summary>
+        /// <param name="app">The application builder.</param>
+        /// <param name="container">The Autofac application lifetime scope/container.</param>
+        /// <returns>The application builder.</returns>
+        [SecuritySafeCritical]
+        public static IAppBuilder DisposeContainerOnAppDisposing(this IAppBuilder app, ILifetimeScope container)
+        {
+            var context = new OwinContext(app.Properties);
+            var token = context.Get<CancellationToken>(Constants.OwinHostOnAppDisposingKey);
+
+            if (token != CancellationToken.None)
+            {
+                token.Register(container.Dispose);
+            }
+
+            return app;
         }
     }
 }

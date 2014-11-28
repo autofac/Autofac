@@ -63,8 +63,8 @@ namespace Autofac.Util
 
         static IEnumerable<Type> TypesAssignableFrom(Type candidateType)
         {
-            return candidateType.GetInterfaces().Concat(
-                Traverse.Across(candidateType, t => t.BaseType));
+            return candidateType.GetTypeInfo().ImplementedInterfaces.Concat(
+                Traverse.Across(candidateType, t => t.GetTypeInfo().BaseType));
         }
 
         public static bool IsGenericTypeDefinedBy(this Type @this, Type openGeneric)
@@ -72,7 +72,7 @@ namespace Autofac.Util
             if (@this == null) throw new ArgumentNullException("this");
             if (openGeneric == null) throw new ArgumentNullException("openGeneric");
 
-            return !@this.ContainsGenericParameters && @this.IsGenericType && @this.GetGenericTypeDefinition() == openGeneric;
+            return !@this.GetTypeInfo().ContainsGenericParameters && @this.GetTypeInfo().IsGenericType && @this.GetGenericTypeDefinition() == openGeneric;
         }
 
         public static bool IsClosedTypeOf(this Type @this, Type openGeneric)
@@ -80,59 +80,59 @@ namespace Autofac.Util
             if (@this == null) throw new ArgumentNullException("this");
             if (openGeneric == null) throw new ArgumentNullException("openGeneric");
 
-            return TypesAssignableFrom(@this).Any(t => t.IsGenericType && !@this.ContainsGenericParameters && t.GetGenericTypeDefinition() == openGeneric);
+            return TypesAssignableFrom(@this).Any(t => t.GetTypeInfo().IsGenericType && !@this.GetTypeInfo().ContainsGenericParameters && t.GetGenericTypeDefinition() == openGeneric);
         }
 
         public static bool IsDelegate(this Type type)
         {
             if (type == null) throw new ArgumentNullException("type");
-            return type.IsSubclassOf(typeof(Delegate));
+            return type.GetTypeInfo().IsSubclassOf(typeof(Delegate));
         }
 
         public static Type FunctionReturnType(this Type type)
         {
             if (type == null) throw new ArgumentNullException("type");
-            var invoke = type.GetMethod("Invoke");
+            var invoke = type.GetTypeInfo().GetDeclaredMethod("Invoke");
             Enforce.NotNull(invoke);
             return invoke.ReturnType;
         }
 
         public static bool IsCompatibleWithGenericParameterConstraints(this Type genericTypeDefinition, Type[] parameters)
         {
-            var genericArgumentDefinitions = genericTypeDefinition.GetGenericArguments();
+            var genericArgumentDefinitions = genericTypeDefinition.GetTypeInfo().GenericTypeParameters;
 
             for (var i = 0; i < genericArgumentDefinitions.Length; ++i)
             {
                 var argumentDefinition = genericArgumentDefinitions[i];
                 var parameter = parameters[i];
 
-                if (argumentDefinition.GetGenericParameterConstraints()
+                if (argumentDefinition.GetTypeInfo().GetGenericParameterConstraints()
                     .Any(constraint => !ParameterCompatibleWithTypeConstraint(parameter, constraint)))
                 {
                     return false;
                 }
 
-                var specialConstraints = argumentDefinition.GenericParameterAttributes;
+                var specialConstraints = argumentDefinition.GetTypeInfo().GenericParameterAttributes;
 
                 if ((specialConstraints & GenericParameterAttributes.DefaultConstructorConstraint)
                     != GenericParameterAttributes.None)
                 {
-                    if (!parameter.IsValueType && parameter.GetConstructor(EmptyTypes) == null)
+                    if (!parameter.GetTypeInfo().IsValueType && parameter.GetTypeInfo().DeclaredConstructors.All(c => c.GetParameters().Count() != 0))
                         return false;
                 }
 
                 if ((specialConstraints & GenericParameterAttributes.ReferenceTypeConstraint)
                     != GenericParameterAttributes.None)
                 {
-                    if (parameter.IsValueType)
+                    if (parameter.GetTypeInfo().IsValueType)
                         return false;
                 }
 
                 if ((specialConstraints & GenericParameterAttributes.NotNullableValueTypeConstraint)
                     != GenericParameterAttributes.None)
                 {
-                    if (!parameter.IsValueType ||
-                        (parameter.IsGenericType && IsGenericTypeDefinedBy(parameter, typeof(Nullable<>))))
+                    if (!parameter.GetTypeInfo().IsValueType ||
+                        (parameter.GetTypeInfo().IsGenericType && IsGenericTypeDefinedBy(parameter, typeof(Nullable<>))))
                         return false;
                 }
             }
@@ -142,20 +142,20 @@ namespace Autofac.Util
 
         static bool ParameterCompatibleWithTypeConstraint(Type parameter, Type constraint)
         {
-            return constraint.IsAssignableFrom(parameter) ||
-                   Traverse.Across(parameter, p => p.BaseType)
-                       .Concat(parameter.GetInterfaces())
+            return constraint.GetTypeInfo().IsAssignableFrom(parameter.GetTypeInfo()) ||
+                   Traverse.Across(parameter, p => p.GetTypeInfo().BaseType)
+                       .Concat(parameter.GetTypeInfo().ImplementedInterfaces)
                        .Any(p => ParameterEqualsConstraint(p, constraint));
         }
 
         [SuppressMessage("Microsoft.Design", "CA1031", Justification = "Implementing a real TryMakeGenericType is not worth the effort.")]
         static bool ParameterEqualsConstraint(Type parameter, Type constraint)
         {
-            var genericArguments = parameter.GetGenericArguments();
-            if (genericArguments.Length > 0 && constraint.IsGenericType)
+            var genericArguments = parameter.GetTypeInfo().GenericTypeArguments;
+            if (genericArguments.Length > 0 && constraint.GetTypeInfo().IsGenericType)
             {
                 var typeDefinition = constraint.GetGenericTypeDefinition();
-                if (typeDefinition.GetGenericArguments().Length == genericArguments.Length)
+                if (typeDefinition.GetTypeInfo().GenericTypeParameters.Length == genericArguments.Length)
                 {
                     try
                     {

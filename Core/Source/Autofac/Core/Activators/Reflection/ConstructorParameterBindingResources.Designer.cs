@@ -10,6 +10,7 @@
 
 namespace Autofac.Core.Activators.Reflection {
     using System;
+    using System.Reflection;
     
     
     /// <summary>
@@ -39,7 +40,12 @@ namespace Autofac.Core.Activators.Reflection {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Activators.Reflection.ConstructorParameterBindingResources", typeof(ConstructorParameterBindingResources).Assembly);
+#if !ASPNETCORE50
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Activators.Reflection.ConstructorParameterBindingResources", typeof(ConstructorParameterBindingResources).GetTypeInfo().Assembly);
+#else
+                    //TODO: Removed namespace to work around https://github.com/aspnet/KRuntime/issues/738
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.ConstructorParameterBindingResources", typeof(ConstructorParameterBindingResources).GetTypeInfo().Assembly);
+#endif
                     resourceMan = temp;
                 }
                 return resourceMan;

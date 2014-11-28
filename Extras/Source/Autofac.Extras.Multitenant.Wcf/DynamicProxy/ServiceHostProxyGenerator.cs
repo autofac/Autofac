@@ -13,7 +13,7 @@ namespace Autofac.Extras.Multitenant.Wcf.DynamicProxy
     /// <remarks>
     /// <para>
     /// The WCF service host has very specific requirements around the object type that
-    /// you pass in when you call <see cref="System.ServiceModel.Activation.ServiceHostFactory.CreateServiceHost(Type,Uri[])"/>.
+    /// you pass in when you call <see cref="System.ServiceModel.Activation.ServiceHostFactory.CreateServiceHost(string, Uri[])"/>.
     /// </para>
     /// <para>
     /// If you have a type that has a <see cref="System.ServiceModel.ServiceContractAttribute"/>

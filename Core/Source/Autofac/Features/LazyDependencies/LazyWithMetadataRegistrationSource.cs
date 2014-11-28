@@ -43,8 +43,7 @@ namespace Autofac.Features.LazyDependencies
     /// </summary>
     class LazyWithMetadataRegistrationSource : IRegistrationSource
     {
-        static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyWithMetadataRegistrationSource).GetMethod(
-            "CreateLazyRegistration", BindingFlags.Static | BindingFlags.NonPublic);
+        static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyWithMetadataRegistrationSource).GetTypeInfo().GetDeclaredMethod("CreateLazyRegistration");
 
         delegate IComponentRegistration RegistrationCreator(Service service, IComponentRegistration valueRegistration);
 
@@ -59,17 +58,17 @@ namespace Autofac.Features.LazyDependencies
             if (swt == null || lazyType == null || !swt.ServiceType.IsGenericTypeDefinedBy(lazyType))
                 return Enumerable.Empty<IComponentRegistration>();
 
-            var valueType = swt.ServiceType.GetGenericArguments()[0];
-            var metaType = swt.ServiceType.GetGenericArguments()[1];
+            var genericTypeArguments = swt.ServiceType.GetTypeInfo().GenericTypeArguments.ToArray();
+            var valueType = genericTypeArguments[0];
+            var metaType = genericTypeArguments[1];
 
-            if (!metaType.IsClass)
+            if (!metaType.GetTypeInfo().IsClass)
                 return Enumerable.Empty<IComponentRegistration>();
 
             var valueService = swt.ChangeType(valueType);
 
-            var registrationCreator = (RegistrationCreator)Delegate.CreateDelegate(
-                typeof(RegistrationCreator),
-                CreateLazyRegistrationMethod.MakeGenericMethod(valueType, metaType));
+            var registrationCreator = (RegistrationCreator)(CreateLazyRegistrationMethod.MakeGenericMethod(
+                valueType, metaType)).CreateDelegate(typeof(RegistrationCreator));
 
             return registrationAccessor(valueService)
                 .Select(v => registrationCreator(service, v));
@@ -109,7 +108,7 @@ namespace Autofac.Features.LazyDependencies
         static Type GetLazyType(IServiceWithType serviceWithType)
         {
             return serviceWithType != null
-                   && serviceWithType.ServiceType.IsGenericType
+                   && serviceWithType.ServiceType.GetTypeInfo().IsGenericType
                    && serviceWithType.ServiceType.GetGenericTypeDefinition().FullName == "System.Lazy`2"
                        ? serviceWithType.ServiceType.GetGenericTypeDefinition()
                        : null;

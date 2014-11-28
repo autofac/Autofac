@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Registration;
@@ -164,7 +165,7 @@ namespace Autofac.Builder
             var limitType = activator.LimitType;
             if (limitType != typeof(object))
                 foreach (var ts in services.OfType<IServiceWithType>())
-                    if (!ts.ServiceType.IsAssignableFrom(limitType))
+                    if (!ts.ServiceType.GetTypeInfo().IsAssignableFrom(limitType.GetTypeInfo()))
                         throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
                             RegistrationBuilderResources.ComponentDoesNotSupportService, limitType, ts));
 

@@ -31,7 +31,7 @@ namespace Autofac.Util
             }
             try
             {
-                return assembly.GetTypes();
+                return assembly.DefinedTypes.Select(t => t.AsType());
             }
             catch (ReflectionTypeLoadException ex)
             {
