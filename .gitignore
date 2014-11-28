@@ -125,6 +125,7 @@ ClientBin/
 *.publishsettings
 node_modules/
 bower_components/
+wwwroot/
 
 # RIA/Silverlight projects
 Generated_Code/
