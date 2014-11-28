@@ -7,6 +7,7 @@
         "Microsoft.Framework.DependencyInjection": "1.0.0-beta1"
     },
     "frameworks": {
+        "aspnet50": {},
         "aspnetcore50": {
             "dependencies": {
                 "System.Runtime": "4.0.20-beta-22231"
