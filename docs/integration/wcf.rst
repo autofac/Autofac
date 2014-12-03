@@ -323,6 +323,18 @@ It is possible to manually perform constructor injection for service marked with
     // Pass it into the ServiceHost preventing it from creating an instance with the default constructor.
     var host = new ServiceHost(service, new Uri("http://localhost:8080/Service1"));
 
+Using Decorators With Services
+------------------------------
+
+The standard Autofac service hosting works well for almost every case, but if you are using :doc:`decorators <../advanced/adapters-decorators>` on your WCF service implementation (not the dependencies, but the actual service implementation) then you need to use the :doc:`multitenant WCF service hosting mechanism <../advanced/multitenant>` rather than the standard Autofac service host.
+
+You do not need to use a multitenant container, pass a tenant ID, or use any of the other multitenant options, but you do need to use the multitenant service host.
+
+The reason for this is that WCF hosting (internal to .NET) requires the host be initialized with a concrete type (not abstract/interface) and once the type is provided you can't change it. When using decorators, the decorator is a generated type that isn't available until you resolve the first instance... but that happens after the host needs the type name. The multitenant hosting mechanism works around this by adding another dynamic proxy - an empty, target-free concrete class that implements the service interface. When the WCF host needs an implementation, one of these dynamic proxies gets fired up and the actual implementation (in this case, your decorated WCF implementation) will be the target.
+
+Again, you only need to do this if you're decorating the service implementation class itself. If you are only decorating/adapting dependencies of the service implementation, you do not need the multitenant host. Standard hosting will work.
+
+
 Example Implementation
 ----------------------
 
