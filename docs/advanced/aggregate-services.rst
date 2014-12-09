@@ -76,7 +76,7 @@ Finally, we register the aggregate service interface.
 .. sourcecode:: csharp
 
     using Autofac;
-    using Autofac.Contrib.AggregateService;
+    using Autofac.Extras.AggregateService;
     //...
 
     var builder = new ContainerBuilder();
