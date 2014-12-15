@@ -4,8 +4,6 @@
     "description": "Core assembly for the Autofac Inversion of Control container.",
     "resources": "**/**/*.resx",
     "frameworks": {
-        // Output is folder "portable-net45+win+wpa81+wp80"
-        // but want it to be "portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1"
         ".NETPortable,Version=v4.5,Profile=Profile259": {
             "frameworkAssemblies": {
                 "System.Collections": "",
