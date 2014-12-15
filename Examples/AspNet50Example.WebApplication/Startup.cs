@@ -59,7 +59,7 @@ namespace AspNet50Example.WebApplication
                 ContainerBuilder builder = new ContainerBuilder();
 
                 // Create the container and use the default application services as a fallback.
-                AutofacRegistration.Populate(builder, services, fallbackServiceProvider: app.ApplicationServices);
+                builder.Populate(services, fallbackServiceProvider: app.ApplicationServices);
 
                 // Build the container.
                 IContainer container = builder.Build();
