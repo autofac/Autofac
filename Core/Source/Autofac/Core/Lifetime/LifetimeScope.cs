@@ -194,13 +194,18 @@ namespace Autofac.Core.Lifetime
                 .Where(src => src.IsAdapterForIndividualComponents))
                 builder.RegisterSource(source);
 
-            var parents = Traverse.Across<ISharingLifetimeScope>(this, s => s.ParentLifetimeScope)
+
+            // Issue #272: Only the most nested parent registry with HasLocalComponents is registered as an external source
+            // It provides all non-adapting registrations from itself and from it's parent registries
+            var parent = Traverse.Across<ISharingLifetimeScope>(this, s => s.ParentLifetimeScope)
                 .Where(s => s.ComponentRegistry.HasLocalComponents)
                 .Select(s => new ExternalRegistrySource(s.ComponentRegistry))
-                .Reverse();
+                .FirstOrDefault();
 
-            foreach (var external in parents)
-                builder.RegisterSource(external);
+            if (parent != null)
+            {
+                builder.RegisterSource(parent);
+            }
 
             configurationAction(builder);
 

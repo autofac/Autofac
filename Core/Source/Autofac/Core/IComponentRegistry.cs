@@ -73,7 +73,10 @@ namespace Autofac.Core
         /// have been invoked.
         /// </summary>
         /// <param name="service">The service for which registrations are sought.</param>
-        /// <returns>Registrations supporting <paramref name="service"/>.</returns>
+        /// <returns>
+        ///  Registrations supporting <paramref name="service"/>.
+        ///  Default registration for the service must be first in the returned sequence.
+        /// </returns>
         IEnumerable<IComponentRegistration> RegistrationsFor(Service service);
 
         /// <summary>

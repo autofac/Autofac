@@ -105,7 +105,6 @@ namespace Autofac.Tests.Core.Lifetime
         }
 
         [Test]
-        [Ignore("Issue #272")]
         public void LocalRegistrationCanPreserveParentAsDefault()
         {
             var o = new object();

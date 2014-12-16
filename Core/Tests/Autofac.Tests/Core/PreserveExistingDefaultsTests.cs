@@ -93,7 +93,6 @@ namespace Autofac.Tests.Core
         }
 
         [Test]
-        [Ignore("Issue #272")]
         public void NestedScope_ComplexConsumerServicesResolve()
         {
             // This is an all-around "integration test" with property injection,
@@ -136,7 +135,6 @@ namespace Autofac.Tests.Core
         }
 
         [Test]
-        [Ignore("Issue #272")]
         public void NestedScope_PreserveDefaultsCanFallBackToNestedParent()
         {
             var builder = new ContainerBuilder();
@@ -149,7 +147,6 @@ namespace Autofac.Tests.Core
         }
 
         [Test]
-        [Ignore("Issue #272")]
         public void NestedScope_PreserveDefaultsCanFallBackToParent()
         {
             var builder = new ContainerBuilder();
@@ -160,7 +157,6 @@ namespace Autofac.Tests.Core
         }
 
         [Test]
-        [Ignore("Issue #272")]
         public void NestedScope_PreserveDefaultsCanFallBackToParentThroughMultipleNesting()
         {
             var builder = new ContainerBuilder();

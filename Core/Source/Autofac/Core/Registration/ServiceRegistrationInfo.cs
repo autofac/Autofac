@@ -15,7 +15,23 @@ namespace Autofac.Core.Registration
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields", Justification="The _service field is useful in debugging and diagnostics.")]
         readonly Service _service;
 
-        readonly LinkedList<IComponentRegistration> _implementations = new LinkedList<IComponentRegistration>();
+        /// <summary>
+        ///  List of explicit default service implementations. Overriding default implementations are appended to the end, 
+        ///  so the enumeration should begin from the end too and the most default implementation is coming last.
+        /// </summary>
+        readonly List<IComponentRegistration> _defaultImplementations = new List<IComponentRegistration>();
+
+        /// <summary>
+        ///  List of service implementations coming from sources. Sources have priority over preserve-default implementations.
+        ///  Implementations from sources are enumerated in preserve-default order, so the most default implementation is coming first.
+        /// </summary>
+        readonly List<IComponentRegistration> _sourceImplementations = new List<IComponentRegistration>(); 
+
+        /// <summary>
+        ///  List of explicit service implementations specified with PreserveExistingDefaults option.
+        ///  Enumerated in preserve-defaults order, so the most default implementation is coming first.
+        /// </summary>
+        readonly List<IComponentRegistration> _preserveDefaultImplementations = new List<IComponentRegistration>();
 
         /// <summary>
         /// Used for bookkeeping so that the same source is not queried twice (may be null.)
@@ -39,14 +55,14 @@ namespace Autofac.Core.Registration
         public bool IsInitialized { get; private set; }
 
         /// <summary>
-        /// The known implementations.
+        /// The known implementations. The first implementation is a default one.
         /// </summary>
         public IEnumerable<IComponentRegistration> Implementations
         {
             get
             {
                 RequiresInitialization();
-                return _implementations;
+                return Enumerable.Reverse(_defaultImplementations).Concat(_sourceImplementations).Concat(_preserveDefaultImplementations);
             }
         }
 
@@ -68,23 +84,50 @@ namespace Autofac.Core.Registration
             }
         }
 
-        bool Any { get { return _implementations.First != null; } }
+        bool Any
+        {
+            get
+            {
+                return _defaultImplementations.Any() || 
+                       _sourceImplementations.Any() ||
+                       _preserveDefaultImplementations.Any();
+            }
+        }
 
-        public void AddImplementation(IComponentRegistration registration, bool preserveDefaults)
+        IComponentRegistration DefaultImplementation
+        {
+            get
+            {
+                return _defaultImplementations.LastOrDefault() ??
+                       _sourceImplementations.FirstOrDefault() ??
+                       _preserveDefaultImplementations.FirstOrDefault();
+            }
+        }
+
+        public void AddImplementation(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource)
         {
             if (preserveDefaults)
             {
-                _implementations.AddLast(registration);
+                if (originatedFromSource)
+                    _sourceImplementations.Add(registration);
+                else
+                    _preserveDefaultImplementations.Add(registration);
             }
             else
             {
-                if (Any)
+                if (originatedFromSource)
+                    throw new ArgumentOutOfRangeException("originatedFromSource");
+
+#if DEBUG
+                // Is this debug block still required?
+                var defaultImplementation = DefaultImplementation;
+                if (defaultImplementation != null)
                     Debug.WriteLine(String.Format(
                         CultureInfo.InvariantCulture,
                         "[Autofac] Overriding default for: '{0}' with: '{1}' (was '{2}')",
-                        _service, registration, _implementations.First.Value));
-
-                _implementations.AddFirst(registration);
+                        _service, registration, defaultImplementation));
+#endif
+                _defaultImplementations.Add(registration);
             }
         }
 
@@ -92,15 +135,11 @@ namespace Autofac.Core.Registration
         {
             RequiresInitialization();
 
-            if (Any)
-            {
-                registration = _implementations.First.Value;
-                return true;
-            }
-
-            registration = null;
-            return false;
+            registration = DefaultImplementation;
+            return registration != null;
         }
+
+
 
         public void Include(IRegistrationSource source)
         {
