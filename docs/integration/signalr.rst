@@ -104,6 +104,9 @@ To make managing your hub dependency lifetimes easier you can have the root life
 
 If this is a common pattern in your application, you might consider creating a base/abstract hub from which other hubs can derive to save all the copy/paste creation/disposal of scopes.
 
+**Injecting a lifetime scope into your hub does not give you per-request lifetime scopes.** It just gives you a way to manage dependency lifetime in a more active way than resolving everything from the root container. Using ``InstancePerRequest``, even with this workaround, will still fail. You may want to read :doc:`the FAQ on per-request scope <../faq/per-request-scope>` for more info.
+
+
 OWIN Integration
 ================
 
