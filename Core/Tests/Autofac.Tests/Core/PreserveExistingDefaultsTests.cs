@@ -200,6 +200,23 @@ namespace Autofac.Tests.Core
             Assert.IsTrue(resolved.Any(s => s == "s4"), "The fourth service wasn't present.");
         }
 
+        [Test]
+        [Ignore("Issue #272")]
+        public void NestedScope_PreserveSameOrderOfAdaptedRegistrations()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance("s1").PreserveExistingDefaults();
+            builder.RegisterAdapter((object from) => "s2_adapted");
+            builder.RegisterInstance(new object());
+            var container = builder.Build();
+            var rootDefault = container.Resolve<string>();
+
+            var scope = container.BeginLifetimeScope(b => { }); // create nested registry
+            var nestedDefault = scope.Resolve<string>();
+
+            Assert.That(nestedDefault, Is.SameAs(rootDefault), "Nested scope should return same default as parent, if there were no overrides");
+        }
+
         private class ComplexConsumer
         {
             public int Number { get; private set; }
