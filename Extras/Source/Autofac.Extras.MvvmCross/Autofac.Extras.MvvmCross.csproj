@@ -43,9 +43,6 @@
     <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Autofac">
-      <HintPath>..\..\..\packages\Autofac.3.5.0\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\Autofac.dll</HintPath>
-    </Reference>
     <Compile Include="AutofacMvxIocProviderResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -60,6 +57,9 @@
     </CodeAnalysisDictionary>
     <Compile Include="Properties\VersionAssemblyInfo.cs" />
     <Compile Include="AutofacMvxIocProvider.cs" />
+    <Reference Include="Autofac">
+      <HintPath>..\..\..\packages\Autofac.3.5.2\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="Cirrious.CrossCore">
       <HintPath>..\..\..\packages\MvvmCross.HotTuna.CrossCore.3.2.1\lib\portable-win+net45+wp8+win8+wpa81+MonoTouch+MonoAndroid\Cirrious.CrossCore.dll</HintPath>
     </Reference>
