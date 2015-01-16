@@ -260,7 +260,7 @@ The following multiple style services are supported:
 - ``ValueProviderFactory``
 - ``MediaTypeFormatter``
 
-In the list of the multiple-style services above the ``MediaTypeFormatter`` is actually the odd one out. Technically, it isn't actually a service and is added to the ``MediaTypeFormatterCollection`` on the ``HttpControllerSettings`` instance and not the ``ControllerServices`` container. We figred that there was no reason to exclude ``MediaTypeFormatter`` instances from dependency injection support and made sure that they could be resolved from the container per-controller type, too.
+In the list of the multiple-style services above the ``MediaTypeFormatter`` is actually the odd one out. Technically, it isn't actually a service and is added to the ``MediaTypeFormatterCollection`` on the ``HttpControllerSettings`` instance and not the ``ControllerServices`` container. We figured that there was no reason to exclude ``MediaTypeFormatter`` instances from dependency injection support and made sure that they could be resolved from the container per-controller type, too.
 
 Service Registration
 --------------------
