@@ -31,7 +31,7 @@
 				$(BuildBinDirectory)\**\Autofac.Extras.Multitenant.xml;
 				$(BuildBinDirectory)\**\Autofac.Extras.Multitenant.pdb" />
 			<ZipFiles Include="
-				$(BuildBinDirectory)\..\..\License.txt;
+				$(BuildBinDirectory)\..\..\LICENSE;
 				$(BuildBinDirectory)\net40\Autofac.Extras.Multitenant.dll;
 				$(BuildBinDirectory)\net40\Autofac.Extras.Multitenant.xml;
 				$(BuildBinDirectory)\net40\Autofac.Extras.Multitenant.pdb" />

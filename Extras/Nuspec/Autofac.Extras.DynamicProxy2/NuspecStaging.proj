@@ -31,7 +31,7 @@
 				$(BuildBinDirectory)\**\Autofac.Extras.DynamicProxy2.xml;
 				$(BuildBinDirectory)\**\Autofac.Extras.DynamicProxy2.pdb" />
 			<ZipFiles Include="
-				$(BuildBinDirectory)\..\..\License.txt;
+				$(BuildBinDirectory)\..\..\LICENSE;
 				$(BuildBinDirectory)\net40\Autofac.Extras.DynamicProxy2.dll;
 				$(BuildBinDirectory)\net40\Autofac.Extras.DynamicProxy2.xml;
 				$(BuildBinDirectory)\net40\Autofac.Extras.DynamicProxy2.pdb" />

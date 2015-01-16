@@ -31,7 +31,7 @@
 				$(BuildBinDirectory)\**\Autofac.Extras.CommonServiceLocator.xml;
 				$(BuildBinDirectory)\**\Autofac.Extras.CommonServiceLocator.pdb" />
 			<ZipFiles Include="
-				$(BuildBinDirectory)\..\..\License.txt;
+				$(BuildBinDirectory)\..\..\LICENSE;
 				$(BuildBinDirectory)\net40\Autofac.Extras.CommonServiceLocator.dll;
 				$(BuildBinDirectory)\net40\Autofac.Extras.CommonServiceLocator.xml;
 				$(BuildBinDirectory)\net40\Autofac.Extras.CommonServiceLocator.pdb" />

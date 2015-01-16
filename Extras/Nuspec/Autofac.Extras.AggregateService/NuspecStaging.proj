@@ -31,7 +31,7 @@
 				$(BuildBinDirectory)\**\Autofac.Extras.AggregateService.xml;
 				$(BuildBinDirectory)\**\Autofac.Extras.AggregateService.pdb" />
 			<ZipFiles Include="
-				$(BuildBinDirectory)\..\..\License.txt;
+				$(BuildBinDirectory)\..\..\LICENSE;
 				$(BuildBinDirectory)\net40\Autofac.Extras.AggregateService.dll;
 				$(BuildBinDirectory)\net40\Autofac.Extras.AggregateService.xml;
 				$(BuildBinDirectory)\net40\Autofac.Extras.AggregateService.pdb" />

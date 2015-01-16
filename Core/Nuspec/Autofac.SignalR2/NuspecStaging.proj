@@ -31,7 +31,7 @@
 				$(BuildBinDirectory)\**\Autofac.Integration.SignalR.xml;
 				$(BuildBinDirectory)\**\Autofac.Integration.SignalR.pdb" />
 			<ZipFiles Include="
-				$(BuildBinDirectory)\..\..\License.txt;
+				$(BuildBinDirectory)\..\..\LICENSE;
 				$(BuildBinDirectory)\net45\Autofac.Integration.SignalR.dll;
 				$(BuildBinDirectory)\net45\Autofac.Integration.SignalR.xml;
 				$(BuildBinDirectory)\net45\Autofac.Integration.SignalR.pdb" />

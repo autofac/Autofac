@@ -31,7 +31,7 @@
 				$(BuildBinDirectory)\**\Autofac.Integration.WebApi.Owin.xml;
 				$(BuildBinDirectory)\**\Autofac.Integration.WebApi.Owin.pdb" />
 			<ZipFiles Include="
-				$(BuildBinDirectory)\..\..\License.txt;
+				$(BuildBinDirectory)\..\..\LICENSE;
 				$(BuildBinDirectory)\net45\Autofac.Integration.WebApi.Owin.dll;
 				$(BuildBinDirectory)\net45\Autofac.Integration.WebApi.Owin.xml;
 				$(BuildBinDirectory)\net45\Autofac.Integration.WebApi.Owin.pdb" />
