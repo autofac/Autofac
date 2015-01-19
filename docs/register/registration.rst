@@ -14,7 +14,7 @@ Each component exposes one or more **services** that are wired up using the ``As
     var builder = new ContainerBuilder();
 
     // Register types that expose interfaces...
-    builder.RegisterType<ConsoleLogger>.As<ILogger>();
+    builder.RegisterType<ConsoleLogger>().As<ILogger>();
 
     // Register instances of objects you create...
     var output = new StringWriter();
