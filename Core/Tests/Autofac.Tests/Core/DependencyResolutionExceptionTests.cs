@@ -1,15 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Autofac.Core;
+﻿using Autofac.Core;
 using NUnit.Framework;
+using System.IO;
 
 namespace Autofac.Tests.Core
 {
     [TestFixture]
     public class DependencyResolutionExceptionTests
     {
+        [SetUp]
+        public void SetUp()
+        {
+            //Explicitly set culture for comparison of Exception strings
+            System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+            System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.InvariantCulture;
+        }
+
         [Test(Description = "Issue 343: The inner exception message should be included in the main exception message.")]
         public void Message_InnerExceptionMessageIncluded()
         {
