@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.22512.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{2D17C2B6-9795-40D3-951A-6A62A3A0FA7C}"
 EndProject
@@ -143,6 +143,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Tests.Integration.Mvc.Owin", "Core\Tests\Autofac.Tests.Integration.WebApi.Mvc\Autofac.Tests.Integration.Mvc.Owin.csproj", "{C8CA150E-ADBC-47DE-A9EB-AACC4621C091}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OwinWebApi.ConsoleApplication", "Examples\OwinWebApi.ConsoleApplication\OwinWebApi.ConsoleApplication.csproj", "{07EC4968-EE0B-4EA9-9ED8-165CED3BB62B}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Autofac.AspNetCore50", "Core\Source\Autofac\Autofac.AspNetCore50.kproj", "{EF9CFC2A-7619-4128-A71D-1F55721FE4B7}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Autofac.Integration.AspNet", "Core\Source\Autofac.Integration.AspNet\Autofac.Integration.AspNet.kproj", "{693F7688-623C-4330-896E-F66D16C69CC7}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "AspNet50Example.WebApplication", "Examples\AspNet50Example.WebApplication\AspNet50Example.WebApplication.kproj", "{8BE3DA70-CDBE-4ADA-ACAF-72F8AFCECE07}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -729,6 +735,54 @@ Global
 		{07EC4968-EE0B-4EA9-9ED8-165CED3BB62B}.Release|ARM.ActiveCfg = Release|Any CPU
 		{07EC4968-EE0B-4EA9-9ED8-165CED3BB62B}.Release|x64.ActiveCfg = Release|Any CPU
 		{07EC4968-EE0B-4EA9-9ED8-165CED3BB62B}.Release|x86.ActiveCfg = Release|Any CPU
+		{EF9CFC2A-7619-4128-A71D-1F55721FE4B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF9CFC2A-7619-4128-A71D-1F55721FE4B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF9CFC2A-7619-4128-A71D-1F55721FE4B7}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{EF9CFC2A-7619-4128-A71D-1F55721FE4B7}.Debug|ARM.Build.0 = Debug|Any CPU
+		{EF9CFC2A-7619-4128-A71D-1F55721FE4B7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EF9CFC2A-7619-4128-A71D-1F55721FE4B7}.Debug|x64.Build.0 = Debug|Any CPU
+		{EF9CFC2A-7619-4128-A71D-1F55721FE4B7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EF9CFC2A-7619-4128-A71D-1F55721FE4B7}.Debug|x86.Build.0 = Debug|Any CPU
+		{EF9CFC2A-7619-4128-A71D-1F55721FE4B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF9CFC2A-7619-4128-A71D-1F55721FE4B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF9CFC2A-7619-4128-A71D-1F55721FE4B7}.Release|ARM.ActiveCfg = Release|Any CPU
+		{EF9CFC2A-7619-4128-A71D-1F55721FE4B7}.Release|ARM.Build.0 = Release|Any CPU
+		{EF9CFC2A-7619-4128-A71D-1F55721FE4B7}.Release|x64.ActiveCfg = Release|Any CPU
+		{EF9CFC2A-7619-4128-A71D-1F55721FE4B7}.Release|x64.Build.0 = Release|Any CPU
+		{EF9CFC2A-7619-4128-A71D-1F55721FE4B7}.Release|x86.ActiveCfg = Release|Any CPU
+		{EF9CFC2A-7619-4128-A71D-1F55721FE4B7}.Release|x86.Build.0 = Release|Any CPU
+		{693F7688-623C-4330-896E-F66D16C69CC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{693F7688-623C-4330-896E-F66D16C69CC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{693F7688-623C-4330-896E-F66D16C69CC7}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{693F7688-623C-4330-896E-F66D16C69CC7}.Debug|ARM.Build.0 = Debug|Any CPU
+		{693F7688-623C-4330-896E-F66D16C69CC7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{693F7688-623C-4330-896E-F66D16C69CC7}.Debug|x64.Build.0 = Debug|Any CPU
+		{693F7688-623C-4330-896E-F66D16C69CC7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{693F7688-623C-4330-896E-F66D16C69CC7}.Debug|x86.Build.0 = Debug|Any CPU
+		{693F7688-623C-4330-896E-F66D16C69CC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{693F7688-623C-4330-896E-F66D16C69CC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{693F7688-623C-4330-896E-F66D16C69CC7}.Release|ARM.ActiveCfg = Release|Any CPU
+		{693F7688-623C-4330-896E-F66D16C69CC7}.Release|ARM.Build.0 = Release|Any CPU
+		{693F7688-623C-4330-896E-F66D16C69CC7}.Release|x64.ActiveCfg = Release|Any CPU
+		{693F7688-623C-4330-896E-F66D16C69CC7}.Release|x64.Build.0 = Release|Any CPU
+		{693F7688-623C-4330-896E-F66D16C69CC7}.Release|x86.ActiveCfg = Release|Any CPU
+		{693F7688-623C-4330-896E-F66D16C69CC7}.Release|x86.Build.0 = Release|Any CPU
+		{8BE3DA70-CDBE-4ADA-ACAF-72F8AFCECE07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BE3DA70-CDBE-4ADA-ACAF-72F8AFCECE07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BE3DA70-CDBE-4ADA-ACAF-72F8AFCECE07}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{8BE3DA70-CDBE-4ADA-ACAF-72F8AFCECE07}.Debug|ARM.Build.0 = Debug|Any CPU
+		{8BE3DA70-CDBE-4ADA-ACAF-72F8AFCECE07}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8BE3DA70-CDBE-4ADA-ACAF-72F8AFCECE07}.Debug|x64.Build.0 = Debug|Any CPU
+		{8BE3DA70-CDBE-4ADA-ACAF-72F8AFCECE07}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8BE3DA70-CDBE-4ADA-ACAF-72F8AFCECE07}.Debug|x86.Build.0 = Debug|Any CPU
+		{8BE3DA70-CDBE-4ADA-ACAF-72F8AFCECE07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BE3DA70-CDBE-4ADA-ACAF-72F8AFCECE07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BE3DA70-CDBE-4ADA-ACAF-72F8AFCECE07}.Release|ARM.ActiveCfg = Release|Any CPU
+		{8BE3DA70-CDBE-4ADA-ACAF-72F8AFCECE07}.Release|ARM.Build.0 = Release|Any CPU
+		{8BE3DA70-CDBE-4ADA-ACAF-72F8AFCECE07}.Release|x64.ActiveCfg = Release|Any CPU
+		{8BE3DA70-CDBE-4ADA-ACAF-72F8AFCECE07}.Release|x64.Build.0 = Release|Any CPU
+		{8BE3DA70-CDBE-4ADA-ACAF-72F8AFCECE07}.Release|x86.ActiveCfg = Release|Any CPU
+		{8BE3DA70-CDBE-4ADA-ACAF-72F8AFCECE07}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -792,6 +846,9 @@ Global
 		{80E903A8-7A29-4B17-B67E-9A769894F415} = {2D17C2B6-9795-40D3-951A-6A62A3A0FA7C}
 		{C8CA150E-ADBC-47DE-A9EB-AACC4621C091} = {531E6E21-94E9-43C7-AF3F-97E78B42D0C8}
 		{07EC4968-EE0B-4EA9-9ED8-165CED3BB62B} = {0822765A-6BFC-4509-ABC7-31443D56B2EF}
+		{EF9CFC2A-7619-4128-A71D-1F55721FE4B7} = {2D17C2B6-9795-40D3-951A-6A62A3A0FA7C}
+		{693F7688-623C-4330-896E-F66D16C69CC7} = {2D17C2B6-9795-40D3-951A-6A62A3A0FA7C}
+		{8BE3DA70-CDBE-4ADA-ACAF-72F8AFCECE07} = {0822765A-6BFC-4509-ABC7-31443D56B2EF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.Interception.2.1.505.0\lib\NET35;packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35;packages\EnterpriseLibrary.ExceptionHandling.5.0.505.0\lib\NET35;packages\Unity.2.1.505.2\lib\NET35;packages\Unity.Interception.2.1.505.2\lib\NET35
