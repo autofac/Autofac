@@ -53,12 +53,6 @@
 			<PackageName>Autofac.SignalR2</PackageName>
 			<PackageVersion>3.1.0</PackageVersion>
 		</AutofacProject>
-		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Wcf\Autofac.Integration.Wcf.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.1.0</FileVersion>
-			<PackageName>Autofac.Wcf</PackageName>
-			<PackageVersion>3.0.1</PackageVersion>
-		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.Owin\Autofac.Integration.Owin.csproj">
 			<AssemblyVersion>3.1.0.0</AssemblyVersion>
 			<FileVersion>3.1.0.0</FileVersion>
