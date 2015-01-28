@@ -31,7 +31,7 @@
 				$(BuildBinDirectory)\**\Autofac.Extras.FakeItEasy.xml;
 				$(BuildBinDirectory)\**\Autofac.Extras.FakeItEasy.pdb" />
 			<ZipFiles Include="
-				$(BuildBinDirectory)\..\..\License.txt;
+				$(BuildBinDirectory)\..\..\LICENSE;
 				$(BuildBinDirectory)\net40\Autofac.Extras.FakeItEasy.dll;
 				$(BuildBinDirectory)\net40\Autofac.Extras.FakeItEasy.xml;
 				$(BuildBinDirectory)\net40\Autofac.Extras.FakeItEasy.pdb" />

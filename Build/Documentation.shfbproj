@@ -58,6 +58,19 @@
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, InheritedFrameworkMembers, Protected, SealedProtected</VisibleItems>
     <MissingTags>Summary, Parameter, Returns, Value, AutoDocumentCtors, TypeParameter, IncludeTargets, AutoDocumentDispose</MissingTags>
     <PlugInConfigurations>
+      <PlugInConfig id="Assembly Binding Redirection" enabled="True" xmlns="">
+        <configuration useGAC="false">
+          <assemblyBinding>
+            <dependentAssembly>
+              <assemblyIdentity name="Autofac" publicKeyToken="17863af14b0044da" />
+              <bindingRedirect oldVersion="0.0.0.0-3.5.0.0" newVersion="3.5.0.0" />
+            </dependentAssembly>
+          </assemblyBinding>
+          <ignoreIfUnresolved>
+            <assemblyIdentity name="System.Core" />
+          </ignoreIfUnresolved>
+        </configuration>
+      </PlugInConfig>
       <PlugInConfig id="Wildcard Assembly References" enabled="True" xmlns="">
         <configuration>
           <references>

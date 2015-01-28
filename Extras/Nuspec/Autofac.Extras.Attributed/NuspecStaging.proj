@@ -31,7 +31,7 @@
 				$(BuildBinDirectory)\**\Autofac.Extras.Attributed.xml;
 				$(BuildBinDirectory)\**\Autofac.Extras.Attributed.pdb" />
 			<ZipFiles Include="
-				$(BuildBinDirectory)\..\..\License.txt;
+				$(BuildBinDirectory)\..\..\LICENSE;
 				$(BuildBinDirectory)\net40\Autofac.Extras.Attributed.dll;
 				$(BuildBinDirectory)\net40\Autofac.Extras.Attributed.xml;
 				$(BuildBinDirectory)\net40\Autofac.Extras.Attributed.pdb" />

@@ -31,7 +31,7 @@
 				$(BuildBinDirectory)\**\Autofac.Extras.EnterpriseLibraryConfigurator.xml;
 				$(BuildBinDirectory)\**\Autofac.Extras.EnterpriseLibraryConfigurator.pdb" />
 			<ZipFiles Include="
-				$(BuildBinDirectory)\..\..\License.txt;
+				$(BuildBinDirectory)\..\..\LICENSE;
 				$(BuildBinDirectory)\net40\Autofac.Extras.EnterpriseLibraryConfigurator.dll;
 				$(BuildBinDirectory)\net40\Autofac.Extras.EnterpriseLibraryConfigurator.xml;
 				$(BuildBinDirectory)\net40\Autofac.Extras.EnterpriseLibraryConfigurator.pdb" />

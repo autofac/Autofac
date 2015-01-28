@@ -31,7 +31,7 @@
 				$(BuildBinDirectory)\**\Autofac.Integration.Mvc.xml;
 				$(BuildBinDirectory)\**\Autofac.Integration.Mvc.pdb" />
 			<ZipFiles Include="
-				$(BuildBinDirectory)\..\..\License.txt;
+				$(BuildBinDirectory)\..\..\LICENSE;
 				$(BuildBinDirectory)\net45\Autofac.Integration.Mvc.dll;
 				$(BuildBinDirectory)\net45\Autofac.Integration.Mvc.xml;
 				$(BuildBinDirectory)\net45\Autofac.Integration.Mvc.pdb" />

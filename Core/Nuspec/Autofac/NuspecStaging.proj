@@ -31,7 +31,7 @@
 				$(BuildBinDirectory)\**\Autofac.xml;
 				$(BuildBinDirectory)\**\Autofac.pdb;" />
 			<ZipFiles Include="
-				$(BuildBinDirectory)\..\..\License.txt;
+				$(BuildBinDirectory)\..\..\LICENSE;
 				$(BuildBinDirectory)\net40\Autofac.dll;
 				$(BuildBinDirectory)\net40\Autofac.xml;
 				$(BuildBinDirectory)\net40\Autofac.pdb;" />

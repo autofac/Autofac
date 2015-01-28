@@ -31,7 +31,7 @@
 				$(BuildBinDirectory)\**\Autofac.Extras.MvvmCross.xml;
 				$(BuildBinDirectory)\**\Autofac.Extras.MvvmCross.pdb" />
 			<ZipFiles Include="
-				$(BuildBinDirectory)\..\..\License.txt;
+				$(BuildBinDirectory)\..\..\LICENSE;
 				$(BuildBinDirectory)\net40\Autofac.Extras.MvvmCross.dll;
 				$(BuildBinDirectory)\net40\Autofac.Extras.MvvmCross.xml;
 				$(BuildBinDirectory)\net40\Autofac.Extras.MvvmCross.pdb" />

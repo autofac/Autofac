@@ -31,7 +31,7 @@
 				$(BuildBinDirectory)\**\Autofac.Extras.DomainServices.xml;
 				$(BuildBinDirectory)\**\Autofac.Extras.DomainServices.pdb" />
 			<ZipFiles Include="
-				$(BuildBinDirectory)\..\..\License.txt;
+				$(BuildBinDirectory)\..\..\LICENSE;
 				$(BuildBinDirectory)\net40\Autofac.Extras.DomainServices.dll;
 				$(BuildBinDirectory)\net40\Autofac.Extras.DomainServices.xml;
 				$(BuildBinDirectory)\net40\Autofac.Extras.DomainServices.pdb" />
