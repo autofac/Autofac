@@ -313,6 +313,7 @@ You can easily accomplish this using the implicit enumerable relationship type. 
 
 This can create a bit of a "gotcha" where you might think you'll get a null value if you inject something using this relationship. Instead, you'll get an empty list.
 
+[TODO: Include example of named collection support.]
 
 Metadata Interrogation (Meta<B>, Meta<B, X>)
 --------------------------------------------

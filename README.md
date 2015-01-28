@@ -9,7 +9,7 @@ You can get Autofac by [grabbing the latest NuGet packages](https://github.com/a
 
 ## Getting Help
 
-**Need help with Autofac?** We have [a documentation site](http://autofac.readthedocs.org/) as well as [API documentation](http://autofac.org/apidoc/). We're ready to answer your questions on [Stack Overflow](http://stackoverflow.com/questions/tagged/autofac Stack Overflow) or check out the [discussion forum](https://groups.google.com/forum/#forum/autofac).
+**Need help with Autofac?** We have [a documentation site](http://autofac.readthedocs.org/) as well as [API documentation](http://autofac.org/apidoc/). We're ready to answer your questions on [Stack Overflow](http://stackoverflow.com/questions/tagged/autofac) or check out the [discussion forum](https://groups.google.com/forum/#forum/autofac).
 
 ## Getting Started
 

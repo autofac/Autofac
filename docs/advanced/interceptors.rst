@@ -164,7 +164,9 @@ Tips
 Use Public Interfaces
 ---------------------
 
-Interface interception requires the interface be public. Non-public interface types can't be intercepted.
+Interface interception requires the interface be public (or, at least, visible to the dynamically generated proxy assembly). Non-public interface types can't be intercepted.
+
+If you want to proxy ``internal`` interfaces, you must mark the assembly containing the interface with ``[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]``.
 
 Use Virtual Methods
 -------------------

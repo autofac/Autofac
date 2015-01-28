@@ -11,3 +11,4 @@ Frequently Asked Questions
     conditional-registration.rst
     share-across-app-types.rst
     isolate-autofac.rst
+    pcl.rst

@@ -2,8 +2,6 @@
 Named and Keyed Services
 ========================
 
-[TODO: Cross reference the :doc:`metadata section on WithKeyAttribute <metadata>`.]
-
 Autofac provides three typical ways to identify services. The most common is to identify by type:
 
 .. sourcecode:: csharp
@@ -98,3 +96,16 @@ Resolving with an Index
 
 
 In the ``SwitchOn()`` method, the index is used to find the implementation of ``IDeviceState`` that was registered with the ``DeviceState.Online`` key.
+
+Resolving with Attributes
+-------------------------
+The :doc:`metadata feature of Autofac provides a WithKeyAttribute <metadata>` that allows you to mark constructor parameters with an attribute specfying which keyed service should be used. The attribute usage looks like this:
+
+.. sourcecode:: csharp
+
+    public class ArtDisplay : IDisplay
+    {
+      public ArtDisplay([WithKey("Painting")] IArtwork art) { ... }
+    }
+
+:doc:`See the metadata documentation <metadata>` for more info on how to get this set up.

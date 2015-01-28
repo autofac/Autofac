@@ -92,3 +92,5 @@ You can also use open generic decorator registrations.
     // You can then resolve closed generics and they'll be
     // wrapped with your decorator.
     var mailHandlers = container.Resolve<IEnumerable<ICommandHandler<EmailCommand>>>();
+
+If you are using decorators on a WCF service implementation class, :doc:`there is some additional information on the WCF integration page about some special considerations. <../integration/wcf>`

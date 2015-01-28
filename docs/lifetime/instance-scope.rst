@@ -46,7 +46,7 @@ When you resolve a component that is instance per dependency, you get a new one 
 Single Instance
 ===============
 
-This is also known as 'singleton.' Using single instance scope, **one instance is returned from all requests in the parent and all nested scopes**.
+This is also known as 'singleton.' Using single instance scope, **one instance is returned from all requests in the root and all nested scopes**.
 
 .. sourcecode:: csharp
 

@@ -55,6 +55,11 @@ Dynamic Configuration
 
 Configuring components within modules is dynamic: the behaviour of a module can vary based on the runtime environment. This is hard, if not impossible, with purely component-based configuration.
 
+Advanced Extensions
+-------------------
+
+Modules can be used for more than just simple type registrations - you can also attach to component resolution events and extend how parameters are resolved or perform other extensions. The :doc:`log4net integration module example <../examples/log4net>` shows one such module.
+
 Example
 =======
 
