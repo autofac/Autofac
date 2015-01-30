@@ -23,6 +23,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Threading;
+
 namespace Autofac.Integration.Owin
 {
     static class Constants
@@ -31,5 +33,11 @@ namespace Autofac.Integration.Owin
         /// The OWIN key for the current lifetime scope.
         /// </summary>
         internal const string OwinLifetimeScopeKey = "autofac:OwinLifetimeScope";
+
+        /// <summary>
+        /// The OWIN key for a <see cref="CancellationToken"/> that is
+        /// canceled when the OWIN application is being shut down.
+        /// </summary>
+        internal const string OwinHostOnAppDisposingKey = "host.OnAppDisposing";
     }
 }
