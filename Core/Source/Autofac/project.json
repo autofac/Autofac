@@ -6,6 +6,27 @@
   "description": "Core assembly for the Autofac Inversion of Control container.",
   "resources": "**/**/*.resx",
   "frameworks": {
+    ".NETPortable,Version=v4.5,Profile=Profile259": {
+      "frameworkAssemblies": {
+        "System.Collections": "",
+        "System.ComponentModel": "",
+        "System.Core": "",
+        "System.Diagnostics.Contracts": "",
+        "System.Diagnostics.Debug": "",
+        "System.Diagnostics.Tools": "",
+        "System.Globalization": "",
+        "System.Linq": "",
+        "System.Linq.Expressions": "",
+        "System.ObjectModel": "",
+        "System.Reflection": "",
+        "System.Reflection.Extensions": "",
+        "System.Reflection.Primitives": "",
+        "System.Resources.ResourceManager": "",
+        "System.Runtime": "",
+        "System.Threading": "",
+        "System.Threading.Tasks": ""
+      }
+    },
     "aspnetcore50": {
       "dependencies": {
         "System.Collections": "4.0.10-beta-22231",
@@ -24,13 +45,6 @@
         "System.Threading.Thread": "4.0.0-beta-22231",
         "System.Threading": "4.0.0-beta-22231",
         "System.Threading.Tasks": "4.0.10-beta-22231"
-      }
-    },
-    "net45+win+wpa81+wp80+MonoAndroid10+MonoTouch10": {
-      "wrappedProject": "Autofac.csproj",
-      "bin": {
-        "assembly": "obj/{configuration}/Autofac.dll",
-        "pdb": "obj/{configuration}/Autofac.pdb"
       }
     }
   }
