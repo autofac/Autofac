@@ -47,12 +47,6 @@
 			<PackageName>Autofac.Web</PackageName>
 			<PackageVersion>3.2.0</PackageVersion>
 		</AutofacProject>
-		<AutofacProject Include="$(MSBuildProjectDirectory)\Core\Source\Autofac.Integration.WebApi\Autofac.Integration.WebApi.csproj">
-			<AssemblyVersion>3.4.0.0</AssemblyVersion>
-			<FileVersion>3.4.0.0</FileVersion>
-			<PackageName>Autofac.WebApi2</PackageName>
-			<PackageVersion>3.4.0</PackageVersion>
-		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.AggregateService\Autofac.Extras.AggregateService.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
 			<FileVersion>3.0.4.0</FileVersion>
