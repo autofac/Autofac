@@ -41,12 +41,6 @@
 			<PackageName>Autofac.Configuration</PackageName>
 			<PackageVersion>3.3.0</PackageVersion>
 		</AutofacProject>
-		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.DomainServices\Autofac.Extras.DomainServices.csproj">
-			<AssemblyVersion>3.1.0.0</AssemblyVersion>
-			<FileVersion>3.1.0.0</FileVersion>
-			<PackageName>Autofac.Extras.DomainServices</PackageName>
-			<PackageVersion>3.1.0</PackageVersion>
-		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.DynamicProxy2\Autofac.Extras.DynamicProxy2.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
 			<FileVersion>3.0.4.0</FileVersion>
