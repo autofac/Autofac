@@ -41,18 +41,6 @@
 			<PackageName>Autofac.Configuration</PackageName>
 			<PackageVersion>3.3.0</PackageVersion>
 		</AutofacProject>
-		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.AggregateService\Autofac.Extras.AggregateService.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.4.0</FileVersion>
-			<PackageName>Autofac.Extras.AggregateService</PackageName>
-			<PackageVersion>3.0.4</PackageVersion>
-		</AutofacProject>
-		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.Attributed\Autofac.Extras.Attributed.csproj">
-			<AssemblyVersion>3.3.0.0</AssemblyVersion>
-			<FileVersion>3.3.0.0</FileVersion>
-			<PackageName>Autofac.Extras.Attributed</PackageName>
-			<PackageVersion>3.3.0</PackageVersion>
-		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.DomainServices\Autofac.Extras.DomainServices.csproj">
 			<AssemblyVersion>3.1.0.0</AssemblyVersion>
 			<FileVersion>3.1.0.0</FileVersion>
