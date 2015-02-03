@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Autofac - Full Framework Rules" Description="This ruleset is for Autofac assemblies that target the full .NET framework." ToolsVersion="12.0">
+  <IncludeAll Action="Warning" />
+  <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
+    <Rule Id="CA1004" Action="None" />
+    <Rule Id="CA1006" Action="None" />
+    <Rule Id="CA1016" Action="None" />
+    <Rule Id="CA1026" Action="None" />
+    <Rule Id="CA1724" Action="None" />
+    <Rule Id="CA2243" Action="None" />
+  </Rules>
+</RuleSet>

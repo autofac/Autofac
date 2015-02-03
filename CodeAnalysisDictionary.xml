@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- Dictionary format defined here: http://msdn.microsoft.com/en-us/library/bb514188.aspx -->
+<Dictionary>
+    <Words>
+        <!--
+        <Unrecognized>
+            <Word></Word>
+        </Unrecognized>
+        -->
+        <!-- Capitalize proper nouns and acronyms; "regular words" just lowercase. -->
+        <Recognized>
+            <Word>Api</Word>
+            <Word>Autofac</Word>
+            <Word>autowired</Word>
+            <Word>autowiring</Word>
+            <Word>composable</Word>
+            <Word>configurator</Word>
+            <Word>Ioc</Word>
+            <Word>Mef</Word>
+            <Word>Moq</Word>
+            <Word>multitenancy</Word>
+            <Word>Mvc</Word>
+            <Word>Mvx</Word>
+            <Word>Mvvm</Word>
+            <Word>startable</Word>
+            <Word>Owin</Word>
+        </Recognized>
+        <!--
+        <Deprecated>
+            <Term PreferredAlternate=""></Term>
+        </Deprecated>
+        <Compound>
+            <Term CompoundAlternate=""></Term>
+        </Compound>
+        <DiscreteExceptions>
+            <Term></Term>
+        </DiscreteExceptions>
+        -->
+    </Words>
+    <!--
+    <Acronyms>
+        <CasingExceptions>
+            <Acronym></Acronym>
+        </CasingExceptions>
+    </Acronyms>
+    -->
+</Dictionary>
