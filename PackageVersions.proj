@@ -53,12 +53,6 @@
 			<PackageName>Autofac.Extras.Attributed</PackageName>
 			<PackageVersion>3.3.0</PackageVersion>
 		</AutofacProject>
-		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.CommonServiceLocator\Autofac.Extras.CommonServiceLocator.csproj">
-			<AssemblyVersion>3.2.0.0</AssemblyVersion>
-			<FileVersion>3.2.0.0</FileVersion>
-			<PackageName>Autofac.Extras.CommonServiceLocator</PackageName>
-			<PackageVersion>3.2.0</PackageVersion>
-		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.DomainServices\Autofac.Extras.DomainServices.csproj">
 			<AssemblyVersion>3.1.0.0</AssemblyVersion>
 			<FileVersion>3.1.0.0</FileVersion>
