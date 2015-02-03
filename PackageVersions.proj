@@ -41,12 +41,6 @@
 			<PackageName>Autofac.Configuration</PackageName>
 			<PackageVersion>3.3.0</PackageVersion>
 		</AutofacProject>
-		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.FakeItEasy\Autofac.Extras.FakeItEasy.csproj">
-			<AssemblyVersion>3.0.0.0</AssemblyVersion>
-			<FileVersion>3.0.2.0</FileVersion>
-			<PackageName>Autofac.Extras.FakeItEasy</PackageName>
-			<PackageVersion>3.0.2</PackageVersion>
-		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.Moq\Autofac.Extras.Moq.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
 			<FileVersion>3.0.2.0</FileVersion>
