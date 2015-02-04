@@ -1,1 +1,0 @@
-﻿<%@ ServiceHost Service="MultitenantExample.WcfService.IMultitenantService, MultitenantExample.WcfService" Factory="Autofac.Integration.Wcf.AutofacServiceHostFactory, Autofac.Integration.Wcf" %>
