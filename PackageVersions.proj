@@ -35,12 +35,6 @@
 			<PackageName>Autofac</PackageName>
 			<PackageVersion>3.5.2</PackageVersion>
 		</AutofacProject>
-		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.MvvmCross\Autofac.Extras.MvvmCross.csproj">
-			<AssemblyVersion>3.3.0.0</AssemblyVersion>
-			<FileVersion>3.3.0.0</FileVersion>
-			<PackageName>Autofac.Extras.MvvmCross</PackageName>
-			<PackageVersion>3.3.0</PackageVersion>
-		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.NHibernate\Autofac.Extras.NHibernate.csproj">
 			<AssemblyVersion>3.0.0.0</AssemblyVersion>
 			<FileVersion>3.0.1.0</FileVersion>
