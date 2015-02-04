@@ -3,11 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.22512.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A08F3DAB-E605-4245-A54F-A46A573C0225}"
-	ProjectSection(SolutionItems) = preProject
-		SharedKey.snk = SharedKey.snk
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac", "src\Autofac\Autofac.csproj", "{AE9C841A-1EDF-48A6-B7BB-1ABA67BC96F0}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Autofac.AspNetCore50", "src\Autofac\Autofac.AspNetCore50.kproj", "{198CE8BE-0C4A-4DA6-8FFE-C5F949B2BBBF}"
