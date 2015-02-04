@@ -4,9 +4,8 @@ using Microsoft.Data.Entity.Metadata;
 using Microsoft.Data.Entity.Migrations;
 using Microsoft.Data.Entity.Migrations.Builders;
 using Microsoft.Data.Entity.Migrations.Infrastructure;
-using AspNet50Example.WebApplication.Models;
 
-namespace AspNet50Example.WebApplication.Migrations
+namespace AutofacTestWebApplication.Migrations
 {
     public partial class CreateIdentitySchema : Migration
     {
@@ -26,7 +25,7 @@ namespace AspNet50Example.WebApplication.Migrations
                         Id = c.Int(nullable: false, identity: true),
                         ClaimType = c.String(),
                         ClaimValue = c.String(),
-                        RoleId = c.String(dataType: "nvarchar(128)")
+                        RoleId = c.String()
                     })
                 .PrimaryKey("PK_AspNetRoleClaims", t => t.Id);
             
@@ -36,7 +35,7 @@ namespace AspNet50Example.WebApplication.Migrations
                         Id = c.Int(nullable: false, identity: true),
                         ClaimType = c.String(),
                         ClaimValue = c.String(),
-                        UserId = c.String(dataType: "nvarchar(128)")
+                        UserId = c.String()
                     })
                 .PrimaryKey("PK_AspNetUserClaims", t => t.Id);
             
@@ -46,7 +45,7 @@ namespace AspNet50Example.WebApplication.Migrations
                         LoginProvider = c.String(),
                         ProviderKey = c.String(),
                         ProviderDisplayName = c.String(),
-                        UserId = c.String(dataType: "nvarchar(128)")
+                        UserId = c.String()
                     })
                 .PrimaryKey("PK_AspNetUserLogins", t => new { t.LoginProvider, t.ProviderKey });
             
@@ -66,7 +65,7 @@ namespace AspNet50Example.WebApplication.Migrations
                         Email = c.String(),
                         EmailConfirmed = c.Boolean(nullable: false),
                         LockoutEnabled = c.Boolean(nullable: false),
-                        LockoutEnd = c.DateTimeOffset(nullable: false),
+                        LockoutEnd = c.DateTimeOffset(),
                         NormalizedUserName = c.String(),
                         PasswordHash = c.String(),
                         PhoneNumber = c.String(),
@@ -77,11 +76,28 @@ namespace AspNet50Example.WebApplication.Migrations
                     })
                 .PrimaryKey("PK_AspNetUsers", t => t.Id);
             
-            migrationBuilder.AddForeignKey("AspNetRoleClaims", "FK_AspNetRoleClaims_AspNetRoles_RoleId", new[] { "RoleId" }, "AspNetRoles", new[] { "Id" }, cascadeDelete: false);
+            migrationBuilder.AddForeignKey(
+                "AspNetRoleClaims",
+                "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                 new[] { "RoleId" },
+                 "AspNetRoles",
+                 new[] { "Id" },
+                 cascadeDelete: false);
             
-            migrationBuilder.AddForeignKey("AspNetUserClaims", "FK_AspNetUserClaims_AspNetUsers_UserId", new[] { "UserId" }, "AspNetUsers", new[] { "Id" }, cascadeDelete: false);
+            migrationBuilder.AddForeignKey(
+                "AspNetUserClaims",
+                "FK_AspNetUserClaims_AspNetUsers_UserId",
+                 new[] { "UserId" }, "AspNetUsers",
+                 new[] { "Id" },
+                 cascadeDelete: false);
             
-            migrationBuilder.AddForeignKey("AspNetUserLogins", "FK_AspNetUserLogins_AspNetUsers_UserId", new[] { "UserId" }, "AspNetUsers", new[] { "Id" }, cascadeDelete: false);
+            migrationBuilder.AddForeignKey(
+                "AspNetUserLogins",
+                "FK_AspNetUserLogins_AspNetUsers_UserId",
+                 new[] { "UserId" },
+                 "AspNetUsers",
+                 new[] { "Id" },
+                 cascadeDelete: false);
         }
         
         public override void Down(MigrationBuilder migrationBuilder)
@@ -106,7 +122,7 @@ namespace AspNet50Example.WebApplication.Migrations
         }
     }
 
-    [ContextType(typeof(ApplicationDbContext))]
+    [ContextType(typeof(Models.ApplicationDbContext))]
     public partial class CreateIdentitySchema : IMigrationMetadata
     {
         string IMigrationMetadata.MigrationId
@@ -121,7 +137,7 @@ namespace AspNet50Example.WebApplication.Migrations
         {
             get
             {
-                return "7.0.0-beta1";
+                return "7.0.0-beta2";
             }
         }
 
@@ -144,7 +160,7 @@ namespace AspNet50Example.WebApplication.Migrations
                     b.Property<string>("ClaimType");
                     b.Property<string>("ClaimValue");
                     b.Property<int>("Id")
-                        .GenerateValuesOnAdd();
+                        .GenerateValueOnAdd();
                     b.Property<string>("RoleId");
                     b.Key("Id");
                     b.ForRelational().Table("AspNetRoleClaims");
@@ -155,7 +171,7 @@ namespace AspNet50Example.WebApplication.Migrations
                     b.Property<string>("ClaimType");
                     b.Property<string>("ClaimValue");
                     b.Property<int>("Id")
-                        .GenerateValuesOnAdd();
+                        .GenerateValueOnAdd();
                     b.Property<string>("UserId");
                     b.Key("Id");
                     b.ForRelational().Table("AspNetUserClaims");
@@ -179,14 +195,14 @@ namespace AspNet50Example.WebApplication.Migrations
                     b.ForRelational().Table("AspNetUserRoles");
                 });
 
-                builder.Entity("AspNet50Example.WebApplication.Models.ApplicationUser", b =>
+                builder.Entity("AutofacTestWebApplication.Models.ApplicationUser", b =>
                 {
                     b.Property<int>("AccessFailedCount");
                     b.Property<string>("Email");
                     b.Property<bool>("EmailConfirmed");
                     b.Property<string>("Id");
                     b.Property<bool>("LockoutEnabled");
-                    b.Property<DateTimeOffset>("LockoutEnd");
+                    b.Property<DateTimeOffset?>("LockoutEnd");
                     b.Property<string>("NormalizedUserName");
                     b.Property<string>("PasswordHash");
                     b.Property<string>("PhoneNumber");
@@ -205,12 +221,12 @@ namespace AspNet50Example.WebApplication.Migrations
 
                 builder.Entity("Microsoft.AspNet.Identity.IdentityUserClaim`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]", b =>
                 {
-                    b.ForeignKey("AspNet50Example.WebApplication.Models.ApplicationUser", "UserId");
+                    b.ForeignKey("AutofacTestWebApplication.Models.ApplicationUser", "UserId");
                 });
 
                 builder.Entity("Microsoft.AspNet.Identity.IdentityUserLogin`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]", b =>
                 {
-                    b.ForeignKey("AspNet50Example.WebApplication.Models.ApplicationUser", "UserId");
+                    b.ForeignKey("AutofacTestWebApplication.Models.ApplicationUser", "UserId");
                 });
 
                 return builder.Model;

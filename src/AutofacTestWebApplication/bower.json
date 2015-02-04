@@ -1,5 +1,5 @@
 {
-    "name": "AspNet50Example.WebApplication",
+    "name": "AutofacTestWebApplication",
     "private": true,
     "dependencies": {
         "bootstrap": "~3.0.0",

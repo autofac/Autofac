@@ -5,7 +5,7 @@ using Microsoft.Data.Entity;
 using Microsoft.Data.Entity.Metadata;
 using Microsoft.Framework.OptionsModel;
 
-namespace AspNet50Example.WebApplication.Models
+namespace AutofacTestWebApplication.Models
 {
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
@@ -24,7 +24,7 @@ namespace AspNet50Example.WebApplication.Models
             // are supported in ASP.NET 5
             if (!_created)
             {
-                Database.AsRelational().ApplyMigrations();
+                Database.AsMigrationsEnabled().ApplyMigrations();
                 _created = true;
             }
         }

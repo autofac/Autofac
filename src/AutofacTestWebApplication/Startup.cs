@@ -12,11 +12,11 @@ using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
 using Microsoft.Framework.Logging.Console;
-using AspNet50Example.WebApplication.Models;
+using AutofacTestWebApplication.Models;
 using Autofac;
 using Autofac.Integration.AspNet;
 
-namespace AspNet50Example.WebApplication
+namespace AutofacTestWebApplication
 {
     public class Startup
     {
@@ -33,6 +33,22 @@ namespace AspNet50Example.WebApplication
         // This method gets called by the runtime.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add EF services to the services container.
+            services.AddEntityFramework(Configuration)
+                .AddSqlServer()
+                .AddDbContext<ApplicationDbContext>();
+
+            // Add Identity services to the services container.
+            services.AddIdentity<ApplicationUser, IdentityRole>(Configuration)
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            // Add MVC services to the services container.
+            services.AddMvc();
+
+            // Uncomment the following line to add Web API servcies which makes it easier to port Web API 2 controllers.
+            // You need to add Microsoft.AspNet.Mvc.WebApiCompatShim package to project.json
+            // services.AddWebApiConventions();
+
         }
 
         // Configure is called after ConfigureServices is called.
@@ -40,21 +56,6 @@ namespace AspNet50Example.WebApplication
         {
             app.UseServices(services =>
             {
-                // Add EF services to the services container.
-                services.AddEntityFramework(Configuration)
-                    .AddSqlServer()
-                    .AddDbContext<ApplicationDbContext>();
-
-                // Add Identity services to the services container.
-                services.AddDefaultIdentity<ApplicationDbContext, ApplicationUser, IdentityRole>(Configuration);
-
-                // Add MVC services to the services container.
-                services.AddMvc();
-
-                // Uncomment the following line to add Web API servcies which makes it easier to port Web API 2 controllers.
-                // You need to add Microsoft.AspNet.Mvc.WebApiCompatShim package to project.json
-                // services.AddWebApiConventions();
-
                 // Create the Autofac container.
                 ContainerBuilder builder = new ContainerBuilder();
 

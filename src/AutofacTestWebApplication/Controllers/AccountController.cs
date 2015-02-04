@@ -5,9 +5,9 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Mvc;
-using AspNet50Example.WebApplication.Models;
+using AutofacTestWebApplication.Models;
 
-namespace AspNet50Example.WebApplication.Controllers
+namespace AutofacTestWebApplication.Controllers
 {
     [Authorize]
     public class AccountController : Controller

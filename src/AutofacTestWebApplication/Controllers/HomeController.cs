@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNet.Mvc;
 
-namespace AspNet50Example.WebApplication.Controllers
+namespace AutofacTestWebApplication.Controllers
 {
     public class HomeController : Controller
     {

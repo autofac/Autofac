@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AspNet50Example.WebApplication.Models
+namespace AutofacTestWebApplication.Models
 {
     public class ExternalLoginConfirmationViewModel
     {
