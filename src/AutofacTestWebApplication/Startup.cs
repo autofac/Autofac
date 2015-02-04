@@ -33,22 +33,6 @@ namespace AutofacTestWebApplication
         // This method gets called by the runtime.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add EF services to the services container.
-            services.AddEntityFramework(Configuration)
-                .AddSqlServer()
-                .AddDbContext<ApplicationDbContext>();
-
-            // Add Identity services to the services container.
-            services.AddIdentity<ApplicationUser, IdentityRole>(Configuration)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-
-            // Add MVC services to the services container.
-            services.AddMvc();
-
-            // Uncomment the following line to add Web API servcies which makes it easier to port Web API 2 controllers.
-            // You need to add Microsoft.AspNet.Mvc.WebApiCompatShim package to project.json
-            // services.AddWebApiConventions();
-
         }
 
         // Configure is called after ConfigureServices is called.
@@ -56,11 +40,27 @@ namespace AutofacTestWebApplication
         {
             app.UseServices(services =>
             {
+                // Add EF services to the services container.
+                services.AddEntityFramework(Configuration)
+                    .AddSqlServer()
+                    .AddDbContext<ApplicationDbContext>();
+
+                // Add Identity services to the services container.
+                services.AddIdentity<ApplicationUser, IdentityRole>(Configuration)
+                    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+                // Add MVC services to the services container.
+                services.AddMvc();
+
+                // Uncomment the following line to add Web API servcies which makes it easier to port Web API 2 controllers.
+                // You need to add Microsoft.AspNet.Mvc.WebApiCompatShim package to project.json
+                // services.AddWebApiConventions();
+
                 // Create the Autofac container.
                 ContainerBuilder builder = new ContainerBuilder();
 
                 // Create the container and use the default application services as a fallback.
-                builder.Populate(services, fallbackServiceProvider: app.ApplicationServices);
+                builder.Populate(services);
 
                 // Build the container.
                 IContainer container = builder.Build();
