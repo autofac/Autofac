@@ -1,0 +1,10 @@
+
+var AUTHORS='Autofac Contributors'
+
+use-standard-lifecycle
+k-standard-goals
+
+#generate-resx .resx description='Converts .resx files to .Designer.cs' target='initialize'
+
+#xml-docs-test .clean .build-compile description='Check generated XML documentation files for errors' target='test'
+  k-xml-docs-test
