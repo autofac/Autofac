@@ -35,12 +35,6 @@
 			<PackageName>Autofac</PackageName>
 			<PackageVersion>3.5.2</PackageVersion>
 		</AutofacProject>
-		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.Multitenant.Wcf\Autofac.Extras.Multitenant.Wcf.csproj">
-			<AssemblyVersion>3.1.0.0</AssemblyVersion>
-			<FileVersion>3.1.1.0</FileVersion>
-			<PackageName>Autofac.Extras.Multitenant.Wcf</PackageName>
-			<PackageVersion>3.1.1</PackageVersion>
-		</AutofacProject>
 		<AutofacProject Include="$(MSBuildProjectDirectory)\Extras\Source\Autofac.Extras.MvvmCross\Autofac.Extras.MvvmCross.csproj">
 			<AssemblyVersion>3.3.0.0</AssemblyVersion>
 			<FileVersion>3.3.0.0</FileVersion>
