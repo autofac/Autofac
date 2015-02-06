@@ -1,14 +1,13 @@
 ﻿using System;
-using NUnit.Framework;
+using Xunit;
 using Autofac.Core;
-using Autofac.Tests.Scenarios.Parameterisation;
+using Autofac.Test.Scenarios.Parameterisation;
 
-namespace Autofac.Tests.Core
+namespace Autofac.Test.Core
 {
-    [TestFixture]
     public class ContainerTests
     {
-        [Test]
+        [Fact]
         public void ResolveByName()
         {
             string name = "name";
@@ -22,13 +21,13 @@ namespace Autofac.Tests.Core
 
             object o;
 
-            Assert.IsTrue(c.TryResolveNamed(name, typeof(string), out o));
-            Assert.IsNotNull(o);
+            Assert.True(c.TryResolveNamed(name, typeof(string), out o));
+            Assert.NotNull(o);
 
-            Assert.IsFalse(c.IsRegistered<object>());
+            Assert.False(c.IsRegistered<object>());
         }
 
-        [Test]
+        [Fact]
         public void RegisterParameterisedWithDelegate()
         {
             var cb = new ContainerBuilder();
@@ -39,12 +38,12 @@ namespace Autofac.Tests.Core
             var result = container.Resolve<Parameterised>(
                 new NamedParameter("a", aVal),
                 new NamedParameter("b", bVal));
-            Assert.IsNotNull(result);
-            Assert.AreEqual(aVal, result.A);
-            Assert.AreEqual(bVal, result.B);
+            Assert.NotNull(result);
+            Assert.Equal(aVal, result.A);
+            Assert.Equal(bVal, result.B);
         }
 
-        [Test]
+        [Fact]
         public void RegisterParameterisedWithReflection()
         {
             var cb = new ContainerBuilder();
@@ -55,12 +54,12 @@ namespace Autofac.Tests.Core
             var result = container.Resolve<Parameterised>(
                 new NamedParameter("a", aVal),
                 new NamedParameter("b", bVal));
-            Assert.IsNotNull(result);
-            Assert.AreEqual(aVal, result.A);
-            Assert.AreEqual(bVal, result.B);
+            Assert.NotNull(result);
+            Assert.Equal(aVal, result.A);
+            Assert.Equal(bVal, result.B);
         }
 
-        [Test]
+        [Fact]
         public void SupportsIServiceProvider()
         {
             var cb = new ContainerBuilder();
@@ -68,12 +67,12 @@ namespace Autofac.Tests.Core
             var container = cb.Build();
             var sp = (IServiceProvider)container;
             var o = sp.GetService(typeof(object));
-            Assert.IsNotNull(o);
+            Assert.NotNull(o);
             var s = sp.GetService(typeof(string));
-            Assert.IsNull(s);
+            Assert.Null(s);
         }
 
-        [Test]
+        [Fact]
         public void ResolveByNameWithServiceType()
         {
             var myName = "Something";
@@ -81,10 +80,10 @@ namespace Autofac.Tests.Core
             cb.RegisterType<object>().Named<object>(myName);
             var container = cb.Build();
             var o = container.ResolveNamed<object>(myName);
-            Assert.IsNotNull(o);
+            Assert.NotNull(o);
         }
 
-        [Test]
+        [Fact]
         public void ResolveByKeyWithServiceType()
         {
             var myKey = new object();
@@ -95,10 +94,10 @@ namespace Autofac.Tests.Core
             var container = cb.Build();
 
             var o = container.ResolveKeyed<object>( myKey );
-            Assert.AreSame( component, o );
+            Assert.Same( component, o );
         }
 
-        [Test]
+        [Fact]
         public void ResolveByKeyWithServiceTypeNonGeneric()
         {
             var myKey = new object();
@@ -109,26 +108,26 @@ namespace Autofac.Tests.Core
             var container = cb.Build();
 
             var o = container.ResolveKeyed(myKey, typeof(object));
-            Assert.AreSame(component, o);
+            Assert.Same(component, o);
         }
 
-        [Test]
+        [Fact]
         public void ContainerProvidesILifetimeScopeAndIContext()
         {
             var container = new Container();
-            Assert.IsTrue(container.IsRegistered<ILifetimeScope>());
-            Assert.IsTrue(container.IsRegistered<IComponentContext>());
+            Assert.True(container.IsRegistered<ILifetimeScope>());
+            Assert.True(container.IsRegistered<IComponentContext>());
         }
 
-        [Test]
+        [Fact]
         public void ResolvingLifetimeScopeProvidesCurrentScope()
         {
             var c = new Container();
             var l = c.BeginLifetimeScope();
-            Assert.AreSame(l, l.Resolve<ILifetimeScope>());
+            Assert.Same(l, l.Resolve<ILifetimeScope>());
         }
 
-        [Test]
+        [Fact]
         public void ReplacingAnInstanceInActivatingHandlerSubstitutesForResult()
         {
             var supplied = new object();
@@ -139,7 +138,7 @@ namespace Autofac.Tests.Core
 
             var resolved = c.Resolve<object>();
 
-            Assert.AreSame(supplied, resolved);
+            Assert.Same(supplied, resolved);
         }
     }
 }

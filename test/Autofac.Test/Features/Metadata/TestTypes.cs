@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace Autofac.Tests.Features.Metadata
+namespace Autofac.Test.Features.Metadata
 {
     public class MyMeta
     {

@@ -1,4 +1,4 @@
-namespace Autofac.Tests.Scenarios.ScannedAssembly
+namespace Autofac.Test.Scenarios.ScannedAssembly
 {
     /// <summary>
     /// An abstract base class that implements the open generic 

@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using NUnit.Framework;
+using Xunit;
 using Autofac.Core;
 
-namespace Autofac.Tests.Core
+namespace Autofac.Test.Core
 {
-    [TestFixture]
     public class ResolvedParameterTests
     {
-        [Test]
+        [Fact]
         public void ResolvesParameterValueFromContext()
         {
             var cb = new ContainerBuilder();
@@ -22,7 +21,7 @@ namespace Autofac.Tests.Core
                     (pi, ctx) => ctx.ResolveNamed<char>("character")));
             var c = cb.Build();
             var s = c.Resolve<string>();
-            Assert.AreEqual("aaaaa", s);
+            Assert.Equal("aaaaa", s);
         }
 
 // ReSharper disable UnusedTypeParameter
@@ -41,7 +40,7 @@ namespace Autofac.Tests.Core
             }
         }
 
-        [Test]
+        [Fact]
         public void CanConstructDecoratorChainFromOpenGenericTypes()
         {
             var builder = new ContainerBuilder();
@@ -61,11 +60,11 @@ namespace Autofac.Tests.Core
 
             var concrete = container.Resolve<ISomething<int>>();
 
-            Assert.IsInstanceOf<SomethingDecorator<int>>(concrete);
-            Assert.IsInstanceOf<ConcreteSomething<int>>(((SomethingDecorator<int>)concrete).Decorated);
+            Assert.IsType<SomethingDecorator<int>>(concrete);
+            Assert.IsType<ConcreteSomething<int>>(((SomethingDecorator<int>)concrete).Decorated);
         }
 
-        [Test]
+        [Fact]
         public void ResolvedParameterForNamedServiceResolvesNamedService()
         {
             var cb = new ContainerBuilder();
@@ -76,10 +75,10 @@ namespace Autofac.Tests.Core
                 .WithParameter(ResolvedParameter.ForNamed<char>("character"));
             var c = cb.Build();
             var s = c.Resolve<string>();
-            Assert.AreEqual("aaaaa", s);
+            Assert.Equal("aaaaa", s);
         }
 
-        [Test]
+        [Fact]
         public void AResolvedParameterForAKeyedServiceMatchesParametersOfTheServiceTypeWhenTheKeyedServiceIsAvailable()
         {
             var k = new object();
@@ -89,17 +88,17 @@ namespace Autofac.Tests.Core
             var rp = ResolvedParameter.ForKeyed<char>(k);
             var cp = GetCharParameter();
             Func<object> vp;
-            Assert.That(rp.CanSupplyValue(cp, container, out vp));
+            Assert.True(rp.CanSupplyValue(cp, container, out vp));
         }
 
-        [Test]
+        [Fact]
         public void AResolvedParameterForAKeyedServiceDoesNotMatcheParametersOfTheServiceTypeWhenTheKeyedServiceIsUnavailable()
         {
             var rp = ResolvedParameter.ForKeyed<char>(new object());
             var cp = GetCharParameter();
             Func<object> vp;
             var canSupply = rp.CanSupplyValue(cp, new ContainerBuilder().Build(), out vp);
-            Assert.That(canSupply, Is.False);
+            Assert.False(canSupply);
         }
 
         static ParameterInfo GetCharParameter()

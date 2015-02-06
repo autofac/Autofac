@@ -1,10 +1,9 @@
 ﻿using Autofac.Core;
 using Autofac.Features.OwnedInstances;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests.Builder
+namespace Autofac.Test.Builder
 {
-    [TestFixture]
     public class InstancePerOwnedRegistrationBuilderTests
     {
         public class MessageHandler
@@ -29,7 +28,7 @@ namespace Autofac.Tests.Builder
             }
         }
 
-        [Test]
+        [Fact]
         public void InstancePerOwnedResolvesToOwnedScope_GenericMethodSignature()
         {
             var cb = new ContainerBuilder();
@@ -42,7 +41,7 @@ namespace Autofac.Tests.Builder
             AssertInstancePerOwnedResolvesToOwnedScope(owned, new TypedService(typeof(MessageHandler)));
         }
 
-        [Test]
+        [Fact]
         public void InstancePerOwnedResolvesToOwnedScope_NonGenericMethodSignature()
         {
             var cb = new ContainerBuilder();
@@ -55,7 +54,7 @@ namespace Autofac.Tests.Builder
             AssertInstancePerOwnedResolvesToOwnedScope(owned, new TypedService(typeof(MessageHandler)));
         }
 
-        [Test]
+        [Fact]
         public void InstancePerOwnedWithKeyResolvesToOwnedScope_GenericMethodSignature()
         {
             var cb = new ContainerBuilder();
@@ -69,7 +68,7 @@ namespace Autofac.Tests.Builder
             AssertInstancePerOwnedResolvesToOwnedScope(owned, new KeyedService(serviceKey, typeof(MessageHandler)));
         }
 
-        [Test]
+        [Fact]
         public void InstancePerOwnedWithKeyResolvesToOwnedScope_NonGenericMethodSignature()
         {
             var cb = new ContainerBuilder();
@@ -88,8 +87,8 @@ namespace Autofac.Tests.Builder
             var handler = owned.Value;
             var dependentService = handler.DependentService;
 
-            Assert.That(handler.LifetimeScope.Tag, Is.EqualTo(tag));
-            Assert.That(dependentService.LifetimeScope, Is.SameAs(handler.LifetimeScope));
+            Assert.Equal(tag, handler.LifetimeScope.Tag);
+            Assert.Same(handler.LifetimeScope, dependentService.LifetimeScope);
         }
     }
 }

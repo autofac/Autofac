@@ -2,11 +2,10 @@
 using System.Linq;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests.Core.Activators.Reflection
+namespace Autofac.Test.Core.Activators.Reflection
 {
-    [TestFixture]
     public class ConstructorParameterBindingTests
     {
         public class ThrowsInCtor
@@ -19,7 +18,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             }
         }
 
-        [Test]
+        [Fact]
         public void WhenAnExceptionIsThrownFromAConstructor_TheInnerExceptionIsWrapped()
         {
             var ci = typeof (ThrowsInCtor).GetConstructor(new Type[0]);
@@ -28,8 +27,8 @@ namespace Autofac.Tests.Core.Activators.Reflection
             var dx = Assert.Throws<DependencyResolutionException>(() =>
                 cpb.Instantiate());
 
-            Assert.That(dx.Message.Contains(typeof(ThrowsInCtor).Name));
-            Assert.AreEqual(ThrowsInCtor.Message, dx.InnerException.Message);
+            Assert.True(dx.Message.Contains(typeof(ThrowsInCtor).Name));
+            Assert.Equal(ThrowsInCtor.Message, dx.InnerException.Message);
         }
     }
 }

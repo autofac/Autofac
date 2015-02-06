@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using Autofac.Core;
 
-namespace Autofac.Tests
+namespace Autofac.Test
 {
-    [TestFixture]
     public class TypedParameterTests
     {
         public class A
@@ -23,7 +22,7 @@ namespace Autofac.Tests
             }
         }
 
-        [Test]
+        [Fact]
         public void MatchesIdenticallyTypedParameter()
         {
             var param = AParamOfCConstructor();
@@ -31,7 +30,7 @@ namespace Autofac.Tests
             var typedParam = new TypedParameter(typeof(A), new A());
 
             Func<object> vp;
-            Assert.IsTrue(typedParam.CanSupplyValue(param, new Container(), out vp));
+            Assert.True(typedParam.CanSupplyValue(param, new Container(), out vp));
         }
 
         private static System.Reflection.ParameterInfo AParamOfCConstructor()
@@ -43,7 +42,7 @@ namespace Autofac.Tests
             return param;
         }
 
-        [Test]
+        [Fact]
         public void DoesNotMatchPolymorphicallyTypedParameter()
         {
             var param = AParamOfCConstructor();
@@ -51,10 +50,10 @@ namespace Autofac.Tests
             var typedParam = new TypedParameter(typeof(B), new B());
 
             Func<object> vp;
-            Assert.IsFalse(typedParam.CanSupplyValue(param, new Container(), out vp));
+            Assert.False(typedParam.CanSupplyValue(param, new Container(), out vp));
         }
 
-        [Test]
+        [Fact]
         public void DoesNotMatchUnrelatedParameter()
         {
             var param = AParamOfCConstructor();
@@ -62,14 +61,14 @@ namespace Autofac.Tests
             var typedParam = new TypedParameter(typeof(string), "Yo!");
 
             Func<object> vp;
-            Assert.IsFalse(typedParam.CanSupplyValue(param, new Container(), out vp));
+            Assert.False(typedParam.CanSupplyValue(param, new Container(), out vp));
         }
 
-		[Test]
+		[Fact]
 		public void FromWorksJustLikeTheConstructor()
 		{
 			var param = TypedParameter.From(new B());
-			Assert.AreSame(typeof(B), param.Type);
+			Assert.Same(typeof(B), param.Type);
 		}
     }
 }

@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Reflection;
 using Autofac.Core.Activators.Reflection;
-using Autofac.Tests.Util;
-using NUnit.Framework;
+using Autofac.Test.Util;
+using Xunit;
 
-namespace Autofac.Tests.Core.Activators.Reflection
+namespace Autofac.Test.Core.Activators.Reflection
 {
     public class HasDefaultValues
     {
@@ -13,8 +13,6 @@ namespace Autofac.Tests.Core.Activators.Reflection
         {
         }
     }
-
-    [TestFixture]
     public class DefaultValueParameterTests
     {
         static ParameterInfo GetTestParameter(string name)
@@ -23,24 +21,24 @@ namespace Autofac.Tests.Core.Activators.Reflection
                 .GetParameters().Where(pi => pi.Name == name).Single();
         }
 
-        [Test]
+        [Fact]
         public void DoesNotProvideValueWhenNoDefaultAvailable()
         {
             var dvp = new DefaultValueParameter();
             Func<object> vp;
             var dp = GetTestParameter("s").DefaultValue;
-            Assert.IsFalse(dvp.CanSupplyValue(GetTestParameter("s"), new ContainerBuilder().Build(), out vp));
+            Assert.False(dvp.CanSupplyValue(GetTestParameter("s"), new ContainerBuilder().Build(), out vp));
         }
 
-        [Test]
+        [Fact]
         public void ProvidesValueWhenDefaultInitialiserPresent()
         {
             var dvp = new DefaultValueParameter();
             var u = GetTestParameter("t");
             Func<object> vp;
             var dp = u.DefaultValue;
-            Assert.IsTrue(dvp.CanSupplyValue(u, new ContainerBuilder().Build(), out vp));
-            Assert.AreEqual("Hello", vp());
+            Assert.True(dvp.CanSupplyValue(u, new ContainerBuilder().Build(), out vp));
+            Assert.Equal("Hello", vp());
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Autofac.Tests
+namespace Autofac.Test
 {
     public class DisposeTracker : IDisposable
     {

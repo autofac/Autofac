@@ -10,7 +10,7 @@ using Autofac.Core;
 using System.Reflection;
 using Autofac.Core.Activators.ProvidedInstance;
 
-namespace Autofac.Tests
+namespace Autofac.Test
 {
     static class Factory
     {

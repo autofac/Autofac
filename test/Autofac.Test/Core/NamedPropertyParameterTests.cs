@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using System.Reflection;
 using Autofac.Core;
 
-namespace Autofac.Tests.Core
+namespace Autofac.Test.Core
 {
-    [TestFixture]
     public class NamedPropertyParameterTests
     {
         public class HasInjectionPoints
@@ -67,36 +66,36 @@ namespace Autofac.Tests.Core
                 .First();
         }
 
-        [Test]
+        [Fact]
         public void MatchesPropertySetterByName()
         {
             var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
             Func<object> vp;
-            Assert.IsTrue(cp.CanSupplyValue(PropertySetValueParameter(), new ContainerBuilder().Build(), out vp));
+            Assert.True(cp.CanSupplyValue(PropertySetValueParameter(), new ContainerBuilder().Build(), out vp));
         }
 
-        [Test]
+        [Fact]
         public void DoesNotMatchePropertySetterWithDifferentName()
         {
             var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
             Func<object> vp;
-            Assert.IsFalse(cp.CanSupplyValue(WrongPropertySetValueParameter(), new ContainerBuilder().Build(), out vp));
+            Assert.False(cp.CanSupplyValue(WrongPropertySetValueParameter(), new ContainerBuilder().Build(), out vp));
         }
 
-        [Test]
+        [Fact]
         public void DoesNotMatchConstructorParameters()
         {
             var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
             Func<object> vp;
-            Assert.IsFalse(cp.CanSupplyValue(ConstructorParameter(), new ContainerBuilder().Build(), out vp));
+            Assert.False(cp.CanSupplyValue(ConstructorParameter(), new ContainerBuilder().Build(), out vp));
         }
 
-        [Test]
+        [Fact]
         public void DoesNotMatchRegularMethodParameters()
         {
             var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
             Func<object> vp;
-            Assert.IsFalse(cp.CanSupplyValue(MethodParameter(), new ContainerBuilder().Build(), out vp));
+            Assert.False(cp.CanSupplyValue(MethodParameter(), new ContainerBuilder().Build(), out vp));
         }
     }
 }

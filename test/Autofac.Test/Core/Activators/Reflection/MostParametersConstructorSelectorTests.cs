@@ -1,30 +1,27 @@
 ﻿using System;
-using NUnit.Framework;
+using Xunit;
 using System.Linq;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core;
 
-namespace Autofac.Tests.Core.Activators.Reflection
+namespace Autofac.Test.Core.Activators.Reflection
 {
-    [TestFixture]
     public class MostParametersConstructorSelectorFixture
     {
         // ReSharper disable ClassNeverInstantiated.Local
 
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Fact]
         public void DoesNotAcceptNullBindings()
         {
             var target = new MostParametersConstructorSelector();
-            target.SelectConstructorBinding(null);
+            Assert.Throws<ArgumentNullException>(() => target.SelectConstructorBinding(null));
         }
 
-        [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [Fact]
         public void DoesNotAcceptEmptyBindings()
         {
             var target = new MostParametersConstructorSelector();
-            target.SelectConstructorBinding(new ConstructorParameterBinding[] { });
+            Assert.Throws<ArgumentOutOfRangeException>(() => target.SelectConstructorBinding(new ConstructorParameterBinding[] { }));
         }
 
         public class ThreeConstructors
@@ -34,16 +31,16 @@ namespace Autofac.Tests.Core.Activators.Reflection
             public ThreeConstructors(int i) { }
         }
 
-        [Test]
+        [Fact]
         public void ChoosesCorrectConstructor()
         {
             var constructors = GetBindingsForAllConstructorsOf<ThreeConstructors>();
             var target = new MostParametersConstructorSelector();
-            
+
             var chosen = target.SelectConstructorBinding(constructors);
 
-            Assert.IsNotNull(chosen);
-            Assert.AreEqual(2, chosen.TargetConstructor.GetParameters().Length);
+            Assert.NotNull(chosen);
+            Assert.Equal(2, chosen.TargetConstructor.GetParameters().Length);
         }
 
         class TwoConstructors
@@ -52,7 +49,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             public TwoConstructors(string s) { }
         }
 
-        [Test]
+        [Fact]
         public void WhenMultipleConstructorsWithTheSameLengthResolvable_ExceptionIsThrown()
         {
             var constructors = GetBindingsForAllConstructorsOf<TwoConstructors>();

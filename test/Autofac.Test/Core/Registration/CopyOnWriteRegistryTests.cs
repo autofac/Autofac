@@ -1,14 +1,13 @@
 ﻿using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Registration;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests.Core.Registration
+namespace Autofac.Test.Core.Registration
 {
-    [TestFixture]
     public class CopyOnWriteRegistryTests
     {
-        [Test]
+        [Fact]
         public void WhenRegistrationsAreMadeTheyDoNotAffectTheReadRegistry()
         {
             var read = new ComponentRegistry();
@@ -17,11 +16,11 @@ namespace Autofac.Tests.Core.Registration
             cow.Register(registration);
 
             var objectService = new TypedService(typeof (object));
-            Assert.That(cow.IsRegistered(objectService));
-            Assert.That(!read.IsRegistered(objectService));
+            Assert.True(cow.IsRegistered(objectService));
+            Assert.False(read.IsRegistered(objectService));
         }
 
-        [Test]
+        [Fact]
         public void WhenReadingTheWriteRegistryIsNotCreated()
         {
             var writeRegistryCreated = false;
@@ -35,10 +34,10 @@ namespace Autofac.Tests.Core.Registration
             IComponentRegistration unused;
             cow.TryGetRegistration(new TypedService(typeof (object)), out unused);
 
-            Assert.IsFalse(writeRegistryCreated);
+            Assert.False(writeRegistryCreated);
         }
 
-        [Test]
+        [Fact]
         public void RegistrationsMadeByUpdatingAChildScopeDoNotAppearInTheParentScope()
         {
             var container = new ContainerBuilder().Build();
@@ -46,8 +45,8 @@ namespace Autofac.Tests.Core.Registration
             var updater = new ContainerBuilder();
             updater.RegisterType<object>();
             updater.Update(childScope.ComponentRegistry);
-            Assert.IsTrue(childScope.IsRegistered<object>());
-            Assert.IsFalse(container.IsRegistered<object>());
+            Assert.True(childScope.IsRegistered<object>());
+            Assert.False(container.IsRegistered<object>());
         }
     }
 }

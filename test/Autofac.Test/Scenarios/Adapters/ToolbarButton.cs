@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Autofac.Tests.Scenarios.Adapters
+namespace Autofac.Test.Scenarios.Adapters
 {
     public class ToolbarButton : IToolbarButton
     {

@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Builder;
-using NUnit.Framework;
+using Xunit;
 using Autofac.Core;
-using Autofac.Tests.Scenarios.Dependencies.Circularity;
-using Autofac.Tests.Scenarios.Graph1;
+using Autofac.Test.Scenarios.Dependencies.Circularity;
+using Autofac.Test.Scenarios.Graph1;
 
-namespace Autofac.Tests
+namespace Autofac.Test
 {
-    [TestFixture]
     public class IntegrationTests
     {
-        [Test]
+        [Fact]
         public void CanCorrectlyBuildGraph1()
         {
             var builder = new ContainerBuilder();
@@ -30,45 +29,33 @@ namespace Autofac.Tests
             IC1 c = target.Resolve<IC1>();
             ID1 d = target.Resolve<ID1>();
 
-            Assert.IsInstanceOf<CD1>(c);
+            Assert.IsType<CD1>(c);
             CD1 cd = (CD1)c;
 
-            Assert.AreSame(a, b.A);
-            Assert.AreSame(a, cd.A);
-            Assert.AreNotSame(b, cd.B);
-            Assert.AreSame(c, e.C);
-            Assert.AreNotSame(b, e.B);
-            Assert.AreNotSame(e.B, cd.B);
+            Assert.Same(a, b.A);
+            Assert.Same(a, cd.A);
+            Assert.NotSame(b, cd.B);
+            Assert.Same(c, e.C);
+            Assert.NotSame(b, e.B);
+            Assert.NotSame(e.B, cd.B);
         }
 
-        [Test]
+        [Fact]
         public void DetectsAndIdentifiesCircularDependencies()
         {
-            try
-            {
-                var builder = new ContainerBuilder();
-                builder.RegisterType<D>().As<ID>();
-                builder.RegisterType<A>().As<IA>();
-                builder.RegisterType<BC>().As<IB, IC>();
+            var builder = new ContainerBuilder();
+            builder.RegisterType<D>().As<ID>();
+            builder.RegisterType<A>().As<IA>();
+            builder.RegisterType<BC>().As<IB, IC>();
 
-                var container = builder.Build();
+            var container = builder.Build();
 
-                ID d = container.Resolve<ID>();
-
-                Assert.Fail("Expected circular dependency exception.");
-            }
-            catch (DependencyResolutionException de)
-            {
-                Assert.IsTrue(de.Message.Contains(
-                    "Autofac.Tests.Scenarios.Dependencies.Circularity.D -> Autofac.Tests.Scenarios.Dependencies.Circularity.A -> Autofac.Tests.Scenarios.Dependencies.Circularity.BC -> Autofac.Tests.Scenarios.Dependencies.Circularity.A"));
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("Wrong exception type caught: " + ex.ToString());
-            }
+            var de = Assert.Throws<DependencyResolutionException>(() => container.Resolve<ID>());
+            Assert.True(de.Message.Contains(
+                "Autofac.Test.Scenarios.Dependencies.Circularity.D -> Autofac.Test.Scenarios.Dependencies.Circularity.A -> Autofac.Test.Scenarios.Dependencies.Circularity.BC -> Autofac.Test.Scenarios.Dependencies.Circularity.A"));
         }
 
-        [Test]
+        [Fact]
         public void UnresolvedProvidedInstances_DisposedWithLifetimeScope()
         {
             var builder = new ContainerBuilder();
@@ -76,12 +63,13 @@ namespace Autofac.Tests
             builder.RegisterInstance(disposable);
             var container = builder.Build();
             container.Dispose();
-            Assert.IsTrue(disposable.IsDisposed);
+            Assert.True(disposable.IsDisposed);
         }
 
-        [Test(Description = "Issue 383: Disposing a container should only dispose a provided instance one time.")]
+        [Fact]
         public void ResolvedProvidedInstances_OnlyDisposedOnce()
         {
+            // Issue 383: Disposing a container should only dispose a provided instance one time.
             var builder = new ContainerBuilder();
             var count = 0;
             var disposable = new DisposeTracker();
@@ -90,10 +78,10 @@ namespace Autofac.Tests
             var container = builder.Build();
             container.Resolve<DisposeTracker>();
             container.Dispose();
-            Assert.AreEqual(1, count, "The disposable instance was disposed the wrong number of times.");
+            Assert.Equal(1, count);
         }
 
-        [Test]
+        [Fact]
         public void UnresolvedProvidedInstances_NotOwnedByLifetimeScope_NeverDisposed()
         {
             var builder = new ContainerBuilder();
@@ -101,14 +89,14 @@ namespace Autofac.Tests
             builder.RegisterInstance(disposable).ExternallyOwned();
             var container = builder.Build();
             container.Dispose();
-            Assert.IsFalse(disposable.IsDisposed);
+            Assert.False(disposable.IsDisposed);
         }
 
         public interface I1<T> { }
         public interface I2<T> { }
         public class C<T> : I1<T>, I2<T> { }
 
-        [Test]
+        [Fact]
         public void MultipleServicesOnAnOpenGenericType_ShareTheSameRegistration()
         {
             var builder = new ContainerBuilder();
@@ -117,10 +105,10 @@ namespace Autofac.Tests
             container.Resolve<I1<int>>();
             var count = container.ComponentRegistry.Registrations.Count();
             container.Resolve<I2<int>>();
-            Assert.AreEqual(count, container.ComponentRegistry.Registrations.Count());
+            Assert.Equal(count, container.ComponentRegistry.Registrations.Count());
         }
 
-        [Test]
+        [Fact]
         public void ComponentsResolvedFromContainer_DisposedInReverseDependencyOrder()
         {
             var target = new Container();
@@ -140,12 +128,12 @@ namespace Autofac.Tests
 
             // B1 depends on A1, therefore B1 should be disposed first
 
-            Assert.AreEqual(2, disposeOrder.Count);
-            Assert.AreSame(b, disposeOrder.Dequeue());
-            Assert.AreSame(a, disposeOrder.Dequeue());
+            Assert.Equal(2, disposeOrder.Count);
+            Assert.Same(b, disposeOrder.Dequeue());
+            Assert.Same(a, disposeOrder.Dequeue());
         }
 
-        [Test]
+        [Fact]
         public void ComponentsResolvedFromContainerInReverseOrder_DisposedInReverseDependencyOrder()
         {
             var target = new Container();
@@ -165,12 +153,12 @@ namespace Autofac.Tests
 
             // B1 depends on A1, therefore B1 should be disposed first
 
-            Assert.AreEqual(2, disposeOrder.Count);
-            Assert.AreSame(b, disposeOrder.Dequeue());
-            Assert.AreSame(a, disposeOrder.Dequeue());
+            Assert.Equal(2, disposeOrder.Count);
+            Assert.Same(b, disposeOrder.Dequeue());
+            Assert.Same(a, disposeOrder.Dequeue());
         }
 
-        [Test]
+        [Fact]
         public void SingleSharedInstance_SharesOneInstanceBetweenAllLifetimeScopes()
         {
             var builder = new ContainerBuilder();
@@ -185,11 +173,11 @@ namespace Autofac.Tests
             var ctxA2 = lifetime.Resolve<A1>();
             var targetA = container.Resolve<A1>();
 
-            Assert.AreSame(ctxA, targetA);
-            Assert.AreSame(ctxA2, targetA);
+            Assert.Same(ctxA, targetA);
+            Assert.Same(ctxA2, targetA);
         }
 
-        [Test]
+        [Fact]
         public void SingleSharedInstance_DisposedOnlyWhenContainerDisposed()
         {
             var builder = new ContainerBuilder();
@@ -202,18 +190,18 @@ namespace Autofac.Tests
 
             var ctxA = lifetime.Resolve<A1>();
 
-            Assert.IsFalse(ctxA.IsDisposed);
+            Assert.False(ctxA.IsDisposed);
 
             lifetime.Dispose();
 
-            Assert.IsFalse(ctxA.IsDisposed);
+            Assert.False(ctxA.IsDisposed);
 
             container.Dispose();
 
-            Assert.IsTrue(ctxA.IsDisposed);
+            Assert.True(ctxA.IsDisposed);
         }
 
-        [Test]
+        [Fact]
         public void NoInstanceSharing_ProvidesUniqueInstancesForAllRequests()
         {
             var builder = new ContainerBuilder();
@@ -227,11 +215,11 @@ namespace Autofac.Tests
             var ctxA2 = lifetime.Resolve<A1>();
             var targetA = container.Resolve<A1>();
 
-            Assert.AreNotSame(ctxA, targetA);
-            Assert.AreNotSame(ctxA, ctxA2);
+            Assert.NotSame(ctxA, targetA);
+            Assert.NotSame(ctxA, ctxA2);
         }
 
-        [Test]
+        [Fact]
         public void NoInstanceSharing_DisposesInstancesWithContainingLifetime()
         {
             var builder = new ContainerBuilder();
@@ -244,21 +232,21 @@ namespace Autofac.Tests
             var ctxA = lifetime.Resolve<A1>();
             var targetA = container.Resolve<A1>();
 
-            Assert.IsFalse(targetA.IsDisposed);
-            Assert.IsFalse(ctxA.IsDisposed);
+            Assert.False(targetA.IsDisposed);
+            Assert.False(ctxA.IsDisposed);
 
             lifetime.Dispose();
 
-            Assert.IsFalse(targetA.IsDisposed);
-            Assert.IsTrue(ctxA.IsDisposed);
+            Assert.False(targetA.IsDisposed);
+            Assert.True(ctxA.IsDisposed);
 
             container.Dispose();
 
-            Assert.IsTrue(targetA.IsDisposed);
-            Assert.IsTrue(ctxA.IsDisposed);
+            Assert.True(targetA.IsDisposed);
+            Assert.True(ctxA.IsDisposed);
         }
 
-        [Test]
+        [Fact]
         public void ShareInstanceInLifetimeScope_SharesOneInstanceInEachLifetimeScope()
         {
             var builder = new ContainerBuilder();
@@ -271,16 +259,16 @@ namespace Autofac.Tests
             var ctxA = lifetime.Resolve<A1>();
             var ctxA2 = lifetime.Resolve<A1>();
 
-            Assert.AreSame(ctxA, ctxA2);
+            Assert.Same(ctxA, ctxA2);
 
             var targetA = container.Resolve<A1>();
             var targetA2 = container.Resolve<A1>();
 
-            Assert.AreSame(targetA, targetA2);
-            Assert.AreNotSame(ctxA, targetA);
+            Assert.Same(targetA, targetA2);
+            Assert.NotSame(ctxA, targetA);
         }
 
-        [Test]
+        [Fact]
         public void ShareInstanceInLifetimeScope_DisposesInstancesWithContainingScope()
         {
             var builder = new ContainerBuilder();
@@ -293,18 +281,18 @@ namespace Autofac.Tests
             var ctxA = lifetime.Resolve<A1>();
             var targetA = container.Resolve<A1>();
 
-            Assert.IsFalse(targetA.IsDisposed);
-            Assert.IsFalse(ctxA.IsDisposed);
+            Assert.False(targetA.IsDisposed);
+            Assert.False(ctxA.IsDisposed);
 
             lifetime.Dispose();
 
-            Assert.IsFalse(targetA.IsDisposed);
-            Assert.IsTrue(ctxA.IsDisposed);
+            Assert.False(targetA.IsDisposed);
+            Assert.True(ctxA.IsDisposed);
 
             container.Dispose();
 
-            Assert.IsTrue(targetA.IsDisposed);
-            Assert.IsTrue(ctxA.IsDisposed);
+            Assert.True(targetA.IsDisposed);
+            Assert.True(ctxA.IsDisposed);
         }
     }
 }

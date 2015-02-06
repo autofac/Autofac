@@ -1,13 +1,12 @@
 using System;
 using Autofac.Builder;
 using Autofac.Core.Lifetime;
-using NUnit.Framework;
+using Xunit;
 using Autofac.Core;
 using System.Collections.Generic;
 
-namespace Autofac.Tests
+namespace Autofac.Test
 {
-    [TestFixture]
     public class TagsFixture
     {
         public class HomeController
@@ -19,7 +18,7 @@ namespace Autofac.Tests
 
         public enum Tag { None, Outer, Middle, Inner }
 
-        [Test]
+        [Fact]
         public void OuterSatisfiesInnerResolutions()
         {
             var builder = new ContainerBuilder();
@@ -38,10 +37,10 @@ namespace Autofac.Tests
             root.Resolve<string>();
             inner.Resolve<string>();
 
-            Assert.AreEqual(1, instantiations);
+            Assert.Equal(1, instantiations);
         }
 
-        [Test]
+        [Fact]
         public void AnonymousInnerContainer()
         {
             var builder = new ContainerBuilder();
@@ -58,11 +57,10 @@ namespace Autofac.Tests
             anon.Resolve<string>();
             root.Resolve<string>();
 
-            Assert.AreEqual(1, instantiations);
+            Assert.Equal(1, instantiations);
         }
 
-        [Test]
-        [ExpectedException(typeof(DependencyResolutionException))]
+        [Fact]
         public void InnerRegistrationNotAccessibleToOuter()
         {
             var builder = new ContainerBuilder();
@@ -72,11 +70,11 @@ namespace Autofac.Tests
 
             var outer = builder.Build();
 
-            Assert.IsTrue(outer.IsRegistered<string>());
-            outer.Resolve<string>();
+            Assert.True(outer.IsRegistered<string>());
+            Assert.Throws<DependencyResolutionException>(() => outer.Resolve<string>());
         }
 
-        [Test]
+        [Fact]
         public void TaggedRegistrationsAccessibleThroughNames()
         {
             var name = "Name";
@@ -90,10 +88,10 @@ namespace Autofac.Tests
             var outer = builder.Build();
 
             var s = outer.ResolveNamed<string>(name);
-            Assert.IsNotNull(s);
+            Assert.NotNull(s);
         }
 
-        [Test]
+        [Fact]
         public void CorrectScopeMaintainsOwnership()
         {
             var builder = new ContainerBuilder();
@@ -102,33 +100,33 @@ namespace Autofac.Tests
             var container = builder.Build();
             var inner = container.BeginLifetimeScope();
             var dt = inner.Resolve<DisposeTracker>();
-            Assert.IsFalse(dt.IsDisposed);
+            Assert.False(dt.IsDisposed);
             inner.Dispose();
-            Assert.IsFalse(dt.IsDisposed);
+            Assert.False(dt.IsDisposed);
             container.Dispose();
-            Assert.IsTrue(dt.IsDisposed);
+            Assert.True(dt.IsDisposed);
         }
 
-        [Test]
+        [Fact]
         public void DefaultSingletonSemanticsCorrect()
         {
             var builder = new ContainerBuilder();
             builder.Register(c => new object()).InstancePerMatchingLifetimeScope(LifetimeScope.RootTag);
             var container = builder.Build();
             var inner = container.BeginLifetimeScope();
-            Assert.AreSame(container.Resolve<object>(), inner.Resolve<object>());
+            Assert.Same(container.Resolve<object>(), inner.Resolve<object>());
         }
 
-        [Test]
+        [Fact]
         public void ReflectiveRegistration()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType(typeof(object)).InstancePerMatchingLifetimeScope(LifetimeScope.RootTag);
             var container = builder.Build();
-            Assert.IsNotNull(container.Resolve<object>());
+            Assert.NotNull(container.Resolve<object>());
         }
 
-        [Test]
+        [Fact]
         public void CollectionsAreTaggable()
         {
             var builder = new ContainerBuilder();
@@ -140,7 +138,7 @@ namespace Autofac.Tests
             var inner = outer.BeginLifetimeScope("tag");
 
             var coll = inner.Resolve<IList<object>>();
-            Assert.IsNotNull(coll);
+            Assert.NotNull(coll);
 
             var threw = false;
             try
@@ -152,10 +150,10 @@ namespace Autofac.Tests
                 threw = true;
             }
 
-            Assert.IsTrue(threw);
+            Assert.True(threw);
         }
 
-        [Test]
+        [Fact]
         public void GenericsAreTaggable()
         {
             var builder = new ContainerBuilder();
@@ -167,7 +165,7 @@ namespace Autofac.Tests
             var inner = outer.BeginLifetimeScope("tag");
 
             var coll = inner.Resolve<IList<object>>();
-            Assert.IsNotNull(coll);
+            Assert.NotNull(coll);
 
             var threw = false;
             try
@@ -179,10 +177,10 @@ namespace Autofac.Tests
                 threw = true;
             }
 
-            Assert.IsTrue(threw);
+            Assert.True(threw);
         }
 
-        [Test]
+        [Fact]
         public void MatchesAgainstMultipleScopes()
         {
             const string tag1 = "Tag1";
@@ -193,10 +191,10 @@ namespace Autofac.Tests
             var container = builder.Build();
 
             var lifetimeScope = container.BeginLifetimeScope(tag1);
-            Assert.That(lifetimeScope.Resolve<object>(), Is.Not.Null);
+            Assert.NotNull(lifetimeScope.Resolve<object>());
 
             lifetimeScope = container.BeginLifetimeScope(tag2);
-            Assert.That(lifetimeScope.Resolve<object>(), Is.Not.Null);
+            Assert.NotNull(lifetimeScope.Resolve<object>());
         }
     }
 }

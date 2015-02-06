@@ -1,15 +1,14 @@
 ﻿using System;
 using Autofac.Builder;
-using NUnit.Framework;
+using Xunit;
 using Autofac.Core;
-using Autofac.Tests.Scenarios.Dependencies;
+using Autofac.Test.Scenarios.Dependencies;
 
-namespace Autofac.Tests.Core.Resolving
+namespace Autofac.Test.Core.Resolving
 {
-    [TestFixture]
     public class ResolveOperationTests
     {
-        [Test]
+        [Fact]
         public void CtorPropDependencyOkOrder1()
         {
             var cb = new ContainerBuilder();
@@ -19,12 +18,12 @@ namespace Autofac.Tests.Core.Resolving
             var c = cb.Build();
             var dbp = c.Resolve<DependsByProp>();
 
-            Assert.IsNotNull(dbp.Dep);
-            Assert.IsNotNull(dbp.Dep.Dep);
-            Assert.AreSame(dbp, dbp.Dep.Dep);
+            Assert.NotNull(dbp.Dep);
+            Assert.NotNull(dbp.Dep.Dep);
+            Assert.Same(dbp, dbp.Dep.Dep);
         }
 
-        [Test]
+        [Fact]
         public void CtorPropDependencyOkOrder2()
         {
             var cb = new ContainerBuilder();
@@ -34,13 +33,12 @@ namespace Autofac.Tests.Core.Resolving
             var c = cb.Build();
             var dbc = c.Resolve<DependsByCtor>();
 
-            Assert.IsNotNull(dbc.Dep);
-            Assert.IsNotNull(dbc.Dep.Dep);
-            Assert.AreSame(dbc, dbc.Dep.Dep);
+            Assert.NotNull(dbc.Dep);
+            Assert.NotNull(dbc.Dep.Dep);
+            Assert.Same(dbc, dbc.Dep.Dep);
         }
 
-        [Test]
-        [ExpectedException(typeof(DependencyResolutionException))]
+        [Fact]
         public void CtorPropDependencyFactoriesOrder1()
         {
             var cb = new ContainerBuilder();
@@ -48,11 +46,10 @@ namespace Autofac.Tests.Core.Resolving
             cb.RegisterType<DependsByProp>().PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
 
             var c = cb.Build();
-            c.Resolve<DependsByProp>();
+            Assert.Throws<DependencyResolutionException>(() => c.Resolve<DependsByProp>());
         }
 
-        [Test]
-        [ExpectedException(typeof(DependencyResolutionException))]
+        [Fact]
         public void CtorPropDependencyFactoriesOrder2()
         {
             var cb = new ContainerBuilder();
@@ -64,13 +61,13 @@ namespace Autofac.Tests.Core.Resolving
                 .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
 
             var c = cb.Build();
-            c.Resolve<DependsByCtor>();
+            Assert.Throws<DependencyResolutionException>(() => c.Resolve<DependsByCtor>());
 
-            Assert.AreEqual(2, ac);
+            Assert.Equal(2, ac);
         }
 
 
-        [Test]
+        [Fact]
         public void ActivatingArgsSuppliesParameters()
         {
             const int provided = 12;
@@ -82,10 +79,10 @@ namespace Autofac.Tests.Core.Resolving
             var container = builder.Build();
 
             container.Resolve<object>(TypedParameter.From(provided));
-            Assert.AreEqual(provided, passed);
+            Assert.Equal(provided, passed);
         }
 
-        [Test]
+        [Fact]
         public void ActivatedArgsSuppliesParameters()
         {
             const int provided = 12;
@@ -97,10 +94,10 @@ namespace Autofac.Tests.Core.Resolving
             var container = builder.Build();
 
             container.Resolve<object>(TypedParameter.From(provided));
-            Assert.AreEqual(provided, passed);
+            Assert.Equal(provided, passed);
         }
 
-        [Test]
+        [Fact]
         public void ChainedOnActivatedEventsAreInvokedWithinASingleResolveOperation()
         {
             var builder = new ContainerBuilder();
@@ -116,10 +113,10 @@ namespace Autofac.Tests.Core.Resolving
             var container = builder.Build();
             container.Resolve<object>();
 
-            Assert.That(secondEventRaised);
+            Assert.True(secondEventRaised);
         }
 
-        [Test]
+        [Fact]
         public void AfterTheOperationIsFinished_ReusingTheTemporaryContextThrows()
         {
             IComponentContext ctx = null;

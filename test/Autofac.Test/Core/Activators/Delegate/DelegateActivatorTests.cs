@@ -1,29 +1,26 @@
 ﻿using System;
-using NUnit.Framework;
+using Xunit;
 using System.Linq;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core;
 
-namespace Autofac.Tests.Component.Activation
+namespace Autofac.Test.Component.Activation
 {
-    [TestFixture]
     public class DelegateActivatorTests
     {
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Fact]
         public void Constructor_DoesNotAcceptNullDelegate()
         {
-            new DelegateActivator(typeof(object), null);
+            Assert.Throws<ArgumentNullException>(() => new DelegateActivator(typeof(object), null));
         }
 
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Fact]
         public void Constructor_DoesNotAcceptNullType()
         {
-            new DelegateActivator(null, (c, p) => new object());
+            Assert.Throws<ArgumentNullException>(() => new DelegateActivator(null, (c, p) => new object()));
         }
 
-        [Test]
+        [Fact]
         public void ActivateInstance_ReturnsResultOfInvokingSuppliedDelegate()
         {
             var instance = new object();
@@ -31,10 +28,10 @@ namespace Autofac.Tests.Component.Activation
             var target =
                 new DelegateActivator(typeof(object), (c, p) => instance);
 
-            Assert.AreSame(instance, target.ActivateInstance(new ContainerBuilder().Build(), Enumerable.Empty<Parameter>()));
+            Assert.Same(instance, target.ActivateInstance(new ContainerBuilder().Build(), Enumerable.Empty<Parameter>()));
         }
 
-        [Test]
+        [Fact]
         public void WhenActivationDelegateReturnsNull_ExceptionDescribesLimitType()
         {
             var target = new DelegateActivator(typeof(string), (c, p) => null);
@@ -42,7 +39,7 @@ namespace Autofac.Tests.Component.Activation
             var ex = Assert.Throws<DependencyResolutionException>(
                 () => target.ActivateInstance(new ContainerBuilder().Build(), Enumerable.Empty<Parameter>()));
 
-            Assert.That(ex.Message.Contains(typeof(string).ToString()));
+            Assert.True(ex.Message.Contains(typeof(string).ToString()));
         }
 	}
 }

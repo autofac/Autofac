@@ -1,31 +1,29 @@
 ﻿using System;
 using Autofac.Builder;
-using NUnit.Framework;
+using Xunit;
 using Autofac.Core;
 
-namespace Autofac.Tests.Builder
+namespace Autofac.Test.Builder
 {
-    [TestFixture]
     public class DelegateRegistrationBuilderTests
     {
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Fact]
         public void RegisterNull()
         {
             var target = new ContainerBuilder();
-            target.Register((Func<IComponentContext, object>)null);
+            Assert.Throws<ArgumentNullException>(() => target.Register((Func<IComponentContext, object>)null));
         }
 
-        [Test]
+        [Fact]
         public void ExposesImplementationType()
         {
             var cb = new ContainerBuilder();
             cb.Register(c => "Hello").As<object>();
             var container = cb.Build();
             IComponentRegistration cr;
-            Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(
+            Assert.True(container.ComponentRegistry.TryGetRegistration(
                 new TypedService(typeof(object)), out cr));
-            Assert.AreEqual(typeof(string), cr.Activator.LimitType);
+            Assert.Equal(typeof(string), cr.Activator.LimitType);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Autofac.Tests.Scenarios.Adapters
+﻿namespace Autofac.Test.Scenarios.Adapters
 {
     public interface IToolbarButton
     {

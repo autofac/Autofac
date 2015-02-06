@@ -2,18 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using Autofac.Util;
 
-namespace Autofac.Tests.Util
+namespace Autofac.Test.Util
 {
-    [TestFixture]
     public class EnforceTests
     {
-        [Test]
+        [Fact]
         public void FindsEmptyElementInList()
         {
-            Assertions.AssertThrows<ArgumentException>(() =>
+            Assert.Throws<ArgumentException>(() =>
                 Enforce.ArgumentElementNotNull(new object[] { null }, "arg"));
         }
     }

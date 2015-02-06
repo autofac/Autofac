@@ -1,9 +1,9 @@
-namespace Autofac.Tests.Scenarios.ScannedAssembly
+namespace Autofac.Test.Scenarios.ScannedAssembly
 {
     /// <summary>
     /// A type to use as a generic parameter.
     /// </summary>
-    public class SaveCommandData
+    public class DeleteCommandData
     {
     }
 }

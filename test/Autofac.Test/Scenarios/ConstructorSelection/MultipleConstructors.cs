@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Autofac.Tests.Scenarios.ConstructorSelection
+namespace Autofac.Test.Scenarios.ConstructorSelection
 {
     public class MultipleConstructors
     {

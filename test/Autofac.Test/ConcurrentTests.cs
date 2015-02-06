@@ -4,14 +4,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Core;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests
+namespace Autofac.Test
 {
-    [TestFixture]
     public class ConcurrentTests
     {
-        [Test]
+        [Fact]
         public void WhenTwoThreadsInitialiseASharedInstanceSimultaneouslyViaChildLifetime_OnlyOneInstanceIsActivated()
         {
             int activationCount = 0;
@@ -48,12 +47,12 @@ namespace Autofac.Tests
             t1.Join();
             t2.Join();
 
-            Assert.AreEqual(1, activationCount);
-            Assert.IsEmpty(exceptions);
-            Assert.AreEqual(1, results.Distinct().Count());
+            Assert.Equal(1, activationCount);
+            Assert.Empty(exceptions);
+            Assert.Equal(1, results.Distinct().Count());
         }
 
-        [Test]
+        [Fact]
         public void ConcurrentResolveOperationsForNonSharedInstancesFromDifferentLifetimes_DoNotBlock()
         {
             var evt = new ManualResetEvent(false);
@@ -82,12 +81,12 @@ namespace Autofac.Tests
             container.BeginLifetimeScope().Resolve<object>(TypedParameter.From(false));
 
             Thread.MemoryBarrier();
-            Assert.AreEqual(0, unblocked);
+            Assert.Equal(0, unblocked);
             evt.Set();
             blockedThread.Join();
         }
 
-        [Test]
+        [Fact]
         public void ConcurrentResolveOperationsFromDifferentContainers_DoesNotThrow()
         {
             var task1 = Task.Factory.StartNew(ResolveObjectInstanceLoop);
@@ -107,7 +106,7 @@ namespace Autofac.Tests
             }
         }
 
-        [Test, MaxTime(1000)]
+        [Fact(Timeout = 1000)]
         public void NoLockWhenResolvingExistingSingleInstance()
         {
             var builder = new ContainerBuilder();

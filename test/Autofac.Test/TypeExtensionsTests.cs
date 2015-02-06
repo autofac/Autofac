@@ -1,20 +1,19 @@
 ﻿using System;
-using Autofac.Tests.Scenarios.ScannedAssembly;
-using NUnit.Framework;
+using Autofac.Test.Scenarios.ScannedAssembly;
+using Xunit;
 
-namespace Autofac.Tests
+namespace Autofac.Test
 {
-    [TestFixture]
     public class TypeExtensionsTests
     {
-        [Test]
+        [Fact]
         public void IsClosedTypeOfNonGenericTypeProvidedThrowsException()
         {
             Assert.Throws<ArgumentException>(() => 
                 typeof(object).IsClosedTypeOf(typeof(SaveCommandData)));
         }
 
-        [Test]
+        [Fact]
         public void IsClosedTypeOfClosedGenericTypeProvidedThrowsException()
         {
             var cb = new ContainerBuilder();
@@ -22,22 +21,22 @@ namespace Autofac.Tests
                 typeof(object).IsClosedTypeOf(typeof(ICommand<SaveCommandData>)));
         }
 
-        [Test]
+        [Fact]
         public void IsClosedTypeOfReturnsTrueForOpenGenericInterfaces()
         {
             Assert.True(typeof(ICommand<SaveCommandData>).IsClosedTypeOf(typeof(ICommand<>)));
         }
 
-        [Test]
+        [Fact]
         public void IsClosedTypeOfReturnsTrueForClosedClasses()
         {
             Assert.True(typeof(SaveCommand).IsClosedTypeOf(typeof(ICommand<>)));
         }
 
-        [Test]
+        [Fact]
         public void AnOpenGenericTypeIsNotAClosedTypeOfAnything()
         {
-            Assert.IsFalse(typeof(CommandBase<>).IsClosedTypeOf(typeof(CommandBase<>)));
+            Assert.False(typeof(CommandBase<>).IsClosedTypeOf(typeof(CommandBase<>)));
         }
     }
 }

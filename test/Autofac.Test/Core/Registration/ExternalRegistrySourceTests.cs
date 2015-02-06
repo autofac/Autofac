@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests.Core.Registration
+namespace Autofac.Test.Core.Registration
 {
-    [TestFixture]
     public class ExternalRegistrySourceTests
     {
         public interface IServiceA { }
@@ -13,7 +12,7 @@ namespace Autofac.Tests.Core.Registration
         public class ClassB : IServiceA { }
 
         // Courtesy of M. Kowalewski
-        [Test]
+        [Fact]
         public void OneTypeImplementTwoInterfaces_OtherObjectsImplementingOneOfThoseInterfaces_CanBeResolved()
         {
             var builder = new ContainerBuilder();
@@ -25,7 +24,7 @@ namespace Autofac.Tests.Core.Registration
             lifetime.Resolve<IServiceB>();
 
             var allImplementationsOfServiceA = lifetime.Resolve<IEnumerable<IServiceA>>();
-            Assert.AreEqual(2, allImplementationsOfServiceA.Count());
+            Assert.Equal(2, allImplementationsOfServiceA.Count());
         }
     }
 }

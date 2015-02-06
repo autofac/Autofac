@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests.Builder
+namespace Autofac.Test.Builder
 {
-    [TestFixture]
     public class PropertyInjectionTests
     {
         public class HasSetter
@@ -24,7 +23,7 @@ namespace Autofac.Tests.Builder
             }
         }
 
-        [Test]
+        [Fact]
         public void SetterInjection()
         {
             var val = "Value";
@@ -37,11 +36,11 @@ namespace Autofac.Tests.Builder
 
             var instance = container.Resolve<HasSetter>();
 
-            Assert.IsNotNull(instance);
-            Assert.AreEqual(val, instance.Val);
+            Assert.NotNull(instance);
+            Assert.Equal(val, instance.Val);
         }
 
-        [Test]
+        [Fact]
         public void SetterInjectionUnset()
         {
             var val = "Value";
@@ -54,8 +53,8 @@ namespace Autofac.Tests.Builder
 
             var instance = container.Resolve<HasSetter>();
 
-            Assert.IsNotNull(instance);
-            Assert.AreEqual(val, instance.Val);
+            Assert.NotNull(instance);
+            Assert.Equal(val, instance.Val);
         }
 
         public class HasSetterWithValue
@@ -75,7 +74,7 @@ namespace Autofac.Tests.Builder
             }
         }
 
-        //[Test]
+        //[Fact]
         //public void SetterInjectionUnsetWithValue()
         //{
         //    var val = "Value";
@@ -89,11 +88,11 @@ namespace Autofac.Tests.Builder
 
         //    var instance = container.Resolve<HasSetterWithValue>();
 
-        //    Assert.IsNotNull(instance);
-        //    Assert.AreEqual("Default", instance.Val);
+        //    Assert.NotNull(instance);
+        //    Assert.Equal("Default", instance.Val);
         //}
 
-        [Test]
+        [Fact]
         public void SetterInjectionWithValue()
         {
             var val = "Value";
@@ -106,8 +105,8 @@ namespace Autofac.Tests.Builder
 
             var instance = container.Resolve<HasSetterWithValue>();
 
-            Assert.IsNotNull(instance);
-            Assert.AreEqual(val, instance.Val);
+            Assert.NotNull(instance);
+            Assert.Equal(val, instance.Val);
         }
 
         public class HasPropReadOnly
@@ -127,7 +126,7 @@ namespace Autofac.Tests.Builder
             }
         }
 
-        [Test]
+        [Fact]
         public void SetterInjectionReadOnly()
         {
             var val = "Value";
@@ -140,11 +139,11 @@ namespace Autofac.Tests.Builder
 
             var instance = container.Resolve<HasPropReadOnly>();
 
-            Assert.IsNotNull(instance);
-            Assert.AreEqual("Default", instance.Val);
+            Assert.NotNull(instance);
+            Assert.Equal("Default", instance.Val);
         }
 
-        [Test]
+        [Fact]
         public void SetterInjectionUnsetReadOnly()
         {
             var val = "Value";
@@ -157,8 +156,8 @@ namespace Autofac.Tests.Builder
 
             var instance = container.Resolve<HasPropReadOnly>();
 
-            Assert.IsNotNull(instance);
-            Assert.AreEqual("Default", instance.Val);
+            Assert.NotNull(instance);
+            Assert.Equal("Default", instance.Val);
         }
 
         public class HasPropWriteOnly
@@ -179,7 +178,7 @@ namespace Autofac.Tests.Builder
             }
         }
 
-        [Test]
+        [Fact]
         public void SetterInjectionWriteOnly()
         {
             var val = "Value";
@@ -191,11 +190,11 @@ namespace Autofac.Tests.Builder
             var container = builder.Build();
             var instance = container.Resolve<HasPropWriteOnly>();
 
-            Assert.IsNotNull(instance);
-            Assert.AreEqual(val, instance.GetVal());
+            Assert.NotNull(instance);
+            Assert.Equal(val, instance.GetVal());
         }
 
-        [Test]
+        [Fact]
         public void SetterInjectionUnsetWriteOnly()
         {
             var val = "Value";
@@ -207,8 +206,8 @@ namespace Autofac.Tests.Builder
             var container = builder.Build();
             var instance = container.Resolve<HasPropWriteOnly>();
 
-            Assert.IsNotNull(instance);
-            Assert.AreEqual(val, instance.GetVal());
+            Assert.NotNull(instance);
+            Assert.Equal(val, instance.GetVal());
         }
 
         public class SplitAccess
@@ -240,7 +239,7 @@ namespace Autofac.Tests.Builder
 
         }
 
-        [Test]
+        [Fact]
         public void SetterInjectionPrivateGet()
         {
             var val = "Value";
@@ -252,9 +251,9 @@ namespace Autofac.Tests.Builder
             var container = builder.Build();
             var instance = container.Resolve<SplitAccess>();
 
-            Assert.IsNotNull(instance);
-            Assert.IsTrue(instance.SetterCalled);
-            Assert.IsFalse(instance.GetterCalled);
+            Assert.NotNull(instance);
+            Assert.True(instance.SetterCalled);
+            Assert.False(instance.GetterCalled);
         }
 
         public class Invokee
@@ -267,7 +266,7 @@ namespace Autofac.Tests.Builder
             }
         }
 
-        [Test]
+        [Fact]
         public void EventFiredWithContainerScope()
         {
             var pval = 12;
@@ -278,7 +277,7 @@ namespace Autofac.Tests.Builder
             var container = builder.Build();
             var inner = container.BeginLifetimeScope();
             var invokee = inner.Resolve<Invokee>();
-            Assert.AreEqual(pval, invokee.Param);
+            Assert.Equal(pval, invokee.Param);
         }
 
         public class HasValueTypeArray
@@ -291,7 +290,7 @@ namespace Autofac.Tests.Builder
             }
         }
 
-        [Test]
+        [Fact]
         public void SetterInjectionIgnoresArraysOfValueTypes()
         {
             var builder = new ContainerBuilder();
@@ -300,7 +299,7 @@ namespace Autofac.Tests.Builder
 
             var instance = container.Resolve<HasValueTypeArray>();
 
-            Assert.That(instance.ByteArray, Is.EqualTo(new byte[] {1, 2, 3}));
+            Assert.Equal(new byte[] {1, 2, 3}, instance.ByteArray);
         }
 
         public class HasNullableValueTypeArray
@@ -313,7 +312,7 @@ namespace Autofac.Tests.Builder
             }
         }
 
-        [Test]
+        [Fact]
         public void SetterInjectionIgnoresArraysOfNullableValueTypes()
         {
             var builder = new ContainerBuilder();
@@ -322,7 +321,7 @@ namespace Autofac.Tests.Builder
 
             var instance = container.Resolve<HasNullableValueTypeArray>();
 
-            Assert.That(instance.DoubleArray, Is.EqualTo(new double?[] {null, 0.1, null}));
+            Assert.Equal(new double?[] {null, 0.1, null}, instance.DoubleArray);
         }
 
         public class HasValueTypeList
@@ -338,7 +337,7 @@ namespace Autofac.Tests.Builder
             }
         }
 
-        [Test]
+        [Fact]
         public void SetterInjectionIgnoresListsOfValueTypes()
         {
             var builder = new ContainerBuilder();
@@ -348,8 +347,8 @@ namespace Autofac.Tests.Builder
             var instance = container.Resolve<HasValueTypeList>();
 
             var expected = new List<byte> {1, 2, 3};
-            Assert.That(instance.ByteListInterface, Is.EqualTo(expected));
-            Assert.That(instance.ByteList, Is.EqualTo(expected));
+            Assert.Equal(expected, instance.ByteListInterface);
+            Assert.Equal(expected, instance.ByteList);
         }
 
         public class HasNullableValueTypeList
@@ -365,7 +364,7 @@ namespace Autofac.Tests.Builder
             }
         }
 
-        [Test]
+        [Fact]
         public void SetterInjectionIgnoresListsOfNullableValueTypes()
         {
             var builder = new ContainerBuilder();
@@ -375,8 +374,8 @@ namespace Autofac.Tests.Builder
             var instance = container.Resolve<HasNullableValueTypeList>();
 
             var expected = new List<double?> {null, 0.1, null};
-            Assert.That(instance.DoubleListInterface, Is.EqualTo(expected));
-            Assert.That(instance.DoubleList, Is.EqualTo(expected));
+            Assert.Equal(expected, instance.DoubleListInterface);
+            Assert.Equal(expected, instance.DoubleList);
         }
 
         public class HasValueTypeCollection
@@ -392,7 +391,7 @@ namespace Autofac.Tests.Builder
             }
         }
 
-        [Test]
+        [Fact]
         public void SetterInjectionIgnoresCollectionsOfValueTypes()
         {
             var builder = new ContainerBuilder();
@@ -402,8 +401,8 @@ namespace Autofac.Tests.Builder
             var instance = container.Resolve<HasValueTypeCollection>();
 
             var expected = new Collection<byte> {1, 2, 3};
-            Assert.That(instance.ByteCollectionInterface, Is.EqualTo(expected));
-            Assert.That(instance.ByteCollection, Is.EqualTo(expected));
+            Assert.Equal(expected, instance.ByteCollectionInterface);
+            Assert.Equal(expected, instance.ByteCollection);
         }
 
         public class HasNullableValueTypeCollection
@@ -419,7 +418,7 @@ namespace Autofac.Tests.Builder
             }
         }
 
-        [Test]
+        [Fact]
         public void SetterInjectionIgnoresCollectionsOfNullableValueTypes()
         {
             var builder = new ContainerBuilder();
@@ -429,8 +428,8 @@ namespace Autofac.Tests.Builder
             var instance = container.Resolve<HasNullableValueTypeCollection>();
 
             var expected = new ReadOnlyCollection<double?>(new double?[] {null, 0.1, null});
-            Assert.That(instance.DoubleCollectionInterface, Is.EqualTo(expected));
-            Assert.That(instance.DoubleCollection, Is.EqualTo(expected));
+            Assert.Equal(expected, instance.DoubleCollectionInterface);
+            Assert.Equal(expected, instance.DoubleCollection);
         }
     }
 }

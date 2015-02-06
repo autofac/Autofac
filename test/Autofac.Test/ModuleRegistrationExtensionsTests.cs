@@ -1,25 +1,24 @@
 ﻿using System;
-using Autofac.Tests.Scenarios.ScannedAssembly;
-using NUnit.Framework;
+using Autofac.Test.Scenarios.ScannedAssembly;
+using Xunit;
 
-namespace Autofac.Tests
+namespace Autofac.Test
 {
-    [TestFixture]
     public class ModuleRegistrationExtensionsTests
     {
-        [Test]
+        [Fact]
         public void RegisterModule()
         {
             var mod = new ObjectModule();
             var target = new ContainerBuilder();
             target.RegisterModule(mod);
-            Assert.IsFalse(mod.ConfigureCalled);
+            Assert.False(mod.ConfigureCalled);
             var container = target.Build();
-            Assert.IsTrue(mod.ConfigureCalled);
-            Assert.IsTrue(container.IsRegistered<object>());
+            Assert.True(mod.ConfigureCalled);
+            Assert.True(container.IsRegistered<object>());
         }
 
-        [Test]
+        [Fact]
         public void RegisterAssemblyModules()
         {
             var assembly = typeof(AComponent).Assembly;
@@ -27,11 +26,11 @@ namespace Autofac.Tests
             builder.RegisterAssemblyModules(assembly);
             var container = builder.Build();
 
-            Assert.That(container.IsRegistered<AComponent>(), Is.True);
-            Assert.That(container.IsRegistered<BComponent>(), Is.True);
+            Assert.True(container.IsRegistered<AComponent>());
+            Assert.True(container.IsRegistered<BComponent>());
         }
 
-        [Test]
+        [Fact]
         public void RegisterAssemblyModulesChainedToRegisterModule()
         {
             var assembly = typeof(AComponent).Assembly;
@@ -39,12 +38,12 @@ namespace Autofac.Tests
             builder.RegisterAssemblyModules(assembly).RegisterModule<ObjectModule>();
             var container = builder.Build();
 
-            Assert.IsTrue(container.IsRegistered<AComponent>());
-            Assert.IsTrue(container.IsRegistered<BComponent>());
-            Assert.IsTrue(container.IsRegistered<object>());
+            Assert.True(container.IsRegistered<AComponent>());
+            Assert.True(container.IsRegistered<BComponent>());
+            Assert.True(container.IsRegistered<object>());
         }
 
-        [Test]
+        [Fact]
         public void RegisterAssemblyModulesOfGenericType()
         {
             var assembly = typeof(AComponent).Assembly;
@@ -52,11 +51,11 @@ namespace Autofac.Tests
             builder.RegisterAssemblyModules<AModule>(assembly);
             var container = builder.Build();
 
-            Assert.That(container.IsRegistered<AComponent>(), Is.True);
-            Assert.That(container.IsRegistered<BComponent>(), Is.False);
+            Assert.True(container.IsRegistered<AComponent>());
+            Assert.False(container.IsRegistered<BComponent>());
         }
 
-        [Test]
+        [Fact]
         public void RegisterAssemblyModulesOfBaseGenericType()
         {
             var assembly = typeof(AComponent).Assembly;
@@ -64,11 +63,11 @@ namespace Autofac.Tests
             builder.RegisterAssemblyModules<ModuleBase>(assembly);
             var container = builder.Build();
 
-            Assert.That(container.IsRegistered<AComponent>(), Is.True);
-            Assert.That(container.IsRegistered<BComponent>(), Is.True);
+            Assert.True(container.IsRegistered<AComponent>());
+            Assert.True(container.IsRegistered<BComponent>());
         }
 
-        [Test]
+        [Fact]
         public void RegisterAssemblyModulesOfType()
         {
             var assembly = typeof(AComponent).Assembly;
@@ -76,11 +75,11 @@ namespace Autofac.Tests
             builder.RegisterAssemblyModules(typeof(AModule), assembly);
             var container = builder.Build();
 
-            Assert.That(container.IsRegistered<AComponent>(), Is.True);
-            Assert.That(container.IsRegistered<BComponent>(), Is.False);
+            Assert.True(container.IsRegistered<AComponent>());
+            Assert.False(container.IsRegistered<BComponent>());
         }
 
-        [Test]
+        [Fact]
         public void RegisterAssemblyModulesOfBaseType()
         {
             var assembly = typeof(AComponent).Assembly;
@@ -88,8 +87,8 @@ namespace Autofac.Tests
             builder.RegisterAssemblyModules(typeof(ModuleBase), assembly);
             var container = builder.Build();
 
-            Assert.That(container.IsRegistered<AComponent>(), Is.True);
-            Assert.That(container.IsRegistered<BComponent>(), Is.True);
+            Assert.True(container.IsRegistered<AComponent>());
+            Assert.True(container.IsRegistered<BComponent>());
         }
 
         class ObjectModule : Module

@@ -1,21 +1,20 @@
 ﻿using System;
-using NUnit.Framework;
+using Xunit;
 using System.Linq;
 using Moq;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core;
-using Autofac.Tests.Scenarios.Dependencies;
-using Autofac.Tests.Scenarios.ConstructorSelection;
+using Autofac.Test.Scenarios.Dependencies;
+using Autofac.Test.Scenarios.ConstructorSelection;
 
-namespace Autofac.Tests.Core.Activators.Reflection
+namespace Autofac.Test.Core.Activators.Reflection
 {
-    [TestFixture]
     public class ReflectionActivatorTests
     {
-        [Test]
+        [Fact]
         public void Constructor_DoesNotAcceptNullType()
         {
-            Assertions.AssertThrows<ArgumentNullException>(delegate
+            Assert.Throws<ArgumentNullException>(delegate
             {
                 new ReflectionActivator(null,
                     new Mock<IConstructorFinder>().Object,
@@ -25,10 +24,10 @@ namespace Autofac.Tests.Core.Activators.Reflection
             });
         }
 
-        [Test]
+        [Fact]
         public void Constructor_DoesNotAcceptNullParameters()
         {
-            Assertions.AssertThrows<ArgumentNullException>(delegate
+            Assert.Throws<ArgumentNullException>(delegate
             {
                 new ReflectionActivator(typeof(object),
                     new Mock<IConstructorFinder>().Object,
@@ -38,10 +37,10 @@ namespace Autofac.Tests.Core.Activators.Reflection
             });
         }
 
-        [Test]
+        [Fact]
         public void Constructor_DoesNotAcceptNullProperties()
         {
-            Assertions.AssertThrows<ArgumentNullException>(delegate
+            Assert.Throws<ArgumentNullException>(delegate
             {
                 new ReflectionActivator(typeof(object),
                     new Mock<IConstructorFinder>().Object,
@@ -51,10 +50,10 @@ namespace Autofac.Tests.Core.Activators.Reflection
             });
         }
 
-        [Test]
+        [Fact]
         public void Constructor_DoesNotAcceptNullFinder()
         {
-            Assertions.AssertThrows<ArgumentNullException>(delegate
+            Assert.Throws<ArgumentNullException>(delegate
             {
                 new ReflectionActivator(typeof(object),
                     null,
@@ -64,10 +63,10 @@ namespace Autofac.Tests.Core.Activators.Reflection
             });
         }
 
-        [Test]
+        [Fact]
         public void Constructor_DoesNotAcceptNullSelector()
         {
-            Assertions.AssertThrows<ArgumentNullException>(delegate
+            Assert.Throws<ArgumentNullException>(delegate
             {
                 new ReflectionActivator(typeof(object),
                     new Mock<IConstructorFinder>().Object,
@@ -77,17 +76,17 @@ namespace Autofac.Tests.Core.Activators.Reflection
             });
         }
 
-        [Test]
+        [Fact]
         public void ActivateInstance_ReturnsInstanceOfTargetType()
         {
             var target = Factory.CreateReflectionActivator(typeof(object));
             var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
 
-            Assert.IsNotNull(instance);
-            Assert.IsInstanceOf<object>(instance.GetType());
+            Assert.NotNull(instance);
+            Assert.IsType<object>(instance.GetType());
         }
 
-        [Test]
+        [Fact]
         public void ActivateInstance_ResolvesConstructorDependencies()
         {
             var o = new object();
@@ -101,16 +100,16 @@ namespace Autofac.Tests.Core.Activators.Reflection
             var target = Factory.CreateReflectionActivator(typeof(Dependent));
             var instance = target.ActivateInstance(container, Factory.NoParameters);
 
-            Assert.IsNotNull(instance);
-            Assert.IsInstanceOf<Dependent>(instance);
+            Assert.NotNull(instance);
+            Assert.IsType<Dependent>(instance);
 
             var dependent = (Dependent)instance;
 
-            Assert.AreSame(o, dependent.TheObject);
-            Assert.AreSame(s, dependent.TheString);
+            Assert.Same(o, dependent.TheObject);
+            Assert.Same(s, dependent.TheString);
        }
 
-        [Test]
+        [Fact]
         public void ActivateInstance_DependenciesNotAvailable_ThrowsException()
         {
             var target = Factory.CreateReflectionActivator(typeof(DependsByCtor));
@@ -118,10 +117,10 @@ namespace Autofac.Tests.Core.Activators.Reflection
                 () => target.ActivateInstance(Factory.EmptyContext, Factory.NoParameters));
 
             // I.e. the type of the missing dependency.
-            Assert.That(ex.Message.Contains("DependsByProp"));
+            Assert.True(ex.Message.Contains("DependsByProp"));
         }
 
-        [Test]
+        [Fact]
         public void ByDefault_ChoosesConstructorWithMostResolvableParameters()
         {
             var builder = new ContainerBuilder();
@@ -131,8 +130,8 @@ namespace Autofac.Tests.Core.Activators.Reflection
             var target = Factory.CreateReflectionActivator(typeof(MultipleConstructors));
             var instance = target.ActivateInstance(container, Factory.NoParameters);
 
-            Assert.IsNotNull(instance);
-            Assert.IsInstanceOf<MultipleConstructors>(instance);
+            Assert.NotNull(instance);
+            Assert.IsType<MultipleConstructors>(instance);
         }
 
         public class AcceptsObjectParameter
@@ -141,7 +140,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             public AcceptsObjectParameter(object p) { P = p; }
         }
 
-        [Test]
+        [Fact]
         public void ProvidedParameters_OverrideThoseInContext()
         {
             var containedInstance = new object();
@@ -157,11 +156,11 @@ namespace Autofac.Tests.Core.Activators.Reflection
 
             var instance = (AcceptsObjectParameter)target.ActivateInstance(container, Factory.NoParameters);
 
-            Assert.AreSame(parameterInstance, instance.P);
-            Assert.AreNotSame(containedInstance, instance.P);
+            Assert.Same(parameterInstance, instance.P);
+            Assert.NotSame(containedInstance, instance.P);
         }
 
-        [Test]
+        [Fact]
         public void WhenReferenceTypeParameterSupplied_ItIsProvidedToTheComponent()
         {
             var p = new object();
@@ -171,15 +170,15 @@ namespace Autofac.Tests.Core.Activators.Reflection
 
             var instance = target.ActivateInstance(new ContainerBuilder().Build(), Factory.NoParameters);
 
-            Assert.IsNotNull(instance);
-            Assert.IsInstanceOf<AcceptsObjectParameter>(instance);
+            Assert.NotNull(instance);
+            Assert.IsType<AcceptsObjectParameter>(instance);
 
             var typedInstance = (AcceptsObjectParameter)instance;
 
-            Assert.AreEqual(p, typedInstance.P);
+            Assert.Equal(p, typedInstance.P);
         }
 
-        [Test]
+        [Fact]
         public void WhenNullReferenceTypeParameterSupplied_ItIsPassedToTheComponent()
         {
             var parameters = new Parameter[] { new NamedParameter("p", null) };
@@ -188,12 +187,12 @@ namespace Autofac.Tests.Core.Activators.Reflection
 
             var instance = target.ActivateInstance(new ContainerBuilder().Build(), Factory.NoParameters);
 
-            Assert.IsNotNull(instance);
-            Assert.IsInstanceOf<AcceptsObjectParameter>(instance);
+            Assert.NotNull(instance);
+            Assert.IsType<AcceptsObjectParameter>(instance);
 
             var typedInstance = (AcceptsObjectParameter)instance;
 
-            Assert.IsNull(typedInstance.P);
+            Assert.Null(typedInstance.P);
         }
 
         public class AcceptsIntParameter
@@ -202,7 +201,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             public AcceptsIntParameter(int i) { I = i; }
         }
 
-        [Test]
+        [Fact]
         public void WhenValueTypeParameterSupplied_ItIsPassedToTheComponent()
         {
             const int i = 42;
@@ -212,15 +211,15 @@ namespace Autofac.Tests.Core.Activators.Reflection
 
             var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
 
-            Assert.IsNotNull(instance);
-            Assert.IsInstanceOf<AcceptsIntParameter>(instance);
+            Assert.NotNull(instance);
+            Assert.IsType<AcceptsIntParameter>(instance);
 
             var typedInstance = (AcceptsIntParameter)instance;
 
-            Assert.AreEqual(i, typedInstance.I);
+            Assert.Equal(i, typedInstance.I);
         }
 
-        [Test]
+        [Fact]
         public void WhenValueTypeParameterIsSuppliedWithNull_TheDefaultForTheValueTypeIsSet()
         {
             var parameters = new Parameter[] { new NamedParameter("i", null) };
@@ -229,12 +228,12 @@ namespace Autofac.Tests.Core.Activators.Reflection
 
             var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
 
-            Assert.IsNotNull(instance);
-            Assert.IsInstanceOf<AcceptsIntParameter>(instance);
+            Assert.NotNull(instance);
+            Assert.IsType<AcceptsIntParameter>(instance);
 
             var typedInstance = (AcceptsIntParameter)instance;
 
-            Assert.AreEqual(0, typedInstance.I);
+            Assert.Equal(0, typedInstance.I);
         }
 
         public class ThreeConstructors
@@ -247,7 +246,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             // ReSharper restore UnusedMember.Local, UnusedParameter.Local
         }
 
-        [Test]
+        [Fact]
         public void ByDefault_ChoosesMostParameterisedConstructor()
         {
             var parameters = new Parameter[] {
@@ -259,12 +258,12 @@ namespace Autofac.Tests.Core.Activators.Reflection
 
             var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
 
-            Assert.IsNotNull(instance);
-            Assert.IsInstanceOf<ThreeConstructors>(instance);
+            Assert.NotNull(instance);
+            Assert.IsType<ThreeConstructors>(instance);
 
             var typedInstance = (ThreeConstructors)instance;
 
-            Assert.AreEqual(2, typedInstance.CalledConstructorParameterCount);
+            Assert.Equal(2, typedInstance.CalledConstructorParameterCount);
         }
 
         public class NoPublicConstructor
@@ -274,14 +273,14 @@ namespace Autofac.Tests.Core.Activators.Reflection
             // ReSharper restore EmptyConstructor
         }
 
-        [Test]
+        [Fact]
         public void NonPublicConstructorsIgnored()
         {
             var target = Factory.CreateReflectionActivator(typeof(NoPublicConstructor));
             var dx = Assert.Throws<DependencyResolutionException>(() =>
                 target.ActivateInstance(new Container(), Factory.NoParameters));
 
-            Assert.That(dx.Message.Contains(typeof(DefaultConstructorFinder).Name));
+            Assert.True(dx.Message.Contains(typeof(DefaultConstructorFinder).Name));
         }
 
         public class WithGenericCtor<T>
@@ -293,13 +292,13 @@ namespace Autofac.Tests.Core.Activators.Reflection
             }
         }
 
-        [Test]
+        [Fact]
         public void CanResolveConstructorsWithGenericParameters()
         {
             var activator = Factory.CreateReflectionActivator(typeof(WithGenericCtor<string>));
             var parameters = new Parameter[] { new NamedParameter("t", "Hello") };
             var instance = activator.ActivateInstance(new Container(), parameters);
-            Assert.IsInstanceOf<WithGenericCtor<string>>(instance);
+            Assert.IsType<WithGenericCtor<string>>(instance);
         }
 
         public class PrivateSetProperty
@@ -310,20 +309,20 @@ namespace Autofac.Tests.Core.Activators.Reflection
             // ReSharper restore UnusedMember.Local
         }
 
-        [Test]
+        [Fact]
         public void PropertiesWithPrivateSetters_AreIgnored()
         {
             var setters = new Parameter[] { new NamedPropertyParameter("P", 1) };
             var activator = Factory.CreateReflectionActivator(typeof(PrivateSetProperty), Factory.NoParameters, setters);
             var instance = activator.ActivateInstance(new Container(), Factory.NoParameters);
-            Assert.IsInstanceOf<PrivateSetProperty>(instance);
+            Assert.IsType<PrivateSetProperty>(instance);
         }
 
         // ReSharper disable UnusedAutoPropertyAccessor.Local
         public class R { public int P1 { get; set; } public int P2 { get; set; } }
         // ReSharper restore UnusedAutoPropertyAccessor.Local
 
-        [Test]
+        [Fact]
         public void SetsMultipleConfiguredProperties()
         {
             const int p1 = 1;
@@ -334,8 +333,8 @@ namespace Autofac.Tests.Core.Activators.Reflection
             };
             var target = Factory.CreateReflectionActivator(typeof(R), Enumerable.Empty<Parameter>(), properties);
             var instance = (R)target.ActivateInstance(new ContainerBuilder().Build(), Enumerable.Empty<Parameter>());
-            Assert.AreEqual(1, instance.P1);
-            Assert.AreEqual(2, instance.P2);
+            Assert.Equal(1, instance.P1);
+            Assert.Equal(2, instance.P2);
         }
 
         public enum E { A, B }
@@ -345,7 +344,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             public E E { get; set; }
         }
 
-        [Test]
+        [Fact]
         public void EnumPropertiesCanBeAutowired()
         {
             var builder = new ContainerBuilder();
@@ -353,7 +352,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             builder.Register(c => E.B);
             var container = builder.Build();
             var withE = container.Resolve<WithE>();
-            Assert.AreEqual(E.B, withE.E);
+            Assert.Equal(E.B, withE.E);
         }
     }
 }

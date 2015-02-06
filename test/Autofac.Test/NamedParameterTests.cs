@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using Autofac.Core;
 
-namespace Autofac.Tests
+namespace Autofac.Test
 {
-    [TestFixture]
     public class NamedParameterTests
     {
         public class A
@@ -23,7 +22,7 @@ namespace Autofac.Tests
             }
         }
 
-        [Test]
+        [Fact]
         public void MatchesIdenticallyNamedParameter()
         {
             var param = AParamOfCConstructor();
@@ -31,7 +30,7 @@ namespace Autofac.Tests
             var namedParam = new NamedParameter("a", new A());
 
             Func<object> vp;
-            Assert.IsTrue(namedParam.CanSupplyValue(param, new Container(), out vp));
+            Assert.True(namedParam.CanSupplyValue(param, new Container(), out vp));
         }
 
         private static System.Reflection.ParameterInfo AParamOfCConstructor()
@@ -43,7 +42,7 @@ namespace Autofac.Tests
             return param;
         }
 
-        [Test]
+        [Fact]
         public void DoesNotMatchDifferentlyNamedParameter()
         {
             var param = AParamOfCConstructor();
@@ -51,7 +50,7 @@ namespace Autofac.Tests
             var namedParam = new NamedParameter("b", new B());
 
             Func<object> vp;
-            Assert.IsFalse(namedParam.CanSupplyValue(param, new Container(), out vp));
+            Assert.False(namedParam.CanSupplyValue(param, new Container(), out vp));
         }
     }
 }

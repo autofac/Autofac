@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autofac.Features.Indexed;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests.Features.Indexed
+namespace Autofac.Test.Features.Indexed
 {
-    [TestFixture]
     public class KeyedServiceIndexTests
     {
-        [Test]
+        [Fact]
         public void IndexerRetrievesComoponentsFromContextByKey()
         {
             var key = 42;
@@ -18,10 +17,10 @@ namespace Autofac.Tests.Features.Indexed
 
             var idx = CreateTarget(cpt, key);
 
-            Assert.AreSame(cpt, idx[key]);
+            Assert.Same(cpt, idx[key]);
         }
 
-        [Test]
+        [Fact]
         public void TryGetValueRetrievesComoponentsFromContextByKey()
         {
             var key = 42;
@@ -31,8 +30,8 @@ namespace Autofac.Tests.Features.Indexed
 
             string val;
 
-            Assert.IsTrue(idx.TryGetValue(key, out val));
-            Assert.AreSame(cpt, val);
+            Assert.True(idx.TryGetValue(key, out val));
+            Assert.Same(cpt, val);
         }
 
         static KeyedServiceIndex<int, string> CreateTarget(string cpt, int key)
@@ -44,7 +43,7 @@ namespace Autofac.Tests.Features.Indexed
             return new KeyedServiceIndex<int, string>(container);
         }
 
-        [Test]
+        [Fact]
         public void WhenKeyNotFound_IndexerReturnsFalse()
         {
             var key = 42;
@@ -54,7 +53,7 @@ namespace Autofac.Tests.Features.Indexed
 
             string val;
 
-            Assert.IsFalse(idx.TryGetValue(key + 1, out val));
+            Assert.False(idx.TryGetValue(key + 1, out val));
         }
     }
 }

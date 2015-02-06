@@ -8,32 +8,30 @@ using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
 using System.Web;
-using NUnit.Framework;
+using Xunit;
+using Xunit.Extensions;
 
-namespace Autofac.Tests.PartialTrust
+namespace Autofac.Test.PartialTrust
 {
-    [TestFixture]
-    public class PartialTrustTestExecutor
+    public class PartialTrustTestExecutor : IDisposable
     {
         // Put the actual tests in the PartialTrustTests class as public void methods
         // with no parameters. This fixture will automatically enumerate them and execute them
         // in a partial trust domain.
         private AppDomain _remoteDomain;
 
-        [SetUp]
-        public void SetUp()
+        public PartialTrustTestExecutor()
         {
             _remoteDomain = CreateSandboxDomain();
         }
 
-        [TearDown]
-        public void TearDown()
+        public void Dispose()
         {
             AppDomain.Unload(_remoteDomain);
         }
 
-        [Test(Description = "Executes the partial trust tests.")]
-        [TestCaseSource("ExecutePartialTrustTestsSource")]
+        [Theory]
+        [PropertyData("ExecutePartialTrustTestsSource")]
         public void ExecutePartialTrustTests(MethodInfo testMethod)
         {
             var fixture = CreateRemoteFixture();
@@ -51,12 +49,15 @@ namespace Autofac.Tests.PartialTrust
             }
         }
 
-        public IEnumerable<MethodInfo> ExecutePartialTrustTestsSource()
+        public static IEnumerable<MethodInfo> ExecutePartialTrustTestsSource
         {
-            return
-                typeof(PartialTrustTests)
-                .GetMethods(BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.Public)
-                .Where(m => m.ReturnType == typeof(void) && m.ContainsGenericParameters == false && m.GetParameters().Length == 0);
+            get
+            {
+                return
+                    typeof(PartialTrustTests)
+                    .GetMethods(BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.Public)
+                    .Where(m => m.ReturnType == typeof(void) && m.ContainsGenericParameters == false && m.GetParameters().Length == 0);
+            }
         }
 
         private PartialTrustTests CreateRemoteFixture()

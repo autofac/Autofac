@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests.Features.OpenGenerics
+namespace Autofac.Test.Features.OpenGenerics
 {
     // ReSharper disable UnusedTypeParameter
     public interface IService<T>
@@ -19,7 +19,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
     }
 
-    public class ImplementorB<T> : IService<T> 
+    public class ImplementorB<T> : IService<T>
     {
         public IService<T> Decorated
         {
@@ -69,16 +69,13 @@ namespace Autofac.Tests.Features.OpenGenerics
             get { return _parameter; }
         }
     }
-
-    [TestFixture]
     public class OpenGenericDecoratorTests
     {
         const string ParameterValue = "Abc";
 
         IContainer _container;
 
-        [SetUp]
-        public void SetUp()
+        public OpenGenericDecoratorTests()
         {
             // Order is:
             //    A -> B(p) -> ImplementorA
@@ -104,59 +101,59 @@ namespace Autofac.Tests.Features.OpenGenerics
             _container = builder.Build();
         }
 
-        [Test]
+        [Fact]
         public void CanResolveDecoratorService()
         {
-            Assert.IsNotNull(_container.Resolve<IService<int>>());
+            Assert.NotNull(_container.Resolve<IService<int>>());
         }
 
-        [Test]
+        [Fact]
         public void ThereAreTwoImplementorsOfInt()
         {
-            Assert.AreEqual(2, _container.ResolveNamed<IEnumerable<IService<int>>>("implementor").Count());
+            Assert.Equal(2, _container.ResolveNamed<IEnumerable<IService<int>>>("implementor").Count());
         }
 
-        [Test]
+        [Fact]
         public void ThereAreTwoBLevelDecoratorsOfInt()
         {
-            Assert.AreEqual(2, _container.ResolveNamed<IEnumerable<IService<int>>>("b").Count());
+            Assert.Equal(2, _container.ResolveNamed<IEnumerable<IService<int>>>("b").Count());
         }
 
-        [Test]
+        [Fact]
         public void TheDefaultImplementorIsTheLastRegistered()
         {
             var defaultChain = _container.Resolve<IService<int>>();
-            Assert.IsInstanceOf<ImplementorB<int>>(defaultChain.Decorated.Decorated);
+            Assert.IsType<ImplementorB<int>>(defaultChain.Decorated.Decorated);
         }
 
-        [Test]
+        [Fact]
         public void AllGenericImplemetationsAreDecorated()
         {
-            Assert.AreEqual(2, _container.Resolve<IEnumerable<IService<int>>>().Count());
+            Assert.Equal(2, _container.Resolve<IEnumerable<IService<int>>>().Count());
         }
 
-        [Test]
+        [Fact]
         public void WhenClosedImplementationsAreAvailableTheyAreDecorated()
         {
-            Assert.AreEqual(3, _container.Resolve<IEnumerable<IService<string>>>().Count());
+            Assert.Equal(3, _container.Resolve<IEnumerable<IService<string>>>().Count());
         }
 
-        [Test]
+        [Fact]
         public void TheFirstDecoratorIsA()
         {
-            Assert.IsInstanceOf<DecoratorA<int>>(_container.Resolve<IService<int>>());
+            Assert.IsType<DecoratorA<int>>(_container.Resolve<IService<int>>());
         }
 
-        [Test]
+        [Fact]
         public void TheSecondDecoratorIsB()
         {
-            Assert.IsInstanceOf<DecoratorB<int>>(_container.Resolve<IService<int>>().Decorated);
+            Assert.IsType<DecoratorB<int>>(_container.Resolve<IService<int>>().Decorated);
         }
 
-        [Test]
+        [Fact]
         public void ParametersArePassedToB()
         {
-            Assert.AreEqual(ParameterValue, ((DecoratorB<int>) _container.Resolve<IService<int>>().Decorated).Parameter);
+            Assert.Equal(ParameterValue, ((DecoratorB<int>) _container.Resolve<IService<int>>().Decorated).Parameter);
         }
     }
 }

@@ -1,43 +1,56 @@
 {
-    "version": "4.0.0-alpha1",
-    "authors": ["Autofac Contributors"],
-    "description": "Core assembly for the Autofac Inversion of Control container.",
-    "compilationOptions": {
-        "warningsAsErrors": true
+  "version": "4.0.0-alpha1",
+  "authors": [
+    "Autofac Contributors"
+  ],
+  "description": "Core assembly for the Autofac Inversion of Control container.",
+  "compilationOptions": {
+    "warningsAsErrors": true
+  },
+  "code": [
+    "**\\*.cs"
+  ],
+  "resources": "**\\*.resx",
+  "dependencies": {
+    "System.Collections": "4.0.10-beta-22416",
+    "System.ComponentModel": "4.0.0-beta-22416",
+    "System.Diagnostics.Contracts": "4.0.0-beta-22416",
+    "System.Diagnostics.Debug": "4.0.10-beta-22416",
+    "System.Diagnostics.Tools": "4.0.0-beta-22416",
+    "System.Globalization": "4.0.10-beta-22416",
+    "System.Linq": "4.0.0-beta-22416",
+    "System.Linq.Expressions": "4.0.0-beta-22416",
+    "System.Reflection": "4.0.10-beta-22416",
+    "System.Reflection.Extensions": "4.0.0-beta-22416",
+    "System.Reflection.TypeExtensions": "4.0.0-beta-22416",
+    "System.Resources.ResourceManager": "4.0.0-beta-22416",
+    "System.Runtime": "4.0.20-beta-22416",
+    "System.Threading.Thread": "4.0.0-beta-22416",
+    "System.Threading": "4.0.0-beta-22416",
+    "System.Threading.Tasks": "4.0.10-beta-22416"
+  },
+  "frameworks": {
+    "aspnet50": {},
+    "aspnetcore50": {
+      "compilationOptions": {
+        "define": [
+          "ASPNETCORE50"
+        ]
+      }
     },
-    "code": ["**\\*.cs"],
-    "resources": "**\\*.resx",
-    "dependencies": {
-        "System.Collections": "4.0.10-beta-22416",
-        "System.ComponentModel": "4.0.0-beta-22416",
-        "System.Diagnostics.Contracts": "4.0.0-beta-22416",
-        "System.Diagnostics.Debug": "4.0.10-beta-22416",
-        "System.Diagnostics.Tools": "4.0.0-beta-22416",
-        "System.Globalization": "4.0.10-beta-22416",
-        "System.Linq": "4.0.0-beta-22416",
-        "System.Linq.Expressions": "4.0.0-beta-22416",
-        "System.Reflection": "4.0.10-beta-22416",
-        "System.Reflection.Extensions": "4.0.0-beta-22416",
-        "System.Reflection.TypeExtensions": "4.0.0-beta-22416",
-        "System.Resources.ResourceManager": "4.0.0-beta-22416",
-        "System.Runtime": "4.0.20-beta-22416",
-        "System.Threading.Thread": "4.0.0-beta-22416",
-        "System.Threading": "4.0.0-beta-22416",
-        "System.Threading.Tasks": "4.0.10-beta-22416"
+    "net45+win+wpa81+wp80+MonoAndroid10+MonoTouch10": {
+      "wrappedProject": "Autofac.csproj",
+      "bin": {
+        "assembly": "obj/{configuration}/Autofac.dll",
+        "pdb": "obj/{configuration}/Autofac.pdb"
+      }
     },
-    "frameworks": {
-        "aspnet50": {},
-        "aspnetcore50": {
-            "compilationOptions": {
-                "define": ["ASPNETCORE50"]
-            }
-        },
-        "net45+win+wpa81+wp80+MonoAndroid10+MonoTouch10": {
-            "wrappedProject": "Autofac.csproj",
-            "bin": {
-                "assembly": "obj/{configuration}/Autofac.dll",
-                "pdb": "obj/{configuration}/Autofac.pdb"
-            }
-        }
+    "net45+win+wpa81+wp80": {
+      "wrappedProject": "Autofac.csproj",
+      "bin": {
+        "assembly": "obj/{configuration}/Autofac.dll",
+        "pdb": "obj/{configuration}/Autofac.pdb"
+      }
     }
+  }
 }

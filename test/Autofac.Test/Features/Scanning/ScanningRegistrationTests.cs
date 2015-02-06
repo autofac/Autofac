@@ -4,20 +4,19 @@ using System.Linq;
 using Autofac.Builder;
 using Autofac.Features.Metadata;
 using Autofac.Features.Scanning;
-using NUnit.Framework;
-using Autofac.Tests.Scenarios.ScannedAssembly;
+using Xunit;
+using Autofac.Test.Scenarios.ScannedAssembly;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
 using System.Reflection;
 
-namespace Autofac.Tests.Features.Scanning
+namespace Autofac.Test.Features.Scanning
 {
-    [TestFixture]
     public class ScanningRegistrationTests
     {
         static readonly Assembly ScenarioAssembly = typeof(AComponent).Assembly;
 
-        [Test]
+        [Fact]
         public void WhenAssemblyIsScannedTypesRegisteredByDefault()
         {
             var cb = new ContainerBuilder();
@@ -30,7 +29,7 @@ namespace Autofac.Tests.Features.Scanning
             c.AssertOwnership<AComponent>(InstanceOwnership.OwnedByLifetimeScope);
         }
 
-        [Test]
+        [Fact]
         public void WhenTypesRegisteredAsSelfConcreteTypeIsService()
         {
             var cb = new ContainerBuilder();
@@ -41,7 +40,7 @@ namespace Autofac.Tests.Features.Scanning
             c.AssertRegistered<AComponent>();
         }
 
-        [Test]
+        [Fact]
         public void WhenNameAndMetadataMappingAppliedValueCalculatedFromType()
         {
             var cb = new ContainerBuilder();
@@ -52,10 +51,10 @@ namespace Autofac.Tests.Features.Scanning
 
             var a = c.Resolve<Meta<AComponent>>();
 
-            Assert.AreEqual(typeof(AComponent).Name, a.Metadata["Name"]);
+            Assert.Equal(typeof(AComponent).Name, a.Metadata["Name"]);
         }
 
-        [Test]
+        [Fact]
         public void WhenMetadataMappingAppliedValuesCalculatedFromType()
         {
             var cb = new ContainerBuilder();
@@ -66,10 +65,10 @@ namespace Autofac.Tests.Features.Scanning
             var c = cb.Build();
             var s = c.Resolve<Meta<SaveCommand>>();
 
-            Assert.IsTrue(s.Metadata.ContainsKey("Execute"));
+            Assert.True(s.Metadata.ContainsKey("Execute"));
         }
 
-        [Test]
+        [Fact]
         public void WhenFiltersAppliedNonMatchingTypesExcluded()
         {
             var cb = new ContainerBuilder();
@@ -83,7 +82,7 @@ namespace Autofac.Tests.Features.Scanning
             c.AssertNotRegistered<A2Component>();
         }
 
-        [Test]
+        [Fact]
         public void WhenServiceSpecifiedDirectlyAllMatchingTypesImplementIt()
         {
             var cb = new ContainerBuilder();
@@ -95,7 +94,7 @@ namespace Autofac.Tests.Features.Scanning
             c.AssertNotRegistered<AComponent>();
         }
 
-        [Test]
+        [Fact]
         public void WhenServicesSpecifiedByFunctionEachTypeMappedIndependently()
         {
             var cb = new ContainerBuilder();
@@ -108,7 +107,7 @@ namespace Autofac.Tests.Features.Scanning
             c.AssertNotRegistered<AComponent>();
         }
 
-        [Test]
+        [Fact]
         public void NameMappingRegistersKeyedServices()
         {
             var cb = new ContainerBuilder();
@@ -119,7 +118,7 @@ namespace Autofac.Tests.Features.Scanning
             c.AssertRegistered<object>("AComponent");
         }
 
-        [Test]
+        [Fact]
         public void NameMappingRegistersKeyedServicesWithGenericSyntax()
         {
             var cb = new ContainerBuilder();
@@ -130,7 +129,7 @@ namespace Autofac.Tests.Features.Scanning
             c.AssertRegistered<object>("AComponent");
         }
 
-        [Test]
+        [Fact]
         public void TypeMappingRegistersTypedServices()
         {
             var cb = new ContainerBuilder();
@@ -141,7 +140,7 @@ namespace Autofac.Tests.Features.Scanning
             c.AssertRegistered<object>();
         }
 
-        [Test]
+        [Fact]
         public void AsImplementedInterfacesRegistersImplementedInterfaces()
         {
             var cb = new ContainerBuilder();
@@ -153,7 +152,7 @@ namespace Autofac.Tests.Features.Scanning
             c.AssertRegistered<IBService>();
         }
 
-        [Test]
+        [Fact]
         public void WhenFilterAppliedDefaultSelfRegistrationOmitted()
         {
             var cb = new ContainerBuilder();
@@ -164,7 +163,7 @@ namespace Autofac.Tests.Features.Scanning
             c.AssertNotRegistered<AComponent>();
         }
 
-        [Test]
+        [Fact]
         public void AsClosedTypesOfNullTypeProvidedThrowsException()
         {
             var cb = new ContainerBuilder();
@@ -172,7 +171,7 @@ namespace Autofac.Tests.Features.Scanning
                 AsClosedTypesOf(null));
         }
 
-        [Test]
+        [Fact]
         public void AsClosedTypesOfOpenGenericInterfaceTypeProvidedClosingGenericTypesRegistered()
         {
             var cb = new ContainerBuilder();
@@ -180,11 +179,11 @@ namespace Autofac.Tests.Features.Scanning
                 .AsClosedTypesOf(typeof(ICommand<>));
             var c = cb.Build();
 
-            Assert.That(c.Resolve<ICommand<SaveCommandData>>(), Is.TypeOf<SaveCommand>());
-            Assert.That(c.Resolve<ICommand<DeleteCommandData>>(), Is.TypeOf<DeleteCommand>());
+            Assert.IsType<SaveCommand>(c.Resolve<ICommand<SaveCommandData>>());
+            Assert.IsType<DeleteCommand>(c.Resolve<ICommand<DeleteCommandData>>());
         }
 
-        [Test]
+        [Fact]
         public void AsClosedTypesOfOpenGenericAbstractClassTypeProvidedClosingGenericTypesRegistered()
         {
             var cb = new ContainerBuilder();
@@ -192,10 +191,10 @@ namespace Autofac.Tests.Features.Scanning
                 .AsClosedTypesOf(typeof(Message<>));
             var c = cb.Build();
 
-            Assert.That(c.Resolve<Message<string>>(), Is.TypeOf<StringMessage>());
+            Assert.IsType<StringMessage>(c.Resolve<Message<string>>());
         }
 
-        [Test]
+        [Fact]
         public void AsClosedTypesOfClosingInterfaceTypeRegistered()
         {
             var cb = new ContainerBuilder();
@@ -203,10 +202,10 @@ namespace Autofac.Tests.Features.Scanning
                 .AsClosedTypesOf(typeof(ICommand<>));
             var c = cb.Build();
 
-            Assert.That(c.Resolve<ICloseCommand>(), Is.TypeOf<CloseCommand>());
+            Assert.IsType<CloseCommand>(c.Resolve<ICloseCommand>());
         }
 
-        [Test]
+        [Fact]
         public void AsSelfExposesConcreteTypeAsService()
         {
             var cb = new ContainerBuilder();
@@ -215,10 +214,10 @@ namespace Autofac.Tests.Features.Scanning
                 .AsSelf();
             var c = cb.Build();
 
-            Assert.That(c.IsRegistered<A2Component>());
+            Assert.True(c.IsRegistered<A2Component>());
         }
 
-        [Test]
+        [Fact]
         public void AsClosedTypesOfMultipleServicesPerClassExposesAllServices()
         {
             var cb = new ContainerBuilder();
@@ -227,10 +226,10 @@ namespace Autofac.Tests.Features.Scanning
             var c = cb.Build();
 
             var r = c.RegistrationFor<ICommand<UndoCommandData>>();
-            Assert.That(r.Services.Contains(new TypedService(typeof(ICommand<RedoCommandData>))));
+            Assert.True(r.Services.Contains(new TypedService(typeof(ICommand<RedoCommandData>))));
         }
 
-        [Test]
+        [Fact]
         public void DoesNotIncludeDelegateTypesThusNotOverridingGeneratedFactories()
         {
             var cb = new ContainerBuilder();
@@ -239,7 +238,7 @@ namespace Autofac.Tests.Features.Scanning
             c.Resolve<HasNestedFactoryDelegate.Factory>();
         }
 
-        [Test]
+        [Fact]
         public void WhenScannedTypesAreRegisteredOnRegisteredHandlersAreCalled()
         {
             var onRegisteredCalled = false;
@@ -249,10 +248,10 @@ namespace Autofac.Tests.Features.Scanning
                 .OnRegistered(e => onRegisteredCalled = true);
             cb.Build();
 
-            Assert.That(onRegisteredCalled);
+            Assert.True(onRegisteredCalled);
         }
 
-        [Test]
+        [Fact]
         public void WhenTypedServicesAreSpecifiedImplicitFilterApplied()
         {
             var cb = new ContainerBuilder();
@@ -261,10 +260,10 @@ namespace Autofac.Tests.Features.Scanning
             var c = cb.Build();
             // Without the filter this line would throw anyway
             var a = c.Resolve<IEnumerable<IAService>>();
-            Assert.AreEqual(1, a.Count());
+            Assert.Equal(1, a.Count());
         }
 
-        [Test]
+        [Fact]
         public void WhenExceptionsProvideConfigurationComponentConfiguredAppropriately()
         {
             var cb = new ContainerBuilder();
@@ -273,10 +272,10 @@ namespace Autofac.Tests.Features.Scanning
             var c = cb.Build();
             var a1 = c.Resolve<AComponent>();
             var a2 = c.Resolve<AComponent>();
-            Assert.AreSame(a1, a2);
+            Assert.Same(a1, a2);
         }
 
-        [Test]
+        [Fact]
         public void SingleRegistrationCanBeRegisteredAsSelf()
         {
             var cb = new ContainerBuilder();
@@ -290,7 +289,7 @@ namespace Autofac.Tests.Features.Scanning
             c.AssertRegistered<IAService>();
         }
 
-        [Test]
+        [Fact]
         public void SingleRegistrationCanBeRegisteredAsImplementedInterfaces()
         {
             var cb = new ContainerBuilder();
@@ -303,7 +302,7 @@ namespace Autofac.Tests.Features.Scanning
             c.AssertRegistered<IBService>();
         }
 
-        [Test]
+        [Fact]
         public void WhenTransformingTypesToServicesNonAssignableServicesAreExcluded()
         {
             var cb = new ContainerBuilder();
@@ -313,10 +312,10 @@ namespace Autofac.Tests.Features.Scanning
 
             var c = cb.Build();
 
-            Assert.IsFalse(c.IsRegisteredWithKey<ScanningRegistrationTests>("foo"));
+            Assert.False(c.IsRegisteredWithKey<ScanningRegistrationTests>("foo"));
         }
 
-        [Test]
+        [Fact]
         public void WhenTransformingTypesToServicesComponentsWithNoServicesAreExcluded()
         {
             var cb = new ContainerBuilder();
@@ -326,35 +325,35 @@ namespace Autofac.Tests.Features.Scanning
 
             var c = cb.Build();
 
-            Assert.IsFalse(c.ComponentRegistry.Registrations.Any(r =>
+            Assert.False(c.ComponentRegistry.Registrations.Any(r =>
                 r.Activator.LimitType == typeof(AComponent)));
         }
 
-        [Test]
+        [Fact]
         public void WhenMappingToMultipleTypedServicesEachExposedAsService()
         {
             var c = RegisterScenarioAssembly(a => a.As(t => t.GetInterfaces()));
             var cd1 = c.ComponentRegistry.Registrations.Single(r => r.Activator.LimitType == typeof(A2Component));
-            Assert.That(cd1.Services.Contains(new TypedService(typeof(IAService))));
-            Assert.That(cd1.Services.Contains(new TypedService(typeof(IBService))));
+            Assert.True(cd1.Services.Contains(new TypedService(typeof(IAService))));
+            Assert.True(cd1.Services.Contains(new TypedService(typeof(IBService))));
         }
 
-        [Test]
+        [Fact]
         public void ByDefaultIDisposableIsNotAServiceInterface()
         {
             var c = RegisterScenarioAssembly(a => a.AsImplementedInterfaces());
-            Assert.IsFalse(c.IsRegistered<IDisposable>());
+            Assert.False(c.IsRegistered<IDisposable>());
         }
 
-        [Test]
+        [Fact]
         public void WhenDerivingKeysDynamically_TheCorrectOverloadIsChosen()
         {
             const string key = "akey";
             var c = RegisterScenarioAssembly(a => a.Keyed<IAService>(t => key));
-            Assert.That(c.IsRegisteredWithKey<IAService>(key));
+            Assert.True(c.IsRegisteredWithKey<IAService>(key));
         }
 
-        [Test]
+        [Fact]
         public void PreserveExistingDefaults()
         {
             var cb = new ContainerBuilder();
@@ -386,7 +385,7 @@ namespace Autofac.Tests.Features.Scanning
         {
         }
 
-        [Test]
+        [Fact]
         public void MetadataCanBeScannedFromAMatchingAttributeInterface()
         {
             var c = RegisterScenarioAssembly(a => a
@@ -399,19 +398,19 @@ namespace Autofac.Tests.Features.Scanning
             object name;
             r.Metadata.TryGetValue("Name", out name);
 
-            Assert.AreEqual("My Name", name);
+            Assert.Equal("My Name", name);
         }
 
-        [Test]
+        [Fact]
         public void ScanningKeyedRegistrationsFilterByAssignabilityBeforeMappingKey()
         {
             const string k = "key";
             var c = RegisterScenarioAssembly(a => a.Keyed<IAService>(t =>
             {
-                Assert.That(typeof(IAService).IsAssignableFrom(t));
+                Assert.True(typeof(IAService).IsAssignableFrom(t));
                 return k;
             }));
-            Assert.That(c.IsRegisteredWithKey<IAService>(k));
+            Assert.True(c.IsRegisteredWithKey<IAService>(k));
         }
     }
 }

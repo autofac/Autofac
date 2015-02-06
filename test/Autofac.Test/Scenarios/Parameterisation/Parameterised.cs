@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Autofac.Tests.Scenarios.Parameterisation
+namespace Autofac.Test.Scenarios.Parameterisation
 {
     public class Parameterised
     {

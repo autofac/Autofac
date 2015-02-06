@@ -4,13 +4,12 @@ using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.LightweightAdapters;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests.Features.LightweightAdapters
+namespace Autofac.Test.Features.LightweightAdapters
 {
     public class LightweightAdapterRegistrationSourceTests
     {
-        [TestFixture]
         public class AdaptingFromOneServiceToAnother
         {
             readonly Service _from = new TypedService(typeof(object)),
@@ -35,29 +34,27 @@ namespace Autofac.Tests.Features.LightweightAdapters
                 _adaptedTo = _subject.RegistrationsFor(_to, s => _adaptedFrom);
             }
 
-            [Test]
+            [Fact]
             public void ForEachAdaptedServiceAnAdapterIsReturned()
             {
-                Assert.AreEqual(_adaptedFrom.Count(), _adaptedTo.Count());
+                Assert.Equal(_adaptedFrom.Count(), _adaptedTo.Count());
             }
 
-            [Test]
+            [Fact]
             public void TheAdaptersExposeTheToService()
             {
-                Assert.That(_adaptedTo.All(a => a.Services.Contains(_to)));
+                Assert.True(_adaptedTo.All(a => a.Services.Contains(_to)));
             }
 
-            [Test]
+            [Fact]
             public void TheAdaptersTargetTheSourceServices()
             {
-                Assert.That(_adaptedFrom.All(from => _adaptedTo.Any(to => to.Target == from)));
+                Assert.True(_adaptedFrom.All(from => _adaptedTo.Any(to => to.Target == from)));
             }
         }
-
-        [TestFixture]
         public class ConstructingAnAdapterRegistrationSource
         {
-            [Test]
+            [Fact]
             public void FromAndToMustDiffer()
             {
                 var ad = new LightweightAdapterActivatorData(new TypedService(typeof(object)), (c, p, t) => new object());

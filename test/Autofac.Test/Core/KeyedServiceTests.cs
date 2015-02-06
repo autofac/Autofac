@@ -1,77 +1,76 @@
 ﻿using System;
-using NUnit.Framework;
+using Xunit;
 using Autofac.Core;
 
-namespace Autofac.Tests.Core
+namespace Autofac.Test.Core
 {
-    [TestFixture]
     public class KeyedServiceTests
     {
-        [Test]
+        [Fact]
         public void KeyedServicesForTheSameName_AreEqual()
         {
             var key = new object();
             var type = typeof(object);
-            Assert.IsTrue(new KeyedService(key, type).Equals(new KeyedService(key, type)));
+            Assert.True(new KeyedService(key, type).Equals(new KeyedService(key, type)));
         }
 
-        [Test]
+        [Fact]
         public void ContructorRequires_KeyNotNull()
         {
-            Assertions.AssertThrows<ArgumentNullException>(delegate
+            Assert.Throws<ArgumentNullException>(delegate
             {
                 new KeyedService(null, typeof(object));
             });
         }
 
-        [Test]
+        [Fact]
         public void ContructorRequires_TypeNotNull()
         {
-            Assertions.AssertThrows<ArgumentNullException>(delegate
+            Assert.Throws<ArgumentNullException>(delegate
             {
                 new KeyedService("name", null);
             });
         }
 
-        [Test]
+        [Fact]
         public void KeyedServicesForDifferentKeys_AreNotEqual()
         {
             var key1 = new object();
             var key2 = new object();
 
-            Assert.IsFalse(new KeyedService(key1, typeof(object)).Equals(
+            Assert.False(new KeyedService(key1, typeof(object)).Equals(
                 new KeyedService(key2, typeof(object))));
         }
 
-        [Test]
+        [Fact]
         public void KeyedServicesForDifferentTypes_AreNotEqual()
         {
             var key = new object();
 
-            Assert.IsFalse(new KeyedService(key, typeof(object)).Equals(
+            Assert.False(new KeyedService(key, typeof(object)).Equals(
                 new KeyedService(key, typeof(string))));
         }
 
-        [Test]
+        [Fact]
         public void KeyedServices_AreNotEqualToOtherServiceTypes()
         {
-            Assert.IsFalse(new KeyedService(new object(), typeof(object)).Equals(new TypedService(typeof(object))));
+            Assert.False(new KeyedService(new object(), typeof(object)).Equals(new TypedService(typeof(object))));
         }
 
-        [Test]
+        [Fact]
         public void AKeyedService_IsNotEqualToNull()
         {
-            Assert.IsFalse(new KeyedService(new object(), typeof(object)).Equals(null));
+            Assert.False(new KeyedService(new object(), typeof(object)).Equals(null));
         }
 
-        [Test]
+        [Fact]
         public void ChangeType_ProvidesKeyedServiceWithNewTypeAndSameKey()
         {
             var newType = typeof(string);
             var key = new object();
             var service = new KeyedService(key, typeof(object));
             var changedService = service.ChangeType(newType);
-            Assert.AreEqual(new KeyedService(key, newType), changedService);
+            Assert.Equal(new KeyedService(key, newType), changedService);
         }
     }
 }

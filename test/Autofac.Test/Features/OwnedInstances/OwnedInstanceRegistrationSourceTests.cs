@@ -4,25 +4,24 @@ using System.Linq;
 using System.Text;
 using Autofac.Builder;
 using Autofac.Core;
-using NUnit.Framework;
+using Xunit;
 using Autofac.Features.OwnedInstances;
 
-namespace Autofac.Tests.Features.OwnedInstances
+namespace Autofac.Test.Features.OwnedInstances
 {
-    [TestFixture]
     public class OwnedInstanceRegistrationSourceTests
     {
-        [Test]
+        [Fact]
         public void WhenTIsRegistered_OwnedTCanBeResolved()
         {
             var cb = new ContainerBuilder();
             cb.RegisterType<DisposeTracker>();
             var c = cb.Build();
             var owned = c.Resolve<Owned<DisposeTracker>>();
-            Assert.IsNotNull(owned.Value);
+            Assert.NotNull(owned.Value);
         }
 
-        [Test]
+        [Fact]
         public void CallingDisposeOnGeneratedOwnedT_DisposesOwnedInstance()
         {
             var cb = new ContainerBuilder();
@@ -31,12 +30,12 @@ namespace Autofac.Tests.Features.OwnedInstances
 
             var owned = c.Resolve<Owned<DisposeTracker>>();
             var dt = owned.Value;
-            Assert.IsFalse(dt.IsDisposed);
+            Assert.False(dt.IsDisposed);
             owned.Dispose();
-            Assert.IsTrue(dt.IsDisposed);
+            Assert.True(dt.IsDisposed);
         }
 
-        [Test]
+        [Fact]
         public void CallingDisposeOnGeneratedOwnedT_DoesNotDisposeCurrentLifetimeScope()
         {
             var cb = new ContainerBuilder();
@@ -47,17 +46,17 @@ namespace Autofac.Tests.Features.OwnedInstances
 
             var owned = c.Resolve<Owned<DisposeTracker>>();
             owned.Dispose();
-            Assert.IsFalse(containerDisposeTracker.IsDisposed);
+            Assert.False(containerDisposeTracker.IsDisposed);
         }
 
-        [Test]
+        [Fact]
         public void IfInnerTypeIsNotRegistered_OwnedTypeIsNotEither()
         {
             var c = new ContainerBuilder().Build();
-            Assert.IsFalse(c.IsRegistered<Owned<Object>>());
+            Assert.False(c.IsRegistered<Owned<Object>>());
         }
 
-        [Test]
+        [Fact]
         public void ResolvingOwnedInstanceByName_ReturnsValueByName()
         {
             object o = new object();
@@ -68,7 +67,7 @@ namespace Autofac.Tests.Features.OwnedInstances
 
             var owned = container.ResolveNamed<Owned<object>>("o");
 
-            Assert.AreSame(o, owned.Value);
+            Assert.Same(o, owned.Value);
         }
 
         public class ExposesScopeTag
@@ -83,7 +82,7 @@ namespace Autofac.Tests.Features.OwnedInstances
             public object Tag { get { return _myScope.Tag; } }
         }
 
-        [Test]
+        [Fact]
         public void ScopesCreatedForOwnedInstances_AreTaggedWithTheServiceThatIsOwned()
         {
             var cb = new ContainerBuilder();
@@ -91,7 +90,7 @@ namespace Autofac.Tests.Features.OwnedInstances
             var c = cb.Build();
 
             var est = c.Resolve<Owned<ExposesScopeTag>>();
-            Assert.AreEqual(new TypedService(typeof(ExposesScopeTag)), est.Value.Tag);
+            Assert.Equal(new TypedService(typeof(ExposesScopeTag)), est.Value.Tag);
         }
 
         public class ClassWithFactory
@@ -106,7 +105,7 @@ namespace Autofac.Tests.Features.OwnedInstances
             }
         }
 
-        [Test]
+        [Fact]
         public void CanResolveAndUse_OwnedGeneratedFactory()
         {
             var cb = new ContainerBuilder();
@@ -117,10 +116,10 @@ namespace Autofac.Tests.Features.OwnedInstances
             bool isAccessed;
             using(var owner = factory("test"))
             {
-                Assert.AreEqual("test", owner.Value.Name); 
+                Assert.Equal("test", owner.Value.Name); 
                 isAccessed = true;
             }
-            Assert.IsTrue(isAccessed);
+            Assert.True(isAccessed);
         }
     }
 }

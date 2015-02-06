@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Reflection;
 using Autofac.Core.Activators.Reflection;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests.Core.Activators.Reflection
+namespace Autofac.Test.Core.Activators.Reflection
 {
     class HasConstructors
     {
@@ -16,11 +16,9 @@ namespace Autofac.Tests.Core.Activators.Reflection
         // ReSharper restore UnusedParameter.Local
         // ReSharper restore UnusedMember.Local
     }
-
-    [TestFixture]
     public class DefaultConstructorFinderTests
     {
-        [Test]
+        [Fact]
         public void FindsPublicConstructorsOnlyByDefault()
         {
             var finder = new DefaultConstructorFinder();
@@ -29,11 +27,11 @@ namespace Autofac.Tests.Core.Activators.Reflection
 
             var constructors = finder.FindConstructors(targetType).ToList();
 
-            Assert.That(constructors, Has.Count.EqualTo(1));
-            Assert.That(constructors, Has.Member(publicConstructor));
+            Assert.Equal(1, constructors.Count);
+            Assert.Contains(publicConstructor, constructors);
         }
 
-        [Test]
+        [Fact]
         public void CanFindNonPublicConstructorsUsingFinderFunction()
         {
             var finder = new DefaultConstructorFinder(type => type.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance));
@@ -43,8 +41,8 @@ namespace Autofac.Tests.Core.Activators.Reflection
 
             var constructors = finder.FindConstructors(targetType).ToList();
 
-            Assert.That(constructors, Has.Count.EqualTo(1));
-            Assert.That(constructors, Has.Member(privateConstructor));
+            Assert.Equal(1, constructors.Count);
+            Assert.Contains(privateConstructor, constructors);
         }
     }
 }

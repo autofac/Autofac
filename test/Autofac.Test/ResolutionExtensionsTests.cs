@@ -1,24 +1,23 @@
 ﻿using System;
-using NUnit.Framework;
+using Xunit;
 using Autofac.Core;
 using Autofac.Core.Activators.ProvidedInstance;
-using Autofac.Tests.Scenarios.Parameterisation;
+using Autofac.Test.Scenarios.Parameterisation;
 using Autofac.Core.Registration;
 
-namespace Autofac.Tests
+namespace Autofac.Test
 {
-    [TestFixture]
     public class ResolutionExtensionsTests
     {
-        [Test]
+        [Fact]
         public void ResolvingUnregisteredService_ProvidesDescriptionInException()
         {
             var target = new Container();
             var ex = Assert.Throws<ComponentNotRegisteredException>(() => target.Resolve<object>());
-            Assert.IsTrue(ex.Message.Contains("System.Object"));
+            Assert.True(ex.Message.Contains("System.Object"));
         }
 
-        [Test]
+        [Fact]
         public void WhenComponentIsRegistered_IsRegisteredReturnsTrueForAllServices()
         {
             var registration = Factory.CreateSingletonRegistration(
@@ -29,11 +28,11 @@ namespace Autofac.Tests
 
             target.ComponentRegistry.Register(registration);
 
-            Assert.IsTrue(target.IsRegistered<object>());
-            Assert.IsTrue(target.IsRegistered<string>());
+            Assert.True(target.IsRegistered<object>());
+            Assert.True(target.IsRegistered<string>());
         }
 
-        [Test]
+        [Fact]
         public void WhenServiceIsRegistered_ResolveOptionalReturnsAnInstance()
         {
             var target = new Container();
@@ -43,18 +42,18 @@ namespace Autofac.Tests
 
             var inst = target.ResolveOptional<string>();
 
-            Assert.AreEqual("Hello", inst);
+            Assert.Equal("Hello", inst);
         }
 
-        [Test]
+        [Fact]
         public void WhenServiceNotRegistered_ResolveOptionalReturnsNull()
         {
             var target = new Container();
             var inst = target.ResolveOptional<string>();
-            Assert.IsNull(inst);
+            Assert.Null(inst);
         }
 
-        [Test]
+        [Fact]
         public void WhenParametersProvided_ResolveOptionalSuppliesThemToComponent()
         {
             var cb = new ContainerBuilder();
@@ -65,12 +64,12 @@ namespace Autofac.Tests
             var result = container.ResolveOptional<Parameterised>(
                 new NamedParameter("a", param1),
                 new NamedParameter("b", param2));
-            Assert.IsNotNull(result);
-            Assert.AreEqual(param1, result.A);
-            Assert.AreEqual(param2, result.B);
+            Assert.NotNull(result);
+            Assert.Equal(param1, result.A);
+            Assert.Equal(param2, result.B);
         }
 
-        [Test]
+        [Fact]
         public void WhenPredicateAndValueParameterSupplied_PassedToComponent()
         {
             const string a = "Hello";
@@ -88,8 +87,8 @@ namespace Autofac.Tests
             var container = builder.Build();
             var result = container.Resolve<Parameterised>();
 
-            Assert.AreEqual(a, result.A);
-            Assert.AreEqual(b, result.B);            
+            Assert.Equal(a, result.A);
+            Assert.Equal(b, result.B);            
         }
     }
 }

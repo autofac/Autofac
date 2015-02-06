@@ -9,18 +9,12 @@
     <ProjectGuid>{206FF1E8-F0E6-4992-9920-17CDCDB1FA12}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Autofac.Tests</RootNamespace>
-    <AssemblyName>Autofac.Tests</AssemblyName>
+    <RootNamespace>Autofac.Test</RootNamespace>
+    <AssemblyName>Autofac.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\build\SharedKey.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkProfile />
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-    <SccProjectName>&lt;Project Location In Database&gt;</SccProjectName>
-    <SccLocalPath>&lt;Local Binding Root of Project&gt;</SccLocalPath>
-    <SccAuxPath>&lt;Source Control Database&gt;</SccAuxPath>
-    <SccProvider>Mercurial Source Control Package</SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,14 +41,17 @@
     <Reference Include="Moq">
       <HintPath>..\..\packages\Moq.4.2.1312.1622\lib\net40\Moq.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>..\..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml">
       <Private>True</Private>
+    </Reference>
+    <Reference Include="xunit">
+      <HintPath>..\..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.extensions">
+      <HintPath>..\..\packages\xunit.extensions.1.9.2\lib\net20\xunit.extensions.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -156,23 +153,20 @@
     <Compile Include="Util\EnforceTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Autofac\Autofac.csproj">
-      <Project>{7D018B3E-34A3-423D-AC35-12731F4E0A2C}</Project>
-      <Name>Autofac</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Autofac.Tests.Scenarios.ScannedAssembly\Autofac.Tests.Scenarios.ScannedAssembly.csproj">
-      <Project>{88562f39-66b5-40ad-a8c2-c33f555b6960}</Project>
-      <Name>Autofac.Tests.Scenarios.ScannedAssembly</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+    <ProjectReference Include="..\..\src\Autofac\Autofac.csproj">
+      <Project>{ae9c841a-1edf-48a6-b7bb-1aba67bc96f0}</Project>
+      <Name>Autofac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Autofac.Test.Scenarios.ScannedAssembly\Autofac.Test.Scenarios.ScannedAssembly.csproj">
+      <Project>{88562f39-66b5-40ad-a8c2-c33f555b6960}</Project>
+      <Name>Autofac.Test.Scenarios.ScannedAssembly</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

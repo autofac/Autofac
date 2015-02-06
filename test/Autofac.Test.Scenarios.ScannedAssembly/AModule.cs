@@ -1,4 +1,4 @@
-﻿namespace Autofac.Tests.Scenarios.ScannedAssembly
+﻿namespace Autofac.Test.Scenarios.ScannedAssembly
 {
     public class AModule : ModuleBase
     {

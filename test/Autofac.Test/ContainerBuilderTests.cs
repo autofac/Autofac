@@ -5,14 +5,13 @@ using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.Indexed;
 using Moq;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests
+namespace Autofac.Test
 {
     // This fixture is in desperate need of some love.
     // Ideally all of the different kinds of registration and syntax extension should be
     // tested in their own fixtures.
-    [TestFixture]
     public class ContainerBuilderTests
     {
         interface IA { }
@@ -21,30 +20,30 @@ namespace Autofac.Tests
 
         public class Abc : DisposeTracker, IA, IB, IC { }
 
-        [Test]
+        [Fact]
         public void SimpleReg()
         {
             var cb = new ContainerBuilder();
             cb.RegisterType<Abc>();
             var c = cb.Build();
             var a = c.Resolve<Abc>();
-            Assert.IsNotNull(a);
-            Assert.IsInstanceOf<Abc>(a);
+            Assert.NotNull(a);
+            Assert.IsType<Abc>(a);
         }
 
-        [Test]
+        [Fact]
         public void SimpleRegIface()
         {
             var cb = new ContainerBuilder();
             cb.RegisterType<Abc>().As<IA>();
             var c = cb.Build();
             var a = c.Resolve<IA>();
-            Assert.IsNotNull(a);
-            Assert.IsInstanceOf<Abc>(a);
-            Assert.IsFalse(c.IsRegistered<Abc>());
+            Assert.NotNull(a);
+            Assert.IsType<Abc>(a);
+            Assert.False(c.IsRegistered<Abc>());
         }
 
-        [Test]
+        [Fact]
         public void WithExternalFactory()
         {
             var cb = new ContainerBuilder();
@@ -56,13 +55,13 @@ namespace Autofac.Tests
             var a2 = c.Resolve<IA>();
             c.Dispose();
 
-            Assert.IsNotNull(a1);
-            Assert.AreNotSame(a1, 12);
-            Assert.IsFalse(((Abc)a1).IsDisposed);
-            Assert.IsFalse(((Abc)a2).IsDisposed);
+            Assert.NotNull(a1);
+            Assert.NotSame(a1, 12);
+            Assert.False(((Abc)a1).IsDisposed);
+            Assert.False(((Abc)a2).IsDisposed);
         }
 
-        [Test]
+        [Fact]
         public void WithInternalSingleton()
         {
             var cb = new ContainerBuilder();
@@ -75,13 +74,13 @@ namespace Autofac.Tests
             var a2 = c.Resolve<IA>();
             c.Dispose();
 
-            Assert.IsNotNull(a1);
-            Assert.AreSame(a1, a2);
-            Assert.IsTrue(((Abc)a1).IsDisposed);
-            Assert.IsTrue(((Abc)a2).IsDisposed);
+            Assert.NotNull(a1);
+            Assert.Same(a1, a2);
+            Assert.True(((Abc)a1).IsDisposed);
+            Assert.True(((Abc)a2).IsDisposed);
         }
 
-        [Test]
+        [Fact]
         public void WithFactoryContext()
         {
             var cb = new ContainerBuilder();
@@ -92,13 +91,13 @@ namespace Autofac.Tests
             var a2 = ctx.Resolve<IA>();
             ctx.Dispose();
 
-            Assert.IsNotNull(a1);
-            Assert.AreNotSame(a1, a2);
-            Assert.IsTrue(((Abc)a1).IsDisposed);
-            Assert.IsTrue(((Abc)a2).IsDisposed);
+            Assert.NotNull(a1);
+            Assert.NotSame(a1, a2);
+            Assert.True(((Abc)a1).IsDisposed);
+            Assert.True(((Abc)a2).IsDisposed);
         }
 
-        [Test]
+        [Fact]
         public void RegistrationOrderingPreserved()
         {
             var target = new ContainerBuilder();
@@ -106,16 +105,15 @@ namespace Autofac.Tests
             var inst2 = new object();
             target.RegisterInstance(inst1);
             target.RegisterInstance(inst2);
-            Assert.AreSame(inst2, target.Build().Resolve<object>());
+            Assert.Same(inst2, target.Build().Resolve<object>());
         }
 
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
+        [Fact]
         public void OnlyAllowBuildOnce()
         {
             var target = new ContainerBuilder();
             target.Build();
-            target.Build();
+            Assert.Throws<InvalidOperationException>(() => target.Build());
         }
 
         public class A1 { }
@@ -133,7 +131,7 @@ namespace Autofac.Tests
             }
         }
 
-        [Test]
+        [Fact]
         public void RegisterWithName()
         {
             var name = "object.registration";
@@ -144,14 +142,14 @@ namespace Autofac.Tests
             var c = cb.Build();
 
             object o1;
-            Assert.IsTrue(c.TryResolveNamed(name, typeof(object), out o1));
-            Assert.IsNotNull(o1);
+            Assert.True(c.TryResolveNamed(name, typeof(object), out o1));
+            Assert.NotNull(o1);
 
             object o2;
-            Assert.IsFalse(c.TryResolve(typeof(object), out o2));
+            Assert.False(c.TryResolve(typeof(object), out o2));
         }
 
-        [Test]
+        [Fact]
         public void RegisterWithKey()
         {
             var key = new object();
@@ -162,14 +160,14 @@ namespace Autofac.Tests
             var c = cb.Build();
 
             object o1;
-            Assert.IsTrue(c.TryResolveKeyed(key, typeof(object), out o1));
-            Assert.IsNotNull(o1);
+            Assert.True(c.TryResolveKeyed(key, typeof(object), out o1));
+            Assert.NotNull(o1);
 
             object o2;
-            Assert.IsFalse(c.TryResolve(typeof(object), out o2));
+            Assert.False(c.TryResolve(typeof(object), out o2));
         }
 
-        [Test]
+        [Fact]
         public void WithMetadata()
         {
             var p1 = new KeyValuePair<string, object>("p1", "p1Value");
@@ -183,14 +181,14 @@ namespace Autofac.Tests
             var container = builder.Build();
 
             IComponentRegistration registration;
-            Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(new TypedService(typeof(object)), out registration));
+            Assert.True(container.ComponentRegistry.TryGetRegistration(new TypedService(typeof(object)), out registration));
 
-            Assert.AreEqual(2, registration.Metadata.Count);
-            Assert.IsTrue(registration.Metadata.Contains(p1));
-            Assert.IsTrue(registration.Metadata.Contains(p2));
+            Assert.Equal(2, registration.Metadata.Count);
+            Assert.True(registration.Metadata.Contains(p1));
+            Assert.True(registration.Metadata.Contains(p2));
         }
 
-        [Test]
+        [Fact]
         public void FiresPreparing()
         {
             int preparingFired = 0;
@@ -198,10 +196,10 @@ namespace Autofac.Tests
             cb.RegisterType<object>().OnPreparing(e => ++preparingFired);
             var container = cb.Build();
             container.Resolve<object>();
-            Assert.AreEqual(1, preparingFired);
+            Assert.Equal(1, preparingFired);
         }
 
-        [Test]
+        [Fact]
         public void WhenPreparingHandlerProvidesParameters_ParamsProvidedToActivator()
         {
             IEnumerable<Parameter> parameters = new Parameter[] { new NamedParameter("n", 1) };
@@ -233,7 +231,7 @@ namespace Autofac.Tests
             }
         }
 
-        [Test]
+        [Fact]
         public void ModuleCanRegisterModule()
         {
             var builder = new ContainerBuilder();
@@ -243,7 +241,7 @@ namespace Autofac.Tests
             container.AssertRegistered<object>();
         }
 
-        [Test]
+        [Fact]
         public void RegisterTypeAsUnsupportedService()
         {
             var builder = new ContainerBuilder();
@@ -251,7 +249,7 @@ namespace Autofac.Tests
             Assert.Throws<ArgumentException>(() => builder.Build());
         }
 
-        [Test]
+        [Fact]
         public void RegisterTypeAsSupportedAndUnsupportedService()
         {
             var builder = new ContainerBuilder();
@@ -259,7 +257,7 @@ namespace Autofac.Tests
             Assert.Throws<ArgumentException>(() => builder.Build());
         }
 
-        [Test]
+        [Fact]
         public void RegisterInstanceAsUnsupportedService()
         {
             var builder = new ContainerBuilder();
@@ -267,7 +265,7 @@ namespace Autofac.Tests
             Assert.Throws<ArgumentException>(() => builder.Build());
         }
 
-        [Test]
+        [Fact]
         public void RegisterAsUnsupportedService()
         {
             var builder = new ContainerBuilder();
@@ -275,7 +273,7 @@ namespace Autofac.Tests
             Assert.Throws<ArgumentException>(() => builder.Build());
         }
 
-        [Test]
+        [Fact]
         public void RegisterThreeServices()
         {
             var target = new ContainerBuilder();
@@ -286,13 +284,13 @@ namespace Autofac.Tests
             var a = container.Resolve<IA>();
             var b = container.Resolve<IB>();
             var c = container.Resolve<IC>();
-            Assert.IsNotNull(a);
-            Assert.AreSame(a, b);
-            Assert.AreSame(b, c);
+            Assert.NotNull(a);
+            Assert.Same(a, b);
+            Assert.Same(b, c);
         }
 
 
-        [Test]
+        [Fact]
         public void InContextSpecifiesContainerScope()
         {
             var contextName = "ctx";
@@ -307,7 +305,7 @@ namespace Autofac.Tests
             AssertIsContainerScoped<object>(ctx1, ctx2);
         }
 
-        [Test]
+        [Fact]
         public void WhenContainerIsBuilt_OnRegisteredHandlersAreInvoked()
         {
             var builder = new ContainerBuilder();
@@ -326,17 +324,17 @@ namespace Autofac.Tests
 
             var container = builder.Build();
 
-            Assert.AreSame(container.ComponentRegistry, registry);
-            Assert.AreSame(marker, cr.Metadata[marker]);
+            Assert.Same(container.ComponentRegistry, registry);
+            Assert.Same(marker, cr.Metadata[marker]);
         }
 
         static void AssertIsContainerScoped<TSvc>(IComponentContext ctx1, IComponentContext ctx2)
         {
-            Assert.AreSame(ctx1.Resolve<TSvc>(), ctx1.Resolve<TSvc>());
-            Assert.AreNotSame(ctx1.Resolve<TSvc>(), ctx2.Resolve<TSvc>());
+            Assert.Same(ctx1.Resolve<TSvc>(), ctx1.Resolve<TSvc>());
+            Assert.NotSame(ctx1.Resolve<TSvc>(), ctx2.Resolve<TSvc>());
         }
 
-        [Test]
+        [Fact]
         public void ProvidedInstancesCannotSupportInstancePerDependency()
         {
             var builder = new ContainerBuilder();
@@ -344,24 +342,24 @@ namespace Autofac.Tests
             Assert.Throws<InvalidOperationException>(() => builder.Build());
         }
 
-        [Test]
+        [Fact]
         public void WhenUpdating_DefaultModulesAreExcluded()
         {
             var builder = new ContainerBuilder();
             var container = new Container();
             builder.Update(container);
-            Assert.IsFalse(container.IsRegistered<IEnumerable<object>>());
+            Assert.False(container.IsRegistered<IEnumerable<object>>());
         }
 
-        [Test]
+        [Fact]
         public void WhenBuildingWithDefaultsExcluded_DefaultModulesAreExcluded()
         {
             var builder = new ContainerBuilder();
             var container = builder.Build(ContainerBuildOptions.ExcludeDefaultModules);
-            Assert.IsFalse(container.IsRegistered<IEnumerable<object>>());
+            Assert.False(container.IsRegistered<IEnumerable<object>>());
         }
 
-        [Test]
+        [Fact]
         public void WhenTIsRegisteredByKey_IndexCanRetrieveIt()
         {
             var key = 42;
@@ -371,10 +369,10 @@ namespace Autofac.Tests
             var container = builder.Build();
 
             var idx = container.Resolve<IIndex<int, string>>();
-            Assert.AreSame(cpt, idx[key]);
+            Assert.Same(cpt, idx[key]);
         }
 
-        [Test]
+        [Fact]
         public void WhenTIsRegisteredByKey_IndexComposesWithIEnumerableOfT()
         {
             var key = 42;
@@ -384,28 +382,28 @@ namespace Autofac.Tests
             var container = builder.Build();
 
             var idx = container.Resolve<IIndex<int, IEnumerable<string>>>();
-            Assert.AreSame(cpt, idx[key].Single());
+            Assert.Same(cpt, idx[key].Single());
         }
 
-        [Test]
+        [Fact]
         public void AfterCallingBuild_SubsequentCallsFail()
         {
             var builder = new ContainerBuilder();
             var c = builder.Build();
 
             var ex = Assert.Throws<InvalidOperationException>(() => builder.Build());
-            Assert.That(ex.Message.Contains("once"));
+            Assert.True(ex.Message.Contains("once"));
         }
 
-        [Test]
+        [Fact]
         public void WhenTheContainerIsBuilt_StartableComponentsAreStarted()
         {
             const ContainerBuildOptions buildOptions = ContainerBuildOptions.None;
             var started = WasStartInvoked(buildOptions);
-            Assert.IsTrue(started);
+            Assert.True(started);
         }
 
-        [Test(Description = "Issue #454: ContainerBuilder.Update() doesn't re-activate existing startable components.")]
+        [Fact]
         public void WhenTheContainerIsUpdated_ExistingStartableComponentsAreNotReStarted()
         {
             var firstStartableInit = 0;
@@ -420,19 +418,20 @@ namespace Autofac.Tests
             builder1.RegisterInstance(startable1.Object);
             var container = builder1.Build();
 
-            Assert.AreEqual(1, firstStartableInit, "The original container build did not start the first startable component.");
+            Assert.Equal(1, firstStartableInit);
 
             var builder2 = new ContainerBuilder();
             builder2.RegisterInstance(startable2.Object);
             builder2.Update(container);
 
-            Assert.AreEqual(1, firstStartableInit, "The container update incorrectly re-started the first startable component.");
-            Assert.AreEqual(1, secondStartableInit, "The container update did not start the second startable component.");
+            Assert.Equal(1, firstStartableInit);
+            Assert.Equal(1, secondStartableInit);
         }
 
-        [Test(Description = "Issue #454: ContainerBuilder.Update() doesn't activate startable components.")]
+        [Fact]
         public void WhenTheContainerIsUpdated_NewStartableComponentsAreStarted()
         {
+            // Issue #454: ContainerBuilder.Update() doesn't activate startable components.
             var started = false;
             var container = new ContainerBuilder().Build();
 
@@ -443,15 +442,15 @@ namespace Autofac.Tests
             builder.RegisterInstance(startable.Object);
             builder.Update(container);
 
-            Assert.IsTrue(started, "The container update did not start the new startable component.");
+            Assert.True(started, "The container update did not start the new startable component.");
         }
 
-        [Test]
+        [Fact]
         public void WhenNoStartIsSpecified_StartableComponentsAreIgnored()
         {
             const ContainerBuildOptions buildOptions = ContainerBuildOptions.IgnoreStartableComponents;
             var started = WasStartInvoked(buildOptions);
-            Assert.IsFalse(started);
+            Assert.False(started);
         }
 
         static bool WasStartInvoked(ContainerBuildOptions buildOptions)

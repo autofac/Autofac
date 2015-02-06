@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Autofac.Tests.Scenarios.ScannedAssembly
+namespace Autofac.Test.Scenarios.ScannedAssembly
 {
 
     public interface IHaveName

@@ -1,16 +1,15 @@
 ﻿using System;
-using NUnit.Framework;
+using Xunit;
 using Autofac.Core;
 
-namespace Autofac.Tests.Core
+namespace Autofac.Test.Core
 {
-    [TestFixture]
     public class ComponentRegistrationTests
     {
-        [Test]
+        [Fact]
         public void Constructor_DetectsNullsAmongServices()
         {
-            Assertions.AssertThrows<ArgumentException>(delegate
+            Assert.Throws<ArgumentException>(delegate
             {
                 var services = new Service[] { new TypedService(typeof(object)), null };
                 Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator(new object()));

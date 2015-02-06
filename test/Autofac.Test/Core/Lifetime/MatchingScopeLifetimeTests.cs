@@ -1,14 +1,13 @@
 ﻿using System;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests.Core.Lifetime
+namespace Autofac.Test.Core.Lifetime
 {
-    [TestFixture]
     public class MatchingScopeLifetimeTests
     {
-        [Test]
+        [Fact]
         public void WhenNoMatchingScopeIsPresent_TheExceptionMessageIncludesTheTag()
         {
             var container = new Container();
@@ -17,10 +16,10 @@ namespace Autofac.Tests.Core.Lifetime
             var rootScope = (ISharingLifetimeScope)container.Resolve<ILifetimeScope>();
 
             var ex = Assert.Throws<DependencyResolutionException>(() => msl.FindScope(rootScope));
-            Assert.That(ex.Message.Contains(tag));
+            Assert.True(ex.Message.Contains(tag));
         }
 
-        [Test]
+        [Fact]
         public void WhenNoMatchingScopeIsPresent_TheExceptionMessageIncludesTheTags()
         {
             var container = new Container();
@@ -30,19 +29,19 @@ namespace Autofac.Tests.Core.Lifetime
             var rootScope = (ISharingLifetimeScope)container.Resolve<ILifetimeScope>();
 
             var ex = Assert.Throws<DependencyResolutionException>(() => msl.FindScope(rootScope));
-            Assert.That(ex.Message.Contains(string.Format("{0}, {1}", tag1, tag2)));
+            Assert.True(ex.Message.Contains(string.Format("{0}, {1}", tag1, tag2)));
         }
 
-        [Test]
+        [Fact]
         public void WhenTagsToMatchIsNull_ExceptionThrown()
         {
             var exception = Assert.Throws<ArgumentNullException>(
                 () => new MatchingScopeLifetime(null));
 
-            Assert.That(exception.ParamName, Is.EqualTo("lifetimeScopeTagsToMatch"));
+            Assert.Equal("lifetimeScopeTagsToMatch", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void MatchesAgainstSingleTaggedScope()
         {
             const string tag = "Tag";
@@ -50,10 +49,10 @@ namespace Autofac.Tests.Core.Lifetime
             var container = new Container();
             var lifetimeScope = (ISharingLifetimeScope)container.BeginLifetimeScope(tag);
 
-            Assert.That(msl.FindScope(lifetimeScope), Is.EqualTo(lifetimeScope));
+            Assert.Equal(lifetimeScope, msl.FindScope(lifetimeScope));
         }
 
-        [Test]
+        [Fact]
         public void MatchesAgainstMultipleTaggedScopes()
         {
             const string tag1 = "Tag1";
@@ -63,10 +62,10 @@ namespace Autofac.Tests.Core.Lifetime
             var container = new Container();
 
             var tag1Scope = (ISharingLifetimeScope)container.BeginLifetimeScope(tag1);
-            Assert.That(msl.FindScope(tag1Scope), Is.EqualTo(tag1Scope));
+            Assert.Equal(tag1Scope, msl.FindScope(tag1Scope));
 
             var tag2Scope = (ISharingLifetimeScope)container.BeginLifetimeScope(tag2);
-            Assert.That(msl.FindScope(tag2Scope), Is.EqualTo(tag2Scope));
+            Assert.Equal(tag2Scope, msl.FindScope(tag2Scope));
         }
     }
 }

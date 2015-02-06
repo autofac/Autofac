@@ -1,4 +1,4 @@
-namespace Autofac.Tests.Scenarios.ScannedAssembly
+namespace Autofac.Test.Scenarios.ScannedAssembly
 {
     /// <summary>
     /// A command class that directly implements the open 

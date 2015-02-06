@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Security;
 using System.Security.Permissions;
-using Autofac.Tests.Scenarios.Graph1;
-using NUnit.Framework;
+using Autofac.Test.Scenarios.Graph1;
+using Xunit;
 
-namespace Autofac.Tests.PartialTrust
+namespace Autofac.Test.PartialTrust
 {
     /// <summary>
     /// Fixture containing the set of tests that will execute in partial trust.
@@ -13,7 +13,7 @@ namespace Autofac.Tests.PartialTrust
     /// <remarks>
     /// <para>
     /// These tests are not marked with any NUnit attributes because they actually get executed
-    /// through NUnit via the <see cref="Autofac.Tests.PartialTrust.PartialTrustTestExecutor"/>.
+    /// through NUnit via the <see cref="Autofac.Test.PartialTrust.PartialTrustTestExecutor"/>.
     /// Any public void method with no parameters found here will execute as a unit test.
     /// </para>
     /// </remarks>
@@ -22,7 +22,7 @@ namespace Autofac.Tests.PartialTrust
         public void AppDomainSetupCorrect()
         {
             // The sandbox should have the expected name and we shouldn't be able to demand unrestricted permissions.
-            Assert.AreEqual("Sandbox", AppDomain.CurrentDomain.FriendlyName, "The AppDomain friendly name was not correct.");
+            Assert.Equal("Sandbox", AppDomain.CurrentDomain.FriendlyName);
             Assert.Throws<SecurityException>(() => new SecurityPermission(PermissionState.Unrestricted).Demand());
         }
 
@@ -43,15 +43,15 @@ namespace Autofac.Tests.PartialTrust
             var c = target.Resolve<IC1>();
             var d = target.Resolve<ID1>();
 
-            Assert.IsInstanceOf<CD1>(c);
+            Assert.IsType<CD1>(c);
             var cd = (CD1)c;
 
-            Assert.AreSame(a, b.A);
-            Assert.AreSame(a, cd.A);
-            Assert.AreNotSame(b, cd.B);
-            Assert.AreSame(c, e.C);
-            Assert.AreNotSame(b, e.B);
-            Assert.AreNotSame(e.B, cd.B);
+            Assert.Same(a, b.A);
+            Assert.Same(a, cd.A);
+            Assert.NotSame(b, cd.B);
+            Assert.Same(c, e.C);
+            Assert.NotSame(b, e.B);
+            Assert.NotSame(e.B, cd.B);
         }
 
         public interface I1<T> { }
@@ -66,7 +66,7 @@ namespace Autofac.Tests.PartialTrust
             container.Resolve<I1<int>>();
             var count = container.ComponentRegistry.Registrations.Count();
             container.Resolve<I2<int>>();
-            Assert.AreEqual(count, container.ComponentRegistry.Registrations.Count());
+            Assert.Equal(count, container.ComponentRegistry.Registrations.Count());
         }
     }
 }

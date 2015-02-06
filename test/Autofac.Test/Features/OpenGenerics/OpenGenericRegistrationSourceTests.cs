@@ -1,14 +1,13 @@
 ﻿using System;
-using Autofac.Tests.Util;
-using NUnit.Framework;
+using Autofac.Test.Util;
+using Xunit;
 using System.Linq;
 using Autofac.Core;
 using Autofac.Features.OpenGenerics;
 using Autofac.Builder;
 
-namespace Autofac.Tests.Features.OpenGenerics
+namespace Autofac.Test.Features.OpenGenerics
 {
-    [TestFixture]
     public class OpenGenericRegistrationSourceTests
     {
         // ReSharper disable UnusedTypeParameter
@@ -16,7 +15,7 @@ namespace Autofac.Tests.Features.OpenGenerics
 
         public class A1<T> : DisposeTracker, I<T> { }
 
-        [Test]
+        [Fact]
         public void GeneratesActivatorAndCorrectServices()
         {
             var g = ConstructSource(typeof (A1<>), typeof (I<>));
@@ -25,11 +24,11 @@ namespace Autofac.Tests.Features.OpenGenerics
                 .RegistrationsFor(new TypedService(typeof(I<int>)), s => null)
                 .Single();
 
-            Assert.AreEqual(typeof(I<int>),
+            Assert.Equal(typeof(I<int>),
                 r.Services.Cast<TypedService>().Single().ServiceType);
 
             var activatedInstance = r.Activator.ActivateInstance(new ContainerBuilder().Build(), Factory.NoParameters);
-            Assert.IsInstanceOf<A1<int>>(activatedInstance);
+            Assert.IsType<A1<int>>(activatedInstance);
         }
 
         public class AWithNew<T> : I<T>
@@ -37,18 +36,18 @@ namespace Autofac.Tests.Features.OpenGenerics
         {
         }
 
-        [Test]
+        [Fact]
         public void DoesNotGenerateActivatorWhenConstructorConstraintBroken()
         {
-            Assert.IsFalse(CanGenerateActivatorForI<string>(typeof(AWithNew<>)));
+            Assert.False(CanGenerateActivatorForI<string>(typeof(AWithNew<>)));
         }
 
         public class PWithNew { }
 
-        [Test]
+        [Fact]
         public void GeneratesActivatorWhenConstructorConstraintMet()
         {
-            Assert.IsTrue(CanGenerateActivatorForI<PWithNew>(typeof(AWithNew<>)));
+            Assert.True(CanGenerateActivatorForI<PWithNew>(typeof(AWithNew<>)));
         }
 
         public class AWithDisposable<T> : I<T>
@@ -56,46 +55,46 @@ namespace Autofac.Tests.Features.OpenGenerics
         {
         }
 
-        [Test]
+        [Fact]
         public void DoesNotGenerateActivatorWhenTypeConstraintBroken()
         {
-            Assert.IsFalse(CanGenerateActivatorForI<string>(typeof(AWithDisposable<>)));
+            Assert.False(CanGenerateActivatorForI<string>(typeof(AWithDisposable<>)));
         }
 
-        [Test]
+        [Fact]
         public void GeneratesActivatorWhenTypeConstraintMet()
         {
-            Assert.IsTrue(CanGenerateActivatorForI<DisposeTracker>(typeof(AWithDisposable<>)));
+            Assert.True(CanGenerateActivatorForI<DisposeTracker>(typeof(AWithDisposable<>)));
         }
 
         public class AWithClass<T> : I<T>
             where T : class { }
 
-        [Test]
+        [Fact]
         public void DoesNotGenerateActivatorWhenClassConstraintBroken()
         {
-            Assert.IsFalse(CanGenerateActivatorForI<int>(typeof(AWithClass<>)));
+            Assert.False(CanGenerateActivatorForI<int>(typeof(AWithClass<>)));
         }
 
-        [Test]
+        [Fact]
         public void GeneratesActivatorWhenClassConstraintMet()
         {
-            Assert.IsTrue(CanGenerateActivatorForI<string>(typeof(AWithClass<>)));
+            Assert.True(CanGenerateActivatorForI<string>(typeof(AWithClass<>)));
         }
 
         public class AWithValue<T> : I<T>
             where T : struct { }
 
-        [Test]
+        [Fact]
         public void DoesNotGenerateActivatorWhenValueConstraintBroken()
         {
-            Assert.IsFalse(CanGenerateActivatorForI<string>(typeof(AWithValue<>)));
+            Assert.False(CanGenerateActivatorForI<string>(typeof(AWithValue<>)));
         }
 
-        [Test]
+        [Fact]
         public void GeneratesActivatorWhenValueConstraintMet()
         {
-            Assert.IsTrue(CanGenerateActivatorForI<int>(typeof(AWithValue<>)));
+            Assert.True(CanGenerateActivatorForI<int>(typeof(AWithValue<>)));
         }
 
         static bool CanGenerateActivatorForI<TClosing>(Type implementor)
@@ -110,24 +109,24 @@ namespace Autofac.Tests.Features.OpenGenerics
         public interface ITwoParams<T, U> { }
         public class TwoParams<T, U> : ITwoParams<T, U> { }
 
-        [Test]
+        [Fact]
         public void SupportsMultipleGenericParameters()
         {
             var g = ConstructSource(typeof(TwoParams<,>));
 
             var rs = g.RegistrationsFor(new TypedService(typeof(TwoParams<int, string>)), s => null);
 
-            Assert.AreEqual(1, rs.Count());
+            Assert.Equal(1, rs.Count());
         }
 
-        [Test]
+        [Fact]
         public void SupportsMultipleGenericParametersMappedFromService()
         {
             var g = ConstructSource(typeof (TwoParams<,>), typeof (ITwoParams<,>));
 
             var rs = g.RegistrationsFor(new TypedService(typeof(ITwoParams<int, string>)), s => null);
 
-            Assert.AreEqual(1, rs.Count());
+            Assert.Equal(1, rs.Count());
         }
 
         public interface IEntity<TId> { }
@@ -136,14 +135,14 @@ namespace Autofac.Tests.Features.OpenGenerics
 
         public class Repository<T, TId> where T : IEntity<TId> { }
 
-        [Test]
+        [Fact]
         public void SupportsCodependentTypeConstraints()
         {
             var g = ConstructSource(typeof(Repository<,>));
 
             var rs = g.RegistrationsFor(new TypedService(typeof(Repository<EntityOfInt, int>)), s => null);
 
-            Assert.AreEqual(1, rs.Count());
+            Assert.Equal(1, rs.Count());
         }
 
         public interface IHaveNoParameters { }
@@ -158,40 +157,40 @@ namespace Autofac.Tests.Features.OpenGenerics
 
         public interface IUnrelated { }
 
-        [Test]
+        [Fact]
         public void RejectsServicesWithoutTypeParameters()
         {
             Assert.Throws<ArgumentException>(() => ConstructSource(typeof(HaveTwoParameters<,>), typeof(IHaveNoParameters)));
         }
 
-        [Test]
+        [Fact]
         public void RejectsServicesNotInTheInheritanceChain()
         {
             Assert.Throws<ArgumentException>(() => ConstructSource(typeof(HaveTwoParameters<,>), typeof(IUnrelated)));
         }
 
-        [Test]
+        [Fact]
         public void IgnoresServicesWithoutEnoughParameters()
         {
-            Assert.That(!SourceCanSupply<IHaveOneParameter<int>>(typeof(HaveTwoParameters<,>)));
+            Assert.False(SourceCanSupply<IHaveOneParameter<int>>(typeof(HaveTwoParameters<,>)));
         }
 
-        [Test]
+        [Fact]
         public void IgnoresServicesThatDoNotSupplyAllParameters()
         {
-            Assert.That(!SourceCanSupply<IHaveTwoParameters<int,int>>(typeof(HaveTwoParameters<,>)));
+            Assert.False(SourceCanSupply<IHaveTwoParameters<int,int>>(typeof(HaveTwoParameters<,>)));
         }
 
-        [Test]
+        [Fact]
         public void AcceptsServicesWithMoreParametersWhenAllImplementationParametersCovered()
         {
-            Assert.That(SourceCanSupply<IHaveThreeParameters<int,string,string>>(typeof(HaveTwoParameters<,>)));
+            Assert.True(SourceCanSupply<IHaveThreeParameters<int,string,string>>(typeof(HaveTwoParameters<,>)));
         }
 
-        [Test]
+        [Fact]
         public void IgnoresServicesWithMismatchedParameters()
         {
-            Assert.That(!SourceCanSupply<IHaveThreeParameters<int,string,decimal>>(typeof(HaveTwoParameters<,>)));
+            Assert.True(!SourceCanSupply<IHaveThreeParameters<int,string,decimal>>(typeof(HaveTwoParameters<,>)));
         }
 
         static bool SourceCanSupply<TClosedService>(Type component)
@@ -207,7 +206,7 @@ namespace Autofac.Tests.Features.OpenGenerics
             var registration = registrations.Single();
             var instance = registration.Activator.ActivateInstance(new ContainerBuilder().Build(), Factory.NoParameters);
 
-            Assert.That(closedServiceType.IsAssignableFrom(instance.GetType()));
+            Assert.True(closedServiceType.IsAssignableFrom(instance.GetType()));
             return true;
         }
 

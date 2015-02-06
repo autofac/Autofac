@@ -3,11 +3,10 @@ using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.Metadata;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests.Builder
+namespace Autofac.Test.Builder
 {
-    [TestFixture]
     public class RegistrationBuilderTests
     {
         class TestMetadata
@@ -16,7 +15,7 @@ namespace Autofac.Tests.Builder
             public string B { get; set; }
         }
 
-        [Test]
+        [Fact]
         public void WhenPropetyFromStronglyTypedClassConfigured_ReflectedInComponentRegistration()
         {
             var builder = RegistrationBuilder.ForType<object>();
@@ -26,11 +25,11 @@ namespace Autofac.Tests.Builder
 
             var reg = builder.CreateRegistration();
 
-            Assert.That(reg.Metadata["A"], Is.EqualTo(42));
-            Assert.That(reg.Metadata["B"], Is.EqualTo("hello"));
+            Assert.Equal(42, reg.Metadata["A"]);
+            Assert.Equal("hello", reg.Metadata["B"]);
         }
 
-        [Test]
+        [Fact]
         public void WhenAccessorNotPropertyAccessExpression_ArgumentExceptionThrown()
         {
             var builder = RegistrationBuilder.ForType<object>();
@@ -38,14 +37,14 @@ namespace Autofac.Tests.Builder
                 builder.WithMetadata<TestMetadata>(ep => ep.For(p => 42, 42)));
         }
 
-        [Test]
+        [Fact]
         public void AsEmptyList_CreatesRegistrationWithNoServices()
         {
             var registration = RegistrationBuilder.ForType<object>()
                 .As(new Service[0])
                 .CreateRegistration();
 
-            Assert.AreEqual(0, registration.Services.Count());
+            Assert.Equal(0, registration.Services.Count());
         }
     }
 }

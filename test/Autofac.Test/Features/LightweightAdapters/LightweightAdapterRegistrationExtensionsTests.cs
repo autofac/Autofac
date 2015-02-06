@@ -2,14 +2,13 @@
 using System.Linq;
 using Autofac.Features.Indexed;
 using Autofac.Features.Metadata;
-using Autofac.Tests.Scenarios.Adapters;
-using NUnit.Framework;
+using Autofac.Test.Scenarios.Adapters;
+using Xunit;
 
-namespace Autofac.Tests.Features.LightweightAdapters
+namespace Autofac.Test.Features.LightweightAdapters
 {
     public class LightweightAdapterRegistrationExtensionsTests
     {
-        [TestFixture]
         public class AdaptingTypeToType
         {
             readonly IEnumerable<Command> _commands = new[]
@@ -31,7 +30,7 @@ namespace Autofac.Tests.Features.LightweightAdapters
                 _toolbarButtons = container.Resolve<IEnumerable<IToolbarButton>>();
             }
 
-            [Test]
+            [Fact]
             public void AdaptingTypeSeesKeysOfAdapteeType()
             {
                 var builder = new ContainerBuilder();
@@ -43,23 +42,21 @@ namespace Autofac.Tests.Features.LightweightAdapters
                 var container = builder.Build();
 
                 var command = container.Resolve<IIndex<string, AnotherCommand>>()["Command"];
-                Assert.IsNotNull(command);
-                Assert.That(command, Is.InstanceOf<AnotherCommand>());
+                Assert.NotNull(command);
+                Assert.IsType<AnotherCommand>(command);
 
                 var anotherCommand = container.Resolve<IIndex<string, AnotherCommand>>()["AnotherCommand"];
-                Assert.IsNotNull(anotherCommand);
-                Assert.That(anotherCommand, Is.InstanceOf<AnotherCommand>());
+                Assert.NotNull(anotherCommand);
+                Assert.IsType<AnotherCommand>(anotherCommand);
             }
 
 
-            [Test]
+            [Fact]
             public void EachInstanceOfTheTargetTypeIsAdapted()
             {
-                Assert.That(_commands.All(cmd => _toolbarButtons.Any(b => b.Command == cmd)));
+                Assert.True(_commands.All(cmd => _toolbarButtons.Any(b => b.Command == cmd)));
             }
         }
-
-        [TestFixture]
         public class OnTopOfAnotherAdapter
         {
             readonly Command _from = new Command();
@@ -77,10 +74,10 @@ namespace Autofac.Tests.Features.LightweightAdapters
                 _to = container.Resolve<ToolbarButton>();
             }
 
-            [Test]
+            [Fact]
             public void AdaptedMetadataIsPassed()
             {
-                Assert.AreEqual(Name, _to.Name);
+                Assert.Equal(Name, _to.Name);
             }
         }
 
@@ -105,8 +102,6 @@ namespace Autofac.Tests.Features.LightweightAdapters
                 get { return _decorated; }
             }
         }
-
-        [TestFixture]
         public class DecoratingANamedService
         {
             readonly IContainer _container;
@@ -121,23 +116,23 @@ namespace Autofac.Tests.Features.LightweightAdapters
                 _container = builder.Build();
             }
 
-            [Test]
+            [Fact]
             public void TheDefaultNamedInstanceIsTheDefaultDecoratedInstance()
             {
                 var d = _container.Resolve<IService>();
-                Assert.IsInstanceOf<Implementer2>(((Decorator)d).Decorated);
+                Assert.IsType<Implementer2>(((Decorator)d).Decorated);
             }
 
-            [Test]
+            [Fact]
             public void AllInstancesAreDecorated()
             {
                 var all = _container.Resolve<IEnumerable<IService>>()
                     .Cast<Decorator>()
                     .Select(d => d.Decorated);
 
-                Assert.AreEqual(2, all.Count());
-                Assert.That(all.Any(i => i is Implementer1));
-                Assert.That(all.Any(i => i is Implementer2));
+                Assert.Equal(2, all.Count());
+                Assert.True(all.Any(i => i is Implementer1));
+                Assert.True(all.Any(i => i is Implementer2));
             }
         }
     }

@@ -2,54 +2,53 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using Autofac.Core;
 
-namespace Autofac.Tests.Core
+namespace Autofac.Test.Core
 {
-    [TestFixture]
     public class TypedServiceTests
     {
-        [Test]
+        [Fact]
         public void TypedServicesForTheSameType_AreEqual()
         {
-            Assert.IsTrue(new TypedService(typeof(object)).Equals(new TypedService(typeof(object))));
+            Assert.True(new TypedService(typeof(object)).Equals(new TypedService(typeof(object))));
         }
 
-        [Test]
+        [Fact]
         public void ConstructorRequires_TypeNotNull()
         {
-            Assertions.AssertThrows<ArgumentNullException>(delegate
+            Assert.Throws<ArgumentNullException>(delegate
             {
                 new TypedService(null);
             });
         }
 
-        [Test]
+        [Fact]
         public void TypedServicesForDifferentTypes_AreNotEqual()
         {
-            Assert.IsFalse(new TypedService(typeof(object)).Equals(new TypedService(typeof(string))));
+            Assert.False(new TypedService(typeof(object)).Equals(new TypedService(typeof(string))));
         }
 
-        [Test]
+        [Fact]
         public void TypedServices_DoNotEqualOtherServiceTypes()
         {
-            Assert.IsFalse(new TypedService(typeof(object)).Equals(new KeyedService("name", typeof(object))));
+            Assert.False(new TypedService(typeof(object)).Equals(new KeyedService("name", typeof(object))));
         }
 
-        [Test]
+        [Fact]
         public void ATypedService_IsNotEqualToNull()
         {
-            Assert.IsFalse(new TypedService(typeof(object)).Equals(null));
+            Assert.False(new TypedService(typeof(object)).Equals(null));
         }
 
-        [Test]
+        [Fact]
         public void ChangeType_ProvidesTypedServiceWithNewType()
         {
             var nt = typeof(string);
             var ts = new TypedService(typeof(object));
             var n = ts.ChangeType(nt);
-            Assert.AreEqual(new TypedService(nt), n);
+            Assert.Equal(new TypedService(nt), n);
         }
     }
 }

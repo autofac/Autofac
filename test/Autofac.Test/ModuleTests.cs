@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using NUnit.Framework;
+using Xunit;
 using Autofac.Core;
 using Autofac.Core.Registration;
 
-namespace Autofac.Tests
+namespace Autofac.Test
 {
-    [TestFixture]
     public class ModuleTests
     {
         class ObjectModule : Module
@@ -19,19 +18,18 @@ namespace Autofac.Tests
             }
         }
 
-        [Test]
+        [Fact]
         public void LoadsRegistrations()
         {
             var cr = new ComponentRegistry();
             new ObjectModule().Configure(cr);
-            Assert.IsTrue(cr.IsRegistered(new TypedService(typeof(object))));
+            Assert.True(cr.IsRegistered(new TypedService(typeof(object))));
         }
 
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Fact]
         public void DetectsNullComponentRegistryArgument()
         {
-            new ObjectModule().Configure(null);
+            Assert.Throws<ArgumentNullException>(() => new ObjectModule().Configure(null));
         }
 
         class AttachingModule : Module
@@ -45,20 +43,20 @@ namespace Autofac.Tests
             }
         }
 
-        [Test]
+        [Fact]
         public void AttachesToRegistrations()
         {
             var attachingModule = new AttachingModule();
-            Assert.AreEqual(0, attachingModule.Registrations.Count);
+            Assert.Equal(0, attachingModule.Registrations.Count);
 
             var builder = new ContainerBuilder();
             builder.RegisterType(typeof(object));
             builder.RegisterModule(attachingModule);
             builder.RegisterInstance("Hello!");
-            
+
             var container = builder.Build();
 
-            Assert.AreEqual(container.ComponentRegistry.Registrations.Count(), attachingModule.Registrations.Count);
+            Assert.Equal(container.ComponentRegistry.Registrations.Count(), attachingModule.Registrations.Count);
         }
 
         class ModuleExposingThisAssembly : Module
@@ -66,18 +64,18 @@ namespace Autofac.Tests
             public Assembly ModuleThisAssembly { get { return ThisAssembly; }}
         }
 
-        [Test]
+        [Fact]
         public void TheAssemblyExposedByThisAssemblyIsTheOneContainingTheConcreteModuleClass()
         {
             var module = new ModuleExposingThisAssembly();
-            Assert.AreSame(typeof(ModuleExposingThisAssembly).Assembly, module.ModuleThisAssembly);
+            Assert.Same(typeof(ModuleExposingThisAssembly).Assembly, module.ModuleThisAssembly);
         }
 
         class ModuleIndirectlyExposingThisAssembly : ModuleExposingThisAssembly
         {
         }
 
-        [Test]
+        [Fact]
         public void IndirectlyDerivedModulesCannotUseThisAssembly()
         {
             var module = new ModuleIndirectlyExposingThisAssembly();

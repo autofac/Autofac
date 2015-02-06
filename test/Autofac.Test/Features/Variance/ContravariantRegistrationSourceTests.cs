@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using Autofac;
 using Autofac.Core;
 using Autofac.Features.Variance;
 
-namespace Autofac.Tests.Features.Variance
+namespace Autofac.Test.Features.Variance
 {
     interface IHandler<in TCommand>
     {
@@ -63,20 +63,18 @@ namespace Autofac.Tests.Features.Variance
         public static void AssertSingleHandlerCanHandle<TCommand>(this IContainer container)
         {
             var handlers = container.ComponentRegistry.RegistrationsFor(new TypedService(typeof(IHandler<TCommand>)));
-            Assert.AreEqual(1, handlers.Count());
+            Assert.Equal(1, handlers.Count());
             container.Resolve<IHandler<TCommand>>();
         }
     }
 
     public class ContravariantRegistrationSourceTests
     {
-        [TestFixture]
         public class WhenAHandlerForAConcreteTypeIsRegistered
         {
             IContainer _container;
 
-            [SetUp]
-            public void SetUp()
+            public WhenAHandlerForAConcreteTypeIsRegistered()
             {
                 var builder = new ContainerBuilder();
                 builder.RegisterSource(new ContravariantRegistrationSource());
@@ -84,44 +82,41 @@ namespace Autofac.Tests.Features.Variance
                 _container = builder.Build();
             }
 
-            [Test]
+            [Fact]
             public void TheCommandTypeCanBeHandled()
             {
                 _container.AssertSingleHandlerCanHandle<CommandB>();
             }
 
-            [Test]
+            [Fact]
             public void DirectSubclassesOfTheCommandTypeCanBeHandled()
             {
                 _container.AssertSingleHandlerCanHandle<CommandC>();
             }
 
-            [Test]
+            [Fact]
             public void IndirectSubclassesOfTheCommandTypeCanBeHandled()
             {
                 _container.AssertSingleHandlerCanHandle<CommandD>();
             }
 
-            [Test]
+            [Fact]
             public void BaseClassesOfTheCommandCannotBeHandled()
             {
-                Assert.IsFalse(_container.IsRegistered<IHandler<CommandA>>());
+                Assert.False(_container.IsRegistered<IHandler<CommandA>>());
             }
 
-            [Test]
+            [Fact]
             public void UnrelatedCommandsCannotBeHandled()
             {
-                Assert.IsFalse(_container.IsRegistered<IHandler<UnrelatedCommand>>());
+                Assert.False(_container.IsRegistered<IHandler<UnrelatedCommand>>());
             }
         }
-
-        [TestFixture]
         public class WhenAHandlerForAnInterfaceTypeIsRegistered
         {
             IContainer _container;
 
-            [SetUp]
-            public void SetUp()
+            public WhenAHandlerForAnInterfaceTypeIsRegistered()
             {
                 var builder = new ContainerBuilder();
                 builder.RegisterSource(new ContravariantRegistrationSource());
@@ -129,56 +124,53 @@ namespace Autofac.Tests.Features.Variance
                 _container = builder.Build();
             }
 
-            [Test]
+            [Fact]
             public void TheInterfaceTypeCanBeHandled()
             {
                 _container.AssertSingleHandlerCanHandle<ICommand>();
             }
 
-            [Test]
+            [Fact]
             public void ImplementersOfTheInterfaceTypeCanBeHandled()
             {
                 _container.AssertSingleHandlerCanHandle<CommandB>();
             }
 
-            [Test]
+            [Fact]
             public void IndirectImplementersOfTheInterfaceTypeCanBeHandled()
             {
                 _container.AssertSingleHandlerCanHandle<CommandC>();
             }
 
-            [Test]
+            [Fact]
             public void SecondOrderIndirectImplementersOfTheInterfaceTypeCanBeHandled()
             {
                 _container.AssertSingleHandlerCanHandle<CommandD>();
             }
 
-            [Test]
+            [Fact]
             public void DerivationsOfTheInterfaceTypeCanBeHandled()
             {
                 _container.AssertSingleHandlerCanHandle<IDerivedCommand>();
             }
 
-            [Test]
+            [Fact]
             public void UnrelatedCommandsCannotBeHandled()
             {
-                Assert.IsFalse(_container.IsRegistered<IHandler<UnrelatedCommand>>());
+                Assert.False(_container.IsRegistered<IHandler<UnrelatedCommand>>());
             }
 
-            [Test]
+            [Fact]
             public void BaseInterfacesOfTheCommandCannotBeHandled()
             {
-                Assert.IsFalse(_container.IsRegistered<IHandler<IBaseCommand>>());
+                Assert.False(_container.IsRegistered<IHandler<IBaseCommand>>());
             }
         }
-
-        [TestFixture]
         public class WhenAHandlerForObjectIsRegistered
         {
             IContainer _container;
 
-            [SetUp]
-            public void SetUp()
+            public WhenAHandlerForObjectIsRegistered()
             {
                 var builder = new ContainerBuilder();
                 builder.RegisterSource(new ContravariantRegistrationSource());
@@ -186,35 +178,33 @@ namespace Autofac.Tests.Features.Variance
                 _container = builder.Build();
             }
 
-            [Test]
+            [Fact]
             public void ObjectCanBeHandled()
             {
                 _container.AssertSingleHandlerCanHandle<object>();
             }
 
-            [Test]
+            [Fact]
             public void AnyConcreteTypeCanBeHandled()
             {
                 _container.AssertSingleHandlerCanHandle<CommandA>();
             }
 
-            [Test]
+            [Fact]
             public void AnyInterfaceTypeCanBeHandled()
             {
                 _container.AssertSingleHandlerCanHandle<ICommand>();
             }
         }
-
-        [TestFixture]
         public class WhenBaseTypesDoNotSatisfyConstraints
         {
-            [Test]
+            [Fact]
             public void TheSourceDoesNotAttemptGenericTypeConstruction()
             {
                 var builder = new ContainerBuilder();
                 builder.RegisterSource(new ContravariantRegistrationSource());
                 var container = builder.Build();
-                Assert.IsFalse(container.IsRegistered<IConstrainedHandler<DerivedWithoutArg>>());
+                Assert.False(container.IsRegistered<IConstrainedHandler<DerivedWithoutArg>>());
             }
         }
     }

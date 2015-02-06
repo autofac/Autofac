@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autofac.Util;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests.Util
+namespace Autofac.Test.Util
 {
-    [TestFixture]
     public class DelegateExtensionsTests
     {
         public class WithTwoInvokes
@@ -17,10 +16,10 @@ namespace Autofac.Tests.Util
         }
 
         // Issue 179
-        [Test]
+        [Fact]
         public void TypeWithTwoInvokeMethodsIsNotADelegate()
         {
-            Assert.IsFalse(typeof(WithTwoInvokes).IsDelegate());
+            Assert.False(typeof(WithTwoInvokes).IsDelegate());
         }
     }
 }

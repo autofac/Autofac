@@ -3,11 +3,10 @@ using Autofac.Core;
 using Autofac.Core.Registration;
 using Autofac.Features.Metadata;
 using Autofac.Util;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests.Features.Metadata
+namespace Autofac.Test.Features.Metadata
 {
-    [TestFixture]
     public class StronglyTypedMeta_WhenMetadataIsSupplied
     {
         const int SuppliedIntValue = 123;
@@ -15,8 +14,7 @@ namespace Autofac.Tests.Features.Metadata
 
         IContainer _container;
 
-        [SetUp]
-        public void SetUp()
+        public StronglyTypedMeta_WhenMetadataIsSupplied()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<object>()
@@ -25,14 +23,14 @@ namespace Autofac.Tests.Features.Metadata
             _container = builder.Build();
         }
 
-        [Test]
+        [Fact]
         public void ValuesAreProvidedFromMetadata()
         {
             var meta = _container.Resolve<Meta<object, MyMeta>>();
-            Assert.That(meta.Metadata.TheInt, Is.EqualTo(SuppliedIntValue));
+            Assert.Equal(SuppliedIntValue, meta.Metadata.TheInt);
         }
 
-        [Test]
+        [Fact]
         public void ValuesProvidedAreUniqueToEachRegistration()
         {
             var builder = new ContainerBuilder();
@@ -41,34 +39,34 @@ namespace Autofac.Tests.Features.Metadata
             _container = builder.Build();
 
             var meta1 = _container.Resolve<Meta<object, MyMeta>>();
-            Assert.That(meta1.Metadata.TheInt, Is.EqualTo(123));
+            Assert.Equal(123, meta1.Metadata.TheInt);
 
             var meta2 = _container.Resolve<Meta<string, MyMeta>>();
-            Assert.That(meta2.Metadata.TheInt, Is.EqualTo(321));
+            Assert.Equal(321, meta2.Metadata.TheInt);
         }
 
-        [Test]
+        [Fact]
         public void ValuesProvidedFromMetadataOverrideDefaults()
         {
             var meta = _container.Resolve<Meta<object, MyMetaWithDefault>>();
-            Assert.That(meta.Metadata.TheInt, Is.EqualTo(SuppliedIntValue));
+            Assert.Equal(SuppliedIntValue, meta.Metadata.TheInt);
         }
 
-        [Test]
+        [Fact]
         public void ValuesProvidedToTypesWithDictionaryConstructor()
         {
             var meta = _container.Resolve<Meta<object, MyMetaWithDictionary>>();
-            Assert.That(meta.Metadata.TheName, Is.EqualTo(SuppliedNameValue));
+            Assert.Equal(SuppliedNameValue, meta.Metadata.TheName);
         }
 
-        [Test]
+        [Fact]
         public void ReadOnlyPropertiesOnMetadataViewAreIgnored()
         {
             var meta = _container.Resolve<Meta<object, MyMetaWithReadOnlyProperty>>();
-            Assert.That(meta.Metadata.TheInt, Is.EqualTo(SuppliedIntValue));
+            Assert.Equal(SuppliedIntValue, meta.Metadata.TheInt);
         }
 
-        [Test]
+        [Fact]
         public void ResolvingStronglyTypedMetadataWithInvalidConstructorThrowsException()
         {
             var exception = Assert.Throws<DependencyResolutionException>(
@@ -77,38 +75,35 @@ namespace Autofac.Tests.Features.Metadata
             var typeName = typeof(MyMetaWithInvalidConstructor).Name;
             var message = string.Format(MetadataViewProviderResources.InvalidViewImplementation, typeName);
 
-            Assert.That(exception.Message, Is.EqualTo(message));
+            Assert.Equal(message, exception.Message);
         }
 
-        [Test]
+        [Fact]
         public void ResolvingStronglyTypedMetadataWithInterfaceThrowsException()
         {
             Assert.Throws<ComponentNotRegisteredException>(
                 () => _container.Resolve<Meta<object, IMyMetaInterface>>());
         }
 
-        [Test]
+        [Fact]
         public void ValuesBubbleUpThroughAdapters()
         {
             var meta = _container.Resolve<Meta<Func<object>, MyMeta>>();
-            Assert.That(meta.Metadata.TheInt, Is.EqualTo(SuppliedIntValue));
+            Assert.Equal(SuppliedIntValue, meta.Metadata.TheInt);
         }
     }
-
-    [TestFixture]
     public class StronglyTypedMeta_WhenNoMatchingMetadataIsSupplied
     {
         IContainer _container;
 
-        [SetUp]
-        public void SetUp()
+        public StronglyTypedMeta_WhenNoMatchingMetadataIsSupplied()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<object>();
             _container = builder.Build();
         }
 
-        [Test]
+        [Fact]
         public void ResolvingStronglyTypedMetadataWithoutDefaultValueThrowsException()
         {
             var exception = Assert.Throws<DependencyResolutionException>(
@@ -117,14 +112,14 @@ namespace Autofac.Tests.Features.Metadata
             var propertyName = ReflectionExtensions.GetProperty<MyMeta, int>(x => x.TheInt).Name;
             var message = string.Format(MetadataViewProviderResources.MissingMetadata, propertyName);
 
-            Assert.That(exception.Message, Is.EqualTo(message));
+            Assert.Equal(message, exception.Message);
         }
 
-        [Test]
+        [Fact]
         public void ResolvingStronglyTypedMetadataWithDefaultValueProvidesDefault()
         {
             var m = _container.Resolve<Meta<object, MyMetaWithDefault>>();
-            Assert.That(m.Metadata.TheInt, Is.EqualTo(42));
+            Assert.Equal(42, m.Metadata.TheInt);
         }
     }
 }

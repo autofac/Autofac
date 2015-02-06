@@ -3,14 +3,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Autofac.Builder;
 using Autofac.Core.Registration;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests.Features.Collections
+namespace Autofac.Test.Features.Collections
 {
-    [TestFixture]
     public class CollectionRegistrationSourceTests
     {
-        [Test]
+        [Fact]
         public void ResolvesAllAvailableElementsWhenArrayIsRequested()
         {
             var cb = new ContainerBuilder();
@@ -21,12 +20,12 @@ namespace Autofac.Tests.Features.Collections
             var c = cb.Build();
 
             var strings = c.Resolve<string[]>();
-            Assert.AreEqual(2, strings.Length);
+            Assert.Equal(2, strings.Length);
             Assert.Contains(s1, strings);
             Assert.Contains(s2, strings);
         }
 
-        [Test]
+        [Fact]
         public void ResolvesAllAvailableElementsWhenEnumerableIsRequested()
         {
             var cb = new ContainerBuilder();
@@ -37,12 +36,12 @@ namespace Autofac.Tests.Features.Collections
             var c = cb.Build();
 
             var strings = c.Resolve<IEnumerable<string>>();
-            Assert.AreEqual(2, strings.Count());
-            Assert.IsTrue(strings.Contains(s1));
-            Assert.IsTrue(strings.Contains(s2));
+            Assert.Equal(2, strings.Count());
+            Assert.True(strings.Contains(s1));
+            Assert.True(strings.Contains(s2));
         }
 
-        [Test]
+        [Fact]
         public void ResolvesCollectionItemsFromCurrentLifetimeScope()
         {
             var builder = new ContainerBuilder();
@@ -54,21 +53,21 @@ namespace Autofac.Tests.Features.Collections
             using (var ls = container.BeginLifetimeScope())
                 tracker = ls.Resolve<DisposeTracker[]>().First();
 
-            Assert.IsTrue(tracker.IsDisposed);
+            Assert.True(tracker.IsDisposed);
         }
 
-        [Test]
+        [Fact]
         public void ReflectsChangesInComponentRegistry()
         {
             var cb = new ContainerBuilder();
             cb.RegisterInstance("Hello");
             var c = cb.Build();
-            Assert.AreEqual(1, c.Resolve<IEnumerable<string>>().Count());
+            Assert.Equal(1, c.Resolve<IEnumerable<string>>().Count());
 
             c.ComponentRegistry.Register(
                 RegistrationBuilder.ForDelegate((ctx,p) => "World").CreateRegistration());
 
-            Assert.AreEqual(2, c.Resolve<IEnumerable<string>>().Count());
+            Assert.Equal(2, c.Resolve<IEnumerable<string>>().Count());
         }
 
         public interface IFoo { }
@@ -76,7 +75,7 @@ namespace Autofac.Tests.Features.Collections
         public class Foo2 : IFoo { }
         public class Foo3 : IFoo { }
 
-        [Test]
+        [Fact]
         public void EnumerablesFromDifferentLifetimeScopesShouldReturnDifferentCollections()
         {
             var rootBuilder = new ContainerBuilder();
@@ -91,16 +90,16 @@ namespace Autofac.Tests.Features.Collections
                 scopeBuilder => scopeBuilder.RegisterType<Foo3>().As<IFoo>());
             var arrayB = scopeB.Resolve<IEnumerable<IFoo>>().ToArray();
 
-            Assert.That(arrayA.Count(), Is.EqualTo(2));
-            Assert.That(arrayA, Has.Some.TypeOf<Foo1>());
-            Assert.That(arrayA, Has.Some.TypeOf<Foo2>());
+            Assert.Equal(2, arrayA.Count());
+            Assert.True(arrayA.Any(x => x is Foo1));
+            Assert.True(arrayA.Any(x => x is Foo2));
 
-            Assert.That(arrayB.Count(), Is.EqualTo(2));
-            Assert.That(arrayB, Has.Some.TypeOf<Foo1>());
-            Assert.That(arrayB, Has.Some.TypeOf<Foo3>());
+            Assert.Equal(2, arrayB.Count());
+            Assert.True(arrayB.Any(x => x is Foo1));
+            Assert.True(arrayB.Any(x => x is Foo3));
         }
 
-        [Test]
+        [Fact]
         public void ResolvesAllAvailableElementsWhenReadOnlyCollectionIsRequested()
         {
             var cb = new ContainerBuilder();
@@ -112,12 +111,12 @@ namespace Autofac.Tests.Features.Collections
 
             var strings = c.Resolve<IReadOnlyCollection<string>>();
 
-            Assert.That(strings.Count, Is.EqualTo(2));
-            Assert.That(strings, Has.Member(s1));
-            Assert.That(strings, Has.Member(s2));
+            Assert.Equal(2, strings.Count);
+            Assert.Contains(s1, strings);
+            Assert.Contains(s2, strings);
         }
 
-        [Test]
+        [Fact]
         public void ResolvesAllAvailableElementsWhenReadOnlyListIsRequested()
         {
             var cb = new ContainerBuilder();
@@ -129,12 +128,12 @@ namespace Autofac.Tests.Features.Collections
 
             var strings = c.Resolve<IReadOnlyList<string>>();
 
-            Assert.That(strings.Count, Is.EqualTo(2));
-            Assert.That(strings, Has.Member(s1));
-            Assert.That(strings, Has.Member(s2));
+            Assert.Equal(2, strings.Count);
+            Assert.Contains(s1, strings);
+            Assert.Contains(s2, strings);
         }
 
-        [Test]
+        [Fact]
         public void ResolvesAllAvailableElementsWhenListIsRequested()
         {
             var cb = new ContainerBuilder();
@@ -146,13 +145,13 @@ namespace Autofac.Tests.Features.Collections
 
             var strings = c.Resolve<IList<string>>();
 
-            Assert.That(strings.Count, Is.EqualTo(2));
-            Assert.That(strings, Has.Member(s1));
-            Assert.That(strings, Has.Member(s2));
-            Assert.That(strings, Is.InstanceOf<List<string>>());
+            Assert.Equal(2, strings.Count);
+            Assert.Contains(s1, strings);
+            Assert.Contains(s2, strings);
+            Assert.IsType<List<string>>(strings);
         }
 
-        [Test]
+        [Fact]
         public void ResolvesAllAvailableElementsWhenCollectionIsRequested()
         {
             var cb = new ContainerBuilder();
@@ -164,13 +163,13 @@ namespace Autofac.Tests.Features.Collections
 
             var strings = c.Resolve<ICollection<string>>();
 
-            Assert.That(strings.Count, Is.EqualTo(2));
-            Assert.That(strings, Has.Member(s1));
-            Assert.That(strings, Has.Member(s2));
-            Assert.That(strings, Is.InstanceOf<List<string>>());
+            Assert.Equal(2, strings.Count);
+            Assert.Contains(s1, strings);
+            Assert.Contains(s2, strings);
+            Assert.IsType<List<string>>(strings);
         }
 
-        [Test]
+        [Fact]
         public void ResolvingClosedListTypeThrowsException()
         {
             var cb = new ContainerBuilder();
@@ -183,7 +182,7 @@ namespace Autofac.Tests.Features.Collections
             Assert.Throws<ComponentNotRegisteredException>(() => c.Resolve<List<string>>());
         }
 
-        [Test]
+        [Fact]
         public void ResolvingClosedCollectionTypeThrowsException()
         {
             var cb = new ContainerBuilder();
@@ -196,7 +195,7 @@ namespace Autofac.Tests.Features.Collections
             Assert.Throws<ComponentNotRegisteredException>(() => c.Resolve<Collection<string>>());
         }
 
-        [Test]
+        [Fact]
         public void ResolvingClosedReadOnlyCollectionTypeThrowsException()
         {
             var cb = new ContainerBuilder();

@@ -24,39 +24,36 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using NUnit.Framework;
+using Xunit;
 using Autofac.Core;
 using Autofac.Core.Registration;
 
-namespace Autofac.Tests
+namespace Autofac.Test
 {
-	[TestFixture]
-	public class ComponentRegisteredEventArgsTests
-	{
-		[Test]
-		public void ConstructorSetsProperties()
-		{
-			var registry = new ComponentRegistry();
-			var registration = Factory.CreateSingletonObjectRegistration();
-			var args = new ComponentRegisteredEventArgs(registry, registration);
-			Assert.AreSame(registry, args.ComponentRegistry);
-			Assert.AreSame(registration, args.ComponentRegistration);
-		}
-		
-		[Test]
-		[ExpectedException(typeof(ArgumentNullException))]
-		public void NullContainerDetected()
-		{
-			var registration = Factory.CreateSingletonObjectRegistration();
-			var args = new ComponentRegisteredEventArgs(null, registration);
-		}
-		
-		[Test]
-		[ExpectedException(typeof(ArgumentNullException))]
-		public void NullRegistrationDetected()
-		{
+    public class ComponentRegisteredEventArgsTests
+    {
+        [Fact]
+        public void ConstructorSetsProperties()
+        {
             var registry = new ComponentRegistry();
-            var args = new ComponentRegisteredEventArgs(registry, null);
-		}
-	}
+            var registration = Factory.CreateSingletonObjectRegistration();
+            var args = new ComponentRegisteredEventArgs(registry, registration);
+            Assert.Same(registry, args.ComponentRegistry);
+            Assert.Same(registration, args.ComponentRegistration);
+        }
+
+        [Fact]
+        public void NullContainerDetected()
+        {
+            var registration = Factory.CreateSingletonObjectRegistration();
+            Assert.Throws<ArgumentNullException>(() => new ComponentRegisteredEventArgs(null, registration));
+        }
+
+        [Fact]
+        public void NullRegistrationDetected()
+        {
+            var registry = new ComponentRegistry();
+            Assert.Throws<ArgumentNullException>(() => new ComponentRegisteredEventArgs(registry, null));
+        }
+    }
 }

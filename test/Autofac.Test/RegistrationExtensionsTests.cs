@@ -4,11 +4,10 @@ using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
 using Autofac.Util;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests
+namespace Autofac.Test
 {
-    [TestFixture]
     public class RegistrationExtensionsTests
     {
         // ReSharper disable InconsistentNaming
@@ -18,43 +17,43 @@ namespace Autofac.Tests
         public sealed class MyComponent : IMyService { }
         public sealed class MyComponent2 { }
 
-        [Test]
+        [Fact]
         public void RegistrationsMadeInConfigureExpressionAreAddedToContainer()
         {
             var ls = new Container()
                 .BeginLifetimeScope(b => b.RegisterType<MyComponent>().As<IMyService>());
 
             var component = ls.Resolve<IMyService>();
-            Assert.IsTrue(component is MyComponent);
+            Assert.True(component is MyComponent);
         }
 
-        [Test]
+        [Fact]
         public void OnlyServicesAssignableToASpecificTypeAreRegisteredFromAssemblies()
         {
             var container = new Container().BeginLifetimeScope(b =>
                 b.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
                     .AssignableTo(typeof(IMyService)));
 
-            Assert.AreEqual(1, container.ComponentRegistry.Registrations.Count());
+            Assert.Equal(1, container.ComponentRegistry.Registrations.Count());
             Object obj;
-            Assert.IsTrue(container.TryResolve(typeof(MyComponent), out obj));
-            Assert.IsFalse(container.TryResolve(typeof(MyComponent2), out obj));
+            Assert.True(container.TryResolve(typeof(MyComponent), out obj));
+            Assert.False(container.TryResolve(typeof(MyComponent2), out obj));
         }
 
-        [Test]
+        [Fact]
         public void OnlyServicesAssignableToASpecificTypeAreRegisteredFromTypeList()
         {
             var container = new Container().BeginLifetimeScope(b =>
                 b.RegisterTypes(Assembly.GetExecutingAssembly().GetLoadableTypes().ToArray())
                     .AssignableTo(typeof(IMyService)));
 
-            Assert.AreEqual(1, container.ComponentRegistry.Registrations.Count());
+            Assert.Equal(1, container.ComponentRegistry.Registrations.Count());
             Object obj;
-            Assert.IsTrue(container.TryResolve(typeof(MyComponent), out obj));
-            Assert.IsFalse(container.TryResolve(typeof(MyComponent2), out obj));
+            Assert.True(container.TryResolve(typeof(MyComponent), out obj));
+            Assert.False(container.TryResolve(typeof(MyComponent2), out obj));
         }
 
-        [Test]
+        [Fact]
         public void WhenAReleaseActionIsSupplied_TheComponentIsNotDisposedAutomatically()
         {
             var builder = new ContainerBuilder();
@@ -63,10 +62,10 @@ namespace Autofac.Tests
             var container = builder.Build();
             var dt = container.Resolve<DisposeTracker>();
             container.Dispose();
-            Assert.IsFalse(dt.IsDisposed);
+            Assert.False(dt.IsDisposed);
         }
 
-        [Test]
+        [Fact]
         public void WhenAReleaseActionIsSupplied_TheInstanceIsPassedToTheReleaseAction()
         {
             var builder = new ContainerBuilder();
@@ -76,10 +75,10 @@ namespace Autofac.Tests
             var container = builder.Build();
             var dt = container.Resolve<DisposeTracker>();
             container.Dispose();
-            Assert.AreSame(dt, instance);
+            Assert.Same(dt, instance);
         }
 
-        [Test]
+        [Fact]
         public void WhenAReleaseActionIsSupplied_AnActivatedProvidedInstanceWillExecuteReleaseAction()
         {
             var builder = new ContainerBuilder();
@@ -90,14 +89,14 @@ namespace Autofac.Tests
             var container = builder.Build();
             container.Resolve<DisposeTracker>();
             container.Dispose();
-            Assert.IsTrue(executed, "The release action should have executed.");
-            Assert.IsFalse(provided.IsDisposed, "The release action should have superseded the automatic call to IDisposable.Dispose.");
+            Assert.True(executed, "The release action should have executed.");
+            Assert.False(provided.IsDisposed, "The release action should have superseded the automatic call to IDisposable.Dispose.");
         }
 
         public interface IImplementedInterface { }
         public class SelfComponent : IImplementedInterface { }
 
-        [Test]
+        [Fact]
         public void AsImplementedInterfaces_CanBeAppliedToNonGenericRegistrations()
         {
             var builder = new ContainerBuilder();
@@ -107,7 +106,7 @@ namespace Autofac.Tests
             context.Resolve<IImplementedInterface>();
         }
 
-        [Test]
+        [Fact]
         public void AsSelf_CanBeAppliedToNonGenericRegistrations()
         {
             var builder = new ContainerBuilder();
@@ -117,7 +116,7 @@ namespace Autofac.Tests
             context.Resolve<SelfComponent>();
         }
 
-        [Test]
+        [Fact]
         public void AsImplementedInterfaces_CanBeAppliedToInstanceRegistrations()
         {
             var builder = new ContainerBuilder();
@@ -127,7 +126,7 @@ namespace Autofac.Tests
             context.Resolve<IImplementedInterface>();
         }
 
-        [Test]
+        [Fact]
         public void AsSelf_CanBeAppliedToInstanceRegistrations()
         {
             var builder = new ContainerBuilder();
@@ -142,7 +141,7 @@ namespace Autofac.Tests
         // ReSharper restore UnusedTypeParameter
         public class SelfComponent<T> : IImplementedInterface<T> { }
 
-        [Test]
+        [Fact]
         public void AsImplementedInterfaces_CanBeAppliedToOpenGenericRegistrations()
         {
             var builder = new ContainerBuilder();
@@ -152,7 +151,7 @@ namespace Autofac.Tests
             context.Resolve<IImplementedInterface<object>>();
         }
 
-        [Test]
+        [Fact]
         public void AsSelf_CanBeAppliedToOpenGenericRegistrations()
         {
             var builder = new ContainerBuilder();
@@ -162,7 +161,7 @@ namespace Autofac.Tests
             context.Resolve<SelfComponent<object>>();
         }
 
-        [Test]
+        [Fact]
         public void AutoActivate_ResolvesComponentsAutomatically()
         {
             int singletonCount = 0;
@@ -171,21 +170,21 @@ namespace Autofac.Tests
             builder.RegisterType<MyComponent>().As<IMyService>().SingleInstance().AutoActivate().OnActivated(e => singletonCount++);
             builder.RegisterType<MyComponent2>().AutoActivate().OnActivated(e => instanceCount++);
             builder.Build();
-            Assert.AreEqual(1, singletonCount, "The singleton component wasn't auto activated.");
-            Assert.AreEqual(1, instanceCount, "The instance component wasn't auto activated.");
+            Assert.Equal(1, singletonCount);
+            Assert.Equal(1, instanceCount);
         }
 
-        [Test]
+        [Fact]
         public void AutoActivate_MultipleAutoStartFlagsOnlyStartTheComponentOnce()
         {
             int instanceCount = 0;
             var builder = new ContainerBuilder();
             builder.RegisterType<MyComponent2>().AutoActivate().AutoActivate().AutoActivate().OnActivated(e => instanceCount++);
             builder.Build();
-            Assert.AreEqual(1, instanceCount, "The instance component wasn't properly auto activated.");
+            Assert.Equal(1, instanceCount);
         }
 
-        [Test]
+        [Fact]
         public void AutoActivate_InvalidLifetimeConflictsWithAutoStart()
         {
             var builder = new ContainerBuilder();
@@ -193,34 +192,36 @@ namespace Autofac.Tests
             Assert.Throws<DependencyResolutionException>(() => builder.Build());
         }
 
-        [Test(Description = "Issue #454: ContainerBuilder.Update() doesn't activate AutoActivate components.")]
+        [Fact]
         public void AutoActivate_ContainerUpdateAutoActivatesNewComponents()
         {
+            // Issue #454: ContainerBuilder.Update() doesn't activate AutoActivate components.
             int instanceCount = 0;
             var container = new ContainerBuilder().Build();
             var builder = new ContainerBuilder();
             builder.RegisterType<MyComponent2>().AutoActivate().OnActivated(e => instanceCount++);
             builder.Update(container);
-            Assert.AreEqual(1, instanceCount, "The instance component wasn't properly auto activated.");
+            Assert.Equal(1, instanceCount);
         }
 
-        [Test(Description = "Issue #454: ContainerBuilder.Update() shouldn't re-activate existing AutoActivate components.")]
+        [Fact]
         public void AutoActivate_ContainerUpdateDoesNotAutoActivateExistingComponents()
         {
+            // Issue #454: ContainerBuilder.Update() shouldn't re-activate existing AutoActivate components.
             int firstCount = 0;
             var builder = new ContainerBuilder();
             builder.RegisterType<MyComponent2>().AutoActivate().OnActivated(e => firstCount++);
             var container = builder.Build();
-            Assert.AreEqual(1, firstCount, "The instance component wasn't properly auto activated.");
+            Assert.Equal(1, firstCount);
 
             int secondCount = 0;
             var builder2 = new ContainerBuilder();
             builder2.RegisterType<MyComponent>().AutoActivate().OnActivated(e => secondCount++);
             builder2.Update(container);
-            Assert.AreEqual(1, firstCount, "The first instance component was incorrectly re-activated.");
-            Assert.AreEqual(1, secondCount, "The second instance component wasn't properly auto activated.");
+            Assert.Equal(1, firstCount);
+            Assert.Equal(1, secondCount);
         }
-        [Test]
+        [Fact]
         public void InstancePerRequest_AdditionalLifetimeScopeTagsCanBeProvided()
         {
             var builder = new ContainerBuilder();
@@ -231,16 +232,16 @@ namespace Autofac.Tests
             var container = builder.Build();
 
             var scope1 = container.BeginLifetimeScope(tag1);
-            Assert.That(scope1.Resolve<object>(), Is.Not.Null);
+            Assert.NotNull(scope1.Resolve<object>());
 
             var scope2 = container.BeginLifetimeScope(tag2);
-            Assert.That(scope2.Resolve<object>(), Is.Not.Null);
+            Assert.NotNull(scope2.Resolve<object>());
 
             var requestScope = container.BeginLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag);
-            Assert.That(requestScope.Resolve<object>(), Is.Not.Null);
+            Assert.NotNull(requestScope.Resolve<object>());
         }
 
-        [Test]
+        [Fact]
         public void InstancePerRequest_ResolutionSucceedsInRequestLifetime()
         {
             var builder = new ContainerBuilder();
@@ -252,7 +253,7 @@ namespace Autofac.Tests
             Assert.Throws<DependencyResolutionException>(() => container.BeginLifetimeScope().Resolve<object>());
 
             var apiRequestScope = container.BeginLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag);
-            Assert.That(apiRequestScope.Resolve<object>(), Is.Not.Null);
+            Assert.NotNull(apiRequestScope.Resolve<object>());
         }
     }
 }

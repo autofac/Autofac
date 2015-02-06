@@ -1,36 +1,35 @@
 ﻿using System;
-using NUnit.Framework;
+using Xunit;
 using System.Linq;
 using Autofac.Core.Activators.ProvidedInstance;
 using Autofac.Core;
 
-namespace Autofac.Tests.Component.Activation
+namespace Autofac.Test.Component.Activation
 {
-    [TestFixture]
     public class ProvidedInstanceActivatorTests
     {
-        [Test]
+        [Fact]
         public void NullIsNotAValidInstance()
         {
-            Assertions.AssertThrows<ArgumentNullException>(delegate
+            Assert.Throws<ArgumentNullException>(delegate
             {
                 new ProvidedInstanceActivator(null);
             });
         }
 
-        [Test]
+        [Fact]
         public void WhenInitializedWithInstance_ThatInstanceIsReturnedFromActivateInstance()
         {
             object instance = new object();
 
             ProvidedInstanceActivator target = new ProvidedInstanceActivator(instance);
-            
+
             var actual = target.ActivateInstance(Factory.EmptyContainer, Factory.NoParameters);
 
-            Assert.AreSame(instance, actual);
+            Assert.Same(instance, actual);
         }
 
-        [Test]
+        [Fact]
         public void ActivatingAProvidedInstanceTwice_RaisesException()
         {
             object instance = new object();
@@ -40,7 +39,7 @@ namespace Autofac.Tests.Component.Activation
 
             target.ActivateInstance(Factory.EmptyContainer, Factory.NoParameters);
 
-            Assertions.AssertThrows<InvalidOperationException>(delegate
+            Assert.Throws<InvalidOperationException>(delegate
             {
                 target.ActivateInstance(Factory.EmptyContainer, Factory.NoParameters);
             });

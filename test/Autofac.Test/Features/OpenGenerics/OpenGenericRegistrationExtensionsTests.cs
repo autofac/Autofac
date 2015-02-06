@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using Autofac.Features.OpenGenerics;
-using NUnit.Framework;
+using Xunit;
 using Autofac.Core;
 using System.Collections.Generic;
 
-namespace Autofac.Tests.Features.OpenGenerics
+namespace Autofac.Test.Features.OpenGenerics
 {
     // ReSharper disable UnusedTypeParameter
     public interface IG<T>
@@ -26,11 +26,9 @@ namespace Autofac.Tests.Features.OpenGenerics
 
         public int I { get; private set; }
     }
-
-    [TestFixture]
     public class OpenGenericRegistrationExtensionsTests
     {
-        [Test]
+        [Fact]
         public void BuildGenericRegistration()
         {
             var componentType = typeof(G<>);
@@ -45,25 +43,25 @@ namespace Autofac.Tests.Features.OpenGenerics
             object g1 = c.Resolve(concreteServiceType);
             object g2 = c.Resolve(concreteServiceType);
 
-            Assert.IsNotNull(g1);
-            Assert.IsNotNull(g2);
-            Assert.AreNotSame(g1, g2);
-            Assert.IsTrue(g1.GetType().GetGenericTypeDefinition() == componentType);
+            Assert.NotNull(g1);
+            Assert.NotNull(g2);
+            Assert.NotSame(g1, g2);
+            Assert.True(g1.GetType().GetGenericTypeDefinition() == componentType);
         }
 
-        [Test]
+        [Fact]
         public void ExposesImplementationType()
         {
             var cb = new ContainerBuilder();
             cb.RegisterGeneric(typeof(G<>)).As(typeof(IG<>));
             var container = cb.Build();
             IComponentRegistration cr;
-            Assert.IsTrue(container.ComponentRegistry.TryGetRegistration(
+            Assert.True(container.ComponentRegistry.TryGetRegistration(
                 new TypedService(typeof(IG<int>)), out cr));
-            Assert.AreEqual(typeof(G<int>), cr.Activator.LimitType);
+            Assert.Equal(typeof(G<int>), cr.Activator.LimitType);
         }
 
-        [Test]
+        [Fact]
         public void FiresPreparing()
         {
             int preparingFired = 0;
@@ -73,10 +71,10 @@ namespace Autofac.Tests.Features.OpenGenerics
                 .OnPreparing(e => ++preparingFired);
             var container = cb.Build();
             container.Resolve<IG<int>>();
-            Assert.AreEqual(1, preparingFired);
+            Assert.Equal(1, preparingFired);
         }
 
-        [Test]
+        [Fact]
         public void WhenNoServicesExplicitlySpecifiedGenericComponentTypeIsService()
         {
             var cb = new ContainerBuilder();
@@ -85,17 +83,17 @@ namespace Autofac.Tests.Features.OpenGenerics
             c.AssertRegistered<G<int>>();
         }
 
-        [Test]
+        [Fact]
         public void SuppliesParameterToConcreteComponent()
         {
             var cb = new ContainerBuilder();
             cb.RegisterGeneric(typeof(G<>)).WithParameter(new NamedParameter("i", 42));
             var c = cb.Build();
             var g = c.Resolve<G<string>>();
-            Assert.AreEqual(42, g.I);
+            Assert.Equal(42, g.I);
         }
 
-        [Test]
+        [Fact]
         public void WhenRegistrationNamedGenericRegistrationsSuppliedViaName()
         {
             const string name = "n";
@@ -103,11 +101,11 @@ namespace Autofac.Tests.Features.OpenGenerics
             cb.RegisterGeneric(typeof(G<>))
                 .Named(name, typeof(IG<>));
             var c = cb.Build();
-            Assert.That(c.IsRegisteredWithName<IG<int>>(name));
-            Assert.That(c.IsRegisteredWithName<IG<string>>(name));
+            Assert.True(c.IsRegisteredWithName<IG<int>>(name));
+            Assert.True(c.IsRegisteredWithName<IG<string>>(name));
         }
 
-        [Test]
+        [Fact]
         public void RegisterGenericRejectsNonOpenGenericTypes()
         {
             var cb = new ContainerBuilder();
@@ -120,7 +118,7 @@ namespace Autofac.Tests.Features.OpenGenerics
 
         public class TwoParams<T, U> : ITwoParams<T, U> { }
 
-        [Test]
+        [Fact]
         public void MultipleTypeParametersAreMatched()
         {
             var cb = new ContainerBuilder();
@@ -129,7 +127,7 @@ namespace Autofac.Tests.Features.OpenGenerics
             c.Resolve<ITwoParams<int, string>>();
         }
 
-        [Test]
+        [Fact]
         public void NonGenericServiceTypesAreRejected()
         {
             var cb = new ContainerBuilder();
@@ -140,38 +138,38 @@ namespace Autofac.Tests.Features.OpenGenerics
             });
         }
 
-        [Test]
+        [Fact]
         public void WhenAnOpenGenericIsRegisteredWithANameItProvidesOnlyOneImplementation()
         {
             var cb = new ContainerBuilder();
             cb.RegisterGeneric(typeof(G<>)).Named("n", typeof(IG<>));
             var c = cb.Build();
-            Assert.AreEqual(1, c.ResolveNamed<IEnumerable<IG<int>>>("n").Count());
+            Assert.Equal(1, c.ResolveNamed<IEnumerable<IG<int>>>("n").Count());
         }
 
-        [Test]
+        [Fact]
         public void WhenAnOpenGenericIsRegisteredWithANameItCannotBeResolvedWithoutOne()
         {
             var cb = new ContainerBuilder();
             cb.RegisterGeneric(typeof(G<>)).Named("n", typeof(IG<>));
             var c = cb.Build();
-            Assert.AreEqual(0, c.Resolve<IEnumerable<IG<int>>>().Count());
+            Assert.Equal(0, c.Resolve<IEnumerable<IG<int>>>().Count());
         }
 
-        [Test]
+        [Fact]
         public void WhenAnOpenGenericIsRegisteredItProvidesOnlyOneImplementation()
         {
             var cb = new ContainerBuilder();
             cb.RegisterGeneric(typeof(G<>)).As(typeof(IG<>));
             var c = cb.Build();
-            Assert.AreEqual(1, c.Resolve<IEnumerable<IG<int>>>().Count());
+            Assert.Equal(1, c.Resolve<IEnumerable<IG<int>>>().Count());
         }
 
         public class FG<T>
         {
         }
 
-        [Test]
+        [Fact]
         public void WhenAnOpenGenericIsRegisteredAndItProvidesNoImplementationItShouldHaveAGoodError()
         {
             var cb = new ContainerBuilder();
@@ -180,7 +178,7 @@ namespace Autofac.Tests.Features.OpenGenerics
             var exception = Assert.Throws<InvalidOperationException>(() => cb.Build());
 
             var message = string.Format(OpenGenericServiceBinderResources.ImplementorDoesntImplementService, typeof(FG<>).FullName, typeof(IG<>).FullName);
-            Assert.That(exception.Message, Is.EqualTo(message));
+            Assert.Equal(message, exception.Message);
         }
     }
 }

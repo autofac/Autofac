@@ -1,33 +1,31 @@
 ﻿﻿using System;
 ﻿using Autofac.Core;
-﻿using Autofac.Tests.Builder;
-﻿using Autofac.Tests.Features.Metadata;
-﻿using NUnit.Framework;
+﻿using Autofac.Test.Builder;
+﻿using Autofac.Test.Features.Metadata;
+﻿using Xunit;
 
-namespace Autofac.Tests.Features.LazyDependencies
+namespace Autofac.Test.Features.LazyDependencies
 {
-    [TestFixture]
     public class LazyWithMetadata_WhenMetadataIsSupplied
     {
         const int SuppliedValue = 123;
         IContainer _container;
 
-        [SetUp]
-        public void SetUp()
+        public LazyWithMetadata_WhenMetadataIsSupplied()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<object>().WithMetadata("TheInt", SuppliedValue);
             _container = builder.Build();
         }
 
-        [Test]
+        [Fact]
         public void ValuesAreProvidedFromMetadata()
         {
             var meta = _container.Resolve<Lazy<object, MyMeta>>();
-            Assert.AreEqual(SuppliedValue, meta.Metadata.TheInt);
+            Assert.Equal(SuppliedValue, meta.Metadata.TheInt);
         }
 
-        [Test]
+        [Fact]
         public void ValuesProvidedAreUniqueToEachRegistration()
         {
             var builder = new ContainerBuilder();
@@ -36,51 +34,48 @@ namespace Autofac.Tests.Features.LazyDependencies
             _container = builder.Build();
 
             var meta1 = _container.Resolve<Lazy<object, MyMeta>>();
-            Assert.That(meta1.Metadata.TheInt, Is.EqualTo(123));
+            Assert.Equal(123, meta1.Metadata.TheInt);
 
             var meta2 = _container.Resolve<Lazy<string, MyMeta>>();
-            Assert.That(meta2.Metadata.TheInt, Is.EqualTo(321));
+            Assert.Equal(321, meta2.Metadata.TheInt);
         }
 
-        [Test]
+        [Fact]
         public void ValuesProvidedFromMetadataOverrideDefaults()
         {
             var meta = _container.Resolve<Lazy<object, MyMetaWithDefault>>();
-            Assert.AreEqual(SuppliedValue, meta.Metadata.TheInt);
+            Assert.Equal(SuppliedValue, meta.Metadata.TheInt);
         }
 
-        [Test]
+        [Fact]
         public void ValuesBubbleUpThroughAdapters()
         {
             var meta = _container.Resolve<Lazy<Func<object>, MyMeta>>();
-            Assert.AreEqual(SuppliedValue, meta.Metadata.TheInt);
+            Assert.Equal(SuppliedValue, meta.Metadata.TheInt);
         }
     }
-
-    [TestFixture]
     public class LazyWithMetadata_WhenNoMatchingMetadataIsSupplied
     {
         IContainer _container;
 
-        [SetUp]
-        public void SetUp()
+        public LazyWithMetadata_WhenNoMatchingMetadataIsSupplied()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<object>();
             _container = builder.Build();
         }
 
-        [Test]
+        [Fact]
         public void ResolvingStronglyTypedMetadataWithoutDefaultValueThrowsException()
         {
             Assert.Throws<DependencyResolutionException>(() => _container.Resolve<Lazy<object, MyMeta>>());
         }
 
-        [Test]
+        [Fact]
         public void ResolvingStronglyTypedMetadataWithDefaultValueProvidesDefault()
         {
             var m = _container.Resolve<Lazy<object, MyMetaWithDefault>>();
-            Assert.AreEqual(42, m.Metadata.TheInt);
+            Assert.Equal(42, m.Metadata.TheInt);
         }
     }
 }

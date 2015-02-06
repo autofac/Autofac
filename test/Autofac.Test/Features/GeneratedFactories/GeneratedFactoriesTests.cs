@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests.Features.GeneratedFactories
+namespace Autofac.Test.Features.GeneratedFactories
 {
-    [TestFixture]
     public class GeneratedFactoriesTests
     {
         public class A<T>
@@ -22,7 +21,7 @@ namespace Autofac.Tests.Features.GeneratedFactories
             }
         }
 
-        [Test]
+        [Fact]
         public void CreateGenericFromFactoryDelegate()
         {
             var cb = new ContainerBuilder();
@@ -33,15 +32,15 @@ namespace Autofac.Tests.Features.GeneratedFactories
             var container = cb.Build();
 
             var factory = container.Resolve<A<string>.Factory>();
-            Assert.IsNotNull(factory);
+            Assert.NotNull(factory);
 
             var s = "Hello!";
             var a = factory(s);
-            Assert.IsNotNull(a);
-            Assert.AreEqual(s, a.P);
+            Assert.NotNull(a);
+            Assert.Equal(s, a.P);
         }
 
-        [Test]
+        [Fact]
         public void CreateGenericFromFactoryDelegateImpliedServiceType()
         {
             var cb = new ContainerBuilder();
@@ -52,12 +51,12 @@ namespace Autofac.Tests.Features.GeneratedFactories
             var container = cb.Build();
 
             var factory = container.Resolve<A<string>.Factory>();
-            Assert.IsNotNull(factory);
+            Assert.NotNull(factory);
 
             var s = "Hello!";
             var a = factory(s);
-            Assert.IsNotNull(a);
-            Assert.AreEqual(s, a.P);
+            Assert.NotNull(a);
+            Assert.Equal(s, a.P);
         }
 
         public class QuoteService
@@ -91,7 +90,7 @@ namespace Autofac.Tests.Features.GeneratedFactories
             }
         }
 
-        [Test]
+        [Fact]
         public void ShareholdingExample()
         {
             var builder = new ContainerBuilder();
@@ -109,12 +108,12 @@ namespace Autofac.Tests.Features.GeneratedFactories
 
             var shareholding = shareholdingFactory.Invoke("ABC", 1234);
 
-            Assert.AreEqual("ABC", shareholding.Symbol);
-            Assert.AreEqual(1234, shareholding.Holding);
-            Assert.AreEqual(1234m * 2, shareholding.Quote());
+            Assert.Equal("ABC", shareholding.Symbol);
+            Assert.Equal<uint>(1234, shareholding.Holding);
+            Assert.Equal(1234m * 2, shareholding.Quote());
         }
 
-        [Test]
+        [Fact]
         public void ShareholdingExampleMatchingFuncParametersByType()
         {
             var builder = new ContainerBuilder();
@@ -132,9 +131,9 @@ namespace Autofac.Tests.Features.GeneratedFactories
 
             var shareholding = shareholdingFactory.Invoke("ABC", 1234);
 
-            Assert.AreEqual("ABC", shareholding.Symbol);
-            Assert.AreEqual(1234, shareholding.Holding);
-            Assert.AreEqual(1234m * 2, shareholding.Quote());
+            Assert.Equal("ABC", shareholding.Symbol);
+            Assert.Equal<uint>(1234, shareholding.Holding);
+            Assert.Equal(1234m * 2, shareholding.Quote());
         }
 
         public class StringHolder
@@ -143,7 +142,7 @@ namespace Autofac.Tests.Features.GeneratedFactories
             public string S;
         }
 
-        [Test]
+        [Fact]
         public void RespectsContexts()
         {
             var builder = new ContainerBuilder();
@@ -158,13 +157,13 @@ namespace Autofac.Tests.Features.GeneratedFactories
             inner.Resolve<StringHolder>().S = "Inner";
 
             var outerFac = container.Resolve<StringHolder.Factory>();
-            Assert.AreEqual("Outer", outerFac().S);
+            Assert.Equal("Outer", outerFac().S);
 
             var innerFac = inner.Resolve<StringHolder.Factory>();
-            Assert.AreEqual("Inner", innerFac().S);
+            Assert.Equal("Inner", innerFac().S);
         }
 
-        [Test]
+        [Fact]
         public void CanSetParmeterMappingToPositional()
         {
             var builder = new ContainerBuilder();
@@ -187,11 +186,11 @@ namespace Autofac.Tests.Features.GeneratedFactories
 
             generated(i0, i1);
 
-            Assert.AreEqual(i0, i0Actual);
-            Assert.AreEqual(i1, i1Actual);
+            Assert.Equal(i0, i0Actual);
+            Assert.Equal(i1, i1Actual);
         }
 
-        [Test]
+        [Fact]
         public void CanNameGeneratedFactories()
         {
             var builder = new ContainerBuilder();
@@ -202,7 +201,7 @@ namespace Autofac.Tests.Features.GeneratedFactories
 
             var of = container.ResolveNamed<Func<object>>("object-factory");
 
-            Assert.IsNotNull(of);
+            Assert.NotNull(of);
         }
 
         // This became necessary because by default the char[] constructor of string
@@ -217,7 +216,7 @@ namespace Autofac.Tests.Features.GeneratedFactories
             }
         }
 
-        [Test]
+        [Fact]
         public void CanAutoGenerateFactoriesFromFuncs()
         {
             var builder = new ContainerBuilder();
@@ -229,12 +228,12 @@ namespace Autofac.Tests.Features.GeneratedFactories
             var sf = container.Resolve<Func<char, int, HasCharIntCtor>>();
             var str = sf('a', 3).Str;
 
-            Assert.AreEqual("aaa", str);
+            Assert.Equal("aaa", str);
         }
 
         public delegate string CharCountStringFactory(char c, int count);
 
-        [Test]
+        [Fact]
         public void CanAutoGenerateFactoriesFromCustomDelegateTypes()
         {
             var builder = new ContainerBuilder();
@@ -246,20 +245,20 @@ namespace Autofac.Tests.Features.GeneratedFactories
             var sf = container.Resolve<CharCountStringFactory>();
             var str = sf('a', 3);
 
-            Assert.AreEqual("aaa", str);
+            Assert.Equal("aaa", str);
         }
 
-        [Test]
+        [Fact]
         public void WillNotAutoGenerateFactoriesWhenProductNotRegistered()
         {
             var builder = new ContainerBuilder();
 
             var container = builder.Build();
 
-            Assert.IsFalse(container.IsRegistered<Func<char, int, string>>());
+            Assert.False(container.IsRegistered<Func<char, int, string>>());
         }
 
-        [Test]
+        [Fact]
         public void CreateGenericFromNongenericFactoryDelegate()
         {
             var builder = new ContainerBuilder();
@@ -270,16 +269,16 @@ namespace Autofac.Tests.Features.GeneratedFactories
             var container = builder.Build();
 
             var factory = container.Resolve<A<string>.Factory>();
-            Assert.IsNotNull(factory);
+            Assert.NotNull(factory);
 
             var s = "Hello!";
             var a = factory(s);
-            Assert.IsNotNull(a);
-            Assert.AreEqual(s, a.P);
+            Assert.NotNull(a);
+            Assert.Equal(s, a.P);
 
         }
 
-        [Test]
+        [Fact]
         public void CreateGenericFromNongenericFactoryDelegateImpliedServiceType()
         {
             var builder = new ContainerBuilder();
@@ -290,16 +289,16 @@ namespace Autofac.Tests.Features.GeneratedFactories
             var container = builder.Build();
 
             var factory = container.Resolve<A<string>.Factory>();
-            Assert.IsNotNull(factory);
+            Assert.NotNull(factory);
 
             var s = "Hello!";
             var a = factory(s);
-            Assert.IsNotNull(a);
-            Assert.AreEqual(s, a.P);
+            Assert.NotNull(a);
+            Assert.Equal(s, a.P);
 
         }
 
-        [Test]
+        [Fact]
         public void WhenMultipleProductsAreRegistered_MultipleFactoriesCanBeResolved()
         {
             object o1 = new object(), o2 = new object();
@@ -311,12 +310,12 @@ namespace Autofac.Tests.Features.GeneratedFactories
 
             var factories = container.Resolve<IEnumerable<Func<object>>>();
 
-            Assert.AreEqual(2, factories.Count());
-            Assert.IsTrue(factories.Any(f => f() == o1));
-            Assert.IsTrue(factories.Any(f => f() == o2));
+            Assert.Equal(2, factories.Count());
+            Assert.True(factories.Any(f => f() == o1));
+            Assert.True(factories.Any(f => f() == o2));
         }
 
-        [Test]
+        [Fact]
         public void ResolvingAutoGeneratedFactoryByName_ReturnsProductsByName()
         {
             object o = new object();
@@ -327,12 +326,13 @@ namespace Autofac.Tests.Features.GeneratedFactories
 
             var fac = container.ResolveNamed<Func<object>>("o");
 
-            Assert.AreSame(o, fac());
+            Assert.Same(o, fac());
         }
 
-        [Test(Description = "Issue #269: An object with duplicate constructor parameter types should fail Func resolution from an auto-generated factory.")]
+        [Fact]
         public void DuplicateConstructorParameterTypesDoNotResolve()
         {
+            // Issue #269: An object with duplicate constructor parameter types should fail Func resolution from an auto-generated factory.
             var builder = new ContainerBuilder();
             builder.RegisterType<DuplicateConstructorParameterTypes>();
             var container = builder.Build();
@@ -340,32 +340,34 @@ namespace Autofac.Tests.Features.GeneratedFactories
             Assert.Throws<DependencyResolutionException>(() => func(1, 2, "3"));
         }
 
-        [Test(Description = "Issue #269: If you register a custom Func for an object with duplicate parameters it should override the auto-generated factory.")]
+        [Fact]
         public void FactoryOverrideCanBeRegisteredForDuplicateParameterTypes()
         {
+            // Issue #269: If you register a custom Func for an object with duplicate parameters it should override the auto-generated factory.
             var builder = new ContainerBuilder();
             builder.RegisterType<DuplicateConstructorParameterTypes>();
             builder.Register<Func<int, int, string, DuplicateConstructorParameterTypes>>(ctx => (a, b, c) => new DuplicateConstructorParameterTypes(a, b, c));
             var container = builder.Build();
             var func = container.Resolve<Func<int, int, string, DuplicateConstructorParameterTypes>>();
             var obj = func(1, 2, "3");
-            Assert.AreEqual(1, obj.A);
-            Assert.AreEqual(2, obj.B);
-            Assert.AreEqual("3", obj.C);
+            Assert.Equal(1, obj.A);
+            Assert.Equal(2, obj.B);
+            Assert.Equal("3", obj.C);
         }
 
-        [Test(Description = "Issue #269: If you register a specific delegate type for an object with duplicate parameters it should work and not throw an exception.")]
+        [Fact]
         public void SpecificDelegateCanBeRegisteredForDuplicateParameterTypes()
         {
+            // Issue #269: If you register a specific delegate type for an object with duplicate parameters it should work and not throw an exception.
             var builder = new ContainerBuilder();
             builder.RegisterType<DuplicateConstructorParameterTypes>();
             builder.RegisterGeneratedFactory<DuplicateConstructorParameterTypes.Factory>(new TypedService(typeof(DuplicateConstructorParameterTypes)));
             var container = builder.Build();
             var func = container.Resolve<DuplicateConstructorParameterTypes.Factory>();
             var obj = func(1, 2, "3");
-            Assert.AreEqual(1, obj.A);
-            Assert.AreEqual(2, obj.B);
-            Assert.AreEqual("3", obj.C);
+            Assert.Equal(1, obj.A);
+            Assert.Equal(2, obj.B);
+            Assert.Equal("3", obj.C);
         }
 
         private class DuplicateConstructorParameterTypes

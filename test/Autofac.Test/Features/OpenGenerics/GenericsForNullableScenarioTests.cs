@@ -1,45 +1,42 @@
-﻿using Autofac.Tests.Util;
-using NUnit.Framework;
+﻿using Autofac.Test.Util;
+using Xunit;
 
-namespace Autofac.Tests.Features.OpenGenerics
+namespace Autofac.Test.Features.OpenGenerics
 {
     public interface IItemProducer<T> { }
 
     public class NullableProducer<T> : IItemProducer<T?>
         where T : struct
-    {      
+    {
     }
-
-    [TestFixture]
     public class GenericsForNullableScenarioTests
     {
         IContainer _container;
 
-        [SetUp]
-        public void SetUp()
+        public GenericsForNullableScenarioTests()
         {
             var builder = new ContainerBuilder();
             builder.RegisterGeneric(typeof(NullableProducer<>)).As(typeof(IItemProducer<>));
             _container = builder.Build();
         }
 
-        [Test]
+        [Fact]
         public void TheServiceIsAvailable()
         {
-            Assert.IsTrue(_container.IsRegistered<IItemProducer<byte?>>());
+            Assert.True(_container.IsRegistered<IItemProducer<byte?>>());
         }
 
-        [Test]
+        [Fact]
         public void TheImplementationTypeParametersAreMapped()
         {
             var np = _container.Resolve<IItemProducer<byte?>>();
-            Assert.IsInstanceOf<NullableProducer<byte>>(np);
+            Assert.IsType<NullableProducer<byte>>(np);
         }
 
-        [Test]
+        [Fact]
         public void IncompatibleTypeParametersAreIgnored()
         {
-            Assert.IsFalse(_container.IsRegistered<IItemProducer<byte>>());
+            Assert.False(_container.IsRegistered<IItemProducer<byte>>());
         }
     }
 }

@@ -2,20 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core.Registration;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests.Core.Registration
+namespace Autofac.Test.Core.Registration
 {
-    [TestFixture]
     public class ModuleRegistrarTests
     {
-        [Test]
+        [Fact]
         public void Ctor_RequiresContainerBuilder()
         {
             Assert.Throws<ArgumentNullException>(() => new ModuleRegistrar(null));
         }
 
-        [Test]
+        [Fact]
         public void RegisterModule_ChainsModuleRegistrations()
         {
             var builder = new ContainerBuilder();
@@ -23,11 +22,11 @@ namespace Autofac.Tests.Core.Registration
             registrar.RegisterModule(new ModuleA()).RegisterModule(new ModuleB());
             var container = builder.Build();
             var strings = container.Resolve<IEnumerable<string>>();
-            Assert.IsTrue(strings.Contains("foo"));
-            Assert.IsTrue(strings.Contains("bar"));
+            Assert.True(strings.Contains("foo"));
+            Assert.True(strings.Contains("bar"));
         }
 
-        [Test]
+        [Fact]
         public void RegisterModule_RequiresModule()
         {
             var registrar = new ModuleRegistrar(new ContainerBuilder());

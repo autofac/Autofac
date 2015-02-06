@@ -1,10 +1,9 @@
 ﻿using Autofac.Core.Registration;
-using NUnit.Framework;
+using Xunit;
 using System;
 
-namespace Autofac.Tests.Features.OpenGenerics
+namespace Autofac.Test.Features.OpenGenerics
 {
-    [TestFixture]
     public class ComplexGenericsTests
     {
         // ReSharper disable UnusedTypeParameter, InconsistentNaming
@@ -25,7 +24,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         public class SameTypes<TA, TB, TC> : IDouble<INested<TA>, INested<IDouble<TB, TC>>> { }
         // ReSharper restore UnusedTypeParameter, InconsistentNaming
 
-        [Test]
+        [Fact]
         public void NestedGenericInterfacesCanBeResolved()
         {
             var cb = new ContainerBuilder();
@@ -33,10 +32,10 @@ namespace Autofac.Tests.Features.OpenGenerics
             var container = cb.Build();
 
             var nest = container.Resolve<INested<Wrapper<string>>>();
-            Assert.IsInstanceOf<CNested<string>>(nest);
+            Assert.IsType<CNested<string>>(nest);
         }
 
-        [Test]
+        [Fact]
         public void NestedGenericClassesCanBeResolved()
         {
             var cb = new ContainerBuilder();
@@ -44,10 +43,10 @@ namespace Autofac.Tests.Features.OpenGenerics
             var container = cb.Build();
 
             var nest = container.Resolve<CNested<Wrapper<string>>>();
-            Assert.IsInstanceOf<CNestedDerived<Wrapper<string>>>(nest);
+            Assert.IsType<CNestedDerived<Wrapper<string>>>(nest);
         }
 
-        [Test]
+        [Fact]
         public void CanResolveImplementationsWhereTypeParametersAreReordered()
         {
             var cb = new ContainerBuilder();
@@ -55,10 +54,10 @@ namespace Autofac.Tests.Features.OpenGenerics
             var container = cb.Build();
 
             var repl = container.Resolve<IDouble<int, string>>();
-            Assert.IsInstanceOf<CReversed<string, int>>(repl);
+            Assert.IsType<CReversed<string, int>>(repl);
         }
 
-        [Test]
+        [Fact]
         public void CanResolveConcreteTypesThatReorderImplementedInterfaceParameters()
         {
             var cb = new ContainerBuilder();
@@ -66,10 +65,10 @@ namespace Autofac.Tests.Features.OpenGenerics
             var container = cb.Build();
 
             var self = container.Resolve<CReversed<int, string>>();
-            Assert.IsInstanceOf<CReversed<int, string>>(self);
+            Assert.IsType<CReversed<int, string>>(self);
         }
 
-        [Test]
+        [Fact]
         public void TestNestingAndReversingSimplification()
         {
             var cb = new ContainerBuilder();
@@ -77,10 +76,10 @@ namespace Autofac.Tests.Features.OpenGenerics
             var container = cb.Build();
 
             var compl = container.Resolve<IDouble<int, INested<Wrapper<string>>>>();
-            Assert.IsInstanceOf<CNestedDerivedReversed<string, int>>(compl);
+            Assert.IsType<CNestedDerivedReversed<string, int>>(compl);
         }
 
-        [Test]
+        [Fact]
         public void TestReversingWithoutNesting()
         {
             var cb = new ContainerBuilder();
@@ -88,10 +87,10 @@ namespace Autofac.Tests.Features.OpenGenerics
             var container = cb.Build();
 
             var compl = container.Resolve<IDouble<int, INested<Wrapper<string>>>>();
-            Assert.IsInstanceOf<CReversed<INested<Wrapper<string>>, int>>(compl);
+            Assert.IsType<CReversed<INested<Wrapper<string>>, int>>(compl);
         }
 
-        [Test]
+        [Fact]
         public void TheSameaceholderWithThreeGenericParametersTypeCanAppearMultipleTimesInTheService()
         {
             var cb = new ContainerBuilder();
@@ -99,10 +98,10 @@ namespace Autofac.Tests.Features.OpenGenerics
             var container = cb.Build();
 
             var compl = container.Resolve<IDouble<INested<string>, INested<IDouble<int, long>>>>();
-            Assert.IsInstanceOf<SameTypes<string, int, long>>(compl);
+            Assert.IsType<SameTypes<string, int, long>>(compl);
         }
 
-        [Test]
+        [Fact]
         public void TheSameaceholderTypeCanAppearMultipleTimesInTheService()
         {
             var cb = new ContainerBuilder();
@@ -110,10 +109,10 @@ namespace Autofac.Tests.Features.OpenGenerics
             var container = cb.Build();
 
             var compl = container.Resolve<IDouble<int, INested<IDouble<string, int>>>>();
-            Assert.IsInstanceOf<SameTypes<int, string>>(compl);
+            Assert.IsType<SameTypes<int, string>>(compl);
         }
 
-        [Test]
+        [Fact]
         public void WhenTheSameTypeAppearsMultipleTimesInTheImplementationMappingItMustAlsoInTheService()
         {
             var cb = new ContainerBuilder();
@@ -130,7 +129,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         public class Constrained<T1, T2> where T2 : IConstraint<T1> { }
         // ReSharper restore UnusedTypeParameter
 
-        [Test]
+        [Fact]
         public void CanResolveComponentWithNestedConstraintViaInterface()
         {
             var builder = new ContainerBuilder();
@@ -139,14 +138,14 @@ namespace Autofac.Tests.Features.OpenGenerics
 
             var container = builder.Build();
 
-            Assert.That(container.IsRegistered<Constrained<int, IConstraint<int>>>());
+            Assert.True(container.IsRegistered<Constrained<int, IConstraint<int>>>());
         }
 
         // ReSharper disable UnusedTypeParameter
         public interface IConstraintWithAddedArgument<T2, T1> : IConstraint<T1> { }
         // ReSharper restore UnusedTypeParameter
 
-        [Test]
+        [Fact]
         public void CanResolveComponentWhenConstrainedArgumentIsGenericTypeWithMoreArgumentsThanGenericConstraint()
         {
             var builder = new ContainerBuilder();
@@ -155,7 +154,7 @@ namespace Autofac.Tests.Features.OpenGenerics
 
             var container = builder.Build();
 
-            Assert.That(container.IsRegistered<Constrained<int, IConstraintWithAddedArgument<string, int>>>());
+            Assert.True(container.IsRegistered<Constrained<int, IConstraintWithAddedArgument<string, int>>>());
         }
 
         // ReSharper disable UnusedTypeParameter
@@ -168,7 +167,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         public class MultiConstrained<T1, T2> where T1 : IEquatable<int> where T2 : IConstrainedConstraint<T1> { }
         // ReSharper restore UnusedTypeParameter
 
-        [Test]
+        [Fact]
         public void CanResolveComponentWhenConstraintsAreNested()
         {
             var builder = new ContainerBuilder();
@@ -177,7 +176,7 @@ namespace Autofac.Tests.Features.OpenGenerics
 
             var container = builder.Build();
 
-            Assert.That(container.IsRegistered<MultiConstrained<int, IConstrainedConstraintWithOnlyAddedArgument<string>>>());
+            Assert.True(container.IsRegistered<MultiConstrained<int, IConstrainedConstraintWithOnlyAddedArgument<string>>>());
         }
     }
 }
@@ -200,12 +199,11 @@ namespace CompanyB
     class CompositeValidator<T> : FluentValidation.AbstractValidator<T>, IValidatorSomeOtherName<T> { }
 }
 
-namespace Autofac.Tests.Features.OpenGenerics
+namespace Autofac.Test.Features.OpenGenerics
 {
-    [TestFixture]
     public class ComplexGenericsWithNamepsaceTests
     {
-        [Test]
+        [Fact]
         public void CanResolveByGenericInterface()
         {
             var builder = new ContainerBuilder();
@@ -215,7 +213,7 @@ namespace Autofac.Tests.Features.OpenGenerics
             var container = builder.Build();
 
             var validator = container.Resolve<CompanyA.IValidator<int>>();
-            Assert.That(validator, Is.InstanceOf<CompanyA.CompositeValidator<int>>());
+            Assert.IsType<CompanyA.CompositeValidator<int>>(validator);
         }
     }
 }

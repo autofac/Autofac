@@ -4,11 +4,10 @@ using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Moq;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests.Builder
+namespace Autofac.Test.Builder
 {
-    [TestFixture]
     public class ReflectiveRegistrationBuilderTests
     {
         public class A1 { }
@@ -39,14 +38,14 @@ namespace Autofac.Tests.Builder
             }
         }
 
-        [Test]
+        [Fact]
         public void ExplicitCtorCalled()
         {
             var selected = new[] { typeof(A1), typeof(A2) };
             ResolveTwoCtorsWith(selected);
         }
 
-        [Test]
+        [Fact]
         public void OtherExplicitCtorCalled()
         {
             var selected = new[] { typeof(A1) };
@@ -65,11 +64,11 @@ namespace Autofac.Tests.Builder
             var c = cb.Build();
             var result = c.Resolve<TwoCtors>();
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(typeof(TwoCtors).GetConstructor(result.CalledCtor), Is.EqualTo(typeof(TwoCtors).GetConstructor(selected)));
+            Assert.NotNull(result);
+            Assert.Equal(typeof(TwoCtors).GetConstructor(selected), typeof(TwoCtors).GetConstructor(result.CalledCtor));
         }
 
-        [Test]
+        [Fact]
         public void ExplicitCtorFromExpression()
         {
             var cb = new ContainerBuilder();
@@ -82,11 +81,11 @@ namespace Autofac.Tests.Builder
             var c = cb.Build();
             var result = c.Resolve<TwoCtors>();
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.CalledCtor, Is.EqualTo(new[] {typeof(A1), typeof(A2)}));
+            Assert.NotNull(result);
+            Assert.Equal(new[] {typeof(A1), typeof(A2)}, result.CalledCtor);
         }
 
-        [Test]
+        [Fact]
         public void OtherExplicitCtorFromExpression()
         {
             var cb = new ContainerBuilder();
@@ -99,11 +98,11 @@ namespace Autofac.Tests.Builder
             var c = cb.Build();
             var result = c.Resolve<TwoCtors>();
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.CalledCtor, Is.EqualTo(new[] {typeof(A1)}));
+            Assert.NotNull(result);
+            Assert.Equal(new[] {typeof(A1)}, result.CalledCtor);
         }
 
-        [Test]
+        [Fact]
         public void UsingConstructorThatIsNotPresent_ThrowsArgumentException()
         {
             var cb = new ContainerBuilder();
@@ -111,7 +110,7 @@ namespace Autofac.Tests.Builder
             Assert.Throws<ArgumentException>(() => registration.UsingConstructor(typeof(A2)));
         }
 
-        [Test]
+        [Fact]
         public void NullIsNotAValidConstructor()
         {
             var cb = new ContainerBuilder();
@@ -119,7 +118,7 @@ namespace Autofac.Tests.Builder
             Assert.Throws<ArgumentNullException>(() => registration.UsingConstructor((Type[])null));
         }
 
-        [Test]
+        [Fact]
         public void NullIsNotAValidExpressionConstructor()
         {
             var cb = new ContainerBuilder();
@@ -127,17 +126,17 @@ namespace Autofac.Tests.Builder
             Assert.Throws<ArgumentNullException>(() => registration.UsingConstructor((Expression<Func<TwoCtors>>)null));
         }
 
-        [Test]
+        [Fact]
         public void FindConstructorsWith_CustomFinderProvided_AddedToRegistration()
         {
             var cb = new ContainerBuilder();
             var constructorFinder = new Mock<IConstructorFinder>().Object;
             var registration = cb.RegisterType<TwoCtors>().FindConstructorsWith(constructorFinder);
 
-            Assert.That(registration.ActivatorData.ConstructorFinder, Is.EqualTo(constructorFinder));
+            Assert.Equal(constructorFinder, registration.ActivatorData.ConstructorFinder);
         }
 
-        [Test]
+        [Fact]
         public void FindConstructorsWith_NullCustomFinderProvided_ThrowsException()
         {
             var cb = new ContainerBuilder();
@@ -145,10 +144,10 @@ namespace Autofac.Tests.Builder
             var exception = Assert.Throws<ArgumentNullException>(
                 () => cb.RegisterType<TwoCtors>().FindConstructorsWith((IConstructorFinder)null));
 
-            Assert.That(exception.ParamName, Is.EqualTo("constructorFinder"));
+            Assert.Equal("constructorFinder", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void FindConstructorsWith_FinderFunctionProvided_PassedToConstructorFinder()
         {
             var cb = new ContainerBuilder();
@@ -164,10 +163,10 @@ namespace Autofac.Tests.Builder
 
             container.Resolve<TwoCtors>();
 
-            Assert.That(finderCalled, Is.EqualTo(true));
+            Assert.True(finderCalled);
         }
 
-        [Test]
+        [Fact]
         public void FindConstructorsWith_CanUseFunctionToFindPrivateConstructors()
         {
             var cb = new ContainerBuilder();
@@ -177,10 +176,10 @@ namespace Autofac.Tests.Builder
 
             var instance = container.Resolve<PrivateConstructor>();
 
-            Assert.That(instance.A1, Is.Not.Null);
+            Assert.NotNull(instance.A1);
         }
 
-        [Test]
+        [Fact]
         public void FindConstructorsWith_NullFinderFunctionProvided_ThrowsException()
         {
             var cb = new ContainerBuilder();
@@ -188,7 +187,7 @@ namespace Autofac.Tests.Builder
             var exception = Assert.Throws<ArgumentNullException>(
                 () => cb.RegisterType<TwoCtors>().FindConstructorsWith((Func<Type, ConstructorInfo[]>)null));
 
-            Assert.That(exception.ParamName, Is.EqualTo("finder"));
+            Assert.Equal("finder", exception.ParamName);
         }
 
         public class CustomConstructorFinder : IConstructorFinder
@@ -202,7 +201,7 @@ namespace Autofac.Tests.Builder
             }
         }
 
-        [Test]
+        [Fact]
         public void FindConstructorsWith_CustomFinderProvided_CustomFinderInvoked()
         {
             var builder = new ContainerBuilder();
@@ -212,7 +211,7 @@ namespace Autofac.Tests.Builder
 
             container.Resolve<object>();
 
-            Assert.That(finder.FindConstructorsCalled, Is.True);
+            Assert.True(finder.FindConstructorsCalled);
         }
 
         public class WithParam
@@ -221,7 +220,7 @@ namespace Autofac.Tests.Builder
             public WithParam(int i, int j) { I = i + j; }
         }
 
-        [Test]
+        [Fact]
         public void ParametersProvided()
         {
             const int ival = 10;
@@ -234,8 +233,8 @@ namespace Autofac.Tests.Builder
             var c = cb.Build();
             var result = c.Resolve<WithParam>();
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.I, Is.EqualTo(ival * 2));
+            Assert.NotNull(result);
+            Assert.Equal(ival * 2, result.I);
         }
 
         public class WithProp
@@ -244,7 +243,7 @@ namespace Autofac.Tests.Builder
             public int Prop2 { get; set; }
         }
 
-        //[Test]
+        //[Fact]
         //public void PropertyProvided()
         //{
         //    var pval = "Hello";
@@ -257,21 +256,20 @@ namespace Autofac.Tests.Builder
         //    var c = cb.Build();
 
         //    var result = c.Resolve<WithProp>();
-        //    Assert.IsNotNull(result);
-        //    Assert.AreEqual(pval, result.Prop);
-        //    Assert.AreEqual(1, result.Prop2);
+        //    Assert.NotNull(result);
+        //    Assert.Equal(pval, result.Prop);
+        //    Assert.Equal(1, result.Prop2);
         //}
 
-        [Test]
+        [Fact]
         public void ExposesImplementationType()
         {
             var cb = new ContainerBuilder();
             cb.RegisterType(typeof(A1)).As<object>();
             var container = cb.Build();
             IComponentRegistration cr;
-            Assert.That(container.ComponentRegistry.TryGetRegistration(
-                new TypedService(typeof(object)), out cr), Is.True);
-            Assert.That(cr.Activator.LimitType, Is.EqualTo(typeof(A1)));
+            Assert.True(container.ComponentRegistry.TryGetRegistration(new TypedService(typeof(object)), out cr));
+            Assert.Equal(typeof(A1), cr.Activator.LimitType);
         }
     }
 }

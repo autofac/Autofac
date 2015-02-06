@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests.Core
+namespace Autofac.Test.Core
 {
     /// <summary>
     /// Tests to verify registration ordering and resolution when used in conjunction with
     /// preserving existing registration defaults.
     /// </summary>
-    [TestFixture]
     public class PreserveExistingDefaultsTests
     {
-        [Test]
+        [Fact]
         public void ContainerScope_ComplexConsumerServicesResolve()
         {
             // This is an all-around "integration test" with property injection,
@@ -30,22 +29,22 @@ namespace Autofac.Tests.Core
 
             var container = builder.Build();
             var consumer = container.Resolve<ComplexConsumer>();
-            Assert.AreEqual("s1", consumer.Text, "The string value was not resolved properly.");
-            Assert.AreEqual(7, consumer.Number, "The number value was not resolved properly.");
-            Assert.IsNotNull(consumer.Value, "The object value was not injected.");
-            Assert.AreNotSame(obj, consumer.Value, "The object value was not resolved properly.");
+            Assert.Equal("s1", consumer.Text);
+            Assert.Equal(7, consumer.Number);
+            Assert.NotNull(consumer.Value);
+            Assert.NotSame(obj, consumer.Value);
         }
 
-        [Test]
+        [Fact]
         public void ContainerScope_DefaultServiceRegistrationUsingPreservation()
         {
             var builder = new ContainerBuilder();
             builder.RegisterInstance("s1").PreserveExistingDefaults();
             var container = builder.Build();
-            Assert.AreEqual("s1", container.Resolve<string>());
+            Assert.Equal("s1", container.Resolve<string>());
         }
 
-        [Test]
+        [Fact]
         public void ContainerScope_MultipleServiceRegistrationsUsingPreservation()
         {
             var builder = new ContainerBuilder();
@@ -53,20 +52,20 @@ namespace Autofac.Tests.Core
             builder.RegisterInstance("s2").PreserveExistingDefaults();
             builder.RegisterInstance("s3").PreserveExistingDefaults();
             var container = builder.Build();
-            Assert.AreEqual("s1", container.Resolve<string>());
+            Assert.Equal("s1", container.Resolve<string>());
         }
 
-        [Test]
+        [Fact]
         public void ContainerScope_PreserveDoesNotOverrideDefault()
         {
             var builder = new ContainerBuilder();
             builder.RegisterInstance("s1");
             builder.RegisterInstance("s2").PreserveExistingDefaults();
             var container = builder.Build();
-            Assert.AreEqual("s1", container.Resolve<string>());
+            Assert.Equal("s1", container.Resolve<string>());
         }
 
-        [Test]
+        [Fact]
         public void ContainerScope_PreserveSupportsIEnumerable()
         {
             var builder = new ContainerBuilder();
@@ -75,13 +74,13 @@ namespace Autofac.Tests.Core
             builder.RegisterInstance("s3").PreserveExistingDefaults();
             var container = builder.Build();
             var resolved = container.Resolve<IEnumerable<string>>();
-            Assert.AreEqual(3, resolved.Count(), "The wrong number of components were resolved.");
-            Assert.IsTrue(resolved.Any(s => s == "s1"), "The first service wasn't present.");
-            Assert.IsTrue(resolved.Any(s => s == "s2"), "The second service wasn't present.");
-            Assert.IsTrue(resolved.Any(s => s == "s3"), "The third service wasn't present.");
+            Assert.Equal(3, resolved.Count());
+            Assert.True(resolved.Any(s => s == "s1"), "The first service wasn't present.");
+            Assert.True(resolved.Any(s => s == "s2"), "The second service wasn't present.");
+            Assert.True(resolved.Any(s => s == "s3"), "The third service wasn't present.");
         }
 
-        [Test]
+        [Fact]
         public void ContainerScope_SimpleRegistrationPreservationStillAllowsOverride()
         {
             var builder = new ContainerBuilder();
@@ -89,11 +88,10 @@ namespace Autofac.Tests.Core
             builder.RegisterInstance("s2").PreserveExistingDefaults();
             builder.RegisterInstance("s3");
             var container = builder.Build();
-            Assert.AreEqual("s3", container.Resolve<string>());
+            Assert.Equal("s3", container.Resolve<string>());
         }
 
-        [Test]
-        [Ignore("Issue #272")]
+        [Fact(Skip = "Issue #272")]
         public void NestedScope_ComplexConsumerServicesResolve()
         {
             // This is an all-around "integration test" with property injection,
@@ -119,24 +117,23 @@ namespace Autofac.Tests.Core
                 });
 
             var consumer = scope.Resolve<ComplexConsumer>();
-            Assert.AreEqual("s1", consumer.Text, "The string value was not resolved properly.");
-            Assert.AreEqual(9, consumer.Number, "The number value was not resolved properly.");
-            Assert.IsNotNull(consumer.Value, "The object value was not injected.");
-            Assert.AreSame(obj, consumer.Value, "The object value was not resolved properly.");
+            Assert.Equal("s1", consumer.Text);
+            Assert.Equal(9, consumer.Number);
+            Assert.NotNull(consumer.Value);
+            Assert.Same(obj, consumer.Value);
         }
 
-        [Test]
+        [Fact]
         public void NestedScope_DefaultRegistrationCanOverrideParent()
         {
             var builder = new ContainerBuilder();
             builder.RegisterInstance("s1");
             var container = builder.Build();
             var scope = container.BeginLifetimeScope(b => b.RegisterInstance("s2"));
-            Assert.AreEqual("s2", scope.Resolve<string>());
+            Assert.Equal("s2", scope.Resolve<string>());
         }
 
-        [Test]
-        [Ignore("Issue #272")]
+        [Fact(Skip = "Issue #272")]
         public void NestedScope_PreserveDefaultsCanFallBackToNestedParent()
         {
             var builder = new ContainerBuilder();
@@ -145,22 +142,20 @@ namespace Autofac.Tests.Core
             var scope1 = container.BeginLifetimeScope(b => b.RegisterInstance("s2").PreserveExistingDefaults());
             var scope2 = scope1.BeginLifetimeScope(b => b.RegisterInstance("s3"));
             var scope3 = scope2.BeginLifetimeScope(b => b.RegisterInstance("s4").PreserveExistingDefaults());
-            Assert.AreEqual("s3", scope3.Resolve<string>());
+            Assert.Equal("s3", scope3.Resolve<string>());
         }
 
-        [Test]
-        [Ignore("Issue #272")]
+        [Fact(Skip = "Issue #272")]
         public void NestedScope_PreserveDefaultsCanFallBackToParent()
         {
             var builder = new ContainerBuilder();
             builder.RegisterInstance("s1");
             var container = builder.Build();
             var scope = container.BeginLifetimeScope(b => b.RegisterInstance("s2").PreserveExistingDefaults());
-            Assert.AreEqual("s1", scope.Resolve<string>());
+            Assert.Equal("s1", scope.Resolve<string>());
         }
 
-        [Test]
-        [Ignore("Issue #272")]
+        [Fact(Skip = "Issue #272")]
         public void NestedScope_PreserveDefaultsCanFallBackToParentThroughMultipleNesting()
         {
             var builder = new ContainerBuilder();
@@ -169,10 +164,10 @@ namespace Autofac.Tests.Core
             var scope1 = container.BeginLifetimeScope(b => b.RegisterInstance("s2").PreserveExistingDefaults());
             var scope2 = scope1.BeginLifetimeScope(b => b.RegisterInstance("s3").PreserveExistingDefaults());
             var scope3 = scope2.BeginLifetimeScope(b => b.RegisterInstance("s4").PreserveExistingDefaults());
-            Assert.AreEqual("s1", scope3.Resolve<string>());
+            Assert.Equal("s1", scope3.Resolve<string>());
         }
 
-        [Test]
+        [Fact]
         public void NestedScope_PreserveDefaultsCanFallbackToDefaultNestedRegistrations()
         {
             var builder = new ContainerBuilder();
@@ -184,10 +179,10 @@ namespace Autofac.Tests.Core
                     b.RegisterInstance("s2");
                     b.RegisterInstance("s3").PreserveExistingDefaults();
                 });
-            Assert.AreEqual("s2", scope.Resolve<string>());
+            Assert.Equal("s2", scope.Resolve<string>());
         }
 
-        [Test]
+        [Fact]
         public void NestedScope_PreserveStillSupportsIEnumerable()
         {
             var builder = new ContainerBuilder();
@@ -197,11 +192,11 @@ namespace Autofac.Tests.Core
             var container = builder.Build();
             var scope = container.BeginLifetimeScope(b => b.RegisterInstance("s4").PreserveExistingDefaults());
             var resolved = scope.Resolve<IEnumerable<string>>();
-            Assert.AreEqual(4, resolved.Count(), "The wrong number of components were resolved.");
-            Assert.IsTrue(resolved.Any(s => s == "s1"), "The first service wasn't present.");
-            Assert.IsTrue(resolved.Any(s => s == "s2"), "The second service wasn't present.");
-            Assert.IsTrue(resolved.Any(s => s == "s3"), "The third service wasn't present.");
-            Assert.IsTrue(resolved.Any(s => s == "s4"), "The fourth service wasn't present.");
+            Assert.Equal(4, resolved.Count());
+            Assert.True(resolved.Any(s => s == "s1"), "The first service wasn't present.");
+            Assert.True(resolved.Any(s => s == "s2"), "The second service wasn't present.");
+            Assert.True(resolved.Any(s => s == "s3"), "The third service wasn't present.");
+            Assert.True(resolved.Any(s => s == "s4"), "The fourth service wasn't present.");
         }
 
         private class ComplexConsumer

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Autofac.Tests.Scenarios.Dependencies
+namespace Autofac.Test.Scenarios.Dependencies
 {
     public class DependsByProp
     {

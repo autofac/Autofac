@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Autofac.Core;
 
-namespace Autofac.Tests.Scenarios.RegistrationSources
+namespace Autofac.Test.Scenarios.RegistrationSources
 {
     public class ObjectRegistrationSource : IRegistrationSource
     {

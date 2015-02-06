@@ -1,16 +1,15 @@
 ﻿using System;
-using NUnit.Framework;
+using Xunit;
 
-namespace Autofac.Tests.Features.LazyDependencies
+namespace Autofac.Test.Features.LazyDependencies
 {
-    [TestFixture]
     public class LazyRegistrationSourceTests
     {
-        [Test]
+        [Fact]
         public void WhenTIsRegistered_CanResolveLazyT()
         {
             var container = GetContainerWithLazyObject();
-            Assert.That(container.IsRegistered<Lazy<object>>());
+            Assert.True(container.IsRegistered<Lazy<object>>());
         }
 
         static IContainer GetContainerWithLazyObject()
@@ -20,29 +19,29 @@ namespace Autofac.Tests.Features.LazyDependencies
             return builder.Build();
         }
 
-        [Test]
+        [Fact]
         public void WhenTIsRegisteredByName_CanResolveLazyTByName()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<object>().Named<object>("foo");
             var container = builder.Build();
-            Assert.That(container.IsRegisteredWithName<Lazy<object>>("foo"));
+            Assert.True(container.IsRegisteredWithName<Lazy<object>>("foo"));
         }
 
-        [Test]
+        [Fact]
         public void WhenLazyIsResolved_ValueProvided()
         {
             var container = GetContainerWithLazyObject();
             var lazy = container.Resolve<Lazy<object>>();
-            Assert.IsInstanceOf<object>(lazy.Value);
+            Assert.IsType<object>(lazy.Value);
         }
 
-        [Test]
+        [Fact]
         public void WhenLazyIsResolved_ValueIsNotYetCreated()
         {
             var container = GetContainerWithLazyObject();
             var lazy = container.Resolve<Lazy<object>>();
-            Assert.IsFalse(lazy.IsValueCreated);
+            Assert.False(lazy.IsValueCreated);
         }
     }
 }
