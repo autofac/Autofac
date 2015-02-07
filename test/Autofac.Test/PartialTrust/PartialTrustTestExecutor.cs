@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !ASPNET50
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -96,3 +97,4 @@ namespace Autofac.Test.PartialTrust
         }
     }
 }
+#endif

@@ -1,4 +1,5 @@
-﻿﻿using System;
+﻿#if !ASPNET50
+﻿using System;
 ﻿using Autofac.Core;
 ﻿using Autofac.Test.Builder;
 ﻿using Autofac.Test.Features.Metadata;
@@ -79,3 +80,4 @@ namespace Autofac.Test.Features.LazyDependencies
         }
     }
 }
+#endif

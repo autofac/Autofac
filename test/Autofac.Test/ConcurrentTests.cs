@@ -105,7 +105,7 @@ namespace Autofac.Test
                 container.Resolve<object>();
             }
         }
-
+#if !ASPNET50
         [Fact(Timeout = 1000)]
         public void NoLockWhenResolvingExistingSingleInstance()
         {
@@ -131,5 +131,6 @@ namespace Autofac.Test
             container.Resolve<Int32>();
             container.Resolve<object>();
         }
+#endif
     }
 }

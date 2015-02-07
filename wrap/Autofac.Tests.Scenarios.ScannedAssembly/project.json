@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "net45+win+wpa81+wp80+MonoAndroid10+MonoTouch10": {
+      "wrappedProject": "../../test/Autofac.Test.Scenarios.ScannedAssembly/Autofac.Test.Scenarios.ScannedAssembly.csproj",
+      "bin": {
+        "assembly": "../../test/Autofac.Test.Scenarios.ScannedAssembly/obj/{configuration}/Autofac.Tests.Scenarios.ScannedAssembly.dll",
+        "pdb": "../../test/Autofac.Test.Scenarios.ScannedAssembly/obj/{configuration}/Autofac.Tests.Scenarios.ScannedAssembly.pdb"
+      },
+      "dependencies": {
+        "Autofac": "1.0.0-*"
+      }
+    }
+  }
+}
