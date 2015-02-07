@@ -32,7 +32,7 @@ namespace Autofac.Core.Activators.Reflection
 {
     class AutowiringPropertyInjector
     {
-        public static void InjectProperties(IComponentContext context, object instance, bool overrideSetValues)
+        public static void InjectProperties(IComponentContext context, object instance, bool overrideSetValues, Func<PropertyInfo, bool> customPropertyFilter)
         {
             if (context == null) throw new ArgumentNullException("context");
             if (instance == null) throw new ArgumentNullException("instance");
@@ -69,9 +69,19 @@ namespace Autofac.Core.Activators.Reflection
                     (property.GetValue(instance, null) != null))
                     continue;
 
+                var propertyFilter = customPropertyFilter ?? DefaultPropertyFilter;
+
+                if (!propertyFilter(property))
+                    continue;
+
                 var propertyValue = context.Resolve(propertyType);
                 property.SetValue(instance, propertyValue, null);
             }
+        }
+
+        private static bool DefaultPropertyFilter(PropertyInfo propertyInfo)
+        {
+            return true;
         }
     }
 }

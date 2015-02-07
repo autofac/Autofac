@@ -371,9 +371,9 @@ namespace Autofac.Builder
             var preserveSetValues = 0 != (int)(wiringFlags & PropertyWiringOptions.PreserveSetValues);
 
             if (allowCircularDependencies)
-                RegistrationData.ActivatedHandlers.Add((s, e) => AutowiringPropertyInjector.InjectProperties(e.Context, e.Instance, !preserveSetValues));
+                RegistrationData.ActivatedHandlers.Add((s, e) => AutowiringPropertyInjector.InjectProperties(e.Context, e.Instance, !preserveSetValues, null));
             else
-                RegistrationData.ActivatingHandlers.Add((s, e) => AutowiringPropertyInjector.InjectProperties(e.Context, e.Instance, !preserveSetValues));
+                RegistrationData.ActivatingHandlers.Add((s, e) => AutowiringPropertyInjector.InjectProperties(e.Context, e.Instance, !preserveSetValues, null));
 
             return this;
         }

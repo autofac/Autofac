@@ -76,7 +76,7 @@ namespace Autofac.Tests
             const string a = "Hello";
             const int b = 42;
             var builder = new ContainerBuilder();
-            
+
             builder.RegisterType<Parameterised>()
                 .WithParameter(
                     (pi, c) => pi.Name == "a",
@@ -89,7 +89,87 @@ namespace Autofac.Tests
             var result = container.Resolve<Parameterised>();
 
             Assert.AreEqual(a, result.A);
-            Assert.AreEqual(b, result.B);            
+            Assert.AreEqual(b, result.B);
+        }
+
+        [Test]
+        public void PropertiesInject()
+        {
+            const string a = "Hello";
+
+            var builder = new ContainerBuilder();
+
+            builder.RegisterInstance(a).AsSelf();
+
+            var container = builder.Build();
+            var @class = new ClassWithProperties();
+
+            container.InjectProperties(@class);
+
+            Assert.AreEqual(a, @class.TestStringA);
+        }
+
+        [Test]
+        public void PropertiesInjectWithFilter()
+        {
+            const string a = "Hello";
+
+            var builder = new ContainerBuilder();
+
+            builder.RegisterInstance(a).AsSelf();
+
+            var container = builder.Build();
+            var @class = new ClassWithProperties();
+
+            container.InjectProperties(@class, o => false);
+
+            Assert.IsNull(@class.TestStringA);
+        }
+
+        [Test]
+        public void PropertiesInjectUnset()
+        {
+            const string a = "HelloA";
+            const string b = "HelloB";
+
+            var builder = new ContainerBuilder();
+
+            builder.RegisterInstance(a).AsSelf();
+
+            var container = builder.Build();
+            var @class = new ClassWithProperties();
+
+            @class.TestStringB = b;
+            container.InjectUnsetProperties(@class);
+
+            Assert.AreEqual(a, @class.TestStringA);
+            Assert.AreEqual(b, @class.TestStringB);
+        }
+
+        [Test]
+        public void PropertiesInjectUnsetWithFilter()
+        {
+            const string a = "HelloA";
+            const string b = "HelloB";
+
+            var builder = new ContainerBuilder();
+
+            builder.RegisterInstance(a).AsSelf();
+
+            var container = builder.Build();
+            var @class = new ClassWithProperties();
+
+            @class.TestStringB = b;
+            container.InjectUnsetProperties(@class, o => false);
+
+            Assert.IsNull(@class.TestStringA);
+            Assert.AreEqual(b, @class.TestStringB);
+        }
+
+        private class ClassWithProperties
+        {
+            public string TestStringA { get; set; }
+            public string TestStringB { get; set; }
         }
     }
 }
