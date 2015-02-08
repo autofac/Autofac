@@ -86,7 +86,7 @@ namespace Autofac.Test.Core.Activators.Reflection
             var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
 
             Assert.NotNull(instance);
-            Assert.IsType<object>(instance.GetType());
+            Assert.IsType<object>(instance);
         }
 
         [Fact]
