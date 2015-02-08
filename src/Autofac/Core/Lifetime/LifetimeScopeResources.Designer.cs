@@ -40,7 +40,7 @@ namespace Autofac.Core.Lifetime {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-#if !ASPNETCORE50
+#if !ASPNETCORE50 && !ASPNET50
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Lifetime.LifetimeScopeResources", typeof(LifetimeScopeResources).GetTypeInfo().Assembly);
 #else
                     //TODO: Removed namespace to work around https://github.com/aspnet/KRuntime/issues/738
