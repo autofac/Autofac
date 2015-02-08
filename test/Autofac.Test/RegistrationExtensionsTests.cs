@@ -31,7 +31,7 @@ namespace Autofac.Test
         public void OnlyServicesAssignableToASpecificTypeAreRegisteredFromAssemblies()
         {
             var container = new Container().BeginLifetimeScope(b =>
-                b.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
+                b.RegisterAssemblyTypes(GetType().GetTypeInfo().Assembly)
                     .AssignableTo(typeof(IMyService)));
 
             Assert.Equal(1, container.ComponentRegistry.Registrations.Count());
@@ -44,7 +44,7 @@ namespace Autofac.Test
         public void OnlyServicesAssignableToASpecificTypeAreRegisteredFromTypeList()
         {
             var container = new Container().BeginLifetimeScope(b =>
-                b.RegisterTypes(Assembly.GetExecutingAssembly().GetLoadableTypes().ToArray())
+                b.RegisterTypes(GetType().GetTypeInfo().Assembly.GetLoadableTypes().ToArray())
                     .AssignableTo(typeof(IMyService)));
 
             Assert.Equal(1, container.ComponentRegistry.Registrations.Count());

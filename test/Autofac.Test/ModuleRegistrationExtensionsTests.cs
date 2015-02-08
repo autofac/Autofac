@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Autofac.Test.Scenarios.ScannedAssembly;
 using Xunit;
 
@@ -21,7 +22,7 @@ namespace Autofac.Test
         [Fact]
         public void RegisterAssemblyModules()
         {
-            var assembly = typeof(AComponent).Assembly;
+            var assembly = typeof(AComponent).GetTypeInfo().Assembly;
             var builder = new ContainerBuilder();
             builder.RegisterAssemblyModules(assembly);
             var container = builder.Build();
@@ -33,7 +34,7 @@ namespace Autofac.Test
         [Fact]
         public void RegisterAssemblyModulesChainedToRegisterModule()
         {
-            var assembly = typeof(AComponent).Assembly;
+            var assembly = typeof(AComponent).GetTypeInfo().Assembly;
             var builder = new ContainerBuilder();
             builder.RegisterAssemblyModules(assembly).RegisterModule<ObjectModule>();
             var container = builder.Build();
@@ -46,7 +47,7 @@ namespace Autofac.Test
         [Fact]
         public void RegisterAssemblyModulesOfGenericType()
         {
-            var assembly = typeof(AComponent).Assembly;
+            var assembly = typeof(AComponent).GetTypeInfo().Assembly;
             var builder = new ContainerBuilder();
             builder.RegisterAssemblyModules<AModule>(assembly);
             var container = builder.Build();
@@ -58,7 +59,7 @@ namespace Autofac.Test
         [Fact]
         public void RegisterAssemblyModulesOfBaseGenericType()
         {
-            var assembly = typeof(AComponent).Assembly;
+            var assembly = typeof(AComponent).GetTypeInfo().Assembly;
             var builder = new ContainerBuilder();
             builder.RegisterAssemblyModules<ModuleBase>(assembly);
             var container = builder.Build();
@@ -70,7 +71,7 @@ namespace Autofac.Test
         [Fact]
         public void RegisterAssemblyModulesOfType()
         {
-            var assembly = typeof(AComponent).Assembly;
+            var assembly = typeof(AComponent).GetTypeInfo().Assembly;
             var builder = new ContainerBuilder();
             builder.RegisterAssemblyModules(typeof(AModule), assembly);
             var container = builder.Build();
@@ -82,7 +83,7 @@ namespace Autofac.Test
         [Fact]
         public void RegisterAssemblyModulesOfBaseType()
         {
-            var assembly = typeof(AComponent).Assembly;
+            var assembly = typeof(AComponent).GetTypeInfo().Assembly;
             var builder = new ContainerBuilder();
             builder.RegisterAssemblyModules(typeof(ModuleBase), assembly);
             var container = builder.Build();

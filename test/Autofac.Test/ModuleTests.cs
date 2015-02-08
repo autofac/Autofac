@@ -68,7 +68,7 @@ namespace Autofac.Test
         public void TheAssemblyExposedByThisAssemblyIsTheOneContainingTheConcreteModuleClass()
         {
             var module = new ModuleExposingThisAssembly();
-            Assert.Same(typeof(ModuleExposingThisAssembly).Assembly, module.ModuleThisAssembly);
+            Assert.Same(typeof(ModuleExposingThisAssembly).GetTypeInfo().Assembly, module.ModuleThisAssembly);
         }
 
         class ModuleIndirectlyExposingThisAssembly : ModuleExposingThisAssembly

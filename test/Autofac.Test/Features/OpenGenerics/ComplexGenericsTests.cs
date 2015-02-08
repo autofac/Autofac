@@ -1,6 +1,8 @@
 ﻿using Autofac.Core.Registration;
 using Xunit;
 using System;
+using System.Linq;
+using System.Reflection;
 
 namespace Autofac.Test.Features.OpenGenerics
 {
@@ -94,7 +96,7 @@ namespace Autofac.Test.Features.OpenGenerics
         public void TheSameaceholderWithThreeGenericParametersTypeCanAppearMultipleTimesInTheService()
         {
             var cb = new ContainerBuilder();
-            cb.RegisterGeneric(typeof(SameTypes<,,>)).As(typeof(SameTypes<,,>).GetInterfaces());
+            cb.RegisterGeneric(typeof(SameTypes<,,>)).As(typeof(SameTypes<,,>).GetTypeInfo().ImplementedInterfaces.ToArray());
             var container = cb.Build();
 
             var compl = container.Resolve<IDouble<INested<string>, INested<IDouble<int, long>>>>();

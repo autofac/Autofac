@@ -1,8 +1,9 @@
 ﻿using System;
-using Xunit;
 using System.Linq;
-using Autofac.Core.Activators.Reflection;
+using System.Reflection;
 using Autofac.Core;
+using Autofac.Core.Activators.Reflection;
+using Xunit;
 
 namespace Autofac.Test.Core.Activators.Reflection
 {
@@ -60,7 +61,7 @@ namespace Autofac.Test.Core.Activators.Reflection
 
         static ConstructorParameterBinding[] GetBindingsForAllConstructorsOf<TTarget>()
         {
-            return typeof(TTarget).GetConstructors()
+            return typeof(TTarget).GetTypeInfo().DeclaredConstructors
                 .Select(ci => new ConstructorParameterBinding(ci, Enumerable.Empty<Parameter>(), new ContainerBuilder().Build()))
                 .ToArray();
         }

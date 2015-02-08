@@ -3,7 +3,9 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
+#if !ASPNETCORE50
 using Moq;
+#endif
 using Xunit;
 
 namespace Autofac.Test.Builder
@@ -125,7 +127,7 @@ namespace Autofac.Test.Builder
             var registration = cb.RegisterType<TwoCtors>();
             Assert.Throws<ArgumentNullException>(() => registration.UsingConstructor((Expression<Func<TwoCtors>>)null));
         }
-
+#if !ASPNETCORE50
         [Fact]
         public void FindConstructorsWith_CustomFinderProvided_AddedToRegistration()
         {
@@ -135,7 +137,7 @@ namespace Autofac.Test.Builder
 
             Assert.Equal(constructorFinder, registration.ActivatorData.ConstructorFinder);
         }
-
+#endif
         [Fact]
         public void FindConstructorsWith_NullCustomFinderProvided_ThrowsException()
         {

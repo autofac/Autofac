@@ -36,8 +36,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var finder = new DefaultConstructorFinder(type => type.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance));
             var targetType = typeof(HasConstructors);
-            var privateConstructor = targetType.GetConstructor(
-                BindingFlags.NonPublic | BindingFlags.Instance, null, new[] {typeof(int)}, null);
+            var privateConstructor = targetType.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).Single();
 
             var constructors = finder.FindConstructors(targetType).ToList();
 

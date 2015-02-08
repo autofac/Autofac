@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !ASPNETCORE50
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Builder;
@@ -467,3 +468,4 @@ namespace Autofac.Test
         }
     }
 }
+#endif

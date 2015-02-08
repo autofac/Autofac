@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !ASPNETCORE50
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,3 +30,4 @@ namespace Autofac.Test.Features.OwnedInstances
         }
     }
 }
+#endif

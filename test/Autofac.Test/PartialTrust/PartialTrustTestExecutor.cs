@@ -1,4 +1,4 @@
-﻿#if !ASPNET50
+﻿#if !ASPNETCORE50 && !ASPNET50
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;

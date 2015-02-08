@@ -1,7 +1,9 @@
 ﻿using System;
 using Xunit;
 using System.Linq;
+#if !ASPNETCORE50
 using Moq;
+#endif
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core;
 using Autofac.Test.Scenarios.Dependencies;
@@ -11,6 +13,7 @@ namespace Autofac.Test.Core.Activators.Reflection
 {
     public class ReflectionActivatorTests
     {
+#if !ASPNETCORE50
         [Fact]
         public void Constructor_DoesNotAcceptNullType()
         {
@@ -75,7 +78,7 @@ namespace Autofac.Test.Core.Activators.Reflection
                     Factory.NoProperties);
             });
         }
-
+#endif
         [Fact]
         public void ActivateInstance_ReturnsInstanceOfTargetType()
         {

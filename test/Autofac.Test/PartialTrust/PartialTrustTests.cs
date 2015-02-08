@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !ASPNETCORE50
+using System;
 using System.Linq;
 using System.Security;
 using System.Security.Permissions;
@@ -70,3 +71,4 @@ namespace Autofac.Test.PartialTrust
         }
     }
 }
+#endif

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Xunit;
 using Autofac.Core;
 
@@ -36,7 +37,9 @@ namespace Autofac.Test
         private static System.Reflection.ParameterInfo AParamOfCConstructor()
         {
             var param = typeof(C)
-                .GetConstructor(new [] { typeof(A) })
+                .GetTypeInfo()
+                .DeclaredConstructors
+                .Single()
                 .GetParameters()
                 .First();
             return param;

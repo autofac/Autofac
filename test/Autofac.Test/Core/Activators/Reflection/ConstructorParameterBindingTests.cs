@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Xunit;
@@ -21,7 +22,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         [Fact]
         public void WhenAnExceptionIsThrownFromAConstructor_TheInnerExceptionIsWrapped()
         {
-            var ci = typeof (ThrowsInCtor).GetConstructor(new Type[0]);
+            var ci = typeof(ThrowsInCtor).GetTypeInfo().DeclaredConstructors.Single();
             var cpb = new ConstructorParameterBinding(
                 ci, Enumerable.Empty<Parameter>(), new ContainerBuilder().Build());
             var dx = Assert.Throws<DependencyResolutionException>(() =>

@@ -1,5 +1,6 @@
 ﻿using Xunit;
 using System.Linq;
+using System.Reflection;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core;
 
@@ -17,7 +18,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         }
 
         readonly ConstructorParameterBinding[] _ctors = typeof(ThreeConstructors)
-            .GetConstructors()
+            .GetTypeInfo().DeclaredConstructors
             .Select(ci => new ConstructorParameterBinding(ci, Enumerable.Empty<Parameter>(), new ContainerBuilder().Build()))
             .ToArray();
 

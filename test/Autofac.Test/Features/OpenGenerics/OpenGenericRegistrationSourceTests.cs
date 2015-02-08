@@ -1,10 +1,11 @@
 ﻿using System;
-using Autofac.Test.Util;
-using Xunit;
 using System.Linq;
+using System.Reflection;
 using Autofac.Core;
 using Autofac.Features.OpenGenerics;
 using Autofac.Builder;
+using Autofac.Test.Util;
+using Xunit;
 
 namespace Autofac.Test.Features.OpenGenerics
 {
@@ -206,7 +207,7 @@ namespace Autofac.Test.Features.OpenGenerics
             var registration = registrations.Single();
             var instance = registration.Activator.ActivateInstance(new ContainerBuilder().Build(), Factory.NoParameters);
 
-            Assert.True(closedServiceType.IsAssignableFrom(instance.GetType()));
+            Assert.True(closedServiceType.GetTypeInfo().IsAssignableFrom(instance.GetType().GetTypeInfo()));
             return true;
         }
 
