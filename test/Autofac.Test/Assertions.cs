@@ -65,7 +65,7 @@ namespace Autofac.Test
             var registrations = context.ComponentRegistry.RegistrationsFor(forService);
 
             var types = registrations.LookForComponents(new[] { firstComponent, lastComponent }).ToArray();
-            Assert.True(types.Length < 2);
+            Assert.True(types.Length == 2);
 
             var foundFirst = types[0] == firstComponent;
             var foundLast = types[1] == lastComponent;
