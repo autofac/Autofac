@@ -63,7 +63,12 @@ namespace Autofac.Extras.AggregateService
             {
                 throw new ArgumentNullException("invocation");
             }
-            var invocationHandler = _invocationMap[invocation.Method];
+
+            //if the method is generic, we use the definition in the invocation map
+            var method = invocation.Method.IsGenericMethod ?
+                invocation.Method.GetGenericMethodDefinition() : invocation.Method;
+
+            var invocationHandler = _invocationMap[method];
             invocationHandler(invocation);
         }
 
@@ -106,14 +111,14 @@ namespace Autofac.Extras.AggregateService
                                                       var typedParameters = parameters
                                                           .Select(info => (Parameter)new TypedParameter(info.ParameterType, arguments[info.Position]));
 
-                                                      invocation.ReturnValue = _context.Resolve(returnType, typedParameters);
+                                                      //in order to handle open generics, this resolves via the invocation return type
+                                                      invocation.ReturnValue = _context.Resolve(invocation.Method.ReturnType, typedParameters);
                                                   });
                     }
                     else
                     {
                         var methodWithoutParams = GetType()
-                            .GetMethod("MethodWithoutParams", BindingFlags.Instance | BindingFlags.NonPublic)
-                            .MakeGenericMethod(new[] { returnType });
+                            .GetMethod("MethodWithoutParams", BindingFlags.Instance | BindingFlags.NonPublic);
 
                         var methodWithoutParamsDelegate = (Action<IInvocation>)Delegate.CreateDelegate(typeof(Action<IInvocation>), this, methodWithoutParams);
                         methodMap.Add(method, methodWithoutParamsDelegate);
@@ -124,12 +129,11 @@ namespace Autofac.Extras.AggregateService
             return methodMap;
         }
 
-        // ReSharper disable UnusedMember.Local
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "This method gets called via reflection.")]
-        private void MethodWithoutParams<TReturnType>(IInvocation invocation)
-        // ReSharper restore UnusedMember.Local
+        private void MethodWithoutParams(IInvocation invocation)
         {
-            invocation.ReturnValue = _context.Resolve<TReturnType>();
+            //in order to handle open generics, this resolves via the invocation return type
+            invocation.ReturnValue = _context.Resolve(invocation.Method.ReturnType);
         }
 
         private static void InvalidReturnTypeInvocation(IInvocation invocation)
