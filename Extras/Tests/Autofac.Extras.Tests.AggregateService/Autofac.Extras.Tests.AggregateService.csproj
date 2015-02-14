@@ -81,10 +81,13 @@
     <Compile Include="..\..\Source\Autofac.Extras.AggregateService\Properties\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AggregateServiceGenericsFixture.cs" />
     <Compile Include="AggregateServiceInheritanceFixture.cs" />
     <Compile Include="ContainerBuilderExtensionsFixture.cs" />
     <Compile Include="AggregateServiceFixture.cs" />
     <Compile Include="AggregateServiceGeneratorFixture.cs" />
+    <Compile Include="IOpenGeneric.cs" />
+    <Compile Include="IOpenGenericAggregate.cs" />
     <Compile Include="ISomeOtherDependency.cs" />
     <Compile Include="ISubService.cs" />
     <Compile Include="IMyService.cs" />
@@ -92,6 +95,7 @@
     <Compile Include="ISuperService.cs" />
     <Compile Include="ISomeDependency.cs" />
     <Compile Include="MyServiceImpl.cs" />
+    <Compile Include="OpenGenericImpl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
