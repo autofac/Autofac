@@ -2,6 +2,10 @@
 	"dependencies": {
 		"Autofac": "1.0.0-*",
 		"Moq": "4.2.1312.1622",
+		"xunit": "2.0.0-beta5-build2785",
+		"xunit.abstractions": "2.0.0-beta5-build2785",
+		"xunit.assert": "2.0.0-beta5-build2785",
+		"xunit.core": "2.0.0-beta5-build2785",
 		"xunit.runner.kre": "1.0.0-*",
 		"Autofac.Test.Scenarios.ScannedAssembly": "1.0.0-*"
 	},
