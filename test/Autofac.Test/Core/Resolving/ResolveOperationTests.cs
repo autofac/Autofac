@@ -54,10 +54,8 @@ namespace Autofac.Test.Core.Resolving
         {
             var cb = new ContainerBuilder();
             var ac = 0;
-            // ReSharper disable AccessToModifiedClosure
-            cb.RegisterType<DependsByCtor>().OnActivating(e => { ++ac; });
-            // ReSharper restore AccessToModifiedClosure
-            cb.RegisterType<DependsByProp>().OnActivating(e => { ++ac; })
+            cb.RegisterType<DependsByCtor>().OnActivating(e => { ac = 2; });
+            cb.RegisterType<DependsByProp>().OnActivating(e => { ac = 1; })
                 .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
 
             var c = cb.Build();
