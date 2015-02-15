@@ -10,7 +10,7 @@
 	"code": [
 		"**\\*.cs"
 	],
-	/*"resources": "**\\*.resx",*/
+	"resources": "**\\*.resx",
 	"frameworks": {
 		"aspnet50": { },
 		"aspnetcore50": {
