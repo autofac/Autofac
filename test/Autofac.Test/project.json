@@ -9,17 +9,10 @@
 		"test": "xunit.runner.kre"
 	},
 	"frameworks": {
-		"aspnet50": {
-			"compilationOptions": {
-				"define": [ "ASPNET50" ]
-			}
-		},
+		"aspnet50": { },
 		"aspnetcore50": {
-			"compilationOptions": {
-				"define": [ "ASPNETCORE50" ]
-			},
 			"dependencies": {
-				"System.Runtime": "4.0.20-beta-22416"
+				"System.Runtime": "4.0.20-beta-*"
 			}
 		}
 	}

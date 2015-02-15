@@ -49,7 +49,7 @@ namespace Autofac.Builder
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         /// <remarks>Factory delegates are provided automatically in Autofac 2,
         /// and this method is generally not required.</remarks>
-        public static IRegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
+        public static IRegistrationBuilder<System.Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
             RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType)
         {
             if (delegateType == null) throw new ArgumentNullException("delegateType");
@@ -68,10 +68,10 @@ namespace Autofac.Builder
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         /// <remarks>Factory delegates are provided automatically in Autofac 2, and
         /// this method is generally not required.</remarks>
-        public static IRegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
+        public static IRegistrationBuilder<System.Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
             RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType, Service service)
         {
-            return GeneratedFactoryRegistrationExtensions.RegisterGeneratedFactory<Delegate>(builder, delegateType, service);
+            return GeneratedFactoryRegistrationExtensions.RegisterGeneratedFactory<System.Delegate>(builder, delegateType, service);
         }
 
         /// <summary>

@@ -86,7 +86,7 @@ namespace Autofac.Util
         public static bool IsDelegate(this Type type)
         {
             if (type == null) throw new ArgumentNullException("type");
-            return type.GetTypeInfo().IsSubclassOf(typeof(Delegate));
+            return type.GetTypeInfo().IsSubclassOf(typeof(System.Delegate));
         }
 
         public static Type FunctionReturnType(this Type type)
