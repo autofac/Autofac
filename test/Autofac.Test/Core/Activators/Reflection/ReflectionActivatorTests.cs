@@ -1,27 +1,23 @@
 ﻿using System;
-using Xunit;
 using System.Linq;
-#if !ASPNETCORE50
-using Moq;
-#endif
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core;
 using Autofac.Test.Scenarios.Dependencies;
 using Autofac.Test.Scenarios.ConstructorSelection;
+using Xunit;
 
 namespace Autofac.Test.Core.Activators.Reflection
 {
     public class ReflectionActivatorTests
     {
-#if !ASPNETCORE50
         [Fact]
         public void Constructor_DoesNotAcceptNullType()
         {
             Assert.Throws<ArgumentNullException>(delegate
             {
                 new ReflectionActivator(null,
-                    new Mock<IConstructorFinder>().Object,
-                    new Mock<IConstructorSelector>().Object,
+                    Mocks.GetConstructorFinder(),
+                    Mocks.GetConstructorSelector(),
                     Factory.NoParameters,
                     Factory.NoProperties);
             });
@@ -33,8 +29,8 @@ namespace Autofac.Test.Core.Activators.Reflection
             Assert.Throws<ArgumentNullException>(delegate
             {
                 new ReflectionActivator(typeof(object),
-                    new Mock<IConstructorFinder>().Object,
-                    new Mock<IConstructorSelector>().Object,
+                    Mocks.GetConstructorFinder(),
+                    Mocks.GetConstructorSelector(),
                     null,
                     Factory.NoProperties);
             });
@@ -46,8 +42,8 @@ namespace Autofac.Test.Core.Activators.Reflection
             Assert.Throws<ArgumentNullException>(delegate
             {
                 new ReflectionActivator(typeof(object),
-                    new Mock<IConstructorFinder>().Object,
-                    new Mock<IConstructorSelector>().Object,
+                    Mocks.GetConstructorFinder(),
+                    Mocks.GetConstructorSelector(),
                     Factory.NoParameters,
                     null);
             });
@@ -60,7 +56,7 @@ namespace Autofac.Test.Core.Activators.Reflection
             {
                 new ReflectionActivator(typeof(object),
                     null,
-                    new Mock<IConstructorSelector>().Object,
+                    Mocks.GetConstructorSelector(),
                     Factory.NoParameters,
                     Factory.NoProperties);
             });
@@ -72,13 +68,13 @@ namespace Autofac.Test.Core.Activators.Reflection
             Assert.Throws<ArgumentNullException>(delegate
             {
                 new ReflectionActivator(typeof(object),
-                    new Mock<IConstructorFinder>().Object,
+                    Mocks.GetConstructorFinder(),
                     null,
                     Factory.NoParameters,
                     Factory.NoProperties);
             });
         }
-#endif
+
         [Fact]
         public void ActivateInstance_ReturnsInstanceOfTargetType()
         {

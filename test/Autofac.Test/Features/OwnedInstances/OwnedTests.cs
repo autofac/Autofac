@@ -1,11 +1,5 @@
-﻿#if !ASPNETCORE50
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Autofac.Features.OwnedInstances;
 using Xunit;
-using Autofac.Features.OwnedInstances;
-using Moq;
 
 namespace Autofac.Test.Features.OwnedInstances
 {
@@ -15,19 +9,17 @@ namespace Autofac.Test.Features.OwnedInstances
         public void WhenInitialisedWithValue_ReturnsSameFromValueProperty()
         {
             var value = "Hello";
-            var owned = new Owned<string>(value, new Mock<IDisposable>().Object);
+            var owned = new Owned<string>(value, Mocks.GetDisposable());
             Assert.Same(value, owned.Value);
         }
 
         [Fact]
         public void DisposingOwned_CallsDisposeOnLifetimeToken()
         {
-            var lifetime = new Mock<IDisposable>();
-            lifetime.Setup(l => l.Dispose()).Verifiable();
-            var owned = new Owned<string>("unused", lifetime.Object);
+            var lifetime = Mocks.GetDisposable();
+            var owned = new Owned<string>("unused", lifetime);
             owned.Dispose();
-            lifetime.VerifyAll();
+            Assert.True(lifetime.IsDisposed);
         }
     }
 }
-#endif

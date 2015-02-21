@@ -3,9 +3,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
-#if !ASPNETCORE50
-using Moq;
-#endif
 using Xunit;
 
 namespace Autofac.Test.Builder
@@ -127,17 +124,17 @@ namespace Autofac.Test.Builder
             var registration = cb.RegisterType<TwoCtors>();
             Assert.Throws<ArgumentNullException>(() => registration.UsingConstructor((Expression<Func<TwoCtors>>)null));
         }
-#if !ASPNETCORE50
+
         [Fact]
         public void FindConstructorsWith_CustomFinderProvided_AddedToRegistration()
         {
             var cb = new ContainerBuilder();
-            var constructorFinder = new Mock<IConstructorFinder>().Object;
+            var constructorFinder = Mocks.GetConstructorFinder();
             var registration = cb.RegisterType<TwoCtors>().FindConstructorsWith(constructorFinder);
 
             Assert.Equal(constructorFinder, registration.ActivatorData.ConstructorFinder);
         }
-#endif
+
         [Fact]
         public void FindConstructorsWith_NullCustomFinderProvided_ThrowsException()
         {

@@ -1,11 +1,9 @@
-﻿#if !ASPNETCORE50
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.Indexed;
-using Moq;
 using Xunit;
 
 namespace Autofac.Test
@@ -407,43 +405,36 @@ namespace Autofac.Test
         [Fact]
         public void WhenTheContainerIsUpdated_ExistingStartableComponentsAreNotReStarted()
         {
-            var firstStartableInit = 0;
-            var secondStartableInit = 0;
-
-            var startable1 = new Mock<IStartable>();
-            startable1.Setup(s => s.Start()).Callback(() => firstStartableInit++);
-            var startable2 = new Mock<IStartable>();
-            startable2.Setup(s => s.Start()).Callback(() => secondStartableInit++);
+            var startable1 = Mocks.GetStartable();
+            var startable2 = Mocks.GetStartable();
 
             var builder1 = new ContainerBuilder();
-            builder1.RegisterInstance(startable1.Object);
+            builder1.RegisterInstance(startable1).As<IStartable>();
             var container = builder1.Build();
 
-            Assert.Equal(1, firstStartableInit);
+            Assert.Equal(1, startable1.StartCount);
 
             var builder2 = new ContainerBuilder();
-            builder2.RegisterInstance(startable2.Object);
+            builder2.RegisterInstance(startable2).As<IStartable>();
             builder2.Update(container);
 
-            Assert.Equal(1, firstStartableInit);
-            Assert.Equal(1, secondStartableInit);
+            Assert.Equal(1, startable1.StartCount);
+            Assert.Equal(1, startable2.StartCount);
         }
 
         [Fact]
         public void WhenTheContainerIsUpdated_NewStartableComponentsAreStarted()
         {
             // Issue #454: ContainerBuilder.Update() doesn't activate startable components.
-            var started = false;
             var container = new ContainerBuilder().Build();
 
-            var startable = new Mock<IStartable>();
-            startable.Setup(s => s.Start()).Callback(() => started = true);
+            var startable = Mocks.GetStartable();
 
             var builder = new ContainerBuilder();
-            builder.RegisterInstance(startable.Object);
+            builder.RegisterInstance(startable).As<IStartable>();
             builder.Update(container);
 
-            Assert.True(started, "The container update did not start the new startable component.");
+            Assert.Equal(1, startable.StartCount);
         }
 
         [Fact]
@@ -456,16 +447,12 @@ namespace Autofac.Test
 
         static bool WasStartInvoked(ContainerBuildOptions buildOptions)
         {
-            var started = false;
-            var startable = new Mock<IStartable>();
-            startable.Setup(s => s.Start())
-                .Callback(() => started = true);
+            var startable = Mocks.GetStartable();
 
             var builder = new ContainerBuilder();
-            builder.RegisterInstance(startable.Object);
+            builder.RegisterInstance(startable).As<IStartable>();
             builder.Build(buildOptions);
-            return started;
+            return startable.StartCount > 0;
         }
     }
 }
-#endif
