@@ -1,4 +1,5 @@
-﻿using Autofac.Core;
+﻿using System;
+using Autofac.Core;
 using Xunit;
 using System.IO;
 
@@ -19,7 +20,7 @@ namespace Autofac.Test.Core
         public void Message_InnerExceptionMessageIncluded()
         {
             // Issue 343: The inner exception message should be included in the main exception message.
-            var inner = new FileNotFoundException("Can't find file.");
+            var inner = new Exception("Can't find file.");
             var dre = new DependencyResolutionException("Unable to resolve component.", inner);
             Assert.True(dre.Message.Contains("Can't find file."), "The exception message should include the inner exception message.");
         }
@@ -52,7 +53,7 @@ namespace Autofac.Test.Core
         public void Message_NullMessageWithInnerException()
         {
             // Issue 343: If there is no message but there is an inner exception specified, the main exception message should be modified.
-            var inner = new FileNotFoundException("Can't find file.");
+            var inner = new Exception("Can't find file.");
             var dre = new DependencyResolutionException(null, inner);
             Assert.True(dre.Message.Contains("Can't find file."), "The exception message should include the inner exception message.");
         }
