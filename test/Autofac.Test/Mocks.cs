@@ -16,11 +16,6 @@ namespace Autofac.Test
             return new MockConstructorSelector();
         }
 
-        public static Disposable GetDisposable()
-        {
-            return new Disposable();
-        }
-
         public static Startable GetStartable()
         {
             return new Startable();
@@ -40,16 +35,6 @@ namespace Autofac.Test
         public ConstructorParameterBinding SelectConstructorBinding(ConstructorParameterBinding[] constructorBindings)
         {
             return null;
-        }
-    }
-
-    class Disposable : IDisposable
-    {
-        public bool IsDisposed { get; private set; }
-
-        public void Dispose()
-        {
-            IsDisposed = true;
         }
     }
 
