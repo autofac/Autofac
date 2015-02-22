@@ -128,6 +128,14 @@ namespace Autofac.Test.Core
         }
 
         [Fact]
+        public void ResolvingComponentContextProvidesCurrentScope()
+        {
+            var c = new Container();
+            var l = c.BeginLifetimeScope();
+            Assert.Same(l, l.Resolve<IComponentContext>());
+        }
+
+        [Fact]
         public void ReplacingAnInstanceInActivatingHandlerSubstitutesForResult()
         {
             var supplied = new object();
