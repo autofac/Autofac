@@ -39,9 +39,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Moq">
-      <HintPath>..\..\packages\Moq.4.2.1312.1622\lib\net40\Moq.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Private>True</Private>
     </Reference>
@@ -71,6 +68,7 @@
     <Compile Include="Core\Registration\ModuleRegistrarTests.cs" />
     <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSourceTests.cs" />
     <Compile Include="Features\Metadata\TestTypes.cs" />
+    <Compile Include="Mocks.cs" />
     <Compile Include="ModuleRegistrationExtensionsTests.cs" />
     <Compile Include="PartialTrust\PartialTrustTestExecutor.cs" />
     <Compile Include="PartialTrust\PartialTrustTests.cs" />
