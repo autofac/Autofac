@@ -50,14 +50,14 @@ namespace Autofac.Test.PartialTrust
             }
         }
 
-        public static IEnumerable<MethodInfo> ExecutePartialTrustTestsSource
+        public static IEnumerable<object[]> ExecutePartialTrustTestsSource
         {
             get
             {
-                return
-                    typeof(PartialTrustTests)
+                return typeof(PartialTrustTests)
                     .GetMethods(BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.Public)
-                    .Where(m => m.ReturnType == typeof(void) && m.ContainsGenericParameters == false && m.GetParameters().Length == 0);
+                    .Where(m => m.ReturnType == typeof(void) && m.ContainsGenericParameters == false && m.GetParameters().Length == 0)
+                    .Select(m => new object[] {m});
             }
         }
 
