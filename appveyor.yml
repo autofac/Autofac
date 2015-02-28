@@ -2,6 +2,7 @@ version: 4.0.0.{build}
 
 install:
   - ps: ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/master/kvminstall.ps1'))
+  - cmd: cmd /c kvm upgrade
 
 assembly_info:
   patch: true
@@ -16,16 +17,13 @@ nuget:
   disable_publish_on_pr: true
 
 build_script:
-- kvm upgrade
-- kpm restore
-- kpm pack src\Autofac --configuration Release
-- kpm pack src\Autofac.AspNet --configuration Release
-- kpm build test\Autofac.Test --configuration Release
+- cmd /c kpm restore
+- cmd /c kpm pack src\Autofac --configuration Release
+- cmd /c kpm pack src\Autofac.AspNet --configuration Release
+- cmd /c kpm build test\Autofac.Test --configuration Release
 
 test_script:
-- pushd test\Autofac.Test
-- k test
-- popd
+- cmd /c "pushd test\Autofac.Test & k test & popd"
 
 build:
   verbosity: minimal
