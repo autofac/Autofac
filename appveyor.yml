@@ -2,7 +2,6 @@ version: 4.0.0.{build}
 
 install:
   - ps: ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/master/kvminstall.ps1'))
-  - cmd: kvm upgrade
 
 assembly_info:
   patch: true
@@ -17,6 +16,7 @@ nuget:
   disable_publish_on_pr: true
 
 build_script:
+- kvm upgrade
 - kpm restore
 - kpm pack src\Autofac --configuration Release
 - kpm pack src\Autofac.AspNet --configuration Release
