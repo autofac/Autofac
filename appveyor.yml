@@ -1,8 +1,5 @@
 version: 4.0.0.{build}
 
-install:
-  - ps: ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/master/kvminstall.ps1'))
-
 assembly_info:
   patch: true
   file: AssemblyInfo.cs
@@ -16,15 +13,7 @@ nuget:
   disable_publish_on_pr: true
 
 build_script:
-- call appveyor-build.cmd
-
-test_script:
-- call appveyor-test.cmd
-
-build:
-  verbosity: minimal
-  publish_nuget: true
-  publish_nuget_symbols: true
+- build.cmd
 
 deploy:
 - provider: NuGet
@@ -32,3 +21,4 @@ deploy:
   api_key:
     secure: N4KZCRegcmenMoJ0peZfQwDzqq+Wt4oxGzNTgvkrDxgWyZhw7hNwKmd4n2AsNKQX
   symbol_server: https://nuget.symbolsource.org/MyGet/autofac
+  artifact: Autofac\..*\.nupkg
