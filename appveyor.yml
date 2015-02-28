@@ -1,6 +1,6 @@
 version: 4.0.0.{build}
 
-init:
+install:
   - ps: ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/master/kvminstall.ps1'))
 
 assembly_info:
@@ -16,16 +16,10 @@ nuget:
   disable_publish_on_pr: true
 
 build_script:
-- kvm upgrade
-- kpm restore
-- kpm pack src\Autofac --configuration Release
-- kpm pack src\Autofac.AspNet --configuration Release
-- kpm build test\Autofac.Test --configuration Release
+- call appveyor-build.cmd
 
 test_script:
-- pushd test\Autofac.Test
-- k test
-- popd
+- call appveyor-test.cmd
 
 build:
   verbosity: minimal
