@@ -4,7 +4,7 @@
 	"version": "1.0.0-*",
 	"dependencies": {
 		"Autofac": "4.0.0-alpha1",
-		"Autofac.Integration.AspNet": "4.0.0-alpha1",
+		"Autofac.AspNet": "4.0.0-alpha1",
 		"EntityFramework.SqlServer": "7.0.0-beta3",
 		"EntityFramework.Commands": "7.0.0-beta3",
 		"Microsoft.AspNet.Mvc": "6.0.0-beta3",
