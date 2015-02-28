@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Globalization;
 using Autofac.Core;
 using Xunit;
-using System.IO;
 
 namespace Autofac.Test.Core
 {
@@ -9,10 +9,13 @@ namespace Autofac.Test.Core
     {
         public DependencyResolutionExceptionTests()
         {
-#if !ASPNETCORE50
             //Explicitly set culture for comparison of Exception strings
-            System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-            System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.InvariantCulture;
+#if ASPNETCORE50
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+            CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
+#else
+            System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+            System.Threading.Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 #endif
         }
 
