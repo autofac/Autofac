@@ -1,9 +1,11 @@
 {
 	"version": "4.0.0-alpha1",
-	"authors": [
-		"Autofac Contributors"
-	],
+	"authors": [ "Autofac Contributors" ],
 	"description": "Core assembly for the Autofac Inversion of Control container.",
+	"projectUrl": "http://autofac.org",
+	"licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
+	"requireLicenseAcceptance": false,
+	"tags": [ "Autofac", "DI", "IoC" ],
 	"compilationOptions": {
 		"warningsAsErrors": true
 	},
