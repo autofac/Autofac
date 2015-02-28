@@ -1,0 +1,40 @@
+version: 4.0.0.{build}
+
+install:
+  - ps: ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/master/kvminstall.ps1'))
+  - cmd: kvm upgrade
+
+assembly_info:
+  patch: true
+  file: AssemblyInfo.cs
+  assembly_version: "4.0.0.0"
+  assembly_file_version: "{version}"
+  assembly_informational_version: "4.0.0-CI-{build}"
+
+configuration: Release
+
+nuget:
+  disable_publish_on_pr: true
+
+build_script:
+- kpm restore
+- kpm pack src\Autofac --configuration Release
+- kpm pack src\Autofac.AspNet --configuration Release
+- kpm build test\Autofac.Test --configuration Release
+
+test_script:
+- pushd test\Autofac.Test
+- k test
+- popd
+
+build:
+  verbosity: minimal
+  publish_nuget: true
+  publish_nuget_symbols: true
+
+deploy:
+- provider: NuGet
+  server: https://www.myget.org/F/autofac/
+  api_key:
+    secure: N4KZCRegcmenMoJ0peZfQwDzqq+Wt4oxGzNTgvkrDxgWyZhw7hNwKmd4n2AsNKQX
+  symbol_server: https://nuget.symbolsource.org/MyGet/autofac
