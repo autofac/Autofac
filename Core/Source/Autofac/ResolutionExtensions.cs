@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
@@ -50,7 +51,23 @@ namespace Autofac
         /// <returns><paramref name="instance"/>.</returns>
         public static TService InjectProperties<TService>(this IComponentContext context, TService instance)
         {
-            AutowiringPropertyInjector.InjectProperties(context, instance, true);
+            AutowiringPropertyInjector.InjectProperties(context, instance, true, null);
+            return instance;
+        }
+
+
+        /// <summary>
+        /// Set any properties on <paramref name="instance"/> that can be
+        /// resolved in the context.
+        /// </summary>
+        /// <typeparam name="TService">Type of instance. Used only to provide method chaining.</typeparam>
+        /// <param name="context">The context from which to resolve the service.</param>
+        /// <param name="instance">The instance to inject properties into.</param>
+        /// <param name="propertyFilter">Delegate to filter which properties will be injected.</param>
+        /// <returns><paramref name="instance"/>.</returns>
+        public static TService InjectProperties<TService>(this IComponentContext context, TService instance, Func<PropertyInfo, bool> propertyFilter)
+        {
+            AutowiringPropertyInjector.InjectProperties(context, instance, true, propertyFilter);
             return instance;
         }
 
@@ -64,7 +81,22 @@ namespace Autofac
         /// <returns><paramref name="instance"/>.</returns>
         public static TService InjectUnsetProperties<TService>(this IComponentContext context, TService instance)
         {
-            AutowiringPropertyInjector.InjectProperties(context, instance, false);
+            AutowiringPropertyInjector.InjectProperties(context, instance, false, null);
+            return instance;
+        }
+
+        /// <summary>
+        /// Set any null-valued properties on <paramref name="instance"/> that can be
+        /// resolved by the container.
+        /// </summary>
+        /// <typeparam name="TService">Type of instance. Used only to provide method chaining.</typeparam>
+        /// <param name="context">The context from which to resolve the service.</param>
+        /// <param name="instance">The instance to inject properties into.</param>
+        /// <param name="propertyFilter">Delegate to filter which properties will be injected.</param>
+        /// <returns><paramref name="instance"/>.</returns>
+        public static TService InjectUnsetProperties<TService>(this IComponentContext context, TService instance, Func<PropertyInfo, bool> propertyFilter)
+        {
+            AutowiringPropertyInjector.InjectProperties(context, instance, false, propertyFilter);
             return instance;
         }
 
