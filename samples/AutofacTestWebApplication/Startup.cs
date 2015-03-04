@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Autofac;
-using Autofac.Integration.AspNet;
+using Autofac.AspNet;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Diagnostics;
 using Microsoft.AspNet.Diagnostics.Entity;

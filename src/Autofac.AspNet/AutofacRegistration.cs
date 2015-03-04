@@ -29,7 +29,7 @@ using System.Reflection;
 using Autofac.Builder;
 using Microsoft.Framework.DependencyInjection;
 
-namespace Autofac.Integration.AspNet
+namespace Autofac.AspNet
 {
     public static class AutofacRegistration
     {
