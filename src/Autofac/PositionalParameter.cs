@@ -32,10 +32,10 @@ namespace Autofac
     /// <summary>
     /// A parameter that is identified according to an integer representing its
     /// position in an argument list. When applied to a reflection-based
-    /// component, <see cref="PositionalParameter.Position"/> will be matched against
+    /// component, <see cref="Position"/> will be matched against
     /// the indices of the component's constructor arguments. When applied to
     /// a delegate-based component, the parameter can be accessed using
-    /// <see cref="ParameterExtensions.Positional"/>.
+    /// <see cref="ParameterExtensions.Positional{T}"/>.
     /// </summary>
     /// <example>
     /// Component with parameter:
@@ -66,10 +66,9 @@ namespace Autofac
         /// <param name="position">The zero-based position of the parameter.</param>
         /// <param name="value">The parameter value.</param>
         public PositionalParameter(int position, object value)
-            : base(value, pi => pi.Position == position &&
-                                (pi.Member is ConstructorInfo))
+            : base(value, pi => pi.Position == position && (pi.Member is ConstructorInfo))
         {
-            if (position < 0) throw new ArgumentOutOfRangeException("position");
+            if (position < 0) throw new ArgumentOutOfRangeException(nameof(position));
 
             Position = position;
         }

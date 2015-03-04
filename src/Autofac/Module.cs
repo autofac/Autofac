@@ -73,7 +73,8 @@ namespace Autofac
         /// <param name="componentRegistry">Component registry to apply configuration to.</param>
         public void Configure(IComponentRegistry componentRegistry)
         {
-            if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
+            if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
+
             var moduleBuilder = new ContainerBuilder();
             Load(moduleBuilder);
             moduleBuilder.Update(componentRegistry);

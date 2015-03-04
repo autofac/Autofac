@@ -23,8 +23,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-
 namespace Autofac
 {
     /// <summary>
@@ -50,7 +48,7 @@ namespace Autofac
     /// <seealso cref="IComponentContext"/>
     /// <seealso cref="ResolutionExtensions"/>
     /// <seealso cref="ContainerBuilder"/>
-    public interface IContainer : ILifetimeScope, IDisposable
+    public interface IContainer : ILifetimeScope
     {
     }
 }

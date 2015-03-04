@@ -33,10 +33,10 @@ namespace Autofac
     /// <summary>
     /// A parameter that can supply values to sites that exactly
     /// match a specified type. When applied to a reflection-based
-    /// component, <see cref="TypedParameter.Type"/> will be matched against
+    /// component, <see cref="Type"/> will be matched against
     /// the types of the component's constructor arguments. When applied to
     /// a delegate-based component, the parameter can be accessed using
-    /// <see cref="ParameterExtensions.TypedAs"/>.
+    /// <see cref="ParameterExtensions.TypedAs{T}"/>.
     /// </summary>
     /// <example>
     /// Component with parameter:

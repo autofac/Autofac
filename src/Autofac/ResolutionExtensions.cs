@@ -388,9 +388,9 @@ namespace Autofac
         /// <exception cref="DependencyResolutionException"/>
         public static object ResolveService(this IComponentContext context, Service service, IEnumerable<Parameter> parameters)
         {
-            if (context == null) throw new ArgumentNullException("context");
-            if (service == null) throw new ArgumentNullException("service");
-            if (parameters == null) throw new ArgumentNullException("parameters");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (service == null) throw new ArgumentNullException(nameof(service));
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
             object instance;
             var successful = context.TryResolveService(service, parameters, out instance);
@@ -646,9 +646,9 @@ namespace Autofac
         /// <exception cref="DependencyResolutionException"/>
         public static object ResolveOptionalService(this IComponentContext context, Service service, IEnumerable<Parameter> parameters)
         {
-            if (context == null) throw new ArgumentNullException("context");
-            if (service == null) throw new ArgumentNullException("service");
-            if (parameters == null) throw new ArgumentNullException("parameters");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (service == null) throw new ArgumentNullException(nameof(service));
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
             object instance;
             context.TryResolveService(service, parameters, out instance);
@@ -749,8 +749,8 @@ namespace Autofac
         /// <returns>True if the service is registered.</returns>
         public static bool IsRegisteredService(this IComponentContext context, Service service)
         {
-            if (context == null) throw new ArgumentNullException("context");
-            if (service == null) throw new ArgumentNullException("service");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (service == null) throw new ArgumentNullException(nameof(service));
 
             return context.ComponentRegistry.IsRegistered(service);
         }
@@ -772,10 +772,8 @@ namespace Autofac
         [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
         public static bool TryResolveService(this IComponentContext context, Service service, IEnumerable<Parameter> parameters, out object instance)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException("context");
-            }
+            if (context == null) throw new ArgumentNullException(nameof(context));
+
             IComponentRegistration registration;
             if (!context.ComponentRegistry.TryGetRegistration(service, out registration))
             {
@@ -800,7 +798,8 @@ namespace Autofac
         [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
         public static bool TryResolveService(this IComponentContext context, Service service, out object instance)
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+
             return context.TryResolveService(service, NoParameters, out instance);
         }
 
@@ -817,7 +816,8 @@ namespace Autofac
         [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
         public static bool TryResolve(this IComponentContext context, Type serviceType, out object instance)
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+
             return context.TryResolveService(new TypedService(serviceType), NoParameters, out instance);
         }
 
@@ -833,7 +833,7 @@ namespace Autofac
         /// <exception cref="DependencyResolutionException"/>
         public static bool TryResolve<T>(this IComponentContext context, out T instance)
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
 
             object component;
             bool success = context.TryResolve(typeof(T), out component);
@@ -856,7 +856,8 @@ namespace Autofac
         [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
         public static bool TryResolveNamed(this IComponentContext context, string serviceName, Type serviceType, out object instance)
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+
             return context.TryResolveService(new KeyedService(serviceName, serviceType), NoParameters, out instance);
         }
 
@@ -874,7 +875,8 @@ namespace Autofac
         [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
         public static bool TryResolveKeyed(this IComponentContext context, object serviceKey, Type serviceType, out object instance)
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+
             return context.TryResolveService(new KeyedService(serviceKey, serviceType), NoParameters, out instance);
         }
     }

@@ -67,8 +67,8 @@ namespace Autofac
     /// <seealso cref="IComponentContext"/>
     /// <seealso cref="IRegistrationBuilder{TLimit,TActivatorData,TRegistrationStyle}.InstancePerMatchingLifetimeScope"/>
     /// <seealso cref="IRegistrationBuilder{TLimit,TActivatorData,TRegistrationStyle}.InstancePerLifetimeScope"/>
-    /// <seealso cref="Autofac.Core.InstanceSharing"/>
-    /// <seealso cref="Autofac.Core.IComponentLifetime"/>
+    /// <seealso cref="InstanceSharing"/>
+    /// <seealso cref="IComponentLifetime"/>
     public interface ILifetimeScope : IComponentContext, IDisposable
     {
         /// <summary>

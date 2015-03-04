@@ -61,7 +61,7 @@ namespace Autofac
         /// <seealso cref="NamedParameter"/>
         public static T Named<T>(this IEnumerable<Parameter> parameters, string name)
         {
-            if (parameters == null) throw new ArgumentNullException("parameters");
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
             Enforce.ArgumentNotNullOrEmpty(name, "name");
 
             return ConstantValue<NamedParameter, T>(parameters, c => c.Name == name);
@@ -80,8 +80,8 @@ namespace Autofac
         /// <seealso cref="PositionalParameter"/>
         public static T Positional<T>(this IEnumerable<Parameter> parameters, int position)
         {
-            if (parameters == null) throw new ArgumentNullException("parameters");
-            if (position < 0) throw new ArgumentOutOfRangeException("position");
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+            if (position < 0) throw new ArgumentOutOfRangeException(nameof(position));
 
             return ConstantValue<PositionalParameter, T>(parameters, c => c.Position == position);
         }
@@ -95,7 +95,7 @@ namespace Autofac
         /// <seealso cref="TypedParameter"/>
         public static T TypedAs<T>(this IEnumerable<Parameter> parameters)
         {
-            if (parameters == null) throw new ArgumentNullException("parameters");
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
             return ConstantValue<TypedParameter, T>(parameters, c => c.Type == typeof(T));
         }
@@ -103,8 +103,8 @@ namespace Autofac
         static TValue ConstantValue<TParameter, TValue>(IEnumerable<Parameter> parameters, Func<TParameter, bool> predicate)
             where TParameter : ConstantParameter
         {
-            if (parameters == null) throw new ArgumentNullException("parameters");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             return parameters
                 .OfType<TParameter>()

@@ -103,7 +103,7 @@ namespace Autofac
             // a metadata value. If the value is present, we won't re-activate. This helps
             // in the container update situation.
             const string started = "__AutoActivated";
-            object meta = null;
+            object meta;
 
             foreach (var startable in componentContext.ComponentRegistry.RegistrationsFor(new TypedService(typeof(IStartable))).Where(r => !r.Metadata.TryGetValue(started, out meta)))
             {
@@ -147,7 +147,7 @@ namespace Autofac
         [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "You can't update any arbitrary context, only containers.")]
         public void Update(IContainer container)
         {
-            this.Update(container, ContainerBuildOptions.None);
+            Update(container, ContainerBuildOptions.None);
         }
 
         /// <summary>

@@ -32,7 +32,7 @@ using Autofac.Util;
 namespace Autofac
 {
     /// <summary>
-    /// Extends <see cref="System.Type"/> with methods that are useful in
+    /// Extends <see cref="Type"/> with methods that are useful in
     /// building scanning rules for <see cref="RegistrationExtensions.RegisterAssemblyTypes"/>.
     /// </summary>
     public static class TypeExtensions
@@ -47,8 +47,9 @@ namespace Autofac
         /// or one of its sub-namespaces; otherwise, false.</returns>
         public static bool IsInNamespace(this Type @this, string @namespace)
         {
-            if (@this == null) throw new ArgumentNullException("this");
-            if (@namespace == null) throw new ArgumentNullException("namespace");
+            if (@this == null) throw new ArgumentNullException(nameof(@this));
+            if (@namespace == null) throw new ArgumentNullException(nameof(@namespace));
+
             return @this.Namespace != null &&
                 (@this.Namespace == @namespace || @this.Namespace.StartsWith(@namespace + ".", StringComparison.Ordinal));
         }
@@ -62,7 +63,8 @@ namespace Autofac
         /// or one of its sub-namespaces; otherwise, false.</returns>
         public static bool IsInNamespaceOf<T>(this Type @this)
         {
-            if (@this == null) throw new ArgumentNullException("this");
+            if (@this == null) throw new ArgumentNullException(nameof(@this));
+
             return IsInNamespace(@this, typeof(T).Namespace);
         }
 
@@ -73,8 +75,8 @@ namespace Autofac
         /// <returns></returns>
         public static bool IsClosedTypeOf(this Type @this, Type openGeneric)
         {
-            if (@this == null) throw new ArgumentNullException("this");
-            if (openGeneric == null) throw new ArgumentNullException("openGeneric");
+            if (@this == null) throw new ArgumentNullException(nameof(@this));
+            if (openGeneric == null) throw new ArgumentNullException(nameof(openGeneric));
 
             if (!(openGeneric.GetTypeInfo().IsGenericTypeDefinition || openGeneric.GetTypeInfo().ContainsGenericParameters))
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, TypeExtensionsResources.NotOpenGenericType, openGeneric.FullName));
@@ -90,7 +92,8 @@ namespace Autofac
         /// <typeparamref name="T"/>; otherwise, False.</returns>
         public static bool IsAssignableTo<T>(this Type @this)
         {
-            if (@this == null) throw new ArgumentNullException("this");
+            if (@this == null) throw new ArgumentNullException(nameof(@this));
+
             return typeof(T).GetTypeInfo().IsAssignableFrom(@this.GetTypeInfo());
         }
 
