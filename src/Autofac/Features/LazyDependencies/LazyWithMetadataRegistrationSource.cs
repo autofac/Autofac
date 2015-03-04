@@ -50,13 +50,18 @@ namespace Autofac.Features.LazyDependencies
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             if (registrationAccessor == null)
-            {
-                throw new ArgumentNullException("registrationAccessor");
-            }
+                throw new ArgumentNullException(nameof(registrationAccessor));
+
             var swt = service as IServiceWithType;
+#if !ASPNETCORE50
             var lazyType = GetLazyType(swt);
             if (swt == null || lazyType == null || !swt.ServiceType.IsGenericTypeDefinedBy(lazyType))
                 return Enumerable.Empty<IComponentRegistration>();
+#else
+            var lazyType = typeof(Lazy<,>);
+            if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(lazyType))
+                return Enumerable.Empty<IComponentRegistration>();
+#endif
 
             var genericTypeArguments = swt.ServiceType.GetTypeInfo().GenericTypeArguments.ToArray();
             var valueType = genericTypeArguments[0];
@@ -105,6 +110,7 @@ namespace Autofac.Features.LazyDependencies
             return rb.CreateRegistration();
         }
 
+#if !ASPNETCORE50
         static Type GetLazyType(IServiceWithType serviceWithType)
         {
             return serviceWithType != null
@@ -113,5 +119,6 @@ namespace Autofac.Features.LazyDependencies
                        ? serviceWithType.ServiceType.GetGenericTypeDefinition()
                        : null;
         }
+#endif
     }
 }

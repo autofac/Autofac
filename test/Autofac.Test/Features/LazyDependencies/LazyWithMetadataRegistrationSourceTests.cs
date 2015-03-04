@@ -1,7 +1,6 @@
 ﻿#if !ASPNET50
 ﻿using System;
 ﻿using Autofac.Core;
-﻿using Autofac.Test.Builder;
 ﻿using Autofac.Test.Features.Metadata;
 ﻿using Xunit;
 
@@ -55,9 +54,10 @@ namespace Autofac.Test.Features.LazyDependencies
             Assert.Equal(SuppliedValue, meta.Metadata.TheInt);
         }
     }
+
     public class LazyWithMetadata_WhenNoMatchingMetadataIsSupplied
     {
-        IContainer _container;
+        readonly IContainer _container;
 
         public LazyWithMetadata_WhenNoMatchingMetadataIsSupplied()
         {

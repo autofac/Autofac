@@ -1,5 +1,5 @@
 ﻿{
-	"version": "4.0.0-alpha1",
+	"version": "4.0.0-alpha1-*",
 	"authors": [ "Autofac Contributors" ],
 	"description": "Autofac integration for ASP.NET 5.0.",
 	"projectUrl": "http://autofac.org",

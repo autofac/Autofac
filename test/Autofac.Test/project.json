@@ -14,7 +14,7 @@
 			"dependencies": {
 				"System.Runtime": "4.0.20-beta-*",
 				"System.Threading": "4.0.10-beta-*",
-				"System.Threading.ExecutionContext":  "4.0.0-beta-*"
+				"System.Threading.ExecutionContext": "4.0.0-beta-*"
 			}
 		}
 	}
