@@ -106,9 +106,9 @@ namespace Autofac.Core.Resolving
         {
             if (_ended) throw new ObjectDisposedException(ResolveOperationResources.TemporaryContextDisposed, innerException: null);
 
-            CircularDependencyDetector.CheckForCircularDependency(registration, _activationStack, ++_callDepth);
-
             var activation = new InstanceLookup(registration, this, currentOperationScope, parameters);
+            
+            CircularDependencyDetector.CheckForCircularDependency(registration, _activationStack, ++_callDepth);
 
             _activationStack.Push(activation);
 
