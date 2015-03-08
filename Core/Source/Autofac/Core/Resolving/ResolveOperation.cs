@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
 
 namespace Autofac.Core.Resolving
@@ -39,6 +40,7 @@ namespace Autofac.Core.Resolving
         ICollection<InstanceLookup> _successfulActivations;
         readonly ISharingLifetimeScope _mostNestedLifetimeScope;
         int _callDepth;
+        int _activationCount;
         bool _ended;
 
         /// <summary>
@@ -110,7 +112,14 @@ namespace Autofac.Core.Resolving
 
             var activation = new InstanceLookup(registration, this, currentOperationScope, parameters);
 
-            _activationStack.Push(activation);
+            // Do not add to the circular dependency resolution stack unless the activator is a reflection activator (ie: generates the actual instance)
+            bool isRealActivation = (activation.ComponentRegistration.Activator is ReflectionActivator);
+            if (isRealActivation)
+                _activationStack.Push(activation);
+
+            // Count the number of activations so we know when the last one is completed. We need to keep track of all activations, not 
+            // just reflection activations here
+            _activationCount++;
 
             var handler = InstanceLookupBeginning;
             if (handler != null)
@@ -119,9 +128,18 @@ namespace Autofac.Core.Resolving
             var instance = activation.Execute();
             _successfulActivations.Add(activation);
 
-            _activationStack.Pop();
+            // Do not pop unless we pushed it above
+            if (isRealActivation)
+                _activationStack.Pop();
 
-            if (_activationStack.Count == 0)
+            // Decrement the activation count
+            _activationCount--;
+
+            // Inject properties AFTER the item is removed from the circular dependency stack, so property-property circular dependencies always work
+            activation.InjectProperties();
+
+            // Complete activations if this is the last recursive item in the activation list
+            if (_activationCount == 0)
                 CompleteActivations();
 
             --_callDepth;

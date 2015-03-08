@@ -94,6 +94,13 @@ namespace Autofac.Core.Resolving
             return _newInstance;
         }
 
+        public void InjectProperties()
+        {
+            if (!NewInstanceActivated)
+                return;
+            _componentRegistration.RaiseInjectProperties(this, _newInstance);
+        }
+
         public void Complete()
         {
             if (!NewInstanceActivated) return;

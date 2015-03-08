@@ -99,5 +99,16 @@ namespace Autofac.Core.Registration
         {
             _inner.RaiseActivated(context, parameters, instance);
         }
+
+        public event EventHandler<InjectPropertiesEventArgs<object>> InjectProperties
+        {
+            add { _inner.InjectProperties += value; }
+            remove { _inner.InjectProperties -= value; }
+        }
+
+        public void RaiseInjectProperties(IComponentContext context, object instance)
+        {
+            _inner.RaiseInjectProperties(context, instance);
+        }
     }
 }

@@ -50,6 +50,7 @@ namespace Autofac.Builder
         readonly ICollection<EventHandler<PreparingEventArgs>> _preparingHandlers = new List<EventHandler<PreparingEventArgs>>();
         readonly ICollection<EventHandler<ActivatingEventArgs<object>>> _activatingHandlers = new List<EventHandler<ActivatingEventArgs<object>>>();
         readonly ICollection<EventHandler<ActivatedEventArgs<object>>> _activatedHandlers = new List<EventHandler<ActivatedEventArgs<object>>>();
+        readonly ICollection<EventHandler<InjectPropertiesEventArgs<object>>> _injectPropertiesHandlers = new List<EventHandler<InjectPropertiesEventArgs<object>>>();
 
         /// <summary>
         /// Construct a RegistrationData instance.
@@ -149,6 +150,11 @@ namespace Autofac.Builder
         public ICollection<EventHandler<ActivatedEventArgs<object>>> ActivatedHandlers { get { return _activatedHandlers; } }
 
         /// <summary>
+        /// Handlers for the Inject Circular Properties event.
+        /// </summary>
+        public ICollection<EventHandler<InjectPropertiesEventArgs<object>>> InjectPropertiesHandlers { get { return _injectPropertiesHandlers; } }
+
+        /// <summary>
         /// Copies the contents of another RegistrationData object into this one.
         /// </summary>
         /// <param name="that">The data to copy.</param>
@@ -176,6 +182,7 @@ namespace Autofac.Builder
             AddAll(PreparingHandlers, that.PreparingHandlers);
             AddAll(ActivatingHandlers, that.ActivatingHandlers);
             AddAll(ActivatedHandlers, that.ActivatedHandlers);
+            AddAll(InjectPropertiesHandlers, that.InjectPropertiesHandlers);
         }
 
         static void AddAll<T>(ICollection<T> to, IEnumerable<T> from)

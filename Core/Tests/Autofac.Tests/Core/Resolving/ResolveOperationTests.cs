@@ -14,7 +14,7 @@ namespace Autofac.Tests.Core.Resolving
         {
             var cb = new ContainerBuilder();
             cb.RegisterType<DependsByCtor>().SingleInstance();
-            cb.RegisterType<DependsByProp>().SingleInstance().PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
+            cb.RegisterType<DependsByProp>().SingleInstance().PropertiesAutowired();
 
             var c = cb.Build();
             var dbp = c.Resolve<DependsByProp>();
@@ -22,6 +22,25 @@ namespace Autofac.Tests.Core.Resolving
             Assert.IsNotNull(dbp.Dep);
             Assert.IsNotNull(dbp.Dep.Dep);
             Assert.AreSame(dbp, dbp.Dep.Dep);
+        }
+
+        [Test]
+        public void CtorPropDependencyOkOrder1DelegateActivator()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterType<DependsByCtor>().InstancePerLifetimeScope();
+            cb.RegisterType<DependsByProp>().InstancePerLifetimeScope().PropertiesAutowired();
+
+            // Create a lifetime scope that will insert DelegateActivators to make sure circular dependency
+            // checks still work in that case
+            var c = cb.Build();
+            using (var s = c.BeginLifetimeScope((ContainerBuilder b) => { })) {
+                var dbp = s.Resolve<DependsByProp>();
+
+                Assert.IsNotNull(dbp.Dep);
+                Assert.IsNotNull(dbp.Dep.Dep);
+                Assert.AreSame(dbp, dbp.Dep.Dep);
+            }
         }
 
         [Test]
@@ -41,11 +60,37 @@ namespace Autofac.Tests.Core.Resolving
 
         [Test]
         [ExpectedException(typeof(DependencyResolutionException))]
+        public void CtorPropDependencyFailsOrder2NotWired()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterType<DependsByCtor>().SingleInstance();
+            cb.RegisterType<DependsByProp>().SingleInstance().PropertiesAutowired();
+
+            var c = cb.Build();
+            c.Resolve<DependsByCtor>();
+        }
+
+        [Test]
+        [ExpectedException(typeof(DependencyResolutionException))]
+        public void CtorPropDependencyFailsOrder2NotWiredDelegateActivator()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterType<DependsByCtor>().InstancePerLifetimeScope();
+            cb.RegisterType<DependsByProp>().InstancePerLifetimeScope().PropertiesAutowired();
+
+            var c = cb.Build();
+            using (var s = c.BeginLifetimeScope((ContainerBuilder b) => { })) {
+                s.Resolve<DependsByCtor>();
+            }
+        }
+
+        [Test]
+        [ExpectedException(typeof(DependencyResolutionException))]
         public void CtorPropDependencyFactoriesOrder1()
         {
             var cb = new ContainerBuilder();
             cb.RegisterType<DependsByCtor>();
-            cb.RegisterType<DependsByProp>().PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
+            cb.RegisterType<DependsByProp>().PropertiesAutowired();
 
             var c = cb.Build();
             c.Resolve<DependsByProp>();

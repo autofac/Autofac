@@ -205,6 +205,25 @@ namespace Autofac.Core.Registration
         }
 
         /// <summary>
+        /// Fired when the activation process is injecting properties when a new instance is created
+        /// </summary>
+        public event EventHandler<InjectPropertiesEventArgs<object>> InjectProperties;
+
+        /// <summary>
+        /// Called by the container to inject properties when the object is fully constructed
+        /// </summary>
+        /// <param name="context">The context in which the instance was activated.</param>
+        /// <param name="instance">The instance.</param>
+        public void RaiseInjectProperties(IComponentContext context, object instance)
+        {
+            var handler = InjectProperties;
+            if (handler == null) return;
+
+            var args = new InjectPropertiesEventArgs<object>(context, instance);
+            handler(this, args);
+        }
+
+        /// <summary>
         /// Describes the component in a human-readable form.
         /// </summary>
         /// <returns>A description of the component.</returns>

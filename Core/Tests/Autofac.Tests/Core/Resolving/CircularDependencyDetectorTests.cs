@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autofac.Tests.Scenarios.Dependencies;
 using NUnit.Framework;
 using Autofac.Core.Resolving;
 using Autofac.Core;
@@ -17,16 +18,16 @@ namespace Autofac.Tests.Core.Resolving
             try
             {
                 var builder = new ContainerBuilder();
-                builder.Register(c => c.Resolve<object>());
+                builder.RegisterType<DependsByCtor>().SingleInstance();
+                builder.RegisterType<DependsByProp>().SingleInstance().PropertiesAutowired();
 
                 var target = builder.Build();
-                target.Resolve<object>();
+                target.Resolve<DependsByCtor>();
             }
             catch (DependencyResolutionException de)
             {
                 Assert.IsNull(de.InnerException);
-                Assert.IsTrue(de.Message.Contains("System.Object -> System.Object"));
-                Assert.IsFalse(de.Message.Contains("System.Object -> System.Object -> System.Object"));
+                Assert.IsTrue(de.Message.Contains("Autofac.Tests.Scenarios.Dependencies.DependsByCtor -> Autofac.Tests.Scenarios.Dependencies.DependsByCtor"));
                 return;
             }
             catch (Exception ex)
