@@ -1,23 +1,16 @@
 ﻿using System;
-using System.Reflection;
 using Autofac;
 using Autofac.AspNet;
+using AutofacTestWebApplication.Models;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Diagnostics;
 using Microsoft.AspNet.Diagnostics.Entity;
 using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Routing;
-using Microsoft.AspNet.Security.Cookies;
-using Microsoft.Data.Entity;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
 using Microsoft.Framework.Logging.Console;
-using AutofacTestWebApplication.Models;
-using ILogger = AutofacTestWebApplication.Services.ILogger;
-using AutofacTestWebApplication.Services;
 
 namespace AutofacTestWebApplication
 {
@@ -62,16 +55,16 @@ namespace AutofacTestWebApplication
                 // Create the Autofac container builder.
                 var builder = new ContainerBuilder();
 
-                // Add any Autofac modules.
+                // Add any Autofac modules or registrations.
                 builder.RegisterModule(new AutofacModule());
 
                 // Populate the services.
                 builder.Populate(services);
 
-                // Builder the container.
+                // Build the container.
                 var container = builder.Build();
 
-                // Resove the service provider.
+                // Resolve and return the service provider.
                 return container.Resolve<IServiceProvider>();
             });
 
