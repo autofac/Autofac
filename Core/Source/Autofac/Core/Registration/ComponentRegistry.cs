@@ -151,17 +151,18 @@ namespace Autofac.Core.Registration
                 registration,
                 adapterServices);
 
+            // adapter registrations come from sources, so they are added with originatedFromSource: true
             var adapters = adaptationSandbox.GetAdapters();
             foreach (var adapter in adapters)
-                AddRegistration(adapter, true);
+                AddRegistration(adapter, preserveDefaults: true, originatedFromSource: true);
         }
 
-        void AddRegistration(IComponentRegistration registration, bool preserveDefaults)
+        void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource = false)
         {
             foreach (var service in registration.Services)
             {
                 var info = GetServiceInfo(service);
-                info.AddImplementation(registration, preserveDefaults);
+                info.AddImplementation(registration, preserveDefaults, originatedFromSource);
             }
 
             _registrations.Add(registration);
@@ -275,7 +276,7 @@ namespace Autofac.Core.Registration
                     foreach (var additionalService in provided.Services)
                     {
                         var additionalInfo = GetServiceInfo(additionalService);
-                        if (additionalInfo.IsInitialized) continue;
+                        if (additionalInfo.IsInitialized || additionalInfo == info) continue;
 
                         if (!additionalInfo.IsInitializing)
                             additionalInfo.BeginInitialization(_dynamicRegistrationSources.Where(src => src != next));
@@ -283,7 +284,7 @@ namespace Autofac.Core.Registration
                             additionalInfo.SkipSource(next);
                     }
 
-                    AddRegistration(provided, true);
+                    AddRegistration(provided, preserveDefaults: true, originatedFromSource: true);
                 }
             }
 

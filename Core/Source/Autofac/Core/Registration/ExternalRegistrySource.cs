@@ -27,6 +27,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Builder;
+using Autofac.Core.Activators.Delegate;
+using Autofac.Core.Lifetime;
 
 namespace Autofac.Core.Registration
 {
@@ -62,15 +64,36 @@ namespace Autofac.Core.Registration
             // Issue #475: This method was refactored significantly to handle
             // registrations made on the fly in parent lifetime scopes to correctly
             // pass to child lifetime scopes.
-            foreach (var registration in _registry.RegistrationsFor(service).Where(r => !r.IsAdapting()))
-            {
-                var r = registration;
-                yield return RegistrationBuilder.ForDelegate(r.Activator.LimitType, (c, p) => c.ResolveComponent(r, p))
-                    .Targeting(r)
-                    .As(service)
-                    .ExternallyOwned()
-                    .CreateRegistration();
-            }
+
+            // Issue #272: Taking from the registry the following registrations:
+            //   - non-adapting own registrations: wrap them with ExternalComponentRegistration
+            //   - if the registration is from the parent registry of this registry,
+            //     it is already wrapped with ExternalComponentRegistration,
+            //     share it as is
+
+            return _registry.RegistrationsFor(service)
+                .Where(r => r is ExternalComponentRegistration || !r.IsAdapting())
+                .Select(r =>
+                    r as ExternalComponentRegistration ??
+
+                        // equivalent to following registation builder
+                        //    RegistrationBuilder.ForDelegate(r.Activator.LimitType, (c, p) => c.ResolveComponent(r, p))
+                        //        .Targeting(r)
+                        //        .As(service)
+                        //        .ExternallyOwned()
+                        //        .CreateRegistration()
+                    new ExternalComponentRegistration(
+                        Guid.NewGuid(), 
+                        new DelegateActivator(r.Activator.LimitType, (c, p) => c.ResolveComponent(r, p)),
+                        new CurrentScopeLifetime(), 
+                        InstanceSharing.None,
+                        InstanceOwnership.ExternallyOwned,
+                        new[]{service},
+                        new Dictionary<string, object>(),
+                        r
+                    )
+                );
+
         }
 
         /// <summary>
@@ -81,5 +104,18 @@ namespace Autofac.Core.Registration
         {
             get { return false; }
         }
+
+
+        /// <summary>
+        ///  ComponentRegistration subtyped only to distinguish it from other adapted registrations
+        /// </summary>
+        private class ExternalComponentRegistration : ComponentRegistration
+        {
+
+            public ExternalComponentRegistration(Guid id, IInstanceActivator activator, IComponentLifetime lifetime, InstanceSharing sharing, InstanceOwnership ownership, IEnumerable<Service> services, IDictionary<string, object> metadata, IComponentRegistration target) : base(id, activator, lifetime, sharing, ownership, services, metadata, target)
+            {
+            }
+        }
+
     }
 }
