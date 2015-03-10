@@ -13,11 +13,11 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Autofac.Test", "test\Autofa
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Autofac.Test.Scenarios.ScannedAssembly", "test\Autofac.Test.Scenarios.ScannedAssembly\Autofac.Test.Scenarios.ScannedAssembly.kproj", "{376ADF06-0774-4C00-AE45-4B0DF63779B2}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Autofac.AspNet", "src\Autofac.AspNet\Autofac.AspNet.kproj", "{513C7F7A-A758-4D48-94F4-891A00F63DA1}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{F3C8D3C7-793A-4578-BBF1-421E94375DF7}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "AutofacTestWebApplication", "samples\AutofacTestWebApplication\AutofacTestWebApplication.kproj", "{7018E664-6F39-415E-BB85-43496836A8B2}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Autofac.Dnx", "src\Autofac.Dnx\Autofac.Dnx.kproj", "{513C7F7A-A758-4D48-94F4-891A00F63DA1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,22 +79,6 @@ Global
 		{376ADF06-0774-4C00-AE45-4B0DF63779B2}.Release|x64.Build.0 = Release|Any CPU
 		{376ADF06-0774-4C00-AE45-4B0DF63779B2}.Release|x86.ActiveCfg = Release|Any CPU
 		{376ADF06-0774-4C00-AE45-4B0DF63779B2}.Release|x86.Build.0 = Release|Any CPU
-		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Debug|ARM.Build.0 = Debug|Any CPU
-		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Debug|x64.Build.0 = Debug|Any CPU
-		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Debug|x86.Build.0 = Debug|Any CPU
-		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Release|ARM.ActiveCfg = Release|Any CPU
-		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Release|ARM.Build.0 = Release|Any CPU
-		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Release|x64.ActiveCfg = Release|Any CPU
-		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Release|x64.Build.0 = Release|Any CPU
-		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Release|x86.ActiveCfg = Release|Any CPU
-		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Release|x86.Build.0 = Release|Any CPU
 		{7018E664-6F39-415E-BB85-43496836A8B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7018E664-6F39-415E-BB85-43496836A8B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7018E664-6F39-415E-BB85-43496836A8B2}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -111,6 +95,22 @@ Global
 		{7018E664-6F39-415E-BB85-43496836A8B2}.Release|x64.Build.0 = Release|Any CPU
 		{7018E664-6F39-415E-BB85-43496836A8B2}.Release|x86.ActiveCfg = Release|Any CPU
 		{7018E664-6F39-415E-BB85-43496836A8B2}.Release|x86.Build.0 = Release|Any CPU
+		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Debug|ARM.Build.0 = Debug|Any CPU
+		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Debug|x64.Build.0 = Debug|Any CPU
+		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Debug|x86.Build.0 = Debug|Any CPU
+		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Release|ARM.ActiveCfg = Release|Any CPU
+		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Release|ARM.Build.0 = Release|Any CPU
+		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Release|x64.ActiveCfg = Release|Any CPU
+		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Release|x64.Build.0 = Release|Any CPU
+		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Release|x86.ActiveCfg = Release|Any CPU
+		{513C7F7A-A758-4D48-94F4-891A00F63DA1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -119,8 +119,8 @@ Global
 		{198CE8BE-0C4A-4DA6-8FFE-C5F949B2BBBF} = {5A54DF18-E3F3-4929-876D-00650A15763E}
 		{48EC73A9-9AA0-4063-9FEE-AE5BB43C66B0} = {DEA4A8C6-DE56-4359-A87C-472FB34132E7}
 		{376ADF06-0774-4C00-AE45-4B0DF63779B2} = {DEA4A8C6-DE56-4359-A87C-472FB34132E7}
-		{513C7F7A-A758-4D48-94F4-891A00F63DA1} = {5A54DF18-E3F3-4929-876D-00650A15763E}
 		{7018E664-6F39-415E-BB85-43496836A8B2} = {F3C8D3C7-793A-4578-BBF1-421E94375DF7}
+		{513C7F7A-A758-4D48-94F4-891A00F63DA1} = {5A54DF18-E3F3-4929-876D-00650A15763E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.Interception.2.1.505.0\lib\NET35;packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35;packages\EnterpriseLibrary.ExceptionHandling.5.0.505.0\lib\NET35;packages\Unity.2.1.505.2\lib\NET35;packages\Unity.Interception.2.1.505.2\lib\NET35

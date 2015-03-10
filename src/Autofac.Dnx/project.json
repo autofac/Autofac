@@ -5,7 +5,7 @@
 	"projectUrl": "http://autofac.org",
 	"licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
 	"requireLicenseAcceptance": false,
-	"tags": [ "Autofac", "DI", "IoC", "AspNet" ],
+	"tags": [ "Autofac", "DI", "IoC", "AspNet", "DNX" ],
 	"dependencies": {
 		"Autofac": "4.0.0-alpha1",
 		"Microsoft.Framework.DependencyInjection": "1.0.0-beta3"

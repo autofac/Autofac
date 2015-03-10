@@ -1,6 +1,6 @@
 ﻿using System;
 using Autofac;
-using Autofac.AspNet;
+using Autofac.Dnx;
 using AutofacTestWebApplication.Models;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Diagnostics;
