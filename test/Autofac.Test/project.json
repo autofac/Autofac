@@ -1,6 +1,6 @@
 ﻿{
 	"dependencies": {
-		"Autofac": "1.0.0-*",
+		"Autofac": "4.0.0-alpha1",
 		"xunit": "2.0.0-rc2-*",
 		"xunit.runner.aspnet": "2.0.0-rc2-*",
 		"Autofac.Test.Scenarios.ScannedAssembly": "1.0.0-*"
