@@ -1,0 +1,29 @@
+﻿{
+	/* Click to learn more about project.json  http://go.microsoft.com/fwlink/?LinkID=517074 */
+	"webroot": "wwwroot",
+	"version": "1.0.0-*",
+	"dependencies": {
+		"Microsoft.AspNet.Server.IIS": "1.0.0-beta3",
+		"Microsoft.AspNet.Mvc": "6.0.0-beta3",
+		"Microsoft.AspNet.StaticFiles": "1.0.0-beta3",
+		"Microsoft.AspNet.Server.WebListener": "1.0.0-beta3",
+		"Autofac": "4.0.0-alpha1",
+		"Autofac.Dnx": "4.0.0-alpha1"
+	},
+	"frameworks": {
+		"aspnet50": { },
+		"aspnetcore50": { }
+	},
+	"exclude": [
+		"wwwroot",
+		"node_modules",
+		"bower_components"
+	],
+	"bundleExclude": [
+		"node_modules",
+		"bower_components",
+		"**.kproj",
+		"**.user",
+		"**.vspscc"
+	]
+}
