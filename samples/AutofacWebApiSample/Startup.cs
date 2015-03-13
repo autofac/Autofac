@@ -15,34 +15,30 @@ namespace AutofacWebApiSample
 
         // This method gets called by a runtime.
         // Use this method to add services to the container
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            // We add MVC here instead of in ConfigureServices.
+            services.AddMvc();
+
+            // Create the Autofac container builder.
+            var builder = new ContainerBuilder();
+
+            // Add any Autofac modules or registrations.
+            builder.RegisterModule(new AutofacModule());
+
+            // Populate the services.
+            builder.Populate(services);
+
+            // Build the container.
+            var container = builder.Build();
+
+            // Resolve and return the service provider.
+            return container.Resolve<IServiceProvider>();
         }
 
         // Configure is called after ConfigureServices is called.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseServices(services =>
-            {
-                // We add MVC here instead of in ConfigureServices.
-                services.AddMvc();
-
-                // Create the Autofac container builder.
-                var builder = new ContainerBuilder();
-
-                // Add any Autofac modules or registrations.
-                builder.RegisterModule(new AutofacModule());
-
-                // Populate the services.
-                builder.Populate(services);
-
-                // Build the container.
-                var container = builder.Build();
-
-                // Resolve and return the service provider.
-                return container.Resolve<IServiceProvider>();
-            });
-
             app.UseStaticFiles();
             // Add MVC to the request pipeline.
             app.UseMvc(routes =>
