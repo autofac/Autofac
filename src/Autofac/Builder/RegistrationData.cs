@@ -43,13 +43,7 @@ namespace Autofac.Builder
 
         readonly ICollection<Service> _services = new HashSet<Service>();
 
-        InstanceOwnership _ownership = InstanceOwnership.OwnedByLifetimeScope;
         IComponentLifetime _lifetime = new CurrentScopeLifetime();
-        InstanceSharing _sharing = InstanceSharing.None;
-        readonly IDictionary<string, object> _metadata = new Dictionary<string, object>();
-        readonly ICollection<EventHandler<PreparingEventArgs>> _preparingHandlers = new List<EventHandler<PreparingEventArgs>>();
-        readonly ICollection<EventHandler<ActivatingEventArgs<object>>> _activatingHandlers = new List<EventHandler<ActivatingEventArgs<object>>>();
-        readonly ICollection<EventHandler<ActivatedEventArgs<object>>> _activatedHandlers = new List<EventHandler<ActivatedEventArgs<object>>>();
 
         /// <summary>
         /// Construct a RegistrationData instance.
@@ -58,7 +52,8 @@ namespace Autofac.Builder
         /// are added.</param>
         public RegistrationData(Service defaultService)
         {
-            if (defaultService == null) throw new ArgumentNullException("defaultService");
+            if (defaultService == null) throw new ArgumentNullException(nameof(defaultService));
+
             _defaultService = defaultService;
         }
 
@@ -84,7 +79,8 @@ namespace Autofac.Builder
         /// clear the default service.</remarks>
         public void AddServices(IEnumerable<Service> services)
         {
-            if (services == null) throw new ArgumentNullException("services");
+            if (services == null) throw new ArgumentNullException(nameof(services));
+
             _defaultServiceOverridden = true; // important even when services is empty
             foreach (var service in services)
                 AddService(service);
@@ -96,7 +92,8 @@ namespace Autofac.Builder
         /// <param name="service">The service to add.</param>
         public void AddService(Service service)
         {
-            if (service == null) throw new ArgumentNullException("service");
+            if (service == null) throw new ArgumentNullException(nameof(service));
+
             _defaultServiceOverridden = true;
             _services.Add(service);
         }
@@ -104,11 +101,7 @@ namespace Autofac.Builder
         /// <summary>
         /// The instance ownership assigned to the component.
         /// </summary>
-        public InstanceOwnership Ownership
-        {
-            get { return _ownership; }
-            set { _ownership = value; }
-        }
+        public InstanceOwnership Ownership { get; set; } = InstanceOwnership.OwnedByLifetimeScope;
 
         /// <summary>
         /// The lifetime assigned to the component.
@@ -122,31 +115,27 @@ namespace Autofac.Builder
         /// <summary>
         /// The sharing mode assigned to the component.
         /// </summary>
-        public InstanceSharing Sharing
-        {
-            get { return _sharing; }
-            set { _sharing = value; }
-        }
+        public InstanceSharing Sharing { get; set; } = InstanceSharing.None;
 
         /// <summary>
         /// Extended properties assigned to the component.
         /// </summary>
-        public IDictionary<string, object> Metadata { get { return _metadata; } }
+        public IDictionary<string, object> Metadata { get; } = new Dictionary<string, object>();
 
         /// <summary>
         /// Handlers for the Preparing event.
         /// </summary>
-        public ICollection<EventHandler<PreparingEventArgs>> PreparingHandlers { get { return _preparingHandlers; } }
+        public ICollection<EventHandler<PreparingEventArgs>> PreparingHandlers { get; } = new List<EventHandler<PreparingEventArgs>>();
 
         /// <summary>
         /// Handlers for the Activating event.
         /// </summary>
-        public ICollection<EventHandler<ActivatingEventArgs<object>>> ActivatingHandlers { get { return _activatingHandlers; } }
+        public ICollection<EventHandler<ActivatingEventArgs<object>>> ActivatingHandlers { get; } = new List<EventHandler<ActivatingEventArgs<object>>>();
 
         /// <summary>
         /// Handlers for the Activated event.
         /// </summary>
-        public ICollection<EventHandler<ActivatedEventArgs<object>>> ActivatedHandlers { get { return _activatedHandlers; } }
+        public ICollection<EventHandler<ActivatedEventArgs<object>>> ActivatedHandlers { get; } = new List<EventHandler<ActivatedEventArgs<object>>>();
 
         /// <summary>
         /// Copies the contents of another RegistrationData object into this one.
@@ -159,10 +148,8 @@ namespace Autofac.Builder
         /// </exception>
         public void CopyFrom(RegistrationData that, bool includeDefaultService)
         {
-            if (that == null)
-            {
-                throw new ArgumentNullException("that");
-            }
+            if (that == null) throw new ArgumentNullException(nameof(that));
+
             Ownership = that.Ownership;
             Sharing = that.Sharing;
             Lifetime = that.Lifetime;

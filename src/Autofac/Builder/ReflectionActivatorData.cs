@@ -39,8 +39,6 @@ namespace Autofac.Builder
         Type _implementer;
         IConstructorFinder _constructorFinder = new DefaultConstructorFinder();
         IConstructorSelector _constructorSelector = new MostParametersConstructorSelector();
-        readonly IList<Parameter> _configuredParameters = new List<Parameter>();
-        readonly IList<Parameter> _configuredProperties = new List<Parameter>();
 
         /// <summary>
         /// Specify a reflection activator for the given type.
@@ -87,17 +85,11 @@ namespace Autofac.Builder
         /// <summary>
         /// The explicitly bound constructor parameters.
         /// </summary>
-        public IList<Parameter> ConfiguredParameters
-        {
-            get { return _configuredParameters; }
-        }
+        public IList<Parameter> ConfiguredParameters { get; } = new List<Parameter>();
 
         /// <summary>
         /// The explicitly bound properties.
         /// </summary>
-        public IList<Parameter> ConfiguredProperties
-        {
-            get { return _configuredProperties; }
-        }
+        public IList<Parameter> ConfiguredProperties { get; } = new List<Parameter>();
     }
 }

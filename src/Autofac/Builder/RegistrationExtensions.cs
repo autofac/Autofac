@@ -49,10 +49,11 @@ namespace Autofac.Builder
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         /// <remarks>Factory delegates are provided automatically in Autofac 2,
         /// and this method is generally not required.</remarks>
-        public static IRegistrationBuilder<System.Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
+        public static IRegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
             RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType)
         {
-            if (delegateType == null) throw new ArgumentNullException("delegateType");
+            if (delegateType == null) throw new ArgumentNullException(nameof(delegateType));
+
             Enforce.ArgumentTypeIsFunction(delegateType);
 
             var returnType = delegateType.FunctionReturnType();
@@ -68,10 +69,10 @@ namespace Autofac.Builder
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         /// <remarks>Factory delegates are provided automatically in Autofac 2, and
         /// this method is generally not required.</remarks>
-        public static IRegistrationBuilder<System.Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
+        public static IRegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
             RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType, Service service)
         {
-            return GeneratedFactoryRegistrationExtensions.RegisterGeneratedFactory<System.Delegate>(builder, delegateType, service);
+            return GeneratedFactoryRegistrationExtensions.RegisterGeneratedFactory<Delegate>(builder, delegateType, service);
         }
 
         /// <summary>
@@ -102,7 +103,8 @@ namespace Autofac.Builder
             RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder)
             where TDelegate : class
         {
-            if (builder == null) throw new ArgumentNullException("builder");
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+
             Enforce.ArgumentTypeIsFunction(typeof(TDelegate));
 
             var returnType = typeof(TDelegate).FunctionReturnType();
@@ -127,10 +129,8 @@ namespace Autofac.Builder
             where TGeneratedFactoryActivatorData : GeneratedFactoryActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
-            if (registration == null)
-            {
-                throw new ArgumentNullException("registration");
-            }
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+
             registration.ActivatorData.ParameterMapping = ParameterMapping.ByName;
             return registration;
         }
@@ -153,10 +153,8 @@ namespace Autofac.Builder
             where TGeneratedFactoryActivatorData : GeneratedFactoryActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
-            if (registration == null)
-            {
-                throw new ArgumentNullException("registration");
-            }
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+
             registration.ActivatorData.ParameterMapping = ParameterMapping.ByPosition;
             return registration;
         }
@@ -179,17 +177,15 @@ namespace Autofac.Builder
             where TGeneratedFactoryActivatorData : GeneratedFactoryActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
-            if (registration == null)
-            {
-                throw new ArgumentNullException("registration");
-            }
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+
             registration.ActivatorData.ParameterMapping = ParameterMapping.ByType;
             return registration;
         }
 
         /// <summary>
         /// Registers the type as a collection. If no services or names are specified, the
-        /// default services will be IList&lt;T&gt;, ICollection&lt;T&gt;, and IEnumerable&lt;T&gt;        
+        /// default services will be IList&lt;T&gt;, ICollection&lt;T&gt;, and IEnumerable&lt;T&gt;
         /// </summary>
         /// <param name="elementType">The type of the collection elements.</param>
         /// <param name="builder">Container builder.</param>

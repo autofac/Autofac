@@ -33,26 +33,18 @@ namespace Autofac.Builder
     /// </summary>
     public class SimpleActivatorData : IConcreteActivatorData
     {
-        readonly IInstanceActivator _activator;
-
         /// <summary>
         /// Return the provided activator.
         /// </summary>
         /// <param name="activator">The activator to return.</param>
         public SimpleActivatorData(IInstanceActivator activator)
         {
-            _activator = Enforce.ArgumentNotNull(activator, "activator");
+            Activator = Enforce.ArgumentNotNull(activator, "activator");
         }
 
         /// <summary>
         /// Gets the activator.
         /// </summary>
-        public IInstanceActivator Activator
-        {
-            get
-            {
-                return _activator;
-            }
-        }
+        public IInstanceActivator Activator { get; }
     }
 }

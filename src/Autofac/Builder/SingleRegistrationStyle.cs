@@ -34,42 +34,21 @@ namespace Autofac.Builder
     /// </summary>
     public class SingleRegistrationStyle
     {
-        Guid _id = Guid.NewGuid();
-
-        readonly ICollection<EventHandler<ComponentRegisteredEventArgs>>
-            _registeredHandlers = new List<EventHandler<ComponentRegisteredEventArgs>>();
-
-        bool _preserveDefaults;
-
         /// <summary>
         /// The id used for the registration.
         /// </summary>
-        public Guid Id
-        {
-            get
-            {
-                return _id;
-            }
-            set
-            {
-                _id = value;
-            }
-        }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         /// <summary>
         /// Handlers to notify of the component registration event.
         /// </summary>
-        public ICollection<EventHandler<ComponentRegisteredEventArgs>> RegisteredHandlers { get { return _registeredHandlers; } }
+        public ICollection<EventHandler<ComponentRegisteredEventArgs>> RegisteredHandlers { get; } = new List<EventHandler<ComponentRegisteredEventArgs>>();
 
         /// <summary>
         /// By default, new registrations override existing registrations as defaults.
         /// If set to true, new registrations will not change existing defaults.
         /// </summary>
-        public bool PreserveDefaults
-        {
-            get { return _preserveDefaults; }
-            set { _preserveDefaults = value; }
-        }
+        public bool PreserveDefaults { get; set; }
 
         /// <summary>
         /// The component upon which this registration is based.
