@@ -62,8 +62,8 @@ namespace Autofac.Core.Activators.Delegate
         /// </remarks>
         public object ActivateInstance(IComponentContext context, IEnumerable<Parameter> parameters)
         {
-            if (context == null) throw new ArgumentNullException("context");
-            if (parameters == null) throw new ArgumentNullException("parameters");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
             var result = _activationFunction(context, parameters);
             if (result == null)

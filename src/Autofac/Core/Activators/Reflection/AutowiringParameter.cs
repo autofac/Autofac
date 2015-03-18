@@ -48,14 +48,9 @@ namespace Autofac.Core.Activators.Reflection
         /// </exception>
         public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<object> valueProvider)
         {
-            if (pi == null)
-            {
-                throw new ArgumentNullException("pi");
-            }
-            if (context == null)
-            {
-                throw new ArgumentNullException("context");
-            }
+            if (pi == null) throw new ArgumentNullException(nameof(pi));
+            if (context == null) throw new ArgumentNullException(nameof(context));
+
             IComponentRegistration registration;
             if (context.ComponentRegistry.TryGetRegistration(new TypedService(pi.ParameterType), out registration))
             {

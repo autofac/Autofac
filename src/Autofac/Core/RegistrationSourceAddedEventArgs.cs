@@ -32,9 +32,6 @@ namespace Autofac.Core
     /// </summary>
     public class RegistrationSourceAddedEventArgs : EventArgs
     {
-        readonly IComponentRegistry _componentRegistry;
-        readonly IRegistrationSource _registrationSource;
-
         /// <summary>
         /// Construct an instance of the <see cref="RegistrationSourceAddedEventArgs"/> class.
         /// </summary>
@@ -43,26 +40,21 @@ namespace Autofac.Core
         /// <exception cref="ArgumentNullException"></exception>
         public RegistrationSourceAddedEventArgs(IComponentRegistry componentRegistry, IRegistrationSource registrationSource)
         {
-            if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
-            if (registrationSource == null) throw new ArgumentNullException("registrationSource");
-            _componentRegistry = componentRegistry;
-            _registrationSource = registrationSource;
+            if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
+            if (registrationSource == null) throw new ArgumentNullException(nameof(registrationSource));
+
+            ComponentRegistry = componentRegistry;
+            RegistrationSource = registrationSource;
         }
 
         /// <summary>
         /// The registry to which the source was added.
         /// </summary>
-        public IRegistrationSource RegistrationSource
-        {
-            get { return _registrationSource; }
-        }
+        public IRegistrationSource RegistrationSource { get; }
 
         /// <summary>
         /// The source that was added.
         /// </summary>
-        public IComponentRegistry ComponentRegistry
-        {
-            get { return _componentRegistry; }
-        }
+        public IComponentRegistry ComponentRegistry { get; }
     }
 }

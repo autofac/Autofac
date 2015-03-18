@@ -39,7 +39,6 @@ namespace Autofac.Core.Activators.Reflection
     {
         readonly ConstructorInfo _ci;
         readonly Func<object>[] _valueRetrievers;
-        readonly bool _canInstantiate;
         readonly static SafeDictionary<ConstructorInfo, Func<object[], object>> _constructorInvokers = new SafeDictionary<ConstructorInfo, Func<object[], object>>();
 
         // We really need to report all non-bindable parameters, howevers some refactoring
@@ -51,12 +50,12 @@ namespace Autofac.Core.Activators.Reflection
         /// The constructor on the target type. The actual constructor used
         /// might differ, e.g. if using a dynamic proxy.
         /// </summary>
-        public ConstructorInfo TargetConstructor { get { return _ci; } }
+        public ConstructorInfo TargetConstructor => _ci;
 
         /// <summary>
         /// True if the binding is valid.
         /// </summary>
-        public bool CanInstantiate { get { return _canInstantiate; } }
+        public bool CanInstantiate { get; }
 
         /// <summary>
         /// Construct a new ConstructorParameterBinding.
@@ -69,11 +68,12 @@ namespace Autofac.Core.Activators.Reflection
             IEnumerable<Parameter> availableParameters,
             IComponentContext context)
         {
-            _canInstantiate = true;
-            _ci = Enforce.ArgumentNotNull(ci, "ci");
-            if (availableParameters == null) throw new ArgumentNullException("availableParameters");
-            if (context == null) throw new ArgumentNullException("context");
+            if (ci == null) throw new ArgumentNullException(nameof(ci));
+            if (availableParameters == null) throw new ArgumentNullException(nameof(availableParameters));
+            if (context == null) throw new ArgumentNullException(nameof(context));
 
+            CanInstantiate = true;
+            _ci = ci;
             var parameters = ci.GetParameters();
             _valueRetrievers = new Func<object>[parameters.Length];
 
@@ -93,7 +93,7 @@ namespace Autofac.Core.Activators.Reflection
                 }
                 if (!foundValue)
                 {
-                    _canInstantiate = false;
+                    CanInstantiate = false;
                     _firstNonBindableParameter = pi;
                     break;
                 }
@@ -139,15 +139,9 @@ namespace Autofac.Core.Activators.Reflection
         /// <summary>
         /// Describes the constructor parameter binding.
         /// </summary>
-        public string Description
-        {
-            get
-            {
-                return CanInstantiate
-                    ? string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.BoundConstructor, _ci)
-                    : string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.NonBindableConstructor, _ci, _firstNonBindableParameter);
-            }
-        }
+        public string Description => CanInstantiate
+            ? string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.BoundConstructor, _ci)
+            : string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.NonBindableConstructor, _ci, _firstNonBindableParameter);
 
         ///<summary>Returns a System.String that represents the current System.Object.</summary>
         ///<returns>A System.String that represents the current System.Object.</returns>

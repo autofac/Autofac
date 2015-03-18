@@ -35,8 +35,6 @@ namespace Autofac.Core
     /// </summary>
     public class PreparingEventArgs : EventArgs
     {
-        readonly IComponentContext _context;
-        readonly IComponentRegistration _component;
         IEnumerable<Parameter> _parameters;
 
         /// <summary>
@@ -47,32 +45,20 @@ namespace Autofac.Core
         /// <param name="parameters">The parameters.</param>
         public PreparingEventArgs(IComponentContext context, IComponentRegistration component, IEnumerable<Parameter> parameters)
         {
-            _context = Enforce.ArgumentNotNull(context, "context");
-            _component = Enforce.ArgumentNotNull(component, "component");
+            Context = Enforce.ArgumentNotNull(context, "context");
+            Component = Enforce.ArgumentNotNull(component, "component");
             _parameters = Enforce.ArgumentNotNull(parameters, "parameters");
         }
 
         /// <summary>
         /// The context in which the activation is occurring.
         /// </summary>
-        public IComponentContext Context
-        {
-            get
-            {
-                return _context;
-            }
-        }
+        public IComponentContext Context { get; }
 
         /// <summary>
         /// The component providing the instance being activated.
         /// </summary>
-        public IComponentRegistration Component
-        {
-            get
-            {
-                return _component;
-            }
-        }
+        public IComponentRegistration Component { get; }
 
         /// <summary>
         /// The parameters supplied to the activator.
@@ -85,7 +71,7 @@ namespace Autofac.Core
             }
             set
             {
-                if (value == null) throw new ArgumentNullException("value");
+                if (value == null) throw new ArgumentNullException(nameof(value));
                 _parameters = value;
             }
         }

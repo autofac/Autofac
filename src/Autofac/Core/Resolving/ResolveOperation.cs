@@ -61,7 +61,7 @@ namespace Autofac.Core.Resolving
         /// The component instance.
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
-        /// <exception cref="Autofac.Core.DependencyResolutionException"/>
+        /// <exception cref="DependencyResolutionException"/>
         public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
             return GetOrCreateInstance(_mostNestedLifetimeScope, registration, parameters);
@@ -113,8 +113,7 @@ namespace Autofac.Core.Resolving
             _activationStack.Push(activation);
 
             var handler = InstanceLookupBeginning;
-            if (handler != null)
-                handler(this, new InstanceLookupBeginningEventArgs(activation));
+            handler?.Invoke(this, new InstanceLookupBeginningEventArgs(activation));
 
             var instance = activation.Execute();
             _successfulActivations.Add(activation);
@@ -150,10 +149,7 @@ namespace Autofac.Core.Resolving
         /// <summary>
         /// Associates services with the components that provide them.
         /// </summary>
-        public IComponentRegistry ComponentRegistry
-        {
-            get { return _mostNestedLifetimeScope.ComponentRegistry; }
-        }
+        public IComponentRegistry ComponentRegistry => _mostNestedLifetimeScope.ComponentRegistry;
 
         void End(Exception exception = null)
         {
@@ -161,8 +157,7 @@ namespace Autofac.Core.Resolving
 
             _ended = true;
             var handler = CurrentOperationEnding;
-            if (handler != null)
-                handler(this, new ResolveOperationEndingEventArgs(this, exception));
+            handler?.Invoke(this, new ResolveOperationEndingEventArgs(this, exception));
         }
     }
 }

@@ -34,8 +34,8 @@ namespace Autofac.Core.Activators.Reflection
     {
         public static void InjectProperties(IComponentContext context, object instance, bool overrideSetValues)
         {
-            if (context == null) throw new ArgumentNullException("context");
-            if (instance == null) throw new ArgumentNullException("instance");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (instance == null) throw new ArgumentNullException(nameof(instance));
 
             var instanceType = instance.GetType();
 

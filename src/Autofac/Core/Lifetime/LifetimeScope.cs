@@ -45,11 +45,7 @@ namespace Autofac.Core.Lifetime
         readonly object _synchRoot = new object();
         readonly IDictionary<Guid, object> _sharedInstances = new Dictionary<Guid, object>();
 
-        readonly IComponentRegistry _componentRegistry;
-        readonly ISharingLifetimeScope _root; // Root optimises singleton lookup without traversal
         readonly ISharingLifetimeScope _parent;
-        readonly IDisposer _disposer = new Disposer();
-        readonly object _tag;
 
         static internal Guid SelfRegistrationId = Guid.NewGuid();
         static readonly Action<ContainerBuilder> NoConfiguration = b => { };
@@ -76,7 +72,7 @@ namespace Autofac.Core.Lifetime
             : this(componentRegistry, tag)
         {
             _parent = Enforce.ArgumentNotNull(parent, "parent");
-            _root = _parent.RootLifetimeScope;
+            RootLifetimeScope = _parent.RootLifetimeScope;
         }
 
         /// <summary>
@@ -87,9 +83,9 @@ namespace Autofac.Core.Lifetime
         public LifetimeScope(IComponentRegistry componentRegistry, object tag)
             : this()
         {
-            _componentRegistry = Enforce.ArgumentNotNull(componentRegistry, "componentRegistry");
-            _root = this;
-            _tag = Enforce.ArgumentNotNull(tag, "tag");
+            ComponentRegistry = Enforce.ArgumentNotNull(componentRegistry, "componentRegistry");
+            RootLifetimeScope = this;
+            Tag = Enforce.ArgumentNotNull(tag, "tag");
         }
 
         /// <summary>
@@ -120,7 +116,7 @@ namespace Autofac.Core.Lifetime
         public ILifetimeScope BeginLifetimeScope(object tag)
         {
             CheckNotDisposed();
-            var registry = new CopyOnWriteRegistry(_componentRegistry, () => CreateScopeRestrictedRegistry(tag, NoConfiguration));
+            var registry = new CopyOnWriteRegistry(ComponentRegistry, () => CreateScopeRestrictedRegistry(tag, NoConfiguration));
             var scope = new LifetimeScope(registry, this, tag);
             RaiseBeginning(scope);
             return scope;
@@ -129,8 +125,7 @@ namespace Autofac.Core.Lifetime
         void RaiseBeginning(ILifetimeScope scope)
         {
             var handler = ChildLifetimeScopeBeginning;
-            if (handler != null)
-                handler(this, new LifetimeScopeBeginningEventArgs(scope));
+            handler?.Invoke(this, new LifetimeScopeBeginningEventArgs(scope));
         }
 
         /// <summary>
@@ -175,7 +170,8 @@ namespace Autofac.Core.Lifetime
         /// </example>
         public ILifetimeScope BeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction)
         {
-            if (configurationAction == null) throw new ArgumentNullException("configurationAction");
+            if (configurationAction == null) throw new ArgumentNullException(nameof(configurationAction));
+
             CheckNotDisposed();
 
             var locals = CreateScopeRestrictedRegistry(tag, configurationAction);
@@ -221,32 +217,26 @@ namespace Autofac.Core.Lifetime
         /// <exception cref="DependencyResolutionException"/>
         public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
-            if (registration == null) throw new ArgumentNullException("registration");
-            if (parameters == null) throw new ArgumentNullException("parameters");
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+
             CheckNotDisposed();
 
             var operation = new ResolveOperation(this);
             var handler = ResolveOperationBeginning;
-            if (handler != null)
-                handler(this, new ResolveOperationBeginningEventArgs(operation));
+            handler?.Invoke(this, new ResolveOperationBeginningEventArgs(operation));
             return operation.Execute(registration, parameters);
         }
 
         /// <summary>
         /// The parent of this node of the hierarchy, or null.
         /// </summary>
-        public ISharingLifetimeScope ParentLifetimeScope
-        {
-            get { return _parent; }
-        }
+        public ISharingLifetimeScope ParentLifetimeScope => _parent;
 
         /// <summary>
         /// The root of the sharing hierarchy.
         /// </summary>
-        public ISharingLifetimeScope RootLifetimeScope
-        {
-            get { return _root; }
-        }
+        public ISharingLifetimeScope RootLifetimeScope { get; }
 
         /// <summary>
         /// Try to retrieve an instance based on a GUID key. If the instance
@@ -257,10 +247,8 @@ namespace Autofac.Core.Lifetime
         /// <returns>An instance.</returns>
         public object GetOrCreateAndShare(Guid id, Func<object> creator)
         {
-            if (creator == null)
-            {
-                throw new ArgumentNullException("creator");
-            }
+            if (creator == null) throw new ArgumentNullException(nameof(creator));
+
             lock (_synchRoot)
             {
                 object result;
@@ -277,31 +265,19 @@ namespace Autofac.Core.Lifetime
         /// The disposer associated with this container. Instances can be associated
         /// with it manually if required.
         /// </summary>
-        public IDisposer Disposer
-        {
-            get { return _disposer; }
-        }
+        public IDisposer Disposer { get; } = new Disposer();
 
         /// <summary>
         /// Tag applied to the lifetime scope.
         /// </summary>
         /// <remarks>The tag applied to this scope and the contexts generated when
         /// it resolves component dependencies.</remarks>
-        public object Tag
-        {
-            get
-            {
-                return _tag;
-            }
-        }
+        public object Tag { get; }
 
         /// <summary>
         /// Associates services with the components that provide them.
         /// </summary>
-        public IComponentRegistry ComponentRegistry
-        {
-            get { return _componentRegistry; }
-        }
+        public IComponentRegistry ComponentRegistry { get; }
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources
@@ -312,9 +288,8 @@ namespace Autofac.Core.Lifetime
             if (disposing)
             {
                 var handler = CurrentScopeEnding;
-                if (handler != null)
-                    handler(this, new LifetimeScopeEndingEventArgs(this));
-                _disposer.Dispose();
+                handler?.Invoke(this, new LifetimeScopeEndingEventArgs(this));
+                Disposer.Dispose();
             }
 
             base.Dispose(disposing);
@@ -337,7 +312,8 @@ namespace Autofac.Core.Lifetime
         /// </returns>
         public object GetService(Type serviceType)
         {
-            if (serviceType == null) throw new ArgumentNullException("serviceType");
+            if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
+
             return this.ResolveOptional(serviceType);
         }
 

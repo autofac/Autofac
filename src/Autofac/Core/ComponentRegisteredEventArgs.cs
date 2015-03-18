@@ -34,20 +34,17 @@ namespace Autofac.Core
 	/// </summary>
 	public class ComponentRegisteredEventArgs : EventArgs
 	{
-        readonly IComponentRegistry _componentRegistry;
-        readonly IComponentRegistration _componentRegistration;
-
-        /// <summary>
+	    /// <summary>
         /// The container into which the registration was made.
         /// </summary>
-        public IComponentRegistry ComponentRegistry { get { return _componentRegistry; } }
+        public IComponentRegistry ComponentRegistry { get; }
 
-        /// <summary>
+	    /// <summary>
         /// The component registration.
         /// </summary>
-        public IComponentRegistration ComponentRegistration { get { return _componentRegistration; } }
+        public IComponentRegistration ComponentRegistration { get; }
 
-        /// <summary>
+	    /// <summary>
 		/// Create a new instance with a valid container and component registration.
 		/// </summary>
 		/// <param name="registry">The container into which the registration 
@@ -55,8 +52,8 @@ namespace Autofac.Core
 		/// <param name="componentRegistration">The component registration.</param>
 		public ComponentRegisteredEventArgs(IComponentRegistry registry, IComponentRegistration componentRegistration)
 		{
-            _componentRegistry = Enforce.ArgumentNotNull(registry, "registry");
-			_componentRegistration = Enforce.ArgumentNotNull(componentRegistration, "componentRegistration");
+            ComponentRegistry = Enforce.ArgumentNotNull(registry, "registry");
+			ComponentRegistration = Enforce.ArgumentNotNull(componentRegistration, "componentRegistration");
 		}
 	}
 }

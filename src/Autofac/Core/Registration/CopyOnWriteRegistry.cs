@@ -1,3 +1,28 @@
+// This software is part of the Autofac IoC container
+// Copyright © 2011 Autofac Contributors
+// http://autofac.org
+//
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+
 using System;
 using System.Collections.Generic;
 
@@ -18,28 +43,20 @@ namespace Autofac.Core.Registration
 
         public CopyOnWriteRegistry(IComponentRegistry readRegistry, Func<IComponentRegistry> createWriteRegistry)
         {
-            if (readRegistry == null) throw new ArgumentNullException("readRegistry");
-            if (createWriteRegistry == null) throw new ArgumentNullException("createWriteRegistry");
+            if (readRegistry == null) throw new ArgumentNullException(nameof(readRegistry));
+            if (createWriteRegistry == null) throw new ArgumentNullException(nameof(createWriteRegistry));
+
             _readRegistry = readRegistry;
             _createWriteRegistry = createWriteRegistry;
         }
 
-        IComponentRegistry Registry { get { return _writeRegistry ?? _readRegistry; } }
+        IComponentRegistry Registry => _writeRegistry ?? _readRegistry;
 
-        IComponentRegistry WriteRegistry
-        {
-            get
-            {
-                if (_writeRegistry == null)
-                    _writeRegistry = _createWriteRegistry();
-                return _writeRegistry;
-            }
-        }
+        IComponentRegistry WriteRegistry => _writeRegistry ?? (_writeRegistry = _createWriteRegistry());
 
         public void Dispose()
         {
-            if (_readRegistry != null)
-                _readRegistry.Dispose();
+            _readRegistry?.Dispose();
         }
 
         public bool TryGetRegistration(Service service, out IComponentRegistration registration)
@@ -62,10 +79,7 @@ namespace Autofac.Core.Registration
             WriteRegistry.Register(registration, preserveDefaults);
         }
 
-        public IEnumerable<IComponentRegistration> Registrations
-        {
-            get { return Registry.Registrations; }
-        }
+        public IEnumerable<IComponentRegistration> Registrations => Registry.Registrations;
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service)
         {
@@ -83,15 +97,9 @@ namespace Autofac.Core.Registration
             WriteRegistry.AddRegistrationSource(source);
         }
 
-        public IEnumerable<IRegistrationSource> Sources
-        {
-            get { return Registry.Sources; }
-        }
+        public IEnumerable<IRegistrationSource> Sources => Registry.Sources;
 
-        public bool HasLocalComponents
-        {
-            get { return _writeRegistry != null; }
-        }
+        public bool HasLocalComponents => _writeRegistry != null;
 
         public event EventHandler<RegistrationSourceAddedEventArgs> RegistrationSourceAdded
         {

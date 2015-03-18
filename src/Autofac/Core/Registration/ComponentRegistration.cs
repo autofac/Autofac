@@ -97,16 +97,13 @@ namespace Autofac.Core.Registration
         /// The component registration upon which this registration is based.
         /// If this registration was created directly by the user, returns this.
         /// </summary>
-        public IComponentRegistration Target
-        {
-            get { return _target ?? this; }
-        }
+        public IComponentRegistration Target => _target ?? this;
 
         /// <summary>
         /// A unique identifier for this component (shared in all sub-contexts.)
         /// This value also appears in Services.
         /// </summary>
-        public Guid Id { get; private set; }
+        public Guid Id { get; }
 
         /// <summary>
         /// The activator used to create instances.
@@ -116,27 +113,27 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// The lifetime associated with the component.
         /// </summary>
-        public IComponentLifetime Lifetime { get; private set; }
+        public IComponentLifetime Lifetime { get; }
 
         /// <summary>
         /// Whether the component instances are shared or not.
         /// </summary>
-        public InstanceSharing Sharing { get; private set; }
+        public InstanceSharing Sharing { get; }
 
         /// <summary>
         /// Whether the instances of the component should be disposed by the container.
         /// </summary>
-        public InstanceOwnership Ownership { get; private set; }
+        public InstanceOwnership Ownership { get; }
 
         /// <summary>
         /// The services provided by the component.
         /// </summary>
-        public IEnumerable<Service> Services { get; private set; }
+        public IEnumerable<Service> Services { get; }
 
         /// <summary>
         /// Additional data associated with the component.
         /// </summary>
-        public IDictionary<string, object> Metadata { get; private set; }
+        public IDictionary<string, object> Metadata { get; }
 
         /// <summary>
         /// Fired when a new instance is required. The instance can be

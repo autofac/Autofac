@@ -34,11 +34,6 @@ namespace Autofac.Core
     /// </summary>
     public class ActivatedEventArgs<T> : EventArgs, IActivatedEventArgs<T>
     {
-        readonly IComponentContext _context;
-        readonly IComponentRegistration _component;
-        readonly IEnumerable<Parameter> _parameters;
-        readonly T _instance;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ActivatedEventArgs{T}"/> class.
         /// </summary>
@@ -48,31 +43,31 @@ namespace Autofac.Core
         /// <param name="instance">The instance.</param>
         public ActivatedEventArgs(IComponentContext context, IComponentRegistration component, IEnumerable<Parameter> parameters, T instance)
         {
-            _context = Enforce.ArgumentNotNull(context, "context");
-            _component = Enforce.ArgumentNotNull(component, "component");
-            _parameters = Enforce.ArgumentNotNull(parameters, "parameters");
-            if ((object)instance == null) throw new ArgumentNullException("instance");
-            _instance = instance;
+            Context = Enforce.ArgumentNotNull(context, "context");
+            Component = Enforce.ArgumentNotNull(component, "component");
+            Parameters = Enforce.ArgumentNotNull(parameters, "parameters");
+            if (instance == null) throw new ArgumentNullException(nameof(instance));
+            Instance = instance;
         }
 
         /// <summary>
         /// The context in which the activation occurred.
         /// </summary>
-        public IComponentContext Context { get { return _context; } }
+        public IComponentContext Context { get; }
 
         /// <summary>
         /// The component providing the instance.
         /// </summary>
-        public IComponentRegistration Component { get { return _component; } }
+        public IComponentRegistration Component { get; }
 
         /// <summary>
         /// The paramters provided when resolved.
         /// </summary>
-        public IEnumerable<Parameter> Parameters { get { return _parameters; } }
+        public IEnumerable<Parameter> Parameters { get; }
 
         /// <summary>
         /// The instance that will be used to satisfy the request.
         /// </summary>
-        public T Instance { get { return _instance; } }
+        public T Instance { get; }
     }
 }

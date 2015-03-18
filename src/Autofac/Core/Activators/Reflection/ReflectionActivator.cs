@@ -43,7 +43,6 @@ namespace Autofac.Core.Activators.Reflection
         readonly Type _implementationType;
         readonly IConstructorSelector _constructorSelector;
         readonly IConstructorFinder _constructorFinder;
-        readonly IEnumerable<Parameter> _configuredParameters;
         readonly IEnumerable<Parameter> _configuredProperties;
         readonly IEnumerable<Parameter> _defaultParameters;
 
@@ -66,28 +65,22 @@ namespace Autofac.Core.Activators.Reflection
             _implementationType = implementationType;
             _constructorFinder = Enforce.ArgumentNotNull(constructorFinder, "constructorFinder");
             _constructorSelector = Enforce.ArgumentNotNull(constructorSelector, "constructorSelector");
-            _configuredParameters = Enforce.ArgumentNotNull(configuredParameters, "configuredParameters");
+            var configuredParameters1 = Enforce.ArgumentNotNull(configuredParameters, "configuredParameters");
             _configuredProperties = Enforce.ArgumentNotNull(configuredProperties, "configuredProperties");
 
-            _defaultParameters = _configuredParameters.Concat(
+            _defaultParameters = configuredParameters1.Concat(
                 new Parameter[] {new AutowiringParameter(), new DefaultValueParameter()});
         }
 
         /// <summary>
         /// The constructor finder.
         /// </summary>
-        public IConstructorFinder ConstructorFinder
-        {
-            get { return _constructorFinder; }
-        }
+        public IConstructorFinder ConstructorFinder => _constructorFinder;
 
         /// <summary>
         /// The constructor selector.
         /// </summary>
-        public IConstructorSelector ConstructorSelector
-        {
-            get { return _constructorSelector; }
-        }
+        public IConstructorSelector ConstructorSelector => _constructorSelector;
 
         /// <summary>
         /// Activate an instance in the provided context.
@@ -101,8 +94,8 @@ namespace Autofac.Core.Activators.Reflection
         /// </remarks>
         public object ActivateInstance(IComponentContext context, IEnumerable<Parameter> parameters)
         {
-            if (context == null) throw new ArgumentNullException("context");
-            if (parameters == null) throw new ArgumentNullException("parameters");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
             var availableConstructors = _constructorFinder.FindConstructors(_implementationType);
 
