@@ -71,7 +71,9 @@ namespace Autofac.Core.Lifetime
         protected LifetimeScope(IComponentRegistry componentRegistry, LifetimeScope parent, object tag)
             : this(componentRegistry, tag)
         {
-            _parent = Enforce.ArgumentNotNull(parent, "parent");
+            if (parent == null) throw new ArgumentNullException(nameof(parent));
+
+            _parent = parent;
             RootLifetimeScope = _parent.RootLifetimeScope;
         }
 
@@ -83,9 +85,12 @@ namespace Autofac.Core.Lifetime
         public LifetimeScope(IComponentRegistry componentRegistry, object tag)
             : this()
         {
-            ComponentRegistry = Enforce.ArgumentNotNull(componentRegistry, "componentRegistry");
+            if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
+            if (tag == null) throw new ArgumentNullException(nameof(tag));
+
+            ComponentRegistry = componentRegistry;
             RootLifetimeScope = this;
-            Tag = Enforce.ArgumentNotNull(tag, "tag");
+            Tag = tag;
         }
 
         /// <summary>

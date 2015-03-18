@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using Autofac.Util;
 
 namespace Autofac.Core
 {
@@ -46,11 +45,14 @@ namespace Autofac.Core
         /// <param name="instance">The instance.</param>
         public ActivatingEventArgs(IComponentContext context, IComponentRegistration component, IEnumerable<Parameter> parameters, T instance)
         {
-            Context = Enforce.ArgumentNotNull(context, "context");
-            Component = Enforce.ArgumentNotNull(component, "component");
-            Parameters = Enforce.ArgumentNotNull(parameters, "parameters");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (component == null) throw new ArgumentNullException(nameof(component));
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
             if (instance == null) throw new ArgumentNullException(nameof(instance));
 
+            Context = context;
+            Component = component;
+            Parameters = parameters;
             _instance = instance;
         }
 

@@ -24,36 +24,38 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Autofac.Util;
 
 namespace Autofac.Core
 {
-	/// <summary>
-	/// Information about the ocurrence of a component being registered
-	/// with a container.
-	/// </summary>
-	public class ComponentRegisteredEventArgs : EventArgs
-	{
-	    /// <summary>
+    /// <summary>
+    /// Information about the ocurrence of a component being registered
+    /// with a container.
+    /// </summary>
+    public class ComponentRegisteredEventArgs : EventArgs
+    {
+        /// <summary>
         /// The container into which the registration was made.
         /// </summary>
         public IComponentRegistry ComponentRegistry { get; }
 
-	    /// <summary>
+        /// <summary>
         /// The component registration.
         /// </summary>
         public IComponentRegistration ComponentRegistration { get; }
 
-	    /// <summary>
-		/// Create a new instance with a valid container and component registration.
-		/// </summary>
-		/// <param name="registry">The container into which the registration 
-		/// was made.</param>
-		/// <param name="componentRegistration">The component registration.</param>
-		public ComponentRegisteredEventArgs(IComponentRegistry registry, IComponentRegistration componentRegistration)
-		{
-            ComponentRegistry = Enforce.ArgumentNotNull(registry, "registry");
-			ComponentRegistration = Enforce.ArgumentNotNull(componentRegistration, "componentRegistration");
-		}
-	}
+        /// <summary>
+        /// Create a new instance with a valid container and component registration.
+        /// </summary>
+        /// <param name="registry">The container into which the registration
+        /// was made.</param>
+        /// <param name="componentRegistration">The component registration.</param>
+        public ComponentRegisteredEventArgs(IComponentRegistry registry, IComponentRegistration componentRegistration)
+        {
+            if (registry == null) throw new ArgumentNullException(nameof(registry));
+            if (componentRegistration == null) throw new ArgumentNullException(nameof(componentRegistration));
+
+            ComponentRegistry = registry;
+            ComponentRegistration = componentRegistration;
+        }
+    }
 }

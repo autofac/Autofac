@@ -27,7 +27,6 @@ using System;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
-using Autofac.Util;
 
 namespace Autofac.Features.GeneratedFactories
 {
@@ -46,8 +45,11 @@ namespace Autofac.Features.GeneratedFactories
         /// <param name="productService">The service used to provide the products of the factory.</param>
         public GeneratedFactoryActivatorData(Type delegateType, Service productService)
         {
-            _delegateType = Enforce.ArgumentNotNull(delegateType, "delegateType");
-            _productService = Enforce.ArgumentNotNull(productService, "productService");
+            if (delegateType == null) throw new ArgumentNullException(nameof(delegateType));
+            if (productService == null) throw new ArgumentNullException(nameof(productService));
+
+            _delegateType = delegateType;
+            _productService = productService;
         }
 
         /// <summary>

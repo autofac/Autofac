@@ -40,7 +40,9 @@ namespace Autofac.Core.Activators
         /// <param name="limitType">Most derived type to which instances can be cast.</param>
         protected InstanceActivator(Type limitType)
         {
-            LimitType = Enforce.ArgumentNotNull(limitType, "limitType");
+            if (limitType == null) throw new ArgumentNullException(nameof(limitType));
+
+            LimitType = limitType;
         }
 
         /// <summary>

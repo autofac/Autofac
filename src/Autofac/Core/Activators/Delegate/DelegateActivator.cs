@@ -27,7 +27,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using Autofac.Util;
 
 namespace Autofac.Core.Activators.Delegate
 {
@@ -47,7 +46,9 @@ namespace Autofac.Core.Activators.Delegate
         public DelegateActivator(Type limitType, Func<IComponentContext, IEnumerable<Parameter>, object> activationFunction)
             : base(limitType)
         {
-            _activationFunction = Enforce.ArgumentNotNull(activationFunction, "activationFunction");
+            if (activationFunction == null) throw new ArgumentNullException(nameof(activationFunction));
+
+            _activationFunction = activationFunction;
         }
 
         /// <summary>

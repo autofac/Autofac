@@ -57,15 +57,18 @@ namespace Autofac.Core.Registration
             IEnumerable<Service> services,
             IDictionary<string, object> metadata)
         {
+            if (activator == null) throw new ArgumentNullException(nameof(activator));
+            if (lifetime == null) throw new ArgumentNullException(nameof(lifetime));
+            if (services == null) throw new ArgumentNullException(nameof(services));
+            if (metadata == null) throw new ArgumentNullException(nameof(metadata));
+
             Id = id;
-            Activator = Enforce.ArgumentNotNull(activator, "activator");
-            Lifetime = Enforce.ArgumentNotNull(lifetime, "lifetime");
+            Activator = activator;
+            Lifetime = lifetime;
             Sharing = sharing;
             Ownership = ownership;
-            Services = Enforce.ArgumentElementNotNull(
-                Enforce.ArgumentNotNull(services, "services"), "services").ToList();
-            Metadata = new Dictionary<string, object>(
-                Enforce.ArgumentNotNull(metadata, "metadata"));
+            Services = Enforce.ArgumentElementNotNull(services, nameof(services)).ToList();
+            Metadata = new Dictionary<string, object>(metadata);
         }
 
         /// <summary>
@@ -90,7 +93,9 @@ namespace Autofac.Core.Registration
             IComponentRegistration target)
             : this(id, activator, lifetime, sharing, ownership, services, metadata)
         {
-            _target = Enforce.ArgumentNotNull(target, "target");
+            if (target == null) throw new ArgumentNullException(nameof(target));
+
+            _target = target;
         }
 
         /// <summary>

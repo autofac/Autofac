@@ -24,7 +24,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Autofac.Util;
 
 namespace Autofac.Core
 {
@@ -40,8 +39,11 @@ namespace Autofac.Core
         /// <param name="serviceType">Type of the service.</param>
         public KeyedService(object serviceKey, Type serviceType)
         {
-            ServiceKey = Enforce.ArgumentNotNull(serviceKey, "serviceKey");
-            ServiceType = Enforce.ArgumentNotNull(serviceType, "serviceType");
+            if (serviceKey == null) throw new ArgumentNullException(nameof(serviceKey));
+            if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
+
+            ServiceKey = serviceKey;
+            ServiceType = serviceType;
         }
 
         /// <summary>

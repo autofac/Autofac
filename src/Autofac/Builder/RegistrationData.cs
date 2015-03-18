@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
-using Autofac.Util;
 
 namespace Autofac.Builder
 {
@@ -109,7 +108,11 @@ namespace Autofac.Builder
         public IComponentLifetime Lifetime
         {
             get { return _lifetime; }
-            set { _lifetime = Enforce.ArgumentNotNull(value, "lifetime"); }
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                _lifetime = value;
+            }
         }
 
         /// <summary>

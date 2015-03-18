@@ -25,7 +25,6 @@
 
 using System;
 using System.Reflection;
-using Autofac.Util;
 
 namespace Autofac.Core
 {
@@ -49,8 +48,10 @@ namespace Autofac.Core
         /// <param name="predicate"></param>
         protected ConstantParameter(object value, Predicate<ParameterInfo> predicate)
         {
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+
             Value = value;
-            _predicate = Enforce.ArgumentNotNull(predicate, "predicate");
+            _predicate = predicate;
         }
 
         /// <summary>

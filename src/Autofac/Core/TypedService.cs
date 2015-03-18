@@ -24,7 +24,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Autofac.Util;
 
 namespace Autofac.Core
 {
@@ -39,7 +38,9 @@ namespace Autofac.Core
         /// <param name="serviceType">Type of the service.</param>
         public TypedService(Type serviceType)
         {
-            ServiceType = Enforce.ArgumentNotNull(serviceType, "serviceType");
+            if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
+
+            ServiceType = serviceType;
         }
 
         /// <summary>

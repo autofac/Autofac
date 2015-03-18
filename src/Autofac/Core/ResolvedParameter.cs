@@ -25,7 +25,6 @@
 
 using System;
 using System.Reflection;
-using Autofac.Util;
 
 namespace Autofac.Core
 {
@@ -45,8 +44,11 @@ namespace Autofac.Core
         /// <param name="valueAccessor">A function that supplies the parameter value given the context.</param>
         public ResolvedParameter(Func<ParameterInfo, IComponentContext, bool> predicate, Func<ParameterInfo, IComponentContext, object> valueAccessor)
         {
-            _predicate = Enforce.ArgumentNotNull(predicate, "predicate");
-            _valueAccessor = Enforce.ArgumentNotNull(valueAccessor, "valueAccessor");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+            if (valueAccessor == null) throw new ArgumentNullException(nameof(valueAccessor));
+
+            _predicate = predicate;
+            _valueAccessor = valueAccessor;
         }
 
         /// <summary>

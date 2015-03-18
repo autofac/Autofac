@@ -65,17 +65,17 @@ namespace Autofac.Features.OwnedInstances
     /// public class C
     /// {
     ///   IService _service;
-    ///   
+    ///
     ///   public C(Owned&lt;IService&gt; service)
     ///   {
     ///     _service = service;
     ///   }
-    ///   
+    ///
     ///   void DoWork()
     ///   {
     ///     _service.Value.DoSomething();
     ///   }
-    ///   
+    ///
     ///   void OnFinished()
     ///   {
     ///     _service.Dispose();
@@ -96,8 +96,10 @@ namespace Autofac.Features.OwnedInstances
         /// <param name="lifetime">An IDisposable interface through which ownership can be released.</param>
         public Owned(T value, IDisposable lifetime)
         {
+            if (lifetime == null) throw new ArgumentNullException(nameof(lifetime));
+
             Value = value;
-            _lifetime = Enforce.ArgumentNotNull(lifetime, "lifetime");
+            _lifetime = lifetime;
         }
 
         /// <summary>

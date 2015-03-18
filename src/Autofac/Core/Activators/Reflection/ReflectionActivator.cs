@@ -30,7 +30,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Autofac.Util;
 
 namespace Autofac.Core.Activators.Reflection
 {
@@ -41,8 +40,6 @@ namespace Autofac.Core.Activators.Reflection
     public class ReflectionActivator : InstanceActivator, IInstanceActivator
     {
         readonly Type _implementationType;
-        readonly IConstructorSelector _constructorSelector;
-        readonly IConstructorFinder _constructorFinder;
         readonly IEnumerable<Parameter> _configuredProperties;
         readonly IEnumerable<Parameter> _defaultParameters;
 
@@ -60,27 +57,31 @@ namespace Autofac.Core.Activators.Reflection
             IConstructorSelector constructorSelector,
             IEnumerable<Parameter> configuredParameters,
             IEnumerable<Parameter> configuredProperties)
-            : base(Enforce.ArgumentNotNull(implementationType, "implementationType"))
+            : base(implementationType)
         {
-            _implementationType = implementationType;
-            _constructorFinder = Enforce.ArgumentNotNull(constructorFinder, "constructorFinder");
-            _constructorSelector = Enforce.ArgumentNotNull(constructorSelector, "constructorSelector");
-            var configuredParameters1 = Enforce.ArgumentNotNull(configuredParameters, "configuredParameters");
-            _configuredProperties = Enforce.ArgumentNotNull(configuredProperties, "configuredProperties");
+            if (constructorFinder == null) throw new ArgumentNullException(nameof(constructorFinder));
+            if (constructorSelector == null) throw new ArgumentNullException(nameof(constructorSelector));
+            if (configuredParameters == null) throw new ArgumentNullException(nameof(configuredParameters));
+            if (configuredProperties == null) throw new ArgumentNullException(nameof(configuredProperties));
 
-            _defaultParameters = configuredParameters1.Concat(
+            _implementationType = implementationType;
+            ConstructorFinder = constructorFinder;
+            ConstructorSelector = constructorSelector;
+            _configuredProperties = configuredProperties;
+
+            _defaultParameters = configuredParameters.Concat(
                 new Parameter[] {new AutowiringParameter(), new DefaultValueParameter()});
         }
 
         /// <summary>
         /// The constructor finder.
         /// </summary>
-        public IConstructorFinder ConstructorFinder => _constructorFinder;
+        public IConstructorFinder ConstructorFinder { get; }
 
         /// <summary>
         /// The constructor selector.
         /// </summary>
-        public IConstructorSelector ConstructorSelector => _constructorSelector;
+        public IConstructorSelector ConstructorSelector { get; }
 
         /// <summary>
         /// Activate an instance in the provided context.
@@ -97,11 +98,11 @@ namespace Autofac.Core.Activators.Reflection
             if (context == null) throw new ArgumentNullException(nameof(context));
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
-            var availableConstructors = _constructorFinder.FindConstructors(_implementationType);
+            var availableConstructors = ConstructorFinder.FindConstructors(_implementationType);
 
             if (availableConstructors.Length == 0)
                 throw new DependencyResolutionException(string.Format(
-                    CultureInfo.CurrentCulture, ReflectionActivatorResources.NoConstructorsAvailable, _implementationType, _constructorFinder));
+                    CultureInfo.CurrentCulture, ReflectionActivatorResources.NoConstructorsAvailable, _implementationType, ConstructorFinder));
 
             var constructorBindings = GetConstructorBindings(
                 context,
@@ -115,7 +116,7 @@ namespace Autofac.Core.Activators.Reflection
             if (validBindings.Length == 0)
                 throw new DependencyResolutionException(GetBindingFailureMessage(constructorBindings));
 
-            var selectedBinding = _constructorSelector.SelectConstructorBinding(validBindings);
+            var selectedBinding = ConstructorSelector.SelectConstructorBinding(validBindings);
 
             var instance = selectedBinding.Instantiate();
 
@@ -137,7 +138,7 @@ namespace Autofac.Core.Activators.Reflection
             return string.Format(
                 CultureInfo.CurrentCulture,
                 ReflectionActivatorResources.NoConstructorsBindable,
-                _constructorFinder, _implementationType, reasons);
+                ConstructorFinder, _implementationType, reasons);
         }
 
         IEnumerable<ConstructorParameterBinding> GetConstructorBindings(

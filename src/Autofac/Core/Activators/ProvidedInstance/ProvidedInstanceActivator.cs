@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using Autofac.Util;
 
 namespace Autofac.Core.Activators.ProvidedInstance
 {
@@ -36,14 +35,13 @@ namespace Autofac.Core.Activators.ProvidedInstance
     {
         readonly object _instance;
         bool _activated;
-        bool _disposeInstance;
 
         /// <summary>
         /// Provide the specified instance.
         /// </summary>
         /// <param name="instance">The instance to provide.</param>
         public ProvidedInstanceActivator(object instance)
-            : base(Enforce.ArgumentNotNull(instance, "instance").GetType())
+            : base(GetType(instance))
         {
             _instance = instance;
         }
@@ -76,11 +74,7 @@ namespace Autofac.Core.Activators.ProvidedInstance
         /// Necessary because otherwise instances that are never resolved will never be
         /// disposed.
         /// </summary>
-        public bool DisposeInstance
-        {
-            get { return _disposeInstance; }
-            set { _disposeInstance = value; }
-        }
+        public bool DisposeInstance { get; set; }
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources
@@ -91,10 +85,17 @@ namespace Autofac.Core.Activators.ProvidedInstance
             // Only dispose of the instance here if it wasn't activated. If it was activated,
             // then either the owning lifetime scope will dispose of it automatically
             // (see InstanceLookup.Activate) or an OnRelease handler will take care of it.
-            if (disposing && _disposeInstance && _instance is IDisposable && !_activated)
+            if (disposing && DisposeInstance && _instance is IDisposable && !_activated)
                 ((IDisposable)_instance).Dispose();
 
             base.Dispose(disposing);
+        }
+
+        static Type GetType(object instance)
+        {
+            if (instance == null) throw new ArgumentNullException(nameof(instance));
+
+            return instance.GetType();
         }
     }
 }

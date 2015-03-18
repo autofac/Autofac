@@ -29,7 +29,6 @@ using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Util;
 
 namespace Autofac.Features.ResolveAnything
 {
@@ -56,7 +55,9 @@ namespace Autofac.Features.ResolveAnything
         /// <param name="predicate">A predicate that selects types the source will register.</param>
         public AnyConcreteTypeNotAlreadyRegisteredSource(Func<Type, bool> predicate)
         {
-            _predicate = Enforce.ArgumentNotNull(predicate, "predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+
+            _predicate = predicate;
         }
 
         /// <summary>

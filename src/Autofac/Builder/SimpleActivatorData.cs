@@ -23,8 +23,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using Autofac.Core;
-using Autofac.Util;
 
 namespace Autofac.Builder
 {
@@ -39,7 +39,9 @@ namespace Autofac.Builder
         /// <param name="activator">The activator to return.</param>
         public SimpleActivatorData(IInstanceActivator activator)
         {
-            Activator = Enforce.ArgumentNotNull(activator, "activator");
+            if (activator == null) throw new ArgumentNullException(nameof(activator));
+
+            Activator = activator;
         }
 
         /// <summary>

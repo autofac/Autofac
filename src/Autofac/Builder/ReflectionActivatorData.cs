@@ -27,7 +27,6 @@ using System;
 using System.Collections.Generic;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
-using Autofac.Util;
 
 namespace Autofac.Builder
 {
@@ -60,7 +59,8 @@ namespace Autofac.Builder
             }
             set
             {
-                _implementer = Enforce.ArgumentNotNull(value, "value");
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                _implementer = value;
             }
         }
 
@@ -70,7 +70,11 @@ namespace Autofac.Builder
         public IConstructorFinder ConstructorFinder
         {
             get { return _constructorFinder; }
-            set { _constructorFinder = Enforce.ArgumentNotNull(value, "value"); }
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                _constructorFinder = value;
+            }
         }
 
         /// <summary>
@@ -79,7 +83,11 @@ namespace Autofac.Builder
         public IConstructorSelector ConstructorSelector
         {
             get { return _constructorSelector; }
-            set { _constructorSelector = Enforce.ArgumentNotNull(value, "value"); }
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                _constructorSelector = value;
+            }
         }
 
         /// <summary>
