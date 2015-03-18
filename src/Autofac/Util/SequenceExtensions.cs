@@ -40,8 +40,8 @@ namespace Autofac.Util
         /// <returns>The joined string.</returns>
         public static string JoinWith(this IEnumerable<string> elements, string separator)
         {
-            if (elements == null) throw new ArgumentNullException("elements");
-            if (separator == null) throw new ArgumentNullException("separator");
+            if (elements == null) throw new ArgumentNullException(nameof(elements));
+            if (separator == null) throw new ArgumentNullException(nameof(separator));
 
             return string.Join(separator, elements.ToArray());
         }
@@ -55,7 +55,7 @@ namespace Autofac.Util
         /// <returns></returns>
         public static IEnumerable<T> Append<T>(this IEnumerable<T> sequence, T trailingItem)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
 
             foreach (var t in sequence)
                 yield return t;
@@ -72,7 +72,7 @@ namespace Autofac.Util
         /// <returns></returns>
         public static IEnumerable<T> Prepend<T>(this IEnumerable<T> sequence, T leadingItem)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
 
             yield return leadingItem;
 
