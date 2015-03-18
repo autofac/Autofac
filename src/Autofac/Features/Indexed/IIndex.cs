@@ -52,6 +52,6 @@ namespace Autofac.Features.Indexed
         /// <param name="key">The key to look up.</param>
         /// <param name="value">The retrieved value.</param>
         /// <returns>True if a value associated with the key exists.</returns>
-        bool TryGetValue(TKey key, out TValue value); 
+        bool TryGetValue(TKey key, out TValue value);
     }
 }

@@ -33,9 +33,6 @@ namespace Autofac.Features.Metadata
     /// <typeparam name="T">The type of the value.</typeparam>
     public class Meta<T>
     {
-        readonly T _value;
-        readonly IDictionary<string, object> _metadata;
-
         /// <summary>
         /// Create a new instance.
         /// </summary>
@@ -43,18 +40,18 @@ namespace Autofac.Features.Metadata
         /// <param name="metadata">The metadata describing the value.</param>
         public Meta(T value, IDictionary<string, object> metadata)
         {
-            _value = value;
-            _metadata = metadata;
+            Value = value;
+            Metadata = metadata;
         }
 
         /// <summary>
         /// The value described by <see cref="Metadata"/>.
         /// </summary>
-        public T Value { get { return _value; } }
+        public T Value { get; }
 
         /// <summary>
         /// Metadata describing the value.
         /// </summary>
-        public IDictionary<string, object> Metadata { get { return _metadata; } }
+        public IDictionary<string, object> Metadata { get; }
     }
 }

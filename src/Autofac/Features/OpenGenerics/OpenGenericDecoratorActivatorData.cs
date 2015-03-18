@@ -36,8 +36,6 @@ namespace Autofac.Features.OpenGenerics
     /// </summary>
     public class OpenGenericDecoratorActivatorData : ReflectionActivatorData
     {
-        readonly IServiceWithType _fromService;
-
         /// <summary>
         /// Construct an <see cref="OpenGenericDecoratorActivatorData"/>.
         /// </summary>
@@ -46,19 +44,16 @@ namespace Autofac.Features.OpenGenerics
         public OpenGenericDecoratorActivatorData(Type implementer, IServiceWithType fromService)
             : base(implementer)
         {
-            if (fromService == null) throw new ArgumentNullException("fromService");
+            if (fromService == null) throw new ArgumentNullException(nameof(fromService));
             if (!fromService.ServiceType.GetTypeInfo().IsGenericTypeDefinition)
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, OpenGenericDecoratorActivatorDataResources.DecoratedServiceIsNotOpenGeneric, fromService));
 
-            _fromService = fromService;
+            FromService = fromService;
         }
 
         /// <summary>
         /// The open generic service type to decorate.
         /// </summary>
-        public IServiceWithType FromService
-        {
-            get { return _fromService; }
-        }
+        public IServiceWithType FromService { get; }
     }
 }

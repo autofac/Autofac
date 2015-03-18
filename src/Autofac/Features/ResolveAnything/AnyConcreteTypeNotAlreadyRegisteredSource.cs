@@ -70,10 +70,8 @@ namespace Autofac.Features.ResolveAnything
             Service service,
             Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
-            if (registrationAccessor == null)
-            {
-                throw new ArgumentNullException("registrationAccessor");
-            }
+            if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
+
             var ts = service as TypedService;
             if (ts == null ||
                 !ts.ServiceType.GetTypeInfo().IsClass ||
@@ -85,21 +83,15 @@ namespace Autofac.Features.ResolveAnything
                 return Enumerable.Empty<IComponentRegistration>();
 
             var builder = RegistrationBuilder.ForType(ts.ServiceType);
-            if (this.RegistrationConfiguration != null)
-            {
-                this.RegistrationConfiguration(builder);
-            }
-            return new[] { builder.CreateRegistration() };
+            RegistrationConfiguration?.Invoke(builder);
+            return new[] {builder.CreateRegistration()};
         }
 
         /// <summary>
         /// Gets whether the registrations provided by this source are 1:1 adapters on top
         /// of other components (I.e. like Meta, Func or Owned.)
         /// </summary>
-        public bool IsAdapterForIndividualComponents
-        {
-            get { return false; }
-        }
+        public bool IsAdapterForIndividualComponents => false;
 
         /// <summary>
         /// Gets or sets an expression used to configure generated registrations.

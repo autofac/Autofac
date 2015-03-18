@@ -34,7 +34,7 @@ using Autofac.Util;
 namespace Autofac.Features.LazyDependencies
 {
     /// <summary>
-    /// Support the <see cref="System.Lazy{T}"/> 
+    /// Support the <see cref="System.Lazy{T}"/>
     /// type automatically whenever type T is registered with the container.
     /// When a dependency of a lazy type is used, the instantiation of the underlying
     /// component will be delayed until the Value property is first accessed.
@@ -45,10 +45,8 @@ namespace Autofac.Features.LazyDependencies
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
-            if (registrationAccessor == null)
-            {
-                throw new ArgumentNullException("registrationAccessor");
-            }
+            if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
+
             var swt = service as IServiceWithType;
             if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Lazy<>)))
                 return Enumerable.Empty<IComponentRegistration>();
@@ -63,10 +61,7 @@ namespace Autofac.Features.LazyDependencies
                 .Cast<IComponentRegistration>();
         }
 
-        public bool IsAdapterForIndividualComponents
-        {
-            get { return true; }
-        }
+        public bool IsAdapterForIndividualComponents => true;
 
         public override string ToString()
         {

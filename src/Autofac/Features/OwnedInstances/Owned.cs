@@ -87,7 +87,6 @@ namespace Autofac.Features.OwnedInstances
     /// </example>
     public class Owned<T> : Disposable
     {
-        T _value;
         IDisposable _lifetime;
 
         /// <summary>
@@ -97,20 +96,14 @@ namespace Autofac.Features.OwnedInstances
         /// <param name="lifetime">An IDisposable interface through which ownership can be released.</param>
         public Owned(T value, IDisposable lifetime)
         {
-            _value = value;
+            Value = value;
             _lifetime = Enforce.ArgumentNotNull(lifetime, "lifetime");
         }
 
         /// <summary>
         /// The owned value.
         /// </summary>
-        public T Value
-        {
-            get
-            {
-                return _value;
-            }
-        }
+        public T Value { get; set; }
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources
@@ -123,7 +116,7 @@ namespace Autofac.Features.OwnedInstances
                 var lt = Interlocked.Exchange(ref _lifetime, null);
                 if (lt != null)
                 {
-                    _value = default(T);
+                    Value = default(T);
                     lt.Dispose();
                 }
             }

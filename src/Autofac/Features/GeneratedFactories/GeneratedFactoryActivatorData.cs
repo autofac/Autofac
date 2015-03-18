@@ -36,9 +36,8 @@ namespace Autofac.Features.GeneratedFactories
     /// </summary>
     public class GeneratedFactoryActivatorData : IConcreteActivatorData
     {
-        ParameterMapping _parameterMapping = ParameterMapping.Adaptive;
-        Type _delegateType;
-        Service _productService;
+        readonly Type _delegateType;
+        readonly Service _productService;
 
         /// <summary>
         /// Create a new GeneratedFactoryActivatorData
@@ -57,18 +56,14 @@ namespace Autofac.Features.GeneratedFactories
         /// For Func-based delegates, this defaults to ByType. Otherwise, the
         /// parameters will be mapped by name.
         /// </summary>
-        public ParameterMapping ParameterMapping
-        {
-            get { return _parameterMapping; }
-            set { _parameterMapping = value; }
-        }
+        public ParameterMapping ParameterMapping { get; set; } = ParameterMapping.Adaptive;
 
         /// <summary>
         /// Activator data that can provide an IInstanceActivator instance.
         /// </summary>
         public IInstanceActivator Activator
         {
-            get 
+            get
             {
                 var factory = new FactoryGenerator(_delegateType, _productService, ParameterMapping);
                 return new DelegateActivator(_delegateType, (c, p) => factory.GenerateFactory(c, p));

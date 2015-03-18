@@ -36,8 +36,8 @@ namespace Autofac.Features.OpenGenerics
         public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
             RegisterGeneric(ContainerBuilder builder, Type implementor)
         {
-            if (builder == null) throw new ArgumentNullException("builder");
-            if (implementor == null) throw new ArgumentNullException("implementor");
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (implementor == null) throw new ArgumentNullException(nameof(implementor));
 
             if (!implementor.GetTypeInfo().IsGenericTypeDefinition)
                 throw new ArgumentException(string.Format(
@@ -57,9 +57,9 @@ namespace Autofac.Features.OpenGenerics
         public static IRegistrationBuilder<object, OpenGenericDecoratorActivatorData, DynamicRegistrationStyle>
             RegisterGenericDecorator(ContainerBuilder builder, Type decoratorType, Type decoratedServiceType, object fromKey, object toKey)
         {
-            if (builder == null) throw new ArgumentNullException("builder");
-            if (decoratorType == null) throw new ArgumentNullException("decoratorType");
-            if (decoratedServiceType == null) throw new ArgumentNullException("decoratedServiceType");
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (decoratorType == null) throw new ArgumentNullException(nameof(decoratorType));
+            if (decoratedServiceType == null) throw new ArgumentNullException(nameof(decoratedServiceType));
 
             var rb = new RegistrationBuilder<object, OpenGenericDecoratorActivatorData, DynamicRegistrationStyle>(
                 (Service)GetServiceWithKey(decoratedServiceType, toKey),

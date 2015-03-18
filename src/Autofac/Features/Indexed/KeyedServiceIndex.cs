@@ -35,18 +35,13 @@ namespace Autofac.Features.Indexed
         ///<summary></summary>
         public KeyedServiceIndex(IComponentContext context)
         {
-            if (context == null) throw new ArgumentNullException("context");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+
             _context = context;
         }
 
         ///<summary></summary>
-        public TValue this[TKey key]
-        {
-            get
-            {
-                return (TValue)_context.ResolveService(GetService(key));
-            }
-        }
+        public TValue this[TKey key] => (TValue)_context.ResolveService(GetService(key));
 
         ///<summary></summary>
         public bool TryGetValue(TKey key, out TValue value)
