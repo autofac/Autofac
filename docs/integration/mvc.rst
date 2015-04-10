@@ -161,6 +161,7 @@ When using the web forms view engine you set the ``Inherits`` attribute on the `
 
     <%@ Page Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="Example.Views.Shared.CustomViewPage"%>
 
+**Due to an issue with ASP.NET MVC internals, dependency injection is not available for Razor layout pages.** Razor views will work, but layout pages won't. `See issue #349 for more information. <https://github.com/autofac/Autofac/issues/349#issuecomment-33025529>`_
 
 Enable Property Injection for Action Filters
 ============================================
