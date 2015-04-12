@@ -1,7 +1,8 @@
 ﻿{
 	"dependencies": {
-		"Autofac": "4.0.0-alpha2",
+		"Autofac": "4.0.0-alpha2-*",
 		"xunit": "2.0.0-aspnet-*",
+		"xunit.assert": "2.0.0-aspnet-*",
 		"xunit.execution": "2.0.0-aspnet-*",
 		"xunit.runner.aspnet": "2.0.0-aspnet-*",
 		"Autofac.Test.Scenarios.ScannedAssembly": "1.0.0-*"
@@ -13,8 +14,8 @@
 		"dnx451": { },
 		"dnxcore50": {
 			"dependencies": {
-				"System.Runtime": "4.0.20-beta-22807",
-				"System.Threading": "4.0.10-beta-22807"
+				"System.Runtime": "4.0.20-beta-*",
+				"System.Threading": "4.0.10-beta-*"
 			}
 		}
 	}
