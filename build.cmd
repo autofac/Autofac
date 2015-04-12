@@ -44,16 +44,16 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 call dnu restore test\Autofac.Dnx.Test
 if %errorlevel% neq 0 exit /b %errorlevel%
 
+call dnu pack src\Autofac --configuration Release --out artifacts\packages
+if %errorlevel% neq 0 exit /b %errorlevel%
+
+call dnu pack src\Autofac.Dnx --configuration Release --out artifacts\packages
+if %errorlevel% neq 0 exit /b %errorlevel%
+
 call dnx test\Autofac.Test test
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 call dnx test\Autofac.Dnx.Test test
-if %errorlevel% neq 0 exit /b %errorlevel%
-
-call dnu pack src\Autofac --out artifacts\packages
-if %errorlevel% neq 0 exit /b %errorlevel%
-
-call dnu pack src\Autofac.Dnx --out artifacts\packages
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 popd
