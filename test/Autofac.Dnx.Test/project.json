@@ -1,23 +1,23 @@
 ﻿{
 	"version": "1.0.0-*",
 	"dependencies": {
-		"Autofac": "4.0.0-alpha1",
-		"Autofac.Dnx": "4.0.0-alpha1",
-		"Microsoft.Framework.DependencyInjection": "1.0.0-beta3",
-		"xunit": "2.0.0-rc2-*",
-		"xunit.runner.aspnet": "2.0.0-rc2-*"
+		"Autofac": "4.0.0-alpha2",
+		"Autofac.Dnx": "4.0.0-alpha2",
+		"Microsoft.Framework.DependencyInjection": "1.0.0-*",
+		"xunit": "2.0.0-aspnet-*",
+		"xunit.runner.aspnet": "2.0.0-aspnet-*"
 	},
 	"commands": {
 		"test": "xunit.runner.aspnet"
 	},
 	"frameworks": {
-		"aspnet50": {
+		"dnx451": {
 			"dependencies": {
 			}
 		},
-		"aspnetcore50": {
+		"dnxcore50": {
 			"dependencies": {
-				"System.Runtime": "4.0.20-beta-22523"
+				"System.Runtime": "4.0.20-beta-22807"
 			}
 		}
 	}

@@ -51,7 +51,7 @@ namespace Autofac.Test
             Assert.Empty(exceptions);
             Assert.Equal(1, results.Distinct().Count());
         }
-#if !ASPNETCORE50
+#if !DNXCORE50
         [Fact]
         public void ConcurrentResolveOperationsForNonSharedInstancesFromDifferentLifetimes_DoNotBlock()
         {
@@ -105,7 +105,7 @@ namespace Autofac.Test
                 container.Resolve<object>();
             }
         }
-#if !ASPNETCORE50 && !ASPNET50
+#if !DNXCORE50 && !DNX451
         [Fact(Timeout = 1000)]
         public void NoLockWhenResolvingExistingSingleInstance()
         {

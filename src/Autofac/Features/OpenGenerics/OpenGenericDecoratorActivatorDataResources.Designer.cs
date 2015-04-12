@@ -40,12 +40,7 @@ namespace Autofac.Features.OpenGenerics {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-#if !ASPNETCORE50 && !ASPNET50
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Features.OpenGenerics.OpenGenericDecoratorActivatorDataResources", typeof(OpenGenericDecoratorActivatorDataResources).GetTypeInfo().Assembly);
-#else
-                    //TODO: Removed namespace to work around https://github.com/aspnet/KRuntime/issues/738
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.OpenGenericDecoratorActivatorDataResources", typeof(OpenGenericDecoratorActivatorDataResources).GetTypeInfo().Assembly);
-#endif
                     resourceMan = temp;
                 }
                 return resourceMan;

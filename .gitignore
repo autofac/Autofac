@@ -126,6 +126,7 @@ ClientBin/
 node_modules/
 bower_components/
 wwwroot/
+project.lock.json
 
 # RIA/Silverlight projects
 Generated_Code/

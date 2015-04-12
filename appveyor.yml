@@ -11,6 +11,8 @@ configuration: Release
 
 nuget:
   disable_publish_on_pr: true
+  
+ clone_depth: 1
 
 build_script:
 - build.cmd

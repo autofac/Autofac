@@ -40,12 +40,7 @@ namespace Autofac.Util {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-#if !ASPNETCORE50 && !ASPNET50
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Util.EnforceResources", typeof(EnforceResources).GetTypeInfo().Assembly);
-#else
-                    //TODO: Removed namespace to work around https://github.com/aspnet/KRuntime/issues/738
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.EnforceResources", typeof(EnforceResources).GetTypeInfo().Assembly);
-#endif
                     resourceMan = temp;
                 }
                 return resourceMan;

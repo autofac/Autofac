@@ -1,4 +1,4 @@
-﻿#if !ASPNETCORE50
+﻿#if !DNXCORE50
 using System;
 using System.Linq;
 using System.Security;

@@ -43,7 +43,7 @@ namespace Autofac.Test
             Assert.True(container.IsRegistered<BComponent>());
             Assert.True(container.IsRegistered<object>());
         }
-#if !ASPNET50
+#if !DNX451
         [Fact]
         public void RegisterAssemblyModulesOfGenericType()
         {

@@ -40,12 +40,7 @@ namespace Autofac.Features.Metadata {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-#if !ASPNETCORE50 && !ASPNET50
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Features.Metadata.MetaRegistrationSourceResources", typeof(MetaRegistrationSourceResources).GetTypeInfo().Assembly);
-#else
-                    //TODO: Removed namespace to work around https://github.com/aspnet/KRuntime/issues/738
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.MetaRegistrationSourceResources", typeof(MetaRegistrationSourceResources).GetTypeInfo().Assembly);
-#endif
                     resourceMan = temp;
                 }
                 return resourceMan;
