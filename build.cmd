@@ -50,10 +50,10 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 call dnx test\Autofac.Dnx.Test test
 if %errorlevel% neq 0 exit /b %errorlevel%
 
-call dnu pack src\Autofac
+call dnu pack src\Autofac --out artifacts\packages
 if %errorlevel% neq 0 exit /b %errorlevel%
 
-call dnu pack src\Autofac.Dnx
+call dnu pack src\Autofac.Dnx --out artifacts\packages
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 popd
