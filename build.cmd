@@ -44,6 +44,11 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 call dnu restore test\Autofac.Dnx.Test
 if %errorlevel% neq 0 exit /b %errorlevel%
 
+SETLOCAL ENABLEEXTENSIONS
+IF ERRORLEVEL 1 ECHO Unable to enable extensions
+IF DEFINED APPVEYOR_BUILD_NUMBER (SET DNX_BUILD_VERSION=%APPVEYOR_BUILD_NUMBER%) ELSE (SET DNX_BUILD_VERSION=1)
+ECHO DNX_BUILD_VERSION=%DNX_BUILD_VERSION%
+
 call dnu pack src\Autofac --configuration Release --out artifacts\packages
 if %errorlevel% neq 0 exit /b %errorlevel%
 
