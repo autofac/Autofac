@@ -26,8 +26,8 @@ if %ERRORLEVEL% neq 0 (
 )
 
 :install
-call dnvm install 1.0.0-beta5-11511
-call dnvm use 1.0.0-beta5-11511
+call dnvm install 1.0.0-beta5-11511 -r CoreCLR
+call dnvm install 1.0.0-beta5-11511 -r CLR
 
 :run
 call dnu restore src\Autofac
@@ -52,6 +52,14 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 
 call dnu pack src\Autofac.Dnx --configuration Release --out artifacts\packages
 if %errorlevel% neq 0 exit /b %errorlevel%
+
+call dnx test\Autofac.Test test
+if %errorlevel% neq 0 exit /b %errorlevel%
+
+call dnx test\Autofac.Dnx.Test test
+if %errorlevel% neq 0 exit /b %errorlevel%
+
+call dnvm use 1.0.0-beta5-11511 -r CoreCLR
 
 call dnx test\Autofac.Test test
 if %errorlevel% neq 0 exit /b %errorlevel%
