@@ -29,7 +29,7 @@ if %ERRORLEVEL% neq 0 (
 call dnvm install 1.0.0-beta5-11511 -r CoreCLR
 call dnvm install 1.0.0-beta5-11511 -r CLR
 
-:run
+:restore
 call dnu restore src\Autofac
 if %errorlevel% neq 0 exit /b %errorlevel%
 
@@ -42,6 +42,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 call dnu restore test\Autofac.Dnx.Test
 if %errorlevel% neq 0 exit /b %errorlevel%
 
+:pack
 SETLOCAL ENABLEEXTENSIONS
 IF ERRORLEVEL 1 ECHO Unable to enable extensions
 IF DEFINED APPVEYOR_BUILD_NUMBER (SET DNX_BUILD_VERSION=%APPVEYOR_BUILD_NUMBER%) ELSE (SET DNX_BUILD_VERSION=1)
@@ -53,6 +54,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 call dnu pack src\Autofac.Dnx --configuration Release --out artifacts\packages
 if %errorlevel% neq 0 exit /b %errorlevel%
 
+:test
 call dnx test\Autofac.Test test
 if %errorlevel% neq 0 exit /b %errorlevel%
 
