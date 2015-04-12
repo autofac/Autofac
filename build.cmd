@@ -28,8 +28,6 @@ if %ERRORLEVEL% neq 0 (
 :install
 call dnvm install 1.0.0-beta5-11511
 call dnvm use 1.0.0-beta5-11511
-rem set the runtime path because the above commands set \.dnx<space>\runtimes
-rem set PATH=!USERPROFILE!\.dnx\runtimes\dnx-clr-win-x86.1.0.0-beta5-11511\bin;!PATH!
 
 :run
 call dnu restore src\Autofac
