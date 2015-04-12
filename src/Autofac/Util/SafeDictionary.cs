@@ -37,10 +37,7 @@ namespace Autofac.Util
             set { lock (_syncLock) _dictionary[key] = value; }
         }
 
-        public IEnumerable<TKey> Keys
-        {
-            get { return _dictionary.Keys; }
-        }
+        public IEnumerable<TKey> Keys => _dictionary.Keys;
 
         public bool TryGetValue(TKey key, out TValue value)
         {

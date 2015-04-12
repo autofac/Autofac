@@ -26,7 +26,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Autofac.Core;
-using Autofac.Util;
 
 namespace Autofac
 {
@@ -70,12 +69,13 @@ namespace Autofac
         public TypedParameter(Type type, object value)
             : base(value, pi => pi.ParameterType == type)
         {
-            Type = Enforce.ArgumentNotNull(type, "type");
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
+            Type = type;
         }
 
-
         /// <summary>
-        /// Shortcut for creating <see cref="TypedParameter"/> 
+        /// Shortcut for creating <see cref="TypedParameter"/>
         /// by using the <typeparamref name="T"/>
         /// </summary>
         /// <typeparam name="T">type to be used for the parameter</typeparam>

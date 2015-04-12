@@ -27,7 +27,6 @@ using System;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
-using Autofac.Util;
 
 namespace Autofac.Features.GeneratedFactories
 {
@@ -36,9 +35,8 @@ namespace Autofac.Features.GeneratedFactories
     /// </summary>
     public class GeneratedFactoryActivatorData : IConcreteActivatorData
     {
-        ParameterMapping _parameterMapping = ParameterMapping.Adaptive;
-        Type _delegateType;
-        Service _productService;
+        readonly Type _delegateType;
+        readonly Service _productService;
 
         /// <summary>
         /// Create a new GeneratedFactoryActivatorData
@@ -47,8 +45,11 @@ namespace Autofac.Features.GeneratedFactories
         /// <param name="productService">The service used to provide the products of the factory.</param>
         public GeneratedFactoryActivatorData(Type delegateType, Service productService)
         {
-            _delegateType = Enforce.ArgumentNotNull(delegateType, "delegateType");
-            _productService = Enforce.ArgumentNotNull(productService, "productService");
+            if (delegateType == null) throw new ArgumentNullException(nameof(delegateType));
+            if (productService == null) throw new ArgumentNullException(nameof(productService));
+
+            _delegateType = delegateType;
+            _productService = productService;
         }
 
         /// <summary>
@@ -57,18 +58,14 @@ namespace Autofac.Features.GeneratedFactories
         /// For Func-based delegates, this defaults to ByType. Otherwise, the
         /// parameters will be mapped by name.
         /// </summary>
-        public ParameterMapping ParameterMapping
-        {
-            get { return _parameterMapping; }
-            set { _parameterMapping = value; }
-        }
+        public ParameterMapping ParameterMapping { get; set; } = ParameterMapping.Adaptive;
 
         /// <summary>
         /// Activator data that can provide an IInstanceActivator instance.
         /// </summary>
         public IInstanceActivator Activator
         {
-            get 
+            get
             {
                 var factory = new FactoryGenerator(_delegateType, _productService, ParameterMapping);
                 return new DelegateActivator(_delegateType, (c, p) => factory.GenerateFactory(c, p));

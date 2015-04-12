@@ -26,8 +26,6 @@
 using System;
 using System.Globalization;
 
-using Autofac.Util;
-
 namespace Autofac.Core.Registration
 {
 	/// <summary>
@@ -43,9 +41,7 @@ namespace Autofac.Core.Registration
         /// </summary>
         /// <param name="service">The service.</param>
         public ComponentNotRegisteredException(Service service)
-            : base(string.Format(CultureInfo.CurrentCulture,
-            ComponentNotRegisteredExceptionResources.Message, 
-            Enforce.ArgumentNotNull(service, "service")))
+            : base(FormatMessage(service))
         {
         }
 
@@ -55,11 +51,15 @@ namespace Autofac.Core.Registration
         /// <param name="service">The service.</param>
         /// <param name="innerException">The inner exception.</param>
         public ComponentNotRegisteredException(Service service, Exception innerException)
-            : base(string.Format(CultureInfo.CurrentCulture,
-            ComponentNotRegisteredExceptionResources.Message, 
-            Enforce.ArgumentNotNull(service, "service")),
-            innerException)
+            : base(FormatMessage(service), innerException)
         {
         }
+
+	    static string FormatMessage(Service service)
+	    {
+            if (service == null) throw new ArgumentNullException(nameof(service));
+
+	        return string.Format(CultureInfo.CurrentCulture, ComponentNotRegisteredExceptionResources.Message, service);
+	    }
     }
 }

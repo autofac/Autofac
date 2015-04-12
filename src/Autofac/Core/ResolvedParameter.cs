@@ -25,7 +25,6 @@
 
 using System;
 using System.Reflection;
-using Autofac.Util;
 
 namespace Autofac.Core
 {
@@ -45,8 +44,11 @@ namespace Autofac.Core
         /// <param name="valueAccessor">A function that supplies the parameter value given the context.</param>
         public ResolvedParameter(Func<ParameterInfo, IComponentContext, bool> predicate, Func<ParameterInfo, IComponentContext, object> valueAccessor)
         {
-            _predicate = Enforce.ArgumentNotNull(predicate, "predicate");
-            _valueAccessor = Enforce.ArgumentNotNull(valueAccessor, "valueAccessor");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+            if (valueAccessor == null) throw new ArgumentNullException(nameof(valueAccessor));
+
+            _predicate = predicate;
+            _valueAccessor = valueAccessor;
         }
 
         /// <summary>
@@ -60,8 +62,8 @@ namespace Autofac.Core
         /// <returns>True if a value can be supplied; otherwise, false.</returns>
         public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<object> valueProvider)
         {
-            if (pi == null) throw new ArgumentNullException("pi");
-            if (context == null) throw new ArgumentNullException("context");
+            if (pi == null) throw new ArgumentNullException(nameof(pi));
+            if (context == null) throw new ArgumentNullException(nameof(context));
 
             if (_predicate(pi, context))
             {
@@ -85,7 +87,8 @@ namespace Autofac.Core
         /// </remarks>
         public static ResolvedParameter ForNamed<TService>(string serviceName)
         {
-            if (serviceName == null) throw new ArgumentNullException("serviceName");
+            if (serviceName == null) throw new ArgumentNullException(nameof(serviceName));
+
             return ForKeyed<TService>(serviceName);
         }
 
@@ -99,7 +102,8 @@ namespace Autofac.Core
         /// <returns>A configured <see cref="ResolvedParameter"/> instance.</returns>
         public static ResolvedParameter ForKeyed<TService>(object serviceKey)
         {
-            if (serviceKey == null) throw new ArgumentNullException("serviceKey");
+            if (serviceKey == null) throw new ArgumentNullException(nameof(serviceKey));
+
             var ks = new KeyedService(serviceKey, typeof(TService));
             return new ResolvedParameter(
                 (pi, c) => pi.ParameterType == typeof(TService) && c.IsRegisteredService(ks),

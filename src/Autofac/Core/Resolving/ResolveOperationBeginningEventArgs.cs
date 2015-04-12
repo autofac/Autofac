@@ -32,23 +32,18 @@ namespace Autofac.Core.Resolving
     /// </summary>
     public class ResolveOperationBeginningEventArgs : EventArgs
     {
-        readonly IResolveOperation _resolveOperation;
-
         /// <summary>
         /// Create an instance of the <see cref="ResolveOperationBeginningEventArgs"/> class.
         /// </summary>
         /// <param name="resolveOperation">The resolve operation that is beginning.</param>
         public ResolveOperationBeginningEventArgs(IResolveOperation resolveOperation)
         {
-            _resolveOperation = resolveOperation;
+            ResolveOperation = resolveOperation;
         }
 
         /// <summary>
         /// The resolve operation that is beginning.
         /// </summary>
-        public IResolveOperation ResolveOperation
-        {
-            get { return _resolveOperation; }
-        }
+        public IResolveOperation ResolveOperation { get; }
     }
 }

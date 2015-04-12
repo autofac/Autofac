@@ -32,9 +32,6 @@ namespace Autofac.Features.Metadata
     /// <typeparam name="TMetadata">An interface to which metadata values can be bound.</typeparam>
     public class Meta<T, TMetadata>
     {
-        readonly T _value;
-        readonly TMetadata _metadata;
-
         /// <summary>
         /// Create a new instance.
         /// </summary>
@@ -42,18 +39,18 @@ namespace Autofac.Features.Metadata
         /// <param name="metadata">The metadata describing the value.</param>
         public Meta(T value, TMetadata metadata)
         {
-            _value = value;
-            _metadata = metadata;
+            Value = value;
+            Metadata = metadata;
         }
 
         /// <summary>
         /// The value described by <see cref="Metadata"/>.
         /// </summary>
-        public T Value { get { return _value; } }
+        public T Value { get; }
 
         /// <summary>
         /// Metadata describing the value.
         /// </summary>
-        public TMetadata Metadata { get { return _metadata; } }
+        public TMetadata Metadata { get; }
     }
 }

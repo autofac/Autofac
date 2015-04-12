@@ -35,10 +35,6 @@ namespace Autofac.Features.Scanning
     /// </summary>
     public class ScanningActivatorData : ReflectionActivatorData
     {
-        readonly ICollection<Func<Type, bool>> _filters = new List<Func<Type, bool>>();
-        readonly ICollection<Action<Type, IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>>> _configurationActions = new List<Action<Type, IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>>>();
-        readonly ICollection<Action<IComponentRegistry>> _postScanningCallbacks = new List<Action<IComponentRegistry>>();
-
         /// <summary>
         /// Create an instance of <see cref="ScanningActivatorData"/>.
         /// </summary>
@@ -50,19 +46,17 @@ namespace Autofac.Features.Scanning
         /// <summary>
         /// The filters applied to the types from the scanned assembly.
         /// </summary>
-        public ICollection<Func<Type, bool>> Filters { get { return _filters; } }
+        public ICollection<Func<Type, bool>> Filters { get; } = new List<Func<Type, bool>>();
 
         /// <summary>
         /// Additional actions to be performed on the concrete type registrations.
         /// </summary>
-        public ICollection<Action<Type, IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>>> ConfigurationActions { get { return _configurationActions; } }
+        public ICollection<Action<Type, IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>>> ConfigurationActions { get; }
+            = new List<Action<Type, IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>>>();
 
         /// <summary>
         /// Actions to be called once the scanning operation is complete.
         /// </summary>
-        public ICollection<Action<IComponentRegistry>> PostScanningCallbacks
-        {
-            get { return _postScanningCallbacks; }
-        }
+        public ICollection<Action<IComponentRegistry>> PostScanningCallbacks { get; } = new List<Action<IComponentRegistry>>();
     }
 }

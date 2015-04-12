@@ -32,21 +32,17 @@ namespace Autofac.Core.Resolving
     /// </summary>
     public class InstanceLookupBeginningEventArgs : EventArgs
     {
-        readonly IInstanceLookup _instanceLookup;
-
         /// <param name="instanceLookup">The instance lookup that is ending.</param>
         public InstanceLookupBeginningEventArgs(IInstanceLookup instanceLookup)
         {
-            if (instanceLookup == null) throw new ArgumentNullException("instanceLookup");
-            _instanceLookup = instanceLookup;
+            if (instanceLookup == null) throw new ArgumentNullException(nameof(instanceLookup));
+
+            InstanceLookup = instanceLookup;
         }
 
         /// <summary>
         /// The instance lookup operation that is beginning.
         /// </summary>
-        public IInstanceLookup InstanceLookup
-        {
-            get { return _instanceLookup; }
-        }
+        public IInstanceLookup InstanceLookup { get; }
     }
 }

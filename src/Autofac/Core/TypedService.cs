@@ -24,7 +24,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Autofac.Util;
 
 namespace Autofac.Core
 {
@@ -39,26 +38,22 @@ namespace Autofac.Core
         /// <param name="serviceType">Type of the service.</param>
         public TypedService(Type serviceType)
         {
-            ServiceType = Enforce.ArgumentNotNull(serviceType, "serviceType");
+            if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
+
+            ServiceType = serviceType;
         }
 
         /// <summary>
         /// Gets the type of the service.
         /// </summary>
         /// <value>The type of the service.</value>
-        public Type ServiceType { get; private set; }
+        public Type ServiceType { get; }
 
         /// <summary>
         /// Gets a human-readable description of the service.
         /// </summary>
         /// <value>The description.</value>
-        public override string Description
-        {
-            get
-            {    
-                return ServiceType.FullName;
-            }
-        }
+        public override string Description => ServiceType.FullName;
 
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
@@ -107,7 +102,8 @@ namespace Autofac.Core
         /// <returns>A new service with the service type.</returns>
         public Service ChangeType(Type newType)
         {
-            if (newType == null) throw new ArgumentNullException("newType");
+            if (newType == null) throw new ArgumentNullException(nameof(newType));
+
             return new TypedService(newType);
         }
     }

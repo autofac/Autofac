@@ -24,39 +24,38 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Autofac.Util;
 
 namespace Autofac.Core
 {
-	/// <summary>
-	/// Information about the ocurrence of a component being registered
-	/// with a container.
-	/// </summary>
-	public class ComponentRegisteredEventArgs : EventArgs
-	{
-        readonly IComponentRegistry _componentRegistry;
-        readonly IComponentRegistration _componentRegistration;
-
+    /// <summary>
+    /// Information about the ocurrence of a component being registered
+    /// with a container.
+    /// </summary>
+    public class ComponentRegisteredEventArgs : EventArgs
+    {
         /// <summary>
         /// The container into which the registration was made.
         /// </summary>
-        public IComponentRegistry ComponentRegistry { get { return _componentRegistry; } }
+        public IComponentRegistry ComponentRegistry { get; }
 
         /// <summary>
         /// The component registration.
         /// </summary>
-        public IComponentRegistration ComponentRegistration { get { return _componentRegistration; } }
+        public IComponentRegistration ComponentRegistration { get; }
 
         /// <summary>
-		/// Create a new instance with a valid container and component registration.
-		/// </summary>
-		/// <param name="registry">The container into which the registration 
-		/// was made.</param>
-		/// <param name="componentRegistration">The component registration.</param>
-		public ComponentRegisteredEventArgs(IComponentRegistry registry, IComponentRegistration componentRegistration)
-		{
-            _componentRegistry = Enforce.ArgumentNotNull(registry, "registry");
-			_componentRegistration = Enforce.ArgumentNotNull(componentRegistration, "componentRegistration");
-		}
-	}
+        /// Create a new instance with a valid container and component registration.
+        /// </summary>
+        /// <param name="registry">The container into which the registration
+        /// was made.</param>
+        /// <param name="componentRegistration">The component registration.</param>
+        public ComponentRegisteredEventArgs(IComponentRegistry registry, IComponentRegistration componentRegistration)
+        {
+            if (registry == null) throw new ArgumentNullException(nameof(registry));
+            if (componentRegistration == null) throw new ArgumentNullException(nameof(componentRegistration));
+
+            ComponentRegistry = registry;
+            ComponentRegistration = componentRegistration;
+        }
+    }
 }

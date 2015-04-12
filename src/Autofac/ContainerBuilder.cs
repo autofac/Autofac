@@ -36,7 +36,6 @@ using Autofac.Features.Indexed;
 using Autofac.Features.LazyDependencies;
 using Autofac.Features.Metadata;
 using Autofac.Features.OwnedInstances;
-using Autofac.Util;
 
 namespace Autofac
 {
@@ -46,13 +45,13 @@ namespace Autofac
     /// <example>
     /// <code>
     /// var builder = new ContainerBuilder();
-    /// 
+    ///
     /// builder.RegisterType&lt;Logger&gt;()
     ///     .As&lt;ILogger&gt;()
     ///     .SingleInstance();
-    /// 
+    ///
     /// builder.Register(c => new MessageHandler(c.Resolve&lt;ILogger&gt;()));
-    /// 
+    ///
     /// var container = builder.Build();
     /// // resolve components from container...
     /// </code>
@@ -73,7 +72,9 @@ namespace Autofac
         /// <param name="configurationCallback">Callback to execute.</param>
         public virtual void RegisterCallback(Action<IComponentRegistry> configurationCallback)
         {
-            _configurationCallbacks.Add(Enforce.ArgumentNotNull(configurationCallback, "configurationCallback"));
+            if (configurationCallback == null) throw new ArgumentNullException(nameof(configurationCallback));
+
+            _configurationCallbacks.Add(configurationCallback);
         }
 
         /// <summary>

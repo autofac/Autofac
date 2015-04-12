@@ -73,8 +73,8 @@ namespace Autofac.Features.Collections
         /// <returns>Registrations providing the service.</returns>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
-            if (service == null) throw new ArgumentNullException("service");
-            if (registrationAccessor == null) throw new ArgumentNullException("registrationAccessor");
+            if (service == null) throw new ArgumentNullException(nameof(service));
+            if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
 
             var swt = service as IServiceWithType;
             if (swt != null)
@@ -124,10 +124,7 @@ namespace Autofac.Features.Collections
             return Enumerable.Empty<IComponentRegistration>();
         }
 
-        public bool IsAdapterForIndividualComponents
-        {
-            get { return false; }
-        }
+        public bool IsAdapterForIndividualComponents => false;
 
         public override string ToString()
         {

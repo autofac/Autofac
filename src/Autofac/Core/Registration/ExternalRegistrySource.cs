@@ -46,7 +46,8 @@ namespace Autofac.Core.Registration
         /// <param name="registry">Component registry to pull registrations from.</param>
         public ExternalRegistrySource(IComponentRegistry registry)
         {
-            if (registry == null) throw new ArgumentNullException("registry");
+            if (registry == null) throw new ArgumentNullException(nameof(registry));
+
             _registry = registry;
         }
 
@@ -62,24 +63,19 @@ namespace Autofac.Core.Registration
             // Issue #475: This method was refactored significantly to handle
             // registrations made on the fly in parent lifetime scopes to correctly
             // pass to child lifetime scopes.
-            foreach (var registration in _registry.RegistrationsFor(service).Where(r => !r.IsAdapting()))
-            {
-                var r = registration;
-                yield return RegistrationBuilder.ForDelegate(r.Activator.LimitType, (c, p) => c.ResolveComponent(r, p))
+            return _registry.RegistrationsFor(service)
+                .Where(r => !r.IsAdapting())
+                .Select(r => RegistrationBuilder.ForDelegate(r.Activator.LimitType, (c, p) => c.ResolveComponent(r, p))
                     .Targeting(r)
                     .As(service)
                     .ExternallyOwned()
-                    .CreateRegistration();
-            }
+                    .CreateRegistration());
         }
 
         /// <summary>
         /// In this case because the components that are adapted do not come from the same
         /// logical scope, we must return false to avoid duplicating them.
         /// </summary>
-        public bool IsAdapterForIndividualComponents
-        {
-            get { return false; }
-        }
+        public bool IsAdapterForIndividualComponents => false;
     }
 }

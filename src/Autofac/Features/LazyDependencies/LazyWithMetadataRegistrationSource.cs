@@ -79,10 +79,7 @@ namespace Autofac.Features.LazyDependencies
                 .Select(v => registrationCreator(service, v));
         }
 
-        public bool IsAdapterForIndividualComponents
-        {
-            get { return true; }
-        }
+        public bool IsAdapterForIndividualComponents => true;
 
         public override string ToString()
         {

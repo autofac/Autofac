@@ -44,10 +44,8 @@ namespace Autofac.Features.Metadata
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
-            if (registrationAccessor == null)
-            {
-                throw new ArgumentNullException("registrationAccessor");
-            }
+            if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
+
             var swt = service as IServiceWithType;
             if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Meta<>)))
                 return Enumerable.Empty<IComponentRegistration>();
@@ -63,10 +61,7 @@ namespace Autofac.Features.Metadata
                 .Cast<IComponentRegistration>();
         }
 
-        public bool IsAdapterForIndividualComponents
-        {
-            get { return true; }
-        }
+        public bool IsAdapterForIndividualComponents => true;
 
         public override string ToString()
         {

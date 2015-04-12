@@ -31,7 +31,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Autofac.Core;
-using Autofac.Util;
 
 namespace Autofac.Features.Metadata
 {

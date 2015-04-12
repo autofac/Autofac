@@ -24,7 +24,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Autofac.Util;
 
 namespace Autofac.Core
 {
@@ -33,9 +32,6 @@ namespace Autofac.Core
     /// </summary>
     public sealed class KeyedService : Service, IServiceWithType, IEquatable<KeyedService>
     {
-        readonly object _serviceKey;
-        readonly Type _serviceType;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Autofac.Core.KeyedService"/> class.
         /// </summary>
@@ -43,39 +39,30 @@ namespace Autofac.Core
         /// <param name="serviceType">Type of the service.</param>
         public KeyedService(object serviceKey, Type serviceType)
         {
-            _serviceKey = Enforce.ArgumentNotNull(serviceKey, "serviceKey");
-            _serviceType = Enforce.ArgumentNotNull(serviceType, "serviceType");
+            if (serviceKey == null) throw new ArgumentNullException(nameof(serviceKey));
+            if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
+
+            ServiceKey = serviceKey;
+            ServiceType = serviceType;
         }
 
         /// <summary>
         /// Gets or sets the key of the service.
         /// </summary>
         /// <value>The key of the service.</value>
-        public object ServiceKey
-        {
-            get { return _serviceKey; }
-        }
+        public object ServiceKey { get; }
 
         /// <summary>
         /// Gets the type of the service.
         /// </summary>
         /// <value>The type of the service.</value>
-        public Type ServiceType
-        {
-            get { return _serviceType; }
-        }
+        public Type ServiceType { get; }
 
         /// <summary>
         /// Gets a human-readable description of the service.
         /// </summary>
         /// <value>The description.</value>
-        public override string Description
-        {
-            get
-            {
-                return ServiceKey + " (" + ServiceType.FullName + ")";
-            }
-        }
+        public override string Description => ServiceKey + " (" + ServiceType.FullName + ")";
 
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
@@ -124,7 +111,8 @@ namespace Autofac.Core
         /// <returns>A new service with the service type.</returns>
         public Service ChangeType(Type newType)
         {
-            if (newType == null) throw new ArgumentNullException("newType");
+            if (newType == null) throw new ArgumentNullException(nameof(newType));
+
             return new KeyedService(ServiceKey, newType);
         }
     }

@@ -43,15 +43,13 @@ namespace Autofac.Core.Activators.Reflection
         /// be set to a function that will lazily retrieve the parameter value. If the result is false,
         /// will be set to null.</param>
         /// <returns>True if a value can be supplied; otherwise, false.</returns>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="pi" /> is <see langword="null" />.
         /// </exception>
         public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<object> valueProvider)
         {
-            if (pi == null)
-            {
-                throw new ArgumentNullException("pi");
-            }
+            if (pi == null) throw new ArgumentNullException(nameof(pi));
+
             // System.DBNull is not included in PCL even though it seems to be available in the selected targets.
             // Verified through experimentation 12/14/2012 - PCL initial release in VS 2012 does not support System.DBNull
             // even though the documentation claims it's available. It doesn't appear to matter what the target
