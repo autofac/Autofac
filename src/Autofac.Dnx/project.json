@@ -4,6 +4,7 @@
 	"description": "Autofac integration for ASP.NET 5.0.",
 	"projectUrl": "http://autofac.org",
 	"licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
+	"iconUrl": "http://code.google.com/p/autofac/logo",
 	"requireLicenseAcceptance": false,
 	"tags": [ "Autofac", "DI", "IoC", "AspNet", "DNX" ],
 	"dependencies": {
