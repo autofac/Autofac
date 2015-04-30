@@ -13,8 +13,9 @@ IF %ERRORLEVEL% neq 0 (
 )
 
 :install
-CALL dnvm install 1.0.0-beta5-11511 -r CoreCLR
-CALL dnvm install 1.0.0-beta5-11511 -r CLR
+CALL dnvm install 1.0.0-beta4 -r CoreCLR
+CALL dnvm install 1.0.0-beta4 -r CLR
+CALL dnvm use 1.0.0-beta4 -r CLR
 
 :restore
 CALL dnu restore src\Autofac
@@ -48,7 +49,7 @@ IF %errorlevel% neq 0 EXIT /b %errorlevel%
 CALL dnx test\Autofac.Dnx.Test test
 IF %errorlevel% neq 0 EXIT /b %errorlevel%
 
-CALL dnvm use 1.0.0-beta5-11511 -r CoreCLR
+CALL dnvm use 1.0.0-beta4 -r CoreCLR
 
 CALL dnx test\Autofac.Test test
 IF %errorlevel% neq 0 EXIT /b %errorlevel%

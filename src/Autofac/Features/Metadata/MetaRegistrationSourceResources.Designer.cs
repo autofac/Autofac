@@ -40,7 +40,7 @@ namespace Autofac.Features.Metadata {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Features.Metadata.MetaRegistrationSourceResources", typeof(MetaRegistrationSourceResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = Util.ResourceManagerHack.Create("Autofac.Features.Metadata.MetaRegistrationSourceResources", typeof(MetaRegistrationSourceResources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
