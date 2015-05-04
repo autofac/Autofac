@@ -21,6 +21,7 @@ build_script:
 
 artifacts:
 - path: artifacts\packages\**\*.nupkg
+  name: MyGet
 
 deploy:
 - provider: NuGet
@@ -28,4 +29,4 @@ deploy:
   api_key:
     secure: N4KZCRegcmenMoJ0peZfQwDzqq+Wt4oxGzNTgvkrDxgWyZhw7hNwKmd4n2AsNKQX
   symbol_server: https://nuget.symbolsource.org/MyGet/autofac
-  artifact: '*.nupkg'
+  artifact: MyGet
