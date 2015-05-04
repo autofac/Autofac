@@ -40,8 +40,6 @@ namespace Autofac.Core
     [DebuggerDisplay("Tag = {Tag}, IsDisposed = {IsDisposed}")]
     public class Container : Disposable, IContainer, IServiceProvider
     {
-        readonly IComponentRegistry _componentRegistry;
-
         readonly ILifetimeScope _rootLifetimeScope;
 
         /// <summary>
@@ -49,9 +47,9 @@ namespace Autofac.Core
         /// </summary>
         internal Container()
         {
-            _componentRegistry = new ComponentRegistry();
+            ComponentRegistry = new ComponentRegistry();
 
-            _componentRegistry.Register(new ComponentRegistration(
+            ComponentRegistry.Register(new ComponentRegistration(
                 LifetimeScope.SelfRegistrationId,
                 new DelegateActivator(typeof(LifetimeScope), (c, p) =>
                 {
@@ -63,7 +61,7 @@ namespace Autofac.Core
                 new Service[] { new TypedService(typeof(ILifetimeScope)), new TypedService(typeof(IComponentContext)) },
                 new Dictionary<string, object>()));
 
-            _rootLifetimeScope = new LifetimeScope(_componentRegistry);
+            _rootLifetimeScope = new LifetimeScope(ComponentRegistry);
         }
 
         /// <summary>
@@ -118,20 +116,14 @@ namespace Autofac.Core
         /// The disposer associated with this container. Instances can be associated
         /// with it manually if required.
         /// </summary>
-        public IDisposer Disposer
-        {
-            get { return _rootLifetimeScope.Disposer; }
-        }
+        public IDisposer Disposer => _rootLifetimeScope.Disposer;
 
         /// <summary>
         /// Tag applied to the lifetime scope.
         /// </summary>
         /// <remarks>The tag applied to this scope and the contexts generated when
         /// it resolves component dependencies.</remarks>
-        public object Tag
-        {
-            get { return _rootLifetimeScope.Tag; }
-        }
+        public object Tag => _rootLifetimeScope.Tag;
 
         /// <summary>
         /// Fired when a new scope based on the current scope is beginning.
@@ -163,10 +155,7 @@ namespace Autofac.Core
         /// <summary>
         /// Associates services with the components that provide them.
         /// </summary>
-        public IComponentRegistry ComponentRegistry
-        {
-            get { return _componentRegistry; }
-        }
+        public IComponentRegistry ComponentRegistry { get; }
 
         /// <summary>
         /// Resolve an instance of the provided registration within the context.
@@ -192,7 +181,7 @@ namespace Autofac.Core
             if (disposing)
             {
                 _rootLifetimeScope.Dispose();
-                _componentRegistry.Dispose();
+                ComponentRegistry.Dispose();
             }
 
             base.Dispose(disposing);

@@ -32,24 +32,20 @@ namespace Autofac.Core.Resolving
     /// </summary>
     public class InstanceLookupCompletionBeginningEventArgs : EventArgs
     {
-        readonly IInstanceLookup _instanceLookup;
-
         /// <summary>
         /// Create an instance of the <see cref="InstanceLookupCompletionBeginningEventArgs"/> class.
         /// </summary>
         /// <param name="instanceLookup">The instance lookup that is beginning the completion phase.</param>
         public InstanceLookupCompletionBeginningEventArgs(IInstanceLookup instanceLookup)
         {
-            if (instanceLookup == null) throw new ArgumentNullException("instanceLookup");
-            _instanceLookup = instanceLookup;
+            if (instanceLookup == null) throw new ArgumentNullException(nameof(instanceLookup));
+
+            InstanceLookup = instanceLookup;
         }
 
         /// <summary>
         /// The instance lookup operation that is beginning the completion phase.
         /// </summary>
-        public IInstanceLookup InstanceLookup
-        {
-            get { return _instanceLookup; }
-        }
+        public IInstanceLookup InstanceLookup { get; }
     }
 }

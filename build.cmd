@@ -1,28 +1,60 @@
-@echo off
-cd %~dp0
+@ECHO OFF
 
-SETLOCAL
-SET CACHED_NUGET=%LocalAppData%\NuGet\NuGet.exe
+PUSHD %~dp0
 
-IF EXIST %CACHED_NUGET% goto copynuget
-echo Downloading latest version of NuGet.exe...
-IF NOT EXIST %LocalAppData%\NuGet md %LocalAppData%\NuGet
-@powershell -NoProfile -ExecutionPolicy unrestricted -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest 'https://www.nuget.org/nuget.exe' -OutFile '%CACHED_NUGET%'"
+:dnvminstall
+SETLOCAL EnableDelayedExpansion 
+where dnvm
+IF %ERRORLEVEL% neq 0 (
+    @powershell -NoProfile -ExecutionPolicy unrestricted -Command "&{$Branch='dev';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.ps1'))}"
+    SET PATH=!PATH!;!userprofile!\.dnx\bin
+    SET DNX_HOME=!USERPROFILE!\.dnx
+    GOTO install
+)
 
-:copynuget
-IF EXIST .nuget\nuget.exe goto restore
-md .nuget
-copy %CACHED_NUGET% .nuget\nuget.exe > nul
+:install
+CALL dnvm install 1.0.0-beta4 -r CoreCLR
+CALL dnvm install 1.0.0-beta4 -r CLR
+CALL dnvm use 1.0.0-beta4 -r CLR
 
 :restore
-IF EXIST packages\KoreBuild goto run
-.nuget\NuGet.exe install KoreBuild -ExcludeVersion -o packages -nocache -pre
-.nuget\NuGet.exe install Sake -version 0.2 -o packages -ExcludeVersion
+CALL dnu restore src\Autofac
+IF %errorlevel% neq 0 EXIT /b %errorlevel%
 
-IF "%SKIP_KRE_INSTALL%"=="1" goto run
-CALL packages\KoreBuild\build\kvm upgrade -runtime CLR -x86
-CALL packages\KoreBuild\build\kvm install default -runtime CoreCLR -x86
+CALL dnu restore src\Autofac.Dnx
+IF %errorlevel% neq 0 EXIT /b %errorlevel%
 
-:run
-CALL packages\KoreBuild\build\kvm use default -runtime CLR -x86
-packages\Sake\tools\Sake.exe -I packages\KoreBuild\build -f makefile.shade %*
+CALL dnu restore test\Autofac.Test
+IF %errorlevel% neq 0 EXIT /b %errorlevel%
+
+CALL dnu restore test\Autofac.Dnx.Test
+IF %errorlevel% neq 0 EXIT /b %errorlevel%
+
+:pack
+SETLOCAL ENABLEEXTENSIONS
+IF ERRORLEVEL 1 ECHO Unable to enable extensions
+IF DEFINED APPVEYOR_BUILD_NUMBER (SET DNX_BUILD_VERSION=%APPVEYOR_BUILD_NUMBER%) ELSE (SET DNX_BUILD_VERSION=1)
+ECHO DNX_BUILD_VERSION=%DNX_BUILD_VERSION%
+
+CALL dnu pack src\Autofac --configuration Release --out artifacts\packages
+IF %errorlevel% neq 0 EXIT /b %errorlevel%
+
+CALL dnu pack src\Autofac.Dnx --configuration Release --out artifacts\packages
+IF %errorlevel% neq 0 EXIT /b %errorlevel%
+
+:test
+CALL dnx test\Autofac.Test test
+IF %errorlevel% neq 0 EXIT /b %errorlevel%
+
+CALL dnx test\Autofac.Dnx.Test test
+IF %errorlevel% neq 0 EXIT /b %errorlevel%
+
+CALL dnvm use 1.0.0-beta4 -r CoreCLR
+
+CALL dnx test\Autofac.Test test
+IF %errorlevel% neq 0 EXIT /b %errorlevel%
+
+CALL dnx test\Autofac.Dnx.Test test
+IF %errorlevel% neq 0 EXIT /b %errorlevel%
+
+POPD

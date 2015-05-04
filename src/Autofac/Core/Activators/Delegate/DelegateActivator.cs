@@ -27,7 +27,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using Autofac.Util;
 
 namespace Autofac.Core.Activators.Delegate
 {
@@ -47,7 +46,9 @@ namespace Autofac.Core.Activators.Delegate
         public DelegateActivator(Type limitType, Func<IComponentContext, IEnumerable<Parameter>, object> activationFunction)
             : base(limitType)
         {
-            _activationFunction = Enforce.ArgumentNotNull(activationFunction, "activationFunction");
+            if (activationFunction == null) throw new ArgumentNullException(nameof(activationFunction));
+
+            _activationFunction = activationFunction;
         }
 
         /// <summary>
@@ -62,8 +63,8 @@ namespace Autofac.Core.Activators.Delegate
         /// </remarks>
         public object ActivateInstance(IComponentContext context, IEnumerable<Parameter> parameters)
         {
-            if (context == null) throw new ArgumentNullException("context");
-            if (parameters == null) throw new ArgumentNullException("parameters");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
             var result = _activationFunction(context, parameters);
             if (result == null)

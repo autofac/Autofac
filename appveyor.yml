@@ -12,8 +12,16 @@ configuration: Release
 nuget:
   disable_publish_on_pr: true
 
+clone_depth: 1
+
+test: off
+
 build_script:
 - build.cmd
+
+artifacts:
+- path: artifacts\packages\**\*.nupkg
+  name: MyGet
 
 deploy:
 - provider: NuGet
@@ -21,4 +29,4 @@ deploy:
   api_key:
     secure: N4KZCRegcmenMoJ0peZfQwDzqq+Wt4oxGzNTgvkrDxgWyZhw7hNwKmd4n2AsNKQX
   symbol_server: https://nuget.symbolsource.org/MyGet/autofac
-  artifact: Autofac\..*\.nupkg
+  artifact: MyGet

@@ -1,5 +1,5 @@
 // This software is part of the Autofac IoC container
-// Copyright © 2015 Autofac Contributors
+// Copyright Â© 2015 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -35,7 +35,7 @@ namespace Autofac.Dnx
     {
         public static void Populate(
                 this ContainerBuilder builder,
-                IEnumerable<IServiceDescriptor> descriptors)
+                IEnumerable<ServiceDescriptor> descriptors)
         {
             builder.RegisterType<AutofacServiceProvider>().As<IServiceProvider>();
             builder.RegisterType<AutofacServiceScopeFactory>().As<IServiceScopeFactory>();
@@ -45,7 +45,7 @@ namespace Autofac.Dnx
 
         private static void Register(
                 ContainerBuilder builder,
-                IEnumerable<IServiceDescriptor> descriptors)
+                IEnumerable<ServiceDescriptor> descriptors)
         {
             foreach (var descriptor in descriptors)
             {
@@ -58,14 +58,14 @@ namespace Autofac.Dnx
                         builder
                             .RegisterGeneric(descriptor.ImplementationType)
                             .As(descriptor.ServiceType)
-                            .ConfigureLifecycle(descriptor.Lifecycle);
+                            .ConfigureLifecycle(descriptor.Lifetime);
                     }
                     else
                     {
                         builder
                             .RegisterType(descriptor.ImplementationType)
                             .As(descriptor.ServiceType)
-                            .ConfigureLifecycle(descriptor.Lifecycle);
+                            .ConfigureLifecycle(descriptor.Lifetime);
                     }
                 }
                 else if (descriptor.ImplementationFactory != null)
@@ -75,7 +75,7 @@ namespace Autofac.Dnx
                         var serviceProvider = context.Resolve<IServiceProvider>();
                         return descriptor.ImplementationFactory(serviceProvider);
                     })
-                    .ConfigureLifecycle(descriptor.Lifecycle)
+                    .ConfigureLifecycle(descriptor.Lifetime)
                     .CreateRegistration();
 
                     builder.RegisterComponent(registration);
@@ -85,24 +85,24 @@ namespace Autofac.Dnx
                     builder
                         .RegisterInstance(descriptor.ImplementationInstance)
                         .As(descriptor.ServiceType)
-                        .ConfigureLifecycle(descriptor.Lifecycle);
+                        .ConfigureLifecycle(descriptor.Lifetime);
                 }
             }
         }
 
         private static IRegistrationBuilder<object, T, U> ConfigureLifecycle<T, U>(
                 this IRegistrationBuilder<object, T, U> registrationBuilder,
-                LifecycleKind lifecycleKind)
+                ServiceLifetime lifecycleKind)
         {
             switch (lifecycleKind)
             {
-                case LifecycleKind.Singleton:
+                case ServiceLifetime.Singleton:
                     registrationBuilder.SingleInstance();
                     break;
-                case LifecycleKind.Scoped:
+                case ServiceLifetime.Scoped:
                     registrationBuilder.InstancePerLifetimeScope();
                     break;
-                case LifecycleKind.Transient:
+                case ServiceLifetime.Transient:
                     registrationBuilder.InstancePerDependency();
                     break;
             }

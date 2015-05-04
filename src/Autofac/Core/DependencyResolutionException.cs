@@ -70,11 +70,10 @@ namespace Autofac.Core
                 // Issue 343: Including the inner exception message with the
                 // main message for easier debugging.
                 var message = base.Message;
-                if (this.InnerException != null)
-                {
-                    var inner = this.InnerException.Message;
-                    message = String.Format(CultureInfo.CurrentCulture, DependencyResolutionExceptionResources.MessageNestingFormat, message, inner);
-                }
+                if (InnerException == null) return message;
+
+                var inner = InnerException.Message;
+                message = string.Format(CultureInfo.CurrentCulture, DependencyResolutionExceptionResources.MessageNestingFormat, message, inner);
                 return message;
             }
         }

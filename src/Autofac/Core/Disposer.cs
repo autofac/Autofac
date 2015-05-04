@@ -70,7 +70,7 @@ namespace Autofac.Core
         /// <param name="instance">The instance.</param>
         public void AddInstanceForDisposal(IDisposable instance)
         {
-            if (instance == null) throw new ArgumentNullException("instance");
+            if (instance == null) throw new ArgumentNullException(nameof(instance));
 
             lock (_synchRoot)
                 _items.Push(instance);

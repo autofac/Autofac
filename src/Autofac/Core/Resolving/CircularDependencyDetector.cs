@@ -39,15 +39,13 @@ namespace Autofac.Core.Resolving
 
         static string CreateDependencyGraphTo(IComponentRegistration registration, IEnumerable<InstanceLookup> activationStack)
         {
-            if (registration == null) throw new ArgumentNullException("registration");
-            if (activationStack == null) throw new ArgumentNullException("activationStack");
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (activationStack == null) throw new ArgumentNullException(nameof(activationStack));
 
             var dependencyGraph = Display(registration);
 
-            foreach (var requestor in activationStack.Select(a => a.ComponentRegistration))
-                dependencyGraph = Display(requestor) + " -> " + dependencyGraph;
-
-            return dependencyGraph;
+            return activationStack.Select(a => a.ComponentRegistration)
+                .Aggregate(dependencyGraph, (current, requestor) => Display(requestor) + " -> " + current);
         }
 
         static string Display(IComponentRegistration registration)
@@ -57,8 +55,8 @@ namespace Autofac.Core.Resolving
 
         public static void CheckForCircularDependency(IComponentRegistration registration, Stack<InstanceLookup> activationStack, int callDepth)
         {
-            if (registration == null) throw new ArgumentNullException("registration");
-            if (activationStack == null) throw new ArgumentNullException("activationStack");
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (activationStack == null) throw new ArgumentNullException(nameof(activationStack));
 
             if (callDepth > MaxResolveDepth)
                 throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture,

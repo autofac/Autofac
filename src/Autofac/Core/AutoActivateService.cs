@@ -23,6 +23,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
+
 namespace Autofac.Core
 {
     /// <summary>
@@ -37,17 +39,14 @@ namespace Autofac.Core
         /// <value>
         /// Always returns <c>AutoActivate</c>.
         /// </value>
-        public override string Description
-        {
-            get { return "AutoActivate"; }
-        }
+        public override string Description => "AutoActivate";
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="System.Object"/>.
+        /// Determines whether the specified <see cref="Object"/> is equal to the current <see cref="Object"/>.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="System.Object"/>.</param>
+        /// <param name="obj">The <see cref="Object"/> to compare with the current <see cref="Object"/>.</param>
         /// <returns>
-        /// <see langword="true" /> if the specified <see cref="System.Object"/> is not <see langword="null" />
+        /// <see langword="true" /> if the specified <see cref="Object"/> is not <see langword="null" />
         /// and is an <see cref="AutoActivateService"/>; otherwise, <see langword="false" />.
         /// </returns>
         /// <remarks>

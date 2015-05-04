@@ -69,29 +69,31 @@ namespace Autofac.Util
 
         public static bool IsGenericTypeDefinedBy(this Type @this, Type openGeneric)
         {
-            if (@this == null) throw new ArgumentNullException("this");
-            if (openGeneric == null) throw new ArgumentNullException("openGeneric");
+            if (@this == null) throw new ArgumentNullException(nameof(@this));
+            if (openGeneric == null) throw new ArgumentNullException(nameof(openGeneric));
 
             return !@this.GetTypeInfo().ContainsGenericParameters && @this.GetTypeInfo().IsGenericType && @this.GetGenericTypeDefinition() == openGeneric;
         }
 
         public static bool IsClosedTypeOf(this Type @this, Type openGeneric)
         {
-            if (@this == null) throw new ArgumentNullException("this");
-            if (openGeneric == null) throw new ArgumentNullException("openGeneric");
+            if (@this == null) throw new ArgumentNullException(nameof(@this));
+            if (openGeneric == null) throw new ArgumentNullException(nameof(openGeneric));
 
             return TypesAssignableFrom(@this).Any(t => t.GetTypeInfo().IsGenericType && !@this.GetTypeInfo().ContainsGenericParameters && t.GetGenericTypeDefinition() == openGeneric);
         }
 
         public static bool IsDelegate(this Type type)
         {
-            if (type == null) throw new ArgumentNullException("type");
-            return type.GetTypeInfo().IsSubclassOf(typeof(System.Delegate));
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
+            return type.GetTypeInfo().IsSubclassOf(typeof(Delegate));
         }
 
         public static Type FunctionReturnType(this Type type)
         {
-            if (type == null) throw new ArgumentNullException("type");
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
             var invoke = type.GetTypeInfo().GetDeclaredMethod("Invoke");
             Enforce.NotNull(invoke);
             return invoke.ReturnType;

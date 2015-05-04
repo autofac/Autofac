@@ -84,7 +84,8 @@ namespace Autofac.Core.Registration
         /// <returns>True if a registration exists.</returns>
         public bool TryGetRegistration(Service service, out IComponentRegistration registration)
         {
-            if (service == null) throw new ArgumentNullException("service");
+            if (service == null) throw new ArgumentNullException(nameof(service));
+
             lock (_synchRoot)
             {
                 var info = GetInitializedServiceInfo(service);
@@ -99,7 +100,8 @@ namespace Autofac.Core.Registration
         /// <returns>True if the service is registered.</returns>
         public bool IsRegistered(Service service)
         {
-            if (service == null) throw new ArgumentNullException("service");
+            if (service == null) throw new ArgumentNullException(nameof(service));
+
             lock (_synchRoot)
             {
                 return GetInitializedServiceInfo(service).IsRegistered;
@@ -123,7 +125,7 @@ namespace Autofac.Core.Registration
         /// component will not be changed.</param>
         public virtual void Register(IComponentRegistration registration, bool preserveDefaults)
         {
-            if (registration == null) throw new ArgumentNullException("registration");
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
 
             lock (_synchRoot)
             {
@@ -142,7 +144,7 @@ namespace Autofac.Core.Registration
             if (adapterServices.Length == 0)
                 return;
 
-            Debug.WriteLine(String.Format(CultureInfo.InvariantCulture,
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture,
                 "[Autofac] Component '{0}' provides services that have already been adapted. Consider refactoring to ContainerBuilder.Build() rather than Update().",
                 registration));
 
@@ -167,8 +169,7 @@ namespace Autofac.Core.Registration
             _registrations.Add(registration);
 
             var handler = Registered;
-            if (handler != null)
-                handler(this, new ComponentRegisteredEventArgs(this, registration));
+            handler?.Invoke(this, new ComponentRegisteredEventArgs(this, registration));
         }
 
         /// <summary>
@@ -192,7 +193,8 @@ namespace Autofac.Core.Registration
         /// <returns>Registrations supporting <paramref name="service"/>.</returns>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service)
         {
-            if (service == null) throw new ArgumentNullException("service");
+            if (service == null) throw new ArgumentNullException(nameof(service));
+
             lock (_synchRoot)
             {
                 var info = GetInitializedServiceInfo(service);
@@ -212,7 +214,7 @@ namespace Autofac.Core.Registration
         /// <param name="source">The source to register.</param>
         public void AddRegistrationSource(IRegistrationSource source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
             lock (_synchRoot)
             {
@@ -221,8 +223,7 @@ namespace Autofac.Core.Registration
                     serviceRegistrationInfo.Value.Include(source);
 
                 var handler = RegistrationSourceAdded;
-                if (handler != null)
-                    handler(this, new RegistrationSourceAddedEventArgs(this, source));
+                handler?.Invoke(this, new RegistrationSourceAddedEventArgs(this, source));
             }
         }
 
@@ -246,10 +247,7 @@ namespace Autofac.Core.Registration
         /// </summary>
         /// <remarks>This property is used when walking up the scope tree looking for
         /// registrations for a new customised scope. (See issue 336.)</remarks>
-        public bool HasLocalComponents
-        {
-            get { return true; }
-        }
+        public bool HasLocalComponents => true;
 
         /// <summary>
         /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.

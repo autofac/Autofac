@@ -54,7 +54,7 @@ namespace Autofac.Features.OpenGenerics
                     var implementorGenericArguments = TryMapImplementationGenericArguments(
                         openGenericImplementationType, swt.ServiceType, definitionService.ServiceType, serviceGenericArguments);
 
-                    if (!implementorGenericArguments.Any(a => a == null) &&
+                    if (implementorGenericArguments.All(a => a != null) &&
                         openGenericImplementationType.IsCompatibleWithGenericParameterConstraints(implementorGenericArguments))
                     {
                         var constructedImplementationTypeTmp = openGenericImplementationType.MakeGenericType(implementorGenericArguments);
@@ -132,14 +132,14 @@ namespace Autofac.Features.OpenGenerics
 
         public static void EnforceBindable(Type implementationType, IEnumerable<Service> services)
         {
-            if (implementationType == null) throw new ArgumentNullException("implementationType");
-            if (services == null) throw new ArgumentNullException("services");
+            if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
+            if (services == null) throw new ArgumentNullException(nameof(services));
 
             if (!implementationType.GetTypeInfo().IsGenericTypeDefinition)
                 throw new ArgumentException(
                     string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.ImplementorMustBeOpenGenericTypeDefinition, implementationType));
 
-            foreach (IServiceWithType service in services)
+            foreach (var service in services.OfType<IServiceWithType>())
             {
                 if (!service.ServiceType.GetTypeInfo().IsGenericTypeDefinition)
                     throw new ArgumentException(

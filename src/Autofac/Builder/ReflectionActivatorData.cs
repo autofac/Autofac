@@ -27,7 +27,6 @@ using System;
 using System.Collections.Generic;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
-using Autofac.Util;
 
 namespace Autofac.Builder
 {
@@ -39,8 +38,6 @@ namespace Autofac.Builder
         Type _implementer;
         IConstructorFinder _constructorFinder = new DefaultConstructorFinder();
         IConstructorSelector _constructorSelector = new MostParametersConstructorSelector();
-        readonly IList<Parameter> _configuredParameters = new List<Parameter>();
-        readonly IList<Parameter> _configuredProperties = new List<Parameter>();
 
         /// <summary>
         /// Specify a reflection activator for the given type.
@@ -62,7 +59,8 @@ namespace Autofac.Builder
             }
             set
             {
-                _implementer = Enforce.ArgumentNotNull(value, "value");
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                _implementer = value;
             }
         }
 
@@ -72,7 +70,11 @@ namespace Autofac.Builder
         public IConstructorFinder ConstructorFinder
         {
             get { return _constructorFinder; }
-            set { _constructorFinder = Enforce.ArgumentNotNull(value, "value"); }
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                _constructorFinder = value;
+            }
         }
 
         /// <summary>
@@ -81,23 +83,21 @@ namespace Autofac.Builder
         public IConstructorSelector ConstructorSelector
         {
             get { return _constructorSelector; }
-            set { _constructorSelector = Enforce.ArgumentNotNull(value, "value"); }
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                _constructorSelector = value;
+            }
         }
 
         /// <summary>
         /// The explicitly bound constructor parameters.
         /// </summary>
-        public IList<Parameter> ConfiguredParameters
-        {
-            get { return _configuredParameters; }
-        }
+        public IList<Parameter> ConfiguredParameters { get; } = new List<Parameter>();
 
         /// <summary>
         /// The explicitly bound properties.
         /// </summary>
-        public IList<Parameter> ConfiguredProperties
-        {
-            get { return _configuredProperties; }
-        }
+        public IList<Parameter> ConfiguredProperties { get; } = new List<Parameter>();
     }
 }

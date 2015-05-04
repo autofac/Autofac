@@ -43,10 +43,8 @@ namespace Autofac.Core.Registration
 
         public override void Register(IComponentRegistration registration, bool preserveDefaults)
         {
-            if (registration == null)
-            {
-                throw new ArgumentNullException("registration");
-            }
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+
             var toRegister = registration;
 
             if (registration.Lifetime is RootScopeLifetime)

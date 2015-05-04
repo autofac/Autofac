@@ -14,7 +14,7 @@ namespace Autofac.Dnx.Test
         public void PopulateRegistersServiceProvider()
         {
             var builder = new ContainerBuilder();
-            builder.Populate(Enumerable.Empty<IServiceDescriptor>());
+            builder.Populate(Enumerable.Empty<ServiceDescriptor>());
             var container = builder.Build();
 
             container.AssertRegistered<IServiceProvider>();
@@ -24,7 +24,7 @@ namespace Autofac.Dnx.Test
         public void CorrectServiceProviderIsRegistered()
         {
             var builder = new ContainerBuilder();
-            builder.Populate(Enumerable.Empty<IServiceDescriptor>());
+            builder.Populate(Enumerable.Empty<ServiceDescriptor>());
             var container = builder.Build();
 
             container.AssertImplementation<IServiceProvider, AutofacServiceProvider>();
@@ -34,7 +34,7 @@ namespace Autofac.Dnx.Test
         public void PopulateRegistersServiceScopeFactory()
         {
             var builder = new ContainerBuilder();
-            builder.Populate(Enumerable.Empty<IServiceDescriptor>());
+            builder.Populate(Enumerable.Empty<ServiceDescriptor>());
             var container = builder.Build();
 
             container.AssertRegistered<IServiceScopeFactory>();
@@ -44,7 +44,7 @@ namespace Autofac.Dnx.Test
         public void ServiceScopeFactoryIsRegistered()
         {
             var builder = new ContainerBuilder();
-            builder.Populate(Enumerable.Empty<IServiceDescriptor>());
+            builder.Populate(Enumerable.Empty<ServiceDescriptor>());
             var container = builder.Build();
 
             container.AssertImplementation<IServiceScopeFactory, AutofacServiceScopeFactory>();
@@ -54,8 +54,8 @@ namespace Autofac.Dnx.Test
         public void CanRegisterTransientService()
         {
             var builder = new ContainerBuilder();
-            var descriptor = new ServiceDescriptor(typeof(IService), typeof(Service), LifecycleKind.Transient);
-            builder.Populate(new IServiceDescriptor[] {descriptor});
+            var descriptor = new ServiceDescriptor(typeof(IService), typeof(Service), ServiceLifetime.Transient);
+            builder.Populate(new ServiceDescriptor[] {descriptor});
             var container = builder.Build();
 
             container.AssertLifetime<IService, CurrentScopeLifetime>();
@@ -67,8 +67,8 @@ namespace Autofac.Dnx.Test
         public void CanRegisterSingletonService()
         {
             var builder = new ContainerBuilder();
-            var descriptor = new ServiceDescriptor(typeof(IService), typeof(Service), LifecycleKind.Singleton);
-            builder.Populate(new IServiceDescriptor[] {descriptor});
+            var descriptor = new ServiceDescriptor(typeof(IService), typeof(Service), ServiceLifetime.Singleton);
+            builder.Populate(new ServiceDescriptor[] {descriptor});
             var container = builder.Build();
 
             container.AssertLifetime<IService, RootScopeLifetime>();
@@ -80,8 +80,8 @@ namespace Autofac.Dnx.Test
         public void CanRegisterScopedService()
         {
             var builder = new ContainerBuilder();
-            var descriptor = new ServiceDescriptor(typeof(IService), typeof(Service), LifecycleKind.Scoped);
-            builder.Populate(new IServiceDescriptor[] {descriptor});
+            var descriptor = new ServiceDescriptor(typeof(IService), typeof(Service), ServiceLifetime.Scoped);
+            builder.Populate(new ServiceDescriptor[] {descriptor});
             var container = builder.Build();
 
             container.AssertLifetime<IService, CurrentScopeLifetime>();
@@ -93,8 +93,8 @@ namespace Autofac.Dnx.Test
         public void CanRegisterGenericService()
         {
             var builder = new ContainerBuilder();
-            var descriptor = new ServiceDescriptor(typeof(IList<>), typeof(List<>), LifecycleKind.Scoped);
-            builder.Populate(new IServiceDescriptor[] { descriptor });
+            var descriptor = new ServiceDescriptor(typeof(IList<>), typeof(List<>), ServiceLifetime.Scoped);
+            builder.Populate(new ServiceDescriptor[] { descriptor });
             var container = builder.Build();
 
             container.AssertRegistered<IList<IService>>();
@@ -104,8 +104,8 @@ namespace Autofac.Dnx.Test
         public void CanRegisterFactoryService()
         {
             var builder = new ContainerBuilder();
-            var descriptor = new ServiceDescriptor(typeof(IService), sp => new Service(), LifecycleKind.Transient);
-            builder.Populate(new IServiceDescriptor[] {descriptor});
+            var descriptor = new ServiceDescriptor(typeof(IService), sp => new Service(), ServiceLifetime.Transient);
+            builder.Populate(new ServiceDescriptor[] {descriptor});
             var container = builder.Build();
 
             container.AssertRegistered<Func<IServiceProvider, IService>>();
@@ -115,8 +115,8 @@ namespace Autofac.Dnx.Test
         public void CanGenerateFactoryService()
         {
             var builder = new ContainerBuilder();
-            var descriptor = new ServiceDescriptor(typeof(IService), typeof(Service), LifecycleKind.Transient);
-            builder.Populate(new IServiceDescriptor[] {descriptor});
+            var descriptor = new ServiceDescriptor(typeof(IService), typeof(Service), ServiceLifetime.Transient);
+            builder.Populate(new ServiceDescriptor[] {descriptor});
             var container = builder.Build();
 
             container.AssertRegistered<Func<IService>>();

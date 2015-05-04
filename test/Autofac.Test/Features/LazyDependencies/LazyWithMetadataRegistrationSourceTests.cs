@@ -1,4 +1,4 @@
-﻿#if !ASPNET50
+﻿#if !DNX451
 ﻿using System;
 ﻿using Autofac.Core;
 ﻿using Autofac.Test.Features.Metadata;

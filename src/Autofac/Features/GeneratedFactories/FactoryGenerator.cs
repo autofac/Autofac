@@ -51,7 +51,7 @@ namespace Autofac.Features.GeneratedFactories
         /// <param name="parameterMapping">The parameter mapping mode to use.</param>
         public FactoryGenerator(Type delegateType, Service service, ParameterMapping parameterMapping)
         {
-            if (service == null) throw new ArgumentNullException("service");
+            if (service == null) throw new ArgumentNullException(nameof(service));
             Enforce.ArgumentTypeIsFunction(delegateType);
 
             _generator = CreateGenerator((activatorContextParam, resolveParameterArray) =>
@@ -81,7 +81,7 @@ namespace Autofac.Features.GeneratedFactories
         /// <param name="parameterMapping">The parameter mapping mode to use.</param>
         public FactoryGenerator(Type delegateType, IComponentRegistration productRegistration, ParameterMapping parameterMapping)
         {
-            if (productRegistration == null) throw new ArgumentNullException("productRegistration");
+            if (productRegistration == null) throw new ArgumentNullException(nameof(productRegistration));
             Enforce.ArgumentTypeIsFunction(delegateType);
 
             _generator = CreateGenerator((activatorContextParam, resolveParameterArray) =>
@@ -217,8 +217,8 @@ namespace Autofac.Features.GeneratedFactories
         /// <returns>A factory delegate that will work within the context.</returns>
         public Delegate GenerateFactory(IComponentContext context, IEnumerable<Parameter> parameters)
         {
-            if (context == null) throw new ArgumentNullException("context");
-            if (parameters == null) throw new ArgumentNullException("parameters");
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
             return _generator(context.Resolve<ILifetimeScope>(), parameters);
         }

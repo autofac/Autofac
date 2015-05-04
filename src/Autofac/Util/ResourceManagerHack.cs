@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2013 Autofac Contributors
+// Copyright © 2015 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -23,35 +23,25 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Collections.Generic;
+using System.Linq;
+using System.Resources;
+using System.Reflection;
 
 namespace Autofac.Util
 {
-    internal class SafeDictionary<TKey, TValue>
+    /// <summary>
+    /// Replaces "new global::System.Resources.ResourceManager(..." in resource designer files
+    /// to work around issue https://github.com/aspnet/dnx/issues/738
+    /// </summary>
+    class ResourceManagerHack
     {
-        readonly object _syncLock = new object();
-        readonly Dictionary<TKey, TValue> _dictionary = new Dictionary<TKey, TValue>();
-
-        public TValue this[TKey key]
+        internal static ResourceManager Create(string resource, Assembly assembly)
         {
-            set { lock (_syncLock) _dictionary[key] = value; }
-        }
-
-        public IEnumerable<TKey> Keys => _dictionary.Keys;
-
-        public bool TryGetValue(TKey key, out TValue value)
-        {
-            lock (_syncLock) return _dictionary.TryGetValue(key, out value);
-        }
-
-        public bool Remove(TKey key)
-        {
-            lock (_syncLock) return _dictionary.Remove(key);
-        }
-
-        public void Clear()
-        {
-            lock (_syncLock) _dictionary.Clear();
+#if DNXCORE50 || DNX451
+            var parts = resource.Split('.');
+            resource = parts.First() + "." + parts.Last();
+#endif
+            return new ResourceManager(resource, assembly);
         }
     }
 }

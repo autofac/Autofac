@@ -10,7 +10,7 @@ namespace Autofac.Test.Core
         public DependencyResolutionExceptionTests()
         {
             //Explicitly set culture for comparison of Exception strings
-#if ASPNETCORE50
+#if DNXCORE50
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
             CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
 #else

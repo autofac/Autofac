@@ -71,7 +71,7 @@ namespace Autofac.Features.Variance
         /// <remarks>
         /// If the source is queried for service s, and it returns a component that implements both s and s', then it
         /// will not be queried again for either s or s'. This means that if the source can return other implementations
-        /// of s', it should return these, plus the transitive closure of other components implementing their 
+        /// of s', it should return these, plus the transitive closure of other components implementing their
         /// additional services, along with the implementation of s. It is not an error to return components
         /// that do not implement <paramref name="service"/>.
         /// </remarks>
@@ -79,8 +79,8 @@ namespace Autofac.Features.Variance
             Service service, 
             Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
-            if (service == null) throw new ArgumentNullException("service");
-            if (registrationAccessor == null) throw new ArgumentNullException("registrationAccessor");
+            if (service == null) throw new ArgumentNullException(nameof(service));
+            if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
 
             int contravariantParameterIndex;
             var swt = service as IServiceWithType;
@@ -177,9 +177,6 @@ namespace Autofac.Features.Variance
         /// Gets whether the registrations provided by this source are 1:1 adapters on top
         /// of other components (I.e. like Meta, Func or Owned.)
         /// </summary>
-        public bool IsAdapterForIndividualComponents
-        {
-            get { return true; }
-        }
+        public bool IsAdapterForIndividualComponents => true;
     }
 }

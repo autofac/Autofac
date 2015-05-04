@@ -41,8 +41,8 @@ namespace Autofac.Features.LightweightAdapters
             RegistrationData registrationData,
             LightweightAdapterActivatorData activatorData)
         {
-            if (registrationData == null) throw new ArgumentNullException("registrationData");
-            if (activatorData == null) throw new ArgumentNullException("activatorData");
+            if (registrationData == null) throw new ArgumentNullException(nameof(registrationData));
+            if (activatorData == null) throw new ArgumentNullException(nameof(activatorData));
 
             _registrationData = registrationData;
             _activatorData = activatorData;
@@ -54,8 +54,8 @@ namespace Autofac.Features.LightweightAdapters
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
-            if (service == null) throw new ArgumentNullException("service");
-            if (registrationAccessor == null) throw new ArgumentNullException("registrationAccessor");
+            if (service == null) throw new ArgumentNullException(nameof(service));
+            if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
 
             if (_registrationData.Services.Contains(service))
             {
@@ -105,10 +105,7 @@ namespace Autofac.Features.LightweightAdapters
             return new IComponentRegistration[0];
         }
 
-        public bool IsAdapterForIndividualComponents
-        {
-            get { return true; }
-        }
+        public bool IsAdapterForIndividualComponents => true;
 
         public override string ToString()
         {

@@ -37,27 +37,6 @@ namespace Autofac.Util
     static class Enforce
     {
         /// <summary>
-        /// Enforce that an argument is not null. Returns the
-        /// value if valid so that it can be used inline in
-        /// base initialiser syntax.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="name"></param>
-        /// <returns><paramref name="value"/></returns>
-        public static T ArgumentNotNull<T>([ValidatedNotNull]T value, string name)
-            where T : class
-        {
-            if (name == null)
-                throw new ArgumentNullException("name");
-
-            if (value == null)
-                throw new ArgumentNullException(name);
-
-            return value;
-        }
-
-        /// <summary>
         /// Enforce that sequence does not contain null. Returns the
         /// value if valid so that it can be used inline in
         /// base initialiser syntax.
@@ -104,7 +83,7 @@ namespace Autofac.Util
         /// <returns><paramref name="value"/></returns>
         public static string ArgumentNotNullOrEmpty([ValidatedNotNull]string value, string description)
         {
-            if (description == null) throw new ArgumentNullException("description");
+            if (description == null) throw new ArgumentNullException(nameof(description));
             if (value == null) throw new ArgumentNullException(description);
 
             if (value.Length == 0)
@@ -120,13 +99,15 @@ namespace Autofac.Util
         /// <param name="delegateType">The type to test.</param>
         public static void ArgumentTypeIsFunction(Type delegateType)
         {
-            if (delegateType == null) throw new ArgumentNullException("delegateType");
+            if (delegateType == null) throw new ArgumentNullException(nameof(delegateType));
 
             MethodInfo invoke = delegateType.GetTypeInfo().GetDeclaredMethod("Invoke");
+
             if (invoke == null)
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
                     EnforceResources.NotDelegate, delegateType));
-            else if (invoke.ReturnType == typeof(void))
+
+            if (invoke.ReturnType == typeof(void))
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
                     EnforceResources.DelegateReturnsVoid, delegateType));
         }

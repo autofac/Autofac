@@ -30,44 +30,39 @@ using System.Linq;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
-using Autofac.Features.Metadata;
 
 namespace Autofac.Builder
 {
     class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> : IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>, IHideObjectMembers
     {
-        readonly TActivatorData _activatorData;
-        readonly TRegistrationStyle _registrationStyle;
-        readonly RegistrationData _registrationData;
-
         public RegistrationBuilder(Service defaultService, TActivatorData activatorData, TRegistrationStyle style)
         {
-            if (defaultService == null) throw new ArgumentNullException("defaultService");
-            if ((object)activatorData == null) throw new ArgumentNullException("activatorData");
-            if ((object)style == null) throw new ArgumentNullException("style");
+            if (defaultService == null) throw new ArgumentNullException(nameof(defaultService));
+            if (activatorData == null) throw new ArgumentNullException(nameof(activatorData));
+            if (style == null) throw new ArgumentNullException(nameof(style));
 
-            _activatorData = activatorData;
-            _registrationStyle = style;
-            _registrationData = new RegistrationData(defaultService);
+            ActivatorData = activatorData;
+            RegistrationStyle = style;
+            RegistrationData = new RegistrationData(defaultService);
         }
 
         /// <summary>
         /// The activator data.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public TActivatorData ActivatorData { get { return _activatorData; } }
+        public TActivatorData ActivatorData { get; }
 
         /// <summary>
         /// The registration style.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public TRegistrationStyle RegistrationStyle { get { return _registrationStyle; } }
+        public TRegistrationStyle RegistrationStyle { get; }
 
         /// <summary>
         /// The registration data.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public RegistrationData RegistrationData { get { return _registrationData; } }
+        public RegistrationData RegistrationData { get; }
 
         /// <summary>
         /// Configure the component so that instances are never disposed by the container.
@@ -138,7 +133,8 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerMatchingLifetimeScope(params object[] lifetimeScopeTag)
         {
-            if (lifetimeScopeTag == null) throw new ArgumentNullException("lifetimeScopeTag");
+            if (lifetimeScopeTag == null) throw new ArgumentNullException(nameof(lifetimeScopeTag));
+
             RegistrationData.Sharing = InstanceSharing.Shared;
             RegistrationData.Lifetime = new MatchingScopeLifetime(lifetimeScopeTag);
             return this;
@@ -259,7 +255,7 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As(params Service[] services)
         {
-            if (services == null) throw new ArgumentNullException("services");
+            if (services == null) throw new ArgumentNullException(nameof(services));
 
             RegistrationData.AddServices(services);
 
@@ -274,8 +270,8 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Named(string serviceName, Type serviceType)
         {
-            if (serviceName == null) throw new ArgumentNullException("serviceName");
-            if (serviceType == null) throw new ArgumentNullException("serviceType");
+            if (serviceName == null) throw new ArgumentNullException(nameof(serviceName));
+            if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
 
             return As(new KeyedService(serviceName, serviceType));
         }
@@ -299,8 +295,8 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Keyed(object serviceKey, Type serviceType)
         {
-            if (serviceKey == null) throw new ArgumentNullException("serviceKey");
-            if (serviceType == null) throw new ArgumentNullException("serviceType");
+            if (serviceKey == null) throw new ArgumentNullException(nameof(serviceKey));
+            if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
 
             return As(new KeyedService(serviceKey, serviceType));
         }
@@ -324,7 +320,8 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnPreparing(Action<PreparingEventArgs> handler)
         {
-            if (handler == null) throw new ArgumentNullException("handler");
+            if (handler == null) throw new ArgumentNullException(nameof(handler));
+
             RegistrationData.PreparingHandlers.Add((s, e) => handler(e));
             return this;
         }
@@ -336,7 +333,8 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivating(Action<IActivatingEventArgs<TLimit>> handler)
         {
-            if (handler == null) throw new ArgumentNullException("handler");
+            if (handler == null) throw new ArgumentNullException(nameof(handler));
+
             RegistrationData.ActivatingHandlers.Add((s, e) =>
             {
                 var args = new ActivatingEventArgs<TLimit>(e.Context, e.Component, e.Parameters, (TLimit)e.Instance);
@@ -353,7 +351,8 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivated(Action<IActivatedEventArgs<TLimit>> handler)
         {
-            if (handler == null) throw new ArgumentNullException("handler");
+            if (handler == null) throw new ArgumentNullException(nameof(handler));
+
             RegistrationData.ActivatedHandlers.Add(
                 (s, e) => handler(new ActivatedEventArgs<TLimit>(e.Context, e.Component, e.Parameters, (TLimit)e.Instance)));
             return this;
@@ -386,7 +385,7 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(string key, object value)
         {
-            if (key == null) throw new ArgumentNullException("key");
+            if (key == null) throw new ArgumentNullException(nameof(key));
 
             RegistrationData.Metadata.Add(key, value);
 
@@ -400,7 +399,7 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(IEnumerable<KeyValuePair<string, object>> properties)
         {
-            if (properties == null) throw new ArgumentNullException("properties");
+            if (properties == null) throw new ArgumentNullException(nameof(properties));
 
             foreach (var prop in properties)
                 WithMetadata(prop.Key, prop.Value);
@@ -416,7 +415,7 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata<TMetadata>(Action<MetadataConfiguration<TMetadata>> configurationAction)
         {
-            if (configurationAction == null) throw new ArgumentNullException("configurationAction");
+            if (configurationAction == null) throw new ArgumentNullException(nameof(configurationAction));
 
             var epConfiguration = new MetadataConfiguration<TMetadata>();
             configurationAction(epConfiguration);

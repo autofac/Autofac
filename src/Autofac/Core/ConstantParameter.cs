@@ -25,7 +25,6 @@
 
 using System;
 using System.Reflection;
-using Autofac.Util;
 
 namespace Autofac.Core
 {
@@ -34,12 +33,12 @@ namespace Autofac.Core
     /// </summary>
     public abstract class ConstantParameter : Parameter
     {
-        Predicate<ParameterInfo> _predicate;
+        readonly Predicate<ParameterInfo> _predicate;
 
         /// <summary>
         /// The value of the parameter.
         /// </summary>
-        public object Value { get; private set; }
+        public object Value { get; }
 
         /// <summary>
         /// Create a constant parameter that will apply to parameters matching
@@ -49,8 +48,10 @@ namespace Autofac.Core
         /// <param name="predicate"></param>
         protected ConstantParameter(object value, Predicate<ParameterInfo> predicate)
         {
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+
             Value = value;
-            _predicate = Enforce.ArgumentNotNull(predicate, "predicate");
+            _predicate = predicate;
         }
 
         /// <summary>
@@ -64,19 +65,16 @@ namespace Autofac.Core
         /// <returns>True if a value can be supplied; otherwise, false.</returns>
         public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<object> valueProvider)
         {
-            if (pi == null) throw new ArgumentNullException("pi");
-            if (context == null) throw new ArgumentNullException("context");
+            if (pi == null) throw new ArgumentNullException(nameof(pi));
+            if (context == null) throw new ArgumentNullException(nameof(context));
 
             if (_predicate(pi))
             {
                 valueProvider = () => Value;
                 return true;
             }
-            else
-            {
-                valueProvider = null;
-                return false;
-            }
+            valueProvider = null;
+            return false;
         }
     }
 }
