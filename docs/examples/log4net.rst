@@ -32,7 +32,7 @@ Here's a sample module that configures Autofac to inject ``ILog`` parameters bas
 
       private static void OnComponentPreparing(object sender, PreparingEventArgs e)
       {
-        var t = e.Component.Activator.LimitType;
+        var t = e.Component.Target.Activator.LimitType;
         e.Parameters = e.Parameters.Union(
           new[]
           {
