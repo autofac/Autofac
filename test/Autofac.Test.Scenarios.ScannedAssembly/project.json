@@ -1,7 +1,7 @@
 ﻿{
 	"version": "1.0.0-*",
 	"dependencies": {
-		"Autofac": "4.0.0-alpha2"
+		"Autofac": "4.0.0-alpha3-*"
 	},
 
 	"frameworks": {
@@ -11,7 +11,7 @@
 		},
 		"dnxcore50": {
 			"dependencies": {
-				"System.Runtime": "4.0.20-beta-22807"
+				"System.Runtime": "4.0.20-beta-*"
 			}
 		}
 	}
