@@ -12,3 +12,4 @@ Frequently Asked Questions
     share-across-app-types.rst
     isolate-autofac.rst
     pcl.rst
+    binding-redirect.rst
