@@ -1,12 +1,5 @@
 version: 4.0.0.{build}
 
-assembly_info:
-  patch: true
-  file: AssemblyInfo.cs
-  assembly_version: "4.0.0.0"
-  assembly_file_version: "{version}"
-  assembly_informational_version: "4.0.0-CI-{build}"
-
 configuration: Release
 
 nuget:
@@ -17,7 +10,7 @@ clone_depth: 1
 test: off
 
 build_script:
-- build.cmd
+- ps: .\build.ps1
 
 artifacts:
 - path: artifacts\packages\**\*.nupkg
