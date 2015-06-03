@@ -22,13 +22,6 @@ function Install-Dnvm
             & $dnvmSetupCmdPath setup
         }
     }
-    else
-    {
-        # Upgrade to the latest DNVM to ensure Unstable flag available.
-        Write-Host "Upgrading DNVM"
-        dnvm setup
-        dnvm upgrade
-    }
 }
 
 function Restore-Packages
@@ -60,6 +53,11 @@ if(Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
 
 # Install DNVM
 Install-Dnvm
+
+# Upgrade to the latest DNVM to ensure Unstable flag available.
+Write-Host "Upgrading DNVM"
+dnvm setup
+dnvm upgrade
 
 # Install DNX
 dnvm install $dnvmVersion -r CoreCLR -u
