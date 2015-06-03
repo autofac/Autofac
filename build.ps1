@@ -22,7 +22,15 @@ function Install-Dnvm
             & $dnvmSetupCmdPath setup
         }
     }
+    else
+    {
+        # Upgrade to the latest DNVM to ensure Unstable flag available.
+        Write-Host "Upgrading DNVM"
+        dnvm setup
+        dnvm upgrade
+    }
 }
+
 function Restore-Packages
 {
     param([string] $DirectoryName)
