@@ -40,7 +40,7 @@ namespace Autofac.Core.Lifetime {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = Util.ResourceManagerHack.Create("Autofac.Core.Lifetime.LifetimeScopeResources", typeof(LifetimeScopeResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Lifetime.LifetimeScopeResources", typeof(LifetimeScopeResources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

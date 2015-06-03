@@ -40,7 +40,7 @@ namespace Autofac {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = Util.ResourceManagerHack.Create("Autofac.TypeExtensionsResources", typeof(TypeExtensionsResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.TypeExtensionsResources", typeof(TypeExtensionsResources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

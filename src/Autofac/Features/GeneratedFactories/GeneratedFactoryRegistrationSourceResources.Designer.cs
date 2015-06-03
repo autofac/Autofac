@@ -40,7 +40,7 @@ namespace Autofac.Features.GeneratedFactories {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = Util.ResourceManagerHack.Create("Autofac.Features.GeneratedFactories.GeneratedFactoryRegistrationSourceResources", typeof(GeneratedFactoryRegistrationSourceResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Features.GeneratedFactories.GeneratedFactoryRegistrationSourceResources", typeof(GeneratedFactoryRegistrationSourceResources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
