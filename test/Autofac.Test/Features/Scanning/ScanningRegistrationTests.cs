@@ -412,5 +412,49 @@ namespace Autofac.Test.Features.Scanning
             }));
             Assert.True(c.IsRegisteredWithKey<IAService>(k));
         }
+
+        [Fact]
+        public void WhereTypeClosesOpenGenericInterface_NullTypeProvided_ThrowsException()
+        {
+            ContainerBuilder builder = new ContainerBuilder();
+            Assert.Throws<ArgumentNullException>(() => builder.RegisterAssemblyTypes(typeof(ICommand<>).Assembly).
+                WhereTypeClosesOpenGenericInterface(null));
+        }
+
+        [Fact]
+        public void WhereTypeClosesOpenGenericInterface_NonGenericTypeProvided_ThrowsException()
+        {
+            ContainerBuilder builder = new ContainerBuilder();
+            Assert.Throws<ArgumentException>(() => builder.RegisterAssemblyTypes(typeof(ICommand<>).Assembly).
+                WhereTypeClosesOpenGenericInterface(typeof(SaveCommandData)));
+        }
+
+        [Fact]
+        public void WhereTypeClosesOpenGenericInterface_ClosedGenericTypeProvided_ThrowsException()
+        {
+            ContainerBuilder builder = new ContainerBuilder();
+            Assert.Throws<ArgumentException>(() => builder.RegisterAssemblyTypes(typeof(ICommand<>).Assembly).
+                WhereTypeClosesOpenGenericInterface(typeof(ICommand<SaveCommandData>)));
+        }
+
+        [Fact]
+        public void WhereTypeClosesOpenGenericInterface_NonInterfaceOpenGenericTypeProvided_ThrowsException()
+        {
+            ContainerBuilder builder = new ContainerBuilder();
+            Assert.Throws<ArgumentException>(() => builder.RegisterAssemblyTypes(typeof(ICommand<>).Assembly).
+                WhereTypeClosesOpenGenericInterface(typeof(List<>)));
+        }
+
+        [Fact]
+        public void WhereTypeClosesOpenGenericInterface_OpenGenericInterfaceTypeProvided_ClosingGenericTypesRegistered()
+        {
+            ContainerBuilder builder = new ContainerBuilder();
+            builder.RegisterAssemblyTypes(typeof(ICommand<>).Assembly)
+                .WhereTypeClosesOpenGenericInterface(typeof(ICommand<>));
+            IContainer container = builder.Build();
+
+            Assert.IsType<SaveCommand>(container.Resolve<ICommand<SaveCommandData>>());
+            Assert.IsType<DeleteCommand>(container.Resolve<ICommand<DeleteCommandData>>());
+        }
     }
 }

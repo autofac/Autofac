@@ -168,5 +168,39 @@ namespace Autofac.Features.Scanning
 
             return registration;
         }
+
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            WhereTypeClosesOpenGenericInterface<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration, Type openGenericInterfaceType)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            if (openGenericInterfaceType == null) throw new ArgumentNullException(nameof(openGenericInterfaceType));
+
+            if (!(openGenericInterfaceType.IsGenericTypeDefinition || openGenericInterfaceType.ContainsGenericParameters) || !openGenericInterfaceType.IsInterface)
+            {
+                throw new ArgumentException("The type '" + openGenericInterfaceType.FullName + "' is not an open generic interface type.");
+            }
+
+            return registration
+                .Where(candidateType => FindInterfaceThatCloses(candidateType, openGenericInterfaceType) != null)
+                .As(candidateType => FindInterfaceThatCloses(candidateType, openGenericInterfaceType));
+        }
+
+        private static Type FindInterfaceThatCloses(Type candidateType, Type openGenericInterfaceType)
+        {
+            if (candidateType.IsAbstract) return null;
+
+            foreach (var interfaceType in candidateType.GetInterfaces())
+            {
+                if (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == openGenericInterfaceType)
+                {
+                    return interfaceType;
+                }
+            }
+
+            return (candidateType.BaseType == typeof(object))
+                ? null
+                : FindInterfaceThatCloses(candidateType.BaseType, openGenericInterfaceType);
+        }
     }
 }
