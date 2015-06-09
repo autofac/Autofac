@@ -68,7 +68,7 @@ namespace Autofac.Core.Activators.Reflection
                     (property.GetValue(instance, null) != null))
                     continue;
 
-                var propertyValue = context.Resolve(propertyType);
+                var propertyValue = context.Resolve(propertyType, new TypedParameter(instanceType, instance));
                 property.SetValue(instance, propertyValue, null);
             }
         }
