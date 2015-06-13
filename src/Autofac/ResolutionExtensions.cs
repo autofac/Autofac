@@ -38,6 +38,11 @@ namespace Autofac
     /// </summary>
     public static class ResolutionExtensions
     {
+        /// <summary>
+        /// The <see cref="NamedParameter"/> name, provided when properties are injected onto an existing instance.
+        /// </summary>
+        public const string PropertyInjectedInstanceTypeNamedParameter = AutowiringPropertyInjector.InstanceTypeNamedParameter;
+
         static readonly IEnumerable<Parameter> NoParameters = Enumerable.Empty<Parameter>();
 
         /// <summary>

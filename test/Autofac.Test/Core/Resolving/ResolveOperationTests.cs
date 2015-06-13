@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Autofac.Builder;
 using Xunit;
 using Autofac.Core;
@@ -8,6 +9,23 @@ namespace Autofac.Test.Core.Resolving
 {
     public class ResolveOperationTests
     {
+        [Fact]
+        public void PropertyInjectionPassesNamedParameterOfTheInstanceTypeBeingInjectedOnto()
+        {
+            var capturedparameters = Enumerable.Empty<Parameter>();
+
+            var cb = new ContainerBuilder();
+            cb.RegisterType<DependsByProp>().SingleInstance().PropertiesAutowired();
+            cb.Register((context, parameters) => { capturedparameters = parameters.ToArray(); return new DependsByCtor(null); });
+
+            var c = cb.Build();
+            var existingInstance = new DependsByProp();
+            c.InjectUnsetProperties(existingInstance);
+
+            var instanceType = capturedparameters.Named<Type>(ResolutionExtensions.PropertyInjectedInstanceTypeNamedParameter);
+            Assert.Equal(existingInstance.GetType(), instanceType);
+        }
+
         [Fact]
         public void CtorPropDependencyOkOrder1()
         {
