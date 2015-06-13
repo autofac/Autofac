@@ -32,6 +32,8 @@ namespace Autofac.Core.Activators.Reflection
 {
     class AutowiringPropertyInjector
     {
+        public const string InstanceTypeNamedParameter = "Autofac.AutowiringPropertyInjector.InstanceType";
+
         public static void InjectProperties(IComponentContext context, object instance, bool overrideSetValues)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
@@ -68,7 +70,7 @@ namespace Autofac.Core.Activators.Reflection
                     (property.GetValue(instance, null) != null))
                     continue;
 
-                var propertyValue = context.Resolve(propertyType);
+                var propertyValue = context.Resolve(propertyType, new NamedParameter(InstanceTypeNamedParameter, instanceType));
                 property.SetValue(instance, propertyValue, null);
             }
         }
