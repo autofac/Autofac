@@ -1,5 +1,5 @@
 ﻿{
-    "version": "4.0.0-alpha3-*",
+    "version": "4.0.0-alpha4-*",
     "authors": ["Autofac Contributors"],
     "description": "Autofac integration for ASP.NET 5.0.",
     "projectUrl": "http://autofac.org",
@@ -10,14 +10,14 @@
     "compile": ["**/*.cs"],
     "resource": ["**/*.resx"],
     "dependencies": {
-        "Autofac": "4.0.0-alpha3-*",
-        "Microsoft.Framework.DependencyInjection": "1.0.0-beta5-*"
+        "Autofac": "4.0.0-alpha4-*",
+        "Microsoft.Framework.DependencyInjection": "1.0.0-beta6-*"
     },
     "frameworks": {
         "dnx451": { },
         "dnxcore50": {
             "dependencies": {
-                "System.Runtime": "4.0.20-beta-*"
+                "System.Runtime": "4.0.20-*"
             }
         }
     }

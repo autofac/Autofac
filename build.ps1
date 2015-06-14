@@ -1,5 +1,5 @@
 # Build variables
-$dnvmVersion = "1.0.0-beta5-11911";
+$dnvmVersion = "1.0.0-beta6-12032";
 
 ########################
 # FUNCTIONS
@@ -70,6 +70,12 @@ Write-Host "Build number:" $env:DNX_BUILD_VERSION
 Get-ChildItem -Path .\src -Filter *.xproj -Recurse | ForEach-Object { Build-Projects $_.DirectoryName }
 
 # Test
+Get-ChildItem -Path .\test -Filter *.xproj -Exclude Autofac.Test.Scenarios.ScannedAssembly.xproj -Recurse | ForEach-Object { Test-Projects $_.DirectoryName }
+
+# Switch to Core CLR
+dnvm use $dnvmVersion -r CoreCLR
+
+# Test again
 Get-ChildItem -Path .\test -Filter *.xproj -Exclude Autofac.Test.Scenarios.ScannedAssembly.xproj -Recurse | ForEach-Object { Test-Projects $_.DirectoryName }
 
 Pop-Location

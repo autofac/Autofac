@@ -3,12 +3,12 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "Microsoft.AspNet.Mvc": "6.0.0-beta4",
-    "Microsoft.AspNet.Server.IIS": "1.0.0-beta4",
-    "Microsoft.AspNet.Server.WebListener": "1.0.0-beta4",
-    "Microsoft.AspNet.StaticFiles": "1.0.0-beta4",
-    "Autofac": "4.0.0-alpha2-*",
-    "Autofac.Dnx": "4.0.0-alpha2-*"
+    "Microsoft.AspNet.Mvc": "6.0.0-beta6-*",
+    "Microsoft.AspNet.Server.IIS": "1.0.0-beta6-*",
+    "Microsoft.AspNet.Server.WebListener": "1.0.0-beta6-*",
+    "Microsoft.AspNet.StaticFiles": "1.0.0-beta6-*",
+    "Autofac": "4.0.0-alpha4-*",
+    "Autofac.Dnx": "4.0.0-alpha4-*"
   },
 
   "commands": {
