@@ -9,7 +9,8 @@
     "requireLicenseAcceptance": false,
     "tags": [ "Autofac", "DI", "IoC" ],
     "compilationOptions": {
-        "warningsAsErrors": true
+        "warningsAsErrors": true,
+        "strongName": true
     },
     "compile": ["**/*.cs"],
     "resource": ["**/*.resx"],

@@ -1,9 +1,11 @@
 ﻿{
 	"version": "1.0.0-*",
+    "compilationOptions": {
+        "strongName": true
+    },
 	"dependencies": {
 		"Autofac": "4.0.0-alpha3-*"
 	},
-
 	"frameworks": {
 		"dnx451": {
 			"dependencies": {

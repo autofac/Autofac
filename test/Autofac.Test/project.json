@@ -1,5 +1,8 @@
 ﻿{
     "authors": ["Autofac Contributors"],
+    "compilationOptions": {
+        "strongName": true
+    },
     "compile": ["**\\*.cs"],
     "resource": ["**\\*.resx", "Files\\*.*"],
 	"commands": {
