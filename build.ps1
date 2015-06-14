@@ -55,8 +55,8 @@ if(Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
 Install-Dnvm
 
 # Install DNX
-dnvm install $dnvmVersion -r CoreCLR -u
-dnvm install $dnvmVersion -r CLR -u
+dnvm install $dnvmVersion -r CoreCLR -Unstable -NoNative
+dnvm install $dnvmVersion -r CLR -Unstable -NoNative
 dnvm use $dnvmVersion -r CLR
 
 # Package restore
