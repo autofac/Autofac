@@ -173,7 +173,7 @@ OK, there are our animals. Obviously we can't treat them all equally, so if we m
       public BirdCage(PetBird bird) { }
     }
 
-Obviously this is a fairly contrived example with flaws if you dive too far into the analogy, but the principal holds - redesigning the interfaces helps us ensure the bird cage only gets what it expects and nothing else.
+Obviously this is a fairly contrived example with flaws if you dive too far into the analogy, but the principle holds - redesigning the interfaces helps us ensure the bird cage only gets what it expects and nothing else.
 
 Bringing this back to the ordering system, *it might seem like every delivery mechanism is just "sending something"* but the truth is, they send *very different types of things*. Maybe there's a base interface that is for general "sending of things," but you probably need an intermediate level to differentiate between the types of things being sent:
 
