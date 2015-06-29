@@ -228,6 +228,30 @@ namespace Autofac.Test.Features.Scanning
             var r = c.RegistrationFor<ICommand<UndoCommandData>>();
             Assert.True(r.Services.Contains(new TypedService(typeof(ICommand<RedoCommandData>))));
         }
+        
+        [Fact]
+        public void AsClosedTypesOfWithServiceKeyShouldAssignKeyToAllRegistrations()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                .AsClosedTypesOf(typeof(ICommand<>), "command");
+            var c = cb.Build();
+
+            Assert.IsType<SaveCommand>(c.ResolveKeyed<ICommand<SaveCommandData>>("command"));
+            Assert.IsType<DeleteCommand>(c.ResolveKeyed<ICommand<DeleteCommandData>>("command"));
+        }
+        
+        [Fact]
+        public void AsClosedTypesOfWithServiceKeyMappingShouldAssignKeyResultToEachRegistration()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                .AsClosedTypesOf(typeof(ICommand<>), t => t);
+            var c = cb.Build();
+
+            Assert.IsType<SaveCommand>(c.ResolveKeyed<ICommand<SaveCommandData>>(typeof(SaveCommand)));
+            Assert.IsType<DeleteCommand>(c.ResolveKeyed<ICommand<DeleteCommandData>>(typeof(DeleteCommand)));
+        }
 
         [Fact]
         public void DoesNotIncludeDelegateTypesThusNotOverridingGeneratedFactories()

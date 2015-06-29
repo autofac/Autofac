@@ -120,6 +120,32 @@ namespace Autofac.Features.Scanning
         }
 
         public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            AsClosedTypesOf<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                Type openGenericServiceType, object serviceKey)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            if (openGenericServiceType == null) throw new ArgumentNullException(nameof(openGenericServiceType));
+            if (serviceKey == null) throw new ArgumentNullException(nameof(serviceKey));
+            
+            return AsClosedTypesOf(registration, openGenericServiceType, t => serviceKey);
+        }
+        
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+            AsClosedTypesOf<TLimit, TScanningActivatorData, TRegistrationStyle>(
+                IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+                Type openGenericServiceType, Func<Type, object> serviceKeyMapping)
+            where TScanningActivatorData : ScanningActivatorData
+        {
+            if (openGenericServiceType == null) throw new ArgumentNullException(nameof(openGenericServiceType));
+
+            return registration
+                .Where(candidateType => candidateType.IsClosedTypeOf(openGenericServiceType))
+                .As(candidateType => candidateType.GetTypesThatClose(openGenericServiceType)
+                        .Select(t => (Service)new KeyedService(serviceKeyMapping(candidateType), t)));
+        }
+
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             AssignableTo<TLimit, TScanningActivatorData, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
                 Type type)
