@@ -33,6 +33,7 @@ using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.Scanning;
 using Castle.DynamicProxy;
+using Castle.DynamicProxy.Internal;
 
 namespace Autofac.Extras.DynamicProxy2
 {
@@ -195,7 +196,8 @@ namespace Autofac.Extras.DynamicProxy2
             {
                 EnsureInterfaceInterceptionApplies(e.Component);
 
-                var proxiedInterfaces = e.Instance.GetType().GetInterfaces().Where(i => i.IsVisible).ToArray();
+                var proxiedInterfaces = e.Instance.GetType().GetInterfaces()
+                    .Where(i => i.IsVisible || i.Assembly.IsInternalToDynamicProxy()).ToArray();
 
                 if (!proxiedInterfaces.Any())
                     return;
@@ -299,7 +301,7 @@ namespace Autofac.Extras.DynamicProxy2
         {
             if (componentRegistration.Services
                 .OfType<IServiceWithType>()
-                .Any(swt => !swt.ServiceType.IsInterface || !swt.ServiceType.IsVisible))
+                .Any(swt => !swt.ServiceType.IsInterface || !swt.ServiceType.Assembly.IsInternalToDynamicProxy()))
                 throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,
                     RegistrationExtensionsResources.InterfaceProxyingOnlySupportsInterfaceServices,
                     componentRegistration));

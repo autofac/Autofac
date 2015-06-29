@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Autofac;
-using Autofac.Core;
+using System.Runtime.CompilerServices;
 using Autofac.Extras.DynamicProxy2;
+using Castle.Core.Internal;
 using Castle.DynamicProxy;
 using NUnit.Framework;
 
@@ -12,10 +10,12 @@ namespace Autofac.Extras.Tests.DynamicProxy2
     [TestFixture]
     public class InterfaceInterceptorsFixture
     {
-        [Test(Description = "Interception should not be able to occur against internal interfaces.")]
-        public void DoesNotInterceptInternalInterfaces()
+        [Test(Description = "Interception should be able to occur against internal interfaces when InternalVisibleTo attribute set.")]
+        public void InterceptsInternalInterfacesWithInternalsVisibleToDynamicProxyGenAssembly2()
         {
-            // DynamicProxy2 only supports visible interfaces so internal won't work.
+            var internalsAttribute = typeof(InterfaceInterceptorsFixture).Assembly.GetAttribute<InternalsVisibleToAttribute>();
+            Assert.That(internalsAttribute.AssemblyName, Is.StringStarting("DynamicProxyGenAssembly2"));
+
             var builder = new ContainerBuilder();
             builder.RegisterType<StringMethodInterceptor>();
             builder
@@ -24,8 +24,8 @@ namespace Autofac.Extras.Tests.DynamicProxy2
                 .InterceptedBy(typeof(StringMethodInterceptor))
                 .As<IInternalInterface>();
             var container = builder.Build();
-            var dre = Assert.Throws<DependencyResolutionException>(() => container.Resolve<IInternalInterface>());
-            Assert.IsInstanceOf<InvalidOperationException>(dre.InnerException, "The inner exception should explain about public interfaces being required.");
+            var obj = container.Resolve<IInternalInterface>();
+            Assert.AreEqual("intercepted-InternalMethod", obj.InternalMethod(), "The interface method should have been intercepted.");
         }
 
         [Test(Description = "Interception should be able to occur against public interfaces.")]
