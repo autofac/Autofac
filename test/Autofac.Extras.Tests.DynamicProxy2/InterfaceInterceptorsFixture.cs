@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using Autofac.Extras.DynamicProxy2;
+using Autofac.Extras.Tests.DynamicProxy2.SatelliteAssembly;
 using Castle.Core.Internal;
 using Castle.DynamicProxy;
 using NUnit.Framework;
@@ -40,6 +41,21 @@ namespace Autofac.Extras.Tests.DynamicProxy2
                 .As<IPublicInterface>();
             var container = builder.Build();
             var obj = container.Resolve<IPublicInterface>();
+            Assert.AreEqual("intercepted-PublicMethod", obj.PublicMethod(), "The interface method should have been intercepted.");
+        }
+		
+        [Test(Description = "Interception should be able to occur against public interfaces.")]
+        public void InterceptsPublicInterfacesSatelliteAssembly()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<StringMethodInterceptor>();
+            builder
+                .RegisterType<InterceptablePublicSatellite>()
+                .EnableInterfaceInterceptors()
+                .InterceptedBy(typeof(StringMethodInterceptor))
+                .As<IPublicInterfaceSatellite>();
+            var container = builder.Build();
+            var obj = container.Resolve<IPublicInterfaceSatellite>();
             Assert.AreEqual("intercepted-PublicMethod", obj.PublicMethod(), "The interface method should have been intercepted.");
         }
 

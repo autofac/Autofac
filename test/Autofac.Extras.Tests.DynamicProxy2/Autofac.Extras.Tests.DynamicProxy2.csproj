@@ -115,6 +115,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Autofac.Extras.Tests.DynamicProxy2.SatelliteAssembly\Autofac.Extras.Tests.DynamicProxy2.SatelliteAssembly.csproj">
+      <Project>{758ca972-9f74-4f30-a32b-d579cacde0b1}</Project>
+      <Name>Autofac.Extras.Tests.DynamicProxy2.SatelliteAssembly</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Autofac.Extras.DynamicProxy2\Autofac.Extras.DynamicProxy2.csproj">
       <Project>{20325c68-5988-4aee-954c-2418901af12e}</Project>
       <Name>Autofac.Extras.DynamicProxy2</Name>
