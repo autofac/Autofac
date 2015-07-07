@@ -301,7 +301,7 @@ namespace Autofac.Extras.DynamicProxy2
         {
             if (componentRegistration.Services
                 .OfType<IServiceWithType>()
-                .Any(swt => !swt.ServiceType.IsInterface || !swt.ServiceType.Assembly.IsInternalToDynamicProxy()))
+                .Any(swt => !swt.ServiceType.IsInterface || (!swt.ServiceType.Assembly.IsInternalToDynamicProxy() && !swt.ServiceType.IsVisible)))
                 throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,
                     RegistrationExtensionsResources.InterfaceProxyingOnlySupportsInterfaceServices,
                     componentRegistration));
