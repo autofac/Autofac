@@ -2,7 +2,6 @@
 
 namespace Autofac.Extras.Tests.DynamicProxy2.SatelliteAssembly
 {
- 
     public interface IPublicInterfaceSatellite
     {
         string PublicMethod();

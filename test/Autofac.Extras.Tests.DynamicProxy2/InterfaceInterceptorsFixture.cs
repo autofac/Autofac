@@ -43,7 +43,7 @@ namespace Autofac.Extras.Tests.DynamicProxy2
             var obj = container.Resolve<IPublicInterface>();
             Assert.AreEqual("intercepted-PublicMethod", obj.PublicMethod(), "The interface method should have been intercepted.");
         }
-		
+
         [Test(Description = "Interception should be able to occur against public interfaces.")]
         public void InterceptsPublicInterfacesSatelliteAssembly()
         {
