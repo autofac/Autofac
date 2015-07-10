@@ -23,6 +23,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Resources;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Autofac.Dnx.Test")]
+[assembly: NeutralResourcesLanguage("en-US")]
