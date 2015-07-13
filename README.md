@@ -117,7 +117,7 @@ If you're feeling bold, you can get [continuous integration builds from MyGet](h
 
 There is a growing number of [integrations](http://autofac.readthedocs.org/en/latest/integration/index.html) that make using Autofac with your application a snap. Support for several popular frameworks is also available through the "Extras" packages.
 
-Autofac is licensed under the MIT license, so you can comfortably use it in commercial applications (we still love [contributions](https://github.com/autofac/Autofac/wiki/Contribution-Guidelines) though).
+Autofac is licensed under the MIT license, so you can comfortably use it in commercial applications (we still love [contributions](http://autofac.readthedocs.org/en/latest/contributors.html) though).
 
 ## Contributing
 
