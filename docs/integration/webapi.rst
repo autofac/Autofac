@@ -153,7 +153,7 @@ In the example below the filter is being applied to the ``Get`` action method on
         .AsWebApiActionFilterFor<ValuesController>(c => c.Get(default(int)))
         .InstancePerApiRequest();
 
-When applying the filter to an action method that requires a parameter use the ``default`` keyword with the data type of the parameter as a placeholder in your lambda expression. For example, the ``Get`` action method in the example above required an ``int`` parameter and used ``efault(int)`` as a strongly-typed placeholder in the lambda expression.
+When applying the filter to an action method that requires a parameter use the ``default`` keyword with the data type of the parameter as a placeholder in your lambda expression. For example, the ``Get`` action method in the example above required an ``int`` parameter and used ``default(int)`` as a strongly-typed placeholder in the lambda expression.
 
 It is also possible to provide a base controller type in the generic type parameter to have the filter applied to all derived controllers. In addition, you can also make your lambda expression for the action method target a method on a base controller type and have it applied to that method on all derived controllers.
 
