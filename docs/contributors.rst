@@ -38,9 +38,9 @@ If you have an issue you'd like fixed, you may also contribute those fixes. **Ma
 Git vs. Patches
 ---------------
 
-Regardless of whether your contribution is accepted for the Core or the Extras, the preferred means of integrating the code is via Git rather than a patch. GitHub offers the ability to create a public '`fork <https://help.github.com/articles/fork-a-repo>`_' of the Autofac repository in which you can commit changes to later be pulled into the main Autofac repository.
+Regardless of whether your contribution is accepted for the core or one of the extension assemblies, the preferred means of integrating the code is via `a GitHub pull request <https://help.github.com/articles/using-pull-requests/>`_ rather than a patch. **Submit pull requests to the develop branch instead of master** as we use Gitflow (see below).
 
-If you plan to have ongoing input into the project, ask on the discussion list to be added to the committers list. Setting this up will permit issues from the issue tracker to be assigned to you, which is convenient when maintaining code contributions.
+If you plan to have ongoing input into the project, ask on `the discussion list <https://groups.google.com/forum/#!forum/autofac>`_ to be added to the committers list. Setting this up will permit issues from the issue tracker to be assigned to you, which is convenient when maintaining code contributions.
 
 Bugs and Code Review Issues
 ---------------------------
@@ -60,16 +60,21 @@ License
 By contributing to Autofac, you assert that:
 
 1. The contribution is your own original work.
-1. You have the right to assign the *copyright* for the work (it is not owned by your employer, or you have been given copyright assignment in writing).
-1. You license it under the terms applied to the rest of the Autofac project.
+2. You have the right to assign the *copyright* for the work (it is not owned by your employer, or you have been given copyright assignment in writing).
+3. You license it under the terms applied to the rest of the Autofac project.
 
 Coding
 ======
 
+Where to Work / Process
+-----------------------
+
+Autofac follows the `Gitflow workflow process <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow/>`_ for handling releases. This means active development is done on the ``develop`` branch and we push to ``master`` when it's release time. **If you're creating a pull request or contribution, please do it on the develop branch.** We can then build, push to MyGet for testing, and release to NuGet when everything's verified.
+
 Developer Environment
 ---------------------
 
-There is a **README file in the root of the codeline** (or `read it on GitHub <https://github.com/autofac/Autofac/blob/master/README.md>`_)that explains the expected developer environment and how to build the project.
+There is a **README file in the root of the codeline** (or `read it on GitHub <https://github.com/autofac/Autofac/blob/master/README.md>`_) that explains the expected developer environment and how to build the project.
 
 If your contribution somehow changes the required environment, this document needs to be updated.
 
