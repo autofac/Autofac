@@ -49,7 +49,7 @@ separately to verify changes will pass Windows App Store certification. This
 build is not chained into the standard developer build since it takes time to
 run. [There is a readme in that folder explaining more about how to run that
 build and assess results](https://github.com/autofac/Autofac/blob/master/Core/Tests/Autofac.Tests.AppCert/readme.html).
-Production package versions are centrally controlled through the 
+Production package versions are centrally controlled through the
 `PackageVersions.proj`. Documentation in that file explains how to use it.
 Before releasing new versions for consumption, be sure to update the
 appropriate version(s).
@@ -63,22 +63,6 @@ repository.
 
  1. Build the API documentation.
  2. Update the contents in the `/apidoc` folder with the new docs (add/remove/update).
- 3. Make sure the index page in the `/apidoc` is `index.html` - lower case, 
+ 3. Make sure the index page in the `/apidoc` is `index.html` - lower case,
     full `html` extension. (By default, Sandcastle makes it `Index.htm` which
     doesn't work.)
-
-## Updating the User Documentation Site
-
-User documentation is viewable at [https://docs.autofac.org](https://docs.autofac.org)
-(a CNAME to [https://autofac.readthedocs.org](https://autofac.readthedocs.org)).
-It is stored in the `/docs` folder in this source repo.
-
-To build the docs and see them locally, you need to follow the 
-[Getting Started](https://docs.readthedocs.org/en/latest/getting_started.html)
-docs on Read The Docs so you get Python and Sphinx installed.
-
-The docs are written in [reStructuredText](http://sphinx-doc.org/rest.html),
-which is very similar to Markdown but not quite. Check that out for a primer.
-
-Updates to the documentation checked into the `/docs` folder will automatically
-propagate to Read The Docs. No build or separate push is required.
