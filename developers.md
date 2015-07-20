@@ -2,6 +2,10 @@
 
 This document explains the developer setup and build execution for Autofac.
 
+## Where to Work / Process
+
+Autofac follows the [Gitflow workflow process](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow/) for handling releases. This means active development is done on the `develop` branch and we push to `master` when it's release time. **If you're creating a pull request or contribution, please do it on the `develop` branch.** We can then build, push to MyGet for testing, and release to NuGet when everything's verified.
+
 ## Developer Environment
 
  - Visual Studio 2013 Premium/Ultimate. (Include the *Windows Phone 8.0 SDK*
