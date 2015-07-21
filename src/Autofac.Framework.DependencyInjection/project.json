@@ -1,7 +1,7 @@
 ﻿{
     "version": "4.0.0-beta5-*",
     "authors": ["Autofac Contributors"],
-    "description": "Autofac integration for ASP.NET 5.0.",
+    "description": "Autofac implementation of the .NET Framework dependency injection abstraction.",
     "projectUrl": "http://autofac.org",
     "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
     "iconUrl": "http://code.google.com/p/autofac/logo",
