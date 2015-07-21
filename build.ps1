@@ -1,5 +1,5 @@
 # Build variables
-$dnvmVersion = "1.0.0-beta5-12103";
+$dnvmVersion = "1.0.0-beta6-12234";
 
 ########################
 # FUNCTIONS
@@ -55,8 +55,8 @@ if(Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
 Install-Dnvm
 
 # Install DNX
-dnvm install $dnvmVersion -r CoreCLR -NoNative
-dnvm install $dnvmVersion -r CLR -NoNative
+dnvm install $dnvmVersion -r CoreCLR -Unstable -NoNative
+dnvm install $dnvmVersion -r CLR -Unstable -NoNative
 dnvm use $dnvmVersion -r CLR
 
 # Package restore

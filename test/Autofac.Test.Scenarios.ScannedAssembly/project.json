@@ -4,7 +4,7 @@
         "strongName": true
     },
 	"dependencies": {
-		"Autofac": "4.0.0-beta5-*"
+		"Autofac": "4.0.0-beta6-*"
 	},
 	"frameworks": {
 		"dnx451": {
