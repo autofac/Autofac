@@ -26,5 +26,5 @@
 using System.Resources;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Autofac.Dnx.Test")]
+[assembly: InternalsVisibleTo("Autofac.Framework.DependencyInjection.Test")]
 [assembly: NeutralResourcesLanguage("en-US")]
