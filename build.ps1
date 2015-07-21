@@ -1,6 +1,3 @@
-# Build variables
-$dnxVersion = "1.0.0-beta6-12234";
-
 ########################
 # FUNCTIONS
 ########################
@@ -22,6 +19,13 @@ function Install-Dnvm
             & $dnvmSetupCmdPath setup
         }
     }
+}
+
+function Get-DnxVersion
+{
+    $globalJson = join-path $PSScriptRoot "global.json"
+    $jsonData = Get-Content -Path $globalJson -Raw | ConvertFrom-JSON
+    return $jsonData.sdk.version
 }
 
 function Restore-Packages
@@ -47,6 +51,8 @@ function Test-Projects
 ########################
 
 Push-Location $PSScriptRoot
+
+$dnxVersion = Get-DnxVersion
 
 # Clean
 if(Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
