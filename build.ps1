@@ -1,5 +1,5 @@
 # Build variables
-$dnvmVersion = "1.0.0-beta6-12234";
+$dnxVersion = "1.0.0-beta6-12234";
 
 ########################
 # FUNCTIONS
@@ -54,10 +54,13 @@ if(Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
 # Install DNVM
 Install-Dnvm
 
+# Update DNVM
+dnvm update-self
+
 # Install DNX
-dnvm install $dnvmVersion -r CoreCLR -Unstable -NoNative
-dnvm install $dnvmVersion -r CLR -Unstable -NoNative
-dnvm use $dnvmVersion -r CLR
+dnvm install $dnxVersion -r CoreCLR -Unstable -NoNative
+dnvm install $dnxVersion -r CLR -Unstable -NoNative
+dnvm use $dnxVersion -r CLR
 
 # Package restore
 Get-ChildItem -Path . -Filter *.xproj -Recurse | ForEach-Object { dnu restore ("""" + $_.DirectoryName + """") }
@@ -73,7 +76,7 @@ Get-ChildItem -Path .\src -Filter *.xproj -Recurse | ForEach-Object { Build-Proj
 Get-ChildItem -Path .\test -Filter *.xproj -Exclude Autofac.Test.Scenarios.ScannedAssembly.xproj -Recurse | ForEach-Object { Test-Projects $_.DirectoryName }
 
 # Switch to Core CLR
-dnvm use $dnvmVersion -r CoreCLR
+dnvm use $dnxVersion -r CoreCLR
 
 # Test again
 Get-ChildItem -Path .\test -Filter *.xproj -Exclude Autofac.Test.Scenarios.ScannedAssembly.xproj -Recurse | ForEach-Object { Test-Projects $_.DirectoryName }
