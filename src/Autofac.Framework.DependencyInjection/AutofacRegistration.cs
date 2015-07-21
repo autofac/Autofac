@@ -29,7 +29,7 @@ using System.Reflection;
 using Autofac.Builder;
 using Microsoft.Framework.DependencyInjection;
 
-namespace Autofac.Dnx
+namespace Autofac.Framework.DependencyInjection
 {
     public static class AutofacRegistration
     {

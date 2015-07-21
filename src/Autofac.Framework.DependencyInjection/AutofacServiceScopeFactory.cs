@@ -25,7 +25,7 @@
 
 using Microsoft.Framework.DependencyInjection;
 
-namespace Autofac.Dnx
+namespace Autofac.Framework.DependencyInjection
 {
     class AutofacServiceScopeFactory : IServiceScopeFactory
     {

@@ -25,7 +25,7 @@
 
 using System;
 
-namespace Autofac.Dnx
+namespace Autofac.Framework.DependencyInjection
 {
     class AutofacServiceProvider : IServiceProvider
     {
