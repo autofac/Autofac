@@ -1,5 +1,5 @@
 {
-    "version": "4.0.0-alpha4-*",
+    "version": "4.0.0-beta5-*",
     "authors": ["Autofac Contributors"],
     "description": "Core assembly for the Autofac Inversion of Control container",
     "summary": "Autofac is an IoC container for Microsoft .NET. It manages the dependencies between classes so that applications stay easy to change as they grow in size and complexity.",
@@ -9,8 +9,7 @@
     "requireLicenseAcceptance": false,
     "tags": [ "Autofac", "DI", "IoC" ],
     "compilationOptions": {
-        "warningsAsErrors": true,
-        "strongName": true
+        "warningsAsErrors": true
     },
     "compile": ["**/*.cs"],
     "resource": ["**/*.resx"],

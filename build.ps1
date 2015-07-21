@@ -1,5 +1,5 @@
 # Build variables
-$dnvmVersion = "1.0.0-beta6-12207";
+$dnvmVersion = "1.0.0-beta5";
 
 ########################
 # FUNCTIONS
