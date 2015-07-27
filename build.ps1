@@ -46,6 +46,17 @@ function Test-Projects
     & dnx ("""" + $DirectoryName + """") test; if($LASTEXITCODE -ne 0) { exit 2 }
 }
 
+function Remove-PathVariable
+{
+    param([string] $VariableToRemove)
+    $path = [Environment]::GetEnvironmentVariable("PATH", "User")
+    $newItems = $path.Split(';') | Where-Object { $_.ToString() -inotlike $VariableToRemove }
+    [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join(';', $newItems), "User")
+    $path = [Environment]::GetEnvironmentVariable("PATH", "Process")
+    $newItems = $path.Split(';') | Where-Object { $_.ToString() -inotlike $VariableToRemove }
+    [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join(';', $newItems), "Process")
+}
+
 ########################
 # THE BUILD!
 ########################
@@ -57,7 +68,9 @@ $dnxVersion = Get-DnxVersion
 # Clean
 if(Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
 
-# Install DNVM
+# Remove the installed DNVM from the path and force use of
+# per-user DNVM (which we can upgrade as needed without admin permissions)
+Remove-PathVariable "*Program Files\Microsoft DNX\DNVM*"
 Install-Dnvm
 
 # Install DNX
