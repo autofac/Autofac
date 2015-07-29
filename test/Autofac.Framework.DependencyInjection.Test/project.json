@@ -10,11 +10,8 @@
         "Autofac": "4.0.0-beta6-*",
         "Autofac.Framework.DependencyInjection": "4.0.0-beta6-*",
         "Microsoft.Framework.DependencyInjection.Abstractions": "1.0.0-beta6-*",
-        "Microsoft.Framework.Runtime.Abstractions": "1.0.0-beta6",
-        "Microsoft.Framework.TestAdapter": "1.0.0-beta6",
-        "Microsoft.Framework.TestHost": "1.0.0-beta6",
         "xunit": "2.1.0-beta4-build3075",
-        "xunit.runner.dnx": "2.1.0-beta4-build124"
+        "xunit.runner.dnx": "2.1.0-beta4-build125"
     },
     "frameworks": {
         "dnx451": {},
