@@ -5,22 +5,25 @@
     },
     "compile": ["**\\*.cs"],
     "resource": ["**\\*.resx", "Files\\*.*"],
-	"commands": {
-		"test": "xunit.runner.dnx"
-	},
-	"dependencies": {
+    "commands": {
+        "test": "xunit.runner.dnx"
+    },
+    "dependencies": {
         "Autofac": "4.0.0-beta6-*",
-        "xunit": "2.1.0-beta3-*",
-		"xunit.runner.dnx": "2.1.0-beta3-*",
-		"Autofac.Test.Scenarios.ScannedAssembly": "1.0.0-*"
-	},
-	"frameworks": {
-		"dnx451": { },
-		"dnxcore50": {
-			"dependencies": {
-				"System.Runtime": "4.0.20-*",
-				"System.Threading": "4.0.10-*"
-			}
-		}
-	}
+        "Autofac.Test.Scenarios.ScannedAssembly": "1.0.0-*",
+        "xunit": "2.1.0-beta4-build3075",
+        "xunit.runner.dnx": "2.1.0-beta4-build124",
+        "Microsoft.Framework.Runtime.Abstractions": "1.0.0-beta6",
+        "Microsoft.Framework.TestAdapter": "1.0.0-beta6",
+        "Microsoft.Framework.TestHost": "1.0.0-beta6"
+    },
+    "frameworks": {
+        "dnx451": {},
+        "dnxcore50": {
+            "dependencies": {
+                "System.Runtime": "4.0.20-*",
+                "System.Threading": "4.0.10-*"
+            }
+        }
+    }
 }
