@@ -9,6 +9,10 @@
     "tags": [ "Autofac", "DI", "IoC", "AspNet", "DNX" ],
     "compile": ["**/*.cs"],
     "resource": ["**/*.resx"],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/autofac/Autofac"
+    },
     "dependencies": {
         "Autofac": "4.0.0-beta6-*",
         "Microsoft.Framework.DependencyInjection.Abstractions": "1.0.0-beta6-*"
