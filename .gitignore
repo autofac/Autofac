@@ -3,7 +3,7 @@
 
 # Autofac specific files
 Examples/Remember.Web/Content/DomainServicesExample.xap
-build_output/
+artifacts/
 
 # User-specific files
 *.suo
