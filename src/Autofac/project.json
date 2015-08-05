@@ -9,8 +9,8 @@
     "requireLicenseAcceptance": false,
     "tags": [ "Autofac", "DI", "IoC" ],
     "compilationOptions": {
-        "warningsAsErrors": true,
-        "strongName": true
+        "keyFile": "../../Build/SharedKey.snk",
+        "warningsAsErrors": true
     },
     "compile": ["**/*.cs"],
     "resource": ["**/*.resx"],

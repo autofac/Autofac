@@ -1,7 +1,7 @@
 ﻿{
     "authors": ["Autofac Contributors"],
     "compilationOptions": {
-        "strongName": true
+        "keyFile": "../../Build/SharedKey.snk"
     },
     "compile": ["**\\*.cs"],
     "resource": ["**\\*.resx", "Files\\*.*"],
