@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "net45+win+wpa81+wp80+MonoAndroid10+Xamarin.iOS10+MonoTouch10": {
+      "wrappedProject": "../../src/Autofac/Autofac.csproj",
+      "bin": {
+        "assembly": "../../src/Autofac/obj/{configuration}/Autofac.dll",
+        "pdb": "../../src/Autofac/obj/{configuration}/Autofac.pdb"
+      },
+      "dependencies": {
+        "NuSpec.ReferenceGenerator": "1.2"
+      }
+    }
+  }
+}
