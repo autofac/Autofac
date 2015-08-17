@@ -19,8 +19,8 @@
         "url": "https://github.com/autofac/Autofac"
     },
     "frameworks": {
-        "dnx451": { },
-        "dnxcore50": {
+        "dnx451": {},
+        "dotnet": {
             "dependencies": {
                 "System.Collections": "4.0.10-*",
                 "System.Collections.Concurrent": "4.0.10-*",
@@ -36,12 +36,12 @@
                 "System.Reflection.TypeExtensions": "4.0.0-*",
                 "System.Resources.ResourceManager": "4.0.0-*",
                 "System.Runtime": "4.0.20-*",
-                "System.Threading.Thread": "4.0.0-*",
                 "System.Threading": "4.0.10-*",
                 "System.Threading.Tasks": "4.0.10-*"
             }
         },
-        ".NETPortable,Version=v4.5,Profile=Profile259": {
+        "net45":{},
+        "netcore45":{
             "frameworkAssemblies": {
                 "System.Collections": "",
                 "System.ComponentModel": "",
