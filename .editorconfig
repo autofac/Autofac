@@ -8,7 +8,7 @@ root = true
 [*]
 end_of_line = CRLF
 
-[*.{cs,json}]
+[*.{config,cs,json,xml}]
 indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
@@ -18,6 +18,11 @@ indent_style = tab
 trim_trailing_whitespace = true
 
 [*.{kproj,csproj,ps1,resx,rst}]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+
+[NuGet.Config]
 indent_style = space
 indent_size = 2
 trim_trailing_whitespace = true
