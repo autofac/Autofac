@@ -1,5 +1,5 @@
 ﻿{
-    "version": "4.0.0-beta8-*",
+    "version": "4.0.0-beta7-*",
     "authors": ["Autofac Contributors"],
     "description": "Autofac implementation of the .NET Framework dependency injection abstraction.",
     "projectUrl": "http://autofac.org",
@@ -14,8 +14,8 @@
         "url": "https://github.com/autofac/Autofac"
     },
     "dependencies": {
-        "Autofac": "4.0.0-beta8-*",
-        "Microsoft.Framework.DependencyInjection.Abstractions": "1.0.0-beta8-*"
+        "Autofac": "4.0.0-beta7-*",
+        "Microsoft.Framework.DependencyInjection.Abstractions": "1.0.0-beta7"
     },
     "frameworks": {
         "dnx451": { },
