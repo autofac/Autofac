@@ -148,5 +148,49 @@ namespace Autofac.Test.Core
 
             Assert.Same(supplied, resolved);
         }
+
+        [Fact]
+        public void ReplaceInstance_RegistrationActivatingHandlerProvidesResultToRelease()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ReplaceableComponent>()
+                .OnActivating(c => c.ReplaceInstance(new ReplaceableComponent { IsReplaced = true }))
+                .OnRelease(c => Assert.True(c.IsReplaced));
+
+            using (var container = builder.Build())
+            {
+                container.Resolve<ReplaceableComponent>();
+            }
+        }
+
+        [Fact(Skip = "Issue #677")]
+        public void ReplaceInstance_ModuleActivatingHandlerProvidesResultToRelease()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterModule<ReplaceInstanceModule>();
+            builder.RegisterType<ReplaceableComponent>()
+                .OnRelease(c => Assert.True(c.IsReplaced));
+
+            using (var container = builder.Build())
+            {
+                container.Resolve<ReplaceableComponent>();
+            }
+        }
+
+        private class ReplaceInstanceModule : Module
+        {
+            protected override void AttachToComponentRegistration(IComponentRegistry componentRegistry, IComponentRegistration registration)
+            {
+                registration.Activating += (o, args) =>
+                {
+                    args.ReplaceInstance(new ReplaceableComponent { IsReplaced = true });
+                };
+            }
+        }
+
+        private class ReplaceableComponent
+        {
+            public bool IsReplaced { get; set; }
+        }
     }
 }
