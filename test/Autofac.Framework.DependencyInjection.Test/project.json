@@ -10,9 +10,8 @@
         "Autofac": "4.0.0-beta7-*",
         "Autofac.Framework.DependencyInjection": "4.0.0-beta7-*",
         "Microsoft.Framework.DependencyInjection.Abstractions": "1.0.0-beta7",
-        "xunit": "2.1.0-rc1-build3143",
-        "xunit.runner.dnx": "2.1.0-beta5-build159",
-        "xunit.runner.reporters": "2.1.0-rc1-build3143"
+        "xunit": "2.1.0-rc1-*",
+        "xunit.runner.dnx": "2.1.0-beta5-*"
     },
     "frameworks": {
         "dnx451": { },
