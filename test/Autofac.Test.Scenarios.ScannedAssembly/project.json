@@ -4,7 +4,7 @@
         "keyFile": "../../Build/SharedKey.snk"
     },
 	"dependencies": {
-		"Autofac": "4.0.0-beta7-*"
+		"Autofac": "4.0.0-beta8-*"
 	},
     "frameworks": {
         "dnx451": { },

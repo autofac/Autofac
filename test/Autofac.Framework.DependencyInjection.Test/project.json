@@ -1,5 +1,4 @@
 ﻿{
-    "version": "4.0.0-beta7-*",
     "authors": ["Autofac Contributors"],
     "compile": ["**\\*.cs"],
     "resource": ["**\\*.resx", "Files\\*.*"],
@@ -7,11 +6,12 @@
         "test": "xunit.runner.dnx"
     },
     "dependencies": {
-        "Autofac": "4.0.0-beta7-*",
-        "Autofac.Framework.DependencyInjection": "4.0.0-beta7-*",
-        "Microsoft.Framework.DependencyInjection.Abstractions": "1.0.0-beta7",
+        "Autofac": "4.0.0-beta8-*",
+        "Autofac.Framework.DependencyInjection": "4.0.0-beta8-*",
+        "Microsoft.Framework.DependencyInjection.Abstractions": "1.0.0-beta8-*",
         "xunit": "2.1.0-rc1-*",
-        "xunit.runner.dnx": "2.1.0-beta5-*"
+        "xunit.runner.dnx": "2.1.0-beta5-*",
+        "xunit.runner.reporters": "2.1.0-rc1-*"
     },
     "frameworks": {
         "dnx451": { },

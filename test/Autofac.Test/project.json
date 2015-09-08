@@ -9,10 +9,11 @@
         "test": "xunit.runner.dnx"
     },
     "dependencies": {
-        "Autofac": "4.0.0-beta7-*",
+        "Autofac": "4.0.0-beta8-*",
         "Autofac.Test.Scenarios.ScannedAssembly": "1.0.0-*",
         "xunit": "2.1.0-rc1-*",
-        "xunit.runner.dnx": "2.1.0-beta5-*"
+        "xunit.runner.dnx": "2.1.0-beta5-*",
+        "xunit.runner.reporters": "2.1.0-rc1-*"
     },
     "frameworks": {
         "dnx451": { },
