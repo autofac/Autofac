@@ -1,15 +1,20 @@
-version: 3.0.7.{build}
+environment:
+  package_semantic_version: 4.0.0
+  assembly_semantic_version: 4.0.0
+
+version: $(package_semantic_version).{build}
 
 assembly_info:
   patch: true
-  file: AssemblyInfo.cs
-  assembly_version: "3.0.0.0"
-  assembly_file_version: "{version}"
-  assembly_informational_version: "3.0.7-CI-{build}"
+  file: '**\AssemblyInfo.*'
+  assembly_version: '$(assembly_semantic_version).0'
+  assembly_file_version: '$(appveyor_build_version)'
+  assembly_informational_version: '$(package_semantic_version)-CI-{build}'
 
 configuration: Release
 
-before_build: nuget restore
+before_build:
+- nuget restore
 
 build:
   verbosity: minimal

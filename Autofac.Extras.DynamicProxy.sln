@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Extras.DynamicProxy2", "src\Autofac.Extras.DynamicProxy2\Autofac.Extras.DynamicProxy2.csproj", "{20325C68-5988-4AEE-954C-2418901AF12E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Extras.DynamicProxy", "src\Autofac.Extras.DynamicProxy\Autofac.Extras.DynamicProxy.csproj", "{20325C68-5988-4AEE-954C-2418901AF12E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Extras.Tests.DynamicProxy2", "test\Autofac.Extras.Tests.DynamicProxy2\Autofac.Extras.Tests.DynamicProxy2.csproj", "{C2F90D43-6146-4414-8423-D5E6F4EB06D4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Extras.DynamicProxy.Test", "test\Autofac.Extras.DynamicProxy.Test\Autofac.Extras.DynamicProxy.Test.csproj", "{C2F90D43-6146-4414-8423-D5E6F4EB06D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Extras.Tests.DynamicProxy2.SatelliteAssembly", "test\Autofac.Extras.Tests.DynamicProxy2.SatelliteAssembly\Autofac.Extras.Tests.DynamicProxy2.SatelliteAssembly.csproj", "{758CA972-9F74-4F30-A32B-D579CACDE0B1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Extras.DynamicProxy.Test.SatelliteAssembly", "test\Autofac.Extras.DynamicProxy.Test.SatelliteAssembly\Autofac.Extras.DynamicProxy.Test.SatelliteAssembly.csproj", "{758CA972-9F74-4F30-A32B-D579CACDE0B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
