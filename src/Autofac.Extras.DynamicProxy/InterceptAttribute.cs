@@ -25,7 +25,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Security;
 using Autofac.Core;
 using Castle.DynamicProxy;
 
@@ -60,7 +59,6 @@ namespace Autofac.Extras.DynamicProxy
         /// Initializes a new instance of the <see cref="InterceptAttribute"/> class.
         /// </summary>
         /// <param name="interceptorServiceName">Name of the interceptor service.</param>
-        [SecuritySafeCritical]
         public InterceptAttribute(string interceptorServiceName)
             : this(new KeyedService(interceptorServiceName, typeof(IInterceptor)))
         {
