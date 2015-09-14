@@ -1,93 +1,58 @@
-﻿using Autofac.Extras.DynamicProxy;
-using Castle.DynamicProxy;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Castle.DynamicProxy;
+using Xunit;
 
 namespace Autofac.Extras.DynamicProxy.Test
 {
-    [TestFixture]
     public class InterceptorsChosenByMetadataWithOptionsFixture
     {
         public interface ICustomerService
         {
-            int GetVisitCount();
             int GetUniqueVisitorCount();
+
+            int GetVisitCount();
         }
 
-        public class CustomerService : ICustomerService
+        [Fact]
+        public void CanInterceptMethodsWithSpecificInterceptors()
         {
-            int VisitCount { get; set; }
-            int UniqueVisitorCount { get; set; }
+            var options = new ProxyGenerationOptions { Selector = new MyInterceptorSelector() };
 
-            public CustomerService()
-            {
-                VisitCount = 10;
-                UniqueVisitorCount = 6;
-            }
+            var builder = new ContainerBuilder();
+            builder.RegisterType<CustomerService>()
+                .As<ICustomerService>()
+                .EnableInterfaceInterceptors(options)
+                .InterceptedBy(typeof(AddOneInterceptor), typeof(AddTenInterceptor));
+            builder.RegisterType<AddOneInterceptor>();
+            builder.RegisterType<AddTenInterceptor>();
+            var cpt = builder.Build().Resolve<ICustomerService>();
 
-            public int GetVisitCount()
-            {
-                return VisitCount;
-            }
-
-            public int GetUniqueVisitorCount()
-            {
-                return UniqueVisitorCount;
-            }
+            Assert.Equal(11, cpt.GetVisitCount());
+            Assert.Equal(16, cpt.GetUniqueVisitorCount());
         }
 
-        class AddOneInterceptor : IInterceptor
+        [Fact]
+        public void CanInterceptOnlySpecificMethods()
         {
-            public void Intercept(IInvocation invocation)
-            {
-                invocation.Proceed();
-                if (invocation.Method.Name.StartsWith("Get"))
-                    invocation.ReturnValue = 1 + (int)invocation.ReturnValue;
-            }
+            var options = new ProxyGenerationOptions(new InterceptOnlyUnique());
+
+            var builder = new ContainerBuilder();
+            builder.RegisterType<CustomerService>()
+                .As<ICustomerService>()
+                .EnableInterfaceInterceptors(options)
+                .InterceptedBy(typeof(AddOneInterceptor), typeof(AddTenInterceptor));
+            builder.RegisterType<AddOneInterceptor>();
+            builder.RegisterType<AddTenInterceptor>();
+            var cpt = builder.Build().Resolve<ICustomerService>();
+
+            Assert.Equal(10, cpt.GetVisitCount());
+            Assert.Equal(17, cpt.GetUniqueVisitorCount());
         }
 
-        class AddTenInterceptor : IInterceptor
-        {
-            public void Intercept(IInvocation invocation)
-            {
-                invocation.Proceed();
-                if (invocation.Method.Name == "GetUniqueVisitorCount")
-                    invocation.ReturnValue = 10 + (int)invocation.ReturnValue;
-            }
-        }
-
-        class InterceptOnlyUnique : IProxyGenerationHook
-        {
-
-            public void MethodsInspected()
-            {
-            }
-
-            public void NonProxyableMemberNotification(Type type, MemberInfo memberInfo)
-            {
-            }
-
-            public bool ShouldInterceptMethod(Type type, MethodInfo methodInfo)
-            {
-                return methodInfo.Name.Equals("GetUniqueVisitorCount");
-            }
-
-        }
-
-        class MyInterceptorSelector : IInterceptorSelector
-        {
-            public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
-            {
-                return method.Name == "GetVisitCount"
-                    ? interceptors.OfType<AddOneInterceptor>().ToArray<IInterceptor>()
-                    : interceptors.OfType<AddTenInterceptor>().ToArray<IInterceptor>();
-            }
-        }
-
-        [Test]
+        [Fact]
         public void InterceptsWithMixinWhenUsingExtendedPropertyAndType()
         {
             var options = new ProxyGenerationOptions();
@@ -102,52 +67,88 @@ namespace Autofac.Extras.DynamicProxy.Test
             var cs = container.Resolve<ICustomerService>();
             var dict = cs as IDictionary<int, int>;
 
-            Assert.IsNotNull(dict);
+            Assert.NotNull(dict);
 
             dict.Add(1, 2);
 
-            Assert.AreEqual(2, dict[1]);
+            Assert.Equal(2, dict[1]);
 
             dict.Clear();
 
-            Assert.IsEmpty(dict);
+            Assert.Empty(dict);
         }
 
-        [Test]
-        public void CanInterceptOnlySpecificMethods()
+        public class CustomerService : ICustomerService
         {
-            var options = new ProxyGenerationOptions(new InterceptOnlyUnique());
+            public CustomerService()
+            {
+                VisitCount = 10;
+                UniqueVisitorCount = 6;
+            }
 
-            var builder = new ContainerBuilder();
-            builder.RegisterType<CustomerService>()
-                .As<ICustomerService>()
-                .EnableInterfaceInterceptors(options)
-                .InterceptedBy(typeof(AddOneInterceptor), typeof(AddTenInterceptor));
-            builder.RegisterType<AddOneInterceptor>();
-            builder.RegisterType<AddTenInterceptor>();
-            var cpt = builder.Build().Resolve<ICustomerService>();
+            private int UniqueVisitorCount { get; set; }
 
-            Assert.AreEqual(10, cpt.GetVisitCount());
-            Assert.AreEqual(17, cpt.GetUniqueVisitorCount());
+            private int VisitCount { get; set; }
+
+            public int GetUniqueVisitorCount()
+            {
+                return UniqueVisitorCount;
+            }
+
+            public int GetVisitCount()
+            {
+                return VisitCount;
+            }
         }
 
-        [Test]
-        public void CanInterceptMethodsWithSpecificInterceptors()
+        private class AddOneInterceptor : IInterceptor
         {
-            var options = new ProxyGenerationOptions { Selector = new MyInterceptorSelector() };
-
-            var builder = new ContainerBuilder();
-            builder.RegisterType<CustomerService>()
-                .As<ICustomerService>()
-                .EnableInterfaceInterceptors(options)
-                .InterceptedBy(typeof(AddOneInterceptor), typeof(AddTenInterceptor));
-            builder.RegisterType<AddOneInterceptor>();
-            builder.RegisterType<AddTenInterceptor>();
-            var cpt = builder.Build().Resolve<ICustomerService>();
-
-            Assert.AreEqual(11, cpt.GetVisitCount());
-            Assert.AreEqual(16, cpt.GetUniqueVisitorCount());
+            public void Intercept(IInvocation invocation)
+            {
+                invocation.Proceed();
+                if (invocation.Method.Name.StartsWith("Get"))
+                {
+                    invocation.ReturnValue = 1 + (int)invocation.ReturnValue;
+                }
+            }
         }
 
+        private class AddTenInterceptor : IInterceptor
+        {
+            public void Intercept(IInvocation invocation)
+            {
+                invocation.Proceed();
+                if (invocation.Method.Name == "GetUniqueVisitorCount")
+                {
+                    invocation.ReturnValue = 10 + (int)invocation.ReturnValue;
+                }
+            }
+        }
+
+        private class InterceptOnlyUnique : IProxyGenerationHook
+        {
+            public void MethodsInspected()
+            {
+            }
+
+            public void NonProxyableMemberNotification(Type type, MemberInfo memberInfo)
+            {
+            }
+
+            public bool ShouldInterceptMethod(Type type, MethodInfo methodInfo)
+            {
+                return methodInfo.Name.Equals("GetUniqueVisitorCount");
+            }
+        }
+
+        private class MyInterceptorSelector : IInterceptorSelector
+        {
+            public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
+            {
+                return method.Name == "GetVisitCount"
+                    ? interceptors.OfType<AddOneInterceptor>().ToArray<IInterceptor>()
+                    : interceptors.OfType<AddTenInterceptor>().ToArray<IInterceptor>();
+            }
+        }
     }
 }

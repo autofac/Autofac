@@ -1,42 +1,24 @@
-﻿﻿using System;
+﻿using System;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using Autofac.Core;
-using Autofac.Extras.DynamicProxy;
-using Autofac.Integration.Wcf;
 using Castle.DynamicProxy;
-using NUnit.Framework;
+using Xunit;
 
 namespace Autofac.Extras.DynamicProxy.Test
 {
-    [TestFixture]
     public class InterceptTransparentProxyFixture
     {
         private static readonly Uri TestServiceAddress = new Uri("http://localhost:80/Temporary_Listen_Addresses/ITestService");
 
-        [Test(Description = "The service being intercepted must be registered as an interface.")]
-        public void ServiceMustBeInterface()
+        [ServiceContract]
+        public interface ITestService
         {
-            var builder = new ContainerBuilder();
-            builder.Register(c => new object()).InterceptTransparentProxy();
-            var container = builder.Build();
-
-            Assert.Throws<DependencyResolutionException>(() => container.Resolve<object>());
+            [OperationContract]
+            string DoWork();
         }
 
-        [Test(Description = "The instance being intercepted must be a transparent proxy.")]
-        public void ServiceMustBeTransparentProxy()
-        {
-            var builder = new ContainerBuilder();
-            builder.Register(c => new object()).As<ITestService>().InterceptTransparentProxy();
-            var container = builder.Build();
-
-            var exception = Assert.Throws<DependencyResolutionException>(() => container.Resolve<ITestService>());
-
-            Assert.That(exception.Message, Is.StringContaining(typeof(object).FullName));
-        }
-
-        [Test(Description = "The instance must implement the additional interfaces provided.")]
+        [Fact]
         public void ProxyMustImplementAdditionalInterfaces()
         {
             var builder = new ContainerBuilder();
@@ -49,11 +31,11 @@ namespace Autofac.Extras.DynamicProxy.Test
 
             var exception = Assert.Throws<DependencyResolutionException>(() => container.Resolve<ITestService>());
 
-            Assert.That(exception.Message, Is.StringContaining(typeof(ICloneable).FullName));
-            Assert.That(exception.Message, Is.StringContaining(typeof(IFormattable).FullName));
+            Assert.Contains(typeof(ICloneable).FullName, exception.Message);
+            Assert.Contains(typeof(IFormattable).FullName, exception.Message);
         }
 
-        [Test(Description = "Issue 361: WCF service client code should allow interception to occur.")]
+        [Fact]
         public void ServiceClientInterceptionIsPossible()
         {
             // Build the service-side container
@@ -69,8 +51,7 @@ namespace Autofac.Extras.DynamicProxy.Test
             cb
                 .Register(c => c.Resolve<ChannelFactory<ITestService>>().CreateChannel())
                 .InterceptTransparentProxy(typeof(IClientChannel))
-                .InterceptedBy(typeof(TestServiceInterceptor))
-                .UseWcfSafeRelease();
+                .InterceptedBy(typeof(TestServiceInterceptor));
 
             using (var sc = sb.Build())
             {
@@ -84,7 +65,7 @@ namespace Autofac.Extras.DynamicProxy.Test
                         // Make a call through the client to the service -
                         // it should be intercepted.
                         var client = cc.Resolve<ITestService>();
-                        Assert.AreEqual("interceptor", client.DoWork(), "The call through the client proxy to the service was not intercepted.");
+                        Assert.Equal("interceptor", client.DoWork());
                     }
                 }
                 finally
@@ -94,25 +75,40 @@ namespace Autofac.Extras.DynamicProxy.Test
             }
         }
 
-        private static ServiceHost CreateTestServiceHost(ILifetimeScope container)
+        [Fact]
+        public void ServiceMustBeInterface()
         {
-            var host = new ServiceHost(typeof(TestService), TestServiceAddress);
-            host.AddServiceEndpoint(typeof(ITestService), new BasicHttpBinding(), "");
-            host.AddDependencyInjectionBehavior<ITestService>(container);
-            host.Description.Behaviors.Add(new ServiceMetadataBehavior { HttpGetEnabled = true, HttpGetUrl = TestServiceAddress });
-            return host;
+            var builder = new ContainerBuilder();
+            builder.Register(c => new object()).InterceptTransparentProxy();
+            var container = builder.Build();
+
+            Assert.Throws<DependencyResolutionException>(() => container.Resolve<object>());
         }
 
-        static ChannelFactory<ITestService> CreateChannelFactory()
+        [Fact]
+        public void ServiceMustBeTransparentProxy()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(c => new object()).As<ITestService>().InterceptTransparentProxy();
+            var container = builder.Build();
+
+            var exception = Assert.Throws<DependencyResolutionException>(() => container.Resolve<ITestService>());
+
+            Assert.Contains(typeof(object).FullName, exception.Message);
+        }
+
+        private static ChannelFactory<ITestService> CreateChannelFactory()
         {
             return new ChannelFactory<ITestService>(new BasicHttpBinding(), new EndpointAddress(TestServiceAddress));
         }
 
-        [ServiceContract]
-        public interface ITestService
+        private static ServiceHost CreateTestServiceHost(ILifetimeScope container)
         {
-            [OperationContract]
-            string DoWork();
+            var host = new ServiceHost(typeof(TestService), TestServiceAddress);
+            host.AddServiceEndpoint(typeof(ITestService), new BasicHttpBinding(), "");
+            // host.AddDependencyInjectionBehavior<ITestService>(container);
+            host.Description.Behaviors.Add(new ServiceMetadataBehavior { HttpGetEnabled = true, HttpGetUrl = TestServiceAddress });
+            return host;
         }
 
         public class TestService : ITestService

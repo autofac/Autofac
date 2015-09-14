@@ -1,21 +1,29 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using Autofac.Extras.DynamicProxy;
 using Autofac.Extras.DynamicProxy.Test.SatelliteAssembly;
 using Castle.Core.Internal;
 using Castle.DynamicProxy;
-using NUnit.Framework;
+using Xunit;
 
 namespace Autofac.Extras.DynamicProxy.Test
 {
-    [TestFixture]
     public class InterfaceInterceptorsFixture
     {
-        [Test(Description = "Interception should be able to occur against internal interfaces when InternalVisibleTo attribute set.")]
+        public interface IPublicInterface
+        {
+            string PublicMethod();
+        }
+
+        internal interface IInternalInterface
+        {
+            string InternalMethod();
+        }
+
+        [Fact]
         public void InterceptsInternalInterfacesWithInternalsVisibleToDynamicProxyGenAssembly2()
         {
             var internalsAttribute = typeof(InterfaceInterceptorsFixture).Assembly.GetAttribute<InternalsVisibleToAttribute>();
-            Assert.That(internalsAttribute.AssemblyName, Is.StringStarting("DynamicProxyGenAssembly2"));
+            Assert.Contains("DynamicProxyGenAssembly2", internalsAttribute.AssemblyName);
 
             var builder = new ContainerBuilder();
             builder.RegisterType<StringMethodInterceptor>();
@@ -26,10 +34,10 @@ namespace Autofac.Extras.DynamicProxy.Test
                 .As<IInternalInterface>();
             var container = builder.Build();
             var obj = container.Resolve<IInternalInterface>();
-            Assert.AreEqual("intercepted-InternalMethod", obj.InternalMethod(), "The interface method should have been intercepted.");
+            Assert.Equal("intercepted-InternalMethod", obj.InternalMethod());
         }
 
-        [Test(Description = "Interception should be able to occur against public interfaces.")]
+        [Fact]
         public void InterceptsPublicInterfaces()
         {
             var builder = new ContainerBuilder();
@@ -41,10 +49,10 @@ namespace Autofac.Extras.DynamicProxy.Test
                 .As<IPublicInterface>();
             var container = builder.Build();
             var obj = container.Resolve<IPublicInterface>();
-            Assert.AreEqual("intercepted-PublicMethod", obj.PublicMethod(), "The interface method should have been intercepted.");
+            Assert.Equal("intercepted-PublicMethod", obj.PublicMethod());
         }
 
-        [Test(Description = "Interception should be able to occur against public interfaces.")]
+        [Fact]
         public void InterceptsPublicInterfacesSatelliteAssembly()
         {
             var builder = new ContainerBuilder();
@@ -56,30 +64,20 @@ namespace Autofac.Extras.DynamicProxy.Test
                 .As<IPublicInterfaceSatellite>();
             var container = builder.Build();
             var obj = container.Resolve<IPublicInterfaceSatellite>();
-            Assert.AreEqual("intercepted-PublicMethod", obj.PublicMethod(), "The interface method should have been intercepted.");
+            Assert.Equal("intercepted-PublicMethod", obj.PublicMethod());
         }
 
         public class Interceptable : IPublicInterface, IInternalInterface
         {
-            public string PublicMethod()
-            {
-                throw new NotImplementedException();
-            }
-
             public string InternalMethod()
             {
                 throw new NotImplementedException();
             }
-        }
 
-        public interface IPublicInterface
-        {
-            string PublicMethod();
-        }
-
-        internal interface IInternalInterface
-        {
-            string InternalMethod();
+            public string PublicMethod()
+            {
+                throw new NotImplementedException();
+            }
         }
 
         private class StringMethodInterceptor : IInterceptor
@@ -96,6 +94,5 @@ namespace Autofac.Extras.DynamicProxy.Test
                 }
             }
         }
-
     }
 }
