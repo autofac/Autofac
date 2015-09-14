@@ -12,7 +12,6 @@ Autofac follows the [Gitflow workflow process](https://www.atlassian.com/git/tut
  - **All** of the latest .NET, VS, and SQL patches through Microsoft Update.
  - **All** of the latest VS updates (stable/RTM, not RC) through VS Extension
    Manager.
- - A git client in your path (so the `dnu sources` repo embedding works during the packaging).
 
 ## Building the Project
 
@@ -20,7 +19,7 @@ At a PowerShell prompt run `build.ps1`.
 
 This will build everything in a release configuration and create NuGet packages. It will also run tests and code analysis.
 
-**Note for developers:** If you are working on the Autofac core, there is
+**Note:** If you are working on the Autofac core, there is
 also a project in `test/Autofac.Tests.AppCert` that should be built/run
 separately to verify changes will pass Windows App Store certification. This
 build is not chained into the standard developer build since it takes time to
