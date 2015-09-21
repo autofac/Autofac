@@ -93,7 +93,7 @@ namespace Autofac.Test.Features.OpenGenerics
         }
 
         [Fact]
-        public void TheSameaceholderWithThreeGenericParametersTypeCanAppearMultipleTimesInTheService()
+        public void TheSamePlaceholderWithThreeGenericParametersTypeCanAppearMultipleTimesInTheService()
         {
             var cb = new ContainerBuilder();
             cb.RegisterGeneric(typeof(SameTypes<,,>)).As(typeof(SameTypes<,,>).GetTypeInfo().ImplementedInterfaces.ToArray());
@@ -104,7 +104,7 @@ namespace Autofac.Test.Features.OpenGenerics
         }
 
         [Fact]
-        public void TheSameaceholderTypeCanAppearMultipleTimesInTheService()
+        public void TheSamePlaceholderTypeCanAppearMultipleTimesInTheService()
         {
             var cb = new ContainerBuilder();
             cb.RegisterGeneric(typeof(SameTypes<,>)).As(typeof(SameTypes<,>).GetInterfaces());
