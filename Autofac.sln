@@ -13,9 +13,9 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Autofac.Test", "test\Autofa
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Autofac.Test.Scenarios.ScannedAssembly", "test\Autofac.Test.Scenarios.ScannedAssembly\Autofac.Test.Scenarios.ScannedAssembly.xproj", "{376ADF06-0774-4C00-AE45-4B0DF63779B2}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Autofac.Framework.DependencyInjection", "src\Autofac.Framework.DependencyInjection\Autofac.Framework.DependencyInjection.xproj", "{513C7F7A-A758-4D48-94F4-891A00F63DA1}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Autofac.Extensions.DependencyInjection", "src\Autofac.Extensions.DependencyInjection\Autofac.Extensions.DependencyInjection.xproj", "{513C7F7A-A758-4D48-94F4-891A00F63DA1}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Autofac.Framework.DependencyInjection.Test", "test\Autofac.Framework.DependencyInjection.Test\Autofac.Framework.DependencyInjection.Test.xproj", "{911AA52A-4E68-41C5-AB24-D1618AFDF753}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Autofac.Extensions.DependencyInjection.Test", "test\Autofac.Extensions.DependencyInjection.Test\Autofac.Extensions.DependencyInjection.Test.xproj", "{911AA52A-4E68-41C5-AB24-D1618AFDF753}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "AutofacWebApiSample", "samples\AutofacWebApiSample\AutofacWebApiSample.xproj", "{081C1CA5-7AA4-4B21-A4E3-8888F9505D54}"
 EndProject
