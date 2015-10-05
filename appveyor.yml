@@ -22,4 +22,5 @@ deploy:
   api_key:
     secure: N4KZCRegcmenMoJ0peZfQwDzqq+Wt4oxGzNTgvkrDxgWyZhw7hNwKmd4n2AsNKQX
   # symbol_server: https://nuget.symbolsource.org/MyGet/autofac
+  skip_symbols: true
   artifact: MyGet
