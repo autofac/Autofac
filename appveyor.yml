@@ -22,5 +22,6 @@ deploy:
   api_key:
     secure: N4KZCRegcmenMoJ0peZfQwDzqq+Wt4oxGzNTgvkrDxgWyZhw7hNwKmd4n2AsNKQX
   skip_symbols: false
-  symbol_server: http://www.myget.org/F/autofac/api/v2/package
+  symbol_server:
+    secure: OUKNYffe7SYviG/RotiR9talZSeo2cFqFcBg/izaiB7MvWSjcKUzbrkyiLirUlmLhV5jxvCxwgeGpHP7Xb3gqFJkTMwzVT6uZKtdNARfZIMGLtL0lauY2pwqdV2Jr4BK
   artifact: MyGet
