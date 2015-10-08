@@ -20,8 +20,7 @@ deploy:
 - provider: NuGet
   server: https://www.myget.org/F/autofac/api/v2/package
   api_key:
-    secure: po0Rep+BsbvwbbM9mjLwYQ7rw6lVvc5sB6L+LgeKRY8W+89k386kkeSO/tttgzGi
-  skip_symbols: false
-  symbol_server:
-    secure: OUKNYffe7SYviG/RotiR9talZSeo2cFqFcBg/izaiB7MvWSjcKUzbrkyiLirUlmLhV5jxvCxwgeGpHP7Xb3gqFJkTMwzVT6uZKtdNARfZIMGLtL0lauY2pwqdV2Jr4BK
+    secure: K/xWru9qKN/4pbvthD0bmKZWoIqMz0E5L6UKSP3HZeJ0dyhmqoR70hzQe6WoBsAz
+  skip_symbols: true
+  # symbol_server: https://www.myget.org/F/autofac/api/v2/package
   artifact: MyGet
