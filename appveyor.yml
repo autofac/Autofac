@@ -18,9 +18,9 @@ artifacts:
 
 deploy:
 - provider: NuGet
-  server: https://www.myget.org/F/autofac/
+  server: https://www.myget.org/F/autofac/api/v2/package
   api_key:
     secure: N4KZCRegcmenMoJ0peZfQwDzqq+Wt4oxGzNTgvkrDxgWyZhw7hNwKmd4n2AsNKQX
-  # symbol_server: https://nuget.symbolsource.org/MyGet/autofac
-  skip_symbols: true
+  skip_symbols: false
+  symbol_server: http://www.myget.org/F/autofac/api/v2/package
   artifact: MyGet
