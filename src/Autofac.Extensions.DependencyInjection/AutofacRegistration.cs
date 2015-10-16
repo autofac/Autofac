@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Autofac.Builder;
-using Microsoft.Framework.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Autofac.Extensions.DependencyInjection
 {

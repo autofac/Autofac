@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
-using Microsoft.Framework.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Autofac.Extensions.DependencyInjection.Test

@@ -4,9 +4,9 @@
 using System;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Microsoft.Framework.DependencyInjection.Tests.Fakes;
+using Microsoft.Extensions.DependencyInjection.Tests.Fakes;
 
-namespace Microsoft.Framework.DependencyInjection.Tests
+namespace Microsoft.Extensions.DependencyInjection.Tests
 {
     public class AutofacContainerTests : ScopingContainerTestBase
     {

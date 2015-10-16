@@ -1,4 +1,4 @@
-﻿namespace Microsoft.Framework.DependencyInjection.Tests.Fakes
+namespace Microsoft.Extensions.DependencyInjection.Tests.Fakes
 {
     public class ClassWithAmbiguousCtors
     {

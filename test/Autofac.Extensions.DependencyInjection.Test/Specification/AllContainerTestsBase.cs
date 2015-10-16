@@ -4,10 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Framework.DependencyInjection.Tests.Fakes;
+using Microsoft.Extensions.DependencyInjection.Tests.Fakes;
 using Xunit;
 
-namespace Microsoft.Framework.DependencyInjection.Tests
+namespace Microsoft.Extensions.DependencyInjection.Tests
 {
     public abstract class AllContainerTestsBase
     {
@@ -24,7 +24,6 @@ namespace Microsoft.Framework.DependencyInjection.Tests
             Assert.Equal("FakeServiceSimpleMethod", service.SimpleMethod());
         }
 
-        [Fact]
         public void ServiceInstanceCanBeResolved()
         {
             var container = CreateContainer();

@@ -5,10 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Microsoft.Framework.DependencyInjection.Tests.Fakes;
+using Microsoft.Extensions.DependencyInjection.Tests.Fakes;
 using Xunit;
 
-namespace Microsoft.Framework.DependencyInjection.Tests
+namespace Microsoft.Extensions.DependencyInjection.Tests
 {
     public abstract class ScopingContainerTestBase : AllContainerTestsBase
     {

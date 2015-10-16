@@ -82,8 +82,8 @@ Remove-PathVariable "*Program Files\Microsoft DNX\DNVM*"
 Install-Dnvm
 
 # Install DNX
-dnvm install $dnxVersion -r CoreCLR -NoNative
-dnvm install $dnxVersion -r CLR -NoNative
+dnvm install $dnxVersion -r CoreCLR -NoNative -Unstable
+dnvm install $dnxVersion -r CLR -NoNative -Unstable
 dnvm use $dnxVersion -r CLR
 
 # Package restore
@@ -95,6 +95,7 @@ Write-Host "Build number:" $env:DNX_BUILD_VERSION
 
 # Build/package
 Get-ChildItem -Path .\src -Filter *.xproj -Recurse | ForEach-Object { Build-Project $_.DirectoryName }
+Get-ChildItem -Path .\samples -Filter *.xproj -Recurse | ForEach-Object { Build-Project $_.DirectoryName }
 
 # Publish tests so we can test without recompiling
 Get-ChildItem -Path .\test -Filter *.xproj -Exclude Autofac.Test.Scenarios.ScannedAssembly.xproj -Recurse | ForEach-Object -Begin { $TestIndex = 0 } -Process { Publish-TestProject -DirectoryName $_.DirectoryName -Index $TestIndex; $TestIndex++; }
