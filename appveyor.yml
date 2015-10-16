@@ -25,5 +25,5 @@ deploy:
 - provider: NuGet
   server: https://www.myget.org/F/autofac/
   api_key:
-    secure: N4KZCRegcmenMoJ0peZfQwDzqq+Wt4oxGzNTgvkrDxgWyZhw7hNwKmd4n2AsNKQX
+    secure: rCUEY75fXN0wxtMy6QL4jCrLdaYbxIBzIXWeN+wEu/XDpyqimzreOc5AH5jMd5ah
   symbol_server: https://nuget.symbolsource.org/MyGet/autofac
