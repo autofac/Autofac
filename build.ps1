@@ -37,6 +37,12 @@ function Restore-Packages
 function Build-Project
 {
     param([string] $DirectoryName)
+    & dnu build ("""" + $DirectoryName + """") --configuration Release; if($LASTEXITCODE -ne 0) { exit 1 }
+}
+
+function Package-Project
+{
+    param([string] $DirectoryName)
     & dnu pack ("""" + $DirectoryName + """") --configuration Release --out .\artifacts\packages; if($LASTEXITCODE -ne 0) { exit 1 }
 }
 
@@ -94,7 +100,7 @@ $env:DNX_BUILD_VERSION = @{ $true = $env:APPVEYOR_BUILD_NUMBER; $false = 1}[$env
 Write-Host "Build number:" $env:DNX_BUILD_VERSION
 
 # Build/package
-Get-ChildItem -Path .\src -Filter *.xproj -Recurse | ForEach-Object { Build-Project $_.DirectoryName }
+Get-ChildItem -Path .\src -Filter *.xproj -Recurse | ForEach-Object { Package-Project $_.DirectoryName }
 Get-ChildItem -Path .\samples -Filter *.xproj -Recurse | ForEach-Object { Build-Project $_.DirectoryName }
 
 # Publish tests so we can test without recompiling
