@@ -24,12 +24,21 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Reflection;
-using System.Resources;
-using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("Autofac.Framework.DependencyInjection")]
-[assembly: InternalsVisibleTo("Autofac.Framework.DependencyInjection.Test")]
-[assembly: NeutralResourcesLanguage("en-US")]
-[assembly: AssemblyCopyright("Copyright © 2015 Autofac Contributors")]
-[assembly: AssemblyDescription("Autofac dependency injection support for DNX-based .NET applications.")]
+namespace Autofac.Extensions.DependencyInjection
+{
+    class AutofacServiceProvider : IServiceProvider
+    {
+        private readonly IComponentContext _componentContext;
+
+        public AutofacServiceProvider(IComponentContext componentContext)
+        {
+            _componentContext = componentContext;
+        }
+
+        public object GetService(Type serviceType)
+        {
+            return _componentContext.ResolveOptional(serviceType);
+        }
+    }
+}

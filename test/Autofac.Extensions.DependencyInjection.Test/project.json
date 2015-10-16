@@ -7,7 +7,7 @@
     },
     "dependencies": {
         "Autofac": "4.0.0-beta8-*",
-        "Autofac.Framework.DependencyInjection": "4.0.0-beta8-*",
+        "Autofac.Extensions.DependencyInjection": "4.0.0-beta8-*",
         "Microsoft.Framework.DependencyInjection": "1.0.0-beta8",
         "Microsoft.Framework.DependencyInjection.Abstractions": "1.0.0-beta8",
         "xunit": "2.1.0-rc1-*",
