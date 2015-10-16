@@ -1,6 +1,6 @@
 ﻿using System;
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
+using Autofac.Framework.DependencyInjection;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.Framework.DependencyInjection;

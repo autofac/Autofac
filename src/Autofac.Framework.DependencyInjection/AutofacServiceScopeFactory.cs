@@ -23,13 +23,22 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Reflection;
-using System.Resources;
-using System.Runtime.CompilerServices;
+using Microsoft.Framework.DependencyInjection;
 
-[assembly: AssemblyTitle("Autofac.Extensions.DependencyInjection")]
-[assembly: InternalsVisibleTo("Autofac.Extensions.DependencyInjection.Test")]
-[assembly: NeutralResourcesLanguage("en-US")]
-[assembly: AssemblyCopyright("Copyright © 2015 Autofac Contributors")]
-[assembly: AssemblyDescription("Autofac dependency injection support for DNX-based .NET applications.")]
+namespace Autofac.Framework.DependencyInjection
+{
+    class AutofacServiceScopeFactory : IServiceScopeFactory
+    {
+        private readonly ILifetimeScope _lifetimeScope;
+
+        public AutofacServiceScopeFactory(ILifetimeScope lifetimeScope)
+        {
+            _lifetimeScope = lifetimeScope;
+        }
+
+        public IServiceScope CreateScope()
+        {
+            return new AutofacServiceScope(_lifetimeScope.BeginLifetimeScope());
+        }
+    }
+}

@@ -24,25 +24,21 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Microsoft.Framework.DependencyInjection;
 
-namespace Autofac.Extensions.DependencyInjection
+namespace Autofac.Framework.DependencyInjection
 {
-    class AutofacServiceScope : IServiceScope
+    class AutofacServiceProvider : IServiceProvider
     {
-        private readonly ILifetimeScope _lifetimeScope;
+        private readonly IComponentContext _componentContext;
 
-        public AutofacServiceScope(ILifetimeScope lifetimeScope)
+        public AutofacServiceProvider(IComponentContext componentContext)
         {
-            _lifetimeScope = lifetimeScope;
-            ServiceProvider = _lifetimeScope.Resolve<IServiceProvider>();
+            _componentContext = componentContext;
         }
 
-        public IServiceProvider ServiceProvider { get; }
-
-        public void Dispose()
+        public object GetService(Type serviceType)
         {
-            _lifetimeScope.Dispose();
+            return _componentContext.ResolveOptional(serviceType);
         }
     }
 }

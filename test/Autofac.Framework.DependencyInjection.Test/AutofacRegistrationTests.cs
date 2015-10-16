@@ -6,7 +6,7 @@ using Autofac.Core.Lifetime;
 using Microsoft.Framework.DependencyInjection;
 using Xunit;
 
-namespace Autofac.Extensions.DependencyInjection.Test
+namespace Autofac.Framework.DependencyInjection.Test
 {
     public class AutofacRegistrationTests
     {

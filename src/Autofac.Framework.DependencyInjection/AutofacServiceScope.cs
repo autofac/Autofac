@@ -23,22 +23,26 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
 using Microsoft.Framework.DependencyInjection;
 
-namespace Autofac.Extensions.DependencyInjection
+namespace Autofac.Framework.DependencyInjection
 {
-    class AutofacServiceScopeFactory : IServiceScopeFactory
+    class AutofacServiceScope : IServiceScope
     {
         private readonly ILifetimeScope _lifetimeScope;
 
-        public AutofacServiceScopeFactory(ILifetimeScope lifetimeScope)
+        public AutofacServiceScope(ILifetimeScope lifetimeScope)
         {
             _lifetimeScope = lifetimeScope;
+            ServiceProvider = _lifetimeScope.Resolve<IServiceProvider>();
         }
 
-        public IServiceScope CreateScope()
+        public IServiceProvider ServiceProvider { get; }
+
+        public void Dispose()
         {
-            return new AutofacServiceScope(_lifetimeScope.BeginLifetimeScope());
+            _lifetimeScope.Dispose();
         }
     }
 }

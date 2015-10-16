@@ -1,7 +1,7 @@
 ﻿using Autofac.Core;
 using Xunit;
 
-namespace Autofac.Extensions.DependencyInjection.Test
+namespace Autofac.Framework.DependencyInjection.Test
 {
     static class Assertions
     {
