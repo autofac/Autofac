@@ -3,7 +3,7 @@
 
 using System;
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
+using Autofac.Framework.DependencyInjection;
 using Microsoft.Framework.DependencyInjection.Tests.Fakes;
 
 namespace Microsoft.Framework.DependencyInjection.Tests
