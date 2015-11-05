@@ -7,18 +7,6 @@ namespace Autofac.Test.Core
 {
     public class DependencyResolutionExceptionTests
     {
-        public DependencyResolutionExceptionTests()
-        {
-            //Explicitly set culture for comparison of Exception strings
-#if DNXCORE50
-            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-            CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
-#else
-            System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-            System.Threading.Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
-#endif
-        }
-
         [Fact]
         public void Message_InnerExceptionMessageIncluded()
         {
@@ -41,7 +29,7 @@ namespace Autofac.Test.Core
         {
             // Issue 343: If there is no message or inner exception specified, the main exception message should not be modified.
             var dre = new DependencyResolutionException(null);
-            Assert.Equal("Exception of type 'Autofac.Core.DependencyResolutionException' was thrown.", dre.Message);
+            Assert.True(dre.Message.Contains("Autofac.Core.DependencyResolutionException"), "The exception message should be the default exception message.");
         }
 
         [Fact]
