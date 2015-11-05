@@ -120,7 +120,7 @@ namespace Autofac.Core.Activators.Reflection
 
             var instance = selectedBinding.Instantiate();
 
-            InjectProperties(instance, context);
+            InjectProperties(instance, context, parameters);
 
             return instance;
         }
@@ -151,9 +151,9 @@ namespace Autofac.Core.Activators.Reflection
             return constructorInfo.Select(ci => new ConstructorParameterBinding(ci, prioritisedParameters, context));
         }
 
-        void InjectProperties(object instance, IComponentContext context)
+        void InjectProperties(object instance, IComponentContext context, IEnumerable<Parameter> parameters)
         {
-            if (!_configuredProperties.Any())
+            if (!_configuredProperties.Any() && !parameters.Any())
                 return;
 
             var actualProps = instance
@@ -161,7 +161,8 @@ namespace Autofac.Core.Activators.Reflection
                 .Where(pi => pi.CanWrite)
                 .ToList();
 
-            foreach (var prop in _configuredProperties)
+            var prioritisedProperties = parameters.Concat(_configuredProperties);
+            foreach (var prop in prioritisedProperties)
             {
                 foreach (var actual in actualProps)
                 {

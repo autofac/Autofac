@@ -336,6 +336,39 @@ namespace Autofac.Test.Core.Activators.Reflection
             Assert.Equal(2, instance.P2);
         }
 
+        [Fact]
+        public void PropertySpecifiedAsResolveParameterWhenAutowired()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<R>().PropertiesAutowired();
+            var container = builder.Build();
+
+            var instance = container.Resolve<R>(new NamedPropertyParameter("P1", 5));
+            Assert.Equal(5, instance.P1);
+        }
+
+        [Fact]
+        public void PropertySpecifiedAsResolveParameterWhenManuallyConfigured()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<R>().WithProperty("P1", 1);
+            var container = builder.Build();
+
+            var instance = container.Resolve<R>(new NamedPropertyParameter("P1", 5));
+            Assert.Equal(5, instance.P1);
+        }
+
+        [Fact]
+        public void PropertySpecifiedAsResolveParameterNoRegistrationPropertySpecified()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<R>();
+            var container = builder.Build();
+
+            var instance = container.Resolve<R>(new NamedPropertyParameter("P1", 5));
+            Assert.Equal(5, instance.P1);
+        }
+
         public enum E { A, B }
 
         public class WithE
