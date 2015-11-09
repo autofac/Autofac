@@ -10,6 +10,7 @@
         "Autofac.Extensions.DependencyInjection": "4.0.0-rc1-*",
         "Microsoft.Extensions.DependencyInjection": "1.0.0-rc1-*",
         "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc1-*",
+        "Microsoft.Extensions.OptionsModel": "1.0.0-rc1-*",
         "xunit": "2.1.0-rc1-*",
         "xunit.runner.dnx": "2.1.0-rc1-*",
         "xunit.runner.reporters": "2.1.0-rc1-*"

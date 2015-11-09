@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Versioning;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.OptionsModel;
 using Xunit;
 
 namespace Autofac.Extensions.DependencyInjection.Test
@@ -55,7 +57,7 @@ namespace Autofac.Extensions.DependencyInjection.Test
         {
             var builder = new ContainerBuilder();
             var descriptor = new ServiceDescriptor(typeof(IService), typeof(Service), ServiceLifetime.Transient);
-            builder.Populate(new ServiceDescriptor[] {descriptor});
+            builder.Populate(new ServiceDescriptor[] { descriptor });
             var container = builder.Build();
 
             container.AssertLifetime<IService, CurrentScopeLifetime>();
@@ -68,7 +70,7 @@ namespace Autofac.Extensions.DependencyInjection.Test
         {
             var builder = new ContainerBuilder();
             var descriptor = new ServiceDescriptor(typeof(IService), typeof(Service), ServiceLifetime.Singleton);
-            builder.Populate(new ServiceDescriptor[] {descriptor});
+            builder.Populate(new ServiceDescriptor[] { descriptor });
             var container = builder.Build();
 
             container.AssertLifetime<IService, RootScopeLifetime>();
@@ -81,7 +83,7 @@ namespace Autofac.Extensions.DependencyInjection.Test
         {
             var builder = new ContainerBuilder();
             var descriptor = new ServiceDescriptor(typeof(IService), typeof(Service), ServiceLifetime.Scoped);
-            builder.Populate(new ServiceDescriptor[] {descriptor});
+            builder.Populate(new ServiceDescriptor[] { descriptor });
             var container = builder.Build();
 
             container.AssertLifetime<IService, CurrentScopeLifetime>();
@@ -105,7 +107,7 @@ namespace Autofac.Extensions.DependencyInjection.Test
         {
             var builder = new ContainerBuilder();
             var descriptor = new ServiceDescriptor(typeof(IService), sp => new Service(), ServiceLifetime.Transient);
-            builder.Populate(new ServiceDescriptor[] {descriptor});
+            builder.Populate(new ServiceDescriptor[] { descriptor });
             var container = builder.Build();
 
             container.AssertRegistered<Func<IServiceProvider, IService>>();
@@ -116,14 +118,42 @@ namespace Autofac.Extensions.DependencyInjection.Test
         {
             var builder = new ContainerBuilder();
             var descriptor = new ServiceDescriptor(typeof(IService), typeof(Service), ServiceLifetime.Transient);
-            builder.Populate(new ServiceDescriptor[] {descriptor});
+            builder.Populate(new ServiceDescriptor[] { descriptor });
             var container = builder.Build();
 
             container.AssertRegistered<Func<IService>>();
         }
 
-        public class Service : IService { }
+        [Fact]
+        public void ServiceCollectionConfigurationIsRetainedInRootContainer()
+        {
+            var collection = new ServiceCollection();
+            collection.AddOptions();
+            collection.Configure<TestOptions>(options =>
+            {
+                options.Value = 5;
+            });
 
-        public interface IService { }
+            var builder = new ContainerBuilder();
+            builder.Populate(collection);
+            var container = builder.Build();
+
+            var resolved = container.Resolve<IOptions<TestOptions>>();
+            Assert.NotNull(resolved.Value);
+            Assert.Equal(5, resolved.Value.Value);
+        }
+
+        public class Service : IService
+        {
+        }
+
+        public interface IService
+        {
+        }
+
+        public class TestOptions
+        {
+            public int Value { get; set; }
+        }
     }
 }
