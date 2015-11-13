@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using Autofac.Core;
+using Autofac.Core.Lifetime;
 using Autofac.Test.Scenarios.RegistrationSources;
 using Xunit;
 
@@ -319,6 +322,35 @@ namespace Autofac.Test.Core.Lifetime
                     }
                 }
             }
+        }
+
+        private class AThatDependsOnB
+        {
+            public AThatDependsOnB(BThatCreatesA bThatCreatesA)
+            {
+            }
+        }
+
+        private class BThatCreatesA
+        {
+            public BThatCreatesA(Func<BThatCreatesA, AThatDependsOnB> factory)
+            {
+                factory(this);
+            }
+        }
+
+        [Fact]
+        public void InstancePerLifetimeScopeServiceCannotCreateSecondInstanceOfSelfDuringConstruction()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<AThatDependsOnB>().InstancePerLifetimeScope();
+            builder.RegisterType<BThatCreatesA>().InstancePerLifetimeScope();
+            var container = builder.Build();
+
+            var exception = Assert.Throws<DependencyResolutionException>(() => container.Resolve<AThatDependsOnB>());
+
+            Assert.Equal(exception.Message, string.Format(CultureInfo.CurrentCulture,
+                LifetimeScopeResources.SelfConstructingDependencyDetected, typeof(AThatDependsOnB).FullName));
         }
     }
 }

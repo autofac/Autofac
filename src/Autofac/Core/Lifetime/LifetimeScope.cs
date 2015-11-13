@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
@@ -260,6 +261,9 @@ namespace Autofac.Core.Lifetime
                 if (!_sharedInstances.TryGetValue(id, out result))
                 {
                     result = creator();
+                    if (_sharedInstances.ContainsKey(id))
+                        throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture,
+                            LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
                     _sharedInstances.Add(id, result);
                 }
                 return result;
