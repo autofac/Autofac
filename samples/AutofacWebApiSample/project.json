@@ -4,7 +4,7 @@
 
   "dependencies": {
     "Microsoft.AspNet.Mvc": "6.0.0-rc1-*",
-    "Microsoft.AspNet.Server.IIS": "1.0.0-beta8",
+    "Microsoft.AspNet.Server.IIS": "1.0.0-beta7",
     "Microsoft.AspNet.Server.WebListener": "1.0.0-rc1-*",
     "Microsoft.AspNet.StaticFiles": "1.0.0-rc1-*",
     "Autofac": "4.0.0-rc1-*",
@@ -25,7 +25,7 @@
      },
     "dnxcore50": {
       "dependencies": {
-        "System.Reflection.Emit": "4.0.1-beta-*"                
+        "System.Reflection.Emit": "4.0.1-beta-*"
       }
     }
   },
