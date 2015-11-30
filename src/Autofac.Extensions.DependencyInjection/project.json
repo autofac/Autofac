@@ -1,5 +1,5 @@
 ﻿{
-    "version": "4.0.0-rc1-*",
+    "version": "4.0.0-rc2-*",
     "authors": ["Autofac Contributors"],
     "description": "Autofac implementation of the .NET Framework dependency injection abstraction.",
     "projectUrl": "http://autofac.org",
@@ -17,8 +17,8 @@
         "url": "https://github.com/autofac/Autofac"
     },
     "dependencies": {
-        "Autofac": "4.0.0-rc1-*",
-        "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc1-*"
+        "Autofac": "4.0.0-rc2-*",
+        "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc2-*"
     },
     "frameworks": {
         "netcore50": {

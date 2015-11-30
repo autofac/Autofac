@@ -25,7 +25,8 @@
      },
     "dnxcore50": {
       "dependencies": {
-        "System.Reflection.Emit": "4.0.1-beta-*"
+        "System.Reflection.Emit": "4.0.1-beta-*",
+        "System.Runtime": "4.0.21-beta-*"        
       }
     }
   },
