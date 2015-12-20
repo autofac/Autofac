@@ -9,7 +9,7 @@
     "requireLicenseAcceptance": false,
     "tags": [ "Autofac", "DI", "IoC" ],
     "compilationOptions": {
-        "keyFile": "../../Build/SharedKey.snk",
+        "keyFile": "../../Autofac.snk",
         "warningsAsErrors": true
     },
     "compile": ["**/*.cs"],

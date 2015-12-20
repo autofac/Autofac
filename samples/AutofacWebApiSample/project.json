@@ -7,8 +7,8 @@
     "Microsoft.AspNet.IISPlatformHandler": "1.0.0-rc1-*",
     "Microsoft.AspNet.Server.WebListener": "1.0.0-rc1-*",
     "Microsoft.AspNet.StaticFiles": "1.0.0-rc1-*",
-    "Autofac": "4.0.0-rc1-*",
-    "Autofac.Extensions.DependencyInjection": "4.0.0-rc1-*"
+    "Autofac": "4.0.0-rc2-*",
+    "Autofac.Extensions.DependencyInjection": "4.0.0-rc2-*"
   },
 
   "commands": {
@@ -26,7 +26,7 @@
     "dnxcore50": {
       "dependencies": {
         "System.Reflection.Emit": "4.0.1-beta-*",
-        "System.Runtime": "4.0.21-beta-*"        
+        "System.Runtime": "4.0.21-beta-*"
       }
     }
   },

@@ -1,7 +1,7 @@
 ﻿{
 	"version": "1.0.0-*",
     "compilationOptions": {
-        "keyFile": "../../Build/SharedKey.snk"
+        "keyFile": "../../Autofac.snk"
     },
 	"dependencies": {
 		"Autofac": "4.0.0-rc2-*"
