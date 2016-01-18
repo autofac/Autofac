@@ -443,7 +443,7 @@ namespace Autofac
         {
             var attrType = typeof(TAttribute);
             var metadataProperties = attrType
-                .GetTypeInfo().DeclaredProperties
+                .GetTypeInfo().GetAllProperties()
                 .Where(pi => pi.CanRead);
 
             return registration.WithMetadata(t =>
@@ -971,7 +971,7 @@ namespace Autofac
         {
             return ScanningRegistrationExtensions.AsClosedTypesOf(registration, openGenericServiceType);
         }
-        
+
         /// <summary>
         /// Specifies that a type from a scanned assembly is registered if it implements an interface
         /// that closes the provided open generic interface type.
@@ -990,7 +990,7 @@ namespace Autofac
         {
             return ScanningRegistrationExtensions.AsClosedTypesOf(registration, openGenericServiceType, serviceKey);
         }
-        
+
         /// <summary>
         /// Specifies that a type from a scanned assembly is registered if it implements an interface
         /// that closes the provided open generic interface type.

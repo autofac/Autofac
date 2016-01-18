@@ -30,6 +30,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Autofac.Util;
 
 namespace Autofac.Core.Activators.Reflection
 {
@@ -157,7 +158,7 @@ namespace Autofac.Core.Activators.Reflection
                 return;
 
             var actualProps = instance
-                .GetType().GetTypeInfo().DeclaredProperties
+                .GetType().GetTypeInfo().GetAllProperties()
                 .Where(pi => pi.CanWrite)
                 .ToList();
 
