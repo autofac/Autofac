@@ -44,7 +44,7 @@ namespace Autofac.Core.Activators.Reflection
             var instanceType = instance.GetType();
 
             foreach (var property in instanceType
-                .GetTypeInfo().GetAllProperties()
+                .GetRuntimeProperties()
                 .Where(pi => pi.CanWrite))
             {
                 var propertyType = property.PropertyType;

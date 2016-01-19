@@ -443,7 +443,7 @@ namespace Autofac
         {
             var attrType = typeof(TAttribute);
             var metadataProperties = attrType
-                .GetTypeInfo().GetAllProperties()
+                .GetRuntimeProperties()
                 .Where(pi => pi.CanRead);
 
             return registration.WithMetadata(t =>

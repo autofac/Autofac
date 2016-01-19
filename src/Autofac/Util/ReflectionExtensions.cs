@@ -24,9 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -118,43 +116,6 @@ namespace Autofac.Util
                     ReflectionExtensionsResources.ExpressionNotConstructorCall,
                     constructorCallExpression));
             return callExpression.Constructor;
-        }
-
-        /// <summary>
-        /// Gets the complete set of all properties on a type, including
-        /// the properties inherited from base types.
-        /// </summary>
-        /// <param name="typeToQuery">The <see cref="TypeInfo"/> for which properties should be retrieved.</param>
-        /// <returns>
-        /// An <see cref="IEnumerable{T}"/> of the all properties for the type.
-        /// </returns>
-        public static IEnumerable<PropertyInfo> GetAllProperties(this TypeInfo typeToQuery)
-        {
-            // This solves issue #2 for Autofac.Configuration where property
-            // injection wasn't happening on base class properties.
-            //
-            // Not all frameworks have "GetProperties()" on a type so we have
-            // to roll our own.
-            if (typeToQuery == null)
-            {
-                throw new ArgumentNullException("typeToQuery");
-            }
-
-            foreach(var prop in typeToQuery.DeclaredProperties)
-            {
-                // DeclaredProperties only returns the properties
-                // immediately set on a type. It doesn't include
-                // inherited properties.
-                yield return prop;
-            }
-
-            if(typeToQuery.BaseType != null)
-            {
-                foreach (var prop in typeToQuery.BaseType.GetTypeInfo().GetAllProperties())
-                {
-                    yield return prop;
-                }
-            }
         }
     }
 }
