@@ -1298,13 +1298,20 @@ namespace Autofac
             if (registration == null) throw new ArgumentNullException(nameof(registration));
             if (releaseAction == null) throw new ArgumentNullException(nameof(releaseAction));
 
-            return registration
-                .ExternallyOwned()
-                .OnActivating(e =>
-                {
-                    var ra = new ReleaseAction(() => releaseAction(e.Instance));
-                    e.Context.Resolve<ILifetimeScope>().Disposer.AddInstanceForDisposal(ra);
-                });
+            // Issue #677: We can't use the standard .OnActivating() handler
+            // mechanism because it creates a strongly-typed "clone" of the
+            // activating event args. Using a clone means a call to .ReplaceInstance()
+            // on the args during activation gets lost during .OnRelease() even
+            // if you keep a closure over the event args - because a later
+            // .OnActivating() handler may call .ReplaceInstance() and we'll
+            // have closed over the wrong thing.
+            registration.ExternallyOwned();
+            registration.RegistrationData.ActivatingHandlers.Add((s, e) =>
+            {
+                var ra = new ReleaseAction<TLimit>(releaseAction, () => (TLimit)e.Instance);
+                e.Context.Resolve<ILifetimeScope>().Disposer.AddInstanceForDisposal(ra);
+            });
+            return registration;
         }
 
         /// <summary>
