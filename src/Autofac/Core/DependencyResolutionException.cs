@@ -29,32 +29,32 @@ using System.Security;
 
 namespace Autofac.Core
 {
-	/// <summary>
-	/// Base exception type thrown whenever the dependency resolution process fails. This is a fatal
-	/// exception, as Autofac is unable to 'roll back' changes to components that may have already
-	/// been made during the operation. For example, 'on activated' handlers may have already been
-	/// fired, or 'single instance' components partially constructed.
-	/// </summary>
-	public class DependencyResolutionException : Exception
-	{
+    /// <summary>
+    /// Base exception type thrown whenever the dependency resolution process fails. This is a fatal
+    /// exception, as Autofac is unable to 'roll back' changes to components that may have already
+    /// been made during the operation. For example, 'on activated' handlers may have already been
+    /// fired, or 'single instance' components partially constructed.
+    /// </summary>
+    public class DependencyResolutionException : Exception
+    {
         /// <summary>
         /// Initializes a new instance of the <see cref="DependencyResolutionException"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
-		public DependencyResolutionException(string message)
-			: base(message)
-		{
-		}
+        public DependencyResolutionException(string message)
+            : base(message)
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DependencyResolutionException"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="innerException">The inner exception.</param>
-		public DependencyResolutionException(string message, Exception innerException)
-			: base(message, innerException)
-		{
-		}
+        public DependencyResolutionException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
 
         /// <summary>
         /// Gets a message that describes the current exception.
@@ -70,12 +70,13 @@ namespace Autofac.Core
                 // Issue 343: Including the inner exception message with the
                 // main message for easier debugging.
                 var message = base.Message;
-                if (InnerException == null) return message;
+                if (InnerException == null)
+                    return message;
 
                 var inner = InnerException.Message;
                 message = string.Format(CultureInfo.CurrentCulture, DependencyResolutionExceptionResources.MessageNestingFormat, message, inner);
                 return message;
             }
         }
-	}
+    }
 }

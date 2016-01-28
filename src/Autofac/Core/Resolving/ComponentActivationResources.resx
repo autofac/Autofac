@@ -120,4 +120,9 @@
   <data name="ActivationAlreadyExecuted" xml:space="preserve">
     <value>The activation has already been executed.</value>
   </data>
+  <data name="UnableToLocateLifetimeScope" xml:space="preserve">
+    <value>Unable to resolve the type '{0}' because the lifetime scope it belongs in can't be located. The following services are exposed by this registration:
+{1}
+Details</value>
+  </data>
 </root>
