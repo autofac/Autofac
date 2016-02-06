@@ -42,6 +42,7 @@ namespace Autofac.Core.Activators.Reflection
         readonly Type _implementationType;
         readonly IEnumerable<Parameter> _configuredProperties;
         readonly IEnumerable<Parameter> _defaultParameters;
+        readonly ConstructorInfo[] _availableConstructors;
 
         /// <summary>
         /// Create an activator for the provided type.
@@ -71,6 +72,8 @@ namespace Autofac.Core.Activators.Reflection
 
             _defaultParameters = configuredParameters.Concat(
                 new Parameter[] {new AutowiringParameter(), new DefaultValueParameter()});
+
+            _availableConstructors = ConstructorFinder.FindConstructors(_implementationType);
         }
 
         /// <summary>
@@ -98,16 +101,14 @@ namespace Autofac.Core.Activators.Reflection
             if (context == null) throw new ArgumentNullException(nameof(context));
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
-            var availableConstructors = ConstructorFinder.FindConstructors(_implementationType);
-
-            if (availableConstructors.Length == 0)
+            if (_availableConstructors.Length == 0)
                 throw new DependencyResolutionException(string.Format(
                     CultureInfo.CurrentCulture, ReflectionActivatorResources.NoConstructorsAvailable, _implementationType, ConstructorFinder));
 
             var constructorBindings = GetConstructorBindings(
                 context,
                 parameters,
-                availableConstructors);
+                _availableConstructors);
 
             var validBindings = constructorBindings
                 .Where(cb => cb.CanInstantiate)

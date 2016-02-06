@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core;
 using Autofac.Test.Scenarios.Dependencies;
@@ -263,6 +264,25 @@ namespace Autofac.Test.Core.Activators.Reflection
             var typedInstance = (ThreeConstructors)instance;
 
             Assert.Equal(2, typedInstance.CalledConstructorParameterCount);
+        }
+
+        [Fact]
+        public void CanReplaceConstructorFinderForRegistrationInChildLifetimeScope()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(c => 1).As<int>();
+            builder.Register(c => "str").As<string>();
+            builder.RegisterType<ThreeConstructors>();
+            var container = builder.Build();
+            var lifetimeScope = container.BeginLifetimeScope(b =>
+            {
+                b.RegisterType<ThreeConstructors>()
+                    .FindConstructorsWith(type => type.GetConstructors().Where(ci => ci.GetParameters().Length == 1).ToArray());
+            });
+
+            var instance = lifetimeScope.Resolve<ThreeConstructors>();
+
+            Assert.Equal(1, instance.CalledConstructorParameterCount);
         }
 
         public class NoPublicConstructor
