@@ -24,6 +24,8 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Autofac.Util;
@@ -42,7 +44,7 @@ namespace Autofac.Core.Activators.Reflection
             var instanceType = instance.GetType();
 
             foreach (var property in instanceType
-                .GetTypeInfo().DeclaredProperties
+                .GetRuntimeProperties()
                 .Where(pi => pi.CanWrite))
             {
                 var propertyType = property.PropertyType;

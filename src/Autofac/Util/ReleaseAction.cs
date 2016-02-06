@@ -30,21 +30,37 @@ namespace Autofac.Util
     /// <summary>
     /// Adapts an action to the <see cref="IDisposable"/> interface.
     /// </summary>
-    class ReleaseAction : Disposable
+    class ReleaseAction<TLimit> : Disposable
     {
-        readonly Action _action;
+        readonly Action<TLimit> _action;
+        readonly Func<TLimit> _factory;
 
-        public ReleaseAction(Action action)
+        /// <summary>
+        /// Instantiates a new instance of <see cref="ReleaseAction{TLimit}"/>.
+        /// </summary>
+        /// <param name="action">
+        /// The action to execute on disposal.
+        /// </param>
+        /// <param name="factory">
+        /// A factory that retrieves the value on which the <paramref name="action" />
+        /// should be executed.
+        /// </param>
+        public ReleaseAction(Action<TLimit> action, Func<TLimit> factory)
         {
             if (action == null) throw new ArgumentNullException(nameof(action));
+            if (factory == null) throw new ArgumentNullException(nameof(factory));
 
             _action = action;
+            _factory = factory;
         }
 
         protected override void Dispose(bool disposing)
         {
+            // Value retrieval for the disposal is deferred until
+            // disposal runs to ensure any calls to, say, .ReplaceInstance()
+            // during .OnActivating() will be accounted for.
             if (disposing)
-                _action();
+                _action(this._factory());
 
             base.Dispose(disposing);
         }

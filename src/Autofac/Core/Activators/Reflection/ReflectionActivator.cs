@@ -158,7 +158,8 @@ namespace Autofac.Core.Activators.Reflection
                 return;
 
             var actualProps = instance
-                .GetType().GetTypeInfo().DeclaredProperties
+                .GetType()
+                .GetRuntimeProperties()
                 .Where(pi => pi.CanWrite)
                 .ToList();
 

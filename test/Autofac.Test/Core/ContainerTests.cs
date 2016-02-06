@@ -163,7 +163,7 @@ namespace Autofac.Test.Core
             }
         }
 
-        [Fact(Skip = "Issue #677")]
+        [Fact]
         public void ReplaceInstance_ModuleActivatingHandlerProvidesResultToRelease()
         {
             var builder = new ContainerBuilder();

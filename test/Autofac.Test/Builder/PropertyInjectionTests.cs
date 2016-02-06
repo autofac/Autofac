@@ -256,6 +256,34 @@ namespace Autofac.Test.Builder
             Assert.False(instance.GetterCalled);
         }
 
+        public class HasSetterDerived : HasSetterBase
+        {
+        }
+
+        public class HasSetterBase
+        {
+            public string Val { get; set; }
+        }
+
+        [Fact]
+        public void SetterInjectionBaseClassProperty()
+        {
+            // Issue #2 from Autofac.Configuration - Ensure properties in base classes can be set by config.
+            var val = "Value";
+
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(val);
+            builder.RegisterType<HasSetterDerived>().PropertiesAutowired();
+
+            var container = builder.Build();
+
+            var instance = container.Resolve<HasSetterDerived>();
+
+            Assert.NotNull(instance);
+            Assert.Equal(val, instance.Val);
+        }
+
+
         public class Invokee
         {
             public int Param { get; set; }

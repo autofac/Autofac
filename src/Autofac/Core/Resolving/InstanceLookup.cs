@@ -25,6 +25,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 
 namespace Autofac.Core.Resolving
 {
@@ -45,7 +47,23 @@ namespace Autofac.Core.Resolving
             Parameters = parameters;
             ComponentRegistration = registration;
             _context = context;
-            _activationScope = ComponentRegistration.Lifetime.FindScope(mostNestedVisibleScope);
+
+            try
+            {
+                _activationScope = ComponentRegistration.Lifetime.FindScope(mostNestedVisibleScope);
+            }
+            catch(DependencyResolutionException ex)
+            {
+                var services = new StringBuilder();
+                foreach(var s in registration.Services)
+                {
+                    services.Append("- ");
+                    services.AppendLine(s.Description);
+                }
+
+                var message = String.Format(CultureInfo.CurrentCulture, ComponentActivationResources.UnableToLocateLifetimeScope, registration.Activator.LimitType, services);
+                throw new DependencyResolutionException(message, ex);
+            }
         }
 
         public object Execute()

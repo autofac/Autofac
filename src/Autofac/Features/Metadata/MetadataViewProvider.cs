@@ -72,7 +72,7 @@ namespace Autofac.Features.Metadata
                 var resultAssignment = Expression.Assign(resultVar, Expression.New(parameterlessConstructor));
                 var blockExprs = new List<Expression> {resultAssignment};
 
-                foreach (var prop in typeof(TMetadata).GetTypeInfo().DeclaredProperties
+                foreach (var prop in typeof(TMetadata).GetRuntimeProperties()
                     .Where(prop =>
                         prop.GetMethod != null && !prop.GetMethod.IsStatic &&
                         prop.SetMethod != null && !prop.SetMethod.IsStatic))
