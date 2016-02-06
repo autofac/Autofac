@@ -1,13 +1,13 @@
 ﻿{
-    "authors": ["Autofac Contributors"],
-    "compilationOptions": {
-        "keyFile": "../../Autofac.snk"
-    },
-    "compile": ["**\\*.cs"],
-    "resource": ["**\\*.resx", "Files\\*.*"],
-    "commands": {
-        "test": "xunit.runner.dnx"
-    },
+  "authors": [ "Autofac Contributors" ],
+  "compilationOptions": {
+    "keyFile": "../../Autofac.snk"
+  },
+  "compile": [ "**\\*.cs" ],
+  "resource": [ "**\\*.resx", "Files\\*.*" ],
+  "commands": {
+    "test": "xunit.runner.dnx"
+  },
   "dependencies": {
     "Autofac": "4.0.0-rc2-*",
     "Autofac.Test.Scenarios.ScannedAssembly": "1.0.0-*",
@@ -19,10 +19,10 @@
     "dnx451": { },
     "dnxcore50": {
       "dependencies": {
-        "System.Reflection": "4.1.0-beta-*",
-        "System.Reflection.Extensions": "4.0.1-beta-*",
-        "System.Reflection.TypeExtensions": "4.0.1-beta-*",
-        "System.Runtime": "4.0.21-beta-*"
+        "System.Reflection": "4.1.0-rc2-*",
+        "System.Reflection.Extensions": "4.0.1-rc2-*",
+        "System.Reflection.TypeExtensions": "4.1.0-rc2-*",
+        "System.Runtime": "4.0.21-rc2-*"
       }
     }
   }

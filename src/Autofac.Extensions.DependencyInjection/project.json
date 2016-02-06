@@ -1,41 +1,41 @@
 ﻿{
-    "version": "4.0.0-rc2-*",
-    "authors": ["Autofac Contributors"],
-    "description": "Autofac implementation of the .NET Framework dependency injection abstraction.",
-    "projectUrl": "http://autofac.org",
-    "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
-    "iconUrl": "http://code.google.com/p/autofac/logo",
-    "requireLicenseAcceptance": false,
-    "tags": [ "Autofac", "DI", "IoC", "AspNet", "DNX" ],
-    "compilationOptions": {
-        "warningsAsErrors": true
+  "version": "4.0.0-rc2-*",
+  "authors": [ "Autofac Contributors" ],
+  "description": "Autofac implementation of the .NET Framework dependency injection abstraction.",
+  "projectUrl": "http://autofac.org",
+  "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
+  "iconUrl": "http://code.google.com/p/autofac/logo",
+  "requireLicenseAcceptance": false,
+  "tags": [ "Autofac", "DI", "IoC", "AspNet", "DNX" ],
+  "compilationOptions": {
+    "warningsAsErrors": true
+  },
+  "compile": [ "**/*.cs" ],
+  "resource": [ "**/*.resx" ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/autofac/Autofac"
+  },
+  "dependencies": {
+    "Autofac": "4.0.0-rc2-*",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc2-*"
+  },
+  "frameworks": {
+    "netcore50": {
+      "dependencies": {
+        "System.Collections": "4.0.11-rc2-*",
+        "System.Diagnostics.Contracts": "4.0.1-rc2-*",
+        "System.Runtime": "4.0.21-rc2-*",
+        "System.Threading.Tasks": "4.0.11-rc2-*"
+      }
     },
-    "compile": ["**/*.cs"],
-    "resource": ["**/*.resx"],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/autofac/Autofac"
+    "dotnet5.4": {
+      "dependencies": {
+        "System.Collections": "4.0.11-rc2-*",
+        "System.Runtime": "4.0.21-rc2-*",
+        "System.Threading.Tasks": "4.0.11-rc2-*"
+      }
     },
-    "dependencies": {
-        "Autofac": "4.0.0-rc2-*",
-        "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc2-*"
-    },
-    "frameworks": {
-        "netcore50": {
-            "dependencies": {
-                "System.Collections": "4.0.11-beta-*",
-                "System.Diagnostics.Contracts": "4.0.1-beta-*",
-                "System.Runtime": "4.0.21-beta-*",
-                "System.Threading.Tasks": "4.0.11-beta-*"
-            }
-        },
-        "dotnet5.4": {
-            "dependencies": {
-                "System.Collections": "4.0.11-beta-*",
-                "System.Runtime": "4.0.21-beta-*",
-                "System.Threading.Tasks": "4.0.11-beta-*"
-            }
-        },
-        "net451": { }
-    }
+    "net451": { }
+  }
 }
