@@ -24,14 +24,11 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-#if DNX451 || DNXCORE50
 using System.Collections.Concurrent;
-#endif
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
-using Autofac.Util;
 
 namespace Autofac.Core.Activators.Reflection
 {
@@ -42,11 +39,8 @@ namespace Autofac.Core.Activators.Reflection
     {
         readonly ConstructorInfo _ci;
         readonly Func<object>[] _valueRetrievers;
-#if DNX451 || DNXCORE50
-        readonly static ConcurrentDictionary<ConstructorInfo, Func<object[], object>> _constructorInvokers = new ConcurrentDictionary<ConstructorInfo, Func<object[], object>>();
-#else
-        readonly static SafeDictionary<ConstructorInfo, Func<object[], object>> _constructorInvokers = new SafeDictionary<ConstructorInfo, Func<object[], object>>();
-#endif
+
+        static readonly ConcurrentDictionary<ConstructorInfo, Func<object[], object>> ConstructorInvokers = new ConcurrentDictionary<ConstructorInfo, Func<object[], object>>();
 
         // We really need to report all non-bindable parameters, howevers some refactoring
         // will be necessary before this is possible. Adding this now to ease the
@@ -121,10 +115,10 @@ namespace Autofac.Core.Activators.Reflection
                 values[i] = _valueRetrievers[i]();
 
             Func<object[], object> constructorInvoker;
-            if (!_constructorInvokers.TryGetValue(TargetConstructor, out constructorInvoker))
+            if (!ConstructorInvokers.TryGetValue(TargetConstructor, out constructorInvoker))
             {
                 constructorInvoker = GetConstructorInvoker(TargetConstructor);
-                _constructorInvokers[TargetConstructor] = constructorInvoker;
+                ConstructorInvokers[TargetConstructor] = constructorInvoker;
             }
 
             try
