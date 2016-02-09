@@ -75,6 +75,7 @@ namespace Autofac.Features.OpenGenerics
                                 constructedImplementationType,
                                 _activatorData.ConstructorFinder,
                                 _activatorData.ConstructorSelector,
+                                _activatorData.PropertyFinder,
                                 AddDecoratedComponentParameter(swt.ServiceType, cr, _activatorData.ConfiguredParameters),
                                 _activatorData.ConfiguredProperties),
                             services));

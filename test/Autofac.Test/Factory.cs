@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Autofac.Builder;
 using Autofac.Core.Registration;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core;
-using System.Reflection;
 using Autofac.Core.Activators.ProvidedInstance;
 
 namespace Autofac.Test
@@ -74,6 +72,7 @@ namespace Autofac.Test
                 implementation,
                 new DefaultConstructorFinder(),
                 new MostParametersConstructorSelector(),
+                new DefaultPropertyFinder(),
                 parameters,
                 properties);
         }

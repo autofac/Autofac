@@ -4,6 +4,7 @@ using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Xunit;
+using System.Linq;
 
 namespace Autofac.Test.Builder
 {
@@ -269,6 +270,103 @@ namespace Autofac.Test.Builder
             IComponentRegistration cr;
             Assert.True(container.ComponentRegistry.TryGetRegistration(new TypedService(typeof(object)), out cr));
             Assert.Equal(typeof(A1), cr.Activator.LimitType);
+        }
+
+        [Fact]
+        public void DoesNotResolvePropertiesByDefault()
+        {
+            const string str = "test";
+
+            var cb = new ContainerBuilder();
+            cb.RegisterType<WithPropInjection>();
+            cb.RegisterInstance(str);
+
+            var c = cb.Build();
+            var result = c.Resolve<WithPropInjection>();
+
+            Assert.NotNull(result);
+            Assert.Null(result.Prop);
+            Assert.Null(result.GetProp2());
+        }
+
+        [Fact]
+        public void ResolvePropertiesWithDefaultFinder()
+        {
+            const string str = "test";
+
+            var cb = new ContainerBuilder();
+            cb.RegisterType<WithPropInjection>()
+                .FindProperties();
+            cb.RegisterInstance(str);
+
+            var c = cb.Build();
+            var result = c.Resolve<WithPropInjection>() ;
+
+            Assert.NotNull(result);
+            Assert.Equal(str, result.Prop);
+            Assert.Null(result.GetProp2());
+        }
+
+        [Fact]
+        public void ResolvePropertiesWithCustomDelegate()
+        {
+            var finderCalled = false;
+
+            var cb = new ContainerBuilder();
+            cb.RegisterType<WithPropInjection>()
+                .FindPropertiesWith(type =>
+                {
+                    finderCalled = true;
+                    return new PropertyInfo[0];
+                });
+
+            var c = cb.Build();
+            var result = c.Resolve<WithPropInjection>() ;
+
+            Assert.True(finderCalled);
+            Assert.NotNull(result);
+            Assert.Null(result.Prop);
+            Assert.Null(result.GetProp2());
+        }
+
+        [Fact]
+        public void ResolvePropertiesWithCustomImplementation()
+        {
+            const string str = "test";
+
+            var cb = new ContainerBuilder();
+            cb.RegisterType<WithPropInjection>()
+                .FindPropertiesWith(new InjectAttributePropertyFinder());
+            cb.RegisterInstance(str);
+
+            var c = cb.Build();
+            var result = c.Resolve<WithPropInjection>() ;
+
+            Assert.NotNull(result);
+            Assert.Null(result.Prop);
+            Assert.Equal(str, result.GetProp2());
+        }
+
+        private class InjectAttributePropertyFinder : IPropertyFinder
+        {
+            public PropertyInfo[] FindProperties(Type type)
+            {
+                return type.GetTypeInfo().DeclaredProperties
+                    .Where(prop => prop.GetCustomAttributes<InjectAttribute>().Any())
+                    .ToArray();
+            }
+        }
+
+        private class InjectAttribute : Attribute { }
+
+        private class WithPropInjection
+        {
+            public string Prop { get; set; }
+
+            [Inject]
+            private string Prop2 { get; set; }
+
+            public string GetProp2() => Prop2;
         }
     }
 }

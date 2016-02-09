@@ -55,18 +55,21 @@ namespace Autofac.Core.Activators.Reflection
             Type implementationType,
             IConstructorFinder constructorFinder,
             IConstructorSelector constructorSelector,
+            IPropertyFinder propertyFinder,
             IEnumerable<Parameter> configuredParameters,
             IEnumerable<Parameter> configuredProperties)
             : base(implementationType)
         {
             if (constructorFinder == null) throw new ArgumentNullException(nameof(constructorFinder));
             if (constructorSelector == null) throw new ArgumentNullException(nameof(constructorSelector));
+            if (propertyFinder == null) throw new ArgumentNullException(nameof(propertyFinder));
             if (configuredParameters == null) throw new ArgumentNullException(nameof(configuredParameters));
             if (configuredProperties == null) throw new ArgumentNullException(nameof(configuredProperties));
 
             _implementationType = implementationType;
             ConstructorFinder = constructorFinder;
             ConstructorSelector = constructorSelector;
+            PropertyFinder = propertyFinder;
             _configuredProperties = configuredProperties;
 
             _defaultParameters = configuredParameters.Concat(
@@ -82,6 +85,11 @@ namespace Autofac.Core.Activators.Reflection
         /// The constructor selector.
         /// </summary>
         public IConstructorSelector ConstructorSelector { get; }
+
+        /// <summary>
+        /// The property finder
+        /// </summary>
+        public IPropertyFinder PropertyFinder { get; }
 
         /// <summary>
         /// Activate an instance in the provided context.
@@ -153,6 +161,11 @@ namespace Autofac.Core.Activators.Reflection
 
         void InjectProperties(object instance, IComponentContext context, IEnumerable<Parameter> parameters)
         {
+            foreach (var property in PropertyFinder.FindProperties(instance.GetType()))
+            {
+                property.SetValue(instance, context.Resolve(property.PropertyType));
+            }
+
             if (!_configuredProperties.Any() && !parameters.Any())
                 return;
 

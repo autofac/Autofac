@@ -37,6 +37,7 @@ namespace Autofac.Builder
     {
         Type _implementer;
         IConstructorFinder _constructorFinder = new DefaultConstructorFinder();
+        IPropertyFinder _propertyFinder = new DefaultPropertyFinder();
         IConstructorSelector _constructorSelector = new MostParametersConstructorSelector();
 
         /// <summary>
@@ -87,6 +88,19 @@ namespace Autofac.Builder
             {
                 if (value == null) throw new ArgumentNullException(nameof(value));
                 _constructorSelector = value;
+            }
+        }
+
+        /// <summary>
+        /// The property selector for the registration
+        /// </summary>
+        public IPropertyFinder PropertyFinder
+        {
+            get { return _propertyFinder; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                _propertyFinder = value;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Autofac.Core.Activators.Reflection;
 
@@ -16,9 +17,22 @@ namespace Autofac.Test
             return new MockConstructorSelector();
         }
 
+        public static IPropertyFinder GetPropertyFinder()
+        {
+            return new MockPropertyFinder();
+        }
+
         public static Startable GetStartable()
         {
             return new Startable();
+        }
+    }
+
+    class MockPropertyFinder : IPropertyFinder
+    {
+        public PropertyInfo[] FindProperties(Type properties)
+        {
+            return new PropertyInfo[0];
         }
     }
 
