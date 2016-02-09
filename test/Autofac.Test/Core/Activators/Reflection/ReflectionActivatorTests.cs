@@ -18,6 +18,7 @@ namespace Autofac.Test.Core.Activators.Reflection
                 new ReflectionActivator(null,
                     Mocks.GetConstructorFinder(),
                     Mocks.GetConstructorSelector(),
+                    Mocks.GetPropertyFinder(),
                     Factory.NoParameters,
                     Factory.NoProperties);
             });
@@ -31,6 +32,7 @@ namespace Autofac.Test.Core.Activators.Reflection
                 new ReflectionActivator(typeof(object),
                     Mocks.GetConstructorFinder(),
                     Mocks.GetConstructorSelector(),
+                    Mocks.GetPropertyFinder(),
                     null,
                     Factory.NoProperties);
             });
@@ -44,6 +46,7 @@ namespace Autofac.Test.Core.Activators.Reflection
                 new ReflectionActivator(typeof(object),
                     Mocks.GetConstructorFinder(),
                     Mocks.GetConstructorSelector(),
+                    Mocks.GetPropertyFinder(),
                     Factory.NoParameters,
                     null);
             });
@@ -57,6 +60,7 @@ namespace Autofac.Test.Core.Activators.Reflection
                 new ReflectionActivator(typeof(object),
                     null,
                     Mocks.GetConstructorSelector(),
+                    Mocks.GetPropertyFinder(),
                     Factory.NoParameters,
                     Factory.NoProperties);
             });
@@ -70,6 +74,7 @@ namespace Autofac.Test.Core.Activators.Reflection
                 new ReflectionActivator(typeof(object),
                     Mocks.GetConstructorFinder(),
                     null,
+                    Mocks.GetPropertyFinder(),
                     Factory.NoParameters,
                     Factory.NoProperties);
             });
@@ -106,7 +111,7 @@ namespace Autofac.Test.Core.Activators.Reflection
 
             Assert.Same(o, dependent.TheObject);
             Assert.Same(s, dependent.TheString);
-       }
+        }
 
         [Fact]
         public void ActivateInstance_DependenciesNotAvailable_ThrowsException()
@@ -149,7 +154,7 @@ namespace Autofac.Test.Core.Activators.Reflection
             var container = builder.Build();
 
             var parameterInstance = new object();
-            var parameters = new Parameter[]{ new NamedParameter("p", parameterInstance)};
+            var parameters = new Parameter[] { new NamedParameter("p", parameterInstance) };
 
             var target = Factory.CreateReflectionActivator(typeof(AcceptsObjectParameter), parameters);
 
@@ -326,7 +331,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             const int p1 = 1;
             const int p2 = 2;
-            var properties = new [] {
+            var properties = new[] {
                 new NamedPropertyParameter("P1", p1),
                 new NamedPropertyParameter("P2", p2)
             };

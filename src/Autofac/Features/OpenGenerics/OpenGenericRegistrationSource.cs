@@ -70,6 +70,7 @@ namespace Autofac.Features.OpenGenerics
                         constructedImplementationType,
                         _activatorData.ConstructorFinder,
                         _activatorData.ConstructorSelector,
+                        _activatorData.PropertyFinder,
                         _activatorData.ConfiguredParameters,
                         _activatorData.ConfiguredProperties),
                     services);

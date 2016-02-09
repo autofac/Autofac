@@ -50,6 +50,7 @@ namespace Autofac.Builder
             ImplementationType,
             ConstructorFinder,
             ConstructorSelector,
+            PropertyFinder,
             ConfiguredParameters,
             ConfiguredProperties);
     }

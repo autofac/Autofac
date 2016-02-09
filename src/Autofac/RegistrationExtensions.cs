@@ -656,6 +656,76 @@ namespace Autofac
         }
 
         /// <summary>
+        /// Set the policy used to find candidate properties on the implementation type.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to set policy on.</param>
+        /// <param name="propertyFinder">Policy to be used when searching for properties to inject.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+            FindPropertiesWith<TLimit, TReflectionActivatorData, TStyle>(
+                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                IPropertyFinder propertyFinder)
+            where TReflectionActivatorData : ReflectionActivatorData
+        {
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (propertyFinder == null) throw new ArgumentNullException(nameof(propertyFinder));
+
+            registration.ActivatorData.PropertyFinder = propertyFinder;
+            return registration;
+        }
+
+        /// <summary>
+        /// Set the policy used to find properties on the implementation type.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to set policy on.</param>
+        /// <param name="finder">A function that returns the properties to inject.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+            FindPropertiesWith<TLimit, TReflectionActivatorData, TStyle>(
+                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                Func<Type, PropertyInfo[]> finder)
+            where TReflectionActivatorData : ReflectionActivatorData
+        {
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (finder == null) throw new ArgumentNullException(nameof(finder));
+
+            var finderPolicy = new DelegatePropertyFinder(finder);
+
+            return registration.FindPropertiesWith(finderPolicy);
+        }
+
+        /// <summary>
+        /// Set the policy used to find properties on the implementation type as all public properties
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to set policy on.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
+            FindProperties<TLimit, TReflectionActivatorData, TStyle>(
+                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration)
+            where TReflectionActivatorData : ReflectionActivatorData
+        {
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+
+            var finderPolicy = new DelegatePropertyFinder(type =>
+            {
+                return type.GetTypeInfo().DeclaredProperties
+                     .Where(property => property.CanWrite && property.SetMethod.IsPublic)
+                     .ToArray();
+            });
+
+            return registration.FindPropertiesWith(finderPolicy);
+        }
+
+        /// <summary>
         /// Set the policy used to select from available constructors on the implementation type.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
@@ -971,7 +1041,7 @@ namespace Autofac
         {
             return ScanningRegistrationExtensions.AsClosedTypesOf(registration, openGenericServiceType);
         }
-        
+
         /// <summary>
         /// Specifies that a type from a scanned assembly is registered if it implements an interface
         /// that closes the provided open generic interface type.
@@ -990,7 +1060,7 @@ namespace Autofac
         {
             return ScanningRegistrationExtensions.AsClosedTypesOf(registration, openGenericServiceType, serviceKey);
         }
-        
+
         /// <summary>
         /// Specifies that a type from a scanned assembly is registered if it implements an interface
         /// that closes the provided open generic interface type.
