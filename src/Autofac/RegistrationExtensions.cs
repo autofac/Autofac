@@ -657,6 +657,24 @@ namespace Autofac
         }
 
         /// <summary>
+        /// Set the policy used to find candidate properties on the implementation type.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to set policy on.</param>
+        /// <param name="propertySelector">Policy to be used when searching for properties to inject.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TStyle> PropertiesAutowired<TLimit, TActivatorData, TStyle>(
+            this IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration,
+            Func<Type, PropertyInfo, object, bool> propertySelector)
+        {
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+
+            return registration.PropertiesAutowired(new DelegatePropertySelector(propertySelector));
+        }
+
+        /// <summary>
         /// Set the policy used to select from available constructors on the implementation type.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>

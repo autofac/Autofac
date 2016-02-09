@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reflection;
+using Autofac.Core;
 using Xunit;
 
 namespace Autofac.Test.Builder
@@ -442,6 +446,112 @@ namespace Autofac.Test.Builder
             var expected = new ReadOnlyCollection<double?>(new double?[] { null, 0.1, null });
             Assert.Equal(expected, instance.DoubleCollectionInterface);
             Assert.Equal(expected, instance.DoubleCollection);
+        }
+
+        [Fact]
+        public void ResolvePropertiesWithCustomDelegate_ReflectionRegistration()
+        {
+            var propertyInfos = new List<PropertyInfo>();
+
+            var cb = new ContainerBuilder();
+            cb.RegisterType<WithPropInjection>()
+                .PropertiesAutowired((type, propInfo, instance) =>
+                {
+                    propertyInfos.Add(propInfo);
+                    return false;
+                });
+            cb.RegisterInstance("test"); // Must register, otherwise delegate won't be called
+
+            var c = cb.Build();
+            var result = c.Resolve<WithPropInjection>();
+            var expected = typeof(WithPropInjection).GetTypeInfo().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+            Assert.Equal(expected, propertyInfos.ToArray());
+            Assert.NotNull(result);
+            Assert.Null(result.Prop);
+            Assert.Null(result.GetProp2());
+        }
+
+        [Fact]
+        public void ResolvePropertiesWithCustomDelegate_DelegateRegistration()
+        {
+            var propertyInfos = new List<PropertyInfo>();
+
+            var cb = new ContainerBuilder();
+            cb.Register(_ => new WithPropInjection())
+                .PropertiesAutowired((type, propInfo, instance) =>
+                {
+                    propertyInfos.Add(propInfo);
+                    return false;
+                });
+            cb.RegisterInstance("test"); // Must register, otherwise delegate won't be called
+
+            var c = cb.Build();
+            var result = c.Resolve<WithPropInjection>();
+            var expected = typeof(WithPropInjection).GetTypeInfo().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+            Assert.Equal(expected, propertyInfos.ToArray());
+            Assert.NotNull(result);
+            Assert.Null(result.Prop);
+            Assert.Null(result.GetProp2());
+        }
+
+        [Fact]
+        public void ResolvePropertiesWithCustomImplementation_ReflectionRegistration()
+        {
+            const string str = "test";
+
+            var cb = new ContainerBuilder();
+            cb.RegisterType<WithPropInjection>()
+                .PropertiesAutowired(new InjectAttributePropertySelector());
+            cb.RegisterInstance(str);
+
+            var c = cb.Build();
+            var result = c.Resolve<WithPropInjection>();
+
+            Assert.NotNull(result);
+            Assert.Null(result.Prop);
+            Assert.Equal(str, result.GetProp2());
+        }
+
+        [Fact]
+        public void ResolvePropertiesWithCustomImplementation_DelegateRegistration()
+        {
+            const string str = "test";
+
+            var cb = new ContainerBuilder();
+            cb.Register(_ => new WithPropInjection())
+                .PropertiesAutowired(new InjectAttributePropertySelector());
+            cb.RegisterInstance(str);
+
+            var c = cb.Build();
+            var result = c.Resolve<WithPropInjection>();
+
+            Assert.NotNull(result);
+            Assert.Null(result.Prop);
+            Assert.Equal(str, result.GetProp2());
+        }
+
+        private class InjectAttributePropertySelector : IPropertySelector
+        {
+            public bool InjectProperty(Type type, PropertyInfo propertyInfo, object instance)
+            {
+                return propertyInfo.GetCustomAttributes<InjectAttribute>().Any();
+            }
+        }
+
+        private class InjectAttribute : Attribute
+        {
+        }
+
+        private class WithPropInjection
+        {
+            public string Prop { get; set; }
+
+            [Inject]
+            private string Prop2 { get; set; }
+
+            public string GetProp2() => Prop2;
         }
     }
 }
