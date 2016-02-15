@@ -1,5 +1,8 @@
 ﻿{
   "authors": [ "Autofac Contributors" ],
+  "compilationOptions": {
+    "keyFile": "../../Autofac.snk"
+  },
   "compile": [ "**\\*.cs" ],
   "resource": [ "**\\*.resx", "Files\\*.*" ],
   "commands": {

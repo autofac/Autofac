@@ -8,6 +8,7 @@
   "requireLicenseAcceptance": false,
   "tags": [ "Autofac", "DI", "IoC", "AspNet", "DNX" ],
   "compilationOptions": {
+    "keyFile": "../../Autofac.snk",
     "warningsAsErrors": true
   },
   "compile": [ "**/*.cs" ],
