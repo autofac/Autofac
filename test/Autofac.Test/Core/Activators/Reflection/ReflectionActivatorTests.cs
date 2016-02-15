@@ -389,6 +389,18 @@ namespace Autofac.Test.Core.Activators.Reflection
             Assert.Equal(5, instance.P1);
         }
 
+        [Fact]
+        public void PropertyShouldNotBeSetWhenNoResolveParameterOrRegistrationPropertyOrAutowiredSpecified()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<R>();
+            builder.Register(c => 5);
+            var container = builder.Build();
+
+            var instance = container.Resolve<R>();
+            Assert.Equal(0, instance.P1);
+        }
+
         public enum E { A, B }
 
         public class WithE
