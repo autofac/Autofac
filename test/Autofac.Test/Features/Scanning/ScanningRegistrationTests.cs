@@ -438,7 +438,7 @@ namespace Autofac.Test.Features.Scanning
         }
 
         [Fact]
-        public void DefferedEnumerableHelperClassDoesNotGetRegistered()
+        public void DeferredEnumerableHelperClassDoesNotGetRegistered()
         {
             var c = RegisterScenarioAssembly(a => a.AsImplementedInterfaces());
 
