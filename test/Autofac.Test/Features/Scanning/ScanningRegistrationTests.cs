@@ -436,5 +436,15 @@ namespace Autofac.Test.Features.Scanning
             }));
             Assert.True(c.IsRegisteredWithKey<IAService>(k));
         }
+
+        [Fact]
+        public void DeferredEnumerableHelperClassDoesNotGetRegistered()
+        {
+            var c = RegisterScenarioAssembly(a => a.AsImplementedInterfaces());
+
+            var implementations = c.Resolve<IEnumerable<IHaveDeferredEnumerable>>();
+
+            Assert.Equal(1, implementations.Count());
+        }
     }
 }
