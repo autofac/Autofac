@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Autofac.Util
 {
@@ -185,6 +186,13 @@ namespace Autofac.Util
                    || type.IsGenericTypeDefinedBy(typeof(ICollection<>))
                    || (ReadOnlyCollectionType != null && type.IsGenericTypeDefinedBy(ReadOnlyCollectionType))
                    || (ReadOnlyListType != null && type.IsGenericTypeDefinedBy(ReadOnlyListType));
+        }
+
+        public static bool IsCompilerGenerated(this Type type)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
+            return type.GetTypeInfo().GetCustomAttributes<CompilerGeneratedAttribute>().Any();
         }
     }
 }
