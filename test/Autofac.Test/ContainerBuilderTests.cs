@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.Indexed;
@@ -394,6 +395,20 @@ namespace Autofac.Test
             Assert.True(ex.Message.Contains("once"));
         }
 
+        [Fact(Skip = "Issue #722")]
+        public void StartableComponentsObeySingletonUsage()
+        {
+            // Issue #722
+            var builder = new ContainerBuilder();
+            StartableDependency.Count = 0;
+            builder.RegisterType<StartableTakesDependency>().AsImplementedInterfaces();
+            builder.RegisterType<StartableDependency>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<StartableTakesDependency>().AsImplementedInterfaces();
+            builder.RegisterType<StartableDependency>().AsImplementedInterfaces().SingleInstance();
+            builder.Build();
+            Assert.Equal(1, StartableDependency.Count);
+        }
+
         [Fact]
         public void WhenTheContainerIsBuilt_StartableComponentsAreStarted()
         {
@@ -453,6 +468,42 @@ namespace Autofac.Test
             builder.RegisterInstance(startable).As<IStartable>();
             builder.Build(buildOptions);
             return startable.StartCount > 0;
+        }
+
+        private interface IStartableDependency { }
+
+        private class StartableDependency : IStartableDependency
+        {
+            private static int _count = 0;
+
+            public StartableDependency()
+            {
+                _count++;
+            }
+
+            public static int Count
+            {
+                get
+                {
+                    return _count;
+                }
+
+                set
+                {
+                    _count = value;
+                }
+            }
+        }
+
+        private class StartableTakesDependency : IStartable
+        {
+            public StartableTakesDependency(IStartableDependency[] dependencies)
+            {
+            }
+
+            public void Start()
+            {
+            }
         }
     }
 }
