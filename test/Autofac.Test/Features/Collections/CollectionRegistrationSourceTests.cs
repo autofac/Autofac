@@ -57,6 +57,36 @@ namespace Autofac.Test.Features.Collections
         }
 
         [Fact]
+        public void CollectionInNestedLifetimeScope()
+        {
+            // Issue #711
+            // Note #711 was using named collections; this test is not.
+            // Named collections don't have different behavior than the standard
+            // auto-generated behavior from a resolve standpoint since you
+            // can't resolve a specifically named collection.
+            var cb = new ContainerBuilder();
+            cb.RegisterType<Foo1>().As<IFoo>();
+            cb.RegisterType<Foo2>().As<IFoo>();
+            using (var container = cb.Build())
+            {
+                var collection = container.Resolve<IEnumerable<IFoo>>();
+                Assert.Equal(2, collection.Count());
+
+                using (var scope = container.BeginLifetimeScope())
+                {
+                    collection = container.Resolve<IEnumerable<IFoo>>();
+                    Assert.Equal(2, collection.Count());
+                }
+
+                using (var scope = container.BeginLifetimeScope(b => { }))
+                {
+                    collection = container.Resolve<IEnumerable<IFoo>>();
+                    Assert.Equal(2, collection.Count());
+                }
+            }
+        }
+
+        [Fact]
         public void ReflectsChangesInComponentRegistry()
         {
             var cb = new ContainerBuilder();
