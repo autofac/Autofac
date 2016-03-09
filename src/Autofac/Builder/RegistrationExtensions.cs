@@ -182,55 +182,5 @@ namespace Autofac.Builder
             registration.ActivatorData.ParameterMapping = ParameterMapping.ByType;
             return registration;
         }
-
-        /// <summary>
-        /// Registers the type as a collection. If no services or names are specified, the
-        /// default services will be IList&lt;T&gt;, ICollection&lt;T&gt;, and IEnumerable&lt;T&gt;
-        /// </summary>
-        /// <param name="elementType">The type of the collection elements.</param>
-        /// <param name="builder">Container builder.</param>
-        /// <param name="collectionName">A unique name for the collection that can be passed to MemberOf().</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        /// <remarks>Collections are provided automatically in Autofac 2,
-        /// and this method is generally not required.</remarks>
-        public static IRegistrationBuilder<object[], SimpleActivatorData, SingleRegistrationStyle>
-            RegisterCollection(this ContainerBuilder builder, string collectionName, Type elementType)
-        {
-            return CollectionRegistrationExtensions.RegisterCollection<object>(builder, collectionName, elementType);
-        }
-
-        /// <summary>
-        /// Registers the type as a collection. If no services or names are specified, the
-        /// default services will be IList&lt;T&gt;, ICollection&lt;T&gt;, and IEnumerable&lt;T&gt;        
-        /// </summary>
-        /// <typeparam name="T">The type of the collection elements.</typeparam>
-        /// <param name="builder">Container builder.</param>
-        /// <param name="collectionName">A unique name for the collection that can be passed to MemberOf().</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        /// <remarks>Collections are provided automatically in Autofac 2,
-        /// and this method is generally not required.</remarks>
-        public static IRegistrationBuilder<T[], SimpleActivatorData, SingleRegistrationStyle>
-            RegisterCollection<T>(this ContainerBuilder builder, string collectionName)
-        {
-            return CollectionRegistrationExtensions.RegisterCollection<T>(builder, collectionName, typeof(T));
-        }
-
-        /// <summary>
-        /// Include the element explicitly in a collection configured using RegisterCollection.
-        /// </summary>
-        /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
-        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
-        /// <param name="registration">Registration to export.</param>
-        /// <param name="collectionName">The collection name, as passed to RegisterCollection.</param>
-        /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
-            MemberOf<TLimit, TActivatorData, TSingleRegistrationStyle>(
-                this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
-                string collectionName)
-            where TSingleRegistrationStyle : SingleRegistrationStyle
-        {
-            return CollectionRegistrationExtensions.MemberOf(registration, collectionName);
-        }
     }
 }

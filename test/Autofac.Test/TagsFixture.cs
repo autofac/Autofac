@@ -127,33 +127,6 @@ namespace Autofac.Test
         }
 
         [Fact]
-        public void CollectionsAreTaggable()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterCollection<object>("o")
-                .InstancePerMatchingLifetimeScope("tag")
-                .As(typeof(IList<object>));
-
-            var outer = builder.Build();
-            var inner = outer.BeginLifetimeScope("tag");
-
-            var coll = inner.Resolve<IList<object>>();
-            Assert.NotNull(coll);
-
-            var threw = false;
-            try
-            {
-                outer.Resolve<IList<object>>();
-            }
-            catch (Exception)
-            {
-                threw = true;
-            }
-
-            Assert.True(threw);
-        }
-
-        [Fact]
         public void GenericsAreTaggable()
         {
             var builder = new ContainerBuilder();
