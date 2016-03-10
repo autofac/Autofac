@@ -5,7 +5,7 @@
   "summary": "Autofac is an IoC container for Microsoft .NET. It manages the dependencies between classes so that applications stay easy to change as they grow in size and complexity.",
   "projectUrl": "http://autofac.org",
   "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
-  "iconUrl": "http://code.google.com/p/autofac/logo",
+  "iconUrl": "https://cloud.githubusercontent.com/assets/1156571/13684110/16b8f152-e6bf-11e5-84ae-22c66c6d351a.png",
   "requireLicenseAcceptance": false,
   "tags": [ "Autofac", "DI", "IoC" ],
   "compilationOptions": {
