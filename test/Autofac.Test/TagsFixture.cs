@@ -1,5 +1,3 @@
-using System;
-using Autofac.Builder;
 using Autofac.Core.Lifetime;
 using Xunit;
 using Autofac.Core;
@@ -11,9 +9,6 @@ namespace Autofac.Test
     {
         public class HomeController
         {
-            public HomeController()
-            {
-            }
         }
 
         public enum Tag { None, Outer, Middle, Inner }
@@ -127,6 +122,22 @@ namespace Autofac.Test
         }
 
         [Fact]
+        public void CollectionsAreTaggable()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<object>()
+                .InstancePerMatchingLifetimeScope("tag");
+
+            var outer = builder.Build();
+            var inner = outer.BeginLifetimeScope("tag");
+
+            var coll = inner.Resolve<IList<object>>();
+            Assert.Equal(1, coll.Count);
+
+            Assert.Throws<DependencyResolutionException>(() => outer.Resolve<IList<object>>());
+        }
+
+        [Fact]
         public void GenericsAreTaggable()
         {
             var builder = new ContainerBuilder();
@@ -140,17 +151,7 @@ namespace Autofac.Test
             var coll = inner.Resolve<IList<object>>();
             Assert.NotNull(coll);
 
-            var threw = false;
-            try
-            {
-                outer.Resolve<IList<object>>();
-            }
-            catch (Exception)
-            {
-                threw = true;
-            }
-
-            Assert.True(threw);
+            Assert.Throws<DependencyResolutionException>(() => outer.Resolve<IList<object>>());
         }
 
         [Fact]

@@ -42,6 +42,20 @@ namespace Autofac.Test.Features.Collections
         }
 
         [Fact]
+        public void ResolvesCollectionItemsFromCurrentLifetimeScope()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<DisposeTracker>();
+            var container = builder.Build();
+
+            DisposeTracker tracker;
+            using (var ls = container.BeginLifetimeScope())
+                tracker = ls.Resolve<IEnumerable<DisposeTracker>>().First();
+
+            Assert.True(tracker.IsDisposed);
+        }
+
+        [Fact]
         public void CollectionInNestedLifetimeScope()
         {
             // Issue #711
