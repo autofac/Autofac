@@ -31,8 +31,16 @@ function Install-DotNet
 		Write-Host "dotnet not found"
 		$tempDotNetInstallPath = Join-Path $env:TEMP "dotnetinstall"
 		$dotNetSetupCmdPath = Join-Path $tempDotNetInstallPath "install.ps1"
-		(new-object net.webclient).DownloadFile('https://raw.githubusercontent.com/aspnet/KoreBuild/dev/build/dotnet/install.ps1', $dotNetSetupCmdPath)
+		$dotNetDownloadUrl = "https://raw.githubusercontent.com/aspnet/KoreBuild/dev/build/dotnet/install.ps1"
+		(new-object net.webclient).DownloadFile($dotNetDownloadUrl, $dotNetSetupCmdPath)
 		& $dotNetSetupCmdPath -Channel $DotNetChannel -Version $DotNetVersion
+		
+		$dotnetLocalInstallFolderBin = "$env:LOCALAPPDATA\Microsoft\dotnet\cli\bin"		
+		if (!($env:Path.Split(';') -icontains $dotnetLocalInstallFolderBin))
+		{
+			Write-Host "Adding $dotnetLocalInstallFolderBin to PATH"
+			$env:Path = "$dotnetLocalInstallFolderBin;$env:PATH"
+		}
 	}
 }
 
