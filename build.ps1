@@ -6,7 +6,8 @@ function Install-Dnvm
     & where.exe dnvm 2>&1 | Out-Null
     if(($LASTEXITCODE -ne 0) -Or ((Test-Path Env:\APPVEYOR) -eq $true))
     {
-        Write-Host "DNVM not found"
+        Write-Host "DNVM not found. Starting installation."
+		
         &{$Branch='dev';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.ps1'))}
 
         # Normally this happens automatically during install but AppVeyor has
@@ -28,7 +29,7 @@ function Install-DotNet
 	& where.exe dotnet 2>&1 | Out-Null
 	if (($LASTEXITCODE -ne 0) -Or ((Test-Path Env:\APPVEYOR) -eq $true))
 	{
-		Write-Host "dotnet not found"
+		Write-Host ".NET Command Line Tools not found. Starting installation."
 		
 		$tempDotNetInstallPath = Join-Path $env:TEMP "dotnetinstall"
 		New-Item -ItemType Directory -Force -Path $tempDotNetInstallPath
@@ -46,6 +47,8 @@ function Install-DotNet
 			$env:Path = "$dotnetLocalInstallFolderBin;$env:PATH"
 		}
 	}
+	
+	& dotnet --version
 }
 
 function Get-DnxVersion
