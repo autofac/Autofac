@@ -21,6 +21,16 @@ function Install-Dnvm
     }
 }
 
+function Install-DotNet
+{
+	& where.exe dotnet 2>&1 | Out-Null
+	if (($LASTEXITCODE -ne 0) -Or ((Test-Path Env:\APPVEYOR) -eq $true))
+	{
+		Write-Host "dotnet not found"
+		iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/KoreBuild/dev/build/dotnet/install.ps1'))
+	}
+}
+
 function Get-DnxVersion
 {
     $globalJson = join-path $PSScriptRoot "global.json"
@@ -81,6 +91,9 @@ $dnxVersion = Get-DnxVersion
 
 # Clean
 if(Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
+
+# Install dotnet CLI
+Install-DotNet
 
 # Remove the installed DNVM from the path and force use of
 # per-user DNVM (which we can upgrade as needed without admin permissions)
