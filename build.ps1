@@ -23,11 +23,14 @@ function Install-Dnvm
 
 function Install-DotNet
 {
+	param([string] $DotNetChannel, [string] $DotNetVersion)
+	
 	& where.exe dotnet 2>&1 | Out-Null
 	if (($LASTEXITCODE -ne 0) -Or ((Test-Path Env:\APPVEYOR) -eq $true))
 	{
 		Write-Host "dotnet not found"
-		iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/KoreBuild/dev/build/dotnet/install.ps1'))
+		$installArgs = "-Channel $DotNetChannel -Version $DotNetVersion"
+		iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/KoreBuild/dev/build/dotnet/install.ps1')) $installArgs
 	}
 }
 
@@ -93,7 +96,11 @@ $dnxVersion = Get-DnxVersion
 if(Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
 
 # Install dotnet CLI
-Install-DotNet
+$dotnetVersionFile = "cli.version.win"
+$dotnetChannel = "beta"
+$dotnetVersion = Get-Content $dotnetVersionFile
+
+Install-DotNet $dotnetChannel $dotnetVersion
 
 # Remove the installed DNVM from the path and force use of
 # per-user DNVM (which we can upgrade as needed without admin permissions)
