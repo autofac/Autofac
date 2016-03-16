@@ -29,8 +29,10 @@ function Install-DotNet
 	if (($LASTEXITCODE -ne 0) -Or ((Test-Path Env:\APPVEYOR) -eq $true))
 	{
 		Write-Host "dotnet not found"
-		$installArgs = "-Channel $DotNetChannel -Version $DotNetVersion"
-		iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/KoreBuild/dev/build/dotnet/install.ps1')) $installArgs
+		$tempDotNetInstallPath = Join-Path $env:TEMP "dotnetinstall"
+		$dotNetSetupCmdPath = Join-Path $tempDotNetInstallPath "install.ps1"
+		(new-object net.webclient).DownloadFile('https://raw.githubusercontent.com/aspnet/KoreBuild/dev/build/dotnet/install.ps1', $dotNetSetupCmdPath)
+		& $dotNetSetupCmdPath -Channel $DotNetChannel -Version $DotNetVersion
 	}
 }
 
