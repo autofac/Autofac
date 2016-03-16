@@ -29,10 +29,14 @@ function Install-DotNet
 	if (($LASTEXITCODE -ne 0) -Or ((Test-Path Env:\APPVEYOR) -eq $true))
 	{
 		Write-Host "dotnet not found"
+		
 		$tempDotNetInstallPath = Join-Path $env:TEMP "dotnetinstall"
+		New-Item -ItemType Directory -Force -Path $tempDotNetInstallPath
+		
 		$dotNetSetupCmdPath = Join-Path $tempDotNetInstallPath "install.ps1"
 		$dotNetDownloadUrl = "https://raw.githubusercontent.com/aspnet/KoreBuild/dev/build/dotnet/install.ps1"
 		(new-object net.webclient).DownloadFile($dotNetDownloadUrl, $dotNetSetupCmdPath)
+		
 		& $dotNetSetupCmdPath -Channel $DotNetChannel -Version $DotNetVersion
 		
 		$dotnetLocalInstallFolderBin = "$env:LOCALAPPDATA\Microsoft\dotnet\cli\bin"		
