@@ -9,20 +9,20 @@
     "test": "xunit.runner.dnx"
   },
   "dependencies": {
-    "Autofac": "4.0.0-rc2-*",
+    "Autofac": "4.0.0-*",
     "Autofac.Test.Scenarios.ScannedAssembly": "1.0.0-*",
     "xunit": "2.2.0-beta1-*",
     "xunit.runner.dnx": "2.1.0-rc2-*",
     "xunit.runner.reporters": "2.2.0-beta1-*"
   },
   "frameworks": {
-    "dnx451": { },
+    "net451": { },
     "dnxcore50": {
       "dependencies": {
-        "System.Reflection": "4.1.0-rc2-*",
-        "System.Reflection.Extensions": "4.0.1-rc2-*",
-        "System.Reflection.TypeExtensions": "4.1.0-rc2-*",
-        "System.Runtime": "4.0.21-rc2-*"
+        "System.Reflection": "4.1.0-*",
+        "System.Reflection.Extensions": "4.0.1-*",
+        "System.Reflection.TypeExtensions": "4.1.0-*",
+        "System.Runtime": "4.1.0-*"
       }
     }
   }

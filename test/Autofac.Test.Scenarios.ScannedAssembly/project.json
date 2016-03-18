@@ -4,16 +4,16 @@
     "keyFile": "../../Autofac.snk"
   },
   "dependencies": {
-    "Autofac": "4.0.0-rc2-*"
+    "Autofac": "4.0.0-*"
   },
   "frameworks": {
-    "dnx451": { },
+    "net451": { },
     "dnxcore50": {
       "dependencies": {
-        "System.Collections": "4.0.11-rc2-*",
-        "System.Threading.Tasks": "4.0.11-rc2-*",
-        "System.Reflection.Emit": "4.0.1-rc2-*",
-        "System.Reflection.TypeExtensions": "4.1.0-rc2-*"
+        "System.Collections": "4.0.11-*",
+        "System.Threading.Tasks": "4.0.11-*",
+        "System.Reflection.Emit": "4.0.1-*",
+        "System.Reflection.TypeExtensions": "4.1.0-*"
       }
     }
   }

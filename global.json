@@ -1,4 +1,4 @@
 {
   "sdk": { "version": "1.0.0-rc2-16357" },
-  "sources": ["src", "test", "samples"]
+  "projects": ["src", "samples"]
 }
