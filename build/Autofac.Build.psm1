@@ -62,6 +62,28 @@ function Publish-TestProject
 
 <#
 .SYNOPSIS
+    Removes a path entry from the current user and process path.
+.DESCRIPTION
+    Updates the user and process paths as needed to remove a specific path
+    from the overall search path.
+.PARAMETER VariableToRemove
+    The directory/path that should be removed.
+#>
+function Remove-PathVariable
+{
+  [cmdletbinding()]
+  param([string] $VariableToRemove)
+  $path = [Environment]::GetEnvironmentVariable("PATH", "User")
+  $newItems = $path.Split(';') | Where-Object { $_.ToString() -inotlike $VariableToRemove }
+  [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join(';', $newItems), "User")
+  $path = [Environment]::GetEnvironmentVariable("PATH", "Process")
+  $newItems = $path.Split(';') | Where-Object { $_.ToString() -inotlike $VariableToRemove }
+  [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join(';', $newItems), "Process")
+}
+
+
+<#
+.SYNOPSIS
     Installs dotnet cli
 .DESCRIPTION
     Installs dotnet cli. If dotnet installation already exists in the given directory

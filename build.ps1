@@ -12,6 +12,11 @@ if (!(Test-Path $env:DOTNET_INSTALL_DIR))
 
 Install-DotNetCli
 
+# Add the dotnet folder path to the process. This gets skipped
+# by Install-DotNetCli if it's already installed.
+Remove-PathVariable $env:DOTNET_INSTALL_DIR
+$env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
+
 # Set build number
 $env:DOTNET_BUILD_VERSION = @{ $true = $env:APPVEYOR_BUILD_NUMBER; $false = 1}[$env:APPVEYOR_BUILD_NUMBER -ne $NULL];
 Write-Host "Build number:" $env:DOTNET_BUILD_VERSION
