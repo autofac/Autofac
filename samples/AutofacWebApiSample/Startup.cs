@@ -1,8 +1,8 @@
 ﻿using System;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AutofacWebApiSample
@@ -18,6 +18,7 @@ namespace AutofacWebApiSample
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
             // Uncomment the following line to add Web API services which makes it easier to port Web API 2 controllers.
             // You will also need to add the Microsoft.AspNet.Mvc.WebApiCompatShim package to the 'dependencies' section of project.json.
             // services.AddWebApiConventions();

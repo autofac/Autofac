@@ -14,19 +14,28 @@
     "Microsoft.Extensions.DependencyInjection": "1.0.0-*",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-*",
     "Microsoft.Extensions.DependencyInjection.Specification.Tests": "1.0.0-*",
-    "Microsoft.Extensions.OptionsModel": "1.0.0-*",
-    "xunit": "2.2.0-beta1-*",
-    "xunit.runner.dnx": "2.1.0-rc2-*",
-    "xunit.runner.reporters": "2.2.0-beta1-*"
+    "Microsoft.Extensions.OptionsModel": "1.0.0-*"
   },
   "frameworks": {
-    "net451": { },
-    "dnxcore50": {
+    "netstandardapp1.5": {
+      "imports": [
+        "dnxcore50",
+        "portable-net451+win8"
+      ],
       "dependencies": {
-        "System.Reflection.Emit": "4.0.1-*",
-        "System.Reflection.TypeExtensions": "4.1.0-*",
-        "System.Runtime": "4.1.0-*"
+        "NETStandard.Library": "1.5.0-*",
+        "System.Diagnostics.Process": "4.1.0-*",
+        "dotnet-test-xunit": "1.0.0-dev-*"
+      }
+    },
+    "net451": {
+      "frameworkAssemblies": {
+         "System.Runtime": { "type": "build"}
+      },
+      "dependencies": {
+        "xunit.runner.console": "2.1.0"
       }
     }
-  }
+  },
+  "testRunner": "xunit"
 }
