@@ -1,138 +1,30 @@
 ########################
-# FUNCTIONS
-########################
-function Install-Dnvm
-{
-  & where.exe dnvm 2>&1 | Out-Null
-  if(($LASTEXITCODE -ne 0) -Or ((Test-Path Env:\APPVEYOR) -eq $true))
-  {
-    Write-Host "DNVM not found. Starting installation."
-
-    &{$Branch='dev';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.ps1'))}
-
-    # Normally this happens automatically during install but AppVeyor has
-    # an issue where you may need to manually re-run setup from within this process.
-    if($env:DNX_HOME -eq $NULL)
-    {
-      Write-Host "Initial DNVM environment setup failed; running manual setup"
-      $tempDnvmPath = Join-Path $env:TEMP "dnvminstall"
-      $dnvmSetupCmdPath = Join-Path $tempDnvmPath "dnvm.ps1"
-      & $dnvmSetupCmdPath setup
-    }
-  }
-}
-
-function Install-DotNet
-{
-	param([string] $DotNetChannel, [string] $DotNetVersion)
-
-	& where.exe dotnet 2>&1 | Out-Null
-	if (($LASTEXITCODE -ne 0) -Or ((Test-Path Env:\APPVEYOR) -eq $true))
-	{
-		Write-Host ".NET Command Line Tools not found. Starting installation."
-
-		$tempDotNetInstallPath = Join-Path $env:TEMP "dotnetinstall"
-		New-Item -ItemType Directory -Force -Path $tempDotNetInstallPath
-
-		$dotNetSetupCmdPath = Join-Path $tempDotNetInstallPath "install.ps1"
-		$dotNetDownloadUrl = "https://raw.githubusercontent.com/aspnet/KoreBuild/dev/build/dotnet/install.ps1"
-		(new-object net.webclient).DownloadFile($dotNetDownloadUrl, $dotNetSetupCmdPath)
-
-		& $dotNetSetupCmdPath -Channel $DotNetChannel -Version $DotNetVersion
-
-		$dotnetLocalInstallFolderBin = "$env:LOCALAPPDATA\Microsoft\dotnet\cli\bin"
-		if (!($env:Path.Split(';') -icontains $dotnetLocalInstallFolderBin))
-		{
-			Write-Host "Adding $dotnetLocalInstallFolderBin to PATH"
-			$env:Path = "$dotnetLocalInstallFolderBin;$env:PATH"
-		}
-	}
-
-	& dotnet --version
-}
-
-function Get-NetcoreVersion
-{
-  $globalJson = join-path $PSScriptRoot "global.json"
-  $jsonData = Get-Content -Path $globalJson -Raw | ConvertFrom-JSON
-  return $jsonData.sdk.version
-}
-
-function Build-Project
-{
-  param([string] $DirectoryName)
-  & dotnet build ("""" + $DirectoryName + """") -c Release; if($LASTEXITCODE -ne 0) { exit 1 }
-}
-
-function Package-Project
-{
-  param([string] $DirectoryName)
-  & dotnet pack ("""" + $DirectoryName + """") -c Release -o .\artifacts\packages; if($LASTEXITCODE -ne 0) { exit 1 }
-}
-
-function Publish-TestProject
-{
-  param([string] $DirectoryName, [int]$Index)
-
-  # Publish to a numbered/indexed folder rather than the full test project name
-  # because the package paths get long and start exceeding OS limitations.
-  & dotnet publish ("""" + $DirectoryName + """") -c Release -o .\artifacts\tests\$Index; if($LASTEXITCODE -ne 0) { exit 2 }
-}
-
-function Invoke-Tests
-{
-  Get-ChildItem .\artifacts\tests -Filter test.cmd -Recurse | ForEach-Object { & $_.FullName; if($LASTEXITCODE -ne 0) { exit 3 } }
-}
-
-function Remove-PathVariable
-{
-  param([string] $VariableToRemove)
-  $path = [Environment]::GetEnvironmentVariable("PATH", "User")
-  $newItems = $path.Split(';') | Where-Object { $_.ToString() -inotlike $VariableToRemove }
-  [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join(';', $newItems), "User")
-  $path = [Environment]::GetEnvironmentVariable("PATH", "Process")
-  $newItems = $path.Split(';') | Where-Object { $_.ToString() -inotlike $VariableToRemove }
-  [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join(';', $newItems), "Process")
-}
-
-########################
 # THE BUILD!
 ########################
-
 Push-Location $PSScriptRoot
+Import-Module $PSScriptRoot\Build\Autofac.Build.psd1 -Force
 
-$netcoreVersion = Get-NetcoreVersion
+$env:DOTNET_INSTALL_DIR="$(Convert-Path "$PSScriptRoot")\.dotnet\win7-x64"
+if (!(Test-Path $env:DOTNET_INSTALL_DIR))
+{
+  mkdir $env:DOTNET_INSTALL_DIR | Out-Null
+}
+
+Install-DotNetCli
+
+# Set build number
+$env:DOTNET_BUILD_VERSION = @{ $true = $env:APPVEYOR_BUILD_NUMBER; $false = 1}[$env:APPVEYOR_BUILD_NUMBER -ne $NULL];
+Write-Host "Build number:" $env:DOTNET_BUILD_VERSION
 
 # Clean
 if(Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
 
-# Install dotnet CLI
-$dotnetVersionFile = "cli.version.win"
-$dotnetChannel = "beta"
-$dotnetVersion = Get-Content $dotnetVersionFile
-
-Install-DotNet $dotnetChannel $dotnetVersion
-
-# Remove the installed DNVM from the path and force use of
-# per-user DNVM (which we can upgrade as needed without admin permissions)
-Remove-PathVariable "*Program Files\Microsoft DNX\DNVM*"
-Install-Dnvm
-
-# Install DNX
-dnvm install $netcoreVersion -r CoreCLR -NoNative -Unstable
-dnvm install $netcoreVersion -r CLR -NoNative -Unstable
-dnvm use $netcoreVersion -r CLR
-
 # Package restore
-& dotnet restore
-
-# Set build number
-$env:DNX_BUILD_VERSION = @{ $true = $env:APPVEYOR_BUILD_NUMBER; $false = 1}[$env:APPVEYOR_BUILD_NUMBER -ne $NULL];
-Write-Host "Build number:" $env:DNX_BUILD_VERSION
+& dotnet restore --infer-runtimes
 
 # Build/package
-Get-ChildItem -Path .\src -Filter *.xproj -Recurse | ForEach-Object { Package-Project $_.DirectoryName }
-Get-ChildItem -Path .\samples -Filter *.xproj -Recurse | ForEach-Object { Build-Project $_.DirectoryName }
+Get-ChildItem -Path .\src -Filter *.xproj -Recurse | ForEach-Object { Invoke-DotNetPack $_.DirectoryName }
+Get-ChildItem -Path .\samples -Filter *.xproj -Recurse | ForEach-Object { Invoke-DotNetBuild $_.DirectoryName }
 
 # Publish tests so we can test without recompiling
 Get-ChildItem -Path .\test -Filter *.xproj -Exclude Autofac.Test.Scenarios.ScannedAssembly.xproj -Recurse | ForEach-Object -Begin { $TestIndex = 0 } -Process { Publish-TestProject -DirectoryName $_.DirectoryName -Index $TestIndex; $TestIndex++; }
@@ -141,9 +33,9 @@ Get-ChildItem -Path .\test -Filter *.xproj -Exclude Autofac.Test.Scenarios.Scann
 Invoke-Tests
 
 # Switch to Core CLR
-dnvm use $netcoreVersion -r CoreCLR
+#dnvm use $netcoreVersion -r CoreCLR
 
 # Test under Core CLR
-Invoke-Tests
+#Invoke-Tests
 
 Pop-Location
