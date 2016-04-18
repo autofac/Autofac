@@ -8,12 +8,17 @@
   },
   "frameworks": {
     "net451": { },
-    "dnxcore50": {
+    "netcoreapp1.0": {
+      "imports": [
+        "dnxcore50",
+        "portable-net451+win8"
+      ],
       "dependencies": {
-        "System.Collections": "4.0.11-*",
-        "System.Threading.Tasks": "4.0.11-*",
-        "System.Reflection.Emit": "4.0.1-*",
-        "System.Reflection.TypeExtensions": "4.1.0-*"
+        "Microsoft.NETCore.App": {
+          "version": "1.0.0-*",
+          "type": "platform"
+        },
+        "dotnet-test-xunit": "1.0.0-dev-*"
       }
     }
   }

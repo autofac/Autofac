@@ -21,7 +21,7 @@ function Invoke-DotNetBuild
 #>
 function Invoke-Tests
 {
-  Get-ChildItem .\artifacts\tests -Filter test.cmd -Recurse | ForEach-Object { & $_.FullName; if($LASTEXITCODE -ne 0) { exit 3 } }
+  Get-ChildItem -Path .\test -Filter *.xproj -Recurse | ForEach-Object { & dotnet test $_.DirectoryName; if($LASTEXITCODE -ne 0) { exit 3 } }
 }
 
 <#

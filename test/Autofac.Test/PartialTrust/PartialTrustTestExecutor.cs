@@ -1,4 +1,4 @@
-﻿#if !DNXCORE50 && !DNX451
+﻿#if !NETCOREAPP1_0 && !NET451
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -32,7 +32,7 @@ namespace Autofac.Test.PartialTrust
         }
 
         [Theory]
-        [PropertyData("ExecutePartialTrustTestsSource")]
+        [MemberData("ExecutePartialTrustTestsSource")]
         public void ExecutePartialTrustTests(MethodInfo testMethod)
         {
             var fixture = CreateRemoteFixture();

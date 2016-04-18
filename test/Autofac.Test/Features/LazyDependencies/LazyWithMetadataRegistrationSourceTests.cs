@@ -1,4 +1,4 @@
-﻿#if !DNX451
+﻿#if !NET451
 ﻿using System;
 ﻿using Autofac.Core;
 ﻿using Autofac.Test.Features.Metadata;
