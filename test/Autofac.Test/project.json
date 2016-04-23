@@ -5,23 +5,14 @@
   },
   "compile": [ "**\\*.cs" ],
   "resource": [ "**\\*.resx", "Files\\*.*" ],
+  "testRunner": "xunit",
   "dependencies": {
     "Autofac": "4.0.0-*",
     "Autofac.Test.Scenarios.ScannedAssembly": "1.0.0-*",
     "xunit": "2.1.0"
   },
-  "testRunner": "xunit",
+
   "frameworks": {
-    "net451": {
-      "dependencies": {
-        "xunit.runner.console": "2.1.0"    
-      },
-      "frameworkAssemblies": {
-        "System.ComponentModel.Composition": "",
-        "System.Data": "",
-        "System.Threading.Tasks": ""
-      }
-    },
     "netcoreapp1.0": {
       "imports": [
         "dnxcore50",
@@ -33,6 +24,16 @@
           "type": "platform"
         },
         "dotnet-test-xunit": "1.0.0-rc2-*"
+      }
+    },
+    "net451": {
+      "frameworkAssemblies": {
+        "System.ComponentModel.Composition": "",
+        "System.Data": "",
+        "System.Threading.Tasks": ""
+      },
+      "dependencies": {
+        "xunit.runner.console": "2.1.0"
       }
     }
   }

@@ -39,11 +39,8 @@ if(Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
 Get-ChildItem -Path .\src -Filter *.xproj -Recurse | ForEach-Object { Invoke-DotNetPack $_.DirectoryName }
 Get-ChildItem -Path .\samples -Filter *.xproj -Recurse | ForEach-Object { Invoke-DotNetBuild $_.DirectoryName }
 
-# Publish tests so we can test without recompiling
-Get-ChildItem -Path .\test -Filter *.xproj -Exclude Autofac.Test.Scenarios.ScannedAssembly.xproj -Recurse | ForEach-Object -Begin { $TestIndex = 0 } -Process { Publish-TestProject -DirectoryName $_.DirectoryName -Index $TestIndex; $TestIndex++; }
-
 # Test under CLR
-Invoke-Tests
+Get-ChildItem -Path .\test -Filter *.xproj -Exclude Autofac.Test.Scenarios.ScannedAssembly.xproj -Recurse | ForEach-Object { Invoke-Tests $_.DirectoryName }
 
 # Switch to Core CLR
 #dnvm use $netcoreVersion -r CoreCLR
