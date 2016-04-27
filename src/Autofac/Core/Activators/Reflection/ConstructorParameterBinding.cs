@@ -164,7 +164,9 @@ namespace Autofac.Core.Activators.Reflection
                 var parameterType = paramsInfo[paramIndex].ParameterType;
 
                 var parameterIndexExpression = Expression.ArrayIndex(parametersExpression, indexExpression);
-                var convertExpression = Expression.Convert(parameterIndexExpression, parameterType);
+                var convertExpression = parameterType.GetTypeInfo().IsPrimitive
+                    ? Expression.Convert(ConvertPrimitiveType(parameterIndexExpression, parameterType), parameterType)
+                    : Expression.Convert(parameterIndexExpression, parameterType);
                 argumentsExpression[paramIndex] = convertExpression;
 
                 if (!parameterType.GetTypeInfo().IsValueType) continue;
@@ -179,6 +181,12 @@ namespace Autofac.Core.Activators.Reflection
             var lambdaExpression = Expression.Lambda<Func<object[], object>>(newExpression, parametersExpression);
 
             return lambdaExpression.Compile();
+        }
+        
+        public static MethodCallExpression ConvertPrimitiveType(Expression valueExpression, Type conversionType)
+        {
+            var changeTypeMethod = typeof(Convert).GetRuntimeMethod(nameof(Convert.ChangeType), new[] {typeof(object), typeof(Type)});
+            return Expression.Call(changeTypeMethod, valueExpression, Expression.Constant(conversionType));
         }
     }
 }
