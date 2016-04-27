@@ -29,6 +29,22 @@ namespace Autofac.Test.Core.Activators.Reflection
             }
         }
 
+        public enum Foo
+        {
+            A,
+            B
+        }
+
+        public class CtorWithInt
+        {
+            public int Value { get; }
+
+            public CtorWithInt(int value)
+            {
+                Value = value;
+            }
+        }
+
         [Fact]
         public void WhenAnExceptionIsThrownFromAConstructor_TheInnerExceptionIsWrapped()
         {
@@ -51,6 +67,17 @@ namespace Autofac.Test.Core.Activators.Reflection
             var instance = (CtorWithDoubleParam)cpb.Instantiate();
             
             Assert.Equal(1d, instance.Value);
+        }
+
+        [Fact]
+        public void WhenEnumTypeIsProvidedForIntParameterConversionWillBeAttempted()
+        {
+            var ci = typeof(CtorWithInt).GetTypeInfo().DeclaredConstructors.Single();
+            var cpb = new ConstructorParameterBinding(
+                ci, new[] { new PositionalParameter(0, Foo.B), }, new ContainerBuilder().Build());
+            var instance = (CtorWithInt)cpb.Instantiate();
+
+            Assert.Equal(1, instance.Value);
         }
     }
 }
