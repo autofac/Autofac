@@ -1,6 +1,6 @@
 # Autofac
 
-Autofac is an [IoC container](http://martinfowler.com/articles/injection.html) for Microsoft .NET. It manages the dependencies between classes so that **applications stay easy to change as they grow** in size and complexity. This is achieved by treating regular .NET classes as *[components](http://autofac.readthedocs.org/en/latest/glossary.html)*.
+Autofac is an [IoC container](http://martinfowler.com/articles/injection.html) for Microsoft .NET. It manages the dependencies between classes so that **applications stay easy to change as they grow** in size and complexity. This is achieved by treating regular .NET classes as *[components](http://autofac.readthedocs.io/en/latest/glossary.html)*.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/s0vgb4m8tv9ar7we?svg=true)](https://ci.appveyor.com/project/Autofac/autofac)
 
@@ -16,15 +16,15 @@ If you're feeling adventurous, [continuous integration builds are on MyGet](http
 
 ## Get Help
 
-**Need help with Autofac?** We have [a documentation site](http://autofac.readthedocs.org/) as well as [API documentation](http://autofac.org/apidoc/). We're ready to answer your questions on [Stack Overflow](http://stackoverflow.com/questions/tagged/autofac) or check out the [discussion forum](https://groups.google.com/forum/#forum/autofac).
+**Need help with Autofac?** We have [a documentation site](http://autofac.readthedocs.io/) as well as [API documentation](http://autofac.org/apidoc/). We're ready to answer your questions on [Stack Overflow](http://stackoverflow.com/questions/tagged/autofac) or check out the [discussion forum](https://groups.google.com/forum/#forum/autofac).
 
 ## Get Started
 
-Our [Getting Started](http://autofac.readthedocs.org/en/latest/getting-started/index.html) tutorial walks you through integrating Autofac with a simple application and gives you some starting points for learning more.
+Our [Getting Started](http://autofac.readthedocs.io/en/latest/getting-started/index.html) tutorial walks you through integrating Autofac with a simple application and gives you some starting points for learning more.
 
 Super-duper quick start:
 
-[Register components with a `ContainerBuilder`](http://autofac.readthedocs.org/en/latest/register/registration.html) and then build the component container.
+[Register components with a `ContainerBuilder`](http://autofac.readthedocs.io/en/latest/register/registration.html) and then build the component container.
 
 ```C#
 var builder = new ContainerBuilder();
@@ -37,19 +37,19 @@ builder.RegisterAssemblyTypes(controllerAssembly);
 var container = builder.Build();
 ```
 
-[Resolve services from a lifetime scope](http://autofac.readthedocs.org/en/latest/resolve/index.html) - either the container or a nested scope:
+[Resolve services from a lifetime scope](http://autofac.readthedocs.io/en/latest/resolve/index.html) - either the container or a nested scope:
 
 ```C#
 var taskController = container.Resolve<TaskController>();
 ```
 
-There is a growing number of [application integration libraries](http://autofac.readthedocs.org/en/latest/integration/index.html) that make using Autofac with your application a snap. Support for several popular frameworks is also available through the "Extras" packages.
+There is a growing number of [application integration libraries](http://autofac.readthedocs.io/en/latest/integration/index.html) that make using Autofac with your application a snap. Support for several popular frameworks is also available through the "Extras" packages.
 
-**[Intrigued? Check out our Getting Started walkthrough!](http://autofac.readthedocs.org/en/latest/getting-started/index.html)**
+**[Intrigued? Check out our Getting Started walkthrough!](http://autofac.readthedocs.io/en/latest/getting-started/index.html)**
 
 ## Project
 
-Autofac is licensed under the MIT license, so you can comfortably use it in commercial applications (we still love [contributions](http://autofac.readthedocs.org/en/latest/contributors.html) though).
+Autofac is licensed under the MIT license, so you can comfortably use it in commercial applications (we still love [contributions](http://autofac.readthedocs.io/en/latest/contributors.html) though).
 
 **File issues in the repo with the associated feature/code.**
 
@@ -79,6 +79,6 @@ Autofac is licensed under the MIT license, so you can comfortably use it in comm
 ## Contributing / Pull Requests
 
 Refer to the [Readme for Autofac Developers](https://github.com/autofac/Autofac/blob/master/developers.md)
-for setting up and building Autofac source. We also have a [contributors guide](http://autofac.readthedocs.org/en/latest/contributors.html) to help you get started.
+for setting up and building Autofac source. We also have a [contributors guide](http://autofac.readthedocs.io/en/latest/contributors.html) to help you get started.
 
 
