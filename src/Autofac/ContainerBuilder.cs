@@ -167,7 +167,7 @@ namespace Autofac
             // Issue #462: The ContainerBuildOptions parameter is added here as an overload
             // rather than an optional parameter to avoid method binding issues. In version
             // 4.0 or later we should refactor this to be an optional parameter.
-            if (container == null) throw new ArgumentNullException("container");
+            if (container == null) throw new ArgumentNullException(nameof(container));
             Update(container.ComponentRegistry);
             if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
                 StartStartableComponents(container);
@@ -184,13 +184,13 @@ namespace Autofac
         /// <param name="componentRegistry">An existing registry to make the registrations in.</param>
         public void Update(IComponentRegistry componentRegistry)
         {
-            if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
+            if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
             Build(componentRegistry, true);
         }
 
         void Build(IComponentRegistry componentRegistry, bool excludeDefaultModules)
         {
-            if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
+            if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
 
             if (_wasBuilt)
                 throw new InvalidOperationException(ContainerBuilderResources.BuildCanOnlyBeCalledOnce);
