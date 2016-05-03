@@ -1,17 +1,20 @@
 ﻿{
-  "authors": [ "Autofac Contributors" ],
-  "compilationOptions": {
-    "keyFile": "../../Autofac.snk"
+  "packOptions": {
+    "authors": [ "Autofac Contributors" ]
   },
-  "compile": [ "**\\*.cs" ],
-  "resource": [ "**\\*.resx", "Files\\*.*" ],
+  "buildOptions": {
+    "keyFile": "../../Autofac.snk",
+    "embed": {
+      "include": ["**/*.resx"],
+      "includFiles": ["Files/*.*"]
+    }
+  },
   "testRunner": "xunit",
   "dependencies": {
     "Autofac": "4.0.0-*",
     "Autofac.Test.Scenarios.ScannedAssembly": "1.0.0-*",
     "xunit": "2.1.0"
   },
-
   "frameworks": {
     "netcoreapp1.0": {
       "imports": [

@@ -1,6 +1,23 @@
 ﻿{
-  "webroot": "wwwroot",
   "version": "1.0.0-*",
+  "buildOptions": {
+    "compile": {
+      "exclude": [
+        "wwwroot",
+        "node_modules",
+        "bower_components"
+      ]
+    }
+  },
+  "publishOptions": {
+    "exclude": [
+      "node_modules",
+      "bower_components",
+      "**.xproj",
+      "**.user",
+      "**.vspscc"
+    ]
+  },
   "dependencies": {
     "Microsoft.AspNetCore.Mvc": "1.0.0-*",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0-*",
@@ -22,16 +39,5 @@
       "imports": "dnxcore50"
     }
   },
-  "exclude": [
-    "wwwroot",
-    "node_modules",
-    "bower_components"
-  ],
-  "publishExclude": [
-    "node_modules",
-    "bower_components",
-    "**.xproj",
-    "**.user",
-    "**.vspscc"
-  ]
+  "webroot": "wwwroot"
 }

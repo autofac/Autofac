@@ -39,13 +39,7 @@ if(Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
 Get-ChildItem -Path .\src -Filter *.xproj -Recurse | ForEach-Object { Invoke-DotNetPack $_.DirectoryName }
 Get-ChildItem -Path .\samples -Filter *.xproj -Recurse | ForEach-Object { Invoke-DotNetBuild $_.DirectoryName }
 
-# Test under CLR
+# Test
 Get-ChildItem -Path .\test -Filter *.xproj -Exclude Autofac.Test.Scenarios.ScannedAssembly.xproj -Recurse | ForEach-Object { Invoke-Tests $_.DirectoryName }
-
-# Switch to Core CLR
-#dnvm use $netcoreVersion -r CoreCLR
-
-# Test under Core CLR
-#Invoke-Tests
 
 Pop-Location
