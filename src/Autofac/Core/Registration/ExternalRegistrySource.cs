@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac.Builder;
 
@@ -35,6 +36,7 @@ namespace Autofac.Core.Registration
     /// Excludes most auto-generated registrations - currently has issues with
     /// collection registrations.
     /// </summary>
+    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the component registry is responsible for disposal.")]
     class ExternalRegistrySource : IRegistrationSource
     {
         readonly IComponentRegistry _registry;

@@ -11,7 +11,7 @@
   },
   "testRunner": "xunit",
   "dependencies": {
-    "Autofac": "4.0.0-*",
+    "Autofac": "4.0.0-rc2-*",
     "Autofac.Test.Scenarios.ScannedAssembly": "1.0.0-*",
     "xunit": "2.1.0"
   },

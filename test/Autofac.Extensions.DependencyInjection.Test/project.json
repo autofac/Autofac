@@ -11,12 +11,12 @@
   },
   "testRunner": "xunit",
   "dependencies": {
-    "Autofac": "4.0.0-*",
-    "Autofac.Extensions.DependencyInjection": "4.0.0-*",
-    "Microsoft.Extensions.DependencyInjection": "1.0.0-*",
-    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-*",
-    "Microsoft.Extensions.DependencyInjection.Specification.Tests": "1.0.0-*",
-    "Microsoft.Extensions.OptionsModel": "1.0.0-*",
+    "Autofac": "4.0.0-rc2-*",
+    "Autofac.Extensions.DependencyInjection": "4.0.0-rc2-*",
+    "Microsoft.Extensions.DependencyInjection": "1.0.0-rc2-*",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc2-*",
+    "Microsoft.Extensions.DependencyInjection.Specification.Tests": "1.0.0-rc2-*",
+    "Microsoft.Extensions.OptionsModel": "1.0.0-rc2-*",
     "xunit": "2.1.0"
   },
   "frameworks": {
@@ -30,7 +30,7 @@
           "version": "1.0.0-rc2-*",
           "type": "platform"
         },
-        "System.Diagnostics.Process": "4.1.0-*",
+        "System.Diagnostics.Process": "4.1.0-rc2-*",
         "dotnet-test-xunit": "1.0.0-rc2-*"
       }
     },

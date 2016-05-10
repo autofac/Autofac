@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using Autofac.Core.Registration;
@@ -38,6 +39,7 @@ namespace Autofac.Core.Lifetime
     /// Lifetime scope implementation.
     /// </summary>
     [DebuggerDisplay("Tag = {Tag}, IsDisposed = {IsDisposed}")]
+    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the parent lifetime scope is responsible for disposal.")]
     public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     {
         /// <summary>
@@ -313,10 +315,10 @@ namespace Autofac.Core.Lifetime
         /// <summary>
         /// Gets the service object of the specified type.
         /// </summary>
-        /// <param name="serviceType">An object that specifies the type of service object 
+        /// <param name="serviceType">An object that specifies the type of service object
         /// to get.</param>
         /// <returns>
-        /// A service object of type <paramref name="serviceType"/>.-or- null if there is 
+        /// A service object of type <paramref name="serviceType"/>.-or- null if there is
         /// no service object of type <paramref name="serviceType"/>.
         /// </returns>
         public object GetService(Type serviceType)

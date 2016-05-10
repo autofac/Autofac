@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Autofac.Core;
 using Autofac.Util;
@@ -85,6 +86,7 @@ namespace Autofac.Features.OwnedInstances
     /// In general, rather than depending on <see cref="Owned{T}"/> directly, components will depend on
     /// System.Func&lt;Owned&lt;T&gt;&gt; in order to create and dispose of other components as required.
     /// </example>
+    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "False positive - the lifetime does get disposed.")]
     public class Owned<T> : Disposable
     {
         IDisposable _lifetime;

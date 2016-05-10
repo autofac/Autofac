@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using Autofac.Util;
@@ -34,6 +35,7 @@ namespace Autofac.Core.Registration
     /// <summary>
     /// Describes a logical component within the container.
     /// </summary>
+    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The target registration, if provided, is disposed elsewhere.")]
     public class ComponentRegistration : Disposable, IComponentRegistration
     {
         readonly IComponentRegistration _target;

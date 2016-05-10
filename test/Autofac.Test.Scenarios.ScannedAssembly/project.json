@@ -4,7 +4,7 @@
     "keyFile": "../../Autofac.snk"
   },
   "dependencies": {
-    "Autofac": "4.0.0-*"
+    "Autofac": "4.0.0-rc2-*"
   },
   "frameworks": {
     "net451": { },
@@ -15,10 +15,10 @@
       ],
       "dependencies": {
         "Microsoft.NETCore.App": {
-          "version": "1.0.0-*",
+          "version": "1.0.0-rc2-*",
           "type": "platform"
         },
-        "dotnet-test-xunit": "1.0.0-dev-*"
+        "dotnet-test-xunit": "1.0.0-rc2-*"
       }
     }
   }

@@ -15,6 +15,7 @@
     }
   },
   "buildOptions": {
+    "additionalArguments": ["/ruleset:../../build/Analyzers.ruleset"],
     "keyFile": "../../Autofac.snk",
     "nowarn": [
       "CS1591"
@@ -23,16 +24,17 @@
     "xmlDoc": true
   },
   "dependencies": {
-    "Autofac": "4.0.0-*",
-    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-*"
+    "Autofac": "4.0.0-rc2-*",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc2-*",
+    "System.Runtime.Analyzers": { "version": "1.1.0", "type": "build" }
   },
   "frameworks": {
     "netstandard1.1": {
       "dependencies": {
-        "System.Collections": "4.0.11-*",
-        "System.Diagnostics.Contracts": "4.0.1-*",
-        "System.Runtime": "4.1.0-*",
-        "System.Threading.Tasks": "4.0.11-*"
+        "System.Collections": "4.0.11-rc2-*",
+        "System.Diagnostics.Contracts": "4.0.1-rc2-*",
+        "System.Runtime": "4.1.0-rc2-*",
+        "System.Threading.Tasks": "4.0.11-rc2-*"
       },
       "imports": [
         "dotnet5.2"

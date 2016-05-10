@@ -25,12 +25,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 
 namespace Autofac.Core.Resolving
 {
     // Is a component context that pins resolution to a point in the context hierarchy
+    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The instance lookup activation scope gets disposed of by the creator of the scope.")]
     class InstanceLookup : IComponentContext, IInstanceLookup
     {
         readonly IResolveOperation _context;
