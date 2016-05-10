@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Autofac Analyzer Rules" Description="Analyzer rules for Autofac assemblies." ToolsVersion="14.0">
+  <!-- https://github.com/dotnet/roslyn/blob/master/docs/compilers/Rule%20Set%20Format.md -->
+  <!-- Include Path=".\Roslyn.ruleset" Action="Default" / -->
+  <IncludeAll Action="Warning" />
+  <Rules AnalyzerId="Microsoft.ApiDesignGuidelines.Analyzers" RuleNamespace="Microsoft.ApiDesignGuidelines.Analyzers">
+    <!-- Rule Id="CA1018" Action="None" / -->
+  </Rules>
+</RuleSet>
