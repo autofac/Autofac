@@ -29,7 +29,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Autofac.Extensions.DependencyInjection
 {
     [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the root service lifetime scope is responsible for disposal.")]
-    class AutofacServiceScopeFactory : IServiceScopeFactory
+    internal class AutofacServiceScopeFactory : IServiceScopeFactory
     {
         private readonly ILifetimeScope _lifetimeScope;
 

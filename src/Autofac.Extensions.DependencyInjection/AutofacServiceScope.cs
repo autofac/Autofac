@@ -28,7 +28,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Autofac.Extensions.DependencyInjection
 {
-    class AutofacServiceScope : IServiceScope
+    internal class AutofacServiceScope : IServiceScope
     {
         private readonly ILifetimeScope _lifetimeScope;
 

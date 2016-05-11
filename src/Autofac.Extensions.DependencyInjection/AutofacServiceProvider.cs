@@ -28,7 +28,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Autofac.Extensions.DependencyInjection
 {
-    class AutofacServiceProvider : IServiceProvider, ISupportRequiredService
+    internal class AutofacServiceProvider : IServiceProvider, ISupportRequiredService
     {
         private readonly IComponentContext _componentContext;
 
