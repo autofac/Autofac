@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
@@ -32,6 +33,7 @@ namespace Autofac.Core.Registration
     /// <summary>
     /// Wraps a component registration, switching its lifetime.
     /// </summary>
+    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the inner registration is responsible for disposal.")]
     class ComponentRegistrationLifetimeDecorator : Disposable, IComponentRegistration
     {
         readonly IComponentRegistration _inner;

@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac.Core.Registration;
 
 namespace Autofac.Core.Resolving
@@ -33,6 +34,7 @@ namespace Autofac.Core.Resolving
     /// A <see cref="ResolveOperation"/> is a component context that sequences and monitors the multiple
     /// activations that go into producing a single requested object graph.
     /// </summary>
+    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the most nested lifetime scope is responsible for disposal.")]
     class ResolveOperation : IComponentContext, IResolveOperation
     {
         readonly Stack<InstanceLookup> _activationStack = new Stack<InstanceLookup>();

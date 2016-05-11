@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Autofac.Core.Registration
 {
@@ -35,6 +36,7 @@ namespace Autofac.Core.Registration
     /// <remarks>
     /// Safe for concurrent access by multiple readers. Write operations are single-threaded.
     /// </remarks>
+    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The owner of the createWriteRegistry function is responsible for subsequent disposal of the registry created.")]
     class CopyOnWriteRegistry : IComponentRegistry
     {
         readonly IComponentRegistry _readRegistry;

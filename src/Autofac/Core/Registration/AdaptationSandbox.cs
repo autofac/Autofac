@@ -24,11 +24,13 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
 {
+    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the component registration is responsible for disposal.")]
     class AdaptationSandbox
     {
         readonly IEnumerable<IRegistrationSource> _adapters;
