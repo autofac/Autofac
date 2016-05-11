@@ -3,6 +3,7 @@
     "authors": [ "Autofac Contributors" ]
   },
   "buildOptions": {
+    "additionalArguments": ["/ruleset:../../build/Analyzers.ruleset"],
     "keyFile": "../../Autofac.snk",
     "embed": {
       "include": ["**/*.resx"],

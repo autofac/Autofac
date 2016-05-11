@@ -1,6 +1,7 @@
 ﻿{
   "version": "1.0.0-*",
   "buildOptions": {
+    "additionalArguments": ["/ruleset:../../build/Analyzers.ruleset"],
     "keyFile": "../../Autofac.snk"
   },
   "dependencies": {

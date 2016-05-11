@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Autofac.Extensions.DependencyInjection.Test
 {
-    static class Assertions
+    internal static class Assertions
     {
         public static void AssertRegistered<TService>(this IComponentContext context)
         {
