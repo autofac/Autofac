@@ -33,8 +33,8 @@ namespace Autofac.Core.Activators.ProvidedInstance
     /// </summary>
     public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
     {
-        readonly object _instance;
-        bool _activated;
+        private readonly object _instance;
+        private bool _activated;
 
         /// <summary>
         /// Provide the specified instance.
@@ -91,7 +91,7 @@ namespace Autofac.Core.Activators.ProvidedInstance
             base.Dispose(disposing);
         }
 
-        static Type GetType(object instance)
+        private static Type GetType(object instance)
         {
             if (instance == null) throw new ArgumentNullException(nameof(instance));
 

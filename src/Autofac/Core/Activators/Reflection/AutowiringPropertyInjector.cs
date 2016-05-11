@@ -30,7 +30,7 @@ using Autofac.Util;
 
 namespace Autofac.Core.Activators.Reflection
 {
-    class AutowiringPropertyInjector
+    internal class AutowiringPropertyInjector
     {
         public const string InstanceTypeNamedParameter = "Autofac.AutowiringPropertyInjector.InstanceType";
 

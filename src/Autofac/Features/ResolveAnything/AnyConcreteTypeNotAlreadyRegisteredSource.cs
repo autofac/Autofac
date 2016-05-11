@@ -85,11 +85,11 @@ namespace Autofac.Features.ResolveAnything
 
             var builder = RegistrationBuilder.ForType(ts.ServiceType);
             RegistrationConfiguration?.Invoke(builder);
-            return new[] {builder.CreateRegistration()};
+            return new[] { builder.CreateRegistration() };
         }
 
         /// <summary>
-        /// Gets whether the registrations provided by this source are 1:1 adapters on top
+        /// Gets a value indicating whether the registrations provided by this source are 1:1 adapters on top
         /// of other components (I.e. like Meta, Func or Owned.)
         /// </summary>
         public bool IsAdapterForIndividualComponents => false;

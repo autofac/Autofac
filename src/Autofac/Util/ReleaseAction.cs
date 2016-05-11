@@ -30,10 +30,10 @@ namespace Autofac.Util
     /// <summary>
     /// Adapts an action to the <see cref="IDisposable"/> interface.
     /// </summary>
-    class ReleaseAction<TLimit> : Disposable
+    internal class ReleaseAction<TLimit> : Disposable
     {
-        readonly Action<TLimit> _action;
-        readonly Func<TLimit> _factory;
+        private readonly Action<TLimit> _action;
+        private readonly Func<TLimit> _factory;
 
         /// <summary>
         /// Instantiates a new instance of <see cref="ReleaseAction{TLimit}"/>.

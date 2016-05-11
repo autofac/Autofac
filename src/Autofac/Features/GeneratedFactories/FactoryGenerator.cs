@@ -57,11 +57,12 @@ namespace Autofac.Features.GeneratedFactories
             _generator = CreateGenerator((activatorContextParam, resolveParameterArray) =>
                 {
                     // c, service, [new Parameter(name, (object)dps)]*
-                    var resolveParams = new[] {
-                            activatorContextParam,
-                            Expression.Constant(service, typeof(Service)),
-                            Expression.NewArrayInit(typeof(Parameter), resolveParameterArray)
-                        };
+                    var resolveParams = new[]
+                    {
+                        activatorContextParam,
+                        Expression.Constant(service, typeof(Service)),
+                        Expression.NewArrayInit(typeof(Parameter), resolveParameterArray)
+                    };
 
                     // c.Resolve(...)
                     return Expression.Call(
@@ -114,7 +115,7 @@ namespace Autofac.Features.GeneratedFactories
             return delegateType.Name.StartsWith("Func`", StringComparison.Ordinal);
         }
 
-        static Func<IComponentContext, IEnumerable<Parameter>, Delegate> CreateGenerator(Func<Expression, Expression[], Expression> makeResolveCall, Type delegateType, ParameterMapping pm)
+        private static Func<IComponentContext, IEnumerable<Parameter>, Delegate> CreateGenerator(Func<Expression, Expression[], Expression> makeResolveCall, Type delegateType, ParameterMapping pm)
         {
             // (c, p) => ([dps]*) => (drt)Resolve(c, productRegistration, [new NamedParameter(name, (object)dps)]*)
 
@@ -201,9 +202,7 @@ namespace Autofac.Features.GeneratedFactories
                 // ReSharper restore RedundantCaseLabel
                 default:
                     return creatorParams
-                            .Select(p => Expression.New(
-                                typeof(NamedParameter).GetMatchingConstructor(new[] { typeof(string), typeof(object) }),
-                                Expression.Constant(p.Name, typeof(string)), Expression.Convert(p, typeof(object))))
+                            .Select(p => Expression.New(typeof(NamedParameter).GetMatchingConstructor(new[] { typeof(string), typeof(object) }), Expression.Constant(p.Name, typeof(string)), Expression.Convert(p, typeof(object))))
                             .OfType<Expression>()
                             .ToArray();
             }

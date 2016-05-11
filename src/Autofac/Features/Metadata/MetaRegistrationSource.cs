@@ -68,9 +68,7 @@ namespace Autofac.Features.Metadata
             return MetaRegistrationSourceResources.MetaRegistrationSourceDescription;
         }
 
-        // ReSharper disable UnusedMember.Local
-        static IComponentRegistration CreateMetaRegistration<T>(Service providedService, IComponentRegistration valueRegistration)
-        // ReSharper restore UnusedMember.Local
+        private static IComponentRegistration CreateMetaRegistration<T>(Service providedService, IComponentRegistration valueRegistration)
         {
             var rb = RegistrationBuilder
                 .ForDelegate((c, p) => new Meta<T>(

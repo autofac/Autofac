@@ -59,7 +59,7 @@ namespace Autofac.Core.Activators.Reflection
         public bool CanInstantiate { get; }
 
         /// <summary>
-        /// Construct a new ConstructorParameterBinding.
+        /// Initializes a new instance of the <see cref="ConstructorParameterBinding"/> class.
         /// </summary>
         /// <param name="ci">ConstructorInfo to bind.</param>
         /// <param name="availableParameters">Available parameters.</param>
@@ -151,7 +151,7 @@ namespace Autofac.Core.Activators.Reflection
             return Description;
         }
 
-        static Func<object[], object> GetConstructorInvoker(ConstructorInfo constructorInfo)
+        private static Func<object[], object> GetConstructorInvoker(ConstructorInfo constructorInfo)
         {
             var paramsInfo = constructorInfo.GetParameters();
 
@@ -182,7 +182,7 @@ namespace Autofac.Core.Activators.Reflection
 
             return lambdaExpression.Compile();
         }
-        
+
         public static MethodCallExpression ConvertPrimitiveType(Expression valueExpression, Type conversionType)
         {
             var changeTypeMethod = typeof(Convert).GetRuntimeMethod(nameof(Convert.ChangeType), new[] {typeof(object), typeof(Type)});

@@ -37,7 +37,7 @@ namespace Autofac.Core.Activators.Reflection
         readonly Type[] _signature;
 
         /// <summary>
-        /// Match constructors with the provided signature.
+        /// Initializes a new instance of the <see cref="MatchingSignatureConstructorSelector"/> class.
         /// </summary>
         /// <param name="signature">Signature to match.</param>
         public MatchingSignatureConstructorSelector(params Type[] signature)

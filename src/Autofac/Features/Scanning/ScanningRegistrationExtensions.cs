@@ -33,7 +33,7 @@ using Autofac.Util;
 
 namespace Autofac.Features.Scanning
 {
-    static class ScanningRegistrationExtensions
+    internal static class ScanningRegistrationExtensions
     {
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             RegisterAssemblyTypes(ContainerBuilder builder, params Assembly[] assemblies)
@@ -128,10 +128,10 @@ namespace Autofac.Features.Scanning
         {
             if (openGenericServiceType == null) throw new ArgumentNullException(nameof(openGenericServiceType));
             if (serviceKey == null) throw new ArgumentNullException(nameof(serviceKey));
-            
+
             return AsClosedTypesOf(registration, openGenericServiceType, t => serviceKey);
         }
-        
+
         public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             AsClosedTypesOf<TLimit, TScanningActivatorData, TRegistrationStyle>(
                 IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,

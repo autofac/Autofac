@@ -37,14 +37,14 @@ namespace Autofac.Core.Resolving
     [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the most nested lifetime scope is responsible for disposal.")]
     class ResolveOperation : IComponentContext, IResolveOperation
     {
-        readonly Stack<InstanceLookup> _activationStack = new Stack<InstanceLookup>();
-        ICollection<InstanceLookup> _successfulActivations;
-        readonly ISharingLifetimeScope _mostNestedLifetimeScope;
-        int _callDepth;
-        bool _ended;
+        private readonly Stack<InstanceLookup> _activationStack = new Stack<InstanceLookup>();
+        private ICollection<InstanceLookup> _successfulActivations;
+        private readonly ISharingLifetimeScope _mostNestedLifetimeScope;
+        private int _callDepth;
+        private bool _ended;
 
         /// <summary>
-        /// Create an instance of <see cref="ResolveOperation"/> in the provided scope.
+        /// Initializes a new instance of the <see cref="ResolveOperation"/> class.
         /// </summary>
         /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
         /// can move upward to less nested scopes as components with wider sharing scopes are activated</param>
@@ -134,7 +134,7 @@ namespace Autofac.Core.Resolving
 
         public event EventHandler<InstanceLookupBeginningEventArgs> InstanceLookupBeginning;
 
-        void CompleteActivations()
+        private void CompleteActivations()
         {
             var completed = _successfulActivations;
             ResetSuccessfulActivations();
@@ -143,7 +143,7 @@ namespace Autofac.Core.Resolving
                 activation.Complete();
         }
 
-        void ResetSuccessfulActivations()
+        private void ResetSuccessfulActivations()
         {
             _successfulActivations = new List<InstanceLookup>();
         }
@@ -153,7 +153,7 @@ namespace Autofac.Core.Resolving
         /// </summary>
         public IComponentRegistry ComponentRegistry => _mostNestedLifetimeScope.ComponentRegistry;
 
-        void End(Exception exception = null)
+        private void End(Exception exception = null)
         {
             if (_ended) return;
 

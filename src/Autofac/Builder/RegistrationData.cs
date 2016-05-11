@@ -37,15 +37,15 @@ namespace Autofac.Builder
     /// </summary>
     public class RegistrationData
     {
-        bool _defaultServiceOverridden;
-        Service _defaultService;
+        private bool _defaultServiceOverridden;
+        private Service _defaultService;
 
-        readonly ICollection<Service> _services = new HashSet<Service>();
+        private readonly ICollection<Service> _services = new HashSet<Service>();
 
-        IComponentLifetime _lifetime = new CurrentScopeLifetime();
+        private IComponentLifetime _lifetime = new CurrentScopeLifetime();
 
         /// <summary>
-        /// Construct a RegistrationData instance.
+        /// Initializes a new instance of the <see cref="RegistrationData"/> class.
         /// </summary>
         /// <param name="defaultService">The default service that will be used if no others
         /// are added.</param>
@@ -98,16 +98,20 @@ namespace Autofac.Builder
         }
 
         /// <summary>
-        /// The instance ownership assigned to the component.
+        /// Gets or sets the instance ownership assigned to the component.
         /// </summary>
         public InstanceOwnership Ownership { get; set; } = InstanceOwnership.OwnedByLifetimeScope;
 
         /// <summary>
-        /// The lifetime assigned to the component.
+        /// Gets or sets the lifetime assigned to the component.
         /// </summary>
         public IComponentLifetime Lifetime
         {
-            get { return _lifetime; }
+            get
+            {
+                return _lifetime;
+            }
+
             set
             {
                 if (value == null) throw new ArgumentNullException(nameof(value));
@@ -116,17 +120,17 @@ namespace Autofac.Builder
         }
 
         /// <summary>
-        /// The sharing mode assigned to the component.
+        /// Gets or sets the sharing mode assigned to the component.
         /// </summary>
         public InstanceSharing Sharing { get; set; } = InstanceSharing.None;
 
         /// <summary>
-        /// Extended properties assigned to the component.
+        /// Gets the extended properties assigned to the component.
         /// </summary>
         public IDictionary<string, object> Metadata { get; } = new Dictionary<string, object>();
 
         /// <summary>
-        /// Handlers for the Preparing event.
+        /// Gets the handlers for the Preparing event.
         /// </summary>
         public ICollection<EventHandler<PreparingEventArgs>> PreparingHandlers { get; } = new List<EventHandler<PreparingEventArgs>>();
 

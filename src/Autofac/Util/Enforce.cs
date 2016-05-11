@@ -34,7 +34,7 @@ namespace Autofac.Util
     /// <summary>
     /// Helper methods used throughout the codebase.
     /// </summary>
-    static class Enforce
+    internal static class Enforce
     {
         /// <summary>
         /// Enforce that sequence does not contain null. Returns the
@@ -87,8 +87,7 @@ namespace Autofac.Util
             if (value == null) throw new ArgumentNullException(description);
 
             if (value.Length == 0)
-                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-                    EnforceResources.CannotBeEmpty, description));
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, EnforceResources.CannotBeEmpty, description));
 
             return value;
         }
@@ -104,12 +103,10 @@ namespace Autofac.Util
             MethodInfo invoke = delegateType.GetTypeInfo().GetDeclaredMethod("Invoke");
 
             if (invoke == null)
-                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-                    EnforceResources.NotDelegate, delegateType));
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, EnforceResources.NotDelegate, delegateType));
 
             if (invoke.ReturnType == typeof(void))
-                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-                    EnforceResources.DelegateReturnsVoid, delegateType));
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, EnforceResources.DelegateReturnsVoid, delegateType));
         }
     }
 }

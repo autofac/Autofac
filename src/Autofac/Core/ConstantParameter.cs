@@ -33,10 +33,10 @@ namespace Autofac.Core
     /// </summary>
     public abstract class ConstantParameter : Parameter
     {
-        readonly Predicate<ParameterInfo> _predicate;
+        private readonly Predicate<ParameterInfo> _predicate;
 
         /// <summary>
-        /// The value of the parameter.
+        /// Gets he value of the parameter.
         /// </summary>
         public object Value { get; }
 
@@ -73,6 +73,7 @@ namespace Autofac.Core
                 valueProvider = () => Value;
                 return true;
             }
+
             valueProvider = null;
             return false;
         }

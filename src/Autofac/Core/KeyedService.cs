@@ -47,7 +47,7 @@ namespace Autofac.Core
         }
 
         /// <summary>
-        /// Gets or sets the key of the service.
+        /// Gets the key of the service.
         /// </summary>
         /// <value>The key of the service.</value>
         public object ServiceKey { get; }

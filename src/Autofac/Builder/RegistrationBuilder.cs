@@ -184,11 +184,11 @@ namespace Autofac.Builder
             if (limitType != typeof(object))
                 foreach (var ts in services.OfType<IServiceWithType>())
                     if (!ts.ServiceType.GetTypeInfo().IsAssignableFrom(limitType.GetTypeInfo()))
-                        throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-                            RegistrationBuilderResources.ComponentDoesNotSupportService, limitType, ts));
+                        throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationBuilderResources.ComponentDoesNotSupportService, limitType, ts));
 
             IComponentRegistration registration;
             if (target == null)
+            {
                 registration = new ComponentRegistration(
                     id,
                     activator,
@@ -197,7 +197,9 @@ namespace Autofac.Builder
                     data.Ownership,
                     services,
                     data.Metadata);
+            }
             else
+            {
                 registration = new ComponentRegistration(
                     id,
                     activator,
@@ -207,6 +209,7 @@ namespace Autofac.Builder
                     services,
                     data.Metadata,
                     target);
+            }
 
             foreach (var p in data.PreparingHandlers)
                 registration.Preparing += p;
@@ -222,7 +225,7 @@ namespace Autofac.Builder
 
         /// <summary>
         /// Register a component in the component registry. This helper method is necessary
-        /// in order to execute OnRegistered hooks and respect PreserveDefaults. 
+        /// in order to execute OnRegistered hooks and respect PreserveDefaults.
         /// </summary>
         /// <remarks>Hoping to refactor this out.</remarks>
         /// <typeparam name="TLimit"></typeparam>

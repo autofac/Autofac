@@ -77,10 +77,10 @@ namespace Autofac.Features.LightweightAdapters
 
             if (
                 // requested and adaptee are services with type
-                (requestedServiceWithType != null && adapteeServiceWithType != null) && 
-                // avoiding decorators here
+                // not including decorators here
+                // and if this registration source contains requested service's type
+                (requestedServiceWithType != null && adapteeServiceWithType != null) &&
                 (requestedServiceWithType.ServiceType != adapteeServiceWithType.ServiceType) &&
-                // if this registration source contains requested service's type
                 (_registrationData.Services.OfType<IServiceWithType>().Any(s => s.ServiceType == requestedServiceWithType.ServiceType)))
             {
                 // we try to find registrations for the adaptee service but preserve info from the requested service e.g. keys
@@ -94,7 +94,7 @@ namespace Autofac.Features.LightweightAdapters
                             .Targeting(r);
 
                         rb.RegistrationData.CopyFrom(_registrationData, true);
-                        
+
                         // we explicitly add requested service to the RegistrationData
                         rb.RegistrationData.AddService(service);
 

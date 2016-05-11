@@ -33,7 +33,7 @@ namespace Autofac.Core.Lifetime
     public class LifetimeScopeEndingEventArgs : EventArgs
     {
         /// <summary>
-        /// Create an instance of the <see cref="LifetimeScopeEndingEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="LifetimeScopeEndingEventArgs"/> class.
         /// </summary>
         /// <param name="lifetimeScope">The lifetime scope that is ending.</param>
         public LifetimeScopeEndingEventArgs(ILifetimeScope lifetimeScope)
@@ -42,7 +42,7 @@ namespace Autofac.Core.Lifetime
         }
 
         /// <summary>
-        /// The lifetime scope that is ending.
+        /// Gets the lifetime scope that is ending.
         /// </summary>
         public ILifetimeScope LifetimeScope { get; }
     }

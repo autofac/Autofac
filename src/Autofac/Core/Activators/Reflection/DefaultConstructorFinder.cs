@@ -42,8 +42,8 @@ namespace Autofac.Core.Activators.Reflection
         /// <remarks>
         /// Default to selecting all public constructors.
         /// </remarks>
-        public DefaultConstructorFinder() : this(type => 
-            type.GetTypeInfo().DeclaredConstructors.Where(c => c.IsPublic).ToArray())
+        public DefaultConstructorFinder()
+          : this(type => type.GetTypeInfo().DeclaredConstructors.Where(c => c.IsPublic).ToArray())
         {
         }
 

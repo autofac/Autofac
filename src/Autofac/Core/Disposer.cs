@@ -33,14 +33,14 @@ namespace Autofac.Core
     /// Maintains a set of objects to dispose, and disposes them in the reverse order
     /// from which they were added when the Disposer is itself disposed.
     /// </summary>
-    class Disposer : Disposable, IDisposer
+    internal class Disposer : Disposable, IDisposer
     {
         /// <summary>
         /// Contents all implement IDisposable.
         /// </summary>
-        Stack<IDisposable> _items = new Stack<IDisposable>();
+        private Stack<IDisposable> _items = new Stack<IDisposable>();
 
-        readonly object _synchRoot = new object();
+        private readonly object _synchRoot = new object();
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources
@@ -57,9 +57,11 @@ namespace Autofac.Core
                         var item = _items.Pop();
                         item.Dispose();
                     }
+
                     _items = null;
                 }
             }
+
             base.Dispose(disposing);
         }
 

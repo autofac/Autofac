@@ -80,7 +80,7 @@ namespace Autofac.Features.OpenGenerics
             return false;
         }
 
-        static Type[] TryMapImplementationGenericArguments(Type implementationType, Type serviceType, Type serviceTypeDefinition, Type[] serviceGenericArguments)
+        private static Type[] TryMapImplementationGenericArguments(Type implementationType, Type serviceType, Type serviceTypeDefinition, Type[] serviceGenericArguments)
         {
             if (serviceTypeDefinition == implementationType)
                 return serviceGenericArguments;
@@ -98,7 +98,7 @@ namespace Autofac.Features.OpenGenerics
                 .ToArray();
         }
 
-        static Type GetInterface(Type implementationType, Type serviceType)
+        private static Type GetInterface(Type implementationType, Type serviceType)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace Autofac.Features.OpenGenerics
             }
         }
 
-        static Type TryFindServiceArgumentForImplementationArgumentDefinition(Type implementationGenericArgumentDefinition, IEnumerable<KeyValuePair<Type, Type>> serviceArgumentDefinitionToArgument)
+        private static Type TryFindServiceArgumentForImplementationArgumentDefinition(Type implementationGenericArgumentDefinition, IEnumerable<KeyValuePair<Type, Type>> serviceArgumentDefinitionToArgument)
         {
             var matchingRegularType = serviceArgumentDefinitionToArgument
                 .Where(argdef => !argdef.Key.GetTypeInfo().IsGenericType && implementationGenericArgumentDefinition.Name == argdef.Key.Name)
@@ -136,14 +136,18 @@ namespace Autofac.Features.OpenGenerics
             if (services == null) throw new ArgumentNullException(nameof(services));
 
             if (!implementationType.GetTypeInfo().IsGenericTypeDefinition)
+            {
                 throw new ArgumentException(
                     string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.ImplementorMustBeOpenGenericTypeDefinition, implementationType));
+            }
 
             foreach (var service in services.OfType<IServiceWithType>())
             {
                 if (!service.ServiceType.GetTypeInfo().IsGenericTypeDefinition)
+                {
                     throw new ArgumentException(
                         string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.ServiceTypeMustBeOpenGenericTypeDefinition, service));
+                }
 
                 if (service.ServiceType.GetTypeInfo().IsInterface)
                 {
@@ -158,9 +162,9 @@ namespace Autofac.Features.OpenGenerics
             }
         }
 
-        static bool IsCompatibleGenericClassDefinition(Type implementor, Type serviceType)
+        private static bool IsCompatibleGenericClassDefinition(Type implementor, Type serviceType)
         {
-            return implementor == serviceType || implementor.GetTypeInfo().IsGenericType && implementor.GetGenericTypeDefinition() == serviceType;
+            return implementor == serviceType || (implementor.GetTypeInfo().IsGenericType && implementor.GetGenericTypeDefinition() == serviceType);
         }
     }
 }

@@ -56,13 +56,13 @@ namespace Autofac.Util
         /// <param name="candidateType">The type that is being checked for the interface.</param>
         /// <param name="openGenericServiceType">The open generic service type to locate.</param>
         /// <returns>True if a closed implementation was found; otherwise false.</returns>
-        static IEnumerable<Type> FindAssignableTypesThatClose(Type candidateType, Type openGenericServiceType)
+        private static IEnumerable<Type> FindAssignableTypesThatClose(Type candidateType, Type openGenericServiceType)
         {
             return TypesAssignableFrom(candidateType)
                 .Where(t => t.IsClosedTypeOf(openGenericServiceType));
         }
 
-        static IEnumerable<Type> TypesAssignableFrom(Type candidateType)
+        private static IEnumerable<Type> TypesAssignableFrom(Type candidateType)
         {
             return candidateType.GetTypeInfo().ImplementedInterfaces.Concat(
                 Traverse.Across(candidateType, t => t.GetTypeInfo().BaseType));
@@ -171,6 +171,7 @@ namespace Autofac.Util
                     }
                 }
             }
+
             return false;
         }
 
@@ -196,4 +197,3 @@ namespace Autofac.Util
         }
     }
 }
-

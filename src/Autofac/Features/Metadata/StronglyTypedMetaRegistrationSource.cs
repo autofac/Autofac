@@ -61,7 +61,7 @@ namespace Autofac.Features.Metadata
 
             var valueService = swt.ChangeType(valueType);
             var methodInfo = CreateMetaRegistrationMethod.MakeGenericMethod(valueType, metaType);
-            var registrationCreator = (RegistrationCreator) methodInfo.CreateDelegate(
+            var registrationCreator = (RegistrationCreator)methodInfo.CreateDelegate(
                 typeof(RegistrationCreator), null);
 
             return registrationAccessor(valueService)
@@ -75,9 +75,7 @@ namespace Autofac.Features.Metadata
             return MetaRegistrationSourceResources.StronglyTypedMetaRegistrationSourceDescription;
         }
 
-        // ReSharper disable UnusedMember.Local
         static IComponentRegistration CreateMetaRegistration<T, TMetadata>(Service providedService, IComponentRegistration valueRegistration)
-        // ReSharper restore UnusedMember.Local
         {
             var metadata = MetadataViewProvider.GetMetadataViewProvider<TMetadata>()(valueRegistration.Target.Metadata);
 

@@ -774,8 +774,8 @@ namespace Autofac
         /// Configure an explicit value for a constructor parameter.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set parameter on.</param>
         /// <param name="parameterSelector">A predicate selecting the parameter to set.</param>
         /// <param name="valueProvider"></param>
@@ -959,8 +959,8 @@ namespace Autofac
         /// that closes the provided open generic interface type.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <param name="openGenericServiceType">The open generic interface or base class type for which implementations will be found.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>

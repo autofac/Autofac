@@ -63,7 +63,7 @@ namespace Autofac.Core
         void Register(IComponentRegistration registration, bool preserveDefaults);
 
         /// <summary>
-        /// Enumerate the registered components.
+        /// Gets the set of registered components.
         /// </summary>
         IEnumerable<IComponentRegistration> Registrations { get; }
 

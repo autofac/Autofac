@@ -47,22 +47,22 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// Protects instance variables from concurrent access.
         /// </summary>
-        readonly object _synchRoot = new object();
+        private readonly object _synchRoot = new object();
 
         /// <summary>
         /// External registration sources.
         /// </summary>
-        readonly IList<IRegistrationSource> _dynamicRegistrationSources = new List<IRegistrationSource>();
+        private readonly IList<IRegistrationSource> _dynamicRegistrationSources = new List<IRegistrationSource>();
 
         /// <summary>
         /// All registrations.
         /// </summary>
-        readonly ICollection<IComponentRegistration> _registrations = new List<IComponentRegistration>();
+        private readonly ICollection<IComponentRegistration> _registrations = new List<IComponentRegistration>();
 
         /// <summary>
         /// Keeps track of the status of registered services.
         /// </summary>
-        readonly IDictionary<Service, ServiceRegistrationInfo> _serviceInfo = new Dictionary<Service, ServiceRegistrationInfo>();
+        private readonly IDictionary<Service, ServiceRegistrationInfo> _serviceInfo = new Dictionary<Service, ServiceRegistrationInfo>();
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources
@@ -134,7 +134,7 @@ namespace Autofac.Core.Registration
             }
         }
 
-        void UpdateInitialisedAdapters(IComponentRegistration registration)
+        private void UpdateInitialisedAdapters(IComponentRegistration registration)
         {
             var adapterServices = _serviceInfo
                 .Where(si => si.Value.ShouldRecalculateAdaptersOn(registration))
@@ -144,9 +144,11 @@ namespace Autofac.Core.Registration
             if (adapterServices.Length == 0)
                 return;
 
-            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture,
-                "[Autofac] Component '{0}' provides services that have already been adapted. Consider refactoring to ContainerBuilder.Build() rather than Update().",
-                registration));
+            Debug.WriteLine(
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    "[Autofac] Component '{0}' provides services that have already been adapted. Consider refactoring to ContainerBuilder.Build() rather than Update().",
+                    registration));
 
             var adaptationSandbox = new AdaptationSandbox(
                 _dynamicRegistrationSources.Where(rs => rs.IsAdapterForIndividualComponents),
@@ -254,7 +256,7 @@ namespace Autofac.Core.Registration
         /// </summary>
         public event EventHandler<RegistrationSourceAddedEventArgs> RegistrationSourceAdded;
 
-        ServiceRegistrationInfo GetInitializedServiceInfo(Service service)
+        private ServiceRegistrationInfo GetInitializedServiceInfo(Service service)
         {
             var info = GetServiceInfo(service);
             if (info.IsInitialized)
@@ -289,7 +291,7 @@ namespace Autofac.Core.Registration
             return info;
         }
 
-        ServiceRegistrationInfo GetServiceInfo(Service service)
+        private ServiceRegistrationInfo GetServiceInfo(Service service)
         {
             ServiceRegistrationInfo existing;
             if (_serviceInfo.TryGetValue(service, out existing))

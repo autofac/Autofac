@@ -34,8 +34,8 @@ namespace Autofac.Core
     /// </summary>
     public class ResolvedParameter : Parameter
     {
-        readonly Func<ParameterInfo, IComponentContext, bool> _predicate;
-        readonly Func<ParameterInfo, IComponentContext, object> _valueAccessor;
+        private readonly Func<ParameterInfo, IComponentContext, bool> _predicate;
+        private readonly Func<ParameterInfo, IComponentContext, object> _valueAccessor;
 
         /// <summary>
         /// Create an instance of the ResolvedParameter class.

@@ -33,7 +33,7 @@ using Autofac.Core.Lifetime;
 
 namespace Autofac.Builder
 {
-    class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> : IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>, IHideObjectMembers
+    internal class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> : IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>, IHideObjectMembers
     {
         public RegistrationBuilder(Service defaultService, TActivatorData activatorData, TRegistrationStyle style)
         {
@@ -47,19 +47,19 @@ namespace Autofac.Builder
         }
 
         /// <summary>
-        /// The activator data.
+        /// Gets the activator data.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public TActivatorData ActivatorData { get; }
 
         /// <summary>
-        /// The registration style.
+        /// Gets the registration style.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public TRegistrationStyle RegistrationStyle { get; }
 
         /// <summary>
-        /// The registration data.
+        /// Gets the registration data.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public RegistrationData RegistrationData { get; }
@@ -412,6 +412,9 @@ namespace Autofac.Builder
         /// </summary>
         /// <typeparam name="TMetadata">A type with properties whose names correspond to the
         /// property names to configure.</typeparam>
+        /// <param name="configurationAction">
+        /// The action used to configure the metadata.
+        /// </param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata<TMetadata>(Action<MetadataConfiguration<TMetadata>> configurationAction)
         {
