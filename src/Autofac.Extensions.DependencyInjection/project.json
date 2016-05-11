@@ -25,7 +25,9 @@
   },
   "dependencies": {
     "Autofac": "4.0.0-rc2-*",
+    "Microsoft.CodeAnalysis.FxCopAnalyzers": { "version": "1.1.0", "type": "build" },
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc2-*",
+    "StyleCop.Analyzers": { "version": "1.0.0", "type": "build" },
     "System.Runtime.Analyzers": { "version": "1.1.0", "type": "build" }
   },
   "frameworks": {

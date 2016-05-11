@@ -1,9 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RuleSet Name="Autofac Analyzer Rules" Description="Analyzer rules for Autofac assemblies." ToolsVersion="14.0">
   <!-- https://github.com/dotnet/roslyn/blob/master/docs/compilers/Rule%20Set%20Format.md -->
-  <!-- Include Path=".\Roslyn.ruleset" Action="Default" / -->
   <IncludeAll Action="Warning" />
-  <Rules AnalyzerId="Microsoft.ApiDesignGuidelines.Analyzers" RuleNamespace="Microsoft.ApiDesignGuidelines.Analyzers">
-    <!-- Rule Id="CA1018" Action="None" / -->
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <!-- Prefix local calls with this -->
+    <Rule Id="SA1101" Action="None" />
+    <!-- Use built-in type alias -->
+    <Rule Id="SA1121" Action="None" />
+    <!-- Using statements must be inside a namespace -->
+    <Rule Id="SA1200" Action="None" />
+    <!-- Enforce order of class members by member type -->
+    <Rule Id="SA1201" Action="None" />
+    <!-- Enforce order of class members by member visibility -->
+    <Rule Id="SA1202" Action="None" />
+    <!-- Fields can't start with underscore -->
+    <Rule Id="SA1309" Action="None" />
+    <!-- No single-line statements involving braces -->
+    <Rule Id="SA1501" Action="None" />
+    <!-- Braces must not be omitted -->
+    <Rule Id="SA1503" Action="None" />
+    <!-- Element must be documented -->
+    <Rule Id="SA1600" Action="None" />
+    <!-- Return value must be documented -->
+    <Rule Id="SA1615" Action="None" />
+    <!-- Don't copy/paste documentation -->
+    <Rule Id="SA1625" Action="None" />
+    <!-- Exception documentation must not be empty -->
+    <Rule Id="SA1627" Action="None" />
+    <!-- File must have header -->
+    <Rule Id="SA1633" Action="None" />
   </Rules>
 </RuleSet>

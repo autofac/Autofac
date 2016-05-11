@@ -13,6 +13,7 @@
   "dependencies": {
     "Autofac": "4.0.0-rc2-*",
     "Autofac.Test.Scenarios.ScannedAssembly": "1.0.0-*",
+    "StyleCop.Analyzers": { "version": "1.0.0", "type": "build" },
     "xunit": "2.1.0"
   },
   "frameworks": {
