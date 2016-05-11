@@ -118,9 +118,6 @@ namespace Autofac.Builder
         /// var registration = RegistrationBuilder.ForType&lt;Foo&gt;().CreateRegistration();
         /// </code>
         /// </example>
-        /// <typeparam name="TLimit"></typeparam>
-        /// <typeparam name="TActivatorData"></typeparam>
-        /// <typeparam name="TSingleRegistrationStyle"></typeparam>
         /// <param name="builder">The registration builder.</param>
         /// <returns>An IComponentRegistration.</returns>
         /// <exception cref="System.ArgumentNullException">
@@ -182,9 +179,15 @@ namespace Autofac.Builder
 
             var limitType = activator.LimitType;
             if (limitType != typeof(object))
+            {
                 foreach (var ts in services.OfType<IServiceWithType>())
+                {
                     if (!ts.ServiceType.GetTypeInfo().IsAssignableFrom(limitType.GetTypeInfo()))
+                    {
                         throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationBuilderResources.ComponentDoesNotSupportService, limitType, ts));
+                    }
+                }
+            }
 
             IComponentRegistration registration;
             if (target == null)
@@ -228,9 +231,6 @@ namespace Autofac.Builder
         /// in order to execute OnRegistered hooks and respect PreserveDefaults.
         /// </summary>
         /// <remarks>Hoping to refactor this out.</remarks>
-        /// <typeparam name="TLimit"></typeparam>
-        /// <typeparam name="TActivatorData"></typeparam>
-        /// <typeparam name="TSingleRegistrationStyle"></typeparam>
         /// <param name="cr">Component registry to make registration in.</param>
         /// <param name="builder">Registration builder with data for new registration.</param>
         public static void RegisterSingleComponent<TLimit, TActivatorData, TSingleRegistrationStyle>(

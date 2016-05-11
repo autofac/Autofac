@@ -37,24 +37,24 @@ namespace Autofac.Core.Activators.Reflection
     /// </summary>
     public class ConstructorParameterBinding
     {
-        readonly ConstructorInfo _ci;
-        readonly Func<object>[] _valueRetrievers;
+        private readonly ConstructorInfo _ci;
+        private readonly Func<object>[] _valueRetrievers;
 
-        static readonly ConcurrentDictionary<ConstructorInfo, Func<object[], object>> ConstructorInvokers = new ConcurrentDictionary<ConstructorInfo, Func<object[], object>>();
+        private static readonly ConcurrentDictionary<ConstructorInfo, Func<object[], object>> ConstructorInvokers = new ConcurrentDictionary<ConstructorInfo, Func<object[], object>>();
 
         // We really need to report all non-bindable parameters, howevers some refactoring
         // will be necessary before this is possible. Adding this now to ease the
         // pain of working with the preview builds.
-        readonly ParameterInfo _firstNonBindableParameter;
+        private readonly ParameterInfo _firstNonBindableParameter;
 
         /// <summary>
-        /// The constructor on the target type. The actual constructor used
+        /// Gets the constructor on the target type. The actual constructor used
         /// might differ, e.g. if using a dynamic proxy.
         /// </summary>
         public ConstructorInfo TargetConstructor => _ci;
 
         /// <summary>
-        /// True if the binding is valid.
+        /// Gets a value indicating whether the binding is valid.
         /// </summary>
         public bool CanInstantiate { get; }
 
@@ -92,6 +92,7 @@ namespace Autofac.Core.Activators.Reflection
                         break;
                     }
                 }
+
                 if (!foundValue)
                 {
                     CanInstantiate = false;
@@ -127,25 +128,23 @@ namespace Autofac.Core.Activators.Reflection
             }
             catch (TargetInvocationException ex)
             {
-                throw new DependencyResolutionException(
-                    string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType.Name), ex.InnerException);
+                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType.Name), ex.InnerException);
             }
             catch (Exception ex)
             {
-                throw new DependencyResolutionException(
-                    string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType.Name), ex);
+                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType.Name), ex);
             }
         }
 
         /// <summary>
-        /// Describes the constructor parameter binding.
+        /// Gets a description of the constructor parameter binding.
         /// </summary>
         public string Description => CanInstantiate
             ? string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.BoundConstructor, _ci)
             : string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.NonBindableConstructor, _ci, _firstNonBindableParameter);
 
-        ///<summary>Returns a System.String that represents the current System.Object.</summary>
-        ///<returns>A System.String that represents the current System.Object.</returns>
+        /// <summary>Returns a System.String that represents the current System.Object.</summary>
+        /// <returns>A System.String that represents the current System.Object.</returns>
         public override string ToString()
         {
             return Description;
@@ -185,7 +184,7 @@ namespace Autofac.Core.Activators.Reflection
 
         public static MethodCallExpression ConvertPrimitiveType(Expression valueExpression, Type conversionType)
         {
-            var changeTypeMethod = typeof(Convert).GetRuntimeMethod(nameof(Convert.ChangeType), new[] {typeof(object), typeof(Type)});
+            var changeTypeMethod = typeof(Convert).GetRuntimeMethod(nameof(Convert.ChangeType), new[] { typeof(object), typeof(Type) });
             return Expression.Call(changeTypeMethod, valueExpression, Expression.Constant(conversionType));
         }
     }

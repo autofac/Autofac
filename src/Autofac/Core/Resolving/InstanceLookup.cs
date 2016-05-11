@@ -33,12 +33,12 @@ namespace Autofac.Core.Resolving
 {
     // Is a component context that pins resolution to a point in the context hierarchy
     [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The instance lookup activation scope gets disposed of by the creator of the scope.")]
-    class InstanceLookup : IComponentContext, IInstanceLookup
+    internal class InstanceLookup : IComponentContext, IInstanceLookup
     {
-        readonly IResolveOperation _context;
-        readonly ISharingLifetimeScope _activationScope;
-        object _newInstance;
-        bool _executed;
+        private readonly IResolveOperation _context;
+        private readonly ISharingLifetimeScope _activationScope;
+        private object _newInstance;
+        private bool _executed;
 
         public InstanceLookup(
             IComponentRegistration registration,
@@ -54,10 +54,10 @@ namespace Autofac.Core.Resolving
             {
                 _activationScope = ComponentRegistration.Lifetime.FindScope(mostNestedVisibleScope);
             }
-            catch(DependencyResolutionException ex)
+            catch (DependencyResolutionException ex)
             {
                 var services = new StringBuilder();
-                foreach(var s in registration.Services)
+                foreach (var s in registration.Services)
                 {
                     services.Append("- ");
                     services.AppendLine(s.Description);
@@ -85,9 +85,9 @@ namespace Autofac.Core.Resolving
             return instance;
         }
 
-        bool NewInstanceActivated => _newInstance != null;
+        private bool NewInstanceActivated => _newInstance != null;
 
-        object Activate(IEnumerable<Parameter> parameters)
+        private object Activate(IEnumerable<Parameter> parameters)
         {
             ComponentRegistration.RaisePreparing(this, ref parameters);
 

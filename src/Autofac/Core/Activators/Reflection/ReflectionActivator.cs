@@ -45,7 +45,7 @@ namespace Autofac.Core.Activators.Reflection
         private readonly ConstructorInfo[] _availableConstructors;
 
         /// <summary>
-        /// Create an activator for the provided type.
+        /// Initializes a new instance of the <see cref="ReflectionActivator"/> class.
         /// </summary>
         /// <param name="implementationType">Type to activate.</param>
         /// <param name="constructorFinder">Constructor finder.</param>
@@ -70,19 +70,18 @@ namespace Autofac.Core.Activators.Reflection
             ConstructorSelector = constructorSelector;
             _configuredProperties = configuredProperties;
 
-            _defaultParameters = configuredParameters.Concat(
-                new Parameter[] {new AutowiringParameter(), new DefaultValueParameter()});
+            _defaultParameters = configuredParameters.Concat(new Parameter[] { new AutowiringParameter(), new DefaultValueParameter() });
 
             _availableConstructors = ConstructorFinder.FindConstructors(_implementationType);
         }
 
         /// <summary>
-        /// The constructor finder.
+        /// Gets the constructor finder.
         /// </summary>
         public IConstructorFinder ConstructorFinder { get; }
 
         /// <summary>
-        /// The constructor selector.
+        /// Gets the constructor selector.
         /// </summary>
         public IConstructorSelector ConstructorSelector { get; }
 
@@ -102,8 +101,7 @@ namespace Autofac.Core.Activators.Reflection
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
             if (_availableConstructors.Length == 0)
-                throw new DependencyResolutionException(string.Format(
-                    CultureInfo.CurrentCulture, ReflectionActivatorResources.NoConstructorsAvailable, _implementationType, ConstructorFinder));
+                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, ReflectionActivatorResources.NoConstructorsAvailable, _implementationType, ConstructorFinder));
 
             var constructorBindings = GetConstructorBindings(
                 context,

@@ -1,5 +1,5 @@
 // This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
+// Copyright ï¿½ 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -37,11 +37,11 @@ namespace Autofac.Core.Registration
     /// Safe for concurrent access by multiple readers. Write operations are single-threaded.
     /// </remarks>
     [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The owner of the createWriteRegistry function is responsible for subsequent disposal of the registry created.")]
-    class CopyOnWriteRegistry : IComponentRegistry
+    internal class CopyOnWriteRegistry : IComponentRegistry
     {
-        readonly IComponentRegistry _readRegistry;
-        readonly Func<IComponentRegistry> _createWriteRegistry;
-        IComponentRegistry _writeRegistry;
+        private readonly IComponentRegistry _readRegistry;
+        private readonly Func<IComponentRegistry> _createWriteRegistry;
+        private IComponentRegistry _writeRegistry;
 
         public CopyOnWriteRegistry(IComponentRegistry readRegistry, Func<IComponentRegistry> createWriteRegistry)
         {
@@ -52,9 +52,9 @@ namespace Autofac.Core.Registration
             _createWriteRegistry = createWriteRegistry;
         }
 
-        IComponentRegistry Registry => _writeRegistry ?? _readRegistry;
+        private IComponentRegistry Registry => _writeRegistry ?? _readRegistry;
 
-        IComponentRegistry WriteRegistry => _writeRegistry ?? (_writeRegistry = _createWriteRegistry());
+        private IComponentRegistry WriteRegistry => _writeRegistry ?? (_writeRegistry = _createWriteRegistry());
 
         public void Dispose()
         {

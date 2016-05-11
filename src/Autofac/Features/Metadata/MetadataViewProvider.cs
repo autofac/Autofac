@@ -34,9 +34,9 @@ using Autofac.Core;
 
 namespace Autofac.Features.Metadata
 {
-    static class MetadataViewProvider
+    internal static class MetadataViewProvider
     {
-        static readonly MethodInfo GetMetadataValueMethod = typeof(MetadataViewProvider).GetTypeInfo().GetDeclaredMethod("GetMetadataValue");
+        private static readonly MethodInfo GetMetadataValueMethod = typeof(MetadataViewProvider).GetTypeInfo().GetDeclaredMethod("GetMetadataValue");
 
         public static Func<IDictionary<string, object>, TMetadata> GetMetadataViewProvider<TMetadata>()
         {

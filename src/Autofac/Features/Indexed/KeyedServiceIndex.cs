@@ -28,9 +28,9 @@ using Autofac.Core;
 
 namespace Autofac.Features.Indexed
 {
-    class KeyedServiceIndex<TKey, TValue> : IIndex<TKey, TValue>
+    internal class KeyedServiceIndex<TKey, TValue> : IIndex<TKey, TValue>
     {
-        readonly IComponentContext _context;
+        private readonly IComponentContext _context;
 
         public KeyedServiceIndex(IComponentContext context)
         {
@@ -54,7 +54,7 @@ namespace Autofac.Features.Indexed
             return false;
         }
 
-        static KeyedService GetService(TKey key)
+        private static KeyedService GetService(TKey key)
         {
             return new KeyedService(key, typeof(TValue));
         }

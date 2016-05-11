@@ -44,13 +44,13 @@ namespace Autofac
     /// public class DataAccessModule : Module
     /// {
     ///     public string ConnectionString { get; set; }
-    ///     
+    ///
     ///     public override void Load(ContainerBuilder moduleBuilder)
     ///     {
     ///         moduleBuilder.RegisterGeneric(typeof(MyRepository&lt;&gt;))
     ///             .As(typeof(IRepository&lt;&gt;))
     ///             .InstancePerMatchingLifetimeScope(WebLifetime.Request);
-    ///         
+    ///
     ///         moduleBuilder.Register(c =&gt; new MyDbConnection(ConnectionString))
     ///             .As&lt;IDbConnection&gt;()
     ///             .InstancePerMatchingLifetimeScope(WebLifetime.Request);
@@ -90,7 +90,9 @@ namespace Autofac
         /// </remarks>
         /// <param name="builder">The builder through which components can be
         /// registered.</param>
-        protected virtual void Load(ContainerBuilder builder) { }
+        protected virtual void Load(ContainerBuilder builder)
+        {
+        }
 
         /// <summary>
         /// Override to attach module-specific functionality to a
@@ -119,7 +121,7 @@ namespace Autofac
         {
         }
 
-        void AttachToRegistrations(IComponentRegistry componentRegistry)
+        private void AttachToRegistrations(IComponentRegistry componentRegistry)
         {
             if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
             foreach (var registration in componentRegistry.Registrations)
@@ -128,7 +130,7 @@ namespace Autofac
                 (sender, e) => AttachToComponentRegistration(e.ComponentRegistry, e.ComponentRegistration);
         }
 
-        void AttachToSources(IComponentRegistry componentRegistry)
+        private void AttachToSources(IComponentRegistry componentRegistry)
         {
             if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
             foreach (var source in componentRegistry.Sources)
@@ -138,7 +140,7 @@ namespace Autofac
         }
 
         /// <summary>
-        /// The assembly in which the concrete module type is located. To avoid bugs whereby deriving from a module will
+        /// Gets the assembly in which the concrete module type is located. To avoid bugs whereby deriving from a module will
         /// change the target assembly, this property can only be used by modules that inherit directly from
         /// <see cref="Module"/>.
         /// </summary>

@@ -98,7 +98,7 @@ namespace Autofac
             return result;
         }
 
-        static void StartStartableComponents(IComponentContext componentContext)
+        private static void StartStartableComponents(IComponentContext componentContext)
         {
             // We track which registrations have already been auto-activated by adding
             // a metadata value. If the value is present, we won't re-activate. This helps
@@ -188,7 +188,7 @@ namespace Autofac
             Build(componentRegistry, true);
         }
 
-        void Build(IComponentRegistry componentRegistry, bool excludeDefaultModules)
+        private void Build(IComponentRegistry componentRegistry, bool excludeDefaultModules)
         {
             if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
 
@@ -204,7 +204,7 @@ namespace Autofac
                 callback(componentRegistry);
         }
 
-        void RegisterDefaultAdapters(IComponentRegistry componentRegistry)
+        private void RegisterDefaultAdapters(IComponentRegistry componentRegistry)
         {
             this.RegisterGeneric(typeof(KeyedServiceIndex<,>)).As(typeof(IIndex<,>)).InstancePerLifetimeScope();
             componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());

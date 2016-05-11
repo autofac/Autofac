@@ -34,7 +34,7 @@ namespace Autofac.Core.Activators.Reflection
     /// </summary>
     public class MatchingSignatureConstructorSelector : IConstructorSelector
     {
-        readonly Type[] _signature;
+        private readonly Type[] _signature;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MatchingSignatureConstructorSelector"/> class.

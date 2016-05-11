@@ -29,7 +29,7 @@ using Autofac.Core;
 
 namespace Autofac.Features.GeneratedFactories
 {
-    static class GeneratedFactoryRegistrationExtensions
+    internal static class GeneratedFactoryRegistrationExtensions
     {
         internal static IRegistrationBuilder<TLimit, GeneratedFactoryActivatorData, SingleRegistrationStyle>
             RegisterGeneratedFactory<TLimit>(ContainerBuilder builder, Type delegateType, Service service)

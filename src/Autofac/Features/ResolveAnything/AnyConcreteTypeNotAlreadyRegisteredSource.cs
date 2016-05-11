@@ -32,14 +32,13 @@ using Autofac.Core;
 
 namespace Autofac.Features.ResolveAnything
 {
-
     /// <summary>
     /// Provides registrations on-the-fly for any concrete type not already registered with
     /// the container.
     /// </summary>
     public class AnyConcreteTypeNotAlreadyRegisteredSource : IRegistrationSource
     {
-        readonly Func<Type, bool> _predicate;
+        private readonly Func<Type, bool> _predicate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AnyConcreteTypeNotAlreadyRegisteredSource"/> class.

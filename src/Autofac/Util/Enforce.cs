@@ -41,10 +41,8 @@ namespace Autofac.Util
         /// value if valid so that it can be used inline in
         /// base initialiser syntax.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="value">The value.</param>
-        /// <param name="name">The name.</param>
-        /// <returns><paramref name="value"/></returns>
+        /// <param name="name">The parameter name.</param>
         public static T ArgumentElementNotNull<T>(T value, string name)
             where T : class, IEnumerable
         {
@@ -60,15 +58,14 @@ namespace Autofac.Util
         /// <summary>
         /// Enforces that the provided object is non-null.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">The type of value being checked.</typeparam>
         /// <param name="value">The value.</param>
         /// <returns><paramref name="value"/></returns>
         public static T NotNull<T>([ValidatedNotNull]T value)
             where T : class
         {
             if (value == null)
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,
-                    EnforceResources.CannotBeNull, typeof(T).FullName));
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, EnforceResources.CannotBeNull, typeof(T).FullName));
 
             return value;
         }

@@ -31,7 +31,7 @@ using Autofac.Core;
 
 namespace Autofac.Features.OpenGenerics
 {
-    static class OpenGenericRegistrationExtensions
+    internal static class OpenGenericRegistrationExtensions
     {
         public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
             RegisterGeneric(ContainerBuilder builder, Type implementor)
@@ -40,8 +40,7 @@ namespace Autofac.Features.OpenGenerics
             if (implementor == null) throw new ArgumentNullException(nameof(implementor));
 
             if (!implementor.GetTypeInfo().IsGenericTypeDefinition)
-                throw new ArgumentException(string.Format(
-                    CultureInfo.CurrentCulture, OpenGenericRegistrationExtensionsResources.ImplementorMustBeOpenGenericType, implementor));
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, OpenGenericRegistrationExtensionsResources.ImplementorMustBeOpenGenericType, implementor));
 
             var rb = new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(
                 new TypedService(implementor),
@@ -72,7 +71,7 @@ namespace Autofac.Features.OpenGenerics
             return rb;
         }
 
-        static IServiceWithType GetServiceWithKey(Type serviceType, object key)
+        private static IServiceWithType GetServiceWithKey(Type serviceType, object key)
         {
             if (key == null)
                 return new TypedService(serviceType);

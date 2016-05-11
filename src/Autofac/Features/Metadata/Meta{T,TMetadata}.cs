@@ -33,7 +33,7 @@ namespace Autofac.Features.Metadata
     public class Meta<T, TMetadata>
     {
         /// <summary>
-        /// Create a new instance.
+        /// Initializes a new instance of the <see cref="Meta{T,TMetadata}"/> class.
         /// </summary>
         /// <param name="value">The value described by the instance.</param>
         /// <param name="metadata">The metadata describing the value.</param>
@@ -44,12 +44,12 @@ namespace Autofac.Features.Metadata
         }
 
         /// <summary>
-        /// The value described by <see cref="Metadata"/>.
+        /// Gets the value described by <see cref="Metadata"/>.
         /// </summary>
         public T Value { get; }
 
         /// <summary>
-        /// Metadata describing the value.
+        /// Gets metadata describing the value.
         /// </summary>
         public TMetadata Metadata { get; }
     }

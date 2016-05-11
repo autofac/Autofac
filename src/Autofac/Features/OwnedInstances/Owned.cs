@@ -89,10 +89,10 @@ namespace Autofac.Features.OwnedInstances
     [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "False positive - the lifetime does get disposed.")]
     public class Owned<T> : Disposable
     {
-        IDisposable _lifetime;
+        private IDisposable _lifetime;
 
         /// <summary>
-        /// Create an instance of <see cref="Owned{T}"/>.
+        /// Initializes a new instance of the <see cref="Owned{T}"/> class.
         /// </summary>
         /// <param name="value">The value representing the instance.</param>
         /// <param name="lifetime">An IDisposable interface through which ownership can be released.</param>
@@ -105,7 +105,7 @@ namespace Autofac.Features.OwnedInstances
         }
 
         /// <summary>
-        /// The owned value.
+        /// Gets or sets the owned value.
         /// </summary>
         public T Value { get; set; }
 

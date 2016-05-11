@@ -160,7 +160,7 @@ namespace Autofac.Core.Registration
                 AddRegistration(adapter, true);
         }
 
-        void AddRegistration(IComponentRegistration registration, bool preserveDefaults)
+        private void AddRegistration(IComponentRegistration registration, bool preserveDefaults)
         {
             foreach (var service in registration.Services)
             {
@@ -175,7 +175,7 @@ namespace Autofac.Core.Registration
         }
 
         /// <summary>
-        /// Enumerate the registered components.
+        /// Gets the registered components.
         /// </summary>
         public IEnumerable<IComponentRegistration> Registrations
         {
@@ -244,6 +244,7 @@ namespace Autofac.Core.Registration
         }
 
         /// <summary>
+        /// Gets a value indicating whether the registry contains its own components.
         /// True if the registry contains its own components; false if it is forwarding
         /// registrations from another external registry.
         /// </summary>

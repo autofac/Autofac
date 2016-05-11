@@ -37,7 +37,7 @@ namespace Autofac.Features.OpenGenerics
     public class OpenGenericDecoratorActivatorData : ReflectionActivatorData
     {
         /// <summary>
-        /// Construct an <see cref="OpenGenericDecoratorActivatorData"/>.
+        /// Initializes a new instance of the <see cref="OpenGenericDecoratorActivatorData"/> class.
         /// </summary>
         /// <param name="implementer">The decorator type.</param>
         /// <param name="fromService">The open generic service type to decorate.</param>
@@ -52,7 +52,7 @@ namespace Autofac.Features.OpenGenerics
         }
 
         /// <summary>
-        /// The open generic service type to decorate.
+        /// Gets the open generic service type to decorate.
         /// </summary>
         public IServiceWithType FromService { get; }
     }

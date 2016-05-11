@@ -36,16 +36,19 @@ namespace Autofac.Core
         private readonly Predicate<ParameterInfo> _predicate;
 
         /// <summary>
-        /// Gets he value of the parameter.
+        /// Gets the value of the parameter.
         /// </summary>
         public object Value { get; }
 
         /// <summary>
-        /// Create a constant parameter that will apply to parameters matching
-        /// the supplied predicate.
+        /// Initializes a new instance of the <see cref="ConstantParameter"/> class.
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="predicate"></param>
+        /// <param name="value">
+        /// The constant parameter value.
+        /// </param>
+        /// <param name="predicate">
+        /// A predicate used to locate the parameter that should be populated by the constant.
+        /// </param>
         protected ConstantParameter(object value, Predicate<ParameterInfo> predicate)
         {
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));

@@ -33,10 +33,10 @@ using Autofac.Core.Activators.Reflection;
 
 namespace Autofac.Features.OpenGenerics
 {
-    class OpenGenericDecoratorRegistrationSource : IRegistrationSource
+    internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
     {
-        readonly RegistrationData _registrationData;
-        readonly OpenGenericDecoratorActivatorData _activatorData;
+        private readonly RegistrationData _registrationData;
+        private readonly OpenGenericDecoratorActivatorData _activatorData;
 
         public OpenGenericDecoratorRegistrationSource(
             RegistrationData registrationData,
@@ -48,8 +48,7 @@ namespace Autofac.Features.OpenGenerics
             OpenGenericServiceBinder.EnforceBindable(activatorData.ImplementationType, registrationData.Services);
 
             if (registrationData.Services.Contains((Service)activatorData.FromService))
-                throw new ArgumentException(string.Format(
-                    CultureInfo.CurrentCulture, OpenGenericDecoratorRegistrationSourceResources.FromAndToMustDiffer, activatorData.FromService));
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, OpenGenericDecoratorRegistrationSourceResources.FromAndToMustDiffer, activatorData.FromService));
 
             _registrationData = registrationData;
             _activatorData = activatorData;
@@ -71,19 +70,14 @@ namespace Autofac.Features.OpenGenerics
                     .Select(cr => RegistrationBuilder.CreateRegistration(
                             Guid.NewGuid(),
                             _registrationData,
-                            new ReflectionActivator(
-                                constructedImplementationType,
-                                _activatorData.ConstructorFinder,
-                                _activatorData.ConstructorSelector,
-                                AddDecoratedComponentParameter(swt.ServiceType, cr, _activatorData.ConfiguredParameters),
-                                _activatorData.ConfiguredProperties),
+                            new ReflectionActivator(constructedImplementationType, _activatorData.ConstructorFinder, _activatorData.ConstructorSelector, AddDecoratedComponentParameter(swt.ServiceType, cr, _activatorData.ConfiguredParameters), _activatorData.ConfiguredProperties),
                             services));
             }
 
             return Enumerable.Empty<IComponentRegistration>();
         }
 
-        static IEnumerable<Parameter> AddDecoratedComponentParameter(Type decoratedParameterType, IComponentRegistration decoratedComponent, IEnumerable<Parameter> configuredParameters)
+        private static IEnumerable<Parameter> AddDecoratedComponentParameter(Type decoratedParameterType, IComponentRegistration decoratedComponent, IEnumerable<Parameter> configuredParameters)
         {
             var parameter = new ResolvedParameter(
                 (pi, c) => pi.ParameterType == decoratedParameterType,
@@ -96,7 +90,8 @@ namespace Autofac.Features.OpenGenerics
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.CurrentCulture,
+            return string.Format(
+                CultureInfo.CurrentCulture,
                 OpenGenericDecoratorRegistrationSourceResources.OpenGenericDecoratorRegistrationSourceImplFromTo,
                 _activatorData.ImplementationType.FullName,
                 ((Service)_activatorData.FromService).Description,

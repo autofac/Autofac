@@ -67,12 +67,12 @@ namespace Autofac.Features.Scanning
             return rb;
         }
 
-        static void ScanAssemblies(IEnumerable<Assembly> assemblies, IComponentRegistry cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
+        private static void ScanAssemblies(IEnumerable<Assembly> assemblies, IComponentRegistry cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
         {
             ScanTypes(assemblies.SelectMany(a => a.GetLoadableTypes()), cr, rb);
         }
 
-        static void ScanTypes(IEnumerable<Type> types, IComponentRegistry cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
+        private static void ScanTypes(IEnumerable<Type> types, IComponentRegistry cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
         {
             rb.ActivatorData.Filters.Add(t =>
                 rb.RegistrationData.Services.OfType<IServiceWithType>().All(swt =>
@@ -123,7 +123,8 @@ namespace Autofac.Features.Scanning
         public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             AsClosedTypesOf<TLimit, TScanningActivatorData, TRegistrationStyle>(
                 IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
-                Type openGenericServiceType, object serviceKey)
+                Type openGenericServiceType,
+                object serviceKey)
             where TScanningActivatorData : ScanningActivatorData
         {
             if (openGenericServiceType == null) throw new ArgumentNullException(nameof(openGenericServiceType));
@@ -135,7 +136,8 @@ namespace Autofac.Features.Scanning
         public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             AsClosedTypesOf<TLimit, TScanningActivatorData, TRegistrationStyle>(
                 IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
-                Type openGenericServiceType, Func<Type, object> serviceKeyMapping)
+                Type openGenericServiceType,
+                Func<Type, object> serviceKeyMapping)
             where TScanningActivatorData : ScanningActivatorData
         {
             if (openGenericServiceType == null) throw new ArgumentNullException(nameof(openGenericServiceType));

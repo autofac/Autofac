@@ -25,19 +25,19 @@
 
 namespace Autofac.Core
 {
-	/// <summary>
-	/// Determines whether instances are shared within a lifetime scope.
-	/// </summary>
-	public enum InstanceSharing
-	{
-		/// <summary>
-		/// Each request for an instance will return a new object.
-		/// </summary>
-		None,
+    /// <summary>
+    /// Determines whether instances are shared within a lifetime scope.
+    /// </summary>
+    public enum InstanceSharing
+    {
+        /// <summary>
+        /// Each request for an instance will return a new object.
+        /// </summary>
+        None,
 
-		/// <summary>
-		/// Each request for an instance will return the same object.
-		/// </summary>
-		Shared
-	}
+        /// <summary>
+        /// Each request for an instance will return the same object.
+        /// </summary>
+        Shared
+    }
 }

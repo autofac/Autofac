@@ -34,17 +34,17 @@ namespace Autofac.Core.Resolving
     public interface IInstanceLookup
     {
         /// <summary>
-        /// The component for which an instance is to be looked up.
+        /// Gets the component for which an instance is to be looked up.
         /// </summary>
         IComponentRegistration ComponentRegistration { get; }
 
         /// <summary>
-        /// The scope in which the instance will be looked up.
+        /// Gets the scope in which the instance will be looked up.
         /// </summary>
         ILifetimeScope ActivationScope { get; }
 
         /// <summary>
-        /// The parameters provided for new instance creation.
+        /// Gets the parameters provided for new instance creation.
         /// </summary>
         IEnumerable<Parameter> Parameters { get; }
 

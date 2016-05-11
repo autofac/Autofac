@@ -35,23 +35,24 @@ namespace Autofac.Builder
     public class SingleRegistrationStyle
     {
         /// <summary>
-        /// The id used for the registration.
+        /// Gets or sets the ID used for the registration.
         /// </summary>
         public Guid Id { get; set; } = Guid.NewGuid();
 
         /// <summary>
-        /// Handlers to notify of the component registration event.
+        /// Gets the handlers to notify of the component registration event.
         /// </summary>
         public ICollection<EventHandler<ComponentRegisteredEventArgs>> RegisteredHandlers { get; } = new List<EventHandler<ComponentRegisteredEventArgs>>();
 
         /// <summary>
+        /// Gets or sets a value indicating whether default registrations should be preserved.
         /// By default, new registrations override existing registrations as defaults.
         /// If set to true, new registrations will not change existing defaults.
         /// </summary>
         public bool PreserveDefaults { get; set; }
 
         /// <summary>
-        /// The component upon which this registration is based.
+        /// Gets or sets the component upon which this registration is based.
         /// </summary>
         public IComponentRegistration Target { get; set; }
     }

@@ -54,12 +54,12 @@ namespace Autofac
     public class NamedParameter : ConstantParameter
     {
         /// <summary>
-        /// The name of the parameter.
+        /// Gets the name of the parameter.
         /// </summary>
         public string Name { get; private set; }
 
         /// <summary>
-        /// Create a <see cref="NamedParameter"/> with the specified constant value.
+        /// Initializes a new instance of the <see cref="NamedParameter"/> class.
         /// </summary>
         /// <param name="name">The name of the parameter.</param>
         /// <param name="value">The parameter value.</param>

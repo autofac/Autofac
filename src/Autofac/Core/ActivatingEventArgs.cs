@@ -78,6 +78,7 @@ namespace Autofac.Core
             {
                 return _instance;
             }
+
             set
             {
                 if (value == null) throw new ArgumentNullException(nameof(value));
@@ -95,7 +96,7 @@ namespace Autofac.Core
         }
 
         /// <summary>
-        /// The parameters supplied to the activator.
+        /// Gets the parameters supplied to the activator.
         /// </summary>
         public IEnumerable<Parameter> Parameters { get; }
     }

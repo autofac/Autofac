@@ -25,7 +25,7 @@
 
 namespace Autofac.Core.Registration
 {
-    static class ComponentRegistrationExtensions
+    internal static class ComponentRegistrationExtensions
     {
         public static bool IsAdapting(this IComponentRegistration componentRegistration)
         {

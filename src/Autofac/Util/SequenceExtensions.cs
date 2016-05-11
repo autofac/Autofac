@@ -29,7 +29,7 @@ using System.Linq;
 
 namespace Autofac.Util
 {
-    static class SequenceExtensions
+    internal static class SequenceExtensions
     {
         /// <summary>
         /// Joins the strings into one single string interspersing the elements with the separator (a-la
@@ -49,10 +49,10 @@ namespace Autofac.Util
         /// <summary>
         /// Appends the item to the specified sequence.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">The type of element in the sequence.</typeparam>
         /// <param name="sequence">The sequence.</param>
         /// <param name="trailingItem">The trailing item.</param>
-        /// <returns></returns>
+        /// <returns>The sequence with an item appended to the end.</returns>
         public static IEnumerable<T> Append<T>(this IEnumerable<T> sequence, T trailingItem)
         {
             if (sequence == null) throw new ArgumentNullException(nameof(sequence));
@@ -66,10 +66,10 @@ namespace Autofac.Util
         /// <summary>
         /// Prepends the item to the specified sequence.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">The type of element in the sequence.</typeparam>
         /// <param name="sequence">The sequence.</param>
         /// <param name="leadingItem">The leading item.</param>
-        /// <returns></returns>
+        /// <returns>The sequence with an item prepended.</returns>
         public static IEnumerable<T> Prepend<T>(this IEnumerable<T> sequence, T leadingItem)
         {
             if (sequence == null) throw new ArgumentNullException(nameof(sequence));

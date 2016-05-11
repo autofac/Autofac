@@ -57,7 +57,7 @@ namespace Autofac.Builder
         }
 
         /// <summary>
-        /// The services explicitly assigned to the component.
+        /// Gets the services explicitly assigned to the component.
         /// </summary>
         public IEnumerable<Service> Services
         {
@@ -135,12 +135,12 @@ namespace Autofac.Builder
         public ICollection<EventHandler<PreparingEventArgs>> PreparingHandlers { get; } = new List<EventHandler<PreparingEventArgs>>();
 
         /// <summary>
-        /// Handlers for the Activating event.
+        /// Gets the handlers for the Activating event.
         /// </summary>
         public ICollection<EventHandler<ActivatingEventArgs<object>>> ActivatingHandlers { get; } = new List<EventHandler<ActivatingEventArgs<object>>>();
 
         /// <summary>
-        /// Handlers for the Activated event.
+        /// Gets the handlers for the Activated event.
         /// </summary>
         public ICollection<EventHandler<ActivatedEventArgs<object>>> ActivatedHandlers { get; } = new List<EventHandler<ActivatedEventArgs<object>>>();
 
@@ -172,7 +172,7 @@ namespace Autofac.Builder
             AddAll(ActivatedHandlers, that.ActivatedHandlers);
         }
 
-        static void AddAll<T>(ICollection<T> to, IEnumerable<T> from)
+        private static void AddAll<T>(ICollection<T> to, IEnumerable<T> from)
         {
             foreach (var item in from)
                 to.Add(item);

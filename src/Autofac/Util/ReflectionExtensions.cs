@@ -33,7 +33,7 @@ namespace Autofac.Util
     /// <summary>
     /// Extension methods for reflection-related types.
     /// </summary>
-    static class ReflectionExtensions
+    internal static class ReflectionExtensions
     {
         /// <summary>
         /// Maps from a property-set-value parameter to the declaring property.

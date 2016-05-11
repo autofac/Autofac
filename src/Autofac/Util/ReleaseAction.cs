@@ -36,7 +36,7 @@ namespace Autofac.Util
         private readonly Func<TLimit> _factory;
 
         /// <summary>
-        /// Instantiates a new instance of <see cref="ReleaseAction{TLimit}"/>.
+        /// Initializes a new instance of the <see cref="ReleaseAction{TLimit}"/> class.
         /// </summary>
         /// <param name="action">
         /// The action to execute on disposal.

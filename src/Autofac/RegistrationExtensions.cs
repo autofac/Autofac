@@ -103,8 +103,9 @@ namespace Autofac
             {
                 if (!(rb.RegistrationData.Lifetime is RootScopeLifetime) ||
                     rb.RegistrationData.Sharing != InstanceSharing.Shared)
-                    throw new InvalidOperationException(string.Format(
-                        CultureInfo.CurrentCulture, RegistrationExtensionsResources.InstanceRegistrationsAreSingleInstanceOnly, instance));
+                {
+                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.InstanceRegistrationsAreSingleInstanceOnly, instance));
+                }
 
                 activator.DisposeInstance = rb.RegistrationData.Ownership == InstanceOwnership.OwnedByLifetimeScope;
 
@@ -208,8 +209,8 @@ namespace Autofac
         /// that have not already been registered.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
         /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
@@ -266,8 +267,8 @@ namespace Autofac
         /// Specifies a subset of types to register from a scanned assembly.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to filter types from.</param>
         /// <param name="predicate">Predicate that returns true for types to register.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
@@ -287,8 +288,8 @@ namespace Autofac
         /// Specifies how a type from a scanned assembly is mapped to a service.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <param name="serviceMapping">Function mapping types to services.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
@@ -308,8 +309,8 @@ namespace Autofac
         /// Specifies how a type from a scanned assembly is mapped to a service.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <param name="serviceMapping">Function mapping types to services.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
@@ -327,8 +328,8 @@ namespace Autofac
         /// Specifies how a type from a scanned assembly is mapped to a service.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <param name="serviceMapping">Function mapping types to services.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
@@ -347,8 +348,8 @@ namespace Autofac
         /// Specifies how a type from a scanned assembly is mapped to a service.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <param name="serviceMapping">Function mapping types to services.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
@@ -411,8 +412,8 @@ namespace Autofac
         /// Specify how a type from a scanned assembly provides metadata.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set metadata on.</param>
         /// <param name="metadataMapping">A function mapping the type to a list of metadata items.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
@@ -463,8 +464,8 @@ namespace Autofac
         /// Specify how a type from a scanned assembly provides metadata.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <param name="metadataKey">Key of the metadata item.</param>
         /// <param name="metadataValueMapping">A function retrieving the value of the item from the component type.</param>
@@ -501,8 +502,8 @@ namespace Autofac
         /// Specifies how a type from a scanned assembly is mapped to a named service.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <param name="serviceType">Service type provided by the component.</param>
         /// <param name="serviceNameMapping">Function mapping types to service names.</param>
@@ -540,8 +541,8 @@ namespace Autofac
         /// Specifies how a type from a scanned assembly is mapped to a keyed service.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <param name="serviceType">Service type provided by the component.</param>
         /// <param name="serviceKeyMapping">Function mapping types to service keys.</param>
@@ -608,7 +609,7 @@ namespace Autofac
             return registration.As(GetImplementedInterfaces(implementationType));
         }
 
-        static Type[] GetImplementedInterfaces(Type type)
+        private static Type[] GetImplementedInterfaces(Type type)
         {
             return type.GetTypeInfo().ImplementedInterfaces.Where(i => i != typeof(IDisposable)).ToArray();
         }
@@ -675,10 +676,8 @@ namespace Autofac
 
             // Unfortunately this could cause some false positives in rare AOP/dynamic subclassing
             // scenarios. If it becomes a problem we'll address it then.
-
             if (registration.ActivatorData.ImplementationType.GetMatchingConstructor(signature) == null)
-                throw new ArgumentException(
-                    string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.NoMatchingConstructorExists, registration.ActivatorData.ImplementationType));
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.NoMatchingConstructorExists, registration.ActivatorData.ImplementationType));
 
             return registration.UsingConstructor(new MatchingSignatureConstructorSelector(signature));
         }
@@ -687,8 +686,8 @@ namespace Autofac
         /// Set the policy used to select from available constructors on the implementation type.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set policy on.</param>
         /// <param name="constructorSelector">Policy to be used when selecting a constructor.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
@@ -732,11 +731,11 @@ namespace Autofac
         /// Configure an explicit value for a constructor parameter.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set parameter on.</param>
         /// <param name="parameterName">Name of a constructor parameter on the target type.</param>
-        /// <param name="parameterValue">Value to supply to the parameter.</param>
+        /// <param name="parameterValue">Value to supply to the parameter.</param>0
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
             WithParameter<TLimit, TReflectionActivatorData, TStyle>(
@@ -752,8 +751,8 @@ namespace Autofac
         /// Configure an explicit value for a constructor parameter.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set parameter on.</param>
         /// <param name="parameter">The parameter to supply to the constructor.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
@@ -778,7 +777,7 @@ namespace Autofac
         /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set parameter on.</param>
         /// <param name="parameterSelector">A predicate selecting the parameter to set.</param>
-        /// <param name="valueProvider"></param>
+        /// <param name="valueProvider">The provider that will generate the parameter value.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
             WithParameter<TLimit, TReflectionActivatorData, TStyle>(
@@ -798,8 +797,8 @@ namespace Autofac
         /// Configure explicit values for constructor parameters.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set parameter on.</param>
         /// <param name="parameters">The parameters to supply to the constructor.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
@@ -821,8 +820,8 @@ namespace Autofac
         /// Configure an explicit value for a property.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set property on.</param>
         /// <param name="propertyName">Name of a property on the target type.</param>
         /// <param name="propertyValue">Value to supply to the property.</param>
@@ -841,8 +840,8 @@ namespace Autofac
         /// Configure an explicit value for a property.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set parameter on.</param>
         /// <param name="property">The property to supply.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
@@ -863,8 +862,8 @@ namespace Autofac
         /// Configure explicit values for properties.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set parameter on.</param>
         /// <param name="properties">The properties to supply.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
@@ -914,8 +913,8 @@ namespace Autofac
         /// Provide a handler to be called when the component is registered.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
         /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration add handler to.</param>
         /// <param name="handler">The handler.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
@@ -977,8 +976,8 @@ namespace Autofac
         /// that closes the provided open generic interface type.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <param name="openGenericServiceType">The open generic interface or base class type for which implementations will be found.</param>
         /// <param name="serviceKey">Key of the service.</param>
@@ -996,8 +995,8 @@ namespace Autofac
         /// that closes the provided open generic interface type.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
         /// <param name="openGenericServiceType">The open generic interface or base class type for which implementations will be found.</param>
         /// <param name="serviceKeyMapping">Function mapping types to service keys.</param>
@@ -1015,8 +1014,8 @@ namespace Autofac
         /// type.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to filter types from.</param>
         /// <param name="type">The type or interface which all classes must be assignable from.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
@@ -1099,8 +1098,8 @@ namespace Autofac
         /// or one of its sub-namespaces.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to filter types from.</param>
         /// <param name="ns">The namespace from which types will be selected.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
@@ -1354,8 +1353,8 @@ namespace Autofac
         /// per-request dependencies (e.g., MVC, Web API, web forms, etc.).
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <param name="registration">The registration to configure.</param>
         /// <param name="lifetimeScopeTags">Additional tags applied for matching lifetime scopes.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>

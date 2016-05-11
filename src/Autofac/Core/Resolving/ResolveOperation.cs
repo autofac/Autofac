@@ -35,7 +35,7 @@ namespace Autofac.Core.Resolving
     /// activations that go into producing a single requested object graph.
     /// </summary>
     [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the most nested lifetime scope is responsible for disposal.")]
-    class ResolveOperation : IComponentContext, IResolveOperation
+    internal class ResolveOperation : IComponentContext, IResolveOperation
     {
         private readonly Stack<InstanceLookup> _activationStack = new Stack<InstanceLookup>();
         private ICollection<InstanceLookup> _successfulActivations;
@@ -72,6 +72,8 @@ namespace Autofac.Core.Resolving
         /// <summary>
         /// Execute the complete resolve operation.
         /// </summary>
+        /// <param name="registration">The registration.</param>
+        /// <param name="parameters">Parameters for the instance.</param>
         public object Execute(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
             object result;
@@ -149,7 +151,7 @@ namespace Autofac.Core.Resolving
         }
 
         /// <summary>
-        /// Associates services with the components that provide them.
+        /// Gets the services associated with the components that provide them.
         /// </summary>
         public IComponentRegistry ComponentRegistry => _mostNestedLifetimeScope.ComponentRegistry;
 

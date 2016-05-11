@@ -33,7 +33,7 @@ namespace Autofac.Core.Resolving
     public class InstanceLookupEndingEventArgs : EventArgs
     {
         /// <summary>
-        /// Create an instance of the <see cref="InstanceLookupBeginningEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="InstanceLookupEndingEventArgs"/> class.
         /// </summary>
         /// <param name="instanceLookup">The instance lookup that is ending.</param>
         /// <param name="newInstanceActivated">True if a new instance was created as part of the operation.</param>
@@ -46,12 +46,12 @@ namespace Autofac.Core.Resolving
         }
 
         /// <summary>
-        /// True if a new instance was created as part of the operation.
+        /// Gets a value indicating whether a new instance was created as part of the operation.
         /// </summary>
         public bool NewInstanceActivated { get; }
 
         /// <summary>
-        /// The instance lookup operation that is ending.
+        /// Gets the instance lookup operation that is ending.
         /// </summary>
         public IInstanceLookup InstanceLookup { get; }
     }

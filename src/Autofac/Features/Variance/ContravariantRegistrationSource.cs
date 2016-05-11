@@ -26,9 +26,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac.Core;
-using Autofac.Builder;
 using System.Reflection;
+using Autofac.Builder;
+using Autofac.Core;
 using Autofac.Util;
 
 namespace Autofac.Features.Variance
@@ -108,20 +108,20 @@ namespace Autofac.Features.Variance
                     .CreateRegistration());
         }
 
-        static Type[] SubstituteArrayElementAt(Type[] array, Type newElement, int index)
+        private static Type[] SubstituteArrayElementAt(Type[] array, Type newElement, int index)
         {
             var copy = array.ToArray();
             copy[index] = newElement;
             return copy;
         }
 
-        static IEnumerable<Type> GetTypesAssignableFrom(Type type)
+        private static IEnumerable<Type> GetTypesAssignableFrom(Type type)
         {
             return GetBagOfTypesAssignableFrom(type)
                 .Distinct();
         }
 
-        static IEnumerable<Type> GetBagOfTypesAssignableFrom(Type type)
+        private static IEnumerable<Type> GetBagOfTypesAssignableFrom(Type type)
         {
             if (type.GetTypeInfo().BaseType != null)
             {
@@ -146,7 +146,7 @@ namespace Autofac.Features.Variance
             }
         }
 
-        static bool IsCompatibleInterfaceType(Type type, out int contravariantParameterIndex)
+        private static bool IsCompatibleInterfaceType(Type type, out int contravariantParameterIndex)
         {
             if (type.GetTypeInfo().IsGenericType && type.GetTypeInfo().IsInterface)
             {

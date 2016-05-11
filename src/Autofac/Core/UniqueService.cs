@@ -32,7 +32,7 @@ namespace Autofac.Core
     /// </summary>
     public sealed class UniqueService : Service
     {
-        readonly Guid _id;
+        private readonly Guid _id;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UniqueService"/> class.
@@ -52,9 +52,8 @@ namespace Autofac.Core
         }
 
         /// <summary>
-        /// Provides a programmer-readable description of the identifying feature of the service.
+        /// Gets a programmer-readable description of the identifying feature of the service.
         /// </summary>
-        /// <value></value>
         public override string Description => _id.ToString();
 
         /// <summary>

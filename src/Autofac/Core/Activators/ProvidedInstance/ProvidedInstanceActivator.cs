@@ -37,7 +37,7 @@ namespace Autofac.Core.Activators.ProvidedInstance
         private bool _activated;
 
         /// <summary>
-        /// Provide the specified instance.
+        /// Initializes a new instance of the <see cref="ProvidedInstanceActivator"/> class.
         /// </summary>
         /// <param name="instance">The instance to provide.</param>
         public ProvidedInstanceActivator(object instance)
@@ -70,7 +70,7 @@ namespace Autofac.Core.Activators.ProvidedInstance
         }
 
         /// <summary>
-        /// Determines whether the activator disposes the instance that it holds.
+        /// Gets or sets a value indicating whether the activator disposes the instance that it holds.
         /// Necessary because otherwise instances that are never resolved will never be
         /// disposed.
         /// </summary>

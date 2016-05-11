@@ -32,13 +32,13 @@ using System.Runtime.CompilerServices;
 
 namespace Autofac.Util
 {
-    static class TypeExtensions
+    internal static class TypeExtensions
     {
         public static readonly Type[] EmptyTypes = new Type[0];
 
-        static readonly Type ReadOnlyCollectionType = Type.GetType("System.Collections.Generic.IReadOnlyCollection`1", false);
+        private static readonly Type ReadOnlyCollectionType = Type.GetType("System.Collections.Generic.IReadOnlyCollection`1", false);
 
-        static readonly Type ReadOnlyListType = Type.GetType("System.Collections.Generic.IReadOnlyList`1", false);
+        private static readonly Type ReadOnlyListType = Type.GetType("System.Collections.Generic.IReadOnlyList`1", false);
 
         /// <summary>Returns the first concrete interface supported by the candidate type that
         /// closes the provided open generic service type.</summary>
@@ -143,7 +143,7 @@ namespace Autofac.Util
             return true;
         }
 
-        static bool ParameterCompatibleWithTypeConstraint(Type parameter, Type constraint)
+        private static bool ParameterCompatibleWithTypeConstraint(Type parameter, Type constraint)
         {
             return constraint.GetTypeInfo().IsAssignableFrom(parameter.GetTypeInfo()) ||
                    Traverse.Across(parameter, p => p.GetTypeInfo().BaseType)
@@ -152,7 +152,7 @@ namespace Autofac.Util
         }
 
         [SuppressMessage("Microsoft.Design", "CA1031", Justification = "Implementing a real TryMakeGenericType is not worth the effort.")]
-        static bool ParameterEqualsConstraint(Type parameter, Type constraint)
+        private static bool ParameterEqualsConstraint(Type parameter, Type constraint)
         {
             var genericArguments = parameter.GetTypeInfo().GenericTypeArguments;
             if (genericArguments.Length > 0 && constraint.GetTypeInfo().IsGenericType)
@@ -177,8 +177,8 @@ namespace Autofac.Util
 
         public static bool IsGenericEnumerableInterfaceType(this Type type)
         {
-            return (type.IsGenericTypeDefinedBy(typeof(IEnumerable<>))
-                || type.IsGenericListOrCollectionInterfaceType());
+            return type.IsGenericTypeDefinedBy(typeof(IEnumerable<>))
+                || type.IsGenericListOrCollectionInterfaceType();
         }
 
         public static bool IsGenericListOrCollectionInterfaceType(this Type type)

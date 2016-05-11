@@ -35,17 +35,18 @@ namespace Autofac.Core
     public class NamedPropertyParameter : ConstantParameter
     {
         /// <summary>
-        /// The name of the property.
+        /// Gets the name of the property.
         /// </summary>
         public string Name { get; private set; }
 
         /// <summary>
-        /// Create a <see cref="NamedPropertyParameter"/> with the specified constant value.
+        /// Initializes a new instance of the <see cref="NamedPropertyParameter"/> class.
         /// </summary>
         /// <param name="name">The name of the property.</param>
         /// <param name="value">The property value.</param>
         public NamedPropertyParameter(string name, object value)
-            : base(value, pi => {
+            : base(value, pi =>
+            {
                 PropertyInfo prop;
                 return pi.TryGetDeclaringProperty(out prop) &&
                     prop.Name == name;

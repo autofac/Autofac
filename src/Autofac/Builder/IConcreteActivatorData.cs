@@ -33,7 +33,7 @@ namespace Autofac.Builder
     public interface IConcreteActivatorData
     {
         /// <summary>
-        /// The instance activator based on the provided data.
+        /// Gets the instance activator based on the provided data.
         /// </summary>
         IInstanceActivator Activator { get; }
     }

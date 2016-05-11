@@ -34,7 +34,7 @@ using Autofac.Util;
 
 namespace Autofac.Features.OpenGenerics
 {
-    static class OpenGenericServiceBinder
+    internal static class OpenGenericServiceBinder
     {
         public static bool TryBindServiceType(
             Service service,

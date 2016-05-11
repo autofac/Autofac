@@ -83,11 +83,15 @@ namespace Autofac.Builder
         }
 
         /// <summary>
-        /// The constructor selector for the registration.
+        /// Gets or sets the constructor selector for the registration.
         /// </summary>
         public IConstructorSelector ConstructorSelector
         {
-            get { return _constructorSelector; }
+            get
+            {
+                return _constructorSelector;
+            }
+
             set
             {
                 if (value == null) throw new ArgumentNullException(nameof(value));
@@ -96,12 +100,12 @@ namespace Autofac.Builder
         }
 
         /// <summary>
-        /// The explicitly bound constructor parameters.
+        /// Gets the explicitly bound constructor parameters.
         /// </summary>
         public IList<Parameter> ConfiguredParameters { get; } = new List<Parameter>();
 
         /// <summary>
-        /// The explicitly bound properties.
+        /// Gets the explicitly bound properties.
         /// </summary>
         public IList<Parameter> ConfiguredProperties { get; } = new List<Parameter>();
     }

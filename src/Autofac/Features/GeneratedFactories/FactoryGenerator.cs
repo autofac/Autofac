@@ -40,10 +40,10 @@ namespace Autofac.Features.GeneratedFactories
     /// </summary>
     public class FactoryGenerator
     {
-        readonly Func<IComponentContext, IEnumerable<Parameter>, Delegate> _generator;
+        private readonly Func<IComponentContext, IEnumerable<Parameter>, Delegate> _generator;
 
         /// <summary>
-        /// Create a factory generator.
+        /// Initializes a new instance of the <see cref="FactoryGenerator"/> class.
         /// </summary>
         /// <param name="service">The service that will be activated in
         /// order to create the products of the factory.</param>
@@ -54,7 +54,8 @@ namespace Autofac.Features.GeneratedFactories
             if (service == null) throw new ArgumentNullException(nameof(service));
             Enforce.ArgumentTypeIsFunction(delegateType);
 
-            _generator = CreateGenerator((activatorContextParam, resolveParameterArray) =>
+            _generator = CreateGenerator(
+                (activatorContextParam, resolveParameterArray) =>
                 {
                     // c, service, [new Parameter(name, (object)dps)]*
                     var resolveParams = new[]
@@ -74,7 +75,7 @@ namespace Autofac.Features.GeneratedFactories
         }
 
         /// <summary>
-        /// Create a factory generator.
+        /// Initializes a new instance of the <see cref="FactoryGenerator"/> class.
         /// </summary>
         /// <param name="productRegistration">The component that will be activated in
         /// order to create the products of the factory.</param>
@@ -85,10 +86,12 @@ namespace Autofac.Features.GeneratedFactories
             if (productRegistration == null) throw new ArgumentNullException(nameof(productRegistration));
             Enforce.ArgumentTypeIsFunction(delegateType);
 
-            _generator = CreateGenerator((activatorContextParam, resolveParameterArray) =>
+            _generator = CreateGenerator(
+                (activatorContextParam, resolveParameterArray) =>
                 {
                     // productRegistration, [new Parameter(name, (object)dps)]*
-                    var resolveParams = new Expression[] {
+                    var resolveParams = new Expression[]
+                    {
                         Expression.Constant(productRegistration, typeof(IComponentRegistration)),
                         Expression.NewArrayInit(typeof(Parameter), resolveParameterArray)
                     };
@@ -103,7 +106,7 @@ namespace Autofac.Features.GeneratedFactories
                 GetParameterMapping(delegateType, parameterMapping));
         }
 
-        static ParameterMapping GetParameterMapping(Type delegateType, ParameterMapping configuredParameterMapping)
+        private static ParameterMapping GetParameterMapping(Type delegateType, ParameterMapping configuredParameterMapping)
         {
             if (configuredParameterMapping == ParameterMapping.Adaptive)
                 return DelegateTypeIsFunc(delegateType) ? ParameterMapping.ByType : ParameterMapping.ByName;
@@ -118,7 +121,6 @@ namespace Autofac.Features.GeneratedFactories
         private static Func<IComponentContext, IEnumerable<Parameter>, Delegate> CreateGenerator(Func<Expression, Expression[], Expression> makeResolveCall, Type delegateType, ParameterMapping pm)
         {
             // (c, p) => ([dps]*) => (drt)Resolve(c, productRegistration, [new NamedParameter(name, (object)dps)]*)
-
             // (c, p)
             var activatorContextParam = Expression.Parameter(typeof(IComponentContext), "c");
             var activatorParamsParam = Expression.Parameter(typeof(IEnumerable<Parameter>), "p");
@@ -175,36 +177,28 @@ namespace Autofac.Features.GeneratedFactories
             return activator.Compile();
         }
 
-
-
-        static Expression[] MapParameters(IEnumerable<ParameterExpression> creatorParams, ParameterMapping pm)
+        private static Expression[] MapParameters(IEnumerable<ParameterExpression> creatorParams, ParameterMapping pm)
         {
             switch (pm)
             {
                 case ParameterMapping.ByType:
                     return creatorParams
-                            .Select(p => Expression.New(
-                                typeof(TypedParameter).GetMatchingConstructor(new[] { typeof(Type), typeof(object) }),
-                                Expression.Constant(p.Type, typeof(Type)), Expression.Convert(p, typeof(object))))
-                            .OfType<Expression>()
-                            .ToArray();
+                        .Select(p => Expression.New(typeof(TypedParameter).GetMatchingConstructor(new[] { typeof(Type), typeof(object) }), Expression.Constant(p.Type, typeof(Type)), Expression.Convert(p, typeof(object))))
+                        .OfType<Expression>()
+                        .ToArray();
 
                 case ParameterMapping.ByPosition:
                     return creatorParams
-                        .Select((p, i) => Expression.New(
-                                typeof(PositionalParameter).GetMatchingConstructor(new[] { typeof(int), typeof(object) }),
-                                Expression.Constant(i, typeof(int)), Expression.Convert(p, typeof(object))))
-                            .OfType<Expression>()
-                            .ToArray();
+                        .Select((p, i) => Expression.New(typeof(PositionalParameter).GetMatchingConstructor(new[] { typeof(int), typeof(object) }), Expression.Constant(i, typeof(int)), Expression.Convert(p, typeof(object))))
+                        .OfType<Expression>()
+                        .ToArray();
 
-                // ReSharper disable RedundantCaseLabel
                 case ParameterMapping.ByName:
-                // ReSharper restore RedundantCaseLabel
                 default:
                     return creatorParams
-                            .Select(p => Expression.New(typeof(NamedParameter).GetMatchingConstructor(new[] { typeof(string), typeof(object) }), Expression.Constant(p.Name, typeof(string)), Expression.Convert(p, typeof(object))))
-                            .OfType<Expression>()
-                            .ToArray();
+                        .Select(p => Expression.New(typeof(NamedParameter).GetMatchingConstructor(new[] { typeof(string), typeof(object) }), Expression.Constant(p.Name, typeof(string)), Expression.Convert(p, typeof(object))))
+                        .OfType<Expression>()
+                        .ToArray();
             }
         }
 

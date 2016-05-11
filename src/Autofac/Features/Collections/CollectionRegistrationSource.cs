@@ -62,7 +62,7 @@ namespace Autofac.Features.Collections
     /// for something you don't expect to resolve."
     /// </para>
     /// </remarks>
-    class CollectionRegistrationSource : IRegistrationSource
+    internal class CollectionRegistrationSource : IRegistrationSource
     {
         /// <summary>
         /// Retrieve registrations for an unregistered service, to be used
@@ -99,9 +99,9 @@ namespace Autofac.Features.Collections
                     var listType = typeof(List<>).MakeGenericType(elementType);
                     var serviceTypeIsList = serviceType.IsGenericListOrCollectionInterfaceType();
 
-                    var registration = new ComponentRegistration(
-                        Guid.NewGuid(),
-                        new DelegateActivator(elementArrayType, (c, p) =>
+                    var activator = new DelegateActivator(
+                        elementArrayType,
+                        (c, p) =>
                         {
                             var elements = c.ComponentRegistry.RegistrationsFor(elementTypeService);
                             var items = elements.Select(cr => c.ResolveComponent(cr, p)).ToArray();
@@ -110,7 +110,11 @@ namespace Autofac.Features.Collections
                             items.CopyTo(result, 0);
 
                             return serviceTypeIsList ? Activator.CreateInstance(listType, result) : result;
-                        }),
+                        });
+
+                    var registration = new ComponentRegistration(
+                        Guid.NewGuid(),
+                        activator,
                         new CurrentScopeLifetime(),
                         InstanceSharing.None,
                         InstanceOwnership.ExternallyOwned,

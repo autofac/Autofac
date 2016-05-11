@@ -34,8 +34,8 @@ namespace Autofac.Util
     /// </summary>
     public class Disposable : IDisposable
     {
-        const int DisposedFlag = 1;
-        int _isDisposed;
+        private const int DisposedFlag = 1;
+        private int _isDisposed;
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -60,7 +60,7 @@ namespace Autofac.Util
         }
 
         /// <summary>
-        /// Returns true if the current instance has been disposed; otherwise false;
+        /// Gets a value indicating whether the current instance has been disposed; otherwise false;
         /// </summary>
         protected bool IsDisposed
         {

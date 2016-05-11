@@ -36,7 +36,7 @@ namespace Autofac.Features.Scanning
     public class ScanningActivatorData : ReflectionActivatorData
     {
         /// <summary>
-        /// Create an instance of <see cref="ScanningActivatorData"/>.
+        /// Initializes a new instance of the <see cref="ScanningActivatorData"/> class.
         /// </summary>
         public ScanningActivatorData()
             : base(typeof(object)) // TODO - refactor common base class out of RAD
