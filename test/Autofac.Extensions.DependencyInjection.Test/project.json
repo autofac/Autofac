@@ -35,14 +35,6 @@
         "System.Diagnostics.Process": "4.1.0-rc2-*",
         "dotnet-test-xunit": "1.0.0-rc2-*"
       }
-    },
-    "net451": {
-      "frameworkAssemblies": {
-         "System.Runtime": { "type": "build"}
-      },
-      "dependencies": {
-        "xunit.runner.console": "2.1.0"
-      }
     }
   }
 }

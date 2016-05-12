@@ -30,16 +30,6 @@
         },
         "dotnet-test-xunit": "1.0.0-rc2-*"
       }
-    },
-    "net451": {
-      "frameworkAssemblies": {
-        "System.ComponentModel.Composition": "",
-        "System.Data": "",
-        "System.Threading.Tasks": ""
-      },
-      "dependencies": {
-        "xunit.runner.console": "2.1.0"
-      }
     }
   }
 }
