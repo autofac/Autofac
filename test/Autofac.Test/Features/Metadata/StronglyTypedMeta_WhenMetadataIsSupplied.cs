@@ -2,6 +2,7 @@
 using Autofac.Core;
 using Autofac.Core.Registration;
 using Autofac.Features.Metadata;
+using Autofac.Test.Features.Metadata.TestTypes;
 using Autofac.Util;
 using Xunit;
 
@@ -9,10 +10,10 @@ namespace Autofac.Test.Features.Metadata
 {
     public class StronglyTypedMeta_WhenMetadataIsSupplied
     {
-        const int SuppliedIntValue = 123;
-        const string SuppliedNameValue = "Homer";
+        private const int SuppliedIntValue = 123;
+        private const string SuppliedNameValue = "Homer";
 
-        IContainer _container;
+        private IContainer _container;
 
         public StronglyTypedMeta_WhenMetadataIsSupplied()
         {
@@ -90,36 +91,6 @@ namespace Autofac.Test.Features.Metadata
         {
             var meta = _container.Resolve<Meta<Func<object>, MyMeta>>();
             Assert.Equal(SuppliedIntValue, meta.Metadata.TheInt);
-        }
-    }
-    public class StronglyTypedMeta_WhenNoMatchingMetadataIsSupplied
-    {
-        IContainer _container;
-
-        public StronglyTypedMeta_WhenNoMatchingMetadataIsSupplied()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<object>();
-            _container = builder.Build();
-        }
-
-        [Fact]
-        public void ResolvingStronglyTypedMetadataWithoutDefaultValueThrowsException()
-        {
-            var exception = Assert.Throws<DependencyResolutionException>(
-                () => _container.Resolve<Meta<object, MyMeta>>());
-
-            var propertyName = ReflectionExtensions.GetProperty<MyMeta, int>(x => x.TheInt).Name;
-            var message = string.Format(MetadataViewProviderResources.MissingMetadata, propertyName);
-
-            Assert.Equal(message, exception.Message);
-        }
-
-        [Fact]
-        public void ResolvingStronglyTypedMetadataWithDefaultValueProvidesDefault()
-        {
-            var m = _container.Resolve<Meta<object, MyMetaWithDefault>>();
-            Assert.Equal(42, m.Metadata.TheInt);
         }
     }
 }

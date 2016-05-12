@@ -1,16 +1,10 @@
-﻿using System;
+using System;
 
-namespace Autofac.Test.Scenarios.ScannedAssembly
+namespace Autofac.Test.Scenarios.ScannedAssembly.MetadataAttributeScanningScenario
 {
-
-    public interface IHaveName
-    {
-        string Name { get; }
-    }
-
     public class NameAttribute : Attribute, IHaveName
     {
-        readonly string _name;
+        private readonly string _name;
 
         public NameAttribute(string name)
         {
@@ -23,7 +17,4 @@ namespace Autofac.Test.Scenarios.ScannedAssembly
             get { return _name; }
         }
     }
-
-    [Name("My Name")]
-    public class ScannedComponentWithName { }
 }

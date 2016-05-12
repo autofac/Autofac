@@ -15,7 +15,7 @@ namespace Autofac.Test.Core.Registration
             var registration = RegistrationBuilder.ForType<object>().CreateRegistration();
             cow.Register(registration);
 
-            var objectService = new TypedService(typeof (object));
+            var objectService = new TypedService(typeof(object));
             Assert.True(cow.IsRegistered(objectService));
             Assert.False(read.IsRegistered(objectService));
         }
@@ -32,7 +32,7 @@ namespace Autofac.Test.Core.Registration
             });
 
             IComponentRegistration unused;
-            cow.TryGetRegistration(new TypedService(typeof (object)), out unused);
+            cow.TryGetRegistration(new TypedService(typeof(object)), out unused);
 
             Assert.False(writeRegistryCreated);
         }

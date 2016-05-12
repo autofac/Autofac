@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Builder;
-using Xunit;
 using Autofac.Core;
 using Autofac.Test.Scenarios.Dependencies.Circularity;
 using Autofac.Test.Scenarios.Graph1;
+using Xunit;
 
 namespace Autofac.Test
 {
@@ -92,9 +92,17 @@ namespace Autofac.Test
             Assert.False(disposable.IsDisposed);
         }
 
-        public interface I1<T> { }
-        public interface I2<T> { }
-        public class C<T> : I1<T>, I2<T> { }
+        public interface I1<T>
+        {
+        }
+
+        public interface I2<T>
+        {
+        }
+
+        public class C<T> : I1<T>, I2<T>
+        {
+        }
 
         [Fact]
         public void MultipleServicesOnAnOpenGenericType_ShareTheSameRegistration()
@@ -127,7 +135,6 @@ namespace Autofac.Test
             target.Dispose();
 
             // B1 depends on A1, therefore B1 should be disposed first
-
             Assert.Equal(2, disposeOrder.Count);
             Assert.Same(b, disposeOrder.Dequeue());
             Assert.Same(a, disposeOrder.Dequeue());
@@ -152,7 +159,6 @@ namespace Autofac.Test
             target.Dispose();
 
             // B1 depends on A1, therefore B1 should be disposed first
-
             Assert.Equal(2, disposeOrder.Count);
             Assert.Same(b, disposeOrder.Dequeue());
             Assert.Same(a, disposeOrder.Dequeue());

@@ -4,7 +4,7 @@ using Autofac.Core.Activators.Reflection;
 
 namespace Autofac.Test
 {
-    static class Mocks
+    internal static class Mocks
     {
         public static IConstructorFinder GetConstructorFinder()
         {
@@ -20,31 +20,31 @@ namespace Autofac.Test
         {
             return new Startable();
         }
-    }
 
-    class MockConstructorFinder : IConstructorFinder
-    {
-        public ConstructorInfo[] FindConstructors(Type targetType)
+        internal class MockConstructorFinder : IConstructorFinder
         {
-            return new ConstructorInfo[0];
+            public ConstructorInfo[] FindConstructors(Type targetType)
+            {
+                return new ConstructorInfo[0];
+            }
         }
-    }
 
-    class MockConstructorSelector : IConstructorSelector
-    {
-        public ConstructorParameterBinding SelectConstructorBinding(ConstructorParameterBinding[] constructorBindings)
+        internal class MockConstructorSelector : IConstructorSelector
         {
-            return null;
+            public ConstructorParameterBinding SelectConstructorBinding(ConstructorParameterBinding[] constructorBindings)
+            {
+                return null;
+            }
         }
-    }
 
-    class Startable : IStartable
-    {
-        public int StartCount { get; private set; }
-
-        public void Start()
+        internal class Startable : IStartable
         {
-            StartCount++;
+            public int StartCount { get; private set; }
+
+            public void Start()
+            {
+                StartCount++;
+            }
         }
     }
 }

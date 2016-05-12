@@ -202,7 +202,9 @@ namespace Autofac.Test.Core
         private class ComplexConsumer
         {
             public int Number { get; private set; }
+
             public string Text { get; private set; }
+
             public object Value { get; set; }
 
             public ComplexConsumer(int number, string text)

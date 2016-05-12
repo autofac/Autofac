@@ -9,6 +9,7 @@ namespace Autofac.Test.Builder
         public class MessageHandler
         {
             public ILifetimeScope LifetimeScope { get; set; }
+
             public ServiceForHandler DependentService { get; set; }
 
             public MessageHandler(ILifetimeScope lifetimeScope, ServiceForHandler service)
@@ -82,7 +83,7 @@ namespace Autofac.Test.Builder
             AssertInstancePerOwnedResolvesToOwnedScope(owned, new KeyedService(serviceKey, typeof(MessageHandler)));
         }
 
-        static void AssertInstancePerOwnedResolvesToOwnedScope(Owned<MessageHandler> owned, IServiceWithType tag)
+        private static void AssertInstancePerOwnedResolvesToOwnedScope(Owned<MessageHandler> owned, IServiceWithType tag)
         {
             var handler = owned.Value;
             var dependentService = handler.DependentService;

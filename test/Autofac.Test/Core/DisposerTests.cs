@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Xunit;
 using Autofac.Core;
 using Autofac.Test.Scenarios.Graph1;
+using Xunit;
 
 namespace Autofac.Test.Core
 {
@@ -32,7 +32,7 @@ namespace Autofac.Test.Core
             instance2.Disposing += (s, e) => lastDisposed = instance2;
 
             var disposer = new Disposer();
-            
+
             disposer.AddInstanceForDisposal(instance1);
             disposer.AddInstanceForDisposal(instance2);
 

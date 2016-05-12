@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Xunit;
 using Autofac.Core;
 using Autofac.Core.Registration;
+using Xunit;
 
 namespace Autofac.Test
 {
     public class ModuleTests
     {
-        class ObjectModule : Module
+        internal class ObjectModule : Module
         {
             protected override void Load(ContainerBuilder builder)
             {
@@ -32,9 +32,9 @@ namespace Autofac.Test
             Assert.Throws<ArgumentNullException>(() => new ObjectModule().Configure(null));
         }
 
-        class AttachingModule : Module
+        internal class AttachingModule : Module
         {
-            public IList<IComponentRegistration> Registrations = new List<IComponentRegistration>();
+            public IList<IComponentRegistration> Registrations { get; set; } = new List<IComponentRegistration>();
 
             protected override void AttachToComponentRegistration(IComponentRegistry componentRegistry, IComponentRegistration registration)
             {
@@ -59,9 +59,15 @@ namespace Autofac.Test
             Assert.Equal(container.ComponentRegistry.Registrations.Count(), attachingModule.Registrations.Count);
         }
 
-        class ModuleExposingThisAssembly : Module
+        internal class ModuleExposingThisAssembly : Module
         {
-            public Assembly ModuleThisAssembly { get { return ThisAssembly; }}
+            public Assembly ModuleThisAssembly
+            {
+                get
+                {
+                    return ThisAssembly;
+                }
+            }
         }
 
         [Fact]
@@ -71,7 +77,7 @@ namespace Autofac.Test
             Assert.Same(typeof(ModuleExposingThisAssembly).GetTypeInfo().Assembly, module.ModuleThisAssembly);
         }
 
-        class ModuleIndirectlyExposingThisAssembly : ModuleExposingThisAssembly
+        internal class ModuleIndirectlyExposingThisAssembly : ModuleExposingThisAssembly
         {
         }
 

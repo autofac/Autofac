@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using Autofac.Builder;
 using Autofac.Core;
-using Xunit;
 using Autofac.Features.OwnedInstances;
+using Xunit;
 
 namespace Autofac.Test.Features.OwnedInstances
 {
@@ -72,14 +72,20 @@ namespace Autofac.Test.Features.OwnedInstances
 
         public class ExposesScopeTag
         {
-            readonly ILifetimeScope _myScope;
+            private readonly ILifetimeScope _myScope;
 
             public ExposesScopeTag(ILifetimeScope myScope)
             {
                 _myScope = myScope;
             }
 
-            public object Tag { get { return _myScope.Tag; } }
+            public object Tag
+            {
+                get
+                {
+                    return _myScope.Tag;
+                }
+            }
         }
 
         [Fact]
@@ -109,16 +115,17 @@ namespace Autofac.Test.Features.OwnedInstances
         public void CanResolveAndUse_OwnedGeneratedFactory()
         {
             var cb = new ContainerBuilder();
-            cb.Register((c,p) => new ClassWithFactory(p.Named<string>("name")));
+            cb.Register((c, p) => new ClassWithFactory(p.Named<string>("name")));
             cb.RegisterGeneratedFactory<ClassWithFactory.OwnedFactory>();
             var container = cb.Build();
             var factory = container.Resolve<ClassWithFactory.OwnedFactory>();
             bool isAccessed;
-            using(var owner = factory("test"))
+            using (var owner = factory("test"))
             {
-                Assert.Equal("test", owner.Value.Name); 
+                Assert.Equal("test", owner.Value.Name);
                 isAccessed = true;
             }
+
             Assert.True(isAccessed);
         }
     }

@@ -7,10 +7,8 @@ using Xunit;
 
 namespace Autofac.Test.Core.Activators.Reflection
 {
-    public class MostParametersConstructorSelectorFixture
+    public class MostParametersConstructorSelectorTests
     {
-        // ReSharper disable ClassNeverInstantiated.Local
-
         [Fact]
         public void DoesNotAcceptNullBindings()
         {
@@ -27,9 +25,17 @@ namespace Autofac.Test.Core.Activators.Reflection
 
         public class ThreeConstructors
         {
-            public ThreeConstructors() { }
-            public ThreeConstructors(int i, string s) { }
-            public ThreeConstructors(int i) { }
+            public ThreeConstructors()
+            {
+            }
+
+            public ThreeConstructors(int i, string s)
+            {
+            }
+
+            public ThreeConstructors(int i)
+            {
+            }
         }
 
         [Fact]
@@ -44,10 +50,15 @@ namespace Autofac.Test.Core.Activators.Reflection
             Assert.Equal(2, chosen.TargetConstructor.GetParameters().Length);
         }
 
-        class TwoConstructors
+        private class TwoConstructors
         {
-            public TwoConstructors(int i) { }
-            public TwoConstructors(string s) { }
+            public TwoConstructors(int i)
+            {
+            }
+
+            public TwoConstructors(string s)
+            {
+            }
         }
 
         [Fact]
@@ -59,13 +70,11 @@ namespace Autofac.Test.Core.Activators.Reflection
             Assert.Throws<DependencyResolutionException>(() => target.SelectConstructorBinding(constructors));
         }
 
-        static ConstructorParameterBinding[] GetBindingsForAllConstructorsOf<TTarget>()
+        private static ConstructorParameterBinding[] GetBindingsForAllConstructorsOf<TTarget>()
         {
             return typeof(TTarget).GetTypeInfo().DeclaredConstructors
                 .Select(ci => new ConstructorParameterBinding(ci, Enumerable.Empty<Parameter>(), new ContainerBuilder().Build()))
                 .ToArray();
         }
-
-        // ReSharper restore ClassNeverInstantiated.Local
     }
 }

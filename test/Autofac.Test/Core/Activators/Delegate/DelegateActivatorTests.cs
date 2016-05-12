@@ -1,8 +1,8 @@
 ﻿using System;
-using Xunit;
 using System.Linq;
-using Autofac.Core.Activators.Delegate;
 using Autofac.Core;
+using Autofac.Core.Activators.Delegate;
+using Xunit;
 
 namespace Autofac.Test.Component.Activation
 {
@@ -41,5 +41,5 @@ namespace Autofac.Test.Component.Activation
 
             Assert.True(ex.Message.Contains(typeof(string).ToString()));
         }
-	}
+    }
 }

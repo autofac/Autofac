@@ -1,8 +1,8 @@
 ﻿using System;
-using Xunit;
 using System.Linq;
-using Autofac.Core.Activators.ProvidedInstance;
 using Autofac.Core;
+using Autofac.Core.Activators.ProvidedInstance;
+using Xunit;
 
 namespace Autofac.Test.Component.Activation
 {

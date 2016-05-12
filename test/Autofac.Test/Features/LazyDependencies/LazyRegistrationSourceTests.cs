@@ -12,7 +12,7 @@ namespace Autofac.Test.Features.LazyDependencies
             Assert.True(container.IsRegistered<Lazy<object>>());
         }
 
-        static IContainer GetContainerWithLazyObject()
+        private static IContainer GetContainerWithLazyObject()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<object>();

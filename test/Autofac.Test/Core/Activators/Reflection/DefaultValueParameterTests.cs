@@ -7,15 +7,16 @@ using Xunit;
 
 namespace Autofac.Test.Core.Activators.Reflection
 {
-    public class HasDefaultValues
-    {
-        public HasDefaultValues(string s, string t = "Hello")
-        {
-        }
-    }
     public class DefaultValueParameterTests
     {
-        static ParameterInfo GetTestParameter(string name)
+        public class HasDefaultValues
+        {
+            public HasDefaultValues(string s, string t = "Hello")
+            {
+            }
+        }
+
+        private static ParameterInfo GetTestParameter(string name)
         {
             return typeof(HasDefaultValues).GetConstructors().Single()
                 .GetParameters().Where(pi => pi.Name == name).Single();

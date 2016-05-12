@@ -12,18 +12,19 @@ namespace Autofac.Test.Features.LightweightAdapters
     {
         public class AdaptingFromOneServiceToAnother
         {
-            readonly Service _from = new TypedService(typeof(object)),
-                    _to = new KeyedService("name", typeof(object));
+            private readonly Service _from = new TypedService(typeof(object));
 
-            readonly IEnumerable<IComponentRegistration> _adaptedFrom = new[]
-                {
-                    RegistrationBuilder.ForType<object>().CreateRegistration(),
-                    RegistrationBuilder.ForType<object>().CreateRegistration()
-                };
+            private readonly Service _to = new KeyedService("name", typeof(object));
 
-            readonly LightweightAdapterRegistrationSource _subject;
+            private readonly IEnumerable<IComponentRegistration> _adaptedFrom = new[]
+            {
+                RegistrationBuilder.ForType<object>().CreateRegistration(),
+                RegistrationBuilder.ForType<object>().CreateRegistration()
+            };
 
-            readonly IEnumerable<IComponentRegistration> _adaptedTo;
+            private readonly LightweightAdapterRegistrationSource _subject;
+
+            private readonly IEnumerable<IComponentRegistration> _adaptedTo;
 
             public AdaptingFromOneServiceToAnother()
             {
@@ -52,6 +53,7 @@ namespace Autofac.Test.Features.LightweightAdapters
                 Assert.True(_adaptedFrom.All(from => _adaptedTo.Any(to => to.Target == from)));
             }
         }
+
         public class ConstructingAnAdapterRegistrationSource
         {
             [Fact]

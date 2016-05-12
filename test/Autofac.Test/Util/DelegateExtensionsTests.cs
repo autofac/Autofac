@@ -11,8 +11,13 @@ namespace Autofac.Test.Util
     {
         public class WithTwoInvokes
         {
-            public void Invoke() { }
-            public void Invoke(string s) { }
+            public void Invoke()
+            {
+            }
+
+            public void Invoke(string s)
+            {
+            }
         }
 
         // Issue 179

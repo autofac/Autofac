@@ -1,9 +1,9 @@
 ﻿using System;
-using Xunit;
 using Autofac.Core;
 using Autofac.Core.Activators.ProvidedInstance;
-using Autofac.Test.Scenarios.Parameterisation;
 using Autofac.Core.Registration;
+using Autofac.Test.Scenarios.Parameterisation;
+using Xunit;
 
 namespace Autofac.Test
 {
@@ -75,7 +75,7 @@ namespace Autofac.Test
             const string a = "Hello";
             const int b = 42;
             var builder = new ContainerBuilder();
-            
+
             builder.RegisterType<Parameterised>()
                 .WithParameter(
                     (pi, c) => pi.Name == "a",
@@ -88,7 +88,7 @@ namespace Autofac.Test
             var result = container.Resolve<Parameterised>();
 
             Assert.Equal(a, result.A);
-            Assert.Equal(b, result.B);            
+            Assert.Equal(b, result.B);
         }
     }
 }

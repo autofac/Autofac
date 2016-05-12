@@ -11,13 +11,13 @@ namespace Autofac.Test.Features.LightweightAdapters
     {
         public class AdaptingTypeToType
         {
-            readonly IEnumerable<Command> _commands = new[]
+            private readonly IEnumerable<Command> _commands = new[]
             {
                 new Command(),
                 new Command()
             };
 
-            readonly IEnumerable<IToolbarButton> _toolbarButtons;
+            private readonly IEnumerable<IToolbarButton> _toolbarButtons;
 
             public AdaptingTypeToType()
             {
@@ -50,19 +50,19 @@ namespace Autofac.Test.Features.LightweightAdapters
                 Assert.IsType<AnotherCommand>(anotherCommand);
             }
 
-
             [Fact]
             public void EachInstanceOfTheTargetTypeIsAdapted()
             {
                 Assert.True(_commands.All(cmd => _toolbarButtons.Any(b => b.Command == cmd)));
             }
         }
+
         public class OnTopOfAnotherAdapter
         {
-            readonly Command _from = new Command();
-            const string NameKey = "Name";
-            const string Name = "N";
-            readonly ToolbarButton _to;
+            private readonly Command _from = new Command();
+            private const string NameKey = "Name";
+            private const string Name = "N";
+            private readonly ToolbarButton _to;
 
             public OnTopOfAnotherAdapter()
             {
@@ -81,16 +81,21 @@ namespace Autofac.Test.Features.LightweightAdapters
             }
         }
 
-        public interface IService { }
+        public interface IService
+        {
+        }
 
-        // ReSharper disable ClassNeverInstantiated.Local
-        public class Implementer1 : IService { }
-        public class Implementer2 : IService { }
-        // ReSharper restore ClassNeverInstantiated.Local
+        public class Implementer1 : IService
+        {
+        }
+
+        public class Implementer2 : IService
+        {
+        }
 
         public class Decorator : IService
         {
-            readonly IService _decorated;
+            private readonly IService _decorated;
 
             public Decorator(IService decorated)
             {
@@ -102,9 +107,10 @@ namespace Autofac.Test.Features.LightweightAdapters
                 get { return _decorated; }
             }
         }
+
         public class DecoratingANamedService
         {
-            readonly IContainer _container;
+            private readonly IContainer _container;
 
             public DecoratingANamedService()
             {

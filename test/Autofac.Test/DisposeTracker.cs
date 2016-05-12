@@ -6,7 +6,7 @@ namespace Autofac.Test
     {
         public event EventHandler<EventArgs> Disposing;
 
-        public bool IsDisposed;
+        public bool IsDisposed { get; set; }
 
         public void Dispose()
         {

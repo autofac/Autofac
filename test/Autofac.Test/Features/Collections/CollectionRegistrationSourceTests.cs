@@ -94,15 +94,26 @@ namespace Autofac.Test.Features.Collections
             Assert.Equal(1, c.Resolve<IEnumerable<string>>().Count());
 
             c.ComponentRegistry.Register(
-                RegistrationBuilder.ForDelegate((ctx,p) => "World").CreateRegistration());
+                RegistrationBuilder.ForDelegate((ctx, p) => "World").CreateRegistration());
 
             Assert.Equal(2, c.Resolve<IEnumerable<string>>().Count());
         }
 
-        public interface IFoo { }
-        public class Foo1 : IFoo { }
-        public class Foo2 : IFoo { }
-        public class Foo3 : IFoo { }
+        public interface IFoo
+        {
+        }
+
+        public class Foo1 : IFoo
+        {
+        }
+
+        public class Foo2 : IFoo
+        {
+        }
+
+        public class Foo3 : IFoo
+        {
+        }
 
         [Fact]
         public void EnumerablesFromDifferentLifetimeScopesShouldReturnDifferentCollections()

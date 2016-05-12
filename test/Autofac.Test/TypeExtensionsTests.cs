@@ -9,7 +9,7 @@ namespace Autofac.Test
         [Fact]
         public void IsClosedTypeOfNonGenericTypeProvidedThrowsException()
         {
-            Assert.Throws<ArgumentException>(() => 
+            Assert.Throws<ArgumentException>(() =>
                 typeof(object).IsClosedTypeOf(typeof(SaveCommandData)));
         }
 

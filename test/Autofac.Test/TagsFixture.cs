@@ -1,7 +1,7 @@
+using System.Collections.Generic;
+using Autofac.Core;
 using Autofac.Core.Lifetime;
 using Xunit;
-using Autofac.Core;
-using System.Collections.Generic;
 
 namespace Autofac.Test
 {
@@ -11,7 +11,13 @@ namespace Autofac.Test
         {
         }
 
-        public enum Tag { None, Outer, Middle, Inner }
+        public enum Tag
+        {
+            None,
+            Outer,
+            Middle,
+            Inner
+        }
 
         [Fact]
         public void OuterSatisfiesInnerResolutions()
@@ -20,7 +26,11 @@ namespace Autofac.Test
 
             var instantiations = 0;
 
-            builder.Register(c => { instantiations++; return ""; }).InstancePerMatchingLifetimeScope(LifetimeScope.RootTag);
+            builder.Register(c =>
+            {
+                instantiations++;
+                return "";
+            }).InstancePerMatchingLifetimeScope(LifetimeScope.RootTag);
 
             var root = builder.Build();
 
@@ -42,8 +52,12 @@ namespace Autofac.Test
 
             var instantiations = 0;
 
-            builder.Register(c => { instantiations++; return ""; })
-                .InstancePerMatchingLifetimeScope(LifetimeScope.RootTag);
+            builder.Register(c =>
+            {
+                instantiations++;
+                return "";
+            })
+            .InstancePerMatchingLifetimeScope(LifetimeScope.RootTag);
 
             var root = builder.Build();
 

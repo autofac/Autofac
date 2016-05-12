@@ -18,11 +18,11 @@ namespace Autofac.Test.Core.Activators.Reflection
                 throw new InvalidOperationException(Message);
             }
         }
-        
+
         public class CtorWithDoubleParam
         {
             public double Value { get; }
-            
+
             public CtorWithDoubleParam(double value)
             {
                 Value = value;
@@ -57,7 +57,7 @@ namespace Autofac.Test.Core.Activators.Reflection
             Assert.True(dx.Message.Contains(typeof(ThrowsInCtor).Name));
             Assert.Equal(ThrowsInCtor.Message, dx.InnerException.Message);
         }
-        
+
         [Fact]
         public void WhenPrimitiveTypeIsProvidedForPrimitiveParameterConversionWillBeAttempted()
         {
@@ -65,7 +65,7 @@ namespace Autofac.Test.Core.Activators.Reflection
             var cpb = new ConstructorParameterBinding(
                 ci, new[] { new PositionalParameter(0, 1), }, new ContainerBuilder().Build());
             var instance = (CtorWithDoubleParam)cpb.Instantiate();
-            
+
             Assert.Equal(1d, instance.Value);
         }
 

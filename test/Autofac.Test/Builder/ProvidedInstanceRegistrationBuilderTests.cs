@@ -1,7 +1,7 @@
 ﻿using System;
 using Autofac.Builder;
-using Xunit;
 using Autofac.Core;
+using Xunit;
 
 namespace Autofac.Test.Builder
 {

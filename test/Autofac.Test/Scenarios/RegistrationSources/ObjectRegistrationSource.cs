@@ -8,7 +8,7 @@ namespace Autofac.Test.Scenarios.RegistrationSources
 {
     public class ObjectRegistrationSource : IRegistrationSource
     {
-        readonly object _instance;
+        private readonly object _instance;
 
         public ObjectRegistrationSource()
             : this(new object())
@@ -25,7 +25,6 @@ namespace Autofac.Test.Scenarios.RegistrationSources
             var objectService = new TypedService(typeof(object));
             if (service == objectService)
                 yield return Factory.CreateSingletonObjectRegistration(_instance);
-
         }
 
         public bool IsAdapterForIndividualComponents

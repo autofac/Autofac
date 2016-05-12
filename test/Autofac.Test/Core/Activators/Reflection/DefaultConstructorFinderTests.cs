@@ -6,18 +6,19 @@ using Xunit;
 
 namespace Autofac.Test.Core.Activators.Reflection
 {
-    class HasConstructors
-    {
-        public HasConstructors() {}
-
-        // ReSharper disable UnusedMember.Local
-        // ReSharper disable UnusedParameter.Local
-        private HasConstructors(int value) {}
-        // ReSharper restore UnusedParameter.Local
-        // ReSharper restore UnusedMember.Local
-    }
     public class DefaultConstructorFinderTests
     {
+        internal class HasConstructors
+        {
+            public HasConstructors()
+            {
+            }
+
+            private HasConstructors(int value)
+            {
+            }
+        }
+
         [Fact]
         public void FindsPublicConstructorsOnlyByDefault()
         {
