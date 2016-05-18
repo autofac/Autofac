@@ -14,11 +14,11 @@ if (!(Test-Path $env:DOTNET_INSTALL_DIR))
 # Download the dotnet CLI install script
 if (!(Test-Path .\dotnet\install.ps1))
 {
-  Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/install.ps1" -OutFile ".\.dotnet\install.ps1"
+  Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.ps1" -OutFile ".\.dotnet\dotnet-install.ps1"
 }
 
 # Run the dotnet CLI install
-& .\.dotnet\install.ps1
+& .\.dotnet\dotnet-install.ps1
 
 # Add the dotnet folder path to the process. This gets skipped
 # by Install-DotNetCli if it's already installed.
