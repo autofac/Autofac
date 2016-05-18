@@ -33,7 +33,7 @@ Write-Host "Build number:" $env:DOTNET_BUILD_VERSION
 if(Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
 
 # Package restore
-& dotnet restore --infer-runtimes
+& dotnet restore
 
 # Build/package
 Get-ChildItem -Path .\src -Filter *.xproj -Recurse | ForEach-Object { Invoke-DotNetPack $_.DirectoryName }
