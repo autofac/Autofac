@@ -5,7 +5,7 @@ using System.Runtime.Versioning;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.OptionsModel;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace Autofac.Extensions.DependencyInjection.Test
