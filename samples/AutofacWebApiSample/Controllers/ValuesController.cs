@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using AutofacWebApiSample.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,8 +13,8 @@ namespace AutofacWebApiSample.Controllers
         {
             _valuesService = valuesService;
         }
-
-        // GET: api/values
+        
+        // GET api/values
         [HttpGet]
         public IEnumerable<string> Get()
         {

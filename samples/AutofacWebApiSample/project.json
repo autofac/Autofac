@@ -1,43 +1,58 @@
 ﻿{
-  "version": "1.0.0-*",
-  "buildOptions": {
-    "compile": {
-      "exclude": [
-        "wwwroot",
-        "node_modules",
-        "bower_components"
-      ]
-    }
-  },
-  "publishOptions": {
-    "exclude": [
-      "node_modules",
-      "bower_components",
-      "**.xproj",
-      "**.user",
-      "**.vspscc"
-    ]
-  },
   "dependencies": {
-    "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-*",
-    "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0-rc2-*",
-    "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-rc2-*",
-    "Microsoft.AspNetCore.StaticFiles": "1.0.0-rc2-*",
-    "Microsoft.NETCore.Platforms": "1.0.1-rc2-*",
+    "Microsoft.NETCore.App": {
+      "version": "1.0.0-rc2-3002702",
+      "type": "platform"
+    },
+    "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0-rc2-final",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Configuration.Json": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Logging": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Logging.Console": "1.0.0-rc2-final",
+    "Microsoft.Extensions.Logging.Debug": "1.0.0-rc2-final",
     "Autofac": "4.0.0-rc2-*",
     "Autofac.Extensions.DependencyInjection": "4.0.0-rc2-*"
   },
-  "commands": {
-    "web": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.Kestrel --server.urls http://localhost:5000"
-  },
-  "frameworks": {
-    "net451": { },
-    "netstandardapp1.5": {
-      "dependencies": {
-        "NETStandard.Library": "1.5.0-rc2-*"
-      },
-      "imports": "dnxcore50"
+
+  "tools": {
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools": {
+      "version": "1.0.0-preview1-final",
+      "imports": "portable-net45+win8+dnxcore50"
     }
   },
-  "webroot": "wwwroot"
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": [
+        "dotnet5.6",
+        "dnxcore50",
+        "portable-net45+win8"
+      ]
+    }
+  },
+
+  "buildOptions": {
+    "emitEntryPoint": true,
+    "preserveCompilationContext": true
+  },
+
+  "runtimeOptions": {
+    "gcServer": true
+  },
+
+  "publishOptions": {
+    "include": [
+      "wwwroot",
+      "Views",
+      "appsettings.json",
+      "web.config"
+    ]
+  },
+
+  "scripts": {
+    "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
+  }
 }
