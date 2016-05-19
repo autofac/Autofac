@@ -33,7 +33,7 @@ using Autofac.Util;
 
 namespace Autofac.Features.Scanning
 {
-    static class ScanningRegistrationExtensions
+    internal static class ScanningRegistrationExtensions
     {
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             RegisterAssemblyTypes(ContainerBuilder builder, params Assembly[] assemblies)
@@ -67,12 +67,12 @@ namespace Autofac.Features.Scanning
             return rb;
         }
 
-        static void ScanAssemblies(IEnumerable<Assembly> assemblies, IComponentRegistry cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
+        private static void ScanAssemblies(IEnumerable<Assembly> assemblies, IComponentRegistry cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
         {
             ScanTypes(assemblies.SelectMany(a => a.GetLoadableTypes()), cr, rb);
         }
 
-        static void ScanTypes(IEnumerable<Type> types, IComponentRegistry cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
+        private static void ScanTypes(IEnumerable<Type> types, IComponentRegistry cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
         {
             rb.ActivatorData.Filters.Add(t =>
                 rb.RegistrationData.Services.OfType<IServiceWithType>().All(swt =>
@@ -84,6 +84,7 @@ namespace Autofac.Features.Scanning
                     !t.GetTypeInfo().IsAbstract &&
                     !t.GetTypeInfo().IsGenericTypeDefinition &&
                     !t.IsDelegate() &&
+                    !t.IsCompilerGenerated() &&
                     rb.ActivatorData.Filters.All(p => p(t))))
             {
                 var scanned = RegistrationBuilder.ForType(t)
@@ -122,19 +123,21 @@ namespace Autofac.Features.Scanning
         public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             AsClosedTypesOf<TLimit, TScanningActivatorData, TRegistrationStyle>(
                 IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
-                Type openGenericServiceType, object serviceKey)
+                Type openGenericServiceType,
+                object serviceKey)
             where TScanningActivatorData : ScanningActivatorData
         {
             if (openGenericServiceType == null) throw new ArgumentNullException(nameof(openGenericServiceType));
             if (serviceKey == null) throw new ArgumentNullException(nameof(serviceKey));
-            
+
             return AsClosedTypesOf(registration, openGenericServiceType, t => serviceKey);
         }
-        
+
         public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             AsClosedTypesOf<TLimit, TScanningActivatorData, TRegistrationStyle>(
                 IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
-                Type openGenericServiceType, Func<Type, object> serviceKeyMapping)
+                Type openGenericServiceType,
+                Func<Type, object> serviceKeyMapping)
             where TScanningActivatorData : ScanningActivatorData
         {
             if (openGenericServiceType == null) throw new ArgumentNullException(nameof(openGenericServiceType));

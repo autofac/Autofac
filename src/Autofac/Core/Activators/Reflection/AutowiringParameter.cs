@@ -57,6 +57,7 @@ namespace Autofac.Core.Activators.Reflection
                 valueProvider = () => context.ResolveComponent(registration, Enumerable.Empty<Parameter>());
                 return true;
             }
+
             valueProvider = null;
             return false;
         }

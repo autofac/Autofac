@@ -34,7 +34,7 @@ namespace Autofac.Core
     /// </summary>
     public class PreparingEventArgs : EventArgs
     {
-        IEnumerable<Parameter> _parameters;
+        private IEnumerable<Parameter> _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PreparingEventArgs"/> class.
@@ -54,17 +54,17 @@ namespace Autofac.Core
         }
 
         /// <summary>
-        /// The context in which the activation is occurring.
+        /// Gets the context in which the activation is occurring.
         /// </summary>
         public IComponentContext Context { get; }
 
         /// <summary>
-        /// The component providing the instance being activated.
+        /// Gets the component providing the instance being activated.
         /// </summary>
         public IComponentRegistration Component { get; }
 
         /// <summary>
-        /// The parameters supplied to the activator.
+        /// Gets or sets the parameters supplied to the activator.
         /// </summary>
         public IEnumerable<Parameter> Parameters
         {
@@ -72,6 +72,7 @@ namespace Autofac.Core
             {
                 return _parameters;
             }
+
             set
             {
                 if (value == null) throw new ArgumentNullException(nameof(value));

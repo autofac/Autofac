@@ -30,7 +30,7 @@ using Autofac.Core;
 
 namespace Autofac.Features.LightweightAdapters
 {
-    static class LightweightAdapterRegistrationExtensions
+    internal static class LightweightAdapterRegistrationExtensions
     {
         public static IRegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
             RegisterAdapter<TFrom, TTo>(
@@ -50,14 +50,14 @@ namespace Autofac.Features.LightweightAdapters
             return RegisterAdapter(builder, decorator, ServiceWithKey<TService>(fromKey), ServiceWithKey<TService>(toKey));
         }
 
-        static Service ServiceWithKey<TService>(object key)
+        private static Service ServiceWithKey<TService>(object key)
         {
             if (key == null)
-                return new TypedService(typeof (TService));
+                return new TypedService(typeof(TService));
             return new KeyedService(key, typeof(TService));
         }
 
-        static IRegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
+        private static IRegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
             RegisterAdapter<TFrom, TTo>(
                 ContainerBuilder builder,
                 Func<IComponentContext, IEnumerable<Parameter>, TFrom, TTo> adapter,

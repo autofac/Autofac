@@ -68,11 +68,12 @@ namespace Autofac
             return IsInNamespace(@this, typeof(T).Namespace);
         }
 
-        /// <summary>Determines whether the candidate type supports any base or 
-        /// interface that closes the provided generic type.</summary>
-        /// <param name="this"></param>
-        /// <param name="openGeneric"></param>
-        /// <returns></returns>
+        /// <summary>
+        /// Determines whether the candidate type supports any base or
+        /// interface that closes the provided generic type.
+        /// </summary>
+        /// <param name="this">The type to test.</param>
+        /// <param name="openGeneric">The open generic against which the type should be tested.</param>
         public static bool IsClosedTypeOf(this Type @this, Type openGeneric)
         {
             if (@this == null) throw new ArgumentNullException(nameof(@this));
@@ -88,6 +89,7 @@ namespace Autofac
         /// Determines whether this type is assignable to <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type to test assignability to.</typeparam>
+        /// <param name="this">The type to test.</param>
         /// <returns>True if this type is assignable to references of type
         /// <typeparamref name="T"/>; otherwise, False.</returns>
         public static bool IsAssignableTo<T>(this Type @this)

@@ -25,19 +25,19 @@
 
 namespace Autofac.Core
 {
-	/// <summary>
-	/// Determines when instances supporting IDisposable are disposed.
-	/// </summary>
-	public enum InstanceOwnership
-	{
-		/// <summary>
-		/// The lifetime scope does not dispose the instances.
-		/// </summary>
-		ExternallyOwned,
+    /// <summary>
+    /// Determines when instances supporting IDisposable are disposed.
+    /// </summary>
+    public enum InstanceOwnership
+    {
+        /// <summary>
+        /// The lifetime scope does not dispose the instances.
+        /// </summary>
+        ExternallyOwned,
 
-		/// <summary>
-		/// The instances are disposed when the lifetime scope is disposed.
-		/// </summary>
-		OwnedByLifetimeScope
-	}
+        /// <summary>
+        /// The instances are disposed when the lifetime scope is disposed.
+        /// </summary>
+        OwnedByLifetimeScope
+    }
 }

@@ -35,17 +35,17 @@ namespace Autofac.Core.Registration
     /// <summary>
     /// Tracks the services known to the registry.
     /// </summary>
-    class ServiceRegistrationInfo
+    internal class ServiceRegistrationInfo
     {
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields", Justification="The _service field is useful in debugging and diagnostics.")]
-        readonly Service _service;
+        private readonly Service _service;
 
-        readonly LinkedList<IComponentRegistration> _implementations = new LinkedList<IComponentRegistration>();
+        private readonly LinkedList<IComponentRegistration> _implementations = new LinkedList<IComponentRegistration>();
 
         /// <summary>
         /// Used for bookkeeping so that the same source is not queried twice (may be null.)
         /// </summary>
-        Queue<IRegistrationSource> _sourcesToQuery;
+        private Queue<IRegistrationSource> _sourcesToQuery;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceRegistrationInfo"/> class.
@@ -57,14 +57,14 @@ namespace Autofac.Core.Registration
         }
 
         /// <summary>
-        /// The first time a service is requested, initialization (e.g. reading from sources)
+        /// Gets a value indicating whether the first time a service is requested, initialization (e.g. reading from sources)
         /// happens. This value will then be set to true. Calling many methods on this type before
         /// initialisation is an error.
         /// </summary>
         public bool IsInitialized { get; private set; }
 
         /// <summary>
-        /// The known implementations.
+        /// Gets the known implementations.
         /// </summary>
         public IEnumerable<IComponentRegistration> Implementations
         {
@@ -75,14 +75,14 @@ namespace Autofac.Core.Registration
             }
         }
 
-        void RequiresInitialization()
+        private void RequiresInitialization()
         {
             if (!IsInitialized)
                 throw new InvalidOperationException(ServiceRegistrationInfoResources.NotInitialized);
         }
 
         /// <summary>
-        /// True if any implementations are known.
+        /// Gets a value indicating whether any implementations are known.
         /// </summary>
         public bool IsRegistered
         {
@@ -93,7 +93,7 @@ namespace Autofac.Core.Registration
             }
         }
 
-        bool Any => _implementations.First != null;
+        private bool Any => _implementations.First != null;
 
         public void AddImplementation(IComponentRegistration registration, bool preserveDefaults)
         {
@@ -104,10 +104,14 @@ namespace Autofac.Core.Registration
             else
             {
                 if (Any)
+                {
                     Debug.WriteLine(String.Format(
                         CultureInfo.InvariantCulture,
                         "[Autofac] Overriding default for: '{0}' with: '{1}' (was '{2}')",
-                        _service, registration, _implementations.First.Value));
+                        _service,
+                        registration,
+                        _implementations.First.Value));
+                }
 
                 _implementations.AddFirst(registration);
             }
@@ -152,7 +156,7 @@ namespace Autofac.Core.Registration
             _sourcesToQuery = new Queue<IRegistrationSource>(_sourcesToQuery.Where(rs => rs != source));
         }
 
-        void EnforceDuringInitialization()
+        private void EnforceDuringInitialization()
         {
             if (!IsInitializing)
                 throw new InvalidOperationException(ServiceRegistrationInfoResources.NotDuringInitialization);
@@ -170,7 +174,6 @@ namespace Autofac.Core.Registration
             // Does not EnforceDuringInitialization() because the recursive algorithm
             // sometimes completes initialisation at a deeper level than that which
             // began it.
-
             IsInitialized = true;
             _sourcesToQuery = null;
         }

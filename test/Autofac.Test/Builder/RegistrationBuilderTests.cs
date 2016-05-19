@@ -9,9 +9,10 @@ namespace Autofac.Test.Builder
 {
     public class RegistrationBuilderTests
     {
-        class TestMetadata
+        internal class TestMetadata
         {
             public int A { get; set; }
+
             public string B { get; set; }
         }
 

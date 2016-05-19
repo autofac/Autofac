@@ -58,5 +58,5 @@ namespace Autofac.Features.GeneratedFactories
         /// indices in the delegate type's formal argument list.
         /// </summary>
         ByPosition
-    };
+    }
 }

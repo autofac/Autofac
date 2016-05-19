@@ -33,7 +33,7 @@ namespace Autofac.Core.Resolving
     public class InstanceLookupCompletionBeginningEventArgs : EventArgs
     {
         /// <summary>
-        /// Create an instance of the <see cref="InstanceLookupCompletionBeginningEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="InstanceLookupCompletionBeginningEventArgs"/> class.
         /// </summary>
         /// <param name="instanceLookup">The instance lookup that is beginning the completion phase.</param>
         public InstanceLookupCompletionBeginningEventArgs(IInstanceLookup instanceLookup)
@@ -44,7 +44,7 @@ namespace Autofac.Core.Resolving
         }
 
         /// <summary>
-        /// The instance lookup operation that is beginning the completion phase.
+        /// Gets the instance lookup operation that is beginning the completion phase.
         /// </summary>
         public IInstanceLookup InstanceLookup { get; }
     }

@@ -32,7 +32,7 @@ using Autofac.Util;
 
 namespace Autofac.Features.GeneratedFactories
 {
-    class GeneratedFactoryRegistrationSource : IRegistrationSource
+    internal class GeneratedFactoryRegistrationSource : IRegistrationSource
     {
         /// <summary>
         /// Retrieve registrations for an unregistered service, to be used

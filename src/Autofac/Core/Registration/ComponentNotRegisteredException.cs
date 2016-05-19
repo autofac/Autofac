@@ -1,5 +1,5 @@
 // This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
+// Copyright ï¿½ 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -28,14 +28,14 @@ using System.Globalization;
 
 namespace Autofac.Core.Registration
 {
-	/// <summary>
-	/// A service was requested that cannot be provided by the container. To avoid this exception, either register a component
-	/// to provide the required service, check for service registration using IsRegistered(), or use the ResolveOptional()
-	/// method to resolve an optional dependency.
-	/// </summary>
-	/// <remarks>This exception is fatal. See <see cref="DependencyResolutionException"/> for more information.</remarks>
+    /// <summary>
+    /// A service was requested that cannot be provided by the container. To avoid this exception, either register a component
+    /// to provide the required service, check for service registration using IsRegistered(), or use the ResolveOptional()
+    /// method to resolve an optional dependency.
+    /// </summary>
+    /// <remarks>This exception is fatal. See <see cref="DependencyResolutionException"/> for more information.</remarks>
     public class ComponentNotRegisteredException : DependencyResolutionException
-	{
+    {
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentNotRegisteredException"/> class.
         /// </summary>
@@ -55,11 +55,11 @@ namespace Autofac.Core.Registration
         {
         }
 
-	    static string FormatMessage(Service service)
-	    {
+        private static string FormatMessage(Service service)
+        {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
-	        return string.Format(CultureInfo.CurrentCulture, ComponentNotRegisteredExceptionResources.Message, service);
-	    }
+            return string.Format(CultureInfo.CurrentCulture, ComponentNotRegisteredExceptionResources.Message, service);
+        }
     }
 }

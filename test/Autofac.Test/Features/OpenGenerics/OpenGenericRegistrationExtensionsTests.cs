@@ -1,33 +1,32 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Autofac.Core;
 using Autofac.Features.OpenGenerics;
 using Xunit;
-using Autofac.Core;
-using System.Collections.Generic;
 
 namespace Autofac.Test.Features.OpenGenerics
 {
-    // ReSharper disable UnusedTypeParameter
-    public interface IG<T>
-    // ReSharper restore UnusedTypeParameter
-    {
-    }
-
-    public class G<T> : IG<T>
-    {
-        public G()
-        {
-        }
-
-        public G(int i)
-        {
-            I = i;
-        }
-
-        public int I { get; private set; }
-    }
     public class OpenGenericRegistrationExtensionsTests
     {
+        public interface IG<T>
+        {
+        }
+
+        public class G<T> : IG<T>
+        {
+            public G()
+            {
+            }
+
+            public G(int i)
+            {
+                I = i;
+            }
+
+            public int I { get; private set; }
+        }
+
         [Fact]
         public void BuildGenericRegistration()
         {
@@ -112,11 +111,13 @@ namespace Autofac.Test.Features.OpenGenerics
             Assert.Throws<ArgumentException>(() => cb.RegisterGeneric(typeof(List<int>)));
         }
 
-        // ReSharper disable UnusedTypeParameter
-        public interface ITwoParams<T, U> { }
-        // ReSharper restore UnusedTypeParameter
+        public interface ITwoParams<T, U>
+        {
+        }
 
-        public class TwoParams<T, U> : ITwoParams<T, U> { }
+        public class TwoParams<T, U> : ITwoParams<T, U>
+        {
+        }
 
         [Fact]
         public void MultipleTypeParametersAreMatched()

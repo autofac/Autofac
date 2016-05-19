@@ -6,12 +6,22 @@ namespace Autofac.Test.Core.Registration
 {
     public class ExternalRegistrySourceTests
     {
-        public interface IServiceA { }
-        public interface IServiceB { }
-        public class ClassA : IServiceA, IServiceB { }
-        public class ClassB : IServiceA { }
+        public interface IServiceA
+        {
+        }
 
-        // Courtesy of M. Kowalewski
+        public interface IServiceB
+        {
+        }
+
+        public class ClassA : IServiceA, IServiceB
+        {
+        }
+
+        public class ClassB : IServiceA
+        {
+        }
+
         [Fact]
         public void OneTypeImplementTwoInterfaces_OtherObjectsImplementingOneOfThoseInterfaces_CanBeResolved()
         {

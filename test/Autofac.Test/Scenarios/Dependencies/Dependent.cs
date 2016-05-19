@@ -7,8 +7,9 @@ namespace Autofac.Test.Scenarios.Dependencies
 {
     public class Dependent
     {
-        public object TheObject;
-        public string TheString;
+        public object TheObject { get; private set; }
+
+        public string TheString { get; private set; }
 
         public Dependent(object o, string s)
         {

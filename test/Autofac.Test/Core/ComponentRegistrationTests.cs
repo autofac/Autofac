@@ -1,6 +1,6 @@
 ﻿using System;
-using Xunit;
 using Autofac.Core;
+using Xunit;
 
 namespace Autofac.Test.Core
 {
@@ -15,6 +15,5 @@ namespace Autofac.Test.Core
                 Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator(new object()));
             });
         }
-
     }
 }

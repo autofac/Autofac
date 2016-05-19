@@ -1,7 +1,7 @@
 namespace Autofac.Test.Scenarios.ScannedAssembly
 {
     /// <summary>
-    /// An abstract base class that implements the open generic 
+    /// An abstract base class that implements the open generic
     /// interface type.
     /// </summary>
     public abstract class CommandBase<T> : ICommand<T>

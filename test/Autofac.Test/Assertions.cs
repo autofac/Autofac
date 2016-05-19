@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Xunit;
 using Autofac.Core;
-using System;
+using Xunit;
 
 namespace Autofac.Test
 {
-    static class Assertions
+    internal static class Assertions
     {
         public static void AssertRegistered<TService>(this IComponentContext context)
         {
@@ -80,6 +80,5 @@ namespace Autofac.Test
                 .Select(registration => types.FirstOrDefault(type => registration.Activator.LimitType == type))
                 .Where(foundType => foundType != null);
         }
-
     }
 }

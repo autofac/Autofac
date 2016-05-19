@@ -37,7 +37,7 @@ namespace Autofac
     public interface IComponentContext
     {
         /// <summary>
-        /// Associates services with the components that provide them.
+        /// Gets the associated services with the components that provide them.
         /// </summary>
         IComponentRegistry ComponentRegistry { get; }
 
@@ -54,5 +54,3 @@ namespace Autofac
         object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters);
     }
 }
-
-

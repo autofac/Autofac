@@ -1,41 +1,46 @@
 ﻿{
-    "version": "4.0.0-rc1-*",
-    "authors": ["Autofac Contributors"],
-    "description": "Autofac implementation of the .NET Framework dependency injection abstraction.",
+  "version": "4.0.0-rc2-*",
+  "description": "Autofac implementation of the interfaces in Microsoft.Extensions.DependencyInjection.Abstractions, the .NET Framework dependency injection abstraction.",
+  "packOptions": {
+    "summary": "Autofac implementation of the .NET Framework dependency injection abstraction.",
+    "tags": [ "autofac", "di", "ioc", "dependencyinjection", "aspnet" ],
+    "owners": [ "Autofac Contributors" ],
+    "iconUrl": "https://cloud.githubusercontent.com/assets/1156571/13684110/16b8f152-e6bf-11e5-84ae-22c66c6d351a.png",
     "projectUrl": "http://autofac.org",
     "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
-    "iconUrl": "http://code.google.com/p/autofac/logo",
     "requireLicenseAcceptance": false,
-    "tags": [ "Autofac", "DI", "IoC", "AspNet", "DNX" ],
-    "compilationOptions": {
-        "warningsAsErrors": true
-    },
-    "compile": ["**/*.cs"],
-    "resource": ["**/*.resx"],
     "repository": {
-        "type": "git",
-        "url": "https://github.com/autofac/Autofac"
-    },
-    "dependencies": {
-        "Autofac": "4.0.0-rc1-*",
-        "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc1-*"
-    },
-    "frameworks": {
-        "netcore50": {
-            "dependencies": {
-                "System.Collections": "4.0.11-beta-*",
-                "System.Diagnostics.Contracts": "4.0.1-beta-*",
-                "System.Runtime": "4.0.21-beta-*",
-                "System.Threading.Tasks": "4.0.11-beta-*"
-            }
-        },
-        "dotnet5.4": {
-            "dependencies": {
-                "System.Collections": "4.0.11-beta-*",
-                "System.Runtime": "4.0.21-beta-*",
-                "System.Threading.Tasks": "4.0.11-beta-*"
-            }
-        },
-        "net451": { }
+      "type": "git",
+      "url": "https://github.com/autofac/Autofac"
     }
+  },
+  "buildOptions": {
+    "additionalArguments": ["/ruleset:../../build/Analyzers.ruleset"],
+    "keyFile": "../../Autofac.snk",
+    "nowarn": [
+      "CS1591"
+    ],
+    "warningsAsErrors": true,
+    "xmlDoc": true
+  },
+  "dependencies": {
+    "Autofac": "4.0.0-rc2-*",
+    "Microsoft.CodeAnalysis.FxCopAnalyzers": { "version": "1.1.0", "type": "build" },
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc2-*",
+    "StyleCop.Analyzers": { "version": "1.0.0", "type": "build" },
+    "System.Runtime.Analyzers": { "version": "1.1.0", "type": "build" }
+  },
+  "frameworks": {
+    "netstandard1.1": {
+      "dependencies": {
+        "System.Collections": "4.0.11-rc2-*",
+        "System.Diagnostics.Contracts": "4.0.1-rc2-*",
+        "System.Runtime": "4.1.0-rc2-*",
+        "System.Threading.Tasks": "4.0.11-rc2-*"
+      },
+      "imports": [
+        "dotnet5.2"
+      ]
+    }
+  }
 }

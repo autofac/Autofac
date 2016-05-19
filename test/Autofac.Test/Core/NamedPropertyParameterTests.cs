@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Xunit;
 using System.Reflection;
+using System.Text;
 using Autofac.Core;
+using Xunit;
 
 namespace Autofac.Test.Core
 {
@@ -13,19 +13,35 @@ namespace Autofac.Test.Core
         public class HasInjectionPoints
         {
             public const string PropertyName = "PropertyInjectionPoint";
+
             public const string WrongPropertyName = "WrongPropertyInjectionPoint";
+
             public const string MethodName = "MethodInjectionPoint";
 
-            public HasInjectionPoints(string PropertyInjectionPoint) { }
+            public HasInjectionPoints(string propertyInjectionPoint)
+            {
+            }
 
-            public void MethodInjectionPoint(string PropertyInjectionPoint) { }
+            public void MethodInjectionPoint(string propertyInjectionPoint)
+            {
+            }
 
-            public string PropertyInjectionPoint { set { } }
+            public string PropertyInjectionPoint
+            {
+                set
+                {
+                }
+            }
 
-            public string WrongPropertyInjectionPoint { set { } }
+            public string WrongPropertyInjectionPoint
+            {
+                set
+                {
+                }
+            }
         }
 
-        ParameterInfo GetSetAccessorParameter(PropertyInfo pi)
+        private ParameterInfo GetSetAccessorParameter(PropertyInfo pi)
         {
             return pi
                 .GetAccessors()
@@ -34,22 +50,21 @@ namespace Autofac.Test.Core
                 .First();
         }
 
-        ParameterInfo PropertySetValueParameter()
+        private ParameterInfo PropertySetValueParameter()
         {
             return GetSetAccessorParameter(
                     typeof(HasInjectionPoints)
                     .GetProperty(HasInjectionPoints.PropertyName));
-                
         }
 
-        ParameterInfo WrongPropertySetValueParameter()
+        private ParameterInfo WrongPropertySetValueParameter()
         {
             return GetSetAccessorParameter(
                     typeof(HasInjectionPoints)
                     .GetProperty(HasInjectionPoints.WrongPropertyName));
         }
 
-        ParameterInfo ConstructorParameter()
+        private ParameterInfo ConstructorParameter()
         {
             return typeof(HasInjectionPoints)
                 .GetConstructors()
@@ -58,7 +73,7 @@ namespace Autofac.Test.Core
                 .First();
         }
 
-        ParameterInfo MethodParameter()
+        private ParameterInfo MethodParameter()
         {
             return typeof(HasInjectionPoints)
                 .GetMethod(HasInjectionPoints.MethodName)

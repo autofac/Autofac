@@ -9,7 +9,9 @@ namespace Autofac.Test.Features.ResolveAnything
 {
     public class ResolveAnythingTests
     {
-        public class NotRegisteredType { }
+        public class NotRegisteredType
+        {
+        }
 
         [Fact]
         public void AConcreteTypeNotRegisteredWithTheContainerWillBeProvided()
@@ -18,7 +20,9 @@ namespace Autofac.Test.Features.ResolveAnything
             Assert.True(container.IsRegistered<NotRegisteredType>());
         }
 
-        public abstract class AbstractType { }
+        public abstract class AbstractType
+        {
+        }
 
         [Fact]
         public void AnAbstractTypeNotRegisteredWithTheContainerWillNotBeProvided()
@@ -27,7 +31,9 @@ namespace Autofac.Test.Features.ResolveAnything
             Assert.False(container.IsRegistered<AbstractType>());
         }
 
-        public interface IInterfaceType { }
+        public interface IInterfaceType
+        {
+        }
 
         [Fact]
         public void AnInterfaceTypeNotRegisteredWithTheContainerWillNotBeProvided()
@@ -40,6 +46,7 @@ namespace Autofac.Test.Features.ResolveAnything
         public void TypesFromTheRegistrationSourceAreProvidedToOtherSources()
         {
             var container = CreateResolveAnythingContainer();
+
             // The RS for Func<> is getting the NotRegisteredType from the resolve-anything source
             Assert.True(container.IsRegistered<Func<NotRegisteredType>>());
             Assert.Equal(1, container.Resolve<IEnumerable<Func<NotRegisteredType>>>().Count());
@@ -56,7 +63,9 @@ namespace Autofac.Test.Features.ResolveAnything
             Assert.Equal(1, container.Resolve<IEnumerable<object>>().Count());
         }
 
-        public class RegisteredType { }
+        public class RegisteredType
+        {
+        }
 
         [Fact]
         public void AServiceAlreadyRegisteredWillNotBeProvided()
@@ -127,12 +136,11 @@ namespace Autofac.Test.Features.ResolveAnything
             }
         }
 
-        static IContainer CreateResolveAnythingContainer()
+        private static IContainer CreateResolveAnythingContainer()
         {
             var cb = new ContainerBuilder();
             cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
             return cb.Build();
         }
-
     }
 }

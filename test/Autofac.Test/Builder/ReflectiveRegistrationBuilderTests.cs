@@ -9,8 +9,13 @@ namespace Autofac.Test.Builder
 {
     public class ReflectiveRegistrationBuilderTests
     {
-        public class A1 { }
-        public class A2 { }
+        public class A1
+        {
+        }
+
+        public class A2
+        {
+        }
 
         public class TwoCtors
         {
@@ -51,7 +56,7 @@ namespace Autofac.Test.Builder
             ResolveTwoCtorsWith(selected);
         }
 
-        static void ResolveTwoCtorsWith(Type[] selected)
+        private static void ResolveTwoCtorsWith(Type[] selected)
         {
             var cb = new ContainerBuilder();
             cb.RegisterType<A1>();
@@ -81,7 +86,7 @@ namespace Autofac.Test.Builder
             var result = c.Resolve<TwoCtors>();
 
             Assert.NotNull(result);
-            Assert.Equal(new[] {typeof(A1), typeof(A2)}, result.CalledCtor);
+            Assert.Equal(new[] { typeof(A1), typeof(A2) }, result.CalledCtor);
         }
 
         [Fact]
@@ -98,7 +103,7 @@ namespace Autofac.Test.Builder
             var result = c.Resolve<TwoCtors>();
 
             Assert.NotNull(result);
-            Assert.Equal(new[] {typeof(A1)}, result.CalledCtor);
+            Assert.Equal(new[] { typeof(A1) }, result.CalledCtor);
         }
 
         [Fact]
@@ -216,7 +221,11 @@ namespace Autofac.Test.Builder
         public class WithParam
         {
             public int I { get; private set; }
-            public WithParam(int i, int j) { I = i + j; }
+
+            public WithParam(int i, int j)
+            {
+                I = i + j;
+            }
         }
 
         [Fact]
@@ -239,26 +248,9 @@ namespace Autofac.Test.Builder
         public class WithProp
         {
             public string Prop { get; set; }
+
             public int Prop2 { get; set; }
         }
-
-        //[Fact]
-        //public void PropertyProvided()
-        //{
-        //    var pval = "Hello";
-
-        //    var cb = new ContainerBuilder();
-        //    cb.RegisterType<WithProp>()
-        //        .WithProperties(new NamedPropertyParameter("Prop", pval))
-        //        .WithProperties(new NamedPropertyParameter("Prop2", 1));
-
-        //    var c = cb.Build();
-
-        //    var result = c.Resolve<WithProp>();
-        //    Assert.NotNull(result);
-        //    Assert.Equal(pval, result.Prop);
-        //    Assert.Equal(1, result.Prop2);
-        //}
 
         [Fact]
         public void ExposesImplementationType()

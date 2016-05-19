@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using Autofac.Core.Registration;
@@ -38,25 +39,30 @@ namespace Autofac.Core.Lifetime
     /// Lifetime scope implementation.
     /// </summary>
     [DebuggerDisplay("Tag = {Tag}, IsDisposed = {IsDisposed}")]
+    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the parent lifetime scope is responsible for disposal.")]
     public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     {
         /// <summary>
         /// Protects shared instances from concurrent access. Other members and the base class are threadsafe.
         /// </summary>
-        readonly object _synchRoot = new object();
-        readonly IDictionary<Guid, object> _sharedInstances = new Dictionary<Guid, object>();
+        private readonly object _synchRoot = new object();
+        private readonly IDictionary<Guid, object> _sharedInstances = new Dictionary<Guid, object>();
 
-        readonly ISharingLifetimeScope _parent;
+        private readonly ISharingLifetimeScope _parent;
 
-        static internal Guid SelfRegistrationId = Guid.NewGuid();
-        static readonly Action<ContainerBuilder> NoConfiguration = b => { };
+        internal static Guid SelfRegistrationId { get; } = Guid.NewGuid();
+
+        private static readonly Action<ContainerBuilder> NoConfiguration = b => { };
 
         /// <summary>
         /// The tag applied to root scopes when no other tag is specified.
         /// </summary>
         public static readonly object RootTag = "root";
 
-        static object MakeAnonymousTag() { return new object(); }
+        private static object MakeAnonymousTag()
+        {
+            return new object();
+        }
 
         private LifetimeScope()
         {
@@ -64,7 +70,7 @@ namespace Autofac.Core.Lifetime
         }
 
         /// <summary>
-        /// Create a lifetime scope for the provided components and nested beneath a parent.
+        /// Initializes a new instance of the <see cref="LifetimeScope"/> class.
         /// </summary>
         /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
         /// <param name="componentRegistry">Components used in the scope.</param>
@@ -79,7 +85,7 @@ namespace Autofac.Core.Lifetime
         }
 
         /// <summary>
-        /// Create a root lifetime scope for the provided components.
+        /// Initializes a new instance of the <see cref="LifetimeScope"/> class.
         /// </summary>
         /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
         /// <param name="componentRegistry">Components used in the scope.</param>
@@ -95,7 +101,7 @@ namespace Autofac.Core.Lifetime
         }
 
         /// <summary>
-        /// Create a root lifetime scope for the provided components.
+        /// Initializes a new instance of the <see cref="LifetimeScope"/> class.
         /// </summary>
         /// <param name="componentRegistry">Components used in the scope.</param>
         public LifetimeScope(IComponentRegistry componentRegistry)
@@ -128,7 +134,7 @@ namespace Autofac.Core.Lifetime
             return scope;
         }
 
-        void RaiseBeginning(ILifetimeScope scope)
+        private void RaiseBeginning(ILifetimeScope scope)
         {
             var handler = ChildLifetimeScopeBeginning;
             handler?.Invoke(this, new LifetimeScopeBeginningEventArgs(scope));
@@ -188,7 +194,7 @@ namespace Autofac.Core.Lifetime
             return scope;
         }
 
-        ScopeRestrictedRegistry CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction)
+        private ScopeRestrictedRegistry CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction)
         {
             var builder = new ContainerBuilder();
 
@@ -235,12 +241,12 @@ namespace Autofac.Core.Lifetime
         }
 
         /// <summary>
-        /// The parent of this node of the hierarchy, or null.
+        /// Gets the parent of this node of the hierarchy, or null.
         /// </summary>
         public ISharingLifetimeScope ParentLifetimeScope => _parent;
 
         /// <summary>
-        /// The root of the sharing hierarchy.
+        /// Gets the root of the sharing hierarchy.
         /// </summary>
         public ISharingLifetimeScope RootLifetimeScope { get; }
 
@@ -262,29 +268,30 @@ namespace Autofac.Core.Lifetime
                 {
                     result = creator();
                     if (_sharedInstances.ContainsKey(id))
-                        throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture,
-                            LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
+                        throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
+
                     _sharedInstances.Add(id, result);
                 }
+
                 return result;
             }
         }
 
         /// <summary>
-        /// The disposer associated with this container. Instances can be associated
+        /// Gets the disposer associated with this container. Instances can be associated
         /// with it manually if required.
         /// </summary>
         public IDisposer Disposer { get; } = new Disposer();
 
         /// <summary>
-        /// Tag applied to the lifetime scope.
+        /// Gets the tag applied to the lifetime scope.
         /// </summary>
         /// <remarks>The tag applied to this scope and the contexts generated when
         /// it resolves component dependencies.</remarks>
         public object Tag { get; }
 
         /// <summary>
-        /// Associates services with the components that provide them.
+        /// Gets the services associated with the components that provide them.
         /// </summary>
         public IComponentRegistry ComponentRegistry { get; }
 
@@ -304,7 +311,7 @@ namespace Autofac.Core.Lifetime
             base.Dispose(disposing);
         }
 
-        void CheckNotDisposed()
+        private void CheckNotDisposed()
         {
             if (IsDisposed)
                 throw new ObjectDisposedException(LifetimeScopeResources.ScopeIsDisposed, innerException: null);
@@ -313,10 +320,10 @@ namespace Autofac.Core.Lifetime
         /// <summary>
         /// Gets the service object of the specified type.
         /// </summary>
-        /// <param name="serviceType">An object that specifies the type of service object 
+        /// <param name="serviceType">An object that specifies the type of service object
         /// to get.</param>
         /// <returns>
-        /// A service object of type <paramref name="serviceType"/>.-or- null if there is 
+        /// A service object of type <paramref name="serviceType"/>.-or- null if there is
         /// no service object of type <paramref name="serviceType"/>.
         /// </returns>
         public object GetService(Type serviceType)

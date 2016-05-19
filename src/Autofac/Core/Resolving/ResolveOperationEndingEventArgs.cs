@@ -33,7 +33,7 @@ namespace Autofac.Core.Resolving
     public class ResolveOperationEndingEventArgs : EventArgs
     {
         /// <summary>
-        /// Create an instance of the <see cref="ResolveOperationBeginningEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="ResolveOperationEndingEventArgs"/> class.
         /// </summary>
         /// <param name="resolveOperation">The resolve operation that is ending.</param>
         /// <param name="exception">If included, the exception causing the operation to end; otherwise, null.</param>
@@ -44,12 +44,12 @@ namespace Autofac.Core.Resolving
         }
 
         /// <summary>
-        /// The exception causing the operation to end, or null.
+        /// Gets the exception causing the operation to end, or null.
         /// </summary>
         public Exception Exception { get; }
 
         /// <summary>
-        /// The resolve operation that is ending.
+        /// Gets the resolve operation that is ending.
         /// </summary>
         public IResolveOperation ResolveOperation { get; }
     }

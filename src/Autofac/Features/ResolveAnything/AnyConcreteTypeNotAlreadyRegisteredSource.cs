@@ -32,14 +32,13 @@ using Autofac.Core;
 
 namespace Autofac.Features.ResolveAnything
 {
-
     /// <summary>
     /// Provides registrations on-the-fly for any concrete type not already registered with
     /// the container.
     /// </summary>
     public class AnyConcreteTypeNotAlreadyRegisteredSource : IRegistrationSource
     {
-        readonly Func<Type, bool> _predicate;
+        private readonly Func<Type, bool> _predicate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AnyConcreteTypeNotAlreadyRegisteredSource"/> class.
@@ -85,11 +84,11 @@ namespace Autofac.Features.ResolveAnything
 
             var builder = RegistrationBuilder.ForType(ts.ServiceType);
             RegistrationConfiguration?.Invoke(builder);
-            return new[] {builder.CreateRegistration()};
+            return new[] { builder.CreateRegistration() };
         }
 
         /// <summary>
-        /// Gets whether the registrations provided by this source are 1:1 adapters on top
+        /// Gets a value indicating whether the registrations provided by this source are 1:1 adapters on top
         /// of other components (I.e. like Meta, Func or Owned.)
         /// </summary>
         public bool IsAdapterForIndividualComponents => false;

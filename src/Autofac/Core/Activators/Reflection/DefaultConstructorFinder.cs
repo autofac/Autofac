@@ -34,7 +34,7 @@ namespace Autofac.Core.Activators.Reflection
     /// </summary>
     public class DefaultConstructorFinder : IConstructorFinder
     {
-        readonly Func<Type, ConstructorInfo[]> _finder;
+        private readonly Func<Type, ConstructorInfo[]> _finder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultConstructorFinder" /> class.
@@ -42,8 +42,8 @@ namespace Autofac.Core.Activators.Reflection
         /// <remarks>
         /// Default to selecting all public constructors.
         /// </remarks>
-        public DefaultConstructorFinder() : this(type => 
-            type.GetTypeInfo().DeclaredConstructors.Where(c => c.IsPublic).ToArray())
+        public DefaultConstructorFinder()
+          : this(type => type.GetTypeInfo().DeclaredConstructors.Where(c => c.IsPublic).ToArray())
         {
         }
 

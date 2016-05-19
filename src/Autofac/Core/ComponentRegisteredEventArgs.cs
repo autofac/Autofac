@@ -1,5 +1,5 @@
 // This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
+// Copyright ï¿½ 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -34,17 +34,17 @@ namespace Autofac.Core
     public class ComponentRegisteredEventArgs : EventArgs
     {
         /// <summary>
-        /// The container into which the registration was made.
+        /// Gets the container into which the registration was made.
         /// </summary>
         public IComponentRegistry ComponentRegistry { get; }
 
         /// <summary>
-        /// The component registration.
+        /// Gets the component registration.
         /// </summary>
         public IComponentRegistration ComponentRegistration { get; }
 
         /// <summary>
-        /// Create a new instance with a valid container and component registration.
+        /// Initializes a new instance of the <see cref="ComponentRegisteredEventArgs"/> class.
         /// </summary>
         /// <param name="registry">The container into which the registration
         /// was made.</param>

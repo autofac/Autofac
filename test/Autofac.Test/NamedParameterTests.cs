@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using Xunit;
 using Autofac.Core;
+using Xunit;
 
 namespace Autofac.Test
 {
@@ -12,13 +12,13 @@ namespace Autofac.Test
         {
         }
 
-        public class B : A { }
+        public class B : A
+        {
+        }
 
         public class C
         {
-            // ReSharper disable UnusedParameter.Local
             public C(A a)
-            // ReSharper restore UnusedParameter.Local
             {
             }
         }

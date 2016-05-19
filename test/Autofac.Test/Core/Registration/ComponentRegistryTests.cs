@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Builder;
+using Autofac.Core;
+using Autofac.Core.Registration;
 using Autofac.Features.Collections;
 using Autofac.Features.GeneratedFactories;
-using Xunit;
-using Autofac.Core.Registration;
-using Autofac.Core;
-using Autofac.Test.Scenarios.RegistrationSources;
 using Autofac.Features.Metadata;
+using Autofac.Test.Scenarios.RegistrationSources;
+using Xunit;
 
 namespace Autofac.Test.Core.Registration
 {
@@ -162,7 +162,7 @@ namespace Autofac.Test.Core.Registration
             Assert.True(allFuncs.Any(f => f() == b));
         }
 
-        class RecursiveRegistrationSource : IRegistrationSource
+        internal class RecursiveRegistrationSource : IRegistrationSource
         {
             public IEnumerable<IComponentRegistration> RegistrationsFor(
                 Service service,

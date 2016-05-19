@@ -28,16 +28,17 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Autofac.Util
 {
-    static class TypeExtensions
+    internal static class TypeExtensions
     {
         public static readonly Type[] EmptyTypes = new Type[0];
 
-        static readonly Type ReadOnlyCollectionType = Type.GetType("System.Collections.Generic.IReadOnlyCollection`1", false);
+        private static readonly Type ReadOnlyCollectionType = Type.GetType("System.Collections.Generic.IReadOnlyCollection`1", false);
 
-        static readonly Type ReadOnlyListType = Type.GetType("System.Collections.Generic.IReadOnlyList`1", false);
+        private static readonly Type ReadOnlyListType = Type.GetType("System.Collections.Generic.IReadOnlyList`1", false);
 
         /// <summary>Returns the first concrete interface supported by the candidate type that
         /// closes the provided open generic service type.</summary>
@@ -55,13 +56,13 @@ namespace Autofac.Util
         /// <param name="candidateType">The type that is being checked for the interface.</param>
         /// <param name="openGenericServiceType">The open generic service type to locate.</param>
         /// <returns>True if a closed implementation was found; otherwise false.</returns>
-        static IEnumerable<Type> FindAssignableTypesThatClose(Type candidateType, Type openGenericServiceType)
+        private static IEnumerable<Type> FindAssignableTypesThatClose(Type candidateType, Type openGenericServiceType)
         {
             return TypesAssignableFrom(candidateType)
                 .Where(t => t.IsClosedTypeOf(openGenericServiceType));
         }
 
-        static IEnumerable<Type> TypesAssignableFrom(Type candidateType)
+        private static IEnumerable<Type> TypesAssignableFrom(Type candidateType)
         {
             return candidateType.GetTypeInfo().ImplementedInterfaces.Concat(
                 Traverse.Across(candidateType, t => t.GetTypeInfo().BaseType));
@@ -142,7 +143,7 @@ namespace Autofac.Util
             return true;
         }
 
-        static bool ParameterCompatibleWithTypeConstraint(Type parameter, Type constraint)
+        private static bool ParameterCompatibleWithTypeConstraint(Type parameter, Type constraint)
         {
             return constraint.GetTypeInfo().IsAssignableFrom(parameter.GetTypeInfo()) ||
                    Traverse.Across(parameter, p => p.GetTypeInfo().BaseType)
@@ -151,7 +152,7 @@ namespace Autofac.Util
         }
 
         [SuppressMessage("Microsoft.Design", "CA1031", Justification = "Implementing a real TryMakeGenericType is not worth the effort.")]
-        static bool ParameterEqualsConstraint(Type parameter, Type constraint)
+        private static bool ParameterEqualsConstraint(Type parameter, Type constraint)
         {
             var genericArguments = parameter.GetTypeInfo().GenericTypeArguments;
             if (genericArguments.Length > 0 && constraint.GetTypeInfo().IsGenericType)
@@ -170,13 +171,14 @@ namespace Autofac.Util
                     }
                 }
             }
+
             return false;
         }
 
         public static bool IsGenericEnumerableInterfaceType(this Type type)
         {
-            return (type.IsGenericTypeDefinedBy(typeof(IEnumerable<>))
-                || type.IsGenericListOrCollectionInterfaceType());
+            return type.IsGenericTypeDefinedBy(typeof(IEnumerable<>))
+                || type.IsGenericListOrCollectionInterfaceType();
         }
 
         public static bool IsGenericListOrCollectionInterfaceType(this Type type)
@@ -186,6 +188,12 @@ namespace Autofac.Util
                    || (ReadOnlyCollectionType != null && type.IsGenericTypeDefinedBy(ReadOnlyCollectionType))
                    || (ReadOnlyListType != null && type.IsGenericTypeDefinedBy(ReadOnlyListType));
         }
+
+        public static bool IsCompilerGenerated(this Type type)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
+            return type.GetTypeInfo().GetCustomAttributes<CompilerGeneratedAttribute>().Any();
+        }
     }
 }
-

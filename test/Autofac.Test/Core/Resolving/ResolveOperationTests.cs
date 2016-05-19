@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Autofac.Builder;
-using Xunit;
 using Autofac.Core;
 using Autofac.Test.Scenarios.Dependencies;
+using Xunit;
 
 namespace Autofac.Test.Core.Resolving
 {
@@ -16,7 +16,11 @@ namespace Autofac.Test.Core.Resolving
 
             var cb = new ContainerBuilder();
             cb.RegisterType<DependsByProp>().SingleInstance().PropertiesAutowired();
-            cb.Register((context, parameters) => { capturedparameters = parameters.ToArray(); return new DependsByCtor(null); });
+            cb.Register((context, parameters) =>
+            {
+                capturedparameters = parameters.ToArray();
+                return new DependsByCtor(null);
+            });
 
             var c = cb.Build();
             var existingInstance = new DependsByProp();
@@ -82,7 +86,6 @@ namespace Autofac.Test.Core.Resolving
             Assert.Equal(2, ac);
         }
 
-
         [Fact]
         public void ActivatingArgsSuppliesParameters()
         {
@@ -137,7 +140,11 @@ namespace Autofac.Test.Core.Resolving
         {
             IComponentContext ctx = null;
             var builder = new ContainerBuilder();
-            builder.Register(c => { ctx = c; return new object(); });
+            builder.Register(c =>
+            {
+                ctx = c;
+                return new object();
+            });
             builder.RegisterInstance("Hello");
             var container = builder.Build();
             container.Resolve<string>();

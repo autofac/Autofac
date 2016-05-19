@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Autofac.Core;
 using Autofac.Util;
@@ -85,12 +86,13 @@ namespace Autofac.Features.OwnedInstances
     /// In general, rather than depending on <see cref="Owned{T}"/> directly, components will depend on
     /// System.Func&lt;Owned&lt;T&gt;&gt; in order to create and dispose of other components as required.
     /// </example>
+    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "False positive - the lifetime does get disposed.")]
     public class Owned<T> : Disposable
     {
-        IDisposable _lifetime;
+        private IDisposable _lifetime;
 
         /// <summary>
-        /// Create an instance of <see cref="Owned{T}"/>.
+        /// Initializes a new instance of the <see cref="Owned{T}"/> class.
         /// </summary>
         /// <param name="value">The value representing the instance.</param>
         /// <param name="lifetime">An IDisposable interface through which ownership can be released.</param>
@@ -103,7 +105,7 @@ namespace Autofac.Features.OwnedInstances
         }
 
         /// <summary>
-        /// The owned value.
+        /// Gets or sets the owned value.
         /// </summary>
         public T Value { get; set; }
 

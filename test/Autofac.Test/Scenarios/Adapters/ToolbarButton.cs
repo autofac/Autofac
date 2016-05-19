@@ -7,8 +7,8 @@ namespace Autofac.Test.Scenarios.Adapters
 {
     public class ToolbarButton : IToolbarButton
     {
-        readonly Command _command;
-        readonly string _name;
+        private readonly Command _command;
+        private readonly string _name;
 
         public ToolbarButton(Command command, string name = "")
         {

@@ -100,7 +100,7 @@ namespace Autofac
             return ConstantValue<TypedParameter, T>(parameters, c => c.Type == typeof(T));
         }
 
-        static TValue ConstantValue<TParameter, TValue>(IEnumerable<Parameter> parameters, Func<TParameter, bool> predicate)
+        private static TValue ConstantValue<TParameter, TValue>(IEnumerable<Parameter> parameters, Func<TParameter, bool> predicate)
             where TParameter : ConstantParameter
         {
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));

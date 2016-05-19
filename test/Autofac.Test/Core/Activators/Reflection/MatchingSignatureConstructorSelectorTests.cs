@@ -1,8 +1,8 @@
-﻿using Xunit;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
-using Autofac.Core.Activators.Reflection;
 using Autofac.Core;
+using Autofac.Core.Activators.Reflection;
+using Xunit;
 
 namespace Autofac.Test.Core.Activators.Reflection
 {
@@ -10,14 +10,20 @@ namespace Autofac.Test.Core.Activators.Reflection
     {
         public class ThreeConstructors
         {
-            // ReSharper disable UnusedMember.Local, UnusedParameter.Local
-            public ThreeConstructors() { }
-            public ThreeConstructors(int i) { }
-            public ThreeConstructors(int i, string s) { }
-            // ReSharper restore UnusedMember.Local, UnusedParameter.Local
+            public ThreeConstructors()
+            {
+            }
+
+            public ThreeConstructors(int i)
+            {
+            }
+
+            public ThreeConstructors(int i, string s)
+            {
+            }
         }
 
-        readonly ConstructorParameterBinding[] _ctors = typeof(ThreeConstructors)
+        private readonly ConstructorParameterBinding[] _ctors = typeof(ThreeConstructors)
             .GetTypeInfo().DeclaredConstructors
             .Select(ci => new ConstructorParameterBinding(ci, Enumerable.Empty<Parameter>(), new ContainerBuilder().Build()))
             .ToArray();

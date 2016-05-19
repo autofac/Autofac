@@ -43,7 +43,8 @@ namespace Autofac.Test
             Assert.True(container.IsRegistered<BComponent>());
             Assert.True(container.IsRegistered<object>());
         }
-#if !DNX451
+
+#if !NET451
         [Fact]
         public void RegisterAssemblyModulesOfGenericType()
         {
@@ -68,6 +69,7 @@ namespace Autofac.Test
             Assert.True(container.IsRegistered<BComponent>());
         }
 #endif
+
         [Fact]
         public void RegisterAssemblyModulesOfType()
         {
@@ -92,7 +94,7 @@ namespace Autofac.Test
             Assert.True(container.IsRegistered<BComponent>());
         }
 
-        class ObjectModule : Module
+        internal class ObjectModule : Module
         {
             public bool ConfigureCalled { get; private set; }
 

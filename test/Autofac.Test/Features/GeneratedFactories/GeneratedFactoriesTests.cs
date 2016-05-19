@@ -139,7 +139,8 @@ namespace Autofac.Test.Features.GeneratedFactories
         public class StringHolder
         {
             public delegate StringHolder Factory();
-            public string S;
+
+            public string S { get; set; }
         }
 
         [Fact]
@@ -208,7 +209,7 @@ namespace Autofac.Test.Features.GeneratedFactories
         // is chosen in the presence of implicit collection support.
         public class HasCharIntCtor
         {
-            public string Str;
+            public string Str { get; private set; }
 
             public HasCharIntCtor(char c, int i)
             {
@@ -275,7 +276,6 @@ namespace Autofac.Test.Features.GeneratedFactories
             var a = factory(s);
             Assert.NotNull(a);
             Assert.Equal(s, a.P);
-
         }
 
         [Fact]
@@ -295,7 +295,6 @@ namespace Autofac.Test.Features.GeneratedFactories
             var a = factory(s);
             Assert.NotNull(a);
             Assert.Equal(s, a.P);
-
         }
 
         [Fact]

@@ -3,15 +3,18 @@ using Xunit;
 
 namespace Autofac.Test.Features.OpenGenerics
 {
-    public interface IItemProducer<T> { }
-
-    public class NullableProducer<T> : IItemProducer<T?>
-        where T : struct
-    {
-    }
     public class GenericsForNullableScenarioTests
     {
-        IContainer _container;
+        public interface IItemProducer<T>
+        {
+        }
+
+        public class NullableProducer<T> : IItemProducer<T?>
+            where T : struct
+        {
+        }
+
+        private IContainer _container;
 
         public GenericsForNullableScenarioTests()
         {

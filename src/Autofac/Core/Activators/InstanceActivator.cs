@@ -34,8 +34,7 @@ namespace Autofac.Core.Activators
     public abstract class InstanceActivator : Disposable
     {
         /// <summary>
-        /// Create an instance activator that will return instances compatible
-        /// with <paramref name="limitType"/>.
+        /// Initializes a new instance of the <see cref="InstanceActivator"/> class.
         /// </summary>
         /// <param name="limitType">Most derived type to which instances can be cast.</param>
         protected InstanceActivator(Type limitType)
@@ -46,7 +45,7 @@ namespace Autofac.Core.Activators
         }
 
         /// <summary>
-        /// The most specific type that the component instances are known to be castable to.
+        /// Gets the most specific type that the component instances are known to be castable to.
         /// </summary>
         public Type LimitType { get; }
 

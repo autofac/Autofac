@@ -37,7 +37,7 @@ namespace Autofac.Features.OwnedInstances
     /// Generates registrations for services of type <see cref="Owned{T}"/> whenever the service
     /// T is available.
     /// </summary>
-    class OwnedInstanceRegistrationSource : IRegistrationSource
+    internal class OwnedInstanceRegistrationSource : IRegistrationSource
     {
         /// <summary>
         /// Retrieve registrations for an unregistered service, to be used
@@ -67,7 +67,7 @@ namespace Autofac.Features.OwnedInstances
                             try
                             {
                                 var value = lifetime.ResolveComponent(r, p);
-                                return Activator.CreateInstance(ts.ServiceType, new [] { value, lifetime });
+                                return Activator.CreateInstance(ts.ServiceType, new[] { value, lifetime });
                             }
                             catch
                             {

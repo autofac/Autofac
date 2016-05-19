@@ -33,7 +33,7 @@ namespace Autofac.Core.Resolving
     public class ResolveOperationBeginningEventArgs : EventArgs
     {
         /// <summary>
-        /// Create an instance of the <see cref="ResolveOperationBeginningEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="ResolveOperationBeginningEventArgs"/> class.
         /// </summary>
         /// <param name="resolveOperation">The resolve operation that is beginning.</param>
         public ResolveOperationBeginningEventArgs(IResolveOperation resolveOperation)
@@ -42,7 +42,7 @@ namespace Autofac.Core.Resolving
         }
 
         /// <summary>
-        /// The resolve operation that is beginning.
+        /// Gets the resolve operation that is beginning.
         /// </summary>
         public IResolveOperation ResolveOperation { get; }
     }

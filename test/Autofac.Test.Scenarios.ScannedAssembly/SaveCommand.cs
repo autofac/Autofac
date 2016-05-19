@@ -1,7 +1,7 @@
 namespace Autofac.Test.Scenarios.ScannedAssembly
 {
     /// <summary>
-    /// A command class that directly implements the open 
+    /// A command class that directly implements the open
     /// generic interface type.
     /// </summary>
     public class SaveCommand : ICommand<SaveCommandData>

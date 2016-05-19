@@ -28,7 +28,7 @@ using System.Collections.Generic;
 
 namespace Autofac.Util
 {
-    static class Traverse
+    internal static class Traverse
     {
         public static IEnumerable<T> Across<T>(T first, Func<T, T> next)
             where T : class

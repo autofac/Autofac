@@ -1,31 +1,60 @@
-﻿using Autofac.Core.Registration;
-using Xunit;
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
+using Autofac.Core.Registration;
+using Xunit;
 
 namespace Autofac.Test.Features.OpenGenerics
 {
     public class ComplexGenericsTests
     {
-        // ReSharper disable UnusedTypeParameter, InconsistentNaming
-        public interface IDouble<T2, T3> { }
-        public interface ISingle<T> : IDouble<T, int> { }
-        public class CReversed<T2, T1> : IDouble<T1, T2> { }
+        public interface IDouble<T2, T3>
+        {
+        }
 
-        public interface INested<T> { }
+        public interface ISingle<T> : IDouble<T, int>
+        {
+        }
 
-        public interface INested<T, D> { }
-        public class Wrapper<T> { }
-        public class CNested<T> : INested<Wrapper<T>> { }
+        public class CReversed<T2, T1> : IDouble<T1, T2>
+        {
+        }
 
-        public class CNestedDerived<T> : CNested<T> { }
+        public interface INested<T>
+        {
+        }
 
-        public class CNestedDerivedReversed<TX, TY> : IDouble<TY, INested<Wrapper<TX>>> { }
-        public class SameTypes<TA, TB> : IDouble<TA, INested<IDouble<TB, TA>>> { }
-        public class CDerivedSingle<T> : ISingle<T> { }
-        public class SameTypes<TA, TB, TC> : IDouble<INested<TA>, INested<IDouble<TB, TC>>> { }
-        // ReSharper restore UnusedTypeParameter, InconsistentNaming
+        public interface INested<T, D>
+        {
+        }
+
+        public class Wrapper<T>
+        {
+        }
+
+        public class CNested<T> : INested<Wrapper<T>>
+        {
+        }
+
+        public class CNestedDerived<T> : CNested<T>
+        {
+        }
+
+        public class CNestedDerivedReversed<TX, TY> : IDouble<TY, INested<Wrapper<TX>>>
+        {
+        }
+
+        public class SameTypes<TA, TB> : IDouble<TA, INested<IDouble<TB, TA>>>
+        {
+        }
+
+        public class CDerivedSingle<T> : ISingle<T>
+        {
+        }
+
+        public class SameTypes<TA, TB, TC> : IDouble<INested<TA>, INested<IDouble<TB, TC>>>
+        {
+        }
 
         [Fact]
         public void NestedGenericInterfacesCanBeResolved()
@@ -126,11 +155,14 @@ namespace Autofac.Test.Features.OpenGenerics
                 container.Resolve<IDouble<decimal, INested<IDouble<string, int>>>>());
         }
 
-        // ReSharper disable UnusedTypeParameter
-        public interface IConstraint<T> { }
+        public interface IConstraint<T>
+        {
+        }
 
-        public class Constrained<T1, T2> where T2 : IConstraint<T1> { }
-        // ReSharper restore UnusedTypeParameter
+        public class Constrained<T1, T2>
+            where T2 : IConstraint<T1>
+        {
+        }
 
         [Fact]
         public void CanResolveComponentWithNestedConstraintViaInterface()
@@ -144,9 +176,9 @@ namespace Autofac.Test.Features.OpenGenerics
             Assert.True(container.IsRegistered<Constrained<int, IConstraint<int>>>());
         }
 
-        // ReSharper disable UnusedTypeParameter
-        public interface IConstraintWithAddedArgument<T2, T1> : IConstraint<T1> { }
-        // ReSharper restore UnusedTypeParameter
+        public interface IConstraintWithAddedArgument<T2, T1> : IConstraint<T1>
+        {
+        }
 
         [Fact]
         public void CanResolveComponentWhenConstrainedArgumentIsGenericTypeWithMoreArgumentsThanGenericConstraint()
@@ -160,15 +192,25 @@ namespace Autofac.Test.Features.OpenGenerics
             Assert.True(container.IsRegistered<Constrained<int, IConstraintWithAddedArgument<string, int>>>());
         }
 
-        // ReSharper disable UnusedTypeParameter
-        public interface IConstrainedConstraint<T> where T : IEquatable<int> { }
+        public interface IConstrainedConstraint<T>
+            where T : IEquatable<int>
+        {
+        }
 
-        public interface IConstrainedConstraintWithAddedArgument<T1, T2> : IConstrainedConstraint<T2> where T2 : IEquatable<int> { }
+        public interface IConstrainedConstraintWithAddedArgument<T1, T2> : IConstrainedConstraint<T2>
+            where T2 : IEquatable<int>
+        {
+        }
 
-        public interface IConstrainedConstraintWithOnlyAddedArgument<T1> : IConstrainedConstraintWithAddedArgument<T1, int> { }
+        public interface IConstrainedConstraintWithOnlyAddedArgument<T1> : IConstrainedConstraintWithAddedArgument<T1, int>
+        {
+        }
 
-        public class MultiConstrained<T1, T2> where T1 : IEquatable<int> where T2 : IConstrainedConstraint<T1> { }
-        // ReSharper restore UnusedTypeParameter
+        public class MultiConstrained<T1, T2>
+            where T1 : IEquatable<int>
+            where T2 : IConstrainedConstraint<T1>
+        {
+        }
 
         [Fact]
         public void CanResolveComponentWhenConstraintsAreNested()
@@ -193,31 +235,7 @@ namespace Autofac.Test.Features.OpenGenerics
             // it throws an ArgumentException.
             container.Resolve<ISingle<double>>();
         }
-    }
-}
 
-namespace FluentValidation
-{
-    interface IValidator<T> { }
-    class AbstractValidator<T> : IValidator<T> { }
-}
-
-namespace CompanyA
-{
-    interface IValidator<T> { } // Please note that this name is the same as FluentValidation's IValidator<T>
-    class CompositeValidator<T> : FluentValidation.AbstractValidator<T>, IValidator<T> { }
-}
-
-namespace CompanyB
-{
-    interface IValidatorSomeOtherName<T> { } // This is NOT the same name.
-    class CompositeValidator<T> : FluentValidation.AbstractValidator<T>, IValidatorSomeOtherName<T> { }
-}
-
-namespace Autofac.Test.Features.OpenGenerics
-{
-    public class ComplexGenericsWithNamepsaceTests
-    {
         [Fact]
         public void CanResolveByGenericInterface()
         {

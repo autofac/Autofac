@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.OpenGenerics;
-using Autofac.Builder;
 using Autofac.Test.Util;
 using Xunit;
 
@@ -11,21 +11,25 @@ namespace Autofac.Test.Features.OpenGenerics
 {
     public class OpenGenericRegistrationSourceTests
     {
-        // ReSharper disable UnusedTypeParameter
-        public interface I<T> { }
+        public interface I<T>
+        {
+        }
 
-        public class A1<T> : DisposeTracker, I<T> { }
+        public class A1<T> : DisposeTracker, I<T>
+        {
+        }
 
         [Fact]
         public void GeneratesActivatorAndCorrectServices()
         {
-            var g = ConstructSource(typeof (A1<>), typeof (I<>));
+            var g = ConstructSource(typeof(A1<>), typeof(I<>));
 
             var r = g
                 .RegistrationsFor(new TypedService(typeof(I<int>)), s => null)
                 .Single();
 
-            Assert.Equal(typeof(I<int>),
+            Assert.Equal(
+                typeof(I<int>),
                 r.Services.Cast<TypedService>().Single().ServiceType);
 
             var activatedInstance = r.Activator.ActivateInstance(new ContainerBuilder().Build(), Factory.NoParameters);
@@ -43,7 +47,9 @@ namespace Autofac.Test.Features.OpenGenerics
             Assert.False(CanGenerateActivatorForI<string>(typeof(AWithNew<>)));
         }
 
-        public class PWithNew { }
+        public class PWithNew
+        {
+        }
 
         [Fact]
         public void GeneratesActivatorWhenConstructorConstraintMet()
@@ -69,7 +75,9 @@ namespace Autofac.Test.Features.OpenGenerics
         }
 
         public class AWithClass<T> : I<T>
-            where T : class { }
+            where T : class
+        {
+        }
 
         [Fact]
         public void DoesNotGenerateActivatorWhenClassConstraintBroken()
@@ -84,7 +92,9 @@ namespace Autofac.Test.Features.OpenGenerics
         }
 
         public class AWithValue<T> : I<T>
-            where T : struct { }
+            where T : struct
+        {
+        }
 
         [Fact]
         public void DoesNotGenerateActivatorWhenValueConstraintBroken()
@@ -98,17 +108,22 @@ namespace Autofac.Test.Features.OpenGenerics
             Assert.True(CanGenerateActivatorForI<int>(typeof(AWithValue<>)));
         }
 
-        static bool CanGenerateActivatorForI<TClosing>(Type implementor)
+        private static bool CanGenerateActivatorForI<TClosing>(Type implementor)
         {
-            var g = ConstructSource(implementor, typeof (I<>));
+            var g = ConstructSource(implementor, typeof(I<>));
 
             var rs = g.RegistrationsFor(new TypedService(typeof(I<TClosing>)), s => null);
 
             return rs.Count() == 1;
         }
 
-        public interface ITwoParams<T, U> { }
-        public class TwoParams<T, U> : ITwoParams<T, U> { }
+        public interface ITwoParams<T, U>
+        {
+        }
+
+        public class TwoParams<T, U> : ITwoParams<T, U>
+        {
+        }
 
         [Fact]
         public void SupportsMultipleGenericParameters()
@@ -123,18 +138,25 @@ namespace Autofac.Test.Features.OpenGenerics
         [Fact]
         public void SupportsMultipleGenericParametersMappedFromService()
         {
-            var g = ConstructSource(typeof (TwoParams<,>), typeof (ITwoParams<,>));
+            var g = ConstructSource(typeof(TwoParams<,>), typeof(ITwoParams<,>));
 
             var rs = g.RegistrationsFor(new TypedService(typeof(ITwoParams<int, string>)), s => null);
 
             Assert.Equal(1, rs.Count());
         }
 
-        public interface IEntity<TId> { }
+        public interface IEntity<TId>
+        {
+        }
 
-        public class EntityOfInt : IEntity<int> { }
+        public class EntityOfInt : IEntity<int>
+        {
+        }
 
-        public class Repository<T, TId> where T : IEntity<TId> { }
+        public class Repository<T, TId>
+            where T : IEntity<TId>
+        {
+        }
 
         [Fact]
         public void SupportsCodependentTypeConstraints()
@@ -146,17 +168,29 @@ namespace Autofac.Test.Features.OpenGenerics
             Assert.Equal(1, rs.Count());
         }
 
-        public interface IHaveNoParameters { }
+        public interface IHaveNoParameters
+        {
+        }
 
-        public interface IHaveOneParameter<T> { }
+        public interface IHaveOneParameter<T>
+        {
+        }
 
-        public interface IHaveTwoParameters<T,U> { }
+        public interface IHaveTwoParameters<T, U>
+        {
+        }
 
-        public interface IHaveThreeParameters<T,U,V> { }
+        public interface IHaveThreeParameters<T, U, V>
+        {
+        }
 
-        public class HaveTwoParameters<T,U> : IHaveThreeParameters<T,U,U>, IHaveTwoParameters<T,T>, IHaveOneParameter<T>, IHaveNoParameters { }
+        public class HaveTwoParameters<T, U> : IHaveThreeParameters<T, U, U>, IHaveTwoParameters<T, T>, IHaveOneParameter<T>, IHaveNoParameters
+        {
+        }
 
-        public interface IUnrelated { }
+        public interface IUnrelated
+        {
+        }
 
         [Fact]
         public void RejectsServicesWithoutTypeParameters()
@@ -179,24 +213,24 @@ namespace Autofac.Test.Features.OpenGenerics
         [Fact]
         public void IgnoresServicesThatDoNotSupplyAllParameters()
         {
-            Assert.False(SourceCanSupply<IHaveTwoParameters<int,int>>(typeof(HaveTwoParameters<,>)));
+            Assert.False(SourceCanSupply<IHaveTwoParameters<int, int>>(typeof(HaveTwoParameters<,>)));
         }
 
         [Fact]
         public void AcceptsServicesWithMoreParametersWhenAllImplementationParametersCovered()
         {
-            Assert.True(SourceCanSupply<IHaveThreeParameters<int,string,string>>(typeof(HaveTwoParameters<,>)));
+            Assert.True(SourceCanSupply<IHaveThreeParameters<int, string, string>>(typeof(HaveTwoParameters<,>)));
         }
 
         [Fact]
         public void IgnoresServicesWithMismatchedParameters()
         {
-            Assert.True(!SourceCanSupply<IHaveThreeParameters<int,string,decimal>>(typeof(HaveTwoParameters<,>)));
+            Assert.True(!SourceCanSupply<IHaveThreeParameters<int, string, decimal>>(typeof(HaveTwoParameters<,>)));
         }
 
-        static bool SourceCanSupply<TClosedService>(Type component)
+        private static bool SourceCanSupply<TClosedService>(Type component)
         {
-            var service = typeof (TClosedService).GetGenericTypeDefinition();
+            var service = typeof(TClosedService).GetGenericTypeDefinition();
             var source = ConstructSource(component, service);
 
             var closedServiceType = typeof(TClosedService);
@@ -211,12 +245,11 @@ namespace Autofac.Test.Features.OpenGenerics
             return true;
         }
 
-        static OpenGenericRegistrationSource ConstructSource(Type component, Type service = null)
+        private static OpenGenericRegistrationSource ConstructSource(Type component, Type service = null)
         {
             return new OpenGenericRegistrationSource(
                 new RegistrationData(new TypedService(service ?? component)),
                 new ReflectionActivatorData(component));
         }
-        // ReSharper restore UnusedTypeParameter
     }
 }

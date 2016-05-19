@@ -1,7 +1,7 @@
 ﻿using System;
-using Xunit;
 using Autofac.Core;
 using Autofac.Test.Scenarios.Parameterisation;
+using Xunit;
 
 namespace Autofac.Test.Core
 {
@@ -90,11 +90,11 @@ namespace Autofac.Test.Core
             var component = new object();
 
             var cb = new ContainerBuilder();
-            cb.Register( c => component ).Keyed<object>( myKey );
+            cb.Register(c => component).Keyed<object>(myKey);
             var container = cb.Build();
 
-            var o = container.ResolveKeyed<object>( myKey );
-            Assert.Same( component, o );
+            var o = container.ResolveKeyed<object>(myKey);
+            Assert.Same(component, o);
         }
 
         [Fact]
@@ -163,7 +163,7 @@ namespace Autofac.Test.Core
             }
         }
 
-        [Fact(Skip = "Issue #677")]
+        [Fact]
         public void ReplaceInstance_ModuleActivatingHandlerProvidesResultToRelease()
         {
             var builder = new ContainerBuilder();

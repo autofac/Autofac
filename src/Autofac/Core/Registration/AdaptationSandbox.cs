@@ -24,20 +24,23 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
 {
-    class AdaptationSandbox
+    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the component registration is responsible for disposal.")]
+    internal class AdaptationSandbox
     {
-        readonly IEnumerable<IRegistrationSource> _adapters;
-        readonly IComponentRegistration _registration;
-        readonly IEnumerable<Service> _adapterServices;
+        private readonly IEnumerable<IRegistrationSource> _adapters;
+        private readonly IComponentRegistration _registration;
+        private readonly IEnumerable<Service> _adapterServices;
 
-        readonly IDictionary<Service, IList<IRegistrationSource>> _adaptersToQuery =
+        private readonly IDictionary<Service, IList<IRegistrationSource>> _adaptersToQuery =
             new Dictionary<Service, IList<IRegistrationSource>>();
-        readonly IList<IComponentRegistration> _registrations = new List<IComponentRegistration>();
+
+        private readonly IList<IComponentRegistration> _registrations = new List<IComponentRegistration>();
 
         public AdaptationSandbox(
             IEnumerable<IRegistrationSource> adapters,
@@ -58,7 +61,7 @@ namespace Autofac.Core.Registration
             return _registrations.Where(r => r != _registration);
         }
 
-        IEnumerable<IComponentRegistration> GetAndInitialiseRegistrationsFor(Service service)
+        private IEnumerable<IComponentRegistration> GetAndInitialiseRegistrationsFor(Service service)
         {
             IList<IRegistrationSource> remaining;
             if (!_adaptersToQuery.TryGetValue(service, out remaining))

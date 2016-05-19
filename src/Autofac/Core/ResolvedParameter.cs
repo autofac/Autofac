@@ -34,11 +34,11 @@ namespace Autofac.Core
     /// </summary>
     public class ResolvedParameter : Parameter
     {
-        readonly Func<ParameterInfo, IComponentContext, bool> _predicate;
-        readonly Func<ParameterInfo, IComponentContext, object> _valueAccessor;
+        private readonly Func<ParameterInfo, IComponentContext, bool> _predicate;
+        private readonly Func<ParameterInfo, IComponentContext, object> _valueAccessor;
 
         /// <summary>
-        /// Create an instance of the ResolvedParameter class.
+        /// Initializes a new instance of the <see cref="ResolvedParameter"/> class.
         /// </summary>
         /// <param name="predicate">A predicate that determines which parameters on a constructor will be supplied by this instance.</param>
         /// <param name="valueAccessor">A function that supplies the parameter value given the context.</param>

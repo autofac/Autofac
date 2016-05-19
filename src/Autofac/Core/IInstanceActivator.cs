@@ -46,8 +46,8 @@ namespace Autofac.Core
         object ActivateInstance(IComponentContext context, IEnumerable<Parameter> parameters);
 
         /// <summary>
-        /// The most specific type that the component instances are known to be castable to.
+        /// Gets the most specific type that the component instances are known to be castable to.
         /// </summary>
-        Type LimitType{ get; }
+        Type LimitType { get; }
     }
 }

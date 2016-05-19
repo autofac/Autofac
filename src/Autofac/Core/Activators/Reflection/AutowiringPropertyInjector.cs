@@ -30,7 +30,7 @@ using Autofac.Util;
 
 namespace Autofac.Core.Activators.Reflection
 {
-    class AutowiringPropertyInjector
+    internal class AutowiringPropertyInjector
     {
         public const string InstanceTypeNamedParameter = "Autofac.AutowiringPropertyInjector.InstanceType";
 
@@ -42,7 +42,7 @@ namespace Autofac.Core.Activators.Reflection
             var instanceType = instance.GetType();
 
             foreach (var property in instanceType
-                .GetTypeInfo().DeclaredProperties
+                .GetRuntimeProperties()
                 .Where(pi => pi.CanWrite))
             {
                 var propertyType = property.PropertyType;

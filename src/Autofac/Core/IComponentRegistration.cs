@@ -1,5 +1,5 @@
 // This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
+// Copyright ï¿½ 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -35,43 +35,43 @@ namespace Autofac.Core
     public interface IComponentRegistration : IDisposable
     {
         /// <summary>
-        /// A unique identifier for this component (shared in all sub-contexts.)
+        /// Gets a unique identifier for this component (shared in all sub-contexts.)
         /// This value also appears in Services.
         /// </summary>
         Guid Id { get; }
 
         /// <summary>
-        /// The activator used to create instances.
+        /// Gets the activator used to create instances.
         /// </summary>
         IInstanceActivator Activator { get; }
 
         /// <summary>
-        /// The lifetime associated with the component.
+        /// Gets the lifetime associated with the component.
         /// </summary>
         IComponentLifetime Lifetime { get; }
 
         /// <summary>
-        /// Whether the component instances are shared or not.
+        /// Gets a value indicating whether the component instances are shared or not.
         /// </summary>
         InstanceSharing Sharing { get; }
 
         /// <summary>
-        /// Whether the instances of the component should be disposed by the container.
+        /// Gets a value indicating whether the instances of the component should be disposed by the container.
         /// </summary>
         InstanceOwnership Ownership { get; }
 
         /// <summary>
-        /// The services provided by the component.
+        /// Gets the services provided by the component.
         /// </summary>
         IEnumerable<Service> Services { get; }
 
         /// <summary>
-        /// Additional data associated with the component.
+        /// Gets additional data associated with the component.
         /// </summary>
         IDictionary<string, object> Metadata { get; }
 
         /// <summary>
-        /// The component registration upon which this registration is based.
+        /// Gets the component registration upon which this registration is based.
         /// </summary>
         IComponentRegistration Target { get; }
 

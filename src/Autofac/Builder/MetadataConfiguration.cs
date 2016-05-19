@@ -40,7 +40,7 @@ namespace Autofac.Builder
     /// <remarks>This feature was suggested by OJ Reeves (@TheColonial).</remarks>
     public class MetadataConfiguration<TMetadata>
     {
-        readonly IDictionary<string, object> _properties = new Dictionary<string, object>();
+        private readonly IDictionary<string, object> _properties = new Dictionary<string, object>();
 
         internal IEnumerable<KeyValuePair<string, object>> Properties => _properties;
 

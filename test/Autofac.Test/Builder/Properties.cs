@@ -1,8 +1,12 @@
-static internal class Properties
+namespace Autofac.Test.Builder
 {
-    interface IProperties
+    internal static class Properties
     {
-        int A { get; }
-        string B { get; }
+        internal interface IProperties
+        {
+            int A { get; }
+
+            string B { get; }
+        }
     }
 }

@@ -34,7 +34,7 @@ namespace Autofac.Test.Features.Indexed
             Assert.Same(cpt, val);
         }
 
-        static KeyedServiceIndex<int, string> CreateTarget(string cpt, int key)
+        private static KeyedServiceIndex<int, string> CreateTarget(string cpt, int key)
         {
             var builder = new ContainerBuilder();
             builder.RegisterInstance(cpt).Keyed<string>(key);

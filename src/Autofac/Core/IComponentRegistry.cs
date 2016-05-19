@@ -63,7 +63,7 @@ namespace Autofac.Core
         void Register(IComponentRegistration registration, bool preserveDefaults);
 
         /// <summary>
-        /// Enumerate the registered components.
+        /// Gets the set of registered components.
         /// </summary>
         IEnumerable<IComponentRegistration> Registrations { get; }
 
@@ -94,6 +94,7 @@ namespace Autofac.Core
         IEnumerable<IRegistrationSource> Sources { get; }
 
         /// <summary>
+        /// Gets a value indicating whether the registry contains its own components.
         /// True if the registry contains its own components; false if it is forwarding
         /// registrations from another external registry.
         /// </summary>

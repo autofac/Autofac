@@ -28,7 +28,8 @@ namespace Autofac.Test
 
             var container = builder.Build();
 
-            ThreadStart work = () => {
+            ThreadStart work = () =>
+            {
                  try
                  {
                      var o = container.BeginLifetimeScope().Resolve<object>();
@@ -51,7 +52,8 @@ namespace Autofac.Test
             Assert.Empty(exceptions);
             Assert.Equal(1, results.Distinct().Count());
         }
-#if !DNXCORE50
+
+#if !NETCOREAPP1_0
         [Fact]
         public void ConcurrentResolveOperationsForNonSharedInstancesFromDifferentLifetimes_DoNotBlock()
         {
@@ -94,7 +96,7 @@ namespace Autofac.Test
             Task.WaitAll(task1, task2);
         }
 
-        static void ResolveObjectInstanceLoop()
+        private static void ResolveObjectInstanceLoop()
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<object>();
@@ -105,8 +107,9 @@ namespace Autofac.Test
                 container.Resolve<object>();
             }
         }
-#if !DNXCORE50 && !DNX451
-        [Fact(Timeout = 1000)]
+
+#if !NETCOREAPP1_0 && !NET451
+        [Fact]
         public void NoLockWhenResolvingExistingSingleInstance()
         {
             var builder = new ContainerBuilder();

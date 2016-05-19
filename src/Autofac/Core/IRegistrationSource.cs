@@ -44,14 +44,14 @@ namespace Autofac.Core
         /// <remarks>
         /// If the source is queried for service s, and it returns a component that implements both s and s', then it
         /// will not be queried again for either s or s'. This means that if the source can return other implementations
-        /// of s', it should return these, plus the transitive closure of other components implementing their 
+        /// of s', it should return these, plus the transitive closure of other components implementing their
         /// additional services, along with the implementation of s. It is not an error to return components
         /// that do not implement <paramref name="service"/>.
         /// </remarks>
         IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor);
 
         /// <summary>
-        /// Gets whether the registrations provided by this source are 1:1 adapters on top
+        /// Gets a value indicating whether the registrations provided by this source are 1:1 adapters on top
         /// of other components (I.e. like Meta, Func or Owned.)
         /// </summary>
         bool IsAdapterForIndividualComponents { get; }

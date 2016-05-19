@@ -36,7 +36,7 @@ namespace Autofac.Features.Scanning
     public class ScanningActivatorData : ReflectionActivatorData
     {
         /// <summary>
-        /// Create an instance of <see cref="ScanningActivatorData"/>.
+        /// Initializes a new instance of the <see cref="ScanningActivatorData"/> class.
         /// </summary>
         public ScanningActivatorData()
             : base(typeof(object)) // TODO - refactor common base class out of RAD
@@ -44,18 +44,18 @@ namespace Autofac.Features.Scanning
         }
 
         /// <summary>
-        /// The filters applied to the types from the scanned assembly.
+        /// Gets the filters applied to the types from the scanned assembly.
         /// </summary>
         public ICollection<Func<Type, bool>> Filters { get; } = new List<Func<Type, bool>>();
 
         /// <summary>
-        /// Additional actions to be performed on the concrete type registrations.
+        /// Gets the additional actions to be performed on the concrete type registrations.
         /// </summary>
         public ICollection<Action<Type, IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>>> ConfigurationActions { get; }
             = new List<Action<Type, IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>>>();
 
         /// <summary>
-        /// Actions to be called once the scanning operation is complete.
+        /// Gets the actions to be called once the scanning operation is complete.
         /// </summary>
         public ICollection<Action<IComponentRegistry>> PostScanningCallbacks { get; } = new List<Action<IComponentRegistry>>();
     }

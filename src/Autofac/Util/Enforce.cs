@@ -34,17 +34,15 @@ namespace Autofac.Util
     /// <summary>
     /// Helper methods used throughout the codebase.
     /// </summary>
-    static class Enforce
+    internal static class Enforce
     {
         /// <summary>
         /// Enforce that sequence does not contain null. Returns the
         /// value if valid so that it can be used inline in
         /// base initialiser syntax.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="value">The value.</param>
-        /// <param name="name">The name.</param>
-        /// <returns><paramref name="value"/></returns>
+        /// <param name="name">The parameter name.</param>
         public static T ArgumentElementNotNull<T>(T value, string name)
             where T : class, IEnumerable
         {
@@ -60,15 +58,14 @@ namespace Autofac.Util
         /// <summary>
         /// Enforces that the provided object is non-null.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">The type of value being checked.</typeparam>
         /// <param name="value">The value.</param>
         /// <returns><paramref name="value"/></returns>
         public static T NotNull<T>([ValidatedNotNull]T value)
             where T : class
         {
             if (value == null)
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,
-                    EnforceResources.CannotBeNull, typeof(T).FullName));
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, EnforceResources.CannotBeNull, typeof(T).FullName));
 
             return value;
         }
@@ -87,8 +84,7 @@ namespace Autofac.Util
             if (value == null) throw new ArgumentNullException(description);
 
             if (value.Length == 0)
-                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-                    EnforceResources.CannotBeEmpty, description));
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, EnforceResources.CannotBeEmpty, description));
 
             return value;
         }
@@ -104,12 +100,10 @@ namespace Autofac.Util
             MethodInfo invoke = delegateType.GetTypeInfo().GetDeclaredMethod("Invoke");
 
             if (invoke == null)
-                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-                    EnforceResources.NotDelegate, delegateType));
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, EnforceResources.NotDelegate, delegateType));
 
             if (invoke.ReturnType == typeof(void))
-                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-                    EnforceResources.DelegateReturnsVoid, delegateType));
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, EnforceResources.DelegateReturnsVoid, delegateType));
         }
     }
 }

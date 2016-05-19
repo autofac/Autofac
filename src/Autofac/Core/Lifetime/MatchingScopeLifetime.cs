@@ -34,10 +34,10 @@ namespace Autofac.Core.Lifetime
     /// </summary>
     public class MatchingScopeLifetime : IComponentLifetime
     {
-        readonly object[] _tagsToMatch;
+        private readonly object[] _tagsToMatch;
 
         /// <summary>
-        /// Match scopes by comparing tags for equality.
+        /// Initializes a new instance of the <see cref="MatchingScopeLifetime"/> class.
         /// </summary>
         /// <param name="lifetimeScopeTagsToMatch">The tags applied to matching scopes.</param>
         public MatchingScopeLifetime(params object[] lifetimeScopeTagsToMatch)

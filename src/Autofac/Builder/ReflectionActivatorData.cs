@@ -35,12 +35,12 @@ namespace Autofac.Builder
     /// </summary>
     public class ReflectionActivatorData
     {
-        Type _implementer;
-        IConstructorFinder _constructorFinder = new DefaultConstructorFinder();
-        IConstructorSelector _constructorSelector = new MostParametersConstructorSelector();
+        private Type _implementer;
+        private IConstructorFinder _constructorFinder = new DefaultConstructorFinder();
+        private IConstructorSelector _constructorSelector = new MostParametersConstructorSelector();
 
         /// <summary>
-        /// Specify a reflection activator for the given type.
+        /// Initializes a new instance of the <see cref="ReflectionActivatorData"/> class.
         /// </summary>
         /// <param name="implementer">Type that will be activated.</param>
         public ReflectionActivatorData(Type implementer)
@@ -49,7 +49,7 @@ namespace Autofac.Builder
         }
 
         /// <summary>
-        /// Get the implementation type.
+        /// Gets or sets the implementation type.
         /// </summary>
         public Type ImplementationType
         {
@@ -57,6 +57,7 @@ namespace Autofac.Builder
             {
                 return _implementer;
             }
+
             set
             {
                 if (value == null) throw new ArgumentNullException(nameof(value));
@@ -65,11 +66,15 @@ namespace Autofac.Builder
         }
 
         /// <summary>
-        /// The constructor finder for the registration.
+        /// Gets or sets the constructor finder for the registration.
         /// </summary>
         public IConstructorFinder ConstructorFinder
         {
-            get { return _constructorFinder; }
+            get
+            {
+                return _constructorFinder;
+            }
+
             set
             {
                 if (value == null) throw new ArgumentNullException(nameof(value));
@@ -78,11 +83,15 @@ namespace Autofac.Builder
         }
 
         /// <summary>
-        /// The constructor selector for the registration.
+        /// Gets or sets the constructor selector for the registration.
         /// </summary>
         public IConstructorSelector ConstructorSelector
         {
-            get { return _constructorSelector; }
+            get
+            {
+                return _constructorSelector;
+            }
+
             set
             {
                 if (value == null) throw new ArgumentNullException(nameof(value));
@@ -91,12 +100,12 @@ namespace Autofac.Builder
         }
 
         /// <summary>
-        /// The explicitly bound constructor parameters.
+        /// Gets the explicitly bound constructor parameters.
         /// </summary>
         public IList<Parameter> ConfiguredParameters { get; } = new List<Parameter>();
 
         /// <summary>
-        /// The explicitly bound properties.
+        /// Gets the explicitly bound properties.
         /// </summary>
         public IList<Parameter> ConfiguredProperties { get; } = new List<Parameter>();
     }

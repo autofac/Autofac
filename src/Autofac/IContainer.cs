@@ -27,7 +27,7 @@ namespace Autofac
 {
     /// <summary>
     /// Creates, wires dependencies and manages lifetime for a set of components.
-    /// Most instances of <see cref="IContainer"/> are created 
+    /// Most instances of <see cref="IContainer"/> are created
     /// by a <see cref="ContainerBuilder"/>.
     /// </summary>
     /// <example>

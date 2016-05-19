@@ -34,7 +34,7 @@ namespace Autofac.Builder
     public class SimpleActivatorData : IConcreteActivatorData
     {
         /// <summary>
-        /// Return the provided activator.
+        /// Initializes a new instance of the <see cref="SimpleActivatorData"/> class.
         /// </summary>
         /// <param name="activator">The activator to return.</param>
         public SimpleActivatorData(IInstanceActivator activator)

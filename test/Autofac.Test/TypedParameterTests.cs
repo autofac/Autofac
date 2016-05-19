@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Xunit;
 using Autofac.Core;
+using Xunit;
 
 namespace Autofac.Test
 {
@@ -14,7 +14,9 @@ namespace Autofac.Test
         {
         }
 
-        public class B : A { }
+        public class B : A
+        {
+        }
 
         public class C
         {
@@ -67,11 +69,11 @@ namespace Autofac.Test
             Assert.False(typedParam.CanSupplyValue(param, new Container(), out vp));
         }
 
-		[Fact]
-		public void FromWorksJustLikeTheConstructor()
-		{
-			var param = TypedParameter.From(new B());
-			Assert.Same(typeof(B), param.Type);
-		}
+        [Fact]
+        public void FromWorksJustLikeTheConstructor()
+        {
+            var param = TypedParameter.From(new B());
+            Assert.Same(typeof(B), param.Type);
+        }
     }
 }

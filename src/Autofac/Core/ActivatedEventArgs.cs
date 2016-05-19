@@ -54,22 +54,22 @@ namespace Autofac.Core
         }
 
         /// <summary>
-        /// The context in which the activation occurred.
+        /// Gets the context in which the activation occurred.
         /// </summary>
         public IComponentContext Context { get; }
 
         /// <summary>
-        /// The component providing the instance.
+        /// Gets the component providing the instance.
         /// </summary>
         public IComponentRegistration Component { get; }
 
         /// <summary>
-        /// The paramters provided when resolved.
+        /// Gets the paramters provided when resolved.
         /// </summary>
         public IEnumerable<Parameter> Parameters { get; }
 
         /// <summary>
-        /// The instance that will be used to satisfy the request.
+        /// Gets the instance that will be used to satisfy the request.
         /// </summary>
         public T Instance { get; }
     }

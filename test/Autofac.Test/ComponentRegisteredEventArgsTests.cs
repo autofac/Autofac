@@ -1,5 +1,5 @@
 // This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
+// Copyright ï¿½ 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -24,9 +24,9 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Xunit;
 using Autofac.Core;
 using Autofac.Core.Registration;
+using Xunit;
 
 namespace Autofac.Test
 {

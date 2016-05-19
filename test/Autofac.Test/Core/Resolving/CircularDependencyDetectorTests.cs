@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Xunit;
-using Autofac.Core.Resolving;
 using Autofac.Core;
+using Autofac.Core.Resolving;
+using Xunit;
 
 namespace Autofac.Test.Core.Resolving
 {

@@ -35,7 +35,7 @@ namespace Autofac.Builder
     public class ConcreteReflectionActivatorData : ReflectionActivatorData, IConcreteActivatorData
     {
         /// <summary>
-        /// Specify a reflection activator for the given type.
+        /// Initializes a new instance of the <see cref="ConcreteReflectionActivatorData"/> class.
         /// </summary>
         /// <param name="implementer">Type that will be activated.</param>
         public ConcreteReflectionActivatorData(Type implementer)
@@ -44,7 +44,7 @@ namespace Autofac.Builder
         }
 
         /// <summary>
-        /// The instance activator based on the provided data.
+        /// Gets the instance activator based on the provided data.
         /// </summary>
         public IInstanceActivator Activator => new ReflectionActivator(
             ImplementationType,

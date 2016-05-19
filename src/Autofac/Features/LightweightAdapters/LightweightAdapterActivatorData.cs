@@ -35,7 +35,7 @@ namespace Autofac.Features.LightweightAdapters
     public class LightweightAdapterActivatorData
     {
         /// <summary>
-        /// Create an instance of <see cref="LightweightAdapterActivatorData"/>.
+        /// Initializes a new instance of the <see cref="LightweightAdapterActivatorData"/> class.
         /// </summary>
         /// <param name="fromService">The service that will be adapted from.</param>
         /// <param name="adapter">The adapter function.</param>
@@ -48,12 +48,12 @@ namespace Autofac.Features.LightweightAdapters
         }
 
         /// <summary>
-        /// The adapter function.
+        /// Gets the adapter function.
         /// </summary>
         public Func<IComponentContext, IEnumerable<Parameter>, object, object> Adapter { get; }
 
         /// <summary>
-        /// The service to be adapted from.
+        /// Gets the service to be adapted from.
         /// </summary>
         public Service FromService { get; }
     }

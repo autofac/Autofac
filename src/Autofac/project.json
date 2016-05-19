@@ -1,75 +1,54 @@
 {
-    "version": "4.0.0-rc1-*",
-    "authors": ["Autofac Contributors"],
-    "description": "Core assembly for the Autofac Inversion of Control container",
-    "summary": "Autofac is an IoC container for Microsoft .NET. It manages the dependencies between classes so that applications stay easy to change as they grow in size and complexity.",
+  "version": "4.0.0-rc2-*",
+  "description": "Autofac is an IoC container for Microsoft .NET. It manages the dependencies between classes so that applications stay easy to change as they grow in size and complexity.",
+  "packOptions": {
+    "summary": "Core assembly for the Autofac Inversion of Control container",
+    "tags": [ "autofac", "di", "ioc", "dependencyinjection" ],
+    "owners": [ "Autofac Contributors" ],
+    "iconUrl": "https://cloud.githubusercontent.com/assets/1156571/13684110/16b8f152-e6bf-11e5-84ae-22c66c6d351a.png",
     "projectUrl": "http://autofac.org",
     "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
-    "iconUrl": "http://code.google.com/p/autofac/logo",
     "requireLicenseAcceptance": false,
-    "tags": [ "Autofac", "DI", "IoC" ],
-    "compilationOptions": {
-        "keyFile": "../../Build/SharedKey.snk",
-        "warningsAsErrors": true
-    },
-    "compile": ["**/*.cs"],
-    "resource": ["**/*.resx"],
     "repository": {
-        "type": "git",
-        "url": "https://github.com/autofac/Autofac"
-    },
-    "frameworks": {
-        "dnxcore50": {
-            "dependencies": {
-                "System.Collections": "4.0.11-beta-*",
-                "System.Collections.Concurrent": "4.0.11-beta-*",
-                "System.ComponentModel": "4.0.1-beta-*",
-                "System.Diagnostics.Debug": "4.0.11-beta-*",
-                "System.Diagnostics.Tools": "4.0.1-beta-*",
-                "System.Globalization": "4.0.11-beta-*",
-                "System.Linq": "4.0.1-beta-*",
-                "System.Linq.Expressions": "4.0.11-beta-*",
-                "System.Reflection": "4.1.0-beta-*",
-                "System.Reflection.Extensions": "4.0.1-beta-*",
-                "System.Resources.ResourceManager": "4.0.1-beta-*",
-                "System.Runtime": "4.0.21-beta-*",
-                "System.Threading.Tasks": "4.0.11-beta-*"
-            }
-        },
-        "dotnet5.2": {
-            "dependencies": {
-                "System.Collections.Concurrent": "4.0.11-beta-*",
-                "System.ComponentModel": "4.0.1-beta-*",
-                "System.Diagnostics.Debug": "4.0.11-beta-*",
-                "System.Diagnostics.Tools": "4.0.1-beta-*",
-                "System.Globalization": "4.0.11-beta-*",
-                "System.Linq": "4.0.1-beta-*",
-                "System.Linq.Expressions": "4.0.11-beta-*",
-                "System.Reflection": "4.1.0-beta-*",
-                "System.Reflection.Extensions": "4.0.1-beta-*",
-                "System.Reflection.Primitives": "4.0.1-beta-*",
-                "System.Resources.ResourceManager": "4.0.1-beta-*",
-                "System.Runtime": "4.0.21-beta-*",
-                "System.Threading": "4.0.11-beta-*"
-            }
-        },
-        "net45":{},
-        "netcore45":{
-            "dependencies": {
-                "System.Collections.Concurrent": "4.0.11-beta-*",
-                "System.ComponentModel": "4.0.1-beta-*",
-                "System.Diagnostics.Debug": "4.0.11-beta-*",
-                "System.Diagnostics.Tools": "4.0.1-beta-*",
-                "System.Globalization": "4.0.11-beta-*",
-                "System.Linq": "4.0.1-beta-*",
-                "System.Linq.Expressions": "4.0.11-beta-*",
-                "System.Reflection": "4.1.0-beta-*",
-                "System.Reflection.Extensions": "4.0.1-beta-*",
-                "System.Reflection.Primitives": "4.0.1-beta-*",
-                "System.Resources.ResourceManager": "4.0.1-beta-*",
-                "System.Runtime": "4.0.21-beta-*",
-                "System.Threading": "4.0.11-beta-*"
-            }
-        }
+      "type": "git",
+      "url": "https://github.com/autofac/Autofac"
     }
+  },
+  "buildOptions": {
+    "additionalArguments": ["/ruleset:../../build/Analyzers.ruleset"],
+    "keyFile": "../../Autofac.snk",
+    "nowarn": [
+      "CS1591"
+    ],
+    "warningsAsErrors": true,
+    "xmlDoc": true
+  },
+  "dependencies": {
+    "Microsoft.CodeAnalysis.FxCopAnalyzers": { "version": "1.1.0", "type": "build" },
+    "StyleCop.Analyzers": { "version": "1.0.0", "type": "build" },
+    "System.Runtime.Analyzers": { "version": "1.1.0", "type": "build" }
+  },
+  "frameworks": {
+    "netstandard1.1": {
+      "dependencies": {
+        "System.Collections.Concurrent": "4.0.12-rc2-*",
+        "System.ComponentModel": "4.0.1-rc2-*",
+        "System.Diagnostics.Debug": "4.0.11-rc2-*",
+        "System.Diagnostics.Tools": "4.0.1-rc2-*",
+        "System.Globalization": "4.0.11-rc2-*",
+        "System.Linq": "4.1.0-rc2-*",
+        "System.Linq.Expressions": "4.0.11-rc2-*",
+        "System.Reflection": "4.1.0-rc2-*",
+        "System.Reflection.Extensions": "4.0.1-rc2-*",
+        "System.Reflection.Primitives": "4.0.1-rc2-*",
+        "System.Resources.ResourceManager": "4.0.1-rc2-*",
+        "System.Runtime": "4.1.0-rc2-*",
+        "System.Runtime.Extensions": "4.1.0-rc2-*",
+        "System.Threading": "4.0.11-rc2-*"
+      },
+      "imports": [
+        "dotnet5.2"
+      ]
+    }
+  }
 }

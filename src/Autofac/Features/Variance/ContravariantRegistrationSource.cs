@@ -26,9 +26,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac.Core;
-using Autofac.Builder;
 using System.Reflection;
+using Autofac.Builder;
+using Autofac.Core;
 using Autofac.Util;
 
 namespace Autofac.Features.Variance
@@ -41,13 +41,13 @@ namespace Autofac.Features.Variance
     /// {
     ///     void Handle(TCommand command);
     /// }
-    /// 
+    ///
     /// class Command { }
-    /// 
+    ///
     /// class DerivedCommand : Command { }
-    /// 
+    ///
     /// class CommandHandler : IHandler&lt;Command&gt; { ... }
-    /// 
+    ///
     /// var builder = new ContainerBuilder();
     /// builder.RegisterSource(new ContravariantRegistrationSource());
     /// builder.RegisterType&lt;CommandHandler&gt;();
@@ -59,7 +59,7 @@ namespace Autofac.Features.Variance
     /// </example>
     public class ContravariantRegistrationSource : IRegistrationSource
     {
-        const string IsContravariantAdapter = "IsContravariantAdapter";
+        private const string IsContravariantAdapter = "IsContravariantAdapter";
 
         /// <summary>
         /// Retrieve registrations for an unregistered service, to be used
@@ -76,7 +76,7 @@ namespace Autofac.Features.Variance
         /// that do not implement <paramref name="service"/>.
         /// </remarks>
         public IEnumerable<IComponentRegistration> RegistrationsFor(
-            Service service, 
+            Service service,
             Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
@@ -108,20 +108,20 @@ namespace Autofac.Features.Variance
                     .CreateRegistration());
         }
 
-        static Type[] SubstituteArrayElementAt(Type[] array, Type newElement, int index)
+        private static Type[] SubstituteArrayElementAt(Type[] array, Type newElement, int index)
         {
             var copy = array.ToArray();
             copy[index] = newElement;
             return copy;
         }
 
-        static IEnumerable<Type> GetTypesAssignableFrom(Type type)
+        private static IEnumerable<Type> GetTypesAssignableFrom(Type type)
         {
             return GetBagOfTypesAssignableFrom(type)
                 .Distinct();
         }
 
-        static IEnumerable<Type> GetBagOfTypesAssignableFrom(Type type)
+        private static IEnumerable<Type> GetBagOfTypesAssignableFrom(Type type)
         {
             if (type.GetTypeInfo().BaseType != null)
             {
@@ -146,14 +146,14 @@ namespace Autofac.Features.Variance
             }
         }
 
-        static bool IsCompatibleInterfaceType(Type type, out int contravariantParameterIndex)
+        private static bool IsCompatibleInterfaceType(Type type, out int contravariantParameterIndex)
         {
             if (type.GetTypeInfo().IsGenericType && type.GetTypeInfo().IsInterface)
             {
                 var contravariantWithIndex = type
                     .GetGenericTypeDefinition()
                     .GetTypeInfo().GenericTypeParameters
-                    .Select((c, i) => new 
+                    .Select((c, i) => new
                     {
                         IsContravariant = (c.GetTypeInfo().GenericParameterAttributes & GenericParameterAttributes.Contravariant) !=
                         GenericParameterAttributes.None,
@@ -174,7 +174,7 @@ namespace Autofac.Features.Variance
         }
 
         /// <summary>
-        /// Gets whether the registrations provided by this source are 1:1 adapters on top
+        /// Gets a value indicating whether the registrations provided by this source are 1:1 adapters on top
         /// of other components (I.e. like Meta, Func or Owned.)
         /// </summary>
         public bool IsAdapterForIndividualComponents => true;

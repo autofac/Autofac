@@ -56,7 +56,6 @@ namespace Autofac.Core.Activators.Reflection
             // framework combination is - .NET for Windows Store apps, Windows Phone, Silverlight... it's never
             // available.
             // http://msdn.microsoft.com/en-us/library/windows/apps/system.dbnull(v=vs.110).aspx
-
             var hasDefaultValue = pi.DefaultValue == null || pi.DefaultValue.GetType().FullName != "System.DBNull";
 
             if (hasDefaultValue)
@@ -64,6 +63,7 @@ namespace Autofac.Core.Activators.Reflection
                 valueProvider = () => pi.DefaultValue;
                 return true;
             }
+
             valueProvider = null;
             return false;
         }

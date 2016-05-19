@@ -1,9 +1,7 @@
-using System;
-using Autofac.Builder;
+using System.Collections.Generic;
+using Autofac.Core;
 using Autofac.Core.Lifetime;
 using Xunit;
-using Autofac.Core;
-using System.Collections.Generic;
 
 namespace Autofac.Test
 {
@@ -11,12 +9,15 @@ namespace Autofac.Test
     {
         public class HomeController
         {
-            public HomeController()
-            {
-            }
         }
 
-        public enum Tag { None, Outer, Middle, Inner }
+        public enum Tag
+        {
+            None,
+            Outer,
+            Middle,
+            Inner
+        }
 
         [Fact]
         public void OuterSatisfiesInnerResolutions()
@@ -25,7 +26,11 @@ namespace Autofac.Test
 
             var instantiations = 0;
 
-            builder.Register(c => { instantiations++; return ""; }).InstancePerMatchingLifetimeScope(LifetimeScope.RootTag);
+            builder.Register(c =>
+            {
+                instantiations++;
+                return "";
+            }).InstancePerMatchingLifetimeScope(LifetimeScope.RootTag);
 
             var root = builder.Build();
 
@@ -47,8 +52,12 @@ namespace Autofac.Test
 
             var instantiations = 0;
 
-            builder.Register(c => { instantiations++; return ""; })
-                .InstancePerMatchingLifetimeScope(LifetimeScope.RootTag);
+            builder.Register(c =>
+            {
+                instantiations++;
+                return "";
+            })
+            .InstancePerMatchingLifetimeScope(LifetimeScope.RootTag);
 
             var root = builder.Build();
 
@@ -130,27 +139,16 @@ namespace Autofac.Test
         public void CollectionsAreTaggable()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterCollection<object>("o")
-                .InstancePerMatchingLifetimeScope("tag")
-                .As(typeof(IList<object>));
+            builder.RegisterType<object>()
+                .InstancePerMatchingLifetimeScope("tag");
 
             var outer = builder.Build();
             var inner = outer.BeginLifetimeScope("tag");
 
             var coll = inner.Resolve<IList<object>>();
-            Assert.NotNull(coll);
+            Assert.Equal(1, coll.Count);
 
-            var threw = false;
-            try
-            {
-                outer.Resolve<IList<object>>();
-            }
-            catch (Exception)
-            {
-                threw = true;
-            }
-
-            Assert.True(threw);
+            Assert.Throws<DependencyResolutionException>(() => outer.Resolve<IList<object>>());
         }
 
         [Fact]
@@ -167,17 +165,7 @@ namespace Autofac.Test
             var coll = inner.Resolve<IList<object>>();
             Assert.NotNull(coll);
 
-            var threw = false;
-            try
-            {
-                outer.Resolve<IList<object>>();
-            }
-            catch (Exception)
-            {
-                threw = true;
-            }
-
-            Assert.True(threw);
+            Assert.Throws<DependencyResolutionException>(() => outer.Resolve<IList<object>>());
         }
 
         [Fact]

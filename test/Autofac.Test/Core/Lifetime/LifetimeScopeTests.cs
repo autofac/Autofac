@@ -141,6 +141,7 @@ namespace Autofac.Test.Core.Lifetime
                 Assert.True(unconfigured.ComponentRegistry.TryGetRegistration(service, out reg), "The registration should have been found in the unconfigured scope.");
                 Assert.Equal(typeof(Person), reg.Activator.LimitType);
             }
+
             using (var configured = container.BeginLifetimeScope(b => { }))
             {
                 IComponentRegistration reg = null;
@@ -156,8 +157,8 @@ namespace Autofac.Test.Core.Lifetime
             var container = builder.Build();
             var l1 = container.BeginLifetimeScope();
             var l2 = l1.BeginLifetimeScope();
-            var L3 = l2.BeginLifetimeScope(b => b.RegisterType<DisposeTracker>());
-            var tracker = L3.Resolve<DisposeTracker>();
+            var l3 = l2.BeginLifetimeScope(b => b.RegisterType<DisposeTracker>());
+            var tracker = l3.Resolve<DisposeTracker>();
             Assert.False(tracker.IsDisposed, "The tracker should not yet be disposed.");
             container.Dispose();
             Assert.True(tracker.IsDisposed, "The tracker should have been disposed along with the lifetime scope chain.");
@@ -274,13 +275,29 @@ namespace Autofac.Test.Core.Lifetime
             Assert.Equal(1, child2.Resolve<IEnumerable<string>>().Count());
         }
 
-        public interface IServiceA { }
-        public interface IServiceB { }
-        public interface IServiceCommon { }
+        public interface IServiceA
+        {
+        }
 
-        public class ServiceA : IServiceA, IServiceCommon { }
-        public class ServiceB1 : IServiceB, IServiceCommon { }
-        public class ServiceB2 : IServiceB { }
+        public interface IServiceB
+        {
+        }
+
+        public interface IServiceCommon
+        {
+        }
+
+        public class ServiceA : IServiceA, IServiceCommon
+        {
+        }
+
+        public class ServiceB1 : IServiceB, IServiceCommon
+        {
+        }
+
+        public class ServiceB2 : IServiceB
+        {
+        }
 
         [Fact]
         public void ServiceOverrideThroughIntermediateScopeIsCorrect()
@@ -348,8 +365,7 @@ namespace Autofac.Test.Core.Lifetime
 
             var exception = Assert.Throws<DependencyResolutionException>(() => container.Resolve<AThatDependsOnB>());
 
-            Assert.Equal(exception.Message, string.Format(CultureInfo.CurrentCulture,
-                LifetimeScopeResources.SelfConstructingDependencyDetected, typeof(AThatDependsOnB).FullName));
+            Assert.Equal(exception.Message, string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, typeof(AThatDependsOnB).FullName));
         }
     }
 }

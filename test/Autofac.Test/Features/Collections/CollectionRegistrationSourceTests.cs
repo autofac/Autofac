@@ -45,15 +45,44 @@ namespace Autofac.Test.Features.Collections
         public void ResolvesCollectionItemsFromCurrentLifetimeScope()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterCollection<DisposeTracker>("dt");
-            builder.RegisterType<DisposeTracker>().MemberOf("dt");
+            builder.RegisterType<DisposeTracker>();
             var container = builder.Build();
 
             DisposeTracker tracker;
             using (var ls = container.BeginLifetimeScope())
-                tracker = ls.Resolve<DisposeTracker[]>().First();
+                tracker = ls.Resolve<IEnumerable<DisposeTracker>>().First();
 
             Assert.True(tracker.IsDisposed);
+        }
+
+        [Fact]
+        public void CollectionInNestedLifetimeScope()
+        {
+            // Issue #711
+            // Note #711 was using named collections; this test is not.
+            // Named collections don't have different behavior than the standard
+            // auto-generated behavior from a resolve standpoint since you
+            // can't resolve a specifically named collection.
+            var cb = new ContainerBuilder();
+            cb.RegisterType<Foo1>().As<IFoo>();
+            cb.RegisterType<Foo2>().As<IFoo>();
+            using (var container = cb.Build())
+            {
+                var collection = container.Resolve<IEnumerable<IFoo>>();
+                Assert.Equal(2, collection.Count());
+
+                using (var scope = container.BeginLifetimeScope())
+                {
+                    collection = container.Resolve<IEnumerable<IFoo>>();
+                    Assert.Equal(2, collection.Count());
+                }
+
+                using (var scope = container.BeginLifetimeScope(b => { }))
+                {
+                    collection = container.Resolve<IEnumerable<IFoo>>();
+                    Assert.Equal(2, collection.Count());
+                }
+            }
         }
 
         [Fact]
@@ -65,15 +94,26 @@ namespace Autofac.Test.Features.Collections
             Assert.Equal(1, c.Resolve<IEnumerable<string>>().Count());
 
             c.ComponentRegistry.Register(
-                RegistrationBuilder.ForDelegate((ctx,p) => "World").CreateRegistration());
+                RegistrationBuilder.ForDelegate((ctx, p) => "World").CreateRegistration());
 
             Assert.Equal(2, c.Resolve<IEnumerable<string>>().Count());
         }
 
-        public interface IFoo { }
-        public class Foo1 : IFoo { }
-        public class Foo2 : IFoo { }
-        public class Foo3 : IFoo { }
+        public interface IFoo
+        {
+        }
+
+        public class Foo1 : IFoo
+        {
+        }
+
+        public class Foo2 : IFoo
+        {
+        }
+
+        public class Foo3 : IFoo
+        {
+        }
 
         [Fact]
         public void EnumerablesFromDifferentLifetimeScopesShouldReturnDifferentCollections()

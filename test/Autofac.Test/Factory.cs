@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Autofac.Builder;
-using Autofac.Core.Registration;
-using Autofac.Core.Lifetime;
-using Autofac.Core.Activators.Reflection;
 using Autofac.Core;
-using System.Reflection;
 using Autofac.Core.Activators.ProvidedInstance;
+using Autofac.Core.Activators.Reflection;
+using Autofac.Core.Lifetime;
+using Autofac.Core.Registration;
 
 namespace Autofac.Test
 {
-    static class Factory
+    internal static class Factory
     {
         public static IComponentRegistration CreateSingletonRegistration(IEnumerable<Service> services, IInstanceActivator activator)
         {

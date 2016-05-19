@@ -1,6 +1,6 @@
 ﻿using System;
-using Xunit;
 using Autofac.Core;
+using Xunit;
 
 namespace Autofac.Test.Core
 {

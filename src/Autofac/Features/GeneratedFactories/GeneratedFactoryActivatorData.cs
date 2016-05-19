@@ -35,11 +35,11 @@ namespace Autofac.Features.GeneratedFactories
     /// </summary>
     public class GeneratedFactoryActivatorData : IConcreteActivatorData
     {
-        readonly Type _delegateType;
-        readonly Service _productService;
+        private readonly Type _delegateType;
+        private readonly Service _productService;
 
         /// <summary>
-        /// Create a new GeneratedFactoryActivatorData
+        /// Initializes a new instance of the <see cref="GeneratedFactoryActivatorData"/> class.
         /// </summary>
         /// <param name="delegateType">The type of the factory.</param>
         /// <param name="productService">The service used to provide the products of the factory.</param>
@@ -53,7 +53,7 @@ namespace Autofac.Features.GeneratedFactories
         }
 
         /// <summary>
-        /// Determines how the parameters of the delegate type are passed on
+        /// Gets or sets a value determining how the parameters of the delegate type are passed on
         /// to the generated Resolve() call as Parameter objects.
         /// For Func-based delegates, this defaults to ByType. Otherwise, the
         /// parameters will be mapped by name.
@@ -61,7 +61,7 @@ namespace Autofac.Features.GeneratedFactories
         public ParameterMapping ParameterMapping { get; set; } = ParameterMapping.Adaptive;
 
         /// <summary>
-        /// Activator data that can provide an IInstanceActivator instance.
+        /// Gets the activator data that can provide an IInstanceActivator instance.
         /// </summary>
         public IInstanceActivator Activator
         {
@@ -72,5 +72,4 @@ namespace Autofac.Features.GeneratedFactories
             }
         }
     }
-
 }

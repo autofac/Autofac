@@ -40,19 +40,19 @@ namespace Autofac.Builder
     public interface IRegistrationBuilder<out TLimit, out TActivatorData, out TRegistrationStyle>
     {
         /// <summary>
-        /// The activator data.
+        /// Gets the activator data.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         TActivatorData ActivatorData { get; }
 
         /// <summary>
-        /// The registration style.
+        /// Gets the registration style.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         TRegistrationStyle RegistrationStyle { get; }
 
         /// <summary>
-        /// The registration data.
+        /// Gets the registration data.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         RegistrationData RegistrationData { get; }
@@ -272,6 +272,9 @@ namespace Autofac.Builder
         /// </summary>
         /// <typeparam name="TMetadata">A type with properties whose names correspond to the
         /// property names to configure.</typeparam>
+        /// <param name="configurationAction">
+        /// The action used to configure the metadata.
+        /// </param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata<TMetadata>(Action<MetadataConfiguration<TMetadata>> configurationAction);
     }

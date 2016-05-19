@@ -41,11 +41,11 @@ namespace Autofac.Features.LazyDependencies
     /// When a dependency of a lazy type is used, the instantiation of the underlying
     /// component will be delayed until the Value property is first accessed.
     /// </summary>
-    class LazyWithMetadataRegistrationSource : IRegistrationSource
+    internal class LazyWithMetadataRegistrationSource : IRegistrationSource
     {
-        static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyWithMetadataRegistrationSource).GetTypeInfo().GetDeclaredMethod("CreateLazyRegistration");
+        private static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyWithMetadataRegistrationSource).GetTypeInfo().GetDeclaredMethod("CreateLazyRegistration");
 
-        delegate IComponentRegistration RegistrationCreator(Service service, IComponentRegistration valueRegistration);
+        private delegate IComponentRegistration RegistrationCreator(Service service, IComponentRegistration valueRegistration);
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
@@ -53,7 +53,7 @@ namespace Autofac.Features.LazyDependencies
                 throw new ArgumentNullException(nameof(registrationAccessor));
 
             var swt = service as IServiceWithType;
-#if !DNXCORE50
+#if !NETCOREAPP1_0
             var lazyType = GetLazyType(swt);
             if (swt == null || lazyType == null || !swt.ServiceType.IsGenericTypeDefinedBy(lazyType))
                 return Enumerable.Empty<IComponentRegistration>();
@@ -72,8 +72,7 @@ namespace Autofac.Features.LazyDependencies
 
             var valueService = swt.ChangeType(valueType);
 
-            var registrationCreator = (RegistrationCreator)(CreateLazyRegistrationMethod.MakeGenericMethod(
-                valueType, metaType)).CreateDelegate(typeof(RegistrationCreator));
+            var registrationCreator = (RegistrationCreator)CreateLazyRegistrationMethod.MakeGenericMethod(valueType, metaType).CreateDelegate(typeof(RegistrationCreator));
 
             return registrationAccessor(valueService)
                 .Select(v => registrationCreator(service, v));
@@ -86,9 +85,7 @@ namespace Autofac.Features.LazyDependencies
             return LazyWithMetadataRegistrationSourceResources.LazyWithMetadataRegistrationSourceDescription;
         }
 
-        // ReSharper disable UnusedMember.Local
-        static IComponentRegistration CreateLazyRegistration<T, TMeta>(Service providedService, IComponentRegistration valueRegistration)
-        // ReSharper restore UnusedMember.Local
+        private static IComponentRegistration CreateLazyRegistration<T, TMeta>(Service providedService, IComponentRegistration valueRegistration)
         {
             var metadataProvider = MetadataViewProvider.GetMetadataViewProvider<TMeta>();
             var metadata = metadataProvider(valueRegistration.Target.Metadata);
@@ -107,8 +104,8 @@ namespace Autofac.Features.LazyDependencies
             return rb.CreateRegistration();
         }
 
-#if !DNXCORE50
-        static Type GetLazyType(IServiceWithType serviceWithType)
+#if !NETCOREAPP1_0
+        private static Type GetLazyType(IServiceWithType serviceWithType)
         {
             return serviceWithType != null
                    && serviceWithType.ServiceType.GetTypeInfo().IsGenericType

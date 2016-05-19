@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac.Core.Registration;
 
 namespace Autofac.Core.Resolving
@@ -33,16 +34,17 @@ namespace Autofac.Core.Resolving
     /// A <see cref="ResolveOperation"/> is a component context that sequences and monitors the multiple
     /// activations that go into producing a single requested object graph.
     /// </summary>
-    class ResolveOperation : IComponentContext, IResolveOperation
+    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the most nested lifetime scope is responsible for disposal.")]
+    internal class ResolveOperation : IComponentContext, IResolveOperation
     {
-        readonly Stack<InstanceLookup> _activationStack = new Stack<InstanceLookup>();
-        ICollection<InstanceLookup> _successfulActivations;
-        readonly ISharingLifetimeScope _mostNestedLifetimeScope;
-        int _callDepth;
-        bool _ended;
+        private readonly Stack<InstanceLookup> _activationStack = new Stack<InstanceLookup>();
+        private ICollection<InstanceLookup> _successfulActivations;
+        private readonly ISharingLifetimeScope _mostNestedLifetimeScope;
+        private int _callDepth;
+        private bool _ended;
 
         /// <summary>
-        /// Create an instance of <see cref="ResolveOperation"/> in the provided scope.
+        /// Initializes a new instance of the <see cref="ResolveOperation"/> class.
         /// </summary>
         /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
         /// can move upward to less nested scopes as components with wider sharing scopes are activated</param>
@@ -70,6 +72,8 @@ namespace Autofac.Core.Resolving
         /// <summary>
         /// Execute the complete resolve operation.
         /// </summary>
+        /// <param name="registration">The registration.</param>
+        /// <param name="parameters">Parameters for the instance.</param>
         public object Execute(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
             object result;
@@ -132,7 +136,7 @@ namespace Autofac.Core.Resolving
 
         public event EventHandler<InstanceLookupBeginningEventArgs> InstanceLookupBeginning;
 
-        void CompleteActivations()
+        private void CompleteActivations()
         {
             var completed = _successfulActivations;
             ResetSuccessfulActivations();
@@ -141,17 +145,17 @@ namespace Autofac.Core.Resolving
                 activation.Complete();
         }
 
-        void ResetSuccessfulActivations()
+        private void ResetSuccessfulActivations()
         {
             _successfulActivations = new List<InstanceLookup>();
         }
 
         /// <summary>
-        /// Associates services with the components that provide them.
+        /// Gets the services associated with the components that provide them.
         /// </summary>
         public IComponentRegistry ComponentRegistry => _mostNestedLifetimeScope.ComponentRegistry;
 
-        void End(Exception exception = null)
+        private void End(Exception exception = null)
         {
             if (_ended) return;
 

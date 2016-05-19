@@ -24,10 +24,11 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Autofac.Extensions.DependencyInjection
 {
-    class AutofacServiceProvider : IServiceProvider
+    internal class AutofacServiceProvider : IServiceProvider, ISupportRequiredService
     {
         private readonly IComponentContext _componentContext;
 
@@ -39,6 +40,11 @@ namespace Autofac.Extensions.DependencyInjection
         public object GetService(Type serviceType)
         {
             return _componentContext.ResolveOptional(serviceType);
+        }
+
+        public object GetRequiredService(Type serviceType)
+        {
+            return _componentContext.Resolve(serviceType);
         }
     }
 }

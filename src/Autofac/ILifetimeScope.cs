@@ -44,10 +44,10 @@ namespace Autofac
     /// {
     ///     // Note that handler is resolved from requestScope, not
     ///     // from the container:
-    ///     
+    ///
     ///     var handler = requestScope.Resolve&lt;IRequestHandler&gt;();
     ///     handler.Handle(request);
-    ///     
+    ///
     ///     // When requestScope is disposed, all resources used in processing
     ///     // the request will be released.
     /// }
@@ -118,7 +118,7 @@ namespace Autofac
         ILifetimeScope BeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction);
 
         /// <summary>
-        /// The disposer associated with this <see cref="ILifetimeScope"/>.
+        /// Gets the disposer associated with this <see cref="ILifetimeScope"/>.
         /// Component instances can be associated with it manually if required.
         /// </summary>
         /// <remarks>Typical usage does not require interaction with this member- it
@@ -126,7 +126,7 @@ namespace Autofac
         IDisposer Disposer { get; }
 
         /// <summary>
-        /// The tag applied to the <see cref="ILifetimeScope"/>.
+        /// Gets the tag applied to the <see cref="ILifetimeScope"/>.
         /// </summary>
         /// <remarks>Tags allow a level in the lifetime hierarchy to be identified.
         /// In most applications, tags are not necessary.</remarks>

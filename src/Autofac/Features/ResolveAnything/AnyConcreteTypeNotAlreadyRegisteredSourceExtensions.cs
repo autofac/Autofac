@@ -24,6 +24,7 @@ namespace Autofac.Features.ResolveAnything
             {
                 throw new ArgumentNullException("source");
             }
+
             source.RegistrationConfiguration = configurationAction;
             return source;
         }

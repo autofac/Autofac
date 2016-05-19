@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
-using Autofac.Core.Activators.Reflection;
+using System.Reflection;
 using Autofac.Core;
-using Autofac.Test.Scenarios.Dependencies;
+using Autofac.Core.Activators.Reflection;
 using Autofac.Test.Scenarios.ConstructorSelection;
+using Autofac.Test.Scenarios.Dependencies;
 using Xunit;
 
 namespace Autofac.Test.Core.Activators.Reflection
@@ -15,7 +16,8 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             Assert.Throws<ArgumentNullException>(delegate
             {
-                new ReflectionActivator(null,
+                new ReflectionActivator(
+                    null,
                     Mocks.GetConstructorFinder(),
                     Mocks.GetConstructorSelector(),
                     Factory.NoParameters,
@@ -28,7 +30,8 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             Assert.Throws<ArgumentNullException>(delegate
             {
-                new ReflectionActivator(typeof(object),
+                new ReflectionActivator(
+                    typeof(object),
                     Mocks.GetConstructorFinder(),
                     Mocks.GetConstructorSelector(),
                     null,
@@ -41,7 +44,8 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             Assert.Throws<ArgumentNullException>(delegate
             {
-                new ReflectionActivator(typeof(object),
+                new ReflectionActivator(
+                    typeof(object),
                     Mocks.GetConstructorFinder(),
                     Mocks.GetConstructorSelector(),
                     Factory.NoParameters,
@@ -54,7 +58,8 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             Assert.Throws<ArgumentNullException>(delegate
             {
-                new ReflectionActivator(typeof(object),
+                new ReflectionActivator(
+                    typeof(object),
                     null,
                     Mocks.GetConstructorSelector(),
                     Factory.NoParameters,
@@ -67,7 +72,8 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             Assert.Throws<ArgumentNullException>(delegate
             {
-                new ReflectionActivator(typeof(object),
+                new ReflectionActivator(
+                    typeof(object),
                     Mocks.GetConstructorFinder(),
                     null,
                     Factory.NoParameters,
@@ -135,8 +141,12 @@ namespace Autofac.Test.Core.Activators.Reflection
 
         public class AcceptsObjectParameter
         {
-            public readonly object P;
-            public AcceptsObjectParameter(object p) { P = p; }
+            public object P { get; private set; }
+
+            public AcceptsObjectParameter(object p)
+            {
+                P = p;
+            }
         }
 
         [Fact]
@@ -149,7 +159,7 @@ namespace Autofac.Test.Core.Activators.Reflection
             var container = builder.Build();
 
             var parameterInstance = new object();
-            var parameters = new Parameter[]{ new NamedParameter("p", parameterInstance)};
+            var parameters = new Parameter[] { new NamedParameter("p", parameterInstance) };
 
             var target = Factory.CreateReflectionActivator(typeof(AcceptsObjectParameter), parameters);
 
@@ -196,8 +206,12 @@ namespace Autofac.Test.Core.Activators.Reflection
 
         public class AcceptsIntParameter
         {
-            public readonly int I;
-            public AcceptsIntParameter(int i) { I = i; }
+            public int I { get; private set; }
+
+            public AcceptsIntParameter(int i)
+            {
+                I = i;
+            }
         }
 
         [Fact]
@@ -237,18 +251,29 @@ namespace Autofac.Test.Core.Activators.Reflection
 
         public class ThreeConstructors
         {
-            public readonly int CalledConstructorParameterCount;
-            // ReSharper disable UnusedMember.Local, UnusedParameter.Local
-            public ThreeConstructors() { CalledConstructorParameterCount = 0; }
-            public ThreeConstructors(int i, string s) { CalledConstructorParameterCount = 2; }
-            public ThreeConstructors(int i) { CalledConstructorParameterCount = 1; }
-            // ReSharper restore UnusedMember.Local, UnusedParameter.Local
+            public int CalledConstructorParameterCount { get; private set; }
+
+            public ThreeConstructors()
+            {
+                CalledConstructorParameterCount = 0;
+            }
+
+            public ThreeConstructors(int i, string s)
+            {
+                CalledConstructorParameterCount = 2;
+            }
+
+            public ThreeConstructors(int i)
+            {
+                CalledConstructorParameterCount = 1;
+            }
         }
 
         [Fact]
         public void ByDefault_ChoosesMostParameterisedConstructor()
         {
-            var parameters = new Parameter[] {
+            var parameters = new Parameter[]
+            {
                 new NamedParameter("i", 1),
                 new NamedParameter("s", "str")
             };
@@ -265,11 +290,30 @@ namespace Autofac.Test.Core.Activators.Reflection
             Assert.Equal(2, typedInstance.CalledConstructorParameterCount);
         }
 
+        [Fact]
+        public void CanReplaceConstructorFinderForRegistrationInChildLifetimeScope()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(c => 1).As<int>();
+            builder.Register(c => "str").As<string>();
+            builder.RegisterType<ThreeConstructors>();
+            var container = builder.Build();
+            var lifetimeScope = container.BeginLifetimeScope(b =>
+            {
+                b.RegisterType<ThreeConstructors>()
+                    .FindConstructorsWith(type => type.GetConstructors().Where(ci => ci.GetParameters().Length == 1).ToArray());
+            });
+
+            var instance = lifetimeScope.Resolve<ThreeConstructors>();
+
+            Assert.Equal(1, instance.CalledConstructorParameterCount);
+        }
+
         public class NoPublicConstructor
         {
-            // ReSharper disable EmptyConstructor
-            internal NoPublicConstructor() { }
-            // ReSharper restore EmptyConstructor
+            internal NoPublicConstructor()
+            {
+            }
         }
 
         [Fact]
@@ -284,9 +328,7 @@ namespace Autofac.Test.Core.Activators.Reflection
 
         public class WithGenericCtor<T>
         {
-            // ReSharper disable UnusedParameter.Local
             public WithGenericCtor(T t)
-            // ReSharper restore UnusedParameter.Local
             {
             }
         }
@@ -302,10 +344,9 @@ namespace Autofac.Test.Core.Activators.Reflection
 
         public class PrivateSetProperty
         {
-            // ReSharper disable UnusedMember.Local
-            public int GetProperty { private set; get; }
+            public int GetProperty { get; private set; }
+
             public int P { get; set; }
-            // ReSharper restore UnusedMember.Local
         }
 
         [Fact]
@@ -317,16 +358,20 @@ namespace Autofac.Test.Core.Activators.Reflection
             Assert.IsType<PrivateSetProperty>(instance);
         }
 
-        // ReSharper disable UnusedAutoPropertyAccessor.Local
-        public class R { public int P1 { get; set; } public int P2 { get; set; } }
-        // ReSharper restore UnusedAutoPropertyAccessor.Local
+        public class R
+        {
+            public int P1 { get; set; }
+
+            public int P2 { get; set; }
+        }
 
         [Fact]
         public void SetsMultipleConfiguredProperties()
         {
             const int p1 = 1;
             const int p2 = 2;
-            var properties = new [] {
+            var properties = new[]
+            {
                 new NamedPropertyParameter("P1", p1),
                 new NamedPropertyParameter("P2", p2)
             };
@@ -369,7 +414,23 @@ namespace Autofac.Test.Core.Activators.Reflection
             Assert.Equal(5, instance.P1);
         }
 
-        public enum E { A, B }
+        [Fact]
+        public void PropertyShouldNotBeSetWhenNoResolveParameterOrRegistrationPropertyOrAutowiredSpecified()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<R>();
+            builder.Register(c => 5);
+            var container = builder.Build();
+
+            var instance = container.Resolve<R>();
+            Assert.Equal(0, instance.P1);
+        }
+
+        public enum E
+        {
+            A,
+            B
+        }
 
         public class WithE
         {

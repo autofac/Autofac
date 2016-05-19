@@ -33,12 +33,12 @@ namespace Autofac.Core
     public interface ISharingLifetimeScope : ILifetimeScope
     {
         /// <summary>
-        /// The root of the sharing hierarchy.
+        /// Gets the root of the sharing hierarchy.
         /// </summary>
         ISharingLifetimeScope RootLifetimeScope { get; }
 
         /// <summary>
-        /// The parent of this node of the hierarchy, or null.
+        /// Gets the parent of this node of the hierarchy, or null.
         /// </summary>
         ISharingLifetimeScope ParentLifetimeScope { get; }
 

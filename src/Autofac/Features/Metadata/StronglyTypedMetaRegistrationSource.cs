@@ -38,11 +38,11 @@ namespace Autofac.Features.Metadata
     /// types automatically whenever type T is registered with the container.
     /// Metadata values come from the component registration's metadata.
     /// </summary>
-    class StronglyTypedMetaRegistrationSource : IRegistrationSource
+    internal class StronglyTypedMetaRegistrationSource : IRegistrationSource
     {
-        static readonly MethodInfo CreateMetaRegistrationMethod = typeof(StronglyTypedMetaRegistrationSource).GetTypeInfo().GetDeclaredMethod("CreateMetaRegistration");
+        private static readonly MethodInfo CreateMetaRegistrationMethod = typeof(StronglyTypedMetaRegistrationSource).GetTypeInfo().GetDeclaredMethod("CreateMetaRegistration");
 
-        delegate IComponentRegistration RegistrationCreator(Service service, IComponentRegistration valueRegistration);
+        private delegate IComponentRegistration RegistrationCreator(Service service, IComponentRegistration valueRegistration);
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
@@ -61,7 +61,7 @@ namespace Autofac.Features.Metadata
 
             var valueService = swt.ChangeType(valueType);
             var methodInfo = CreateMetaRegistrationMethod.MakeGenericMethod(valueType, metaType);
-            var registrationCreator = (RegistrationCreator) methodInfo.CreateDelegate(
+            var registrationCreator = (RegistrationCreator)methodInfo.CreateDelegate(
                 typeof(RegistrationCreator), null);
 
             return registrationAccessor(valueService)
@@ -75,9 +75,7 @@ namespace Autofac.Features.Metadata
             return MetaRegistrationSourceResources.StronglyTypedMetaRegistrationSourceDescription;
         }
 
-        // ReSharper disable UnusedMember.Local
-        static IComponentRegistration CreateMetaRegistration<T, TMetadata>(Service providedService, IComponentRegistration valueRegistration)
-        // ReSharper restore UnusedMember.Local
+        private static IComponentRegistration CreateMetaRegistration<T, TMetadata>(Service providedService, IComponentRegistration valueRegistration)
         {
             var metadata = MetadataViewProvider.GetMetadataViewProvider<TMetadata>()(valueRegistration.Target.Metadata);
 

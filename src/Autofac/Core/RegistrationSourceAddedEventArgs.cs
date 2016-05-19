@@ -33,7 +33,7 @@ namespace Autofac.Core
     public class RegistrationSourceAddedEventArgs : EventArgs
     {
         /// <summary>
-        /// Construct an instance of the <see cref="RegistrationSourceAddedEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="RegistrationSourceAddedEventArgs"/> class.
         /// </summary>
         /// <param name="componentRegistry">The registry to which the source was added.</param>
         /// <param name="registrationSource">The source that was added.</param>
@@ -48,12 +48,12 @@ namespace Autofac.Core
         }
 
         /// <summary>
-        /// The registry to which the source was added.
+        /// Gets the registry to which the source was added.
         /// </summary>
         public IRegistrationSource RegistrationSource { get; }
 
         /// <summary>
-        /// The source that was added.
+        /// Gets the source that was added.
         /// </summary>
         public IComponentRegistry ComponentRegistry { get; }
     }

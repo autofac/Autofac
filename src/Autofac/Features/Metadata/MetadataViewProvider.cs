@@ -34,18 +34,20 @@ using Autofac.Core;
 
 namespace Autofac.Features.Metadata
 {
-    static class MetadataViewProvider
+    internal static class MetadataViewProvider
     {
-        static readonly MethodInfo GetMetadataValueMethod = typeof(MetadataViewProvider).GetTypeInfo().GetDeclaredMethod("GetMetadataValue");
+        private static readonly MethodInfo GetMetadataValueMethod = typeof(MetadataViewProvider).GetTypeInfo().GetDeclaredMethod("GetMetadataValue");
 
-        public static Func<IDictionary<string,object>, TMetadata> GetMetadataViewProvider<TMetadata>()
+        public static Func<IDictionary<string, object>, TMetadata> GetMetadataViewProvider<TMetadata>()
         {
             if (typeof(TMetadata) == typeof(IDictionary<string, object>))
                 return m => (TMetadata)m;
 
             if (!typeof(TMetadata).GetTypeInfo().IsClass)
+            {
                 throw new DependencyResolutionException(
                     string.Format(CultureInfo.CurrentCulture, MetadataViewProviderResources.InvalidViewImplementation, typeof(TMetadata).Name));
+            }
 
             var ti = typeof(TMetadata);
             var dictionaryConstructor = ti.GetTypeInfo().DeclaredConstructors.SingleOrDefault(ci =>
@@ -70,9 +72,9 @@ namespace Autofac.Features.Metadata
                 var resultVar = Expression.Variable(typeof(TMetadata), "result");
 
                 var resultAssignment = Expression.Assign(resultVar, Expression.New(parameterlessConstructor));
-                var blockExprs = new List<Expression> {resultAssignment};
+                var blockExprs = new List<Expression> { resultAssignment };
 
-                foreach (var prop in typeof(TMetadata).GetTypeInfo().DeclaredProperties
+                foreach (var prop in typeof(TMetadata).GetRuntimeProperties()
                     .Where(prop =>
                         prop.GetMethod != null && !prop.GetMethod.IsStatic &&
                         prop.SetMethod != null && !prop.SetMethod.IsStatic))
@@ -97,9 +99,7 @@ namespace Autofac.Features.Metadata
                 string.Format(CultureInfo.CurrentCulture, MetadataViewProviderResources.InvalidViewImplementation, typeof(TMetadata).Name));
         }
 
-        // ReSharper disable UnusedMember.Local
-        static TValue GetMetadataValue<TValue>(IDictionary<string, object> metadata, string name, DefaultValueAttribute defaultValue)
-        // ReSharper restore UnusedMember.Local
+        private static TValue GetMetadataValue<TValue>(IDictionary<string, object> metadata, string name, DefaultValueAttribute defaultValue)
         {
             object result;
             if (metadata.TryGetValue(name, out result))

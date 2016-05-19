@@ -1,5 +1,5 @@
 // This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
+// Copyright ï¿½ 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -35,22 +35,22 @@ namespace Autofac.Core
     public interface IActivatedEventArgs<out T>
     {
         /// <summary>
-        /// The context in which the activation occurred.
+        /// Gets the context in which the activation occurred.
         /// </summary>
         IComponentContext Context { get; }
 
         /// <summary>
-        /// The component providing the instance.
+        /// Gets the component providing the instance.
         /// </summary>
         IComponentRegistration Component { get; }
 
         /// <summary>
-        /// The paramters provided when resolved.
+        /// Gets the paramters provided when resolved.
         /// </summary>
         IEnumerable<Parameter> Parameters { get; }
 
         /// <summary>
-        /// The instance that will be used to satisfy the request.
+        /// Gets the instance that will be used to satisfy the request.
         /// </summary>
         T Instance { get; }
     }

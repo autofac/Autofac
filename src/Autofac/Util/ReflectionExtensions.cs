@@ -33,7 +33,7 @@ namespace Autofac.Util
     /// <summary>
     /// Extension methods for reflection-related types.
     /// </summary>
-    static class ReflectionExtensions
+    internal static class ReflectionExtensions
     {
         /// <summary>
         /// Maps from a property-set-value parameter to the declaring property.
@@ -70,10 +70,13 @@ namespace Autofac.Util
 
             var mex = propertyAccessor.Body as MemberExpression;
             if (!(mex?.Member is PropertyInfo))
+            {
                 throw new ArgumentException(string.Format(
                     CultureInfo.CurrentCulture,
                     ReflectionExtensionsResources.ExpressionNotPropertyAccessor,
                     propertyAccessor));
+            }
+
             return (PropertyInfo)mex.Member;
         }
 
@@ -91,10 +94,13 @@ namespace Autofac.Util
 
             var callExpression = methodCallExpression.Body as MethodCallExpression;
             if (callExpression == null)
+            {
                 throw new ArgumentException(string.Format(
                     CultureInfo.CurrentCulture,
                     ReflectionExtensionsResources.ExpressionNotMethodCall,
                     methodCallExpression));
+            }
+
             return callExpression.Method;
         }
 
@@ -111,10 +117,13 @@ namespace Autofac.Util
 
             var callExpression = constructorCallExpression.Body as NewExpression;
             if (callExpression == null)
+            {
                 throw new ArgumentException(string.Format(
                     CultureInfo.CurrentCulture,
                     ReflectionExtensionsResources.ExpressionNotConstructorCall,
                     constructorCallExpression));
+            }
+
             return callExpression.Constructor;
         }
     }

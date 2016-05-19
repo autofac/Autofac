@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac.Builder;
 
@@ -35,13 +36,13 @@ namespace Autofac.Core.Registration
     /// Excludes most auto-generated registrations - currently has issues with
     /// collection registrations.
     /// </summary>
-    class ExternalRegistrySource : IRegistrationSource
+    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the component registry is responsible for disposal.")]
+    internal class ExternalRegistrySource : IRegistrationSource
     {
-        readonly IComponentRegistry _registry;
+        private readonly IComponentRegistry _registry;
 
         /// <summary>
-        /// Create an external registry source that draws components from
-        /// <paramref name="registry"/>.
+        /// Initializes a new instance of the <see cref="ExternalRegistrySource"/> class.
         /// </summary>
         /// <param name="registry">Component registry to pull registrations from.</param>
         public ExternalRegistrySource(IComponentRegistry registry)
@@ -73,6 +74,7 @@ namespace Autofac.Core.Registration
         }
 
         /// <summary>
+        /// Gets a value indicating whether components are adapted from the same logical scope.
         /// In this case because the components that are adapted do not come from the same
         /// logical scope, we must return false to avoid duplicating them.
         /// </summary>

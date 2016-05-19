@@ -8,7 +8,7 @@ namespace Autofac.Test.Builder
     {
         public class HasSetter
         {
-            string _val;
+           private string _val;
 
             public string Val
             {
@@ -16,6 +16,7 @@ namespace Autofac.Test.Builder
                 {
                     return _val;
                 }
+
                 set
                 {
                     _val = value;
@@ -59,7 +60,7 @@ namespace Autofac.Test.Builder
 
         public class HasSetterWithValue
         {
-            string _val = "Default";
+            private string _val = "Default";
 
             public string Val
             {
@@ -67,30 +68,13 @@ namespace Autofac.Test.Builder
                 {
                     return _val;
                 }
+
                 set
                 {
                     _val = value;
                 }
             }
         }
-
-        //[Fact]
-        //public void SetterInjectionUnsetWithValue()
-        //{
-        //    var val = "Value";
-
-        //    var builder = new ContainerBuilder();
-        //    builder.Register(val);
-        //    builder.Register<HasSetterWithValue>()
-        //        .OnActivating(ActivatingHandler.InjectUnsetProperties);
-
-        //    var container = builder.Build();
-
-        //    var instance = container.Resolve<HasSetterWithValue>();
-
-        //    Assert.NotNull(instance);
-        //    Assert.Equal("Default", instance.Val);
-        //}
 
         [Fact]
         public void SetterInjectionWithValue()
@@ -111,7 +95,7 @@ namespace Autofac.Test.Builder
 
         public class HasPropReadOnly
         {
-            string _val = "Default";
+            private string _val = "Default";
 
             public string Val
             {
@@ -119,6 +103,7 @@ namespace Autofac.Test.Builder
                 {
                     return _val;
                 }
+
                 protected set
                 {
                     _val = value;
@@ -162,7 +147,7 @@ namespace Autofac.Test.Builder
 
         public class HasPropWriteOnly
         {
-            string _val;
+            private string _val;
 
             public string Val
             {
@@ -231,12 +216,12 @@ namespace Autofac.Test.Builder
                     GetterCalled = true;
                     return null;
                 }
+
                 set
                 {
                     SetterCalled = true;
                 }
             }
-
         }
 
         [Fact]
@@ -254,6 +239,33 @@ namespace Autofac.Test.Builder
             Assert.NotNull(instance);
             Assert.True(instance.SetterCalled);
             Assert.False(instance.GetterCalled);
+        }
+
+        public class HasSetterDerived : HasSetterBase
+        {
+        }
+
+        public class HasSetterBase
+        {
+            public string Val { get; set; }
+        }
+
+        [Fact]
+        public void SetterInjectionBaseClassProperty()
+        {
+            // Issue #2 from Autofac.Configuration - Ensure properties in base classes can be set by config.
+            var val = "Value";
+
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(val);
+            builder.RegisterType<HasSetterDerived>().PropertiesAutowired();
+
+            var container = builder.Build();
+
+            var instance = container.Resolve<HasSetterDerived>();
+
+            Assert.NotNull(instance);
+            Assert.Equal(val, instance.Val);
         }
 
         public class Invokee
@@ -286,7 +298,7 @@ namespace Autofac.Test.Builder
 
             public HasValueTypeArray()
             {
-                ByteArray = new byte[] {1, 2, 3};
+                ByteArray = new byte[] { 1, 2, 3 };
             }
         }
 
@@ -299,7 +311,7 @@ namespace Autofac.Test.Builder
 
             var instance = container.Resolve<HasValueTypeArray>();
 
-            Assert.Equal(new byte[] {1, 2, 3}, instance.ByteArray);
+            Assert.Equal(new byte[] { 1, 2, 3 }, instance.ByteArray);
         }
 
         public class HasNullableValueTypeArray
@@ -308,7 +320,7 @@ namespace Autofac.Test.Builder
 
             public HasNullableValueTypeArray()
             {
-                DoubleArray = new double?[] {null, 0.1, null};
+                DoubleArray = new double?[] { null, 0.1, null };
             }
         }
 
@@ -321,7 +333,7 @@ namespace Autofac.Test.Builder
 
             var instance = container.Resolve<HasNullableValueTypeArray>();
 
-            Assert.Equal(new double?[] {null, 0.1, null}, instance.DoubleArray);
+            Assert.Equal(new double?[] { null, 0.1, null }, instance.DoubleArray);
         }
 
         public class HasValueTypeList
@@ -332,7 +344,7 @@ namespace Autofac.Test.Builder
 
             public HasValueTypeList()
             {
-                ByteList = new List<byte> {1, 2, 3};
+                ByteList = new List<byte> { 1, 2, 3 };
                 ByteListInterface = ByteList;
             }
         }
@@ -346,7 +358,7 @@ namespace Autofac.Test.Builder
 
             var instance = container.Resolve<HasValueTypeList>();
 
-            var expected = new List<byte> {1, 2, 3};
+            var expected = new List<byte> { 1, 2, 3 };
             Assert.Equal(expected, instance.ByteListInterface);
             Assert.Equal(expected, instance.ByteList);
         }
@@ -359,7 +371,7 @@ namespace Autofac.Test.Builder
 
             public HasNullableValueTypeList()
             {
-                DoubleList = new List<double?> {null, 0.1, null};
+                DoubleList = new List<double?> { null, 0.1, null };
                 DoubleListInterface = DoubleList;
             }
         }
@@ -373,7 +385,7 @@ namespace Autofac.Test.Builder
 
             var instance = container.Resolve<HasNullableValueTypeList>();
 
-            var expected = new List<double?> {null, 0.1, null};
+            var expected = new List<double?> { null, 0.1, null };
             Assert.Equal(expected, instance.DoubleListInterface);
             Assert.Equal(expected, instance.DoubleList);
         }
@@ -386,7 +398,7 @@ namespace Autofac.Test.Builder
 
             public HasValueTypeCollection()
             {
-                ByteCollection = new Collection<byte> {1, 2, 3};
+                ByteCollection = new Collection<byte> { 1, 2, 3 };
                 ByteCollectionInterface = ByteCollection;
             }
         }
@@ -400,7 +412,7 @@ namespace Autofac.Test.Builder
 
             var instance = container.Resolve<HasValueTypeCollection>();
 
-            var expected = new Collection<byte> {1, 2, 3};
+            var expected = new Collection<byte> { 1, 2, 3 };
             Assert.Equal(expected, instance.ByteCollectionInterface);
             Assert.Equal(expected, instance.ByteCollection);
         }
@@ -413,7 +425,7 @@ namespace Autofac.Test.Builder
 
             public HasNullableValueTypeCollection()
             {
-                DoubleCollection = new ReadOnlyCollection<double?>(new double?[] {null, 0.1, null});
+                DoubleCollection = new ReadOnlyCollection<double?>(new double?[] { null, 0.1, null });
                 DoubleCollectionInterface = DoubleCollection;
             }
         }
@@ -427,7 +439,7 @@ namespace Autofac.Test.Builder
 
             var instance = container.Resolve<HasNullableValueTypeCollection>();
 
-            var expected = new ReadOnlyCollection<double?>(new double?[] {null, 0.1, null});
+            var expected = new ReadOnlyCollection<double?>(new double?[] { null, 0.1, null });
             Assert.Equal(expected, instance.DoubleCollectionInterface);
             Assert.Equal(expected, instance.DoubleCollection);
         }
