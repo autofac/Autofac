@@ -235,6 +235,12 @@ namespace Autofac.Test
                 base.Load(builder);
                 builder.RegisterType<object>();
             }
+
+            public override bool Equals(IModule other)
+            {
+                if (other == null) return false;
+                return other.GetType() == GetType();
+            }
         }
 
         internal class Module2 : Module
@@ -243,6 +249,12 @@ namespace Autofac.Test
             {
                 base.Load(builder);
                 builder.RegisterModule(new Module1());
+            }
+
+            public override bool Equals(IModule other)
+            {
+                if (other == null) return false;
+                return other.GetType() == GetType();
             }
         }
 

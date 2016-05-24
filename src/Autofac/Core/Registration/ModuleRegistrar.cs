@@ -24,6 +24,9 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Autofac.Core.Registration
 {
@@ -34,6 +37,9 @@ namespace Autofac.Core.Registration
     /// </summary>
     internal class ModuleRegistrar : IModuleRegistrar
     {
+        internal static readonly ConditionalWeakTable<object, List<IModule>> ModuleRegistry =
+            new ConditionalWeakTable<object, List<IModule>>();
+
         /// <summary>
         /// The <see cref="ContainerBuilder"/> into which registrations will be made.
         /// </summary>
@@ -70,7 +76,13 @@ namespace Autofac.Core.Registration
         {
             if (module == null) throw new ArgumentNullException(nameof(module));
 
-            _builder.RegisterCallback(module.Configure);
+            var registeredModules = ModuleRegistry.GetOrCreateValue(_builder);
+            if (!registeredModules.Any(m => m.Equals(module)))
+            {
+                _builder.RegisterCallback(module.Configure);
+                registeredModules.Add(module);
+            }
+
             return this;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Autofac.Core;
 using AutofacWebApiSample.Services;
 
 namespace AutofacWebApiSample
@@ -14,6 +15,12 @@ namespace AutofacWebApiSample
             builder.Register(c => new ValuesService(c.Resolve<ILogger>()))
                 .As<IValuesService>()
                 .InstancePerLifetimeScope();
+        }
+
+        public override bool Equals(IModule other)
+        {
+            if (other == null) return false;
+            return other.GetType() == GetType();
         }
     }
 }

@@ -55,6 +55,12 @@ namespace Autofac
     ///             .As&lt;IDbConnection&gt;()
     ///             .InstancePerMatchingLifetimeScope(WebLifetime.Request);
     ///     }
+    ///
+    ///     public override bool Equals(IModule other)
+    ///     {
+    ///         if (other == null) return false;
+    ///         return other.GetType() == GetType();
+    ///     }
     /// }
     /// </code>
     /// Using the module:
@@ -154,6 +160,22 @@ namespace Autofac
 
                 return thisType.GetTypeInfo().Assembly;
             }
+        }
+
+        public abstract bool Equals(IModule other);
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+
+            var other = obj as IModule;
+            return other != null && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return GetType().GetHashCode();
         }
     }
 }

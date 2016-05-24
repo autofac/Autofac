@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Autofac.Core;
 using Autofac.Test.Scenarios.ScannedAssembly;
 using Xunit;
 
@@ -103,6 +104,12 @@ namespace Autofac.Test
                 if (builder == null) throw new ArgumentNullException("builder");
                 ConfigureCalled = true;
                 builder.RegisterType<object>().SingleInstance();
+            }
+
+            public override bool Equals(IModule other)
+            {
+                if (other == null) return false;
+                return other.GetType() == GetType();
             }
         }
     }

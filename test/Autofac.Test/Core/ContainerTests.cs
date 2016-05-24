@@ -186,6 +186,12 @@ namespace Autofac.Test.Core
                     args.ReplaceInstance(new ReplaceableComponent { IsReplaced = true });
                 };
             }
+
+            public override bool Equals(IModule other)
+            {
+                if (other == null) return false;
+                return other.GetType() == GetType();
+            }
         }
 
         private class ReplaceableComponent
