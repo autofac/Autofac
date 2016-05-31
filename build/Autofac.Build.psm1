@@ -47,6 +47,7 @@ function Install-DotNetCli
   }
 
   # Run the dotnet CLI install
+  # 5/31/2016 Currently pinned to a version that works since the latest is broken
   & .\.dotnet\dotnet-install.ps1 -version "1.0.0-preview2-002877"
 
   # Add the dotnet folder path to the process.
@@ -174,4 +175,33 @@ function Remove-PathVariable
   $path = [Environment]::GetEnvironmentVariable("PATH", "Process")
   $newItems = $path.Split(';') | Where-Object { $_.ToString() -inotlike $VariableToRemove }
   [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join(';', $newItems), "Process")
+}
+
+<#
+ .SYNOPSIS
+  Restores dependencies using the dotnet utility.
+
+ .PARAMETER ProjectDirectory
+  Path to the directory containing the project with dependencies to restore.
+#>
+function Restore-DependencyPackages
+{
+  [CmdletBinding()]
+  Param(
+    [Parameter(Mandatory=$True, ValueFromPipeline=$True, ValueFromPipelineByPropertyName=$True)]
+    [ValidateNotNull()]
+    [System.IO.DirectoryInfo[]]
+    $ProjectDirectory
+  )
+  Process
+  {
+    foreach($Project in $ProjectDirectory)
+    {
+      & dotnet restore ("""" + $Project.FullName + """") --no-cache
+      if($LASTEXITCODE -ne 0)
+      {
+        exit 4
+      }
+    }
+  }
 }

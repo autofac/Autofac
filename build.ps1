@@ -17,7 +17,7 @@ Write-Host "Build number:" $env:DOTNET_BUILD_VERSION
 if(Test-Path $artifactsPath) { Remove-Item $artifactsPath -Force -Recurse }
 
 # Package restore
-& dotnet restore
+Get-DotNetProjectDirectory -RootPath $PSScriptRoot | Restore-DependencyPackages
 
 # Build/package
 Get-DotNetProjectDirectory -RootPath $PSScriptRoot\src | Invoke-DotNetPack -PackagesPath $packagesPath
