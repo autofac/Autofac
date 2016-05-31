@@ -171,8 +171,9 @@ namespace Autofac.Builder
                 this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration, PropertyWiringOptions wiringFlags = PropertyWiringOptions.None)
         {
             var preserveSetValues = (int)(wiringFlags & PropertyWiringOptions.PreserveSetValues) != 0;
+            var allowCircularDependencies = (int)(wiringFlags & PropertyWiringOptions.AllowCircularDependencies) != 0;
 
-            return registration.PropertiesAutowired(new DefaultPropertySelector(preserveSetValues), wiringFlags);
+            return registration.PropertiesAutowired(new DefaultPropertySelector(preserveSetValues), allowCircularDependencies);
         }
 
         /// <summary>
