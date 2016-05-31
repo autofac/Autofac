@@ -12,7 +12,7 @@ namespace Autofac.Test.Builder
     {
         public class HasSetter
         {
-           private string _val;
+            private string _val;
 
             public string Val
             {
@@ -455,7 +455,7 @@ namespace Autofac.Test.Builder
 
             var cb = new ContainerBuilder();
             cb.RegisterType<WithPropInjection>()
-                .PropertiesAutowired((type, propInfo, instance) =>
+                .PropertiesAutowired((propInfo, instance) =>
                 {
                     propertyInfos.Add(propInfo);
                     return false;
@@ -479,7 +479,7 @@ namespace Autofac.Test.Builder
 
             var cb = new ContainerBuilder();
             cb.Register(_ => new WithPropInjection())
-                .PropertiesAutowired((type, propInfo, instance) =>
+                .PropertiesAutowired((propInfo, instance) =>
                 {
                     propertyInfos.Add(propInfo);
                     return false;
@@ -534,7 +534,7 @@ namespace Autofac.Test.Builder
 
         private class InjectAttributePropertySelector : IPropertySelector
         {
-            public bool InjectProperty(Type type, PropertyInfo propertyInfo, object instance)
+            public bool InjectProperty(PropertyInfo propertyInfo, object instance)
             {
                 return propertyInfo.GetCustomAttributes<InjectAttribute>().Any();
             }

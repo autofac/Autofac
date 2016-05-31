@@ -667,7 +667,7 @@ namespace Autofac
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<TLimit, TActivatorData, TStyle> PropertiesAutowired<TLimit, TActivatorData, TStyle>(
             this IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration,
-            Func<Type, PropertyInfo, object, bool> propertySelector)
+            Func<PropertyInfo, object, bool> propertySelector)
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 

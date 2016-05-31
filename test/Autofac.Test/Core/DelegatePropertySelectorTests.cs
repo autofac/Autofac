@@ -31,17 +31,15 @@ namespace Autofac.Test.Core
         [Fact]
         public void UsesDelegatePassedIn()
         {
-            var finder = new DelegatePropertySelector((type, propInfo, instance) =>
+            var finder = new DelegatePropertySelector((propInfo, instance) =>
             {
                 return propInfo.GetCustomAttributes<InjectPropertyAttribute>().Any();
             });
 
-            var targetType = typeof(HasProperties);
-
-            foreach (var propInfo in targetType.GetProperties())
+            foreach (var propInfo in typeof(HasProperties).GetProperties())
             {
                 var expected = propInfo.GetCustomAttributes<InjectPropertyAttribute>().Any();
-                Assert.Equal(expected, finder.InjectProperty(targetType, propInfo, null));
+                Assert.Equal(expected, finder.InjectProperty(propInfo, null));
             }
         }
     }

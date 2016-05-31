@@ -42,10 +42,9 @@ namespace Autofac.Test.Core
             var finder = new DefaultPropertySelector(preserveSetValue);
 
             var instance = new HasProperties();
-            var targetType = instance.GetType();
-            var property = targetType.GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            var property = instance.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
-            Assert.Equal(expected, finder.InjectProperty(targetType, property, instance));
+            Assert.Equal(expected, finder.InjectProperty(property, instance));
         }
     }
 }

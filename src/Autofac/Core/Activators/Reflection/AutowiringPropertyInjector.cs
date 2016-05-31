@@ -67,7 +67,7 @@ namespace Autofac.Core.Activators.Reflection
                 if (!context.IsRegistered(propertyType))
                     continue;
 
-                if (!propertySelector.InjectProperty(instanceType, property, instance))
+                if (!propertySelector.InjectProperty(property, instance))
                     continue;
 
                 var propertyValue = context.Resolve(propertyType, new NamedParameter(InstanceTypeNamedParameter, instanceType));

@@ -30,11 +30,10 @@ namespace Autofac.Core
         /// Provides default filtering to determine if property should be injected by rejecting
         /// non-public settable properties.
         /// </summary>
-        /// <param name="type">Type of property to be injected</param>
         /// <param name="propertyInfo">Property to be injected</param>
         /// <param name="instance">Instance that has the property to be injected</param>
         /// <returns>Whether property should be injected</returns>
-        public virtual bool InjectProperty(Type type, PropertyInfo propertyInfo, object instance)
+        public virtual bool InjectProperty(PropertyInfo propertyInfo, object instance)
         {
             if (propertyInfo.SetMethod?.IsPublic != true)
                 return false;
