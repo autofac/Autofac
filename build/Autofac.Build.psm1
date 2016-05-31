@@ -76,7 +76,7 @@ function Invoke-DotNetBuild
   {
     foreach($Project in $ProjectDirectory)
     {
-      & dotnet build ("""" + $Project.FullName + """") --configuration Release --no-incremental
+      & dotnet build ("""" + $Project.FullName + """") --configuration Release
       if($LASTEXITCODE -ne 0)
       {
         exit 1
@@ -117,7 +117,7 @@ function Invoke-DotNetPack
   {
     foreach($Project in $ProjectDirectory)
     {
-      & dotnet build ("""" + $Project.FullName + """") --configuration Release --no-incremental
+      & dotnet build ("""" + $Project.FullName + """") --configuration Release
       & dotnet pack ("""" + $Project.FullName + """") --configuration Release --output $PackagesPath
       if($LASTEXITCODE -ne 0)
       {
