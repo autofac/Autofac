@@ -246,14 +246,6 @@ namespace Autofac.Builder
 
         /// <summary>
         /// Configure the component so that any properties whose types are registered in the
-        /// container will be wired to instances of the appropriate service.
-        /// </summary>
-        /// <param name="options">Set wiring options such as circular dependency wiring support.</param>
-        /// <returns>A registration builder allowing further configuration of the component.</returns>
-        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> PropertiesAutowired(PropertyWiringOptions options = PropertyWiringOptions.None);
-
-        /// <summary>
-        /// Configure the component so that any properties whose types are registered in the
         /// container and follow specific criteria will be wired to instances of the appropriate service.
         /// </summary>
         /// <param name="propertySelector">Selector to determine which properties should be injected</param>
