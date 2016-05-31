@@ -15,6 +15,7 @@
     "Autofac": "4.0.0-rc2-*",
     "Autofac.Extensions.DependencyInjection": "4.0.0-rc2-*",
     "dotnet-test-xunit": "1.0.0-rc3-*",
+    "Microsoft.Extensions.DependencyInjection": "1.0.0-rc2-*",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc2-*",
     "Microsoft.Extensions.DependencyInjection.Specification.Tests": "1.0.0-rc2-*",
     "Microsoft.Extensions.Options": "1.0.0-rc2-*",
