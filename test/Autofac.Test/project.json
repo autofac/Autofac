@@ -14,7 +14,12 @@
   "dependencies": {
     "Autofac": "4.0.0-rc2-*",
     "Autofac.Test.Scenarios.ScannedAssembly": "1.0.0-*",
-    "StyleCop.Analyzers": { "version": "1.0.0", "type": "build" },
+    "dotnet-test-xunit": "1.0.0-rc3-*",
+    "Microsoft.NETCore.Platforms": "1.0.1-rc2-*",
+    "StyleCop.Analyzers": {
+      "version": "1.0.0",
+      "type": "build"
+    },
     "xunit": "2.1.0"
   },
   "frameworks": {
@@ -27,8 +32,7 @@
         "Microsoft.NETCore.App": {
           "version": "1.0.0-rc2-*",
           "type": "platform"
-        },
-        "dotnet-test-xunit": "1.0.0-rc2-*"
+        }
       }
     }
   }

@@ -19,8 +19,7 @@
         "Microsoft.NETCore.App": {
           "version": "1.0.0-rc2-*",
           "type": "platform"
-        },
-        "dotnet-test-xunit": "1.0.0-rc2-*"
+        }
       }
     }
   }
