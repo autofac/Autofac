@@ -43,6 +43,7 @@ namespace Autofac.Core.Activators.Reflection
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
             if (instance == null) throw new ArgumentNullException(nameof(instance));
+            if (propertySelector == null) throw new ArgumentNullException(nameof(propertySelector));
 
             var instanceType = instance.GetType();
 
