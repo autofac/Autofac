@@ -23,7 +23,7 @@ function Get-DotNetProjectDirectory
 
   # We don't search for project.json because that gets copied around. .xproj is the only
   # good way to actually locate where the source project is.
-  Get-FolderItem -Path $RootPath -Filter "*.xproj" | Select-Object @{ Name="ParentFolder"; Expression={ $_.ParentFolder.TrimEnd("\") } } | Select-Object -ExpandProperty ParentFolder
+  Get-ChildItem -Path $RootPath -Recurse -Include "*.xproj" | Select-Object @{ Name="ParentFolder"; Expression={ $_.Directory.FullName.TrimEnd("\") } } | Select-Object -ExpandProperty ParentFolder
 }
 
 <#
@@ -165,7 +165,7 @@ function Invoke-Test
 .PARAMETER VariableToRemove
     The directory/path that should be removed.
 #>
-function Remove-PathVariable
+function Remove-EnvironmentPathEntry
 {
   [cmdletbinding()]
   param([string] $VariableToRemove)
