@@ -4,11 +4,9 @@
       "/ruleset:../../build/Analyzers.ruleset"
     ],
     "embed": {
-      "includFiles": [
-        "Files/*.*"
-      ],
       "include": [
-        "**/*.resx"
+        "**/*.resx",
+        "Files/*.*"
       ]
     },
     "keyFile": "../../Autofac.snk"
