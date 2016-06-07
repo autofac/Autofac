@@ -1,9 +1,11 @@
 ﻿{
+  "buildOptions": {
+    "emitEntryPoint": true,
+    "preserveCompilationContext": true
+  },
   "dependencies": {
-    "Microsoft.NETCore.App": {
-      "version": "1.0.0-rc2-3002702",
-      "type": "platform"
-    },
+    "Autofac": "4.0.0-rc2-*",
+    "Autofac.Extensions.DependencyInjection": "4.0.0-rc2-*",
     "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0-rc2-final",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-rc2-final",
@@ -13,17 +15,11 @@
     "Microsoft.Extensions.Logging": "1.0.0-rc2-final",
     "Microsoft.Extensions.Logging.Console": "1.0.0-rc2-final",
     "Microsoft.Extensions.Logging.Debug": "1.0.0-rc2-final",
-    "Autofac": "4.0.0-rc2-*",
-    "Autofac.Extensions.DependencyInjection": "4.0.0-rc2-*"
-  },
-
-  "tools": {
-    "Microsoft.AspNetCore.Server.IISIntegration.Tools": {
-      "version": "1.0.0-preview1-final",
-      "imports": "portable-net45+win8+dnxcore50"
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.0-rc2-3002702"
     }
   },
-
   "frameworks": {
     "netcoreapp1.0": {
       "imports": [
@@ -33,16 +29,6 @@
       ]
     }
   },
-
-  "buildOptions": {
-    "emitEntryPoint": true,
-    "preserveCompilationContext": true
-  },
-
-  "runtimeOptions": {
-    "gcServer": true
-  },
-
   "publishOptions": {
     "include": [
       "wwwroot",
@@ -51,8 +37,18 @@
       "web.config"
     ]
   },
-
+  "runtimeOptions": {
+    "gcServer": true
+  },
   "scripts": {
-    "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
+    "postpublish": [
+      "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%"
+    ]
+  },
+  "tools": {
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools": {
+      "imports": "portable-net45+win8+dnxcore50",
+      "version": "1.0.0-preview1-final"
+    }
   }
 }

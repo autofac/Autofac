@@ -1,33 +1,41 @@
 ﻿{
-  "packOptions": {
-    "authors": [ "Autofac Contributors" ]
-  },
   "buildOptions": {
-    "additionalArguments": ["/ruleset:../../build/Analyzers.ruleset"],
-    "keyFile": "../../Autofac.snk",
+    "additionalArguments": [
+      "/ruleset:../../build/Analyzers.ruleset"
+    ],
     "embed": {
-      "include": ["**/*.resx"],
-      "includFiles": ["Files/*.*"]
-    }
+      "includFiles": [
+        "Files/*.*"
+      ],
+      "include": [
+        "**/*.resx"
+      ]
+    },
+    "keyFile": "../../Autofac.snk"
   },
-  "testRunner": "xunit",
   "dependencies": {
     "Autofac": "4.0.0-rc2-*",
     "Autofac.Test.Scenarios.ScannedAssembly": "1.0.0-*",
-    "dotnet-test-xunit": "1.0.0-rc3-*",
     "Microsoft.NETCore.Platforms": "1.0.1-rc2-*",
     "StyleCop.Analyzers": {
-      "version": "1.0.0",
-      "type": "build"
+      "type": "build",
+      "version": "1.0.0"
     },
+    "dotnet-test-xunit": "1.0.0-rc3-*",
     "xunit": "2.1.0"
   },
   "frameworks": {
     "net46": {
-        "frameworkAssemblies": {
-            "System.ComponentModel.Composition": "4.0.0.0",
-            "System.Data": "4.0.0.0"
-        }
+      "frameworkAssemblies": {
+        "System.ComponentModel.Composition": "4.0.0.0",
+        "System.Data": "4.0.0.0"
+      }
     }
-  }
+  },
+  "packOptions": {
+    "authors": [
+      "Autofac Contributors"
+    ]
+  },
+  "testRunner": "xunit"
 }
