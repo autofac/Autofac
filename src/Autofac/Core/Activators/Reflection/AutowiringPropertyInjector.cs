@@ -36,8 +36,14 @@ namespace Autofac.Core.Activators.Reflection
 
         public static void InjectProperties(IComponentContext context, object instance, bool overrideSetValues)
         {
+            InjectProperties(context, instance, new DefaultPropertySelector(!overrideSetValues));
+        }
+
+        public static void InjectProperties(IComponentContext context, object instance, IPropertySelector propertySelector)
+        {
             if (context == null) throw new ArgumentNullException(nameof(context));
             if (instance == null) throw new ArgumentNullException(nameof(instance));
+            if (propertySelector == null) throw new ArgumentNullException(nameof(propertySelector));
 
             var instanceType = instance.GetType();
 
@@ -53,7 +59,7 @@ namespace Autofac.Core.Activators.Reflection
                 if (propertyType.IsArray && propertyType.GetElementType().GetTypeInfo().IsValueType)
                     continue;
 
-                if (propertyType.IsGenericEnumerableInterfaceType() && propertyType.GetTypeInfo().GenericTypeArguments.ToArray()[0].GetTypeInfo().IsValueType)
+                if (propertyType.IsGenericEnumerableInterfaceType() && propertyType.GetTypeInfo().GenericTypeArguments[0].GetTypeInfo().IsValueType)
                     continue;
 
                 if (property.GetIndexParameters().Length != 0)
@@ -62,12 +68,7 @@ namespace Autofac.Core.Activators.Reflection
                 if (!context.IsRegistered(propertyType))
                     continue;
 
-                if (!property.SetMethod.IsPublic)
-                    continue;
-
-                if (!overrideSetValues &&
-                    property.CanRead && property.CanWrite &&
-                    (property.GetValue(instance, null) != null))
+                if (!propertySelector.InjectProperty(property, instance))
                     continue;
 
                 var propertyValue = context.Resolve(propertyType, new NamedParameter(InstanceTypeNamedParameter, instanceType));
