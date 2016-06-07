@@ -23,17 +23,6 @@
     "xunit": "2.1.0"
   },
   "frameworks": {
-    "netcoreapp1.0": {
-      "imports": [
-        "dnxcore50",
-        "portable-net451+win8"
-      ],
-      "dependencies": {
-        "Microsoft.NETCore.App": {
-          "version": "1.0.0-rc2-*",
-          "type": "platform"
-        }
-      }
-    }
+    "net46": { }
   }
 }
