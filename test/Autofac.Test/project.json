@@ -23,6 +23,11 @@
     "xunit": "2.1.0"
   },
   "frameworks": {
-    "net46": { }
+    "net46": {
+        "frameworkAssemblies": {
+            "System.ComponentModel.Composition": "4.0.0.0",
+            "System.Data": "4.0.0.0"
+        }
+    }
   }
 }
