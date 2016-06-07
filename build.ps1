@@ -24,6 +24,6 @@ Get-DotNetProjectDirectory -RootPath $PSScriptRoot\src | Invoke-DotNetPack -Pack
 Get-DotNetProjectDirectory -RootPath $PSScriptRoot\samples | Invoke-DotNetBuild
 
 # Test
-Get-DotNetProjectDirectory -RootPath $PSScriptRoot\test | Where-Object { $_ -inotlike "Autofac.Test.Scenarios.ScannedAssembly" } | Invoke-Test
+Get-DotNetProjectDirectory -RootPath $PSScriptRoot\test | Where-Object { $_ -inotlike "*Autofac.Test.Scenarios.ScannedAssembly" } | Invoke-Test
 
 Pop-Location
