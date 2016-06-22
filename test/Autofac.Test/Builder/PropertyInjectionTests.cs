@@ -38,11 +38,8 @@ namespace Autofac.Test.Builder
             var propertySelector = new DefaultPropertySelector(true);
 
             Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null, null, null));
-            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null, null, false));
             Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, null, null));
-            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, null, false));
             Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null, instance, null));
-            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null, instance, false));
             Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, instance, null));
             Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null, instance, propertySelector));
             Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, null, propertySelector));

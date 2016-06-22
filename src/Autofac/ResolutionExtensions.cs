@@ -55,7 +55,7 @@ namespace Autofac
         /// <returns><paramref name="instance"/>.</returns>
         public static TService InjectProperties<TService>(this IComponentContext context, TService instance)
         {
-            AutowiringPropertyInjector.InjectProperties(context, instance, true);
+            AutowiringPropertyInjector.InjectProperties(context, instance, DefaultPropertySelector.OverwriteSetValueInstance);
             return instance;
         }
 
@@ -84,7 +84,7 @@ namespace Autofac
         /// <returns><paramref name="instance"/>.</returns>
         public static TService InjectUnsetProperties<TService>(this IComponentContext context, TService instance)
         {
-            AutowiringPropertyInjector.InjectProperties(context, instance, false);
+            AutowiringPropertyInjector.InjectProperties(context, instance, DefaultPropertySelector.PreserveSetValueInstance);
             return instance;
         }
 

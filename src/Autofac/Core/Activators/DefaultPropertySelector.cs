@@ -11,6 +11,16 @@ namespace Autofac.Core
     public class DefaultPropertySelector : IPropertySelector
     {
         /// <summary>
+        /// Gets an instance of DefaultPropertySelector that will preserve any values already set
+        /// </summary>
+        internal static IPropertySelector PreserveSetValueInstance { get; } = new DefaultPropertySelector(true);
+
+        /// <summary>
+        /// Gets an instance of DefaultPropertySelector that will cause values to be overwritten
+        /// </summary>
+        internal static IPropertySelector OverwriteSetValueInstance { get; } = new DefaultPropertySelector(false);
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DefaultPropertySelector"/> class
         /// that provides default selection criteria.
         /// </summary>

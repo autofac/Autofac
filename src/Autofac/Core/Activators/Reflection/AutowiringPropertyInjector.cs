@@ -34,11 +34,6 @@ namespace Autofac.Core.Activators.Reflection
     {
         public const string InstanceTypeNamedParameter = "Autofac.AutowiringPropertyInjector.InstanceType";
 
-        public static void InjectProperties(IComponentContext context, object instance, bool overrideSetValues)
-        {
-            InjectProperties(context, instance, new DefaultPropertySelector(!overrideSetValues));
-        }
-
         public static void InjectProperties(IComponentContext context, object instance, IPropertySelector propertySelector)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
