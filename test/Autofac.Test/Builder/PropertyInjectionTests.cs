@@ -469,6 +469,61 @@ namespace Autofac.Test.Builder
         }
 
         [Fact]
+        public void InjectProperties()
+        {
+            const string str = "test";
+
+            var cb = new ContainerBuilder();
+            cb.RegisterInstance(str);
+            var c = cb.Build();
+
+            var obj = new WithPropInjection();
+
+            Assert.Null(obj.Prop);
+            c.InjectUnsetProperties(obj);
+            Assert.Equal(str, obj.Prop);
+            Assert.Null(obj.GetProp2());
+        }
+
+        [Fact]
+        public void InjectUnsetProperties()
+        {
+            const string str = "test";
+            const string otherStr = "someString";
+
+            var cb = new ContainerBuilder();
+            cb.RegisterInstance(str);
+            var c = cb.Build();
+
+            var obj = new WithPropInjection
+            {
+                Prop = otherStr
+            };
+
+            Assert.Equal(otherStr, obj.Prop);
+            c.InjectUnsetProperties(obj);
+            Assert.Equal(otherStr, obj.Prop);
+            Assert.Null(obj.GetProp2());
+        }
+
+        [Fact]
+        public void InjectPropertiesWithSelector()
+        {
+            const string str = "test";
+
+            var cb = new ContainerBuilder();
+            cb.RegisterInstance(str);
+            var c = cb.Build();
+
+            var obj = new WithPropInjection();
+
+            Assert.Null(obj.Prop);
+            c.InjectProperties(obj, new DelegatePropertySelector((p, __) => p.GetCustomAttributes<InjectAttribute>().Any()));
+            Assert.Null(obj.Prop);
+            Assert.Equal(str, obj.GetProp2());
+        }
+
+        [Fact]
         public void ResolvePropertiesWithCustomDelegate_ReflectionRegistration()
         {
             var propertyInfos = new List<PropertyInfo>();
