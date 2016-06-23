@@ -47,7 +47,6 @@ function Install-DotNetCli
   }
 
   # Run the dotnet CLI install
-  # 5/31/2016 Currently pinned to a version that works since the latest is broken
   & .\.dotnet\dotnet-install.ps1
 
   # Add the dotnet folder path to the process.
