@@ -515,7 +515,7 @@ namespace Autofac.Test.Builder
             var obj = new WithPropInjection();
 
             Assert.Null(obj.Prop);
-            c.InjectProperties(obj, new DelegatePropertySelector((p, __) => p.GetCustomAttributes<InjectAttribute>().Any()));
+            c.InjectProperties(obj, new DelegatePropertySelector((p, _) => p.GetCustomAttributes<InjectAttribute>().Any()));
             Assert.Null(obj.Prop);
             Assert.Equal(str, obj.GetProp2());
         }
