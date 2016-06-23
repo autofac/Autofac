@@ -38,11 +38,8 @@ namespace Autofac.Test.Builder
             var propertySelector = new DefaultPropertySelector(true);
 
             Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null, null, null));
-            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null, null, false));
             Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, null, null));
-            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, null, false));
             Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null, instance, null));
-            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null, instance, false));
             Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, instance, null));
             Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null, instance, propertySelector));
             Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, null, propertySelector));
@@ -466,6 +463,61 @@ namespace Autofac.Test.Builder
             var expected = new ReadOnlyCollection<double?>(new double?[] { null, 0.1, null });
             Assert.Equal(expected, instance.DoubleCollectionInterface);
             Assert.Equal(expected, instance.DoubleCollection);
+        }
+
+        [Fact]
+        public void InjectProperties()
+        {
+            const string str = "test";
+
+            var cb = new ContainerBuilder();
+            cb.RegisterInstance(str);
+            var c = cb.Build();
+
+            var obj = new WithPropInjection();
+
+            Assert.Null(obj.Prop);
+            c.InjectUnsetProperties(obj);
+            Assert.Equal(str, obj.Prop);
+            Assert.Null(obj.GetProp2());
+        }
+
+        [Fact]
+        public void InjectUnsetProperties()
+        {
+            const string str = "test";
+            const string otherStr = "someString";
+
+            var cb = new ContainerBuilder();
+            cb.RegisterInstance(str);
+            var c = cb.Build();
+
+            var obj = new WithPropInjection
+            {
+                Prop = otherStr
+            };
+
+            Assert.Equal(otherStr, obj.Prop);
+            c.InjectUnsetProperties(obj);
+            Assert.Equal(otherStr, obj.Prop);
+            Assert.Null(obj.GetProp2());
+        }
+
+        [Fact]
+        public void InjectPropertiesWithSelector()
+        {
+            const string str = "test";
+
+            var cb = new ContainerBuilder();
+            cb.RegisterInstance(str);
+            var c = cb.Build();
+
+            var obj = new WithPropInjection();
+
+            Assert.Null(obj.Prop);
+            c.InjectProperties(obj, new DelegatePropertySelector((p, __) => p.GetCustomAttributes<InjectAttribute>().Any()));
+            Assert.Null(obj.Prop);
+            Assert.Equal(str, obj.GetProp2());
         }
 
         [Fact]

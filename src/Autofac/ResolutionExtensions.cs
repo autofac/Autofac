@@ -55,7 +55,22 @@ namespace Autofac
         /// <returns><paramref name="instance"/>.</returns>
         public static TService InjectProperties<TService>(this IComponentContext context, TService instance)
         {
-            AutowiringPropertyInjector.InjectProperties(context, instance, true);
+            AutowiringPropertyInjector.InjectProperties(context, instance, DefaultPropertySelector.OverwriteSetValueInstance);
+            return instance;
+        }
+
+        /// <summary>
+        /// Set any properties on <paramref name="instance"/> that can be resolved by service and that satisfy the
+        /// constraints imposed by <paramref name="propertySelector"/>
+        /// </summary>
+        /// <typeparam name="TService">Type of instance. Used only to provide method chaining.</typeparam>
+        /// <param name="context">The context from which to resolve the service.</param>
+        /// <param name="instance">The instance to inject properties into.</param>
+        /// <param name="propertySelector">Selector to determine with properties should be injected.</param>
+        /// <returns><paramref name="instance"/>.</returns>
+        public static TService InjectProperties<TService>(this IComponentContext context, TService instance, IPropertySelector propertySelector)
+        {
+            AutowiringPropertyInjector.InjectProperties(context, instance, propertySelector);
             return instance;
         }
 
@@ -69,7 +84,7 @@ namespace Autofac
         /// <returns><paramref name="instance"/>.</returns>
         public static TService InjectUnsetProperties<TService>(this IComponentContext context, TService instance)
         {
-            AutowiringPropertyInjector.InjectProperties(context, instance, false);
+            AutowiringPropertyInjector.InjectProperties(context, instance, DefaultPropertySelector.PreserveSetValueInstance);
             return instance;
         }
 
