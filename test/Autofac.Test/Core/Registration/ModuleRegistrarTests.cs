@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac.Core;
 using Autofac.Core.Registration;
 using Xunit;
 
@@ -39,6 +40,12 @@ namespace Autofac.Test.Core.Registration
             {
                 builder.RegisterInstance("foo").As<string>();
             }
+
+            public override bool Equals(IModule other)
+            {
+                if (other == null) return false;
+                return other.GetType() == GetType();
+            }
         }
 
         private class ModuleB : Module
@@ -46,6 +53,12 @@ namespace Autofac.Test.Core.Registration
             protected override void Load(ContainerBuilder builder)
             {
                 builder.RegisterInstance("bar").As<string>();
+            }
+
+            public override bool Equals(IModule other)
+            {
+                if (other == null) return false;
+                return other.GetType() == GetType();
             }
         }
     }

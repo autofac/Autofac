@@ -16,6 +16,12 @@ namespace Autofac.Test
             {
                 builder.RegisterInstance(new object());
             }
+
+            public override bool Equals(IModule other)
+            {
+                if (other == null) return false;
+                return other.GetType() == GetType();
+            }
         }
 
         [Fact]
@@ -40,6 +46,12 @@ namespace Autofac.Test
             {
                 base.AttachToComponentRegistration(componentRegistry, registration);
                 Registrations.Add(registration);
+            }
+
+            public override bool Equals(IModule other)
+            {
+                if (other == null) return false;
+                return other.GetType() == GetType();
             }
         }
 
@@ -67,6 +79,12 @@ namespace Autofac.Test
                 {
                     return ThisAssembly;
                 }
+            }
+
+            public override bool Equals(IModule other)
+            {
+                if (other == null) return false;
+                return other.GetType() == GetType();
             }
         }
 
