@@ -1,15 +1,31 @@
 {
+  "version": "4.0.0-rc3-*",
+
+  "description": "Autofac is an IoC container for Microsoft .NET. It manages the dependencies between classes so that applications stay easy to change as they grow in size and complexity.",
+  "authors": [ "Autofac Contributors" ],
+
+  "packOptions": {
+    "iconUrl": "https://cloud.githubusercontent.com/assets/1156571/13684110/16b8f152-e6bf-11e5-84ae-22c66c6d351a.png",
+    "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
+    "owners": [ "Autofac Contributors" ],
+    "projectUrl": "http://autofac.org",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/autofac/Autofac"
+    },
+    "requireLicenseAcceptance": false,
+    "summary": "Core assembly for the Autofac Inversion of Control container",
+    "tags": [ "autofac", "di", "ioc", "dependencyinjection" ]
+  },
+
   "buildOptions": {
-    "additionalArguments": [
-      "/ruleset:../../build/Analyzers.ruleset"
-    ],
+    "additionalArguments": [ "/ruleset:../../build/Analyzers.ruleset" ],
     "keyFile": "../../Autofac.snk",
-    "nowarn": [
-      "CS1591"
-    ],
+    "nowarn": [ "CS1591" ],
     "warningsAsErrors": true,
     "xmlDoc": true
   },
+
   "dependencies": {
     "Microsoft.CodeAnalysis.FxCopAnalyzers": {
       "type": "build",
@@ -24,49 +40,26 @@
       "version": "1.1.0"
     }
   },
-  "description": "Autofac is an IoC container for Microsoft .NET. It manages the dependencies between classes so that applications stay easy to change as they grow in size and complexity.",
+
   "frameworks": {
     "netstandard1.1": {
       "dependencies": {
-        "System.Collections.Concurrent": "4.0.12-rc2-*",
-        "System.ComponentModel": "4.0.1-rc2-*",
-        "System.Diagnostics.Debug": "4.0.11-rc2-*",
-        "System.Diagnostics.Tools": "4.0.1-rc2-*",
-        "System.Globalization": "4.0.11-rc2-*",
-        "System.Linq": "4.1.0-rc2-*",
-        "System.Linq.Expressions": "4.0.11-rc2-*",
-        "System.Reflection": "4.1.0-rc2-*",
-        "System.Reflection.Extensions": "4.0.1-rc2-*",
-        "System.Reflection.Primitives": "4.0.1-rc2-*",
-        "System.Resources.ResourceManager": "4.0.1-rc2-*",
-        "System.Runtime": "4.1.0-rc2-*",
-        "System.Runtime.Extensions": "4.1.0-rc2-*",
-        "System.Threading": "4.0.11-rc2-*"
-      },
-      "imports": [
-        "dotnet5.2"
-      ]
-    }
-  },
-  "packOptions": {
-    "iconUrl": "https://cloud.githubusercontent.com/assets/1156571/13684110/16b8f152-e6bf-11e5-84ae-22c66c6d351a.png",
-    "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
-    "owners": [
-      "Autofac Contributors"
-    ],
-    "projectUrl": "http://autofac.org",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/autofac/Autofac"
+        "System.Collections.Concurrent": "4.0.12",
+        "System.ComponentModel": "4.0.1",
+        "System.Diagnostics.Debug": "4.0.11",
+        "System.Diagnostics.Tools": "4.0.1",
+        "System.Globalization": "4.0.11",
+        "System.Linq": "4.1.0*",
+        "System.Linq.Expressions": "4.1.0",
+        "System.Reflection": "4.1.0",
+        "System.Reflection.Extensions": "4.0.1",
+        "System.Reflection.Primitives": "4.0.1",
+        "System.Resources.ResourceManager": "4.0.1",
+        "System.Runtime": "4.1.0",
+        "System.Runtime.Extensions": "4.1.0",
+        "System.Threading": "4.0.11"
+      }
     },
-    "requireLicenseAcceptance": false,
-    "summary": "Core assembly for the Autofac Inversion of Control container",
-    "tags": [
-      "autofac",
-      "di",
-      "ioc",
-      "dependencyinjection"
-    ]
-  },
-  "version": "4.0.0-rc2-*"
+    "net4.5.1": { }
+  }
 }

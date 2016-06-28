@@ -1,31 +1,22 @@
 ﻿{
+  "version": "1.0.0",
+
   "buildOptions": {
-    "additionalArguments": [
-      "/ruleset:../../build/Analyzers.ruleset"
-    ],
+    "additionalArguments": [ "/ruleset:../../build/Analyzers.ruleset" ],
     "keyFile": "../../Autofac.snk"
   },
+
   "dependencies": {
-    "Autofac": "4.0.0-rc2-*",
+    "NETStandard.Library": "1.6.0",
+    "Autofac": { "target": "project" },
     "StyleCop.Analyzers": {
       "type": "build",
       "version": "1.0.0"
     }
   },
+
   "frameworks": {
-    "net451": {},
-    "netcoreapp1.0": {
-      "dependencies": {
-        "Microsoft.NETCore.App": {
-          "type": "platform",
-          "version": "1.0.0-rc2-*"
-        }
-      },
-      "imports": [
-        "dnxcore50",
-        "portable-net451+win8"
-      ]
-    }
-  },
-  "version": "1.0.0-*"
+    "netstandard1.1": {},
+    "net4.5.1": {}
+  }
 }
