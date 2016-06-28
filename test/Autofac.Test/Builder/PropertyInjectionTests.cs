@@ -1,5 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reflection;
+using Autofac.Builder;
+using Autofac.Core;
+using Autofac.Core.Activators.Reflection;
 using Xunit;
 
 namespace Autofac.Test.Builder
@@ -8,7 +14,7 @@ namespace Autofac.Test.Builder
     {
         public class HasSetter
         {
-           private string _val;
+            private string _val;
 
             public string Val
             {
@@ -22,6 +28,21 @@ namespace Autofac.Test.Builder
                     _val = value;
                 }
             }
+        }
+
+        [Fact]
+        public void NullCheckTests()
+        {
+            var ctx = new ContainerBuilder().Build();
+            var instance = new object();
+            var propertySelector = new DefaultPropertySelector(true);
+
+            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null, null, null));
+            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, null, null));
+            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null, instance, null));
+            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, instance, null));
+            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null, instance, propertySelector));
+            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, null, propertySelector));
         }
 
         [Fact]
@@ -442,6 +463,167 @@ namespace Autofac.Test.Builder
             var expected = new ReadOnlyCollection<double?>(new double?[] { null, 0.1, null });
             Assert.Equal(expected, instance.DoubleCollectionInterface);
             Assert.Equal(expected, instance.DoubleCollection);
+        }
+
+        [Fact]
+        public void InjectProperties()
+        {
+            const string str = "test";
+
+            var cb = new ContainerBuilder();
+            cb.RegisterInstance(str);
+            var c = cb.Build();
+
+            var obj = new WithPropInjection();
+
+            Assert.Null(obj.Prop);
+            c.InjectUnsetProperties(obj);
+            Assert.Equal(str, obj.Prop);
+            Assert.Null(obj.GetProp2());
+        }
+
+        [Fact]
+        public void InjectUnsetProperties()
+        {
+            const string str = "test";
+            const string otherStr = "someString";
+
+            var cb = new ContainerBuilder();
+            cb.RegisterInstance(str);
+            var c = cb.Build();
+
+            var obj = new WithPropInjection
+            {
+                Prop = otherStr
+            };
+
+            Assert.Equal(otherStr, obj.Prop);
+            c.InjectUnsetProperties(obj);
+            Assert.Equal(otherStr, obj.Prop);
+            Assert.Null(obj.GetProp2());
+        }
+
+        [Fact]
+        public void InjectPropertiesWithSelector()
+        {
+            const string str = "test";
+
+            var cb = new ContainerBuilder();
+            cb.RegisterInstance(str);
+            var c = cb.Build();
+
+            var obj = new WithPropInjection();
+
+            Assert.Null(obj.Prop);
+            c.InjectProperties(obj, new DelegatePropertySelector((p, _) => p.GetCustomAttributes<InjectAttribute>().Any()));
+            Assert.Null(obj.Prop);
+            Assert.Equal(str, obj.GetProp2());
+        }
+
+        [Fact]
+        public void ResolvePropertiesWithCustomDelegate_ReflectionRegistration()
+        {
+            var propertyInfos = new List<PropertyInfo>();
+
+            var cb = new ContainerBuilder();
+            cb.RegisterType<WithPropInjection>()
+                .PropertiesAutowired((propInfo, instance) =>
+                {
+                    propertyInfos.Add(propInfo);
+                    return false;
+                });
+            cb.RegisterInstance("test"); // Must register, otherwise delegate won't be called
+
+            var c = cb.Build();
+            var result = c.Resolve<WithPropInjection>();
+            var expected = typeof(WithPropInjection).GetTypeInfo().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+            Assert.Equal(expected, propertyInfos.ToArray());
+            Assert.NotNull(result);
+            Assert.Null(result.Prop);
+            Assert.Null(result.GetProp2());
+        }
+
+        [Fact]
+        public void ResolvePropertiesWithCustomDelegate_DelegateRegistration()
+        {
+            var propertyInfos = new List<PropertyInfo>();
+
+            var cb = new ContainerBuilder();
+            cb.Register(_ => new WithPropInjection())
+                .PropertiesAutowired((propInfo, instance) =>
+                {
+                    propertyInfos.Add(propInfo);
+                    return false;
+                });
+            cb.RegisterInstance("test"); // Must register, otherwise delegate won't be called
+
+            var c = cb.Build();
+            var result = c.Resolve<WithPropInjection>();
+            var expected = typeof(WithPropInjection).GetTypeInfo().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+            Assert.Equal(expected, propertyInfos.ToArray());
+            Assert.NotNull(result);
+            Assert.Null(result.Prop);
+            Assert.Null(result.GetProp2());
+        }
+
+        [Fact]
+        public void ResolvePropertiesWithCustomImplementation_ReflectionRegistration()
+        {
+            const string str = "test";
+
+            var cb = new ContainerBuilder();
+            cb.RegisterType<WithPropInjection>()
+                .PropertiesAutowired(new InjectAttributePropertySelector());
+            cb.RegisterInstance(str);
+
+            var c = cb.Build();
+            var result = c.Resolve<WithPropInjection>();
+
+            Assert.NotNull(result);
+            Assert.Null(result.Prop);
+            Assert.Equal(str, result.GetProp2());
+        }
+
+        [Fact]
+        public void ResolvePropertiesWithCustomImplementation_DelegateRegistration()
+        {
+            const string str = "test";
+
+            var cb = new ContainerBuilder();
+            cb.Register(_ => new WithPropInjection())
+                .PropertiesAutowired(new InjectAttributePropertySelector());
+            cb.RegisterInstance(str);
+
+            var c = cb.Build();
+            var result = c.Resolve<WithPropInjection>();
+
+            Assert.NotNull(result);
+            Assert.Null(result.Prop);
+            Assert.Equal(str, result.GetProp2());
+        }
+
+        private class InjectAttributePropertySelector : IPropertySelector
+        {
+            public bool InjectProperty(PropertyInfo propertyInfo, object instance)
+            {
+                return propertyInfo.GetCustomAttributes<InjectAttribute>().Any();
+            }
+        }
+
+        private class InjectAttribute : Attribute
+        {
+        }
+
+        private class WithPropInjection
+        {
+            public string Prop { get; set; }
+
+            [Inject]
+            private string Prop2 { get; set; }
+
+            public string GetProp2() => Prop2;
         }
     }
 }

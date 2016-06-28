@@ -55,9 +55,17 @@ namespace Autofac.Test.PartialTrust
             Assert.NotSame(e.B, cd.B);
         }
 
-        public interface I1<T> { }
-        public interface I2<T> { }
-        public class C<T> : I1<T>, I2<T> { }
+        public interface I1<T>
+        {
+        }
+
+        public interface I2<T>
+        {
+        }
+
+        public class C<T> : I1<T>, I2<T>
+        {
+        }
 
         public void Integration_MultipleServicesOnAnOpenGenericType_ShareTheSameRegistration()
         {

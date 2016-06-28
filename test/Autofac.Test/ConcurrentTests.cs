@@ -88,6 +88,7 @@ namespace Autofac.Test
             blockedThread.Join();
         }
 #endif
+
         [Fact]
         public void ConcurrentResolveOperationsFromDifferentContainers_DoesNotThrow()
         {
@@ -113,8 +114,8 @@ namespace Autofac.Test
         public void NoLockWhenResolvingExistingSingleInstance()
         {
             var builder = new ContainerBuilder();
-            Func<IContainer> containerProvider = null;
-            builder.Register(c => new Int32()).SingleInstance();
+            Func<IContainer> containerProvider = default(Func<IContainer>);
+            builder.Register(c => default(Int32)).SingleInstance();
             builder.Register(c =>
             {
                 using (var mres = new ManualResetEventSlim())

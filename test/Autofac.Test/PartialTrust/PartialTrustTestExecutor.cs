@@ -46,6 +46,7 @@ namespace Autofac.Test.PartialTrust
                 {
                     throw ex.InnerException;
                 }
+
                 throw;
             }
         }
@@ -57,7 +58,7 @@ namespace Autofac.Test.PartialTrust
                 return typeof(PartialTrustTests)
                     .GetMethods(BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.Public)
                     .Where(m => m.ReturnType == typeof(void) && m.ContainsGenericParameters == false && m.GetParameters().Length == 0)
-                    .Select(m => new object[] {m});
+                    .Select(m => new object[] { m });
             }
         }
 

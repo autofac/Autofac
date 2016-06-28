@@ -4,42 +4,26 @@
 Push-Location $PSScriptRoot
 Import-Module $PSScriptRoot\Build\Autofac.Build.psd1 -Force
 
-# Prepare the dotnet CLI folder
-$env:DOTNET_INSTALL_DIR="$(Convert-Path "$PSScriptRoot")\.dotnet\win7-x64"
-if (!(Test-Path $env:DOTNET_INSTALL_DIR))
-{
-  mkdir $env:DOTNET_INSTALL_DIR | Out-Null
-}
+$artifactsPath = "$PSScriptRoot\artifacts"
+$packagesPath = "$artifactsPath\packages"
 
-# Download the dotnet CLI install script
-if (!(Test-Path .\dotnet\install.ps1))
-{
-  Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.ps1" -OutFile ".\.dotnet\dotnet-install.ps1"
-}
-
-# Run the dotnet CLI install
-& .\.dotnet\dotnet-install.ps1
-
-# Add the dotnet folder path to the process. This gets skipped
-# by Install-DotNetCli if it's already installed.
-Remove-PathVariable $env:DOTNET_INSTALL_DIR
-$env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
+Install-DotNetCli
 
 # Set build number
 $env:DOTNET_BUILD_VERSION = @{ $true = $env:APPVEYOR_BUILD_NUMBER; $false = 1}[$env:APPVEYOR_BUILD_NUMBER -ne $NULL];
 Write-Host "Build number:" $env:DOTNET_BUILD_VERSION
 
 # Clean
-if(Test-Path .\artifacts) { Remove-Item .\artifacts -Force -Recurse }
+if(Test-Path $artifactsPath) { Remove-Item $artifactsPath -Force -Recurse }
 
 # Package restore
-& dotnet restore
+Get-DotNetProjectDirectory -RootPath $PSScriptRoot | Restore-DependencyPackages
 
 # Build/package
-Get-ChildItem -Path .\src -Filter *.xproj -Recurse | ForEach-Object { Invoke-DotNetPack $_.DirectoryName }
-Get-ChildItem -Path .\samples -Filter *.xproj -Recurse | ForEach-Object { Invoke-DotNetBuild $_.DirectoryName }
+Get-DotNetProjectDirectory -RootPath $PSScriptRoot\src | Invoke-DotNetPack -PackagesPath $packagesPath
+Get-DotNetProjectDirectory -RootPath $PSScriptRoot\samples | Invoke-DotNetBuild
 
 # Test
-Get-ChildItem -Path .\test -Filter *.xproj -Exclude Autofac.Test.Scenarios.ScannedAssembly.xproj -Recurse | ForEach-Object { Invoke-Tests $_.DirectoryName }
+Get-DotNetProjectDirectory -RootPath $PSScriptRoot\test | Where-Object { $_ -inotlike "*Autofac.Test.Scenarios.ScannedAssembly" } | Invoke-Test
 
 Pop-Location

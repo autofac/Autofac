@@ -1,40 +1,41 @@
 ﻿{
-  "packOptions": {
-    "owners": [ "Autofac Contributors" ]
-  },
   "buildOptions": {
-    "additionalArguments": ["/ruleset:../../build/Analyzers.ruleset"],
-    "keyFile": "../../Autofac.snk",
-    "embed": {
-      "include": ["**/*.resx"],
-      "includFiles": ["Files/*.*"]
-    }
+    "additionalArguments": [
+      "/ruleset:../../build/Analyzers.ruleset"
+    ],
+    "keyFile": "../../Autofac.snk"
   },
-  "testRunner": "xunit",
   "dependencies": {
-    "Autofac": "4.0.0-rc2-*",
-    "Autofac.Extensions.DependencyInjection": "4.0.0-rc2-*",
-    "Microsoft.Extensions.DependencyInjection": "1.0.0-rc2-*",
-    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc2-*",
-    "Microsoft.Extensions.DependencyInjection.Specification.Tests": "1.0.0-rc2-*",
-    "Microsoft.Extensions.Options": "1.0.0-rc2-*",
-    "StyleCop.Analyzers": { "version": "1.0.0", "type": "build" },
-    "xunit": "2.1.0"
+    "Autofac": {
+      "target": "project"
+    },
+    "Autofac.Extensions.DependencyInjection": {
+      "target": "project"
+    },
+    "Microsoft.Extensions.DependencyInjection": "1.0.0",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
+    "Microsoft.Extensions.DependencyInjection.Specification.Tests": "1.0.0",
+    "Microsoft.Extensions.Options": "1.0.0",
+    "StyleCop.Analyzers": {
+      "type": "build",
+      "version": "1.0.0"
+    },
+    "dotnet-test-xunit": "2.2.0-preview2-build1029",
+    "xunit": "2.2.0-beta2-build3300"
   },
   "frameworks": {
     "netcoreapp1.0": {
-      "imports": [
-        "dnxcore50",
-        "portable-net451+win8"
-      ],
       "dependencies": {
         "Microsoft.NETCore.App": {
-          "version": "1.0.0-rc2-*",
-          "type": "platform"
-        },
-        "System.Diagnostics.Process": "4.1.0-rc2-*",
-        "dotnet-test-xunit": "1.0.0-rc2-*"
-      }
+          "type": "platform",
+          "version": "1.0.0"
+        }
+      },
+      "imports": [
+        "dnxcore50",
+        "portable-net45+win8"
+      ]
     }
-  }
+  },
+  "testRunner": "xunit"
 }

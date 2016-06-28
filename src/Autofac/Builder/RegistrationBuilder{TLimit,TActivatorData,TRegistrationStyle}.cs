@@ -360,19 +360,17 @@ namespace Autofac.Builder
 
         /// <summary>
         /// Configure the component so that any properties whose types are registered in the
-        /// container will be wired to instances of the appropriate service.
+        /// container and follow specific criteria will be wired to instances of the appropriate service.
         /// </summary>
-        /// <param name="wiringFlags">Set wiring options such as circular dependency wiring support.</param>
+        /// <param name="propertySelector">Selector to determine which properties should be injected</param>
+        /// <param name="allowCircularDependencies">Determine if circular dependencies should be allowed or not.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> PropertiesAutowired(PropertyWiringOptions wiringFlags)
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> PropertiesAutowired(IPropertySelector propertySelector, bool allowCircularDependencies)
         {
-            var allowCircularDependencies = (int)(wiringFlags & PropertyWiringOptions.AllowCircularDependencies) != 0;
-            var preserveSetValues = (int)(wiringFlags & PropertyWiringOptions.PreserveSetValues) != 0;
-
             if (allowCircularDependencies)
-                RegistrationData.ActivatedHandlers.Add((s, e) => AutowiringPropertyInjector.InjectProperties(e.Context, e.Instance, !preserveSetValues));
+                RegistrationData.ActivatedHandlers.Add((s, e) => AutowiringPropertyInjector.InjectProperties(e.Context, e.Instance, propertySelector));
             else
-                RegistrationData.ActivatingHandlers.Add((s, e) => AutowiringPropertyInjector.InjectProperties(e.Context, e.Instance, !preserveSetValues));
+                RegistrationData.ActivatingHandlers.Add((s, e) => AutowiringPropertyInjector.InjectProperties(e.Context, e.Instance, propertySelector));
 
             return this;
         }
