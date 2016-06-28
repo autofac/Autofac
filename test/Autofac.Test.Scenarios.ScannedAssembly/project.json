@@ -1,22 +1,23 @@
 ﻿{
-  "version": "1.0.0",
-
   "buildOptions": {
-    "additionalArguments": [ "/ruleset:../../build/Analyzers.ruleset" ],
+    "additionalArguments": [
+      "/ruleset:../../build/Analyzers.ruleset"
+    ],
     "keyFile": "../../Autofac.snk"
   },
-
   "dependencies": {
+    "Autofac": {
+      "target": "project"
+    },
     "NETStandard.Library": "1.6.0",
-    "Autofac": { "target": "project" },
     "StyleCop.Analyzers": {
       "type": "build",
       "version": "1.0.0"
     }
   },
-
   "frameworks": {
-    "netstandard1.1": {},
-    "net4.5.1": {}
-  }
+    "net451": {},
+    "netstandard1.1": {}
+  },
+  "version": "1.0.0"
 }

@@ -1,31 +1,15 @@
 {
-  "version": "4.0.0-rc3-*",
-
-  "description": "Autofac is an IoC container for Microsoft .NET. It manages the dependencies between classes so that applications stay easy to change as they grow in size and complexity.",
-  "authors": [ "Autofac Contributors" ],
-
-  "packOptions": {
-    "iconUrl": "https://cloud.githubusercontent.com/assets/1156571/13684110/16b8f152-e6bf-11e5-84ae-22c66c6d351a.png",
-    "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
-    "owners": [ "Autofac Contributors" ],
-    "projectUrl": "http://autofac.org",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/autofac/Autofac"
-    },
-    "requireLicenseAcceptance": false,
-    "summary": "Core assembly for the Autofac Inversion of Control container",
-    "tags": [ "autofac", "di", "ioc", "dependencyinjection" ]
-  },
-
   "buildOptions": {
-    "additionalArguments": [ "/ruleset:../../build/Analyzers.ruleset" ],
+    "additionalArguments": [
+      "/ruleset:../../build/Analyzers.ruleset"
+    ],
     "keyFile": "../../Autofac.snk",
-    "nowarn": [ "CS1591" ],
+    "nowarn": [
+      "CS1591"
+    ],
     "warningsAsErrors": true,
     "xmlDoc": true
   },
-
   "dependencies": {
     "Microsoft.CodeAnalysis.FxCopAnalyzers": {
       "type": "build",
@@ -40,8 +24,9 @@
       "version": "1.1.0"
     }
   },
-
+  "description": "Autofac is an IoC container for Microsoft .NET. It manages the dependencies between classes so that applications stay easy to change as they grow in size and complexity.",
   "frameworks": {
+    "net451": {},
     "netstandard1.1": {
       "dependencies": {
         "System.Collections.Concurrent": "4.0.12",
@@ -59,7 +44,27 @@
         "System.Runtime.Extensions": "4.1.0",
         "System.Threading": "4.0.11"
       }
+    }
+  },
+  "packOptions": {
+    "iconUrl": "https://cloud.githubusercontent.com/assets/1156571/13684110/16b8f152-e6bf-11e5-84ae-22c66c6d351a.png",
+    "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
+    "owners": [
+      "Autofac Contributors"
+    ],
+    "projectUrl": "http://autofac.org",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/autofac/Autofac"
     },
-    "net4.5.1": { }
-  }
+    "requireLicenseAcceptance": false,
+    "summary": "Core assembly for the Autofac Inversion of Control container.",
+    "tags": [
+      "autofac",
+      "di",
+      "ioc",
+      "dependencyinjection"
+    ]
+  },
+  "version": "4.0.0-rc3-*"
 }

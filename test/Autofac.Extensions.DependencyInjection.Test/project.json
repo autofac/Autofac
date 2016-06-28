@@ -1,14 +1,17 @@
 ﻿{
-  "testRunner": "xunit",
-
   "buildOptions": {
-    "additionalArguments": [ "/ruleset:../../build/Analyzers.ruleset" ],
+    "additionalArguments": [
+      "/ruleset:../../build/Analyzers.ruleset"
+    ],
     "keyFile": "../../Autofac.snk"
   },
-
   "dependencies": {
-    "Autofac": { "target": "project" },
-    "Autofac.Extensions.DependencyInjection": { "target": "project" },
+    "Autofac": {
+      "target": "project"
+    },
+    "Autofac.Extensions.DependencyInjection": {
+      "target": "project"
+    },
     "Microsoft.Extensions.DependencyInjection": "1.0.0",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
     "Microsoft.Extensions.DependencyInjection.Specification.Tests": "1.0.0",
@@ -20,7 +23,6 @@
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "xunit": "2.2.0-beta2-build3300"
   },
-
   "frameworks": {
     "netcoreapp1.0": {
       "dependencies": {
@@ -34,5 +36,6 @@
         "portable-net45+win8"
       ]
     }
-  }
+  },
+  "testRunner": "xunit"
 }

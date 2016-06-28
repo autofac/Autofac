@@ -4,8 +4,12 @@
     "preserveCompilationContext": true
   },
   "dependencies": {
-    "Autofac": { "target": "project" },
-    "Autofac.Extensions.DependencyInjection": { "target": "project" },
+    "Autofac": {
+      "target": "project"
+    },
+    "Autofac.Extensions.DependencyInjection": {
+      "target": "project"
+    },
     "Microsoft.AspNetCore.Mvc": "1.0.0",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0",

@@ -1,33 +1,19 @@
 ﻿{
-  "version": "4.0.0-rc3-*",
-
-  "description": "Autofac implementation of the interfaces in Microsoft.Extensions.DependencyInjection.Abstractions, the .NET Framework dependency injection abstraction.",
-  "authors": [ "Autofac Contributors" ],
-
-  "packOptions": {
-    "iconUrl": "https://cloud.githubusercontent.com/assets/1156571/13684110/16b8f152-e6bf-11e5-84ae-22c66c6d351a.png",
-    "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
-    "owners": [ "Autofac Contributors" ],
-    "projectUrl": "http://autofac.org",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/autofac/Autofac"
-    },
-    "requireLicenseAcceptance": false,
-    "summary": "Autofac implementation of the .NET Framework dependency injection abstraction.",
-    "tags": [ "autofac", "di", "ioc", "dependencyinjection", "aspnet" ]
-  },
-  
   "buildOptions": {
-    "additionalArguments": [ "/ruleset:../../build/Analyzers.ruleset" ],
+    "additionalArguments": [
+      "/ruleset:../../build/Analyzers.ruleset"
+    ],
     "keyFile": "../../Autofac.snk",
-    "nowarn": [ "CS1591" ],
+    "nowarn": [
+      "CS1591"
+    ],
     "warningsAsErrors": true,
     "xmlDoc": true
   },
-
   "dependencies": {
-    "Autofac": { "target": "project" },
+    "Autofac": {
+      "target": "project"
+    },
     "Microsoft.CodeAnalysis.FxCopAnalyzers": {
       "type": "build",
       "version": "1.1.0"
@@ -42,7 +28,7 @@
       "version": "1.1.0"
     }
   },
-
+  "description": "Autofac implementation of the interfaces in Microsoft.Extensions.DependencyInjection.Abstractions, the .NET Framework dependency injection abstraction.",
   "frameworks": {
     "netstandard1.1": {
       "dependencies": {
@@ -52,5 +38,27 @@
         "System.Threading.Tasks": "4.0.11"
       }
     }
-  }
+  },
+  "packOptions": {
+    "iconUrl": "https://cloud.githubusercontent.com/assets/1156571/13684110/16b8f152-e6bf-11e5-84ae-22c66c6d351a.png",
+    "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
+    "owners": [
+      "Autofac Contributors"
+    ],
+    "projectUrl": "http://autofac.org",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/autofac/Autofac"
+    },
+    "requireLicenseAcceptance": false,
+    "summary": "Autofac implementation of the .NET Framework dependency injection abstraction.",
+    "tags": [
+      "autofac",
+      "di",
+      "ioc",
+      "dependencyinjection",
+      "aspnet"
+    ]
+  },
+  "version": "4.0.0-rc3-*"
 }
