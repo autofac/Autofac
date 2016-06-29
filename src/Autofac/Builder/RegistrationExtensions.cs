@@ -160,23 +160,6 @@ namespace Autofac.Builder
         }
 
         /// <summary>
-        /// Configure the component so that any properties whose types are registered in the
-        /// container will be wired to instances of the appropriate service.
-        /// </summary>
-        /// <param name="registration">Registration to auto-wire properties.</param>
-        /// <param name="wiringFlags">Set wiring options such as circular dependency wiring support.</param>
-        /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>
-            PropertiesAutowired<TLimit, TActivatorData, TRegistrationStyle>(
-                this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration, PropertyWiringOptions wiringFlags = PropertyWiringOptions.None)
-        {
-            var preserveSetValues = (int)(wiringFlags & PropertyWiringOptions.PreserveSetValues) != 0;
-            var allowCircularDependencies = (int)(wiringFlags & PropertyWiringOptions.AllowCircularDependencies) != 0;
-
-            return registration.PropertiesAutowired(new DefaultPropertySelector(preserveSetValues), allowCircularDependencies);
-        }
-
-        /// <summary>
         /// Changes the parameter mapping mode of the supplied delegate type to match
         /// parameters by type.
         /// </summary>
