@@ -276,7 +276,7 @@ namespace Autofac.Core.Registration
                     foreach (var additionalService in provided.Services)
                     {
                         var additionalInfo = GetServiceInfo(additionalService);
-                        if (additionalInfo.IsInitialized) continue;
+                        if (additionalInfo.IsInitialized || additionalInfo == info) continue;
 
                         if (!additionalInfo.IsInitializing)
                             additionalInfo.BeginInitialization(_dynamicRegistrationSources.Where(src => src != next));
