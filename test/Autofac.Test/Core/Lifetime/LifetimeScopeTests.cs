@@ -105,7 +105,7 @@ namespace Autofac.Test.Core.Lifetime
             Assert.Same(o2, scope3.Resolve<object>());
         }
 
-        [Fact(Skip = "Issue #272")]
+        [Fact]
         public void LocalRegistrationCanPreserveParentAsDefault()
         {
             var o = new object();

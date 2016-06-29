@@ -92,7 +92,7 @@ namespace Autofac.Test.Core
             Assert.Equal("s3", container.Resolve<string>());
         }
 
-        [Fact(Skip = "Issue #272")]
+        [Fact]
         public void NestedScope_ComplexConsumerServicesResolve()
         {
             // This is an all-around "integration test" with property injection,
@@ -134,7 +134,7 @@ namespace Autofac.Test.Core
             Assert.Equal("s2", scope.Resolve<string>());
         }
 
-        [Fact(Skip = "Issue #272")]
+        [Fact]
         public void NestedScope_PreserveDefaultsCanFallBackToNestedParent()
         {
             var builder = new ContainerBuilder();
@@ -146,7 +146,7 @@ namespace Autofac.Test.Core
             Assert.Equal("s3", scope3.Resolve<string>());
         }
 
-        [Fact(Skip = "Issue #272")]
+        [Fact]
         public void NestedScope_PreserveDefaultsCanFallBackToParent()
         {
             var builder = new ContainerBuilder();
@@ -156,7 +156,7 @@ namespace Autofac.Test.Core
             Assert.Equal("s1", scope.Resolve<string>());
         }
 
-        [Fact(Skip = "Issue #272")]
+        [Fact]
         public void NestedScope_PreserveDefaultsCanFallBackToParentThroughMultipleNesting()
         {
             var builder = new ContainerBuilder();
