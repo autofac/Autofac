@@ -135,10 +135,14 @@ namespace Autofac.Core.Registration
 
                 var defaultImplementation = DefaultImplementation;
                 if (defaultImplementation != null)
+                {
                     Debug.WriteLine(string.Format(
                         CultureInfo.InvariantCulture,
                         "[Autofac] Overriding default for: '{0}' with: '{1}' (was '{2}')",
-                        _service, registration, defaultImplementation));
+                        _service,
+                        registration,
+                        defaultImplementation));
+                }
 
                 _defaultImplementations.Add(registration);
             }
