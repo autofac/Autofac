@@ -41,20 +41,20 @@ namespace Autofac.Core.Registration
         private readonly Service _service;
 
         /// <summary>
-        ///  List of explicit default service implementations. Overriding default implementations are appended to the end,
-        ///  so the enumeration should begin from the end too and the most default implementation is coming last.
+        ///  List of implicit default service implementations. Overriding default implementations are appended to the end,
+        ///  so the enumeration should begin from the end too, and the most default implementation comes last.
         /// </summary>
         private readonly List<IComponentRegistration> _defaultImplementations = new List<IComponentRegistration>();
 
         /// <summary>
         ///  List of service implementations coming from sources. Sources have priority over preserve-default implementations.
-        ///  Implementations from sources are enumerated in preserve-default order, so the most default implementation is coming first.
+        ///  Implementations from sources are enumerated in preserve-default order, so the most default implementation comes first.
         /// </summary>
         private readonly List<IComponentRegistration> _sourceImplementations = new List<IComponentRegistration>();
 
         /// <summary>
-        ///  List of explicit service implementations specified with PreserveExistingDefaults option.
-        ///  Enumerated in preserve-defaults order, so the most default implementation is coming first.
+        ///  List of explicit service implementations specified with the PreserveExistingDefaults option.
+        ///  Enumerated in preserve-defaults order, so the most default implementation comes first.
         /// </summary>
         private readonly List<IComponentRegistration> _preserveDefaultImplementations = new List<IComponentRegistration>();
 
