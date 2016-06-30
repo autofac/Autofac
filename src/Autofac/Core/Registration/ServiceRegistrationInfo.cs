@@ -87,7 +87,10 @@ namespace Autofac.Core.Registration
             get
             {
                 RequiresInitialization();
-                return Enumerable.Reverse(_defaultImplementations).Concat(_sourceImplementations).Concat(_preserveDefaultImplementations);
+                return Enumerable
+                    .Reverse(_defaultImplementations)
+                    .Concat(_sourceImplementations)
+                    .Concat(_preserveDefaultImplementations);
             }
         }
 
