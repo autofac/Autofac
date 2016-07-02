@@ -88,12 +88,4 @@ namespace Autofac.Extensions.DependencyInjection
             return f.ImplementationInstance == a || (f.ImplementationInstance == null && a.GetType() == f.ImplementationType);
         }
     }
-
-    internal class OrderedServiceDescriptor
-    {
-        public int Index { get; set; }
-        public object ImplementationInstance { get; set; }
-        public Type ImplementationType { get; set; }
-
-    }
 }
