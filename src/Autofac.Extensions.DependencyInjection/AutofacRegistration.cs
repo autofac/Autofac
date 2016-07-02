@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,6 +40,7 @@ namespace Autofac.Extensions.DependencyInjection
         {
             builder.RegisterType<AutofacServiceProvider>().As<IServiceProvider>();
             builder.RegisterType<AutofacServiceScopeFactory>().As<IServiceScopeFactory>();
+            builder.RegisterInstance(descriptors.ToList());
 
             Register(builder, descriptors);
         }
