@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
+using Autofac.Util;
 
 namespace Autofac.Builder
 {
@@ -54,6 +55,11 @@ namespace Autofac.Builder
             if (defaultService == null) throw new ArgumentNullException(nameof(defaultService));
 
             _defaultService = defaultService;
+
+            Metadata = new Dictionary<string, object>
+            {
+                { MetadataKeys.RegistrationOrderMetadataKey, SequenceGenerator.GetNextUniqueSequence() }
+            };
         }
 
         /// <summary>
@@ -127,7 +133,7 @@ namespace Autofac.Builder
         /// <summary>
         /// Gets the extended properties assigned to the component.
         /// </summary>
-        public IDictionary<string, object> Metadata { get; } = new Dictionary<string, object>();
+        public IDictionary<string, object> Metadata { get; }
 
         /// <summary>
         /// Gets the handlers for the Preparing event.
@@ -166,7 +172,7 @@ namespace Autofac.Builder
                 _defaultService = that._defaultService;
 
             AddAll(_services, that._services);
-            AddAll(Metadata, that.Metadata);
+            AddAll(Metadata, that.Metadata.Where(m => m.Key != MetadataKeys.RegistrationOrderMetadataKey));
             AddAll(PreparingHandlers, that.PreparingHandlers);
             AddAll(ActivatingHandlers, that.ActivatingHandlers);
             AddAll(ActivatedHandlers, that.ActivatedHandlers);

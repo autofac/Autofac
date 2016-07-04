@@ -89,7 +89,7 @@ namespace Autofac.Core.Registration
                         InstanceSharing.None,
                         InstanceOwnership.ExternallyOwned,
                         new[] { service },
-                        new Dictionary<string, object>(),
+                        r.Metadata,
                         r));
         }
 

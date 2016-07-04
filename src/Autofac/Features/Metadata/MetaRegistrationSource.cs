@@ -40,7 +40,7 @@ namespace Autofac.Features.Metadata
     /// </summary>
     internal class MetaRegistrationSource : IRegistrationSource
     {
-        private static readonly MethodInfo CreateMetaRegistrationMethod = typeof(MetaRegistrationSource).GetTypeInfo().GetDeclaredMethod("CreateMetaRegistration");
+        private static readonly MethodInfo CreateMetaRegistrationMethod = typeof(MetaRegistrationSource).GetTypeInfo().GetDeclaredMethod(nameof(CreateMetaRegistration));
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
@@ -75,7 +75,8 @@ namespace Autofac.Features.Metadata
                     (T)c.ResolveComponent(valueRegistration, p),
                     valueRegistration.Target.Metadata))
                 .As(providedService)
-                .Targeting(valueRegistration);
+                .Targeting(valueRegistration)
+                .InheritRegistrationOrderFrom(valueRegistration);
 
             return rb.CreateRegistration();
         }

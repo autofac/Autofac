@@ -47,26 +47,25 @@ namespace Autofac.Features.GeneratedFactories
             if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
 
             var ts = service as IServiceWithType;
-            if (ts != null && ts.ServiceType.IsDelegate())
-            {
-                var resultType = ts.ServiceType.FunctionReturnType();
-                var resultTypeService = ts.ChangeType(resultType);
+            if (ts == null || !ts.ServiceType.IsDelegate())
+                return Enumerable.Empty<IComponentRegistration>();
 
-                return registrationAccessor(resultTypeService)
-                    .Select(r =>
-                    {
-                        var factory = new FactoryGenerator(ts.ServiceType, r, ParameterMapping.Adaptive);
-                        var rb = RegistrationBuilder.ForDelegate(ts.ServiceType, factory.GenerateFactory)
-                            .InstancePerLifetimeScope()
-                            .ExternallyOwned()
-                            .As(service)
-                            .Targeting(r);
+            var resultType = ts.ServiceType.FunctionReturnType();
+            var resultTypeService = ts.ChangeType(resultType);
 
-                        return rb.CreateRegistration();
-                    });
-            }
+            return registrationAccessor(resultTypeService)
+                .Select(r =>
+                {
+                    var factory = new FactoryGenerator(ts.ServiceType, r, ParameterMapping.Adaptive);
+                    var rb = RegistrationBuilder.ForDelegate(ts.ServiceType, factory.GenerateFactory)
+                        .InstancePerLifetimeScope()
+                        .ExternallyOwned()
+                        .As(service)
+                        .Targeting(r)
+                        .InheritRegistrationOrderFrom(r);
 
-            return Enumerable.Empty<IComponentRegistration>();
+                    return rb.CreateRegistration();
+                });
         }
 
         public bool IsAdapterForIndividualComponents => true;

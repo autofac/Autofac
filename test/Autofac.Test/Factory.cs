@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Activators.ProvidedInstance;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
+using Autofac.Util;
 
 namespace Autofac.Test
 {
@@ -35,15 +34,20 @@ namespace Autofac.Test
                 sharing,
                 InstanceOwnership.OwnedByLifetimeScope,
                 services,
-                NoMetadata);
+                GetDefaultMetadata());
         }
 
-        public static IComponentRegistration CreateSingletonObjectRegistration(object instance)
+        public static IComponentRegistration CreateSingletonRegistration<T>(T instance)
         {
             return RegistrationBuilder
                 .ForDelegate((c, p) => instance)
                 .SingleInstance()
                 .CreateRegistration();
+        }
+
+        public static IComponentRegistration CreateSingletonObjectRegistration(object instance)
+        {
+            return CreateSingletonRegistration(instance);
         }
 
         public static IComponentRegistration CreateSingletonObjectRegistration()
@@ -83,10 +87,20 @@ namespace Autofac.Test
             return new ProvidedInstanceActivator(instance);
         }
 
+        private static IDictionary<string, object> GetDefaultMetadata()
+        {
+            return new Dictionary<string, object>
+            {
+                { MetadataKeys.RegistrationOrderMetadataKey, SequenceGenerator.GetNextUniqueSequence() }
+            };
+        }
+
         public static readonly IContainer EmptyContainer = new Container();
+
         public static readonly IComponentContext EmptyContext = new Container();
+
         public static readonly IEnumerable<Parameter> NoParameters = Enumerable.Empty<Parameter>();
+
         public static readonly IEnumerable<Parameter> NoProperties = Enumerable.Empty<Parameter>();
-        public static readonly IDictionary<string, object> NoMetadata = new Dictionary<string, object>();
     }
 }

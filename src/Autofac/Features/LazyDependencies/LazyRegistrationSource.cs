@@ -41,7 +41,7 @@ namespace Autofac.Features.LazyDependencies
     /// </summary>
     internal class LazyRegistrationSource : IRegistrationSource
     {
-        private static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyRegistrationSource).GetTypeInfo().GetDeclaredMethod("CreateLazyRegistration");
+        private static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyRegistrationSource).GetTypeInfo().GetDeclaredMethod(nameof(CreateLazyRegistration));
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
@@ -77,7 +77,8 @@ namespace Autofac.Features.LazyDependencies
                     return new Lazy<T>(() => (T)context.ResolveComponent(valueRegistration, p));
                 })
                 .As(providedService)
-                .Targeting(valueRegistration);
+                .Targeting(valueRegistration)
+                .InheritRegistrationOrderFrom(valueRegistration);
 
             return rb.CreateRegistration();
         }

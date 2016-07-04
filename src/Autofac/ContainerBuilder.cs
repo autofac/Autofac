@@ -103,7 +103,7 @@ namespace Autofac
             // We track which registrations have already been auto-activated by adding
             // a metadata value. If the value is present, we won't re-activate. This helps
             // in the container update situation.
-            const string started = "__AutoActivated";
+            const string started = MetadataKeys.AutoActivated;
             object meta;
 
             foreach (var startable in componentContext.ComponentRegistry.RegistrationsFor(new TypedService(typeof(IStartable))).Where(r => !r.Metadata.TryGetValue(started, out meta)))

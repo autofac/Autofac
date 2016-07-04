@@ -48,8 +48,8 @@ namespace Autofac.Features.OwnedInstances
         /// <returns>Registrations providing the service.</returns>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
-            if (service == null) throw new ArgumentNullException("service");
-            if (registrationAccessor == null) throw new ArgumentNullException("registrationAccessor");
+            if (service == null) throw new ArgumentNullException(nameof(service));
+            if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
 
             var ts = service as IServiceWithType;
             if (ts == null || !ts.ServiceType.IsGenericTypeDefinedBy(typeof(Owned<>)))
@@ -77,16 +77,14 @@ namespace Autofac.Features.OwnedInstances
                         })
                         .ExternallyOwned()
                         .As(service)
-                        .Targeting(r);
+                        .Targeting(r)
+                        .InheritRegistrationOrderFrom(r);
 
                     return rb.CreateRegistration();
                 });
         }
 
-        public bool IsAdapterForIndividualComponents
-        {
-            get { return true; }
-        }
+        public bool IsAdapterForIndividualComponents => true;
 
         public override string ToString()
         {

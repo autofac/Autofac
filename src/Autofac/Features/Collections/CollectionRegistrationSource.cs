@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
@@ -77,55 +78,53 @@ namespace Autofac.Features.Collections
             if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
 
             var swt = service as IServiceWithType;
-            if (swt != null)
+            if (swt == null)
+                return Enumerable.Empty<IComponentRegistration>();
+
+            var serviceType = swt.ServiceType;
+            Type elementType = null;
+
+            if (serviceType.IsGenericEnumerableInterfaceType())
             {
-                var serviceType = swt.ServiceType;
-                Type elementType = null;
-
-                if (serviceType.IsGenericEnumerableInterfaceType())
-                {
-                    elementType = serviceType.GetTypeInfo().GenericTypeArguments.First();
-                }
-                else if (serviceType.IsArray)
-                {
-                    elementType = serviceType.GetElementType();
-                }
-
-                if (elementType != null)
-                {
-                    var elementTypeService = swt.ChangeType(elementType);
-                    var elementArrayType = elementType.MakeArrayType();
-
-                    var listType = typeof(List<>).MakeGenericType(elementType);
-                    var serviceTypeIsList = serviceType.IsGenericListOrCollectionInterfaceType();
-
-                    var activator = new DelegateActivator(
-                        elementArrayType,
-                        (c, p) =>
-                        {
-                            var elements = c.ComponentRegistry.RegistrationsFor(elementTypeService);
-                            var items = elements.Select(cr => c.ResolveComponent(cr, p)).ToArray();
-
-                            var result = Array.CreateInstance(elementType, items.Length);
-                            items.CopyTo(result, 0);
-
-                            return serviceTypeIsList ? Activator.CreateInstance(listType, result) : result;
-                        });
-
-                    var registration = new ComponentRegistration(
-                        Guid.NewGuid(),
-                        activator,
-                        new CurrentScopeLifetime(),
-                        InstanceSharing.None,
-                        InstanceOwnership.ExternallyOwned,
-                        new[] { service },
-                        new Dictionary<string, object>());
-
-                    return new IComponentRegistration[] { registration };
-                }
+                elementType = serviceType.GetTypeInfo().GenericTypeArguments.First();
+            }
+            else if (serviceType.IsArray)
+            {
+                elementType = serviceType.GetElementType();
             }
 
-            return Enumerable.Empty<IComponentRegistration>();
+            if (elementType == null)
+                return Enumerable.Empty<IComponentRegistration>();
+
+            var elementTypeService = swt.ChangeType(elementType);
+            var elementArrayType = elementType.MakeArrayType();
+
+            var listType = typeof(List<>).MakeGenericType(elementType);
+            var serviceTypeIsList = serviceType.IsGenericListOrCollectionInterfaceType();
+
+            var activator = new DelegateActivator(
+                elementArrayType,
+                (c, p) =>
+                {
+                    var elements = c.ComponentRegistry.RegistrationsFor(elementTypeService).OrderBy(cr => cr.GetRegistrationOrder());
+                    var items = elements.Select(cr => c.ResolveComponent(cr, p)).ToArray();
+
+                    var result = Array.CreateInstance(elementType, items.Length);
+                    items.CopyTo(result, 0);
+
+                    return serviceTypeIsList ? Activator.CreateInstance(listType, result) : result;
+                });
+
+            var registration = new ComponentRegistration(
+                Guid.NewGuid(),
+                activator,
+                new CurrentScopeLifetime(),
+                InstanceSharing.None,
+                InstanceOwnership.ExternallyOwned,
+                new[] { service },
+                new Dictionary<string, object>());
+
+            return new IComponentRegistration[] { registration };
         }
 
         public bool IsAdapterForIndividualComponents => false;

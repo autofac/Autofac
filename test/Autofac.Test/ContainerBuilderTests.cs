@@ -198,7 +198,7 @@ namespace Autofac.Test
             IComponentRegistration registration;
             Assert.True(container.ComponentRegistry.TryGetRegistration(new TypedService(typeof(object)), out registration));
 
-            Assert.Equal(2, registration.Metadata.Count);
+            Assert.Equal(3, registration.Metadata.Count); // Two plus one default.
             Assert.True(registration.Metadata.Contains(p1));
             Assert.True(registration.Metadata.Contains(p2));
         }
