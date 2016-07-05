@@ -15,13 +15,21 @@ namespace Autofac.Test.Features.Collections
         private const string S2 = "s2";
         private const string S3 = "s3";
 
-        private interface IService { }
+        private interface IService
+        {
+        }
 
-        private class Implementer1 : IService { }
+        private class Implementer1 : IService
+        {
+        }
 
-        private class Implementer2 : IService { }
+        private class Implementer2 : IService
+        {
+        }
 
-        private class Implementer3 : IService { }
+        private class Implementer3 : IService
+        {
+        }
 
         private class Decorator : IService
         {
@@ -70,8 +78,8 @@ namespace Autofac.Test.Features.Collections
 
             public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
             {
-                return service == _stringService 
-                    ? _instances.Select(Factory.CreateSingletonRegistration) 
+                return service == _stringService
+                    ? _instances.Select(Factory.CreateSingletonRegistration)
                     : Enumerable.Empty<IComponentRegistration>();
             }
 
