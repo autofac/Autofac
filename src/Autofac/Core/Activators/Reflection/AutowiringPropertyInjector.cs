@@ -60,14 +60,16 @@ namespace Autofac.Core.Activators.Reflection
                 if (property.GetIndexParameters().Length != 0)
                     continue;
 
-                if (!context.IsRegistered(propertyType))
-                    continue;
-
                 if (!propertySelector.InjectProperty(property, instance))
                     continue;
 
-                var propertyValue = context.Resolve(propertyType, new NamedParameter(InstanceTypeNamedParameter, instanceType));
-                property.SetValue(instance, propertyValue, null);
+                object propertyValue;
+                var propertyService = new TypedService(propertyType);
+                var instanceTypeParameter = new NamedParameter(InstanceTypeNamedParameter, instanceType);
+                if (context.TryResolveService(propertyService, new Parameter[] { instanceTypeParameter }, out propertyValue))
+                {
+                    property.SetValue(instance, propertyValue, null);
+                }
             }
         }
     }
