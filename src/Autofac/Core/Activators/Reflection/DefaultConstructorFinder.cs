@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 
@@ -36,6 +37,8 @@ namespace Autofac.Core.Activators.Reflection
     {
         private readonly Func<Type, ConstructorInfo[]> _finder;
 
+        private static readonly ConcurrentDictionary<Type, ConstructorInfo[]> DefaultPublicConstructorsCache = new ConcurrentDictionary<Type, ConstructorInfo[]>();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultConstructorFinder" /> class.
         /// </summary>
@@ -43,7 +46,7 @@ namespace Autofac.Core.Activators.Reflection
         /// Default to selecting all public constructors.
         /// </remarks>
         public DefaultConstructorFinder()
-          : this(type => type.GetTypeInfo().DeclaredConstructors.Where(c => c.IsPublic).ToArray())
+          : this(GetDefaultPublicConstructors)
         {
         }
 
@@ -66,6 +69,12 @@ namespace Autofac.Core.Activators.Reflection
         public ConstructorInfo[] FindConstructors(Type targetType)
         {
             return _finder(targetType);
+        }
+
+        private static ConstructorInfo[] GetDefaultPublicConstructors(Type type)
+        {
+            return DefaultPublicConstructorsCache.GetOrAdd(
+                type, t => t.GetTypeInfo().DeclaredConstructors.Where(c => c.IsPublic).ToArray());
         }
     }
 }

@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -34,11 +35,9 @@ namespace Autofac.Util
 {
     internal static class TypeExtensions
     {
-        public static readonly Type[] EmptyTypes = new Type[0];
-
-        private static readonly Type ReadOnlyCollectionType = Type.GetType("System.Collections.Generic.IReadOnlyCollection`1", false);
-
-        private static readonly Type ReadOnlyListType = Type.GetType("System.Collections.Generic.IReadOnlyList`1", false);
+        private static readonly ConcurrentDictionary<Type, bool> IsGenericEnumerableInterfaceCache = new ConcurrentDictionary<Type, bool>();
+        private static readonly ConcurrentDictionary<Type, bool> IsGenericListOrCollectionInterfaceTypeCache = new ConcurrentDictionary<Type, bool>();
+        private static readonly ConcurrentDictionary<Tuple<Type, Type>, bool> IsGenericTypeDefinedByCache = new ConcurrentDictionary<Tuple<Type, Type>, bool>();
 
         /// <summary>Returns the first concrete interface supported by the candidate type that
         /// closes the provided open generic service type.</summary>
@@ -70,31 +69,25 @@ namespace Autofac.Util
 
         public static bool IsGenericTypeDefinedBy(this Type @this, Type openGeneric)
         {
-            if (@this == null) throw new ArgumentNullException(nameof(@this));
-            if (openGeneric == null) throw new ArgumentNullException(nameof(openGeneric));
-
-            return !@this.GetTypeInfo().ContainsGenericParameters && @this.GetTypeInfo().IsGenericType && @this.GetGenericTypeDefinition() == openGeneric;
+            return IsGenericTypeDefinedByCache.GetOrAdd(
+                Tuple.Create(@this, openGeneric),
+                key => !key.Item1.GetTypeInfo().ContainsGenericParameters
+                    && key.Item1.GetTypeInfo().IsGenericType
+                    && key.Item1.GetGenericTypeDefinition() == key.Item2);
         }
 
         public static bool IsClosedTypeOf(this Type @this, Type openGeneric)
         {
-            if (@this == null) throw new ArgumentNullException(nameof(@this));
-            if (openGeneric == null) throw new ArgumentNullException(nameof(openGeneric));
-
             return TypesAssignableFrom(@this).Any(t => t.GetTypeInfo().IsGenericType && !@this.GetTypeInfo().ContainsGenericParameters && t.GetGenericTypeDefinition() == openGeneric);
         }
 
         public static bool IsDelegate(this Type type)
         {
-            if (type == null) throw new ArgumentNullException(nameof(type));
-
             return type.GetTypeInfo().IsSubclassOf(typeof(Delegate));
         }
 
         public static Type FunctionReturnType(this Type type)
         {
-            if (type == null) throw new ArgumentNullException(nameof(type));
-
             var invoke = type.GetTypeInfo().GetDeclaredMethod("Invoke");
             Enforce.NotNull(invoke);
             return invoke.ReturnType;
@@ -177,22 +170,22 @@ namespace Autofac.Util
 
         public static bool IsGenericEnumerableInterfaceType(this Type type)
         {
-            return type.IsGenericTypeDefinedBy(typeof(IEnumerable<>))
-                || type.IsGenericListOrCollectionInterfaceType();
+            return IsGenericEnumerableInterfaceCache.GetOrAdd(
+                type, t => type.IsGenericTypeDefinedBy(typeof(IEnumerable<>))
+                           || type.IsGenericListOrCollectionInterfaceType());
         }
 
         public static bool IsGenericListOrCollectionInterfaceType(this Type type)
         {
-            return type.IsGenericTypeDefinedBy(typeof(IList<>))
-                   || type.IsGenericTypeDefinedBy(typeof(ICollection<>))
-                   || (ReadOnlyCollectionType != null && type.IsGenericTypeDefinedBy(ReadOnlyCollectionType))
-                   || (ReadOnlyListType != null && type.IsGenericTypeDefinedBy(ReadOnlyListType));
+            return IsGenericListOrCollectionInterfaceTypeCache.GetOrAdd(
+                type, t => t.IsGenericTypeDefinedBy(typeof(IList<>))
+                           || t.IsGenericTypeDefinedBy(typeof(ICollection<>))
+                           || t.IsGenericTypeDefinedBy(typeof(IReadOnlyCollection<>))
+                           || t.IsGenericTypeDefinedBy(typeof(IReadOnlyList<>)));
         }
 
         public static bool IsCompilerGenerated(this Type type)
         {
-            if (type == null) throw new ArgumentNullException(nameof(type));
-
             return type.GetTypeInfo().GetCustomAttributes<CompilerGeneratedAttribute>().Any();
         }
     }
