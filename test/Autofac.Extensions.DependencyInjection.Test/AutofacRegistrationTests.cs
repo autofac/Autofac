@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Versioning;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
 using Microsoft.Extensions.DependencyInjection;
@@ -141,6 +140,50 @@ namespace Autofac.Extensions.DependencyInjection.Test
             var resolved = container.Resolve<IOptions<TestOptions>>();
             Assert.NotNull(resolved.Value);
             Assert.Equal(5, resolved.Value.Value);
+        }
+
+        [Fact]
+        public void RegistrationsAddedAfterPopulateComeLastWhenResolvedWithIEnumerable()
+        {
+            const string s1 = "s1";
+            const string s2 = "s2";
+            const string s3 = "s3";
+            const string s4 = "s4";
+
+            var collection = new ServiceCollection();
+            collection.AddTransient(provider => s1);
+            collection.AddTransient(provider => s2);
+            var builder = new ContainerBuilder();
+            builder.Populate(collection);
+            builder.Register(c => s3);
+            builder.Register(c => s4);
+            var container = builder.Build();
+
+            var resolved = container.Resolve<IEnumerable<string>>().ToArray();
+
+            Assert.Equal(resolved, new[] { s1, s2, s3, s4 });
+        }
+
+        [Fact]
+        public void RegistrationsAddedBeforePopulateComeFirstWhenResolvedWithIEnumerable()
+        {
+            const string s1 = "s1";
+            const string s2 = "s2";
+            const string s3 = "s3";
+            const string s4 = "s4";
+
+            var builder = new ContainerBuilder();
+            builder.Register(c => s1);
+            builder.Register(c => s2);
+            var collection = new ServiceCollection();
+            collection.AddTransient(provider => s3);
+            collection.AddTransient(provider => s4);
+            builder.Populate(collection);
+            var container = builder.Build();
+
+            var resolved = container.Resolve<IEnumerable<string>>().ToArray();
+
+            Assert.Equal(resolved, new[] { s1, s2, s3, s4 });
         }
 
         public class Service : IService
