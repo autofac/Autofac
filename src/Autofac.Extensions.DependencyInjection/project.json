@@ -32,10 +32,7 @@
   "frameworks": {
     "netstandard1.1": {
       "dependencies": {
-        "System.Collections": "4.0.11",
-        "System.Diagnostics.Contracts": "4.0.1",
-        "System.Runtime": "4.1.0",
-        "System.Threading.Tasks": "4.0.11"
+        "NETStandard.Library":  "1.6.0"
       }
     }
   },
