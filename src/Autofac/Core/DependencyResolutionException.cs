@@ -35,6 +35,7 @@ namespace Autofac.Core
     /// been made during the operation. For example, 'on activated' handlers may have already been
     /// fired, or 'single instance' components partially constructed.
     /// </summary>
+    [Serializable]
     public class DependencyResolutionException : Exception
     {
         /// <summary>
