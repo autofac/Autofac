@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
@@ -308,6 +309,46 @@ namespace Autofac.Test.Core.Activators.Reflection
             var instance = lifetimeScope.Resolve<ThreeConstructors>();
 
             Assert.Equal(1, instance.CalledConstructorParameterCount);
+        }
+
+        public class TwoConstructorsParam1
+        {
+        }
+
+        public class TwoConstructorsParam2
+        {
+        }
+
+        [SuppressMessage("ReSharper", "UnusedParameter.Local")]
+        public class TwoConstructors
+        {
+            public int ParameterCount { get; }
+
+            public TwoConstructors(TwoConstructorsParam1 param1)
+            {
+                ParameterCount = 1;
+            }
+
+            public TwoConstructors(TwoConstructorsParam1 param1, TwoConstructorsParam2 param2)
+            {
+                ParameterCount = 2;
+            }
+        }
+
+        [Fact]
+        public void AdditionalTypeRegisteredInChildLifetimeScopeConsideredWhenSelectingConstructor()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<TwoConstructors>();
+            builder.RegisterType<TwoConstructorsParam1>();
+            var container = builder.Build();
+            var instance = container.Resolve<TwoConstructors>();
+            Assert.Equal(1, instance.ParameterCount);
+            var lifetimeScope = container.BeginLifetimeScope(b => b.RegisterType<TwoConstructorsParam2>());
+
+            instance = lifetimeScope.Resolve<TwoConstructors>();
+
+            Assert.Equal(2, instance.ParameterCount);
         }
 
         public class NoPublicConstructor
