@@ -69,8 +69,8 @@ namespace Autofac.Core.Registration
             Lifetime = lifetime;
             Sharing = sharing;
             Ownership = ownership;
-            Services = Enforce.ArgumentElementNotNull(services, nameof(services)).ToList();
-            Metadata = new Dictionary<string, object>(metadata);
+            Services = Enforce.ArgumentElementNotNull(services, nameof(services));
+            Metadata = metadata;
         }
 
         /// <summary>
@@ -202,10 +202,7 @@ namespace Autofac.Core.Registration
         public void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, object instance)
         {
             var handler = Activated;
-            if (handler == null) return;
-
-            var args = new ActivatedEventArgs<object>(context, this, parameters, instance);
-            handler(this, args);
+            handler?.Invoke(this, new ActivatedEventArgs<object>(context, this, parameters, instance));
         }
 
         /// <summary>

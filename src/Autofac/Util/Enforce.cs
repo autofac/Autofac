@@ -24,7 +24,8 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -43,13 +44,13 @@ namespace Autofac.Util
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="name">The parameter name.</param>
-        public static T ArgumentElementNotNull<T>(T value, string name)
-            where T : class, IEnumerable
+        [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
+        public static IEnumerable<T> ArgumentElementNotNull<T>(IEnumerable<T> value, string name)
+            where T : class
         {
             if (value == null) throw new ArgumentNullException(name);
 
-            // Contains(null) does not work on Mono, must use Any(...)
-            if (value.Cast<object>().Any(v => v == null))
+            if (value.Any(e => e == null))
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, EnforceResources.ElementCannotBeNull, name));
 
             return value;
