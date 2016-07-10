@@ -218,7 +218,12 @@ namespace Autofac.Core.Registration
             //
             // Once the optimization is in place, REMOVE THE SUPPRESSMESSAGE ATTRIBUTE
             // as, ostensibly, the actual registration will be used at that time.
-            return IsInitialized;
+
+            // IMPROVEMENT - We only need to check service registration infos that:
+            // - Have already been initialized
+            // - Were created via a registration source (because we might be adding an equivalent explicit registration such as Func<T>)
+            // - Don't contain any registrations (because a registration source was added when no adaptee was present)
+            return IsInitialized && (_sourceImplementations.Any() || !Any);
         }
     }
 }
