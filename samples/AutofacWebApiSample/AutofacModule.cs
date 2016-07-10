@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using AutofacWebApiSample.Services;
+using Microsoft.Extensions.Logging;
 
 namespace AutofacWebApiSample
 {
@@ -7,11 +8,10 @@ namespace AutofacWebApiSample
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register(c => new Logger())
-                .As<ILogger>()
-                .InstancePerLifetimeScope();
+            // The generic ILogger<TCategoryName> service was added to the ServiceCollection by ASP.NET Core.
+            // It was then registered with Autofac using the Populate method in ConfigureServices.
 
-            builder.Register(c => new ValuesService(c.Resolve<ILogger>()))
+            builder.Register(c => new ValuesService(c.Resolve<ILogger<ValuesService>>()))
                 .As<IValuesService>()
                 .InstancePerLifetimeScope();
         }
