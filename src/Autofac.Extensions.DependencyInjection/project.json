@@ -4,9 +4,6 @@
       "/ruleset:../../build/Analyzers.ruleset"
     ],
     "keyFile": "../../Autofac.snk",
-    "nowarn": [
-      "CS1591"
-    ],
     "warningsAsErrors": true,
     "xmlDoc": true
   },
