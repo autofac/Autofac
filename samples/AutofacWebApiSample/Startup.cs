@@ -1,9 +1,7 @@
-﻿using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -21,17 +19,34 @@ namespace AutofacWebApiSample
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
-            Configuration = builder.Build();
+            this.Configuration = builder.Build();
         }
 
-        public IConfigurationRoot Configuration { get; }
+        public IContainer ApplicationContainer { get; private set; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        public IConfigurationRoot Configuration { get; private set; }
+
+        // This method gets called by the runtime after ConfigureServices.
+        // Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
+        {
+            loggerFactory.AddConsole(this.Configuration.GetSection("Logging"));
+            loggerFactory.AddDebug();
+
+            app.UseMvc();
+
+            // If you want to dispose of resources that have been resolved in the
+            // application container, register for the "ApplicationStopped" event.
+            appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
+        }
+
+        // This method gets called by the runtime after the Startup constructor.
+        // Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
             services.AddMvc();
-            
+
             // Create the Autofac container builder.
             var builder = new ContainerBuilder();
 
@@ -42,19 +57,10 @@ namespace AutofacWebApiSample
             builder.Populate(services);
 
             // Build the container.
-            var container = builder.Build();
-            
-            // Resolve and return the service provider.
-            return container.Resolve<IServiceProvider>();
-        }
+            this.ApplicationContainer = builder.Build();
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-        {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
-            app.UseMvc();
+            // Create and return the service provider.
+            return new AutofacServiceProvider(this.ApplicationContainer);
         }
     }
 }
