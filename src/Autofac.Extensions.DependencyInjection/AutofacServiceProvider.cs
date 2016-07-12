@@ -33,7 +33,7 @@ namespace Autofac.Extensions.DependencyInjection
     /// </summary>
     /// <seealso cref="System.IServiceProvider" />
     /// <seealso cref="Microsoft.Extensions.DependencyInjection.ISupportRequiredService" />
-    internal class AutofacServiceProvider : IServiceProvider, ISupportRequiredService
+    public class AutofacServiceProvider : IServiceProvider, ISupportRequiredService
     {
         private readonly IComponentContext _componentContext;
 
