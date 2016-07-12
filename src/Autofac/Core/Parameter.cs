@@ -48,6 +48,6 @@ namespace Autofac.Core
         /// will be set to null.</param>
         /// <returns>True if a value can be supplied; otherwise, false.</returns>
         [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "2#")]
-        public abstract bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<object> valueProvider);
+        public abstract bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<IComponentContext, object> valueProvider);
     }
 }

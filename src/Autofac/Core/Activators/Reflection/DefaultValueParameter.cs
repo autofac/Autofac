@@ -46,7 +46,7 @@ namespace Autofac.Core.Activators.Reflection
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="pi" /> is <see langword="null" />.
         /// </exception>
-        public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<object> valueProvider)
+        public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<IComponentContext, object> valueProvider)
         {
             if (pi == null) throw new ArgumentNullException(nameof(pi));
 
@@ -60,7 +60,7 @@ namespace Autofac.Core.Activators.Reflection
 
             if (hasDefaultValue)
             {
-                valueProvider = () => pi.DefaultValue;
+                valueProvider = c => pi.DefaultValue;
                 return true;
             }
 

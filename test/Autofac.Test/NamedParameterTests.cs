@@ -30,7 +30,7 @@ namespace Autofac.Test
 
             var namedParam = new NamedParameter("a", new A());
 
-            Func<object> vp;
+            Func<IComponentContext, object> vp;
             Assert.True(namedParam.CanSupplyValue(param, new Container(), out vp));
         }
 
@@ -52,7 +52,7 @@ namespace Autofac.Test
 
             var namedParam = new NamedParameter("b", new B());
 
-            Func<object> vp;
+            Func<IComponentContext, object> vp;
             Assert.False(namedParam.CanSupplyValue(param, new Container(), out vp));
         }
     }
