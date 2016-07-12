@@ -24,11 +24,12 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using Autofac.Util;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Autofac.Extensions.DependencyInjection
 {
-    internal class AutofacServiceProvider : IServiceProvider, ISupportRequiredService
+    internal class AutofacServiceProvider : Disposable, IServiceProvider, ISupportRequiredService
     {
         private readonly IComponentContext _componentContext;
 
@@ -45,6 +46,16 @@ namespace Autofac.Extensions.DependencyInjection
         public object GetRequiredService(Type serviceType)
         {
             return _componentContext.Resolve(serviceType);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                (_componentContext as IDisposable)?.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
     }
 }
