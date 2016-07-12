@@ -611,7 +611,8 @@ namespace Autofac
 
         private static Type[] GetImplementedInterfaces(Type type)
         {
-            return type.GetTypeInfo().ImplementedInterfaces.Where(i => i != typeof(IDisposable)).ToArray();
+            var interfaces = type.GetTypeInfo().ImplementedInterfaces.Where(i => i != typeof(IDisposable));
+            return type.GetTypeInfo().IsInterface ? interfaces.Append(type).ToArray() : interfaces.ToArray();
         }
 
         /// <summary>
