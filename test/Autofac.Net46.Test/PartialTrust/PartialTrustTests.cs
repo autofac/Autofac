@@ -1,12 +1,11 @@
-﻿#if !NETCOREAPP1_0
-using System;
+﻿using System;
 using System.Linq;
 using System.Security;
 using System.Security.Permissions;
-using Autofac.Test.Scenarios.Graph1;
+using Autofac.Net46.Test.Scenarios.Graph1;
 using Xunit;
 
-namespace Autofac.Test.PartialTrust
+namespace Autofac.Net46.Test.PartialTrust
 {
     /// <summary>
     /// Fixture containing the set of tests that will execute in partial trust.
@@ -14,7 +13,7 @@ namespace Autofac.Test.PartialTrust
     /// <remarks>
     /// <para>
     /// These tests are not marked with any NUnit attributes because they actually get executed
-    /// through NUnit via the <see cref="Autofac.Test.PartialTrust.PartialTrustTestExecutor"/>.
+    /// through XUnit via the <see cref="PartialTrustTestExecutor"/>.
     /// Any public void method with no parameters found here will execute as a unit test.
     /// </para>
     /// </remarks>
@@ -79,4 +78,3 @@ namespace Autofac.Test.PartialTrust
         }
     }
 }
-#endif

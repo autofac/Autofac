@@ -1,5 +1,4 @@
-﻿#if !NETCOREAPP1_0 && !NET451
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -10,9 +9,8 @@ using System.Security;
 using System.Security.Permissions;
 using System.Web;
 using Xunit;
-using Xunit.Extensions;
 
-namespace Autofac.Test.PartialTrust
+namespace Autofac.Net46.Test.PartialTrust
 {
     public class PartialTrustTestExecutor : IDisposable
     {
@@ -98,4 +96,3 @@ namespace Autofac.Test.PartialTrust
         }
     }
 }
-#endif

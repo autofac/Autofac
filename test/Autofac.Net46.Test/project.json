@@ -1,0 +1,27 @@
+﻿{
+  "buildOptions": {
+    "additionalArguments": [
+      "/ruleset:../../build/Analyzers.ruleset"
+    ],
+    "keyFile": "../../Autofac.snk"
+  },
+  "dependencies": {
+    "Autofac": {
+      "target": "project"
+    },
+    "StyleCop.Analyzers": {
+      "type": "build",
+      "version": "1.0.0"
+    },
+    "dotnet-test-xunit": "2.2.0-*",
+    "xunit": "2.2.0-*"
+  },
+  "frameworks": {
+    "net46": {
+      "frameworkAssemblies": {
+        "System.Data": "4.0.0.0"
+      }
+    }
+  },
+  "testRunner": "xunit"
+}
