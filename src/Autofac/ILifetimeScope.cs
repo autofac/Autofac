@@ -97,7 +97,7 @@ namespace Autofac
         /// as the root scope.
         /// </remarks>
         /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
-        /// that adds component registations visible only in the new scope.</param>
+        /// that adds component registrations visible only in the new scope.</param>
         /// <returns>A new lifetime scope.</returns>
         ILifetimeScope BeginLifetimeScope(Action<ContainerBuilder> configurationAction);
 
@@ -113,7 +113,7 @@ namespace Autofac
         /// </remarks>
         /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
         /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
-        /// that adds component registations visible only in the new scope.</param>
+        /// that adds component registrations visible only in the new scope.</param>
         /// <returns>A new lifetime scope.</returns>
         ILifetimeScope BeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction);
 
