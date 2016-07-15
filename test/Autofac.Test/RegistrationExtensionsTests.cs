@@ -136,7 +136,7 @@ namespace Autofac.Test
             context.Resolve<IImplementedInterface>();
         }
 
-        IImplementedInterface SelfComponentFactory()
+        internal IImplementedInterface SelfComponentFactory()
         {
             return new SelfComponent();
         }
