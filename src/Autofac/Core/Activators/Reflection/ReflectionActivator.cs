@@ -43,7 +43,6 @@ namespace Autofac.Core.Activators.Reflection
         private readonly IEnumerable<Parameter> _configuredProperties;
         private readonly IEnumerable<Parameter> _defaultParameters;
         private readonly ConstructorInfo[] _availableConstructors;
-        private ConstructorParameterBinding _singleConstructorBinding;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReflectionActivator"/> class.
@@ -101,26 +100,6 @@ namespace Autofac.Core.Activators.Reflection
             if (context == null) throw new ArgumentNullException(nameof(context));
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
-            ConstructorParameterBinding selectedBinding;
-
-            // If there is only one constructor, and no user provided parameters, we can cache the
-            // selected binding as a component cannot be unregistered in a child lifetime scope.
-            // We also don't have to worry about additional component registrations being added that
-            // would result in a different constructor being selected on subsequent invocations.
-            if (_availableConstructors.Length == 1 && !parameters.Any())
-                selectedBinding = _singleConstructorBinding ?? (_singleConstructorBinding = GetConstructorParameterBinding(context, parameters));
-            else
-                selectedBinding = GetConstructorParameterBinding(context, parameters);
-
-            var instance = selectedBinding.Instantiate(context);
-
-            InjectProperties(instance, context, parameters);
-
-            return instance;
-        }
-
-        private ConstructorParameterBinding GetConstructorParameterBinding(IComponentContext context, IEnumerable<Parameter> parameters)
-        {
             if (_availableConstructors.Length == 0)
                 throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, ReflectionActivatorResources.NoConstructorsAvailable, _implementationType, ConstructorFinder));
 
@@ -137,7 +116,12 @@ namespace Autofac.Core.Activators.Reflection
                 throw new DependencyResolutionException(GetBindingFailureMessage(constructorBindings));
 
             var selectedBinding = ConstructorSelector.SelectConstructorBinding(validBindings);
-            return selectedBinding;
+
+            var instance = selectedBinding.Instantiate();
+
+            InjectProperties(instance, context, parameters);
+
+            return instance;
         }
 
         private string GetBindingFailureMessage(IEnumerable<ConstructorParameterBinding> constructorBindings)
@@ -185,12 +169,12 @@ namespace Autofac.Core.Activators.Reflection
                 foreach (var actual in actualProps)
                 {
                     var setter = actual.SetMethod;
-                    Func<IComponentContext, object> vp;
+                    Func<object> vp;
                     if (setter != null &&
                         prop.CanSupplyValue(setter.GetParameters().First(), context, out vp))
                     {
                         actualProps.Remove(actual);
-                        actual.SetValue(instance, vp(context), null);
+                        actual.SetValue(instance, vp(), null);
                         break;
                     }
                 }

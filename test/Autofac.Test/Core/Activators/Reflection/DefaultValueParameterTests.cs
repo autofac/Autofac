@@ -26,7 +26,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         public void DoesNotProvideValueWhenNoDefaultAvailable()
         {
             var dvp = new DefaultValueParameter();
-            Func<IComponentContext, object> vp;
+            Func<object> vp;
             var dp = GetTestParameter("s").DefaultValue;
             Assert.False(dvp.CanSupplyValue(GetTestParameter("s"), new ContainerBuilder().Build(), out vp));
         }
@@ -36,11 +36,10 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var dvp = new DefaultValueParameter();
             var u = GetTestParameter("t");
-            Func<IComponentContext, object> vp;
+            Func<object> vp;
             var dp = u.DefaultValue;
-            var c = new ContainerBuilder().Build();
-            Assert.True(dvp.CanSupplyValue(u, c, out vp));
-            Assert.Equal("Hello", vp(c));
+            Assert.True(dvp.CanSupplyValue(u, new ContainerBuilder().Build(), out vp));
+            Assert.Equal("Hello", vp());
         }
     }
 }

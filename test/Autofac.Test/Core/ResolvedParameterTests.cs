@@ -89,7 +89,7 @@ namespace Autofac.Test.Core
             var container = builder.Build();
             var rp = ResolvedParameter.ForKeyed<char>(k);
             var cp = GetCharParameter();
-            Func<IComponentContext, object> vp;
+            Func<object> vp;
             Assert.True(rp.CanSupplyValue(cp, container, out vp));
         }
 
@@ -98,7 +98,7 @@ namespace Autofac.Test.Core
         {
             var rp = ResolvedParameter.ForKeyed<char>(new object());
             var cp = GetCharParameter();
-            Func<IComponentContext, object> vp;
+            Func<object> vp;
             var canSupply = rp.CanSupplyValue(cp, new ContainerBuilder().Build(), out vp);
             Assert.False(canSupply);
         }

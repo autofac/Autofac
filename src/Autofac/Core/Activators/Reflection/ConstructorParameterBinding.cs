@@ -38,7 +38,7 @@ namespace Autofac.Core.Activators.Reflection
     public class ConstructorParameterBinding
     {
         private readonly ConstructorInfo _ci;
-        private readonly Func<IComponentContext, object>[] _valueRetrievers;
+        private readonly Func<object>[] _valueRetrievers;
 
         private static readonly ConcurrentDictionary<ConstructorInfo, Func<object[], object>> ConstructorInvokers = new ConcurrentDictionary<ConstructorInfo, Func<object[], object>>();
 
@@ -76,7 +76,7 @@ namespace Autofac.Core.Activators.Reflection
             CanInstantiate = true;
             _ci = ci;
             var parameters = ci.GetParameters();
-            _valueRetrievers = new Func<IComponentContext, object>[parameters.Length];
+            _valueRetrievers = new Func<object>[parameters.Length];
 
             for (int i = 0; i < parameters.Length; ++i)
             {
@@ -84,7 +84,7 @@ namespace Autofac.Core.Activators.Reflection
                 bool foundValue = false;
                 foreach (var param in availableParameters)
                 {
-                    Func<IComponentContext, object> valueRetriever;
+                    Func<object> valueRetriever;
                     if (param.CanSupplyValue(pi, context, out valueRetriever))
                     {
                         _valueRetrievers[i] = valueRetriever;
@@ -105,18 +105,22 @@ namespace Autofac.Core.Activators.Reflection
         /// <summary>
         /// Invoke the constructor with the parameter bindings.
         /// </summary>
-        /// <param name="context">The component context to resolve from.</param>
         /// <returns>The constructed instance.</returns>
-        public object Instantiate(IComponentContext context)
+        public object Instantiate()
         {
             if (!CanInstantiate)
                 throw new InvalidOperationException(ConstructorParameterBindingResources.CannotInstantitate);
 
             var values = new object[_valueRetrievers.Length];
             for (var i = 0; i < _valueRetrievers.Length; ++i)
-                values[i] = _valueRetrievers[i](context);
+                values[i] = _valueRetrievers[i]();
 
-            var constructorInvoker = ConstructorInvokers.GetOrAdd(TargetConstructor, GetConstructorInvoker);
+            Func<object[], object> constructorInvoker;
+            if (!ConstructorInvokers.TryGetValue(TargetConstructor, out constructorInvoker))
+            {
+                constructorInvoker = GetConstructorInvoker(TargetConstructor);
+                ConstructorInvokers[TargetConstructor] = constructorInvoker;
+            }
 
             try
             {
@@ -178,7 +182,7 @@ namespace Autofac.Core.Activators.Reflection
             return lambdaExpression.Compile();
         }
 
-        private static MethodCallExpression ConvertPrimitiveType(Expression valueExpression, Type conversionType)
+        public static MethodCallExpression ConvertPrimitiveType(Expression valueExpression, Type conversionType)
         {
             var changeTypeMethod = typeof(Convert).GetRuntimeMethod(nameof(Convert.ChangeType), new[] { typeof(object), typeof(Type) });
             return Expression.Call(changeTypeMethod, valueExpression, Expression.Constant(conversionType));

@@ -32,11 +32,11 @@ namespace Autofac.Test
 
             var typedParam = new TypedParameter(typeof(A), new A());
 
-            Func<IComponentContext, object> vp;
+            Func<object> vp;
             Assert.True(typedParam.CanSupplyValue(param, new Container(), out vp));
         }
 
-        private static ParameterInfo AParamOfCConstructor()
+        private static System.Reflection.ParameterInfo AParamOfCConstructor()
         {
             var param = typeof(C)
                 .GetTypeInfo()
@@ -54,7 +54,7 @@ namespace Autofac.Test
 
             var typedParam = new TypedParameter(typeof(B), new B());
 
-            Func<IComponentContext, object> vp;
+            Func<object> vp;
             Assert.False(typedParam.CanSupplyValue(param, new Container(), out vp));
         }
 
@@ -65,7 +65,7 @@ namespace Autofac.Test
 
             var typedParam = new TypedParameter(typeof(string), "Yo!");
 
-            Func<IComponentContext, object> vp;
+            Func<object> vp;
             Assert.False(typedParam.CanSupplyValue(param, new Container(), out vp));
         }
 
