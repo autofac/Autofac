@@ -136,6 +136,21 @@ namespace Autofac.Test
             context.Resolve<IImplementedInterface>();
         }
 
+        IImplementedInterface SelfComponentFactory()
+        {
+            return new SelfComponent();
+        }
+
+        [Fact]
+        public void AsImplementedInterfaces_CanBeAppliedToInstanceRegistrationsOfInterfaces()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(c => SelfComponentFactory()).AsImplementedInterfaces();
+            var context = builder.Build();
+
+            context.Resolve<IImplementedInterface>();
+        }
+
         [Fact]
         public void AsSelf_CanBeAppliedToInstanceRegistrations()
         {
