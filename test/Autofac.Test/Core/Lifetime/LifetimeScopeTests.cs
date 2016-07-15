@@ -367,5 +367,53 @@ namespace Autofac.Test.Core.Lifetime
 
             Assert.Equal(exception.Message, string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, typeof(AThatDependsOnB).FullName));
         }
+
+        internal class DependsOnRegisteredInstance
+        {
+            internal object Instance { get; set; }
+
+            public DependsOnRegisteredInstance(object instance)
+            {
+                Instance = instance;
+            }
+        }
+
+        internal class UpdatesRegistryWithInstance
+        {
+            private readonly IComponentContext _registerContext;
+
+            public UpdatesRegistryWithInstance(IComponentContext registerContext)
+            {
+                _registerContext = registerContext;
+            }
+
+            internal void UpdateRegistry(object instance)
+            {
+                var builder = new ContainerBuilder();
+                builder.RegisterInstance(instance);
+                builder.Update(_registerContext.ComponentRegistry);
+            }
+        }
+
+        [Fact]
+        public void CanRegisterInstanceUsingUpdateInsideChildLifetimeScope()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<UpdatesRegistryWithInstance>();
+            builder.RegisterType<DependsOnRegisteredInstance>();
+            var container = builder.Build();
+
+            var scope = container.BeginLifetimeScope();
+            var updatesRegistry = scope.Resolve<UpdatesRegistryWithInstance>();
+            updatesRegistry.UpdateRegistry(new object());
+            var instance1 = scope.Resolve<DependsOnRegisteredInstance>();
+
+            scope = container.BeginLifetimeScope();
+            updatesRegistry = scope.Resolve<UpdatesRegistryWithInstance>();
+            updatesRegistry.UpdateRegistry(new object());
+            var instance2 = scope.Resolve<DependsOnRegisteredInstance>();
+
+            Assert.NotSame(instance1, instance2);
+        }
     }
 }
