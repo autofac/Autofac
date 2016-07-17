@@ -25,9 +25,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 
 namespace Autofac.Core.Registration
@@ -57,6 +55,9 @@ namespace Autofac.Core.Registration
         ///  Enumerated in preserve-defaults order, so the most default implementation comes first.
         /// </summary>
         private readonly List<IComponentRegistration> _preserveDefaultImplementations = new List<IComponentRegistration>();
+
+        [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the compponent registration is responsible for disposal.")]
+        private IComponentRegistration _defaultImplementation;
 
         /// <summary>
         /// Used for bookkeeping so that the same source is not queried twice (may be null.)
@@ -117,11 +118,6 @@ namespace Autofac.Core.Registration
             _sourceImplementations.Any() ||
             _preserveDefaultImplementations.Any();
 
-        private IComponentRegistration DefaultImplementation =>
-            _defaultImplementations.LastOrDefault() ??
-            _sourceImplementations.FirstOrDefault() ??
-            _preserveDefaultImplementations.FirstOrDefault();
-
         public void AddImplementation(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource)
         {
             if (preserveDefaults)
@@ -136,26 +132,21 @@ namespace Autofac.Core.Registration
                 if (originatedFromSource)
                     throw new ArgumentOutOfRangeException(nameof(originatedFromSource));
 
-                var defaultImplementation = DefaultImplementation;
-                if (defaultImplementation != null)
-                {
-                    Debug.WriteLine(string.Format(
-                        CultureInfo.InvariantCulture,
-                        "[Autofac] Overriding default for: '{0}' with: '{1}' (was '{2}')",
-                        _service,
-                        registration,
-                        defaultImplementation));
-                }
-
                 _defaultImplementations.Add(registration);
             }
+
+            _defaultImplementation = null;
         }
 
         public bool TryGetRegistration(out IComponentRegistration registration)
         {
             RequiresInitialization();
 
-            registration = DefaultImplementation;
+            registration = _defaultImplementation ?? (_defaultImplementation =
+                _defaultImplementations.LastOrDefault() ??
+                _sourceImplementations.FirstOrDefault() ??
+                _preserveDefaultImplementations.FirstOrDefault());
+
             return registration != null;
         }
 
