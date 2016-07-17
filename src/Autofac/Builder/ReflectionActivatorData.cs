@@ -36,8 +36,11 @@ namespace Autofac.Builder
     public class ReflectionActivatorData
     {
         private Type _implementer;
-        private IConstructorFinder _constructorFinder = new DefaultConstructorFinder();
-        private IConstructorSelector _constructorSelector = new MostParametersConstructorSelector();
+        private IConstructorFinder _constructorFinder;
+        private IConstructorSelector _constructorSelector;
+
+        private static readonly IConstructorFinder DefaultConstructorFinder = new DefaultConstructorFinder();
+        private static readonly IConstructorSelector DefaultConstructorSelector = new MostParametersConstructorSelector();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReflectionActivatorData"/> class.
@@ -46,6 +49,9 @@ namespace Autofac.Builder
         public ReflectionActivatorData(Type implementer)
         {
             ImplementationType = implementer;
+
+            _constructorFinder = DefaultConstructorFinder;
+            _constructorSelector = DefaultConstructorSelector;
         }
 
         /// <summary>
