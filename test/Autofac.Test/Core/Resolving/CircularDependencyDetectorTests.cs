@@ -18,7 +18,6 @@ namespace Autofac.Test.Core.Resolving
 
             var target = builder.Build();
             var de = Assert.Throws<DependencyResolutionException>(() => target.Resolve<object>());
-            Assert.Null(de.InnerException);
             Assert.True(de.Message.Contains("System.Object -> System.Object"));
             Assert.False(de.Message.Contains("System.Object -> System.Object -> System.Object"));
         }

@@ -118,7 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivationAlreadyExecuted" xml:space="preserve">
-    <value>The activation has already been executed.</value>
+    <value>The activation has already been executed: {0}</value>
+  </data>
+  <data name="ErrorDuringActivation" xml:space="preserve">
+    <value>An error occurred during the activation of a particular registration. See the inner exception for details. Registration: {0}</value>
   </data>
   <data name="UnableToLocateLifetimeScope" xml:space="preserve">
     <value>Unable to resolve the type '{0}' because the lifetime scope it belongs in can't be located. The following services are exposed by this registration:

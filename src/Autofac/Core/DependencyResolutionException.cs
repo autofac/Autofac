@@ -25,7 +25,6 @@
 
 using System;
 using System.Globalization;
-using System.Security;
 
 namespace Autofac.Core
 {
@@ -65,7 +64,6 @@ namespace Autofac.Core
         /// </value>
         public override string Message
         {
-            [SecuritySafeCritical]
             get
             {
                 // Issue 343: Including the inner exception message with the

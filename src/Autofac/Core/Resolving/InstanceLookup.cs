@@ -71,7 +71,7 @@ namespace Autofac.Core.Resolving
         public object Execute()
         {
             if (_executed)
-                throw new InvalidOperationException(ComponentActivationResources.ActivationAlreadyExecuted);
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, ComponentActivationResources.ActivationAlreadyExecuted, this.ComponentRegistration));
 
             _executed = true;
 
@@ -91,7 +91,14 @@ namespace Autofac.Core.Resolving
         {
             ComponentRegistration.RaisePreparing(this, ref parameters);
 
-            _newInstance = ComponentRegistration.Activator.ActivateInstance(this, parameters);
+            try
+            {
+                _newInstance = ComponentRegistration.Activator.ActivateInstance(this, parameters);
+            }
+            catch (Exception ex)
+            {
+                throw new DependencyResolutionException(String.Format(CultureInfo.CurrentCulture, ComponentActivationResources.ErrorDuringActivation, this.ComponentRegistration), ex);
+            }
 
             if (ComponentRegistration.Ownership == InstanceOwnership.OwnedByLifetimeScope)
             {

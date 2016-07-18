@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Globalization;
 using System.Reflection;
 using Autofac.Core;
 
@@ -148,9 +149,10 @@ namespace Autofac
         {
             get
             {
-                var thisType = GetType();
-                if (thisType.GetTypeInfo().BaseType != typeof(Module))
-                    throw new InvalidOperationException(ModuleResources.ThisAssemblyUnavailable);
+                var thisType = this.GetType();
+                var baseType = thisType.GetTypeInfo().BaseType;
+                if (baseType != typeof(Module))
+                    throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, ModuleResources.ThisAssemblyUnavailable, thisType, baseType));
 
                 return thisType.GetTypeInfo().Assembly;
             }

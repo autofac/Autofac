@@ -121,7 +121,7 @@
     <value>Bound constructor '{0}'.</value>
   </data>
   <data name="CannotInstantitate" xml:space="preserve">
-    <value>The binding cannot be instantiated.</value>
+    <value>The binding cannot be instantiated: {0}</value>
   </data>
   <data name="ExceptionDuringInstantiation" xml:space="preserve">
     <value>An exception was thrown while invoking the constructor '{0}' on type '{1}'.</value>

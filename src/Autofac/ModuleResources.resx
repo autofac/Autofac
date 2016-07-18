@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ThisAssemblyUnavailable" xml:space="preserve">
-    <value>Module.ThisAssembly is only available in modules that inherit directly from Module.</value>
+    <value>Module.ThisAssembly is only available in modules that inherit directly from Module. It can't be used in '{0}' which inherits from '{1}'.</value>
   </data>
 </root>

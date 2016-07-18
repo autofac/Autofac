@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Autofac.Core.Activators.ProvidedInstance
 {
@@ -62,7 +63,7 @@ namespace Autofac.Core.Activators.ProvidedInstance
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
             if (_activated)
-                throw new InvalidOperationException(ProvidedInstanceActivatorResources.InstanceAlreadyActivated);
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, ProvidedInstanceActivatorResources.InstanceAlreadyActivated, this._instance.GetType()));
 
             _activated = true;
 

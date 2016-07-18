@@ -11,8 +11,8 @@
 namespace Autofac.Core.Resolving {
     using System;
     using System.Reflection;
-    
-    
+
+
     /// <summary>
     ///    A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,19 +23,19 @@ namespace Autofac.Core.Resolving {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class ComponentActivationResources {
-        
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         internal ComponentActivationResources() {
         }
-        
+
         /// <summary>
         ///    Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Resolving.ComponentActivationResources", typeof(ComponentActivationResources).GetTypeInfo().Assembly);
@@ -44,13 +44,13 @@ namespace Autofac.Core.Resolving {
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///    Overrides the current thread's CurrentUICulture property for all
         ///    resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -58,22 +58,31 @@ namespace Autofac.Core.Resolving {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
-        ///    Looks up a localized string similar to The activation has already been executed..
+        ///    Looks up a localized string similar to The activation has already been executed: {0}.
         /// </summary>
-        internal static string ActivationAlreadyExecuted {
+        public static string ActivationAlreadyExecuted {
             get {
                 return ResourceManager.GetString("ActivationAlreadyExecuted", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///    Looks up a localized string similar to An error occurred during the activation of a particular registration. See the inner exception for details. Registration: {0}.
+        /// </summary>
+        public static string ErrorDuringActivation {
+            get {
+                return ResourceManager.GetString("ErrorDuringActivation", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///    Looks up a localized string similar to Unable to resolve the type &apos;{0}&apos; because the lifetime scope it belongs in can&apos;t be located. The following services are exposed by this registration:
         ///{1}
         ///Details.
         /// </summary>
-        internal static string UnableToLocateLifetimeScope {
+        public static string UnableToLocateLifetimeScope {
             get {
                 return ResourceManager.GetString("UnableToLocateLifetimeScope", resourceCulture);
             }
