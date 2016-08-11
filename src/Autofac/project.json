@@ -32,11 +32,6 @@
         "NETStandard.Library": "1.6.0",
         "System.ComponentModel": "4.0.1"
       }
-    },
-    "uap10.0": {
-      "dependencies": {
-        "Microsoft.NETCore.UniversalWindowsPlatform": "5.1.0"
-      }
     }
   },
   "packOptions": {
