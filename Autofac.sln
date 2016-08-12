@@ -27,7 +27,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Autofac.Net46.Test", "test\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Test.Uwp.DeviceRunner", "test\Autofac.Test.Uwp.DeviceRunner\Autofac.Test.Uwp.DeviceRunner.csproj", "{13130CD5-8E37-4E3E-B924-533E2604A9EF}"
 	ProjectSection(ProjectDependencies) = postProject
-		{48EC73A9-9AA0-4063-9FEE-AE5BB43C66B0} = {48EC73A9-9AA0-4063-9FEE-AE5BB43C66B0}
+		{376ADF06-0774-4C00-AE45-4B0DF63779B2} = {376ADF06-0774-4C00-AE45-4B0DF63779B2}
 	EndProjectSection
 EndProject
 Global

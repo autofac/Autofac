@@ -536,7 +536,7 @@ namespace Autofac.Test.Builder
 
             var c = cb.Build();
             var result = c.Resolve<WithPropInjection>();
-            var expected = typeof(WithPropInjection).GetTypeInfo().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            var expected = typeof(WithPropInjection).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
             Assert.Equal(expected, propertyInfos.ToArray());
             Assert.NotNull(result);
@@ -560,7 +560,7 @@ namespace Autofac.Test.Builder
 
             var c = cb.Build();
             var result = c.Resolve<WithPropInjection>();
-            var expected = typeof(WithPropInjection).GetTypeInfo().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            var expected = typeof(WithPropInjection).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
             Assert.Equal(expected, propertyInfos.ToArray());
             Assert.NotNull(result);
