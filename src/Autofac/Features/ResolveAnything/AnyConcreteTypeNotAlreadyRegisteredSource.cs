@@ -74,6 +74,7 @@ namespace Autofac.Features.ResolveAnything
 
             var ts = service as TypedService;
             if (ts == null ||
+                ts.ServiceType == typeof(string) ||
                 !ts.ServiceType.GetTypeInfo().IsClass ||
                 ts.ServiceType.GetTypeInfo().IsSubclassOf(typeof(Delegate)) ||
                 ts.ServiceType.GetTypeInfo().IsAbstract ||
