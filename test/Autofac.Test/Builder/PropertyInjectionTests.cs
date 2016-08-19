@@ -625,5 +625,29 @@ namespace Autofac.Test.Builder
 
             public string GetProp2() => Prop2;
         }
+
+        [Fact]
+        public void TypedParameterForConstructorShouldNotAttachToProperty()
+        {
+            // Issue #789
+            var cb = new ContainerBuilder();
+            cb.RegisterType<ConstructorParamNotAttachedToProperty>();
+            var container = cb.Build();
+            var resolved = container.Resolve<ConstructorParamNotAttachedToProperty>(TypedParameter.From("test"));
+            Assert.Equal("test", resolved._id);
+            Assert.Null(resolved.Name);
+        }
+
+        private class ConstructorParamNotAttachedToProperty
+        {
+            public ConstructorParamNotAttachedToProperty(string id)
+            {
+                this._id = id;
+            }
+
+            public string _id = null;
+
+            public string Name { get; set; }
+        }
     }
 }
