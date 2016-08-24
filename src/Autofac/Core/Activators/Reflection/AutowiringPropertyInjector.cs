@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Autofac.Util;
@@ -34,11 +35,27 @@ namespace Autofac.Core.Activators.Reflection
     {
         public const string InstanceTypeNamedParameter = "Autofac.AutowiringPropertyInjector.InstanceType";
 
-        public static void InjectProperties(IComponentContext context, object instance, IPropertySelector propertySelector)
+        public static void InjectProperties(IComponentContext context, object instance, IPropertySelector propertySelector, IEnumerable<Parameter> parameters)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-            if (instance == null) throw new ArgumentNullException(nameof(instance));
-            if (propertySelector == null) throw new ArgumentNullException(nameof(propertySelector));
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (instance == null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
+
+            if (propertySelector == null)
+            {
+                throw new ArgumentNullException(nameof(propertySelector));
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
 
             var instanceType = instance.GetType();
 
@@ -49,19 +66,38 @@ namespace Autofac.Core.Activators.Reflection
                 var propertyType = property.PropertyType;
 
                 if (propertyType.GetTypeInfo().IsValueType && !propertyType.GetTypeInfo().IsEnum)
+                {
                     continue;
+                }
 
                 if (propertyType.IsArray && propertyType.GetElementType().GetTypeInfo().IsValueType)
+                {
                     continue;
+                }
 
                 if (propertyType.IsGenericEnumerableInterfaceType() && propertyType.GetTypeInfo().GenericTypeArguments[0].GetTypeInfo().IsValueType)
+                {
                     continue;
+                }
 
                 if (property.GetIndexParameters().Length != 0)
+                {
                     continue;
+                }
 
                 if (!propertySelector.InjectProperty(property, instance))
+                {
                     continue;
+                }
+
+                var setParameter = property.SetMethod.GetParameters().First();
+                var valueProvider = (Func<object>)null;
+                var parameter = parameters.FirstOrDefault(p => p.CanSupplyValue(setParameter, context, out valueProvider));
+                if (parameter != null)
+                {
+                    property.SetValue(instance, valueProvider(), null);
+                    continue;
+                }
 
                 object propertyValue;
                 var propertyService = new TypedService(propertyType);

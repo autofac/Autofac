@@ -119,7 +119,7 @@ namespace Autofac.Core.Activators.Reflection
 
             var instance = selectedBinding.Instantiate();
 
-            InjectProperties(instance, context, parameters);
+            InjectProperties(instance, context);
 
             return instance;
         }
@@ -152,29 +152,28 @@ namespace Autofac.Core.Activators.Reflection
             return constructorInfo.Select(ci => new ConstructorParameterBinding(ci, prioritisedParameters, context));
         }
 
-        private void InjectProperties(object instance, IComponentContext context, IEnumerable<Parameter> parameters)
+        private void InjectProperties(object instance, IComponentContext context)
         {
-            if (!_configuredProperties.Any() && !parameters.Any())
+            if (!_configuredProperties.Any())
                 return;
 
-            var actualProps = instance
+            var actualProperties = instance
                 .GetType()
                 .GetRuntimeProperties()
                 .Where(pi => pi.CanWrite)
                 .ToList();
 
-            var prioritisedProperties = parameters.Concat(_configuredProperties);
-            foreach (var prop in prioritisedProperties)
+            foreach (var configuredProperty in _configuredProperties)
             {
-                foreach (var actual in actualProps)
+                foreach (var actualProperty in actualProperties)
                 {
-                    var setter = actual.SetMethod;
+                    var setter = actualProperty.SetMethod;
                     Func<object> vp;
                     if (setter != null &&
-                        prop.CanSupplyValue(setter.GetParameters().First(), context, out vp))
+                        configuredProperty.CanSupplyValue(setter.GetParameters().First(), context, out vp))
                     {
-                        actualProps.Remove(actual);
-                        actual.SetValue(instance, vp(), null);
+                        actualProperties.Remove(actualProperty);
+                        actualProperty.SetValue(instance, vp(), null);
                         break;
                     }
                 }

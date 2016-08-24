@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
@@ -36,13 +37,12 @@ namespace Autofac.Test.Builder
             var ctx = new ContainerBuilder().Build();
             var instance = new object();
             var propertySelector = new DefaultPropertySelector(true);
+            var parameters = new Parameter[0];
 
-            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null, null, null));
-            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, null, null));
-            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null, instance, null));
-            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, instance, null));
-            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null, instance, propertySelector));
-            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, null, propertySelector));
+            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null, instance, propertySelector, parameters));
+            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, null, propertySelector, parameters));
+            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, instance, null, parameters));
+            Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, instance, propertySelector, null));
         }
 
         [Fact]
@@ -604,6 +604,52 @@ namespace Autofac.Test.Builder
             Assert.Equal(str, result.GetProp2());
         }
 
+        [Fact]
+        public void PropertySpecifiedAsResolveParameterWhenAutowired()
+        {
+            // Issue #289 tried to get parameters to work as passed in directly to resolve
+            // but issue #789 found a problem with trying to do that. Now it's just
+            // manual property injection that allows parameters.
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ConstructorParamNotAttachedToProperty>().WithParameter(TypedParameter.From("ctor")).PropertiesAutowired();
+            var container = builder.Build();
+
+            var instance = container.Resolve<ConstructorParamNotAttachedToProperty>(new NamedPropertyParameter("Name", "value"));
+            Assert.Equal("ctor", instance._id);
+            Assert.Equal("value", instance.Name);
+        }
+
+        [Fact]
+        public void PropertySpecifiedAsResolveParameterWhenAutowiredMayBeBothConstructorAndProperty()
+        {
+            // Issue #289 tried to get parameters to work as passed in directly to resolve
+            // but issue #789 found a problem with trying to do that. Now it's just
+            // manual property injection that allows parameters.
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ConstructorParamNotAttachedToProperty>().PropertiesAutowired();
+            var container = builder.Build();
+
+            var instance = container.Resolve<ConstructorParamNotAttachedToProperty>(TypedParameter.From("test"));
+            Assert.Equal("test", instance._id);
+            Assert.Equal("test", instance.Name);
+        }
+
+        [Fact]
+        public void PropertySpecifiedAsResolveParameterNoRegistrationPropertySpecified()
+        {
+            // Issue #289 tried to get parameters to work as passed in directly to resolve
+            // but issue #789 found a problem with trying to do that. Now it's just
+            // manual property injection that allows parameters.
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ConstructorParamNotAttachedToProperty>().WithParameter(TypedParameter.From("ctor"));
+            var container = builder.Build();
+
+            var instance = container.Resolve<ConstructorParamNotAttachedToProperty>();
+            Assert.Null(instance.Name);
+            container.InjectProperties(instance, new NamedPropertyParameter("Name", "value"));
+            Assert.Equal("value", instance.Name);
+        }
+
         private class InjectAttributePropertySelector : IPropertySelector
         {
             public bool InjectProperty(PropertyInfo propertyInfo, object instance)
@@ -629,7 +675,9 @@ namespace Autofac.Test.Builder
         [Fact]
         public void TypedParameterForConstructorShouldNotAttachToProperty()
         {
-            // Issue #789
+            // Issue #789: If the parameters automatically flow from resolve
+            // to property injection when PropertiesAutowired isn't specified
+            // then properties get inadvertently resolved.
             var cb = new ContainerBuilder();
             cb.RegisterType<ConstructorParamNotAttachedToProperty>();
             var container = cb.Build();
@@ -645,6 +693,7 @@ namespace Autofac.Test.Builder
                 this._id = id;
             }
 
+            [SuppressMessage("SA1401", "SA1401")]
             public string _id = null;
 
             public string Name { get; set; }
