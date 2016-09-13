@@ -36,8 +36,17 @@ namespace Autofac.Util
     internal static class TypeExtensions
     {
         private static readonly ConcurrentDictionary<Type, bool> IsGenericEnumerableInterfaceCache = new ConcurrentDictionary<Type, bool>();
+
         private static readonly ConcurrentDictionary<Type, bool> IsGenericListOrCollectionInterfaceTypeCache = new ConcurrentDictionary<Type, bool>();
+
         private static readonly ConcurrentDictionary<Tuple<Type, Type>, bool> IsGenericTypeDefinedByCache = new ConcurrentDictionary<Tuple<Type, Type>, bool>();
+
+        public static Type FunctionReturnType(this Type type)
+        {
+            var invoke = type.GetTypeInfo().GetDeclaredMethod("Invoke");
+            Enforce.NotNull(invoke);
+            return invoke.ReturnType;
+        }
 
         /// <summary>Returns the first concrete interface supported by the candidate type that
         /// closes the provided open generic service type.</summary>
@@ -47,6 +56,96 @@ namespace Autofac.Util
         public static IEnumerable<Type> GetTypesThatClose(this Type @this, Type openGeneric)
         {
             return FindAssignableTypesThatClose(@this, openGeneric);
+        }
+
+        public static bool IsClosedTypeOf(this Type @this, Type openGeneric)
+        {
+            return TypesAssignableFrom(@this).Any(t => t.GetTypeInfo().IsGenericType && !@this.GetTypeInfo().ContainsGenericParameters && t.GetGenericTypeDefinition() == openGeneric);
+        }
+
+        public static bool IsCompatibleWithGenericParameterConstraints(this Type genericTypeDefinition, Type[] parameters)
+        {
+            var genericArgumentDefinitions = genericTypeDefinition.GetTypeInfo().GenericTypeParameters;
+
+            for (var i = 0; i < genericArgumentDefinitions.Length; ++i)
+            {
+                var argumentDefinitionTypeInfo = genericArgumentDefinitions[i].GetTypeInfo();
+                var parameter = parameters[i];
+                var parameterTypeInfo = parameter.GetTypeInfo();
+
+                if (argumentDefinitionTypeInfo.GetGenericParameterConstraints()
+                    .Any(constraint => !ParameterCompatibleWithTypeConstraint(parameter, constraint)))
+                {
+                    return false;
+                }
+
+                var specialConstraints = argumentDefinitionTypeInfo.GenericParameterAttributes;
+
+                if ((specialConstraints & GenericParameterAttributes.DefaultConstructorConstraint)
+                    != GenericParameterAttributes.None)
+                {
+                    if (!parameterTypeInfo.IsValueType && parameterTypeInfo.DeclaredConstructors.All(c => c.GetParameters().Count() != 0))
+                    {
+                        return false;
+                    }
+                }
+
+                if ((specialConstraints & GenericParameterAttributes.ReferenceTypeConstraint)
+                    != GenericParameterAttributes.None)
+                {
+                    if (parameterTypeInfo.IsValueType)
+                    {
+                        return false;
+                    }
+                }
+
+                if ((specialConstraints & GenericParameterAttributes.NotNullableValueTypeConstraint)
+                    != GenericParameterAttributes.None)
+                {
+                    if (!parameterTypeInfo.IsValueType ||
+                        (parameterTypeInfo.IsGenericType && IsGenericTypeDefinedBy(parameter, typeof(Nullable<>))))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public static bool IsCompilerGenerated(this Type type)
+        {
+            return type.GetTypeInfo().GetCustomAttributes<CompilerGeneratedAttribute>().Any();
+        }
+
+        public static bool IsDelegate(this Type type)
+        {
+            return type.GetTypeInfo().IsSubclassOf(typeof(Delegate));
+        }
+
+        public static bool IsGenericEnumerableInterfaceType(this Type type)
+        {
+            return IsGenericEnumerableInterfaceCache.GetOrAdd(
+                type, t => type.IsGenericTypeDefinedBy(typeof(IEnumerable<>))
+                           || type.IsGenericListOrCollectionInterfaceType());
+        }
+
+        public static bool IsGenericListOrCollectionInterfaceType(this Type type)
+        {
+            return IsGenericListOrCollectionInterfaceTypeCache.GetOrAdd(
+                type, t => t.IsGenericTypeDefinedBy(typeof(IList<>))
+                           || t.IsGenericTypeDefinedBy(typeof(ICollection<>))
+                           || t.IsGenericTypeDefinedBy(typeof(IReadOnlyCollection<>))
+                           || t.IsGenericTypeDefinedBy(typeof(IReadOnlyList<>)));
+        }
+
+        public static bool IsGenericTypeDefinedBy(this Type @this, Type openGeneric)
+        {
+            return IsGenericTypeDefinedByCache.GetOrAdd(
+                Tuple.Create(@this, openGeneric),
+                key => !key.Item1.GetTypeInfo().ContainsGenericParameters
+                    && key.Item1.GetTypeInfo().IsGenericType
+                    && key.Item1.GetGenericTypeDefinition() == key.Item2);
         }
 
         /// <summary>
@@ -59,81 +158,6 @@ namespace Autofac.Util
         {
             return TypesAssignableFrom(candidateType)
                 .Where(t => t.IsClosedTypeOf(openGenericServiceType));
-        }
-
-        private static IEnumerable<Type> TypesAssignableFrom(Type candidateType)
-        {
-            return candidateType.GetTypeInfo().ImplementedInterfaces.Concat(
-                Traverse.Across(candidateType, t => t.GetTypeInfo().BaseType));
-        }
-
-        public static bool IsGenericTypeDefinedBy(this Type @this, Type openGeneric)
-        {
-            return IsGenericTypeDefinedByCache.GetOrAdd(
-                Tuple.Create(@this, openGeneric),
-                key => !key.Item1.GetTypeInfo().ContainsGenericParameters
-                    && key.Item1.GetTypeInfo().IsGenericType
-                    && key.Item1.GetGenericTypeDefinition() == key.Item2);
-        }
-
-        public static bool IsClosedTypeOf(this Type @this, Type openGeneric)
-        {
-            return TypesAssignableFrom(@this).Any(t => t.GetTypeInfo().IsGenericType && !@this.GetTypeInfo().ContainsGenericParameters && t.GetGenericTypeDefinition() == openGeneric);
-        }
-
-        public static bool IsDelegate(this Type type)
-        {
-            return type.GetTypeInfo().IsSubclassOf(typeof(Delegate));
-        }
-
-        public static Type FunctionReturnType(this Type type)
-        {
-            var invoke = type.GetTypeInfo().GetDeclaredMethod("Invoke");
-            Enforce.NotNull(invoke);
-            return invoke.ReturnType;
-        }
-
-        public static bool IsCompatibleWithGenericParameterConstraints(this Type genericTypeDefinition, Type[] parameters)
-        {
-            var genericArgumentDefinitions = genericTypeDefinition.GetTypeInfo().GenericTypeParameters;
-
-            for (var i = 0; i < genericArgumentDefinitions.Length; ++i)
-            {
-                var argumentDefinition = genericArgumentDefinitions[i];
-                var parameter = parameters[i];
-
-                if (argumentDefinition.GetTypeInfo().GetGenericParameterConstraints()
-                    .Any(constraint => !ParameterCompatibleWithTypeConstraint(parameter, constraint)))
-                {
-                    return false;
-                }
-
-                var specialConstraints = argumentDefinition.GetTypeInfo().GenericParameterAttributes;
-
-                if ((specialConstraints & GenericParameterAttributes.DefaultConstructorConstraint)
-                    != GenericParameterAttributes.None)
-                {
-                    if (!parameter.GetTypeInfo().IsValueType && parameter.GetTypeInfo().DeclaredConstructors.All(c => c.GetParameters().Count() != 0))
-                        return false;
-                }
-
-                if ((specialConstraints & GenericParameterAttributes.ReferenceTypeConstraint)
-                    != GenericParameterAttributes.None)
-                {
-                    if (parameter.GetTypeInfo().IsValueType)
-                        return false;
-                }
-
-                if ((specialConstraints & GenericParameterAttributes.NotNullableValueTypeConstraint)
-                    != GenericParameterAttributes.None)
-                {
-                    if (!parameter.GetTypeInfo().IsValueType ||
-                        (parameter.GetTypeInfo().IsGenericType && IsGenericTypeDefinedBy(parameter, typeof(Nullable<>))))
-                        return false;
-                }
-            }
-
-            return true;
         }
 
         private static bool ParameterCompatibleWithTypeConstraint(Type parameter, Type constraint)
@@ -158,10 +182,13 @@ namespace Autofac.Util
                         var genericType = typeDefinition.MakeGenericType(genericArguments);
                         var constraintArguments = constraint.GetTypeInfo().GenericTypeArguments;
 
-                        for (int i = 0; i < constraintArguments.Count(); i++)
+                        for (var i = 0; i < constraintArguments.Length; i++)
                         {
                             var constraintArgument = constraintArguments[i].GetTypeInfo();
-                            if (!constraintArgument.IsGenericParameter && !constraintArgument.IsAssignableFrom(genericArguments[i].GetTypeInfo())) return false;
+                            if (!constraintArgument.IsGenericParameter && !constraintArgument.IsAssignableFrom(genericArguments[i].GetTypeInfo()))
+                            {
+                                return false;
+                            }
                         }
 
                         return genericType == parameter;
@@ -176,25 +203,10 @@ namespace Autofac.Util
             return false;
         }
 
-        public static bool IsGenericEnumerableInterfaceType(this Type type)
+        private static IEnumerable<Type> TypesAssignableFrom(Type candidateType)
         {
-            return IsGenericEnumerableInterfaceCache.GetOrAdd(
-                type, t => type.IsGenericTypeDefinedBy(typeof(IEnumerable<>))
-                           || type.IsGenericListOrCollectionInterfaceType());
-        }
-
-        public static bool IsGenericListOrCollectionInterfaceType(this Type type)
-        {
-            return IsGenericListOrCollectionInterfaceTypeCache.GetOrAdd(
-                type, t => t.IsGenericTypeDefinedBy(typeof(IList<>))
-                           || t.IsGenericTypeDefinedBy(typeof(ICollection<>))
-                           || t.IsGenericTypeDefinedBy(typeof(IReadOnlyCollection<>))
-                           || t.IsGenericTypeDefinedBy(typeof(IReadOnlyList<>)));
-        }
-
-        public static bool IsCompilerGenerated(this Type type)
-        {
-            return type.GetTypeInfo().GetCustomAttributes<CompilerGeneratedAttribute>().Any();
+            return candidateType.GetTypeInfo().ImplementedInterfaces.Concat(
+                Traverse.Across(candidateType, t => t.GetTypeInfo().BaseType));
         }
     }
 }
