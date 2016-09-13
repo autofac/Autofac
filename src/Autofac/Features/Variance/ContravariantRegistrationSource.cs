@@ -90,6 +90,9 @@ namespace Autofac.Features.Variance
             var args = swt.ServiceType.GetTypeInfo().GenericTypeArguments;
             var definition = swt.ServiceType.GetGenericTypeDefinition();
             var contravariantParameter = args[contravariantParameterIndex];
+            if (contravariantParameter.GetTypeInfo().IsValueType)
+                return Enumerable.Empty<IComponentRegistration>();
+
             var possibleSubstitutions = GetTypesAssignableFrom(contravariantParameter);
             var variations = possibleSubstitutions
                 .Select(s => SubstituteArrayElementAt(args, s, contravariantParameterIndex))

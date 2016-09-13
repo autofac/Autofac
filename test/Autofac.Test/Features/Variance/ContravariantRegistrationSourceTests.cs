@@ -89,6 +89,12 @@ namespace Autofac.Test.Features.Variance
             }
         }
 
+        internal enum AEnum
+        {
+            First,
+            Second
+        }
+
         internal static class AssertExtensions
         {
             public static void AssertSingleHandlerCanHandle<TCommand>(IContainer container)
@@ -237,6 +243,19 @@ namespace Autofac.Test.Features.Variance
                 builder.RegisterSource(new ContravariantRegistrationSource());
                 var container = builder.Build();
                 Assert.False(container.IsRegistered<IConstrainedHandler<DerivedWithoutArg>>());
+            }
+        }
+
+        public class WhenAValueTypeIsRequested
+        {
+            [Fact]
+            public void TheSourceDoesNotApply()
+            {
+                var builder = new ContainerBuilder();
+                builder.RegisterSource(new ContravariantRegistrationSource());
+                builder.RegisterType<ObjectHandler>().As<IHandler<object>>();
+                var container = builder.Build();
+                Assert.False(container.IsRegistered<IHandler<AEnum>>());
             }
         }
     }
