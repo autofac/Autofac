@@ -248,5 +248,69 @@ namespace Autofac.Test.Features.OpenGenerics
             var validator = container.Resolve<CompanyA.IValidator<int>>();
             Assert.IsType<CompanyA.CompositeValidator<int>>(validator);
         }
+
+        public interface ISimpleInterface
+        {
+        }
+
+        public interface IOtherSimpleInterface
+        {
+        }
+
+        public interface ISingleGeneric<T>
+        {
+        }
+
+        public interface ISingleGenericWithOutModifier<out T>
+        {
+        }
+
+        public interface IDoubleGenericWithInModifier<in T1, T2>
+        {
+        }
+
+        public class CSimple : ISimpleInterface
+        {
+        }
+
+        public class COther : IOtherSimpleInterface
+        {
+        }
+
+        public class CNestedConstrainted<T1, T2> : IDoubleGenericWithInModifier<T1, T2>
+            where T2 : ISingleGenericWithOutModifier<ISimpleInterface>
+        {
+        }
+
+        public class COtherNestedConstrainted<T1, T2> : IDoubleGenericWithInModifier<T1, T2>
+            where T2 : ISingleGenericWithOutModifier<IOtherSimpleInterface>
+        {
+        }
+
+        [Fact]
+        public void CanResolveComponentUsingInterfaceWhenConstraintAndClassUseNestedInterfaces()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterGeneric(typeof(CNestedConstrainted<,>))
+                .As(typeof(IDoubleGenericWithInModifier<,>));
+
+            builder.RegisterGeneric(typeof(COtherNestedConstrainted<,>))
+                .As(typeof(IDoubleGenericWithInModifier<,>));
+
+            var container = builder.Build();
+
+            // These simple concrete implementations lookup which were failing as per issue #794
+            Assert.True(container.IsRegistered<IDoubleGenericWithInModifier<int, ISingleGenericWithOutModifier<CSimple>>>());
+            Assert.True(container.IsRegistered<IDoubleGenericWithInModifier<int, ISingleGenericWithOutModifier<COther>>>());
+
+            // These a little bit more complex concrete implementations lookup were failing as well as per issue #794
+            Assert.True(container.IsRegistered<IDoubleGenericWithInModifier<ISingleGeneric<ISingleGenericWithOutModifier<CSimple>>, ISingleGenericWithOutModifier<CSimple>>>());
+            Assert.True(container.IsRegistered<IDoubleGenericWithInModifier<ISingleGeneric<ISingleGenericWithOutModifier<COther>>, ISingleGenericWithOutModifier<COther>>>());
+
+            // These should resolve, but per issue #794 exceptions were thrown
+            container.Resolve<IDoubleGenericWithInModifier<ISingleGeneric<ISingleGenericWithOutModifier<CSimple>>, ISingleGenericWithOutModifier<CSimple>>>();
+            container.Resolve<IDoubleGenericWithInModifier<ISingleGeneric<ISingleGenericWithOutModifier<CSimple>>, ISingleGenericWithOutModifier<COther>>>();
+        }
     }
 }
