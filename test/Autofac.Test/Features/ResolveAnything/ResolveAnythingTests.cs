@@ -136,9 +136,9 @@ namespace Autofac.Test.Features.ResolveAnything
             }
         }
 
-        public class RegiserTypeWithCtorParam
+        public class RegisterTypeWithCtorParam
         {
-            public RegiserTypeWithCtorParam(string stringParam = "MyString")
+            public RegisterTypeWithCtorParam(string stringParam = "MyString")
             {
                 StringParam = stringParam;
             }
@@ -153,7 +153,7 @@ namespace Autofac.Test.Features.ResolveAnything
             cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
             var container = cb.Build();
 
-            var resolved = container.Resolve<RegiserTypeWithCtorParam>();
+            var resolved = container.Resolve<RegisterTypeWithCtorParam>();
 
             Assert.Equal("MyString", resolved.StringParam);
         }
@@ -164,11 +164,11 @@ namespace Autofac.Test.Features.ResolveAnything
             var cb = new ContainerBuilder();
 
             // Concrete type is already registered, but still errors
-            cb.RegisterType<RegiserTypeWithCtorParam>();
+            cb.RegisterType<RegisterTypeWithCtorParam>();
             cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
             var container = cb.Build();
 
-            var resolved = container.Resolve<RegiserTypeWithCtorParam>();
+            var resolved = container.Resolve<RegisterTypeWithCtorParam>();
 
             Assert.Equal("MyString", resolved.StringParam);
         }
