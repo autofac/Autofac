@@ -156,6 +156,14 @@ namespace Autofac.Util
                     try
                     {
                         var genericType = typeDefinition.MakeGenericType(genericArguments);
+                        var constraintArguments = constraint.GetTypeInfo().GenericTypeArguments;
+
+                        for (int i = 0; i < constraintArguments.Count(); i++)
+                        {
+                            var constraintArgument = constraintArguments[i].GetTypeInfo();
+                            if (!constraintArgument.IsGenericParameter && !constraintArgument.IsAssignableFrom(genericArguments[i].GetTypeInfo())) return false;
+                        }
+
                         return genericType == parameter;
                     }
                     catch (Exception)
