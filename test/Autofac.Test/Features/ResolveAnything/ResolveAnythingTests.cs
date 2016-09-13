@@ -136,6 +136,43 @@ namespace Autofac.Test.Features.ResolveAnything
             }
         }
 
+        public class RegiserTypeWithCtorParam
+        {
+            public RegiserTypeWithCtorParam(string stringParam = "MyString")
+            {
+                StringParam = stringParam;
+            }
+
+            public string StringParam { get; }
+        }
+
+        [Fact]
+        public void AllConcreteTypesSourceResolvesOptionalParams()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+            var container = cb.Build();
+
+            var resolved = container.Resolve<RegiserTypeWithCtorParam>();
+
+            Assert.Equal("MyString", resolved.StringParam);
+        }
+
+        [Fact]
+        public void AllConcreteTypesSourceAlreadyRegisteredResolvesOptionalParams()
+        {
+            var cb = new ContainerBuilder();
+
+            // Concrete type is already registered, but still errors
+            cb.RegisterType<RegiserTypeWithCtorParam>();
+            cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+            var container = cb.Build();
+
+            var resolved = container.Resolve<RegiserTypeWithCtorParam>();
+
+            Assert.Equal("MyString", resolved.StringParam);
+        }
+
         private static IContainer CreateResolveAnythingContainer()
         {
             var cb = new ContainerBuilder();
