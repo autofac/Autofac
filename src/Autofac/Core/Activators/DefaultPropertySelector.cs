@@ -11,23 +11,13 @@ namespace Autofac.Core
     public class DefaultPropertySelector : IPropertySelector
     {
         /// <summary>
-        /// Gets an instance of DefaultPropertySelector that will preserve any values already set
-        /// </summary>
-        internal static IPropertySelector PreserveSetValueInstance { get; } = new DefaultPropertySelector(true);
-
-        /// <summary>
-        /// Gets an instance of DefaultPropertySelector that will cause values to be overwritten
-        /// </summary>
-        internal static IPropertySelector OverwriteSetValueInstance { get; } = new DefaultPropertySelector(false);
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="DefaultPropertySelector"/> class
         /// that provides default selection criteria.
         /// </summary>
         /// <param name="preserveSetValues">Determines if values should be preserved or not</param>
         public DefaultPropertySelector(bool preserveSetValues)
         {
-            PreserveSetValues = preserveSetValues;
+            this.PreserveSetValues = preserveSetValues;
         }
 
         /// <summary>
@@ -35,6 +25,16 @@ namespace Autofac.Core
         /// set (ie non-null)
         /// </summary>
         public bool PreserveSetValues { get; protected set; }
+
+        /// <summary>
+        /// Gets an instance of DefaultPropertySelector that will cause values to be overwritten
+        /// </summary>
+        internal static IPropertySelector OverwriteSetValueInstance { get; } = new DefaultPropertySelector(false);
+
+        /// <summary>
+        /// Gets an instance of DefaultPropertySelector that will preserve any values already set
+        /// </summary>
+        internal static IPropertySelector PreserveSetValueInstance { get; } = new DefaultPropertySelector(true);
 
         /// <summary>
         /// Provides default filtering to determine if property should be injected by rejecting
@@ -45,12 +45,24 @@ namespace Autofac.Core
         /// <returns>Whether property should be injected</returns>
         public virtual bool InjectProperty(PropertyInfo propertyInfo, object instance)
         {
-            if (propertyInfo.SetMethod?.IsPublic != true)
+            if (!propertyInfo.CanWrite || propertyInfo.SetMethod?.IsPublic != true)
+            {
                 return false;
+            }
 
-            if (PreserveSetValues && propertyInfo.CanRead && propertyInfo.CanWrite &&
-                (propertyInfo.GetValue(instance, null) != null))
-                return false;
+            if (this.PreserveSetValues && propertyInfo.CanRead)
+            {
+                try
+                {
+                    return propertyInfo.GetValue(instance, null) == null;
+                }
+                catch
+                {
+                    // Issue #799: If getting the property value throws an exception
+                    // then assume it's set and skip it.
+                    return false;
+                }
+            }
 
             return true;
         }
