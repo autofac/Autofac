@@ -7,7 +7,7 @@ Import-Module $PSScriptRoot\Build\Autofac.Build.psd1 -Force
 $artifactsPath = "$PSScriptRoot\artifacts"
 $packagesPath = "$artifactsPath\packages"
 
-Install-DotNetCli
+Install-DotNetCli -Version (Get-DotNetSdkVersion "$PSScriptRoot\global.json")
 
 # Set build number
 $env:DOTNET_BUILD_VERSION = @{ $true = $env:APPVEYOR_BUILD_NUMBER; $false = 1}[$env:APPVEYOR_BUILD_NUMBER -ne $NULL];

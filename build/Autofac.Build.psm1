@@ -28,30 +28,62 @@ function Get-DotNetProjectDirectory
 
 <#
  .SYNOPSIS
-  Runs the dotnet CLI RC2 install script from GitHub to install a project-local
+  Gets the SDK version specified in a global.json, if any. Defaults to "Latest".
+
+ .PARAMETER GlobalJson
+  Path to the global.json file.
+#>
+function Get-DotNetSdkVersion
+{
+  [CmdletBinding()]
+  Param(
+    [Parameter(Mandatory=$True, ValueFromPipeline=$False, ValueFromPipelineByPropertyName=$False)]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $GlobalJson
+  )
+
+  $version = (Get-Content $GlobalJson | ConvertFrom-Json).sdk.version
+
+  if ($version -eq $Null)
+  {
+    return "Latest"
+  }
+
+  return $version
+}
+
+<#
+ .SYNOPSIS
+  Runs the dotnet CLI install script from GitHub to install a project-local
   copy of the CLI.
 #>
 function Install-DotNetCli
 {
+  [CmdletBinding()]
+  Param(
+    [string]
+    $Version = "Latest"
+  )
+
   $callerPath = Split-Path $MyInvocation.PSCommandPath
-  $env:DOTNET_INSTALL_DIR = Join-Path -Path $callerPath -ChildPath ".dotnet\cli"
-  if (!(Test-Path $env:DOTNET_INSTALL_DIR))
+  $installDir = Join-Path -Path $callerPath -ChildPath ".dotnet\cli"
+  if (!(Test-Path $installDir))
   {
-    New-Item -ItemType Directory -Path "$($env:DOTNET_INSTALL_DIR)" | Out-Null
+    New-Item -ItemType Directory -Path "$installDir" | Out-Null
   }
 
   # Download the dotnet CLI install script
   if (!(Test-Path .\dotnet\install.ps1))
   {
-    Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0-preview2/scripts/obtain/dotnet-install.ps1" -OutFile ".\.dotnet\dotnet-install.ps1"
+    Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.ps1" -OutFile ".\.dotnet\dotnet-install.ps1"
   }
 
   # Run the dotnet CLI install
-  & .\.dotnet\dotnet-install.ps1
+  & .\.dotnet\dotnet-install.ps1 -InstallDir "$installDir" -Version $Version
 
   # Add the dotnet folder path to the process.
-  Remove-EnvironmentPathEntry $env:DOTNET_INSTALL_DIR
-  $env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
+  $env:PATH = "$installDir;$env:PATH"
 }
 
 <#
