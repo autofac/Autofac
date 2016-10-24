@@ -164,6 +164,33 @@ namespace Autofac.Test.Core.Lifetime
             Assert.True(tracker.IsDisposed, "The tracker should have been disposed along with the lifetime scope chain.");
         }
 
+        [Fact]
+        public void TwoRegistrationsSameServicesDifferentLifetimeScopes()
+        {
+            // Issue #511
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ServiceB1>().As<IServiceB>().As<IServiceCommon>();
+            builder.RegisterType<ServiceB1>().As<IServiceB>().InstancePerLifetimeScope();
+            using (var container = builder.Build())
+            {
+                using (var lifetimeScope = container.BeginLifetimeScope())
+                {
+                    var obj1 = lifetimeScope.Resolve<IServiceB>();
+                    var obj2 = lifetimeScope.Resolve<IServiceB>();
+                    Assert.Same(obj1, obj2);
+                }
+
+                using (var lifetimeScope = container.BeginLifetimeScope(x => { }))
+                {
+                    // Issue #511 mentions that passing a lambda configuration
+                    // expression causes the test to fail.
+                    var obj1 = lifetimeScope.Resolve<IServiceB>();
+                    var obj2 = lifetimeScope.Resolve<IServiceB>();
+                    Assert.Same(obj1, obj2);
+                }
+            }
+        }
+
         public class Person
         {
         }
