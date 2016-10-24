@@ -34,6 +34,15 @@ namespace Autofac.Core
     public interface IComponentRegistry : IDisposable
     {
         /// <summary>
+        /// Gets or sets the set of properties used during component registration.
+        /// </summary>
+        /// <value>
+        /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
+        /// context across registrations.
+        /// </value>
+        IDictionary<string, object> Properties { get; set; }
+
+        /// <summary>
         /// Attempts to find a default registration for the specified service.
         /// </summary>
         /// <param name="service">The service to look up.</param>

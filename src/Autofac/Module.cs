@@ -76,7 +76,11 @@ namespace Autofac
         {
             if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
 
-            var moduleBuilder = new ContainerBuilder();
+            var moduleBuilder = new ContainerBuilder
+            {
+                Properties = componentRegistry.Properties
+            };
+
             Load(moduleBuilder);
             moduleBuilder.Update(componentRegistry);
             AttachToRegistrations(componentRegistry);

@@ -521,5 +521,33 @@ namespace Autofac.Test
             {
             }
         }
+
+        [Fact]
+        public void CtorCreatesDefaultPropertyBag()
+        {
+            var builder = new ContainerBuilder();
+            Assert.NotNull(builder.Properties);
+        }
+
+        [Fact]
+        public void RegistrationsCanUsePropertyBag()
+        {
+            var builder = new ContainerBuilder();
+            builder.Properties["count"] = 0;
+            builder.Register(ctx =>
+            {
+                // TOTALLY not thread-safe, but illustrates the point.
+                var count = (int)ctx.ComponentRegistry.Properties["count"];
+                count++;
+                ctx.ComponentRegistry.Properties["count"] = count;
+                return "incremented";
+            }).As<string>();
+            var container = builder.Build();
+
+            container.Resolve<string>();
+            container.Resolve<string>();
+
+            Assert.Equal(2, container.ComponentRegistry.Properties["count"]);
+        }
     }
 }

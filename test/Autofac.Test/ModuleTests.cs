@@ -87,5 +87,38 @@ namespace Autofac.Test
             var module = new ModuleIndirectlyExposingThisAssembly();
             Assert.Throws<InvalidOperationException>(() => { var unused = module.ModuleThisAssembly; });
         }
+
+        internal class PropertySetModule : Module
+        {
+            protected override void Load(ContainerBuilder builder)
+            {
+                // Increment a counter to show use of existing properties.
+                var count = (int)builder.Properties["count"];
+                count++;
+                builder.Properties["count"] = count;
+
+                if (!builder.Properties.ContainsKey("prop"))
+                {
+                    // If Add is called twice, it'll throw.
+                    builder.Properties.Add("prop", "value");
+                }
+            }
+        }
+
+        [Fact]
+        public void CanUseBuilderPropertyBag()
+        {
+            var builder = new ContainerBuilder();
+            builder.Properties["count"] = 0;
+
+            // Registering the module twice helps test whether
+            // we can do things like detecting duplicates.
+            builder.RegisterModule<PropertySetModule>();
+            builder.RegisterModule<PropertySetModule>();
+
+            var container = builder.Build();
+            Assert.Equal(2, builder.Properties["count"]);
+            Assert.Equal("value", builder.Properties["prop"]);
+        }
     }
 }

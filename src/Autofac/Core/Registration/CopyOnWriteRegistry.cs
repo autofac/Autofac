@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Autofac.Util;
 
 namespace Autofac.Core.Registration
 {
@@ -50,11 +51,21 @@ namespace Autofac.Core.Registration
 
             _readRegistry = readRegistry;
             _createWriteRegistry = createWriteRegistry;
+            this.Properties = new FallbackDictionary<string, object>(readRegistry.Properties);
         }
 
         private IComponentRegistry Registry => _writeRegistry ?? _readRegistry;
 
         private IComponentRegistry WriteRegistry => _writeRegistry ?? (_writeRegistry = _createWriteRegistry());
+
+        /// <summary>
+        /// Gets or sets the set of properties used during component registration.
+        /// </summary>
+        /// <value>
+        /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
+        /// context across registrations.
+        /// </value>
+        public IDictionary<string, object> Properties { get; set; }
 
         public void Dispose()
         {
