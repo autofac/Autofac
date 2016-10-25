@@ -76,10 +76,7 @@ namespace Autofac
         {
             if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
 
-            var moduleBuilder = new ContainerBuilder
-            {
-                Properties = componentRegistry.Properties
-            };
+            var moduleBuilder = new ContainerBuilder(componentRegistry.Properties);
 
             Load(moduleBuilder);
             moduleBuilder.Update(componentRegistry);
@@ -153,10 +150,10 @@ namespace Autofac
         {
             get
             {
-                var thisType = this.GetType();
+                var thisType = GetType();
                 var baseType = thisType.GetTypeInfo().BaseType;
                 if (baseType != typeof(Module))
-                    throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, ModuleResources.ThisAssemblyUnavailable, thisType, baseType));
+                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ModuleResources.ThisAssemblyUnavailable, thisType, baseType));
 
                 return thisType.GetTypeInfo().Assembly;
             }

@@ -68,18 +68,27 @@ namespace Autofac.Core.Registration
         /// Initializes a new instance of the <see cref="ComponentRegistry"/> class.
         /// </summary>
         public ComponentRegistry()
+            : this(new Dictionary<string, object>())
         {
-            this.Properties = new Dictionary<string, object>();
         }
 
         /// <summary>
-        /// Gets or sets the set of properties used during component registration.
+        /// Initializes a new instance of the <see cref="ComponentRegistry"/> class.
+        /// </summary>
+        /// <param name="properties">The properties used during component registration.</param>
+        internal ComponentRegistry(IDictionary<string, object> properties)
+        {
+            Properties = properties;
+        }
+
+        /// <summary>
+        /// Gets the set of properties used during component registration.
         /// </summary>
         /// <value>
         /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
         /// context across registrations.
         /// </value>
-        public IDictionary<string, object> Properties { get; set; }
+        public IDictionary<string, object> Properties { get; }
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources

@@ -69,18 +69,27 @@ namespace Autofac
         /// Initializes a new instance of the <see cref="ContainerBuilder"/> class.
         /// </summary>
         public ContainerBuilder()
+            : this(new Dictionary<string, object>())
         {
-            this.Properties = new Dictionary<string, object>();
         }
 
         /// <summary>
-        /// Gets or sets the set of properties used during component registration.
+        /// Initializes a new instance of the <see cref="ContainerBuilder"/> class.
+        /// </summary>
+        /// <param name="properties">The properties used during component registration.</param>
+        internal ContainerBuilder(IDictionary<string, object> properties)
+        {
+            Properties = properties;
+        }
+
+        /// <summary>
+        /// Gets the set of properties used during component registration.
         /// </summary>
         /// <value>
         /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
         /// context across registrations.
         /// </value>
-        public IDictionary<string, object> Properties { get; set; }
+        public IDictionary<string, object> Properties { get; }
 
         /// <summary>
         /// Register a callback that will be invoked when the container is configured.
@@ -108,8 +117,7 @@ namespace Autofac
         /// <returns>A new container with the configured component registrations.</returns>
         public IContainer Build(ContainerBuildOptions options = ContainerBuildOptions.None)
         {
-            var result = new Container();
-            result.ComponentRegistry.Properties = this.Properties;
+            var result = new Container(Properties);
             Build(result.ComponentRegistry, (options & ContainerBuildOptions.ExcludeDefaultModules) != ContainerBuildOptions.None);
             if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
                 StartStartableComponents(result);

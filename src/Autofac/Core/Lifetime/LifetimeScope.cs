@@ -196,8 +196,7 @@ namespace Autofac.Core.Lifetime
 
         private ScopeRestrictedRegistry CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction)
         {
-            var builder = new ContainerBuilder();
-            builder.Properties = new FallbackDictionary<string, object>(this.ComponentRegistry.Properties);
+            var builder = new ContainerBuilder(new FallbackDictionary<string, object>(ComponentRegistry.Properties));
 
             foreach (var source in ComponentRegistry.Sources
                 .Where(src => src.IsAdapterForIndividualComponents))
@@ -217,9 +216,8 @@ namespace Autofac.Core.Lifetime
 
             configurationAction(builder);
 
-            var locals = new ScopeRestrictedRegistry(tag);
+            var locals = new ScopeRestrictedRegistry(tag, builder.Properties);
             builder.Update(locals);
-            locals.Properties = builder.Properties;
             return locals;
         }
 

@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using Autofac.Core.Lifetime;
 
 namespace Autofac.Core.Registration
@@ -36,7 +37,8 @@ namespace Autofac.Core.Registration
     {
         private readonly IComponentLifetime _restrictedRootScopeLifetime;
 
-        public ScopeRestrictedRegistry(object scopeTag)
+        internal ScopeRestrictedRegistry(object scopeTag, IDictionary<string, object> properties)
+            : base(properties)
         {
             _restrictedRootScopeLifetime = new MatchingScopeLifetime(scopeTag);
         }
