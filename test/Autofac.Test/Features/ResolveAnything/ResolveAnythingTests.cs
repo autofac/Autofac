@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac.Core;
+using Autofac.Features.Metadata;
+using Autofac.Features.OwnedInstances;
 using Autofac.Features.ResolveAnything;
 using Autofac.Test.Scenarios.RegistrationSources;
 using Xunit;
@@ -9,7 +12,7 @@ namespace Autofac.Test.Features.ResolveAnything
 {
     public class ResolveAnythingTests
     {
-        public class NotRegisteredType
+        public interface IInterfaceType
         {
         }
 
@@ -20,51 +23,31 @@ namespace Autofac.Test.Features.ResolveAnything
             Assert.True(container.IsRegistered<NotRegisteredType>());
         }
 
-        public abstract class AbstractType
+        [Fact]
+        public void AllConcreteTypesSourceAlreadyRegisteredResolvesOptionalParams()
         {
+            var cb = new ContainerBuilder();
+
+            // Concrete type is already registered, but still errors
+            cb.RegisterType<RegisterTypeWithCtorParam>();
+            cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+            var container = cb.Build();
+
+            var resolved = container.Resolve<RegisterTypeWithCtorParam>();
+
+            Assert.Equal("MyString", resolved.StringParam);
         }
 
         [Fact]
-        public void AnAbstractTypeNotRegisteredWithTheContainerWillNotBeProvided()
-        {
-            var container = CreateResolveAnythingContainer();
-            Assert.False(container.IsRegistered<AbstractType>());
-        }
-
-        public interface IInterfaceType
-        {
-        }
-
-        [Fact]
-        public void AnInterfaceTypeNotRegisteredWithTheContainerWillNotBeProvided()
-        {
-            var container = CreateResolveAnythingContainer();
-            Assert.False(container.IsRegistered<IInterfaceType>());
-        }
-
-        [Fact]
-        public void TypesFromTheRegistrationSourceAreProvidedToOtherSources()
-        {
-            var container = CreateResolveAnythingContainer();
-
-            // The RS for Func<> is getting the NotRegisteredType from the resolve-anything source
-            Assert.True(container.IsRegistered<Func<NotRegisteredType>>());
-            Assert.Equal(1, container.Resolve<IEnumerable<Func<NotRegisteredType>>>().Count());
-        }
-
-        [Fact]
-        public void AServiceProvideByAnotherRegistrationSourceWillNotBeProvided()
+        public void AllConcreteTypesSourceResolvesOptionalParams()
         {
             var cb = new ContainerBuilder();
             cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
-            cb.RegisterSource(new ObjectRegistrationSource());
             var container = cb.Build();
-            Assert.True(container.IsRegistered<object>());
-            Assert.Equal(1, container.Resolve<IEnumerable<object>>().Count());
-        }
 
-        public class RegisteredType
-        {
+            var resolved = container.Resolve<RegisterTypeWithCtorParam>();
+
+            Assert.Equal("MyString", resolved.StringParam);
         }
 
         [Fact]
@@ -75,6 +58,17 @@ namespace Autofac.Test.Features.ResolveAnything
             cb.RegisterType<RegisteredType>();
             var container = cb.Build();
             Assert.True(container.IsRegistered<RegisteredType>());
+            Assert.Equal(1, container.Resolve<IEnumerable<object>>().Count());
+        }
+
+        [Fact]
+        public void AServiceProvideByAnotherRegistrationSourceWillNotBeProvided()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+            cb.RegisterSource(new ObjectRegistrationSource());
+            var container = cb.Build();
+            Assert.True(container.IsRegistered<object>());
             Assert.Equal(1, container.Resolve<IEnumerable<object>>().Count());
         }
 
@@ -90,14 +84,18 @@ namespace Autofac.Test.Features.ResolveAnything
             Assert.Equal(1, container.Resolve<IEnumerable<object>>().Count());
         }
 
-        [Fact]
-        public void TypesIgnoredUsingPredicateAreNotResolvedFromTheContainer()
+        [Theory]
+        [InlineData(typeof(string))]
+        [InlineData(typeof(IInterfaceType))]
+        [InlineData(typeof(AbstractType))]
+        [InlineData(typeof(Delegate))]
+        [InlineData(typeof(MulticastDelegate))]
+        [InlineData(typeof(Tuple<>))]
+        public void IgnoresTypesThatShouldNotBeProvided(Type serviceType)
         {
-            var cb = new ContainerBuilder();
-            var registrationSource = new AnyConcreteTypeNotAlreadyRegisteredSource(t => !t.IsAssignableTo<string>());
-            cb.RegisterSource(registrationSource);
-            var container = cb.Build();
-            Assert.False(container.IsRegistered<string>());
+            var source = new AnyConcreteTypeNotAlreadyRegisteredSource();
+            var service = new TypedService(serviceType);
+            Assert.False(source.RegistrationsFor(service, s => Enumerable.Empty<IComponentRegistration>()).Any(), $"Failed: {serviceType}");
         }
 
         [Fact]
@@ -136,41 +134,92 @@ namespace Autofac.Test.Features.ResolveAnything
             }
         }
 
-        public class RegisterTypeWithCtorParam
+        [Fact]
+        public void TypesFromTheRegistrationSourceAreProvidedToOtherSources()
         {
-            public RegisterTypeWithCtorParam(string stringParam = "MyString")
-            {
-                StringParam = stringParam;
-            }
+            var container = CreateResolveAnythingContainer();
 
-            public string StringParam { get; }
+            // The RS for Func<> is getting the NotRegisteredType from the resolve-anything source
+            Assert.True(container.IsRegistered<Func<NotRegisteredType>>());
+            Assert.Equal(1, container.Resolve<IEnumerable<Func<NotRegisteredType>>>().Count());
+            Assert.True(container.IsRegistered<Owned<NotRegisteredType>>());
+            Assert.True(container.IsRegistered<Meta<NotRegisteredType>>());
+            Assert.True(container.IsRegistered<Lazy<NotRegisteredType>>());
+        }
+
+        [Theory]
+        [InlineData(typeof(Func<IInterfaceType>))]
+        [InlineData(typeof(Owned<IInterfaceType>))]
+        [InlineData(typeof(Meta<IInterfaceType>))]
+        [InlineData(typeof(Lazy<IInterfaceType>))]
+        [InlineData(typeof(Tuple<IInterfaceType>))]
+        public void IgnoredTypesFromTheRegistrationSourceAreNotProvidedToOtherSources(Type serviceType)
+        {
+            // Issue #495: Meta<T> not correctly handled with ACTNARS.
+            var container = CreateResolveAnythingContainer();
+            Assert.False(container.IsRegistered(serviceType), $"Failed: {serviceType}");
         }
 
         [Fact]
-        public void AllConcreteTypesSourceResolvesOptionalParams()
+        public void DoesNotInterfereWithMetadata()
         {
+            // Issue #495: Meta<T> not correctly handled with ACTNARS.
             var cb = new ContainerBuilder();
+            cb.RegisterType<RegisteredType>().WithMetadata("value", 1);
             cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
             var container = cb.Build();
 
-            var resolved = container.Resolve<RegisterTypeWithCtorParam>();
+            var regType = container.Resolve<Meta<RegisteredType>>();
+            Assert.Equal(1, regType.Metadata["value"]);
 
-            Assert.Equal("MyString", resolved.StringParam);
+            var nonRegType = container.Resolve<Meta<NotRegisteredType>>();
+            Assert.False(nonRegType.Metadata.ContainsKey("value"));
+
+            var interfaceMeta = container.Resolve<IEnumerable<Meta<IInterfaceType>>>();
+            Assert.Equal(0, interfaceMeta.Count());
+
+            var classMeta = container.Resolve<IEnumerable<Meta<NotRegisteredType>>>();
+            Assert.Equal(1, classMeta.Count());
         }
 
         [Fact]
-        public void AllConcreteTypesSourceAlreadyRegisteredResolvesOptionalParams()
+        public void ConstructableClosedGenericsCanBeResolved()
+        {
+            var container = CreateResolveAnythingContainer();
+            Assert.True(container.IsRegistered<Tuple<Exception>>());
+            Assert.NotNull(container.Resolve<Tuple<Exception>>());
+        }
+
+        [Fact]
+        public void WorksWithOpenGenericClassRegistrations()
         {
             var cb = new ContainerBuilder();
-
-            // Concrete type is already registered, but still errors
-            cb.RegisterType<RegisterTypeWithCtorParam>();
+            cb.RegisterGeneric(typeof(Progress<>)).AsSelf();
             cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
             var container = cb.Build();
+            Assert.True(container.IsRegistered<Progress<Exception>>());
+            Assert.NotNull(container.Resolve<Progress<Exception>>());
+        }
 
-            var resolved = container.Resolve<RegisterTypeWithCtorParam>();
+        [Fact]
+        public void WorksWithOpenGenericInterfaceRegistrations()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(Progress<>)).As(typeof(IProgress<>));
+            cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+            var container = cb.Build();
+            Assert.True(container.IsRegistered<IProgress<Exception>>());
+            Assert.NotNull(container.Resolve<IProgress<Exception>>());
+        }
 
-            Assert.Equal("MyString", resolved.StringParam);
+        [Fact]
+        public void TypesIgnoredUsingPredicateAreNotResolvedFromTheContainer()
+        {
+            var cb = new ContainerBuilder();
+            var registrationSource = new AnyConcreteTypeNotAlreadyRegisteredSource(t => !t.IsAssignableTo<string>());
+            cb.RegisterSource(registrationSource);
+            var container = cb.Build();
+            Assert.False(container.IsRegistered<string>());
         }
 
         private static IContainer CreateResolveAnythingContainer()
@@ -178,6 +227,28 @@ namespace Autofac.Test.Features.ResolveAnything
             var cb = new ContainerBuilder();
             cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
             return cb.Build();
+        }
+
+        public abstract class AbstractType
+        {
+        }
+
+        public class NotRegisteredType
+        {
+        }
+
+        public class RegisteredType
+        {
+        }
+
+        public class RegisterTypeWithCtorParam
+        {
+            public RegisterTypeWithCtorParam(string stringParam = "MyString")
+            {
+                this.StringParam = stringParam;
+            }
+
+            public string StringParam { get; }
         }
     }
 }

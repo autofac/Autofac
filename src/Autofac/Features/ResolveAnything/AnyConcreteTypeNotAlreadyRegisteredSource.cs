@@ -70,18 +70,39 @@ namespace Autofac.Features.ResolveAnything
             Service service,
             Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
-            if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
+            if (registrationAccessor == null)
+            {
+                throw new ArgumentNullException(nameof(registrationAccessor));
+            }
 
             var ts = service as TypedService;
-            if (ts == null ||
-                ts.ServiceType == typeof(string) ||
-                !ts.ServiceType.GetTypeInfo().IsClass ||
-                ts.ServiceType.GetTypeInfo().IsSubclassOf(typeof(Delegate)) ||
-                ts.ServiceType.GetTypeInfo().IsAbstract ||
+            if (ts == null || ts.ServiceType == typeof(string))
+            {
+                return Enumerable.Empty<IComponentRegistration>();
+            }
+
+            var typeInfo = ts.ServiceType.GetTypeInfo();
+            if (!typeInfo.IsClass ||
+                typeInfo.IsSubclassOf(typeof(Delegate)) ||
+                typeInfo.IsAbstract ||
+                typeInfo.IsGenericTypeDefinition ||
 
                 !_predicate(ts.ServiceType) ||
                 registrationAccessor(service).Any())
+            {
                 return Enumerable.Empty<IComponentRegistration>();
+            }
+
+            if (typeInfo.IsGenericType)
+            {
+                foreach (var typeParameter in typeInfo.GenericTypeArguments)
+                {
+                    if (!registrationAccessor(new TypedService(typeParameter)).Any())
+                    {
+                        return Enumerable.Empty<IComponentRegistration>();
+                    }
+                }
+            }
 
             var builder = RegistrationBuilder.ForType(ts.ServiceType);
             RegistrationConfiguration?.Invoke(builder);
