@@ -4,6 +4,6 @@
     <NuGetPackageRoot>$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
   </PropertyGroup>
   <ImportGroup>
-    <Import Project="$(NuGetPackageRoot)\xunit.core\2.2.0-beta4-build3428\build\uap10.0\xunit.core.props" Condition="Exists('$(NuGetPackageRoot)\xunit.core\2.2.0-beta4-build3428\build\uap10.0\xunit.core.props')" />
+    <Import Project="$(NuGetPackageRoot)\xunit.core\2.2.0-beta4-build3434\build\uap10.0\xunit.core.props" Condition="Exists('$(NuGetPackageRoot)\xunit.core\2.2.0-beta4-build3434\build\uap10.0\xunit.core.props')" />
   </ImportGroup>
 </Project>
