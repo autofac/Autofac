@@ -361,7 +361,9 @@ namespace Autofac.Test
         {
             var builder = new ContainerBuilder();
             var container = new Container();
+#pragma warning disable CS0618
             builder.Update(container);
+#pragma warning restore CS0618
             Assert.False(container.IsRegistered<IEnumerable<object>>());
         }
 
@@ -445,7 +447,9 @@ namespace Autofac.Test
 
             var builder2 = new ContainerBuilder();
             builder2.RegisterInstance(startable2).As<IStartable>();
+#pragma warning disable CS0618
             builder2.Update(container);
+#pragma warning restore CS0618
 
             Assert.Equal(1, startable1.StartCount);
             Assert.Equal(1, startable2.StartCount);
@@ -461,7 +465,9 @@ namespace Autofac.Test
 
             var builder = new ContainerBuilder();
             builder.RegisterInstance(startable).As<IStartable>();
+#pragma warning disable CS0618
             builder.Update(container);
+#pragma warning restore CS0618
 
             Assert.Equal(1, startable.StartCount);
         }

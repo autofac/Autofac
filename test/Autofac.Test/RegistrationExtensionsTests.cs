@@ -228,7 +228,9 @@ namespace Autofac.Test
             var container = new ContainerBuilder().Build();
             var builder = new ContainerBuilder();
             builder.RegisterType<MyComponent2>().AutoActivate().OnActivated(e => instanceCount++);
+#pragma warning disable CS0618
             builder.Update(container);
+#pragma warning restore CS0618
             Assert.Equal(1, instanceCount);
         }
 
@@ -245,7 +247,9 @@ namespace Autofac.Test
             int secondCount = 0;
             var builder2 = new ContainerBuilder();
             builder2.RegisterType<MyComponent>().AutoActivate().OnActivated(e => secondCount++);
+#pragma warning disable CS0618
             builder2.Update(container);
+#pragma warning restore CS0618
             Assert.Equal(1, firstCount);
             Assert.Equal(1, secondCount);
         }

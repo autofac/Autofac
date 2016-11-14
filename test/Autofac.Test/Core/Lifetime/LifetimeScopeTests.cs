@@ -418,7 +418,7 @@ namespace Autofac.Test.Core.Lifetime
             {
                 var builder = new ContainerBuilder();
                 builder.RegisterInstance(instance);
-                builder.Update(_registerContext.ComponentRegistry);
+                builder.UpdateRegistry(_registerContext.ComponentRegistry);
             }
         }
 

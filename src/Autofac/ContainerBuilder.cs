@@ -172,6 +172,7 @@ namespace Autofac
         /// </remarks>
         /// <param name="container">An existing container to make the registrations in.</param>
         [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "You can't update any arbitrary context, only containers.")]
+        [Obsolete("Containers should generally be considered immutable. Register all of your dependencies before building/resolving. If you need to change the contents of a container, you technically should rebuild the container. This method may be removed in a future major release.")]
         public void Update(IContainer container)
         {
             Update(container, ContainerBuildOptions.None);
@@ -188,6 +189,7 @@ namespace Autofac
         /// <param name="container">An existing container to make the registrations in.</param>
         /// <param name="options">Options that influence the way the container is updated.</param>
         [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "You can't update any arbitrary context, only containers.")]
+        [Obsolete("Containers should generally be considered immutable. Register all of your dependencies before building/resolving. If you need to change the contents of a container, you technically should rebuild the container. This method may be removed in a future major release.")]
         public void Update(IContainer container, ContainerBuildOptions options)
         {
             // Issue #462: The ContainerBuildOptions parameter is added here as an overload
@@ -208,7 +210,23 @@ namespace Autofac
         /// - this prevents ownership issues for provided instances.
         /// </remarks>
         /// <param name="componentRegistry">An existing registry to make the registrations in.</param>
+        [Obsolete("Containers should generally be considered immutable. Register all of your dependencies before building/resolving. If you need to change the contents of a container, you technically should rebuild the container. This method may be removed in a future major release.")]
         public void Update(IComponentRegistry componentRegistry)
+        {
+            this.UpdateRegistry(componentRegistry);
+        }
+
+        /// <summary>
+        /// Configure an existing registry with the component registrations
+        /// that have been made. Primarily useful in dynamically adding registrations
+        /// to a child lifetime scope.
+        /// </summary>
+        /// <remarks>
+        /// Update can only be called once per <see cref="ContainerBuilder"/>
+        /// - this prevents ownership issues for provided instances.
+        /// </remarks>
+        /// <param name="componentRegistry">An existing registry to make the registrations in.</param>
+        internal void UpdateRegistry(IComponentRegistry componentRegistry)
         {
             if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
             Build(componentRegistry, true);

@@ -79,7 +79,7 @@ namespace Autofac
             var moduleBuilder = new ContainerBuilder(componentRegistry.Properties);
 
             Load(moduleBuilder);
-            moduleBuilder.Update(componentRegistry);
+            moduleBuilder.UpdateRegistry(componentRegistry);
             AttachToRegistrations(componentRegistry);
             AttachToSources(componentRegistry);
         }

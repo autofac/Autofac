@@ -217,7 +217,7 @@ namespace Autofac.Core.Lifetime
             configurationAction(builder);
 
             var locals = new ScopeRestrictedRegistry(tag, builder.Properties);
-            builder.Update(locals);
+            builder.UpdateRegistry(locals);
             return locals;
         }
 

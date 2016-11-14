@@ -44,7 +44,7 @@ namespace Autofac.Test.Core.Registration
             var childScope = container.BeginLifetimeScope();
             var updater = new ContainerBuilder();
             updater.RegisterType<object>();
-            updater.Update(childScope.ComponentRegistry);
+            updater.UpdateRegistry(childScope.ComponentRegistry);
             Assert.True(childScope.IsRegistered<object>());
             Assert.False(container.IsRegistered<object>());
         }
