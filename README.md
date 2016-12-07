@@ -76,7 +76,7 @@ Autofac is licensed under the MIT license, so you can comfortably use it in comm
 
 ## Contributing / Pull Requests
 
-Refer to the [Readme for Autofac Developers](https://github.com/autofac/Autofac/blob/master/developers.md)
-for setting up and building Autofac source. We also have a [contributors guide](http://autofac.readthedocs.io/en/latest/contributors.html) to help you get started.
+Refer to the [Contributor Guide](https://github.com/autofac/Autofac/blob/master/CONTRIBUTING.md)
+for setting up and building Autofac source.
 
 
