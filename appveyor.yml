@@ -1,4 +1,4 @@
-version: 4.2.1.{build}
+version: 4.2.2.{build}
 
 configuration: Release
 
