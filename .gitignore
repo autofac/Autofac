@@ -164,3 +164,4 @@ $RECYCLE.BIN/
 
 # Mac crap
 .DS_Store
+BenchmarkDotNet.Artifacts/

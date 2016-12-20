@@ -36,6 +36,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{F65B03DB
 		build\Documentation.shfbproj = build\Documentation.shfbproj
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bench", "bench", "{48F40A36-C829-4895-99B3-1634CC6594E0}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Autofac.Benchmarks", "bench\Autofac.Benchmarks\Autofac.Benchmarks.xproj", "{D7A37F73-BBA3-4DAE-9648-1A753A86F968}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -116,6 +120,22 @@ Global
 		{13130CD5-8E37-4E3E-B924-533E2604A9EF}.Release|x86.ActiveCfg = Release|x86
 		{13130CD5-8E37-4E3E-B924-533E2604A9EF}.Release|x86.Build.0 = Release|x86
 		{13130CD5-8E37-4E3E-B924-533E2604A9EF}.Release|x86.Deploy.0 = Release|x86
+		{D7A37F73-BBA3-4DAE-9648-1A753A86F968}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7A37F73-BBA3-4DAE-9648-1A753A86F968}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7A37F73-BBA3-4DAE-9648-1A753A86F968}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{D7A37F73-BBA3-4DAE-9648-1A753A86F968}.Debug|ARM.Build.0 = Debug|Any CPU
+		{D7A37F73-BBA3-4DAE-9648-1A753A86F968}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D7A37F73-BBA3-4DAE-9648-1A753A86F968}.Debug|x64.Build.0 = Debug|Any CPU
+		{D7A37F73-BBA3-4DAE-9648-1A753A86F968}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D7A37F73-BBA3-4DAE-9648-1A753A86F968}.Debug|x86.Build.0 = Debug|Any CPU
+		{D7A37F73-BBA3-4DAE-9648-1A753A86F968}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7A37F73-BBA3-4DAE-9648-1A753A86F968}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7A37F73-BBA3-4DAE-9648-1A753A86F968}.Release|ARM.ActiveCfg = Release|Any CPU
+		{D7A37F73-BBA3-4DAE-9648-1A753A86F968}.Release|ARM.Build.0 = Release|Any CPU
+		{D7A37F73-BBA3-4DAE-9648-1A753A86F968}.Release|x64.ActiveCfg = Release|Any CPU
+		{D7A37F73-BBA3-4DAE-9648-1A753A86F968}.Release|x64.Build.0 = Release|Any CPU
+		{D7A37F73-BBA3-4DAE-9648-1A753A86F968}.Release|x86.ActiveCfg = Release|Any CPU
+		{D7A37F73-BBA3-4DAE-9648-1A753A86F968}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -125,6 +145,7 @@ Global
 		{48EC73A9-9AA0-4063-9FEE-AE5BB43C66B0} = {DEA4A8C6-DE56-4359-A87C-472FB34132E7}
 		{376ADF06-0774-4C00-AE45-4B0DF63779B2} = {DEA4A8C6-DE56-4359-A87C-472FB34132E7}
 		{13130CD5-8E37-4E3E-B924-533E2604A9EF} = {DEA4A8C6-DE56-4359-A87C-472FB34132E7}
+		{D7A37F73-BBA3-4DAE-9648-1A753A86F968} = {48F40A36-C829-4895-99B3-1634CC6594E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.Interception.2.1.505.0\lib\NET35;packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35;packages\EnterpriseLibrary.ExceptionHandling.5.0.505.0\lib\NET35;packages\Unity.2.1.505.2\lib\NET35;packages\Unity.Interception.2.1.505.2\lib\NET35
