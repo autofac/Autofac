@@ -1,6 +1,5 @@
 using System;
 
-using Autofac;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 
@@ -59,4 +58,6 @@ namespace Autofac.Benchmarks
     internal class NonSharedReflection { }
 
     internal class Shared { }
+
+#pragma warning restore SA1402, SA1502
 }
