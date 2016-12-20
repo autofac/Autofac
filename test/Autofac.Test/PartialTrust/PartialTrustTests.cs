@@ -1,11 +1,12 @@
-﻿using System;
+﻿#if PARTIAL_TRUST
+using System;
 using System.Linq;
 using System.Security;
 using System.Security.Permissions;
-using Autofac.Net46.Test.Scenarios.Graph1;
+using Autofac.Test.Scenarios.Graph1;
 using Xunit;
 
-namespace Autofac.Net46.Test.PartialTrust
+namespace Autofac.Test.PartialTrust
 {
     /// <summary>
     /// Fixture containing the set of tests that will execute in partial trust.
@@ -78,3 +79,4 @@ namespace Autofac.Net46.Test.PartialTrust
         }
     }
 }
+#endif

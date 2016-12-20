@@ -16,15 +16,24 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6B324E70-6C86-4E09-B150-CAE9DD2BADCC}"
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
+		build.ps1 = build.ps1
 		global.json = global.json
 		NuGet.Config = NuGet.Config
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Autofac.Net46.Test", "test\Autofac.Net46.Test\Autofac.Net46.Test.xproj", "{ACFC71ED-10F9-4BA4-8BE4-91AA572B1520}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Test.Uwp.DeviceRunner", "test\Autofac.Test.Uwp.DeviceRunner\Autofac.Test.Uwp.DeviceRunner.csproj", "{13130CD5-8E37-4E3E-B924-533E2604A9EF}"
 	ProjectSection(ProjectDependencies) = postProject
 		{376ADF06-0774-4C00-AE45-4B0DF63779B2} = {376ADF06-0774-4C00-AE45-4B0DF63779B2}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{F65B03DB-7242-4C47-BB28-2079DC050CC9}"
+	ProjectSection(SolutionItems) = preProject
+		build\Analyzers.ruleset = build\Analyzers.ruleset
+		build\Autofac.Build.psd1 = build\Autofac.Build.psd1
+		build\Autofac.Build.psm1 = build\Autofac.Build.psm1
+		build\CodeAnalysisDictionary.xml = build\CodeAnalysisDictionary.xml
+		build\Documentation.proj = build\Documentation.proj
+		build\Documentation.shfbproj = build\Documentation.shfbproj
 	EndProjectSection
 EndProject
 Global
@@ -87,22 +96,6 @@ Global
 		{376ADF06-0774-4C00-AE45-4B0DF63779B2}.Release|x64.Build.0 = Release|Any CPU
 		{376ADF06-0774-4C00-AE45-4B0DF63779B2}.Release|x86.ActiveCfg = Release|Any CPU
 		{376ADF06-0774-4C00-AE45-4B0DF63779B2}.Release|x86.Build.0 = Release|Any CPU
-		{ACFC71ED-10F9-4BA4-8BE4-91AA572B1520}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ACFC71ED-10F9-4BA4-8BE4-91AA572B1520}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ACFC71ED-10F9-4BA4-8BE4-91AA572B1520}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{ACFC71ED-10F9-4BA4-8BE4-91AA572B1520}.Debug|ARM.Build.0 = Debug|Any CPU
-		{ACFC71ED-10F9-4BA4-8BE4-91AA572B1520}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{ACFC71ED-10F9-4BA4-8BE4-91AA572B1520}.Debug|x64.Build.0 = Debug|Any CPU
-		{ACFC71ED-10F9-4BA4-8BE4-91AA572B1520}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{ACFC71ED-10F9-4BA4-8BE4-91AA572B1520}.Debug|x86.Build.0 = Debug|Any CPU
-		{ACFC71ED-10F9-4BA4-8BE4-91AA572B1520}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ACFC71ED-10F9-4BA4-8BE4-91AA572B1520}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ACFC71ED-10F9-4BA4-8BE4-91AA572B1520}.Release|ARM.ActiveCfg = Release|Any CPU
-		{ACFC71ED-10F9-4BA4-8BE4-91AA572B1520}.Release|ARM.Build.0 = Release|Any CPU
-		{ACFC71ED-10F9-4BA4-8BE4-91AA572B1520}.Release|x64.ActiveCfg = Release|Any CPU
-		{ACFC71ED-10F9-4BA4-8BE4-91AA572B1520}.Release|x64.Build.0 = Release|Any CPU
-		{ACFC71ED-10F9-4BA4-8BE4-91AA572B1520}.Release|x86.ActiveCfg = Release|Any CPU
-		{ACFC71ED-10F9-4BA4-8BE4-91AA572B1520}.Release|x86.Build.0 = Release|Any CPU
 		{13130CD5-8E37-4E3E-B924-533E2604A9EF}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{13130CD5-8E37-4E3E-B924-533E2604A9EF}.Debug|ARM.ActiveCfg = Debug|ARM
 		{13130CD5-8E37-4E3E-B924-533E2604A9EF}.Debug|ARM.Build.0 = Debug|ARM
@@ -131,7 +124,6 @@ Global
 		{198CE8BE-0C4A-4DA6-8FFE-C5F949B2BBBF} = {5A54DF18-E3F3-4929-876D-00650A15763E}
 		{48EC73A9-9AA0-4063-9FEE-AE5BB43C66B0} = {DEA4A8C6-DE56-4359-A87C-472FB34132E7}
 		{376ADF06-0774-4C00-AE45-4B0DF63779B2} = {DEA4A8C6-DE56-4359-A87C-472FB34132E7}
-		{ACFC71ED-10F9-4BA4-8BE4-91AA572B1520} = {DEA4A8C6-DE56-4359-A87C-472FB34132E7}
 		{13130CD5-8E37-4E3E-B924-533E2604A9EF} = {DEA4A8C6-DE56-4359-A87C-472FB34132E7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

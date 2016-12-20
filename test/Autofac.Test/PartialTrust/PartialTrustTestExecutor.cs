@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if PARTIAL_TRUST
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -10,7 +11,7 @@ using System.Security.Permissions;
 using System.Web;
 using Xunit;
 
-namespace Autofac.Net46.Test.PartialTrust
+namespace Autofac.Test.PartialTrust
 {
     public class PartialTrustTestExecutor : IDisposable
     {
@@ -96,3 +97,4 @@ namespace Autofac.Net46.Test.PartialTrust
         }
     }
 }
+#endif

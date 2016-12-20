@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Autofac.Net46.Test.Scenarios
+namespace Autofac.Test.Util
 {
     public class DisposeTracker : IDisposable
     {
