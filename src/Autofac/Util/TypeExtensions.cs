@@ -74,6 +74,7 @@ namespace Autofac.Util
                 var parameterTypeInfo = parameter.GetTypeInfo();
 
                 if (argumentDefinitionTypeInfo.GetGenericParameterConstraints()
+                    .Select(constraint => SubstituteGenericParameterConstraint(parameters, constraint))
                     .Any(constraint => !ParameterCompatibleWithTypeConstraint(parameter, constraint)))
                 {
                     return false;
@@ -158,6 +159,12 @@ namespace Autofac.Util
         {
             return TypesAssignableFrom(candidateType)
                 .Where(t => t.IsClosedTypeOf(openGenericServiceType));
+        }
+
+        private static Type SubstituteGenericParameterConstraint(Type[] parameters, Type constraint)
+        {
+            if (!constraint.IsGenericParameter) return constraint;
+            return parameters[constraint.GenericParameterPosition];
         }
 
         private static bool ParameterCompatibleWithTypeConstraint(Type parameter, Type constraint)
