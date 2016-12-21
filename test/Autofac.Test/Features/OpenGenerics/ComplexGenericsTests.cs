@@ -220,7 +220,7 @@ namespace Autofac.Test.Features.OpenGenerics
             builder.RegisterGeneric(typeof(MultiConstrained<,>));
 
             var container = builder.Build();
-            
+
             Assert.True(container.IsRegistered<MultiConstrained<int, IConstrainedConstraintWithOnlyAddedArgument<string>>>());
         }
 
