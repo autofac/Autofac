@@ -220,8 +220,25 @@ namespace Autofac.Test.Features.OpenGenerics
             builder.RegisterGeneric(typeof(MultiConstrained<,>));
 
             var container = builder.Build();
-
+            
             Assert.True(container.IsRegistered<MultiConstrained<int, IConstrainedConstraintWithOnlyAddedArgument<string>>>());
+        }
+
+        public class ConstrainedWithGenericParameter<T1, T2>
+            where T1 : T2
+        {
+        }
+
+        [Fact]
+        public void CanResolveComponentWhenGenericParameterIsConstrainedWithOtherGenericParameter()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterGeneric(typeof(ConstrainedWithGenericParameter<,>));
+
+            var container = builder.Build();
+
+            Assert.True(container.IsRegistered<ConstrainedWithGenericParameter<int, object>>());
         }
 
         [Fact(Skip = "Issue #688")]
