@@ -1,0 +1,29 @@
+{
+  "buildOptions": {
+    "additionalArguments": [
+      "/ruleset:../../build/Analyzers.ruleset"
+    ],
+    "keyFile": "../../Autofac.snk"
+  },
+  "dependencies": {
+    "Autofac": { "target": "project" },
+    "dotnet-test-xunit": "2.2.0-*",
+    "xunit": "2.2.0-*",
+    "BenchmarkDotNet": "0.9.9"
+  },
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0"
+        }
+      },
+      "imports": [
+        "dnxcore50",
+        "portable-net45+win8"
+      ]
+    }
+  },
+  "testRunner": "xunit"
+}

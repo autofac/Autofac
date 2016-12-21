@@ -6,11 +6,10 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>acfc71ed-10f9-4ba4-8be4-91aa572b1520</ProjectGuid>
-    <RootNamespace>Autofac.Net46.Test</RootNamespace>
+    <ProjectGuid>d7a37f73-bba3-4dae-9648-1a753a86f968</ProjectGuid>
+    <RootNamespace>Autofac.Benchmarks</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
