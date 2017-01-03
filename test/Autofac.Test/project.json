@@ -27,6 +27,15 @@
           "version": "1.0.0"
         }
       }
+    },
+    "net46": {
+      "buildOptions": {
+        "define": [ "PARTIAL_TRUST" ]
+      },
+      "frameworkAssemblies": {
+        "System.Data": "4.0.0.0",
+        "System.ComponentModel.Composition": "4.0.0.0"
+      }
     }
   },
   "testRunner": "xunit"

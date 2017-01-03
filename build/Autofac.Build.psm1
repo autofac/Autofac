@@ -178,7 +178,7 @@ function Invoke-Test
   {
     foreach($Project in $ProjectDirectory)
     {
-      & dotnet test ("""" + $Project.FullName + """")
+      & dotnet test ("""" + $Project.FullName + """") --configuration Release
       if($LASTEXITCODE -ne 0)
       {
         exit 3
