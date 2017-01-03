@@ -79,7 +79,7 @@ namespace Autofac.Features.AttributeFilters
     /// </code>
     /// <para>
     /// When registering your components, the associated metadata on the dependencies will be used.
-    /// Be sure to specify the <see cref="RegistrationExtensions.WithAttributeFilter{TLimit, TReflectionActivatorData, TStyle}" />
+    /// Be sure to specify the <see cref="RegistrationExtensions.WithAttributeFiltering{TLimit, TReflectionActivatorData, TStyle}" />
     /// extension on the type with the filtered constructor parameters.
     /// </para>
     /// <code lang="C#">
@@ -100,18 +100,18 @@ namespace Autofac.Features.AttributeFilters
     /// </code>
     /// </example>
     [SuppressMessage("Microsoft.Design", "CA1018:MarkAttributesWithAttributeUsage", Justification = "Allowing the inherited AttributeUsageAttribute to be used avoids accidental override or conflict at this level.")]
-    public sealed class WithMetadataAttribute : ParameterFilterAttribute
+    public sealed class MetadataFilterAttribute : ParameterFilterAttribute
     {
-        private static readonly MethodInfo FilterOneMethod = typeof(WithMetadataAttribute).GetTypeInfo().GetDeclaredMethod(nameof(FilterOne));
+        private static readonly MethodInfo FilterOneMethod = typeof(MetadataFilterAttribute).GetTypeInfo().GetDeclaredMethod(nameof(FilterOne));
 
-        private static readonly MethodInfo FilterAllMethod = typeof(WithMetadataAttribute).GetTypeInfo().GetDeclaredMethod(nameof(FilterAll));
+        private static readonly MethodInfo FilterAllMethod = typeof(MetadataFilterAttribute).GetTypeInfo().GetDeclaredMethod(nameof(FilterAll));
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WithMetadataAttribute"/> class.
+        /// Initializes a new instance of the <see cref="MetadataFilterAttribute"/> class.
         /// </summary>
         /// <param name="key">The metadata key that the dependency should have in order to satisfy the parameter.</param>
         /// <param name="value">The metadata value that the dependency should have in order to satisfy the parameter.</param>
-        public WithMetadataAttribute(string key, object value)
+        public MetadataFilterAttribute(string key, object value)
         {
             Key = key;
             Value = value;

@@ -76,7 +76,7 @@ namespace Autofac.Features.AttributeFilters
     /// <para>
     /// When registering your components, the associated key on the
     /// dependencies will be used. Be sure to specify the
-    /// <see cref="RegistrationExtensions.WithAttributeFilter{TLimit, TReflectionActivatorData, TStyle}" />
+    /// <see cref="RegistrationExtensions.WithAttributeFiltering{TLimit, TReflectionActivatorData, TStyle}" />
     /// extension on the type with the filtered constructor parameters.
     /// </para>
     /// <code lang="C#">
@@ -97,13 +97,13 @@ namespace Autofac.Features.AttributeFilters
     /// </code>
     /// </example>
     [SuppressMessage("Microsoft.Design", "CA1018:MarkAttributesWithAttributeUsage", Justification = "Allowing the inherited AttributeUsageAttribute to be used avoids accidental override or conflict at this level.")]
-    public sealed class WithKeyAttribute : ParameterFilterAttribute
+    public sealed class KeyFilterAttribute : ParameterFilterAttribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="WithKeyAttribute"/> class.
+        /// Initializes a new instance of the <see cref="KeyFilterAttribute"/> class.
         /// </summary>
         /// <param name="key">The key that the dependency should have in order to satisfy the parameter.</param>
-        public WithKeyAttribute(object key)
+        public KeyFilterAttribute(object key)
         {
             Key = key;
         }

@@ -34,7 +34,7 @@ namespace Autofac.Test.Features.AttributeFilters
                 .Keyed<ILogger>("Other");
 
             builder.RegisterType<SolutionExplorerMixed>()
-                .WithAttributeFilter();
+                .WithAttributeFiltering();
 
             var container = builder.Build();
 
@@ -58,7 +58,7 @@ namespace Autofac.Test.Features.AttributeFilters
                 .Keyed<ILogger>("Other");
 
             builder.RegisterType<SolutionExplorerKeyed>()
-                .WithAttributeFilter();
+                .WithAttributeFiltering();
 
             var container = builder.Build();
             var explorer = container.Resolve<SolutionExplorerKeyed>();
@@ -81,7 +81,7 @@ namespace Autofac.Test.Features.AttributeFilters
                 .Keyed<IAdapter>("Other");
 
             builder.RegisterType<SolutionExplorerKeyed>()
-                .WithAttributeFilter();
+                .WithAttributeFiltering();
 
             var container = builder.Build();
 
@@ -105,7 +105,7 @@ namespace Autofac.Test.Features.AttributeFilters
                 .Keyed<ILogger>("Other");
 
             builder.RegisterType<ManagerWithLazySingle>()
-                .WithAttributeFilter();
+                .WithAttributeFiltering();
 
             var container = builder.Build();
             var resolved = container.Resolve<ManagerWithLazySingle>();
@@ -125,7 +125,7 @@ namespace Autofac.Test.Features.AttributeFilters
                 .Keyed<ILogger>("Other");
 
             builder.RegisterType<ManagerWithMetaSingle>()
-                .WithAttributeFilter();
+                .WithAttributeFiltering();
 
             var container = builder.Build();
 
@@ -146,7 +146,7 @@ namespace Autofac.Test.Features.AttributeFilters
                 .Keyed<ILogger>("Other");
 
             builder.RegisterType<ManagerWithOwnedSingle>()
-                .WithAttributeFilter();
+                .WithAttributeFiltering();
 
             var container = builder.Build();
 
@@ -170,7 +170,7 @@ namespace Autofac.Test.Features.AttributeFilters
                 .Keyed<ILogger>("Other");
 
             builder.RegisterType<ManagerWithLazyMany>()
-                .WithAttributeFilter();
+                .WithAttributeFiltering();
 
             var container = builder.Build();
 
@@ -194,7 +194,7 @@ namespace Autofac.Test.Features.AttributeFilters
                 .Keyed<ILogger>("Other");
 
             builder.RegisterType<ManagerWithMetaMany>()
-                .WithAttributeFilter();
+                .WithAttributeFiltering();
 
             var container = builder.Build();
 
@@ -217,7 +217,7 @@ namespace Autofac.Test.Features.AttributeFilters
                 .Keyed<ILogger>("Other");
 
             builder.RegisterType<ManagerWithOwnedMany>()
-                .WithAttributeFilter();
+                .WithAttributeFiltering();
 
             var container = builder.Build();
 
@@ -240,7 +240,7 @@ namespace Autofac.Test.Features.AttributeFilters
                 .As<ILogger>();
 
             builder.RegisterType<SolutionExplorerMetadata>()
-                .WithAttributeFilter();
+                .WithAttributeFiltering();
 
             var container = builder.Build();
 
@@ -266,7 +266,7 @@ namespace Autofac.Test.Features.AttributeFilters
                 .WithMetadata<AdapterMetadata>(m => m.For(am => am.Target, "Other"))
                 .As<IAdapter>();
 
-            builder.RegisterType<SolutionExplorerMetadata>().WithAttributeFilter();
+            builder.RegisterType<SolutionExplorerMetadata>().WithAttributeFiltering();
 
             var container = builder.Build();
 
@@ -300,7 +300,7 @@ namespace Autofac.Test.Features.AttributeFilters
                 .OnActivating(h => adapterActivationCount++);
 
             builder.RegisterType<SolutionExplorerMetadata>()
-                .WithAttributeFilter();
+                .WithAttributeFiltering();
 
             var container = builder.Build();
 
@@ -343,7 +343,7 @@ namespace Autofac.Test.Features.AttributeFilters
 
         public class ManagerWithLazySingle
         {
-            public ManagerWithLazySingle([WithKey("Manager")] Lazy<ILogger> logger)
+            public ManagerWithLazySingle([KeyFilter("Manager")] Lazy<ILogger> logger)
             {
                 Logger = logger;
             }
@@ -353,7 +353,7 @@ namespace Autofac.Test.Features.AttributeFilters
 
         public class ManagerWithMetaSingle
         {
-            public ManagerWithMetaSingle([WithKey("Manager")] Meta<ILogger, EmptyMetadata> logger)
+            public ManagerWithMetaSingle([KeyFilter("Manager")] Meta<ILogger, EmptyMetadata> logger)
             {
                 Logger = logger;
             }
@@ -363,7 +363,7 @@ namespace Autofac.Test.Features.AttributeFilters
 
         public class ManagerWithOwnedSingle
         {
-            public ManagerWithOwnedSingle([WithKey("Manager")] Owned<ILogger> logger)
+            public ManagerWithOwnedSingle([KeyFilter("Manager")] Owned<ILogger> logger)
             {
                 Logger = logger;
             }
@@ -373,7 +373,7 @@ namespace Autofac.Test.Features.AttributeFilters
 
         public class ManagerWithLazyMany
         {
-            public ManagerWithLazyMany([WithKey("Manager")] IEnumerable<Lazy<ILogger>> loggers)
+            public ManagerWithLazyMany([KeyFilter("Manager")] IEnumerable<Lazy<ILogger>> loggers)
             {
                 Loggers = loggers;
             }
@@ -383,7 +383,7 @@ namespace Autofac.Test.Features.AttributeFilters
 
         public class ManagerWithMetaMany
         {
-            public ManagerWithMetaMany([WithKey("Manager")] IEnumerable<Meta<ILogger, EmptyMetadata>> loggers)
+            public ManagerWithMetaMany([KeyFilter("Manager")] IEnumerable<Meta<ILogger, EmptyMetadata>> loggers)
             {
                 Loggers = loggers;
             }
@@ -393,7 +393,7 @@ namespace Autofac.Test.Features.AttributeFilters
 
         public class ManagerWithOwnedMany
         {
-            public ManagerWithOwnedMany([WithKey("Manager")] IEnumerable<Owned<ILogger>> loggers)
+            public ManagerWithOwnedMany([KeyFilter("Manager")] IEnumerable<Owned<ILogger>> loggers)
             {
                 Loggers = loggers;
             }
@@ -404,8 +404,8 @@ namespace Autofac.Test.Features.AttributeFilters
         public class SolutionExplorerKeyed
         {
             public SolutionExplorerKeyed(
-            [WithKey("Solution")] IEnumerable<IAdapter> adapters,
-            [WithKey("Solution")] ILogger logger)
+            [KeyFilter("Solution")] IEnumerable<IAdapter> adapters,
+            [KeyFilter("Solution")] ILogger logger)
             {
                 Adapters = adapters.ToList();
                 Logger = logger;
@@ -419,8 +419,8 @@ namespace Autofac.Test.Features.AttributeFilters
         public class SolutionExplorerMetadata
         {
             public SolutionExplorerMetadata(
-            [WithMetadata("Target", "Solution")] IEnumerable<IAdapter> adapters,
-            [WithMetadata("LoggerName", "Solution")] ILogger logger)
+            [MetadataFilter("Target", "Solution")] IEnumerable<IAdapter> adapters,
+            [MetadataFilter("LoggerName", "Solution")] ILogger logger)
             {
                 Adapters = adapters.ToList();
                 Logger = logger;
@@ -434,8 +434,8 @@ namespace Autofac.Test.Features.AttributeFilters
         public class SolutionExplorerMixed
         {
             public SolutionExplorerMixed(
-            [WithMetadata("Target", "Solution")] IEnumerable<IAdapter> adapters,
-            [WithKey("Solution")] ILogger logger)
+            [MetadataFilter("Target", "Solution")] IEnumerable<IAdapter> adapters,
+            [KeyFilter("Solution")] ILogger logger)
             {
                 Adapters = adapters.ToList();
                 Logger = logger;

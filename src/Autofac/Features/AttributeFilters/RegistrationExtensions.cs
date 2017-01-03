@@ -51,15 +51,15 @@ namespace Autofac.Features.AttributeFilters
         /// <para>
         /// Apply this extension to component registrations that use attributes
         /// that derive from the <see cref="ParameterFilterAttribute"/>
-        /// like the <see cref="WithMetadataAttribute"/>
+        /// like the <see cref="MetadataFilterAttribute"/>
         /// in their constructors. Doing so will allow the attribute-based filtering to occur. See
-        /// <see cref="WithMetadataAttribute"/> for an
+        /// <see cref="MetadataFilterAttribute"/> for an
         /// example on how to use the filter and attribute together.
         /// </para>
         /// </remarks>
-        /// <seealso cref="WithMetadataAttribute"/>
+        /// <seealso cref="MetadataFilterAttribute"/>
         public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TRegistrationStyle>
-            WithAttributeFilter<TLimit, TReflectionActivatorData, TRegistrationStyle>(
+            WithAttributeFiltering<TLimit, TReflectionActivatorData, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TReflectionActivatorData, TRegistrationStyle> builder)
             where TReflectionActivatorData : ReflectionActivatorData
         {

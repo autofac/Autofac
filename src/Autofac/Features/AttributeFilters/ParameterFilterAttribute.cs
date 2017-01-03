@@ -36,23 +36,23 @@ namespace Autofac.Features.AttributeFilters
     /// <para>
     /// Implementations of this attribute can be used to mark constructor parameters
     /// so filtering can be done based on registered service data. For example, the
-    /// <see cref="WithMetadataAttribute"/> allows constructor
+    /// <see cref="MetadataFilterAttribute"/> allows constructor
     /// parameters to be filtered by registered metadata criteria and the
-    /// <see cref="WithKeyAttribute"/> allows constructor
+    /// <see cref="KeyFilterAttribute"/> allows constructor
     /// parameters to be filtered by a keyed service registration.
     /// </para>
     /// <para>
     /// If a type uses these attributes, it should be registered with Autofac
     /// using the
-    /// <see cref="RegistrationExtensions.WithAttributeFilter{TLimit, TReflectionActivatorData, TStyle}" />
+    /// <see cref="RegistrationExtensions.WithAttributeFiltering{TLimit, TReflectionActivatorData, TStyle}" />
     /// extension to enable the behavior.
     /// </para>
     /// <para>
     /// For specific attribute usage examples, see the attribute documentation.
     /// </para>
     /// </remarks>
-    /// <seealso cref="WithMetadataAttribute"/>
-    /// <seealso cref="WithKeyAttribute"/>
+    /// <seealso cref="MetadataFilterAttribute"/>
+    /// <seealso cref="KeyFilterAttribute"/>
     [AttributeUsage(AttributeTargets.Parameter)]
     public abstract class ParameterFilterAttribute : Attribute
     {
