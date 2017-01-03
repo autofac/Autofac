@@ -40,8 +40,8 @@ namespace Autofac.Core.Activators.Reflection
     public class ReflectionActivator : InstanceActivator, IInstanceActivator
     {
         private readonly Type _implementationType;
-        private readonly IEnumerable<Parameter> _configuredProperties;
-        private readonly IEnumerable<Parameter> _defaultParameters;
+        private readonly Parameter[] _configuredProperties;
+        private readonly Parameter[] _defaultParameters;
         private readonly ConstructorInfo[] _availableConstructors;
 
         /// <summary>
@@ -68,9 +68,9 @@ namespace Autofac.Core.Activators.Reflection
             _implementationType = implementationType;
             ConstructorFinder = constructorFinder;
             ConstructorSelector = constructorSelector;
-            _configuredProperties = configuredProperties;
+            _configuredProperties = configuredProperties.ToArray();
 
-            _defaultParameters = configuredParameters.Concat(new Parameter[] { new AutowiringParameter(), new DefaultValueParameter() });
+            _defaultParameters = configuredParameters.Concat(new Parameter[] { new AutowiringParameter(), new DefaultValueParameter() }).ToArray();
 
             _availableConstructors = ConstructorFinder.FindConstructors(_implementationType);
         }
@@ -103,17 +103,7 @@ namespace Autofac.Core.Activators.Reflection
             if (_availableConstructors.Length == 0)
                 throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, ReflectionActivatorResources.NoConstructorsAvailable, _implementationType, ConstructorFinder));
 
-            var constructorBindings = GetConstructorBindings(
-                context,
-                parameters,
-                _availableConstructors);
-
-            var validBindings = constructorBindings
-                .Where(cb => cb.CanInstantiate)
-                .ToArray();
-
-            if (validBindings.Length == 0)
-                throw new DependencyResolutionException(GetBindingFailureMessage(constructorBindings));
+            var validBindings = GetValidConstructorBindings(context, parameters);
 
             var selectedBinding = ConstructorSelector.SelectConstructorBinding(validBindings);
 
@@ -122,6 +112,40 @@ namespace Autofac.Core.Activators.Reflection
             InjectProperties(instance, context);
 
             return instance;
+        }
+
+        private ConstructorParameterBinding[] GetValidConstructorBindings(IComponentContext context, IEnumerable<Parameter> parameters)
+        {
+            // Most often, there will be no `parameters` and/or no `_defaultParameters`; in both of those cases we can avoid allocating.
+            var prioritisedParameters = parameters.Any() ?
+                (_defaultParameters.Length == 0 ? parameters : parameters.Concat(_defaultParameters)) :
+                _defaultParameters;
+
+            var constructorBindings = new ConstructorParameterBinding[_availableConstructors.Length];
+            for (var i = 0; i < _availableConstructors.Length; ++i)
+            {
+                constructorBindings[i] = new ConstructorParameterBinding(_availableConstructors[i], prioritisedParameters, context);
+            }
+
+            // Copy-on-write; 99% of components will have a single constructor that can be instantiated.
+            var validBindings = constructorBindings;
+            for (var i = 0; i < constructorBindings.Length; ++i)
+            {
+                if (!constructorBindings[i].CanInstantiate)
+                {
+                    // Further optimisation opportunity here
+                    validBindings = constructorBindings
+                        .Where(cb => cb.CanInstantiate)
+                        .ToArray();
+
+                    break;
+                }
+            }
+
+            if (validBindings.Length == 0)
+                throw new DependencyResolutionException(GetBindingFailureMessage(constructorBindings));
+
+            return validBindings;
         }
 
         private string GetBindingFailureMessage(IEnumerable<ConstructorParameterBinding> constructorBindings)
@@ -142,19 +166,9 @@ namespace Autofac.Core.Activators.Reflection
                 reasons);
         }
 
-        private IEnumerable<ConstructorParameterBinding> GetConstructorBindings(
-            IComponentContext context,
-            IEnumerable<Parameter> parameters,
-            IEnumerable<ConstructorInfo> constructorInfo)
-        {
-            var prioritisedParameters = parameters.Concat(_defaultParameters);
-
-            return constructorInfo.Select(ci => new ConstructorParameterBinding(ci, prioritisedParameters, context));
-        }
-
         private void InjectProperties(object instance, IComponentContext context)
         {
-            if (!_configuredProperties.Any())
+            if (_configuredProperties.Length == 0)
                 return;
 
             var actualProperties = instance

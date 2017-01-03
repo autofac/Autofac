@@ -35,5 +35,11 @@ namespace Autofac.Benchmarks
         {
             BenchmarkRunner.Run<RootContainerResolveBenchmark>();
         }
+
+        [Fact]
+        public void DeepGraphResolve()
+        {
+            BenchmarkRunner.Run<DeepGraphResolveBenchmark>();
+        }
     }
 }
