@@ -31,7 +31,7 @@ using Autofac.Core;
 namespace Autofac
 {
     /// <summary>
-    /// Base class for user-defined modules. Modules can add a set of releated components
+    /// Base class for user-defined modules. Modules can add a set of related components
     /// to a container (<see cref="Module.Load"/>) or attach cross-cutting functionality
     /// to other components (<see cref="Module.AttachToComponentRegistration"/>.
     /// Modules are given special support in the XML configuration feature - see
