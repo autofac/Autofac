@@ -81,6 +81,30 @@ namespace Autofac.Test.Features.LightweightAdapters
             }
         }
 
+        public class DecoratingServiceThatHasDefaultImplementation
+        {
+            readonly IContainer _container;
+
+            public DecoratingServiceThatHasDefaultImplementation()
+            {
+                const string from = "from";
+                var builder = new ContainerBuilder();
+
+                builder.RegisterType<Implementer1>().As<IService>().Named<IService>(from);
+                builder.RegisterDecorator<IService>(s => new Decorator(s), from);
+
+                _container = builder.Build();
+            }
+
+            [Fact(Skip = "Issue #529")]
+            public void InstanceWithDefaultImplementationIsDecorated()
+            {
+                var decorator = _container.Resolve<IService>();
+                Assert.IsType<Decorator>(decorator);
+                Assert.IsType<Implementer1>(((Decorator)decorator).Decorated);
+            }
+        }
+
         public interface IService
         {
         }
