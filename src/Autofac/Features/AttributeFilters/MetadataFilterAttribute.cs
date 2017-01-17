@@ -56,7 +56,7 @@ namespace Autofac.Features.AttributeFilters
     /// <code lang="C#">
     /// public class Manager
     /// {
-    ///   public Manager([WithMetadata("LoggerName", "Manager")] ILogger logger)
+    ///   public Manager([MetadataFilter("LoggerName", "Manager")] ILogger logger)
     ///   {
     ///     // ...
     ///   }
@@ -69,8 +69,8 @@ namespace Autofac.Features.AttributeFilters
     /// public class SolutionExplorer
     /// {
     ///   public SolutionExplorer(
-    ///     [WithMetadata("Target", "Solution")] IEnumerable&lt;IAdapter&gt; adapters,
-    ///     [WithMetadata("LoggerName", "Solution")] ILogger logger)
+    ///     [MetadataFilter("Target", "Solution")] IEnumerable&lt;IAdapter&gt; adapters,
+    ///     [MetadataFilter("LoggerName", "Solution")] ILogger logger)
     ///   {
     ///     this.Adapters = adapters.ToList();
     ///     this.Logger = logger;
@@ -84,14 +84,13 @@ namespace Autofac.Features.AttributeFilters
     /// </para>
     /// <code lang="C#">
     /// var builder = new ContainerBuilder();
-    /// builder.RegisterModule(new AttributedMetadataModule());
     ///
     /// // Attach metadata to the components getting filtered
     /// builder.RegisterType&lt;ConsoleLogger&gt;().WithMetadata(&quot;LoggerName&quot;, &quot;Solution&quot;).As&lt;ILogger&gt;();
     /// builder.RegisterType&lt;FileLogger&gt;().WithMetadata(&quot;LoggerName&quot;, &quot;Other&quot;).As&lt;ILogger&gt;();
     ///
     /// // Attach the filtering behavior to the component with the constructor
-    /// builder.RegisterType&lt;SolutionExplorer&gt;().WithAttributeFilter();
+    /// builder.RegisterType&lt;SolutionExplorer&gt;().WithAttributeFiltering();
     ///
     /// var container = builder.Build();
     ///

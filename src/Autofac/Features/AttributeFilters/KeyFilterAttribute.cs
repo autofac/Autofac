@@ -52,7 +52,7 @@ namespace Autofac.Features.AttributeFilters
     /// <code lang="C#">
     /// public class Manager
     /// {
-    ///   public Manager([WithKey("Manager")] ILogger logger)
+    ///   public Manager([KeyFilter("Manager")] ILogger logger)
     ///   {
     ///     // ...
     ///   }
@@ -65,8 +65,8 @@ namespace Autofac.Features.AttributeFilters
     /// public class SolutionExplorer
     /// {
     ///   public SolutionExplorer(
-    ///     [WithKey("Solution")] IEnumerable&lt;IAdapter&gt; adapters,
-    ///     [WithKey("Solution")] ILogger logger)
+    ///     [KeyFilter("Solution")] IEnumerable&lt;IAdapter&gt; adapters,
+    ///     [KeyFilter("Solution")] ILogger logger)
     ///   {
     ///     this.Adapters = adapters.ToList();
     ///     this.Logger = logger;
@@ -81,14 +81,13 @@ namespace Autofac.Features.AttributeFilters
     /// </para>
     /// <code lang="C#">
     /// var builder = new ContainerBuilder();
-    /// builder.RegisterModule(new AttributedMetadataModule());
     ///
     /// // Register the components getting filtered with keys
     /// builder.RegisterType&lt;ConsoleLogger&gt;().Keyed&lt;ILogger&gt;(&quot;Solution&quot;);
     /// builder.RegisterType&lt;FileLogger&gt;().Keyed&lt;ILogger&gt;(&quot;Other&quot;);
     ///
     /// // Attach the filtering behavior to the component with the constructor
-    /// builder.RegisterType&lt;SolutionExplorer&gt;().WithAttributeFilter();
+    /// builder.RegisterType&lt;SolutionExplorer&gt;().WithAttributeFiltering();
     ///
     /// var container = builder.Build();
     ///
