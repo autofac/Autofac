@@ -83,7 +83,7 @@ namespace Autofac.Test.Features.LightweightAdapters
 
         public class DecoratingServiceThatHasDefaultImplementation
         {
-            readonly IContainer _container;
+            private readonly IContainer _container;
 
             public DecoratingServiceThatHasDefaultImplementation()
             {
