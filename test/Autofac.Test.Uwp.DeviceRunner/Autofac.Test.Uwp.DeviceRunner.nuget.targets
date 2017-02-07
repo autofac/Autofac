@@ -4,6 +4,6 @@
     <NuGetPackageRoot>$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
   </PropertyGroup>
   <ImportGroup>
-    <Import Project="$(NuGetPackageRoot)xunit.runner.devices\2.1.0\build\uap10.0\xunit.runner.devices.targets" Condition="Exists('$(NuGetPackageRoot)xunit.runner.devices\2.1.0\build\uap10.0\xunit.runner.devices.targets')" />
+    <Import Project="$(NuGetPackageRoot)\xunit.runner.devices\2.1.0\build\uap10.0\xunit.runner.devices.targets" Condition="Exists('$(NuGetPackageRoot)\xunit.runner.devices\2.1.0\build\uap10.0\xunit.runner.devices.targets')" />
   </ImportGroup>
 </Project>
