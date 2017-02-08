@@ -32,6 +32,7 @@ x64/
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
 *.TestResults.xml
+results/
 
 *_i.c
 *_p.c
