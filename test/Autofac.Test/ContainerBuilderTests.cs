@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.Indexed;
@@ -198,7 +197,6 @@ namespace Autofac.Test
             IComponentRegistration registration;
             Assert.True(container.ComponentRegistry.TryGetRegistration(new TypedService(typeof(object)), out registration));
 
-            Assert.Equal(3, registration.Metadata.Count); // Two plus one default.
             Assert.True(registration.Metadata.Contains(p1));
             Assert.True(registration.Metadata.Contains(p2));
         }

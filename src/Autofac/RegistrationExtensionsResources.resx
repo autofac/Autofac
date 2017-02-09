@@ -129,4 +129,7 @@
   <data name="NoMatchingConstructorExists" xml:space="preserve">
     <value>No matching constructor exists on type '{0}'.</value>
   </data>
+  <data name="OnlyIfRequiresCallbackContainer" xml:space="preserve">
+    <value>You can only attach a registration predicate to a registration that has a callback container attached (e.g., one that was made with a standard ContainerBuilder extension method).</value>
+  </data>
 </root>

@@ -46,7 +46,7 @@ namespace Autofac.Features.Scanning
                 new ScanningActivatorData(),
                 new DynamicRegistrationStyle());
 
-            builder.RegisterCallback(cr => ScanAssemblies(assemblies, cr, rb));
+            rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => ScanAssemblies(assemblies, cr, rb));
 
             return rb;
         }
@@ -62,7 +62,7 @@ namespace Autofac.Features.Scanning
                 new ScanningActivatorData(),
                 new DynamicRegistrationStyle());
 
-            builder.RegisterCallback(cr => ScanTypes(types, cr, rb));
+            rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => ScanTypes(types, cr, rb));
 
             return rb;
         }

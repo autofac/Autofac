@@ -136,6 +136,15 @@ namespace Autofac.Builder
         public IDictionary<string, object> Metadata { get; }
 
         /// <summary>
+        /// Gets or sets the callback used to register this component.
+        /// </summary>
+        /// <value>
+        /// A <see cref="Builder.DeferredCallback"/> that contains the delegate
+        /// used to register this component with an <see cref="IComponentRegistry"/>.
+        /// </value>
+        public DeferredCallback DeferredCallback { get; set; }
+
+        /// <summary>
         /// Gets the handlers for the Preparing event.
         /// </summary>
         public ICollection<EventHandler<PreparingEventArgs>> PreparingHandlers { get; } = new List<EventHandler<PreparingEventArgs>>();
