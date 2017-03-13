@@ -6,6 +6,8 @@ environment:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   NUGET_XMLDOC_MODE: skip
 
+skip_tags: true
+
 nuget:
   disable_publish_on_pr: true
 
