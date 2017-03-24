@@ -277,7 +277,7 @@ namespace Autofac.Test.Core.Activators.Reflection
             var parameters = new Parameter[]
             {
                 new NamedParameter("i", 1),
-                new NamedParameter("s", "str")
+                new NamedParameter("s", "str"),
             };
 
             var target = Factory.CreateReflectionActivator(typeof(ThreeConstructors), parameters);
@@ -415,7 +415,7 @@ namespace Autofac.Test.Core.Activators.Reflection
             var properties = new[]
             {
                 new NamedPropertyParameter("P1", p1),
-                new NamedPropertyParameter("P2", p2)
+                new NamedPropertyParameter("P2", p2),
             };
             var target = Factory.CreateReflectionActivator(typeof(R), Enumerable.Empty<Parameter>(), properties);
             var instance = (R)target.ActivateInstance(new ContainerBuilder().Build(), Enumerable.Empty<Parameter>());

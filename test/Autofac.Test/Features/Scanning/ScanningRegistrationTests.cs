@@ -402,7 +402,6 @@ namespace Autofac.Test.Features.Scanning
             return cb.Build();
         }
 
-        // ReSharper disable ClassNeverInstantiated.Local
         /// <summary>
         /// Test class used in the <see cref="ScanningRegistrationTests.PreserveExistingDefaults"/> test case.
         /// </summary>

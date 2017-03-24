@@ -77,7 +77,7 @@ namespace Autofac.Test.PartialTrust
             var info = new AppDomainSetup
             {
                 ApplicationBase = AppDomain.CurrentDomain.BaseDirectory,
-                PrivateBinPath = AppDomain.CurrentDomain.RelativeSearchPath
+                PrivateBinPath = AppDomain.CurrentDomain.RelativeSearchPath,
             };
 
             // Grant set is the same set of permissions as ASP.NET medium trust EXCEPT

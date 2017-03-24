@@ -91,7 +91,7 @@ namespace Autofac.Test
         {
             return new Dictionary<string, object>
             {
-                { MetadataKeys.RegistrationOrderMetadataKey, SequenceGenerator.GetNextUniqueSequence() }
+                { MetadataKeys.RegistrationOrderMetadataKey, SequenceGenerator.GetNextUniqueSequence() },
             };
         }
 

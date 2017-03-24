@@ -14,7 +14,7 @@ namespace Autofac.Test.Features.LightweightAdapters
             private readonly IEnumerable<Command> _commands = new[]
             {
                 new Command(),
-                new Command()
+                new Command(),
             };
 
             private readonly IEnumerable<IToolbarButton> _toolbarButtons;

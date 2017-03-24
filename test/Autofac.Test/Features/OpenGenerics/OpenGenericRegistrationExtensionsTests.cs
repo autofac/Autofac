@@ -111,11 +111,11 @@ namespace Autofac.Test.Features.OpenGenerics
             Assert.Throws<ArgumentException>(() => cb.RegisterGeneric(typeof(List<int>)));
         }
 
-        public interface ITwoParams<T, U>
+        public interface ITwoParams<T, TU>
         {
         }
 
-        public class TwoParams<T, U> : ITwoParams<T, U>
+        public class TwoParams<T, TU> : ITwoParams<T, TU>
         {
         }
 

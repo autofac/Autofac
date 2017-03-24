@@ -62,7 +62,7 @@ namespace Autofac.Features.GeneratedFactories
                     {
                         activatorContextParam,
                         Expression.Constant(service, typeof(Service)),
-                        Expression.NewArrayInit(typeof(Parameter), resolveParameterArray)
+                        Expression.NewArrayInit(typeof(Parameter), resolveParameterArray),
                     };
 
                     // c.Resolve(...)
@@ -93,7 +93,7 @@ namespace Autofac.Features.GeneratedFactories
                     var resolveParams = new Expression[]
                     {
                         Expression.Constant(productRegistration, typeof(IComponentRegistration)),
-                        Expression.NewArrayInit(typeof(Parameter), resolveParameterArray)
+                        Expression.NewArrayInit(typeof(Parameter), resolveParameterArray),
                     };
 
                     // c.Resolve(...)

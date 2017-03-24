@@ -117,11 +117,11 @@ namespace Autofac.Test.Features.OpenGenerics
             return rs.Count() == 1;
         }
 
-        public interface ITwoParams<T, U>
+        public interface ITwoParams<T, TU>
         {
         }
 
-        public class TwoParams<T, U> : ITwoParams<T, U>
+        public class TwoParams<T, TU> : ITwoParams<T, TU>
         {
         }
 
@@ -176,15 +176,15 @@ namespace Autofac.Test.Features.OpenGenerics
         {
         }
 
-        public interface IHaveTwoParameters<T, U>
+        public interface IHaveTwoParameters<T, TU>
         {
         }
 
-        public interface IHaveThreeParameters<T, U, V>
+        public interface IHaveThreeParameters<T, TU, TV>
         {
         }
 
-        public class HaveTwoParameters<T, U> : IHaveThreeParameters<T, U, U>, IHaveTwoParameters<T, T>, IHaveOneParameter<T>, IHaveNoParameters
+        public class HaveTwoParameters<T, TU> : IHaveThreeParameters<T, TU, TU>, IHaveTwoParameters<T, T>, IHaveOneParameter<T>, IHaveNoParameters
         {
         }
 

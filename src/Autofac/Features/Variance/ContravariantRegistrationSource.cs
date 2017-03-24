@@ -160,7 +160,7 @@ namespace Autofac.Features.Variance
                     {
                         IsContravariant = (c.GetTypeInfo().GenericParameterAttributes & GenericParameterAttributes.Contravariant) !=
                         GenericParameterAttributes.None,
-                        Index = i
+                        Index = i,
                     })
                     .Where(cwi => cwi.IsContravariant)
                     .ToArray();

@@ -494,7 +494,7 @@ namespace Autofac.Test.Builder
 
             var obj = new WithPropInjection
             {
-                Prop = otherStr
+                Prop = otherStr,
             };
 
             Assert.Equal(otherStr, obj.Prop);

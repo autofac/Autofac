@@ -24,7 +24,7 @@ namespace Autofac.Test.Features.OpenGenerics
         {
         }
 
-        public interface INested<T, D>
+        public interface INested<T, TD>
         {
         }
 
