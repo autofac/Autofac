@@ -63,6 +63,7 @@ namespace Autofac
     public class ContainerBuilder
     {
         private readonly IList<DeferredCallback> _configurationCallbacks = new List<DeferredCallback>();
+        private readonly IList<Action<IContainer>> _buildCallbacks = new List<Action<IContainer>>();
         private bool _wasBuilt;
 
         /// <summary>
@@ -106,6 +107,20 @@ namespace Autofac
         }
 
         /// <summary>
+        /// Register a callback that will be invoked when the container is built.
+        /// </summary>
+        /// <param name="buildCallback">Callback to execute.</param>
+        /// <returns>The <see cref="ContainerBuilder"/> instance to continue registration calls.</returns>
+        public ContainerBuilder RegisterBuildCallback(Action<IContainer> buildCallback)
+        {
+            if (buildCallback == null) throw new ArgumentNullException(nameof(buildCallback));
+
+            _buildCallbacks.Add(buildCallback);
+
+            return this;
+        }
+
+        /// <summary>
         /// Create a new container with the component registrations that have been made.
         /// </summary>
         /// <param name="options">Options that influence the way the container is initialised.</param>
@@ -121,8 +136,13 @@ namespace Autofac
         {
             var result = new Container(Properties);
             Build(result.ComponentRegistry, (options & ContainerBuildOptions.ExcludeDefaultModules) != ContainerBuildOptions.None);
+
             if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
                 StartStartableComponents(result);
+
+            foreach (var buildCallback in _buildCallbacks)
+                buildCallback(result);
+
             return result;
         }
 

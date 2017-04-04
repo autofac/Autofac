@@ -553,5 +553,41 @@ namespace Autofac.Test
 
             Assert.Equal(2, container.ComponentRegistry.Properties["count"]);
         }
+
+        [Fact]
+        public void RegisterBuildCallbackThrowsWhenProvidedNullCallback()
+        {
+            var builder = new ContainerBuilder();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => builder.RegisterBuildCallback(null));
+
+            Assert.Equal("buildCallback", exception.ParamName);
+        }
+
+        [Fact]
+        public void RegisterBuildCallbackReturnsBuilderInstance()
+        {
+            var builder = new ContainerBuilder();
+
+            Assert.Same(builder, builder.RegisterBuildCallback(c => { }));
+        }
+
+        [Fact]
+        public void BuildCallbacksInvokedWhenContainerBuilt()
+        {
+            var called = 0;
+
+            void BuildCallback(IContainer c)
+            {
+                called++;
+            }
+
+            new ContainerBuilder()
+                .RegisterBuildCallback(BuildCallback)
+                .RegisterBuildCallback(BuildCallback)
+                .Build();
+
+            Assert.Equal(2, called);
+        }
     }
 }
