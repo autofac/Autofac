@@ -308,9 +308,15 @@ namespace Autofac.Core.Lifetime
             if (disposing)
             {
                 var handler = CurrentScopeEnding;
-                handler?.Invoke(this, new LifetimeScopeEndingEventArgs(this));
 
-                Disposer.Dispose();
+                try
+                {
+                    handler?.Invoke(this, new LifetimeScopeEndingEventArgs(this));
+                }
+                finally
+                {
+                    Disposer.Dispose();
+                }
 
                 // ReSharper disable once InconsistentlySynchronizedField
                 _sharedInstances.Clear();
