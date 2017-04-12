@@ -515,5 +515,32 @@ namespace Autofac.Test.Core.Lifetime
                 }
             }
         }
+
+        class HandlerException : Exception
+        {
+        }
+
+        [Fact]
+        public void ContainerIsDisposedEvenIfHandlerThrowsException()
+        {
+            var rootScope = new ContainerBuilder().Build();
+
+            var nestedScope = rootScope.BeginLifetimeScope(cb =>
+                cb.RegisterType<DisposeTracker>().SingleInstance());
+
+            nestedScope.CurrentScopeEnding += (sender, args) => throw new HandlerException();
+
+            var dt = nestedScope.Resolve<DisposeTracker>();
+
+            try
+            {
+                nestedScope.Dispose();
+            }
+            catch (HandlerException)
+            {
+            }
+
+            Assert.True(dt.IsDisposed);
+        }
     }
 }
