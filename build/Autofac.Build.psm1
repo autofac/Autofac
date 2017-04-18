@@ -145,9 +145,9 @@ function Invoke-DotNetPack
     $PackagesPath,
 
     [Parameter(Mandatory=$True, ValueFromPipeline=$False)]
-    [ValidateNotNull()]
-    [System.IO.DirectoryInfo]
-    $VersionSuffix
+    [AllowEmptyString()]
+    [string]
+    $VersionSuffix = ""
   )
   Begin
   {
@@ -157,8 +157,27 @@ function Invoke-DotNetPack
   {
     foreach($Project in $ProjectDirectory)
     {
-      & dotnet build ("""" + $Project.FullName + """") --configuration Release --version-suffix $VersionSuffix
-      & dotnet pack ("""" + $Project.FullName + """") --configuration Release --version-suffix $VersionSuffix --include-symbols --output $PackagesPath
+      if ($VersionSuffix -eq "")
+      {
+        & dotnet build ("""" + $Project.FullName + """") --configuration Release
+      }
+      else
+      {
+        & dotnet build ("""" + $Project.FullName + """") --configuration Release --version-suffix $VersionSuffix
+      }
+      if ($LASTEXITCODE -ne 0)
+      {
+        exit 1
+      }
+
+      if ($VersionSuffix -eq "")
+      {
+        & dotnet pack ("""" + $Project.FullName + """") --configuration Release --include-symbols --output $PackagesPath
+      }
+      else
+      {
+        & dotnet pack ("""" + $Project.FullName + """") --configuration Release --version-suffix $VersionSuffix --include-symbols --output $PackagesPath
+      }
       if ($LASTEXITCODE -ne 0)
       {
         exit 1
