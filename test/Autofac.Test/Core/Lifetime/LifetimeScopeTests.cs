@@ -150,20 +150,6 @@ namespace Autofac.Test.Core.Lifetime
             }
         }
 
-        [Fact(Skip = "Issue #397 needs to be well thought-out due to possible memory leaks. Initial fix rolled out.")]
-        public void NestedLifetimeScopesGetDisposedWhenParentIsDisposed()
-        {
-            var builder = new ContainerBuilder();
-            var container = builder.Build();
-            var l1 = container.BeginLifetimeScope();
-            var l2 = l1.BeginLifetimeScope();
-            var l3 = l2.BeginLifetimeScope(b => b.RegisterType<DisposeTracker>());
-            var tracker = l3.Resolve<DisposeTracker>();
-            Assert.False(tracker.IsDisposed, "The tracker should not yet be disposed.");
-            container.Dispose();
-            Assert.True(tracker.IsDisposed, "The tracker should have been disposed along with the lifetime scope chain.");
-        }
-
         [Fact]
         public void TwoRegistrationsSameServicesDifferentLifetimeScopes()
         {
