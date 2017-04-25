@@ -241,16 +241,15 @@ namespace Autofac.Test.Features.OpenGenerics
             Assert.True(container.IsRegistered<ConstrainedWithGenericParameter<int, object>>());
         }
 
-        [Fact(Skip = "Issue #688")]
+        [Fact]
         public void GenericArgumentArityDifference()
         {
+            // Issue #688
             var builder = new ContainerBuilder();
             builder.RegisterGeneric(typeof(CDerivedSingle<>)).AsImplementedInterfaces();
             var container = builder.Build();
-
-            // This should fill in IDouble<double, int>, but per issue #688
-            // it throws an ArgumentException.
-            container.Resolve<ISingle<double>>();
+            Assert.IsType<CDerivedSingle<double>>(container.Resolve<ISingle<double>>());
+            Assert.IsType<CDerivedSingle<double>>(container.Resolve<IDouble<double, int>>());
         }
 
         [Fact]

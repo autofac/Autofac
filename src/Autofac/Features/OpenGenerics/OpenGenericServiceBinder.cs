@@ -58,12 +58,15 @@ namespace Autofac.Features.OpenGenerics
                         openGenericImplementationType.IsCompatibleWithGenericParameterConstraints(implementorGenericArguments))
                     {
                         var constructedImplementationTypeTmp = openGenericImplementationType.MakeGenericType(implementorGenericArguments);
+                        var constructedImplementationTypeTmpInfo = constructedImplementationTypeTmp.GetTypeInfo();
 
-                        // This needs looking at
-                        var implementedServices = (from IServiceWithType s in configuredOpenGenericServices
-                                                   let genericService = s.ServiceType.MakeGenericType(serviceGenericArguments)
-                                                   where genericService.GetTypeInfo().IsAssignableFrom(constructedImplementationTypeTmp.GetTypeInfo())
-                                                   select s.ChangeType(genericService)).ToArray();
+                        var implementedServices = configuredOpenGenericServices
+                            .Cast<IServiceWithType>()
+                            .Where(s => s.ServiceType.GetTypeInfo().GenericTypeParameters.Length == serviceGenericArguments.Length)
+                            .Select(s => new { ServiceWithType = s, GenericService = s.ServiceType.MakeGenericType(serviceGenericArguments) })
+                            .Where(p => p.GenericService.GetTypeInfo().IsAssignableFrom(constructedImplementationTypeTmpInfo))
+                            .Select(p => p.ServiceWithType.ChangeType(p.GenericService))
+                            .ToArray();
 
                         if (implementedServices.Length > 0)
                         {
