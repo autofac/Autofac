@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
@@ -42,9 +43,27 @@ namespace Autofac.Core.Lifetime
         /// <param name="lifetimeScopeTagsToMatch">The tags applied to matching scopes.</param>
         public MatchingScopeLifetime(params object[] lifetimeScopeTagsToMatch)
         {
-            if (lifetimeScopeTagsToMatch == null) throw new ArgumentNullException(nameof(lifetimeScopeTagsToMatch));
+            if (lifetimeScopeTagsToMatch == null)
+            {
+                throw new ArgumentNullException(nameof(lifetimeScopeTagsToMatch));
+            }
 
-            _tagsToMatch = lifetimeScopeTagsToMatch;
+            this._tagsToMatch = lifetimeScopeTagsToMatch;
+        }
+
+        /// <summary>
+        /// Gets the list of lifetime scope tags to match.
+        /// </summary>
+        /// <value>
+        /// An <see cref="IEnumerable{T}"/> of object tags to match
+        /// when searching for the lifetime scope for the component.
+        /// </value>
+        public IEnumerable<object> TagsToMatch
+        {
+            get
+            {
+                return this._tagsToMatch;
+            }
         }
 
         /// <summary>
@@ -55,19 +74,24 @@ namespace Autofac.Core.Lifetime
         /// <returns>The scope for the component.</returns>
         public ISharingLifetimeScope FindScope(ISharingLifetimeScope mostNestedVisibleScope)
         {
-            if (mostNestedVisibleScope == null) throw new ArgumentNullException(nameof(mostNestedVisibleScope));
+            if (mostNestedVisibleScope == null)
+            {
+                throw new ArgumentNullException(nameof(mostNestedVisibleScope));
+            }
 
             var next = mostNestedVisibleScope;
             while (next != null)
             {
-                if (_tagsToMatch.Contains(next.Tag))
+                if (this._tagsToMatch.Contains(next.Tag))
+                {
                     return next;
+                }
 
                 next = next.ParentLifetimeScope;
             }
 
             throw new DependencyResolutionException(string.Format(
-                CultureInfo.CurrentCulture, MatchingScopeLifetimeResources.MatchingScopeNotFound, string.Join(", ", _tagsToMatch)));
+                CultureInfo.CurrentCulture, MatchingScopeLifetimeResources.MatchingScopeNotFound, string.Join(", ", this._tagsToMatch)));
         }
     }
 }
