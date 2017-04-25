@@ -516,7 +516,7 @@ namespace Autofac.Test.Core.Lifetime
             }
         }
 
-        class HandlerException : Exception
+        public class HandlerException : Exception
         {
         }
 
