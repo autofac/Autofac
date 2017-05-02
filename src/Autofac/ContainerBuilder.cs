@@ -63,8 +63,9 @@ namespace Autofac
     public class ContainerBuilder
     {
         private readonly IList<DeferredCallback> _configurationCallbacks = new List<DeferredCallback>();
-        private readonly IList<Action<IContainer>> _buildCallbacks = new List<Action<IContainer>>();
         private bool _wasBuilt;
+
+        private const string BuildCallbackPropertyKey = "__BuildCallbackKey";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContainerBuilder"/> class.
@@ -81,6 +82,11 @@ namespace Autofac
         internal ContainerBuilder(IDictionary<string, object> properties)
         {
             Properties = properties;
+
+            if (!Properties.ContainsKey(BuildCallbackPropertyKey))
+            {
+                Properties.Add(BuildCallbackPropertyKey, new List<Action<IContainer>>());
+            }
         }
 
         /// <summary>
@@ -115,7 +121,8 @@ namespace Autofac
         {
             if (buildCallback == null) throw new ArgumentNullException(nameof(buildCallback));
 
-            _buildCallbacks.Add(buildCallback);
+            var buildCallbacks = GetBuildCallbacks();
+            buildCallbacks.Add(buildCallback);
 
             return this;
         }
@@ -140,7 +147,8 @@ namespace Autofac
             if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
                 StartStartableComponents(result);
 
-            foreach (var buildCallback in _buildCallbacks)
+            var buildCallbacks = GetBuildCallbacks();
+            foreach (var buildCallback in buildCallbacks)
                 buildCallback(result);
 
             return result;
@@ -280,6 +288,11 @@ namespace Autofac
             componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
             componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());
             componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
+        }
+
+        private List<Action<IContainer>> GetBuildCallbacks()
+        {
+            return (List<Action<IContainer>>)Properties[BuildCallbackPropertyKey];
         }
     }
 }

@@ -589,5 +589,33 @@ namespace Autofac.Test
 
             Assert.Equal(2, called);
         }
+
+        [Fact]
+        public void BuildCallbacksInvokedWhenRegisteredInModuleLoad()
+        {
+            var module = new BuildCallbackModule();
+
+            var builder = new ContainerBuilder();
+            builder.RegisterModule(module);
+            builder.Build();
+
+            Assert.Equal(2, module.Called);
+        }
+
+        public class BuildCallbackModule : Module
+        {
+            public int Called { get; private set; }
+
+            protected override void Load(ContainerBuilder builder)
+            {
+                void BuildCallback(IContainer c)
+                {
+                    Called++;
+                }
+
+                builder.RegisterBuildCallback(BuildCallback)
+                    .RegisterBuildCallback(BuildCallback);
+            }
+        }
     }
 }
