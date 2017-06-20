@@ -1,4 +1,4 @@
-#Contributor Guide
+# Contributor Guide
 
 Contributions to Autofac, whether new features or bug fixes, are deeply appreciated and benefit the whole user community.
 
@@ -8,7 +8,7 @@ If you'd like to contribute code or documentation to Autofac, we welcome pull re
 
 **Your contributions must be your own work and licensed under the same terms as Autofac.**
 
-##Process
+## Process
 
 **When working through contributions, please file issues and submit pull requests in the repository containing the code in question.** For example, if the issue is with the Autofac MVC integration, file it in that repo rather than the core Autofac repo.
 
@@ -18,7 +18,7 @@ If you'd like to contribute code or documentation to Autofac, we welcome pull re
 - **Code review.** Some iteration may take place requiring updates to the pull request (e.g., to fix a typo or add error handling).
 - **Pull request acceptance.** The pull request will be accepted into the `develop` branch and pushed to `master` with the next release.
 
-##License
+## License
 
 By contributing to Autofac, you assert that:
 
@@ -26,18 +26,18 @@ By contributing to Autofac, you assert that:
 2. You have the right to assign the *copyright* for the work (it is not owned by your employer, or you have been given copyright assignment in writing).
 3. You license it under the terms applied to the rest of the Autofac project.
 
-##Coding
+## Coding
 
-###Workflow
+### Workflow
 
 Autofac and the associated integration libraries follow the [Gitflow workflow process](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow/) for handling releases. This means active development is done on the `develop` branch and we push to `master` when it's release time. **If you're creating a pull request or contribution, please do it on the `develop` branch.** We can then build, push to MyGet for testing, and release to NuGet when everything's verified.
 
-###Developer Environment
+### Developer Environment
 
-- Visual Studio 2015 (with latest patches/updates).
+- Visual Studio 2017 (with latest patches/updates).
 - PowerShell 4+
 
-###Dependencies
+### Dependencies
 
 The core Autofac assemblies depend _only_ on the .NET Base Class Libraries (BCL). `Autofac.dll` proper is a Portable Class Library so only depends on a subset of that BCL functionality. This is a conscious decision to keep the project lightweight and easier to maintain.
 
@@ -50,7 +50,7 @@ The `Autofac.Extras` features include assemblies that depend on other Open Sourc
 
 Unit tests are written in XUnit.
 
-###Build / Test
+### Build / Test
 
 Project codelines with scripted builds generally have a `build.ps1` script. This Powershell script will build, package, and execute tests.
 
@@ -59,7 +59,7 @@ Some project codelines rely on convention-based builds so do not have a specific
 - The build is executed by running it in Visual Studio or by executing `msbuild Solution.sln` on the solution in the codeline root.
 - Unit tests can be run from the Visual Studio test explorer or by manually executing the command-line unit test runner from the `packages` folder against the built unit test assembly.
 
-###Code Documentation
+### Code Documentation
 
 It is *strongly* encouraged that you update the Autofac documentation when making changes. If your changes impact existing features, the documentation may be updated regardless of whether a binary distribution has been made that includes the changes. [This can also be done through pull request.](https://github.com/autofac/Documentation)
 
@@ -67,7 +67,7 @@ You should also include XML API comments in the code. These are used to generate
 
 **The Golden Rule of Documentation: Write the documentation you'd want to read.** Every developer has seen self explanatory docs and wondered why there wasn't more information. (Parameter: "index." Documentation: "The index.") Please write the documentation you'd want to read if you were a developer first trying to understand how to make use of a feature.
 
-###Coding Standards
+### Coding Standards
 
 Normal .NET coding guidelines apply. See the [Framework Design Guidelines](http://msdn.microsoft.com/en-us/library/ms229042.aspx>) for suggestions. If you have access to ReSharper, code should be 'green' - that is, have no ReSharper warnings or errors with the default settings.
 
@@ -75,7 +75,7 @@ Autofac source code uses four spaces for indents (rather than tabs).
 
 [If you have the EditorConfig add-in for your editor of choice (Visual Studio, Sublime Text, etc.)](http://editorconfig.org/), there are `.editorconfig` settings in the various repositories to help make your life easier.
 
-##Autofac.Extras
+## Autofac.Extras
 
 Autofac.Extras are companion libraries that get distributed alongside the main Autofac distribution. The Extras are distinguished by:
 
