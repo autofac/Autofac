@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
+using Autofac.Core.Registration;
 using Autofac.Test.Scenarios.RegistrationSources;
 using Xunit;
 
@@ -239,6 +240,17 @@ namespace Autofac.Test.Core.Lifetime
             nestedScope.Dispose();
 
             Assert.True(dt.IsDisposed);
+        }
+
+        [Fact]
+        public void LifetimeScopeCreatedWithAdditionalRegistrationsUsesScopeRestrictedRegistry()
+        {
+            var rootScope = new ContainerBuilder().Build();
+
+            var nestedScope = rootScope.BeginLifetimeScope(cb =>
+                cb.RegisterType<object>().SingleInstance());
+
+            Assert.IsType<ScopeRestrictedRegistry>(nestedScope.ComponentRegistry);
         }
 
         [Fact]
