@@ -149,7 +149,7 @@ namespace Autofac.Core.Registration
         /// <param name="registration">The component registration.</param>
         /// <param name="preserveDefaults">If true, existing defaults for the services provided by the
         /// component will not be changed.</param>
-        public virtual void Register(IComponentRegistration registration, bool preserveDefaults)
+        public void Register(IComponentRegistration registration, bool preserveDefaults)
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 
@@ -187,7 +187,7 @@ namespace Autofac.Core.Registration
                 AddRegistration(adapter, true, true);
         }
 
-        private void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource = false)
+        protected virtual void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource = false)
         {
             foreach (var service in registration.Services)
             {

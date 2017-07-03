@@ -43,7 +43,7 @@ namespace Autofac.Core.Registration
             _restrictedRootScopeLifetime = new MatchingScopeLifetime(scopeTag);
         }
 
-        public override void Register(IComponentRegistration registration, bool preserveDefaults)
+        protected override void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource = false)
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 
@@ -52,7 +52,7 @@ namespace Autofac.Core.Registration
             if (registration.Lifetime is RootScopeLifetime)
                 toRegister = new ComponentRegistrationLifetimeDecorator(registration, _restrictedRootScopeLifetime);
 
-            base.Register(toRegister, preserveDefaults);
+            base.AddRegistration(toRegister, preserveDefaults, originatedFromSource);
         }
     }
 }
