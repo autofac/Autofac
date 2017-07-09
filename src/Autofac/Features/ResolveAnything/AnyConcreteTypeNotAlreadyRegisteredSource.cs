@@ -54,9 +54,7 @@ namespace Autofac.Features.ResolveAnything
         /// <param name="predicate">A predicate that selects types the source will register.</param>
         public AnyConcreteTypeNotAlreadyRegisteredSource(Func<Type, bool> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
-
-            _predicate = predicate;
+            _predicate = predicate ?? throw new ArgumentNullException(nameof(predicate));
         }
 
         /// <summary>
@@ -97,7 +95,8 @@ namespace Autofac.Features.ResolveAnything
             {
                 foreach (var typeParameter in typeInfo.GenericTypeArguments)
                 {
-                    if (!registrationAccessor(new TypedService(typeParameter)).Any())
+                    // Issue #855: If the generic type argument doesn't match the filter don't look for a registration.
+                    if (_predicate(typeParameter) && !registrationAccessor(new TypedService(typeParameter)).Any())
                     {
                         return Enumerable.Empty<IComponentRegistration>();
                     }

@@ -191,6 +191,24 @@ namespace Autofac.Test.Features.ResolveAnything
         }
 
         [Fact]
+        public void ConstructableOpenGenericsCanBeResolved()
+        {
+            var container = CreateResolveAnythingContainer();
+            Assert.True(container.IsRegistered<Progress<Exception>>());
+            Assert.NotNull(container.Resolve<Progress<Exception>>());
+        }
+
+        [Fact]
+        public void ConstructableOpenGenericsWithGenericTypeArgumentNotMatchingFilterCanBeResolved()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource(t => t.Name.StartsWith("Progress")));
+            var container = cb.Build();
+            Assert.True(container.IsRegistered<Progress<Exception>>());
+            Assert.NotNull(container.Resolve<Progress<Exception>>());
+        }
+
+        [Fact]
         public void WorksWithOpenGenericClassRegistrations()
         {
             var cb = new ContainerBuilder();
