@@ -130,6 +130,7 @@ namespace Autofac.Core.Lifetime
             CheckNotDisposed();
             var registry = new CopyOnWriteRegistry(ComponentRegistry, () => CreateScopeRestrictedRegistry(tag, NoConfiguration));
             var scope = new LifetimeScope(registry, this, tag);
+            scope.Disposer.AddInstanceForDisposal(registry);
             RaiseBeginning(scope);
             return scope;
         }
@@ -188,12 +189,23 @@ namespace Autofac.Core.Lifetime
 
             var locals = CreateScopeRestrictedRegistry(tag, configurationAction);
             var scope = new LifetimeScope(locals, this, tag);
+            scope.Disposer.AddInstanceForDisposal(locals);
 
             RaiseBeginning(scope);
 
             return scope;
         }
 
+        /// <summary>
+        /// Creates and setup the registry for a child scope.
+        /// </summary>
+        /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
+        /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
+        /// that adds component registrations visible only in the child scope.</param>
+        /// <returns>Registry to use for a child scope</returns>
+        /// <remarks>It is the responsibility of the caller to make sure that the registry is properly
+        /// disposed of. This is generally done by adding the registry to the <see cref="Disposer"/>
+        /// property of the child scope.</remarks>
         private ScopeRestrictedRegistry CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction)
         {
             var builder = new ContainerBuilder(new FallbackDictionary<string, object>(ComponentRegistry.Properties));
