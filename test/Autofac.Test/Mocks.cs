@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
+using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 
 namespace Autofac.Test
@@ -19,6 +21,11 @@ namespace Autofac.Test
         public static Startable GetStartable()
         {
             return new Startable();
+        }
+
+        public static MockComponentRegistration GetComponentRegistration()
+        {
+            return new MockComponentRegistration();
         }
 
         internal class MockConstructorFinder : IConstructorFinder
@@ -44,6 +51,50 @@ namespace Autofac.Test
             public void Start()
             {
                 StartCount++;
+            }
+        }
+
+        internal class MockComponentRegistration : IComponentRegistration
+        {
+            public void Dispose()
+            {
+                IsDisposed = true;
+            }
+
+            public bool IsDisposed { get; set; }
+
+            public Guid Id { get; }
+
+            public IInstanceActivator Activator { get; }
+
+            public IComponentLifetime Lifetime { get; }
+
+            public InstanceSharing Sharing { get; }
+
+            public InstanceOwnership Ownership { get; }
+
+            public IEnumerable<Service> Services { get; } = new Service[0];
+
+            public IDictionary<string, object> Metadata { get; }
+
+            public IComponentRegistration Target { get; }
+
+            public event EventHandler<PreparingEventArgs> Preparing;
+
+            public void RaisePreparing(IComponentContext context, ref IEnumerable<Parameter> parameters)
+            {
+            }
+
+            public event EventHandler<ActivatingEventArgs<object>> Activating;
+
+            public void RaiseActivating(IComponentContext context, IEnumerable<Parameter> parameters, ref object instance)
+            {
+            }
+
+            public event EventHandler<ActivatedEventArgs<object>> Activated;
+
+            public void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, object instance)
+            {
             }
         }
     }

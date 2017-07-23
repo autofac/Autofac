@@ -48,5 +48,19 @@ namespace Autofac.Test.Core.Registration
             Assert.True(childScope.IsRegistered<object>());
             Assert.False(container.IsRegistered<object>());
         }
+
+        [Fact]
+        public void OnlyRegistrationsMadeOnTheRegistryAreDisposedWhenTheRegistryIsDisposed()
+        {
+            var componentRegistration = Mocks.GetComponentRegistration();
+            var readOnlyRegistry = new ComponentRegistry();
+            readOnlyRegistry.Register(componentRegistration);
+            var cow = new CopyOnWriteRegistry(readOnlyRegistry, () => new ComponentRegistry());
+            var nestedComponentRegistration = Mocks.GetComponentRegistration();
+            cow.Register(nestedComponentRegistration);
+            cow.Dispose();
+            Assert.False(componentRegistration.IsDisposed);
+            Assert.True(nestedComponentRegistration.IsDisposed);
+        }
     }
 }
