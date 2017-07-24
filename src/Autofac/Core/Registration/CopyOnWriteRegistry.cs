@@ -46,12 +46,9 @@ namespace Autofac.Core.Registration
 
         public CopyOnWriteRegistry(IComponentRegistry readRegistry, Func<IComponentRegistry> createWriteRegistry)
         {
-            if (readRegistry == null) throw new ArgumentNullException(nameof(readRegistry));
-            if (createWriteRegistry == null) throw new ArgumentNullException(nameof(createWriteRegistry));
-
-            _readRegistry = readRegistry;
-            _createWriteRegistry = createWriteRegistry;
-            this.Properties = new FallbackDictionary<string, object>(readRegistry.Properties);
+            _readRegistry = readRegistry ?? throw new ArgumentNullException(nameof(readRegistry));
+            _createWriteRegistry = createWriteRegistry ?? throw new ArgumentNullException(nameof(createWriteRegistry));
+            Properties = new FallbackDictionary<string, object>(readRegistry.Properties);
         }
 
         private IComponentRegistry Registry => _writeRegistry ?? _readRegistry;
@@ -69,7 +66,9 @@ namespace Autofac.Core.Registration
 
         public void Dispose()
         {
-            _readRegistry?.Dispose();
+            // The _readRegistry doesn't need to be disposed if it still points to the initial registry.
+            // Only the potentially allocated registry, containing additional registrations, needs to be disposed.
+            _writeRegistry?.Dispose();
         }
 
         public bool TryGetRegistration(Service service, out IComponentRegistration registration)
@@ -101,8 +100,8 @@ namespace Autofac.Core.Registration
 
         public event EventHandler<ComponentRegisteredEventArgs> Registered
         {
-            add { WriteRegistry.Registered += value; }
-            remove { WriteRegistry.Registered -= value; }
+            add => WriteRegistry.Registered += value;
+            remove => WriteRegistry.Registered -= value;
         }
 
         public void AddRegistrationSource(IRegistrationSource source)
@@ -116,8 +115,8 @@ namespace Autofac.Core.Registration
 
         public event EventHandler<RegistrationSourceAddedEventArgs> RegistrationSourceAdded
         {
-            add { WriteRegistry.RegistrationSourceAdded += value; }
-            remove { WriteRegistry.RegistrationSourceAdded -= value; }
+            add => WriteRegistry.RegistrationSourceAdded += value;
+            remove => WriteRegistry.RegistrationSourceAdded -= value;
         }
     }
 }

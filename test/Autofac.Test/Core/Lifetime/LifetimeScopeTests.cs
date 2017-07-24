@@ -300,6 +300,29 @@ namespace Autofac.Test.Core.Lifetime
             Assert.Equal(1, child2.Resolve<IEnumerable<string>>().Count());
         }
 
+        [Fact]
+        public void NestedComponentRegistryIsProperlyDisposed()
+        {
+            var builder = new ContainerBuilder();
+            var container = builder.Build();
+            var nestedRegistration = Mocks.GetComponentRegistration();
+            var child = container.BeginLifetimeScope(b => b.RegisterComponent(nestedRegistration));
+            child.Dispose();
+            Assert.True(nestedRegistration.IsDisposed);
+        }
+
+        [Fact]
+        public void NestedComponentRegistryIsProperlyDisposedEvenWhenRegistryUpdatedLater()
+        {
+            var builder = new ContainerBuilder();
+            var container = builder.Build();
+            var nestedRegistration = Mocks.GetComponentRegistration();
+            var child = container.BeginLifetimeScope();
+            child.ComponentRegistry.Register(nestedRegistration);
+            child.Dispose();
+            Assert.True(nestedRegistration.IsDisposed);
+        }
+
         public interface IServiceA
         {
         }
