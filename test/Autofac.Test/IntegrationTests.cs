@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Test.Scenarios.Dependencies.Circularity;
 using Autofac.Test.Scenarios.Graph1;
@@ -23,14 +21,14 @@ namespace Autofac.Test
 
             var target = builder.Build();
 
-            E1 e = target.Resolve<E1>();
-            A1 a = target.Resolve<A1>();
-            B1 b = target.Resolve<B1>();
-            IC1 c = target.Resolve<IC1>();
-            ID1 d = target.Resolve<ID1>();
+            var e = target.Resolve<E1>();
+            var a = target.Resolve<A1>();
+            var b = target.Resolve<B1>();
+            var c = target.Resolve<IC1>();
+            var d = target.Resolve<ID1>();
 
             Assert.IsType<CD1>(c);
-            CD1 cd = (CD1)c;
+            var cd = (CD1)c;
 
             Assert.Same(a, b.A);
             Assert.Same(a, cd.A);
@@ -56,18 +54,21 @@ namespace Autofac.Test
         }
 
         [Fact]
-        public void UnresolvedProvidedInstances_DisposedWithLifetimeScope()
+        public void ResolvedProvidedInstances_DisposedWithLifetimeScope()
         {
             var builder = new ContainerBuilder();
             var disposable = new DisposeTracker();
             builder.RegisterInstance(disposable);
             var container = builder.Build();
+            container.Resolve<DisposeTracker>();
+
             container.Dispose();
+
             Assert.True(disposable.IsDisposed);
         }
 
         [Fact]
-        public void ResolvedProvidedInstances_OnlyDisposedOnce()
+        public void ResolvedProvidedInstances_DisposedWithLifetimeScope_OnlyDisposedOnce()
         {
             // Issue 383: Disposing a container should only dispose a provided instance one time.
             var builder = new ContainerBuilder();
@@ -77,6 +78,129 @@ namespace Autofac.Test
             builder.RegisterInstance(disposable);
             var container = builder.Build();
             container.Resolve<DisposeTracker>();
+
+            container.Dispose();
+
+            Assert.Equal(1, count);
+        }
+
+        [Fact]
+        public void ResolvedProvidedInstances_DisposedWithNestedLifetimeScope()
+        {
+            var builder = new ContainerBuilder();
+            var disposable = new DisposeTracker();
+            var container = builder.Build();
+            var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable));
+            scope.Resolve<DisposeTracker>();
+
+            scope.Dispose();
+
+            Assert.True(disposable.IsDisposed);
+        }
+
+        [Fact]
+        public void ResolvedProvidedInstances_DisposedWithNestedLifetimeScope_OnlyDisposedOnce()
+        {
+            // Issue 383: Disposing a container should only dispose a provided instance one time.
+            var builder = new ContainerBuilder();
+            var count = 0;
+            var disposable = new DisposeTracker();
+            disposable.Disposing += (sender, e) => count++;
+            var container = builder.Build();
+            var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable));
+            scope.Resolve<DisposeTracker>();
+
+            scope.Dispose();
+            Assert.Equal(1, count);
+
+            container.Dispose();
+            Assert.Equal(1, count);
+        }
+
+        [Fact]
+        public void ResolvedProvidedInstances_NotOwnedByLifetimeScope_NeverDisposed()
+        {
+            var builder = new ContainerBuilder();
+            var disposable = new DisposeTracker();
+            builder.RegisterInstance(disposable).ExternallyOwned();
+            var container = builder.Build();
+            container.Resolve<DisposeTracker>();
+
+            container.Dispose();
+
+            Assert.False(disposable.IsDisposed);
+        }
+
+        [Fact]
+        public void ResolvedProvidedInstances_NotOwnedByNestedLifetimeScope_NeverDisposed()
+        {
+            var builder = new ContainerBuilder();
+            var disposable = new DisposeTracker();
+            var container = builder.Build();
+            var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable).ExternallyOwned());
+            scope.Resolve<DisposeTracker>();
+
+            scope.Dispose();
+            Assert.False(disposable.IsDisposed);
+
+            container.Dispose();
+            Assert.False(disposable.IsDisposed);
+        }
+
+        [Fact]
+        public void UnresolvedProvidedInstances_DisposedWithLifetimeScope()
+        {
+            var builder = new ContainerBuilder();
+            var disposable = new DisposeTracker();
+            builder.RegisterInstance(disposable);
+            var container = builder.Build();
+
+            container.Dispose();
+
+            Assert.True(disposable.IsDisposed);
+        }
+
+        [Fact]
+        public void UnresolvedProvidedInstances_DisposedWithLifetimeScope_OnlyDisposedOnce()
+        {
+            var builder = new ContainerBuilder();
+            var count = 0;
+            var disposable = new DisposeTracker();
+            disposable.Disposing += (sender, e) => count++;
+            builder.RegisterInstance(disposable);
+            var container = builder.Build();
+
+            container.Dispose();
+
+            Assert.Equal(1, count);
+        }
+
+        [Fact]
+        public void UnresolvedProvidedInstances_DisposedWithNestedLifetimeScope()
+        {
+            var builder = new ContainerBuilder();
+            var disposable = new DisposeTracker();
+            var container = builder.Build();
+            var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable));
+
+            scope.Dispose();
+
+            Assert.True(disposable.IsDisposed);
+        }
+
+        [Fact]
+        public void UnresolvedProvidedInstances_DisposedWithNestedLifetimeScope_OnlyDisposedOnce()
+        {
+            var builder = new ContainerBuilder();
+            var count = 0;
+            var disposable = new DisposeTracker();
+            disposable.Disposing += (sender, e) => count++;
+            var container = builder.Build();
+            var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable));
+
+            scope.Dispose();
+            Assert.Equal(1, count);
+
             container.Dispose();
             Assert.Equal(1, count);
         }
@@ -88,6 +212,23 @@ namespace Autofac.Test
             var disposable = new DisposeTracker();
             builder.RegisterInstance(disposable).ExternallyOwned();
             var container = builder.Build();
+
+            container.Dispose();
+
+            Assert.False(disposable.IsDisposed);
+        }
+
+        [Fact]
+        public void UnresolvedProvidedInstances_NotOwnedByNestedLifetimeScope_NeverDisposed()
+        {
+            var builder = new ContainerBuilder();
+            var disposable = new DisposeTracker();
+            var container = builder.Build();
+            var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable).ExternallyOwned());
+
+            scope.Dispose();
+            Assert.False(disposable.IsDisposed);
+
             container.Dispose();
             Assert.False(disposable.IsDisposed);
         }

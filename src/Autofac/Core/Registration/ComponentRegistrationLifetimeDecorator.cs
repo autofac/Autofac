@@ -40,11 +40,8 @@ namespace Autofac.Core.Registration
 
         public ComponentRegistrationLifetimeDecorator(IComponentRegistration inner, IComponentLifetime lifetime)
         {
-            if (inner == null) throw new ArgumentNullException(nameof(inner));
-            if (lifetime == null) throw new ArgumentNullException(nameof(lifetime));
-
-            _inner = inner;
-            Lifetime = lifetime;
+            _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+            Lifetime = lifetime ?? throw new ArgumentNullException(nameof(lifetime));
         }
 
         public Guid Id => _inner.Id;
@@ -65,8 +62,8 @@ namespace Autofac.Core.Registration
 
         public event EventHandler<PreparingEventArgs> Preparing
         {
-            add { _inner.Preparing += value; }
-            remove { _inner.Preparing -= value; }
+            add => _inner.Preparing += value;
+            remove => _inner.Preparing -= value;
         }
 
         public void RaisePreparing(IComponentContext context, ref IEnumerable<Parameter> parameters)
@@ -76,8 +73,8 @@ namespace Autofac.Core.Registration
 
         public event EventHandler<ActivatingEventArgs<object>> Activating
         {
-            add { _inner.Activating += value; }
-            remove { _inner.Activating -= value; }
+            add => _inner.Activating += value;
+            remove => _inner.Activating -= value;
         }
 
         public void RaiseActivating(IComponentContext context, IEnumerable<Parameter> parameters, ref object instance)
@@ -87,13 +84,18 @@ namespace Autofac.Core.Registration
 
         public event EventHandler<ActivatedEventArgs<object>> Activated
         {
-            add { _inner.Activated += value; }
-            remove { _inner.Activated -= value; }
+            add => _inner.Activated += value;
+            remove => _inner.Activated -= value;
         }
 
         public void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, object instance)
         {
             _inner.RaiseActivated(context, parameters, instance);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _inner.Dispose();
         }
     }
 }
