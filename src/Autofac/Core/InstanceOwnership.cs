@@ -38,6 +38,6 @@ namespace Autofac.Core
         /// <summary>
         /// The instances are disposed when the lifetime scope is disposed.
         /// </summary>
-        OwnedByLifetimeScope
+        OwnedByLifetimeScope,
     }
 }

@@ -50,6 +50,6 @@ namespace Autofac
         /// If specified, properties that already have a non-default value will be left
         /// unchanged in the wiring operation.
         /// </summary>
-        PreserveSetValues = 2
+        PreserveSetValues = 2,
     }
 }

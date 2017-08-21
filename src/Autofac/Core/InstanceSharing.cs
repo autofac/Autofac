@@ -38,6 +38,6 @@ namespace Autofac.Core
         /// <summary>
         /// Each request for an instance will return the same object.
         /// </summary>
-        Shared
+        Shared,
     }
 }

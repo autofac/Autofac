@@ -438,7 +438,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         public enum E
         {
             A,
-            B
+            B,
         }
 
         public class WithE

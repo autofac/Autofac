@@ -11,7 +11,7 @@ Import-Module $PSScriptRoot\Build\Autofac.Build.psd1 -Force
 
 $artifactsPath = "$PSScriptRoot\artifacts"
 $packagesPath = "$artifactsPath\packages"
-$sdkVersion = "1.0.1"
+$sdkVersion = "1.1.0"
 
 # Clean up artifacts folder
 if (Test-Path $artifactsPath) {

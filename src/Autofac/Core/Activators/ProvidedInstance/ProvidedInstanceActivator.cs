@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace Autofac.Core.Activators.ProvidedInstance
@@ -92,6 +93,7 @@ namespace Autofac.Core.Activators.ProvidedInstance
             base.Dispose(disposing);
         }
 
+        [SuppressMessage("CA2222", "CA2222", Justification = "False positive. GetType doesn't hide an inherited member.")]
         private static Type GetType(object instance)
         {
             if (instance == null) throw new ArgumentNullException(nameof(instance));

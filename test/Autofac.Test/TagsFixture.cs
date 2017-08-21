@@ -16,7 +16,7 @@ namespace Autofac.Test
             None,
             Outer,
             Middle,
-            Inner
+            Inner,
         }
 
         [Fact]

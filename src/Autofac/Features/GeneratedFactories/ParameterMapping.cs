@@ -57,6 +57,6 @@ namespace Autofac.Features.GeneratedFactories
         /// underlying registration as PositionalParameters based on the parameter
         /// indices in the delegate type's formal argument list.
         /// </summary>
-        ByPosition
+        ByPosition,
     }
 }

@@ -3,6 +3,10 @@
   <!-- https://github.com/dotnet/roslyn/blob/master/docs/compilers/Rule%20Set%20Format.md -->
   <IncludeAll Action="Warning" />
   <Rules AnalyzerId="Microsoft.Usage" RuleNamespace="Microsoft.Usage">
+    <!-- Implement standard exception constructors - not all of the exception constructors (e.g., parameterless) are desired in our system. -->
+    <Rule Id="CA1032" Action="None" />
+    <!-- Change names to avoid reserved word overlaps (e.g., Delegate, GetType, etc.) - too many of these in the public API, we'd break if we fixed it. -->
+    <Rule Id="CA1716" Action="None" />
     <!-- Implement serialization constructors - false positive when building .NET Core -->
     <Rule Id="CA2229" Action="None" />
     <!-- Mark ISerializable types with SerializableAttribute - false positive when building .NET Core -->
@@ -31,6 +35,8 @@
     <Rule Id="SA1309" Action="None" />
     <!-- Suppressions must have a justification -->
     <Rule Id="SA1404" Action="None" />
+    <!-- Use trailing comma in initializers - lots of false positives for enums in StyleCop 1.1.0-beta004 -->
+    <Rule Id="SA1413" Action="None" />
     <!-- No single-line statements involving braces -->
     <Rule Id="SA1501" Action="None" />
     <!-- Braces must not be omitted -->

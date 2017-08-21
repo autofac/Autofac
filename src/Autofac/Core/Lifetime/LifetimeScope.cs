@@ -135,6 +135,7 @@ namespace Autofac.Core.Lifetime
             return scope;
         }
 
+        [SuppressMessage("CA1030", "CA1030", Justification = "This method raises the event; it's not the event proper.")]
         private void RaiseBeginning(ILifetimeScope scope)
         {
             var handler = ChildLifetimeScopeBeginning;

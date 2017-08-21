@@ -92,7 +92,7 @@ namespace Autofac.Test.Features.Variance
         internal enum AEnum
         {
             First,
-            Second
+            Second,
         }
 
         internal static class AssertExtensions

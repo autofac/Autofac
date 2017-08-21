@@ -64,7 +64,7 @@ namespace Autofac.Core
         /// Serves as a hash function for a particular type.
         /// </summary>
         /// <returns>
-        /// A hash code for the current <see cref="T:System.Object"/>. Always <c>0</c> for this type.
+        /// A hash code for the current <see cref="System.Object"/>. Always <c>0</c> for this type.
         /// </returns>
         /// <remarks>
         /// <para>
