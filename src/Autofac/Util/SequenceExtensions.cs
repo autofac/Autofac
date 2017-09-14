@@ -53,7 +53,7 @@ namespace Autofac.Util
         /// <param name="sequence">The sequence.</param>
         /// <param name="trailingItem">The trailing item.</param>
         /// <returns>The sequence with an item appended to the end.</returns>
-        public static IEnumerable<T> Append<T>(this IEnumerable<T> sequence, T trailingItem)
+        public static IEnumerable<T> AppendItem<T>(this IEnumerable<T> sequence, T trailingItem)
         {
             if (sequence == null) throw new ArgumentNullException(nameof(sequence));
 
