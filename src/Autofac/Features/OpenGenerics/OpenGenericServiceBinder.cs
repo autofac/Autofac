@@ -106,7 +106,7 @@ namespace Autofac.Features.OpenGenerics
             try
             {
                 return implementationType.GetTypeInfo().ImplementedInterfaces
-                    .Single(i => i.Name == serviceType.Name && i.Namespace == serviceType.Namespace);
+                    .First(i => i.Name == serviceType.Name && i.Namespace == serviceType.Namespace);
             }
             catch (InvalidOperationException)
             {
