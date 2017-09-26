@@ -328,5 +328,38 @@ namespace Autofac.Test.Features.OpenGenerics
             container.Resolve<IDoubleGenericWithInModifier<ISingleGeneric<ISingleGenericWithOutModifier<CSimple>>, ISingleGenericWithOutModifier<CSimple>>>();
             container.Resolve<IDoubleGenericWithInModifier<ISingleGeneric<ISingleGenericWithOutModifier<CSimple>>, ISingleGenericWithOutModifier<COther>>>();
         }
+
+        public interface ISingleGenericWithInModifier<in T>
+        {
+        }
+
+        public class CGeneric<T> : ISingleGeneric<T>
+        {
+        }
+
+        public class CDoubleInheritGeneric<T> : ISingleGenericWithInModifier<ISingleGeneric<T>>, ISingleGenericWithInModifier<CGeneric<T>>
+        {
+        }
+
+        [Fact]
+        public void CanResolveComponentWhenItInheritsFromTheSameGenericInterfaceTwice()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterGeneric(typeof(CDoubleInheritGeneric<>)).As(typeof(ISingleGenericWithInModifier<>));
+
+            var container = builder.Build();
+
+            // These should resolve because it inherits from ISingleGenericWithInModifier with both as nested generic arguments
+            Assert.True(container.IsRegistered<ISingleGenericWithInModifier<ISingleGeneric<int>>>());
+            Assert.True(container.IsRegistered<ISingleGenericWithInModifier<CGeneric<int>>>());
+            Assert.True(container.IsRegistered<ISingleGenericWithInModifier<ISingleGeneric<CSimple>>>());
+            Assert.True(container.IsRegistered<ISingleGenericWithInModifier<CGeneric<CSimple>>>());
+
+            // These should not resolve because they do not match the above pattern
+            Assert.False(container.IsRegistered<ISingleGenericWithInModifier<int>>());
+            Assert.False(container.IsRegistered<ISingleGenericWithInModifier<ISingleGenericWithOutModifier<int>>>());
+            Assert.False(container.IsRegistered<ISingleGenericWithInModifier<ISingleGenericWithOutModifier<CSimple>>>());
+        }
     }
 }
