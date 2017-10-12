@@ -50,17 +50,48 @@ namespace Autofac.Core.Activators.Reflection
         {
             if (pi == null) throw new ArgumentNullException(nameof(pi));
 
-            // System.DBNull is not included in PCL even though it seems to be available in the selected targets.
-            // Verified through experimentation 12/14/2012 - PCL initial release in VS 2012 does not support System.DBNull
-            // even though the documentation claims it's available. It doesn't appear to matter what the target
-            // framework combination is - .NET for Windows Store apps, Windows Phone, Silverlight... it's never
-            // available.
-            // http://msdn.microsoft.com/en-us/library/windows/apps/system.dbnull(v=vs.110).aspx
-            var hasDefaultValue = pi.DefaultValue == null || pi.DefaultValue.GetType().FullName != "System.DBNull";
+            bool hasDefaultValue;
+            var tryToGetDefaultValue = true;
+            try
+            {
+                // Workaround for https://github.com/dotnet/corefx/issues/17943
+                if (pi.Member.DeclaringType?.GetTypeInfo().Assembly.IsDynamic ?? true)
+                {
+                    hasDefaultValue = pi.DefaultValue != null && pi.HasDefaultValue;
+                }
+                else
+                {
+                    hasDefaultValue = pi.HasDefaultValue;
+                }
+            }
+            catch (FormatException) when (pi.ParameterType == typeof(DateTime))
+            {
+                // Workaround for https://github.com/dotnet/corefx/issues/12338
+                // If HasDefaultValue throws FormatException for DateTime
+                // we expect it to have default value
+                hasDefaultValue = true;
+                tryToGetDefaultValue = false;
+            }
 
             if (hasDefaultValue)
             {
-                valueProvider = () => pi.DefaultValue;
+                valueProvider = () =>
+                {
+                    if (!tryToGetDefaultValue)
+                    {
+                        return default(DateTime);
+                    }
+
+                    var defaultValue = pi.DefaultValue;
+
+                    // Workaround for https://github.com/dotnet/corefx/issues/11797
+                    if (defaultValue == null && pi.ParameterType.GetTypeInfo().IsValueType)
+                    {
+                        defaultValue = Activator.CreateInstance(pi.ParameterType);
+                    }
+
+                    return defaultValue;
+                };
                 return true;
             }
 
