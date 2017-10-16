@@ -39,10 +39,10 @@ namespace Autofac.Core.Activators.Reflection
         /// </summary>
         /// <param name="pi">Constructor, method, or property-mutator parameter.</param>
         /// <param name="context">The component context in which the value is being provided.</param>
-        /// <param name="valueProvider">If the result is true, the valueProvider parameter will
-        /// be set to a function that will lazily retrieve the parameter value. If the result is false,
-        /// will be set to null.</param>
-        /// <returns>True if a value can be supplied; otherwise, false.</returns>
+        /// <param name="valueProvider">If the result is true, the <paramref name="valueProvider" /> parameter will
+        /// be set to a function that will lazily retrieve the parameter value. If the result is <see langword="false" />,
+        /// will be set to <see langword="null" />.</param>
+        /// <returns><see langword="true" /> if a value can be supplied; otherwise, <see langword="false" />.</returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="pi" /> is <see langword="null" />.
         /// </exception>
@@ -92,6 +92,7 @@ namespace Autofac.Core.Activators.Reflection
 
                     return defaultValue;
                 };
+
                 return true;
             }
 
