@@ -29,6 +29,8 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
 using Autofac.Util;
@@ -45,7 +47,7 @@ namespace Autofac.Core.Lifetime
         /// <summary>
         /// Protects shared instances from concurrent access. Other members and the base class are threadsafe.
         /// </summary>
-        private readonly object _synchRoot = new object();
+        private readonly AsyncLock _synchRoot;
         private readonly IDictionary<Guid, object> _sharedInstances = new Dictionary<Guid, object>();
 
         private readonly ISharingLifetimeScope _parent;
@@ -98,6 +100,12 @@ namespace Autofac.Core.Lifetime
             ComponentRegistry = componentRegistry;
             RootLifetimeScope = this;
             Tag = tag;
+
+            TimeSpan timeout = default(TimeSpan);
+            object tmp;
+            if (componentRegistry.Properties.TryGetValue(AsyncLock.LockTimeoutKey, out tmp))
+                timeout = (TimeSpan)tmp;
+            _synchRoot = new AsyncLock(timeout);
         }
 
         /// <summary>
@@ -278,7 +286,7 @@ namespace Autofac.Core.Lifetime
         {
             if (creator == null) throw new ArgumentNullException(nameof(creator));
 
-            lock (_synchRoot)
+            using (_synchRoot.AcquireAsync().Result)
             {
                 object result;
                 if (!_sharedInstances.TryGetValue(id, out result))
