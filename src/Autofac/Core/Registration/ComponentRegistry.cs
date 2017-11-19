@@ -28,6 +28,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
@@ -47,7 +49,7 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// Protects instance variables from concurrent access.
         /// </summary>
-        private readonly object _synchRoot = new object();
+        private readonly AsyncLock _synchRoot;
 
         /// <summary>
         /// External registration sources.
@@ -79,6 +81,11 @@ namespace Autofac.Core.Registration
         internal ComponentRegistry(IDictionary<string, object> properties)
         {
             Properties = properties;
+            TimeSpan timeout = Timeout.InfiniteTimeSpan;
+            object tmp;
+            if (Properties.TryGetValue(AsyncLock.LockTimeoutKey, out tmp))
+                timeout = (TimeSpan)tmp;
+            _synchRoot = new AsyncLock(timeout);
         }
 
         /// <summary>
@@ -112,7 +119,7 @@ namespace Autofac.Core.Registration
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
-            lock (_synchRoot)
+            using (_synchRoot.AcquireAsync().Result)
             {
                 var info = GetInitializedServiceInfo(service);
                 return info.TryGetRegistration(out registration);
@@ -128,7 +135,7 @@ namespace Autofac.Core.Registration
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
-            lock (_synchRoot)
+            using (_synchRoot.AcquireAsync().Result)
             {
                 return GetInitializedServiceInfo(service).IsRegistered;
             }
@@ -153,7 +160,7 @@ namespace Autofac.Core.Registration
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 
-            lock (_synchRoot)
+            using (_synchRoot.AcquireAsync().Result)
             {
                 AddRegistration(registration, preserveDefaults);
                 UpdateInitialisedAdapters(registration);
@@ -208,7 +215,7 @@ namespace Autofac.Core.Registration
         {
             get
             {
-                lock (_synchRoot)
+                using (_synchRoot.AcquireAsync().Result)
                     return _registrations.ToArray();
             }
         }
@@ -224,7 +231,7 @@ namespace Autofac.Core.Registration
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
-            lock (_synchRoot)
+            using (_synchRoot.AcquireAsync().Result)
             {
                 var info = GetInitializedServiceInfo(service);
                 return info.Implementations.ToArray();
@@ -245,7 +252,7 @@ namespace Autofac.Core.Registration
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
-            lock (_synchRoot)
+            using (_synchRoot.AcquireAsync().Result)
             {
                 _dynamicRegistrationSources.Insert(0, source);
                 foreach (var serviceRegistrationInfo in _serviceInfo)
@@ -263,7 +270,7 @@ namespace Autofac.Core.Registration
         {
             get
             {
-                lock (_synchRoot)
+                using (_synchRoot.AcquireAsync().Result)
                 {
                     return _dynamicRegistrationSources.ToArray();
                 }

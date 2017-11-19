@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
@@ -48,7 +49,8 @@ namespace Autofac.Core
         /// <param name="properties">The properties used during component registration.</param>
         internal Container(IDictionary<string, object> properties = null)
         {
-            ComponentRegistry = new ComponentRegistry(properties ?? new Dictionary<string, object>());
+            var prop = properties ?? new Dictionary<string, object>();
+            ComponentRegistry = new ComponentRegistry(prop);
 
             ComponentRegistry.Register(new ComponentRegistration(
                 LifetimeScope.SelfRegistrationId,
@@ -58,6 +60,14 @@ namespace Autofac.Core
                 InstanceOwnership.ExternallyOwned,
                 new Service[] { new TypedService(typeof(ILifetimeScope)), new TypedService(typeof(IComponentContext)) },
                 new Dictionary<string, object>()));
+
+            var dest = ComponentRegistry.Properties;
+            object timeout;
+            if (prop.TryGetValue(AsyncLock.LockTimeoutKey, out timeout) &&
+                !dest.ContainsKey(AsyncLock.LockTimeoutKey))
+            {
+                dest.Add(AsyncLock.LockTimeoutKey, timeout);
+            }
 
             _rootLifetimeScope = new LifetimeScope(ComponentRegistry);
         }
