@@ -563,5 +563,23 @@ namespace Autofac.Test.Core.Lifetime
 
             Assert.True(dt.IsDisposed);
         }
+
+        [Fact]
+        public void BeginLifetimeScopeCannotBeCalledWithDuplicateTag()
+        {
+            var rootScope = new ContainerBuilder().Build();
+            const string duplicateTagName = "ABC";
+            var taggedScope = rootScope.BeginLifetimeScope(duplicateTagName);
+            var differentTaggedScope = taggedScope.BeginLifetimeScope("DEF");
+
+            var exception = Assert.Throws<InvalidOperationException>(() => differentTaggedScope.BeginLifetimeScope(duplicateTagName));
+
+            var expectedMessage = string.Format(
+                CultureInfo.CurrentCulture,
+                LifetimeScopeResources.DuplicateTagDetected,
+                duplicateTagName);
+
+            Assert.Equal(expectedMessage, exception.Message);
+        }
     }
 }

@@ -128,6 +128,19 @@ namespace Autofac.Core.Lifetime
         public ILifetimeScope BeginLifetimeScope(object tag)
         {
             CheckNotDisposed();
+
+            ISharingLifetimeScope parentScope = this;
+            while (parentScope != RootLifetimeScope)
+            {
+                if (parentScope.Tag.Equals(tag))
+                {
+                    throw new InvalidOperationException(
+                        string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.DuplicateTagDetected, tag));
+                }
+
+                parentScope = parentScope.ParentLifetimeScope;
+            }
+
             var registry = new CopyOnWriteRegistry(ComponentRegistry, () => CreateScopeRestrictedRegistry(tag, NoConfiguration));
             var scope = new LifetimeScope(registry, this, tag);
             scope.Disposer.AddInstanceForDisposal(registry);

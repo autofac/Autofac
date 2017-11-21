@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>Autofac is an IoC container for Microsoft .NET. It manages the dependencies between classes so that applications stay easy to change as they grow in size and complexity.</Description>
     <VersionPrefix>4.6.2</VersionPrefix>
-    <TargetFrameworks>net45;netstandard1.1</TargetFrameworks>
+    <TargetFrameworks>netstandard1.1;net45</TargetFrameworks>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -53,5 +53,20 @@
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.1' ">
     <PackageReference Include="System.ComponentModel" Version="4.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Core\Lifetime\LifetimeScopeResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LifetimeScopeResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Core\Lifetime\LifetimeScopeResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LifetimeScopeResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
