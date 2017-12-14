@@ -73,7 +73,7 @@ Normal .NET coding guidelines apply. See the [Framework Design Guidelines](http:
 
 Autofac source code uses four spaces for indents (rather than tabs).
 
-[If you have the EditorConfig add-in for your editor of choice (Visual Studio, Sublime Text, etc.)](http://editorconfig.org/), there are `.editorconfig` settings in the various repositories to help make your life easier.
+[If you have the EditorConfig add-in for your editor of choice (Visual Studio, Sublime Text, etc.)](http://editorconfig.org/), there are `.editorconfig` settings in the various repositories to help make your life easier. VS2017 supports EditorConfig out of the box.
 
 ## Autofac.Extras
 

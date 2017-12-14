@@ -22,7 +22,7 @@ namespace Autofac.Features.ResolveAnything
         {
             if (source == null)
             {
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
             }
 
             source.RegistrationConfiguration = configurationAction;

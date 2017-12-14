@@ -125,7 +125,7 @@ namespace Autofac
 
         private void AttachToRegistrations(IComponentRegistry componentRegistry)
         {
-            if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
+            if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
             foreach (var registration in componentRegistry.Registrations)
                 AttachToComponentRegistration(componentRegistry, registration);
             componentRegistry.Registered +=
@@ -134,7 +134,7 @@ namespace Autofac
 
         private void AttachToSources(IComponentRegistry componentRegistry)
         {
-            if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
+            if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
             foreach (var source in componentRegistry.Sources)
                 AttachToRegistrationSource(componentRegistry, source);
             componentRegistry.RegistrationSourceAdded +=
