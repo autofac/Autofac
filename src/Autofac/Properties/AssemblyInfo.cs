@@ -13,3 +13,4 @@ using System.Runtime.InteropServices;
 [assembly: NeutralResourcesLanguage("en-US")]
 [assembly: AssemblyCopyright("Copyright © 2015 Autofac Contributors")]
 [assembly: AssemblyDescription("Autofac Inversion of Control container for .NET applications.")]
+[assembly: AssemblyVersion("4.7.0.0")]
