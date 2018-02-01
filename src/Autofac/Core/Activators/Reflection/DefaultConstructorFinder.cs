@@ -73,8 +73,15 @@ namespace Autofac.Core.Activators.Reflection
 
         private static ConstructorInfo[] GetDefaultPublicConstructors(Type type)
         {
-            return DefaultPublicConstructorsCache.GetOrAdd(
+            var retval = DefaultPublicConstructorsCache.GetOrAdd(
                 type, t => t.GetTypeInfo().DeclaredConstructors.Where(c => c.IsPublic).ToArray());
+
+            if (retval.Count() == 0)
+            {
+                throw new NoPublicConstructorException(type);
+            }
+
+            return retval;
         }
     }
 }

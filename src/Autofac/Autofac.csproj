@@ -56,6 +56,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Core\Activators\Reflection\NoPublicConstructorExceptionResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>NoPublicConstructorExceptionResources.resx</DependentUpon>
+    </Compile>
     <Compile Update="Core\Lifetime\LifetimeScopeResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -64,6 +69,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Core\Activators\Reflection\NoPublicConstructorExceptionResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>NoPublicConstructorExceptionResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Core\Lifetime\LifetimeScopeResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LifetimeScopeResources.Designer.cs</LastGenOutput>
