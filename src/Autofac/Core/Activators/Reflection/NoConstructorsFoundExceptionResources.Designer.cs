@@ -23,14 +23,14 @@ namespace Autofac.Core.Activators.Reflection {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class NoPublicConstructorExceptionResources {
+    internal class NoConstructorsFoundExceptionResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal NoPublicConstructorExceptionResources() {
+        internal NoConstructorsFoundExceptionResources() {
         }
         
         /// <summary>
@@ -40,7 +40,7 @@ namespace Autofac.Core.Activators.Reflection {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Activators.Reflection.NoPublicConstructorExceptionResources", typeof(NoPublicConstructorExceptionResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Activators.Reflection.NoConstructorsFoundExceptionResources", typeof(NoConstructorsFoundExceptionResources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,7 +62,7 @@ namespace Autofac.Core.Activators.Reflection {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type {0} has no public constructors.
+        ///   Looks up a localized string similar to No accessible constructors were found for the type &apos;{0}&apos;..
         /// </summary>
         internal static string Message {
             get {

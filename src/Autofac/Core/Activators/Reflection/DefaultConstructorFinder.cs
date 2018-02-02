@@ -76,9 +76,9 @@ namespace Autofac.Core.Activators.Reflection
             var retval = DefaultPublicConstructorsCache.GetOrAdd(
                 type, t => t.GetTypeInfo().DeclaredConstructors.Where(c => c.IsPublic).ToArray());
 
-            if (retval.Count() == 0)
+            if (retval.Length == 0)
             {
-                throw new NoPublicConstructorException(type);
+                throw new NoConstructorsFoundException(type);
             }
 
             return retval;
