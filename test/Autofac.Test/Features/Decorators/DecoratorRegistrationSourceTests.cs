@@ -182,6 +182,22 @@ namespace Autofac.Test.Features.Decorators
         }
 
         [Fact]
+        public void ResolvesDecoratedServiceWhenRegisteredWithoutGenericConstraint()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterDecorated(typeof(ImplementorA), typeof(IDecoratedService));
+            builder.RegisterDecorator(typeof(DecoratorA), typeof(IDecoratedService));
+            builder.RegisterDecorator(typeof(DecoratorB), typeof(IDecoratedService));
+            var container = builder.Build();
+
+            var instance = container.Resolve<IDecoratedService>();
+
+            Assert.IsType<DecoratorB>(instance);
+            Assert.IsType<DecoratorA>(instance.Decorated);
+            Assert.IsType<ImplementorA>(instance.Decorated.Decorated);
+        }
+
+        [Fact]
         public void DecoratorRegistrationsGetAppliedInOrderAdded()
         {
             var builder = new ContainerBuilder();
