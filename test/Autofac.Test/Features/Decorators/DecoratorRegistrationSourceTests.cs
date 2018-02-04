@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Autofac.Core;
 using Xunit;
 
@@ -115,9 +116,7 @@ namespace Autofac.Test.Features.Decorators
             builder.RegisterDecorated<ImplementorA, IDecoratedService>().As<ImplementorA>();
             builder.RegisterDecorator<DecoratorA, IDecoratedService>();
 
-            var container = builder.Build();
-
-            Assert.Throws<DependencyResolutionException>(() => container.RegistrationFor<IDecoratedService>());
+            Assert.Throws<ArgumentException>(() => builder.Build());
         }
 
         [Fact]

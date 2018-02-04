@@ -16,6 +16,14 @@ namespace Autofac.Features.Decorators
         {
             _registrationData = registrationData;
             _activatorData = activatorData;
+
+            // TODO: Add additional checks that all services appropriate for decoratoration
+            var implementationService = new TypedService(_activatorData.ImplementationType);
+            if (_registrationData.Services.Contains(implementationService))
+            {
+                throw new ArgumentException(
+                    $"The decorated service {_activatorData.ServiceType} cannot expose its implementation type {_activatorData.ImplementationType} as a service");
+            }
         }
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
@@ -32,14 +40,6 @@ namespace Autofac.Features.Decorators
 
             if (service.GetType() == typeof(DecoratorService))
                 return Enumerable.Empty<IComponentRegistration>();
-
-            // TODO: Add additional checks that all services appropriate for decoratoration
-            var implementationService = new TypedService(_activatorData.ImplementationType);
-            if (_registrationData.Services.Contains(implementationService))
-            {
-                throw new DependencyResolutionException(
-                    $"The decorated service {_activatorData.ServiceType} cannot expose its implementation type {_activatorData.ImplementationType} as a service");
-            }
 
             var decoratedRegistration = BuildDecoratedRegistration();
 
