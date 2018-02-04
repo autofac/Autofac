@@ -35,6 +35,7 @@ using Autofac.Core;
 using Autofac.Core.Activators.ProvidedInstance;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
+using Autofac.Features.Decorators;
 using Autofac.Features.LightweightAdapters;
 using Autofac.Features.OpenGenerics;
 using Autofac.Features.Scanning;
@@ -1312,6 +1313,31 @@ namespace Autofac
             if (decorator == null) throw new ArgumentNullException(nameof(decorator));
 
             return LightweightAdapterRegistrationExtensions.RegisterDecorator<TService>(builder, (c, p, f) => decorator(f), fromKey, toKey);
+        }
+
+        public static IRegistrationBuilder<TDecorator, ReflectionActivatorData, DynamicRegistrationStyle>
+            RegisterDecorated<TDecorator, TService>(this ContainerBuilder builder)
+            where TDecorator : TService
+        {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+
+            var rb = new RegistrationBuilder<TDecorator, DecoratorActivatorData, DynamicRegistrationStyle>(
+                new TypedService(typeof(TService)),
+                new DecoratorActivatorData(typeof(TDecorator), typeof(TService)),
+                new DynamicRegistrationStyle());
+
+            rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => cr.AddRegistrationSource(
+                new DecoratorRegistrationSource(rb.RegistrationData, rb.ActivatorData)));
+
+            return rb;
+        }
+
+        public static void RegisterDecorator<TDecorator, TService>(this ContainerBuilder builder)
+            where TDecorator : TService
+        {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+
+            builder.RegisterType<TDecorator>().As(new DecoratorService(typeof(TService)));
         }
 
         /// <summary>
