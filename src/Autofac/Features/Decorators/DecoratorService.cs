@@ -7,9 +7,12 @@ namespace Autofac.Features.Decorators
     {
         public Type ServiceType { get; }
 
-        public DecoratorService(Type serviceType)
+        public Func<IDecoratorContext, bool> Condition { get; }
+
+        public DecoratorService(Type serviceType, Func<IDecoratorContext, bool> condition = null)
         {
             ServiceType = serviceType ?? throw new ArgumentNullException(nameof(serviceType));
+            Condition = condition ?? (context => true);
         }
 
         public override string Description => $"Decorator ({ServiceType.FullName})";
@@ -19,7 +22,7 @@ namespace Autofac.Features.Decorators
         {
             if (newType == null) throw new ArgumentNullException(nameof(newType));
 
-            return new DecoratorService(newType);
+            return new DecoratorService(newType, Condition);
         }
 
         public bool Equals(DecoratorService other)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Autofac.Core;
+using Autofac.Features.Decorators;
 using Xunit;
 
 namespace Autofac.Test.Features.Decorators
@@ -78,6 +79,33 @@ namespace Autofac.Test.Features.Decorators
             }
 
             public string Parameter { get; }
+        }
+
+        public interface IDecoratorWithContext
+        {
+            IDecoratorContext Context { get; }
+        }
+
+        public class DecoratorWithContextA : Decorator, IDecoratorWithContext
+        {
+            public DecoratorWithContextA(IDecoratedService decorated, IDecoratorContext context)
+                : base(decorated)
+            {
+                Context = context;
+            }
+
+            public IDecoratorContext Context { get; }
+        }
+
+        public class DecoratorWithContextB : Decorator, IDecoratorWithContext
+        {
+            public DecoratorWithContextB(IDecoratedService decorated, IDecoratorContext context)
+                : base(decorated)
+            {
+                Context = context;
+            }
+
+            public IDecoratorContext Context { get; }
         }
 
         [Fact]
@@ -224,9 +252,61 @@ namespace Autofac.Test.Features.Decorators
             Assert.IsType<ImplementorA>(instance.Decorated.Decorated);
         }
 
-        [Fact(Skip = "Not Implemented")]
-        public void CanDetermineDecoratorChainAtRuntime()
+        [Fact]
+        public void CanApplyDecoratorConditionallyAtRuntime()
         {
+            var builder = new ContainerBuilder();
+            builder.RegisterDecorated<ImplementorA, IDecoratedService>();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>(context => context.AppliedDecorators.Any());
+            builder.RegisterDecorator<DecoratorB, IDecoratedService>();
+            var container = builder.Build();
+
+            var instance = container.Resolve<IDecoratedService>();
+
+            Assert.IsType<DecoratorB>(instance);
+            Assert.IsType<ImplementorA>(instance.Decorated);
+        }
+
+        [Fact]
+        public void CanInjectDecoratorContextAsSnapshot()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterDecorated<ImplementorA, IDecoratedService>();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            builder.RegisterDecorator<DecoratorB, IDecoratedService>();
+            builder.RegisterDecorator<DecoratorWithContextA, IDecoratedService>();
+            builder.RegisterDecorator<DecoratorWithContextB, IDecoratedService>();
+            var container = builder.Build();
+
+            var instance = container.Resolve<IDecoratedService>();
+
+            var contextB = ((IDecoratorWithContext)instance).Context;
+            Assert.Equal(typeof(IDecoratedService), contextB.ServiceType);
+            Assert.Equal(typeof(ImplementorA), contextB.ImplementationType);
+            Assert.IsType<DecoratorWithContextA>(contextB.CurrentInstance);
+            Assert.Collection(
+                contextB.AppliedDecorators,
+                item => Assert.IsType<DecoratorA>(item),
+                item => Assert.IsType<DecoratorB>(item),
+                item => Assert.IsType<DecoratorWithContextA>(item));
+            Assert.Collection(
+                contextB.AppliedDecoratorTypes,
+                item => Assert.Equal(typeof(DecoratorA), item),
+                item => Assert.Equal(typeof(DecoratorB), item),
+                item => Assert.Equal(typeof(DecoratorWithContextA), item));
+
+            var contextA = ((IDecoratorWithContext)instance.Decorated).Context;
+            Assert.Equal(typeof(IDecoratedService), contextA.ServiceType);
+            Assert.Equal(typeof(ImplementorA), contextA.ImplementationType);
+            Assert.IsType<DecoratorB>(contextA.CurrentInstance);
+            Assert.Collection(
+                contextA.AppliedDecorators,
+                item => Assert.IsType<DecoratorA>(item),
+                item => Assert.IsType<DecoratorB>(item));
+            Assert.Collection(
+                contextA.AppliedDecoratorTypes,
+                item => Assert.Equal(typeof(DecoratorA), item),
+                item => Assert.Equal(typeof(DecoratorB), item));
         }
 
         [Fact]

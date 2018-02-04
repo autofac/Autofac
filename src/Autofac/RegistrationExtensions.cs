@@ -1349,12 +1349,12 @@ namespace Autofac
             return rb;
         }
 
-        public static void RegisterDecorator<TDecorator, TService>(this ContainerBuilder builder)
+        public static void RegisterDecorator<TDecorator, TService>(this ContainerBuilder builder, Func<IDecoratorContext, bool> condition = null)
             where TDecorator : TService
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
 
-            builder.RegisterType<TDecorator>().As(new DecoratorService(typeof(TService)));
+            builder.RegisterType<TDecorator>().As(new DecoratorService(typeof(TService), condition));
         }
 
         public static void RegisterDecorator(this ContainerBuilder builder, Type implementationType, Type serviceType)

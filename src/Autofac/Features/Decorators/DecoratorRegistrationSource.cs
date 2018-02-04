@@ -44,11 +44,12 @@ namespace Autofac.Features.Decorators
             var decoratedRegistration = BuildDecoratedRegistration();
 
             var decoratorService = new DecoratorService(_activatorData.ServiceType);
-            var decoratorServices = registrationAccessor(decoratorService)
+            var decorators = registrationAccessor(decoratorService)
                 .OrderBy(r => r.GetRegistrationOrder())
+                .Select(r => new { Registration = r, Service = r.Services.OfType<DecoratorService>().FirstOrDefault() })
                 .ToArray();
 
-            if (decoratorServices.Length == 0)
+            if (decorators.Length == 0)
                 return new[] { decoratedRegistration };
 
             var registrationBuilder = RegistrationBuilder.ForDelegate(
@@ -57,11 +58,18 @@ namespace Autofac.Features.Decorators
                     var parameters = p.ToArray();
                     var instance = c.ResolveComponent(decoratedRegistration, parameters);
 
-                    foreach (var decoratorRegistration in decoratorServices)
+                    var context = DecoratorContext.Create(_activatorData.ImplementationType, _activatorData.ServiceType, instance);
+
+                    foreach (var decorator in decorators)
                     {
+                        if (!decorator.Service.Condition(context)) continue;
+
                         var serviceParameter = new TypedParameter(_activatorData.ServiceType, instance);
-                        var invokeParameters = parameters.Concat(new Parameter[] { serviceParameter });
-                        instance = c.ResolveComponent(decoratorRegistration, invokeParameters);
+                        var contextParameter = new TypedParameter(typeof(IDecoratorContext), context);
+                        var invokeParameters = parameters.Concat(new Parameter[] { serviceParameter, contextParameter });
+                        instance = c.ResolveComponent(decorator.Registration, invokeParameters);
+
+                        context = context.UpdateContext(instance);
                     }
 
                     return instance;
