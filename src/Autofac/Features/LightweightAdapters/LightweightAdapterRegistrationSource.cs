@@ -62,7 +62,7 @@ namespace Autofac.Features.LightweightAdapters
                     .Select(r =>
                     {
                         var rb = RegistrationBuilder
-                            .ForDelegate((c, p) => _activatorData.Adapter(c, p, c.ResolveComponent(r, Enumerable.Empty<Parameter>())))
+                            .ForDelegate((c, p) => _activatorData.Adapter(c, Enumerable.Empty<Parameter>(), c.ResolveComponent(r, p)))
                             .Targeting(r)
                             .InheritRegistrationOrderFrom(r);
 
