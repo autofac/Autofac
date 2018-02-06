@@ -96,7 +96,7 @@ namespace Autofac.Test.Features.LightweightAdapters
                 _container = builder.Build();
             }
 
-            [Fact(Skip = "Issue #529")]
+            [Fact(Skip = "Issue #529 => #880")]
             public void InstanceWithDefaultImplementationIsDecorated()
             {
                 var decorator = _container.Resolve<IService>();
