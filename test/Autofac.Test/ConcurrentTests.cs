@@ -126,6 +126,7 @@ namespace Autofac.Test
                     });
                     mres.Wait(1250);
                 }
+
                 return new object();
             });
 

@@ -66,9 +66,18 @@ namespace Autofac.Core.Registration
 
         public void Dispose()
         {
-            // The _readRegistry doesn't need to be disposed if it still points to the initial registry.
-            // Only the potentially allocated registry, containing additional registrations, needs to be disposed.
-            _writeRegistry?.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // The _readRegistry doesn't need to be disposed if it still points to the initial registry.
+                // Only the potentially allocated registry, containing additional registrations, needs to be disposed.
+                _writeRegistry?.Dispose();
+            }
         }
 
         public bool TryGetRegistration(Service service, out IComponentRegistration registration)
