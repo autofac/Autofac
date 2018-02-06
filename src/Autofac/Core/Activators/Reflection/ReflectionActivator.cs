@@ -105,7 +105,7 @@ namespace Autofac.Core.Activators.Reflection
 
             var validBindings = GetValidConstructorBindings(context, parameters);
 
-            var selectedBinding = ConstructorSelector.SelectConstructorBinding(validBindings);
+            var selectedBinding = ConstructorSelector.SelectConstructorBinding(validBindings, parameters);
 
             var instance = selectedBinding.Instantiate();
 

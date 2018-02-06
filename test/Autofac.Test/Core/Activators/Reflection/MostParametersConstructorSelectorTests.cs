@@ -13,14 +13,14 @@ namespace Autofac.Test.Core.Activators.Reflection
         public void DoesNotAcceptNullBindings()
         {
             var target = new MostParametersConstructorSelector();
-            Assert.Throws<ArgumentNullException>(() => target.SelectConstructorBinding(null));
+            Assert.Throws<ArgumentNullException>(() => target.SelectConstructorBinding(null, Enumerable.Empty<Parameter>()));
         }
 
         [Fact]
         public void DoesNotAcceptEmptyBindings()
         {
             var target = new MostParametersConstructorSelector();
-            Assert.Throws<ArgumentOutOfRangeException>(() => target.SelectConstructorBinding(new ConstructorParameterBinding[] { }));
+            Assert.Throws<ArgumentOutOfRangeException>(() => target.SelectConstructorBinding(new ConstructorParameterBinding[] { }, Enumerable.Empty<Parameter>()));
         }
 
         public class ThreeConstructors
@@ -44,7 +44,7 @@ namespace Autofac.Test.Core.Activators.Reflection
             var constructors = GetBindingsForAllConstructorsOf<ThreeConstructors>();
             var target = new MostParametersConstructorSelector();
 
-            var chosen = target.SelectConstructorBinding(constructors);
+            var chosen = target.SelectConstructorBinding(constructors, Enumerable.Empty<Parameter>());
 
             Assert.NotNull(chosen);
             Assert.Equal(2, chosen.TargetConstructor.GetParameters().Length);
@@ -67,7 +67,7 @@ namespace Autofac.Test.Core.Activators.Reflection
             var constructors = GetBindingsForAllConstructorsOf<TwoConstructors>();
             var target = new MostParametersConstructorSelector();
 
-            Assert.Throws<DependencyResolutionException>(() => target.SelectConstructorBinding(constructors));
+            Assert.Throws<DependencyResolutionException>(() => target.SelectConstructorBinding(constructors, Enumerable.Empty<Parameter>()));
         }
 
         private static ConstructorParameterBinding[] GetBindingsForAllConstructorsOf<TTarget>()
