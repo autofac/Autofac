@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
@@ -38,9 +39,10 @@ namespace Autofac.Core.Activators.Reflection
         /// Selects the best constructor from the available constructors.
         /// </summary>
         /// <param name="constructorBindings">Available constructors.</param>
+        /// <param name="parameters">Parameters to the instance being resolved.</param>
         /// <returns>The best constructor.</returns>
         /// <exception cref='DependencyResolutionException'>A single unambiguous match could not be chosen.</exception>
-        public ConstructorParameterBinding SelectConstructorBinding(ConstructorParameterBinding[] constructorBindings)
+        public ConstructorParameterBinding SelectConstructorBinding(ConstructorParameterBinding[] constructorBindings, IEnumerable<Parameter> parameters)
         {
             if (constructorBindings == null) throw new ArgumentNullException(nameof(constructorBindings));
             if (constructorBindings.Length == 0) throw new ArgumentOutOfRangeException(nameof(constructorBindings));

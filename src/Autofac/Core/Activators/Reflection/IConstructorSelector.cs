@@ -23,6 +23,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Collections.Generic;
+
 namespace Autofac.Core.Activators.Reflection
 {
     /// <summary>
@@ -34,7 +36,8 @@ namespace Autofac.Core.Activators.Reflection
         /// Selects the best constructor from the available constructors.
         /// </summary>
         /// <param name="constructorBindings">Available constructors.</param>
+        /// <param name="parameters">Parameters to the instance being resolved.</param>
         /// <returns>The best constructor.</returns>
-        ConstructorParameterBinding SelectConstructorBinding(ConstructorParameterBinding[] constructorBindings);
+        ConstructorParameterBinding SelectConstructorBinding(ConstructorParameterBinding[] constructorBindings, IEnumerable<Parameter> parameters);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Autofac.Core;
 using Autofac.Features.Indexed;
 using Autofac.Features.Metadata;
 using Autofac.Test.Scenarios.Adapters;
@@ -96,7 +97,7 @@ namespace Autofac.Test.Features.LightweightAdapters
                 _container = builder.Build();
             }
 
-            [Fact(Skip = "Issue #529")]
+            [Fact(Skip = "Issue #529 => #880")]
             public void InstanceWithDefaultImplementationIsDecorated()
             {
                 var decorator = _container.Resolve<IService>();
@@ -129,6 +130,74 @@ namespace Autofac.Test.Features.LightweightAdapters
             public IService Decorated
             {
                 get { return _decorated; }
+            }
+        }
+
+        public class DecoratorParameterization
+        {
+            private readonly IContainer _container;
+
+            public DecoratorParameterization()
+            {
+                var builder = new ContainerBuilder();
+                builder.Register((ctx, p) => new ParameterizedImplementer(p)).Named<IParameterizedService>("from");
+                builder.RegisterDecorator<IParameterizedService>((ctx, p, s) => new ParameterizedDecorator1(s, p), "from", "to");
+                builder.RegisterDecorator<IParameterizedService>((ctx, p, s) => new ParameterizedDecorator2(s, p), "to");
+                _container = builder.Build();
+            }
+
+            [Fact]
+            public void ParametersGoToTheDecoratedInstance()
+            {
+                var expected = new Implementer1();
+                var resolved = _container.Resolve<IParameterizedService>(TypedParameter.From<IService>(new Implementer1()));
+                var dec2 = Assert.IsType<ParameterizedDecorator2>(resolved);
+                Assert.Empty(dec2.Parameters);
+                var dec1 = Assert.IsType<ParameterizedDecorator1>(dec2.Implementer);
+                Assert.Empty(dec1.Parameters);
+                var imp = Assert.IsType<ParameterizedImplementer>(dec1.Implementer);
+                Assert.Single(imp.Parameters);
+            }
+
+            public interface IParameterizedService
+            {
+                IEnumerable<Parameter> Parameters { get; }
+            }
+
+            public class ParameterizedImplementer : IParameterizedService
+            {
+                public ParameterizedImplementer(IEnumerable<Parameter> parameters)
+                {
+                    this.Parameters = parameters;
+                }
+
+                public IEnumerable<Parameter> Parameters { get; }
+            }
+
+            public class ParameterizedDecorator1 : IParameterizedService
+            {
+                public ParameterizedDecorator1(IParameterizedService implementer, IEnumerable<Parameter> parameters)
+                {
+                    this.Implementer = implementer;
+                    this.Parameters = parameters;
+                }
+
+                public IParameterizedService Implementer { get; }
+
+                public IEnumerable<Parameter> Parameters { get; }
+            }
+
+            public class ParameterizedDecorator2 : IParameterizedService
+            {
+                public ParameterizedDecorator2(IParameterizedService implementer, IEnumerable<Parameter> parameters)
+                {
+                    this.Implementer = implementer;
+                    this.Parameters = parameters;
+                }
+
+                public IParameterizedService Implementer { get; }
+
+                public IEnumerable<Parameter> Parameters { get; }
             }
         }
 

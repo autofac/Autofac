@@ -359,9 +359,30 @@ namespace Autofac.Test.Core.Activators.Reflection
         }
 
         [Fact]
+        public void ThrowsWhenNoPublicConstructors()
+        {
+            var dx = Assert.Throws<NoConstructorsFoundException>(
+                () => Factory.CreateReflectionActivator(typeof(NoPublicConstructor)));
+
+            Assert.True(dx.Message.Contains(typeof(NoPublicConstructor).FullName));
+            Assert.Equal(typeof(NoPublicConstructor), dx.OffendingType);
+        }
+
+        public class InternalDefaultConstructor
+        {
+            public InternalDefaultConstructor(int x)
+            {
+            }
+
+            internal InternalDefaultConstructor()
+            {
+            }
+        }
+
+        [Fact]
         public void NonPublicConstructorsIgnored()
         {
-            var target = Factory.CreateReflectionActivator(typeof(NoPublicConstructor));
+            var target = Factory.CreateReflectionActivator(typeof(InternalDefaultConstructor));
             var dx = Assert.Throws<DependencyResolutionException>(() =>
                 target.ActivateInstance(new Container(), Factory.NoParameters));
 

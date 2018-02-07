@@ -32,7 +32,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         public void SelectsEmptyConstructor()
         {
             var target0 = new MatchingSignatureConstructorSelector();
-            var c0 = target0.SelectConstructorBinding(_ctors);
+            var c0 = target0.SelectConstructorBinding(_ctors, Enumerable.Empty<Parameter>());
             Assert.NotNull(c0);
             Assert.Equal(0, c0.TargetConstructor.GetParameters().Length);
         }
@@ -41,7 +41,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         public void SelectsConstructorWithParameters()
         {
             var target2 = new MatchingSignatureConstructorSelector(typeof(int), typeof(string));
-            var c2 = target2.SelectConstructorBinding(_ctors);
+            var c2 = target2.SelectConstructorBinding(_ctors, Enumerable.Empty<Parameter>());
             Assert.NotNull(c2);
             Assert.Equal(2, c2.TargetConstructor.GetParameters().Length);
         }
@@ -52,7 +52,7 @@ namespace Autofac.Test.Core.Activators.Reflection
             var target = new MatchingSignatureConstructorSelector(typeof(string));
 
             var dx = Assert.Throws<DependencyResolutionException>(() =>
-                target.SelectConstructorBinding(_ctors));
+                target.SelectConstructorBinding(_ctors, Enumerable.Empty<Parameter>()));
 
             Assert.True(dx.Message.Contains(typeof(ThreeConstructors).Name));
             Assert.True(dx.Message.Contains(typeof(string).Name));
