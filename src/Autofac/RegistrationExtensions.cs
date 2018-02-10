@@ -1364,6 +1364,26 @@ namespace Autofac
             builder.RegisterType(implementationType).As(new DecoratorService(serviceType));
         }
 
+        public static void RegisterDecorator<TService>(
+            this ContainerBuilder builder,
+            Func<IComponentContext, IEnumerable<Parameter>, TService, TService> decorator,
+            Func<IDecoratorContext, bool> condition = null)
+        {
+            var service = new DecoratorService(typeof(TService), condition);
+
+            builder.Register((c, p) =>
+            {
+                var instance = (TService)p.OfType<TypedParameter>().FirstOrDefault(tp => tp.Type == typeof(TService))?.Value;
+                if (instance == null)
+                {
+                    throw new DependencyResolutionException($"A decorator for {typeof(TService).Name} was not provided with an instance parameter");
+                }
+
+                return decorator(c, p, instance);
+            })
+            .As(service);
+        }
+
         /// <summary>
         /// Run a supplied action instead of disposing instances when they're no
         /// longer required.

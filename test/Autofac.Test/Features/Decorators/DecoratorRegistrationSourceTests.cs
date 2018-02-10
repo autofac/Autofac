@@ -193,6 +193,45 @@ namespace Autofac.Test.Features.Decorators
         }
 
         [Fact]
+        public void DecoratorRegisteredAsLambdaCanBeResolved()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterDecorated<ImplementorA, IDecoratedService>();
+            builder.RegisterDecorator<IDecoratedService>((c, p, i) => new DecoratorA(i));
+            var container = builder.Build();
+
+            var instance = container.Resolve<IDecoratedService>();
+
+            Assert.IsType<DecoratorA>(instance);
+            Assert.IsType<ImplementorA>(instance.Decorated);
+        }
+
+        [Fact]
+        public void DecoratorRegisteredAsLambdaCanAcceptAdditionalParameters()
+        {
+            const string parameterName = "parameter";
+            const string parameterValue = "ABC";
+
+            var builder = new ContainerBuilder();
+            builder.RegisterDecorated<ImplementorA, IDecoratedService>();
+            builder.RegisterDecorator<IDecoratedService>((c, p, i) =>
+            {
+                var stringParameter = (string)p
+                    .OfType<NamedParameter>()
+                    .FirstOrDefault(np => np.Name == parameterName)?.Value;
+
+                return new DecoratorWithParameter(i, stringParameter);
+            });
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var parameter = new NamedParameter(parameterName, parameterValue);
+            var instance = container.Resolve<IDecoratedService>(parameter);
+
+            Assert.Equal(parameterValue, ((DecoratorWithParameter)instance.Decorated).Parameter);
+        }
+
+        [Fact]
         public void ResolvesDecoratedServiceWhenMultipleDecoratorRegistered()
         {
             var builder = new ContainerBuilder();
