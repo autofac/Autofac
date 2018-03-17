@@ -1,12 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Autofac.Core;
 using Autofac.Features.Decorators;
 using Xunit;
 
 namespace Autofac.Test.Features.Decorators
 {
-    public class DecoratorRegistrationSourceTests
+    public class DecoratorTests
     {
         public interface IService
         {
@@ -112,7 +111,8 @@ namespace Autofac.Test.Features.Decorators
         public void RegistrationIncludesTheServiceType()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterDecorated<ImplementorA, IDecoratedService>();
+
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
             builder.RegisterDecorator<DecoratorA, IDecoratedService>();
             var container = builder.Build();
 
@@ -127,7 +127,7 @@ namespace Autofac.Test.Features.Decorators
         public void RegistrationTargetsTheImplementationType()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterDecorated<ImplementorA, IDecoratedService>();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
             builder.RegisterDecorator<DecoratorA, IDecoratedService>();
             var container = builder.Build();
 
@@ -138,20 +138,21 @@ namespace Autofac.Test.Features.Decorators
         }
 
         [Fact]
-        public void DecoratedRegistrationCannotIncludeImplementationType()
+        public void DecoratedRegistrationCanIncludeImplementationType()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterDecorated<ImplementorA, IDecoratedService>().As<ImplementorA>();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>().AsSelf();
             builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
 
-            Assert.Throws<ArgumentException>(() => builder.Build());
+            Assert.IsType<ImplementorA>(container.Resolve<ImplementorA>());
         }
 
         [Fact]
         public void DecoratedRegistrationCanIncludeOtherServices()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterDecorated<ImplementorA, IDecoratedService>().As<IService>();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>().As<IService>();
             builder.RegisterDecorator<DecoratorA, IDecoratedService>();
             var container = builder.Build();
 
@@ -170,7 +171,7 @@ namespace Autofac.Test.Features.Decorators
         public void ResolvesDecoratedServiceWhenNoDecoratorsRegistered()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterDecorated<ImplementorA, IDecoratedService>();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
             var container = builder.Build();
 
             var instance = container.Resolve<IDecoratedService>();
@@ -182,7 +183,8 @@ namespace Autofac.Test.Features.Decorators
         public void ResolvesDecoratedServiceWhenSingleDecoratorRegistered()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterDecorated<ImplementorA, IDecoratedService>();
+
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
             builder.RegisterDecorator<DecoratorA, IDecoratedService>();
             var container = builder.Build();
 
@@ -196,7 +198,7 @@ namespace Autofac.Test.Features.Decorators
         public void DecoratorRegisteredAsLambdaCanBeResolved()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterDecorated<ImplementorA, IDecoratedService>();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
             builder.RegisterDecorator<IDecoratedService>((c, p, i) => new DecoratorA(i));
             var container = builder.Build();
 
@@ -213,7 +215,7 @@ namespace Autofac.Test.Features.Decorators
             const string parameterValue = "ABC";
 
             var builder = new ContainerBuilder();
-            builder.RegisterDecorated<ImplementorA, IDecoratedService>();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
             builder.RegisterDecorator<IDecoratedService>((c, p, i) =>
             {
                 var stringParameter = (string)p
@@ -235,7 +237,7 @@ namespace Autofac.Test.Features.Decorators
         public void ResolvesDecoratedServiceWhenMultipleDecoratorRegistered()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterDecorated<ImplementorA, IDecoratedService>();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
             builder.RegisterDecorator<DecoratorA, IDecoratedService>();
             builder.RegisterDecorator<DecoratorB, IDecoratedService>();
             var container = builder.Build();
@@ -251,7 +253,7 @@ namespace Autofac.Test.Features.Decorators
         public void ResolvesDecoratedServiceWhenRegisteredWithoutGenericConstraint()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterDecorated(typeof(ImplementorA), typeof(IDecoratedService));
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
             builder.RegisterDecorator(typeof(DecoratorA), typeof(IDecoratedService));
             builder.RegisterDecorator(typeof(DecoratorB), typeof(IDecoratedService));
             var container = builder.Build();
@@ -267,7 +269,7 @@ namespace Autofac.Test.Features.Decorators
         public void DecoratorRegistrationsGetAppliedInOrderAdded()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterDecorated<ImplementorA, IDecoratedService>();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
             builder.RegisterDecorator<DecoratorA, IDecoratedService>();
             builder.RegisterDecorator<DecoratorB, IDecoratedService>();
             var container = builder.Build();
@@ -279,7 +281,7 @@ namespace Autofac.Test.Features.Decorators
             Assert.IsType<ImplementorA>(instance.Decorated.Decorated);
 
             builder = new ContainerBuilder();
-            builder.RegisterDecorated<ImplementorA, IDecoratedService>();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
             builder.RegisterDecorator<DecoratorB, IDecoratedService>();
             builder.RegisterDecorator<DecoratorA, IDecoratedService>();
             container = builder.Build();
@@ -295,7 +297,7 @@ namespace Autofac.Test.Features.Decorators
         public void CanApplyDecoratorConditionallyAtRuntime()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterDecorated<ImplementorA, IDecoratedService>();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
             builder.RegisterDecorator<DecoratorA, IDecoratedService>(context => context.AppliedDecorators.Any());
             builder.RegisterDecorator<DecoratorB, IDecoratedService>();
             var container = builder.Build();
@@ -310,7 +312,7 @@ namespace Autofac.Test.Features.Decorators
         public void CanInjectDecoratorContextAsSnapshot()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterDecorated<ImplementorA, IDecoratedService>();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
             builder.RegisterDecorator<DecoratorA, IDecoratedService>();
             builder.RegisterDecorator<DecoratorB, IDecoratedService>();
             builder.RegisterDecorator<DecoratorWithContextA, IDecoratedService>();
@@ -352,7 +354,7 @@ namespace Autofac.Test.Features.Decorators
         public void DecoratorInheritsDecoratedLifetimeWhenSingleInstance()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterDecorated<ImplementorA, IDecoratedService>().SingleInstance();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>().SingleInstance();
             builder.RegisterDecorator<DecoratorA, IDecoratedService>();
 
             var container = builder.Build();
@@ -370,7 +372,7 @@ namespace Autofac.Test.Features.Decorators
         public void DecoratorInheritsDecoratedLifetimeWhenInstancePerDependency()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterDecorated<ImplementorA, IDecoratedService>().InstancePerDependency();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>().InstancePerDependency();
             builder.RegisterDecorator<DecoratorA, IDecoratedService>();
 
             var container = builder.Build();
@@ -391,7 +393,7 @@ namespace Autofac.Test.Features.Decorators
         public void DecoratorInheritsDecoratedLifetimeWhenInstancePerLifetimeScope()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterDecorated<ImplementorA, IDecoratedService>().InstancePerLifetimeScope();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>().InstancePerLifetimeScope();
             builder.RegisterDecorator<DecoratorA, IDecoratedService>();
 
             var container = builder.Build();
@@ -414,7 +416,7 @@ namespace Autofac.Test.Features.Decorators
         public void ParametersArePassedThroughDecoratorChain()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterDecorated<ImplementorA, IDecoratedService>();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
             builder.RegisterDecorator<DecoratorWithParameter, IDecoratedService>();
             builder.RegisterDecorator<DecoratorA, IDecoratedService>();
             var container = builder.Build();
@@ -429,7 +431,7 @@ namespace Autofac.Test.Features.Decorators
         public void ParametersCanBeConfiguredOnDecoratedService()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterDecorated<ImplementorWithParameters, IDecoratedService>().WithParameter("parameter", "ABC");
+            builder.RegisterType<ImplementorWithParameters>().As<IDecoratedService>().WithParameter("parameter", "ABC");
             builder.RegisterDecorator<DecoratorA, IDecoratedService>();
             builder.RegisterDecorator<DecoratorB, IDecoratedService>();
             var container = builder.Build();

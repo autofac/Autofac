@@ -1315,40 +1315,6 @@ namespace Autofac
             return LightweightAdapterRegistrationExtensions.RegisterDecorator<TService>(builder, (c, p, f) => decorator(f), fromKey, toKey);
         }
 
-        public static IRegistrationBuilder<TImplementation, ReflectionActivatorData, DynamicRegistrationStyle>
-            RegisterDecorated<TImplementation, TService>(this ContainerBuilder builder)
-            where TImplementation : TService
-        {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-
-            var rb = new RegistrationBuilder<TImplementation, DecoratorActivatorData, DynamicRegistrationStyle>(
-                new TypedService(typeof(TService)),
-                new DecoratorActivatorData(typeof(TImplementation), typeof(TService)),
-                new DynamicRegistrationStyle());
-
-            rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => cr.AddRegistrationSource(
-                new DecoratorRegistrationSource(rb.RegistrationData, rb.ActivatorData)));
-
-            return rb;
-        }
-
-        public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
-            RegisterDecorated(
-                this ContainerBuilder builder, Type implementationType, Type serviceType)
-        {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-
-            var rb = new RegistrationBuilder<object, DecoratorActivatorData, DynamicRegistrationStyle>(
-                new TypedService(serviceType),
-                new DecoratorActivatorData(implementationType, serviceType),
-                new DynamicRegistrationStyle());
-
-            rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => cr.AddRegistrationSource(
-                new DecoratorRegistrationSource(rb.RegistrationData, rb.ActivatorData)));
-
-            return rb;
-        }
-
         public static void RegisterDecorator<TDecorator, TService>(this ContainerBuilder builder, Func<IDecoratorContext, bool> condition = null)
             where TDecorator : TService
         {
