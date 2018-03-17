@@ -170,7 +170,7 @@ namespace Autofac.Core.Registration
 
             foreach (var serviceWithType in registration.Services.OfType<IServiceWithType>())
             {
-                if (serviceWithType is IDecoratorService) break;
+                if (serviceWithType is DecoratorService) break;
 
                 if (_decoratedServiceTypes.Contains(serviceWithType.ServiceType))
                 {
@@ -224,7 +224,7 @@ namespace Autofac.Core.Registration
                 var info = GetServiceInfo(service);
                 info.AddImplementation(registration, preserveDefaults, originatedFromSource);
 
-                if (service is IDecoratorService decoratorService)
+                if (service is DecoratorService decoratorService)
                     _decoratedServiceTypes.Add(decoratorService.ServiceType);
             }
 
@@ -290,7 +290,7 @@ namespace Autofac.Core.Registration
                 if (!(source is OpenGenericRegistrationSource openGenericRegistrationSource)) return;
 
                 var decoratorService = openGenericRegistrationSource.Services
-                    .OfType<IDecoratorService>()
+                    .OfType<DecoratorService>()
                     .Select(s => s.ServiceType)
                     .FirstOrDefault();
 

@@ -1356,7 +1356,7 @@ namespace Autofac
 
             OpenGenericRegistrationExtensions
                 .RegisterGeneric(builder, implementationType)
-                .As(new OpenGenericDecoratorService(serviceType));
+                .As(new DecoratorService(serviceType));
         }
 
         /// <summary>

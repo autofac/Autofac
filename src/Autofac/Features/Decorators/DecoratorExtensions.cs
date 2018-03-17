@@ -18,20 +18,15 @@ namespace Autofac.Features.Decorators
             var serviceType = typedService.ServiceType;
 
             var decoratorService = new DecoratorService(serviceType);
+
             var decorators = registry.RegistrationsFor(decoratorService)
                 .OrderBy(r => r.GetRegistrationOrder())
-                .Select(r => new { Registration = r, Service = r.Services.OfType<IDecoratorService>().FirstOrDefault() })
+                .Select(r => new
+                {
+                    Registration = r,
+                    Service = r.Services.OfType<DecoratorService>().FirstOrDefault()
+                })
                 .ToArray();
-
-            if (decorators.Length == 0 && serviceType.IsConstructedGenericType)
-            {
-                var openGenericService = new OpenGenericDecoratorService(serviceType);
-
-                decorators = registry.RegistrationsFor(openGenericService)
-                    .OrderBy(r => r.GetRegistrationOrder())
-                    .Select(r => new { Registration = r, Service = r.Services.OfType<IDecoratorService>().FirstOrDefault() })
-                    .ToArray();
-            }
 
             if (decorators.Length == 0) return instance;
 

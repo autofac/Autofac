@@ -3,7 +3,7 @@ using Autofac.Core;
 
 namespace Autofac.Features.Decorators
 {
-    public class DecoratorService : Service, IDecoratorService, IEquatable<DecoratorService>
+    public class DecoratorService : Service, IServiceWithType, IEquatable<DecoratorService>
     {
         public Type ServiceType { get; }
 
