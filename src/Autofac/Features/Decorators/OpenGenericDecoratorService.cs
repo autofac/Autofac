@@ -3,13 +3,13 @@ using Autofac.Core;
 
 namespace Autofac.Features.Decorators
 {
-    public class DecoratorService : Service, IDecoratorService, IEquatable<DecoratorService>
+    public class OpenGenericDecoratorService : Service, IDecoratorService, IEquatable<OpenGenericDecoratorService>
     {
         public Type ServiceType { get; }
 
         public Func<IDecoratorContext, bool> Condition { get; }
 
-        public DecoratorService(Type serviceType, Func<IDecoratorContext, bool> condition = null)
+        public OpenGenericDecoratorService(Type serviceType, Func<IDecoratorContext, bool> condition = null)
         {
             ServiceType = serviceType ?? throw new ArgumentNullException(nameof(serviceType));
             Condition = condition ?? (context => true);
@@ -22,21 +22,21 @@ namespace Autofac.Features.Decorators
         {
             if (newType == null) throw new ArgumentNullException(nameof(newType));
 
-            return new DecoratorService(newType, Condition);
+            return new OpenGenericDecoratorService(newType, Condition);
         }
 
-        public bool Equals(DecoratorService other)
+        public bool Equals(OpenGenericDecoratorService other)
         {
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
-            return ServiceType == other.ServiceType;
+            return ServiceType == other.ServiceType || other.ServiceType.IsClosedTypeOf(ServiceType);
         }
 
         public override bool Equals(object obj)
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((DecoratorService)obj);
+            return obj.GetType() == GetType() && Equals((OpenGenericDecoratorService)obj);
         }
 
         public override int GetHashCode()

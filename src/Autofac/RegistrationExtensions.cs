@@ -1350,6 +1350,15 @@ namespace Autofac
             .As(service);
         }
 
+        public static void RegisterGenericDecorator(this ContainerBuilder builder, Type implementationType, Type serviceType)
+        {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+
+            OpenGenericRegistrationExtensions
+                .RegisterGeneric(builder, implementationType)
+                .As(new OpenGenericDecoratorService(serviceType));
+        }
+
         /// <summary>
         /// Run a supplied action instead of disposing instances when they're no
         /// longer required.

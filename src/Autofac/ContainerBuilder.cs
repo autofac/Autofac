@@ -36,6 +36,7 @@ using Autofac.Features.GeneratedFactories;
 using Autofac.Features.Indexed;
 using Autofac.Features.LazyDependencies;
 using Autofac.Features.Metadata;
+using Autofac.Features.OpenGenerics;
 using Autofac.Features.OwnedInstances;
 
 namespace Autofac
@@ -67,7 +68,6 @@ namespace Autofac
         private bool _wasBuilt;
 
         private const string BuildCallbackPropertyKey = "__BuildCallbackKey";
-        private const string WiredDecoratorsPropertyKey = "__WiredDecorators";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContainerBuilder"/> class.
@@ -88,11 +88,6 @@ namespace Autofac
             if (!Properties.ContainsKey(BuildCallbackPropertyKey))
             {
                 Properties.Add(BuildCallbackPropertyKey, new List<Action<IContainer>>());
-            }
-
-            if (!Properties.ContainsKey(WiredDecoratorsPropertyKey))
-            {
-                Properties.Add(WiredDecoratorsPropertyKey, new HashSet<Type>());
             }
         }
 
@@ -283,45 +278,6 @@ namespace Autofac
 
             foreach (var callback in _configurationCallbacks)
                 callback.Callback(componentRegistry);
-
-            // Build a distinct list of decorated service types.
-            var decoratorServiceTypes = componentRegistry.Registrations
-                .SelectMany(r => r.Services)
-                .OfType<DecoratorService>()
-                .Select(ds => ds.ServiceType)
-                .Distinct()
-                .ToArray();
-
-            // No decorators configured so bail early.
-            if (decoratorServiceTypes.Length == 0) return;
-
-            // Enumerate the decorated service types.
-            foreach (var decoratorServiceType in decoratorServiceTypes)
-            {
-                // The typed service being decorated.
-                var typedService = new TypedService(decoratorServiceType);
-
-                // TODO: Exception condition?
-                if (!componentRegistry.TryGetRegistration(typedService, out var decorated)) continue;
-
-                // Get a list of decorators that have already been wired.
-                var wiredDecorators = GetWiredDecorators();
-
-                // Bail if we have already wired up the Activating method.
-                if (wiredDecorators.Contains(decoratorServiceType)) continue;
-
-                void ApplyDecorator(object sender, ActivatingEventArgs<object> args)
-                {
-                    var decoratedInstance = typedService.Decorate(args.Instance, args.Context, args.Parameters);
-                    args.ReplaceInstance(decoratedInstance);
-                }
-
-                // Wire up the Activating method.
-                decorated.Activating += ApplyDecorator;
-
-                // Note that the service type has already been wired.
-                wiredDecorators.Add(decoratorServiceType);
-            }
         }
 
         private void RegisterDefaultAdapters(IComponentRegistry componentRegistry)
@@ -339,11 +295,6 @@ namespace Autofac
         private List<Action<IContainer>> GetBuildCallbacks()
         {
             return (List<Action<IContainer>>)Properties[BuildCallbackPropertyKey];
-        }
-
-        private HashSet<Type> GetWiredDecorators()
-        {
-            return (HashSet<Type>)Properties[WiredDecoratorsPropertyKey];
         }
     }
 }

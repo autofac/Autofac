@@ -48,6 +48,11 @@ namespace Autofac.Util
             return invoke.ReturnType;
         }
 
+        public static bool IsOpenGeneric(this Type type)
+        {
+            return type.GetTypeInfo().IsGenericTypeDefinition || type.GetTypeInfo().ContainsGenericParameters;
+        }
+
         /// <summary>Returns the first concrete interface supported by the candidate type that
         /// closes the provided open generic service type.</summary>
         /// <param name="this">The type that is being checked for the interface.</param>

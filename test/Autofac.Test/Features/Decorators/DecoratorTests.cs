@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Autofac.Core;
 using Autofac.Features.Decorators;
 using Xunit;
@@ -247,6 +249,49 @@ namespace Autofac.Test.Features.Decorators
             Assert.IsType<DecoratorB>(instance);
             Assert.IsType<DecoratorA>(instance.Decorated);
             Assert.IsType<ImplementorA>(instance.Decorated.Decorated);
+        }
+
+        [Fact]
+        public void CanResolveMultipleDecoratedServices()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+            builder.RegisterType<ImplementorB>().As<IDecoratedService>();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var services = container.Resolve<IEnumerable<IDecoratedService>>();
+
+            Assert.Collection(
+                services,
+                s => Assert.IsType<DecoratorA>(s),
+                s => Assert.IsType<DecoratorA>(s));
+        }
+
+        [Fact]
+        public void CanResolveDecoratorWithFunc()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var factory = container.Resolve<Func<IDecoratedService>>();
+
+            Assert.IsType<DecoratorA>(factory());
+        }
+
+        [Fact]
+        public void CanResolveDecoratorWithLazy()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var lazy = container.Resolve<Lazy<IDecoratedService>>();
+
+            Assert.IsType<DecoratorA>(lazy.Value);
         }
 
         [Fact]

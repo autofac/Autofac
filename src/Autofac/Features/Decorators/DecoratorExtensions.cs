@@ -7,7 +7,7 @@ namespace Autofac.Features.Decorators
 {
     internal static class DecoratorExtensions
     {
-        public static object Decorate(
+        public static object DecorateService(
             this IServiceWithType typedService,
             object instance,
             IComponentContext context,
@@ -20,8 +20,20 @@ namespace Autofac.Features.Decorators
             var decoratorService = new DecoratorService(serviceType);
             var decorators = registry.RegistrationsFor(decoratorService)
                 .OrderBy(r => r.GetRegistrationOrder())
-                .Select(r => new { Registration = r, Service = r.Services.OfType<DecoratorService>().FirstOrDefault() })
+                .Select(r => new { Registration = r, Service = r.Services.OfType<IDecoratorService>().FirstOrDefault() })
                 .ToArray();
+
+            if (decorators.Length == 0 && serviceType.IsConstructedGenericType)
+            {
+                var openGenericService = new OpenGenericDecoratorService(serviceType);
+
+                decorators = registry.RegistrationsFor(openGenericService)
+                    .OrderBy(r => r.GetRegistrationOrder())
+                    .Select(r => new { Registration = r, Service = r.Services.OfType<IDecoratorService>().FirstOrDefault() })
+                    .ToArray();
+            }
+
+            if (decorators.Length == 0) return instance;
 
             var decoratorContext = DecoratorContext.Create(instance.GetType(), serviceType, instance);
 

@@ -24,10 +24,13 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using System.Text;
+using Autofac.Features.Decorators;
 
 namespace Autofac.Core.Resolving
 {
@@ -91,9 +94,13 @@ namespace Autofac.Core.Resolving
         {
             ComponentRegistration.RaisePreparing(this, ref parameters);
 
+            var resolveParameters = parameters as Parameter[] ?? parameters.ToArray();
+
             try
             {
-                _newInstance = ComponentRegistration.Activator.ActivateInstance(this, parameters);
+                _newInstance = ComponentRegistration.Activator.ActivateInstance(this, resolveParameters);
+
+                TryApplyDecorators(resolveParameters);
             }
             catch (Exception ex)
             {
@@ -111,9 +118,15 @@ namespace Autofac.Core.Resolving
                     _activationScope.Disposer.AddInstanceForDisposal(instanceAsDisposable);
             }
 
-            ComponentRegistration.RaiseActivating(this, parameters, ref _newInstance);
+            ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance);
 
             return _newInstance;
+        }
+
+        private void TryApplyDecorators(IEnumerable<Parameter> parameters)
+        {
+            if (ComponentRegistry.TryGetDecoratedService(ComponentRegistration, out var service))
+                _newInstance = service.DecorateService(_newInstance, _activationScope, parameters);
         }
 
         public void Complete()

@@ -41,6 +41,8 @@ namespace Autofac.Features.OpenGenerics
         private readonly RegistrationData _registrationData;
         private readonly ReflectionActivatorData _activatorData;
 
+        internal IEnumerable<Service> Services => _registrationData.Services;
+
         public OpenGenericRegistrationSource(
             RegistrationData registrationData,
             ReflectionActivatorData activatorData)
