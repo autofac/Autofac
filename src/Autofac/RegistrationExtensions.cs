@@ -1350,13 +1350,17 @@ namespace Autofac
             .As(service);
         }
 
-        public static void RegisterGenericDecorator(this ContainerBuilder builder, Type implementationType, Type serviceType)
+        public static void RegisterGenericDecorator(
+            this ContainerBuilder builder,
+            Type implementationType,
+            Type serviceType,
+            Func<IDecoratorContext, bool> condition = null)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
 
             OpenGenericRegistrationExtensions
                 .RegisterGeneric(builder, implementationType)
-                .As(new DecoratorService(serviceType));
+                .As(new DecoratorService(serviceType, condition));
         }
 
         /// <summary>

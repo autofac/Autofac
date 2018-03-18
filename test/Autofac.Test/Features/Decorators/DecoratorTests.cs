@@ -264,8 +264,16 @@ namespace Autofac.Test.Features.Decorators
 
             Assert.Collection(
                 services,
-                s => Assert.IsType<DecoratorA>(s),
-                s => Assert.IsType<DecoratorA>(s));
+                s =>
+                {
+                    Assert.IsType<DecoratorA>(s);
+                    Assert.IsType<ImplementorA>(s.Decorated);
+                },
+                s =>
+                {
+                    Assert.IsType<DecoratorA>(s);
+                    Assert.IsType<ImplementorB>(s.Decorated);
+                });
         }
 
         [Fact]
