@@ -71,8 +71,6 @@ namespace Autofac.Core
         /// component will not be changed.</param>
         void Register(IComponentRegistration registration, bool preserveDefaults);
 
-        bool TryGetDecoratedService(IComponentRegistration registration, out IServiceWithType service);
-
         /// <summary>
         /// Gets the set of registered components.
         /// </summary>

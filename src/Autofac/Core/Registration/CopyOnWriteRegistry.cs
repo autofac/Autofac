@@ -100,11 +100,6 @@ namespace Autofac.Core.Registration
             WriteRegistry.Register(registration, preserveDefaults);
         }
 
-        public bool TryGetDecoratedService(IComponentRegistration registration, out IServiceWithType service)
-        {
-            return Registry.TryGetDecoratedService(registration, out service);
-        }
-
         public IEnumerable<IComponentRegistration> Registrations => Registry.Registrations;
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service)

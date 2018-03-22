@@ -493,5 +493,18 @@ namespace Autofac.Test.Features.Decorators
 
             Assert.Equal("ABC", ((ImplementorWithParameters)instance.Decorated.Decorated).Parameter);
         }
+
+        [Fact]
+        public void DecoratorCanBeAppliedToServiceRegisteredInChildLifetimeScope()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var scope = container.BeginLifetimeScope(b => b.RegisterType<ImplementorA>().As<IDecoratedService>());
+            var instance = scope.Resolve<IDecoratedService>();
+
+            Assert.IsType<DecoratorA>(instance);
+        }
     }
 }

@@ -29,7 +29,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using Autofac.Features.Decorators;
-using Autofac.Features.OpenGenerics;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
@@ -65,8 +64,6 @@ namespace Autofac.Core.Registration
         /// Keeps track of the status of registered services.
         /// </summary>
         private readonly IDictionary<Service, ServiceRegistrationInfo> _serviceInfo = new Dictionary<Service, ServiceRegistrationInfo>();
-
-        private readonly HashSet<Type> _decoratedServiceTypes = new HashSet<Type>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentRegistry"/> class.
@@ -164,32 +161,6 @@ namespace Autofac.Core.Registration
             }
         }
 
-        public bool TryGetDecoratedService(IComponentRegistration registration, out IServiceWithType service)
-        {
-            service = null;
-
-            foreach (var serviceWithType in registration.Services.OfType<IServiceWithType>())
-            {
-                if (serviceWithType is DecoratorService) break;
-
-                if (_decoratedServiceTypes.Contains(serviceWithType.ServiceType))
-                {
-                    service = serviceWithType;
-                    return true;
-                }
-
-                if (!serviceWithType.ServiceType.IsConstructedGenericType) continue;
-
-                var openGenericType = serviceWithType.ServiceType.GetGenericTypeDefinition();
-                if (!_decoratedServiceTypes.Contains(openGenericType)) continue;
-
-                service = serviceWithType;
-                return true;
-            }
-
-            return false;
-        }
-
         private void UpdateInitialisedAdapters(IComponentRegistration registration)
         {
             var adapterServices = _serviceInfo
@@ -224,8 +195,7 @@ namespace Autofac.Core.Registration
                 var info = GetServiceInfo(service);
                 info.AddImplementation(registration, preserveDefaults, originatedFromSource);
 
-                if (service is DecoratorService decoratorService)
-                    _decoratedServiceTypes.Add(decoratorService.ServiceType);
+                this.RegisterForDecoration(service);
             }
 
             _registrations.Add(registration);
@@ -287,15 +257,7 @@ namespace Autofac.Core.Registration
                 var handler = RegistrationSourceAdded;
                 handler?.Invoke(this, new RegistrationSourceAddedEventArgs(this, source));
 
-                if (!(source is OpenGenericRegistrationSource openGenericRegistrationSource)) return;
-
-                var decoratorService = openGenericRegistrationSource.Services
-                    .OfType<DecoratorService>()
-                    .Select(s => s.ServiceType)
-                    .FirstOrDefault();
-
-                if (decoratorService != null)
-                    _decoratedServiceTypes.Add(decoratorService);
+                this.RegisterForDecoration(source);
             }
         }
 

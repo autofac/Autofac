@@ -461,5 +461,18 @@ namespace Autofac.Test.Features.Decorators
             Assert.IsType<StringImplementor>(instance);
             Assert.IsType<ImplementorA<string>>(instance.Decorated);
         }
+
+        [Fact]
+        public void DecoratorCanBeAppliedToServiceRegisteredInChildLifetimeScope()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterGenericDecorator(typeof(DecoratorA<>), typeof(IDecoratedService<>));
+            var container = builder.Build();
+
+            var scope = container.BeginLifetimeScope(b => b.RegisterGeneric(typeof(ImplementorA<>)).As(typeof(IDecoratedService<>)));
+            var instance = scope.Resolve<IDecoratedService<int>>();
+
+            Assert.IsType<DecoratorA<int>>(instance);
+        }
     }
 }

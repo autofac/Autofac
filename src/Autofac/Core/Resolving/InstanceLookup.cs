@@ -24,7 +24,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -100,7 +99,8 @@ namespace Autofac.Core.Resolving
             {
                 _newInstance = ComponentRegistration.Activator.ActivateInstance(this, resolveParameters);
 
-                TryApplyDecorators(resolveParameters);
+                if (ComponentRegistry.TryGetDecoratedService(ComponentRegistration, out var service))
+                    _newInstance = service.DecorateService(_newInstance, _activationScope, resolveParameters);
             }
             catch (Exception ex)
             {
@@ -121,12 +121,6 @@ namespace Autofac.Core.Resolving
             ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance);
 
             return _newInstance;
-        }
-
-        private void TryApplyDecorators(IEnumerable<Parameter> parameters)
-        {
-            if (ComponentRegistry.TryGetDecoratedService(ComponentRegistration, out var service))
-                _newInstance = service.DecorateService(_newInstance, _activationScope, parameters);
         }
 
         public void Complete()
