@@ -1350,6 +1350,8 @@ namespace Autofac
             Func<IDecoratorContext, bool> condition = null)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (decoratorType == null) throw new ArgumentNullException(nameof(decoratorType));
+            if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
 
             builder.RegisterType(decoratorType).As(new DecoratorService(serviceType, condition));
         }
@@ -1369,11 +1371,18 @@ namespace Autofac
             Func<IComponentContext, IEnumerable<Parameter>, TService, TService> decorator,
             Func<IDecoratorContext, bool> condition = null)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (decorator == null) throw new ArgumentNullException(nameof(decorator));
+
             var service = new DecoratorService(typeof(TService), condition);
 
             builder.Register((c, p) =>
             {
-                var instance = (TService)p.OfType<TypedParameter>().FirstOrDefault(tp => tp.Type == typeof(TService))?.Value;
+                var instance = (TService)p
+                    .OfType<TypedParameter>()
+                    .FirstOrDefault(tp => tp.Type == typeof(TService))
+                    ?.Value;
+
                 if (instance == null)
                 {
                     throw new DependencyResolutionException($"A decorator for {typeof(TService).Name} was not provided with an instance parameter");
@@ -1400,6 +1409,8 @@ namespace Autofac
             Func<IDecoratorContext, bool> condition = null)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (decoratorType == null) throw new ArgumentNullException(nameof(decoratorType));
+            if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
 
             OpenGenericRegistrationExtensions
                 .RegisterGeneric(builder, decoratorType)
