@@ -31,12 +31,10 @@ using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.Collections;
-using Autofac.Features.Decorators;
 using Autofac.Features.GeneratedFactories;
 using Autofac.Features.Indexed;
 using Autofac.Features.LazyDependencies;
 using Autofac.Features.Metadata;
-using Autofac.Features.OpenGenerics;
 using Autofac.Features.OwnedInstances;
 
 namespace Autofac
