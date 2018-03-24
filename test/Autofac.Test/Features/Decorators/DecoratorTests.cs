@@ -506,5 +506,21 @@ namespace Autofac.Test.Features.Decorators
 
             Assert.IsType<DecoratorA>(instance);
         }
+
+        [Fact]
+        public void DecoratorCanBeRegisteredInChildLifetimeScope()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+            var container = builder.Build();
+
+            var scope = container.BeginLifetimeScope(b => b.RegisterDecorator<DecoratorA, IDecoratedService>());
+
+            var scopedInstance = scope.Resolve<IDecoratedService>();
+            Assert.IsType<DecoratorA>(scopedInstance);
+
+            var rootInstance = container.Resolve<IDecoratedService>();
+            Assert.IsType<ImplementorA>(rootInstance);
+        }
     }
 }
