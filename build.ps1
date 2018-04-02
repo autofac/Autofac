@@ -48,7 +48,7 @@ Get-DotNetProjectDirectory -RootPath $PSScriptRoot\test | Where-Object { $_ -ino
 # Benchmark
 if ($Bench) {
 	Get-DotNetProjectDirectory -RootPath $PSScriptRoot\bench | Invoke-Test
-	mv "$PSScriptRoot\BenchmarkDotNet.Artifacts" "$PSScriptRoot\artifacts\benchmarks"
+	mv "$PSScriptRoot\bench\Autofac.Benchmarks\bin\Release\netcoreapp1.1\BenchmarkDotNet.Artifacts" "$PSScriptRoot\artifacts\benchmarks"
 }
 
 # Finished
