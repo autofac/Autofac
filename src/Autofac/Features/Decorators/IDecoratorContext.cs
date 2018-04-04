@@ -52,7 +52,7 @@ namespace Autofac.Features.Decorators
 
         /// <summary>
         /// Gets the current instance in the decorator chain. This will be initialized
-        /// to the service being decorated and will then become the decoratored instance
+        /// to the service being decorated and will then become the decorated instance
         /// as each decorator is applied.
         /// </summary>
         object CurrentInstance { get; }

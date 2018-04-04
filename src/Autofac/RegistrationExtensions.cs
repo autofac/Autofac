@@ -1385,7 +1385,7 @@ namespace Autofac
 
                 if (instance == null)
                 {
-                    throw new DependencyResolutionException($"A decorator for {typeof(TService).Name} was not provided with an instance parameter");
+                    throw new DependencyResolutionException(String.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.DecoratorRequiresInstanceParameter, typeof(TService).Name));
                 }
 
                 return decorator(c, p, instance);

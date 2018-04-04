@@ -56,26 +56,368 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Builder\RegistrationBuilderResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RegistrationBuilderResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="ContainerBuilderResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ContainerBuilderResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Core\Activators\Delegate\DelegateActivatorResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DelegateActivatorResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ProvidedInstanceActivatorResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Core\Activators\Reflection\ConstructorParameterBindingResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ConstructorParameterBindingResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Core\Activators\Reflection\MatchingSignatureConstructorSelectorResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MatchingSignatureConstructorSelectorResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Core\Activators\Reflection\MostParametersConstructorSelectorResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MostParametersConstructorSelectorResources.resx</DependentUpon>
+    </Compile>
     <Compile Update="Core\Activators\Reflection\NoConstructorsFoundExceptionResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>NoConstructorsFoundExceptionResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Core\Activators\Reflection\ReflectionActivatorResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReflectionActivatorResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Core\ContainerResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ContainerResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Core\DependencyResolutionExceptionResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DependencyResolutionExceptionResources.resx</DependentUpon>
     </Compile>
     <Compile Update="Core\Lifetime\LifetimeScopeResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>LifetimeScopeResources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Core\Lifetime\MatchingScopeLifetimeResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MatchingScopeLifetimeResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Core\Registration\ComponentNotRegisteredExceptionResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ComponentNotRegisteredExceptionResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Core\Registration\ComponentRegistrationResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ComponentRegistrationResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Core\Registration\ServiceRegistrationInfoResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ServiceRegistrationInfoResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Core\Resolving\CircularDependencyDetectorResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CircularDependencyDetectorResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Core\Resolving\ComponentActivationResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ComponentActivationResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Core\Resolving\ResolveOperationResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ResolveOperationResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Core\ServiceResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ServiceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Features\Collections\CollectionRegistrationSourceResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CollectionRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Features\GeneratedFactories\GeneratedFactoryRegistrationSourceResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GeneratedFactoryRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Features\LazyDependencies\LazyRegistrationSourceResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LazyRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Features\LazyDependencies\LazyWithMetadataRegistrationSourceResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LazyWithMetadataRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Features\LightweightAdapters\LightweightAdapterRegistrationSourceResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LightweightAdapterRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Features\Metadata\MetadataViewProviderResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MetadataViewProviderResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Features\Metadata\MetaRegistrationSourceResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MetaRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Features\OpenGenerics\OpenGenericDecoratorActivatorDataResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>OpenGenericDecoratorActivatorDataResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Features\OpenGenerics\OpenGenericDecoratorRegistrationSourceResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>OpenGenericDecoratorRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Features\OpenGenerics\OpenGenericRegistrationExtensionsResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>OpenGenericRegistrationExtensionsResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Features\OpenGenerics\OpenGenericRegistrationSourceResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>OpenGenericRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Features\OpenGenerics\OpenGenericServiceBinderResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>OpenGenericServiceBinderResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Features\OwnedInstances\OwnedInstanceRegistrationSourceResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>OwnedInstanceRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Features\ResolveAnything\AnyConcreteTypeNotAlreadyRegisteredSourceResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AnyConcreteTypeNotAlreadyRegisteredSourceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="ModuleResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ModuleResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="RegistrationExtensionsResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RegistrationExtensionsResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="TypeExtensionsResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TypeExtensionsResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Util\EnforceResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EnforceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Util\FallbackDictionaryResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FallbackDictionaryResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Util\ReflectionExtensionsResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReflectionExtensionsResources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Builder\RegistrationBuilderResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RegistrationBuilderResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ContainerBuilderResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ContainerBuilderResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Activators\Delegate\DelegateActivatorResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DelegateActivatorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ProvidedInstanceActivatorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Activators\Reflection\ConstructorParameterBindingResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ConstructorParameterBindingResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Activators\Reflection\MatchingSignatureConstructorSelectorResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MatchingSignatureConstructorSelectorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Activators\Reflection\MostParametersConstructorSelectorResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MostParametersConstructorSelectorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Core\Activators\Reflection\NoConstructorsFoundExceptionResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>NoConstructorsFoundExceptionResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Core\Activators\Reflection\ReflectionActivatorResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ReflectionActivatorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\ContainerResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ContainerResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\DependencyResolutionExceptionResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DependencyResolutionExceptionResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Core\Lifetime\LifetimeScopeResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LifetimeScopeResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Lifetime\MatchingScopeLifetimeResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MatchingScopeLifetimeResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Registration\ComponentNotRegisteredExceptionResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ComponentNotRegisteredExceptionResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Registration\ComponentRegistrationResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ComponentRegistrationResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Registration\ServiceRegistrationInfoResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ServiceRegistrationInfoResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Resolving\CircularDependencyDetectorResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CircularDependencyDetectorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Resolving\ComponentActivationResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ComponentActivationResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Resolving\ResolveOperationResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResolveOperationResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\ServiceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ServiceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Features\Collections\CollectionRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CollectionRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Features\GeneratedFactories\GeneratedFactoryRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>GeneratedFactoryRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Features\LazyDependencies\LazyRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LazyRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Features\LazyDependencies\LazyWithMetadataRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LazyWithMetadataRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Features\LightweightAdapters\LightweightAdapterRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LightweightAdapterRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Features\Metadata\MetadataViewProviderResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MetadataViewProviderResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Features\Metadata\MetaRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MetaRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Features\OpenGenerics\OpenGenericDecoratorActivatorDataResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OpenGenericDecoratorActivatorDataResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Features\OpenGenerics\OpenGenericDecoratorRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OpenGenericDecoratorRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Features\OpenGenerics\OpenGenericRegistrationExtensionsResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OpenGenericRegistrationExtensionsResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Features\OpenGenerics\OpenGenericRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OpenGenericRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Features\OpenGenerics\OpenGenericServiceBinderResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OpenGenericServiceBinderResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Features\OwnedInstances\OwnedInstanceRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OwnedInstanceRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Features\ResolveAnything\AnyConcreteTypeNotAlreadyRegisteredSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AnyConcreteTypeNotAlreadyRegisteredSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ModuleResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ModuleResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="RegistrationExtensionsResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RegistrationExtensionsResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="TypeExtensionsResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TypeExtensionsResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Util\EnforceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EnforceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Util\FallbackDictionaryResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FallbackDictionaryResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Util\ReflectionExtensionsResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ReflectionExtensionsResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 </Project>

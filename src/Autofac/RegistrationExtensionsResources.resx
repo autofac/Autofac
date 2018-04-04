@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DecoratorRequiresInstanceParameter" xml:space="preserve">
+    <value>A decorator for '{0}' was not provided with an instance parameter.</value>
+  </data>
   <data name="InstanceRegistrationsAreSingleInstanceOnly" xml:space="preserve">
     <value>The instance  registration '{0}' can support SingleInstance() sharing only.</value>
   </data>
