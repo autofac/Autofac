@@ -1,5 +1,4 @@
-﻿using System;
-using Autofac.Benchmarks.Decorators.Scenario;
+﻿using Autofac.Benchmarks.Decorators.Scenario;
 using BenchmarkDotNet.Attributes;
 
 namespace Autofac.Benchmarks.Decorators
@@ -13,6 +12,7 @@ namespace Autofac.Benchmarks.Decorators
         public void Setup()
         {
             var builder = new ContainerBuilder();
+
             builder.RegisterType<CommandHandlerOne>()
                 .Named<ICommandHandler>("handler");
             builder.RegisterType<CommandHandlerTwo>()
@@ -23,6 +23,7 @@ namespace Autofac.Benchmarks.Decorators
             builder.RegisterDecorator<ICommandHandler>(
                 (c, inner) => new CommandHandlerDecoratorTwo(inner),
                 fromKey: "decorated");
+
             this.Container = builder.Build();
         }
     }

@@ -73,9 +73,21 @@ namespace Autofac.Benchmarks
         }
 
         [Fact]
+        public void DecoratorFluent_NestedLambda()
+        {
+            BenchmarkRunner.Run<Decorators.FluentNestedLambdaBenchmark>();
+        }
+
+        [Fact]
         public void DecoratorFluent_Simple()
         {
             BenchmarkRunner.Run<Decorators.FluentSimpleBenchmark>();
+        }
+
+        [Fact]
+        public void DecoratorFluent_SimpleLambda()
+        {
+            BenchmarkRunner.Run<Decorators.FluentSimpleLambdaBenchmark>();
         }
     }
 }

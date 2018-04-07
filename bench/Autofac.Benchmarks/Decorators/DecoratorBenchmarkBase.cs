@@ -1,8 +1,6 @@
-﻿using Autofac.Benchmarks.Decorators.Scenario;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Autofac.Benchmarks.Decorators
 {
