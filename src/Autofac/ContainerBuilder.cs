@@ -156,39 +156,50 @@ namespace Autofac
 
         private static void StartStartableComponents(IComponentContext componentContext)
         {
-            // We track which registrations have already been auto-activated by adding
-            // a metadata value. If the value is present, we won't re-activate. This helps
-            // in the container update situation.
             const string started = MetadataKeys.AutoActivated;
-            object meta;
+            const string startOnActivate = MetadataKeys.StartOnActivatePropertyKey;
 
-            foreach (var startable in componentContext.ComponentRegistry.RegistrationsFor(new TypedService(typeof(IStartable))).Where(r => !r.Metadata.TryGetValue(started, out meta)))
+            var componentRegistry = componentContext.ComponentRegistry;
+            try
             {
-                try
+                componentRegistry.Properties[startOnActivate] = true;
+
+                // We track which registrations have already been auto-activated by adding
+                // a metadata value. If the value is present, we won't re-activate. This helps
+                // in the container update situation.
+                object meta;
+
+                foreach (var startable in componentRegistry.RegistrationsFor(new TypedService(typeof(IStartable))).Where(r => !r.Metadata.TryGetValue(started, out meta)))
                 {
-                    var instance = (IStartable)componentContext.ResolveComponent(startable, Enumerable.Empty<Parameter>());
-                    instance.Start();
+                    try
+                    {
+                        componentContext.ResolveComponent(startable, Enumerable.Empty<Parameter>());
+                    }
+                    finally
+                    {
+                        startable.Metadata[started] = true;
+                    }
                 }
-                finally
+
+                foreach (var registration in componentRegistry.RegistrationsFor(new AutoActivateService()).Where(r => !r.Metadata.TryGetValue(started, out meta)))
                 {
-                    startable.Metadata[started] = true;
+                    try
+                    {
+                        componentContext.ResolveComponent(registration, Enumerable.Empty<Parameter>());
+                    }
+                    catch (DependencyResolutionException ex)
+                    {
+                        throw new DependencyResolutionException(String.Format(CultureInfo.CurrentCulture, ContainerBuilderResources.ErrorAutoActivating, registration), ex);
+                    }
+                    finally
+                    {
+                        registration.Metadata[started] = true;
+                    }
                 }
             }
-
-            foreach (var registration in componentContext.ComponentRegistry.RegistrationsFor(new AutoActivateService()).Where(r => !r.Metadata.TryGetValue(started, out meta)))
+            finally
             {
-                try
-                {
-                    componentContext.ResolveComponent(registration, Enumerable.Empty<Parameter>());
-                }
-                catch (DependencyResolutionException ex)
-                {
-                    throw new DependencyResolutionException(String.Format(CultureInfo.CurrentCulture, ContainerBuilderResources.ErrorAutoActivating, registration), ex);
-                }
-                finally
-                {
-                    registration.Metadata[started] = true;
-                }
+                componentRegistry.Properties.Remove(startOnActivate);
             }
         }
 
