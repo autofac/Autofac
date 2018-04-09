@@ -43,51 +43,51 @@ namespace Autofac.Benchmarks
         }
 
         [Fact]
-        public void DecoratorClassic_Generic()
+        public void Decorator_Keyed_Generic()
         {
-            BenchmarkRunner.Run<Decorators.ClassicGenericBenchmark>();
+            BenchmarkRunner.Run<Decorators.KeyedGenericBenchmark>();
         }
 
         [Fact]
-        public void DecoratorClassic_Nested()
+        public void Decorator_Keyed_Nested()
         {
-            BenchmarkRunner.Run<Decorators.ClassicNestedBenchmark>();
+            BenchmarkRunner.Run<Decorators.KeyedNestedBenchmark>();
         }
 
         [Fact]
-        public void DecoratorClassic_Simple()
+        public void Decorator_Keyed_Simple()
         {
-            BenchmarkRunner.Run<Decorators.ClassicSimpleBenchmark>();
+            BenchmarkRunner.Run<Decorators.KeyedSimpleBenchmark>();
         }
 
         [Fact]
-        public void DecoratorFluent_Generic()
+        public void Decorator_Keyless_Generic()
         {
-            BenchmarkRunner.Run<Decorators.FluentGenericBenchmark>();
+            BenchmarkRunner.Run<Decorators.KeylessGenericBenchmark>();
         }
 
         [Fact]
-        public void DecoratorFluent_Nested()
+        public void Decorator_Keyless_Nested()
         {
-            BenchmarkRunner.Run<Decorators.FluentNestedBenchmark>();
+            BenchmarkRunner.Run<Decorators.KeylessNestedBenchmark>();
         }
 
         [Fact]
-        public void DecoratorFluent_NestedLambda()
+        public void Decorator_Keyless_Nested_Lambda()
         {
-            BenchmarkRunner.Run<Decorators.FluentNestedLambdaBenchmark>();
+            BenchmarkRunner.Run<Decorators.KeylessNestedLambdaBenchmark>();
         }
 
         [Fact]
-        public void DecoratorFluent_Simple()
+        public void Decorator_Keyless_Simple()
         {
-            BenchmarkRunner.Run<Decorators.FluentSimpleBenchmark>();
+            BenchmarkRunner.Run<Decorators.KeylessSimpleBenchmark>();
         }
 
         [Fact]
-        public void DecoratorFluent_SimpleLambda()
+        public void Decorator_Keyless_Simple_Lambda()
         {
-            BenchmarkRunner.Run<Decorators.FluentSimpleLambdaBenchmark>();
+            BenchmarkRunner.Run<Decorators.KeylessSimpleLambdaBenchmark>();
         }
     }
 }

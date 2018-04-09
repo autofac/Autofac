@@ -4,9 +4,9 @@ using BenchmarkDotNet.Attributes;
 namespace Autofac.Benchmarks.Decorators
 {
     /// <summary>
-    /// Benchmarks the simple/common use case for decorators using the new fluent syntax.
+    /// Benchmarks the simple/common use case for decorators using the new keyless syntax.
     /// </summary>
-    public class FluentSimpleBenchmark : DecoratorBenchmarkBase<ICommandHandler>
+    public class KeylessSimpleBenchmark : DecoratorBenchmarkBase<ICommandHandler>
     {
         [Setup]
         public void Setup()

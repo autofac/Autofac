@@ -4,9 +4,9 @@ using BenchmarkDotNet.Attributes;
 namespace Autofac.Benchmarks.Decorators
 {
     /// <summary>
-    /// Benchmarks the simple/common use case for decorators using the new fluent syntax.
+    /// Benchmarks a more complex case of chaining decorators using the new keyless syntax.
     /// </summary>
-    public class FluentSimpleLambdaBenchmark : DecoratorBenchmarkBase<ICommandHandler>
+    public class KeylessNestedLambdaBenchmark : DecoratorBenchmarkBase<ICommandHandler>
     {
         [Setup]
         public void Setup()
@@ -17,7 +17,10 @@ namespace Autofac.Benchmarks.Decorators
                 .As<ICommandHandler>();
             builder.RegisterType<CommandHandlerTwo>()
                 .As<ICommandHandler>();
-            builder.RegisterDecorator<ICommandHandler>((c, p, i) => new CommandHandlerDecoratorOne(i));
+            builder.RegisterDecorator<ICommandHandler>(
+                (c, p, i) => new CommandHandlerDecoratorOne(i));
+            builder.RegisterDecorator<ICommandHandler>(
+                (c, p, i) => new CommandHandlerDecoratorTwo(i));
 
             this.Container = builder.Build();
         }

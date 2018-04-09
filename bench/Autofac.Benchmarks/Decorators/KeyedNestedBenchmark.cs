@@ -4,9 +4,9 @@ using BenchmarkDotNet.Attributes;
 namespace Autofac.Benchmarks.Decorators
 {
     /// <summary>
-    /// Benchmarks the simple/common use case for decorators using the classic syntax.
+    /// Benchmarks a more complex case of chaining decorators using the keyed syntax.
     /// </summary>
-    public class ClassicSimpleBenchmark : DecoratorBenchmarkBase<ICommandHandler>
+    public class KeyedNestedBenchmark : DecoratorBenchmarkBase<ICommandHandler>
     {
         [Setup]
         public void Setup()
@@ -19,7 +19,10 @@ namespace Autofac.Benchmarks.Decorators
                 .Named<ICommandHandler>("handler");
             builder.RegisterDecorator<ICommandHandler>(
                 (c, inner) => new CommandHandlerDecoratorOne(inner),
-                fromKey: "handler");
+                fromKey: "handler", toKey: "decorated");
+            builder.RegisterDecorator<ICommandHandler>(
+                (c, inner) => new CommandHandlerDecoratorTwo(inner),
+                fromKey: "decorated");
 
             this.Container = builder.Build();
         }

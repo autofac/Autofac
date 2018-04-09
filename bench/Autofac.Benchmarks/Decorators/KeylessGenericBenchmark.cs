@@ -4,9 +4,9 @@ using BenchmarkDotNet.Attributes;
 namespace Autofac.Benchmarks.Decorators
 {
     /// <summary>
-    /// Benchmarks the simple/common use case for open generic decorators using the classic syntax.
+    /// Benchmarks the simple/common use case for open generic decorators using the new keyless syntax.
     /// </summary>
-    public class ClassicGenericBenchmark : DecoratorBenchmarkBase<ICommandHandler<Command>>
+    public class KeylessGenericBenchmark : DecoratorBenchmarkBase<ICommandHandler<Command>>
     {
         [Setup]
         public void Setup()
@@ -14,14 +14,12 @@ namespace Autofac.Benchmarks.Decorators
             var builder = new ContainerBuilder();
 
             builder.RegisterGeneric(typeof(GenericCommandHandlerOne<>))
-                .Named("handler", typeof(ICommandHandler<>));
+                .As(typeof(ICommandHandler<>));
             builder.RegisterGeneric(typeof(GenericCommandHandlerTwo<>))
-                .Named("handler", typeof(ICommandHandler<>));
-
+                .As(typeof(ICommandHandler<>));
             builder.RegisterGenericDecorator(
-                    typeof(GenericCommandHandlerDecorator<>),
-                    typeof(ICommandHandler<>),
-                    fromKey: "handler");
+                typeof(GenericCommandHandlerTwo<>),
+                typeof(ICommandHandler<>));
 
             this.Container = builder.Build();
         }
