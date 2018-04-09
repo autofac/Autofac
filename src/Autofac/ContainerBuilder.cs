@@ -167,9 +167,7 @@ namespace Autofac
                 // We track which registrations have already been auto-activated by adding
                 // a metadata value. If the value is present, we won't re-activate. This helps
                 // in the container update situation.
-                object meta;
-
-                foreach (var startable in componentRegistry.RegistrationsFor(new TypedService(typeof(IStartable))).Where(r => !r.Metadata.TryGetValue(started, out meta)))
+                foreach (var startable in componentRegistry.RegistrationsFor(new TypedService(typeof(IStartable))).Where(r => !r.Metadata.ContainsKey(started)))
                 {
                     try
                     {
@@ -181,7 +179,7 @@ namespace Autofac
                     }
                 }
 
-                foreach (var registration in componentRegistry.RegistrationsFor(new AutoActivateService()).Where(r => !r.Metadata.TryGetValue(started, out meta)))
+                foreach (var registration in componentRegistry.RegistrationsFor(new AutoActivateService()).Where(r => !r.Metadata.ContainsKey(started)))
                 {
                     try
                     {

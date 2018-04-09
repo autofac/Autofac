@@ -450,6 +450,24 @@ namespace Autofac.Test
             container.Resolve<ComponentTakesStartableDependency>();
         }
 
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void WhenTheContainerIsBuilt_StartableComponentsThatDependOnAutoActivateComponents_AreNotStartedTwice(bool isSingleton)
+        {
+            var builder = new ContainerBuilder();
+            var expectedStartCount = isSingleton ? 1 : 2;
+            var dependencyRegistration = builder.RegisterType<StartableDependency>().As<IStartableDependency>().AutoActivate();
+            if (isSingleton)
+                dependencyRegistration.SingleInstance();
+
+            builder.RegisterType<StartableTakesDependency>().AsSelf().As<IStartable>();
+
+            StartableDependency.Count = 0;
+            builder.Build();
+            Assert.Equal(expectedStartCount, StartableDependency.Count);
+        }
+
         [Fact]
         public void WhenTheContainerIsUpdated_ExistingStartableComponentsAreNotReStarted()
         {

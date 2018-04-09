@@ -91,11 +91,10 @@ namespace Autofac.Core.Resolving
 
         private void StartStartableComponent(object instance)
         {
-            object meta;
             if (instance is IStartable startable
                 && ComponentRegistration.Services.Any(s => (s is TypedService typed) && typed.ServiceType == typeof(IStartable))
-                && !this.ComponentRegistration.Metadata.TryGetValue(MetadataKeys.AutoActivated, out meta)
-                && this.ComponentRegistry.Properties.TryGetValue(MetadataKeys.StartOnActivatePropertyKey, out meta))
+                && !ComponentRegistration.Metadata.ContainsKey(MetadataKeys.AutoActivated)
+                && ComponentRegistry.Properties.ContainsKey(MetadataKeys.StartOnActivatePropertyKey))
             {
                 try
                 {
