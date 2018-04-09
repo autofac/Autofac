@@ -29,6 +29,7 @@ using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Features.Decorators;
 using Autofac.Util;
 
 namespace Autofac.Features.Variance
@@ -82,9 +83,9 @@ namespace Autofac.Features.Variance
             if (service == null) throw new ArgumentNullException(nameof(service));
             if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
 
-            int contravariantParameterIndex;
-            var swt = service as IServiceWithType;
-            if (swt == null || !IsCompatibleInterfaceType(swt.ServiceType, out contravariantParameterIndex))
+            if (!(service is IServiceWithType swt)
+                || service is DecoratorService
+                || !IsCompatibleInterfaceType(swt.ServiceType, out var contravariantParameterIndex))
                 return Enumerable.Empty<IComponentRegistration>();
 
             var args = swt.ServiceType.GetTypeInfo().GenericTypeArguments;

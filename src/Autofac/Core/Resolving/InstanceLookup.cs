@@ -99,8 +99,11 @@ namespace Autofac.Core.Resolving
             {
                 _newInstance = ComponentRegistration.Activator.ActivateInstance(this, resolveParameters);
 
-                if (ComponentRegistry.TryGetDecoratedService(ComponentRegistration, out var service))
-                    _newInstance = service.DecorateService(_newInstance, _activationScope, resolveParameters);
+                _newInstance = InstanceDecorator.TryDecorateRegistration(
+                    ComponentRegistration,
+                    _newInstance,
+                    _activationScope,
+                    resolveParameters);
             }
             catch (Exception ex)
             {

@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using Autofac.Features.Decorators;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
@@ -194,8 +193,6 @@ namespace Autofac.Core.Registration
             {
                 var info = GetServiceInfo(service);
                 info.AddImplementation(registration, preserveDefaults, originatedFromSource);
-
-                this.RegisterForDecoration(service);
             }
 
             _registrations.Add(registration);
@@ -256,8 +253,6 @@ namespace Autofac.Core.Registration
 
                 var handler = RegistrationSourceAdded;
                 handler?.Invoke(this, new RegistrationSourceAddedEventArgs(this, source));
-
-                this.RegisterForDecoration(source);
             }
         }
 

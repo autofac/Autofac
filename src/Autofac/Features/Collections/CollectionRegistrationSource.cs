@@ -32,6 +32,7 @@ using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
+using Autofac.Features.Decorators;
 using Autofac.Util;
 
 namespace Autofac.Features.Collections
@@ -77,8 +78,7 @@ namespace Autofac.Features.Collections
             if (service == null) throw new ArgumentNullException(nameof(service));
             if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
 
-            var swt = service as IServiceWithType;
-            if (swt == null)
+            if (!(service is IServiceWithType swt) || service is DecoratorService)
                 return Enumerable.Empty<IComponentRegistration>();
 
             var serviceType = swt.ServiceType;
