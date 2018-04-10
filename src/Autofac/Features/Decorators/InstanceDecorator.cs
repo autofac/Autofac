@@ -47,24 +47,20 @@ namespace Autofac.Features.Decorators
 
                 var registry = context.ComponentRegistry;
                 var decoratorService = new DecoratorService(serviceWithType.ServiceType);
-                var decoratorRegistrations = registry.RegistrationsFor(decoratorService).ToList();
+                var deocratorRegistrations = registry.RegistrationsFor(decoratorService).ToList();
 
-                if (decoratorRegistrations.Count <= 0) continue;
+                if (deocratorRegistrations.Count == 0) return instance;
 
-                var resolveParameters = parameters as Parameter[] ?? parameters.ToArray();
-
-                var decorators = registry.RegistrationsFor(decoratorService)
+                var decorators = deocratorRegistrations
                     .OrderBy(r => r.GetRegistrationOrder())
                     .Select(r => new
                     {
                         Registration = r,
                         Service = r.Services.OfType<DecoratorService>().FirstOrDefault()
-                    })
-                    .ToList();
-
-                if (decorators.Count == 0) return instance;
+                    });
 
                 var serviceType = serviceWithType.ServiceType;
+                var resolveParameters = parameters as Parameter[] ?? parameters.ToArray();
 
                 var decoratorContext = DecoratorContext.Create(instance.GetType(), serviceType, instance);
 
