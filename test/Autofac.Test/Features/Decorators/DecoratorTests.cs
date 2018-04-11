@@ -109,6 +109,18 @@ namespace Autofac.Test.Features.Decorators
             public IDecoratorContext Context { get; }
         }
 
+        public class StartableImplementation : IDecoratedService, IStartable
+        {
+            public IDecoratedService Decorated => this;
+
+            public bool Started { get; private set; }
+
+            public void Start()
+            {
+                this.Started = true;
+            }
+        }
+
         [Fact]
         public void RegistrationIncludesTheServiceType()
         {
@@ -521,6 +533,22 @@ namespace Autofac.Test.Features.Decorators
 
             var rootInstance = container.Resolve<IDecoratedService>();
             Assert.IsType<ImplementorA>(rootInstance);
+        }
+
+        [Fact]
+        public void StartableTypesCanBeDecorated()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<StartableImplementation>()
+                .As<IDecoratedService>()
+                .As<IStartable>()
+                .SingleInstance();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var decorated = Assert.IsType<DecoratorA>(container.Resolve<IDecoratedService>());
+            var instance = Assert.IsType<StartableImplementation>(decorated.Decorated);
+            Assert.True(instance.Started);
         }
     }
 }

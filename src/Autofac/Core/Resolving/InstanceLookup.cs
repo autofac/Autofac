@@ -78,14 +78,15 @@ namespace Autofac.Core.Resolving
 
             _executed = true;
 
+            object decoratorTarget = null;
             object instance = ComponentRegistration.Sharing == InstanceSharing.None
-                ? Activate(Parameters)
-                : _activationScope.GetOrCreateAndShare(ComponentRegistration.Id, () => Activate(Parameters));
+                ? Activate(Parameters, out decoratorTarget)
+                : _activationScope.GetOrCreateAndShare(ComponentRegistration.Id, () => Activate(Parameters, out decoratorTarget));
 
             var handler = InstanceLookupEnding;
             handler?.Invoke(this, new InstanceLookupEndingEventArgs(this, NewInstanceActivated));
 
-            StartStartableComponent(instance);
+            StartStartableComponent(decoratorTarget);
 
             return instance;
         }
@@ -110,7 +111,7 @@ namespace Autofac.Core.Resolving
 
         private bool NewInstanceActivated => _newInstance != null;
 
-        private object Activate(IEnumerable<Parameter> parameters)
+        private object Activate(IEnumerable<Parameter> parameters, out object decoratorTarget)
         {
             ComponentRegistration.RaisePreparing(this, ref parameters);
 
@@ -118,7 +119,7 @@ namespace Autofac.Core.Resolving
 
             try
             {
-                _newInstance = ComponentRegistration.Activator.ActivateInstance(this, resolveParameters);
+                decoratorTarget = _newInstance = ComponentRegistration.Activator.ActivateInstance(this, resolveParameters);
 
                 _newInstance = InstanceDecorator.TryDecorateRegistration(
                     ComponentRegistration,
