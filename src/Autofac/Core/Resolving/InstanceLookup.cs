@@ -29,6 +29,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using Autofac.Builder;
 using Autofac.Features.Decorators;
 
 namespace Autofac.Core.Resolving
@@ -84,7 +85,27 @@ namespace Autofac.Core.Resolving
             var handler = InstanceLookupEnding;
             handler?.Invoke(this, new InstanceLookupEndingEventArgs(this, NewInstanceActivated));
 
+            StartStartableComponent(instance);
+
             return instance;
+        }
+
+        private void StartStartableComponent(object instance)
+        {
+            if (instance is IStartable startable
+                && ComponentRegistration.Services.Any(s => (s is TypedService typed) && typed.ServiceType == typeof(IStartable))
+                && !ComponentRegistration.Metadata.ContainsKey(MetadataKeys.AutoActivated)
+                && ComponentRegistry.Properties.ContainsKey(MetadataKeys.StartOnActivatePropertyKey))
+            {
+                try
+                {
+                    startable.Start();
+                }
+                finally
+                {
+                    ComponentRegistration.Metadata[MetadataKeys.AutoActivated] = true;
+                }
+            }
         }
 
         private bool NewInstanceActivated => _newInstance != null;

@@ -431,6 +431,43 @@ namespace Autofac.Test
             Assert.True(started);
         }
 
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void WhenTheContainerIsBuilt_StartableComponentsAreStartedInDependencyOrder(bool ignoreStartableComponents)
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<StartableTakesDependency>().AsSelf()
+                .SingleInstance().As<IStartable>();
+
+            builder.RegisterType<ComponentTakesStartableDependency>()
+                .WithParameter("expectStarted", !ignoreStartableComponents)
+                .AsSelf()
+                .As<IStartable>();
+
+            var container = builder.Build(ignoreStartableComponents ? ContainerBuildOptions.IgnoreStartableComponents : ContainerBuildOptions.None);
+            container.Resolve<ComponentTakesStartableDependency>();
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void WhenTheContainerIsBuilt_StartableComponentsThatDependOnAutoActivateComponents_AreNotStartedTwice(bool isSingleton)
+        {
+            var builder = new ContainerBuilder();
+            var expectedStartCount = isSingleton ? 1 : 2;
+            var dependencyRegistration = builder.RegisterType<StartableDependency>().As<IStartableDependency>().AutoActivate();
+            if (isSingleton)
+                dependencyRegistration.SingleInstance();
+
+            builder.RegisterType<StartableTakesDependency>().AsSelf().As<IStartable>();
+
+            StartableDependency.Count = 0;
+            builder.Build();
+            Assert.Equal(expectedStartCount, StartableDependency.Count);
+        }
+
         [Fact]
         public void WhenTheContainerIsUpdated_ExistingStartableComponentsAreNotReStarted()
         {
@@ -517,8 +554,23 @@ namespace Autofac.Test
 
         private class StartableTakesDependency : IStartable
         {
+            public bool WasStarted { get; private set; }
+
             public StartableTakesDependency(IStartableDependency[] dependencies)
             {
+            }
+
+            public void Start()
+            {
+                WasStarted = true;
+            }
+        }
+
+        private class ComponentTakesStartableDependency : IStartable
+        {
+            public ComponentTakesStartableDependency(StartableTakesDependency dependency, bool expectStarted)
+            {
+                Assert.Equal(expectStarted, dependency.WasStarted);
             }
 
             public void Start()
