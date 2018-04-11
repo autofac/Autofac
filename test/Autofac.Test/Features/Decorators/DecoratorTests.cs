@@ -550,5 +550,20 @@ namespace Autofac.Test.Features.Decorators
             var instance = Assert.IsType<StartableImplementation>(decorated.Decorated);
             Assert.True(instance.Started);
         }
+
+        [Fact]
+        public void DecoratorsApplyToKeyedServices()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<ImplementorA>().Keyed<IDecoratedService>("service");
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var instance = container.ResolveKeyed<IDecoratedService>("service");
+
+            Assert.IsType<DecoratorA>(instance);
+            Assert.IsType<ImplementorA>(instance.Decorated);
+        }
     }
 }
