@@ -43,12 +43,12 @@ namespace Autofac.Features.Decorators
         /// <summary>
         /// Gets the implementation types of the decorators that have been applied.
         /// </summary>
-        IEnumerable<Type> AppliedDecoratorTypes { get; }
+        IReadOnlyList<Type> AppliedDecoratorTypes { get; }
 
         /// <summary>
         /// Gets the decorator instances that have been applied.
         /// </summary>
-        IEnumerable<object> AppliedDecorators { get; }
+        IReadOnlyList<object> AppliedDecorators { get; }
 
         /// <summary>
         /// Gets the current instance in the decorator chain. This will be initialized

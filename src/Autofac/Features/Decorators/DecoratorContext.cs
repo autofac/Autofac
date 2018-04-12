@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Autofac.Features.Decorators
 {
@@ -38,10 +37,10 @@ namespace Autofac.Features.Decorators
         public Type ServiceType { get; private set; }
 
         /// <inheritdoc />
-        public IEnumerable<Type> AppliedDecoratorTypes { get; private set; }
+        public IReadOnlyList<Type> AppliedDecoratorTypes { get; private set; }
 
         /// <inheritdoc />
-        public IEnumerable<object> AppliedDecorators { get; private set; }
+        public IReadOnlyList<object> AppliedDecorators { get; private set; }
 
         /// <inheritdoc />
         public object CurrentInstance { get; private set; }
@@ -56,23 +55,33 @@ namespace Autofac.Features.Decorators
             {
                 ImplementationType = implementationType,
                 ServiceType = serviceType,
-                AppliedDecorators = Enumerable.Empty<object>(),
-                AppliedDecoratorTypes = Enumerable.Empty<Type>(),
+                AppliedDecorators = new List<object>(0),
+                AppliedDecoratorTypes = new List<Type>(0),
                 CurrentInstance = implementationInstance
             };
+
             return context;
         }
 
         internal DecoratorContext UpdateContext(object decoratorInstance)
         {
+            var appliedDecorators = new List<object>(AppliedDecorators.Count + 1);
+            appliedDecorators.AddRange(AppliedDecorators);
+            appliedDecorators.Add(decoratorInstance);
+
+            var appliedDecoratorTypes = new List<Type>(AppliedDecoratorTypes.Count + 1);
+            appliedDecoratorTypes.AddRange(AppliedDecoratorTypes);
+            appliedDecoratorTypes.Add(decoratorInstance.GetType());
+
             var context = new DecoratorContext
             {
                 ImplementationType = ImplementationType,
                 ServiceType = ServiceType,
-                AppliedDecorators = AppliedDecorators.Concat(new[] { decoratorInstance }),
-                AppliedDecoratorTypes = AppliedDecoratorTypes.Concat(new[] { decoratorInstance.GetType() }),
+                AppliedDecorators = appliedDecorators,
+                AppliedDecoratorTypes = appliedDecoratorTypes,
                 CurrentInstance = decoratorInstance
             };
+
             return context;
         }
     }
