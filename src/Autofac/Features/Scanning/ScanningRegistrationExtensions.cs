@@ -80,6 +80,7 @@ namespace Autofac.Features.Scanning
 
             foreach (var t in types
                 .Where(t =>
+                    (t.GetTypeInfo().IsPublic || t.GetTypeInfo().IsNestedPublic) &&
                     t.GetTypeInfo().IsClass &&
                     !t.GetTypeInfo().IsAbstract &&
                     !t.GetTypeInfo().IsGenericTypeDefinition &&

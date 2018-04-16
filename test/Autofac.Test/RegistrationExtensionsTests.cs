@@ -10,7 +10,7 @@ namespace Autofac.Test
 {
     public class RegistrationExtensionsTests
     {
-        internal interface IMyService
+        public interface IMyService
         {
         }
 
