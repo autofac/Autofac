@@ -142,6 +142,7 @@ namespace Autofac
         public IContainer Build(ContainerBuildOptions options = ContainerBuildOptions.None)
         {
             var result = new Container(Properties);
+            result.ComponentRegistry.Properties[MetadataKeys.ContainerBuildOptions] = options;
             Build(result.ComponentRegistry, (options & ContainerBuildOptions.ExcludeDefaultModules) != ContainerBuildOptions.None);
 
             if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
