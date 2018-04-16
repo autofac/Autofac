@@ -11,20 +11,6 @@ namespace Autofac.Test
         {
         }
 
-        [Fact(Skip = "Issue #722")]
-        public void StartableComponentsObeySingletonUsage()
-        {
-            // Issue #722
-            var builder = new ContainerBuilder();
-            StartableDependency.Count = 0;
-            builder.RegisterType<StartableTakesDependency>().AsImplementedInterfaces();
-            builder.RegisterType<StartableDependency>().AsImplementedInterfaces().SingleInstance();
-            builder.RegisterType<StartableTakesDependency>().AsImplementedInterfaces();
-            builder.RegisterType<StartableDependency>().AsImplementedInterfaces().SingleInstance();
-            builder.Build();
-            Assert.Equal(1, StartableDependency.Count);
-        }
-
         [Fact]
         public void WhenChildScopeBegins_NewStartableComponentsAreStarted()
         {
