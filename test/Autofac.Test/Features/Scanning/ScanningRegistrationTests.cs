@@ -446,5 +446,30 @@ namespace Autofac.Test.Features.Scanning
 
             Assert.Equal(1, implementations.Count());
         }
+
+        [Fact]
+        public void InternalClassesAreIgnored()
+        {
+            var c = RegisterScenarioAssembly();
+            var internalType = ScenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.InternalComponent", true);
+            Assert.False(c.IsRegistered(internalType));
+        }
+
+        [Fact]
+        public void NonPublicNestedClassesAreIgnored()
+        {
+            var c = RegisterScenarioAssembly();
+            var privateType = ScenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+PrivateComponent", true);
+            var internalType = ScenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+InternalComponent", true);
+            c.AssertRegistered<NestedComponent>();
+            Assert.False(c.IsRegistered(privateType));
+        }
+
+        [Fact]
+        public void PublicNestedClassesAreScanned()
+        {
+            var c = RegisterScenarioAssembly();
+            c.AssertRegistered<NestedComponent.PublicComponent>();
+        }
     }
 }

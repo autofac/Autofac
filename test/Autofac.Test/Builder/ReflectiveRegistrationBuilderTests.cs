@@ -184,6 +184,22 @@ namespace Autofac.Test.Builder
         }
 
         [Fact]
+        public void FindConstructorsWith_AsSelfWorksWithCustomConstructorExpression()
+        {
+            // Issue #907
+            // AsSelf ignores custom constructor finders if it's registered
+            // before the custom constructor finder.
+            var cb = new ContainerBuilder();
+            cb.RegisterType<A1>();
+            cb.RegisterType<PrivateConstructor>().AsSelf().FindConstructorsWith(type => type.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic));
+            var container = cb.Build();
+
+            var instance = container.Resolve<PrivateConstructor>();
+
+            Assert.NotNull(instance.A1);
+        }
+
+        [Fact]
         public void FindConstructorsWith_NullFinderFunctionProvided_ThrowsException()
         {
             var cb = new ContainerBuilder();

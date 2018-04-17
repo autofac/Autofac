@@ -10,7 +10,7 @@ namespace Autofac.Test
 {
     public class RegistrationExtensionsTests
     {
-        internal interface IMyService
+        public interface IMyService
         {
         }
 
@@ -252,6 +252,37 @@ namespace Autofac.Test
 #pragma warning restore CS0618
             Assert.Equal(1, firstCount);
             Assert.Equal(1, secondCount);
+        }
+
+        [Fact]
+        public void AutoActivate_CanBeAddedToChildLifetimeScope()
+        {
+            // Issue #567
+            int singletonCount = 0;
+            var container = new ContainerBuilder().Build();
+            using (var scope = container.BeginLifetimeScope(b => b.RegisterType<MyComponent>().As<IMyService>().SingleInstance().AutoActivate().OnActivated(e => singletonCount++)))
+            {
+                Assert.Equal(1, singletonCount);
+            }
+        }
+
+        [Fact]
+        public void AutoActivate_RegistrationsAddedToChildDoNotDoubleActivateParent()
+        {
+            // Issue #567
+            int parentCount = 0;
+            int childCount = 0;
+            var builder = new ContainerBuilder();
+            builder.RegisterType<MyComponent2>().AutoActivate().OnActivated(e => parentCount++);
+            var container = builder.Build();
+            using (var scope = container.BeginLifetimeScope(b => b.RegisterType<MyComponent>().AutoActivate().OnActivated(e => childCount++)))
+            {
+                using (var scope2 = scope.BeginLifetimeScope(b => b.RegisterInstance("x")))
+                {
+                    Assert.Equal(1, childCount);
+                    Assert.Equal(1, parentCount);
+                }
+            }
         }
 
         [Fact]

@@ -15,23 +15,23 @@ namespace Autofac.Test.Features.Collections
         private const string S2 = "s2";
         private const string S3 = "s3";
 
-        private interface IService
+        public interface IService
         {
         }
 
-        private class Implementer1 : IService
+        public class Implementer1 : IService
         {
         }
 
-        private class Implementer2 : IService
+        public class Implementer2 : IService
         {
         }
 
-        private class Implementer3 : IService
+        public class Implementer3 : IService
         {
         }
 
-        private class Decorator : IService
+        public class Decorator : IService
         {
             public Decorator(IService decorated)
             {

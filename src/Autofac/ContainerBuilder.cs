@@ -142,63 +142,17 @@ namespace Autofac
         public IContainer Build(ContainerBuildOptions options = ContainerBuildOptions.None)
         {
             var result = new Container(Properties);
+            result.ComponentRegistry.Properties[MetadataKeys.ContainerBuildOptions] = options;
             Build(result.ComponentRegistry, (options & ContainerBuildOptions.ExcludeDefaultModules) != ContainerBuildOptions.None);
 
             if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
-                StartStartableComponents(result);
+                StartableManager.StartStartableComponents(result);
 
             var buildCallbacks = GetBuildCallbacks();
             foreach (var buildCallback in buildCallbacks)
                 buildCallback(result);
 
             return result;
-        }
-
-        private static void StartStartableComponents(IComponentContext componentContext)
-        {
-            const string started = MetadataKeys.AutoActivated;
-            const string startOnActivate = MetadataKeys.StartOnActivatePropertyKey;
-
-            var componentRegistry = componentContext.ComponentRegistry;
-            try
-            {
-                componentRegistry.Properties[startOnActivate] = true;
-
-                // We track which registrations have already been auto-activated by adding
-                // a metadata value. If the value is present, we won't re-activate. This helps
-                // in the container update situation.
-                foreach (var startable in componentRegistry.RegistrationsFor(new TypedService(typeof(IStartable))).Where(r => !r.Metadata.ContainsKey(started)))
-                {
-                    try
-                    {
-                        componentContext.ResolveComponent(startable, Enumerable.Empty<Parameter>());
-                    }
-                    finally
-                    {
-                        startable.Metadata[started] = true;
-                    }
-                }
-
-                foreach (var registration in componentRegistry.RegistrationsFor(new AutoActivateService()).Where(r => !r.Metadata.ContainsKey(started)))
-                {
-                    try
-                    {
-                        componentContext.ResolveComponent(registration, Enumerable.Empty<Parameter>());
-                    }
-                    catch (DependencyResolutionException ex)
-                    {
-                        throw new DependencyResolutionException(String.Format(CultureInfo.CurrentCulture, ContainerBuilderResources.ErrorAutoActivating, registration), ex);
-                    }
-                    finally
-                    {
-                        registration.Metadata[started] = true;
-                    }
-                }
-            }
-            finally
-            {
-                componentRegistry.Properties.Remove(startOnActivate);
-            }
         }
 
         /// <summary>
@@ -237,7 +191,7 @@ namespace Autofac
             if (container == null) throw new ArgumentNullException(nameof(container));
             Update(container.ComponentRegistry);
             if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
-                StartStartableComponents(container);
+                StartableManager.StartStartableComponents(container);
         }
 
         /// <summary>
