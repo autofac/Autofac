@@ -78,9 +78,12 @@ namespace Autofac.Features.Scanning
                 rb.RegistrationData.Services.OfType<IServiceWithType>().All(swt =>
                     swt.ServiceType.GetTypeInfo().IsAssignableFrom(t.GetTypeInfo())));
 
+            // Issue #897: For back compat reasons we can't filter out
+            // non-public types here. Folks use assembly scanning on their
+            // own stuff, so encapsulation is a tricky thing to manage.
+            // If people want only public types, a LINQ Where clause can be used.
             foreach (var t in types
                 .Where(t =>
-                    (t.GetTypeInfo().IsPublic || t.GetTypeInfo().IsNestedPublic) &&
                     t.GetTypeInfo().IsClass &&
                     !t.GetTypeInfo().IsAbstract &&
                     !t.GetTypeInfo().IsGenericTypeDefinition &&

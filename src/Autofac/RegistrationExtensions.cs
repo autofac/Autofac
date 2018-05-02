@@ -241,7 +241,7 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Register the types in an assembly.
+        /// Register all types in an assembly.
         /// </summary>
         /// <param name="builder">Container builder.</param>
         /// <param name="assemblies">The assemblies from which to register types.</param>
