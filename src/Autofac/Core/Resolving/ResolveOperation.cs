@@ -38,7 +38,7 @@ namespace Autofac.Core.Resolving
     internal class ResolveOperation : IComponentContext, IResolveOperation
     {
         private readonly Stack<InstanceLookup> _activationStack = new Stack<InstanceLookup>();
-        private ICollection<InstanceLookup> _successfulActivations;
+        private List<InstanceLookup> _successfulActivations;
         private readonly ISharingLifetimeScope _mostNestedLifetimeScope;
         private int _callDepth;
         private bool _ended;
@@ -110,7 +110,9 @@ namespace Autofac.Core.Resolving
         {
             if (_ended) throw new ObjectDisposedException(ResolveOperationResources.TemporaryContextDisposed, innerException: null);
 
-            CircularDependencyDetector.CheckForCircularDependency(registration, _activationStack, ++_callDepth);
+            ++_callDepth;
+
+            if (_activationStack.Count > 0) CircularDependencyDetector.CheckForCircularDependency(registration, _activationStack, _callDepth);
 
             var activation = new InstanceLookup(registration, this, currentOperationScope, parameters);
 
@@ -138,11 +140,14 @@ namespace Autofac.Core.Resolving
 
         private void CompleteActivations()
         {
-            var completed = _successfulActivations;
+            List<InstanceLookup> completed = _successfulActivations;
+            int count = completed.Count;
             ResetSuccessfulActivations();
 
-            foreach (var activation in completed)
-                activation.Complete();
+            for (int i = 0; i < count; i++)
+            {
+                completed[i].Complete();
+            }
         }
 
         private void ResetSuccessfulActivations()
