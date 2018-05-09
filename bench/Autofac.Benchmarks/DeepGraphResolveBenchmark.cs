@@ -10,7 +10,7 @@ namespace Autofac.Benchmarks
     {
         private IContainer _container;
 
-        [Setup]
+        [GlobalSetup]
         public void Setup()
         {
             var builder = new ContainerBuilder();

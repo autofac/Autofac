@@ -52,7 +52,7 @@ namespace Autofac.Util
         }
 
         /// <summary>
-        /// Releases unmanaged and - optionally - managed resources
+        /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
@@ -60,7 +60,7 @@ namespace Autofac.Util
         }
 
         /// <summary>
-        /// Gets a value indicating whether the current instance has been disposed; otherwise false;
+        /// Gets a value indicating whether the current instance has been disposed.
         /// </summary>
         protected bool IsDisposed
         {

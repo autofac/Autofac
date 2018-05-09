@@ -132,7 +132,7 @@ namespace Autofac.Test.Features.OpenGenerics
 
             var rs = g.RegistrationsFor(new TypedService(typeof(TwoParams<int, string>)), s => null);
 
-            Assert.Equal(1, rs.Count());
+            Assert.Single(rs);
         }
 
         [Fact]
@@ -142,7 +142,7 @@ namespace Autofac.Test.Features.OpenGenerics
 
             var rs = g.RegistrationsFor(new TypedService(typeof(ITwoParams<int, string>)), s => null);
 
-            Assert.Equal(1, rs.Count());
+            Assert.Single(rs);
         }
 
         public interface IEntity<TId>
@@ -165,7 +165,7 @@ namespace Autofac.Test.Features.OpenGenerics
 
             var rs = g.RegistrationsFor(new TypedService(typeof(Repository<EntityOfInt, int>)), s => null);
 
-            Assert.Equal(1, rs.Count());
+            Assert.Single(rs);
         }
 
         public interface IHaveNoParameters

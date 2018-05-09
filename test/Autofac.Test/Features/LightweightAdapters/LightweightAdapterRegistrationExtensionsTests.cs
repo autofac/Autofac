@@ -230,8 +230,8 @@ namespace Autofac.Test.Features.LightweightAdapters
                     .Select(d => d.Decorated);
 
                 Assert.Equal(2, all.Count());
-                Assert.True(all.Any(i => i is Implementer1));
-                Assert.True(all.Any(i => i is Implementer2));
+                Assert.Contains(all, i => i is Implementer1);
+                Assert.Contains(all, i => i is Implementer2);
             }
         }
     }

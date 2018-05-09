@@ -37,8 +37,8 @@ namespace Autofac.Test.Features.Collections
 
             var strings = c.Resolve<IEnumerable<string>>();
             Assert.Equal(2, strings.Count());
-            Assert.True(strings.Contains(s1));
-            Assert.True(strings.Contains(s2));
+            Assert.Contains(s1, strings);
+            Assert.Contains(s2, strings);
         }
 
         [Fact]
@@ -91,7 +91,7 @@ namespace Autofac.Test.Features.Collections
             var cb = new ContainerBuilder();
             cb.RegisterInstance("Hello");
             var c = cb.Build();
-            Assert.Equal(1, c.Resolve<IEnumerable<string>>().Count());
+            Assert.Single(c.Resolve<IEnumerable<string>>());
 
             c.ComponentRegistry.Register(
                 RegistrationBuilder.ForDelegate((ctx, p) => "World").CreateRegistration());
@@ -131,12 +131,12 @@ namespace Autofac.Test.Features.Collections
             var arrayB = scopeB.Resolve<IEnumerable<IFoo>>().ToArray();
 
             Assert.Equal(2, arrayA.Count());
-            Assert.True(arrayA.Any(x => x is Foo1));
-            Assert.True(arrayA.Any(x => x is Foo2));
+            Assert.Contains(arrayA, x => x is Foo1);
+            Assert.Contains(arrayA, x => x is Foo2);
 
             Assert.Equal(2, arrayB.Count());
-            Assert.True(arrayB.Any(x => x is Foo1));
-            Assert.True(arrayB.Any(x => x is Foo3));
+            Assert.Contains(arrayB, x => x is Foo1);
+            Assert.Contains(arrayB, x => x is Foo3);
         }
 
         [Fact]

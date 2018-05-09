@@ -58,7 +58,7 @@ namespace Autofac
     ///     }
     /// }
     /// </code>
-    /// Using the module:
+    /// Using the module...
     /// <code>
     /// var builder = new ContainerBuilder();
     /// builder.RegisterModule(new DataAccessModule { ConnectionString = "..." });

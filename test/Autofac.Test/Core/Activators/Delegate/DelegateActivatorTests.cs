@@ -39,7 +39,7 @@ namespace Autofac.Test.Component.Activation
             var ex = Assert.Throws<DependencyResolutionException>(
                 () => target.ActivateInstance(new ContainerBuilder().Build(), Enumerable.Empty<Parameter>()));
 
-            Assert.True(ex.Message.Contains(typeof(string).ToString()));
+            Assert.Contains(typeof(string).ToString(), ex.Message);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Autofac.Test.PartialTrust
         }
 
         [Theory]
-        [MemberData("ExecutePartialTrustTestsSource")]
+        [MemberData(nameof(ExecutePartialTrustTestsSource))]
         public void ExecutePartialTrustTests(MethodInfo testMethod)
         {
             var fixture = CreateRemoteFixture();

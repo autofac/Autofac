@@ -19,8 +19,8 @@ namespace Autofac.Test.Core.Resolving
 
             var target = builder.Build();
             var de = Assert.Throws<DependencyResolutionException>(() => target.Resolve<object>());
-            Assert.True(de.Message.Contains("System.Object -> System.Object"));
-            Assert.False(de.Message.Contains("System.Object -> System.Object -> System.Object"));
+            Assert.Contains("System.Object -> System.Object", de.Message);
+            Assert.DoesNotContain("System.Object -> System.Object -> System.Object", de.Message);
         }
 
         [Fact(Skip = "Issue #648")]

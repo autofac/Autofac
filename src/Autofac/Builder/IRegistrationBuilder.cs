@@ -65,14 +65,14 @@ namespace Autofac.Builder
 
         /// <summary>
         /// Configure the component so that instances that support IDisposable are
-        /// disposed by the container (default.)
+        /// disposed by the container (default).
         /// </summary>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OwnedByLifetimeScope();
 
         /// <summary>
         /// Configure the component so that every dependent component or call to Resolve()
-        /// gets a new, unique instance (default.)
+        /// gets a new, unique instance (default).
         /// </summary>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerDependency();

@@ -37,6 +37,7 @@ namespace Autofac.Features.Variance
     /// Enables contravariant <code>Resolve()</code> for interfaces that have a single contravariant ('in') parameter.
     /// </summary>
     /// <example>
+    /// <code>
     /// interface IHandler&lt;in TCommand&gt;
     /// {
     ///     void Handle(TCommand command);
@@ -56,6 +57,7 @@ namespace Autofac.Features.Variance
     /// // actual registered type.
     /// var handler = container.Resolve&lt;IHandler&lt;DerivedCommand&gt;&gt;();
     /// handler.Handle(new DerivedCommand());
+    /// </code>
     /// </example>
     public class ContravariantRegistrationSource : IRegistrationSource
     {
@@ -178,7 +180,7 @@ namespace Autofac.Features.Variance
 
         /// <summary>
         /// Gets a value indicating whether the registrations provided by this source are 1:1 adapters on top
-        /// of other components (I.e. like Meta, Func or Owned.)
+        /// of other components (e.g., Meta, Func, or Owned).
         /// </summary>
         public bool IsAdapterForIndividualComponents => true;
     }

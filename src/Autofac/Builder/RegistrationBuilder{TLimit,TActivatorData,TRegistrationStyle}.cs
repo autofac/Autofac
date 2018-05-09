@@ -76,7 +76,7 @@ namespace Autofac.Builder
 
         /// <summary>
         /// Configure the component so that instances that support IDisposable are
-        /// disposed by the container (default.)
+        /// disposed by the container (default).
         /// </summary>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OwnedByLifetimeScope()
@@ -87,7 +87,7 @@ namespace Autofac.Builder
 
         /// <summary>
         /// Configure the component so that every dependent component or call to Resolve()
-        /// gets a new, unique instance (default.)
+        /// gets a new, unique instance (default).
         /// </summary>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerDependency()
@@ -362,7 +362,7 @@ namespace Autofac.Builder
         /// Configure the component so that any properties whose types are registered in the
         /// container and follow specific criteria will be wired to instances of the appropriate service.
         /// </summary>
-        /// <param name="propertySelector">Selector to determine which properties should be injected</param>
+        /// <param name="propertySelector">Selector to determine which properties should be injected.</param>
         /// <param name="allowCircularDependencies">Determine if circular dependencies should be allowed or not.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> PropertiesAutowired(IPropertySelector propertySelector, bool allowCircularDependencies)

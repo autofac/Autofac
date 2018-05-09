@@ -33,7 +33,7 @@ namespace Autofac.Core.Resolving
     internal class CircularDependencyDetector
     {
         /// <summary>
-        /// Catch circular dependencies that are triggered by post-resolve processing (e.g. 'OnActivated')
+        /// Catch circular dependencies that are triggered by post-resolve processing (e.g. 'OnActivated').
         /// </summary>
         private const int MaxResolveDepth = 50;
 

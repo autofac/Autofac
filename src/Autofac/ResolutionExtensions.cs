@@ -91,7 +91,7 @@ namespace Autofac
 
         /// <summary>
         /// Set any properties on <paramref name="instance"/> that can be resolved by service and that satisfy the
-        /// constraints imposed by <paramref name="propertySelector"/>
+        /// constraints imposed by <paramref name="propertySelector"/>.
         /// </summary>
         /// <typeparam name="TService">Type of instance. Used only to provide method chaining.</typeparam>
         /// <param name="context">The context from which to resolve the service.</param>
@@ -106,7 +106,7 @@ namespace Autofac
 
         /// <summary>
         /// Set any properties on <paramref name="instance"/> that can be resolved by service and that satisfy the
-        /// constraints imposed by <paramref name="propertySelector"/>
+        /// constraints imposed by <paramref name="propertySelector"/>.
         /// </summary>
         /// <typeparam name="TService">Type of instance. Used only to provide method chaining.</typeparam>
         /// <param name="context">The context from which to resolve the service.</param>
@@ -122,7 +122,7 @@ namespace Autofac
 
         /// <summary>
         /// Set any properties on <paramref name="instance"/> that can be resolved by service and that satisfy the
-        /// constraints imposed by <paramref name="propertySelector"/>
+        /// constraints imposed by <paramref name="propertySelector"/>.
         /// </summary>
         /// <typeparam name="TService">Type of instance. Used only to provide method chaining.</typeparam>
         /// <param name="context">The context from which to resolve the service.</param>

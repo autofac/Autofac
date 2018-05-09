@@ -34,7 +34,7 @@ namespace Autofac.Test.Core.Activators.Reflection
             var target0 = new MatchingSignatureConstructorSelector();
             var c0 = target0.SelectConstructorBinding(_ctors, Enumerable.Empty<Parameter>());
             Assert.NotNull(c0);
-            Assert.Equal(0, c0.TargetConstructor.GetParameters().Length);
+            Assert.Empty(c0.TargetConstructor.GetParameters());
         }
 
         [Fact]
@@ -54,8 +54,8 @@ namespace Autofac.Test.Core.Activators.Reflection
             var dx = Assert.Throws<DependencyResolutionException>(() =>
                 target.SelectConstructorBinding(_ctors, Enumerable.Empty<Parameter>()));
 
-            Assert.True(dx.Message.Contains(typeof(ThreeConstructors).Name));
-            Assert.True(dx.Message.Contains(typeof(string).Name));
+            Assert.Contains(typeof(ThreeConstructors).Name, dx.Message);
+            Assert.Contains(typeof(string).Name, dx.Message);
         }
     }
 }

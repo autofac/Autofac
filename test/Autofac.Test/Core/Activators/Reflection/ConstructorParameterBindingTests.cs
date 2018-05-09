@@ -54,7 +54,7 @@ namespace Autofac.Test.Core.Activators.Reflection
             var dx = Assert.Throws<DependencyResolutionException>(() =>
                 cpb.Instantiate());
 
-            Assert.True(dx.Message.Contains(typeof(ThrowsInCtor).Name));
+            Assert.Contains(typeof(ThrowsInCtor).Name, dx.Message);
             Assert.Equal(ThrowsInCtor.Message, dx.InnerException.Message);
         }
 

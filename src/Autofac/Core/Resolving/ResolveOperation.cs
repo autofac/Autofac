@@ -47,7 +47,7 @@ namespace Autofac.Core.Resolving
         /// Initializes a new instance of the <see cref="ResolveOperation"/> class.
         /// </summary>
         /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
-        /// can move upward to less nested scopes as components with wider sharing scopes are activated</param>
+        /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
         public ResolveOperation(ISharingLifetimeScope mostNestedLifetimeScope)
         {
             _mostNestedLifetimeScope = mostNestedLifetimeScope;

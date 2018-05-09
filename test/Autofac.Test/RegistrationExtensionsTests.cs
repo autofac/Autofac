@@ -39,7 +39,7 @@ namespace Autofac.Test
                 b.RegisterAssemblyTypes(GetType().GetTypeInfo().Assembly)
                     .AssignableTo(typeof(IMyService)));
 
-            Assert.Equal(1, container.ComponentRegistry.Registrations.Count());
+            Assert.Single(container.ComponentRegistry.Registrations);
             Object obj;
             Assert.True(container.TryResolve(typeof(MyComponent), out obj));
             Assert.False(container.TryResolve(typeof(MyComponent2), out obj));
@@ -52,7 +52,7 @@ namespace Autofac.Test
                 b.RegisterTypes(GetType().GetTypeInfo().Assembly.GetLoadableTypes().ToArray())
                     .AssignableTo(typeof(IMyService)));
 
-            Assert.Equal(1, container.ComponentRegistry.Registrations.Count());
+            Assert.Single(container.ComponentRegistry.Registrations);
             Object obj;
             Assert.True(container.TryResolve(typeof(MyComponent), out obj));
             Assert.False(container.TryResolve(typeof(MyComponent2), out obj));

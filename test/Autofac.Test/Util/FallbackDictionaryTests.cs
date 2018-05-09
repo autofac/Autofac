@@ -36,9 +36,9 @@ namespace Autofac.Test.Util
             var dict = new FallbackDictionary<string, object>(parent);
             dict.Add("third", 3);
 
-            Assert.True(dict.Contains(new KeyValuePair<string, object>("first", 1)));
-            Assert.True(dict.Contains(new KeyValuePair<string, object>("second", 2)));
-            Assert.True(dict.Contains(new KeyValuePair<string, object>("third", 3)));
+            Assert.Contains(new KeyValuePair<string, object>("first", 1), dict);
+            Assert.Contains(new KeyValuePair<string, object>("second", 2), dict);
+            Assert.Contains(new KeyValuePair<string, object>("third", 3), dict);
         }
 
         [Fact]
@@ -48,8 +48,8 @@ namespace Autofac.Test.Util
             dict.Add("first", 1);
             dict.Add("second", 2);
 
-            Assert.True(dict.Contains(new KeyValuePair<string, object>("first", 1)));
-            Assert.True(dict.Contains(new KeyValuePair<string, object>("second", 2)));
+            Assert.Contains(new KeyValuePair<string, object>("first", 1), dict);
+            Assert.Contains(new KeyValuePair<string, object>("second", 2), dict);
         }
 
         [Fact]
@@ -61,8 +61,8 @@ namespace Autofac.Test.Util
 
             var dict = new FallbackDictionary<string, object>(parent);
 
-            Assert.True(dict.Contains(new KeyValuePair<string, object>("first", 1)));
-            Assert.True(dict.Contains(new KeyValuePair<string, object>("second", 2)));
+            Assert.Contains(new KeyValuePair<string, object>("first", 1), dict);
+            Assert.Contains(new KeyValuePair<string, object>("second", 2), dict);
         }
 
         [Fact]
@@ -76,17 +76,17 @@ namespace Autofac.Test.Util
             dict["second"] = "two";
             dict["third"] = 3;
 
-            Assert.True(dict.Contains(new KeyValuePair<string, object>("first", 1)));
-            Assert.False(dict.Contains(new KeyValuePair<string, object>("second", 2)));
-            Assert.True(dict.Contains(new KeyValuePair<string, object>("second", "two")));
-            Assert.True(dict.Contains(new KeyValuePair<string, object>("third", 3)));
+            Assert.Contains(new KeyValuePair<string, object>("first", 1), dict);
+            Assert.DoesNotContain(new KeyValuePair<string, object>("second", 2), dict);
+            Assert.Contains(new KeyValuePair<string, object>("second", "two"), dict);
+            Assert.Contains(new KeyValuePair<string, object>("third", 3), dict);
         }
 
         [Fact]
         public void Count_Empty()
         {
             var dict = new FallbackDictionary<string, object>();
-            Assert.Equal(0, dict.Count);
+            Assert.Empty(dict);
         }
 
         [Fact]

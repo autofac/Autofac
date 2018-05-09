@@ -91,7 +91,7 @@ namespace Autofac.Core.Registration
         public IDictionary<string, object> Properties { get; }
 
         /// <summary>
-        /// Releases unmanaged and - optionally - managed resources
+        /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
@@ -276,7 +276,7 @@ namespace Autofac.Core.Registration
         /// registrations from another external registry.
         /// </summary>
         /// <remarks>This property is used when walking up the scope tree looking for
-        /// registrations for a new customised scope. (See issue 336.)</remarks>
+        /// registrations for a new customised scope.</remarks>
         public bool HasLocalComponents => true;
 
         /// <summary>

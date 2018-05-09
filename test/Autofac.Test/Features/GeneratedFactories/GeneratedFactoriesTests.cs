@@ -310,8 +310,8 @@ namespace Autofac.Test.Features.GeneratedFactories
             var factories = container.Resolve<IEnumerable<Func<object>>>();
 
             Assert.Equal(2, factories.Count());
-            Assert.True(factories.Any(f => f() == o1));
-            Assert.True(factories.Any(f => f() == o2));
+            Assert.Contains(factories, f => f() == o1);
+            Assert.Contains(factories, f => f() == o2);
         }
 
         [Fact]

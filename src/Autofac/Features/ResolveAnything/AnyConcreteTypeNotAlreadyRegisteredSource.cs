@@ -110,7 +110,7 @@ namespace Autofac.Features.ResolveAnything
 
         /// <summary>
         /// Gets a value indicating whether the registrations provided by this source are 1:1 adapters on top
-        /// of other components (I.e. like Meta, Func or Owned.)
+        /// of other components (e.g., Meta, Func, or Owned).
         /// </summary>
         public bool IsAdapterForIndividualComponents => false;
 
@@ -129,7 +129,6 @@ namespace Autofac.Features.ResolveAnything
         /// <returns>
         /// A <see cref="System.String"/> that represents the current <see cref="System.Object"/>.
         /// </returns>
-        /// <filterpriority>2</filterpriority>
         public override string ToString()
         {
             return AnyConcreteTypeNotAlreadyRegisteredSourceResources.AnyConcreteTypeNotAlreadyRegisteredSourceDescription;

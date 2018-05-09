@@ -16,7 +16,7 @@ namespace Autofac.Test.Core.Lifetime
             var rootScope = (ISharingLifetimeScope)container.Resolve<ILifetimeScope>();
 
             var ex = Assert.Throws<DependencyResolutionException>(() => msl.FindScope(rootScope));
-            Assert.True(ex.Message.Contains(tag));
+            Assert.Contains(tag, ex.Message);
         }
 
         [Fact]
@@ -29,7 +29,7 @@ namespace Autofac.Test.Core.Lifetime
             var rootScope = (ISharingLifetimeScope)container.Resolve<ILifetimeScope>();
 
             var ex = Assert.Throws<DependencyResolutionException>(() => msl.FindScope(rootScope));
-            Assert.True(ex.Message.Contains(string.Format("{0}, {1}", tag1, tag2)));
+            Assert.Contains(string.Format("{0}, {1}", tag1, tag2), ex.Message);
         }
 
         [Fact]
