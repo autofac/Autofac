@@ -51,6 +51,15 @@ namespace Autofac.Test
             Assert.True(startable.StartCount > 0);
         }
 
+        [Fact]
+        public void WhenStartableCreatesChildScope_NoExceptionIsThrown()
+        {
+            // Issue #916
+            var builder = new ContainerBuilder();
+            builder.RegisterType<StartableCreatesLifetimeScope>().As<IStartable>().SingleInstance();
+            var container = builder.Build();
+        }
+
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
@@ -136,6 +145,36 @@ namespace Autofac.Test
 
             public void Start()
             {
+            }
+        }
+
+        // Issue #916
+        private class StartableCreatesLifetimeScope : IStartable
+        {
+            private readonly ILifetimeScope _scope;
+
+            public StartableCreatesLifetimeScope(ILifetimeScope scope)
+            {
+                this._scope = scope;
+            }
+
+            public void Start()
+            {
+                using (var nested = this._scope.BeginLifetimeScope("tag", b => { }))
+                {
+                }
+
+                using (var nested = this._scope.BeginLifetimeScope(b => { }))
+                {
+                }
+
+                using (var nested = this._scope.BeginLifetimeScope("tag"))
+                {
+                }
+
+                using (var nested = this._scope.BeginLifetimeScope())
+                {
+                }
             }
         }
 
