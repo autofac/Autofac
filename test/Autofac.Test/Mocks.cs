@@ -73,7 +73,7 @@ namespace Autofac.Test
 
             public InstanceOwnership Ownership { get; }
 
-            public IEnumerable<Service> Services { get; } = new Service[0];
+            public Service[] Services { get; } = new Service[0];
 
             public IDictionary<string, object> Metadata { get; }
 

@@ -54,7 +54,7 @@ namespace Autofac.Core.Registration
 
         public InstanceOwnership Ownership => _inner.Ownership;
 
-        public IEnumerable<Service> Services => _inner.Services;
+        public Service[] Services => _inner.Services;
 
         public IDictionary<string, object> Metadata => _inner.Metadata;
 

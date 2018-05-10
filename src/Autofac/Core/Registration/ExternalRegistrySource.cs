@@ -105,7 +105,7 @@ namespace Autofac.Core.Registration
         /// </summary>
         private class ExternalComponentRegistration : ComponentRegistration
         {
-            public ExternalComponentRegistration(Guid id, IInstanceActivator activator, IComponentLifetime lifetime, InstanceSharing sharing, InstanceOwnership ownership, IEnumerable<Service> services, IDictionary<string, object> metadata, IComponentRegistration target)
+            public ExternalComponentRegistration(Guid id, IInstanceActivator activator, IComponentLifetime lifetime, InstanceSharing sharing, InstanceOwnership ownership, Service[] services, IDictionary<string, object> metadata, IComponentRegistration target)
                 : base(id, activator, lifetime, sharing, ownership, services, metadata, target)
             {
             }

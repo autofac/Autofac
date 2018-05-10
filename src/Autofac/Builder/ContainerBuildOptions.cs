@@ -40,12 +40,6 @@ namespace Autofac.Builder
         None = 0,
 
         /// <summary>
-        /// Prevents inclusion of standard modules like support for
-        /// relationship types including <see cref="IEnumerable{T}"/> etc.
-        /// </summary>
-        ExcludeDefaultModules = 2,
-
-        /// <summary>
         /// Does not call <see cref="IStartable.Start"/> on components implementing
         /// this interface (useful for module testing.)
         /// </summary>

@@ -63,7 +63,7 @@ namespace Autofac.Core
         /// <summary>
         /// Gets the services provided by the component.
         /// </summary>
-        IEnumerable<Service> Services { get; }
+        Service[] Services { get; }
 
         /// <summary>
         /// Gets additional data associated with the component.

@@ -108,11 +108,11 @@ namespace Autofac.Builder
         /// <summary>
         /// Gets the explicitly bound constructor parameters.
         /// </summary>
-        public IList<Parameter> ConfiguredParameters { get; } = new List<Parameter>();
+        public List<Parameter> ConfiguredParameters { get; } = new List<Parameter>();
 
         /// <summary>
         /// Gets the explicitly bound properties.
         /// </summary>
-        public IList<Parameter> ConfiguredProperties { get; } = new List<Parameter>();
+        public List<Parameter> ConfiguredProperties { get; } = new List<Parameter>();
     }
 }

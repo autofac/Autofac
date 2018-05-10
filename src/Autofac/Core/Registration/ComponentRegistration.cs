@@ -56,20 +56,21 @@ namespace Autofac.Core.Registration
             IComponentLifetime lifetime,
             InstanceSharing sharing,
             InstanceOwnership ownership,
-            IEnumerable<Service> services,
+            Service[] services,
             IDictionary<string, object> metadata)
         {
             if (activator == null) throw new ArgumentNullException(nameof(activator));
             if (lifetime == null) throw new ArgumentNullException(nameof(lifetime));
             if (services == null) throw new ArgumentNullException(nameof(services));
             if (metadata == null) throw new ArgumentNullException(nameof(metadata));
+            Enforce.ArgumentElementNotNull(services, nameof(services));
 
             Id = id;
             Activator = activator;
             Lifetime = lifetime;
             Sharing = sharing;
             Ownership = ownership;
-            Services = Enforce.ArgumentElementNotNull(services, nameof(services));
+            Services = services;
             Metadata = metadata;
         }
 
@@ -90,7 +91,7 @@ namespace Autofac.Core.Registration
             IComponentLifetime lifetime,
             InstanceSharing sharing,
             InstanceOwnership ownership,
-            IEnumerable<Service> services,
+            Service[] services,
             IDictionary<string, object> metadata,
             IComponentRegistration target)
             : this(id, activator, lifetime, sharing, ownership, services, metadata)
@@ -135,7 +136,7 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// Gets the services provided by the component.
         /// </summary>
-        public IEnumerable<Service> Services { get; }
+        public Service[] Services { get; }
 
         /// <summary>
         /// Gets additional data associated with the component.

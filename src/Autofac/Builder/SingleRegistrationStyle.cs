@@ -42,7 +42,7 @@ namespace Autofac.Builder
         /// <summary>
         /// Gets the handlers to notify of the component registration event.
         /// </summary>
-        public ICollection<EventHandler<ComponentRegisteredEventArgs>> RegisteredHandlers { get; } = new List<EventHandler<ComponentRegisteredEventArgs>>();
+        public List<EventHandler<ComponentRegisteredEventArgs>> RegisteredHandlers { get; } = new List<EventHandler<ComponentRegisteredEventArgs>>();
 
         /// <summary>
         /// Gets or sets a value indicating whether default registrations should be preserved.

@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Registration;
 
@@ -164,7 +165,7 @@ namespace Autofac
                 .Where(t => moduleType.GetTypeInfo().IsAssignableFrom(t.GetTypeInfo()))
                 .As<IModule>();
 
-            using (var moduleContainer = moduleFinder.Build())
+            using (var moduleContainer = moduleFinder.Build(ContainerBuildOptions.None))
             {
                 foreach (var module in moduleContainer.Resolve<IEnumerable<IModule>>())
                 {

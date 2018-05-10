@@ -278,5 +278,19 @@ namespace Autofac.Builder
         /// </param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata<TMetadata>(Action<MetadataConfiguration<TMetadata>> configurationAction);
+
+        /// <summary>
+        /// Configure the services that the component will provide.
+        /// </summary>
+        /// <param name="service">Service types to expose.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As(Type service);
+
+        /// <summary>
+        /// Configure the services that the component will provide.
+        /// </summary>
+        /// <param name="service">Services to expose.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As(Service service);
     }
 }

@@ -60,7 +60,7 @@ namespace Autofac.Features.OpenGenerics
             if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
 
             Type constructedImplementationType;
-            IEnumerable<Service> services;
+            Service[] services;
             if (OpenGenericServiceBinder.TryBindServiceType(service, _registrationData.Services, _activatorData.ImplementationType, out constructedImplementationType, out services))
             {
                 yield return RegistrationBuilder.CreateRegistration(

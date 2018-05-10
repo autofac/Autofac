@@ -52,17 +52,17 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// External registration sources.
         /// </summary>
-        private readonly IList<IRegistrationSource> _dynamicRegistrationSources = new List<IRegistrationSource>();
+        private readonly List<IRegistrationSource> _dynamicRegistrationSources = new List<IRegistrationSource>();
 
         /// <summary>
         /// All registrations.
         /// </summary>
-        private readonly ICollection<IComponentRegistration> _registrations = new List<IComponentRegistration>();
+        private readonly List<IComponentRegistration> _registrations = new List<IComponentRegistration>();
 
         /// <summary>
         /// Keeps track of the status of registered services.
         /// </summary>
-        private readonly IDictionary<Service, ServiceRegistrationInfo> _serviceInfo = new Dictionary<Service, ServiceRegistrationInfo>();
+        private readonly Dictionary<Service, ServiceRegistrationInfo> _serviceInfo = new Dictionary<Service, ServiceRegistrationInfo>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentRegistry"/> class.
@@ -162,12 +162,17 @@ namespace Autofac.Core.Registration
 
         private void UpdateInitialisedAdapters(IComponentRegistration registration)
         {
-            var adapterServices = _serviceInfo
-                .Where(si => si.Value.ShouldRecalculateAdaptersOn(registration))
-                .Select(si => si.Key)
-                .ToArray();
+            List<Service> adapterServices = new List<Service>();
 
-            if (adapterServices.Length == 0)
+            foreach (var serviceInfo in _serviceInfo)
+            {
+                if (serviceInfo.Value.ShouldRecalculateAdaptersOn(registration))
+                {
+                    adapterServices.Add(serviceInfo.Key);
+                }
+            }
+
+            if (adapterServices.Count == 0)
                 return;
 
             Debug.WriteLine(

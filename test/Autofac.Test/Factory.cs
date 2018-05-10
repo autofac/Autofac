@@ -33,7 +33,7 @@ namespace Autofac.Test
                 lifetime,
                 sharing,
                 InstanceOwnership.OwnedByLifetimeScope,
-                services,
+                services.ToArray(),
                 GetDefaultMetadata());
         }
 
@@ -78,8 +78,8 @@ namespace Autofac.Test
                 implementation,
                 new DefaultConstructorFinder(),
                 new MostParametersConstructorSelector(),
-                parameters,
-                properties);
+                parameters.ToArray(),
+                properties.ToArray());
         }
 
         public static ProvidedInstanceActivator CreateProvidedInstanceActivator(object instance)
@@ -99,8 +99,8 @@ namespace Autofac.Test
 
         public static readonly IComponentContext EmptyContext = new Container();
 
-        public static readonly IEnumerable<Parameter> NoParameters = Enumerable.Empty<Parameter>();
+        public static readonly Parameter[] NoParameters = new Parameter[0];
 
-        public static readonly IEnumerable<Parameter> NoProperties = Enumerable.Empty<Parameter>();
+        public static readonly Parameter[] NoProperties = new Parameter[0];
     }
 }

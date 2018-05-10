@@ -369,7 +369,7 @@ namespace Autofac.Test
         public void WhenBuildingWithDefaultsExcluded_DefaultModulesAreExcluded()
         {
             var builder = new ContainerBuilder();
-            var container = builder.Build(ContainerBuildOptions.ExcludeDefaultModules);
+            var container = builder.Build(ContainerBuildOptions.None, DefaultServiceFlags.None);
             Assert.False(container.IsRegistered<IEnumerable<object>>());
         }
 

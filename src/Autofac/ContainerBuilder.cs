@@ -131,6 +131,7 @@ namespace Autofac
         /// Create a new container with the component registrations that have been made.
         /// </summary>
         /// <param name="options">Options that influence the way the container is initialised.</param>
+        /// <param name="flags">Defines which default services should be enabled.</param>
         /// <remarks>
         /// Build can only be called once per <see cref="ContainerBuilder"/>
         /// - this prevents ownership issues for provided instances.
@@ -139,11 +140,11 @@ namespace Autofac
         /// first create the container, then call Update() on the builder.
         /// </remarks>
         /// <returns>A new container with the configured component registrations.</returns>
-        public IContainer Build(ContainerBuildOptions options = ContainerBuildOptions.None)
+        public IContainer Build(ContainerBuildOptions options = ContainerBuildOptions.None, DefaultServiceFlags flags = DefaultServiceFlags.All)
         {
             var result = new Container(Properties);
             result.ComponentRegistry.Properties[MetadataKeys.ContainerBuildOptions] = options;
-            Build(result.ComponentRegistry, (options & ContainerBuildOptions.ExcludeDefaultModules) != ContainerBuildOptions.None);
+            Build(result.ComponentRegistry, flags);
 
             if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
                 StartableManager.StartStartableComponents(result);
@@ -206,7 +207,7 @@ namespace Autofac
         [Obsolete("Containers should generally be considered immutable. Register all of your dependencies before building/resolving. If you need to change the contents of a container, you technically should rebuild the container. This method may be removed in a future major release.")]
         public void Update(IComponentRegistry componentRegistry)
         {
-            this.UpdateRegistry(componentRegistry);
+            UpdateRegistry(componentRegistry);
         }
 
         /// <summary>
@@ -222,10 +223,10 @@ namespace Autofac
         internal void UpdateRegistry(IComponentRegistry componentRegistry)
         {
             if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
-            Build(componentRegistry, true);
+            Build(componentRegistry, DefaultServiceFlags.None);
         }
 
-        private void Build(IComponentRegistry componentRegistry, bool excludeDefaultModules)
+        private void Build(IComponentRegistry componentRegistry, DefaultServiceFlags flags = DefaultServiceFlags.None)
         {
             if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
 
@@ -234,28 +235,89 @@ namespace Autofac
 
             _wasBuilt = true;
 
-            if (!excludeDefaultModules)
-                RegisterDefaultAdapters(componentRegistry);
+            RegisterDefaultAdapters(componentRegistry, flags);
 
             foreach (var callback in _configurationCallbacks)
                 callback.Callback(componentRegistry);
         }
 
-        private void RegisterDefaultAdapters(IComponentRegistry componentRegistry)
+        private void RegisterDefaultAdapters(IComponentRegistry componentRegistry, DefaultServiceFlags flags)
         {
-            this.RegisterGeneric(typeof(KeyedServiceIndex<,>)).As(typeof(IIndex<,>)).InstancePerLifetimeScope();
-            componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
-            componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
-            componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
-            componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
-            componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
-            componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());
-            componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
+            if ((flags & DefaultServiceFlags.Index) == DefaultServiceFlags.Index)
+                this.RegisterGeneric(typeof(KeyedServiceIndex<,>)).As(new[] { typeof(IIndex<,>) }).InstancePerLifetimeScope();
+            if ((flags & DefaultServiceFlags.Collections) == DefaultServiceFlags.Collections)
+                componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
+            if ((flags & DefaultServiceFlags.Owned) == DefaultServiceFlags.Owned)
+                componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
+            if ((flags & DefaultServiceFlags.Meta) == DefaultServiceFlags.Meta)
+                componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
+            if ((flags & DefaultServiceFlags.Lazy) == DefaultServiceFlags.Lazy)
+                componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
+            if ((flags & DefaultServiceFlags.LazyWithMeta) == DefaultServiceFlags.LazyWithMeta)
+                componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
+            if ((flags & DefaultServiceFlags.StronglyTypedMeta) == DefaultServiceFlags.StronglyTypedMeta)
+                componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());
+            if ((flags & DefaultServiceFlags.GeneratedFactory) == DefaultServiceFlags.GeneratedFactory)
+                componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
         }
 
         private List<Action<IContainer>> GetBuildCallbacks()
         {
             return (List<Action<IContainer>>)Properties[BuildCallbackPropertyKey];
         }
+    }
+
+    [Flags]
+    public enum DefaultServiceFlags
+    {
+        /// <summary>
+        /// None
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// Index
+        /// </summary>
+        Index = 1,
+
+        /// <summary>
+        /// Collection
+        /// </summary>
+        Collections = 2,
+
+        /// <summary>
+        /// Owned
+        /// </summary>
+        Owned = 4,
+
+        /// <summary>
+        /// Meta
+        /// </summary>
+        Meta = 8,
+
+        /// <summary>
+        /// Lazy
+        /// </summary>
+        Lazy = 16,
+
+        /// <summary>
+        /// LazyWithMeta
+        /// </summary>
+        LazyWithMeta = 32,
+
+        /// <summary>
+        /// StronglyTypedMeta
+        /// </summary>
+        StronglyTypedMeta = 64,
+
+        /// <summary>
+        /// GeneratedFactory
+        /// </summary>
+        GeneratedFactory = 128,
+
+        /// <summary>
+        /// All
+        /// </summary>
+        All = Index | Collections | Owned | Meta | Lazy | LazyWithMeta | StronglyTypedMeta | GeneratedFactory
     }
 }

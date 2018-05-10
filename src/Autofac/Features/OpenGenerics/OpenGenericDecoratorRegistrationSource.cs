@@ -60,7 +60,7 @@ namespace Autofac.Features.OpenGenerics
             if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
 
             Type constructedImplementationType;
-            IEnumerable<Service> services;
+            Service[] services;
             if (OpenGenericServiceBinder.TryBindServiceType(service, _registrationData.Services, _activatorData.ImplementationType, out constructedImplementationType, out services))
             {
                 var swt = (IServiceWithType)service;
@@ -77,13 +77,19 @@ namespace Autofac.Features.OpenGenerics
             return Enumerable.Empty<IComponentRegistration>();
         }
 
-        private static IEnumerable<Parameter> AddDecoratedComponentParameter(Type decoratedParameterType, IComponentRegistration decoratedComponent, IEnumerable<Parameter> configuredParameters)
+        private static IList<Parameter> AddDecoratedComponentParameter(Type decoratedParameterType, IComponentRegistration decoratedComponent, IList<Parameter> configuredParameters)
         {
             var parameter = new ResolvedParameter(
                 (pi, c) => pi.ParameterType == decoratedParameterType,
                 (pi, c) => c.ResolveComponent(decoratedComponent, Enumerable.Empty<Parameter>()));
 
-            return new[] { parameter }.Concat(configuredParameters);
+            var resultArray = new Parameter[configuredParameters.Count + 1];
+            resultArray[1] = parameter;
+
+            for (int i = 0; i < configuredParameters.Count; i++)
+                resultArray[i + 1] = configuredParameters[i];
+
+            return resultArray;
         }
 
         public bool IsAdapterForIndividualComponents => true;

@@ -41,7 +41,7 @@ namespace Autofac.Builder
         private bool _defaultServiceOverridden;
         private Service _defaultService;
 
-        private readonly ICollection<Service> _services = new HashSet<Service>();
+        private readonly HashSet<Service> _services = new HashSet<Service>();
 
         private IComponentLifetime _lifetime = new CurrentScopeLifetime();
 
@@ -147,17 +147,17 @@ namespace Autofac.Builder
         /// <summary>
         /// Gets the handlers for the Preparing event.
         /// </summary>
-        public ICollection<EventHandler<PreparingEventArgs>> PreparingHandlers { get; } = new List<EventHandler<PreparingEventArgs>>();
+        public List<EventHandler<PreparingEventArgs>> PreparingHandlers { get; } = new List<EventHandler<PreparingEventArgs>>();
 
         /// <summary>
         /// Gets the handlers for the Activating event.
         /// </summary>
-        public ICollection<EventHandler<ActivatingEventArgs<object>>> ActivatingHandlers { get; } = new List<EventHandler<ActivatingEventArgs<object>>>();
+        public List<EventHandler<ActivatingEventArgs<object>>> ActivatingHandlers { get; } = new List<EventHandler<ActivatingEventArgs<object>>>();
 
         /// <summary>
         /// Gets the handlers for the Activated event.
         /// </summary>
-        public ICollection<EventHandler<ActivatedEventArgs<object>>> ActivatedHandlers { get; } = new List<EventHandler<ActivatedEventArgs<object>>>();
+        public List<EventHandler<ActivatedEventArgs<object>>> ActivatedHandlers { get; } = new List<EventHandler<ActivatedEventArgs<object>>>();
 
         /// <summary>
         /// Copies the contents of another RegistrationData object into this one.

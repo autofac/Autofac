@@ -133,7 +133,7 @@ namespace Autofac.Builder
                 builder.RegistrationStyle.Id,
                 builder.RegistrationData,
                 builder.ActivatorData.Activator,
-                builder.RegistrationData.Services,
+                builder.RegistrationData.Services.ToArray(),
                 builder.RegistrationStyle.Target);
         }
 
@@ -149,7 +149,7 @@ namespace Autofac.Builder
             Guid id,
             RegistrationData data,
             IInstanceActivator activator,
-            IEnumerable<Service> services)
+            Service[] services)
         {
             return CreateRegistration(id, data, activator, services, null);
         }
@@ -170,7 +170,7 @@ namespace Autofac.Builder
             Guid id,
             RegistrationData data,
             IInstanceActivator activator,
-            IEnumerable<Service> services,
+            Service[] services,
             IComponentRegistration target)
         {
             if (activator == null) throw new ArgumentNullException(nameof(activator));
@@ -179,11 +179,15 @@ namespace Autofac.Builder
             var limitType = activator.LimitType;
             if (limitType != typeof(object))
             {
-                foreach (var ts in services.OfType<IServiceWithType>())
+                foreach (var ts in services)
                 {
-                    if (!ts.ServiceType.GetTypeInfo().IsAssignableFrom(limitType.GetTypeInfo()))
+                    var asServiceWithType = ts as IServiceWithType;
+                    if (asServiceWithType != null)
                     {
-                        throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationBuilderResources.ComponentDoesNotSupportService, limitType, ts));
+                        if (!asServiceWithType.ServiceType.GetTypeInfo().IsAssignableFrom(limitType.GetTypeInfo()))
+                        {
+                            throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationBuilderResources.ComponentDoesNotSupportService, limitType, ts));
+                        }
                     }
                 }
             }

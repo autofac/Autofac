@@ -241,11 +241,24 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As(params Type[] services)
         {
-            return As(services.Select(t =>
-                t.FullName != null
-                ? new TypedService(t)
-                : new TypedService(t.GetGenericTypeDefinition()))
-                .Cast<Service>().ToArray());
+            Service[] argArray = new Service[services.Length];
+
+            for (int i = 0; i < services.Length; i++)
+            {
+                argArray[i] = new TypedService(services[i]);
+            }
+
+            return As(argArray);
+        }
+
+        /// <summary>
+        /// Configure the services that the component will provide.
+        /// </summary>
+        /// <param name="service">Service types to expose.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As(Type service)
+        {
+            return As(new TypedService(service));
         }
 
         /// <summary>
@@ -258,6 +271,20 @@ namespace Autofac.Builder
             if (services == null) throw new ArgumentNullException(nameof(services));
 
             RegistrationData.AddServices(services);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configure the services that the component will provide.
+        /// </summary>
+        /// <param name="service">Services to expose.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As(Service service)
+        {
+            if (service == null) throw new ArgumentNullException(nameof(service));
+
+            RegistrationData.AddService(service);
 
             return this;
         }

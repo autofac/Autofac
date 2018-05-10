@@ -57,8 +57,8 @@ namespace Autofac.Core.Activators.Reflection
             Type implementationType,
             IConstructorFinder constructorFinder,
             IConstructorSelector constructorSelector,
-            IEnumerable<Parameter> configuredParameters,
-            IEnumerable<Parameter> configuredProperties)
+            IList<Parameter> configuredParameters,
+            IList<Parameter> configuredProperties)
             : base(implementationType)
         {
             if (constructorFinder == null) throw new ArgumentNullException(nameof(constructorFinder));
@@ -70,7 +70,14 @@ namespace Autofac.Core.Activators.Reflection
             ConstructorFinder = constructorFinder;
             ConstructorSelector = constructorSelector;
             _configuredProperties = configuredProperties.ToArray();
-            _defaultParameters = configuredParameters.Concat(new Parameter[] { new AutowiringParameter(), new DefaultValueParameter() }).ToArray();
+
+            _defaultParameters = new Parameter[configuredParameters.Count + 2];
+
+            for (int i = 0; i < configuredParameters.Count; i++)
+                _defaultParameters[i] = configuredParameters[i];
+
+            _defaultParameters[_defaultParameters.Length - 2] = new AutowiringParameter();
+            _defaultParameters[_defaultParameters.Length - 1] = new DefaultValueParameter();
         }
 
         /// <summary>

@@ -48,13 +48,13 @@ namespace Autofac.Core.Registration
         ///  List of service implementations coming from sources. Sources have priority over preserve-default implementations.
         ///  Implementations from sources are enumerated in preserve-default order, so the most default implementation comes first.
         /// </summary>
-        private readonly List<IComponentRegistration> _sourceImplementations = new List<IComponentRegistration>();
+        private List<IComponentRegistration> _sourceImplementations;
 
         /// <summary>
         ///  List of explicit service implementations specified with the PreserveExistingDefaults option.
         ///  Enumerated in preserve-defaults order, so the most default implementation comes first.
         /// </summary>
-        private readonly List<IComponentRegistration> _preserveDefaultImplementations = new List<IComponentRegistration>();
+        private List<IComponentRegistration> _preserveDefaultImplementations;
 
         [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the compponent registration is responsible for disposal.")]
         private IComponentRegistration _defaultImplementation;
@@ -88,10 +88,16 @@ namespace Autofac.Core.Registration
             get
             {
                 RequiresInitialization();
-                return Enumerable
-                    .Reverse(_defaultImplementations)
-                    .Concat(_sourceImplementations)
-                    .Concat(_preserveDefaultImplementations);
+
+                var resultingCollection = Enumerable.Reverse(_defaultImplementations);
+
+                if (_sourceImplementations != null)
+                    resultingCollection = resultingCollection.Concat(_sourceImplementations);
+
+                if (_preserveDefaultImplementations != null)
+                    resultingCollection = resultingCollection.Concat(_preserveDefaultImplementations);
+
+                return resultingCollection;
             }
         }
 
@@ -114,18 +120,28 @@ namespace Autofac.Core.Registration
         }
 
         private bool Any =>
-            _defaultImplementations.Any() ||
-            _sourceImplementations.Any() ||
-            _preserveDefaultImplementations.Any();
+            _defaultImplementations.Count > 0 ||
+            _sourceImplementations != null ||
+            _preserveDefaultImplementations != null;
 
         public void AddImplementation(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource)
         {
             if (preserveDefaults)
             {
                 if (originatedFromSource)
+                {
+                    if (_sourceImplementations == null)
+                        _sourceImplementations = new List<IComponentRegistration>();
+
                     _sourceImplementations.Add(registration);
+                }
                 else
+                {
+                    if (_preserveDefaultImplementations == null)
+                        _preserveDefaultImplementations = new List<IComponentRegistration>();
+
                     _preserveDefaultImplementations.Add(registration);
+                }
             }
             else
             {
@@ -144,8 +160,8 @@ namespace Autofac.Core.Registration
 
             registration = _defaultImplementation ?? (_defaultImplementation =
                 _defaultImplementations.LastOrDefault() ??
-                _sourceImplementations.FirstOrDefault() ??
-                _preserveDefaultImplementations.FirstOrDefault());
+                _sourceImplementations?.First() ??
+                _preserveDefaultImplementations?.First());
 
             return registration != null;
         }
@@ -214,7 +230,9 @@ namespace Autofac.Core.Registration
             // - Have already been initialized
             // - Were created via a registration source (because we might be adding an equivalent explicit registration such as Func<T>)
             // - Don't contain any registrations (because a registration source was added when no adaptee was present)
-            return IsInitialized && (_sourceImplementations.Any() || !Any);
+            bool result = IsInitialized && (_sourceImplementations != null || !Any);
+
+            return result;
         }
     }
 }
