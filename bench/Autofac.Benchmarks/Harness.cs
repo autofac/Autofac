@@ -41,5 +41,11 @@ namespace Autofac.Benchmarks
         {
             BenchmarkRunner.Run<DeepGraphResolveBenchmark>();
         }
+
+        [Fact]
+        public void EnumerableResolve()
+        {
+            BenchmarkRunner.Run<EnumerableResolveBenchmark>();
+        }
     }
 }

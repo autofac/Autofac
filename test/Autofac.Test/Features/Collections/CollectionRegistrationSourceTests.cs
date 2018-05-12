@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Autofac.Builder;
@@ -9,6 +10,22 @@ namespace Autofac.Test.Features.Collections
 {
     public class CollectionRegistrationSourceTests
     {
+        [Theory]
+        [InlineData(typeof(IEnumerable<string>), typeof(string[]))]
+        [InlineData(typeof(string[]), typeof(string[]))]
+        [InlineData(typeof(IList<string>), typeof(List<string>))]
+        [InlineData(typeof(IReadOnlyList<string>), typeof(List<string>))]
+        [InlineData(typeof(ICollection<string>), typeof(List<string>))]
+        [InlineData(typeof(IReadOnlyCollection<string>), typeof(List<string>))]
+        public void LimitTypeSetCorrectlyForServiceType(Type serviceType, Type limitType)
+        {
+            var registration = new ContainerBuilder()
+                .Build()
+                .RegistrationFor(serviceType);
+
+            Assert.Equal(limitType, registration.Activator.LimitType);
+        }
+
         [Fact]
         public void ResolvesAllAvailableElementsWhenArrayIsRequested()
         {
