@@ -84,7 +84,7 @@ namespace Autofac.Features.OpenGenerics
                 (pi, c) => c.ResolveComponent(decoratedComponent, Enumerable.Empty<Parameter>()));
 
             var resultArray = new Parameter[configuredParameters.Count + 1];
-            resultArray[1] = parameter;
+            resultArray[0] = parameter;
 
             for (int i = 0; i < configuredParameters.Count; i++)
                 resultArray[i + 1] = configuredParameters[i];
