@@ -245,7 +245,10 @@ namespace Autofac.Builder
 
             for (int i = 0; i < services.Length; i++)
             {
-                argArray[i] = new TypedService(services[i]);
+                if (services[i].FullName != null)
+                    argArray[i] = new TypedService(services[i]);
+                else
+                    argArray[i] = new TypedService(services[i].GetGenericTypeDefinition());
             }
 
             return As(argArray);
