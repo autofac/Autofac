@@ -89,5 +89,11 @@ namespace Autofac.Benchmarks
         {
             BenchmarkRunner.Run<Decorators.KeylessSimpleLambdaBenchmark>();
         }
+
+        [Fact]
+        public void EnumerableResolve()
+        {
+            BenchmarkRunner.Run<EnumerableResolveBenchmark>();
+        }
     }
 }

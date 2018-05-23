@@ -65,7 +65,7 @@ namespace Autofac.Test
             c.Dispose();
 
             Assert.NotNull(a1);
-            Assert.NotSame(a1, 12);
+            Assert.NotSame(a1, a2);
             Assert.False(((Abc)a1).IsDisposed);
             Assert.False(((Abc)a2).IsDisposed);
         }
@@ -342,8 +342,8 @@ namespace Autofac.Test
 
         private static void AssertIsContainerScoped<TSvc>(IComponentContext ctx1, IComponentContext ctx2)
         {
-            Assert.Same(ctx1.Resolve<TSvc>(), ctx1.Resolve<TSvc>());
-            Assert.NotSame(ctx1.Resolve<TSvc>(), ctx2.Resolve<TSvc>());
+            Assert.Equal(ctx1.Resolve<TSvc>(), ctx1.Resolve<TSvc>());
+            Assert.NotEqual(ctx1.Resolve<TSvc>(), ctx2.Resolve<TSvc>());
         }
 
         [Fact]
@@ -406,7 +406,7 @@ namespace Autofac.Test
             var c = builder.Build();
 
             var ex = Assert.Throws<InvalidOperationException>(() => builder.Build());
-            Assert.True(ex.Message.Contains("once"));
+            Assert.Contains("once", ex.Message);
         }
 
         [Fact]

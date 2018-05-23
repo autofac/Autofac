@@ -45,7 +45,7 @@ namespace Autofac.Test.Builder
                 .As(new Service[0])
                 .CreateRegistration();
 
-            Assert.Equal(0, registration.Services.Count());
+            Assert.Empty(registration.Services);
         }
     }
 }

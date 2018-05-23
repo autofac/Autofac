@@ -33,11 +33,11 @@ namespace Autofac.Core.Resolving
     internal class CircularDependencyDetector
     {
         /// <summary>
-        /// Catch circular dependencies that are triggered by post-resolve processing (e.g. 'OnActivated')
+        /// Catch circular dependencies that are triggered by post-resolve processing (e.g. 'OnActivated').
         /// </summary>
         private const int MaxResolveDepth = 50;
 
-        private static string CreateDependencyGraphTo(IComponentRegistration registration, IEnumerable<InstanceLookup> activationStack)
+        private static string CreateDependencyGraphTo(IComponentRegistration registration, Stack<InstanceLookup> activationStack)
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
             if (activationStack == null) throw new ArgumentNullException(nameof(activationStack));
@@ -56,18 +56,13 @@ namespace Autofac.Core.Resolving
         public static void CheckForCircularDependency(IComponentRegistration registration, Stack<InstanceLookup> activationStack, int callDepth)
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (activationStack == null) throw new ArgumentNullException(nameof(activationStack));
 
             if (callDepth > MaxResolveDepth)
                 throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, CircularDependencyDetectorResources.MaxDepthExceeded, registration));
 
-            if (IsCircularDependency(registration, activationStack))
+            // Checks for circular dependency
+            if (activationStack.Any(a => a.ComponentRegistration == registration))
                 throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, CircularDependencyDetectorResources.CircularDependency, CreateDependencyGraphTo(registration, activationStack)));
-        }
-
-        private static bool IsCircularDependency(IComponentRegistration registration, IEnumerable<InstanceLookup> activationStack)
-        {
-            return activationStack.Any(a => a.ComponentRegistration == registration);
         }
     }
 }

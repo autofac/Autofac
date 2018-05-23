@@ -297,7 +297,7 @@ namespace Autofac.Test.Core.Lifetime
             var container = builder.Build();
             var child1 = container.BeginLifetimeScope();
             var child2 = child1.BeginLifetimeScope(b => b.RegisterType<object>());
-            Assert.Equal(1, child2.Resolve<IEnumerable<string>>().Count());
+            Assert.Single(child2.Resolve<IEnumerable<string>>());
         }
 
         [Fact]

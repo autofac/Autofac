@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Autofac.Builder;
@@ -9,6 +10,22 @@ namespace Autofac.Test.Features.Collections
 {
     public class CollectionRegistrationSourceTests
     {
+        [Theory]
+        [InlineData(typeof(IEnumerable<string>), typeof(string[]))]
+        [InlineData(typeof(string[]), typeof(string[]))]
+        [InlineData(typeof(IList<string>), typeof(List<string>))]
+        [InlineData(typeof(IReadOnlyList<string>), typeof(List<string>))]
+        [InlineData(typeof(ICollection<string>), typeof(List<string>))]
+        [InlineData(typeof(IReadOnlyCollection<string>), typeof(List<string>))]
+        public void LimitTypeSetCorrectlyForServiceType(Type serviceType, Type limitType)
+        {
+            var registration = new ContainerBuilder()
+                .Build()
+                .RegistrationFor(serviceType);
+
+            Assert.Equal(limitType, registration.Activator.LimitType);
+        }
+
         [Fact]
         public void ResolvesAllAvailableElementsWhenArrayIsRequested()
         {
@@ -37,8 +54,8 @@ namespace Autofac.Test.Features.Collections
 
             var strings = c.Resolve<IEnumerable<string>>();
             Assert.Equal(2, strings.Count());
-            Assert.True(strings.Contains(s1));
-            Assert.True(strings.Contains(s2));
+            Assert.Contains(s1, strings);
+            Assert.Contains(s2, strings);
         }
 
         [Fact]
@@ -91,7 +108,7 @@ namespace Autofac.Test.Features.Collections
             var cb = new ContainerBuilder();
             cb.RegisterInstance("Hello");
             var c = cb.Build();
-            Assert.Equal(1, c.Resolve<IEnumerable<string>>().Count());
+            Assert.Single(c.Resolve<IEnumerable<string>>());
 
             c.ComponentRegistry.Register(
                 RegistrationBuilder.ForDelegate((ctx, p) => "World").CreateRegistration());
@@ -131,12 +148,12 @@ namespace Autofac.Test.Features.Collections
             var arrayB = scopeB.Resolve<IEnumerable<IFoo>>().ToArray();
 
             Assert.Equal(2, arrayA.Count());
-            Assert.True(arrayA.Any(x => x is Foo1));
-            Assert.True(arrayA.Any(x => x is Foo2));
+            Assert.Contains(arrayA, x => x is Foo1);
+            Assert.Contains(arrayA, x => x is Foo2);
 
             Assert.Equal(2, arrayB.Count());
-            Assert.True(arrayB.Any(x => x is Foo1));
-            Assert.True(arrayB.Any(x => x is Foo3));
+            Assert.Contains(arrayB, x => x is Foo1);
+            Assert.Contains(arrayB, x => x is Foo3);
         }
 
         [Fact]

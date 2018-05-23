@@ -38,14 +38,18 @@ namespace Autofac
     /// <see cref="ParameterExtensions.TypedAs{T}"/>.
     /// </summary>
     /// <example>
-    /// Component with parameter:
+    /// <para>
+    /// Component with parameter...
+    /// </para>
     /// <code>
     /// public class MyComponent
     /// {
     ///     public MyComponent(int amount) { ... }
     /// }
     /// </code>
-    /// Providing the parameter:
+    /// <para>
+    /// Providing the parameter...
+    /// </para>
     /// <code>
     /// var builder = new ContainerBuilder();
     /// builder.RegisterType&lt;MyComponent&gt;();
@@ -76,11 +80,11 @@ namespace Autofac
 
         /// <summary>
         /// Shortcut for creating <see cref="TypedParameter"/>
-        /// by using the <typeparamref name="T"/>
+        /// by using the <typeparamref name="T"/>.
         /// </summary>
-        /// <typeparam name="T">type to be used for the parameter</typeparam>
+        /// <typeparam name="T">Type to be used for the parameter.</typeparam>
         /// <param name="value">The parameter value.</param>
-        /// <returns>new typed parameter</returns>
+        /// <returns>New typed parameter.</returns>
         public static TypedParameter From<T>(T value)
         {
             return new TypedParameter(typeof(T), value);

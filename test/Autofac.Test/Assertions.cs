@@ -48,8 +48,12 @@ namespace Autofac.Test
 
         public static IComponentRegistration RegistrationFor<TComponent>(this IComponentContext context)
         {
-            IComponentRegistration r;
-            Assert.True(context.ComponentRegistry.TryGetRegistration(new TypedService(typeof(TComponent)), out r));
+            return RegistrationFor(context, typeof(TComponent));
+        }
+
+        public static IComponentRegistration RegistrationFor(this IComponentContext context, Type componenType)
+        {
+            Assert.True(context.ComponentRegistry.TryGetRegistration(new TypedService(componenType), out var r));
             return r;
         }
 

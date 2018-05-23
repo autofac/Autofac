@@ -28,7 +28,7 @@ namespace Autofac.Test.Core.Activators.Reflection
 
             var constructors = finder.FindConstructors(targetType).ToList();
 
-            Assert.Equal(1, constructors.Count);
+            Assert.Single(constructors);
             Assert.Contains(publicConstructor, constructors);
         }
 
@@ -41,7 +41,7 @@ namespace Autofac.Test.Core.Activators.Reflection
 
             var constructors = finder.FindConstructors(targetType).ToList();
 
-            Assert.Equal(1, constructors.Count);
+            Assert.Single(constructors);
             Assert.Contains(privateConstructor, constructors);
         }
     }

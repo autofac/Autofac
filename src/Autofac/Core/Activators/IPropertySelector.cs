@@ -9,11 +9,11 @@ namespace Autofac.Core
     public interface IPropertySelector
     {
         /// <summary>
-        /// Provides filtering to determine if property should be injected
+        /// Provides filtering to determine if property should be injected.
         /// </summary>
-        /// <param name="propertyInfo">Property to be injected</param>
-        /// <param name="instance">Instance that has the property to be injected</param>
-        /// <returns>Whether property should be injected</returns>
+        /// <param name="propertyInfo">Property to be injected.</param>
+        /// <param name="instance">Instance that has the property to be injected.</param>
+        /// <returns>Whether property should be injected.</returns>
         bool InjectProperty(PropertyInfo propertyInfo, object instance);
     }
 }

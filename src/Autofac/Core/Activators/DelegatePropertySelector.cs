@@ -4,7 +4,7 @@ using System.Reflection;
 namespace Autofac.Core
 {
     /// <summary>
-    /// Provides a property selector that applies a filter defined by a delegate
+    /// Provides a property selector that applies a filter defined by a delegate.
     /// </summary>
     public sealed class DelegatePropertySelector : IPropertySelector
     {
@@ -12,9 +12,9 @@ namespace Autofac.Core
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DelegatePropertySelector"/> class
-        /// that invokes a delegate to determine selection
+        /// that invokes a delegate to determine selection.
         /// </summary>
-        /// <param name="finder">Delegate to determine whether a property should be injected</param>
+        /// <param name="finder">Delegate to determine whether a property should be injected.</param>
         public DelegatePropertySelector(Func<PropertyInfo, object, bool> finder)
         {
             if (finder == null) throw new ArgumentNullException(nameof(finder));

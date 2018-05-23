@@ -98,14 +98,11 @@ namespace Autofac.Core.Resolving
                 && !ComponentRegistration.Metadata.ContainsKey(MetadataKeys.AutoActivated)
                 && ComponentRegistry.Properties.ContainsKey(MetadataKeys.StartOnActivatePropertyKey))
             {
-                try
-                {
-                    startable.Start();
-                }
-                finally
-                {
-                    ComponentRegistration.Metadata[MetadataKeys.AutoActivated] = true;
-                }
+                // Issue #916: Set the startable as "done starting" BEFORE calling Start
+                // so you don't get a StackOverflow if the component creates a child scope
+                // during Start. You don't want the startable trying to activate itself.
+                ComponentRegistration.Metadata[MetadataKeys.AutoActivated] = true;
+                startable.Start();
             }
         }
 

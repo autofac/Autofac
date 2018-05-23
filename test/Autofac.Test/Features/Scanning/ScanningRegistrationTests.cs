@@ -227,7 +227,7 @@ namespace Autofac.Test.Features.Scanning
             var c = cb.Build();
 
             var r = c.RegistrationFor<ICommand<UndoCommandData>>();
-            Assert.True(r.Services.Contains(new TypedService(typeof(ICommand<RedoCommandData>))));
+            Assert.Contains(new TypedService(typeof(ICommand<RedoCommandData>)), r.Services);
         }
 
         [Fact]
@@ -286,7 +286,7 @@ namespace Autofac.Test.Features.Scanning
 
             // Without the filter this line would throw anyway
             var a = c.Resolve<IEnumerable<IAService>>();
-            Assert.Equal(1, a.Count());
+            Assert.Single(a);
         }
 
         [Fact]
@@ -351,8 +351,8 @@ namespace Autofac.Test.Features.Scanning
 
             var c = cb.Build();
 
-            Assert.False(c.ComponentRegistry.Registrations.Any(r =>
-                r.Activator.LimitType == typeof(AComponent)));
+            Assert.DoesNotContain(c.ComponentRegistry.Registrations, r =>
+                r.Activator.LimitType == typeof(AComponent));
         }
 
         [Fact]
@@ -360,8 +360,8 @@ namespace Autofac.Test.Features.Scanning
         {
             var c = RegisterScenarioAssembly(a => a.As(t => t.GetInterfaces()));
             var cd1 = c.ComponentRegistry.Registrations.Single(r => r.Activator.LimitType == typeof(A2Component));
-            Assert.True(cd1.Services.Contains(new TypedService(typeof(IAService))));
-            Assert.True(cd1.Services.Contains(new TypedService(typeof(IBService))));
+            Assert.Contains(new TypedService(typeof(IAService)), cd1.Services);
+            Assert.Contains(new TypedService(typeof(IBService)), cd1.Services);
         }
 
         [Fact]
@@ -444,7 +444,7 @@ namespace Autofac.Test.Features.Scanning
 
             var implementations = c.Resolve<IEnumerable<IHaveDeferredEnumerable>>();
 
-            Assert.Equal(1, implementations.Count());
+            Assert.Single(implementations);
         }
 
         [Fact]

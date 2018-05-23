@@ -42,7 +42,7 @@ namespace Autofac.Builder
     /// <code>
     /// var cr = RegistrationBuilder.ForType(t).CreateRegistration();
     /// </code>
-    /// The full builder syntax is supported:
+    /// The full builder syntax is supported.
     /// <code>
     /// var cr = RegistrationBuilder.ForType(t).Named("foo").ExternallyOwned().CreateRegistration();
     /// </code>
@@ -105,8 +105,7 @@ namespace Autofac.Builder
 
         /// <summary>
         /// Create an <see cref='IComponentRegistration'/> from a <see cref='RegistrationBuilder'/>.
-        /// (There is no need to call
-        /// this method when registering components through a <see cref="ContainerBuilder"/>.)
+        /// There is no need to call this method when registering components through a <see cref="ContainerBuilder"/>.
         /// </summary>
         /// <remarks>
         /// When called on the result of one of the <see cref='ContainerBuilder'/> methods,

@@ -14,7 +14,7 @@ namespace Autofac.Test
         {
             var target = new Container();
             var ex = Assert.Throws<ComponentNotRegisteredException>(() => target.Resolve<object>());
-            Assert.True(ex.Message.Contains("System.Object"));
+            Assert.Contains("System.Object", ex.Message);
         }
 
         [Fact]

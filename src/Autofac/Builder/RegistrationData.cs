@@ -34,7 +34,7 @@ namespace Autofac.Builder
 {
     /// <summary>
     /// Data common to all registrations made in the container, both direct (IComponentRegistration)
-    /// and dynamic (IRegistrationSource.)
+    /// and dynamic (IRegistrationSource).
     /// </summary>
     public class RegistrationData
     {

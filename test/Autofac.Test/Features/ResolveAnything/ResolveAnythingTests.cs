@@ -58,7 +58,7 @@ namespace Autofac.Test.Features.ResolveAnything
             cb.RegisterType<RegisteredType>();
             var container = cb.Build();
             Assert.True(container.IsRegistered<RegisteredType>());
-            Assert.Equal(1, container.Resolve<IEnumerable<object>>().Count());
+            Assert.Single(container.Resolve<IEnumerable<object>>());
         }
 
         [Fact]
@@ -69,7 +69,7 @@ namespace Autofac.Test.Features.ResolveAnything
             cb.RegisterSource(new ObjectRegistrationSource());
             var container = cb.Build();
             Assert.True(container.IsRegistered<object>());
-            Assert.Equal(1, container.Resolve<IEnumerable<object>>().Count());
+            Assert.Single(container.Resolve<IEnumerable<object>>());
         }
 
         [Fact]
@@ -81,7 +81,7 @@ namespace Autofac.Test.Features.ResolveAnything
             var container = cb.Build();
 
             Assert.True(container.IsRegistered<RegisteredType>());
-            Assert.Equal(1, container.Resolve<IEnumerable<object>>().Count());
+            Assert.Single(container.Resolve<IEnumerable<object>>());
         }
 
         [Theory]
@@ -141,7 +141,7 @@ namespace Autofac.Test.Features.ResolveAnything
 
             // The RS for Func<> is getting the NotRegisteredType from the resolve-anything source
             Assert.True(container.IsRegistered<Func<NotRegisteredType>>());
-            Assert.Equal(1, container.Resolve<IEnumerable<Func<NotRegisteredType>>>().Count());
+            Assert.Single(container.Resolve<IEnumerable<Func<NotRegisteredType>>>());
             Assert.True(container.IsRegistered<Owned<NotRegisteredType>>());
             Assert.True(container.IsRegistered<Meta<NotRegisteredType>>());
             Assert.True(container.IsRegistered<Lazy<NotRegisteredType>>());
@@ -176,10 +176,10 @@ namespace Autofac.Test.Features.ResolveAnything
             Assert.False(nonRegType.Metadata.ContainsKey("value"));
 
             var interfaceMeta = container.Resolve<IEnumerable<Meta<IInterfaceType>>>();
-            Assert.Equal(0, interfaceMeta.Count());
+            Assert.Empty(interfaceMeta);
 
             var classMeta = container.Resolve<IEnumerable<Meta<NotRegisteredType>>>();
-            Assert.Equal(1, classMeta.Count());
+            Assert.Single(classMeta);
         }
 
         [Fact]

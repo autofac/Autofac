@@ -145,7 +145,7 @@ namespace Autofac.Test.Features.OpenGenerics
             var cb = new ContainerBuilder();
             cb.RegisterGeneric(typeof(G<>)).Named("n", typeof(IG<>));
             var c = cb.Build();
-            Assert.Equal(1, c.ResolveNamed<IEnumerable<IG<int>>>("n").Count());
+            Assert.Single(c.ResolveNamed<IEnumerable<IG<int>>>("n"));
         }
 
         [Fact]
@@ -154,7 +154,7 @@ namespace Autofac.Test.Features.OpenGenerics
             var cb = new ContainerBuilder();
             cb.RegisterGeneric(typeof(G<>)).Named("n", typeof(IG<>));
             var c = cb.Build();
-            Assert.Equal(0, c.Resolve<IEnumerable<IG<int>>>().Count());
+            Assert.Empty(c.Resolve<IEnumerable<IG<int>>>());
         }
 
         [Fact]
@@ -163,7 +163,7 @@ namespace Autofac.Test.Features.OpenGenerics
             var cb = new ContainerBuilder();
             cb.RegisterGeneric(typeof(G<>)).As(typeof(IG<>));
             var c = cb.Build();
-            Assert.Equal(1, c.Resolve<IEnumerable<IG<int>>>().Count());
+            Assert.Single(c.Resolve<IEnumerable<IG<int>>>());
         }
 
         public class FG<T>

@@ -28,7 +28,7 @@ namespace Autofac.Test.Core.Registration
             registry.AddRegistrationSource(new ObjectRegistrationSource());
             Assert.False(registry.Registrations.Where(
                 r => r.Services.Contains(new TypedService(typeof(object)))).Any());
-            Assert.Equal(1, registry.RegistrationsFor(new TypedService(typeof(object))).Count());
+            Assert.Single(registry.RegistrationsFor(new TypedService(typeof(object))));
         }
 
         [Fact]
@@ -153,13 +153,13 @@ namespace Autofac.Test.Core.Registration
 
             var allObjects = container.Resolve<IEnumerable<object>>();
             Assert.Equal(2, allObjects.Count());
-            Assert.True(allObjects.Contains(a));
-            Assert.True(allObjects.Contains(b));
+            Assert.Contains(a, allObjects);
+            Assert.Contains(b, allObjects);
 
             var allFuncs = container.Resolve<IEnumerable<Func<object>>>();
             Assert.Equal(2, allFuncs.Count());
-            Assert.True(allFuncs.Any(f => f() == a));
-            Assert.True(allFuncs.Any(f => f() == b));
+            Assert.Contains(allFuncs, f => f() == a);
+            Assert.Contains(allFuncs, f => f() == b);
         }
 
         internal class RecursiveRegistrationSource : IRegistrationSource
@@ -239,7 +239,7 @@ namespace Autofac.Test.Core.Registration
             var meta2 = registry.RegistrationsFor(metaService);
 
             Assert.Equal(2, meta2.Count());
-            Assert.True(meta2.Contains(firstMeta));
+            Assert.Contains(firstMeta, meta2);
             Assert.Equal(new[] { first, second }, meta2.Select(m => m.Target));
         }
 
@@ -251,7 +251,7 @@ namespace Autofac.Test.Core.Registration
             registry.AddRegistrationSource(new CollectionRegistrationSource());
             var metaCollections = registry.RegistrationsFor(
                 new TypedService(typeof(Meta<IEnumerable<object>>)));
-            Assert.Equal(1, metaCollections.Count());
+            Assert.Single(metaCollections);
         }
 
         [Fact]
@@ -263,7 +263,7 @@ namespace Autofac.Test.Core.Registration
             registry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
             var metaCollections = registry.RegistrationsFor(
                 new TypedService(typeof(Meta<Func<object>>)));
-            Assert.Equal(1, metaCollections.Count());
+            Assert.Single(metaCollections);
         }
 
         [Fact]
@@ -273,10 +273,10 @@ namespace Autofac.Test.Core.Registration
             registry.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
             var adapterService = new TypedService(typeof(Func<object>));
             var pre = registry.RegistrationsFor(adapterService);
-            Assert.Equal(0, pre.Count());
+            Assert.Empty(pre);
             registry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
             var post = registry.RegistrationsFor(adapterService);
-            Assert.Equal(1, post.Count());
+            Assert.Single(post);
         }
 
         [Fact]
@@ -290,7 +290,7 @@ namespace Autofac.Test.Core.Registration
             var chainedService = new TypedService(typeof(Meta<Func<object>>));
 
             var pre = registry.RegistrationsFor(chainedService);
-            Assert.Equal(1, pre.Count());
+            Assert.Single(pre);
 
             Func<object> func = () => new object();
             registry.Register(RegistrationBuilder.ForDelegate((c, p) => func).CreateRegistration());
@@ -308,7 +308,7 @@ namespace Autofac.Test.Core.Registration
             registry.RegistrationsFor(adapterService);
             registry.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
             var adapters = registry.RegistrationsFor(adapterService);
-            Assert.Equal(1, adapters.Count());
+            Assert.Single(adapters);
         }
 
         [Fact]

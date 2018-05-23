@@ -52,7 +52,7 @@ namespace Autofac.Core
 
         /// <summary>
         /// Gets a value indicating whether the registrations provided by this source are 1:1 adapters on top
-        /// of other components (I.e. like Meta, Func or Owned.)
+        /// of other components (e.g., Meta, Func, or Owned).
         /// </summary>
         bool IsAdapterForIndividualComponents { get; }
     }

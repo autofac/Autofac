@@ -115,9 +115,9 @@ namespace Autofac.Builder
         /// Changes the parameter mapping mode of the supplied delegate type to match
         /// parameters by name.
         /// </summary>
-        /// <typeparam name="TDelegate">Factory delegate type</typeparam>
-        /// <typeparam name="TGeneratedFactoryActivatorData">Activator data type</typeparam>
-        /// <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
+        /// <typeparam name="TDelegate">Factory delegate type.</typeparam>
+        /// <typeparam name="TGeneratedFactoryActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to change parameter mapping mode of.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         /// <exception cref="System.ArgumentNullException">
@@ -139,9 +139,9 @@ namespace Autofac.Builder
         /// Changes the parameter mapping mode of the supplied delegate type to match
         /// parameters by position.
         /// </summary>
-        /// <typeparam name="TDelegate">Factory delegate type</typeparam>
-        /// <typeparam name="TGeneratedFactoryActivatorData">Activator data type</typeparam>
-        /// <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
+        /// <typeparam name="TDelegate">Factory delegate type.</typeparam>
+        /// <typeparam name="TGeneratedFactoryActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to change parameter mapping mode of.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         /// <exception cref="System.ArgumentNullException">
@@ -163,9 +163,9 @@ namespace Autofac.Builder
         /// Changes the parameter mapping mode of the supplied delegate type to match
         /// parameters by type.
         /// </summary>
-        /// <typeparam name="TDelegate">Factory delegate type</typeparam>
-        /// <typeparam name="TGeneratedFactoryActivatorData">Activator data type</typeparam>
-        /// <typeparam name="TSingleRegistrationStyle">Registration style</typeparam>
+        /// <typeparam name="TDelegate">Factory delegate type.</typeparam>
+        /// <typeparam name="TGeneratedFactoryActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to change parameter mapping mode of.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         /// <exception cref="System.ArgumentNullException">

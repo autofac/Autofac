@@ -50,7 +50,7 @@ namespace Autofac.Test
 
             Assert.Equal(1, activationCount);
             Assert.Empty(exceptions);
-            Assert.Equal(1, results.Distinct().Count());
+            Assert.Single(results.Distinct());
         }
 
         [Fact]

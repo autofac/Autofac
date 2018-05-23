@@ -59,7 +59,7 @@ namespace Autofac.Core.Activators.Delegate
         /// <returns>The activated instance.</returns>
         /// <remarks>
         /// The context parameter here should probably be ILifetimeScope in order to reveal Disposer,
-        /// but will wait until implementing a concrete use case to make the decision
+        /// but will wait until implementing a concrete use case to make the decision.
         /// </remarks>
         public object ActivateInstance(IComponentContext context, IEnumerable<Parameter> parameters)
         {

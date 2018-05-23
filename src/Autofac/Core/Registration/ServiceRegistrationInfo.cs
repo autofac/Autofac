@@ -35,7 +35,7 @@ namespace Autofac.Core.Registration
     /// </summary>
     internal class ServiceRegistrationInfo
     {
-        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields", Justification="The _service field is useful in debugging and diagnostics.")]
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields", Justification = "The _service field is useful in debugging and diagnostics.")]
         private readonly Service _service;
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace Autofac.Core.Registration
         private IComponentRegistration _defaultImplementation;
 
         /// <summary>
-        /// Used for bookkeeping so that the same source is not queried twice (may be null.)
+        /// Used for bookkeeping so that the same source is not queried twice (may be null).
         /// </summary>
         private Queue<IRegistrationSource> _sourcesToQuery;
 

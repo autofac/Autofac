@@ -108,7 +108,7 @@ namespace Autofac.Core
         /// registrations from another external registry.
         /// </summary>
         /// <remarks>This property is used when walking up the scope tree looking for
-        /// registrations for a new customised scope. (See issue 336.)</remarks>
+        /// registrations for a new customised scope.</remarks>
         bool HasLocalComponents { get; }
 
         /// <summary>

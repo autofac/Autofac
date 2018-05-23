@@ -100,7 +100,7 @@ namespace Autofac.Test.Features.Variance
             public static void AssertSingleHandlerCanHandle<TCommand>(IContainer container)
             {
                 var handlers = container.ComponentRegistry.RegistrationsFor(new TypedService(typeof(IHandler<TCommand>)));
-                Assert.Equal(1, handlers.Count());
+                Assert.Single(handlers);
                 container.Resolve<IHandler<TCommand>>();
             }
         }

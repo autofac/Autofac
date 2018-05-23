@@ -76,12 +76,12 @@ namespace Autofac.Core.Registration
                 .Select(r =>
                     r as ExternalComponentRegistration ??
 
-                        // equivalent to following registation builder
-                        //    RegistrationBuilder.ForDelegate(r.Activator.LimitType, (c, p) => c.ResolveComponent(r, p))
-                        //        .Targeting(r)
-                        //        .As(service)
-                        //        .ExternallyOwned()
-                        //        .CreateRegistration()
+                    // equivalent to following registation builder
+                    //    RegistrationBuilder.ForDelegate(r.Activator.LimitType, (c, p) => c.ResolveComponent(r, p))
+                    //        .Targeting(r)
+                    //        .As(service)
+                    //        .ExternallyOwned()
+                    //        .CreateRegistration()
                     new ExternalComponentRegistration(
                         Guid.NewGuid(),
                         new DelegateActivator(r.Activator.LimitType, (c, p) => c.ResolveComponent(r, p)),
@@ -101,7 +101,7 @@ namespace Autofac.Core.Registration
         public bool IsAdapterForIndividualComponents => false;
 
         /// <summary>
-        ///  ComponentRegistration subtyped only to distinguish it from other adapted registrations
+        ///  ComponentRegistration subtyped only to distinguish it from other adapted registrations.
         /// </summary>
         private class ExternalComponentRegistration : ComponentRegistration
         {

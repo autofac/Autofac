@@ -38,14 +38,18 @@ namespace Autofac
     /// <see cref="ParameterExtensions.Positional{T}"/>.
     /// </summary>
     /// <example>
-    /// Component with parameter:
+    /// <para>
+    /// Component with parameter...
+    /// </para>
     /// <code>
     /// public class MyComponent
     /// {
     ///     public MyComponent(int amount) { ... }
     /// }
     /// </code>
-    /// Providing the parameter:
+    /// <para>
+    /// Providing the parameter...
+    /// </para>
     /// <code>
     /// var builder = new ContainerBuilder();
     /// builder.RegisterType&lt;MyComponent&gt;();

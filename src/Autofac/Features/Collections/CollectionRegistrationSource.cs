@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
@@ -83,36 +84,41 @@ namespace Autofac.Features.Collections
 
             var serviceType = swt.ServiceType;
             Type elementType = null;
+            Type limitType = null;
+            Func<IEnumerable<object>, object> generator = null;
 
-            if (serviceType.IsGenericEnumerableInterfaceType())
+            if (serviceType.IsGenericTypeDefinedBy(typeof(IEnumerable<>)))
             {
                 elementType = serviceType.GetTypeInfo().GenericTypeArguments.First();
+                limitType = elementType.MakeArrayType();
+                generator = BuildGenerator(elementType, nameof(Enumerable.ToArray));
             }
             else if (serviceType.IsArray)
             {
                 elementType = serviceType.GetElementType();
+                limitType = serviceType;
+                generator = BuildGenerator(elementType, nameof(Enumerable.ToArray));
+            }
+            else if (serviceType.IsGenericListOrCollectionInterfaceType())
+            {
+                elementType = serviceType.GetTypeInfo().GenericTypeArguments.First();
+                limitType = typeof(List<>).MakeGenericType(elementType);
+                generator = BuildGenerator(elementType, nameof(Enumerable.ToList));
             }
 
-            if (elementType == null)
+            if (elementType == null || limitType == null || generator == null)
                 return Enumerable.Empty<IComponentRegistration>();
 
             var elementTypeService = swt.ChangeType(elementType);
-            var elementArrayType = elementType.MakeArrayType();
-
-            var listType = typeof(List<>).MakeGenericType(elementType);
-            var serviceTypeIsList = serviceType.IsGenericListOrCollectionInterfaceType();
 
             var activator = new DelegateActivator(
-                elementArrayType,
+                limitType,
                 (c, p) =>
                 {
                     var elements = c.ComponentRegistry.RegistrationsFor(elementTypeService).OrderBy(cr => cr.GetRegistrationOrder());
-                    var items = elements.Select(cr => c.ResolveComponent(cr, p)).ToArray();
+                    var items = elements.Select(cr => c.ResolveComponent(cr, p));
 
-                    var result = Array.CreateInstance(elementType, items.Length);
-                    items.CopyTo(result, 0);
-
-                    return serviceTypeIsList ? Activator.CreateInstance(listType, result) : result;
+                    return generator(items);
                 });
 
             var registration = new ComponentRegistration(
@@ -132,6 +138,25 @@ namespace Autofac.Features.Collections
         public override string ToString()
         {
             return CollectionRegistrationSourceResources.CollectionRegistrationSourceDescription;
+        }
+
+        private static Func<IEnumerable<object>, object> BuildGenerator(Type elementType, string methodName)
+        {
+            var ofTypeMethod = typeof(Enumerable)
+                .GetTypeInfo()
+                .GetDeclaredMethod(nameof(Enumerable.OfType))
+                .MakeGenericMethod(elementType);
+
+            var enumerableMethod = typeof(Enumerable)
+                .GetTypeInfo()
+                .GetDeclaredMethod(methodName)
+                .MakeGenericMethod(elementType);
+
+            var items = Expression.Parameter(typeof(IEnumerable<object>), "items");
+            var ofType = Expression.Call(ofTypeMethod, items);
+            var toEnumerable = Expression.Call(enumerableMethod, ofType);
+            var lambda = Expression.Lambda<Func<IEnumerable<object>, object>>(toEnumerable, items).Compile();
+            return lambda;
         }
     }
 }
