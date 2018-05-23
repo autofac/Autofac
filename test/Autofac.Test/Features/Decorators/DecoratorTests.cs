@@ -148,7 +148,7 @@ namespace Autofac.Test.Features.Decorators
             var registration = container.RegistrationFor<IDecoratedService>();
 
             Assert.NotNull(registration);
-            Assert.Equal(registration.Target.Activator.LimitType, typeof(ImplementorA));
+            Assert.IsType<ImplementorA>(registration.Target.Activator.LimitType);
         }
 
         [Fact(Skip ="Cannot currently determine requested resolve service type")]

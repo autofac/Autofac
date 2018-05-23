@@ -8,7 +8,7 @@ namespace Autofac.Benchmarks.Decorators
     /// </summary>
     public class KeylessGenericBenchmark : DecoratorBenchmarkBase<ICommandHandler<Command>>
     {
-        [Setup]
+        [GlobalSetup]
         public void Setup()
         {
             var builder = new ContainerBuilder();
