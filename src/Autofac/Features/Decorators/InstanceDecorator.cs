@@ -25,9 +25,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Util;
 
 namespace Autofac.Features.Decorators
 {
@@ -39,44 +37,37 @@ namespace Autofac.Features.Decorators
             IComponentContext context,
             IEnumerable<Parameter> parameters)
         {
-            foreach (var service in registration.Services)
-            {
-                if (!(service is IServiceWithType serviceWithType)
-                    || service is DecoratorService
-                    || serviceWithType.ServiceType.IsGenericEnumerableInterfaceType()) continue;
+            var decoratorRegistrations = context.ComponentRegistry.DecoratorsFor(registration);
 
-                var registry = context.ComponentRegistry;
-                var decoratorService = new DecoratorService(serviceWithType.ServiceType);
-                var deocratorRegistrations = registry.RegistrationsFor(decoratorService).ToList();
+            // ReSharper disable once PossibleMultipleEnumeration
+            if (!decoratorRegistrations.Any()) return instance;
 
-                if (deocratorRegistrations.Count == 0) return instance;
-
-                var decorators = deocratorRegistrations
-                    .OrderBy(r => r.GetRegistrationOrder())
-                    .Select(r => new
-                    {
-                        Registration = r,
-                        Service = r.Services.OfType<DecoratorService>().FirstOrDefault()
-                    });
-
-                var serviceType = serviceWithType.ServiceType;
-                var resolveParameters = parameters as Parameter[] ?? parameters.ToArray();
-
-                var decoratorContext = DecoratorContext.Create(instance.GetType(), serviceType, instance);
-
-                foreach (var decorator in decorators)
+            // ReSharper disable once PossibleMultipleEnumeration
+            var decorators = decoratorRegistrations
+                .Select(r => new
                 {
-                    if (!decorator.Service.Condition(decoratorContext)) continue;
+                    Registration = r,
+                    Service = r.Services.OfType<DecoratorService>().First()
+                })
+                .ToArray();
 
-                    var serviceParameter = new TypedParameter(serviceType, instance);
-                    var contextParameter = new TypedParameter(typeof(IDecoratorContext), decoratorContext);
-                    var invokeParameters = resolveParameters.Concat(new Parameter[] { serviceParameter, contextParameter });
-                    instance = context.ResolveComponent(decorator.Registration, invokeParameters);
+            if (decorators.Length == 0) return instance;
 
-                    decoratorContext = decoratorContext.UpdateContext(instance);
-                }
+            var serviceType = decorators[0].Service.ServiceType;
+            var resolveParameters = parameters as Parameter[] ?? parameters.ToArray();
 
-                return instance;
+            var decoratorContext = DecoratorContext.Create(instance.GetType(), serviceType, instance);
+
+            foreach (var decorator in decorators)
+            {
+                if (!decorator.Service.Condition(decoratorContext)) continue;
+
+                var serviceParameter = new TypedParameter(serviceType, instance);
+                var contextParameter = new TypedParameter(typeof(IDecoratorContext), decoratorContext);
+                var invokeParameters = resolveParameters.Concat(new Parameter[] { serviceParameter, contextParameter });
+                instance = context.ResolveComponent(decorator.Registration, invokeParameters);
+
+                decoratorContext = decoratorContext.UpdateContext(instance);
             }
 
             return instance;

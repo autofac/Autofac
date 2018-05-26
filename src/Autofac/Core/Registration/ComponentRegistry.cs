@@ -24,10 +24,13 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using Autofac.Builder;
+using Autofac.Features.Decorators;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
@@ -63,6 +66,9 @@ namespace Autofac.Core.Registration
         /// Keeps track of the status of registered services.
         /// </summary>
         private readonly IDictionary<Service, ServiceRegistrationInfo> _serviceInfo = new Dictionary<Service, ServiceRegistrationInfo>();
+
+        private readonly ConcurrentDictionary<IComponentRegistration, IEnumerable<IComponentRegistration>> _decorators
+            = new ConcurrentDictionary<IComponentRegistration, IEnumerable<IComponentRegistration>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentRegistry"/> class.
@@ -229,6 +235,27 @@ namespace Autofac.Core.Registration
                 var info = GetInitializedServiceInfo(service);
                 return info.Implementations.ToArray();
             }
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<IComponentRegistration> DecoratorsFor(IComponentRegistration registration)
+        {
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+
+            return _decorators.GetOrAdd(registration, r =>
+            {
+                foreach (var service in r.Services)
+                {
+                    if (service is DecoratorService || !(service is IServiceWithType swt)) continue;
+
+                    var decoratorService = new DecoratorService(swt.ServiceType);
+                    return RegistrationsFor(decoratorService)
+                        .OrderBy(d => d.GetRegistrationOrder())
+                        .ToArray();
+                }
+
+                return Enumerable.Empty<IComponentRegistration>();
+            });
         }
 
         /// <summary>
