@@ -66,7 +66,7 @@ namespace Autofac.Core.Activators.Reflection
         /// <param name="context">Context in which to construct instance.</param>
         public ConstructorParameterBinding(
             ConstructorInfo ci,
-            IEnumerable<Parameter> availableParameters,
+            Parameter[] availableParameters,
             IComponentContext context)
         {
             if (ci == null) throw new ArgumentNullException(nameof(ci));

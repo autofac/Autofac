@@ -56,7 +56,7 @@ namespace Autofac.Builder
 
             _defaultService = defaultService;
 
-            Metadata = new Dictionary<string, object>
+            Metadata = new Dictionary<string, object>(1)
             {
                 { MetadataKeys.RegistrationOrderMetadataKey, SequenceGenerator.GetNextUniqueSequence() },
             };

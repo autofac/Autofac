@@ -135,10 +135,25 @@ namespace Autofac.Core.Activators.Reflection
 
         private ConstructorParameterBinding[] GetValidConstructorBindings(IComponentContext context, IEnumerable<Parameter> parameters)
         {
-            // Most often, there will be no `parameters` and/or no `_defaultParameters`; in both of those cases we can avoid allocating.
-            var prioritisedParameters = parameters.Any() ?
-                (_defaultParameters.Length == 0 ? parameters : parameters.Concat(_defaultParameters)) :
-                _defaultParameters;
+            // Most often, there will be no `parameters`we can avoid allocating.
+            Parameter[] prioritisedParameters;
+            if (parameters is Parameter[] parametersArray)
+            {
+                if (parametersArray.Length == 0)
+                {
+                    prioritisedParameters = _defaultParameters;
+                }
+                else
+                {
+                    prioritisedParameters = new Parameter[_defaultParameters.Length + parametersArray.Length];
+                    Array.Copy(parametersArray, 0, prioritisedParameters, 0, parametersArray.Length);
+                    Array.Copy(_defaultParameters, 0, prioritisedParameters, parametersArray.Length, _defaultParameters.Length);
+                }
+            }
+            else
+            {
+                prioritisedParameters = parameters.Concat(_defaultParameters).ToArray();
+            }
 
             var constructorBindings = new ConstructorParameterBinding[_availableConstructors.Length];
             for (var i = 0; i < _availableConstructors.Length; ++i)
