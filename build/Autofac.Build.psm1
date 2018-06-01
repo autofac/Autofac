@@ -172,11 +172,11 @@ function Invoke-DotNetPack
 
       if ($VersionSuffix -eq "")
       {
-        & dotnet pack ("""" + $Project.FullName + """") --configuration Release --include-symbols --output $PackagesPath
+        & dotnet pack ("""" + $Project.FullName + """") --configuration Release --output $PackagesPath
       }
       else
       {
-        & dotnet pack ("""" + $Project.FullName + """") --configuration Release --version-suffix $VersionSuffix --include-symbols --output $PackagesPath
+        & dotnet pack ("""" + $Project.FullName + """") --configuration Release --version-suffix $VersionSuffix --output $PackagesPath
       }
       if ($LASTEXITCODE -ne 0)
       {
