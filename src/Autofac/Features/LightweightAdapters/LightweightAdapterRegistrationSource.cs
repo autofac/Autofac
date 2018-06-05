@@ -102,7 +102,7 @@ namespace Autofac.Features.LightweightAdapters
                     });
             }
 
-            return new IComponentRegistration[0];
+            return Enumerable.Empty<IComponentRegistration>();
         }
 
         public bool IsAdapterForIndividualComponents => true;
