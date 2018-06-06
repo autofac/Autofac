@@ -135,8 +135,7 @@ namespace Autofac.Core.Resolving
                 // important. The ProvidedInstanceActivator will NOT dispose of the provided
                 // instance once the instance has been activated - assuming that it will be
                 // done during the lifetime scope's Disposer executing.
-                var instanceAsDisposable = _newInstance as IDisposable;
-                if (instanceAsDisposable != null)
+                if (decoratorTarget is IDisposable instanceAsDisposable)
                     _activationScope.Disposer.AddInstanceForDisposal(instanceAsDisposable);
             }
 

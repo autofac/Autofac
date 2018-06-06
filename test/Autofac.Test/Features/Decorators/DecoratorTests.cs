@@ -121,6 +121,33 @@ namespace Autofac.Test.Features.Decorators
             }
         }
 
+        public class DisposableImplementor : IDecoratedService, IDisposable
+        {
+            public int DisposeCallCount { get; private set; }
+
+            public IDecoratedService Decorated => this;
+
+            public void Dispose()
+            {
+                DisposeCallCount++;
+            }
+        }
+
+        public class DisposableDecorator : Decorator, IDisposable
+        {
+            public int DisposeCallCount { get; private set; }
+
+            public DisposableDecorator(IDecoratedService decorated)
+                : base(decorated)
+            {
+            }
+
+            public void Dispose()
+            {
+                DisposeCallCount++;
+            }
+        }
+
         [Fact]
         public void RegistrationIncludesTheServiceType()
         {
@@ -478,6 +505,33 @@ namespace Autofac.Test.Features.Decorators
         }
 
         [Fact]
+        public void DecoratorInheritsDecoratedLifetimeWhenInstancePerMatchingLifetimeScope()
+        {
+            const string tag = "foo";
+
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>()
+                .As<IDecoratedService>()
+                .InstancePerMatchingLifetimeScope(tag);
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+
+            var container = builder.Build();
+
+            using (var scope = container.BeginLifetimeScope(tag))
+            {
+                var first = scope.Resolve<IDecoratedService>();
+                var second = scope.Resolve<IDecoratedService>();
+                Assert.Same(first, second);
+
+                using (var scope2 = scope.BeginLifetimeScope())
+                {
+                    var third = scope2.Resolve<IDecoratedService>();
+                    Assert.Same(second, third);
+                }
+            }
+        }
+
+        [Fact]
         public void ParametersArePassedThroughDecoratorChain()
         {
             var builder = new ContainerBuilder();
@@ -564,6 +618,115 @@ namespace Autofac.Test.Features.Decorators
 
             Assert.IsType<DecoratorA>(instance);
             Assert.IsType<ImplementorA>(instance.Decorated);
+        }
+
+        [Fact]
+        public void DecoratorAndDecoratedBothDisposedWhenInstancePerDependency()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<DisposableImplementor>().
+                As<IDecoratedService>()
+                .InstancePerDependency();
+            builder.RegisterDecorator<DisposableDecorator, IDecoratedService>();
+            var container = builder.Build();
+
+            DisposableDecorator decorator;
+            DisposableImplementor decorated;
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                var instance = scope.Resolve<IDecoratedService>();
+                decorator = (DisposableDecorator)instance;
+                decorated = (DisposableImplementor)instance.Decorated;
+            }
+
+            Assert.Equal(1, decorator.DisposeCallCount);
+            Assert.Equal(1, decorated.DisposeCallCount);
+        }
+
+        [Fact]
+        public void DecoratorAndDecoratedBothDisposedWhenInstancePerLifetimeScope()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<DisposableImplementor>()
+                .As<IDecoratedService>()
+                .InstancePerLifetimeScope();
+            builder.RegisterDecorator<DisposableDecorator, IDecoratedService>();
+            var container = builder.Build();
+
+            DisposableDecorator decorator;
+            DisposableImplementor decorated;
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                var instance = scope.Resolve<IDecoratedService>();
+                decorator = (DisposableDecorator)instance;
+                decorated = (DisposableImplementor)instance.Decorated;
+            }
+
+            Assert.Equal(1, decorator.DisposeCallCount);
+            Assert.Equal(1, decorated.DisposeCallCount);
+        }
+
+        [Fact]
+        public void DecoratorAndDecoratedBothDisposedWhenInstancePerMatchingLifetimeScope()
+        {
+            const string tag = "foo";
+
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<DisposableImplementor>()
+                .As<IDecoratedService>()
+                .InstancePerMatchingLifetimeScope(tag);
+            builder.RegisterDecorator<DisposableDecorator, IDecoratedService>();
+            var container = builder.Build();
+
+            DisposableDecorator decorator;
+            DisposableImplementor decorated;
+
+            using (var scope = container.BeginLifetimeScope(tag))
+            {
+                var instance = scope.Resolve<IDecoratedService>();
+                decorator = (DisposableDecorator)instance;
+                decorated = (DisposableImplementor)instance.Decorated;
+
+                DisposableDecorator decorator2;
+                DisposableImplementor decorated2;
+
+                using (var scope2 = scope.BeginLifetimeScope())
+                {
+                    var instance2 = scope2.Resolve<IDecoratedService>();
+                    decorator2 = (DisposableDecorator)instance2;
+                    decorated2 = (DisposableImplementor)instance2.Decorated;
+                }
+
+                Assert.Equal(0, decorator2.DisposeCallCount);
+                Assert.Equal(0, decorated2.DisposeCallCount);
+            }
+
+            Assert.Equal(1, decorator.DisposeCallCount);
+            Assert.Equal(1, decorated.DisposeCallCount);
+        }
+
+        [Fact]
+        public void DecoratorAndDecoratedBothDisposedWhenSingleInstance()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<DisposableImplementor>()
+                .As<IDecoratedService>()
+                .SingleInstance();
+            builder.RegisterDecorator<DisposableDecorator, IDecoratedService>();
+            var container = builder.Build();
+
+            var instance = container.Resolve<IDecoratedService>();
+            container.Dispose();
+
+            var decorator = (DisposableDecorator)instance;
+            var decorated = (DisposableImplementor)instance.Decorated;
+
+            Assert.Equal(1, decorator.DisposeCallCount);
+            Assert.Equal(1, decorated.DisposeCallCount);
         }
     }
 }
