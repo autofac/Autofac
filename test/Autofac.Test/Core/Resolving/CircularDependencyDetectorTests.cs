@@ -23,6 +23,40 @@ namespace Autofac.Test.Core.Resolving
             Assert.DoesNotContain("System.Object -> System.Object -> System.Object", de.Message);
         }
 
+        [Fact]
+        public void MaxStackDepthExceeded_ThrowsCircularDependencyException()
+        {
+            var builder = new ContainerBuilder().WithMaxResolveStackDepth(10);
+            builder.RegisterType<OuterScopeType>();
+            builder.RegisterType<OuterScopeType2>();
+            builder.RegisterType<OuterScopeType3>();
+            builder.RegisterType<OuterScopeType4>();
+            builder.RegisterType<OuterScopeType5>();
+            IContainer container = builder.Build();
+
+            using (var lifetimeScope = container.BeginLifetimeScope(b => b.RegisterType<InnerScopeType>()))
+            {
+                Assert.Throws<DependencyResolutionException>(() => lifetimeScope.Resolve<InnerScopeType>());
+            }
+        }
+
+        [Fact]
+        public void MaxStackDepthNotExceeded_CanBeResolved()
+        {
+            var builder = new ContainerBuilder().WithMaxResolveStackDepth(11);
+            builder.RegisterType<OuterScopeType>();
+            builder.RegisterType<OuterScopeType2>();
+            builder.RegisterType<OuterScopeType3>();
+            builder.RegisterType<OuterScopeType4>();
+            builder.RegisterType<OuterScopeType5>();
+            IContainer container = builder.Build();
+
+            using (var lifetimeScope = container.BeginLifetimeScope(b => b.RegisterType<InnerScopeType>()))
+            {
+                Assert.NotNull(lifetimeScope.Resolve<InnerScopeType>());
+            }
+        }
+
         [Fact(Skip = "Issue #648")]
         public void ManualEnumerableRegistrationDoesNotCauseCircularDependency()
         {
@@ -93,6 +127,40 @@ namespace Autofac.Test.Core.Resolving
         private class RootViewModel
         {
             public RootViewModel(IEnumerable<IPlugin> plugins, PluginsViewModel pluginsViewModel)
+            {
+            }
+        }
+
+        public class OuterScopeType
+        {
+            public OuterScopeType(OuterScopeType2 outerScopeType2) { }
+        }
+
+        public class OuterScopeType2
+        {
+            public OuterScopeType2(OuterScopeType3 outerScopeType3) { }
+        }
+
+        public class OuterScopeType3
+        {
+            public OuterScopeType3(OuterScopeType4 outerScopeType4) { }
+
+        }
+
+        public class OuterScopeType4
+        {
+            public OuterScopeType4(OuterScopeType5 outerScopeType5) { }
+        }
+
+        public class OuterScopeType5 { }
+
+        public class InnerScopeType
+        {
+            public InnerScopeType(
+                OuterScopeType outerScopeType,
+                OuterScopeType4 outerScopeType4,
+                OuterScopeType5 outerScopeType5
+            )
             {
             }
         }

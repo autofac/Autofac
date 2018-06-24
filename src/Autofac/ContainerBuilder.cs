@@ -30,6 +30,7 @@ using System.Globalization;
 using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Resolving;
 using Autofac.Features.Collections;
 using Autofac.Features.GeneratedFactories;
 using Autofac.Features.Indexed;
@@ -97,6 +98,17 @@ namespace Autofac
         /// context across registrations.
         /// </value>
         public IDictionary<string, object> Properties { get; }
+
+        /// <summary>
+        /// Sets the maximum size of the stack used when resolving a single component (and all of its transitive dependencies) from the container.
+        /// If this limit is exceeded the component will be treated as a circular dependency.
+        /// </summary>
+        /// <param name="maximumStackDepth">Maximum size of the stack used for resolve operations.</param>
+        public ContainerBuilder WithMaxResolveStackDepth(int maximumStackDepth)
+        {
+            Properties[CircularDependencyDetector.MaxResolveStackDepthPropertyName] = maximumStackDepth;
+            return this;
+        }
 
         /// <summary>
         /// Register a callback that will be invoked when the container is configured.
