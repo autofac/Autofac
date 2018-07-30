@@ -198,6 +198,16 @@ namespace Autofac.Test.Features.ResolveAnything
             Assert.NotNull(container.Resolve<Progress<Exception>>());
         }
 
+        [Fact(Skip = "Issue #925")]
+        public void ConstructableOpenGenericsWithUnresolvableTypeParametersCanBeResolved()
+        {
+            var container = CreateResolveAnythingContainer();
+            Assert.True(container.IsRegistered<Progress<IComparable>>());
+            Assert.NotNull(container.Resolve<Progress<IComparable>>());
+            Assert.True(container.IsRegistered<Progress<AbstractType>>());
+            Assert.NotNull(container.Resolve<Progress<AbstractType>>());
+        }
+
         [Fact]
         public void ConstructableOpenGenericsWithGenericTypeArgumentNotMatchingFilterCanBeResolved()
         {
