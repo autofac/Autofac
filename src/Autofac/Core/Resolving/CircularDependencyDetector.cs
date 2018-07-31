@@ -30,12 +30,13 @@ using System.Linq;
 
 namespace Autofac.Core.Resolving
 {
+    /// <summary>
+    /// Catch circular dependencies that are triggered by post-resolve processing (e.g. 'OnActivated').
+    /// </summary>
     internal class CircularDependencyDetector
     {
-        /// <summary>
-        /// Catch circular dependencies that are triggered by post-resolve processing (e.g. 'OnActivated').
-        /// </summary>
-        private const int MaxResolveDepth = 50;
+        internal const string MaxResolveStackDepthPropertyName = "MaxResolveStackDepth";
+        private const int DefaultMaxResolveDepth = 50;
 
         private static string CreateDependencyGraphTo(IComponentRegistration registration, Stack<InstanceLookup> activationStack)
         {
@@ -53,16 +54,25 @@ namespace Autofac.Core.Resolving
             return registration.Activator.LimitType.FullName ?? string.Empty;
         }
 
-        public static void CheckForCircularDependency(IComponentRegistration registration, Stack<InstanceLookup> activationStack, int callDepth)
+        public static void CheckForCircularDependency(ISharingLifetimeScope currentOperationScope, IComponentRegistration registration, Stack<InstanceLookup> activationStack, int callDepth)
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 
-            if (callDepth > MaxResolveDepth)
-                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, CircularDependencyDetectorResources.MaxDepthExceeded, registration));
+            if (callDepth > MaxResolveDepth(currentOperationScope))
+            {
+                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, CircularDependencyDetectorResources.MaxDepthExceeded, registration) + "\r\nGraph: " + CreateDependencyGraphTo(registration, activationStack));
+            }
 
             // Checks for circular dependency
             if (activationStack.Any(a => a.ComponentRegistration == registration))
                 throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, CircularDependencyDetectorResources.CircularDependency, CreateDependencyGraphTo(registration, activationStack)));
+        }
+
+        private static int MaxResolveDepth(ISharingLifetimeScope currentOperationScope)
+        {
+            return currentOperationScope.ComponentRegistry.Properties.ContainsKey(MaxResolveStackDepthPropertyName)
+                ? (int)currentOperationScope.ComponentRegistry.Properties[MaxResolveStackDepthPropertyName]
+                : DefaultMaxResolveDepth;
         }
     }
 }

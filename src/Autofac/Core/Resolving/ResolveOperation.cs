@@ -112,7 +112,7 @@ namespace Autofac.Core.Resolving
 
             ++_callDepth;
 
-            if (_activationStack.Count > 0) CircularDependencyDetector.CheckForCircularDependency(registration, _activationStack, _callDepth);
+            if (_activationStack.Count > 0) CircularDependencyDetector.CheckForCircularDependency(currentOperationScope, registration, _activationStack, _callDepth);
 
             var activation = new InstanceLookup(registration, this, currentOperationScope, parameters);
 
