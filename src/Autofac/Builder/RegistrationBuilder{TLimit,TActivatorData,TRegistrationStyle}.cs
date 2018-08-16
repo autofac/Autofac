@@ -241,11 +241,32 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As(params Type[] services)
         {
-            return As(services.Select(t =>
-                t.FullName != null
-                ? new TypedService(t)
-                : new TypedService(t.GetGenericTypeDefinition()))
-                .Cast<Service>().ToArray());
+            // Issue #919: Use arrays and iteration rather than LINQ to reduce memory allocation.
+            Service[] argArray = new Service[services.Length];
+            for (int i = 0; i < services.Length; i++)
+            {
+                if (services[i].FullName != null)
+                {
+                    argArray[i] = new TypedService(services[i]);
+                }
+                else
+                {
+                    argArray[i] = new TypedService(services[i].GetGenericTypeDefinition());
+                }
+            }
+
+            return As(argArray);
+        }
+
+        /// <summary>
+        /// Configure a single service that the component will provide.
+        /// </summary>
+        /// <param name="service">Service type to expose.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As(Type service)
+        {
+            // Issue #919: Avoid allocating the array for params if there's only one item.
+            return As(new TypedService(service));
         }
 
         /// <summary>
@@ -258,6 +279,20 @@ namespace Autofac.Builder
             if (services == null) throw new ArgumentNullException(nameof(services));
 
             RegistrationData.AddServices(services);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configure a single service that the component will provide.
+        /// </summary>
+        /// <param name="service">Service to expose.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As(Service service)
+        {
+            if (service == null) throw new ArgumentNullException(nameof(service));
+
+            RegistrationData.AddService(service);
 
             return this;
         }
