@@ -43,5 +43,33 @@ namespace Autofac.Test.Features.LazyDependencies
             var lazy = container.Resolve<Lazy<object>>();
             Assert.False(lazy.IsValueCreated);
         }
+
+        [Fact(Skip = "#718")]
+        public void LazyWorksWithCircularPropertyDependencies()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<A>()
+                .SingleInstance();
+            builder.RegisterType<B>()
+                .SingleInstance()
+                .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
+
+            var container = builder.Build();
+            Assert.NotNull(container.Resolve<A>());
+        }
+
+        private class A
+        {
+            public A(Lazy<B> b)
+            {
+                var myB = b.Value;
+            }
+        }
+
+        private class B
+        {
+            public A A { get; set; }
+        }
     }
 }
