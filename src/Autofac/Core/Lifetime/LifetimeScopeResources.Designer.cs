@@ -62,7 +62,7 @@ namespace Autofac.Core.Lifetime {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The tag &apos;{0}&apos; has already been assigned to a parent lifetime scope..
+        ///   Looks up a localized string similar to The tag &apos;{0}&apos; has already been assigned to a parent lifetime scope. If you are using Owned&lt;T&gt; this indicates you may have a circular dependency chain..
         /// </summary>
         internal static string DuplicateTagDetected {
             get {

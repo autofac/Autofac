@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DuplicateTagDetected" xml:space="preserve">
-    <value>The tag '{0}' has already been assigned to a parent lifetime scope.</value>
+    <value>The tag '{0}' has already been assigned to a parent lifetime scope. If you are using Owned&lt;T&gt; this indicates you may have a circular dependency chain.</value>
   </data>
   <data name="ScopeIsDisposed" xml:space="preserve">
     <value>Instances cannot be resolved and nested lifetimes cannot be created from this LifetimeScope as it has already been disposed.</value>
