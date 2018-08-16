@@ -41,7 +41,7 @@ namespace Autofac.Features.OpenGenerics
             IEnumerable<Service> configuredOpenGenericServices,
             Type openGenericImplementationType,
             out Type constructedImplementationType,
-            out IEnumerable<Service> constructedServices)
+            out Service[] constructedServices)
         {
             var swt = service as IServiceWithType;
             if (swt != null && swt.ServiceType.GetTypeInfo().IsGenericType)
