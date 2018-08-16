@@ -63,8 +63,13 @@ namespace Autofac.Core.Resolving
                 throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, CircularDependencyDetectorResources.MaxDepthExceeded, registration));
 
             // Checks for circular dependency
-            if (activationStack.Any(a => a.ComponentRegistration == registration))
-                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, CircularDependencyDetectorResources.CircularDependency, CreateDependencyGraphTo(registration, activationStack)));
+            foreach (var a in activationStack)
+            {
+                if (a.ComponentRegistration == registration)
+                {
+                    throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, CircularDependencyDetectorResources.CircularDependency, CreateDependencyGraphTo(registration, activationStack)));
+                }
+            }
         }
     }
 }
