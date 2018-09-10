@@ -31,7 +31,7 @@ namespace Autofac
     /// When implemented by a component, an instance of the component will be resolved
     /// and started as soon as the container is built. Autofac will not call the Start()
     /// method when subsequent instances are resolved. If this behavior is required, use
-    /// an <code>OnActivated()</code> event handler instead.
+    /// an <c>OnActivated()</c> event handler instead.
     /// </summary>
     /// <remarks>
     /// For equivalent "Stop" functionality, implement <see cref="IDisposable"/>. Autofac

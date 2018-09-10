@@ -35,7 +35,7 @@ using Autofac.Util;
 namespace Autofac.Features.Variance
 {
     /// <summary>
-    /// Enables contravariant <code>Resolve()</code> for interfaces that have a single contravariant ('in') parameter.
+    /// Enables contravariant <c>Resolve()</c> for interfaces that have a single contravariant ('in') parameter.
     /// </summary>
     /// <example>
     /// <code>

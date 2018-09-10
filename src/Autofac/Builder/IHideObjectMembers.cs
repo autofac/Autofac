@@ -33,7 +33,7 @@ namespace Autofac.Builder
     /// Hides standard Object members to make fluent interfaces
     /// easier to read.
     /// Based on blog post by @kzu here:
-    /// http://www.clariusconsulting.net/blogs/kzu/archive/2008/03/10/58301.aspx
+    /// http://www.clariusconsulting.net/blogs/kzu/archive/2008/03/10/58301.aspx.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public interface IHideObjectMembers

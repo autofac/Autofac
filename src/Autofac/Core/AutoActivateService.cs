@@ -51,7 +51,7 @@ namespace Autofac.Core
         /// </returns>
         /// <remarks>
         /// <para>
-        /// All services of this type are considered "equal."
+        /// All services of this type are considered "equal".
         /// </para>
         /// </remarks>
         public override bool Equals(object obj)

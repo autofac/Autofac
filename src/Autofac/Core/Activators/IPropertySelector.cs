@@ -1,10 +1,9 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace Autofac.Core
 {
     /// <summary>
-    /// Find suitable properties to inject
+    /// Finds suitable properties to inject.
     /// </summary>
     public interface IPropertySelector
     {

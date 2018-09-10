@@ -62,7 +62,7 @@ namespace Autofac.Features.Collections
     /// This implicit support means other areas (like MVC support or manual
     /// property injection) must take care to only request enumerable values they
     /// expect to get something back for. In other words, "Don't ask the container
-    /// for something you don't expect to resolve."
+    /// for something you don't expect to resolve".
     /// </para>
     /// </remarks>
     internal class CollectionRegistrationSource : IRegistrationSource

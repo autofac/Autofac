@@ -61,7 +61,7 @@ namespace Autofac.Util
         /// </summary>
         /// <typeparam name="T">The type of value being checked.</typeparam>
         /// <param name="value">The value.</param>
-        /// <returns><paramref name="value"/></returns>
+        /// <returns><paramref name="value"/> if not null.</returns>
         public static T NotNull<T>([ValidatedNotNull]T value)
             where T : class
         {
@@ -78,7 +78,7 @@ namespace Autofac.Util
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="description">The description.</param>
-        /// <returns><paramref name="value"/></returns>
+        /// <returns><paramref name="value"/>if not null or empty.</returns>
         public static string ArgumentNotNullOrEmpty([ValidatedNotNull]string value, string description)
         {
             if (description == null) throw new ArgumentNullException(nameof(description));
