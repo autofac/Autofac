@@ -1,5 +1,4 @@
-﻿#if !WINDOWS_UWP
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
@@ -137,4 +136,3 @@ namespace Autofac.Test
         }
     }
 }
-#endif

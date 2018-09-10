@@ -1,7 +1,5 @@
-#if !NET451
 using System;
 using Autofac.Core;
-using Autofac.Test.Features.Metadata;
 using Autofac.Test.Features.Metadata.TestTypes;
 using Xunit;
 
@@ -32,4 +30,3 @@ namespace Autofac.Test.Features.LazyDependencies
         }
     }
 }
-#endif

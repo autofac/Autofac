@@ -53,7 +53,7 @@ namespace Autofac.Features.LazyDependencies
                 throw new ArgumentNullException(nameof(registrationAccessor));
 
             var swt = service as IServiceWithType;
-#if !NETCOREAPP1_0
+#if NET45
             var lazyType = GetLazyType(swt);
             if (swt == null || lazyType == null || !swt.ServiceType.IsGenericTypeDefinedBy(lazyType))
                 return Enumerable.Empty<IComponentRegistration>();
@@ -104,7 +104,7 @@ namespace Autofac.Features.LazyDependencies
             return rb.CreateRegistration();
         }
 
-#if !NETCOREAPP1_0
+#if NET45
         private static Type GetLazyType(IServiceWithType serviceWithType)
         {
             return serviceWithType != null

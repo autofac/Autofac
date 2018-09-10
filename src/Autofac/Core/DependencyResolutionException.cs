@@ -34,7 +34,7 @@ namespace Autofac.Core
     /// been made during the operation. For example, 'on activated' handlers may have already been
     /// fired, or 'single instance' components partially constructed.
     /// </summary>
-#if NET45
+#if !NETSTANDARD1_1
     [Serializable]
 #endif
     public class DependencyResolutionException : Exception
