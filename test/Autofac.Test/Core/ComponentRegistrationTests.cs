@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Core.Registration;
 using Xunit;
 
 namespace Autofac.Test.Core
@@ -13,7 +12,7 @@ namespace Autofac.Test.Core
         [Fact]
         public void Constructor_DetectsNullsAmongServices()
         {
-            Assert.Throws<ArgumentException>(delegate
+            Assert.Throws<ArgumentException>(() =>
             {
                 var services = new Service[] { new TypedService(typeof(object)), null };
                 Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator(new object()));

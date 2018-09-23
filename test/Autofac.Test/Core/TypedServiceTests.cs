@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Autofac.Core;
 using Xunit;
 
@@ -18,10 +15,7 @@ namespace Autofac.Test.Core
         [Fact]
         public void ConstructorRequires_TypeNotNull()
         {
-            Assert.Throws<ArgumentNullException>(delegate
-            {
-                new TypedService(null);
-            });
+            Assert.Throws<ArgumentNullException>(() => new TypedService(null));
         }
 
         [Fact]

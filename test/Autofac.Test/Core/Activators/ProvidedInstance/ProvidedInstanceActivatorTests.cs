@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using Autofac.Core;
 using Autofac.Core.Activators.ProvidedInstance;
 using Xunit;
 
@@ -11,10 +9,7 @@ namespace Autofac.Test.Component.Activation
         [Fact]
         public void NullIsNotAValidInstance()
         {
-            Assert.Throws<ArgumentNullException>(delegate
-            {
-                new ProvidedInstanceActivator(null);
-            });
+            Assert.Throws<ArgumentNullException>(() => new ProvidedInstanceActivator(null));
         }
 
         [Fact]
@@ -39,10 +34,8 @@ namespace Autofac.Test.Component.Activation
 
             target.ActivateInstance(Factory.EmptyContainer, Factory.NoParameters);
 
-            Assert.Throws<InvalidOperationException>(delegate
-            {
-                target.ActivateInstance(Factory.EmptyContainer, Factory.NoParameters);
-            });
+            Assert.Throws<InvalidOperationException>(() =>
+                target.ActivateInstance(Factory.EmptyContainer, Factory.NoParameters));
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
-using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Test.Scenarios.ConstructorSelection;
@@ -16,71 +15,61 @@ namespace Autofac.Test.Core.Activators.Reflection
         [Fact]
         public void Constructor_DoesNotAcceptNullType()
         {
-            Assert.Throws<ArgumentNullException>(delegate
-            {
-                new ReflectionActivator(
+            Assert.Throws<ArgumentNullException>(
+                () => new ReflectionActivator(
                     null,
                     Mocks.GetConstructorFinder(),
                     Mocks.GetConstructorSelector(),
                     Factory.NoParameters,
-                    Factory.NoProperties);
-            });
+                    Factory.NoProperties));
         }
 
         [Fact]
         public void Constructor_DoesNotAcceptNullParameters()
         {
-            Assert.Throws<ArgumentNullException>(delegate
-            {
-                new ReflectionActivator(
+            Assert.Throws<ArgumentNullException>(
+                () => new ReflectionActivator(
                     typeof(object),
                     Mocks.GetConstructorFinder(),
                     Mocks.GetConstructorSelector(),
                     null,
-                    Factory.NoProperties);
-            });
+                    Factory.NoProperties));
         }
 
         [Fact]
         public void Constructor_DoesNotAcceptNullProperties()
         {
-            Assert.Throws<ArgumentNullException>(delegate
-            {
-                new ReflectionActivator(
+            Assert.Throws<ArgumentNullException>(
+                () => new ReflectionActivator(
                     typeof(object),
                     Mocks.GetConstructorFinder(),
                     Mocks.GetConstructorSelector(),
                     Factory.NoParameters,
-                    null);
-            });
+                    null));
         }
 
         [Fact]
         public void Constructor_DoesNotAcceptNullFinder()
         {
-            Assert.Throws<ArgumentNullException>(delegate
-            {
-                new ReflectionActivator(
+            Assert.Throws<ArgumentNullException>(
+                () => new ReflectionActivator(
                     typeof(object),
                     null,
                     Mocks.GetConstructorSelector(),
                     Factory.NoParameters,
-                    Factory.NoProperties);
-            });
+                    Factory.NoProperties));
         }
 
         [Fact]
         public void Constructor_DoesNotAcceptNullSelector()
         {
-            Assert.Throws<ArgumentNullException>(delegate
-            {
-                new ReflectionActivator(
+            Assert.Throws<ArgumentNullException>(
+                () => new ReflectionActivator(
                     typeof(object),
                     Mocks.GetConstructorFinder(),
                     null,
                     Factory.NoParameters,
-                    Factory.NoProperties);
-            });
+                    Factory.NoProperties));
         }
 
         [Fact]
@@ -303,7 +292,7 @@ namespace Autofac.Test.Core.Activators.Reflection
             var lifetimeScope = container.BeginLifetimeScope(b =>
             {
                 b.RegisterType<ThreeConstructors>()
-                    .FindConstructorsWith(type => type.GetConstructors().Where(ci => ci.GetParameters().Length == 1).ToArray());
+                    .FindConstructorsWith(type => type.GetTypeInfo().GetConstructors().Where(ci => ci.GetParameters().Length == 1).ToArray());
             });
 
             var instance = lifetimeScope.Resolve<ThreeConstructors>();
