@@ -39,6 +39,36 @@ namespace Autofac.Test.Core.Resolving
         }
 
         [Fact]
+        public void ActivationStackResetsOnFailedLambdaResolve()
+        {
+            // Issue #929
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ServiceImpl>().AsSelf();
+            builder.Register<IService>(c =>
+            {
+                try
+                {
+                    // This will fail because ServiceImpl needs a Guid ctor
+                    // parameter and it's not provided.
+                    return c.Resolve<ServiceImpl>();
+                }
+                catch (Exception)
+                {
+                    // This is where the activation stack isn't getting reset.
+                }
+
+                return new ServiceImpl(Guid.Empty);
+            });
+            builder.RegisterType<Dependency>().AsSelf();
+            builder.RegisterType<ComponentConsumer>().AsSelf();
+            var container = builder.Build();
+
+            // This throws a circular dependency exception if the activation stack
+            // doesn't get reset.
+            container.Resolve<ComponentConsumer>();
+        }
+
+        [Fact]
         public void AfterTheOperationIsFinished_ReusingTheTemporaryContextThrows()
         {
             IComponentContext ctx = null;
@@ -149,6 +179,52 @@ namespace Autofac.Test.Core.Resolving
 
             var instanceType = capturedparameters.Named<Type>(ResolutionExtensions.PropertyInjectedInstanceTypeNamedParameter);
             Assert.Equal(existingInstance.GetType(), instanceType);
+        }
+
+        private interface IService
+        {
+        }
+
+        // Issue #929
+        // When a resolve operation fails in a lambda registration the activation stack
+        // doesn't get reset and incorrectly causes a circular dependency exception.
+        //
+        // The ComponentConsumer takes IService (ServiceImpl) and a Dependency; the
+        // Dependency also takes an IService. Normally this wouldn't cause an issue, but
+        // if the registration for IService is a lambda that has a try/catch around a failing
+        // resolve, the activation stack won't reset and the IService will be seen as a
+        // circular dependency.
+        private class ComponentConsumer
+        {
+            private Dependency _dependency;
+
+            private IService _service;
+
+            public ComponentConsumer(IService service, Dependency dependency)
+            {
+                this._service = service;
+                this._dependency = dependency;
+            }
+        }
+
+        private class Dependency
+        {
+            private IService _service;
+
+            public Dependency(IService service)
+            {
+                this._service = service;
+            }
+        }
+
+        private class ServiceImpl : IService
+        {
+            private Guid _id;
+
+            public ServiceImpl(Guid id)
+            {
+                this._id = id;
+            }
         }
     }
 }
