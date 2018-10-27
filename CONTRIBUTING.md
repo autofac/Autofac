@@ -4,7 +4,7 @@ Contributions to Autofac, whether new features or bug fixes, are deeply apprecia
 
 The following guidelines help ensure the smooth running of the project, and keep a consistent standard across the codebase. They are guidelines only - should you feel a need to deviate from them it is probably for a good reason - but please adhere to them as closely as possible.
 
-If you'd like to contribute code or documentation to Autofac, we welcome pull requests. [Questions and suggestions are welcome on the newsgroup.](https://groups.google.com/forum/#!forum/autofac>).
+If you'd like to contribute code or documentation to Autofac, we welcome pull requests. [Questions and suggestions are welcome on the newsgroup.](https://groups.google.com/forum/#!forum/autofac).
 
 **Your contributions must be your own work and licensed under the same terms as Autofac.**
 
