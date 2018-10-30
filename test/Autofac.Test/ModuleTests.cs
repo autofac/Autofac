@@ -59,6 +59,42 @@ namespace Autofac.Test
             Assert.Equal(container.ComponentRegistry.Registrations.Count(), attachingModule.Registrations.Count);
         }
 
+        [Fact]
+        public void AttachesToRegistrationsInScope()
+        {
+            var attachingModule = new AttachingModule();
+            Assert.Equal(0, attachingModule.Registrations.Count);
+
+            var builder = new ContainerBuilder();
+            builder.RegisterModule(attachingModule);
+
+            using (var container = builder.Build())
+            using (var scope = container.BeginLifetimeScope(c => c.RegisterType(typeof(int))))
+            {
+                var expected = container.ComponentRegistry.Registrations.Count() + scope.ComponentRegistry.Registrations.Count();
+                Assert.Equal(expected, attachingModule.Registrations.Count);
+            }
+        }
+
+        [Fact]
+        public void AttachesToRegistrationsInNestedScope()
+        {
+            var attachingModule = new AttachingModule();
+            Assert.Equal(0, attachingModule.Registrations.Count);
+
+            var builder = new ContainerBuilder();
+            builder.RegisterModule(attachingModule);
+
+            using (var container = builder.Build())
+            using (var outerScope = container.BeginLifetimeScope(c => c.RegisterType(typeof(int))))
+            using (var innerScope = outerScope.BeginLifetimeScope(c => c.RegisterType(typeof(double))))
+            {
+                var expected = container.ComponentRegistry.Registrations.Count()
+                    + outerScope.ComponentRegistry.Registrations.Count() + innerScope.ComponentRegistry.Registrations.Count();
+                Assert.Equal(expected, attachingModule.Registrations.Count);
+            }
+        }
+
         internal class ModuleExposingThisAssembly : Module
         {
             public Assembly ModuleThisAssembly
