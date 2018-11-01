@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Registration;
 using Xunit;
@@ -57,6 +58,70 @@ namespace Autofac.Test
             var container = builder.Build();
 
             Assert.Equal(container.ComponentRegistry.Registrations.Count(), attachingModule.Registrations.Count);
+        }
+
+        [Fact]
+        public void AttachesToRegistrationsInScope()
+        {
+            var attachingModule = new AttachingModule();
+            Assert.Equal(0, attachingModule.Registrations.Count);
+
+            var builder = new ContainerBuilder();
+            builder.RegisterModule(attachingModule);
+
+            using (var container = builder.Build())
+            using (var scope = container.BeginLifetimeScope(c => c.RegisterType(typeof(int))))
+            {
+                var expected = container.ComponentRegistry.Registrations.Count() + scope.ComponentRegistry.Registrations.Count();
+                Assert.Equal(expected, attachingModule.Registrations.Count);
+            }
+        }
+
+        [Fact]
+        public void AttachesToRegistrationsInNestedScope()
+        {
+            var attachingModule = new AttachingModule();
+            Assert.Equal(0, attachingModule.Registrations.Count);
+
+            var builder = new ContainerBuilder();
+            builder.RegisterModule(attachingModule);
+
+            using (var container = builder.Build())
+            using (var outerScope = container.BeginLifetimeScope(c => c.RegisterType(typeof(int))))
+            using (var innerScope = outerScope.BeginLifetimeScope(c => c.RegisterType(typeof(double))))
+            {
+                var expected = container.ComponentRegistry.Registrations.Count()
+                    + outerScope.ComponentRegistry.Registrations.Count() + innerScope.ComponentRegistry.Registrations.Count();
+                Assert.Equal(expected, attachingModule.Registrations.Count);
+            }
+        }
+
+        [Fact]
+        public void ModifiedScopesHaveTheirOwnDelegate()
+        {
+            var attachingModule = new AttachingModule();
+            Assert.Equal(0, attachingModule.Registrations.Count);
+
+            var builder = new ContainerBuilder();
+            builder.RegisterModule(attachingModule);
+
+            using (var container = builder.Build())
+            {
+                Assert.NotNull(container.ComponentRegistry.Properties[MetadataKeys.RegisteredPropertyKey]);
+                using (var outerScope = container.BeginLifetimeScope(c => c.RegisterType(typeof(int))))
+                {
+                    Assert.Equal(
+                        container.ComponentRegistry.Properties[MetadataKeys.RegisteredPropertyKey],
+                        outerScope.ComponentRegistry.Properties[MetadataKeys.RegisteredPropertyKey]);
+                    outerScope.ComponentRegistry.Registered += (s, e) => { };
+                    using (var innerScope = outerScope.BeginLifetimeScope())
+                    {
+                        Assert.NotEqual(
+                            container.ComponentRegistry.Properties[MetadataKeys.RegisteredPropertyKey],
+                            innerScope.ComponentRegistry.Properties[MetadataKeys.RegisteredPropertyKey]);
+                    }
+                }
+            }
         }
 
         internal class ModuleExposingThisAssembly : Module

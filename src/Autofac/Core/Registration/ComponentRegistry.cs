@@ -207,8 +207,7 @@ namespace Autofac.Core.Registration
 
             _registrations.Add(registration);
 
-            var handler = Registered;
-            handler?.Invoke(this, new ComponentRegisteredEventArgs(this, registration));
+            GetRegistered()?.Invoke(this, new ComponentRegisteredEventArgs(this, registration));
         }
 
         /// <summary>
@@ -266,7 +265,24 @@ namespace Autofac.Core.Registration
         /// Fired whenever a component is registered - either explicitly or via a
         /// <see cref="IRegistrationSource"/>.
         /// </summary>
-        public event EventHandler<ComponentRegisteredEventArgs> Registered;
+        public event EventHandler<ComponentRegisteredEventArgs> Registered
+        {
+            add
+            {
+                lock (_synchRoot)
+                {
+                    Properties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() + value;
+                }
+            }
+
+            remove
+            {
+                lock (_synchRoot)
+                {
+                    Properties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() - value;
+                }
+            }
+        }
 
         /// <summary>
         /// Add a registration source that will provide registrations on-the-fly.
@@ -359,6 +375,14 @@ namespace Autofac.Core.Registration
             var info = new ServiceRegistrationInfo(service);
             _serviceInfo.Add(service, info);
             return info;
+        }
+
+        private EventHandler<ComponentRegisteredEventArgs> GetRegistered()
+        {
+            if (Properties.TryGetValue(MetadataKeys.RegisteredPropertyKey, out var registered))
+                return (EventHandler<ComponentRegisteredEventArgs>)registered;
+
+            return null;
         }
     }
 }
