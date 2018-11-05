@@ -98,6 +98,8 @@ namespace Autofac.Core.Activators.Reflection
             if (context == null) throw new ArgumentNullException(nameof(context));
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
+            CheckNotDisposed();
+
             // Lazy instantiate available constructor list so the constructor
             // finder can be changed during AsSelf() registration. AsSelf() creates
             // a temporary activator just long enough to get the LimitType.

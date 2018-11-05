@@ -57,5 +57,11 @@ namespace Autofac.Core.Activators
         {
             return LimitType.Name + " (" + GetType().Name + ")";
         }
+
+        protected void CheckNotDisposed()
+        {
+            if (IsDisposed)
+                throw new ObjectDisposedException(InstanceActivatorResources.InstanceActivatorDisposed, innerException: null);
+        }
     }
 }

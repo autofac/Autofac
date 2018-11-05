@@ -66,6 +66,8 @@ namespace Autofac.Core.Activators.Delegate
             if (context == null) throw new ArgumentNullException(nameof(context));
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
+            CheckNotDisposed();
+
             var result = _activationFunction(context, parameters);
             if (result == null)
             {
