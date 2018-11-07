@@ -72,6 +72,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>DelegateActivatorResources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Core\Activators\InstanceActivatorResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>InstanceActivatorResources.resx</DependentUpon>
+    </Compile>
     <Compile Update="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -271,6 +276,10 @@
     <EmbeddedResource Update="Core\Activators\Delegate\DelegateActivatorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DelegateActivatorResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Activators\InstanceActivatorResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InstanceActivatorResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

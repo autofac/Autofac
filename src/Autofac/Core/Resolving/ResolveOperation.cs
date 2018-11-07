@@ -82,6 +82,10 @@ namespace Autofac.Core.Resolving
             {
                 result = ResolveComponent(registration, parameters);
             }
+            catch (ObjectDisposedException)
+            {
+                throw;
+            }
             catch (DependencyResolutionException dependencyResolutionException)
             {
                 End(dependencyResolutionException);

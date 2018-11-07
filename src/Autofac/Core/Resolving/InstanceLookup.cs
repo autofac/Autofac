@@ -124,6 +124,10 @@ namespace Autofac.Core.Resolving
                     _activationScope,
                     resolveParameters);
             }
+            catch (ObjectDisposedException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 throw new DependencyResolutionException(String.Format(CultureInfo.CurrentCulture, ComponentActivationResources.ErrorDuringActivation, this.ComponentRegistration), ex);
