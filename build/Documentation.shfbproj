@@ -41,7 +41,7 @@
     <Preliminary>False</Preliminary>
     <NamingMethod>HashedMemberName</NamingMethod>
     <HelpTitle>Autofac .NET Inversion of Control Container</HelpTitle>
-    <CopyrightText>Copyright (c) 2007-2013 Autofac Contributors</CopyrightText>
+    <CopyrightText>Copyright © 2007-2013 Autofac Contributors</CopyrightText>
     <CopyrightHref>http://autofac.org</CopyrightHref>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <FeedbackEMailAddress>autofac@googlegroups.com</FeedbackEMailAddress>
