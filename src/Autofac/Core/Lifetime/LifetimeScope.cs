@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -47,7 +48,7 @@ namespace Autofac.Core.Lifetime
         /// Protects shared instances from concurrent access. Other members and the base class are threadsafe.
         /// </summary>
         private readonly object _synchRoot = new object();
-        private readonly IDictionary<Guid, object> _sharedInstances = new Dictionary<Guid, object>();
+        private readonly ConcurrentDictionary<Guid, object> _sharedInstances = new ConcurrentDictionary<Guid, object>();
 
         private readonly ISharingLifetimeScope _parent;
 
@@ -302,20 +303,23 @@ namespace Autofac.Core.Lifetime
         {
             if (creator == null) throw new ArgumentNullException(nameof(creator));
 
-            lock (_synchRoot)
+            object result;
+            if (!_sharedInstances.TryGetValue(id, out result))
             {
-                object result;
-                if (!_sharedInstances.TryGetValue(id, out result))
+                lock (_synchRoot)
                 {
-                    result = creator();
-                    if (_sharedInstances.ContainsKey(id))
-                        throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
+                    if (!_sharedInstances.TryGetValue(id, out result))
+                    {
+                        result = creator();
+                        if (_sharedInstances.ContainsKey(id))
+                            throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
 
-                    _sharedInstances.Add(id, result);
+                        _sharedInstances.TryAdd(id, result);
+                    }
                 }
-
-                return result;
             }
+
+            return result;
         }
 
         /// <summary>
