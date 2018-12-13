@@ -69,11 +69,11 @@ You should also include XML API comments in the code. These are used to generate
 
 ### Coding Standards
 
-Normal .NET coding guidelines apply. See the [Framework Design Guidelines](http://msdn.microsoft.com/en-us/library/ms229042.aspx>) for suggestions. If you have access to ReSharper, code should be 'green' - that is, have no ReSharper warnings or errors with the default settings.
+Normal .NET coding guidelines apply. See the [Framework Design Guidelines](https://msdn.microsoft.com/en-us/library/ms229042.aspx>) for suggestions. If you have access to ReSharper, code should be 'green' - that is, have no ReSharper warnings or errors with the default settings.
 
 Autofac source code uses four spaces for indents (rather than tabs).
 
-[If you have the EditorConfig add-in for your editor of choice (Visual Studio, Sublime Text, etc.)](http://editorconfig.org/), there are `.editorconfig` settings in the various repositories to help make your life easier. VS2017 supports EditorConfig out of the box.
+[If you have the EditorConfig add-in for your editor of choice (Visual Studio, Sublime Text, etc.)](https://editorconfig.org/), there are `.editorconfig` settings in the various repositories to help make your life easier. VS2017 supports EditorConfig out of the box.
 
 ## Autofac.Extras
 

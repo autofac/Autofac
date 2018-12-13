@@ -1,6 +1,6 @@
-Try StackOverflow! If you have a _usage question_ ("How do I...?" "Others have this working but I can't get it...") please try [StackOverflow](http://stackoverflow.com) and tag your question `autofac`. We, along with a great community, monitor those questions.
+Try StackOverflow! If you have a _usage question_ ("How do I...?" "Others have this working but I can't get it...") please try [StackOverflow](https://stackoverflow.com) and tag your question `autofac`. We, along with a great community, monitor those questions.
 
-**Have you [read the docs?](http://autofac.readthedocs.io/)**
+**Have you [read the docs?](https://autofac.readthedocs.io/)**
 
 **This repo is for core Autofac only.** If you are encountering issues with an integration package (MVC, Web API, etc.) please file it in the appropriate repo. Thanks!
 

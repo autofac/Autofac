@@ -1,8 +1,8 @@
 ![Autofac](https://autofac.org/img/carousel-logo.png)
 
-Autofac is an [IoC container](http://martinfowler.com/articles/injection.html) for Microsoft .NET. It manages the dependencies between classes so that **applications stay easy to change as they grow** in size and complexity. This is achieved by treating regular .NET classes as *[components](http://autofac.readthedocs.io/en/latest/glossary.html)*.
+Autofac is an [IoC container](http://martinfowler.com/articles/injection.html) for Microsoft .NET. It manages the dependencies between classes so that **applications stay easy to change as they grow** in size and complexity. This is achieved by treating regular .NET classes as *[components](https://autofac.readthedocs.io/en/latest/glossary.html)*.
 
-[![Build status](https://ci.appveyor.com/api/projects/status/s0vgb4m8tv9ar7we?svg=true)](https://ci.appveyor.com/project/Autofac/autofac) ![MyGet publish status](https://www.myget.org/BuildSource/Badge/autofac?identifier=e0f25040-634c-4b7d-aebe-0f62b9c465a8) [![Autofac on Stack Overflow](https://img.shields.io/badge/stack%20overflow-autofac-orange.svg)](http://stackoverflow.com/questions/tagged/autofac) [![Join the chat at https://gitter.im/autofac/autofac](https://img.shields.io/gitter/room/autofac/autofac.svg)](https://gitter.im/autofac/autofac) [![NuGet](https://img.shields.io/nuget/v/Autofac.svg)](https://nuget.org/packages/Autofac)
+[![Build status](https://ci.appveyor.com/api/projects/status/s0vgb4m8tv9ar7we?svg=true)](https://ci.appveyor.com/project/Autofac/autofac) ![MyGet publish status](https://www.myget.org/BuildSource/Badge/autofac?identifier=e0f25040-634c-4b7d-aebe-0f62b9c465a8) [![Autofac on Stack Overflow](https://img.shields.io/badge/stack%20overflow-autofac-orange.svg)](https://stackoverflow.com/questions/tagged/autofac) [![Join the chat at https://gitter.im/autofac/autofac](https://img.shields.io/gitter/room/autofac/autofac.svg)](https://gitter.im/autofac/autofac) [![NuGet](https://img.shields.io/nuget/v/Autofac.svg)](https://nuget.org/packages/Autofac)
 
 ## Get Packages
 
@@ -12,15 +12,15 @@ You can get Autofac by [grabbing the latest NuGet packages](https://github.com/a
 
 ## Get Help
 
-**Need help with Autofac?** We have [a documentation site](http://autofac.readthedocs.io/) as well as [API documentation](http://autofac.org/apidoc/). We're ready to answer your questions on [Stack Overflow](http://stackoverflow.com/questions/tagged/autofac) or check out the [discussion forum](https://groups.google.com/forum/#forum/autofac).
+**Need help with Autofac?** We have [a documentation site](https://autofac.readthedocs.io/) as well as [API documentation](https://autofac.org/apidoc/). We're ready to answer your questions on [Stack Overflow](https://stackoverflow.com/questions/tagged/autofac) or check out the [discussion forum](https://groups.google.com/forum/#forum/autofac).
 
 ## Get Started
 
-Our [Getting Started](http://autofac.readthedocs.io/en/latest/getting-started/index.html) tutorial walks you through integrating Autofac with a simple application and gives you some starting points for learning more.
+Our [Getting Started](https://autofac.readthedocs.io/en/latest/getting-started/index.html) tutorial walks you through integrating Autofac with a simple application and gives you some starting points for learning more.
 
 Super-duper quick start:
 
-[Register components with a `ContainerBuilder`](http://autofac.readthedocs.io/en/latest/register/registration.html) and then build the component container.
+[Register components with a `ContainerBuilder`](https://autofac.readthedocs.io/en/latest/register/registration.html) and then build the component container.
 
 ```C#
 var builder = new ContainerBuilder();
@@ -33,19 +33,19 @@ builder.RegisterAssemblyTypes(controllerAssembly);
 var container = builder.Build();
 ```
 
-[Resolve services from a lifetime scope](http://autofac.readthedocs.io/en/latest/resolve/index.html) - either the container or a nested scope:
+[Resolve services from a lifetime scope](https://autofac.readthedocs.io/en/latest/resolve/index.html) - either the container or a nested scope:
 
 ```C#
 var taskController = container.Resolve<TaskController>();
 ```
 
-There is a growing number of [application integration libraries](http://autofac.readthedocs.io/en/latest/integration/index.html) that make using Autofac with your application a snap. Support for several popular frameworks is also available through the "Extras" packages.
+There is a growing number of [application integration libraries](https://autofac.readthedocs.io/en/latest/integration/index.html) that make using Autofac with your application a snap. Support for several popular frameworks is also available through the "Extras" packages.
 
-**[Intrigued? Check out our Getting Started walkthrough!](http://autofac.readthedocs.io/en/latest/getting-started/index.html)**
+**[Intrigued? Check out our Getting Started walkthrough!](https://autofac.readthedocs.io/en/latest/getting-started/index.html)**
 
 ## Project
 
-Autofac is licensed under the MIT license, so you can comfortably use it in commercial applications (we still love [contributions](http://autofac.readthedocs.io/en/latest/contributors.html) though).
+Autofac is licensed under the MIT license, so you can comfortably use it in commercial applications (we still love [contributions](https://autofac.readthedocs.io/en/latest/contributors.html) though).
 
 **File issues in the repo with the associated feature/code.**
 

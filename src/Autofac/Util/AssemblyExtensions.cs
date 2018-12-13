@@ -1,6 +1,6 @@
 ﻿// This software is part of the Autofac IoC container
 // Copyright © 2011 Autofac Contributors
-// http://autofac.org
+// https://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
@@ -49,7 +49,7 @@ namespace Autofac.Util
         public static IEnumerable<Type> GetLoadableTypes(this Assembly assembly)
         {
             // Algorithm from StackOverflow answer here:
-            // http://stackoverflow.com/questions/7889228/how-to-prevent-reflectiontypeloadexception-when-calling-assembly-gettypes
+            // https://stackoverflow.com/questions/7889228/how-to-prevent-reflectiontypeloadexception-when-calling-assembly-gettypes
             if (assembly == null) throw new ArgumentNullException(nameof(assembly));
 
             try
