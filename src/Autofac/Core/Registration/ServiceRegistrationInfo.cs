@@ -173,10 +173,10 @@ namespace Autofac.Core.Registration
                         Volatile.Write(ref _preserveDefaultImplementations, new List<IComponentRegistration>());
                     }
 
-                    var newpreserveDefaultImplementations = new List<IComponentRegistration>(Volatile.Read(ref _preserveDefaultImplementations));
-                    newpreserveDefaultImplementations.Add(registration);
+                    var newPreserveDefaultImplementations = new List<IComponentRegistration>(Volatile.Read(ref _preserveDefaultImplementations));
+                    newPreserveDefaultImplementations.Add(registration);
 
-                    Volatile.Write(ref _preserveDefaultImplementations, newpreserveDefaultImplementations);
+                    Volatile.Write(ref _preserveDefaultImplementations, newPreserveDefaultImplementations);
                 }
             }
             else
