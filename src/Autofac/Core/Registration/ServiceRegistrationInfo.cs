@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading;
 
 namespace Autofac.Core.Registration
 {
@@ -41,21 +42,27 @@ namespace Autofac.Core.Registration
         /// <summary>
         ///  List of implicit default service implementations. Overriding default implementations are appended to the end,
         ///  so the enumeration should begin from the end too, and the most default implementation comes last.
+        ///  Used from multithreaded environment, use Interlocked/Volatile for read and write new List each time.
         /// </summary>
-        private readonly List<IComponentRegistration> _defaultImplementations = new List<IComponentRegistration>();
+        private List<IComponentRegistration> _defaultImplementations = new List<IComponentRegistration>();
 
         /// <summary>
         ///  List of service implementations coming from sources. Sources have priority over preserve-default implementations.
         ///  Implementations from sources are enumerated in preserve-default order, so the most default implementation comes first.
+        ///  Used from multithreaded environment, use Interlocked/Volatile for read and write new List each time.
         /// </summary>
         private List<IComponentRegistration> _sourceImplementations = null;
 
         /// <summary>
         ///  List of explicit service implementations specified with the PreserveExistingDefaults option.
         ///  Enumerated in preserve-defaults order, so the most default implementation comes first.
+        ///  Used from multithreaded environment, use Interlocked/Volatile for read and write new List each time.
         /// </summary>
         private List<IComponentRegistration> _preserveDefaultImplementations = null;
 
+        /// <summary>
+        ///  Used from multithreaded environment, use Interlocked/Volatile for read and write each time.
+        /// </summary>
         [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the compponent registration is responsible for disposal.")]
         private IComponentRegistration _defaultImplementation;
 
@@ -73,12 +80,25 @@ namespace Autofac.Core.Registration
             _service = service;
         }
 
+        private volatile bool _isInitialized;
+
         /// <summary>
         /// Gets a value indicating whether the first time a service is requested, initialization (e.g. reading from sources)
         /// happens. This value will then be set to true. Calling many methods on this type before
         /// initialisation is an error.
         /// </summary>
-        public bool IsInitialized { get; private set; }
+        public bool IsInitialized
+        {
+            get
+            {
+                return _isInitialized;
+            }
+
+            private set
+            {
+                _isInitialized = value;
+            }
+        }
 
         /// <summary>
         /// Gets the known implementations. The first implementation is a default one.
@@ -88,15 +108,17 @@ namespace Autofac.Core.Registration
             get
             {
                 RequiresInitialization();
-                var resultingCollection = Enumerable.Reverse(_defaultImplementations);
-                if (_sourceImplementations != null)
+                var resultingCollection = Enumerable.Reverse(Volatile.Read(ref _defaultImplementations));
+                var sourceImplementations = Volatile.Read(ref _sourceImplementations);
+                if (sourceImplementations != null)
                 {
-                    resultingCollection = resultingCollection.Concat(_sourceImplementations);
+                    resultingCollection = resultingCollection.Concat(sourceImplementations);
                 }
 
-                if (_preserveDefaultImplementations != null)
+                var preserveDefaultImplementations = Volatile.Read(ref _preserveDefaultImplementations);
+                if (preserveDefaultImplementations != null)
                 {
-                    resultingCollection = resultingCollection.Concat(_preserveDefaultImplementations);
+                    resultingCollection = resultingCollection.Concat(preserveDefaultImplementations);
                 }
 
                 return resultingCollection;
@@ -122,9 +144,9 @@ namespace Autofac.Core.Registration
         }
 
         private bool Any =>
-            _defaultImplementations.Count > 0 ||
-            _sourceImplementations != null ||
-            _preserveDefaultImplementations != null;
+            Volatile.Read(ref _defaultImplementations).Count > 0 ||
+            Volatile.Read(ref _sourceImplementations) != null ||
+            Volatile.Read(ref _preserveDefaultImplementations) != null;
 
         public void AddImplementation(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource)
         {
@@ -132,21 +154,29 @@ namespace Autofac.Core.Registration
             {
                 if (originatedFromSource)
                 {
-                    if (_sourceImplementations == null)
+                    // called inside of lock, just making List _sourceImplementations thread safe
+                    if (Volatile.Read(ref _sourceImplementations) == null)
                     {
-                        _sourceImplementations = new List<IComponentRegistration>();
+                        Volatile.Write(ref _sourceImplementations, new List<IComponentRegistration>());
                     }
 
-                    _sourceImplementations.Add(registration);
+                    var newSourceImplementations = new List<IComponentRegistration>(Volatile.Read(ref _sourceImplementations));
+                    newSourceImplementations.Add(registration);
+
+                    Volatile.Write(ref _sourceImplementations, newSourceImplementations);
                 }
                 else
                 {
-                    if (_preserveDefaultImplementations == null)
+                    // called inside of lock, just making List _preserveDefaultImplementations thread safe
+                    if (Volatile.Read(ref _preserveDefaultImplementations) == null)
                     {
-                        _preserveDefaultImplementations = new List<IComponentRegistration>();
+                        Volatile.Write(ref _preserveDefaultImplementations, new List<IComponentRegistration>());
                     }
 
-                    _preserveDefaultImplementations.Add(registration);
+                    var newpreserveDefaultImplementations = new List<IComponentRegistration>(Volatile.Read(ref _preserveDefaultImplementations));
+                    newpreserveDefaultImplementations.Add(registration);
+
+                    Volatile.Write(ref _preserveDefaultImplementations, newpreserveDefaultImplementations);
                 }
             }
             else
@@ -154,20 +184,26 @@ namespace Autofac.Core.Registration
                 if (originatedFromSource)
                     throw new ArgumentOutOfRangeException(nameof(originatedFromSource));
 
-                _defaultImplementations.Add(registration);
+                var newDefaultImplementations = new List<IComponentRegistration>(Volatile.Read(ref _defaultImplementations));
+                newDefaultImplementations.Add(registration);
+
+                Volatile.Write(ref _defaultImplementations, newDefaultImplementations);
             }
 
-            _defaultImplementation = null;
+            Volatile.Write(ref _defaultImplementation, null);
         }
 
         public bool TryGetRegistration(out IComponentRegistration registration)
         {
             RequiresInitialization();
 
-            registration = _defaultImplementation ?? (_defaultImplementation =
-                _defaultImplementations.LastOrDefault() ??
-                _sourceImplementations?.First() ??
-                _preserveDefaultImplementations?.First());
+            registration = Interlocked.CompareExchange(
+                ref _defaultImplementation,
+                Volatile.Read(ref _defaultImplementations).LastOrDefault() ?? Volatile.Read(ref _sourceImplementations)?.First() ?? Volatile.Read(ref _preserveDefaultImplementations)?.First(),
+                null);
+
+            if (registration == null)
+                registration = Volatile.Read(ref _defaultImplementation);
 
             return registration != null;
         }
@@ -236,7 +272,7 @@ namespace Autofac.Core.Registration
             // - Have already been initialized
             // - Were created via a registration source (because we might be adding an equivalent explicit registration such as Func<T>)
             // - Don't contain any registrations (because a registration source was added when no adaptee was present)
-            return IsInitialized && (_sourceImplementations != null || !Any);
+            return IsInitialized && (Volatile.Read(ref _sourceImplementations) != null || !Any);
         }
     }
 }
