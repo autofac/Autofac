@@ -118,6 +118,7 @@ namespace Autofac.Core.Registration
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
+            // get without lock if already registered
             var info = GetInitializedServiceInfoOrDefault(service);
             if (info != null && info.TryGetRegistration(out registration))
             {
@@ -131,18 +132,6 @@ namespace Autofac.Core.Registration
             }
         }
 
-        private IComponentRegistration GetIfRegisteredAndInitializedOrDefault(Service service)
-        {
-            var info = GetInitializedServiceInfoOrDefault(service);
-            if (info != null && info.IsInitialized)
-            {
-                if (info.TryGetRegistration(out var registration))
-                    return registration;
-            }
-
-            return null;
-        }
-
         /// <summary>
         /// Determines whether the specified service is registered.
         /// </summary>
@@ -152,9 +141,12 @@ namespace Autofac.Core.Registration
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
+            // get without lock if already registered
             var info = GetInitializedServiceInfoOrDefault(service);
             if (info != null && info.IsRegistered)
+            {
                 return true;
+            }
 
             lock (_synchRoot)
             {
@@ -255,6 +247,7 @@ namespace Autofac.Core.Registration
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
+            // get without lock if already registered
             var info = GetInitializedServiceInfoOrDefault(service);
             if (info != null)
             {
