@@ -197,15 +197,35 @@ namespace Autofac.Core.Registration
         {
             RequiresInitialization();
 
-            registration = Interlocked.CompareExchange(
-                ref _defaultImplementation,
-                Volatile.Read(ref _defaultImplementations).LastOrDefault() ?? Volatile.Read(ref _sourceImplementations)?.First() ?? Volatile.Read(ref _preserveDefaultImplementations)?.First(),
-                null);
+            registration = Volatile.Read(ref _defaultImplementation);
+            if (registration != null)
+                return true;
 
-            if (registration == null)
-                registration = Volatile.Read(ref _defaultImplementation);
+            var defaultImplementations = Volatile.Read(ref _defaultImplementations);
+            if (defaultImplementations.Count > 0)
+            {
+                registration = defaultImplementations[defaultImplementations.Count - 1];
+                Volatile.Write(ref _defaultImplementation, registration);
+                return true;
+            }
 
-            return registration != null;
+            var sourceImplementations = Volatile.Read(ref _sourceImplementations);
+            if (sourceImplementations != null && sourceImplementations.Count > 0)
+            {
+                registration = sourceImplementations[0];
+                Volatile.Write(ref _defaultImplementation, registration);
+                return true;
+            }
+
+            var preserveDefaultImplementations = Volatile.Read(ref _preserveDefaultImplementations);
+            if (preserveDefaultImplementations != null && preserveDefaultImplementations.Count > 0)
+            {
+                registration = preserveDefaultImplementations[0];
+                Volatile.Write(ref _defaultImplementation, registration);
+                return true;
+            }
+
+            return false;
         }
 
         public void Include(IRegistrationSource source)
