@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Runtime.CompilerServices;
 using Autofac.Util;
 
 namespace Autofac.Core.Activators
@@ -58,6 +59,7 @@ namespace Autofac.Core.Activators
             return LimitType.Name + " (" + GetType().Name + ")";
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void CheckNotDisposed()
         {
             if (IsDisposed)
