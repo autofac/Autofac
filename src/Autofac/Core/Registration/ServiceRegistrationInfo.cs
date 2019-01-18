@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Autofac.Core.Registration
 {
@@ -103,6 +104,7 @@ namespace Autofac.Core.Registration
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void RequiresInitialization()
         {
             if (!IsInitialized)
