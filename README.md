@@ -8,7 +8,7 @@ Autofac is an [IoC container](http://martinfowler.com/articles/injection.html) f
 
 You can get Autofac by [grabbing the latest NuGet packages](https://github.com/autofac/Autofac/wiki/Nu-Get-Packages). If you're feeling adventurous, [continuous integration builds are on MyGet](https://www.myget.org/gallery/autofac).
 
-[Release notes are available on the wiki](https://github.com/autofac/Autofac/wiki/Release-Notes).
+[Release notes are available on the wiki](https://github.com/autofac/Autofac/wiki#release-notes).
 
 ## Get Help
 
