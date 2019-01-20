@@ -30,6 +30,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Autofac.Builder;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
@@ -49,8 +50,6 @@ namespace Autofac.Core.Lifetime
         /// </summary>
         private readonly object _synchRoot = new object();
         private readonly ConcurrentDictionary<Guid, object> _sharedInstances = new ConcurrentDictionary<Guid, object>();
-
-        private readonly ISharingLifetimeScope _parent;
 
         internal static Guid SelfRegistrationId { get; } = Guid.NewGuid();
 
@@ -80,10 +79,8 @@ namespace Autofac.Core.Lifetime
         protected LifetimeScope(IComponentRegistry componentRegistry, LifetimeScope parent, object tag)
             : this(componentRegistry, tag)
         {
-            if (parent == null) throw new ArgumentNullException(nameof(parent));
-
-            _parent = parent;
-            RootLifetimeScope = _parent.RootLifetimeScope;
+            ParentLifetimeScope = parent ?? throw new ArgumentNullException(nameof(parent));
+            RootLifetimeScope = ParentLifetimeScope.RootLifetimeScope;
         }
 
         /// <summary>
@@ -94,12 +91,9 @@ namespace Autofac.Core.Lifetime
         public LifetimeScope(IComponentRegistry componentRegistry, object tag)
             : this()
         {
-            if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
-            if (tag == null) throw new ArgumentNullException(nameof(tag));
-
-            ComponentRegistry = componentRegistry;
+            ComponentRegistry = componentRegistry ?? throw new ArgumentNullException(nameof(componentRegistry));
+            Tag = tag ?? throw new ArgumentNullException(nameof(tag));
             RootLifetimeScope = this;
-            Tag = tag;
         }
 
         /// <summary>
@@ -285,7 +279,7 @@ namespace Autofac.Core.Lifetime
         /// <summary>
         /// Gets the parent of this node of the hierarchy, or null.
         /// </summary>
-        public ISharingLifetimeScope ParentLifetimeScope => _parent;
+        public ISharingLifetimeScope ParentLifetimeScope { get; }
 
         /// <summary>
         /// Gets the root of the sharing hierarchy.
@@ -303,20 +297,17 @@ namespace Autofac.Core.Lifetime
         {
             if (creator == null) throw new ArgumentNullException(nameof(creator));
 
-            object result;
-            if (!_sharedInstances.TryGetValue(id, out result))
-            {
-                lock (_synchRoot)
-                {
-                    if (!_sharedInstances.TryGetValue(id, out result))
-                    {
-                        result = creator();
-                        if (_sharedInstances.ContainsKey(id))
-                            throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
+            if (_sharedInstances.TryGetValue(id, out var result)) return result;
 
-                        _sharedInstances.TryAdd(id, result);
-                    }
-                }
+            lock (_synchRoot)
+            {
+                if (_sharedInstances.TryGetValue(id, out result)) return result;
+
+                result = creator();
+                if (_sharedInstances.ContainsKey(id))
+                    throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
+
+                _sharedInstances.TryAdd(id, result);
             }
 
             return result;
@@ -366,6 +357,7 @@ namespace Autofac.Core.Lifetime
             base.Dispose(disposing);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void CheckNotDisposed()
         {
             if (IsDisposed)
