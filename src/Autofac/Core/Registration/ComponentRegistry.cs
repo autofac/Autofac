@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Autofac.Builder;
 using Autofac.Features.Decorators;
 using Autofac.Util;
@@ -65,7 +66,7 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// Keeps track of the status of registered services.
         /// </summary>
-        private readonly Dictionary<Service, ServiceRegistrationInfo> _serviceInfo = new Dictionary<Service, ServiceRegistrationInfo>();
+        private readonly ConcurrentDictionary<Service, ServiceRegistrationInfo> _serviceInfo = new ConcurrentDictionary<Service, ServiceRegistrationInfo>();
 
         private readonly ConcurrentDictionary<IComponentRegistration, IEnumerable<IComponentRegistration>> _decorators
             = new ConcurrentDictionary<IComponentRegistration, IEnumerable<IComponentRegistration>>();
@@ -118,9 +119,13 @@ namespace Autofac.Core.Registration
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
+            var info = GetInitializedServiceInfoOrDefault(service);
+            if (info != null && info.TryGetRegistration(out registration))
+                return true;
+
             lock (_synchRoot)
             {
-                var info = GetInitializedServiceInfo(service);
+                info = GetInitializedServiceInfo(service);
                 return info.TryGetRegistration(out registration);
             }
         }
@@ -133,6 +138,10 @@ namespace Autofac.Core.Registration
         public bool IsRegistered(Service service)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
+
+            var info = GetInitializedServiceInfoOrDefault(service);
+            if (info != null && info.IsRegistered)
+                return true;
 
             lock (_synchRoot)
             {
@@ -233,9 +242,13 @@ namespace Autofac.Core.Registration
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
+            var info = GetInitializedServiceInfoOrDefault(service);
+            if (info != null)
+                return info.Implementations.ToArray();
+
             lock (_synchRoot)
             {
-                var info = GetInitializedServiceInfo(service);
+                info = GetInitializedServiceInfo(service);
                 return info.Implementations.ToArray();
             }
         }
@@ -366,17 +379,27 @@ namespace Autofac.Core.Registration
             return info;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ServiceRegistrationInfo GetServiceInfo(Service service)
         {
-            ServiceRegistrationInfo existing;
-            if (_serviceInfo.TryGetValue(service, out existing))
+            if (_serviceInfo.TryGetValue(service, out var existing))
                 return existing;
 
             var info = new ServiceRegistrationInfo(service);
-            _serviceInfo.Add(service, info);
+            _serviceInfo.TryAdd(service, info);
             return info;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private ServiceRegistrationInfo GetInitializedServiceInfoOrDefault(Service service)
+        {
+            if (_serviceInfo.TryGetValue(service, out var existing) && existing.IsInitialized)
+                return existing;
+
+            return null;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private EventHandler<ComponentRegisteredEventArgs> GetRegistered()
         {
             if (Properties.TryGetValue(MetadataKeys.RegisteredPropertyKey, out var registered))

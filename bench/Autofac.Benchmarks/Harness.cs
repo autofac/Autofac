@@ -43,6 +43,12 @@ namespace Autofac.Benchmarks
         }
 
         [Fact]
+        public void Concurrency()
+        {
+            BenchmarkRunner.Run<ConcurrencyBenchmark>();
+        }
+
+        [Fact]
         public void Decorator_Keyed_Generic()
         {
             BenchmarkRunner.Run<Decorators.KeyedGenericBenchmark>();
