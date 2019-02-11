@@ -36,6 +36,8 @@ namespace Autofac.Core.Registration
     /// </summary>
     internal class ServiceRegistrationInfo
     {
+        private volatile bool _isInitialized;
+
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields", Justification = "The _service field is useful in debugging and diagnostics.")]
         private readonly Service _service;
 
@@ -77,9 +79,13 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// Gets a value indicating whether the first time a service is requested, initialization (e.g. reading from sources)
         /// happens. This value will then be set to true. Calling many methods on this type before
-        /// initialisation is an error.
+        /// initialization is an error.
         /// </summary>
-        public bool IsInitialized { get; private set; }
+        public bool IsInitialized
+        {
+            get => _isInitialized;
+            private set => _isInitialized = value;
+        }
 
         /// <summary>
         /// Gets the known implementations. The first implementation is a default one.
