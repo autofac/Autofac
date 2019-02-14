@@ -36,5 +36,31 @@ namespace Autofac.Test.Core.Registration
             var allImplementationsOfServiceA = lifetime.Resolve<IEnumerable<IServiceA>>();
             Assert.Equal(2, allImplementationsOfServiceA.Count());
         }
+
+        // Issue #960
+        [Fact]
+        public void TwoLayersOfExternalRegistration_OnDisposingInnerLayer_OuterLayerRemains()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ClassA>().InstancePerLifetimeScope();
+
+            // Root has the main registration.
+            var root = builder.Build();
+
+            // Middle has ExternalRegistration pointing upwards.
+            var middle = root.BeginLifetimeScope(cb => cb.Register(_ => new object()));
+            middle.Resolve<ClassA>();
+
+            // Child has ExternalRegistration pointing upwards.
+            var child = middle.BeginLifetimeScope(cb => cb.Register(_ => new object()));
+            child.Resolve<ClassA>();
+
+            // This should only dispose the registration in child, not the one in middle.
+            child.Dispose();
+
+            // We check by trying to use the registration in middle.
+            // If too much got disposed, this will throw ObjectDisposedException.
+            middle.Resolve<ClassA>();
+        }
     }
 }
