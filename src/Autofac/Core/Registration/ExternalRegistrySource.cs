@@ -68,13 +68,9 @@ namespace Autofac.Core.Registration
 
             // Issue #272: Taking from the registry the following registrations:
             //   - non-adapting own registrations: wrap them with ExternalComponentRegistration
-            //   - if the registration is from the parent registry of this registry,
-            //     it is already wrapped with ExternalComponentRegistration,
-            //     share it as is
             return _registry.RegistrationsFor(service)
                 .Where(r => r is ExternalComponentRegistration || !r.IsAdapting())
                 .Select(r =>
-                    r as ExternalComponentRegistration ??
 
                     // equivalent to following registation builder
                     //    RegistrationBuilder.ForDelegate(r.Activator.LimitType, (c, p) => c.ResolveComponent(r, p))
