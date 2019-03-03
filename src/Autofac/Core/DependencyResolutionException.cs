@@ -24,7 +24,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Globalization;
 
 namespace Autofac.Core
 {
@@ -56,28 +55,6 @@ namespace Autofac.Core
         public DependencyResolutionException(string message, Exception innerException)
             : base(message, innerException)
         {
-        }
-
-        /// <summary>
-        /// Gets a message that describes the current exception.
-        /// </summary>
-        /// <value>
-        /// The error message that explains the reason for the exception, or an empty string("").
-        /// </value>
-        public override string Message
-        {
-            get
-            {
-                // Issue 343: Including the inner exception message with the
-                // main message for easier debugging.
-                var message = base.Message;
-                if (InnerException == null)
-                    return message;
-
-                var inner = InnerException.Message;
-                message = string.Format(CultureInfo.CurrentCulture, DependencyResolutionExceptionResources.MessageNestingFormat, message, inner);
-                return message;
-            }
         }
     }
 }

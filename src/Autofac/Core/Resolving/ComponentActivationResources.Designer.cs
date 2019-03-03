@@ -8,9 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Reflection;
+
 namespace Autofac.Core.Resolving {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -71,7 +72,7 @@ namespace Autofac.Core.Resolving {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An error occurred during the activation of a particular registration. See the inner exception for details. Registration: {0}.
+        ///   Looks up a localized string similar to An exception was thrown while activating {0}..
         /// </summary>
         internal static string ErrorDuringActivation {
             get {

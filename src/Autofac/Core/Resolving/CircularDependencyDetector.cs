@@ -52,7 +52,7 @@ namespace Autofac.Core.Resolving
 
         private static string Display(IComponentRegistration registration)
         {
-            return registration.Activator.LimitType.FullName ?? string.Empty;
+            return registration.Activator.DisplayName();
         }
 
         public static void CheckForCircularDependency(IComponentRegistration registration, Stack<InstanceLookup> activationStack, int callDepth)

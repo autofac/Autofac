@@ -112,11 +112,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ContainerResources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Core\DependencyResolutionExceptionResources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DependencyResolutionExceptionResources.resx</DependentUpon>
-    </Compile>
     <Compile Update="Core\Lifetime\LifetimeScopeResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -308,10 +303,6 @@
     <EmbeddedResource Update="Core\ContainerResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ContainerResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Core\DependencyResolutionExceptionResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>DependencyResolutionExceptionResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Core\Lifetime\LifetimeScopeResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
