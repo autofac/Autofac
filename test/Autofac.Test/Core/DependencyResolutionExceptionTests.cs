@@ -1,52 +1,75 @@
 ﻿using System;
-using System.Globalization;
 using Autofac.Core;
 using Xunit;
 
 namespace Autofac.Test.Core
 {
+    // ReSharper disable ClassNeverInstantiated.Local, UnusedParameter.Local
     public class DependencyResolutionExceptionTests
     {
-        [Fact]
-        public void Message_InnerExceptionMessageIncluded()
+        public class A
         {
-            // Issue 343: The inner exception message should be included in the main exception message.
-            var inner = new Exception("Can't find file.");
-            var dre = new DependencyResolutionException("Unable to resolve component.", inner);
-            Assert.True(dre.Message.Contains("Can't find file."), "The exception message should include the inner exception message.");
+            public const string Message = "This is the original exception.";
+
+            public A()
+            {
+                throw new InvalidOperationException(Message);
+            }
+        }
+
+        public class B
+        {
+            public B(A a)
+            {
+            }
+        }
+
+        public class C
+        {
+            public C(B b)
+            {
+            }
         }
 
         [Fact]
-        public void Message_NoInnerException()
+        public void ExceptionMessageUnwrapsNestedResolutionFailures()
         {
-            // Issue 343: If there is no inner exception specified, the main exception message should not be modified.
-            var dre = new DependencyResolutionException("Unable to resolve component.");
-            Assert.Equal("Unable to resolve component.", dre.Message);
-        }
+            var builder = new ContainerBuilder();
+            builder.RegisterType<A>();
+            builder.Register(c => new B(c.Resolve<A>()));
+            builder.RegisterType<C>();
 
-        [Fact]
-        public void Message_NoMessageOrInnerException()
-        {
-            // Issue 343: If there is no message or inner exception specified, the main exception message should not be modified.
-            var dre = new DependencyResolutionException(null);
-            Assert.True(dre.Message.Contains("Autofac.Core.DependencyResolutionException"), "The exception message should be the default exception message.");
-        }
+            Exception ex;
+            using (var container = builder.Build())
+            {
+                ex = Assert.Throws<DependencyResolutionException>(() => container.Resolve<C>());
+            }
 
-        [Fact]
-        public void Message_NullInnerException()
-        {
-            // Issue 343: If there is a null inner exception specified, the main exception message should not be modified.
-            var dre = new DependencyResolutionException("Unable to resolve component.", null);
-            Assert.Equal("Unable to resolve component.", dre.Message);
-        }
+            // Without unwrapping, the exception message is:
+            //
+            // An error occurred during the activation of a particular registration. See the inner exception
+            // for details. Registration: Activator = C (ReflectionActivator), Services =
+            // [Autofac.Test.ExceptionReportingTests+C], Lifetime = Autofac.Core.Lifetime.CurrentScopeLifetime,
+            // Sharing = None, Ownership = OwnedByLifetimeScope ---> An error occurred during the activation of
+            // a particular registration. See the inner exception for details. Registration: Activator = B
+            // (DelegateActivator), Services = [Autofac.Test.ExceptionReportingTests+B], Lifetime =
+            // Autofac.Core.Lifetime.CurrentScopeLifetime, Sharing = None, Ownership = OwnedByLifetimeScope --->
+            // An error occurred during the activation of a particular registration. See the inner exception for
+            // details. Registration: Activator = A (ReflectionActivator), Services =
+            // [Autofac.Test.ExceptionReportingTests+A], Lifetime = Autofac.Core.Lifetime.CurrentScopeLifetime,
+            // Sharing = None, Ownership = OwnedByLifetimeScope ---> An exception was thrown while invoking the
+            // constructor 'Void .ctor()' on type 'A'. ---> This is the original exception. (See inner exception
+            // for details.) (See inner exception for details.) (See inner exception for details.) (See inner
+            // exception for details.)
+            var n = GetType().FullName;
+            Assert.Equal($"An exception was thrown while activating {n}+C -> λ:{n}+B -> {n}+A.", ex.Message);
 
-        [Fact]
-        public void Message_NullMessageWithInnerException()
-        {
-            // Issue 343: If there is no message but there is an inner exception specified, the main exception message should be modified.
-            var inner = new Exception("Can't find file.");
-            var dre = new DependencyResolutionException(null, inner);
-            Assert.True(dre.Message.Contains("Can't find file."), "The exception message should include the inner exception message.");
+            var inner = ex.InnerException;
+            Assert.IsType<DependencyResolutionException>(inner);
+            Assert.Equal("An exception was thrown while invoking the constructor 'Void .ctor()' on type 'A'.", inner.Message);
+
+            Assert.IsType<InvalidOperationException>(inner.InnerException);
+            Assert.Equal(A.Message, inner.InnerException.Message);
         }
     }
 }

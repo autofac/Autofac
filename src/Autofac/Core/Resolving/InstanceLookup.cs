@@ -30,6 +30,8 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using Autofac.Builder;
+using Autofac.Core.Activators;
+using Autofac.Core.Activators.Delegate;
 using Autofac.Features.Decorators;
 
 namespace Autofac.Core.Resolving
@@ -42,6 +44,7 @@ namespace Autofac.Core.Resolving
         private readonly ISharingLifetimeScope _activationScope;
         private object _newInstance;
         private bool _executed;
+        private const string ActivatorChainExceptionData = "ActivatorChain";
 
         public InstanceLookup(
             IComponentRegistration registration,
@@ -130,7 +133,7 @@ namespace Autofac.Core.Resolving
             }
             catch (Exception ex)
             {
-                throw new DependencyResolutionException(String.Format(CultureInfo.CurrentCulture, ComponentActivationResources.ErrorDuringActivation, this.ComponentRegistration), ex);
+                throw PropagateActivationException(this.ComponentRegistration.Activator, ex);
             }
 
             if (ComponentRegistration.Ownership == InstanceOwnership.OwnedByLifetimeScope)
@@ -146,6 +149,23 @@ namespace Autofac.Core.Resolving
             ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance);
 
             return _newInstance;
+        }
+
+        private static DependencyResolutionException PropagateActivationException(IInstanceActivator activator, Exception exception)
+        {
+            var activatorChain = activator.DisplayName();
+            var innerException = exception;
+
+            if (exception.Data.Contains(ActivatorChainExceptionData) &&
+                exception.Data[ActivatorChainExceptionData] is string innerChain)
+            {
+                activatorChain = activatorChain + " -> " + innerChain;
+                innerException = exception.InnerException;
+            }
+
+            var result = new DependencyResolutionException(String.Format(CultureInfo.CurrentCulture, ComponentActivationResources.ErrorDuringActivation, activatorChain), innerException);
+            result.Data[ActivatorChainExceptionData] = activatorChain;
+            return result;
         }
 
         public void Complete()

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using Autofac.Core;
-using Autofac.Core.Resolving;
 using Xunit;
 
 namespace Autofac.Test.Core.Resolving
@@ -19,11 +15,11 @@ namespace Autofac.Test.Core.Resolving
 
             var target = builder.Build();
             var de = Assert.Throws<DependencyResolutionException>(() => target.Resolve<object>());
-            Assert.Contains("System.Object -> System.Object", de.Message);
-            Assert.DoesNotContain("System.Object -> System.Object -> System.Object", de.Message);
+            Assert.Contains("λ:System.Object -> λ:System.Object", de.ToString());
+            Assert.DoesNotContain("λ:System.Object -> λ:System.Object -> λ:System.Object", de.Message);
         }
 
-        [Fact(Skip = "Issue #648")]
+        [Fact]
         public void ManualEnumerableRegistrationDoesNotCauseCircularDependency()
         {
             var builder = new ContainerBuilder();

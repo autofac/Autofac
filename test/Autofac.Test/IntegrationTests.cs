@@ -49,7 +49,7 @@ namespace Autofac.Test
             var container = builder.Build();
 
             var de = Assert.Throws<DependencyResolutionException>(() => container.Resolve<ID>());
-            Assert.Contains("Autofac.Test.Scenarios.Dependencies.Circularity.D -> Autofac.Test.Scenarios.Dependencies.Circularity.A -> Autofac.Test.Scenarios.Dependencies.Circularity.BC -> Autofac.Test.Scenarios.Dependencies.Circularity.A", de.Message);
+            Assert.Contains("Autofac.Test.Scenarios.Dependencies.Circularity.D -> Autofac.Test.Scenarios.Dependencies.Circularity.A -> Autofac.Test.Scenarios.Dependencies.Circularity.BC -> Autofac.Test.Scenarios.Dependencies.Circularity.A", de.ToString());
         }
 
         [Fact]
