@@ -1,4 +1,8 @@
 ﻿using System;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Permissions;
 using Autofac.Core;
 using Xunit;
 
@@ -54,6 +58,49 @@ namespace Autofac.Test.Core
 
             Assert.IsType<InvalidOperationException>(inner.InnerException);
             Assert.Equal(A.Message, inner.InnerException.Message);
+        }
+
+        [Serializable]
+        public class CustomDependencyResolutionException : DependencyResolutionException
+        {
+            public int Value { get; }
+
+            public CustomDependencyResolutionException(int value)
+                : base(null)
+            {
+                Value = value;
+            }
+
+            protected CustomDependencyResolutionException(SerializationInfo info, StreamingContext context)
+                : base(info, context)
+            {
+                if (info == null) throw new ArgumentNullException(nameof(info));
+
+                Value = info.GetInt32(nameof(Value));
+            }
+
+            [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+            public override void GetObjectData(SerializationInfo info, StreamingContext context)
+            {
+                base.GetObjectData(info, context);
+
+                info.AddValue(nameof(Value), 123);
+            }
+        }
+
+        [Fact]
+        public void SupportCustomRuntimeSerialization()
+        {
+            using (var stream = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(stream, new CustomDependencyResolutionException(123));
+
+                stream.Position = 0;
+                var exception = (CustomDependencyResolutionException)formatter.Deserialize(stream);
+
+                Assert.Equal(123, exception.Value);
+            }
         }
     }
 }
