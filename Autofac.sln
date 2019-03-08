@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Autofac.Benchmarks", "bench
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Autofac.Test.Scenarios.ScannedAssembly", "test\Autofac.Test.Scenarios.ScannedAssembly\Autofac.Test.Scenarios.ScannedAssembly.csproj", "{49FB428A-28D6-4A60-AF29-B9D5F7552041}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Specification.Test", "test\Autofac.Specification.Test\Autofac.Specification.Test.csproj", "{39610DBF-4CAF-45FD-8B9F-D8928D76066A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,22 @@ Global
 		{49FB428A-28D6-4A60-AF29-B9D5F7552041}.Release|x64.Build.0 = Release|Any CPU
 		{49FB428A-28D6-4A60-AF29-B9D5F7552041}.Release|x86.ActiveCfg = Release|Any CPU
 		{49FB428A-28D6-4A60-AF29-B9D5F7552041}.Release|x86.Build.0 = Release|Any CPU
+		{39610DBF-4CAF-45FD-8B9F-D8928D76066A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39610DBF-4CAF-45FD-8B9F-D8928D76066A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39610DBF-4CAF-45FD-8B9F-D8928D76066A}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{39610DBF-4CAF-45FD-8B9F-D8928D76066A}.Debug|ARM.Build.0 = Debug|Any CPU
+		{39610DBF-4CAF-45FD-8B9F-D8928D76066A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{39610DBF-4CAF-45FD-8B9F-D8928D76066A}.Debug|x64.Build.0 = Debug|Any CPU
+		{39610DBF-4CAF-45FD-8B9F-D8928D76066A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{39610DBF-4CAF-45FD-8B9F-D8928D76066A}.Debug|x86.Build.0 = Debug|Any CPU
+		{39610DBF-4CAF-45FD-8B9F-D8928D76066A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39610DBF-4CAF-45FD-8B9F-D8928D76066A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39610DBF-4CAF-45FD-8B9F-D8928D76066A}.Release|ARM.ActiveCfg = Release|Any CPU
+		{39610DBF-4CAF-45FD-8B9F-D8928D76066A}.Release|ARM.Build.0 = Release|Any CPU
+		{39610DBF-4CAF-45FD-8B9F-D8928D76066A}.Release|x64.ActiveCfg = Release|Any CPU
+		{39610DBF-4CAF-45FD-8B9F-D8928D76066A}.Release|x64.Build.0 = Release|Any CPU
+		{39610DBF-4CAF-45FD-8B9F-D8928D76066A}.Release|x86.ActiveCfg = Release|Any CPU
+		{39610DBF-4CAF-45FD-8B9F-D8928D76066A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -120,6 +138,7 @@ Global
 		{48EC73A9-9AA0-4063-9FEE-AE5BB43C66B0} = {DEA4A8C6-DE56-4359-A87C-472FB34132E7}
 		{D7A37F73-BBA3-4DAE-9648-1A753A86F968} = {48F40A36-C829-4895-99B3-1634CC6594E0}
 		{49FB428A-28D6-4A60-AF29-B9D5F7552041} = {DEA4A8C6-DE56-4359-A87C-472FB34132E7}
+		{39610DBF-4CAF-45FD-8B9F-D8928D76066A} = {DEA4A8C6-DE56-4359-A87C-472FB34132E7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2D16574C-61CB-4568-8490-AC9B85A721C0}

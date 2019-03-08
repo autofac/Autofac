@@ -30,29 +30,6 @@ namespace Autofac.Test
         }
 
         [Fact]
-        public void SimpleReg()
-        {
-            var cb = new ContainerBuilder();
-            cb.RegisterType<Abc>();
-            var c = cb.Build();
-            var a = c.Resolve<Abc>();
-            Assert.NotNull(a);
-            Assert.IsType<Abc>(a);
-        }
-
-        [Fact]
-        public void SimpleRegIface()
-        {
-            var cb = new ContainerBuilder();
-            cb.RegisterType<Abc>().As<IA>();
-            var c = cb.Build();
-            var a = c.Resolve<IA>();
-            Assert.NotNull(a);
-            Assert.IsType<Abc>(a);
-            Assert.False(c.IsRegistered<Abc>());
-        }
-
-        [Fact]
         public void WithExternalFactory()
         {
             var cb = new ContainerBuilder();
@@ -255,22 +232,6 @@ namespace Autofac.Test
         }
 
         [Fact]
-        public void RegisterTypeAsUnsupportedService()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<string>().As<IA>();
-            Assert.Throws<ArgumentException>(() => builder.Build());
-        }
-
-        [Fact]
-        public void RegisterTypeAsSupportedAndUnsupportedService()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<string>().As<IA, IB>();
-            Assert.Throws<ArgumentException>(() => builder.Build());
-        }
-
-        [Fact]
         public void RegisterInstanceAsUnsupportedService()
         {
             var builder = new ContainerBuilder();
@@ -284,22 +245,6 @@ namespace Autofac.Test
             var builder = new ContainerBuilder();
             builder.Register(c => "hello").As<IA>();
             Assert.Throws<ArgumentException>(() => builder.Build());
-        }
-
-        [Fact]
-        public void RegisterThreeServices()
-        {
-            var target = new ContainerBuilder();
-            target.RegisterType<Abc>()
-                .As<IA, IB, IC>()
-                .SingleInstance();
-            var container = target.Build();
-            var a = container.Resolve<IA>();
-            var b = container.Resolve<IB>();
-            var c = container.Resolve<IC>();
-            Assert.NotNull(a);
-            Assert.Same(a, b);
-            Assert.Same(b, c);
         }
 
         [Fact]
