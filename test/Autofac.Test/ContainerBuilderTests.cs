@@ -30,24 +30,6 @@ namespace Autofac.Test
         }
 
         [Fact]
-        public void WithExternalFactory()
-        {
-            var cb = new ContainerBuilder();
-            cb.RegisterType<Abc>()
-                .As<IA>()
-                .ExternallyOwned();
-            var c = cb.Build();
-            var a1 = c.Resolve<IA>();
-            var a2 = c.Resolve<IA>();
-            c.Dispose();
-
-            Assert.NotNull(a1);
-            Assert.NotSame(a1, a2);
-            Assert.False(((Abc)a1).IsDisposed);
-            Assert.False(((Abc)a2).IsDisposed);
-        }
-
-        [Fact]
         public void WithInternalSingleton()
         {
             var cb = new ContainerBuilder();
