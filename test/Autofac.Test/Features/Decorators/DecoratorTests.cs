@@ -13,12 +13,12 @@ namespace Autofac.Test.Features.Decorators
         {
         }
 
-        public interface IDecoratedService
+        public interface IDecoratedService : IService
         {
             IDecoratedService Decorated { get; }
         }
 
-        public class ImplementorA : IDecoratedService, IService
+        public class ImplementorA : IDecoratedService
         {
             public IDecoratedService Decorated => this;
         }
@@ -189,12 +189,9 @@ namespace Autofac.Test.Features.Decorators
             Assert.IsType<ImplementorA>(container.Resolve<ImplementorA>());
         }
 
-        [Fact(Skip = "Issue #963")]
+        [Fact]
         public void DecoratedRegistrationCanIncludeOtherServices()
         {
-            // Issue #963 - Make sure IDecoratedService does _not_ derive from
-            // IService. The idea is that a component may provide multiple
-            // services but only one of them may be decorated.
             var builder = new ContainerBuilder();
             builder.RegisterType<ImplementorA>().As<IDecoratedService>().As<IService>();
             builder.RegisterDecorator<DecoratorA, IDecoratedService>();
@@ -207,7 +204,7 @@ namespace Autofac.Test.Features.Decorators
             Assert.NotNull(decoratedServiceRegistration);
             Assert.Same(serviceRegistration, decoratedServiceRegistration);
 
-            Assert.IsType<ImplementorA>(container.Resolve<IService>());
+            Assert.IsType<DecoratorA>(container.Resolve<IService>());
             Assert.IsType<DecoratorA>(container.Resolve<IDecoratedService>());
         }
 
