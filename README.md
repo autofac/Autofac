@@ -50,7 +50,9 @@ Autofac is licensed under the MIT license, so you can comfortably use it in comm
 **File issues in the repo with the associated feature/code.**
 
 - [Autofac](https://github.com/autofac/Autofac) - Core dependency resolution and common functions (this repo).
+- [Autofac.AspNetCore.Multitenant](https://github.com/autofac/Autofac.AspNetCore.Multitenant) - Multitenant DI support for ASP.NET Core applications.
 - [Autofac.Configuration](https://github.com/autofac/Autofac.Configuration) - JSON/XML file-based configuration support.
+- [Autofac.Extensions.DependencyInjection](https://github.com/autofac/Autofac.Extensions.DependencyInjection) - .NET Core integration for Autofac.
 - [Autofac.Extras.AggregateService](https://github.com/autofac/Autofac.Extras.AggregateService) - Dynamic aggregate service implementation generation.
 - [Autofac.Extras.AttributeMetadata](https://github.com/autofac/Autofac.Extras.AttributeMetadata) - Metadata scanning/filtering through attributes.
 - [Autofac.Extras.CommonServiceLocator](https://github.com/autofac/Autofac.Extras.CommonServiceLocator) - Common Service Locator implementation backed by Autofac.
@@ -62,15 +64,17 @@ Autofac is licensed under the MIT license, so you can comfortably use it in comm
 - [Autofac.Extras.MvvmCross](https://github.com/autofac/Autofac.Extras.MvvmCross) - MvvmCross integration.
 - [Autofac.Extras.NHibernate](https://github.com/autofac/Autofac.Extras.NHibernate) - NHibernate integration.
 - [Autofac.Mef](https://github.com/autofac/Autofac.Mef) - MEF catalog integration.
-- [Autofac.Multitenant.Wcf](https://github.com/autofac/Autofac.Multitenant.Wcf) - Multitenant WCF service hosting.
 - [Autofac.Multitenant](https://github.com/autofac/Autofac.Multitenant) - Multitenant dependency resolution support.
+- [Autofac.Multitenant.Wcf](https://github.com/autofac/Autofac.Multitenant.Wcf) - Multitenant WCF service hosting.
+- [Autofac.Mvc](https://github.com/autofac/Autofac.Mvc) - ASP.NET MVC integration.
 - [Autofac.Mvc.Owin](https://github.com/autofac/Autofac.Mvc.Owin) - OWIN support for ASP.NET MVC.
 - [Autofac.Owin](https://github.com/autofac/Autofac.Owin) - Core OWIN support - shared middleware for request lifetime integration.
+- [Autofac.ServiceFabric](https://github.com/autofac/Autofac.ServiceFabric) - Application integration for Service Fabric services.
 - [Autofac.SignalR](https://github.com/autofac/Autofac.SignalR) - Application integration for SignalR.
 - [Autofac.Wcf](https://github.com/autofac/Autofac.Wcf) - WCF service hosting.
 - [Autofac.Web](https://github.com/autofac/Autofac.Web) - ASP.NET web forms integration.
-- [Autofac.WebApi.Owin](https://github.com/autofac/Autofac.WebApi.Owin) - OWIN support for Web API.
 - [Autofac.WebApi](https://github.com/autofac/Autofac.WebApi) - Application integration for Web API.
+- [Autofac.WebApi.Owin](https://github.com/autofac/Autofac.WebApi.Owin) - OWIN support for Web API.
 
 ## Contributing / Pull Requests
 
