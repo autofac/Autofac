@@ -190,7 +190,10 @@ namespace Autofac.Test.Features.Decorators
         public void DecoratedRegistrationCanIncludeOtherServices()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterGeneric(typeof(ImplementorA<>)).As(typeof(IDecoratedService<>)).As(typeof(IService<>));
+
+            // #963: The SingleInstance here is important - a single component may expose multiple services.
+            // If that component is decorated, the decorator ALSO needs to expose all of those services.
+            builder.RegisterGeneric(typeof(ImplementorA<>)).As(typeof(IDecoratedService<>)).As(typeof(IService<>)).SingleInstance();
             builder.RegisterGenericDecorator(typeof(DecoratorA<>), typeof(IDecoratedService<>));
             var container = builder.Build();
 
