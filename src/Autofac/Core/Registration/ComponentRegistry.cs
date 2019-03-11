@@ -260,17 +260,18 @@ namespace Autofac.Core.Registration
 
             return _decorators.GetOrAdd(registration, r =>
             {
+                var result = new List<IComponentRegistration>();
+
                 foreach (var service in r.Services)
                 {
                     if (service is DecoratorService || !(service is IServiceWithType swt)) continue;
 
                     var decoratorService = new DecoratorService(swt.ServiceType);
-                    return RegistrationsFor(decoratorService)
-                        .OrderBy(d => d.GetRegistrationOrder())
-                        .ToArray();
+                    var decoratorRegistrations = RegistrationsFor(decoratorService);
+                    result.AddRange(decoratorRegistrations);
                 }
 
-                return Enumerable.Empty<IComponentRegistration>();
+                return result.OrderBy(d => d.GetRegistrationOrder()).ToArray();
             });
         }
 

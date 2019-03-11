@@ -14,6 +14,10 @@ namespace Autofac.Test.Features.Decorators
         {
         }
 
+        public interface ISomeOtherService<T>
+        {
+        }
+
         public interface IDecoratedService<T> : IService<T>
         {
             IDecoratedService<T> Decorated { get; }
@@ -39,6 +43,11 @@ namespace Autofac.Test.Features.Decorators
             {
                 Parameter = parameter;
             }
+        }
+
+        public class ImplementorWithSomeOtherService<T> : IDecoratedService<T>, ISomeOtherService<T>
+        {
+            public IDecoratedService<T> Decorated => this;
         }
 
         public abstract class Decorator<T> : IDecoratedService<T>
@@ -657,6 +666,23 @@ namespace Autofac.Test.Features.Decorators
 
             Assert.Equal(1, decorator.DisposeCallCount);
             Assert.Equal(1, decorated.DisposeCallCount);
+        }
+
+        [Theory]
+        [InlineData(typeof(IDecoratedService<>), typeof(ISomeOtherService<>))]
+        [InlineData(typeof(ISomeOtherService<>), typeof(IDecoratedService<>))]
+        public void DecoratorShouldBeAppliedRegardlessOfServiceOrder(Type firstService, Type secondService)
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterGeneric(typeof(ImplementorWithSomeOtherService<>)).As(firstService, secondService);
+            builder.RegisterGenericDecorator(typeof(DecoratorA<>), typeof(IDecoratedService<>));
+            var container = builder.Build();
+
+            var instance = container.Resolve<IDecoratedService<int>>();
+
+            Assert.IsType<DecoratorA<int>>(instance);
+            Assert.IsType<ImplementorWithSomeOtherService<int>>(instance.Decorated);
         }
     }
 }
