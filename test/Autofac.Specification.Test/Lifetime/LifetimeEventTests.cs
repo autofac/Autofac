@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core;
 using Autofac.Features.Metadata;
+using Autofac.Specification.Test.Util;
 using Xunit;
 
 namespace Autofac.Specification.Test.Lifetime
@@ -62,6 +63,31 @@ namespace Autofac.Specification.Test.Lifetime
             builder.RegisterType<object>().OnRegistered(e => registeredRaised++);
             var container = builder.Build();
             Assert.Equal(1, registeredRaised);
+        }
+
+        [Fact]
+        public void ReleaseStopsAutomaticDisposal()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<DisposeTracker>()
+                .OnRelease(_ => { });
+            var container = builder.Build();
+            var dt = container.Resolve<DisposeTracker>();
+            container.Dispose();
+            Assert.False(dt.IsDisposed);
+        }
+
+        [Fact]
+        public void ReleaseHandlersGetInstanceBeingReleased()
+        {
+            var builder = new ContainerBuilder();
+            object instance = null;
+            builder.RegisterType<DisposeTracker>()
+                .OnRelease(i => { instance = i; });
+            var container = builder.Build();
+            var dt = container.Resolve<DisposeTracker>();
+            container.Dispose();
+            Assert.Same(dt, instance);
         }
     }
 }

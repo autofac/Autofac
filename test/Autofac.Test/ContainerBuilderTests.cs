@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using Autofac.Core;
 using Xunit;
 
 namespace Autofac.Test
@@ -42,17 +40,6 @@ namespace Autofac.Test
             container.Resolve<string>();
 
             Assert.Equal(2, container.ComponentRegistry.Properties["count"]);
-        }
-
-        [Fact]
-        public void UpdateExcludesDefaultModules()
-        {
-            var builder = new ContainerBuilder();
-            var container = new Container();
-#pragma warning disable CS0618
-            builder.Update(container);
-#pragma warning restore CS0618
-            Assert.False(container.IsRegistered<IEnumerable<object>>());
         }
     }
 }

@@ -9,6 +9,10 @@ namespace Autofac.Specification.Test.Registration
         {
         }
 
+        private interface IB
+        {
+        }
+
         [Fact]
         public void ProvidedInstancesCannotSupportInstancePerDependency()
         {
@@ -18,11 +22,35 @@ namespace Autofac.Specification.Test.Registration
         }
 
         [Fact]
+        public void RegisterInstanceAsImplementedInterfaces()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(new A()).AsImplementedInterfaces();
+            var context = builder.Build();
+            context.Resolve<IA>();
+            context.Resolve<IB>();
+        }
+
+        [Fact]
+        public void RegisterInstanceAsSelf()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(new A()).AsSelf();
+            var context = builder.Build();
+
+            context.Resolve<A>();
+        }
+
+        [Fact]
         public void RegisterInstanceAsUnsupportedService()
         {
             var builder = new ContainerBuilder();
             builder.RegisterInstance("hello").As<IA>();
             Assert.Throws<ArgumentException>(() => builder.Build());
+        }
+
+        private class A : IA, IB
+        {
         }
     }
 }

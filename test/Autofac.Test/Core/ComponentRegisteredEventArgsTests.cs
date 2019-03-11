@@ -28,7 +28,7 @@ using Autofac.Core;
 using Autofac.Core.Registration;
 using Xunit;
 
-namespace Autofac.Test
+namespace Autofac.Test.Core
 {
     public class ComponentRegisteredEventArgsTests
     {

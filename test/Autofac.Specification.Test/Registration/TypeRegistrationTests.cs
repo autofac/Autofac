@@ -3,10 +3,6 @@ using Xunit;
 
 namespace Autofac.Specification.Test.Registration
 {
-    /// <summary>
-    /// Tests for fairly simple/straightforward type-as-self or
-    /// type-as-service registrations.
-    /// </summary>
     public class TypeRegistrationTests
     {
         private interface IA
@@ -19,6 +15,54 @@ namespace Autofac.Specification.Test.Registration
 
         private interface IC
         {
+        }
+
+        public interface IMyService
+        {
+        }
+
+        [Fact]
+        public void AsImplementedInterfacesGeneric()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ABC>().AsImplementedInterfaces();
+            var context = builder.Build();
+
+            context.Resolve<IA>();
+            context.Resolve<IB>();
+            context.Resolve<IC>();
+        }
+
+        [Fact]
+        public void AsImplementedInterfacesNonGeneric()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType(typeof(ABC)).AsImplementedInterfaces();
+            var context = builder.Build();
+
+            context.Resolve<IA>();
+            context.Resolve<IB>();
+            context.Resolve<IC>();
+        }
+
+        [Fact]
+        public void AsSelfGeneric()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ABC>().AsSelf();
+            var context = builder.Build();
+
+            context.Resolve<ABC>();
+        }
+
+        [Fact]
+        public void AsSelfNonGeneric()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType(typeof(ABC)).AsSelf();
+            var context = builder.Build();
+
+            context.Resolve<ABC>();
         }
 
         [Fact]
@@ -35,6 +79,19 @@ namespace Autofac.Specification.Test.Registration
             var builder = new ContainerBuilder();
             builder.RegisterType<string>().As<IA>();
             Assert.Throws<ArgumentException>(() => builder.Build());
+        }
+
+        [Fact]
+        public void RegisterTypesCanBeFilteredByAssignableTo()
+        {
+            var container = new ContainerBuilder().Build().BeginLifetimeScope(b =>
+                b.RegisterTypes(typeof(MyComponent), typeof(MyComponent2))
+                    .AssignableTo(typeof(IMyService)));
+
+            Assert.Single(container.ComponentRegistry.Registrations);
+            object obj;
+            Assert.True(container.TryResolve(typeof(MyComponent), out obj));
+            Assert.False(container.TryResolve(typeof(MyComponent2), out obj));
         }
 
         [Fact]
@@ -89,6 +146,14 @@ namespace Autofac.Specification.Test.Registration
         }
 
         private class ABC : IA, IB, IC
+        {
+        }
+
+        public sealed class MyComponent : IMyService
+        {
+        }
+
+        public sealed class MyComponent2
         {
         }
     }

@@ -4,11 +4,11 @@ using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Test.Scenarios.Adapters;
+using Autofac.Specification.Test.Registration.Adapters;
 using Autofac.Test.Scenarios.ScannedAssembly;
 using Xunit;
 
-namespace Autofac.Test
+namespace Autofac.Specification.Test.Registration
 {
     public class RegistrationOnlyIfTests
     {
