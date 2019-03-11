@@ -8,188 +8,12 @@ namespace Autofac.Test.Features.OpenGenerics
 {
     public class ComplexGenericsTests
     {
-        public interface IDouble<T2, T3>
+        public interface I1<T>
         {
         }
 
-        public interface ISingle<T> : IDouble<T, int>
+        public interface I2<T>
         {
-        }
-
-        public class CReversed<T2, T1> : IDouble<T1, T2>
-        {
-        }
-
-        public interface INested<T>
-        {
-        }
-
-        public interface INested<T, TD>
-        {
-        }
-
-        public class Wrapper<T>
-        {
-        }
-
-        public class CNested<T> : INested<Wrapper<T>>
-        {
-        }
-
-        public class CNestedDerived<T> : CNested<T>
-        {
-        }
-
-        public class CNestedDerivedReversed<TX, TY> : IDouble<TY, INested<Wrapper<TX>>>
-        {
-        }
-
-        public class SameTypes<TA, TB> : IDouble<TA, INested<IDouble<TB, TA>>>
-        {
-        }
-
-        public class CDerivedSingle<T> : ISingle<T>
-        {
-        }
-
-        public class SameTypes<TA, TB, TC> : IDouble<INested<TA>, INested<IDouble<TB, TC>>>
-        {
-        }
-
-        [Fact]
-        public void NestedGenericInterfacesCanBeResolved()
-        {
-            var cb = new ContainerBuilder();
-            cb.RegisterGeneric(typeof(CNested<>)).As(typeof(INested<>));
-            var container = cb.Build();
-
-            var nest = container.Resolve<INested<Wrapper<string>>>();
-            Assert.IsType<CNested<string>>(nest);
-        }
-
-        [Fact]
-        public void NestedGenericClassesCanBeResolved()
-        {
-            var cb = new ContainerBuilder();
-            cb.RegisterGeneric(typeof(CNestedDerived<>)).As(typeof(CNested<>));
-            var container = cb.Build();
-
-            var nest = container.Resolve<CNested<Wrapper<string>>>();
-            Assert.IsType<CNestedDerived<Wrapper<string>>>(nest);
-        }
-
-        [Fact]
-        public void CanResolveImplementationsWhereTypeParametersAreReordered()
-        {
-            var cb = new ContainerBuilder();
-            cb.RegisterGeneric(typeof(CReversed<,>)).As(typeof(IDouble<,>));
-            var container = cb.Build();
-
-            var repl = container.Resolve<IDouble<int, string>>();
-            Assert.IsType<CReversed<string, int>>(repl);
-        }
-
-        [Fact]
-        public void CanResolveConcreteTypesThatReorderImplementedInterfaceParameters()
-        {
-            var cb = new ContainerBuilder();
-            cb.RegisterGeneric(typeof(CReversed<,>));
-            var container = cb.Build();
-
-            var self = container.Resolve<CReversed<int, string>>();
-            Assert.IsType<CReversed<int, string>>(self);
-        }
-
-        [Fact]
-        public void TestNestingAndReversingSimplification()
-        {
-            var cb = new ContainerBuilder();
-            cb.RegisterGeneric(typeof(CNestedDerivedReversed<,>)).As(typeof(IDouble<,>));
-            var container = cb.Build();
-
-            var compl = container.Resolve<IDouble<int, INested<Wrapper<string>>>>();
-            Assert.IsType<CNestedDerivedReversed<string, int>>(compl);
-        }
-
-        [Fact]
-        public void TestReversingWithoutNesting()
-        {
-            var cb = new ContainerBuilder();
-            cb.RegisterGeneric(typeof(CReversed<,>)).As(typeof(IDouble<,>));
-            var container = cb.Build();
-
-            var compl = container.Resolve<IDouble<int, INested<Wrapper<string>>>>();
-            Assert.IsType<CReversed<INested<Wrapper<string>>, int>>(compl);
-        }
-
-        [Fact]
-        public void TheSamePlaceholderWithThreeGenericParametersTypeCanAppearMultipleTimesInTheService()
-        {
-            var cb = new ContainerBuilder();
-            cb.RegisterGeneric(typeof(SameTypes<,,>)).As(typeof(SameTypes<,,>).GetTypeInfo().ImplementedInterfaces.ToArray());
-            var container = cb.Build();
-
-            var compl = container.Resolve<IDouble<INested<string>, INested<IDouble<int, long>>>>();
-            Assert.IsType<SameTypes<string, int, long>>(compl);
-        }
-
-        [Fact]
-        public void TheSamePlaceholderTypeCanAppearMultipleTimesInTheService()
-        {
-            var cb = new ContainerBuilder();
-            cb.RegisterGeneric(typeof(SameTypes<,>)).As(typeof(SameTypes<,>).GetInterfaces());
-            var container = cb.Build();
-
-            var compl = container.Resolve<IDouble<int, INested<IDouble<string, int>>>>();
-            Assert.IsType<SameTypes<int, string>>(compl);
-        }
-
-        [Fact]
-        public void WhenTheSameTypeAppearsMultipleTimesInTheImplementationMappingItMustAlsoInTheService()
-        {
-            var cb = new ContainerBuilder();
-            cb.RegisterGeneric(typeof(SameTypes<,>)).As(typeof(SameTypes<,>).GetInterfaces());
-            var container = cb.Build();
-
-            Assert.Throws<ComponentNotRegisteredException>(() =>
-                container.Resolve<IDouble<decimal, INested<IDouble<string, int>>>>());
-        }
-
-        public interface IConstraint<T>
-        {
-        }
-
-        public class Constrained<T1, T2>
-            where T2 : IConstraint<T1>
-        {
-        }
-
-        [Fact]
-        public void CanResolveComponentWithNestedConstraintViaInterface()
-        {
-            var builder = new ContainerBuilder();
-
-            builder.RegisterGeneric(typeof(Constrained<,>));
-
-            var container = builder.Build();
-
-            Assert.True(container.IsRegistered<Constrained<int, IConstraint<int>>>());
-        }
-
-        public interface IConstraintWithAddedArgument<T2, T1> : IConstraint<T1>
-        {
-        }
-
-        [Fact]
-        public void CanResolveComponentWhenConstrainedArgumentIsGenericTypeWithMoreArgumentsThanGenericConstraint()
-        {
-            var builder = new ContainerBuilder();
-
-            builder.RegisterGeneric(typeof(Constrained<,>));
-
-            var container = builder.Build();
-
-            Assert.True(container.IsRegistered<Constrained<int, IConstraintWithAddedArgument<string, int>>>());
         }
 
         public interface IConstrainedConstraint<T>
@@ -206,50 +30,52 @@ namespace Autofac.Test.Features.OpenGenerics
         {
         }
 
-        public class MultiConstrained<T1, T2>
-            where T1 : IEquatable<int>
-            where T2 : IConstrainedConstraint<T1>
+        public interface IConstraint<T>
         {
         }
 
-        [Fact]
-        public void CanResolveComponentWhenConstraintsAreNested()
-        {
-            var builder = new ContainerBuilder();
-
-            builder.RegisterGeneric(typeof(MultiConstrained<,>));
-
-            var container = builder.Build();
-
-            Assert.True(container.IsRegistered<MultiConstrained<int, IConstrainedConstraintWithOnlyAddedArgument<string>>>());
-        }
-
-        public class ConstrainedWithGenericParameter<T1, T2>
-            where T1 : T2
+        public interface IConstraintWithAddedArgument<T2, T1> : IConstraint<T1>
         {
         }
 
-        [Fact]
-        public void CanResolveComponentWhenGenericParameterIsConstrainedWithOtherGenericParameter()
+        public interface IDouble<T2, T3>
         {
-            var builder = new ContainerBuilder();
-
-            builder.RegisterGeneric(typeof(ConstrainedWithGenericParameter<,>));
-
-            var container = builder.Build();
-
-            Assert.True(container.IsRegistered<ConstrainedWithGenericParameter<int, object>>());
         }
 
-        [Fact]
-        public void GenericArgumentArityDifference()
+        public interface IDoubleGenericWithInModifier<in T1, T2>
         {
-            // Issue #688
-            var builder = new ContainerBuilder();
-            builder.RegisterGeneric(typeof(CDerivedSingle<>)).AsImplementedInterfaces();
-            var container = builder.Build();
-            Assert.IsType<CDerivedSingle<double>>(container.Resolve<ISingle<double>>());
-            Assert.IsType<CDerivedSingle<double>>(container.Resolve<IDouble<double, int>>());
+        }
+
+        public interface INested<T>
+        {
+        }
+
+        public interface INested<T, TD>
+        {
+        }
+
+        public interface IOtherSimpleInterface
+        {
+        }
+
+        public interface ISimpleInterface
+        {
+        }
+
+        public interface ISingle<T> : IDouble<T, int>
+        {
+        }
+
+        public interface ISingleGeneric<T>
+        {
+        }
+
+        public interface ISingleGenericWithInModifier<in T>
+        {
+        }
+
+        public interface ISingleGenericWithOutModifier<out T>
+        {
         }
 
         [Fact]
@@ -263,44 +89,6 @@ namespace Autofac.Test.Features.OpenGenerics
 
             var validator = container.Resolve<CompanyA.IValidator<int>>();
             Assert.IsType<CompanyA.CompositeValidator<int>>(validator);
-        }
-
-        public interface ISimpleInterface
-        {
-        }
-
-        public interface IOtherSimpleInterface
-        {
-        }
-
-        public interface ISingleGeneric<T>
-        {
-        }
-
-        public interface ISingleGenericWithOutModifier<out T>
-        {
-        }
-
-        public interface IDoubleGenericWithInModifier<in T1, T2>
-        {
-        }
-
-        public class CSimple : ISimpleInterface
-        {
-        }
-
-        public class COther : IOtherSimpleInterface
-        {
-        }
-
-        public class CNestedConstrainted<T1, T2> : IDoubleGenericWithInModifier<T1, T2>
-            where T2 : ISingleGenericWithOutModifier<ISimpleInterface>
-        {
-        }
-
-        public class COtherNestedConstrainted<T1, T2> : IDoubleGenericWithInModifier<T1, T2>
-            where T2 : ISingleGenericWithOutModifier<IOtherSimpleInterface>
-        {
         }
 
         [Fact]
@@ -329,16 +117,40 @@ namespace Autofac.Test.Features.OpenGenerics
             container.Resolve<IDoubleGenericWithInModifier<ISingleGeneric<ISingleGenericWithOutModifier<CSimple>>, ISingleGenericWithOutModifier<COther>>>();
         }
 
-        public interface ISingleGenericWithInModifier<in T>
+        [Fact]
+        public void CanResolveComponentWhenConstrainedArgumentIsGenericTypeWithMoreArgumentsThanGenericConstraint()
         {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterGeneric(typeof(Constrained<,>));
+
+            var container = builder.Build();
+
+            Assert.True(container.IsRegistered<Constrained<int, IConstraintWithAddedArgument<string, int>>>());
         }
 
-        public class CGeneric<T> : ISingleGeneric<T>
+        [Fact]
+        public void CanResolveComponentWhenConstraintsAreNested()
         {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterGeneric(typeof(MultiConstrained<,>));
+
+            var container = builder.Build();
+
+            Assert.True(container.IsRegistered<MultiConstrained<int, IConstrainedConstraintWithOnlyAddedArgument<string>>>());
         }
 
-        public class CDoubleInheritGeneric<T> : ISingleGenericWithInModifier<ISingleGeneric<T>>, ISingleGenericWithInModifier<CGeneric<T>>
+        [Fact]
+        public void CanResolveComponentWhenGenericParameterIsConstrainedWithOtherGenericParameter()
         {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterGeneric(typeof(ConstrainedWithGenericParameter<,>));
+
+            var container = builder.Build();
+
+            Assert.True(container.IsRegistered<ConstrainedWithGenericParameter<int, object>>());
         }
 
         [Fact]
@@ -360,6 +172,218 @@ namespace Autofac.Test.Features.OpenGenerics
             Assert.False(container.IsRegistered<ISingleGenericWithInModifier<int>>());
             Assert.False(container.IsRegistered<ISingleGenericWithInModifier<ISingleGenericWithOutModifier<int>>>());
             Assert.False(container.IsRegistered<ISingleGenericWithInModifier<ISingleGenericWithOutModifier<CSimple>>>());
+        }
+
+        [Fact]
+        public void CanResolveComponentWithNestedConstraintViaInterface()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterGeneric(typeof(Constrained<,>));
+
+            var container = builder.Build();
+
+            Assert.True(container.IsRegistered<Constrained<int, IConstraint<int>>>());
+        }
+
+        [Fact]
+        public void CanResolveConcreteTypesThatReorderImplementedInterfaceParameters()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(CReversed<,>));
+            var container = cb.Build();
+
+            var self = container.Resolve<CReversed<int, string>>();
+            Assert.IsType<CReversed<int, string>>(self);
+        }
+
+        [Fact]
+        public void CanResolveImplementationsWhereTypeParametersAreReordered()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(CReversed<,>)).As(typeof(IDouble<,>));
+            var container = cb.Build();
+
+            var repl = container.Resolve<IDouble<int, string>>();
+            Assert.IsType<CReversed<string, int>>(repl);
+        }
+
+        [Fact]
+        public void GenericArgumentArityDifference()
+        {
+            // Issue #688
+            var builder = new ContainerBuilder();
+            builder.RegisterGeneric(typeof(CDerivedSingle<>)).AsImplementedInterfaces();
+            var container = builder.Build();
+            Assert.IsType<CDerivedSingle<double>>(container.Resolve<ISingle<double>>());
+            Assert.IsType<CDerivedSingle<double>>(container.Resolve<IDouble<double, int>>());
+        }
+
+        [Fact]
+        public void MultipleServicesOnAnOpenGenericType_ShareTheSameRegistration()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterGeneric(typeof(C<>)).As(typeof(I1<>), typeof(I2<>));
+            var container = builder.Build();
+            container.Resolve<I1<int>>();
+            var count = container.ComponentRegistry.Registrations.Count();
+            container.Resolve<I2<int>>();
+            Assert.Equal(count, container.ComponentRegistry.Registrations.Count());
+        }
+
+        [Fact]
+        public void NestedGenericClassesCanBeResolved()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(CNestedDerived<>)).As(typeof(CNested<>));
+            var container = cb.Build();
+
+            var nest = container.Resolve<CNested<Wrapper<string>>>();
+            Assert.IsType<CNestedDerived<Wrapper<string>>>(nest);
+        }
+
+        [Fact]
+        public void NestedGenericInterfacesCanBeResolved()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(CNested<>)).As(typeof(INested<>));
+            var container = cb.Build();
+
+            var nest = container.Resolve<INested<Wrapper<string>>>();
+            Assert.IsType<CNested<string>>(nest);
+        }
+
+        [Fact]
+        public void TestNestingAndReversingSimplification()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(CNestedDerivedReversed<,>)).As(typeof(IDouble<,>));
+            var container = cb.Build();
+
+            var compl = container.Resolve<IDouble<int, INested<Wrapper<string>>>>();
+            Assert.IsType<CNestedDerivedReversed<string, int>>(compl);
+        }
+
+        [Fact]
+        public void TestReversingWithoutNesting()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(CReversed<,>)).As(typeof(IDouble<,>));
+            var container = cb.Build();
+
+            var compl = container.Resolve<IDouble<int, INested<Wrapper<string>>>>();
+            Assert.IsType<CReversed<INested<Wrapper<string>>, int>>(compl);
+        }
+
+        [Fact]
+        public void TheSamePlaceholderTypeCanAppearMultipleTimesInTheService()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(SameTypes<,>)).As(typeof(SameTypes<,>).GetInterfaces());
+            var container = cb.Build();
+
+            var compl = container.Resolve<IDouble<int, INested<IDouble<string, int>>>>();
+            Assert.IsType<SameTypes<int, string>>(compl);
+        }
+
+        [Fact]
+        public void TheSamePlaceholderWithThreeGenericParametersTypeCanAppearMultipleTimesInTheService()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(SameTypes<,,>)).As(typeof(SameTypes<,,>).GetTypeInfo().ImplementedInterfaces.ToArray());
+            var container = cb.Build();
+
+            var compl = container.Resolve<IDouble<INested<string>, INested<IDouble<int, long>>>>();
+            Assert.IsType<SameTypes<string, int, long>>(compl);
+        }
+
+        [Fact]
+        public void WhenTheSameTypeAppearsMultipleTimesInTheImplementationMappingItMustAlsoInTheService()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(SameTypes<,>)).As(typeof(SameTypes<,>).GetInterfaces());
+            var container = cb.Build();
+
+            Assert.Throws<ComponentNotRegisteredException>(() =>
+                container.Resolve<IDouble<decimal, INested<IDouble<string, int>>>>());
+        }
+
+        public class C<T> : I1<T>, I2<T>
+        {
+        }
+
+        public class CDerivedSingle<T> : ISingle<T>
+        {
+        }
+
+        public class CDoubleInheritGeneric<T> : ISingleGenericWithInModifier<ISingleGeneric<T>>, ISingleGenericWithInModifier<CGeneric<T>>
+        {
+        }
+
+        public class CGeneric<T> : ISingleGeneric<T>
+        {
+        }
+
+        public class CNested<T> : INested<Wrapper<T>>
+        {
+        }
+
+        public class CNestedConstrainted<T1, T2> : IDoubleGenericWithInModifier<T1, T2>
+            where T2 : ISingleGenericWithOutModifier<ISimpleInterface>
+        {
+        }
+
+        public class CNestedDerived<T> : CNested<T>
+        {
+        }
+
+        public class CNestedDerivedReversed<TX, TY> : IDouble<TY, INested<Wrapper<TX>>>
+        {
+        }
+
+        public class Constrained<T1, T2>
+            where T2 : IConstraint<T1>
+        {
+        }
+
+        public class ConstrainedWithGenericParameter<T1, T2>
+            where T1 : T2
+        {
+        }
+
+        public class COther : IOtherSimpleInterface
+        {
+        }
+
+        public class COtherNestedConstrainted<T1, T2> : IDoubleGenericWithInModifier<T1, T2>
+            where T2 : ISingleGenericWithOutModifier<IOtherSimpleInterface>
+        {
+        }
+
+        public class CReversed<T2, T1> : IDouble<T1, T2>
+        {
+        }
+
+        public class CSimple : ISimpleInterface
+        {
+        }
+
+        public class MultiConstrained<T1, T2>
+            where T1 : IEquatable<int>
+            where T2 : IConstrainedConstraint<T1>
+        {
+        }
+
+        public class SameTypes<TA, TB> : IDouble<TA, INested<IDouble<TB, TA>>>
+        {
+        }
+
+        public class SameTypes<TA, TB, TC> : IDouble<INested<TA>, INested<IDouble<TB, TC>>>
+        {
+        }
+
+        public class Wrapper<T>
+        {
         }
     }
 }
