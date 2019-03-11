@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Autofac.Specification.Test.Resolution
 {
-    public class ComplexGraph
+    public class ComplexGraphTests
     {
         [Fact]
         public void CanCorrectlyBuildGraph1()

@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Autofac.Specification.Test.Features
 {
-    public class Metadata
+    public class MetadataTests
     {
         [Fact]
         public void WithMetadata()

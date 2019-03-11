@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Autofac.Specification.Test.Registration
 {
-    public class InstanceRegistration
+    public class InstanceRegistrationTests
     {
         private interface IA
         {

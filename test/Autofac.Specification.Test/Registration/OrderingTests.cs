@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Autofac.Specification.Test.Registration
 {
-    public class Ordering
+    public class OrderingTests
     {
         [Fact]
         public void LastInWins()

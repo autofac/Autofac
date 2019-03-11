@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Autofac.Specification.Test.Features
 {
-    public class Index
+    public class IndexTests
     {
         [Fact]
         public void IndexCanRetrieveKeyedRegistration()

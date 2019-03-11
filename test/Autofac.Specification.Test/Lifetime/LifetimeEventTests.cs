@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Autofac.Specification.Test.Lifetime
 {
-    public class LifetimeEvents
+    public class LifetimeEventTests
     {
         [Fact]
         public void PreparingCanProvideParametersToActivator()

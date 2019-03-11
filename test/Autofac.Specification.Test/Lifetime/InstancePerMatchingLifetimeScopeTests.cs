@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Autofac.Specification.Test.Lifetime
 {
-    public class InstancePerMatchingLifetimeScope
+    public class InstancePerMatchingLifetimeScopeTests
     {
         [Fact]
         public void ChildOfNamedScopeGetsSharedInstance()

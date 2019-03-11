@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Autofac.Specification.Test.Registration
 {
-    public class LambdaRegistration
+    public class LambdaRegistrationTests
     {
         private interface IA
         {

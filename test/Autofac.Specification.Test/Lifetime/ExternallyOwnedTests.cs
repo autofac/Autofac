@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Autofac.Specification.Test.Lifetime
 {
-    public class ExternallyOwned
+    public class ExternallyOwnedTests
     {
         [Fact]
         public void RootInstancesNotDisposedOnContainerDisposal()

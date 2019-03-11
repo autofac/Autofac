@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Autofac.Specification.Test
 {
-    public class ContainerBuilderBehavior
+    public class ContainerBuilderTests
     {
         [Fact]
         public void BuildCallbacksInvokedWhenContainerBuilt()

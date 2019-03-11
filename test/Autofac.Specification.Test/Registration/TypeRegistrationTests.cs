@@ -7,7 +7,7 @@ namespace Autofac.Specification.Test.Registration
     /// Tests for fairly simple/straightforward type-as-self or
     /// type-as-service registrations.
     /// </summary>
-    public class TypeRegistration
+    public class TypeRegistrationTests
     {
         private interface IA
         {

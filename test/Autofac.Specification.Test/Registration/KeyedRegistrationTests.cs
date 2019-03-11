@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Autofac.Specification.Test.Registration
 {
-    public class KeyedRegistration
+    public class KeyedRegistrationTests
     {
         [Fact]
         public void TypeRegisteredWithKey()
