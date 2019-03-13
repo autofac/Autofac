@@ -11,6 +11,20 @@ namespace Autofac.Specification.Test.Lifetime
     public class LifetimeEventTests
     {
         [Fact]
+        public void ActivatedAllowsMethodInjection()
+        {
+            var pval = 12;
+            var builder = new ContainerBuilder();
+            builder.RegisterType<MethodInjection>()
+                .InstancePerLifetimeScope()
+                .OnActivated(e => e.Instance.Method(pval));
+            var container = builder.Build();
+            var scope = container.BeginLifetimeScope();
+            var invokee = scope.Resolve<MethodInjection>();
+            Assert.Equal(pval, invokee.Param);
+        }
+
+        [Fact]
         public void PreparingCanProvideParametersToActivator()
         {
             IEnumerable<Parameter> parameters = new Parameter[] { new NamedParameter("n", 1) };
@@ -66,6 +80,19 @@ namespace Autofac.Specification.Test.Lifetime
         }
 
         [Fact]
+        public void ReleaseHandlersGetInstanceBeingReleased()
+        {
+            var builder = new ContainerBuilder();
+            object instance = null;
+            builder.RegisterType<DisposeTracker>()
+                .OnRelease(i => { instance = i; });
+            var container = builder.Build();
+            var dt = container.Resolve<DisposeTracker>();
+            container.Dispose();
+            Assert.Same(dt, instance);
+        }
+
+        [Fact]
         public void ReleaseStopsAutomaticDisposal()
         {
             var builder = new ContainerBuilder();
@@ -77,17 +104,14 @@ namespace Autofac.Specification.Test.Lifetime
             Assert.False(dt.IsDisposed);
         }
 
-        [Fact]
-        public void ReleaseHandlersGetInstanceBeingReleased()
+        private class MethodInjection
         {
-            var builder = new ContainerBuilder();
-            object instance = null;
-            builder.RegisterType<DisposeTracker>()
-                .OnRelease(i => { instance = i; });
-            var container = builder.Build();
-            var dt = container.Resolve<DisposeTracker>();
-            container.Dispose();
-            Assert.Same(dt, instance);
+            public int Param { get; private set; }
+
+            public void Method(int param)
+            {
+                this.Param = param;
+            }
         }
     }
 }
