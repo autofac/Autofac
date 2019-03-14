@@ -5,8 +5,30 @@ using Xunit;
 
 namespace Autofac.Specification.Test.Lifetime
 {
-    public class DisposalOrderTests
+    public class DisposalTests
     {
+        [Fact]
+        public void ComponentsAreDisposedEvenIfCurrentScopeEndingThrowsException()
+        {
+            var rootScope = new ContainerBuilder().Build();
+
+            var nestedScope = rootScope.BeginLifetimeScope(cb => cb.RegisterType<DisposeTracker>().SingleInstance());
+
+            nestedScope.CurrentScopeEnding += (sender, args) => throw new DivideByZeroException();
+
+            var dt = nestedScope.Resolve<DisposeTracker>();
+
+            try
+            {
+                nestedScope.Dispose();
+            }
+            catch (DivideByZeroException)
+            {
+            }
+
+            Assert.True(dt.IsDisposed);
+        }
+
         [Fact]
         public void ComponentsResolvedFromContainer_DisposedInReverseDependencyOrder()
         {
@@ -52,6 +74,29 @@ namespace Autofac.Specification.Test.Lifetime
             Assert.Equal(2, disposeOrder.Count);
             Assert.Same(b, disposeOrder.Dequeue());
             Assert.Same(a, disposeOrder.Dequeue());
+        }
+
+        [Fact]
+        public void InstancesRegisteredInParentScope_ButResolvedInChild_AreDisposedWithChild()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<DisposeTracker>();
+            var parent = builder.Build();
+            var child = parent.BeginLifetimeScope(b => { });
+            var dt = child.Resolve<DisposeTracker>();
+            child.Dispose();
+            Assert.True(dt.IsDisposed);
+        }
+
+        [Fact]
+        public void ResolvingFromAnEndedLifetimeProducesObjectDisposedException()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<object>();
+            var container = builder.Build();
+            var lifetime = container.BeginLifetimeScope();
+            lifetime.Dispose();
+            Assert.Throws<ObjectDisposedException>(() => lifetime.Resolve<object>());
         }
 
         private class A : DisposeTracker

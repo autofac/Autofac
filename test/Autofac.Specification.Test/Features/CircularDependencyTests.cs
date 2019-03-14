@@ -19,5 +19,31 @@ namespace Autofac.Specification.Test.Features
 
             var de = Assert.Throws<DependencyResolutionException>(() => container.Resolve<ID>());
         }
+
+        [Fact]
+        public void InstancePerLifetimeScopeServiceCannotCreateSecondInstanceOfSelfDuringConstruction()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<AThatDependsOnB>().InstancePerLifetimeScope();
+            builder.RegisterType<BThatCreatesA>().InstancePerLifetimeScope();
+            var container = builder.Build();
+
+            var exception = Assert.Throws<DependencyResolutionException>(() => container.Resolve<AThatDependsOnB>());
+        }
+
+        private class AThatDependsOnB
+        {
+            public AThatDependsOnB(BThatCreatesA bThatCreatesA)
+            {
+            }
+        }
+
+        private class BThatCreatesA
+        {
+            public BThatCreatesA(Func<BThatCreatesA, AThatDependsOnB> factory)
+            {
+                factory(this);
+            }
+        }
     }
 }
