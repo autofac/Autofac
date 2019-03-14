@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using Autofac.Core.Activators.Reflection;
 using Xunit;
@@ -7,6 +8,42 @@ namespace Autofac.Specification.Test.Resolution
 {
     public class ConstructorFinderTests
     {
+        [Fact]
+        public void AdditionalTypeRegisteredInChildLifetimeScopeConsideredWhenSelectingConstructor()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<MultipleConstructors>();
+            builder.RegisterType<A1>();
+            var container = builder.Build();
+            var instance = container.Resolve<MultipleConstructors>();
+            Assert.Equal(1, instance.CalledCtor);
+
+            var lifetimeScope = container.BeginLifetimeScope(b => b.RegisterType<A2>());
+            instance = lifetimeScope.Resolve<MultipleConstructors>();
+            Assert.Equal(2, instance.CalledCtor);
+        }
+
+        [Fact]
+        public void CanReplaceConstructorFinderForRegistrationInChildLifetimeScope()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<A1>();
+            builder.RegisterType<A2>();
+            builder.RegisterType<MultipleConstructors>();
+            var container = builder.Build();
+            var lifetimeScope = container.BeginLifetimeScope(b =>
+            {
+                b.RegisterType<MultipleConstructors>()
+                    .FindConstructorsWith(type => type.GetTypeInfo().GetConstructors().Where(ci => ci.GetParameters().Length == 1).ToArray());
+            });
+
+            var root = container.Resolve<MultipleConstructors>();
+            Assert.Equal(2, root.CalledCtor);
+
+            var nested = lifetimeScope.Resolve<MultipleConstructors>();
+            Assert.Equal(1, nested.CalledCtor);
+        }
+
         [Fact]
         public void FindConstructorsWith_AsSelfWorksWithCustomConstructorExpression()
         {

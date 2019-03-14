@@ -9,6 +9,23 @@ namespace Autofac.Specification.Test.Features
 {
     public class PropertyInjectionTests
     {
+        public enum SimpleEnumeration
+        {
+            A,
+            B,
+        }
+
+        [Fact]
+        public void EnumPropertiesCanBeAutowired()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<EnumProperty>().PropertiesAutowired();
+            builder.Register(c => SimpleEnumeration.B);
+            var container = builder.Build();
+            var withE = container.Resolve<EnumProperty>();
+            Assert.Equal(SimpleEnumeration.B, withE.Value);
+        }
+
         [Fact]
         public void InjectPropertiesOverwritesSetProperties()
         {
@@ -224,6 +241,22 @@ namespace Autofac.Specification.Test.Features
             var obj = c.Resolve<HasMixedVisibilityProperties>();
             Assert.Null(obj.PublicString);
             Assert.Equal(str, obj.PrivateStringAccessor());
+        }
+
+        [Fact]
+        public void PropertiesNotSetIfNotSpecified()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<HasPublicSetter>();
+            var container = builder.Build();
+            var instance = container.Resolve<HasPublicSetter>();
+            Assert.NotNull(instance);
+            Assert.Null(instance.Val);
+        }
+
+        public class EnumProperty
+        {
+            public SimpleEnumeration Value { get; set; }
         }
     }
 }
