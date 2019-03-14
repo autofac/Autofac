@@ -17,7 +17,7 @@ namespace Autofac.Test.Builder
         }
 
         [Fact]
-        public void WhenPropetyFromStronglyTypedClassConfigured_ReflectedInComponentRegistration()
+        public void WhenPropertyFromStronglyTypedClassConfigured_ReflectedInComponentRegistration()
         {
             var builder = RegistrationBuilder.ForType<object>();
             builder.WithMetadata<TestMetadata>(ep => ep
