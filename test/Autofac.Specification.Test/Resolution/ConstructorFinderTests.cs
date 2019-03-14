@@ -1,0 +1,120 @@
+﻿using System;
+using System.Reflection;
+using Autofac.Core.Activators.Reflection;
+using Xunit;
+
+namespace Autofac.Specification.Test.Resolution
+{
+    public class ConstructorFinderTests
+    {
+        [Fact]
+        public void FindConstructorsWith_AsSelfWorksWithCustomConstructorExpression()
+        {
+            // Issue #907
+            // AsSelf ignores custom constructor finders if it's registered
+            // before the custom constructor finder.
+            var cb = new ContainerBuilder();
+            cb.RegisterType<A1>();
+            cb.RegisterType<PrivateConstructor>().AsSelf().FindConstructorsWith(type => type.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic));
+            var container = cb.Build();
+
+            var instance = container.Resolve<PrivateConstructor>();
+
+            Assert.NotNull(instance.A1);
+        }
+
+        [Fact]
+        public void FindConstructorsWith_CanUseFunctionToFindPrivateConstructors()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterType<A1>();
+            cb.RegisterType<PrivateConstructor>().FindConstructorsWith(type => type.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic));
+            var container = cb.Build();
+
+            var instance = container.Resolve<PrivateConstructor>();
+
+            Assert.NotNull(instance.A1);
+        }
+
+        [Fact]
+        public void FindConstructorsWith_CustomFinderProvided_CustomFinderInvoked()
+        {
+            var builder = new ContainerBuilder();
+            var finder = new CustomConstructorFinder();
+            builder.RegisterType<object>().FindConstructorsWith(finder);
+            var container = builder.Build();
+
+            container.Resolve<object>();
+
+            Assert.True(finder.FindConstructorsCalled);
+        }
+
+        [Fact]
+        public void FindConstructorsWith_FinderFunctionProvided_PassedToConstructorFinder()
+        {
+            var cb = new ContainerBuilder();
+            var finderCalled = false;
+            Func<Type, ConstructorInfo[]> finder = type =>
+            {
+                finderCalled = true;
+                return type.GetConstructors();
+            };
+            cb.RegisterType<A1>();
+            cb.RegisterType<MultipleConstructors>().FindConstructorsWith(finder);
+            var container = cb.Build();
+
+            container.Resolve<MultipleConstructors>();
+
+            Assert.True(finderCalled);
+        }
+
+        public class A1
+        {
+        }
+
+        public class A2
+        {
+        }
+
+        public class CustomConstructorFinder : IConstructorFinder
+        {
+            public bool FindConstructorsCalled { get; private set; }
+
+            public ConstructorInfo[] FindConstructors(Type targetType)
+            {
+                this.FindConstructorsCalled = true;
+                return new DefaultConstructorFinder().FindConstructors(targetType);
+            }
+        }
+
+        public class MultipleConstructors
+        {
+            public MultipleConstructors(A1 a1)
+            {
+                this.CalledCtor = 1;
+            }
+
+            public MultipleConstructors(A1 a1, A2 a2)
+            {
+                this.CalledCtor = 2;
+            }
+
+            public MultipleConstructors(A1 a1, A2 a2, string s1)
+            {
+                this.CalledCtor = 3;
+            }
+
+            public int CalledCtor { get; private set; }
+        }
+
+        public class PrivateConstructor
+        {
+            private PrivateConstructor(A1 a1)
+            {
+                this.A1 = a1;
+            }
+
+            public A1 A1 { get; set; }
+        }
+    }
+}
