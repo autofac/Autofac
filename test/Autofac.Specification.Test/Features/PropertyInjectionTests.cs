@@ -254,6 +254,24 @@ namespace Autofac.Specification.Test.Features
             Assert.Null(instance.Val);
         }
 
+        [Fact]
+        public void PropertyInjectionPassesNamedParameterOfTheInstanceTypeBeingInjectedOnto()
+        {
+            var captured = Enumerable.Empty<Parameter>();
+            var cb = new ContainerBuilder();
+            cb.RegisterType<HasPublicSetter>().SingleInstance().PropertiesAutowired();
+            cb.Register((context, parameters) =>
+            {
+                captured = parameters.ToArray();
+                return "value";
+            });
+
+            var c = cb.Build();
+            var instance = c.Resolve<HasPublicSetter>();
+            var instanceType = captured.Named<Type>(ResolutionExtensions.PropertyInjectedInstanceTypeNamedParameter);
+            Assert.Equal(instance.GetType(), instanceType);
+        }
+
         public class EnumProperty
         {
             public SimpleEnumeration Value { get; set; }

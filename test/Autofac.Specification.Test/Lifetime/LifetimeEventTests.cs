@@ -25,6 +25,55 @@ namespace Autofac.Specification.Test.Lifetime
         }
 
         [Fact]
+        public void ActivatedCanReceiveParameters()
+        {
+            const int provided = 12;
+            var passed = 0;
+
+            var builder = new ContainerBuilder();
+            builder.RegisterType<object>()
+                .OnActivated(e => passed = e.Parameters.TypedAs<int>());
+            var container = builder.Build();
+
+            container.Resolve<object>(TypedParameter.From(provided));
+            Assert.Equal(provided, passed);
+        }
+
+        [Fact]
+        public void ActivatingCanReceiveParameters()
+        {
+            const int provided = 12;
+            var passed = 0;
+
+            var builder = new ContainerBuilder();
+            builder.RegisterType<object>()
+                .OnActivating(e => passed = e.Parameters.TypedAs<int>());
+            var container = builder.Build();
+
+            container.Resolve<object>(TypedParameter.From(provided));
+            Assert.Equal(provided, passed);
+        }
+
+        [Fact]
+        public void ChainedOnActivatedEventsAreInvokedWithinASingleResolveOperation()
+        {
+            var builder = new ContainerBuilder();
+
+            var secondEventRaised = false;
+            builder.RegisterType<object>()
+                .Named<object>("second")
+                .OnActivated(e => secondEventRaised = true);
+
+            builder.RegisterType<object>()
+                .OnActivated(e => e.Context.ResolveNamed<object>("second"));
+
+            var container = builder.Build();
+            container.Resolve<object>();
+
+            Assert.True(secondEventRaised);
+        }
+
+        [Fact]
         public void PreparingCanProvideParametersToActivator()
         {
             IEnumerable<Parameter> parameters = new Parameter[] { new NamedParameter("n", 1) };
