@@ -14,10 +14,25 @@ namespace Autofac.Specification.Test.Registration
         }
 
         [Fact]
+        public void NullCannotBeRegisteredAsAnInstance()
+        {
+            var builder = new ContainerBuilder();
+            Assert.Throws<ArgumentNullException>(() => builder.RegisterInstance((object)null));
+        }
+
+        [Fact]
         public void ProvidedInstancesCannotSupportInstancePerDependency()
         {
             var builder = new ContainerBuilder();
             builder.RegisterInstance(new object()).InstancePerDependency();
+            Assert.Throws<InvalidOperationException>(() => builder.Build());
+        }
+
+        [Fact]
+        public void ProvidedInstancesCannotSupportInstancePerLifetimeScope()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(new object()).InstancePerLifetimeScope();
             Assert.Throws<InvalidOperationException>(() => builder.Build());
         }
 
