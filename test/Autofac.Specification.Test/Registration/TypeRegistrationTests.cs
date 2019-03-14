@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace Autofac.Specification.Test.Registration
@@ -63,6 +65,21 @@ namespace Autofac.Specification.Test.Registration
             var context = builder.Build();
 
             context.Resolve<ABC>();
+        }
+
+        [Fact]
+        public void OneTypeImplementMultipleInterfaces_OtherObjectsImplementingOneOfThoseInterfaces_CanBeResolved()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType(typeof(ABC)).As(typeof(IA), typeof(IB));
+            builder.RegisterType(typeof(A)).As(typeof(IA));
+
+            var container = builder.Build();
+            var lifetime = container.BeginLifetimeScope(cb => cb.Register(_ => new object()));
+            Assert.NotNull(lifetime.Resolve<IB>());
+
+            var allImplementationsOfServiceA = lifetime.Resolve<IEnumerable<IA>>();
+            Assert.Equal(2, allImplementationsOfServiceA.Count());
         }
 
         [Fact]
