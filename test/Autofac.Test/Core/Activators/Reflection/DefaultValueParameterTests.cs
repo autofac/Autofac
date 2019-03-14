@@ -78,7 +78,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         }
 
         [Fact]
-        public void ProvdesValueWhenDefaultStructure()
+        public void ProvidesValueWhenDefaultStructure()
         {
             var dvp = new DefaultValueParameter();
             var u = GetTestParameter("dt");
