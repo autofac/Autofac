@@ -72,7 +72,7 @@ namespace Autofac.Core.Registration
                 .Where(r => r is ExternalComponentRegistration || !r.IsAdapting())
                 .Select(r =>
 
-                    // equivalent to following registation builder
+                    // equivalent to following registration builder
                     //    RegistrationBuilder.ForDelegate(r.Activator.LimitType, (c, p) => c.ResolveComponent(r, p))
                     //        .Targeting(r)
                     //        .As(service)
