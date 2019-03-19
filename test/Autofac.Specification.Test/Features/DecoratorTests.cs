@@ -259,6 +259,24 @@ namespace Autofac.Specification.Test.Features
             Assert.Equal(1, decorated.DisposeCallCount);
         }
 
+        [Fact(Skip = "Issue #963: Need to figure out how to track which decorators have already been applied.")]
+        public void DecoratorAppliedOnlyOnceToComponent()
+        {
+            // #965: A nested lifetime scope that has a registration lambda
+            // causes the decorator to be applied twice - once for the container
+            // level, once for the scope level. This doesn't seem to happen
+            // if there's no registration lambda.
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var scope = container.BeginLifetimeScope(b => { });
+            var service = scope.Resolve<IDecoratedService>();
+            Assert.IsType<DecoratorA>(service);
+            Assert.IsType<ImplementorA>(service.Decorated);
+        }
+
         [Fact]
         public void DecoratorCanBeAppliedToServiceRegisteredInChildLifetimeScope()
         {
