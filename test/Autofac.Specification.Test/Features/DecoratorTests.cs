@@ -282,6 +282,26 @@ namespace Autofac.Specification.Test.Features
         }
 
         [Fact]
+        public void DecoratorCanBeAppliedTwiceIntentionallyWithExternalRegistrySource()
+        {
+            // #965: A nested lifetime scope that has a registration lambda
+            // causes the decorator to be applied twice - once for the container
+            // level, and once for the scope level.
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var scope = container.BeginLifetimeScope(b => { });
+            var service = scope.Resolve<IDecoratedService>();
+
+            Assert.IsType<DecoratorA>(service);
+            Assert.IsType<DecoratorA>(service.Decorated);
+            Assert.IsType<ImplementorA>(service.Decorated.Decorated);
+        }
+
+        [Fact]
         public void DecoratorCanBeAppliedTwice()
         {
             var builder = new ContainerBuilder();
