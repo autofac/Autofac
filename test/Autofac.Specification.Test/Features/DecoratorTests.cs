@@ -276,8 +276,45 @@ namespace Autofac.Specification.Test.Features
 
             var scope = container.BeginLifetimeScope(b => { });
             var service = scope.Resolve<IDecoratedService>();
+
             Assert.IsType<DecoratorA>(service);
             Assert.IsType<ImplementorA>(service.Decorated);
+        }
+
+        [Fact]
+        public void DecoratorCanBeAppliedTwice()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var service = container.Resolve<IDecoratedService>();
+
+            Assert.IsType<DecoratorA>(service);
+            Assert.IsType<DecoratorA>(service.Decorated);
+            Assert.IsType<ImplementorA>(service.Decorated.Decorated);
+        }
+
+        [Fact]
+        public void DecoratorCanBeAppliedTwiceInChildLifetimeScope()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var scope = container.BeginLifetimeScope(b => b.RegisterDecorator<DecoratorA, IDecoratedService>());
+            var scopeInstance = scope.Resolve<IDecoratedService>();
+
+            Assert.IsType<DecoratorA>(scopeInstance);
+            Assert.IsType<DecoratorA>(scopeInstance.Decorated);
+            Assert.IsType<ImplementorA>(scopeInstance.Decorated.Decorated);
+
+            var rootInstance = container.Resolve<IDecoratedService>();
+            Assert.IsType<DecoratorA>(rootInstance);
+            Assert.IsType<ImplementorA>(rootInstance.Decorated);
         }
 
         [Fact]
