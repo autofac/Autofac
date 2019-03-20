@@ -98,7 +98,9 @@ namespace Autofac.Specification.Test.Features
 
             var factory = container.Resolve<Func<IDecoratedService>>();
 
-            Assert.IsType<DecoratorA>(factory());
+            var decoratedService = factory();
+            Assert.IsType<DecoratorA>(decoratedService);
+            Assert.IsType<ImplementorA>(decoratedService.Decorated);
         }
 
         [Fact]
@@ -111,7 +113,9 @@ namespace Autofac.Specification.Test.Features
 
             var lazy = container.Resolve<Lazy<IDecoratedService>>();
 
-            Assert.IsType<DecoratorA>(lazy.Value);
+            var decoratedService = lazy.Value;
+            Assert.IsType<DecoratorA>(decoratedService);
+            Assert.IsType<ImplementorA>(decoratedService.Decorated);
         }
 
         [Fact]
@@ -259,13 +263,12 @@ namespace Autofac.Specification.Test.Features
             Assert.Equal(1, decorated.DisposeCallCount);
         }
 
-        [Fact(Skip = "Issue #963: Need to figure out how to track which decorators have already been applied.")]
-        public void DecoratorAppliedOnlyOnceToComponent()
+        [Fact]
+        public void DecoratorAppliedOnlyOnceToComponentWithExternalRegistrySource()
         {
             // #965: A nested lifetime scope that has a registration lambda
             // causes the decorator to be applied twice - once for the container
-            // level, once for the scope level. This doesn't seem to happen
-            // if there's no registration lambda.
+            // level, and once for the scope level.
             var builder = new ContainerBuilder();
             builder.RegisterType<ImplementorA>().As<IDecoratedService>();
             builder.RegisterDecorator<DecoratorA, IDecoratedService>();
@@ -288,6 +291,7 @@ namespace Autofac.Specification.Test.Features
             var instance = scope.Resolve<IDecoratedService>();
 
             Assert.IsType<DecoratorA>(instance);
+            Assert.IsType<ImplementorA>(instance.Decorated);
         }
 
         [Fact]
@@ -301,6 +305,7 @@ namespace Autofac.Specification.Test.Features
 
             var scopedInstance = scope.Resolve<IDecoratedService>();
             Assert.IsType<DecoratorA>(scopedInstance);
+            Assert.IsType<ImplementorA>(scopedInstance.Decorated);
 
             var rootInstance = container.Resolve<IDecoratedService>();
             Assert.IsType<ImplementorA>(rootInstance);
@@ -602,7 +607,7 @@ namespace Autofac.Specification.Test.Features
         {
             protected Decorator(IDecoratedService decorated)
             {
-                this.Decorated = decorated;
+                Decorated = decorated;
             }
 
             public IDecoratedService Decorated { get; }
@@ -635,6 +640,7 @@ namespace Autofac.Specification.Test.Features
             public IDecoratorContext Context { get; }
         }
 
+        // ReSharper disable once ClassNeverInstantiated.Local
         private class DecoratorWithContextB : Decorator, IDecoratorWithContext
         {
             public DecoratorWithContextB(IDecoratedService decorated, IDecoratorContext context)
@@ -657,6 +663,7 @@ namespace Autofac.Specification.Test.Features
             public string Parameter { get; }
         }
 
+        // ReSharper disable once ClassNeverInstantiated.Local
         private class DisposableDecorator : Decorator, IDisposable
         {
             public DisposableDecorator(IDecoratedService decorated)
@@ -672,6 +679,7 @@ namespace Autofac.Specification.Test.Features
             }
         }
 
+        // ReSharper disable once ClassNeverInstantiated.Local
         private class DisposableImplementor : IDecoratedService, IDisposable
         {
             public IDecoratedService Decorated => this;
@@ -689,11 +697,13 @@ namespace Autofac.Specification.Test.Features
             public IDecoratedService Decorated => this;
         }
 
+        // ReSharper disable once ClassNeverInstantiated.Local
         private class ImplementorB : IDecoratedService
         {
             public IDecoratedService Decorated => this;
         }
 
+        // ReSharper disable once ClassNeverInstantiated.Local
         private class ImplementorWithParameters : IDecoratedService
         {
             public ImplementorWithParameters(string parameter)
@@ -706,11 +716,13 @@ namespace Autofac.Specification.Test.Features
             public string Parameter { get; }
         }
 
+        // ReSharper disable once ClassNeverInstantiated.Local
         private class ImplementorWithSomeOtherService : IDecoratedService, ISomeOtherService
         {
             public IDecoratedService Decorated => this;
         }
 
+        // ReSharper disable once ClassNeverInstantiated.Local
         private class StartableImplementation : IDecoratedService, IStartable
         {
             public IDecoratedService Decorated => this;

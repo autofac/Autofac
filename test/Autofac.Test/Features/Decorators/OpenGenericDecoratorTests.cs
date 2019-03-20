@@ -14,6 +14,7 @@ namespace Autofac.Test.Features.Decorators
         {
         }
 
+        // ReSharper disable once UnusedTypeParameter
         public interface ISomeOtherService<T>
         {
         }
@@ -295,7 +296,9 @@ namespace Autofac.Test.Features.Decorators
 
             var factory = container.Resolve<Func<IDecoratedService<int>>>();
 
-            Assert.IsType<DecoratorA<int>>(factory());
+            var decoratedService = factory();
+            Assert.IsType<DecoratorA<int>>(decoratedService);
+            Assert.IsType<ImplementorA<int>>(decoratedService.Decorated);
         }
 
         [Fact]
@@ -308,7 +311,9 @@ namespace Autofac.Test.Features.Decorators
 
             var lazy = container.Resolve<Lazy<IDecoratedService<int>>>();
 
-            Assert.IsType<DecoratorA<int>>(lazy.Value);
+            var decoratedService = lazy.Value;
+            Assert.IsType<DecoratorA<int>>(decoratedService);
+            Assert.IsType<ImplementorA<int>>(decoratedService.Decorated);
         }
 
         [Fact]
@@ -529,6 +534,23 @@ namespace Autofac.Test.Features.Decorators
         }
 
         [Fact]
+        public void DecoratorAppliedOnlyOnceToComponentWithExternalRegistrySource()
+        {
+            // #965: A nested lifetime scope that has a registration lambda
+            // causes the decorator to be applied twice - once for the container
+            // level, and once for the scope level.
+            var builder = new ContainerBuilder();
+            builder.RegisterGeneric(typeof(ImplementorA<>)).As(typeof(IDecoratedService<>));
+            builder.RegisterGenericDecorator(typeof(DecoratorA<>), typeof(IDecoratedService<>));
+            var container = builder.Build();
+
+            var scope = container.BeginLifetimeScope(b => { });
+            var service = scope.Resolve<IDecoratedService<int>>();
+            Assert.IsType<DecoratorA<int>>(service);
+            Assert.IsType<ImplementorA<int>>(service.Decorated);
+        }
+
+        [Fact]
         public void DecoratorCanBeAppliedToServiceRegisteredInChildLifetimeScope()
         {
             var builder = new ContainerBuilder();
@@ -539,6 +561,7 @@ namespace Autofac.Test.Features.Decorators
             var instance = scope.Resolve<IDecoratedService<int>>();
 
             Assert.IsType<DecoratorA<int>>(instance);
+            Assert.IsType<ImplementorA<int>>(instance.Decorated);
         }
 
         [Fact]
@@ -552,6 +575,7 @@ namespace Autofac.Test.Features.Decorators
 
             var scopedInstance = scope.Resolve<IDecoratedService<int>>();
             Assert.IsType<DecoratorA<int>>(scopedInstance);
+            Assert.IsType<ImplementorA<int>>(scopedInstance.Decorated);
 
             var rootInstance = container.Resolve<IDecoratedService<int>>();
             Assert.IsType<ImplementorA<int>>(rootInstance);
