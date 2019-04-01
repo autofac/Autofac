@@ -353,9 +353,14 @@ namespace Autofac.Test.Features.OpenGenerics
         {
         }
 
-        public class CollectionConstrainedByClass<TInput, TCollection> where TCollection : ConstraintClass<IEnumerable<TInput>> { }
+        public class CollectionConstrainedByClass<TInput, TCollection>
+            where TCollection : ConstraintClass<IEnumerable<TInput>>
+        {
+        }
 
-        public class CollectionOfStrings : ConstraintClass<IEnumerable<string>> { }
+        public class CollectionOfStrings : ConstraintClass<IEnumerable<string>>
+        {
+        }
 
         public class Constrained<T1, T2>
             where T2 : IConstraint<T1>
@@ -367,7 +372,9 @@ namespace Autofac.Test.Features.OpenGenerics
         {
         }
 
-        public class ConstraintClass<T> { }
+        public class ConstraintClass<T>
+        {
+        }
 
         public class COther : IOtherSimpleInterface
         {
