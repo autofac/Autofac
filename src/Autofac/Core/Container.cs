@@ -26,7 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Autofac.Core.Activators.Delegate;
+
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
@@ -50,14 +50,7 @@ namespace Autofac.Core
         {
             ComponentRegistry = new ComponentRegistry(properties ?? new Dictionary<string, object>());
 
-            ComponentRegistry.Register(new ComponentRegistration(
-                LifetimeScope.SelfRegistrationId,
-                new DelegateActivator(typeof(LifetimeScope), (c, p) => { throw new InvalidOperationException(ContainerResources.SelfRegistrationCannotBeActivated); }),
-                new CurrentScopeLifetime(),
-                InstanceSharing.Shared,
-                InstanceOwnership.ExternallyOwned,
-                new Service[] { new TypedService(typeof(ILifetimeScope)), new TypedService(typeof(IComponentContext)) },
-                new Dictionary<string, object>()));
+            ComponentRegistry.Register(new SelfComponentRegistration());
 
             _rootLifetimeScope = new LifetimeScope(ComponentRegistry);
         }
