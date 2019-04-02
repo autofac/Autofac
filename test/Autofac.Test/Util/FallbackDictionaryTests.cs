@@ -139,13 +139,6 @@ namespace Autofac.Test.Util
         }
 
         [Fact]
-        public void Ctor_Default()
-        {
-            var dict = new FallbackDictionary<string, object>();
-            Assert.IsAssignableFrom<IDictionary<string, object>>(dict.Parent);
-        }
-
-        [Fact]
         public void Ctor_NullParent()
         {
             Assert.Throws<ArgumentNullException>(() => new FallbackDictionary<string, object>(null));

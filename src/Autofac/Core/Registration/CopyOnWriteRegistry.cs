@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using Autofac.Util;
 
@@ -48,7 +49,7 @@ namespace Autofac.Core.Registration
         {
             _readRegistry = readRegistry ?? throw new ArgumentNullException(nameof(readRegistry));
             _createWriteRegistry = createWriteRegistry ?? throw new ArgumentNullException(nameof(createWriteRegistry));
-            Properties = new FallbackDictionary<string, object>(readRegistry.Properties);
+            MutableProperties = new FallbackDictionary<string, object>(readRegistry.Properties);
         }
 
         private IComponentRegistry Registry => _writeRegistry ?? _readRegistry;
@@ -56,13 +57,18 @@ namespace Autofac.Core.Registration
         private IComponentRegistry WriteRegistry => _writeRegistry ?? (_writeRegistry = _createWriteRegistry());
 
         /// <summary>
-        /// Gets or sets the set of properties used during component registration.
+        /// Gets the set of properties used during component registration.
         /// </summary>
         /// <value>
-        /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
+        /// An <see cref="IReadOnlyDictionary{TKey, TValue}"/> that can be used to share
         /// context across registrations.
         /// </value>
-        public IDictionary<string, object> Properties { get; set; }
+        public IReadOnlyDictionary<string, object> Properties
+        {
+            get { return new ReadOnlyDictionary<string, object>(MutableProperties); }
+        }
+
+        public IDictionary<string, object> MutableProperties { get; }
 
         public void Dispose()
         {

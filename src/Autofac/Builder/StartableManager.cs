@@ -18,7 +18,7 @@ namespace Autofac.Builder
             var componentRegistry = componentContext.ComponentRegistry;
             try
             {
-                componentRegistry.Properties[MetadataKeys.StartOnActivatePropertyKey] = true;
+                componentRegistry.MutableProperties[MetadataKeys.StartOnActivatePropertyKey] = true;
 
                 // We track which registrations have already been auto-activated by adding
                 // a metadata value. If the value is present, we won't re-activate. This helps
@@ -53,7 +53,7 @@ namespace Autofac.Builder
             }
             finally
             {
-                componentRegistry.Properties.Remove(MetadataKeys.StartOnActivatePropertyKey);
+                componentRegistry.MutableProperties.Remove(MetadataKeys.StartOnActivatePropertyKey);
             }
         }
     }

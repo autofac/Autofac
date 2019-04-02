@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -85,7 +86,7 @@ namespace Autofac.Core.Registration
         /// <param name="properties">The properties used during component registration.</param>
         internal ComponentRegistry(IDictionary<string, object> properties)
         {
-            Properties = properties;
+            MutableProperties = properties;
         }
 
         /// <summary>
@@ -95,7 +96,12 @@ namespace Autofac.Core.Registration
         /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
         /// context across registrations.
         /// </value>
-        public IDictionary<string, object> Properties { get; }
+        public IReadOnlyDictionary<string, object> Properties
+        {
+            get { return new ReadOnlyDictionary<string, object>(MutableProperties); }
+        }
+
+        public IDictionary<string, object> MutableProperties { get; }
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
@@ -285,7 +291,7 @@ namespace Autofac.Core.Registration
             {
                 lock (_synchRoot)
                 {
-                    Properties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() + value;
+                    MutableProperties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() + value;
                 }
             }
 
@@ -293,7 +299,7 @@ namespace Autofac.Core.Registration
             {
                 lock (_synchRoot)
                 {
-                    Properties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() - value;
+                    MutableProperties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() - value;
                 }
             }
         }

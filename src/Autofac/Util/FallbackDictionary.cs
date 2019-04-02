@@ -14,7 +14,12 @@ namespace Autofac.Util
         /// <summary>
         /// Storage for local values set in the dictionary.
         /// </summary>
-        private IDictionary<TKey, TValue> _localValues = new Dictionary<TKey, TValue>();
+        private readonly IDictionary<TKey, TValue> _localValues = new Dictionary<TKey, TValue>();
+
+        /// <summary>
+        /// The parent dictionary to which values should fall back when not present in the current dictionary.
+        /// </summary>
+        private readonly IReadOnlyDictionary<TKey, TValue> _parent;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FallbackDictionary{TKey, TValue}"/> class
@@ -30,16 +35,16 @@ namespace Autofac.Util
         /// with a specified parent.
         /// </summary>
         /// <param name="parent">
-        /// The parent dictionary to which values should fall back when not present in the current dictionary.
+        ///     The parent dictionary to which values should fall back when not present in the current dictionary.
         /// </param>
-        public FallbackDictionary(IDictionary<TKey, TValue> parent)
+        public FallbackDictionary(IReadOnlyDictionary<TKey, TValue> parent)
         {
             if (parent == null)
             {
                 throw new ArgumentNullException(nameof(parent));
             }
 
-            this.Parent = parent;
+            this._parent = parent;
         }
 
         /// <summary>
@@ -90,14 +95,6 @@ namespace Autofac.Util
         }
 
         /// <summary>
-        /// Gets the parent dictionary.
-        /// </summary>
-        /// <value>
-        /// The parent dictionary to which values should fall back when not present in the current dictionary.
-        /// </value>
-        public IDictionary<TKey, TValue> Parent { get; private set; }
-
-        /// <summary>
         /// Gets an <see cref="ICollection{TKey}"/> containing the values of the dictionary.
         /// </summary>
         /// <value>
@@ -145,7 +142,7 @@ namespace Autofac.Util
                     return value;
                 }
 
-                return this.Parent[key];
+                return this._parent[key];
             }
 
             set
@@ -191,7 +188,7 @@ namespace Autofac.Util
                 throw new ArgumentNullException(nameof(key));
             }
 
-            if (this.Parent.ContainsKey(key))
+            if (this._parent.ContainsKey(key))
             {
                 throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, FallbackDictionaryResources.DuplicateItem, key));
             }
@@ -221,7 +218,7 @@ namespace Autofac.Util
                 return this._localValues.Contains(item);
             }
 
-            return this.Parent.Contains(item);
+            return this._parent.Contains(item);
         }
 
         /// <summary>
@@ -317,7 +314,7 @@ namespace Autofac.Util
                 return true;
             }
 
-            return this.Parent.TryGetValue(key, out value);
+            return this._parent.TryGetValue(key, out value);
         }
 
         /// <summary>
@@ -339,7 +336,7 @@ namespace Autofac.Util
         /// </returns>
         private IEnumerable<TKey> OrderedKeys()
         {
-            return this._localValues.Keys.Union(this.Parent.Keys).Distinct().OrderBy(k => k);
+            return this._localValues.Keys.Union(this._parent.Keys).Distinct().OrderBy(k => k);
         }
     }
 }

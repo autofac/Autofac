@@ -31,7 +31,7 @@ namespace Autofac.Test
                 // TOTALLY not thread-safe, but illustrates the point.
                 var count = (int)ctx.ComponentRegistry.Properties["count"];
                 count++;
-                ctx.ComponentRegistry.Properties["count"] = count;
+                ctx.ComponentRegistry.MutableProperties["count"] = count;
                 return "incremented";
             }).As<string>();
             var container = builder.Build();
