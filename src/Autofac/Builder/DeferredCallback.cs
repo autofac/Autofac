@@ -9,19 +9,19 @@ namespace Autofac.Builder
     /// </summary>
     public class DeferredCallback
     {
-        private Action<IComponentRegistry> _callback;
+        private Action<IComponentRegistryBuilder> _callback;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeferredCallback"/> class.
         /// </summary>
         /// <param name="callback">
         /// An <see cref="Action{T}"/> that executes a registration action
-        /// against an <see cref="IComponentRegistry"/>.
+        /// against an <see cref="IComponentRegistryBuilder"/>.
         /// </param>
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="callback" /> is <see langword="null" />.
         /// </exception>
-        public DeferredCallback(Action<IComponentRegistry> callback)
+        public DeferredCallback(Action<IComponentRegistryBuilder> callback)
         {
             if (callback == null)
             {
@@ -37,12 +37,12 @@ namespace Autofac.Builder
         /// </summary>
         /// <value>
         /// An <see cref="Action{T}"/> that executes a registration action
-        /// against an <see cref="IComponentRegistry"/>.
+        /// against an <see cref="IComponentRegistryBuilder"/>.
         /// </value>
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="value" /> is <see langword="null" />.
         /// </exception>
-        public Action<IComponentRegistry> Callback
+        public Action<IComponentRegistryBuilder> Callback
         {
             get
             {

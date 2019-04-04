@@ -102,20 +102,6 @@ namespace Autofac.Test.Features.Collections
             }
         }
 
-        [Fact]
-        public void ReflectsChangesInComponentRegistry()
-        {
-            var cb = new ContainerBuilder();
-            cb.RegisterInstance("Hello");
-            var c = cb.Build();
-            Assert.Single(c.Resolve<IEnumerable<string>>());
-
-            c.ComponentRegistry.Register(
-                RegistrationBuilder.ForDelegate((ctx, p) => "World").CreateRegistration());
-
-            Assert.Equal(2, c.Resolve<IEnumerable<string>>().Count());
-        }
-
         public interface IFoo
         {
         }

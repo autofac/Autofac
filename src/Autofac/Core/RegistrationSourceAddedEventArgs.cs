@@ -38,7 +38,7 @@ namespace Autofac.Core
         /// <param name="componentRegistry">The registry to which the source was added.</param>
         /// <param name="registrationSource">The source that was added.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public RegistrationSourceAddedEventArgs(IComponentRegistry componentRegistry, IRegistrationSource registrationSource)
+        public RegistrationSourceAddedEventArgs(IComponentRegistryBuilder componentRegistry, IRegistrationSource registrationSource)
         {
             if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
             if (registrationSource == null) throw new ArgumentNullException(nameof(registrationSource));
@@ -55,6 +55,6 @@ namespace Autofac.Core
         /// <summary>
         /// Gets the source that was added.
         /// </summary>
-        public IComponentRegistry ComponentRegistry { get; }
+        public IComponentRegistryBuilder ComponentRegistry { get; }
     }
 }

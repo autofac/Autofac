@@ -39,36 +39,29 @@ namespace Autofac.Core.Registration
     /// Safe for concurrent access by multiple readers. Write operations are single-threaded.
     /// </remarks>
     [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The owner of the createWriteRegistry function is responsible for subsequent disposal of the registry created.")]
-    internal class CopyOnWriteRegistry : IComponentRegistry
+    internal class CopyOnWriteRegistryBuilder : IComponentRegistryBuilder
     {
         private readonly IComponentRegistry _readRegistry;
-        private readonly Func<IComponentRegistry> _createWriteRegistry;
-        private IComponentRegistry _writeRegistry;
+        private readonly Func<IComponentRegistryBuilder> _createWriteRegistry;
+        private IComponentRegistryBuilder _writeRegistry;
 
-        public CopyOnWriteRegistry(IComponentRegistry readRegistry, Func<IComponentRegistry> createWriteRegistry)
+        public CopyOnWriteRegistryBuilder(IComponentRegistry readRegistry, Func<IComponentRegistryBuilder> createWriteRegistry)
         {
             _readRegistry = readRegistry ?? throw new ArgumentNullException(nameof(readRegistry));
             _createWriteRegistry = createWriteRegistry ?? throw new ArgumentNullException(nameof(createWriteRegistry));
-            MutableProperties = new FallbackDictionary<string, object>(readRegistry.Properties);
+            Properties = new FallbackDictionary<string, object>(readRegistry.Properties);
         }
 
-        private IComponentRegistry Registry => _writeRegistry ?? _readRegistry;
-
-        private IComponentRegistry WriteRegistry => _writeRegistry ?? (_writeRegistry = _createWriteRegistry());
+        private IComponentRegistryBuilder WriteRegistry => _writeRegistry ?? (_writeRegistry = _createWriteRegistry());
 
         /// <summary>
         /// Gets the set of properties used during component registration.
         /// </summary>
         /// <value>
-        /// An <see cref="IReadOnlyDictionary{TKey, TValue}"/> that can be used to share
+        /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
         /// context across registrations.
         /// </value>
-        public IReadOnlyDictionary<string, object> Properties
-        {
-            get { return new ReadOnlyDictionary<string, object>(MutableProperties); }
-        }
-
-        public IDictionary<string, object> MutableProperties { get; }
+        public IDictionary<string, object> Properties { get; }
 
         public void Dispose()
         {
@@ -76,7 +69,7 @@ namespace Autofac.Core.Registration
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected void Dispose(bool disposing)
         {
             if (disposing)
             {
@@ -84,16 +77,6 @@ namespace Autofac.Core.Registration
                 // Only the potentially allocated registry, containing additional registrations, needs to be disposed.
                 _writeRegistry?.Dispose();
             }
-        }
-
-        public bool TryGetRegistration(Service service, out IComponentRegistration registration)
-        {
-            return Registry.TryGetRegistration(service, out registration);
-        }
-
-        public bool IsRegistered(Service service)
-        {
-            return Registry.IsRegistered(service);
         }
 
         public void Register(IComponentRegistration registration)
@@ -106,22 +89,15 @@ namespace Autofac.Core.Registration
             WriteRegistry.Register(registration, preserveDefaults);
         }
 
-        public IEnumerable<IComponentRegistration> Registrations => Registry.Registrations;
-
-        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service)
-        {
-            return Registry.RegistrationsFor(service);
-        }
-
-        public IEnumerable<IComponentRegistration> DecoratorsFor(IComponentRegistration registration)
-        {
-            return Registry.DecoratorsFor(registration);
-        }
-
         public event EventHandler<ComponentRegisteredEventArgs> Registered
         {
             add => WriteRegistry.Registered += value;
             remove => WriteRegistry.Registered -= value;
+        }
+
+        public bool IsRegistered(Service service)
+        {
+            return _writeRegistry?.IsRegistered(service) == true || _readRegistry.IsRegistered(service);
         }
 
         public void AddRegistrationSource(IRegistrationSource source)
@@ -129,14 +105,20 @@ namespace Autofac.Core.Registration
             WriteRegistry.AddRegistrationSource(source);
         }
 
-        public IEnumerable<IRegistrationSource> Sources => Registry.Sources;
-
-        public bool HasLocalComponents => _writeRegistry != null;
-
         public event EventHandler<RegistrationSourceAddedEventArgs> RegistrationSourceAdded
         {
             add => WriteRegistry.RegistrationSourceAdded += value;
             remove => WriteRegistry.RegistrationSourceAdded -= value;
+        }
+
+        public IComponentRegistry Build()
+        {
+            if (_writeRegistry != null)
+            {
+                return _writeRegistry.Build();
+            }
+
+            return _readRegistry;
         }
     }
 }

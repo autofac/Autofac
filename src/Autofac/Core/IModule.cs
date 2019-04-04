@@ -35,6 +35,6 @@ namespace Autofac.Core
         /// Apply the module to the component registry.
         /// </summary>
         /// <param name="componentRegistry">Component registry to apply configuration to.</param>
-        void Configure(IComponentRegistry componentRegistry);
+        void Configure(IComponentRegistryBuilder componentRegistry);
     }
 }

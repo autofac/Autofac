@@ -36,7 +36,7 @@ namespace Autofac.Core
         /// <summary>
         /// Gets the container into which the registration was made.
         /// </summary>
-        public IComponentRegistry ComponentRegistry { get; }
+        public IComponentRegistryBuilder ComponentRegistry { get; }
 
         /// <summary>
         /// Gets the component registration.
@@ -49,7 +49,7 @@ namespace Autofac.Core
         /// <param name="registry">The container into which the registration
         /// was made.</param>
         /// <param name="componentRegistration">The component registration.</param>
-        public ComponentRegisteredEventArgs(IComponentRegistry registry, IComponentRegistration componentRegistration)
+        public ComponentRegisteredEventArgs(IComponentRegistryBuilder registry, IComponentRegistration componentRegistration)
         {
             if (registry == null) throw new ArgumentNullException(nameof(registry));
             if (componentRegistration == null) throw new ArgumentNullException(nameof(componentRegistration));

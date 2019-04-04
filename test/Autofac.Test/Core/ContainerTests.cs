@@ -16,8 +16,11 @@ namespace Autofac.Test.Core
                 new Service[] { new KeyedService(name, typeof(string)) },
                 Factory.CreateReflectionActivator(typeof(object)));
 
-            var c = new Container();
-            c.ComponentRegistry.Register(r);
+            var builder = Factory.CreateEmptyComponentRegistryBuilder();
+            builder.Register(r);
+            var registry = builder.Build();
+
+            var c = new Container(registry);
 
             object o;
 
@@ -114,7 +117,7 @@ namespace Autofac.Test.Core
         [Fact]
         public void ContainerProvidesILifetimeScopeAndIContext()
         {
-            var container = new Container();
+            var container = new Container(Factory.EmptyComponentRegistry);
             Assert.True(container.IsRegistered<ILifetimeScope>());
             Assert.True(container.IsRegistered<IComponentContext>());
         }
@@ -122,7 +125,7 @@ namespace Autofac.Test.Core
         [Fact]
         public void ResolvingLifetimeScopeProvidesCurrentScope()
         {
-            var c = new Container();
+            var c = new Container(Factory.EmptyComponentRegistry);
             var l = c.BeginLifetimeScope();
             Assert.Same(l, l.Resolve<ILifetimeScope>());
         }
@@ -130,7 +133,7 @@ namespace Autofac.Test.Core
         [Fact]
         public void ResolvingComponentContextProvidesCurrentScope()
         {
-            var c = new Container();
+            var c = new Container(Factory.EmptyComponentRegistry);
             var l = c.BeginLifetimeScope();
             Assert.Same(l, l.Resolve<IComponentContext>());
         }
@@ -179,7 +182,7 @@ namespace Autofac.Test.Core
 
         private class ReplaceInstanceModule : Module
         {
-            protected override void AttachToComponentRegistration(IComponentRegistry componentRegistry, IComponentRegistration registration)
+            protected override void AttachToComponentRegistration(IComponentRegistryBuilder componentRegistry, IComponentRegistration registration)
             {
                 registration.Activating += (o, args) =>
                 {

@@ -45,13 +45,10 @@ namespace Autofac.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="Container"/> class.
         /// </summary>
-        /// <param name="properties">The properties used during component registration.</param>
-        internal Container(IDictionary<string, object> properties = null)
+        /// <param name="componentRegistry">The registry of components.</param>
+        internal Container(IComponentRegistry componentRegistry)
         {
-            ComponentRegistry = new ComponentRegistry(properties ?? new Dictionary<string, object>());
-
-            ComponentRegistry.Register(new SelfComponentRegistration());
-
+            ComponentRegistry = componentRegistry;
             _rootLifetimeScope = new LifetimeScope(ComponentRegistry);
         }
 

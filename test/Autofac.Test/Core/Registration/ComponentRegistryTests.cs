@@ -17,17 +17,18 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void Register_DoesNotAcceptNull()
         {
-            var registry = new ComponentRegistry();
-            Assert.Throws<ArgumentNullException>(() => registry.Register(null));
+            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            Assert.Throws<ArgumentNullException>(() => builder.Register(null));
         }
 
         [Fact]
         public void WhenNoImplementationsRegistered_RegistrationsForServiceIncludeDynamicSources()
         {
-            var registry = new ComponentRegistry();
-            registry.AddRegistrationSource(new ObjectRegistrationSource());
-            Assert.False(registry.Registrations.Where(
-                r => r.Services.Contains(new TypedService(typeof(object)))).Any());
+            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            builder.AddRegistrationSource(new ObjectRegistrationSource());
+            var registry = builder.Build();
+
+            Assert.DoesNotContain(registry.Registrations, r => r.Services.Contains(new TypedService(typeof(object))));
             Assert.Single(registry.RegistrationsFor(new TypedService(typeof(object))));
         }
 
@@ -38,8 +39,8 @@ namespace Autofac.Test.Core.Registration
             ComponentRegisteredEventArgs args = null;
             var eventCount = 0;
 
-            var registry = new ComponentRegistry();
-            registry.Registered += (sender, e) =>
+            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            builder.Registered += (sender, e) =>
             {
                 eventSender = sender;
                 args = e;
@@ -47,13 +48,13 @@ namespace Autofac.Test.Core.Registration
             };
 
             var registration = Factory.CreateSingletonObjectRegistration();
-            registry.Register(registration);
+            builder.Register(registration);
 
             Assert.Equal(1, eventCount);
             Assert.NotNull(eventSender);
-            Assert.Same(registry, eventSender);
+            Assert.Same(builder, eventSender);
             Assert.NotNull(args);
-            Assert.Same(registry, args.ComponentRegistry);
+            Assert.Same(builder, args.ComponentRegistry);
             Assert.Same(registration, args.ComponentRegistration);
         }
 
@@ -63,10 +64,12 @@ namespace Autofac.Test.Core.Registration
             var r1 = Factory.CreateSingletonObjectRegistration();
             var r2 = Factory.CreateSingletonObjectRegistration();
 
-            var registry = new ComponentRegistry();
+            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
 
-            registry.Register(r1);
-            registry.Register(r2);
+            builder.Register(r1);
+            builder.Register(r2);
+
+            var registry = builder.Build();
 
             IComponentRegistration defaultRegistration;
             Assert.True(registry.TryGetRegistration(new TypedService(typeof(object)), out defaultRegistration));
@@ -76,7 +79,9 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void WhenNoImplementers_TryGetRegistrationReturnsFalse()
         {
-            var registry = new ComponentRegistry();
+            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            var registry = builder.Build();
+
             IComponentRegistration unused;
             Assert.False(registry.TryGetRegistration(new TypedService(typeof(object)), out unused));
         }
@@ -84,8 +89,9 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void WhenNoImplementerIsDirectlyRegistered_RegistrationCanBeProvidedDynamically()
         {
-            var registry = new ComponentRegistry();
-            registry.AddRegistrationSource(new ObjectRegistrationSource());
+            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            builder.AddRegistrationSource(new ObjectRegistrationSource());
+            var registry = builder.Build();
             IComponentRegistration registration;
             Assert.True(registry.TryGetRegistration(new TypedService(typeof(object)), out registration));
         }
@@ -95,9 +101,10 @@ namespace Autofac.Test.Core.Registration
         {
             var r = Factory.CreateSingletonObjectRegistration();
 
-            var registry = new ComponentRegistry();
-            registry.Register(r);
-            registry.AddRegistrationSource(new ObjectRegistrationSource());
+            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            builder.Register(r);
+            builder.AddRegistrationSource(new ObjectRegistrationSource());
+            var registry = builder.Build();
 
             IComponentRegistration defaultForObject;
             registry.TryGetRegistration(new TypedService(typeof(object)), out defaultForObject);
@@ -110,9 +117,10 @@ namespace Autofac.Test.Core.Registration
         {
             var r = Factory.CreateSingletonObjectRegistration();
 
-            var registry = new ComponentRegistry();
-            registry.Register(r);
-            registry.AddRegistrationSource(new ObjectRegistrationSource());
+            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            builder.Register(r);
+            builder.AddRegistrationSource(new ObjectRegistrationSource());
+            var registry = builder.Build();
 
             var forObject = registry.RegistrationsFor(new TypedService(typeof(object)));
 
@@ -129,10 +137,12 @@ namespace Autofac.Test.Core.Registration
         {
             var r = Factory.CreateSingletonObjectRegistration();
 
-            var registry = new ComponentRegistry();
-            registry.AddRegistrationSource(new ObjectRegistrationSource());
-            registry.Register(r);
+            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
 
+            builder.AddRegistrationSource(new ObjectRegistrationSource());
+            builder.Register(r);
+
+            var registry = builder.Build();
             var forObject = registry.RegistrationsFor(new TypedService(typeof(object)));
 
             Assert.Equal(2, forObject.Count());
@@ -181,8 +191,9 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void WhenARegistrationSourceQueriesForTheSameService_ItIsNotRecursivelyQueried()
         {
-            var registry = new ComponentRegistry();
-            registry.AddRegistrationSource(new RecursiveRegistrationSource());
+            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            builder.AddRegistrationSource(new RecursiveRegistrationSource());
+            var registry = builder.Build();
             Assert.False(registry.IsRegistered(new UniqueService()));
         }
 
@@ -192,10 +203,11 @@ namespace Autofac.Test.Core.Registration
             var r1 = Factory.CreateSingletonObjectRegistration();
             var r2 = Factory.CreateSingletonObjectRegistration();
 
-            var registry = new ComponentRegistry();
-            registry.Register(r1);
-            registry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
-            registry.Register(r2);
+            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            builder.Register(r1);
+            builder.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
+            builder.Register(r2);
+            var registry = builder.Build();
 
             var wrappedObjects = registry.RegistrationsFor(new TypedService(typeof(Func<object>)));
 
@@ -207,11 +219,12 @@ namespace Autofac.Test.Core.Registration
         {
             var first = new object();
             var second = new object();
-            var registry = new ComponentRegistry();
+            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
 
-            registry.AddRegistrationSource(new ObjectRegistrationSource(first));
-            registry.AddRegistrationSource(new ObjectRegistrationSource(second));
+            builder.AddRegistrationSource(new ObjectRegistrationSource(first));
+            builder.AddRegistrationSource(new ObjectRegistrationSource(second));
 
+            var registry = builder.Build();
             IComponentRegistration def;
             registry.TryGetRegistration(new TypedService(typeof(object)), out def);
 
@@ -221,115 +234,49 @@ namespace Autofac.Test.Core.Registration
         }
 
         [Fact]
-        public void AfterResolvingAdapter_AddingMoreAdaptees_AddsMoreAdapters()
-        {
-            var registry = new ComponentRegistry();
-            registry.AddRegistrationSource(new MetaRegistrationSource());
-            var metaService = new TypedService(typeof(Meta<object>));
-
-            var first = RegistrationBuilder.ForType<object>().CreateRegistration();
-            registry.Register(first);
-
-            var meta1 = registry.RegistrationsFor(metaService);
-            var firstMeta = meta1.First();
-
-            var second = RegistrationBuilder.ForType<object>().CreateRegistration();
-            registry.Register(second);
-
-            var meta2 = registry.RegistrationsFor(metaService);
-
-            Assert.Equal(2, meta2.Count());
-            Assert.Contains(firstMeta, meta2);
-            Assert.Equal(new[] { first, second }, meta2.Select(m => m.Target));
-        }
-
-        [Fact]
         public void AdaptingAGeneratedServiceYieldsASingleAdapter()
         {
-            var registry = new ComponentRegistry();
-            registry.AddRegistrationSource(new MetaRegistrationSource());
-            registry.AddRegistrationSource(new CollectionRegistrationSource());
-            var metaCollections = registry.RegistrationsFor(
-                new TypedService(typeof(Meta<IEnumerable<object>>)));
+            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+
+            builder.AddRegistrationSource(new MetaRegistrationSource());
+            builder.AddRegistrationSource(new CollectionRegistrationSource());
+            var registry = builder.Build();
+            var metaCollections = registry.RegistrationsFor(new TypedService(typeof(Meta<IEnumerable<object>>)));
             Assert.Single(metaCollections);
         }
 
         [Fact]
         public void AdaptingAnAdapterYieldsASingleAdapter()
         {
-            var registry = new ComponentRegistry();
-            registry.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
-            registry.AddRegistrationSource(new MetaRegistrationSource());
-            registry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
+            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            builder.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
+            builder.AddRegistrationSource(new MetaRegistrationSource());
+            builder.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
+            var registry = builder.Build();
             var metaCollections = registry.RegistrationsFor(
                 new TypedService(typeof(Meta<Func<object>>)));
             Assert.Single(metaCollections);
         }
 
         [Fact]
-        public void AfterResolvingAdapterType_AddingAnAdapter_AddsAdaptingComponents()
-        {
-            var registry = new ComponentRegistry();
-            registry.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
-            var adapterService = new TypedService(typeof(Func<object>));
-            var pre = registry.RegistrationsFor(adapterService);
-            Assert.Empty(pre);
-            registry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
-            var post = registry.RegistrationsFor(adapterService);
-            Assert.Single(post);
-        }
-
-        [Fact]
-        public void AddingConcreteImplementationWhenAdapterImplementationsExist_AddsChainedAdapters()
-        {
-            var registry = new ComponentRegistry();
-            registry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
-            registry.AddRegistrationSource(new MetaRegistrationSource());
-            registry.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
-
-            var chainedService = new TypedService(typeof(Meta<Func<object>>));
-
-            var pre = registry.RegistrationsFor(chainedService);
-            Assert.Single(pre);
-
-            Func<object> func = () => new object();
-            registry.Register(RegistrationBuilder.ForDelegate((c, p) => func).CreateRegistration());
-
-            var post = registry.RegistrationsFor(chainedService);
-            Assert.Equal(2, post.Count());
-        }
-
-        [Fact]
-        public void WhenAdaptersAreAppliedButNoRegistrationsCreated_AddingAdapteesAddsAdapters()
-        {
-            var registry = new ComponentRegistry();
-            registry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
-            var adapterService = new TypedService(typeof(Func<object>));
-            registry.RegistrationsFor(adapterService);
-            registry.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
-            var adapters = registry.RegistrationsFor(adapterService);
-            Assert.Single(adapters);
-        }
-
-        [Fact]
         public void WhenASourceIsAddedToTheRegistry_TheSourceAddedEventIsRaised()
         {
-            var registry = new ComponentRegistry();
+            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
 
             object sender = null;
             RegistrationSourceAddedEventArgs args = null;
 
-            registry.RegistrationSourceAdded += (s, e) =>
+            builder.RegistrationSourceAdded += (s, e) =>
             {
                 sender = s;
                 args = e;
             };
 
             var source = new ObjectRegistrationSource();
-            registry.AddRegistrationSource(source);
+            builder.AddRegistrationSource(source);
 
-            Assert.Same(registry, sender);
-            Assert.Same(registry, args.ComponentRegistry);
+            Assert.Same(builder, sender);
+            Assert.Same(builder, args.ComponentRegistry);
             Assert.Same(source, args.RegistrationSource);
         }
     }

@@ -33,11 +33,11 @@ namespace Autofac.Core.Registration
     /// Switches components with a RootScopeLifetime (singletons) with
     /// decorators exposing MatchingScopeLifetime targeting the specified scope.
     /// </summary>
-    internal class ScopeRestrictedRegistry : ComponentRegistry
+    internal class ScopeRestrictedRegistryBuilder : ComponentRegistry
     {
         private readonly IComponentLifetime _restrictedRootScopeLifetime;
 
-        internal ScopeRestrictedRegistry(object scopeTag, IDictionary<string, object> properties)
+        internal ScopeRestrictedRegistryBuilder(object scopeTag, IDictionary<string, object> properties)
             : base(properties)
         {
             _restrictedRootScopeLifetime = new MatchingScopeLifetime(scopeTag);

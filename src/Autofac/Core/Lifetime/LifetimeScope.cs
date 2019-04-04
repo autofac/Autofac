@@ -123,25 +123,7 @@ namespace Autofac.Core.Lifetime
         /// <returns>A new lifetime scope.</returns>
         public ILifetimeScope BeginLifetimeScope(object tag)
         {
-            CheckNotDisposed();
-
-            ISharingLifetimeScope parentScope = this;
-            while (parentScope != RootLifetimeScope)
-            {
-                if (parentScope.Tag.Equals(tag))
-                {
-                    throw new InvalidOperationException(
-                        string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.DuplicateTagDetected, tag));
-                }
-
-                parentScope = parentScope.ParentLifetimeScope;
-            }
-
-            var registry = new CopyOnWriteRegistry(ComponentRegistry, () => CreateScopeRestrictedRegistry(tag, NoConfiguration));
-            var scope = new LifetimeScope(registry, this, tag);
-            scope.Disposer.AddInstanceForDisposal(registry);
-            RaiseBeginning(scope);
-            return scope;
+            return BeginLifetimeScope(tag, NoConfiguration);
         }
 
         [SuppressMessage("CA1030", "CA1030", Justification = "This method raises the event; it's not the event proper.")]
@@ -201,11 +183,23 @@ namespace Autofac.Core.Lifetime
 
             CheckNotDisposed();
 
-            var locals = CreateScopeRestrictedRegistry(tag, configurationAction);
-            var scope = new LifetimeScope(locals, this, tag);
-            scope.Disposer.AddInstanceForDisposal(locals);
+            ISharingLifetimeScope parentScope = this;
+            while (parentScope != RootLifetimeScope)
+            {
+                if (parentScope.Tag.Equals(tag))
+                {
+                    throw new InvalidOperationException(
+                        string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.DuplicateTagDetected, tag));
+                }
 
-            if (locals.Properties.TryGetValue(MetadataKeys.ContainerBuildOptions, out var options) &&
+                parentScope = parentScope.ParentLifetimeScope;
+            }
+
+            var localsBuilder = CreateScopeRestrictedRegistry(tag, configurationAction);
+            var scope = new LifetimeScope(localsBuilder.Build(), this, tag);
+            scope.Disposer.AddInstanceForDisposal(localsBuilder);
+
+            if (localsBuilder.Properties.TryGetValue(MetadataKeys.ContainerBuildOptions, out var options) &&
                 !((ContainerBuildOptions)options).HasFlag(ContainerBuildOptions.IgnoreStartableComponents))
             {
                 StartableManager.StartStartableComponents(scope);
@@ -226,7 +220,7 @@ namespace Autofac.Core.Lifetime
         /// <remarks>It is the responsibility of the caller to make sure that the registry is properly
         /// disposed of. This is generally done by adding the registry to the <see cref="Disposer"/>
         /// property of the child scope.</remarks>
-        private ScopeRestrictedRegistry CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction)
+        private IComponentRegistryBuilder CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction)
         {
             var builder = new ContainerBuilder(new FallbackDictionary<string, object>(ComponentRegistry.Properties));
 
@@ -248,7 +242,7 @@ namespace Autofac.Core.Lifetime
 
             configurationAction(builder);
 
-            var locals = new ScopeRestrictedRegistry(tag, builder.Properties);
+            var locals = new ScopeRestrictedRegistryBuilder(tag, builder.Properties);
             builder.UpdateRegistry(locals);
             return locals;
         }

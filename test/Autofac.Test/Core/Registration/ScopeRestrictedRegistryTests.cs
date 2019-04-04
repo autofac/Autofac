@@ -27,11 +27,12 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void SingletonsFromRegistrationSourceAreWrappedWithLifetimeDecorator()
         {
-            var registry = new ScopeRestrictedRegistry(new object(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = new ScopeRestrictedRegistryBuilder(new object(), new Dictionary<string, object>());
 
-            registry.AddRegistrationSource(new ObjectRegistrationSource());
+            builder.AddRegistrationSource(new ObjectRegistrationSource());
 
             var typedService = new TypedService(typeof(object));
+            var registry = builder.Build();
             registry.TryGetRegistration(typedService, out IComponentRegistration registration);
 
             Assert.IsType<ComponentRegistrationLifetimeDecorator>(registration);
@@ -40,9 +41,11 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void SingletonsRegisteredDirectlyAreWrappedWithLifetimeDecorator()
         {
-            var registry = new ScopeRestrictedRegistry(new object(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = new ScopeRestrictedRegistryBuilder(new object(), new Dictionary<string, object>());
 
-            registry.Register(ObjectRegistration);
+            builder.Register(ObjectRegistration);
+
+            var registry = builder.Build();
 
             var typedService = new TypedService(typeof(object));
             registry.TryGetRegistration(typedService, out IComponentRegistration registration);

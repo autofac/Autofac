@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Autofac.Builder;
+﻿using Autofac.Builder;
 using Xunit;
 
 namespace Autofac.Test
@@ -95,45 +93,6 @@ namespace Autofac.Test
             StartableDependency.Count = 0;
             builder.Build();
             Assert.Equal(expectedStartCount, StartableDependency.Count);
-        }
-
-        [Fact]
-        public void WhenTheContainerIsUpdated_ExistingStartableComponentsAreNotRestarted()
-        {
-            var startable1 = Mocks.GetStartable();
-            var startable2 = Mocks.GetStartable();
-
-            var builder1 = new ContainerBuilder();
-            builder1.RegisterInstance(startable1).As<IStartable>();
-            var container = builder1.Build();
-
-            Assert.Equal(1, startable1.StartCount);
-
-            var builder2 = new ContainerBuilder();
-            builder2.RegisterInstance(startable2).As<IStartable>();
-#pragma warning disable CS0618
-            builder2.Update(container);
-#pragma warning restore CS0618
-
-            Assert.Equal(1, startable1.StartCount);
-            Assert.Equal(1, startable2.StartCount);
-        }
-
-        [Fact]
-        public void WhenTheContainerIsUpdated_NewStartableComponentsAreStarted()
-        {
-            // Issue #454: ContainerBuilder.Update() doesn't activate startable components.
-            var container = new ContainerBuilder().Build();
-
-            var startable = Mocks.GetStartable();
-
-            var builder = new ContainerBuilder();
-            builder.RegisterInstance(startable).As<IStartable>();
-#pragma warning disable CS0618
-            builder.Update(container);
-#pragma warning restore CS0618
-
-            Assert.Equal(1, startable.StartCount);
         }
 
         private class ComponentTakesStartableDependency : IStartable

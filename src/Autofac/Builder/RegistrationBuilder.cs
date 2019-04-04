@@ -239,7 +239,7 @@ namespace Autofac.Builder
         /// <param name="cr">Component registry to make registration in.</param>
         /// <param name="builder">Registration builder with data for new registration.</param>
         public static void RegisterSingleComponent<TLimit, TActivatorData, TSingleRegistrationStyle>(
-            IComponentRegistry cr,
+            IComponentRegistryBuilder cr,
             IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> builder)
             where TSingleRegistrationStyle : SingleRegistrationStyle
             where TActivatorData : IConcreteActivatorData

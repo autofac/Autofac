@@ -1,5 +1,7 @@
 ﻿using System;
-using System.Linq;
+
+using Autofac.Core;
+
 using Xunit;
 
 namespace Autofac.Test
@@ -31,7 +33,7 @@ namespace Autofac.Test
                 // TOTALLY not thread-safe, but illustrates the point.
                 var count = (int)ctx.ComponentRegistry.Properties["count"];
                 count++;
-                ctx.ComponentRegistry.MutableProperties["count"] = count;
+                ((IComponentRegistryBuilder)ctx.ComponentRegistry).Properties["count"] = count;
                 return "incremented";
             }).As<string>();
             var container = builder.Build();

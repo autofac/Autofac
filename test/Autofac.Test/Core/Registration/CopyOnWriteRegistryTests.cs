@@ -10,10 +10,11 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void WhenRegistrationsAreMadeTheyDoNotAffectTheReadRegistry()
         {
-            var read = new ComponentRegistry();
-            var cow = new CopyOnWriteRegistry(read, () => new ComponentRegistry());
+            var read = Factory.EmptyComponentRegistry;
+            var cowBuilder = new CopyOnWriteRegistryBuilder(read, () => Factory.CreateEmptyComponentRegistryBuilder());
             var registration = RegistrationBuilder.ForType<object>().CreateRegistration();
-            cow.Register(registration);
+            cowBuilder.Register(registration);
+            var cow = cowBuilder.Build();
 
             var objectService = new TypedService(typeof(object));
             Assert.True(cow.IsRegistered(objectService));
@@ -24,15 +25,16 @@ namespace Autofac.Test.Core.Registration
         public void WhenReadingTheWriteRegistryIsNotCreated()
         {
             var writeRegistryCreated = false;
-            var read = new ComponentRegistry();
-            var cow = new CopyOnWriteRegistry(read, () =>
+            var read = Factory.EmptyComponentRegistry;
+            var cowBuilder = new CopyOnWriteRegistryBuilder(read, () =>
             {
                 writeRegistryCreated = true;
-                return new ComponentRegistry();
+                return Factory.CreateEmptyComponentRegistryBuilder();
             });
 
+            var registry = cowBuilder.Build();
             IComponentRegistration unused;
-            cow.TryGetRegistration(new TypedService(typeof(object)), out unused);
+            registry.TryGetRegistration(new TypedService(typeof(object)), out unused);
 
             Assert.False(writeRegistryCreated);
         }
@@ -41,10 +43,7 @@ namespace Autofac.Test.Core.Registration
         public void RegistrationsMadeByUpdatingAChildScopeDoNotAppearInTheParentScope()
         {
             var container = new ContainerBuilder().Build();
-            var childScope = container.BeginLifetimeScope();
-            var updater = new ContainerBuilder();
-            updater.RegisterType<object>();
-            updater.UpdateRegistry(childScope.ComponentRegistry);
+            var childScope = container.BeginLifetimeScope(x => x.RegisterType<object>());
             Assert.True(childScope.IsRegistered<object>());
             Assert.False(container.IsRegistered<object>());
         }
@@ -53,11 +52,13 @@ namespace Autofac.Test.Core.Registration
         public void OnlyRegistrationsMadeOnTheRegistryAreDisposedWhenTheRegistryIsDisposed()
         {
             var componentRegistration = Mocks.GetComponentRegistration();
-            var readOnlyRegistry = new ComponentRegistry();
-            readOnlyRegistry.Register(componentRegistration);
-            var cow = new CopyOnWriteRegistry(readOnlyRegistry, () => new ComponentRegistry());
+            var readOnlyRegistryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+            readOnlyRegistryBuilder.Register(componentRegistration);
+            var readOnlyRegistry = readOnlyRegistryBuilder.Build();
+            var cowBuilder = new CopyOnWriteRegistryBuilder(readOnlyRegistry, () => Factory.CreateEmptyComponentRegistryBuilder());
             var nestedComponentRegistration = Mocks.GetComponentRegistration();
-            cow.Register(nestedComponentRegistration);
+            cowBuilder.Register(nestedComponentRegistration);
+            var cow = cowBuilder.Build();
             cow.Dispose();
             Assert.False(componentRegistration.IsDisposed);
             Assert.True(nestedComponentRegistration.IsDisposed);

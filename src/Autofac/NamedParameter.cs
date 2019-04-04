@@ -33,7 +33,7 @@ namespace Autofac
     /// component, <see cref="NamedParameter.Name"/> will be matched against
     /// the name of the component's constructor arguments. When applied to
     /// a delegate-based component, the parameter can be accessed using
-    /// <see cref="ParameterExtensions.Named"/>.
+    /// <see cref="ParameterExtensions.Named{T}"/>.
     /// </summary>
     /// <example>
     /// <para>

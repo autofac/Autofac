@@ -1531,7 +1531,7 @@ namespace Autofac
         /// </exception>
         public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
             OnlyIf<TLimit, TActivatorData, TStyle>(
-                this IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration, Predicate<IComponentRegistry> predicate)
+                this IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration, Predicate<IComponentRegistryBuilder> predicate)
         {
             if (registration == null)
             {
@@ -1550,7 +1550,7 @@ namespace Autofac
             }
 
             var original = c.Callback;
-            Action<IComponentRegistry> updated = registry =>
+            Action<IComponentRegistryBuilder> updated = registry =>
             {
                 if (predicate(registry))
                 {

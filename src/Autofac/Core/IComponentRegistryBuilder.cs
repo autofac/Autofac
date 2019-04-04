@@ -3,9 +3,11 @@ using System.Collections.Generic;
 
 namespace Autofac.Core
 {
-    public interface IMutableComponentRegistry
+    public interface IComponentRegistryBuilder : IDisposable
     {
-        IDictionary<string, object> MutableProperties { get; }
+        IComponentRegistry Build();
+
+        IDictionary<string, object> Properties { get; }
 
         /// <summary>
         /// Register a component.
@@ -26,6 +28,13 @@ namespace Autofac.Core
         /// <see cref="IRegistrationSource"/>.
         /// </summary>
         event EventHandler<ComponentRegisteredEventArgs> Registered;
+
+        /// <summary>
+        /// Determines whether the specified service is registered.
+        /// </summary>
+        /// <param name="service">The service to test.</param>
+        /// <returns>True if the service is registered.</returns>
+        bool IsRegistered(Service service);
 
         /// <summary>
         /// Add a registration source that will provide registrations on-the-fly.
