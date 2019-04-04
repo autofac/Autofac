@@ -125,6 +125,17 @@ namespace Autofac.Core.Lifetime
         {
             CheckNotDisposed();
 
+            CheckTagIsUnique(tag);
+
+            var registry = new CopyOnWriteRegistry(ComponentRegistry, () => CreateScopeRestrictedRegistry(tag, NoConfiguration));
+            var scope = new LifetimeScope(registry, this, tag);
+            scope.Disposer.AddInstanceForDisposal(registry);
+            RaiseBeginning(scope);
+            return scope;
+        }
+
+        private void CheckTagIsUnique(object tag)
+        {
             ISharingLifetimeScope parentScope = this;
             while (parentScope != RootLifetimeScope)
             {
@@ -136,12 +147,6 @@ namespace Autofac.Core.Lifetime
 
                 parentScope = parentScope.ParentLifetimeScope;
             }
-
-            var registry = new CopyOnWriteRegistry(ComponentRegistry, () => CreateScopeRestrictedRegistry(tag, NoConfiguration));
-            var scope = new LifetimeScope(registry, this, tag);
-            scope.Disposer.AddInstanceForDisposal(registry);
-            RaiseBeginning(scope);
-            return scope;
         }
 
         [SuppressMessage("CA1030", "CA1030", Justification = "This method raises the event; it's not the event proper.")]
@@ -200,6 +205,7 @@ namespace Autofac.Core.Lifetime
             if (configurationAction == null) throw new ArgumentNullException(nameof(configurationAction));
 
             CheckNotDisposed();
+            CheckTagIsUnique(tag);
 
             var locals = CreateScopeRestrictedRegistry(tag, configurationAction);
             var scope = new LifetimeScope(locals, this, tag);
