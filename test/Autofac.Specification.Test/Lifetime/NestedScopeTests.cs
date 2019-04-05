@@ -19,7 +19,8 @@ namespace Autofac.Specification.Test.Lifetime
             var taggedScope = rootScope.BeginLifetimeScope(duplicateTagName);
             var differentTaggedScope = taggedScope.BeginLifetimeScope("DEF");
 
-            var exception = Assert.Throws<InvalidOperationException>(() => differentTaggedScope.BeginLifetimeScope(duplicateTagName));
+            Assert.Throws<InvalidOperationException>(() => differentTaggedScope.BeginLifetimeScope(duplicateTagName));
+            Assert.Throws<InvalidOperationException>(() => differentTaggedScope.BeginLifetimeScope(duplicateTagName, builder => builder.RegisterType<object>()));
         }
     }
 }

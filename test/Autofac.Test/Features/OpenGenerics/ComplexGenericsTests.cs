@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Autofac.Core.Registration;
@@ -186,6 +187,17 @@ namespace Autofac.Test.Features.OpenGenerics
             Assert.True(container.IsRegistered<Constrained<int, IConstraint<int>>>());
         }
 
+        [Fact(Skip = "Issue #972")]
+        public void CanResolveComponentWithNestedEnumerableConstraint()
+        {
+            // Issue #972
+            var builder = new ContainerBuilder();
+            builder.RegisterGeneric(typeof(CollectionConstrainedByClass<,>));
+            var container = builder.Build();
+            Assert.True(typeof(ConstraintClass<IEnumerable<string>>).IsAssignableFrom(typeof(CollectionOfStrings)));
+            Assert.IsType<CollectionConstrainedByClass<string, CollectionOfStrings>>(container.Resolve<CollectionConstrainedByClass<string, CollectionOfStrings>>());
+        }
+
         [Fact]
         public void CanResolveConcreteTypesThatReorderImplementedInterfaceParameters()
         {
@@ -341,6 +353,15 @@ namespace Autofac.Test.Features.OpenGenerics
         {
         }
 
+        public class CollectionConstrainedByClass<TInput, TCollection>
+            where TCollection : ConstraintClass<IEnumerable<TInput>>
+        {
+        }
+
+        public class CollectionOfStrings : ConstraintClass<IEnumerable<string>>
+        {
+        }
+
         public class Constrained<T1, T2>
             where T2 : IConstraint<T1>
         {
@@ -348,6 +369,10 @@ namespace Autofac.Test.Features.OpenGenerics
 
         public class ConstrainedWithGenericParameter<T1, T2>
             where T1 : T2
+        {
+        }
+
+        public class ConstraintClass<T>
         {
         }
 

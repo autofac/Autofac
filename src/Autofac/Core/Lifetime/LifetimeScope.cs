@@ -126,6 +126,21 @@ namespace Autofac.Core.Lifetime
             return BeginLifetimeScope(tag, NoConfiguration);
         }
 
+        private void CheckTagIsUnique(object tag)
+        {
+            ISharingLifetimeScope parentScope = this;
+            while (parentScope != RootLifetimeScope)
+            {
+                if (parentScope.Tag.Equals(tag))
+                {
+                    throw new InvalidOperationException(
+                        string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.DuplicateTagDetected, tag));
+                }
+
+                parentScope = parentScope.ParentLifetimeScope;
+            }
+        }
+
         [SuppressMessage("CA1030", "CA1030", Justification = "This method raises the event; it's not the event proper.")]
         private void RaiseBeginning(ILifetimeScope scope)
         {
@@ -182,18 +197,7 @@ namespace Autofac.Core.Lifetime
             if (configurationAction == null) throw new ArgumentNullException(nameof(configurationAction));
 
             CheckNotDisposed();
-
-            ISharingLifetimeScope parentScope = this;
-            while (parentScope != RootLifetimeScope)
-            {
-                if (parentScope.Tag.Equals(tag))
-                {
-                    throw new InvalidOperationException(
-                        string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.DuplicateTagDetected, tag));
-                }
-
-                parentScope = parentScope.ParentLifetimeScope;
-            }
+            CheckTagIsUnique(tag);
 
             var localsBuilder = CreateScopeRestrictedRegistry(tag, configurationAction);
             var scope = new LifetimeScope(localsBuilder.Build(), this, tag);
