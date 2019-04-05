@@ -47,10 +47,12 @@ namespace Autofac.Test.Core.Registration
                 ++eventCount;
             };
 
+            var numberOfRegistrations = eventCount;
+
             var registration = Factory.CreateSingletonObjectRegistration();
             builder.Register(registration);
 
-            Assert.Equal(1, eventCount);
+            Assert.Equal(numberOfRegistrations + 1, eventCount);
             Assert.NotNull(eventSender);
             Assert.Same(builder, eventSender);
             Assert.NotNull(args);
