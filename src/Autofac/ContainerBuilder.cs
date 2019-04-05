@@ -144,7 +144,6 @@ namespace Autofac
         {
             Properties[MetadataKeys.ContainerBuildOptions] = options;
             IComponentRegistryBuilder componentRegistryBuilder = new ComponentRegistry(Properties);
-            componentRegistryBuilder.Register(new SelfComponentRegistration());
 
             Build(componentRegistryBuilder, (options & ContainerBuildOptions.ExcludeDefaultModules) != ContainerBuildOptions.None);
 

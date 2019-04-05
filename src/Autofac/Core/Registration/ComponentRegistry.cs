@@ -81,6 +81,7 @@ namespace Autofac.Core.Registration
         internal ComponentRegistry(IDictionary<string, object> properties)
         {
             _properties = properties;
+            ((IComponentRegistryBuilder)this).Register(new SelfComponentRegistration());
         }
 
         /// <summary>
