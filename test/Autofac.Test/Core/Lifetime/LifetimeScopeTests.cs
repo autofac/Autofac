@@ -28,17 +28,6 @@ namespace Autofac.Test.Core.Lifetime
         }
 
         [Fact]
-        public void LifetimeScopeCreatedWithAdditionalRegistrationsUsesScopeRestrictedRegistry()
-        {
-            var rootScope = new ContainerBuilder().Build();
-
-            var nestedScope = rootScope.BeginLifetimeScope(cb =>
-                cb.RegisterType<object>().SingleInstance());
-
-            Assert.IsType<ScopeRestrictedRegistryBuilder>(nestedScope.ComponentRegistry);
-        }
-
-        [Fact]
         public void NestedComponentRegistryIsProperlyDisposed()
         {
             var builder = new ContainerBuilder();

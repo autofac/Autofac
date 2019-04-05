@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using Autofac.Core.Lifetime;
+using Autofac.Util;
 
 namespace Autofac.Core.Registration
 {
@@ -33,17 +34,40 @@ namespace Autofac.Core.Registration
     /// Switches components with a RootScopeLifetime (singletons) with
     /// decorators exposing MatchingScopeLifetime targeting the specified scope.
     /// </summary>
-    internal class ScopeRestrictedRegistryBuilder : ComponentRegistry
+    internal class ScopeRestrictedRegistryBuilder : Disposable, IComponentRegistryBuilder
     {
-        private readonly IComponentLifetime _restrictedRootScopeLifetime;
+        private readonly MatchingScopeLifetime _restrictedRootScopeLifetime;
+        private readonly IComponentRegistryBuilder _inner;
 
         internal ScopeRestrictedRegistryBuilder(object scopeTag, IDictionary<string, object> properties)
-            : base(properties)
         {
             _restrictedRootScopeLifetime = new MatchingScopeLifetime(scopeTag);
+            var tracker = new ScopeRestrictedRegisteredServicesTracker(_restrictedRootScopeLifetime);
+
+            _inner = new ComponentRegistry(tracker, properties);
         }
 
-        protected override void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource = false)
+        protected override void Dispose(bool disposing)
+        {
+            _inner.Dispose();
+        }
+
+        public IComponentRegistry Build()
+        {
+            return _inner.Build();
+        }
+
+        public IDictionary<string, object> Properties
+        {
+            get { return _inner.Properties; }
+        }
+
+        public void Register(IComponentRegistration registration)
+        {
+            Register(registration, false);
+        }
+
+        public void Register(IComponentRegistration registration, bool preserveDefaults)
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 
@@ -52,7 +76,29 @@ namespace Autofac.Core.Registration
             if (registration.Lifetime is RootScopeLifetime)
                 toRegister = new ComponentRegistrationLifetimeDecorator(registration, _restrictedRootScopeLifetime);
 
-            base.AddRegistration(toRegister, preserveDefaults, originatedFromSource);
+            _inner.Register(toRegister, preserveDefaults);
+        }
+
+        public event EventHandler<ComponentRegisteredEventArgs> Registered
+        {
+            add { _inner.Registered += value; }
+            remove { _inner.Registered -= value; }
+        }
+
+        public bool IsRegistered(Service service)
+        {
+            return _inner.IsRegistered(service);
+        }
+
+        public void AddRegistrationSource(IRegistrationSource source)
+        {
+            _inner.AddRegistrationSource(source);
+        }
+
+        public event EventHandler<RegistrationSourceAddedEventArgs> RegistrationSourceAdded
+        {
+            add { _inner.RegistrationSourceAdded += value; }
+            remove { _inner.RegistrationSourceAdded -= value; }
         }
     }
 }
