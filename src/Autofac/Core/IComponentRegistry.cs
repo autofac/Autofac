@@ -12,10 +12,10 @@ namespace Autofac.Core
         /// Gets the set of properties used during component registration.
         /// </summary>
         /// <value>
-        /// An <see cref="IReadOnlyDictionary{TKey, TValue}"/> that can be used to share
+        /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
         /// context across registrations.
         /// </value>
-        IReadOnlyDictionary<string, object> Properties { get; }
+        IDictionary<string, object> Properties { get; }
 
         /// <summary>
         /// Gets the set of registered components.

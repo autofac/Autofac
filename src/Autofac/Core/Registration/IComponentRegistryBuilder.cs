@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Autofac.Core
+namespace Autofac.Core.Registration
 {
     public interface IComponentRegistryBuilder : IDisposable
     {

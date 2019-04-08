@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Linq;
-using Autofac.Core;
+using Autofac.Core.Registration;
 
 namespace Autofac.Builder
 {

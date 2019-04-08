@@ -97,14 +97,17 @@ namespace Autofac.Test
 
         public static IComponentRegistryBuilder CreateEmptyComponentRegistryBuilder()
         {
-            return new ComponentRegistry(new Dictionary<string, object>());;
+            return new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
         }
 
-        public static readonly IComponentRegistry EmptyComponentRegistry = new ComponentRegistry(new Dictionary<string, object>());
+        public static IComponentRegistry CreateEmptyComponentRegistry()
+        {
+            return CreateEmptyComponentRegistryBuilder().Build();
+        }
 
-        public static readonly IContainer EmptyContainer = new Container(EmptyComponentRegistry);
+        public static readonly IContainer EmptyContainer = new Container(CreateEmptyComponentRegistry());
 
-        public static readonly IComponentContext EmptyContext = new Container(EmptyComponentRegistry);
+        public static readonly IComponentContext EmptyContext = new Container(CreateEmptyComponentRegistry());
 
         public static readonly IEnumerable<Parameter> NoParameters = Enumerable.Empty<Parameter>();
 

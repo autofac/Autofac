@@ -35,6 +35,7 @@ using Autofac.Core;
 using Autofac.Core.Activators.ProvidedInstance;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
+using Autofac.Core.Registration;
 using Autofac.Features.Decorators;
 using Autofac.Features.LightweightAdapters;
 using Autofac.Features.OpenGenerics;

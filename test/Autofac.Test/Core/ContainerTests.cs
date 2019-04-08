@@ -1,5 +1,6 @@
 ﻿using System;
 using Autofac.Core;
+using Autofac.Core.Registration;
 using Autofac.Test.Scenarios.Parameterisation;
 using Xunit;
 
@@ -117,7 +118,7 @@ namespace Autofac.Test.Core
         [Fact]
         public void ContainerProvidesILifetimeScopeAndIContext()
         {
-            var container = new Container(Factory.EmptyComponentRegistry);
+            var container = new Container(Factory.CreateEmptyComponentRegistry());
             Assert.True(container.IsRegistered<ILifetimeScope>());
             Assert.True(container.IsRegistered<IComponentContext>());
         }
@@ -125,7 +126,7 @@ namespace Autofac.Test.Core
         [Fact]
         public void ResolvingLifetimeScopeProvidesCurrentScope()
         {
-            var c = new Container(Factory.EmptyComponentRegistry);
+            var c = new Container(Factory.CreateEmptyComponentRegistry());
             var l = c.BeginLifetimeScope();
             Assert.Same(l, l.Resolve<ILifetimeScope>());
         }
@@ -133,7 +134,7 @@ namespace Autofac.Test.Core
         [Fact]
         public void ResolvingComponentContextProvidesCurrentScope()
         {
-            var c = new Container(Factory.EmptyComponentRegistry);
+            var c = new Container(Factory.CreateEmptyComponentRegistry());
             var l = c.BeginLifetimeScope();
             Assert.Same(l, l.Resolve<IComponentContext>());
         }

@@ -26,9 +26,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
+
 using Autofac.Builder;
 using Autofac.Features.Decorators;
 using Autofac.Util;
@@ -45,17 +44,11 @@ namespace Autofac.Core.Registration
     /// is normally used through a <see cref="ContainerBuilder"/>, and not
     /// directly by application code.
     /// </remarks>
-    internal class ComponentRegistry : Disposable, IComponentRegistry, IComponentRegistryBuilder
+    internal class ComponentRegistry : Disposable, IComponentRegistry
     {
-        /// <summary>
-        /// Protects instance variables from concurrent access.
-        /// </summary>
-        private readonly object _synchRoot = new object();
-
         private readonly ConcurrentDictionary<IComponentRegistration, IEnumerable<IComponentRegistration>> _decorators
             = new ConcurrentDictionary<IComponentRegistration, IEnumerable<IComponentRegistration>>();
 
-        private readonly IDictionary<string, object> _properties;
         private readonly IRegisteredServicesTracker _registeredServicesTracker;
 
         /// <summary>
@@ -65,18 +58,8 @@ namespace Autofac.Core.Registration
         /// <param name="properties">The properties used during component registration.</param>
         internal ComponentRegistry(IRegisteredServicesTracker registeredServicesTracker, IDictionary<string, object> properties)
         {
-            _properties = properties;
+            Properties = properties;
             _registeredServicesTracker = registeredServicesTracker;
-            Register(new SelfComponentRegistration());
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ComponentRegistry"/> class.
-        /// </summary>
-        /// <param name="properties">The properties used during component registration.</param>
-        internal ComponentRegistry(IDictionary<string, object> properties)
-            : this(new DefaultRegisteredServicesTracker(), properties)
-        {
         }
 
         /// <summary>
@@ -86,20 +69,7 @@ namespace Autofac.Core.Registration
         /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
         /// context across registrations.
         /// </value>
-        IReadOnlyDictionary<string, object> IComponentRegistry.Properties
-        {
-            get { return new ReadOnlyDictionary<string, object>(_properties); }
-        }
-
-        IDictionary<string, object> IComponentRegistryBuilder.Properties
-        {
-            get { return _properties; }
-        }
-
-        IComponentRegistry IComponentRegistryBuilder.Build()
-        {
-            return this;
-        }
+        public IDictionary<string, object> Properties { get; }
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
@@ -118,14 +88,9 @@ namespace Autofac.Core.Registration
         /// <param name="service">The service to look up.</param>
         /// <param name="registration">The default registration for the service.</param>
         /// <returns>True if a registration exists.</returns>
-        bool IComponentRegistry.TryGetRegistration(Service service, out IComponentRegistration registration)
+        public bool TryGetRegistration(Service service, out IComponentRegistration registration)
         {
             return _registeredServicesTracker.TryGetRegistration(service, out registration);
-        }
-
-        bool IComponentRegistryBuilder.IsRegistered(Service service)
-        {
-            return _registeredServicesTracker.IsRegistered(service);
         }
 
         /// <summary>
@@ -133,46 +98,15 @@ namespace Autofac.Core.Registration
         /// </summary>
         /// <param name="service">The service to test.</param>
         /// <returns>True if the service is registered.</returns>
-        bool IComponentRegistry.IsRegistered(Service service)
+        public bool IsRegistered(Service service)
         {
             return _registeredServicesTracker.IsRegistered(service);
         }
 
         /// <summary>
-        /// Register a component.
-        /// </summary>
-        /// <param name="registration">The component registration.</param>
-        void IComponentRegistryBuilder.Register(IComponentRegistration registration)
-        {
-            Register(registration);
-        }
-
-        private void Register(IComponentRegistration registration)
-        {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-
-            _registeredServicesTracker.AddRegistration(registration, false);
-            GetRegistered()?.Invoke(this, new ComponentRegisteredEventArgs(this, registration));
-        }
-
-        /// <summary>
-        /// Register a component.
-        /// </summary>
-        /// <param name="registration">The component registration.</param>
-        /// <param name="preserveDefaults">If true, existing defaults for the services provided by the
-        /// component will not be changed.</param>
-        void IComponentRegistryBuilder.Register(IComponentRegistration registration, bool preserveDefaults)
-        {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-
-            _registeredServicesTracker.AddRegistration(registration, preserveDefaults);
-            GetRegistered()?.Invoke(this, new ComponentRegisteredEventArgs(this, registration));
-        }
-
-        /// <summary>
         /// Gets the registered components.
         /// </summary>
-        IEnumerable<IComponentRegistration> IComponentRegistry.Registrations
+        public IEnumerable<IComponentRegistration> Registrations
         {
             get { return _registeredServicesTracker.Registrations; }
         }
@@ -184,13 +118,13 @@ namespace Autofac.Core.Registration
         /// </summary>
         /// <param name="service">The service for which registrations are sought.</param>
         /// <returns>Registrations supporting <paramref name="service"/>.</returns>
-        IEnumerable<IComponentRegistration> IComponentRegistry.RegistrationsFor(Service service)
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service)
         {
             return _registeredServicesTracker.RegistrationsFor(service);
         }
 
         /// <inheritdoc />
-        IEnumerable<IComponentRegistration> IComponentRegistry.DecoratorsFor(IComponentRegistration registration)
+        public IEnumerable<IComponentRegistration> DecoratorsFor(IComponentRegistration registration)
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 
@@ -212,47 +146,9 @@ namespace Autofac.Core.Registration
         }
 
         /// <summary>
-        /// Fired whenever a component is registered - either explicitly or via a
-        /// <see cref="IRegistrationSource"/>.
-        /// </summary>
-        event EventHandler<ComponentRegisteredEventArgs> IComponentRegistryBuilder.Registered
-        {
-            add
-            {
-                lock (_synchRoot)
-                {
-                    foreach (IComponentRegistration registration in _registeredServicesTracker.Registrations)
-                    {
-                        value(this, new ComponentRegisteredEventArgs(this, registration));
-                    }
-
-                    _properties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() + value;
-                }
-            }
-
-            remove
-            {
-                lock (_synchRoot)
-                {
-                    _properties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() - value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Add a registration source that will provide registrations on-the-fly.
-        /// </summary>
-        /// <param name="source">The source to register.</param>
-        void IComponentRegistryBuilder.AddRegistrationSource(IRegistrationSource source)
-        {
-            _registeredServicesTracker.AddRegistrationSource(source);
-            GetRegistrationSourceAdded()?.Invoke(this, new RegistrationSourceAddedEventArgs(this, source));
-        }
-
-        /// <summary>
         /// Gets the registration sources that are used by the registry.
         /// </summary>
-        IEnumerable<IRegistrationSource> IComponentRegistry.Sources
+        public IEnumerable<IRegistrationSource> Sources
         {
             get { return _registeredServicesTracker.Sources; }
         }
@@ -264,51 +160,6 @@ namespace Autofac.Core.Registration
         /// </summary>
         /// <remarks>This property is used when walking up the scope tree looking for
         /// registrations for a new customised scope.</remarks>
-        bool IComponentRegistry.HasLocalComponents => true;
-
-        /// <summary>
-        /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
-        /// </summary>
-        event EventHandler<RegistrationSourceAddedEventArgs> IComponentRegistryBuilder.RegistrationSourceAdded
-        {
-            add
-            {
-                lock (_synchRoot)
-                {
-                    foreach (IRegistrationSource source in _registeredServicesTracker.Sources)
-                    {
-                        value(this, new RegistrationSourceAddedEventArgs(this, source));
-                    }
-
-                    _properties[MetadataKeys.RegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() + value;
-                }
-            }
-
-            remove
-            {
-                lock (_synchRoot)
-                {
-                    _properties[MetadataKeys.RegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() - value;
-                }
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private EventHandler<ComponentRegisteredEventArgs> GetRegistered()
-        {
-            if (_properties.TryGetValue(MetadataKeys.RegisteredPropertyKey, out var registered))
-                return (EventHandler<ComponentRegisteredEventArgs>)registered;
-
-            return null;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private EventHandler<RegistrationSourceAddedEventArgs> GetRegistrationSourceAdded()
-        {
-            if (_properties.TryGetValue(MetadataKeys.RegistrationSourceAddedPropertyKey, out var registrationSourceAdded))
-                return (EventHandler<RegistrationSourceAddedEventArgs>)registrationSourceAdded;
-
-            return null;
-        }
+        public bool HasLocalComponents => true;
     }
 }

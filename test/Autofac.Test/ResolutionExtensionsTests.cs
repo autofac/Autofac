@@ -51,7 +51,7 @@ namespace Autofac.Test
         [Fact]
         public void WhenServiceNotRegistered_ResolveOptionalReturnsNull()
         {
-            var target = new Container(Factory.EmptyComponentRegistry);
+            var target = new Container(Factory.CreateEmptyComponentRegistry());
             var inst = target.ResolveOptional<string>();
             Assert.Null(inst);
         }

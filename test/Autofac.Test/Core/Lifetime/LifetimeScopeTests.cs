@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Autofac.Core;
 using Autofac.Core.Registration;
 using Autofac.Test.Scenarios.RegistrationSources;
@@ -16,7 +15,7 @@ namespace Autofac.Test.Core.Lifetime
             const string parentInstance = "p";
             const string childInstance = "c";
 
-            IComponentRegistryBuilder componentRegistryBuilder = new ComponentRegistry(new Dictionary<string, object>());
+            IComponentRegistryBuilder componentRegistryBuilder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
             componentRegistryBuilder.AddRegistrationSource(new ObjectRegistrationSource(parentInstance));
             var registry = componentRegistryBuilder.Build();
 

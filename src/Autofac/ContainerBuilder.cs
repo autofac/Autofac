@@ -25,9 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Registration;
@@ -143,7 +140,7 @@ namespace Autofac
         public IContainer Build(ContainerBuildOptions options = ContainerBuildOptions.None)
         {
             Properties[MetadataKeys.ContainerBuildOptions] = options;
-            IComponentRegistryBuilder componentRegistryBuilder = new ComponentRegistry(Properties);
+            IComponentRegistryBuilder componentRegistryBuilder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), Properties);
 
             Build(componentRegistryBuilder, (options & ContainerBuildOptions.ExcludeDefaultModules) != ContainerBuildOptions.None);
 

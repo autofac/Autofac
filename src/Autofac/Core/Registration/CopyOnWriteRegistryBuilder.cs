@@ -49,7 +49,7 @@ namespace Autofac.Core.Registration
         {
             _readRegistry = readRegistry ?? throw new ArgumentNullException(nameof(readRegistry));
             _createWriteRegistry = createWriteRegistry ?? throw new ArgumentNullException(nameof(createWriteRegistry));
-            Properties = new FallbackDictionary<string, object>(readRegistry.Properties);
+            Properties = new FallbackDictionary<string, object>(new ReadOnlyDictionary<string, object>(readRegistry.Properties));
         }
 
         private IComponentRegistryBuilder WriteRegistry => _writeRegistry ?? (_writeRegistry = _createWriteRegistry());

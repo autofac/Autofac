@@ -27,6 +27,7 @@ using System;
 using System.Globalization;
 using System.Reflection;
 using Autofac.Core;
+using Autofac.Core.Registration;
 
 namespace Autofac
 {

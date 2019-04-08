@@ -29,6 +29,7 @@ using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Registration;
 using Autofac.Util;
 
 namespace Autofac.Features.Scanning

@@ -22,7 +22,7 @@ namespace Autofac.Test
         [Fact]
         public void LoadsRegistrations()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
             new ObjectModule().Configure(builder);
             var registry = builder.Build();
 
@@ -110,25 +110,36 @@ namespace Autofac.Test
             using (var container = builder.Build())
             {
                 Assert.NotNull(container.ComponentRegistry.Properties[MetadataKeys.RegisteredPropertyKey]);
-                using (var outerScope = container.BeginLifetimeScope(c => c.RegisterType(typeof(int))))
+                using (container.BeginLifetimeScope(c =>
                 {
-                    Assert.Equal(
-                        container.ComponentRegistry.Properties[MetadataKeys.RegisteredPropertyKey],
-                        outerScope.ComponentRegistry.Properties[MetadataKeys.RegisteredPropertyKey]);
-                    Assert.Equal(
-                        container.ComponentRegistry.Properties[MetadataKeys.RegistrationSourceAddedPropertyKey],
-                        outerScope.ComponentRegistry.Properties[MetadataKeys.RegistrationSourceAddedPropertyKey]);
-                    ((IComponentRegistryBuilder)outerScope.ComponentRegistry).Registered += (s, e) => { };
-                    ((IComponentRegistryBuilder)outerScope.ComponentRegistry).RegistrationSourceAdded += (s, e) => { };
-                    using (var innerScope = outerScope.BeginLifetimeScope())
+                    c.RegisterCallback(outerBuilder =>
                     {
+                        Assert.Equal(
+                            container.ComponentRegistry.Properties[MetadataKeys.RegisteredPropertyKey],
+                            outerBuilder.Properties[MetadataKeys.RegisteredPropertyKey]);
+
+                        outerBuilder.Registered += (s, e) => { };
+
                         Assert.NotEqual(
                             container.ComponentRegistry.Properties[MetadataKeys.RegisteredPropertyKey],
-                            innerScope.ComponentRegistry.Properties[MetadataKeys.RegisteredPropertyKey]);
-                        Assert.NotEqual(
+                            outerBuilder.Properties[MetadataKeys.RegisteredPropertyKey]);
+                    });
+                    c.RegisterCallback(outerBuilder =>
+                    {
+                        Assert.Equal(
                             container.ComponentRegistry.Properties[MetadataKeys.RegistrationSourceAddedPropertyKey],
-                            innerScope.ComponentRegistry.Properties[MetadataKeys.RegistrationSourceAddedPropertyKey]);
-                    }
+                            outerBuilder.Properties[MetadataKeys.RegistrationSourceAddedPropertyKey]);
+
+                        outerBuilder.RegistrationSourceAdded += (s, e) => { };
+
+                        Assert.NotEqual(
+                            container.ComponentRegistry.Properties[MetadataKeys.RegisteredPropertyKey],
+                            outerBuilder.Properties[MetadataKeys.RegisteredPropertyKey]);
+                    });
+
+                    c.RegisterType(typeof(int));
+                }))
+                {
                 }
             }
         }

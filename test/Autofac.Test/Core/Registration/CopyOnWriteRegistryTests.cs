@@ -10,7 +10,7 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void WhenRegistrationsAreMadeTheyDoNotAffectTheReadRegistry()
         {
-            var read = Factory.EmptyComponentRegistry;
+            var read = Factory.CreateEmptyComponentRegistry();
             var cowBuilder = new CopyOnWriteRegistryBuilder(read, () => Factory.CreateEmptyComponentRegistryBuilder());
             var registration = RegistrationBuilder.ForType<object>().CreateRegistration();
             cowBuilder.Register(registration);
@@ -25,7 +25,7 @@ namespace Autofac.Test.Core.Registration
         public void WhenReadingTheWriteRegistryIsNotCreated()
         {
             var writeRegistryCreated = false;
-            var read = Factory.EmptyComponentRegistry;
+            var read = Factory.CreateEmptyComponentRegistry();
             var cowBuilder = new CopyOnWriteRegistryBuilder(read, () =>
             {
                 writeRegistryCreated = true;

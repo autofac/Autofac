@@ -17,14 +17,14 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void Register_DoesNotAcceptNull()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
             Assert.Throws<ArgumentNullException>(() => builder.Register(null));
         }
 
         [Fact]
         public void WhenNoImplementationsRegistered_RegistrationsForServiceIncludeDynamicSources()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
             builder.AddRegistrationSource(new ObjectRegistrationSource());
             var registry = builder.Build();
 
@@ -39,7 +39,7 @@ namespace Autofac.Test.Core.Registration
             ComponentRegisteredEventArgs args = null;
             var eventCount = 0;
 
-            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
             builder.Registered += (sender, e) =>
             {
                 eventSender = sender;
@@ -66,7 +66,7 @@ namespace Autofac.Test.Core.Registration
             var r1 = Factory.CreateSingletonObjectRegistration();
             var r2 = Factory.CreateSingletonObjectRegistration();
 
-            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
 
             builder.Register(r1);
             builder.Register(r2);
@@ -81,7 +81,7 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void WhenNoImplementers_TryGetRegistrationReturnsFalse()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
             var registry = builder.Build();
 
             IComponentRegistration unused;
@@ -91,7 +91,7 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void WhenNoImplementerIsDirectlyRegistered_RegistrationCanBeProvidedDynamically()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
             builder.AddRegistrationSource(new ObjectRegistrationSource());
             var registry = builder.Build();
             IComponentRegistration registration;
@@ -103,7 +103,7 @@ namespace Autofac.Test.Core.Registration
         {
             var r = Factory.CreateSingletonObjectRegistration();
 
-            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
             builder.Register(r);
             builder.AddRegistrationSource(new ObjectRegistrationSource());
             var registry = builder.Build();
@@ -119,7 +119,7 @@ namespace Autofac.Test.Core.Registration
         {
             var r = Factory.CreateSingletonObjectRegistration();
 
-            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
             builder.Register(r);
             builder.AddRegistrationSource(new ObjectRegistrationSource());
             var registry = builder.Build();
@@ -139,7 +139,7 @@ namespace Autofac.Test.Core.Registration
         {
             var r = Factory.CreateSingletonObjectRegistration();
 
-            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
 
             builder.AddRegistrationSource(new ObjectRegistrationSource());
             builder.Register(r);
@@ -193,7 +193,7 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void WhenARegistrationSourceQueriesForTheSameService_ItIsNotRecursivelyQueried()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
             builder.AddRegistrationSource(new RecursiveRegistrationSource());
             var registry = builder.Build();
             Assert.False(registry.IsRegistered(new UniqueService()));
@@ -205,7 +205,7 @@ namespace Autofac.Test.Core.Registration
             var r1 = Factory.CreateSingletonObjectRegistration();
             var r2 = Factory.CreateSingletonObjectRegistration();
 
-            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
             builder.Register(r1);
             builder.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
             builder.Register(r2);
@@ -221,7 +221,7 @@ namespace Autofac.Test.Core.Registration
         {
             var first = new object();
             var second = new object();
-            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
 
             builder.AddRegistrationSource(new ObjectRegistrationSource(first));
             builder.AddRegistrationSource(new ObjectRegistrationSource(second));
@@ -238,7 +238,7 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void AdaptingAGeneratedServiceYieldsASingleAdapter()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
 
             builder.AddRegistrationSource(new MetaRegistrationSource());
             builder.AddRegistrationSource(new CollectionRegistrationSource());
@@ -250,7 +250,7 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void AdaptingAnAdapterYieldsASingleAdapter()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
             builder.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
             builder.AddRegistrationSource(new MetaRegistrationSource());
             builder.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
@@ -263,7 +263,7 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void WhenASourceIsAddedToTheRegistry_TheSourceAddedEventIsRaised()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistry(new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
 
             object sender = null;
             RegistrationSourceAddedEventArgs args = null;

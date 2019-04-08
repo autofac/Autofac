@@ -25,6 +25,8 @@
 
 using System;
 
+using Autofac.Core.Registration;
+
 namespace Autofac.Core
 {
     /// <summary>

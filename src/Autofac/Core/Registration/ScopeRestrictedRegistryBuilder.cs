@@ -44,7 +44,7 @@ namespace Autofac.Core.Registration
             _restrictedRootScopeLifetime = new MatchingScopeLifetime(scopeTag);
             var tracker = new ScopeRestrictedRegisteredServicesTracker(_restrictedRootScopeLifetime);
 
-            _inner = new ComponentRegistry(tracker, properties);
+            _inner = new ComponentRegistryBuilder(tracker, properties);
         }
 
         protected override void Dispose(bool disposing)
