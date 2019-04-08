@@ -1,5 +1,4 @@
-﻿using System;
-using Autofac.Core;
+﻿using Autofac.Core;
 using Xunit;
 
 namespace Autofac.Specification.Test.Features

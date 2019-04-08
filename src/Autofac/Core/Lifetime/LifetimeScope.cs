@@ -126,28 +126,6 @@ namespace Autofac.Core.Lifetime
             return BeginLifetimeScope(tag, NoConfiguration);
         }
 
-        private void CheckTagIsUnique(object tag)
-        {
-            ISharingLifetimeScope parentScope = this;
-            while (parentScope != RootLifetimeScope)
-            {
-                if (parentScope.Tag.Equals(tag))
-                {
-                    throw new InvalidOperationException(
-                        string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.DuplicateTagDetected, tag));
-                }
-
-                parentScope = parentScope.ParentLifetimeScope;
-            }
-        }
-
-        [SuppressMessage("CA1030", "CA1030", Justification = "This method raises the event; it's not the event proper.")]
-        private void RaiseBeginning(ILifetimeScope scope)
-        {
-            var handler = ChildLifetimeScopeBeginning;
-            handler?.Invoke(this, new LifetimeScopeBeginningEventArgs(scope));
-        }
-
         /// <summary>
         /// Begin a new anonymous sub-scope, with additional components available to it.
         /// Component instances created via the new scope
@@ -206,12 +184,34 @@ namespace Autofac.Core.Lifetime
             if (localsBuilder.Properties.TryGetValue(MetadataKeys.ContainerBuildOptions, out var options) &&
                 !((ContainerBuildOptions)options).HasFlag(ContainerBuildOptions.IgnoreStartableComponents))
             {
-                StartableManager.StartStartableComponents(scope);
+                StartableManager.StartStartableComponents(localsBuilder.Properties, scope);
             }
 
             RaiseBeginning(scope);
 
             return scope;
+        }
+
+        private void CheckTagIsUnique(object tag)
+        {
+            ISharingLifetimeScope parentScope = this;
+            while (parentScope != RootLifetimeScope)
+            {
+                if (parentScope.Tag.Equals(tag))
+                {
+                    throw new InvalidOperationException(
+                        string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.DuplicateTagDetected, tag));
+                }
+
+                parentScope = parentScope.ParentLifetimeScope;
+            }
+        }
+
+        [SuppressMessage("CA1030", "CA1030", Justification = "This method raises the event; it's not the event proper.")]
+        private void RaiseBeginning(ILifetimeScope scope)
+        {
+            var handler = ChildLifetimeScopeBeginning;
+            handler?.Invoke(this, new LifetimeScopeBeginningEventArgs(scope));
         }
 
         /// <summary>

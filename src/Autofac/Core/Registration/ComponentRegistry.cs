@@ -67,7 +67,7 @@ namespace Autofac.Core.Registration
         {
             _properties = properties;
             _registeredServicesTracker = registeredServicesTracker;
-            ((IComponentRegistryBuilder)this).Register(new SelfComponentRegistration());
+            Register(new SelfComponentRegistration());
         }
 
         /// <summary>
@@ -144,7 +144,15 @@ namespace Autofac.Core.Registration
         /// <param name="registration">The component registration.</param>
         void IComponentRegistryBuilder.Register(IComponentRegistration registration)
         {
-            ((IComponentRegistryBuilder)this).Register(registration, false);
+            Register(registration);
+        }
+
+        private void Register(IComponentRegistration registration)
+        {
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+
+            _registeredServicesTracker.AddRegistration(registration, false);
+            GetRegistered()?.Invoke(this, new ComponentRegisteredEventArgs(this, registration));
         }
 
         /// <summary>

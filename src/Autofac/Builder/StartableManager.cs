@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Autofac.Core;
@@ -10,15 +10,16 @@ namespace Autofac.Builder
         /// <summary>
         /// Executes the startable and auto-activate components in a context.
         /// </summary>
+        /// <param name="properties">The set of properties used during component registration.</param>
         /// <param name="componentContext">
         /// The <see cref="IComponentContext"/> in which startables should execute.
         /// </param>
-        internal static void StartStartableComponents(IComponentContext componentContext)
+        internal static void StartStartableComponents(IDictionary<string, object> properties, IComponentContext componentContext)
         {
             var componentRegistry = componentContext.ComponentRegistry;
             try
             {
-                ((IComponentRegistryBuilder)componentRegistry).Properties[MetadataKeys.StartOnActivatePropertyKey] = true;
+                properties[MetadataKeys.StartOnActivatePropertyKey] = true;
 
                 // We track which registrations have already been auto-activated by adding
                 // a metadata value. If the value is present, we won't re-activate. This helps
@@ -53,7 +54,7 @@ namespace Autofac.Builder
             }
             finally
             {
-                ((IComponentRegistryBuilder)componentRegistry).Properties.Remove(MetadataKeys.StartOnActivatePropertyKey);
+                properties.Remove(MetadataKeys.StartOnActivatePropertyKey);
             }
         }
     }

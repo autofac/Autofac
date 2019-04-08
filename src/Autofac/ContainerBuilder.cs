@@ -151,7 +151,7 @@ namespace Autofac
 
             var result = new Container(componentRegistry);
             if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
-                StartableManager.StartStartableComponents(result);
+                StartableManager.StartStartableComponents(Properties, result);
 
             var buildCallbacks = GetBuildCallbacks();
             foreach (var buildCallback in buildCallbacks)
