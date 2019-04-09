@@ -3,8 +3,17 @@ using System.Collections.Generic;
 
 namespace Autofac.Core.Registration
 {
+    /// <summary>
+    /// Keeps track of the status of registered services.
+    /// </summary>
     internal interface IRegisteredServicesTracker : IDisposable
     {
+        /// <summary>
+        /// Adds a registration to the list of registered services.
+        /// </summary>
+        /// <param name="registration">The registration to add.</param>
+        /// <param name="preserveDefaults">Indicates whehter the defaults should be preserved.</param>
+        /// <param name="originatedFromSource">Indicates whether this is an explicitly added registration or that it has been added by a different source.</param>
         void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource = false);
 
         /// <summary>
@@ -31,6 +40,11 @@ namespace Autofac.Core.Registration
         /// </summary>
         IEnumerable<IRegistrationSource> Sources { get; }
 
+        /// <summary>
+        /// Determines whether the specified service is registered.
+        /// </summary>
+        /// <param name="service">The service to test.</param>
+        /// <returns>True if the service is registered.</returns>
         bool IsRegistered(Service service);
 
         /// <summary>

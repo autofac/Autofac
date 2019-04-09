@@ -7,12 +7,19 @@ using Autofac.Util;
 
 namespace Autofac.Core.Registration
 {
+    /// <summary>
+    /// Used to build a <see cref="IComponentRegistry" />.
+    /// </summary>
     internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
     {
         /// <summary>
         /// Protects instance variables from concurrent access.
         /// </summary>
         private readonly object _synchRoot = new object();
+
+        /// <summary>
+        /// The tracker for the registered services.
+        /// </summary>
         private readonly IRegisteredServicesTracker _registeredServicesTracker;
 
         /// <summary>
@@ -37,13 +44,29 @@ namespace Autofac.Core.Registration
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Gets the set of properties used during component registration.
+        /// </summary>
+        /// <value>
+        /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
+        /// context across registrations.
+        /// </value>
         public IDictionary<string, object> Properties { get; }
 
+        /// <summary>
+        /// Create a new <see cref="IComponentRegistry" /> with all the component registrations that have been made.
+        /// </summary>
+        /// <returns>A new component registry with the configured component registrations.</returns>
         public IComponentRegistry Build()
         {
             return new ComponentRegistry(_registeredServicesTracker, Properties);
         }
 
+        /// <summary>
+        /// Determines whether the specified service is registered.
+        /// </summary>
+        /// <param name="service">The service to test.</param>
+        /// <returns>True if the service is registered.</returns>
         public bool IsRegistered(Service service)
         {
             return _registeredServicesTracker.IsRegistered(service);

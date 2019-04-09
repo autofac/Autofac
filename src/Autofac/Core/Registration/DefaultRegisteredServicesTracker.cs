@@ -27,6 +27,9 @@ namespace Autofac.Core.Registration
         /// </summary>
         private readonly List<IComponentRegistration> _registrations = new List<IComponentRegistration>();
 
+        /// <summary>
+        /// Protects instance variables from concurrent access.
+        /// </summary>
         private readonly object _synchRoot = new object();
 
         /// <summary>
@@ -41,6 +44,12 @@ namespace Autofac.Core.Registration
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Adds a registration to the list of registered services.
+        /// </summary>
+        /// <param name="registration">The registration to add.</param>
+        /// <param name="preserveDefaults">Indicates whehter the defaults should be preserved.</param>
+        /// <param name="originatedFromSource">Indicates whether this is an explicitly added registration or that it has been added by a different source.</param>
         public virtual void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource = false)
         {
             foreach (var service in registration.Services)
@@ -102,6 +111,11 @@ namespace Autofac.Core.Registration
             }
         }
 
+        /// <summary>
+        /// Determines whether the specified service is registered.
+        /// </summary>
+        /// <param name="service">The service to test.</param>
+        /// <returns>True if the service is registered.</returns>
         public bool IsRegistered(Service service)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));

@@ -5,8 +5,19 @@ namespace Autofac.Core.Registration
 {
     public interface IComponentRegistryBuilder : IDisposable
     {
+        /// <summary>
+        /// Create a new <see cref="IComponentRegistry" /> with all the component registrations that have been made.
+        /// </summary>
+        /// <returns>A new component registry with the configured component registrations.</returns>
         IComponentRegistry Build();
 
+        /// <summary>
+        /// Gets the set of properties used during component registration.
+        /// </summary>
+        /// <value>
+        /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
+        /// context across registrations.
+        /// </value>
         IDictionary<string, object> Properties { get; }
 
         /// <summary>
