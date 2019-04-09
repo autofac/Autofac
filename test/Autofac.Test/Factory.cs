@@ -105,9 +105,15 @@ namespace Autofac.Test
             return CreateEmptyComponentRegistryBuilder().Build();
         }
 
-        public static readonly IContainer EmptyContainer = new Container(CreateEmptyComponentRegistry());
+        public static IContainer CreateEmptyContainer()
+        {
+            return new ContainerBuilder().Build();
+        }
 
-        public static readonly IComponentContext EmptyContext = new Container(CreateEmptyComponentRegistry());
+        public static IComponentContext CreateEmptyContext()
+        {
+            return CreateEmptyContainer();
+        }
 
         public static readonly IEnumerable<Parameter> NoParameters = Enumerable.Empty<Parameter>();
 

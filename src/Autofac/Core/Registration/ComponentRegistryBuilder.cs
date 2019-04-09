@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 
 using Autofac.Builder;
@@ -14,8 +13,6 @@ namespace Autofac.Core.Registration
         /// Protects instance variables from concurrent access.
         /// </summary>
         private readonly object _synchRoot = new object();
-
-        private readonly IDictionary<string, object> _properties;
         private readonly IRegisteredServicesTracker _registeredServicesTracker;
 
         /// <summary>
@@ -25,9 +22,8 @@ namespace Autofac.Core.Registration
         /// <param name="properties">The properties used during component registration.</param>
         internal ComponentRegistryBuilder(IRegisteredServicesTracker registeredServicesTracker, IDictionary<string, object> properties)
         {
-            _properties = properties;
+            Properties = properties;
             _registeredServicesTracker = registeredServicesTracker;
-            Register(new SelfComponentRegistration());
         }
 
         /// <summary>
@@ -41,10 +37,7 @@ namespace Autofac.Core.Registration
             base.Dispose(disposing);
         }
 
-        public IDictionary<string, object> Properties
-        {
-            get { return _properties; }
-        }
+        public IDictionary<string, object> Properties { get; }
 
         public IComponentRegistry Build()
         {
@@ -97,7 +90,7 @@ namespace Autofac.Core.Registration
                         value(this, new ComponentRegisteredEventArgs(this, registration));
                     }
 
-                    _properties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() + value;
+                    Properties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() + value;
                 }
             }
 
@@ -105,7 +98,7 @@ namespace Autofac.Core.Registration
             {
                 lock (_synchRoot)
                 {
-                    _properties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() - value;
+                    Properties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() - value;
                 }
             }
         }
@@ -134,7 +127,7 @@ namespace Autofac.Core.Registration
                         value(this, new RegistrationSourceAddedEventArgs(this, source));
                     }
 
-                    _properties[MetadataKeys.RegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() + value;
+                    Properties[MetadataKeys.RegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() + value;
                 }
             }
 
@@ -142,7 +135,7 @@ namespace Autofac.Core.Registration
             {
                 lock (_synchRoot)
                 {
-                    _properties[MetadataKeys.RegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() - value;
+                    Properties[MetadataKeys.RegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() - value;
                 }
             }
         }
@@ -150,7 +143,7 @@ namespace Autofac.Core.Registration
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private EventHandler<ComponentRegisteredEventArgs> GetRegistered()
         {
-            if (_properties.TryGetValue(MetadataKeys.RegisteredPropertyKey, out var registered))
+            if (Properties.TryGetValue(MetadataKeys.RegisteredPropertyKey, out var registered))
                 return (EventHandler<ComponentRegisteredEventArgs>)registered;
 
             return null;
@@ -159,7 +152,7 @@ namespace Autofac.Core.Registration
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private EventHandler<RegistrationSourceAddedEventArgs> GetRegistrationSourceAdded()
         {
-            if (_properties.TryGetValue(MetadataKeys.RegistrationSourceAddedPropertyKey, out var registrationSourceAdded))
+            if (Properties.TryGetValue(MetadataKeys.RegistrationSourceAddedPropertyKey, out var registrationSourceAdded))
                 return (EventHandler<RegistrationSourceAddedEventArgs>)registrationSourceAdded;
 
             return null;

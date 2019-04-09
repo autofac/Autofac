@@ -78,6 +78,25 @@ namespace Autofac
         /// </summary>
         /// <param name="properties">The properties used during component registration.</param>
         internal ContainerBuilder(IDictionary<string, object> properties)
+            : this(properties, new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), properties))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContainerBuilder"/> class.
+        /// </summary>
+        /// <param name="componentRegistryBuilder">The builder to use for building the underlying <see cref="IComponentRegistry" />.</param>
+        internal ContainerBuilder(IComponentRegistryBuilder componentRegistryBuilder)
+            : this(new Dictionary<string, object>(), componentRegistryBuilder)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContainerBuilder"/> class.
+        /// </summary>
+        /// <param name="properties">The properties used during component registration.</param>
+        /// <param name="componentRegistryBuilder">The builder to use for building the underlying <see cref="IComponentRegistry" />.</param>
+        internal ContainerBuilder(IDictionary<string, object> properties, IComponentRegistryBuilder componentRegistryBuilder)
         {
             Properties = properties;
 
@@ -85,7 +104,14 @@ namespace Autofac
             {
                 Properties.Add(BuildCallbackPropertyKey, new List<Action<IContainer>>());
             }
+
+            ComponentRegistryBuilder = componentRegistryBuilder;
         }
+
+        /// <summary>
+        /// Gets the builder to use for building the underlying <see cref="IComponentRegistry" />.
+        /// </summary>
+        public IComponentRegistryBuilder ComponentRegistryBuilder { get; }
 
         /// <summary>
         /// Gets the set of properties used during component registration.
@@ -101,7 +127,7 @@ namespace Autofac
         /// </summary>
         /// <remarks>This is primarily for extending the builder syntax.</remarks>
         /// <param name="configurationCallback">Callback to execute.</param>
-        public virtual DeferredCallback RegisterCallback(Action<IComponentRegistryBuilder> configurationCallback)
+        public DeferredCallback RegisterCallback(Action<IComponentRegistryBuilder> configurationCallback)
         {
             if (configurationCallback == null) throw new ArgumentNullException(nameof(configurationCallback));
 
@@ -140,11 +166,11 @@ namespace Autofac
         public IContainer Build(ContainerBuildOptions options = ContainerBuildOptions.None)
         {
             Properties[MetadataKeys.ContainerBuildOptions] = options;
-            IComponentRegistryBuilder componentRegistryBuilder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), Properties);
+            ComponentRegistryBuilder.Register(new SelfComponentRegistration());
 
-            Build(componentRegistryBuilder, (options & ContainerBuildOptions.ExcludeDefaultModules) != ContainerBuildOptions.None);
+            Build(ComponentRegistryBuilder, (options & ContainerBuildOptions.ExcludeDefaultModules) != ContainerBuildOptions.None);
 
-            var componentRegistry = componentRegistryBuilder.Build();
+            var componentRegistry = ComponentRegistryBuilder.Build();
 
             var result = new Container(componentRegistry);
             if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)

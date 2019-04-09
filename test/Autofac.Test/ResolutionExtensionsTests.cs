@@ -11,7 +11,7 @@ namespace Autofac.Test
         [Fact]
         public void ResolvingUnregisteredService_ProvidesDescriptionInException()
         {
-            var target = Factory.EmptyContainer;
+            var target = Factory.CreateEmptyContainer();
             var ex = Assert.Throws<ComponentNotRegisteredException>(() => target.Resolve<object>());
             Assert.Contains("System.Object", ex.Message);
         }
@@ -25,8 +25,7 @@ namespace Autofac.Test
 
             var builder = Factory.CreateEmptyComponentRegistryBuilder();
             builder.Register(registration);
-            var registry = builder.Build();
-            var target = new Container(registry);
+            var target = new ContainerBuilder(builder).Build();
 
             Assert.True(target.IsRegistered<object>());
             Assert.True(target.IsRegistered<string>());
@@ -39,9 +38,8 @@ namespace Autofac.Test
             builder.Register(Factory.CreateSingletonRegistration(
                 new[] { new TypedService(typeof(string)) },
                 new ProvidedInstanceActivator("Hello")));
-            var registry = builder.Build();
 
-            var target = new Container(registry);
+            var target = new ContainerBuilder(builder).Build();
 
             var inst = target.ResolveOptional<string>();
 
@@ -51,7 +49,7 @@ namespace Autofac.Test
         [Fact]
         public void WhenServiceNotRegistered_ResolveOptionalReturnsNull()
         {
-            var target = new Container(Factory.CreateEmptyComponentRegistry());
+            var target = Factory.CreateEmptyContainer();
             var inst = target.ResolveOptional<string>();
             Assert.Null(inst);
         }

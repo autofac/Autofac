@@ -101,19 +101,14 @@ namespace Autofac.Specification.Test.Registration
         [Fact]
         public void RegisterTypesCanBeFilteredByAssignableTo()
         {
-            IContainer emptyContainer = new ContainerBuilder().Build();
-
-            var lifetimeScope = new ContainerBuilder().Build().BeginLifetimeScope(b =>
+            var container = new ContainerBuilder().Build().BeginLifetimeScope(b =>
                 b.RegisterTypes(typeof(MyComponent), typeof(MyComponent2))
                     .AssignableTo(typeof(IMyService)));
 
-            var numberOfServicesAdded = lifetimeScope.ComponentRegistry.Registrations.Count() -
-                                        emptyContainer.ComponentRegistry.Registrations.Count();
-
-            Assert.Equal(1, numberOfServicesAdded);
+            Assert.Single(container.ComponentRegistry.Registrations);
             object obj;
-            Assert.True(lifetimeScope.TryResolve(typeof(MyComponent), out obj));
-            Assert.False(lifetimeScope.TryResolve(typeof(MyComponent2), out obj));
+            Assert.True(container.TryResolve(typeof(MyComponent), out obj));
+            Assert.False(container.TryResolve(typeof(MyComponent2), out obj));
         }
 
         [Fact]

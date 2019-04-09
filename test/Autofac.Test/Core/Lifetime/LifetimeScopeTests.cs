@@ -17,9 +17,8 @@ namespace Autofac.Test.Core.Lifetime
 
             IComponentRegistryBuilder componentRegistryBuilder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
             componentRegistryBuilder.AddRegistrationSource(new ObjectRegistrationSource(parentInstance));
-            var registry = componentRegistryBuilder.Build();
 
-            var parent = new Container(registry);
+            var parent = new ContainerBuilder(componentRegistryBuilder).Build();
             var child = parent.BeginLifetimeScope(builder =>
                     builder.RegisterSource(new ObjectRegistrationSource(childInstance)));
             var fromChild = child.Resolve<object>();

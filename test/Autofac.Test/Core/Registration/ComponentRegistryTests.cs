@@ -236,13 +236,39 @@ namespace Autofac.Test.Core.Registration
         }
 
         [Fact]
+        public void AfterResolvingAdapter_AddingMoreAdaptees_AddsMoreAdapters()
+        {
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            var metaService = new TypedService(typeof(Meta<object>));
+
+            var first = RegistrationBuilder.ForType<object>().CreateRegistration();
+            builder.Register(first);
+
+            using (var container = new ContainerBuilder(builder).Build())
+            {
+                var meta1 = container.ComponentRegistry.RegistrationsFor(metaService);
+                var firstMeta = meta1.First();
+
+                var second = RegistrationBuilder.ForType<object>().CreateRegistration();
+
+                using (var lifetimeScope = container.BeginLifetimeScope(x => x.RegisterComponent(second)))
+                {
+                    var meta2 = lifetimeScope.ComponentRegistry.RegistrationsFor(metaService);
+
+                    Assert.Equal(2, meta2.Count());
+                    Assert.Contains(firstMeta, meta2);
+                    Assert.Equal(new[] { first, second }, meta2.Select(m => m.Target));
+                }
+            }
+        }
+
+        [Fact]
         public void AdaptingAGeneratedServiceYieldsASingleAdapter()
         {
             IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            var container = new ContainerBuilder(builder).Build();
 
-            builder.AddRegistrationSource(new MetaRegistrationSource());
-            builder.AddRegistrationSource(new CollectionRegistrationSource());
-            var registry = builder.Build();
+            var registry = container.ComponentRegistry;
             var metaCollections = registry.RegistrationsFor(new TypedService(typeof(Meta<IEnumerable<object>>)));
             Assert.Single(metaCollections);
         }
@@ -252,12 +278,67 @@ namespace Autofac.Test.Core.Registration
         {
             IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
             builder.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
-            builder.AddRegistrationSource(new MetaRegistrationSource());
-            builder.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
-            var registry = builder.Build();
-            var metaCollections = registry.RegistrationsFor(
-                new TypedService(typeof(Meta<Func<object>>)));
+            var container = new ContainerBuilder(builder).Build();
+
+            var registry = container.ComponentRegistry;
+            var metaCollections = registry.RegistrationsFor(new TypedService(typeof(Meta<Func<object>>)));
             Assert.Single(metaCollections);
+        }
+
+        [Fact]
+        public void AfterResolvingAdapterType_AddingAnAdapter_AddsAdaptingComponents()
+        {
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            builder.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
+            var adapterService = new TypedService(typeof(Func<object>));
+
+            var container = new ContainerBuilder(builder).Build(ContainerBuildOptions.ExcludeDefaultModules);
+            var pre = container.ComponentRegistry.RegistrationsFor(adapterService);
+            Assert.Empty(pre);
+
+            var lifetimeScope = container.BeginLifetimeScope(inner =>
+                inner.ComponentRegistryBuilder.AddRegistrationSource(new GeneratedFactoryRegistrationSource()));
+
+            var post = lifetimeScope.ComponentRegistry.RegistrationsFor(adapterService);
+            Assert.Single(post);
+        }
+
+        [Fact]
+        public void AddingConcreteImplementationWhenAdapterImplementationsExist_AddsChainedAdapters()
+        {
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            builder.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
+
+            var container = new ContainerBuilder(builder).Build();
+
+            var chainedService = new TypedService(typeof(Meta<Func<object>>));
+
+            var pre = container.ComponentRegistry.RegistrationsFor(chainedService);
+            Assert.Single(pre);
+
+            Func<object> func = () => new object();
+
+            var lifetimeScope = container.BeginLifetimeScope(inner =>
+                inner.ComponentRegistryBuilder.Register(RegistrationBuilder.ForDelegate((c, p) => func).CreateRegistration()));
+
+            var post = lifetimeScope.ComponentRegistry.RegistrationsFor(chainedService);
+            Assert.Equal(2, post.Count());
+        }
+
+        [Fact]
+        public void WhenAdaptersAreAppliedButNoRegistrationsCreated_AddingAdapteesAddsAdapters()
+        {
+            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            var adapterService = new TypedService(typeof(Func<object>));
+
+            var container = new ContainerBuilder(builder).Build();
+            container.ComponentRegistry.RegistrationsFor(adapterService);
+
+            var lifetimeScope = container.BeginLifetimeScope(inner =>
+                inner.ComponentRegistryBuilder.Register(RegistrationBuilder.ForType<object>().CreateRegistration()));
+
+            var adapters = lifetimeScope.ComponentRegistry.RegistrationsFor(adapterService);
+            Assert.Single(adapters);
         }
 
         [Fact]

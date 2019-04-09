@@ -19,9 +19,8 @@ namespace Autofac.Test.Core
 
             var builder = Factory.CreateEmptyComponentRegistryBuilder();
             builder.Register(r);
-            var registry = builder.Build();
 
-            var c = new Container(registry);
+            var c = new ContainerBuilder(builder).Build();
 
             object o;
 
@@ -118,7 +117,7 @@ namespace Autofac.Test.Core
         [Fact]
         public void ContainerProvidesILifetimeScopeAndIContext()
         {
-            var container = new Container(Factory.CreateEmptyComponentRegistry());
+            var container = Factory.CreateEmptyContainer();
             Assert.True(container.IsRegistered<ILifetimeScope>());
             Assert.True(container.IsRegistered<IComponentContext>());
         }
@@ -126,7 +125,7 @@ namespace Autofac.Test.Core
         [Fact]
         public void ResolvingLifetimeScopeProvidesCurrentScope()
         {
-            var c = new Container(Factory.CreateEmptyComponentRegistry());
+            var c = Factory.CreateEmptyContainer();
             var l = c.BeginLifetimeScope();
             Assert.Same(l, l.Resolve<ILifetimeScope>());
         }
@@ -134,7 +133,7 @@ namespace Autofac.Test.Core
         [Fact]
         public void ResolvingComponentContextProvidesCurrentScope()
         {
-            var c = new Container(Factory.CreateEmptyComponentRegistry());
+            var c = Factory.CreateEmptyContainer();
             var l = c.BeginLifetimeScope();
             Assert.Same(l, l.Resolve<IComponentContext>());
         }

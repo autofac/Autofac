@@ -30,7 +30,7 @@ namespace Autofac.Test
             var typedParam = new TypedParameter(typeof(A), new A());
 
             Func<object> vp;
-            Assert.True(typedParam.CanSupplyValue(param, Factory.EmptyContainer, out vp));
+            Assert.True(typedParam.CanSupplyValue(param, Factory.CreateEmptyContainer(), out vp));
         }
 
         private static System.Reflection.ParameterInfo AParamOfCConstructor()
@@ -52,7 +52,7 @@ namespace Autofac.Test
             var typedParam = new TypedParameter(typeof(B), new B());
 
             Func<object> vp;
-            Assert.False(typedParam.CanSupplyValue(param, Factory.EmptyContainer, out vp));
+            Assert.False(typedParam.CanSupplyValue(param, Factory.CreateEmptyContainer(), out vp));
         }
 
         [Fact]
@@ -63,7 +63,7 @@ namespace Autofac.Test
             var typedParam = new TypedParameter(typeof(string), "Yo!");
 
             Func<object> vp;
-            Assert.False(typedParam.CanSupplyValue(param, Factory.EmptyContainer, out vp));
+            Assert.False(typedParam.CanSupplyValue(param, Factory.CreateEmptyContainer(), out vp));
         }
 
         [Fact]

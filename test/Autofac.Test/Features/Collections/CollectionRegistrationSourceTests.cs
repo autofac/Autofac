@@ -102,6 +102,19 @@ namespace Autofac.Test.Features.Collections
             }
         }
 
+        [Fact]
+        public void ReflectsChangesInComponentRegistry()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance("Hello");
+            var c = builder.Build();
+            Assert.Single(c.Resolve<IEnumerable<string>>());
+
+            var lifetimeScope = c.BeginLifetimeScope(inner => inner.RegisterComponent(RegistrationBuilder.ForDelegate((ctx, p) => "World").CreateRegistration()));
+
+            Assert.Equal(2, lifetimeScope.Resolve<IEnumerable<string>>().Count());
+        }
+
         public interface IFoo
         {
         }
