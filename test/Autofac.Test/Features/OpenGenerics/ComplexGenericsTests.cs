@@ -187,7 +187,7 @@ namespace Autofac.Test.Features.OpenGenerics
             Assert.True(container.IsRegistered<Constrained<int, IConstraint<int>>>());
         }
 
-        [Fact(Skip = "Issue #972")]
+        [Fact]
         public void CanResolveComponentWithNestedEnumerableConstraint()
         {
             // Issue #972
