@@ -48,8 +48,7 @@ namespace Autofac.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentRegisteredEventArgs"/> class.
         /// </summary>
-        /// <param name="registryBuilder">The container into which the registration
-        /// was made.</param>
+        /// <param name="registryBuilder">The <see cref="IComponentRegistryBuilder" /> into which the registration was made.</param>
         /// <param name="componentRegistration">The component registration.</param>
         public ComponentRegisteredEventArgs(IComponentRegistryBuilder registryBuilder, IComponentRegistration componentRegistration)
         {
