@@ -53,8 +53,6 @@ namespace Autofac.Core.Lifetime
 
         internal static Guid SelfRegistrationId { get; } = Guid.NewGuid();
 
-        private static readonly Action<ContainerBuilder> NoConfiguration = b => { };
-
         /// <summary>
         /// The tag applied to root scopes when no other tag is specified.
         /// </summary>
@@ -123,7 +121,39 @@ namespace Autofac.Core.Lifetime
         /// <returns>A new lifetime scope.</returns>
         public ILifetimeScope BeginLifetimeScope(object tag)
         {
-            return BeginLifetimeScope(tag, NoConfiguration);
+            CheckNotDisposed();
+
+            CheckTagIsUnique(tag);
+
+            // var registryBuilder = new CopyOnWriteRegistryBuilder(ComponentRegistry, () => CreateScopeRestrictedRegistry(tag, NoConfiguration));
+            // var registry = registryBuilder.Build();
+            var scope = new LifetimeScope(ComponentRegistry, this, tag);
+
+            // scope.Disposer.AddInstanceForDisposal(registry);
+            RaiseBeginning(scope);
+            return scope;
+        }
+
+        private void CheckTagIsUnique(object tag)
+        {
+            ISharingLifetimeScope parentScope = this;
+            while (parentScope != RootLifetimeScope)
+            {
+                if (parentScope.Tag.Equals(tag))
+                {
+                    throw new InvalidOperationException(
+                        string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.DuplicateTagDetected, tag));
+                }
+
+                parentScope = parentScope.ParentLifetimeScope;
+            }
+        }
+
+        [SuppressMessage("CA1030", "CA1030", Justification = "This method raises the event; it's not the event proper.")]
+        private void RaiseBeginning(ILifetimeScope scope)
+        {
+            var handler = ChildLifetimeScopeBeginning;
+            handler?.Invoke(this, new LifetimeScopeBeginningEventArgs(scope));
         }
 
         /// <summary>
@@ -190,28 +220,6 @@ namespace Autofac.Core.Lifetime
             RaiseBeginning(scope);
 
             return scope;
-        }
-
-        private void CheckTagIsUnique(object tag)
-        {
-            ISharingLifetimeScope parentScope = this;
-            while (parentScope != RootLifetimeScope)
-            {
-                if (parentScope.Tag.Equals(tag))
-                {
-                    throw new InvalidOperationException(
-                        string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.DuplicateTagDetected, tag));
-                }
-
-                parentScope = parentScope.ParentLifetimeScope;
-            }
-        }
-
-        [SuppressMessage("CA1030", "CA1030", Justification = "This method raises the event; it's not the event proper.")]
-        private void RaiseBeginning(ILifetimeScope scope)
-        {
-            var handler = ChildLifetimeScopeBeginning;
-            handler?.Invoke(this, new LifetimeScopeBeginningEventArgs(scope));
         }
 
         /// <summary>
