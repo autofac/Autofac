@@ -36,9 +36,9 @@ namespace Autofac.Core
     public class ComponentRegisteredEventArgs : EventArgs
     {
         /// <summary>
-        /// Gets the container into which the registration was made.
+        /// Gets the <see cref="IComponentRegistryBuilder" /> into which the registration was made.
         /// </summary>
-        public IComponentRegistryBuilder ComponentRegistry { get; }
+        public IComponentRegistryBuilder ComponentRegistryBuilder { get; }
 
         /// <summary>
         /// Gets the component registration.
@@ -48,15 +48,15 @@ namespace Autofac.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentRegisteredEventArgs"/> class.
         /// </summary>
-        /// <param name="registry">The container into which the registration
+        /// <param name="registryBuilder">The container into which the registration
         /// was made.</param>
         /// <param name="componentRegistration">The component registration.</param>
-        public ComponentRegisteredEventArgs(IComponentRegistryBuilder registry, IComponentRegistration componentRegistration)
+        public ComponentRegisteredEventArgs(IComponentRegistryBuilder registryBuilder, IComponentRegistration componentRegistration)
         {
-            if (registry == null) throw new ArgumentNullException(nameof(registry));
+            if (registryBuilder == null) throw new ArgumentNullException(nameof(registryBuilder));
             if (componentRegistration == null) throw new ArgumentNullException(nameof(componentRegistration));
 
-            ComponentRegistry = registry;
+            ComponentRegistryBuilder = registryBuilder;
             ComponentRegistration = componentRegistration;
         }
     }

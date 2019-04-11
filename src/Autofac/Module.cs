@@ -128,7 +128,7 @@ namespace Autofac
         {
             if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
             componentRegistry.Registered +=
-                (sender, e) => AttachToComponentRegistration(e.ComponentRegistry, e.ComponentRegistration);
+                (sender, e) => AttachToComponentRegistration(e.ComponentRegistryBuilder, e.ComponentRegistration);
         }
 
         private void AttachToSources(IComponentRegistryBuilder componentRegistry)

@@ -25,7 +25,6 @@
 
 using System;
 using Autofac.Core;
-using Autofac.Core.Registration;
 using Xunit;
 
 namespace Autofac.Test.Core
@@ -38,7 +37,7 @@ namespace Autofac.Test.Core
             var registry = Factory.CreateEmptyComponentRegistryBuilder();
             var registration = Factory.CreateSingletonObjectRegistration();
             var args = new ComponentRegisteredEventArgs(registry, registration);
-            Assert.Same(registry, args.ComponentRegistry);
+            Assert.Same(registry, args.ComponentRegistryBuilder);
             Assert.Same(registration, args.ComponentRegistration);
         }
 
