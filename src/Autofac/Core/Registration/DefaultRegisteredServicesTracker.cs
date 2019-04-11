@@ -10,6 +10,9 @@ using Autofac.Util;
 
 namespace Autofac.Core.Registration
 {
+    /// <summary>
+    /// Keeps track of the status of registered services.
+    /// </summary>
     internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredServicesTracker
     {
         /// <summary>

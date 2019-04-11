@@ -17,14 +17,14 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void Register_DoesNotAcceptNull()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
             Assert.Throws<ArgumentNullException>(() => builder.Register(null));
         }
 
         [Fact]
         public void WhenNoImplementationsRegistered_RegistrationsForServiceIncludeDynamicSources()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
             builder.AddRegistrationSource(new ObjectRegistrationSource());
             var registry = builder.Build();
 
@@ -39,7 +39,7 @@ namespace Autofac.Test.Core.Registration
             ComponentRegisteredEventArgs args = null;
             var eventCount = 0;
 
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
             builder.Registered += (sender, e) =>
             {
                 eventSender = sender;
@@ -66,7 +66,7 @@ namespace Autofac.Test.Core.Registration
             var r1 = Factory.CreateSingletonObjectRegistration();
             var r2 = Factory.CreateSingletonObjectRegistration();
 
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
 
             builder.Register(r1);
             builder.Register(r2);
@@ -81,7 +81,7 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void WhenNoImplementers_TryGetRegistrationReturnsFalse()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
             var registry = builder.Build();
 
             IComponentRegistration unused;
@@ -91,7 +91,7 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void WhenNoImplementerIsDirectlyRegistered_RegistrationCanBeProvidedDynamically()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
             builder.AddRegistrationSource(new ObjectRegistrationSource());
             var registry = builder.Build();
             IComponentRegistration registration;
@@ -103,7 +103,7 @@ namespace Autofac.Test.Core.Registration
         {
             var r = Factory.CreateSingletonObjectRegistration();
 
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
             builder.Register(r);
             builder.AddRegistrationSource(new ObjectRegistrationSource());
             var registry = builder.Build();
@@ -119,7 +119,7 @@ namespace Autofac.Test.Core.Registration
         {
             var r = Factory.CreateSingletonObjectRegistration();
 
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
             builder.Register(r);
             builder.AddRegistrationSource(new ObjectRegistrationSource());
             var registry = builder.Build();
@@ -139,7 +139,7 @@ namespace Autofac.Test.Core.Registration
         {
             var r = Factory.CreateSingletonObjectRegistration();
 
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
 
             builder.AddRegistrationSource(new ObjectRegistrationSource());
             builder.Register(r);
@@ -193,7 +193,7 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void WhenARegistrationSourceQueriesForTheSameService_ItIsNotRecursivelyQueried()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
             builder.AddRegistrationSource(new RecursiveRegistrationSource());
             var registry = builder.Build();
             Assert.False(registry.IsRegistered(new UniqueService()));
@@ -205,7 +205,7 @@ namespace Autofac.Test.Core.Registration
             var r1 = Factory.CreateSingletonObjectRegistration();
             var r2 = Factory.CreateSingletonObjectRegistration();
 
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
             builder.Register(r1);
             builder.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
             builder.Register(r2);
@@ -221,7 +221,7 @@ namespace Autofac.Test.Core.Registration
         {
             var first = new object();
             var second = new object();
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
 
             builder.AddRegistrationSource(new ObjectRegistrationSource(first));
             builder.AddRegistrationSource(new ObjectRegistrationSource(second));
@@ -238,20 +238,21 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void AfterResolvingAdapter_AddingMoreAdaptees_AddsMoreAdapters()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
+            builder.AddRegistrationSource(new MetaRegistrationSource());
             var metaService = new TypedService(typeof(Meta<object>));
 
             var first = RegistrationBuilder.ForType<object>().CreateRegistration();
             builder.Register(first);
 
-            using (var container = new ContainerBuilder(builder).Build())
+            using (var container = new ContainerBuilder(builder).Build(ContainerBuildOptions.ExcludeDefaultModules))
             {
                 var meta1 = container.ComponentRegistry.RegistrationsFor(metaService);
                 var firstMeta = meta1.First();
 
                 var second = RegistrationBuilder.ForType<object>().CreateRegistration();
 
-                using (var lifetimeScope = container.BeginLifetimeScope(x => x.RegisterComponent(second)))
+                using (var lifetimeScope = container.BeginLifetimeScope(x => x.ComponentRegistryBuilder.Register(second)))
                 {
                     var meta2 = lifetimeScope.ComponentRegistry.RegistrationsFor(metaService);
 
@@ -265,30 +266,34 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void AdaptingAGeneratedServiceYieldsASingleAdapter()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
-            var container = new ContainerBuilder(builder).Build();
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
+            builder.AddRegistrationSource(new MetaRegistrationSource());
+            builder.AddRegistrationSource(new CollectionRegistrationSource());
 
-            var registry = container.ComponentRegistry;
-            var metaCollections = registry.RegistrationsFor(new TypedService(typeof(Meta<IEnumerable<object>>)));
+            var registry = builder.Build();
+            var metaCollections = registry.RegistrationsFor(
+                new TypedService(typeof(Meta<IEnumerable<object>>)));
             Assert.Single(metaCollections);
         }
 
         [Fact]
         public void AdaptingAnAdapterYieldsASingleAdapter()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
             builder.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
-            var container = new ContainerBuilder(builder).Build();
+            builder.AddRegistrationSource(new MetaRegistrationSource());
+            builder.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
 
-            var registry = container.ComponentRegistry;
-            var metaCollections = registry.RegistrationsFor(new TypedService(typeof(Meta<Func<object>>)));
+            var registry = builder.Build();
+            var metaCollections = registry.RegistrationsFor(
+                new TypedService(typeof(Meta<Func<object>>)));
             Assert.Single(metaCollections);
         }
 
         [Fact]
         public void AfterResolvingAdapterType_AddingAnAdapter_AddsAdaptingComponents()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
             builder.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
             var adapterService = new TypedService(typeof(Func<object>));
 
@@ -306,10 +311,12 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void AddingConcreteImplementationWhenAdapterImplementationsExist_AddsChainedAdapters()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
+            builder.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
+            builder.AddRegistrationSource(new MetaRegistrationSource());
             builder.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
 
-            var container = new ContainerBuilder(builder).Build();
+            var container = new ContainerBuilder(builder).Build(ContainerBuildOptions.ExcludeDefaultModules);
 
             var chainedService = new TypedService(typeof(Meta<Func<object>>));
 
@@ -328,10 +335,11 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void WhenAdaptersAreAppliedButNoRegistrationsCreated_AddingAdapteesAddsAdapters()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
+            builder.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
             var adapterService = new TypedService(typeof(Func<object>));
 
-            var container = new ContainerBuilder(builder).Build();
+            var container = new ContainerBuilder(builder).Build(ContainerBuildOptions.ExcludeDefaultModules);
             container.ComponentRegistry.RegistrationsFor(adapterService);
 
             var lifetimeScope = container.BeginLifetimeScope(inner =>
@@ -344,7 +352,7 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void WhenASourceIsAddedToTheRegistry_TheSourceAddedEventIsRaised()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
 
             object sender = null;
             RegistrationSourceAddedEventArgs args = null;

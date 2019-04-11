@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
 using Xunit;
 
@@ -27,7 +28,10 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void SingletonsFromRegistrationSourceAreWrappedWithLifetimeDecorator()
         {
-            IComponentRegistryBuilder builder = new ScopeRestrictedRegistryBuilder(new object(), new Dictionary<string, object>());
+            var restrictedRootScopeLifetime = new MatchingScopeLifetime(new object());
+            var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
+
+            var builder = new ComponentRegistryBuilder(tracker, new Dictionary<string, object>());
 
             builder.AddRegistrationSource(new ObjectRegistrationSource());
 
@@ -41,7 +45,10 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void SingletonsRegisteredDirectlyAreWrappedWithLifetimeDecorator()
         {
-            IComponentRegistryBuilder builder = new ScopeRestrictedRegistryBuilder(new object(), new Dictionary<string, object>());
+            var restrictedRootScopeLifetime = new MatchingScopeLifetime(new object());
+            var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
+
+            var builder = new ComponentRegistryBuilder(tracker, new Dictionary<string, object>());
 
             builder.Register(ObjectRegistration);
 

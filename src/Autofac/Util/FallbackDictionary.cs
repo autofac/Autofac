@@ -19,7 +19,7 @@ namespace Autofac.Util
         /// <summary>
         /// The parent dictionary to which values should fall back when not present in the current dictionary.
         /// </summary>
-        private readonly IReadOnlyDictionary<TKey, TValue> _parent;
+        private readonly IDictionary<TKey, TValue> _parent;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FallbackDictionary{TKey, TValue}"/> class
@@ -35,9 +35,9 @@ namespace Autofac.Util
         /// with a specified parent.
         /// </summary>
         /// <param name="parent">
-        ///     The parent dictionary to which values should fall back when not present in the current dictionary.
+        /// The parent dictionary to which values should fall back when not present in the current dictionary.
         /// </param>
-        public FallbackDictionary(IReadOnlyDictionary<TKey, TValue> parent)
+        public FallbackDictionary(IDictionary<TKey, TValue> parent)
         {
             if (parent == null)
             {

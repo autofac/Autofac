@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Autofac.Core;
-using Autofac.Core.Registration;
+﻿using Autofac.Core;
 using Autofac.Test.Scenarios.RegistrationSources;
 using Xunit;
 
@@ -15,12 +12,12 @@ namespace Autofac.Test.Core.Lifetime
             const string parentInstance = "p";
             const string childInstance = "c";
 
-            IComponentRegistryBuilder componentRegistryBuilder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
-            componentRegistryBuilder.AddRegistrationSource(new ObjectRegistrationSource(parentInstance));
+            var builder = new ContainerBuilder();
+            builder.ComponentRegistryBuilder.AddRegistrationSource(new ObjectRegistrationSource(parentInstance));
 
-            var parent = new ContainerBuilder(componentRegistryBuilder).Build();
-            var child = parent.BeginLifetimeScope(builder =>
-                    builder.RegisterSource(new ObjectRegistrationSource(childInstance)));
+            var parent = builder.Build();
+            var child = parent.BeginLifetimeScope(lifetimeScopeBuilder =>
+                    lifetimeScopeBuilder.RegisterSource(new ObjectRegistrationSource(childInstance)));
             var fromChild = child.Resolve<object>();
             Assert.Same(childInstance, fromChild);
         }
@@ -42,7 +39,7 @@ namespace Autofac.Test.Core.Lifetime
             var builder = new ContainerBuilder();
             var container = builder.Build();
             var nestedRegistration = Mocks.GetComponentRegistration();
-            var child = container.BeginLifetimeScope(x => x.RegisterComponent(nestedRegistration));
+            var child = container.BeginLifetimeScope(x => x.ComponentRegistryBuilder.Register(nestedRegistration));
             child.Dispose();
             Assert.True(nestedRegistration.IsDisposed);
         }
@@ -68,20 +65,6 @@ namespace Autofac.Test.Core.Lifetime
                 Assert.True(configured.ComponentRegistry.TryGetRegistration(service, out reg), "The registration should have been found in the configured scope.");
                 Assert.Equal(typeof(Person), reg.Activator.LimitType);
             }
-        }
-
-        internal class DependsOnRegisteredInstance
-        {
-            public DependsOnRegisteredInstance(object instance)
-            {
-                this.Instance = instance;
-            }
-
-            internal object Instance { get; set; }
-        }
-
-        public class HandlerException : Exception
-        {
         }
 
         public class Person

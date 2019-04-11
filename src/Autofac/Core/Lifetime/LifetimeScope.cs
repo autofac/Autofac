@@ -26,7 +26,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -227,7 +226,13 @@ namespace Autofac.Core.Lifetime
         /// property of the child scope.</remarks>
         private IComponentRegistryBuilder CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction)
         {
-            var builder = new ContainerBuilder(new FallbackDictionary<string, object>(new ReadOnlyDictionary<string, object>(ComponentRegistry.Properties)));
+            var restrictedRootScopeLifetime = new MatchingScopeLifetime(tag);
+            var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
+
+            var fallbackProperties = new FallbackDictionary<string, object>(ComponentRegistry.Properties);
+            var registryBuilder = new ComponentRegistryBuilder(tracker, fallbackProperties);
+
+            var builder = new ContainerBuilder(fallbackProperties, registryBuilder);
 
             foreach (var source in ComponentRegistry.Sources
                 .Where(src => src.IsAdapterForIndividualComponents))
@@ -247,9 +252,8 @@ namespace Autofac.Core.Lifetime
 
             configurationAction(builder);
 
-            var locals = new ScopeRestrictedRegistryBuilder(tag, builder.Properties);
-            builder.UpdateRegistry(locals);
-            return locals;
+            builder.UpdateRegistry(registryBuilder);
+            return registryBuilder;
         }
 
         /// <summary>

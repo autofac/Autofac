@@ -7,6 +7,9 @@ using Autofac.Core.Registration;
 
 namespace Autofac.Core
 {
+    /// <summary>
+    /// The <see cref="ComponentRegistration" /> for resolving the current <see cref="ILifetimeScope"/>.
+    /// </summary>
     internal sealed class SelfComponentRegistration : ComponentRegistration
     {
         public SelfComponentRegistration()

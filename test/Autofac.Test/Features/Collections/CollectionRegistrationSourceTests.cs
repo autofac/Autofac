@@ -110,7 +110,7 @@ namespace Autofac.Test.Features.Collections
             var c = builder.Build();
             Assert.Single(c.Resolve<IEnumerable<string>>());
 
-            var lifetimeScope = c.BeginLifetimeScope(inner => inner.RegisterComponent(RegistrationBuilder.ForDelegate((ctx, p) => "World").CreateRegistration()));
+            var lifetimeScope = c.BeginLifetimeScope(inner => inner.ComponentRegistryBuilder.Register(RegistrationBuilder.ForDelegate((ctx, p) => "World").CreateRegistration()));
 
             Assert.Equal(2, lifetimeScope.Resolve<IEnumerable<string>>().Count());
         }

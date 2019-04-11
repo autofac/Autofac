@@ -22,7 +22,7 @@ namespace Autofac.Test
         [Fact]
         public void LoadsRegistrations()
         {
-            IComponentRegistryBuilder builder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
             new ObjectModule().Configure(builder);
             var registry = builder.Build();
 

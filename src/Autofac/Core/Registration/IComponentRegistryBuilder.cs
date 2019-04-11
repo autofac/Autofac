@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Autofac.Core.Registration
 {
+    /// <summary>
+    /// Used to build a <see cref="IComponentRegistry" />.
+    /// </summary>
     public interface IComponentRegistryBuilder : IDisposable
     {
         /// <summary>

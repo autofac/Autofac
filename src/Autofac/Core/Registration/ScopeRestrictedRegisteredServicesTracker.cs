@@ -5,7 +5,7 @@ using Autofac.Core.Lifetime;
 namespace Autofac.Core.Registration
 {
     /// <summary>
-    /// An <see cref="IRegisteredServicesTracker" /> where the singletons are scoped with the provided <see cref="IComponentLifetime" />.
+    /// A <see cref="IRegisteredServicesTracker" /> where the singletons are scoped with the provided <see cref="IComponentLifetime" />.
     /// </summary>
     internal class ScopeRestrictedRegisteredServicesTracker : DefaultRegisteredServicesTracker
     {
