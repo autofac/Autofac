@@ -174,8 +174,30 @@ namespace Autofac.Util
 
         private static bool ParameterCompatibleWithTypeConstraint(Type parameter, Type constraint)
         {
-            return constraint.GetTypeInfo().IsAssignableFrom(parameter.GetTypeInfo()) ||
-                   Traverse.Across(parameter, p => p.GetTypeInfo().BaseType)
+            if (constraint.GetTypeInfo().IsAssignableFrom(parameter.GetTypeInfo()))
+            {
+                return true;
+            }
+
+            var allGenericParametersMatch = false;
+            var baseType = parameter.GetTypeInfo().BaseType;
+            if (!constraint.GetTypeInfo().IsInterface &&
+                baseType.GetTypeInfo().IsGenericType &&
+                baseType.GenericTypeArguments.Length > 0 &&
+                baseType.GenericTypeArguments.Length == constraint.GenericTypeArguments.Length)
+            {
+                allGenericParametersMatch = true;
+                for (int i = 0; i < baseType.GenericTypeArguments.Length; i++)
+                {
+                    var paramArg = baseType.GenericTypeArguments[i];
+                    var constraintArg = constraint.GenericTypeArguments[i];
+
+                    allGenericParametersMatch &= paramArg.IsClosedTypeOf(constraintArg.GetGenericTypeDefinition());
+                }
+            }
+
+            return allGenericParametersMatch ||
+                Traverse.Across(parameter, p => p.GetTypeInfo().BaseType)
                        .Concat(parameter.GetTypeInfo().ImplementedInterfaces)
                        .Any(p => ParameterEqualsConstraint(p, constraint));
         }
