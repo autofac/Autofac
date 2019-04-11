@@ -122,14 +122,9 @@ namespace Autofac.Core.Lifetime
         public ILifetimeScope BeginLifetimeScope(object tag)
         {
             CheckNotDisposed();
-
             CheckTagIsUnique(tag);
 
-            // var registryBuilder = new CopyOnWriteRegistryBuilder(ComponentRegistry, () => CreateScopeRestrictedRegistry(tag, NoConfiguration));
-            // var registry = registryBuilder.Build();
             var scope = new LifetimeScope(ComponentRegistry, this, tag);
-
-            // scope.Disposer.AddInstanceForDisposal(registry);
             RaiseBeginning(scope);
             return scope;
         }
