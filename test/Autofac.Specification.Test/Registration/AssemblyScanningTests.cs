@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using Xunit;
 
@@ -14,10 +13,9 @@ namespace Autofac.Specification.Test.Registration
         [Fact]
         public void OnlyServicesAssignableToASpecificTypeAreRegisteredFromAssemblies()
         {
-            var container =
-                new ContainerBuilder()
-                    .Build()
-                    .BeginLifetimeScope(b => b.RegisterAssemblyTypes(this.GetType().GetTypeInfo().Assembly).AssignableTo(typeof(IMyService)));
+            var container = new ContainerBuilder().Build().BeginLifetimeScope(b =>
+                b.RegisterAssemblyTypes(this.GetType().GetTypeInfo().Assembly)
+                    .AssignableTo(typeof(IMyService)));
 
             Assert.Single(container.ComponentRegistry.Registrations);
             object obj;
