@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Autofac.Test.Core.Registration
 {
-    public sealed class ScopeRestrictedRegistryTests
+    public sealed class ScopeRestrictedRegisteredServicesTrackerTests
     {
         private static readonly IComponentRegistration ObjectRegistration =
             RegistrationBuilder.ForType<object>().SingleInstance().CreateRegistration();
