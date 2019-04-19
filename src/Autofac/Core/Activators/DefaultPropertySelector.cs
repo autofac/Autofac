@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace Autofac.Core
@@ -43,6 +44,7 @@ namespace Autofac.Core
         /// <param name="propertyInfo">Property to be injected.</param>
         /// <param name="instance">Instance that has the property to be injected.</param>
         /// <returns>Whether property should be injected.</returns>
+        [SuppressMessage("CA1031", "CA1031", Justification = "Issue #799: If getting the property value throws an exception then assume it's set and skip it.")]
         public virtual bool InjectProperty(PropertyInfo propertyInfo, object instance)
         {
             if (!propertyInfo.CanWrite || propertyInfo.SetMethod?.IsPublic != true)

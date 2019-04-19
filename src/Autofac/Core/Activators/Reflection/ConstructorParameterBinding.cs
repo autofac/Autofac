@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -106,6 +107,7 @@ namespace Autofac.Core.Activators.Reflection
         /// Invoke the constructor with the parameter bindings.
         /// </summary>
         /// <returns>The constructed instance.</returns>
+        [SuppressMessage("CA1031", "CA1031", Justification = "General exception gets rethrown in a DependencyResolutionException.")]
         public object Instantiate()
         {
             if (!CanInstantiate)

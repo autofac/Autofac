@@ -111,6 +111,7 @@ namespace Autofac.Core.Resolving
 
         private bool NewInstanceActivated => _newInstance != null;
 
+        [SuppressMessage("CA1031", "CA1031", Justification = "General exception gets rethrown in a PropagateActivationException.")]
         private object Activate(IEnumerable<Parameter> parameters, out object decoratorTarget)
         {
             ComponentRegistration.RaisePreparing(this, ref parameters);
