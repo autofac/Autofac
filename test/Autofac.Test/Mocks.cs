@@ -18,11 +18,6 @@ namespace Autofac.Test
             return new MockConstructorSelector();
         }
 
-        public static Startable GetStartable()
-        {
-            return new Startable();
-        }
-
         public static MockComponentRegistration GetComponentRegistration()
         {
             return new MockComponentRegistration();
@@ -41,16 +36,6 @@ namespace Autofac.Test
             public ConstructorParameterBinding SelectConstructorBinding(ConstructorParameterBinding[] constructorBindings, IEnumerable<Parameter> parameters)
             {
                 return null;
-            }
-        }
-
-        internal class Startable : IStartable
-        {
-            public int StartCount { get; private set; }
-
-            public void Start()
-            {
-                StartCount++;
             }
         }
 
