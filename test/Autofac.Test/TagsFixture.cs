@@ -1,48 +1,19 @@
 using System.Collections.Generic;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
+using Autofac.Test.Util;
 using Xunit;
 
 namespace Autofac.Test
 {
     public class TagsFixture
     {
-        public class HomeController
-        {
-        }
-
         public enum Tag
         {
             None,
             Outer,
             Middle,
             Inner,
-        }
-
-        [Fact]
-        public void OuterSatisfiesInnerResolutions()
-        {
-            var builder = new ContainerBuilder();
-
-            var instantiations = 0;
-
-            builder.Register(c =>
-            {
-                instantiations++;
-                return "";
-            }).InstancePerMatchingLifetimeScope(LifetimeScope.RootTag);
-
-            var root = builder.Build();
-
-            var middle = root.BeginLifetimeScope(Tag.Middle);
-
-            var inner = middle.BeginLifetimeScope(Tag.Inner);
-
-            middle.Resolve<string>();
-            root.Resolve<string>();
-            inner.Resolve<string>();
-
-            Assert.Equal(1, instantiations);
         }
 
         [Fact]
@@ -70,34 +41,19 @@ namespace Autofac.Test
         }
 
         [Fact]
-        public void InnerRegistrationNotAccessibleToOuter()
+        public void CollectionsAreTaggable()
         {
             var builder = new ContainerBuilder();
-
-            builder.Register(c => "")
-                .InstancePerMatchingLifetimeScope(Tag.Middle);
-
-            var outer = builder.Build();
-
-            Assert.True(outer.IsRegistered<string>());
-            Assert.Throws<DependencyResolutionException>(() => outer.Resolve<string>());
-        }
-
-        [Fact]
-        public void TaggedRegistrationsAccessibleThroughNames()
-        {
-            var name = "Name";
-
-            var builder = new ContainerBuilder();
-
-            builder.Register(c => "")
-                .InstancePerMatchingLifetimeScope(LifetimeScope.RootTag)
-                .Named<string>(name);
+            builder.RegisterType<object>()
+                .InstancePerMatchingLifetimeScope("tag");
 
             var outer = builder.Build();
+            var inner = outer.BeginLifetimeScope("tag");
 
-            var s = outer.ResolveNamed<string>(name);
-            Assert.NotNull(s);
+            var coll = inner.Resolve<IList<object>>();
+            Assert.Equal(1, coll.Count);
+
+            Assert.Throws<DependencyResolutionException>(() => outer.Resolve<IList<object>>());
         }
 
         [Fact]
@@ -127,31 +83,6 @@ namespace Autofac.Test
         }
 
         [Fact]
-        public void ReflectiveRegistration()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterType(typeof(object)).InstancePerMatchingLifetimeScope(LifetimeScope.RootTag);
-            var container = builder.Build();
-            Assert.NotNull(container.Resolve<object>());
-        }
-
-        [Fact]
-        public void CollectionsAreTaggable()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<object>()
-                .InstancePerMatchingLifetimeScope("tag");
-
-            var outer = builder.Build();
-            var inner = outer.BeginLifetimeScope("tag");
-
-            var coll = inner.Resolve<IList<object>>();
-            Assert.Equal(1, coll.Count);
-
-            Assert.Throws<DependencyResolutionException>(() => outer.Resolve<IList<object>>());
-        }
-
-        [Fact]
         public void GenericsAreTaggable()
         {
             var builder = new ContainerBuilder();
@@ -169,6 +100,20 @@ namespace Autofac.Test
         }
 
         [Fact]
+        public void InnerRegistrationNotAccessibleToOuter()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.Register(c => "")
+                .InstancePerMatchingLifetimeScope(Tag.Middle);
+
+            var outer = builder.Build();
+
+            Assert.True(outer.IsRegistered<string>());
+            Assert.Throws<DependencyResolutionException>(() => outer.Resolve<string>());
+        }
+
+        [Fact]
         public void MatchesAgainstMultipleScopes()
         {
             const string tag1 = "Tag1";
@@ -183,6 +128,62 @@ namespace Autofac.Test
 
             lifetimeScope = container.BeginLifetimeScope(tag2);
             Assert.NotNull(lifetimeScope.Resolve<object>());
+        }
+
+        [Fact]
+        public void OuterSatisfiesInnerResolutions()
+        {
+            var builder = new ContainerBuilder();
+
+            var instantiations = 0;
+
+            builder.Register(c =>
+            {
+                instantiations++;
+                return "";
+            }).InstancePerMatchingLifetimeScope(LifetimeScope.RootTag);
+
+            var root = builder.Build();
+
+            var middle = root.BeginLifetimeScope(Tag.Middle);
+
+            var inner = middle.BeginLifetimeScope(Tag.Inner);
+
+            middle.Resolve<string>();
+            root.Resolve<string>();
+            inner.Resolve<string>();
+
+            Assert.Equal(1, instantiations);
+        }
+
+        [Fact]
+        public void ReflectiveRegistration()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType(typeof(object)).InstancePerMatchingLifetimeScope(LifetimeScope.RootTag);
+            var container = builder.Build();
+            Assert.NotNull(container.Resolve<object>());
+        }
+
+        [Fact]
+        public void TaggedRegistrationsAccessibleThroughNames()
+        {
+            var name = "Name";
+
+            var builder = new ContainerBuilder();
+
+            builder.Register(c => "")
+                .InstancePerMatchingLifetimeScope(LifetimeScope.RootTag)
+                .Named<string>(name);
+
+            var outer = builder.Build();
+
+            var s = outer.ResolveNamed<string>(name);
+            Assert.NotNull(s);
+        }
+
+        public class HomeController
+        {
         }
     }
 }

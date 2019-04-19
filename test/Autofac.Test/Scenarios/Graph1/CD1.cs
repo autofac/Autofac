@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Autofac.Test.Util;
 
 namespace Autofac.Test.Scenarios.Graph1
 {
@@ -9,14 +8,14 @@ namespace Autofac.Test.Scenarios.Graph1
     // and E depends on IC1 and B1.
     public class CD1 : DisposeTracker, IC1, ID1
     {
+        public CD1(A1 a, B1 b)
+        {
+            this.A = a;
+            this.B = b;
+        }
+
         public A1 A { get; private set; }
 
         public B1 B { get; private set; }
-
-        public CD1(A1 a, B1 b)
-        {
-            A = a;
-            B = b;
-        }
     }
 }
