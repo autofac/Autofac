@@ -30,8 +30,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using Autofac.Builder;
-using Autofac.Core.Activators;
-using Autofac.Core.Activators.Delegate;
 using Autofac.Features.Decorators;
 
 namespace Autofac.Core.Resolving
@@ -69,7 +67,7 @@ namespace Autofac.Core.Resolving
                     services.AppendLine(s.Description);
                 }
 
-                var message = String.Format(CultureInfo.CurrentCulture, ComponentActivationResources.UnableToLocateLifetimeScope, registration.Activator.LimitType, services);
+                var message = string.Format(CultureInfo.CurrentCulture, ComponentActivationResources.UnableToLocateLifetimeScope, registration.Activator.LimitType, services);
                 throw new DependencyResolutionException(message, ex);
             }
         }
@@ -77,7 +75,7 @@ namespace Autofac.Core.Resolving
         public object Execute()
         {
             if (_executed)
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, ComponentActivationResources.ActivationAlreadyExecuted, this.ComponentRegistration));
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ComponentActivationResources.ActivationAlreadyExecuted, this.ComponentRegistration));
 
             _executed = true;
 
@@ -164,7 +162,7 @@ namespace Autofac.Core.Resolving
                 innerException = exception.InnerException;
             }
 
-            var result = new DependencyResolutionException(String.Format(CultureInfo.CurrentCulture, ComponentActivationResources.ErrorDuringActivation, activatorChain), innerException);
+            var result = new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, ComponentActivationResources.ErrorDuringActivation, activatorChain), innerException);
             result.Data[ActivatorChainExceptionData] = activatorChain;
             return result;
         }
