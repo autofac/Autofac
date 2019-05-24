@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -31,9 +32,18 @@ using Autofac.Util;
 
 namespace Autofac.Core.Activators.Reflection
 {
-    internal class AutowiringPropertyInjector
+    internal static class AutowiringPropertyInjector
     {
         public const string InstanceTypeNamedParameter = "Autofac.AutowiringPropertyInjector.InstanceType";
+
+        private static readonly ConcurrentDictionary<PropertyInfo, Action<object, object>> PropertySetters =
+            new ConcurrentDictionary<PropertyInfo, Action<object, object>>();
+
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> InjectableProperties =
+            new ConcurrentDictionary<Type, PropertyInfo[]>();
+
+        private static readonly MethodInfo CallPropertySetterOpenGenericMethod =
+            typeof(AutowiringPropertyInjector).GetTypeInfo().GetDeclaredMethod(nameof(CallPropertySetter));
 
         public static void InjectProperties(IComponentContext context, object instance, IPropertySelector propertySelector, IEnumerable<Parameter> parameters)
         {
@@ -57,12 +67,49 @@ namespace Autofac.Core.Activators.Reflection
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            var instanceType = instance.GetType();
+            var resolveParameters = parameters as Parameter[] ?? parameters.ToArray();
 
-            foreach (var property in instanceType
-                .GetRuntimeProperties()
-                .Where(pi => pi.CanWrite))
+            var instanceType = instance.GetType();
+            var injectableProperties = InjectableProperties.GetOrAdd(instanceType, type => GetInjectableProperties(type).ToArray());
+
+            for (var index = 0; index < injectableProperties.Length; index++)
             {
+                var property = injectableProperties[index];
+
+                if (!propertySelector.InjectProperty(property, instance))
+                {
+                    continue;
+                }
+
+                var setParameter = property.SetMethod.GetParameters()[0];
+                var valueProvider = (Func<object>)null;
+                var parameter = resolveParameters.FirstOrDefault(p => p.CanSupplyValue(setParameter, context, out valueProvider));
+                if (parameter != null)
+                {
+                    var setter = PropertySetters.GetOrAdd(property, MakeFastPropertySetter);
+                    setter(instance, valueProvider());
+                    continue;
+                }
+
+                var propertyService = new TypedService(property.PropertyType);
+                var instanceTypeParameter = new NamedParameter(InstanceTypeNamedParameter, instanceType);
+                if (context.TryResolveService(propertyService, new Parameter[] { instanceTypeParameter }, out var propertyValue))
+                {
+                    var setter = PropertySetters.GetOrAdd(property, MakeFastPropertySetter);
+                    setter(instance, propertyValue);
+                }
+            }
+        }
+
+        private static IEnumerable<PropertyInfo> GetInjectableProperties(Type instanceType)
+        {
+            foreach (var property in instanceType.GetRuntimeProperties())
+            {
+                if (!property.CanWrite)
+                {
+                    continue;
+                }
+
                 var propertyType = property.PropertyType;
 
                 if (propertyType.GetTypeInfo().IsValueType && !propertyType.GetTypeInfo().IsEnum)
@@ -85,28 +132,27 @@ namespace Autofac.Core.Activators.Reflection
                     continue;
                 }
 
-                if (!propertySelector.InjectProperty(property, instance))
-                {
-                    continue;
-                }
-
-                var setParameter = property.SetMethod.GetParameters().First();
-                var valueProvider = (Func<object>)null;
-                var parameter = parameters.FirstOrDefault(p => p.CanSupplyValue(setParameter, context, out valueProvider));
-                if (parameter != null)
-                {
-                    property.SetValue(instance, valueProvider(), null);
-                    continue;
-                }
-
-                object propertyValue;
-                var propertyService = new TypedService(propertyType);
-                var instanceTypeParameter = new NamedParameter(InstanceTypeNamedParameter, instanceType);
-                if (context.TryResolveService(propertyService, new Parameter[] { instanceTypeParameter }, out propertyValue))
-                {
-                    property.SetValue(instance, propertyValue, null);
-                }
+                yield return property;
             }
         }
+
+        private static Action<object, object> MakeFastPropertySetter(PropertyInfo propertyInfo)
+        {
+            var setMethod = propertyInfo.SetMethod;
+            var typeInput = setMethod.DeclaringType;
+            var parameters = setMethod.GetParameters();
+            var parameterType = parameters[0].ParameterType;
+
+            // Create a delegate TDeclaringType -> { TDeclaringType.Property = TValue; }
+            var propertySetterAsAction = setMethod.CreateDelegate(typeof(Action<,>).MakeGenericType(typeInput, parameterType));
+            var callPropertySetterClosedGenericMethod = CallPropertySetterOpenGenericMethod.MakeGenericMethod(typeInput, parameterType);
+            var callPropertySetterDelegate = callPropertySetterClosedGenericMethod.CreateDelegate(typeof(Action<object, object>), propertySetterAsAction);
+
+            return (Action<object, object>)callPropertySetterDelegate;
+        }
+
+        private static void CallPropertySetter<TDeclaringType, TValue>(
+            Action<TDeclaringType, TValue> setter, object target, object value) =>
+                setter((TDeclaringType)target, (TValue)value);
     }
 }

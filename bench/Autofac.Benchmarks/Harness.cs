@@ -101,5 +101,8 @@ namespace Autofac.Benchmarks
         {
             BenchmarkRunner.Run<EnumerableResolveBenchmark>();
         }
+
+        [Fact]
+        public void PropertyInjection() => BenchmarkRunner.Run<PropertyInjectionBenchmark>();
     }
 }
