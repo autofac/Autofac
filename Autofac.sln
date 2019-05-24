@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5A54DF18-E3F3-4929-876D-00650A15763E}"
 EndProject
@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{DEA4A8C6-D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6B324E70-6C86-4E09-B150-CAE9DD2BADCC}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		appveyor.yml = appveyor.yml
 		build.ps1 = build.ps1
 		global.json = global.json
@@ -35,7 +36,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Autofac.Benchmarks", "bench
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Autofac.Test.Scenarios.ScannedAssembly", "test\Autofac.Test.Scenarios.ScannedAssembly\Autofac.Test.Scenarios.ScannedAssembly.csproj", "{49FB428A-28D6-4A60-AF29-B9D5F7552041}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.Specification.Test", "test\Autofac.Specification.Test\Autofac.Specification.Test.csproj", "{39610DBF-4CAF-45FD-8B9F-D8928D76066A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Autofac.Specification.Test", "test\Autofac.Specification.Test\Autofac.Specification.Test.csproj", "{39610DBF-4CAF-45FD-8B9F-D8928D76066A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
