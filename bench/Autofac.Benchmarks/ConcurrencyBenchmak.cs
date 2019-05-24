@@ -26,10 +26,10 @@ namespace Autofac.Benchmarks
             _container = builder.Build();
         }
 
-        [Params(10, 100, 1_000)]
+        [Params(10 /*, 100, 1_000 */)]
         public int ResolveTaskCount { get; set; }
 
-        [Params(1_000, 10_000)]
+        [Params(10 /*, 1_000, 10_000 */)]
         public int ResolvesPerTask { get; set; }
 
         [Benchmark]
