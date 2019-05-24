@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
@@ -9,6 +8,8 @@ using Xunit;
 
 namespace Autofac.Test.Builder
 {
+    // It may or may not be interesting long-term to ignore value type arrays/lists
+    // so the tests around that are not part of the specification.
     public class PropertyInjectionTests
     {
         [Fact]
@@ -23,52 +24,6 @@ namespace Autofac.Test.Builder
             Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, null, propertySelector, parameters));
             Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, instance, null, parameters));
             Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, instance, propertySelector, null));
-        }
-
-        [Fact]
-        public void PropertySpecifiedAsResolveParameterNoRegistrationPropertySpecified()
-        {
-            // Issue #289 tried to get parameters to work as passed in directly to resolve
-            // but issue #789 found a problem with trying to do that. Now it's just
-            // manual property injection that allows parameters.
-            var builder = new ContainerBuilder();
-            builder.RegisterType<ConstructorParamNotAttachedToProperty>().WithParameter(TypedParameter.From("ctor"));
-            var container = builder.Build();
-
-            var instance = container.Resolve<ConstructorParamNotAttachedToProperty>();
-            Assert.Null(instance.Name);
-            container.InjectProperties(instance, new NamedPropertyParameter("Name", "value"));
-            Assert.Equal("value", instance.Name);
-        }
-
-        [Fact]
-        public void PropertySpecifiedAsResolveParameterWhenAutowired()
-        {
-            // Issue #289 tried to get parameters to work as passed in directly to resolve
-            // but issue #789 found a problem with trying to do that. Now it's just
-            // manual property injection that allows parameters.
-            var builder = new ContainerBuilder();
-            builder.RegisterType<ConstructorParamNotAttachedToProperty>().WithParameter(TypedParameter.From("ctor")).PropertiesAutowired();
-            var container = builder.Build();
-
-            var instance = container.Resolve<ConstructorParamNotAttachedToProperty>(new NamedPropertyParameter("Name", "value"));
-            Assert.Equal("ctor", instance._id);
-            Assert.Equal("value", instance.Name);
-        }
-
-        [Fact]
-        public void PropertySpecifiedAsResolveParameterWhenAutowiredMayBeBothConstructorAndProperty()
-        {
-            // Issue #289 tried to get parameters to work as passed in directly to resolve
-            // but issue #789 found a problem with trying to do that. Now it's just
-            // manual property injection that allows parameters.
-            var builder = new ContainerBuilder();
-            builder.RegisterType<ConstructorParamNotAttachedToProperty>().PropertiesAutowired();
-            var container = builder.Build();
-
-            var instance = container.Resolve<ConstructorParamNotAttachedToProperty>(TypedParameter.From("test"));
-            Assert.Equal("test", instance._id);
-            Assert.Equal("test", instance.Name);
         }
 
         [Fact]
@@ -151,50 +106,6 @@ namespace Autofac.Test.Builder
             Assert.Equal(expected, instance.ByteList);
         }
 
-        [Fact]
-        public void SetterInjectionPrivateGet()
-        {
-            var val = "Value";
-
-            var builder = new ContainerBuilder();
-            builder.RegisterInstance(val);
-            builder.RegisterType<SplitAccess>().PropertiesAutowired();
-
-            var container = builder.Build();
-            var instance = container.Resolve<SplitAccess>();
-
-            Assert.NotNull(instance);
-            Assert.True(instance.SetterCalled);
-            Assert.False(instance.GetterCalled);
-        }
-
-        [Fact]
-        public void TypedParameterForConstructorShouldNotAttachToProperty()
-        {
-            // Issue #789: If the parameters automatically flow from resolve
-            // to property injection when PropertiesAutowired isn't specified
-            // then properties get inadvertently resolved.
-            var cb = new ContainerBuilder();
-            cb.RegisterType<ConstructorParamNotAttachedToProperty>();
-            var container = cb.Build();
-            var resolved = container.Resolve<ConstructorParamNotAttachedToProperty>(TypedParameter.From("test"));
-            Assert.Equal("test", resolved._id);
-            Assert.Null(resolved.Name);
-        }
-
-        private class ConstructorParamNotAttachedToProperty
-        {
-            [SuppressMessage("SA1401", "SA1401")]
-            public string _id = null;
-
-            public ConstructorParamNotAttachedToProperty(string id)
-            {
-                this._id = id;
-            }
-
-            public string Name { get; set; }
-        }
-
         public class HasNullableValueTypeArray
         {
             public HasNullableValueTypeArray()
@@ -265,35 +176,6 @@ namespace Autofac.Test.Builder
             public List<byte> ByteList { get; set; }
 
             public IList<byte> ByteListInterface { get; set; }
-        }
-
-        public class SplitAccess
-        {
-            public bool GetterCalled
-            {
-                get;
-                set;
-            }
-
-            public bool SetterCalled
-            {
-                get;
-                set;
-            }
-
-            public string Value
-            {
-                private get
-                {
-                    this.GetterCalled = true;
-                    return null;
-                }
-
-                set
-                {
-                    this.SetterCalled = true;
-                }
-            }
         }
     }
 }

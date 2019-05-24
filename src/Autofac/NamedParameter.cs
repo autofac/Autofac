@@ -30,7 +30,7 @@ namespace Autofac
 {
     /// <summary>
     /// A parameter identified by name. When applied to a reflection-based
-    /// component, <see cref="NamedParameter.Name"/> will be matched against
+    /// component, <see cref="Name"/> will be matched against
     /// the name of the component's constructor arguments. When applied to
     /// a delegate-based component, the parameter can be accessed using
     /// <see cref="ParameterExtensions.Named{T}"/>.
@@ -60,7 +60,7 @@ namespace Autofac
         /// <summary>
         /// Gets the name of the parameter.
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NamedParameter"/> class.
@@ -68,9 +68,7 @@ namespace Autofac
         /// <param name="name">The name of the parameter.</param>
         /// <param name="value">The parameter value.</param>
         public NamedParameter(string name, object value)
-            : base(value, pi => pi.Name == name)
-        {
-            Name = Enforce.ArgumentNotNullOrEmpty(name, "name");
-        }
+            : base(value, pi => pi.Name == name) =>
+                Name = Enforce.ArgumentNotNullOrEmpty(name, "name");
     }
 }

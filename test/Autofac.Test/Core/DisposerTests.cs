@@ -1,26 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Autofac.Core;
-using Autofac.Test.Scenarios.Graph1;
+using Autofac.Test.Util;
 using Xunit;
 
 namespace Autofac.Test.Core
 {
     public class DisposerTests
     {
-        [Fact]
-        public void OnDispose_DisposerDisposesContainedInstances()
-        {
-            var instance = new DisposeTracker();
-            var disposer = new Disposer();
-            disposer.AddInstanceForDisposal(instance);
-            Assert.False(instance.IsDisposed);
-            disposer.Dispose();
-            Assert.True(instance.IsDisposed);
-        }
-
         [Fact]
         public void DisposerDisposesContainedInstances_InReverseOfOrderAdded()
         {
@@ -39,6 +26,17 @@ namespace Autofac.Test.Core
             disposer.Dispose();
 
             Assert.Same(instance1, lastDisposed);
+        }
+
+        [Fact]
+        public void OnDispose_DisposerDisposesContainedInstances()
+        {
+            var instance = new DisposeTracker();
+            var disposer = new Disposer();
+            disposer.AddInstanceForDisposal(instance);
+            Assert.False(instance.IsDisposed);
+            disposer.Dispose();
+            Assert.True(instance.IsDisposed);
         }
     }
 }

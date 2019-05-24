@@ -123,7 +123,11 @@ namespace Autofac.Specification.Test.Registration
 
             protected override void Load(ContainerBuilder builder)
             {
-                if (builder == null) throw new ArgumentNullException(nameof(builder));
+                if (builder == null)
+                {
+                    throw new ArgumentNullException(nameof(builder));
+                }
+
                 this.ConfigureCalled = true;
                 builder.RegisterType<object>().SingleInstance();
             }

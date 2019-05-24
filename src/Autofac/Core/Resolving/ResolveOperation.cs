@@ -74,6 +74,7 @@ namespace Autofac.Core.Resolving
         /// </summary>
         /// <param name="registration">The registration.</param>
         /// <param name="parameters">Parameters for the instance.</param>
+        [SuppressMessage("CA1031", "CA1031", Justification = "General exception gets rethrown in a DependencyResolutionException.")]
         public object Execute(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
             object result;

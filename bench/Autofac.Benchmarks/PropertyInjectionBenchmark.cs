@@ -1,12 +1,9 @@
-﻿using BenchmarkDotNet.Attributes;
-using System;
+﻿using System;
+using BenchmarkDotNet.Attributes;
 
 namespace Autofac.Benchmarks
 {
-    /// <summary>
-    /// Tests the performance of retrieving a (reasonably) deeply-nested object graph.
-    /// </summary>
-    public class DeepGraphResolveBenchmark
+    public class PropertyInjectionBenchmark
     {
         private IContainer _container;
 
@@ -14,11 +11,11 @@ namespace Autofac.Benchmarks
         public void Setup()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<A>();
-            builder.RegisterType<B1>();
-            builder.RegisterType<B2>();
-            builder.RegisterType<C1>();
-            builder.RegisterType<C2>();
+            builder.RegisterType<A>().PropertiesAutowired();
+            builder.RegisterType<B1>().PropertiesAutowired();
+            builder.RegisterType<B2>().PropertiesAutowired();
+            builder.RegisterType<C1>().PropertiesAutowired();
+            builder.RegisterType<C2>().PropertiesAutowired();
             builder.RegisterType<D1>();
             builder.RegisterType<D2>();
             _container = builder.Build();
@@ -33,27 +30,29 @@ namespace Autofac.Benchmarks
 
         internal class A
         {
-            public A(B1 b1, B2 b2) { }
+            public B1 B1 { get; set; }
+
+            public B2 B2 { get; set; }
         }
 
         internal class B1
         {
-            public B1(B2 b2, C1 c1, C2 c2) { }
+            public C1 C1 { get; set; }
         }
 
         internal class B2
         {
-            public B2(C1 c1, C2 c2) { }
+            public C2 C2 { get; set; }
         }
 
         internal class C1
         {
-            public C1(C2 c2, D1 d1, D2 d2) { }
+            public D1 D1 { get; set; }
         }
 
         internal class C2
         {
-            public C2(D1 d1, D2 d2) { }
+            public D2 D2 { get; set; }
         }
 
         internal class D1 { }

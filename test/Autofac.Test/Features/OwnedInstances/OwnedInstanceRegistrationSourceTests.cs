@@ -1,26 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.OwnedInstances;
+using Autofac.Test.Util;
 using Xunit;
 
 namespace Autofac.Test.Features.OwnedInstances
 {
     public class OwnedInstanceRegistrationSourceTests
     {
-        [Fact]
-        public void WhenTIsRegistered_OwnedTCanBeResolved()
-        {
-            var cb = new ContainerBuilder();
-            cb.RegisterType<DisposeTracker>();
-            var c = cb.Build();
-            var owned = c.Resolve<Owned<DisposeTracker>>();
-            Assert.NotNull(owned.Value);
-        }
-
         [Fact]
         public void CallingDisposeOnGeneratedOwnedT_DisposesOwnedInstance()
         {
@@ -50,68 +39,6 @@ namespace Autofac.Test.Features.OwnedInstances
         }
 
         [Fact]
-        public void IfInnerTypeIsNotRegistered_OwnedTypeIsNotEither()
-        {
-            var c = new ContainerBuilder().Build();
-            Assert.False(c.IsRegistered<Owned<Object>>());
-        }
-
-        [Fact]
-        public void ResolvingOwnedInstanceByName_ReturnsValueByName()
-        {
-            object o = new object();
-
-            var builder = new ContainerBuilder();
-            builder.RegisterInstance(o).Named<object>("o");
-            var container = builder.Build();
-
-            var owned = container.ResolveNamed<Owned<object>>("o");
-
-            Assert.Same(o, owned.Value);
-        }
-
-        public class ExposesScopeTag
-        {
-            private readonly ILifetimeScope _myScope;
-
-            public ExposesScopeTag(ILifetimeScope myScope)
-            {
-                _myScope = myScope;
-            }
-
-            public object Tag
-            {
-                get
-                {
-                    return _myScope.Tag;
-                }
-            }
-        }
-
-        [Fact]
-        public void ScopesCreatedForOwnedInstances_AreTaggedWithTheServiceThatIsOwned()
-        {
-            var cb = new ContainerBuilder();
-            cb.RegisterType<ExposesScopeTag>();
-            var c = cb.Build();
-
-            var est = c.Resolve<Owned<ExposesScopeTag>>();
-            Assert.Equal(new TypedService(typeof(ExposesScopeTag)), est.Value.Tag);
-        }
-
-        public class ClassWithFactory
-        {
-            public string Name { get; set; }
-
-            public delegate Owned<ClassWithFactory> OwnedFactory(string name);
-
-            public ClassWithFactory(string name)
-            {
-                Name = name;
-            }
-        }
-
-        [Fact]
         public void CanResolveAndUse_OwnedGeneratedFactory()
         {
             var cb = new ContainerBuilder();
@@ -127,6 +54,78 @@ namespace Autofac.Test.Features.OwnedInstances
             }
 
             Assert.True(isAccessed);
+        }
+
+        [Fact]
+        public void IfInnerTypeIsNotRegistered_OwnedTypeIsNotEither()
+        {
+            var c = new ContainerBuilder().Build();
+            Assert.False(c.IsRegistered<Owned<object>>());
+        }
+
+        [Fact]
+        public void ResolvingOwnedInstanceByName_ReturnsValueByName()
+        {
+            var o = new object();
+
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(o).Named<object>("o");
+            var container = builder.Build();
+
+            var owned = container.ResolveNamed<Owned<object>>("o");
+
+            Assert.Same(o, owned.Value);
+        }
+
+        [Fact]
+        public void ScopesCreatedForOwnedInstances_AreTaggedWithTheServiceThatIsOwned()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterType<ExposesScopeTag>();
+            var c = cb.Build();
+
+            var est = c.Resolve<Owned<ExposesScopeTag>>();
+            Assert.Equal(new TypedService(typeof(ExposesScopeTag)), est.Value.Tag);
+        }
+
+        [Fact]
+        public void WhenTIsRegistered_OwnedTCanBeResolved()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterType<DisposeTracker>();
+            var c = cb.Build();
+            var owned = c.Resolve<Owned<DisposeTracker>>();
+            Assert.NotNull(owned.Value);
+        }
+
+        public class ClassWithFactory
+        {
+            public ClassWithFactory(string name)
+            {
+                this.Name = name;
+            }
+
+            public delegate Owned<ClassWithFactory> OwnedFactory(string name);
+
+            public string Name { get; set; }
+        }
+
+        public class ExposesScopeTag
+        {
+            private readonly ILifetimeScope _myScope;
+
+            public ExposesScopeTag(ILifetimeScope myScope)
+            {
+                this._myScope = myScope;
+            }
+
+            public object Tag
+            {
+                get
+                {
+                    return this._myScope.Tag;
+                }
+            }
         }
     }
 }

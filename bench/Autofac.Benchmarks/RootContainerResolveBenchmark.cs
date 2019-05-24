@@ -30,34 +30,30 @@ namespace Autofac.Benchmarks
         }
 
         [Benchmark]
-        public void NonSharedReflection()
+        public void NonSharedReflectionResolve()
         {
             var nonShared = _container.Resolve<NonSharedReflection>();
             GC.KeepAlive(nonShared);
         }
 
         [Benchmark]
-        public void NonSharedDelegate()
+        public void NonSharedDelegateResolve()
         {
             var nonShared = _container.Resolve<NonSharedDelegate>();
             GC.KeepAlive(nonShared);
         }
 
         [Benchmark]
-        public void Shared()
+        public void SharedResolve()
         {
             var shared = _container.Resolve<Shared>();
             GC.KeepAlive(shared);
         }
+
+        internal class NonSharedDelegate { }
+
+        internal class NonSharedReflection { }
+
+        internal class Shared { }
     }
-
-#pragma warning disable SA1402, SA1502
-
-    internal class NonSharedDelegate { }
-
-    internal class NonSharedReflection { }
-
-    internal class Shared { }
-
-#pragma warning restore SA1402, SA1502
 }

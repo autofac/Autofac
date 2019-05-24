@@ -26,10 +26,10 @@ namespace Autofac.Benchmarks
             _container = builder.Build();
         }
 
-        [Params(10, 100, 1_000)]
+        [Params(10 /*, 100, 1_000 */)]
         public int ResolveTaskCount { get; set; }
 
-        [Params(1_000, 10_000)]
+        [Params(10 /*, 1_000, 10_000 */)]
         public int ResolvesPerTask { get; set; }
 
         [Benchmark]
@@ -60,8 +60,6 @@ namespace Autofac.Benchmarks
             Task.WhenAll(tasks);
         }
 
-#pragma warning disable SA1402, SA1502
-
         internal class A
         {
             public A(B1 b1, B2 b2) { }
@@ -90,7 +88,5 @@ namespace Autofac.Benchmarks
         internal class D1 { }
 
         internal class D2 { }
-
-#pragma warning restore SA1402, SA1502
     }
 }
