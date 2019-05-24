@@ -60,8 +60,6 @@ namespace Autofac.Benchmarks
             Task.WhenAll(tasks);
         }
 
-#pragma warning disable SA1402, SA1502
-
         internal class A
         {
             public A(B1 b1, B2 b2) { }
@@ -90,7 +88,5 @@ namespace Autofac.Benchmarks
         internal class D1 { }
 
         internal class D2 { }
-
-#pragma warning restore SA1402, SA1502
     }
 }
