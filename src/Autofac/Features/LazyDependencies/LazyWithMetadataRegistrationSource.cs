@@ -43,9 +43,9 @@ namespace Autofac.Features.LazyDependencies
     /// </summary>
     internal class LazyWithMetadataRegistrationSource : IRegistrationSource
     {
-        private static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyWithMetadataRegistrationSource).GetTypeInfo().GetDeclaredMethod("CreateLazyRegistration");
+        private static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyWithMetadataRegistrationSource).GetTypeInfo().GetDeclaredMethod(nameof(CreateLazyRegistration));
 
-        private delegate IComponentRegistration RegistrationCreator(Service service, IComponentRegistration valueRegistration);
+        private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, IComponentRegistration valueRegistration);
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
@@ -75,7 +75,7 @@ namespace Autofac.Features.LazyDependencies
             var registrationCreator = (RegistrationCreator)CreateLazyRegistrationMethod.MakeGenericMethod(valueType, metaType).CreateDelegate(typeof(RegistrationCreator));
 
             return registrationAccessor(valueService)
-                .Select(v => registrationCreator(service, v));
+                .Select(v => registrationCreator(service, valueService, v));
         }
 
         public bool IsAdapterForIndividualComponents => true;
@@ -85,7 +85,7 @@ namespace Autofac.Features.LazyDependencies
             return LazyWithMetadataRegistrationSourceResources.LazyWithMetadataRegistrationSourceDescription;
         }
 
-        private static IComponentRegistration CreateLazyRegistration<T, TMeta>(Service providedService, IComponentRegistration valueRegistration)
+        private static IComponentRegistration CreateLazyRegistration<T, TMeta>(Service providedService, Service valueService, IComponentRegistration valueRegistration)
         {
             var metadataProvider = MetadataViewProvider.GetMetadataViewProvider<TMeta>();
             var metadata = metadataProvider(valueRegistration.Target.Metadata);
@@ -95,7 +95,7 @@ namespace Autofac.Features.LazyDependencies
                 {
                     var context = c.Resolve<IComponentContext>();
                     var lazyType = ((IServiceWithType)providedService).ServiceType;
-                    var valueFactory = new Func<T>(() => (T)context.ResolveComponent(providedService, valueRegistration, p));
+                    var valueFactory = new Func<T>(() => (T)context.ResolveComponent(valueService, valueRegistration, p));
                     return Activator.CreateInstance(lazyType, valueFactory, metadata);
                 })
                 .As(providedService)
