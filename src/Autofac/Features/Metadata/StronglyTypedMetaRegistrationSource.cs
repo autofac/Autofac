@@ -40,9 +40,9 @@ namespace Autofac.Features.Metadata
     /// </summary>
     internal class StronglyTypedMetaRegistrationSource : IRegistrationSource
     {
-        private static readonly MethodInfo CreateMetaRegistrationMethod = typeof(StronglyTypedMetaRegistrationSource).GetTypeInfo().GetDeclaredMethod("CreateMetaRegistration");
+        private static readonly MethodInfo CreateMetaRegistrationMethod = typeof(StronglyTypedMetaRegistrationSource).GetTypeInfo().GetDeclaredMethod(nameof(CreateMetaRegistration));
 
-        private delegate IComponentRegistration RegistrationCreator(Service service, IComponentRegistration valueRegistration);
+        private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, IComponentRegistration valueRegistration);
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
@@ -65,7 +65,7 @@ namespace Autofac.Features.Metadata
                 typeof(RegistrationCreator), null);
 
             return registrationAccessor(valueService)
-                .Select(v => registrationCreator.Invoke(service, v));
+                .Select(v => registrationCreator.Invoke(service, valueService, v));
         }
 
         public bool IsAdapterForIndividualComponents => true;
@@ -75,12 +75,12 @@ namespace Autofac.Features.Metadata
             return MetaRegistrationSourceResources.StronglyTypedMetaRegistrationSourceDescription;
         }
 
-        private static IComponentRegistration CreateMetaRegistration<T, TMetadata>(Service providedService, IComponentRegistration valueRegistration)
+        private static IComponentRegistration CreateMetaRegistration<T, TMetadata>(Service providedService, Service valueService, IComponentRegistration valueRegistration)
         {
             var metadata = MetadataViewProvider.GetMetadataViewProvider<TMetadata>()(valueRegistration.Target.Metadata);
 
             var rb = RegistrationBuilder
-                .ForDelegate((c, p) => new Meta<T, TMetadata>((T)c.ResolveComponent(providedService, valueRegistration, p), metadata))
+                .ForDelegate((c, p) => new Meta<T, TMetadata>((T)c.ResolveComponent(valueService, valueRegistration, p), metadata))
                 .As(providedService)
                 .Targeting(valueRegistration);
 
