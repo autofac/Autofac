@@ -80,7 +80,7 @@ namespace Autofac.Core.Registration
                     //        .CreateRegistration()
                     new ExternalComponentRegistration(
                         Guid.NewGuid(),
-                        new DelegateActivator(r.Activator.LimitType, (c, p) => c.ResolveComponent(r, p)),
+                        new DelegateActivator(r.Activator.LimitType, (c, p) => c.ResolveComponent(service, r, p)),
                         new CurrentScopeLifetime(),
                         InstanceSharing.None,
                         InstanceOwnership.ExternallyOwned,

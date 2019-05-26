@@ -155,19 +155,10 @@ namespace Autofac.Core
         /// </summary>
         public IComponentRegistry ComponentRegistry { get; }
 
-        /// <summary>
-        /// Resolve an instance of the provided registration within the context.
-        /// </summary>
-        /// <param name="registration">The registration.</param>
-        /// <param name="parameters">Parameters for the instance.</param>
-        /// <returns>
-        /// The component instance.
-        /// </returns>
-        /// <exception cref="ComponentNotRegisteredException"/>
-        /// <exception cref="DependencyResolutionException"/>
-        public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        /// <inheritdoc />
+        public object ResolveComponent(Service service, IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
-            return _rootLifetimeScope.ResolveComponent(registration, parameters);
+            return _rootLifetimeScope.ResolveComponent(service, registration, parameters);
         }
 
         /// <summary>

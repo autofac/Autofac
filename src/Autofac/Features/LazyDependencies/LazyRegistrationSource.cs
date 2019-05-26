@@ -74,7 +74,7 @@ namespace Autofac.Features.LazyDependencies
                 (c, p) =>
                 {
                     var context = c.Resolve<IComponentContext>();
-                    return new Lazy<T>(() => (T)context.ResolveComponent(valueRegistration, p));
+                    return new Lazy<T>(() => (T)context.ResolveComponent(providedService, valueRegistration, p));
                 })
                 .As(providedService)
                 .Targeting(valueRegistration)

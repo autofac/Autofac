@@ -38,10 +38,11 @@ namespace Autofac.Core.Resolving
         /// Get or create and share an instance of <paramref name="registration"/> in the <paramref name="currentOperationScope"/>.
         /// </summary>
         /// <param name="currentOperationScope">The scope in the hierarchy in which the operation will begin.</param>
+        /// <param name="service">The service to activate.</param>
         /// <param name="registration">The component to resolve.</param>
         /// <param name="parameters">Parameters for the component.</param>
         /// <returns>The component instance.</returns>
-        object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, IComponentRegistration registration, IEnumerable<Parameter> parameters);
+        object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, Service service, IComponentRegistration registration, IEnumerable<Parameter> parameters);
 
         /// <summary>
         /// Raised when the entire operation is complete.

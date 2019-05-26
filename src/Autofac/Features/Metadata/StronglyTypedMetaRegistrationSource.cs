@@ -80,7 +80,7 @@ namespace Autofac.Features.Metadata
             var metadata = MetadataViewProvider.GetMetadataViewProvider<TMetadata>()(valueRegistration.Target.Metadata);
 
             var rb = RegistrationBuilder
-                .ForDelegate((c, p) => new Meta<T, TMetadata>((T)c.ResolveComponent(valueRegistration, p), metadata))
+                .ForDelegate((c, p) => new Meta<T, TMetadata>((T)c.ResolveComponent(providedService, valueRegistration, p), metadata))
                 .As(providedService)
                 .Targeting(valueRegistration);
 
