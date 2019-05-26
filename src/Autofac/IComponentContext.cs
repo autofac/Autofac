@@ -44,6 +44,7 @@ namespace Autofac
         /// <summary>
         /// Resolve an instance of the provided registration within the context.
         /// </summary>
+        /// <param name="service">The service to resolve.</param>
         /// <param name="registration">The registration.</param>
         /// <param name="parameters">Parameters for the instance.</param>
         /// <returns>
@@ -51,6 +52,6 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="Autofac.Core.DependencyResolutionException"/>
-        object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters);
+        object ResolveComponent(Service service, IComponentRegistration registration, IEnumerable<Parameter> parameters);
     }
 }

@@ -23,23 +23,25 @@ namespace Autofac.Builder
                 // We track which registrations have already been auto-activated by adding
                 // a metadata value. If the value is present, we won't re-activate. This helps
                 // in the container update situation.
-                foreach (var startable in componentRegistry.RegistrationsFor(new TypedService(typeof(IStartable))).Where(r => !r.Metadata.ContainsKey(MetadataKeys.AutoActivated)))
+                var startableService = new TypedService(typeof(IStartable));
+                foreach (var registration in componentRegistry.RegistrationsFor(startableService).Where(r => !r.Metadata.ContainsKey(MetadataKeys.AutoActivated)))
                 {
                     try
                     {
-                        componentContext.ResolveComponent(startable, Enumerable.Empty<Parameter>());
+                        componentContext.ResolveComponent(startableService, registration, Enumerable.Empty<Parameter>());
                     }
                     finally
                     {
-                        startable.Metadata[MetadataKeys.AutoActivated] = true;
+                        registration.Metadata[MetadataKeys.AutoActivated] = true;
                     }
                 }
 
-                foreach (var registration in componentRegistry.RegistrationsFor(new AutoActivateService()).Where(r => !r.Metadata.ContainsKey(MetadataKeys.AutoActivated)))
+                var autoActivateService = new AutoActivateService();
+                foreach (var registration in componentRegistry.RegistrationsFor(autoActivateService).Where(r => !r.Metadata.ContainsKey(MetadataKeys.AutoActivated)))
                 {
                     try
                     {
-                        componentContext.ResolveComponent(registration, Enumerable.Empty<Parameter>());
+                        componentContext.ResolveComponent(autoActivateService, registration, Enumerable.Empty<Parameter>());
                     }
                     catch (DependencyResolutionException ex)
                     {

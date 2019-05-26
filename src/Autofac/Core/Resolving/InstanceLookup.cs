@@ -38,6 +38,7 @@ namespace Autofac.Core.Resolving
     [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The instance lookup activation scope gets disposed of by the creator of the scope.")]
     internal class InstanceLookup : IComponentContext, IInstanceLookup
     {
+        private readonly Service _service;
         private readonly IResolveOperation _context;
         private readonly ISharingLifetimeScope _activationScope;
         private object _newInstance;
@@ -45,6 +46,7 @@ namespace Autofac.Core.Resolving
         private const string ActivatorChainExceptionData = "ActivatorChain";
 
         public InstanceLookup(
+            Service service,
             IComponentRegistration registration,
             IResolveOperation context,
             ISharingLifetimeScope mostNestedVisibleScope,
@@ -52,6 +54,7 @@ namespace Autofac.Core.Resolving
         {
             Parameters = parameters;
             ComponentRegistration = registration;
+            _service = service;
             _context = context;
 
             try
@@ -182,9 +185,9 @@ namespace Autofac.Core.Resolving
 
         public IComponentRegistry ComponentRegistry => _activationScope.ComponentRegistry;
 
-        public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        public object ResolveComponent(Service service, IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
-            return _context.GetOrCreateInstance(_activationScope, registration, parameters);
+            return _context.GetOrCreateInstance(_activationScope, service, registration, parameters);
         }
 
         public IComponentRegistration ComponentRegistration { get; }

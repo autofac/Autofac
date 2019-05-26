@@ -1031,14 +1031,13 @@ namespace Autofac
                 throw new ArgumentNullException(nameof(context));
             }
 
-            IComponentRegistration registration;
-            if (!context.ComponentRegistry.TryGetRegistration(service, out registration))
+            if (!context.ComponentRegistry.TryGetRegistration(service, out var registration))
             {
                 instance = null;
                 return false;
             }
 
-            instance = context.ResolveComponent(registration, parameters);
+            instance = context.ResolveComponent(service, registration, parameters);
             return true;
         }
     }

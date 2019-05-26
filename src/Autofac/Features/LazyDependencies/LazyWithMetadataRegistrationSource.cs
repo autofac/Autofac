@@ -95,7 +95,7 @@ namespace Autofac.Features.LazyDependencies
                 {
                     var context = c.Resolve<IComponentContext>();
                     var lazyType = ((IServiceWithType)providedService).ServiceType;
-                    var valueFactory = new Func<T>(() => (T)context.ResolveComponent(valueRegistration, p));
+                    var valueFactory = new Func<T>(() => (T)context.ResolveComponent(providedService, valueRegistration, p));
                     return Activator.CreateInstance(lazyType, valueFactory, metadata);
                 })
                 .As(providedService)

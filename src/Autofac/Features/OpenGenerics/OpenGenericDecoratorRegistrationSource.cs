@@ -70,18 +70,18 @@ namespace Autofac.Features.OpenGenerics
                     .Select(cr => RegistrationBuilder.CreateRegistration(
                             Guid.NewGuid(),
                             _registrationData,
-                            new ReflectionActivator(constructedImplementationType, _activatorData.ConstructorFinder, _activatorData.ConstructorSelector, AddDecoratedComponentParameter(swt.ServiceType, cr, _activatorData.ConfiguredParameters), _activatorData.ConfiguredProperties),
+                            new ReflectionActivator(constructedImplementationType, _activatorData.ConstructorFinder, _activatorData.ConstructorSelector, AddDecoratedComponentParameter(fromService, swt.ServiceType, cr, _activatorData.ConfiguredParameters), _activatorData.ConfiguredProperties),
                             services));
             }
 
             return Enumerable.Empty<IComponentRegistration>();
         }
 
-        private static Parameter[] AddDecoratedComponentParameter(Type decoratedParameterType, IComponentRegistration decoratedComponent, IList<Parameter> configuredParameters)
+        private static Parameter[] AddDecoratedComponentParameter(Service service, Type decoratedParameterType, IComponentRegistration decoratedComponent, IList<Parameter> configuredParameters)
         {
             var parameter = new ResolvedParameter(
                 (pi, c) => pi.ParameterType == decoratedParameterType,
-                (pi, c) => c.ResolveComponent(decoratedComponent, Enumerable.Empty<Parameter>()));
+                (pi, c) => c.ResolveComponent(service, decoratedComponent, Enumerable.Empty<Parameter>()));
 
             var resultArray = new Parameter[configuredParameters.Count + 1];
             resultArray[0] = parameter;

@@ -71,7 +71,7 @@ namespace Autofac.Features.Decorators
                 var serviceParameter = new TypedParameter(serviceType, instance);
                 var contextParameter = new TypedParameter(typeof(IDecoratorContext), decoratorContext);
                 var invokeParameters = resolveParameters.Concat(new Parameter[] { serviceParameter, contextParameter });
-                instance = context.ResolveComponent(decorator.Registration, invokeParameters);
+                instance = context.ResolveComponent(decorator.Service, decorator.Registration, invokeParameters);
 
                 decoratorContext = decoratorContext.UpdateContext(instance);
             }

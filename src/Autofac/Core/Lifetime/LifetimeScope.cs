@@ -259,17 +259,8 @@ namespace Autofac.Core.Lifetime
             return locals;
         }
 
-        /// <summary>
-        /// Resolve an instance of the provided registration within the context.
-        /// </summary>
-        /// <param name="registration">The registration.</param>
-        /// <param name="parameters">Parameters for the instance.</param>
-        /// <returns>
-        /// The component instance.
-        /// </returns>
-        /// <exception cref="Autofac.Core.Registration.ComponentNotRegisteredException"/>
-        /// <exception cref="DependencyResolutionException"/>
-        public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        /// <inheritdoc />
+        public object ResolveComponent(Service service, IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
@@ -279,7 +270,7 @@ namespace Autofac.Core.Lifetime
             var operation = new ResolveOperation(this);
             var handler = ResolveOperationBeginning;
             handler?.Invoke(this, new ResolveOperationBeginningEventArgs(operation));
-            return operation.Execute(registration, parameters);
+            return operation.Execute(service, registration, parameters);
         }
 
         /// <summary>

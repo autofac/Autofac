@@ -107,7 +107,7 @@ namespace Autofac.Features.Variance
 
             return variantRegistrations
                 .Select(vr => RegistrationBuilder
-                    .ForDelegate((c, p) => c.ResolveComponent(vr, p))
+                    .ForDelegate((c, p) => c.ResolveComponent(service, vr, p))
                     .Targeting(vr)
                     .As(service)
                     .WithMetadata(IsContravariantAdapter, true)
