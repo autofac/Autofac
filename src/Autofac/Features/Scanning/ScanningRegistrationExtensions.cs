@@ -88,8 +88,8 @@ namespace Autofac.Features.Scanning
                     !t.GetTypeInfo().IsAbstract &&
                     !t.GetTypeInfo().IsGenericTypeDefinition &&
                     !t.IsDelegate() &&
-                    !t.IsCompilerGenerated() &&
-                    rb.ActivatorData.Filters.All(p => p(t))))
+                    rb.ActivatorData.Filters.All(p => p(t)) &&
+                    !t.IsCompilerGenerated()))
             {
                 var scanned = RegistrationBuilder.ForType(t)
                     .FindConstructorsWith(rb.ActivatorData.ConstructorFinder)
