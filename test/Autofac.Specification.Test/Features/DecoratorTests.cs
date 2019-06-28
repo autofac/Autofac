@@ -524,6 +524,19 @@ namespace Autofac.Specification.Test.Features
             Assert.IsType<ImplementorA>(instance.Decorated);
         }
 
+        [Fact(Skip = "Issue #999")]
+        public void DecoratorRegisteredOnLambdaWithCast()
+        {
+            // Issue #999: The cast in the lambda to IDecoratedService
+            // throws off the decorator and it doesn't get applied.
+            var builder = new ContainerBuilder();
+            builder.Register(ctx => (IDecoratedService)new ImplementorA()).As<IDecoratedService>();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+            var instance = container.Resolve<IDecoratedService>();
+            Assert.IsType<DecoratorA>(instance);
+        }
+
         [Fact]
         public void DecoratorRegistrationsGetAppliedInOrderAdded()
         {
