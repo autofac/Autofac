@@ -51,6 +51,8 @@ Some project codelines rely on convention-based builds so do not have a specific
 
 Unit tests are written in XUnit and Moq. **Code contributions should include tests that exercise/demonstrate the contribution.**
 
+**Everything should build and test with zero errors and zero warnings.**
+
 ### Coding Standards
 
 Normal .NET coding guidelines apply. See the [Framework Design Guidelines](https://msdn.microsoft.com/en-us/library/ms229042.aspx) for suggestions. We have Roslyn analyzers running on most of the code. These analyzers are actually correct a majority of the time. Please try to fix warnings rather than suppressing the message. If you do need to suppress a false positive, use the `[SuppressMessage]` attribute.
