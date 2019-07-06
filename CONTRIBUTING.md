@@ -8,6 +8,10 @@ If you'd like to contribute code or documentation to Autofac, we welcome pull re
 
 **Your contributions must be your own work and licensed under the same terms as Autofac.**
 
+## Code of Conduct
+
+The Autofac Code of Conduct [is posted on GitHub](CODE_OF_CONDUCT.md). It is expected that all contributors follow the code of conduct.
+
 ## Process
 
 **When working through contributions, please file issues and submit pull requests in the repository containing the code in question.** For example, if the issue is with the Autofac MVC integration, file it in that repo rather than the core Autofac repo.
