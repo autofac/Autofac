@@ -143,9 +143,8 @@ namespace Autofac.Core.Registration
         public IDictionary<string, object> Metadata { get; }
 
         /// <summary>
-        /// Fired when a new instance is required. The instance can be
-        /// provided in order to skip the regular activator, by setting the Instance property in
-        /// the provided event arguments.
+        /// Fired when a new instance is required, prior to activation.
+        /// Can be used to provide Autofac with additional parameters, used during activation.
         /// </summary>
         public event EventHandler<PreparingEventArgs> Preparing;
 
