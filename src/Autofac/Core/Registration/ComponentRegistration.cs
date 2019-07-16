@@ -144,7 +144,7 @@ namespace Autofac.Core.Registration
 
         /// <summary>
         /// Fired when a new instance is required, prior to activation.
-        /// Can be used to provide Autofac with additional parameter used during activation.
+        /// Can be used to provide Autofac with additional parameters, used during activation.
         /// </summary>
         public event EventHandler<PreparingEventArgs> Preparing;
 
