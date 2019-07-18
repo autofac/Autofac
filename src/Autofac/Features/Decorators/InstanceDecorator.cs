@@ -41,7 +41,7 @@ namespace Autofac.Features.Decorators
             var instanceType = instance.GetType();
 
             // Issue #965: Do not apply the decorator if already applied, or if the registration is for an adapter.
-            if (registration.IsAdapting() || registration.Activator.LimitType != instanceType) return instance;
+            if (registration.IsAdapting()) return instance;
 
             var decoratorRegistrations = context.ComponentRegistry.DecoratorsFor(registration);
 
