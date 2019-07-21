@@ -524,7 +524,7 @@ namespace Autofac.Specification.Test.Features
             Assert.IsType<ImplementorA>(instance.Decorated);
         }
 
-        [Fact(Skip = "Issue #999")]
+        [Fact]
         public void DecoratorRegisteredOnLambdaWithCast()
         {
             // Issue #999: The cast in the lambda to IDecoratedService
