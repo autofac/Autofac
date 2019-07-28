@@ -1037,7 +1037,7 @@ namespace Autofac
                 return false;
             }
 
-            instance = context.ResolveComponent(service, registration, parameters);
+            instance = context.ResolveComponent(new ResolveRequest(service, registration, parameters));
             return true;
         }
     }

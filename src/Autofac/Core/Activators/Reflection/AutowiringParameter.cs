@@ -54,7 +54,7 @@ namespace Autofac.Core.Activators.Reflection
             var service = new TypedService(pi.ParameterType);
             if (context.ComponentRegistry.TryGetRegistration(service, out var registration))
             {
-                valueProvider = () => context.ResolveComponent(service, registration, Enumerable.Empty<Parameter>());
+                valueProvider = () => context.ResolveComponent(new ResolveRequest(service, registration, Enumerable.Empty<Parameter>()));
                 return true;
             }
 

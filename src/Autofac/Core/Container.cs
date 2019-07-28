@@ -156,9 +156,9 @@ namespace Autofac.Core
         public IComponentRegistry ComponentRegistry { get; }
 
         /// <inheritdoc />
-        public object ResolveComponent(Service service, IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        public object ResolveComponent(ResolveRequest request)
         {
-            return _rootLifetimeScope.ResolveComponent(service, registration, parameters);
+            return _rootLifetimeScope.ResolveComponent(request);
         }
 
         /// <summary>

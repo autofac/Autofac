@@ -24,7 +24,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 
 namespace Autofac.Core.Resolving
 {
@@ -35,14 +34,12 @@ namespace Autofac.Core.Resolving
     public interface IResolveOperation
     {
         /// <summary>
-        /// Get or create and share an instance of <paramref name="registration"/> in the <paramref name="currentOperationScope"/>.
+        /// Get or create and share an instance of the requested service in the <paramref name="currentOperationScope"/>.
         /// </summary>
         /// <param name="currentOperationScope">The scope in the hierarchy in which the operation will begin.</param>
-        /// <param name="service">The service to activate.</param>
-        /// <param name="registration">The component to resolve.</param>
-        /// <param name="parameters">Parameters for the component.</param>
+        /// <param name="request">The resolve request.</param>
         /// <returns>The component instance.</returns>
-        object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, Service service, IComponentRegistration registration, IEnumerable<Parameter> parameters);
+        object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest request);
 
         /// <summary>
         /// Raised when the entire operation is complete.

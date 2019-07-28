@@ -42,6 +42,9 @@ namespace Autofac.Features.GeneratedFactories
     {
         private readonly Func<IComponentContext, IEnumerable<Parameter>, Delegate> _generator;
 
+        private static readonly ConstructorInfo RequestConstructor
+            = ReflectionExtensions.GetConstructor(() => new ResolveRequest(default, default, default));
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FactoryGenerator"/> class.
         /// </summary>
@@ -67,7 +70,7 @@ namespace Autofac.Features.GeneratedFactories
 
                     // c.Resolve(...)
                     return Expression.Call(
-                        ReflectionExtensions.GetMethod<IComponentContext>(cc => cc.ResolveService(default(Service), default(Parameter[]))),
+                        ReflectionExtensions.GetMethod<IComponentContext>(cc => cc.ResolveService(default, default)),
                         resolveParams);
                 },
                 delegateType,
@@ -91,20 +94,19 @@ namespace Autofac.Features.GeneratedFactories
             _generator = CreateGenerator(
                 (activatorContextParam, resolveParameterArray) =>
                 {
-                    // service, productRegistration, [new Parameter(name, (object)dps)]*
-                    var resolveParams = new Expression[]
-                    {
+                    // new ResolveRequest(service, productRegistration, [new Parameter(name, (object)dps)])*)
+                    var newExpression = Expression.New(
+                        RequestConstructor,
                         Expression.Constant(service, typeof(Service)),
                         Expression.Constant(productRegistration, typeof(IComponentRegistration)),
-                        Expression.NewArrayInit(typeof(Parameter), resolveParameterArray),
-                    };
+                        Expression.NewArrayInit(typeof(Parameter), resolveParameterArray));
 
                     // c.Resolve(...)
                     return Expression.Call(
                         activatorContextParam,
                         ReflectionExtensions.GetMethod<IComponentContext>(cc => cc.ResolveComponent(
-                            default(Service), default(IComponentRegistration), default(Parameter[]))),
-                        resolveParams);
+                            new ResolveRequest(default, default, default(Parameter[])))),
+                        newExpression);
                 },
                 delegateType,
                 GetParameterMapping(delegateType, parameterMapping));
