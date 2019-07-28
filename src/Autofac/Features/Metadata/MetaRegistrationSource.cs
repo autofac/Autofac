@@ -72,7 +72,7 @@ namespace Autofac.Features.Metadata
         {
             var rb = RegistrationBuilder
                 .ForDelegate((c, p) => new Meta<T>(
-                    (T)c.ResolveComponent(valueService, valueRegistration, p),
+                    (T)c.ResolveComponent(new ResolveRequest(valueService, valueRegistration, p)),
                     valueRegistration.Target.Metadata))
                 .As(providedService)
                 .Targeting(valueRegistration)

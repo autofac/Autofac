@@ -54,25 +54,23 @@ namespace Autofac.Core.Resolving
         }
 
         /// <inheritdoc />
-        public object ResolveComponent(Service service, IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        public object ResolveComponent(ResolveRequest request)
         {
-            return GetOrCreateInstance(_mostNestedLifetimeScope, service, registration, parameters);
+            return GetOrCreateInstance(_mostNestedLifetimeScope, request);
         }
 
         /// <summary>
         /// Execute the complete resolve operation.
         /// </summary>
-        /// <param name="service">The service to resolve.</param>
-        /// <param name="registration">The registration.</param>
-        /// <param name="parameters">Parameters for the instance.</param>
+        /// <param name="request">The resolution context.</param>
         [SuppressMessage("CA1031", "CA1031", Justification = "General exception gets rethrown in a DependencyResolutionException.")]
-        public object Execute(Service service, IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        public object Execute(ResolveRequest request)
         {
             object result;
 
             try
             {
-                result = ResolveComponent(service, registration, parameters);
+                result = ResolveComponent(request);
             }
             catch (ObjectDisposedException)
             {
@@ -94,24 +92,23 @@ namespace Autofac.Core.Resolving
         }
 
         /// <summary>
-        /// Continue building the object graph by instantiating <paramref name="registration"/> in the
+        /// Continue building the object graph by instantiating <paramref name="request"/> in the
         /// current <paramref name="currentOperationScope"/>.
         /// </summary>
-        /// <param name="service">The service to activate.</param>
         /// <param name="currentOperationScope">The current scope of the operation.</param>
-        /// <param name="registration">The component to activate.</param>
-        /// <param name="parameters">The parameters for the component.</param>
+        /// <param name="request">The resolve request.</param>
         /// <returns>The resolved instance.</returns>
         /// <exception cref="ArgumentNullException"/>
-        public object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, Service service, IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        public object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest request)
         {
             if (_ended) throw new ObjectDisposedException(ResolveOperationResources.TemporaryContextDisposed, innerException: null);
 
             ++_callDepth;
 
-            if (_activationStack.Count > 0) CircularDependencyDetector.CheckForCircularDependency(registration, _activationStack, _callDepth);
+            if (_activationStack.Count > 0)
+                CircularDependencyDetector.CheckForCircularDependency(request.Registration, _activationStack, _callDepth);
 
-            var activation = new InstanceLookup(service, registration, this, currentOperationScope, parameters);
+            var activation = new InstanceLookup(this, currentOperationScope, request);
 
             _activationStack.Push(activation);
 

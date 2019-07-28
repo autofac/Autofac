@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -260,17 +259,16 @@ namespace Autofac.Core.Lifetime
         }
 
         /// <inheritdoc />
-        public object ResolveComponent(Service service, IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        public object ResolveComponent(ResolveRequest request)
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+            if (request == null) throw new ArgumentNullException(nameof(request));
 
             CheckNotDisposed();
 
             var operation = new ResolveOperation(this);
             var handler = ResolveOperationBeginning;
             handler?.Invoke(this, new ResolveOperationBeginningEventArgs(operation));
-            return operation.Execute(service, registration, parameters);
+            return operation.Execute(request);
         }
 
         /// <summary>

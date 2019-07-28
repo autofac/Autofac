@@ -38,7 +38,6 @@ namespace Autofac.Core.Resolving
     [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The instance lookup activation scope gets disposed of by the creator of the scope.")]
     internal class InstanceLookup : IComponentContext, IInstanceLookup
     {
-        private readonly Service _service;
         private readonly IResolveOperation _context;
         private readonly ISharingLifetimeScope _activationScope;
         private object _newInstance;
@@ -46,15 +45,12 @@ namespace Autofac.Core.Resolving
         private const string ActivatorChainExceptionData = "ActivatorChain";
 
         public InstanceLookup(
-            Service service,
-            IComponentRegistration registration,
             IResolveOperation context,
             ISharingLifetimeScope mostNestedVisibleScope,
-            IEnumerable<Parameter> parameters)
+            ResolveRequest request)
         {
-            Parameters = parameters;
-            ComponentRegistration = registration;
-            _service = service;
+            Parameters = request.Parameters;
+            ComponentRegistration = request.Registration;
             _context = context;
 
             try
@@ -64,13 +60,13 @@ namespace Autofac.Core.Resolving
             catch (DependencyResolutionException ex)
             {
                 var services = new StringBuilder();
-                foreach (var s in registration.Services)
+                foreach (var s in ComponentRegistration.Services)
                 {
                     services.Append("- ");
                     services.AppendLine(s.Description);
                 }
 
-                var message = string.Format(CultureInfo.CurrentCulture, ComponentActivationResources.UnableToLocateLifetimeScope, registration.Activator.LimitType, services);
+                var message = string.Format(CultureInfo.CurrentCulture, ComponentActivationResources.UnableToLocateLifetimeScope, ComponentRegistration.Activator.LimitType, services);
                 throw new DependencyResolutionException(message, ex);
             }
         }
@@ -185,9 +181,9 @@ namespace Autofac.Core.Resolving
 
         public IComponentRegistry ComponentRegistry => _activationScope.ComponentRegistry;
 
-        public object ResolveComponent(Service service, IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        public object ResolveComponent(ResolveRequest request)
         {
-            return _context.GetOrCreateInstance(_activationScope, service, registration, parameters);
+            return _context.GetOrCreateInstance(_activationScope, request);
         }
 
         public IComponentRegistration ComponentRegistration { get; }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Linq;
 using Autofac.Core;
 
@@ -28,7 +27,8 @@ namespace Autofac.Builder
                 {
                     try
                     {
-                        componentContext.ResolveComponent(startableService, registration, Enumerable.Empty<Parameter>());
+                        var request = new ResolveRequest(startableService, registration, Enumerable.Empty<Parameter>());
+                        componentContext.ResolveComponent(request);
                     }
                     finally
                     {
@@ -41,7 +41,8 @@ namespace Autofac.Builder
                 {
                     try
                     {
-                        componentContext.ResolveComponent(autoActivateService, registration, Enumerable.Empty<Parameter>());
+                        var request = new ResolveRequest(autoActivateService, registration, Enumerable.Empty<Parameter>());
+                        componentContext.ResolveComponent(request);
                     }
                     catch (DependencyResolutionException ex)
                     {
