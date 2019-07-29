@@ -191,8 +191,9 @@ namespace Autofac.Util
                 {
                     var paramArg = baseType.GenericTypeArguments[i];
                     var constraintArg = constraint.GenericTypeArguments[i];
+                    var constraintArgIsGeneric = constraintArg.GetTypeInfo().IsGenericType;
 
-                    allGenericParametersMatch &= paramArg.IsClosedTypeOf(constraintArg.GetGenericTypeDefinition());
+                    allGenericParametersMatch &= paramArg.IsClosedTypeOf(constraintArgIsGeneric ? constraintArg.GetGenericTypeDefinition() : constraintArg);
                 }
             }
 
