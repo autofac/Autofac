@@ -78,7 +78,7 @@ namespace Autofac.Features.OwnedInstances
                         })
                         .ExternallyOwned()
                         .As(service)
-                        .Targeting(r)
+                        .Targeting(r, IsAdapterForIndividualComponents)
                         .InheritRegistrationOrderFrom(r);
 
                     return rb.CreateRegistration();

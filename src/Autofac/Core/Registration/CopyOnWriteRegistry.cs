@@ -107,11 +107,6 @@ namespace Autofac.Core.Registration
             return Registry.RegistrationsFor(service);
         }
 
-        public IEnumerable<IComponentRegistration> DecoratorsFor(IComponentRegistration registration)
-        {
-            return Registry.DecoratorsFor(registration);
-        }
-
         public event EventHandler<ComponentRegisteredEventArgs> Registered
         {
             add => WriteRegistry.Registered += value;

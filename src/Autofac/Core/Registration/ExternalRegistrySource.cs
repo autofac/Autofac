@@ -47,11 +47,7 @@ namespace Autofac.Core.Registration
         /// </summary>
         /// <param name="registry">Component registry to pull registrations from.</param>
         public ExternalRegistrySource(IComponentRegistry registry)
-        {
-            if (registry == null) throw new ArgumentNullException(nameof(registry));
-
-            _registry = registry;
-        }
+            => _registry = registry ?? throw new ArgumentNullException(nameof(registry));
 
         /// <summary>
         /// Retrieve registrations for an unregistered service, to be used
@@ -86,7 +82,8 @@ namespace Autofac.Core.Registration
                         InstanceOwnership.ExternallyOwned,
                         new[] { service },
                         r.Metadata,
-                        r));
+                        r,
+                        false));
         }
 
         /// <summary>
@@ -95,16 +92,5 @@ namespace Autofac.Core.Registration
         /// logical scope, we must return false to avoid duplicating them.
         /// </summary>
         public bool IsAdapterForIndividualComponents => false;
-
-        /// <summary>
-        ///  ComponentRegistration subtyped only to distinguish it from other adapted registrations.
-        /// </summary>
-        private class ExternalComponentRegistration : ComponentRegistration
-        {
-            public ExternalComponentRegistration(Guid id, IInstanceActivator activator, IComponentLifetime lifetime, InstanceSharing sharing, InstanceOwnership ownership, IEnumerable<Service> services, IDictionary<string, object> metadata, IComponentRegistration target)
-                : base(id, activator, lifetime, sharing, ownership, services, metadata, target)
-            {
-            }
-        }
     }
 }
