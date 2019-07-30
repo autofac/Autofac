@@ -1,6 +1,4 @@
-using System;
 using Autofac.Core;
-using Autofac.Core.Registration;
 using Autofac.Features.Metadata;
 using Autofac.Test.Features.Metadata.TestTypes;
 using Autofac.Util;
@@ -10,7 +8,7 @@ namespace Autofac.Test.Features.Metadata
 {
     public class StronglyTypedMeta_WhenNoMatchingMetadataIsSupplied
     {
-        private IContainer _container;
+        private readonly IContainer _container;
 
         public StronglyTypedMeta_WhenNoMatchingMetadataIsSupplied()
         {
@@ -28,7 +26,7 @@ namespace Autofac.Test.Features.Metadata
             var propertyName = ReflectionExtensions.GetProperty<MyMeta, int>(x => x.TheInt).Name;
             var message = string.Format(MetadataViewProviderResources.MissingMetadata, propertyName);
 
-            Assert.Equal(message, exception.Message);
+            Assert.Equal(message, exception.InnerException.Message);
         }
 
         [Fact]
