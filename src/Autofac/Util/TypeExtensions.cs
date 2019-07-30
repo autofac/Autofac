@@ -180,7 +180,7 @@ namespace Autofac.Util
             }
 
             var allGenericParametersMatch = false;
-            var baseType = parameter.GetTypeInfo().BaseType;
+            var baseType = parameter.GetTypeInfo().BaseType ?? parameter;
             if (!constraint.GetTypeInfo().IsInterface &&
                 baseType.GetTypeInfo().IsGenericType &&
                 baseType.GenericTypeArguments.Length > 0 &&
