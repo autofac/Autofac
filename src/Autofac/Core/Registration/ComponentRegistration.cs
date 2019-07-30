@@ -71,6 +71,7 @@ namespace Autofac.Core.Registration
             Ownership = ownership;
             Services = Enforce.ArgumentElementNotNull(services, nameof(services));
             Metadata = metadata;
+            IsAdapterForIndividualComponent = false;
         }
 
         /// <summary>
@@ -84,6 +85,7 @@ namespace Autofac.Core.Registration
         /// <param name="services">Services the component provides.</param>
         /// <param name="metadata">Data associated with the component.</param>
         /// <param name="target">The component registration upon which this registration is based.</param>
+        /// <param name="isAdapterForIndividualComponents">Whether the registration is a 1:1 adapters on top of another component.</param>
         public ComponentRegistration(
             Guid id,
             IInstanceActivator activator,
@@ -92,12 +94,14 @@ namespace Autofac.Core.Registration
             InstanceOwnership ownership,
             IEnumerable<Service> services,
             IDictionary<string, object> metadata,
-            IComponentRegistration target)
+            IComponentRegistration target,
+            bool isAdapterForIndividualComponents)
             : this(id, activator, lifetime, sharing, ownership, services, metadata)
         {
             if (target == null) throw new ArgumentNullException(nameof(target));
 
             _target = target;
+            IsAdapterForIndividualComponent = isAdapterForIndividualComponents;
         }
 
         /// <summary>
@@ -141,6 +145,9 @@ namespace Autofac.Core.Registration
         /// Gets additional data associated with the component.
         /// </summary>
         public IDictionary<string, object> Metadata { get; }
+
+        /// <inheritdoc />
+        public bool IsAdapterForIndividualComponent { get; }
 
         /// <summary>
         /// Fired when a new instance is required, prior to activation.

@@ -76,6 +76,12 @@ namespace Autofac.Core
         IComponentRegistration Target { get; }
 
         /// <summary>
+        /// Gets a value indicating whether the registration is a 1:1 adapter on top
+        /// of another component (e.g., Meta, Func, or Owned).
+        /// </summary>
+        bool IsAdapterForIndividualComponent { get; }
+
+        /// <summary>
         /// Fired when a new instance is required, prior to activation.
         /// Can be used to provide Autofac with additional parameters, used during activation.
         /// </summary>

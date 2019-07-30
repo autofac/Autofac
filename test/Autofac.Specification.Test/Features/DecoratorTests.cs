@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Features.Decorators;
+using Autofac.Features.Metadata;
+using Autofac.Features.OwnedInstances;
 using Xunit;
 
 namespace Autofac.Specification.Test.Features
@@ -104,6 +106,38 @@ namespace Autofac.Specification.Test.Features
         }
 
         [Fact]
+        public void CanResolveDecoratorWithMeta()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>().WithMetadata("A", 123);
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var meta = container.Resolve<Meta<IDecoratedService>>();
+
+            var decoratedService = meta.Value;
+            Assert.IsType<DecoratorA>(decoratedService);
+            Assert.IsType<ImplementorA>(decoratedService.Decorated);
+            Assert.Equal(123, meta.Metadata["A"]);
+        }
+
+        [Fact]
+        public void CanResolveDecoratorWithStronglyTypedMeta()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>().WithMetadata("A", 123);
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var meta = container.Resolve<Meta<IDecoratedService, MyMetadata>>();
+
+            var decoratedService = meta.Value;
+            Assert.IsType<DecoratorA>(decoratedService);
+            Assert.IsType<ImplementorA>(decoratedService.Decorated);
+            Assert.Equal(123, meta.Metadata.A);
+        }
+
+        [Fact]
         public void CanResolveDecoratorWithLazy()
         {
             var builder = new ContainerBuilder();
@@ -114,6 +148,39 @@ namespace Autofac.Specification.Test.Features
             var lazy = container.Resolve<Lazy<IDecoratedService>>();
 
             var decoratedService = lazy.Value;
+            Assert.IsType<DecoratorA>(decoratedService);
+            Assert.IsType<ImplementorA>(decoratedService.Decorated);
+        }
+
+#if NETCOREAPP2_1
+        [Fact]
+        public void CanResolveDecoratorWithLazyWithMetadata()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>().WithMetadata("A", 123);
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var meta = container.Resolve<Lazy<IDecoratedService, MyMetadata>>();
+
+            var decoratedService = meta.Value;
+            Assert.IsType<DecoratorA>(decoratedService);
+            Assert.IsType<ImplementorA>(decoratedService.Decorated);
+            Assert.Equal(123, meta.Metadata.A);
+        }
+#endif
+
+        [Fact]
+        public void CanResolveDecoratorWithOwned()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var meta = container.Resolve<Owned<IDecoratedService>>();
+
+            var decoratedService = meta.Value;
             Assert.IsType<DecoratorA>(decoratedService);
             Assert.IsType<ImplementorA>(decoratedService.Decorated);
         }
@@ -143,7 +210,7 @@ namespace Autofac.Specification.Test.Features
                 });
         }
 
-        [Fact(Skip = "Cannot currently determine requested resolve service type")]
+        [Fact]
         public void DecoratedRegistrationCanIncludeImplementationType()
         {
             var builder = new ContainerBuilder();
@@ -527,8 +594,6 @@ namespace Autofac.Specification.Test.Features
         [Fact]
         public void DecoratorRegisteredOnLambdaWithCast()
         {
-            // Issue #999: The cast in the lambda to IDecoratedService
-            // throws off the decorator and it doesn't get applied.
             var builder = new ContainerBuilder();
             builder.Register(ctx => (IDecoratedService)new ImplementorA()).As<IDecoratedService>();
             builder.RegisterDecorator<DecoratorA, IDecoratedService>();
@@ -690,15 +755,20 @@ namespace Autofac.Specification.Test.Features
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<StartableImplementation>()
-                .As<IDecoratedService>()
                 .As<IStartable>()
                 .SingleInstance();
-            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            builder.RegisterDecorator<StartableDecorator, IStartable>();
             var container = builder.Build();
 
-            var decorated = Assert.IsType<DecoratorA>(container.Resolve<IDecoratedService>());
-            var instance = Assert.IsType<StartableImplementation>(decorated.Decorated);
-            Assert.True(instance.Started);
+            var startable = container.Resolve<IStartable>();
+            var decorated = Assert.IsType<StartableDecorator>(startable);
+            var implementation = Assert.IsType<StartableImplementation>(decorated.Decorated);
+            Assert.True(implementation.Started);
+        }
+
+        private class MyMetadata
+        {
+            public int A { get; set; }
         }
 
         private abstract class Decorator : IDecoratedService
@@ -841,15 +911,31 @@ namespace Autofac.Specification.Test.Features
         }
 
         // ReSharper disable once ClassNeverInstantiated.Local
-        private class StartableImplementation : IDecoratedService, IStartable
+        private class StartableImplementation : IStartable
         {
-            public IDecoratedService Decorated => this;
+            public IStartable Decorated => this;
 
             public bool Started { get; private set; }
 
             public void Start()
             {
                 this.Started = true;
+            }
+        }
+
+        // ReSharper disable once ClassNeverInstantiated.Local
+        private class StartableDecorator : IStartable
+        {
+            public IStartable Decorated { get; }
+
+            public StartableDecorator(IStartable startable)
+            {
+                Decorated = startable;
+            }
+
+            public void Start()
+            {
+                this.Decorated.Start();
             }
         }
     }
