@@ -265,6 +265,7 @@ namespace Autofac.Core.Registration
                 foreach (var service in r.Services)
                 {
                     if (service is DecoratorService || !(service is IServiceWithType swt)) continue;
+                    if (swt.ServiceType.IsDelegate() && IsRegistered(service)) continue;
 
                     var decoratorService = new DecoratorService(swt.ServiceType);
                     var decoratorRegistrations = RegistrationsFor(decoratorService);

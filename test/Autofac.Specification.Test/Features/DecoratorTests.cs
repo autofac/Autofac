@@ -701,6 +701,25 @@ namespace Autofac.Specification.Test.Features
             Assert.True(instance.Started);
         }
 
+        [Fact]
+        public void ReturnFuncTypeWhenFuncTypeHasBeenRegisteredInsteadOfDecorator()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<ImplementorA>()
+                .As<IDecoratedService>();
+
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+
+            builder.Register<Func<IDecoratedService>>(ctx => () => new ImplementorB());
+
+            var container = builder.Build();
+
+            var instance = container.Resolve<Func<IDecoratedService>>()();
+
+            Assert.IsType<ImplementorB>(instance);
+        }
+
         private abstract class Decorator : IDecoratedService
         {
             protected Decorator(IDecoratedService decorated)
