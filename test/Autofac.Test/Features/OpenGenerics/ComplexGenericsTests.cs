@@ -320,6 +320,41 @@ namespace Autofac.Test.Features.OpenGenerics
                 container.Resolve<IDouble<decimal, INested<IDouble<string, int>>>>());
         }
 
+        [Fact]
+        public void TestSelfReferentialGeneric()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(SelfReferenceConsumer<>)).As(typeof(IBaseGeneric<>));
+            var container = cb.Build();
+
+            var instance = container.Resolve<IBaseGeneric<DerivedSelfReferencing>>();
+        }
+
+        [Fact]
+        public void ResolveTypeFromOpenGenericInterfaceTypeParameterIsInterfaceWithConstraint()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(CGenericNestedProvider<>)).AsImplementedInterfaces();
+            cb.RegisterType<CNestedSimpleInterface>().AsImplementedInterfaces();
+            var container = cb.Build();
+
+            var instance = container.Resolve<INested<ISimpleInterface>>();
+        }
+
+
+        private class CNestedSimpleInterface : INested<ISimpleInterface>
+        {
+        }
+
+        private class CGenericNestedProvider<T> : INested<T>
+            where T : CSimpleNoInterface
+        {
+        }
+
+        private class CSimpleNoInterface
+        {
+        }
+
         public class C<T> : I1<T>, I2<T>
         {
         }
@@ -408,6 +443,24 @@ namespace Autofac.Test.Features.OpenGenerics
         }
 
         public class Wrapper<T>
+        {
+        }
+
+        public interface IBaseGeneric<TDerived>
+            where TDerived : BaseGenericImplementation<TDerived>, new()
+        {
+        }
+
+        public class SelfReferenceConsumer<TSource> : IBaseGeneric<TSource>
+            where TSource : BaseGenericImplementation<TSource>, new()
+        {
+        }
+
+        public abstract class BaseGenericImplementation<TDerived>
+        {
+        }
+
+        public class DerivedSelfReferencing : BaseGenericImplementation<DerivedSelfReferencing>
         {
         }
     }
