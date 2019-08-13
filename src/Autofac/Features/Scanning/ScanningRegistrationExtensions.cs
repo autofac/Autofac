@@ -44,7 +44,8 @@ namespace Autofac.Features.Scanning
             var rb = new RegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>(
                 new TypedService(typeof(object)),
                 new ScanningActivatorData(),
-                new DynamicRegistrationStyle());
+                new DynamicRegistrationStyle(),
+                builder.DefaultInstanceOwnership);
 
             rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => ScanAssemblies(assemblies, cr, rb));
 
@@ -60,7 +61,8 @@ namespace Autofac.Features.Scanning
             var rb = new RegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>(
                 new TypedService(typeof(object)),
                 new ScanningActivatorData(),
-                new DynamicRegistrationStyle());
+                new DynamicRegistrationStyle(),
+                builder.DefaultInstanceOwnership);
 
             rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => ScanTypes(types, cr, rb));
 
@@ -91,7 +93,7 @@ namespace Autofac.Features.Scanning
                     rb.ActivatorData.Filters.All(p => p(t)) &&
                     !t.IsCompilerGenerated()))
             {
-                var scanned = RegistrationBuilder.ForType(t)
+                var scanned = RegistrationBuilder.ForType(t, rb.RegistrationData.Ownership)
                     .FindConstructorsWith(rb.ActivatorData.ConstructorFinder)
                     .UsingConstructor(rb.ActivatorData.ConstructorSelector)
                     .WithParameters(rb.ActivatorData.ConfiguredParameters)

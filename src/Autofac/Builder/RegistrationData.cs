@@ -50,7 +50,10 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="defaultService">The default service that will be used if no others
         /// are added.</param>
-        public RegistrationData(Service defaultService)
+        /// <param name="instanceOwnership">Initial <see cref="InstanceOwnership"/> for the registration,
+        /// determining whether components implementing IDisposable are disposed by Autofac at the end of a unit of work.
+        /// Defaults to OwnedByLifetimeScope.</param>
+        public RegistrationData(Service defaultService, InstanceOwnership instanceOwnership = InstanceOwnership.OwnedByLifetimeScope)
         {
             if (defaultService == null) throw new ArgumentNullException(nameof(defaultService));
 
@@ -60,6 +63,8 @@ namespace Autofac.Builder
             {
                 { MetadataKeys.RegistrationOrderMetadataKey, SequenceGenerator.GetNextUniqueSequence() },
             };
+
+            Ownership = instanceOwnership;
         }
 
         /// <summary>
@@ -106,7 +111,7 @@ namespace Autofac.Builder
         /// <summary>
         /// Gets or sets the instance ownership assigned to the component.
         /// </summary>
-        public InstanceOwnership Ownership { get; set; } = InstanceOwnership.OwnedByLifetimeScope;
+        public InstanceOwnership Ownership { get; set; }
 
         /// <summary>
         /// Gets or sets the lifetime assigned to the component.

@@ -63,6 +63,9 @@ namespace Autofac
     public class ContainerBuilder
     {
         private readonly IList<DeferredCallback> _configurationCallbacks = new List<DeferredCallback>();
+
+        internal InstanceOwnership DefaultInstanceOwnership { get; }
+
         private bool _wasBuilt;
 
         private const string BuildCallbackPropertyKey = "__BuildCallbackKey";
@@ -78,10 +81,23 @@ namespace Autofac
         /// <summary>
         /// Initializes a new instance of the <see cref="ContainerBuilder"/> class.
         /// </summary>
+        /// <param name="defaultInstanceOwnership">The default <see cref="InstanceOwnership"/> for any registrations created
+        /// by the <see cref="ContainerBuilder"/>. Defaults to OwnedByLifetimeScope.</param>
+        public ContainerBuilder(InstanceOwnership defaultInstanceOwnership)
+            : this(new Dictionary<string, object>(), defaultInstanceOwnership)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContainerBuilder"/> class.
+        /// </summary>
         /// <param name="properties">The properties used during component registration.</param>
-        internal ContainerBuilder(IDictionary<string, object> properties)
+        /// <param name="defaultInstanceOwnership">The default <see cref="InstanceOwnership"/> for any registrations created
+        /// by the <see cref="ContainerBuilder"/>. Defaults to OwnedByLifetimeScope.</param>
+        internal ContainerBuilder(IDictionary<string, object> properties, InstanceOwnership defaultInstanceOwnership = InstanceOwnership.OwnedByLifetimeScope)
         {
             Properties = properties;
+            DefaultInstanceOwnership = defaultInstanceOwnership;
 
             if (!Properties.ContainsKey(BuildCallbackPropertyKey))
             {

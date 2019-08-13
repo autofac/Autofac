@@ -67,7 +67,8 @@ namespace Autofac.Features.LightweightAdapters
             var rb = new RegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>(
                 toService,
                 new LightweightAdapterActivatorData(fromService, (c, p, f) => adapter(c, p, (TFrom)f)),
-                new DynamicRegistrationStyle());
+                new DynamicRegistrationStyle(),
+                builder.DefaultInstanceOwnership);
 
             rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => cr.AddRegistrationSource(
                 new LightweightAdapterRegistrationSource(rb.RegistrationData, rb.ActivatorData)));

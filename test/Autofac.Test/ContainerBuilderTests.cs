@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using Autofac.Core;
 using Xunit;
 
 namespace Autofac.Test
@@ -40,6 +40,19 @@ namespace Autofac.Test
             container.Resolve<string>();
 
             Assert.Equal(2, container.ComponentRegistry.Properties["count"]);
+        }
+
+        [Theory]
+        [InlineData(InstanceOwnership.OwnedByLifetimeScope)]
+        [InlineData(InstanceOwnership.ExternallyOwned)]
+        public void ContainerBuilderPassesRegistrationsOwnership(InstanceOwnership ownership)
+        {
+            var builder = new ContainerBuilder(ownership);
+            builder.RegisterType<object>();
+            var container = builder.Build();
+            var regExists = container.ComponentRegistry.TryGetRegistration(new TypedService(typeof(object)), out var reg);
+            Assert.True(regExists);
+            Assert.Equal(ownership, reg.Ownership);
         }
     }
 }

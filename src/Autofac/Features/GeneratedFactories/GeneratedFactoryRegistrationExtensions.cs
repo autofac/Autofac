@@ -39,7 +39,8 @@ namespace Autofac.Features.GeneratedFactories
             var rb = new RegistrationBuilder<TLimit, GeneratedFactoryActivatorData, SingleRegistrationStyle>(
                 new TypedService(delegateType),
                 activatorData,
-                new SingleRegistrationStyle());
+                new SingleRegistrationStyle(),
+                builder.DefaultInstanceOwnership);
 
             rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => RegistrationBuilder.RegisterSingleComponent(cr, rb));
 

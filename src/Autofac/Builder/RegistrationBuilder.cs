@@ -54,13 +54,17 @@ namespace Autofac.Builder
         /// </summary>
         /// <typeparam name="T">Instance type returned by delegate.</typeparam>
         /// <param name="delegate">Delegate to register.</param>
+        /// <param name="ownership">Initial <see cref="InstanceOwnership"/> for the registration,
+        /// determining whether components implementing IDisposable are disposed by Autofac at the end of a unit of work.
+        /// Defaults to OwnedByLifetimeScope.</param>
         /// <returns>A registration builder.</returns>
-        public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> ForDelegate<T>(Func<IComponentContext, IEnumerable<Parameter>, T> @delegate)
+        public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> ForDelegate<T>(Func<IComponentContext, IEnumerable<Parameter>, T> @delegate, InstanceOwnership ownership = InstanceOwnership.OwnedByLifetimeScope)
         {
             return new RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>(
                 new TypedService(typeof(T)),
                 new SimpleActivatorData(new DelegateActivator(typeof(T), (c, p) => @delegate(c, p))),
-                new SingleRegistrationStyle());
+                new SingleRegistrationStyle(),
+                ownership);
         }
 
         /// <summary>
@@ -68,13 +72,16 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="delegate">Delegate to register.</param>
         /// <param name="limitType">Most specific type return value of delegate can be cast to.</param>
-        /// <returns>A registration builder.</returns>
-        public static IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> ForDelegate(Type limitType, Func<IComponentContext, IEnumerable<Parameter>, object> @delegate)
+        /// <param name="ownership">Initial <see cref="InstanceOwnership"/> for the registration,
+        /// determining whether components implementing IDisposable are disposed by Autofac at the end of a unit of work.
+        /// Defaults to OwnedByLifetimeScope.</param>
+        public static IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> ForDelegate(Type limitType, Func<IComponentContext, IEnumerable<Parameter>, object> @delegate, InstanceOwnership ownership = InstanceOwnership.OwnedByLifetimeScope)
         {
             return new RegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle>(
                 new TypedService(limitType),
                 new SimpleActivatorData(new DelegateActivator(limitType, @delegate)),
-                new SingleRegistrationStyle());
+                new SingleRegistrationStyle(),
+                ownership);
         }
 
         /// <summary>
@@ -82,12 +89,16 @@ namespace Autofac.Builder
         /// </summary>
         /// <typeparam name="TImplementer">Implementation type to register.</typeparam>
         /// <returns>A registration builder.</returns>
-        public static IRegistrationBuilder<TImplementer, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType<TImplementer>()
+        /// <param name="ownership">Initial <see cref="InstanceOwnership"/> for the registration,
+        /// determining whether components implementing IDisposable are disposed by Autofac at the end of a unit of work.
+        /// Defaults to OwnedByLifetimeScope.</param>
+        public static IRegistrationBuilder<TImplementer, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType<TImplementer>(InstanceOwnership ownership = InstanceOwnership.OwnedByLifetimeScope)
         {
             return new RegistrationBuilder<TImplementer, ConcreteReflectionActivatorData, SingleRegistrationStyle>(
                 new TypedService(typeof(TImplementer)),
                 new ConcreteReflectionActivatorData(typeof(TImplementer)),
-                new SingleRegistrationStyle());
+                new SingleRegistrationStyle(),
+                ownership);
         }
 
         /// <summary>
@@ -95,12 +106,16 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="implementationType">Implementation type to register.</param>
         /// <returns>A registration builder.</returns>
-        public static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType(Type implementationType)
+        /// <param name="ownership">Initial <see cref="InstanceOwnership"/> for the registration,
+        /// determining whether components implementing IDisposable are disposed by Autofac at the end of a unit of work.
+        /// Defaults to OwnedByLifetimeScope.</param>
+        public static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType(Type implementationType, InstanceOwnership ownership = InstanceOwnership.OwnedByLifetimeScope)
         {
             return new RegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>(
                 new TypedService(implementationType),
                 new ConcreteReflectionActivatorData(implementationType),
-                new SingleRegistrationStyle());
+                new SingleRegistrationStyle(),
+                ownership);
         }
 
         /// <summary>

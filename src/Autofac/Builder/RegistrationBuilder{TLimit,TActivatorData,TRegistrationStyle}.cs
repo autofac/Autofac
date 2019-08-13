@@ -35,7 +35,7 @@ namespace Autofac.Builder
 {
     internal class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> : IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>, IHideObjectMembers
     {
-        public RegistrationBuilder(Service defaultService, TActivatorData activatorData, TRegistrationStyle style)
+        public RegistrationBuilder(Service defaultService, TActivatorData activatorData, TRegistrationStyle style, InstanceOwnership defaultInstanceOwnership)
         {
             if (defaultService == null) throw new ArgumentNullException(nameof(defaultService));
             if (activatorData == null) throw new ArgumentNullException(nameof(activatorData));
@@ -43,7 +43,7 @@ namespace Autofac.Builder
 
             ActivatorData = activatorData;
             RegistrationStyle = style;
-            RegistrationData = new RegistrationData(defaultService);
+            RegistrationData = new RegistrationData(defaultService, defaultInstanceOwnership);
         }
 
         /// <summary>
