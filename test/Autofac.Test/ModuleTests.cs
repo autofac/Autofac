@@ -185,5 +185,38 @@ namespace Autofac.Test
             Assert.Equal(2, builder.Properties["count"]);
             Assert.Equal("value", builder.Properties["prop"]);
         }
+
+        [Theory]
+        [InlineData(InstanceOwnership.OwnedByLifetimeScope)]
+        [InlineData(InstanceOwnership.ExternallyOwned)]
+        [InlineData(null)]
+        public void ModuleOwnershipOverridesAreAppliedToRegistrations(InstanceOwnership? moduleOwnership)
+        {
+            var builder = new ContainerBuilder();
+            var module = moduleOwnership.HasValue ? new InjectedOwnershipModule(moduleOwnership.Value) : new DefaultOwnershipModule();
+            builder.RegisterModule(module);
+            var container = builder.Build();
+            var regExists = container.ComponentRegistry.TryGetRegistration(new TypedService(typeof(object)), out var reg);
+            Assert.True(regExists);
+            Assert.Equal(moduleOwnership ?? InstanceOwnership.OwnedByLifetimeScope, reg.Ownership);
+        }
+
+        internal class DefaultOwnershipModule : Module
+        {
+            protected override void Load(ContainerBuilder builder)
+            {
+                builder.RegisterType<object>();
+            }
+        }
+
+        internal class InjectedOwnershipModule : DefaultOwnershipModule
+        {
+            public InjectedOwnershipModule(InstanceOwnership defaultOwnership)
+            {
+                DefaultInstanceOwnership = defaultOwnership;
+            }
+
+            protected override InstanceOwnership DefaultInstanceOwnership { get; }
+        }
     }
 }

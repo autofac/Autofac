@@ -81,16 +81,6 @@ namespace Autofac
         /// <summary>
         /// Initializes a new instance of the <see cref="ContainerBuilder"/> class.
         /// </summary>
-        /// <param name="defaultInstanceOwnership">The default <see cref="InstanceOwnership"/> for any registrations created
-        /// by the <see cref="ContainerBuilder"/>. Defaults to OwnedByLifetimeScope.</param>
-        public ContainerBuilder(InstanceOwnership defaultInstanceOwnership)
-            : this(new Dictionary<string, object>(), defaultInstanceOwnership)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ContainerBuilder"/> class.
-        /// </summary>
         /// <param name="properties">The properties used during component registration.</param>
         /// <param name="defaultInstanceOwnership">The default <see cref="InstanceOwnership"/> for any registrations created
         /// by the <see cref="ContainerBuilder"/>. Defaults to OwnedByLifetimeScope.</param>

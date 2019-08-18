@@ -69,6 +69,11 @@ namespace Autofac
     public abstract class Module : IModule
     {
         /// <summary>
+        /// Gets the <see cref="InstanceOwnership"></see> which is used as the default for all registrations loaded by the <see cref="Module"/>.
+        /// </summary>
+        protected virtual InstanceOwnership DefaultInstanceOwnership => InstanceOwnership.OwnedByLifetimeScope;
+
+        /// <summary>
         /// Apply the module to the component registry.
         /// </summary>
         /// <param name="componentRegistry">Component registry to apply configuration to.</param>
@@ -76,7 +81,7 @@ namespace Autofac
         {
             if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
 
-            var moduleBuilder = new ContainerBuilder(componentRegistry.Properties);
+            var moduleBuilder = new ContainerBuilder(componentRegistry.Properties, DefaultInstanceOwnership);
 
             Load(moduleBuilder);
             moduleBuilder.UpdateRegistry(componentRegistry);
