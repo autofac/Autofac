@@ -116,7 +116,7 @@ namespace Autofac.Features.Collections
                 (c, p) =>
                 {
                     var elements = c.ComponentRegistry.RegistrationsFor(elementTypeService).OrderBy(cr => cr.GetRegistrationOrder());
-                    var items = elements.Select(cr => c.ResolveComponent(cr, p));
+                    var items = elements.Select(cr => c.ResolveComponent(new ResolveRequest(elementTypeService, cr, p)));
 
                     return generator(items);
                 });

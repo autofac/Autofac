@@ -51,10 +51,10 @@ namespace Autofac.Core.Activators.Reflection
             if (pi == null) throw new ArgumentNullException(nameof(pi));
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            IComponentRegistration registration;
-            if (context.ComponentRegistry.TryGetRegistration(new TypedService(pi.ParameterType), out registration))
+            var service = new TypedService(pi.ParameterType);
+            if (context.ComponentRegistry.TryGetRegistration(service, out var registration))
             {
-                valueProvider = () => context.ResolveComponent(registration, Enumerable.Empty<Parameter>());
+                valueProvider = () => context.ResolveComponent(new ResolveRequest(service, registration, Enumerable.Empty<Parameter>()));
                 return true;
             }
 
