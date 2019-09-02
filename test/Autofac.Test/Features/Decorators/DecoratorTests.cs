@@ -57,7 +57,7 @@ namespace Autofac.Test.Features.Decorators
             Assert.NotSame(serviceInstance, decoratedServiceInstance);
         }
 
-        [Fact]
+        [Fact(Skip = "Issue #963")]
         public void DecoratedInstancePerLifetimeScopeRegistrationCanIncludeOtherServices()
         {
             var builder = new ContainerBuilder();
@@ -84,7 +84,7 @@ namespace Autofac.Test.Features.Decorators
             Assert.Same(serviceInstance, decoratedServiceInstance);
         }
 
-        [Fact]
+        [Fact(Skip = "Issue #963")]
         public void DecoratedSingleInstanceRegistrationCanIncludeOtherServices()
         {
             var builder = new ContainerBuilder();
