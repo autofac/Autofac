@@ -341,7 +341,6 @@ namespace Autofac.Test.Features.OpenGenerics
             var instance = container.Resolve<INested<ISimpleInterface>>();
         }
 
-
         private class CNestedSimpleInterface : INested<ISimpleInterface>
         {
         }

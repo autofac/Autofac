@@ -57,7 +57,7 @@ namespace Autofac.Features.LazyDependencies
             var registrationCreator = CreateLazyRegistrationMethod.MakeGenericMethod(valueType);
 
             return registrationAccessor(valueService)
-                .Select(v => registrationCreator.Invoke(null, new object[] { service, v }))
+                .Select(v => registrationCreator.Invoke(null, new object[] { service, valueService, v }))
                 .Cast<IComponentRegistration>();
         }
 
@@ -68,13 +68,14 @@ namespace Autofac.Features.LazyDependencies
             return LazyRegistrationSourceResources.LazyRegistrationSourceDescription;
         }
 
-        private static IComponentRegistration CreateLazyRegistration<T>(Service providedService, IComponentRegistration valueRegistration)
+        private static IComponentRegistration CreateLazyRegistration<T>(Service providedService, Service valueService, IComponentRegistration valueRegistration)
         {
             var rb = RegistrationBuilder.ForDelegate(
                 (c, p) =>
                 {
                     var context = c.Resolve<IComponentContext>();
-                    return new Lazy<T>(() => (T)context.ResolveComponent(valueRegistration, p));
+                    var request = new ResolveRequest(valueService, valueRegistration, p);
+                    return new Lazy<T>(() => (T)context.ResolveComponent(request));
                 })
                 .As(providedService)
                 .Targeting(valueRegistration)
