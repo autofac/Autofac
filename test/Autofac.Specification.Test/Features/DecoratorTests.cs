@@ -709,13 +709,15 @@ namespace Autofac.Specification.Test.Features
             builder.RegisterType<ImplementorA>()
                 .As<IDecoratedService>();
 
-            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            builder.RegisterDecorator<IDecoratedService>((_, __, inner) => new DecoratorA(inner));
 
             builder.Register<Func<IDecoratedService>>(ctx => () => new ImplementorB());
 
             var container = builder.Build();
 
-            var instance = container.Resolve<Func<IDecoratedService>>()();
+            var func = container.Resolve<Func<IDecoratedService>>();
+
+            var instance = func();
 
             Assert.IsType<ImplementorB>(instance);
         }
