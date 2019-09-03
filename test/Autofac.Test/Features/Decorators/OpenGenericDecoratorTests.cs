@@ -185,7 +185,7 @@ namespace Autofac.Test.Features.Decorators
             Assert.Equal(typeof(ImplementorA<int>), registration.Target.Activator.LimitType);
         }
 
-        [Fact(Skip ="Cannot currently determine requested resolve service type")]
+        [Fact]
         public void DecoratedRegistrationCanIncludeImplementationType()
         {
             var builder = new ContainerBuilder();
@@ -197,7 +197,60 @@ namespace Autofac.Test.Features.Decorators
         }
 
         [Fact]
-        public void DecoratedRegistrationCanIncludeOtherServices()
+        public void DecoratedInstancePerDependencyRegistrationCanIncludeOtherServices()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterGeneric(typeof(ImplementorA<>)).As(typeof(IDecoratedService<>)).As(typeof(IService<>));
+            builder.RegisterGenericDecorator(typeof(DecoratorA<>), typeof(IDecoratedService<>));
+            builder.RegisterGenericDecorator(typeof(DecoratorA<>), typeof(IService<>));
+            var container = builder.Build();
+
+            var serviceRegistration = container.RegistrationFor<IService<int>>();
+            var decoratedServiceRegistration = container.RegistrationFor<IDecoratedService<int>>();
+
+            Assert.NotNull(serviceRegistration);
+            Assert.NotNull(decoratedServiceRegistration);
+            Assert.Same(serviceRegistration, decoratedServiceRegistration);
+
+            var serviceInstance = container.Resolve<IService<int>>();
+            Assert.IsType<DecoratorA<int>>(serviceInstance);
+
+            var decoratedServiceInstance = container.Resolve<IDecoratedService<int>>();
+            Assert.IsType<DecoratorA<int>>(decoratedServiceInstance);
+
+            Assert.NotSame(serviceInstance, decoratedServiceInstance);
+        }
+
+        [Fact(Skip = "Issue #963")]
+        public void DecoratedInstancePerLifetimeScopeRegistrationCanIncludeOtherServices()
+        {
+            var builder = new ContainerBuilder();
+
+            // #963: The InstancePerLifetimeScope here is important - a single component may expose multiple services.
+            // If that component is decorated, the decorator ALSO needs to expose all of those services.
+            builder.RegisterGeneric(typeof(ImplementorA<>)).As(typeof(IDecoratedService<>)).As(typeof(IService<>)).InstancePerLifetimeScope();
+            builder.RegisterGenericDecorator(typeof(DecoratorA<>), typeof(IDecoratedService<>));
+            var container = builder.Build();
+
+            var serviceRegistration = container.RegistrationFor<IService<int>>();
+            var decoratedServiceRegistration = container.RegistrationFor<IDecoratedService<int>>();
+
+            Assert.NotNull(serviceRegistration);
+            Assert.NotNull(decoratedServiceRegistration);
+            Assert.Same(serviceRegistration, decoratedServiceRegistration);
+
+            var serviceInstance = container.Resolve<IService<int>>();
+            Assert.IsType<DecoratorA<int>>(serviceInstance);
+
+            var decoratedServiceInstance = container.Resolve<IDecoratedService<int>>();
+            Assert.IsType<DecoratorA<int>>(decoratedServiceInstance);
+
+            Assert.Same(serviceInstance, decoratedServiceInstance);
+        }
+
+        [Fact(Skip = "Issue #963")]
+        public void DecoratedSingleInstanceRegistrationCanIncludeOtherServices()
         {
             var builder = new ContainerBuilder();
 
@@ -214,8 +267,13 @@ namespace Autofac.Test.Features.Decorators
             Assert.NotNull(decoratedServiceRegistration);
             Assert.Same(serviceRegistration, decoratedServiceRegistration);
 
-            Assert.IsType<DecoratorA<int>>(container.Resolve<IService<int>>());
-            Assert.IsType<DecoratorA<int>>(container.Resolve<IDecoratedService<int>>());
+            var serviceInstance = container.Resolve<IService<int>>();
+            Assert.IsType<DecoratorA<int>>(serviceInstance);
+
+            var decoratedServiceInstance = container.Resolve<IDecoratedService<int>>();
+            Assert.IsType<DecoratorA<int>>(decoratedServiceInstance);
+
+            Assert.Same(serviceInstance, decoratedServiceInstance);
         }
 
         [Fact]
@@ -762,6 +820,61 @@ namespace Autofac.Test.Features.Decorators
 
             Assert.IsType<DecoratorA<int>>(instance);
             Assert.IsType<ImplementorWithSomeOtherService<int>>(instance.Decorated);
+        }
+
+        [Fact]
+        public void CanApplyDecoratorOnTypeThatImplementsTwoInterfaces()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterAssemblyTypes(typeof(TransactionalCommandHandlerDecorator<>).Assembly)
+                .AsClosedTypesOf(typeof(ICommandHandler<>))
+                .Where(type => !typeof(TransactionalCommandHandlerDecorator<>).IsAssignableFrom(type))
+                .InstancePerLifetimeScope();
+            builder.RegisterGenericDecorator(typeof(TransactionalCommandHandlerDecorator<>), typeof(ICommandHandler<>));
+            var container = builder.Build();
+
+            var instance = container.Resolve<ICommandHandler<CreateLocation>>();
+
+            Assert.IsType<TransactionalCommandHandlerDecorator<CreateLocation>>(instance);
+        }
+
+        public interface ICommandHandler<T>
+        {
+            void Handle(T command);
+        }
+
+        public class TransactionalCommandHandlerDecorator<T> : ICommandHandler<T>
+        {
+            public ICommandHandler<T> Handler { get; }
+
+            public TransactionalCommandHandlerDecorator(ICommandHandler<T> handler)
+            {
+                Handler = handler;
+            }
+
+            public void Handle(T command)
+            {
+            }
+        }
+
+        public class ModifyLocation
+        {
+        }
+
+        public class CreateLocation
+        {
+        }
+
+        public class Handler : ICommandHandler<CreateLocation>, ICommandHandler<ModifyLocation>
+        {
+            public void Handle(CreateLocation command)
+            {
+
+            }
+
+            public void Handle(ModifyLocation command)
+            {
+            }
         }
     }
 }

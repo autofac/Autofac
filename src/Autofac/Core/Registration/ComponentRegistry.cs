@@ -68,9 +68,6 @@ namespace Autofac.Core.Registration
         /// </summary>
         private readonly ConcurrentDictionary<Service, ServiceRegistrationInfo> _serviceInfo = new ConcurrentDictionary<Service, ServiceRegistrationInfo>();
 
-        private readonly ConcurrentDictionary<IComponentRegistration, IEnumerable<IComponentRegistration>> _decorators
-            = new ConcurrentDictionary<IComponentRegistration, IEnumerable<IComponentRegistration>>();
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentRegistry"/> class.
         /// </summary>
@@ -251,28 +248,6 @@ namespace Autofac.Core.Registration
                 info = GetInitializedServiceInfo(service);
                 return info.Implementations.ToArray();
             }
-        }
-
-        /// <inheritdoc />
-        public IEnumerable<IComponentRegistration> DecoratorsFor(IComponentRegistration registration)
-        {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-
-            return _decorators.GetOrAdd(registration, r =>
-            {
-                var result = new List<IComponentRegistration>();
-
-                foreach (var service in r.Services)
-                {
-                    if (service is DecoratorService || !(service is IServiceWithType swt)) continue;
-
-                    var decoratorService = new DecoratorService(swt.ServiceType);
-                    var decoratorRegistrations = RegistrationsFor(decoratorService);
-                    result.AddRange(decoratorRegistrations);
-                }
-
-                return result.OrderBy(d => d.GetRegistrationOrder()).ToArray();
-            });
         }
 
         /// <summary>

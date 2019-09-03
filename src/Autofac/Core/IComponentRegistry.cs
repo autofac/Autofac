@@ -86,13 +86,6 @@ namespace Autofac.Core
         IEnumerable<IComponentRegistration> RegistrationsFor(Service service);
 
         /// <summary>
-        /// Selects all available decorator registrations that can be applied to the specified registration.
-        /// </summary>
-        /// <param name="registration">The registration for which decorator registrations are sought.</param>
-        /// <returns>Decorator registrations applicable to <paramref name="registration"/>.</returns>
-        IEnumerable<IComponentRegistration> DecoratorsFor(IComponentRegistration registration);
-
-        /// <summary>
         /// Fired whenever a component is registered - either explicitly or via a
         /// <see cref="IRegistrationSource"/>.
         /// </summary>
