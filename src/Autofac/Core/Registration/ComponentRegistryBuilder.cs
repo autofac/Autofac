@@ -13,11 +13,6 @@ namespace Autofac.Core.Registration
     internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
     {
         /// <summary>
-        /// Protects instance variables from concurrent access.
-        /// </summary>
-        private readonly object _synchRoot = new object();
-
-        /// <summary>
         /// The tracker for the registered services.
         /// </summary>
         private readonly IRegisteredServicesTracker _registeredServicesTracker;
@@ -106,23 +101,17 @@ namespace Autofac.Core.Registration
         {
             add
             {
-                lock (_synchRoot)
+                foreach (IComponentRegistration registration in _registeredServicesTracker.Registrations)
                 {
-                    foreach (IComponentRegistration registration in _registeredServicesTracker.Registrations)
-                    {
-                        value(this, new ComponentRegisteredEventArgs(this, registration));
-                    }
-
-                    Properties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() + value;
+                    value(this, new ComponentRegisteredEventArgs(this, registration));
                 }
+
+                Properties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() + value;
             }
 
             remove
             {
-                lock (_synchRoot)
-                {
-                    Properties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() - value;
-                }
+                Properties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() - value;
             }
         }
 
@@ -143,23 +132,17 @@ namespace Autofac.Core.Registration
         {
             add
             {
-                lock (_synchRoot)
+                foreach (IRegistrationSource source in _registeredServicesTracker.Sources)
                 {
-                    foreach (IRegistrationSource source in _registeredServicesTracker.Sources)
-                    {
-                        value(this, new RegistrationSourceAddedEventArgs(this, source));
-                    }
-
-                    Properties[MetadataKeys.RegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() + value;
+                    value(this, new RegistrationSourceAddedEventArgs(this, source));
                 }
+
+                Properties[MetadataKeys.RegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() + value;
             }
 
             remove
             {
-                lock (_synchRoot)
-                {
-                    Properties[MetadataKeys.RegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() - value;
-                }
+                Properties[MetadataKeys.RegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() - value;
             }
         }
 
