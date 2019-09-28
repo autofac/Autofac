@@ -23,13 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-
-using Autofac.Builder;
-using Autofac.Features.Decorators;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
@@ -46,9 +40,6 @@ namespace Autofac.Core.Registration
     /// </remarks>
     internal class ComponentRegistry : Disposable, IComponentRegistry
     {
-        private readonly ConcurrentDictionary<IComponentRegistration, IEnumerable<IComponentRegistration>> _decorators
-            = new ConcurrentDictionary<IComponentRegistration, IEnumerable<IComponentRegistration>>();
-
         private readonly IRegisteredServicesTracker _registeredServicesTracker;
 
         /// <summary>
@@ -72,15 +63,23 @@ namespace Autofac.Core.Registration
         public IDictionary<string, object> Properties { get; }
 
         /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
+        /// Gets the registered components.
         /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected override void Dispose(bool disposing)
-        {
-            _registeredServicesTracker.Dispose();
+        public IEnumerable<IComponentRegistration> Registrations => _registeredServicesTracker.Registrations;
 
-            base.Dispose(disposing);
-        }
+        /// <summary>
+        /// Gets the registration sources that are used by the registry.
+        /// </summary>
+        public IEnumerable<IRegistrationSource> Sources => _registeredServicesTracker.Sources;
+
+        /// <summary>
+        /// Gets a value indicating whether the registry contains its own components.
+        /// True if the registry contains its own components; false if it is forwarding
+        /// registrations from another external registry.
+        /// </summary>
+        /// <remarks>This property is used when walking up the scope tree looking for
+        /// registrations for a new customized scope.</remarks>
+        public bool HasLocalComponents => true;
 
         /// <summary>
         /// Attempts to find a default registration for the specified service.
@@ -89,27 +88,14 @@ namespace Autofac.Core.Registration
         /// <param name="registration">The default registration for the service.</param>
         /// <returns>True if a registration exists.</returns>
         public bool TryGetRegistration(Service service, out IComponentRegistration registration)
-        {
-            return _registeredServicesTracker.TryGetRegistration(service, out registration);
-        }
+            => _registeredServicesTracker.TryGetRegistration(service, out registration);
 
         /// <summary>
         /// Determines whether the specified service is registered.
         /// </summary>
         /// <param name="service">The service to test.</param>
         /// <returns>True if the service is registered.</returns>
-        public bool IsRegistered(Service service)
-        {
-            return _registeredServicesTracker.IsRegistered(service);
-        }
-
-        /// <summary>
-        /// Gets the registered components.
-        /// </summary>
-        public IEnumerable<IComponentRegistration> Registrations
-        {
-            get { return _registeredServicesTracker.Registrations; }
-        }
+        public bool IsRegistered(Service service) => _registeredServicesTracker.IsRegistered(service);
 
         /// <summary>
         /// Selects from the available registrations after ensuring that any
@@ -119,25 +105,17 @@ namespace Autofac.Core.Registration
         /// <param name="service">The service for which registrations are sought.</param>
         /// <returns>Registrations supporting <paramref name="service"/>.</returns>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service)
-        {
-            return _registeredServicesTracker.RegistrationsFor(service);
-        }
+            => _registeredServicesTracker.RegistrationsFor(service);
 
         /// <summary>
-        /// Gets the registration sources that are used by the registry.
+        /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
-        public IEnumerable<IRegistrationSource> Sources
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected override void Dispose(bool disposing)
         {
-            get { return _registeredServicesTracker.Sources; }
-        }
+            _registeredServicesTracker.Dispose();
 
-        /// <summary>
-        /// Gets a value indicating whether the registry contains its own components.
-        /// True if the registry contains its own components; false if it is forwarding
-        /// registrations from another external registry.
-        /// </summary>
-        /// <remarks>This property is used when walking up the scope tree looking for
-        /// registrations for a new customised scope.</remarks>
-        public bool HasLocalComponents => true;
+            base.Dispose(disposing);
+        }
     }
 }

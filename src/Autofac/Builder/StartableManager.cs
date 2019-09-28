@@ -12,7 +12,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="properties">The set of properties used during component registration.</param>
         /// <param name="componentContext">
-        /// The <see cref="IComponentContext"/> in which startables should execute.
+        /// The <see cref="IComponentContext"/> in which startable services should execute.
         /// </param>
         internal static void StartStartableComponents(IDictionary<string, object> properties, IComponentContext componentContext)
         {

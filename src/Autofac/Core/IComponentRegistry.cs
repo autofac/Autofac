@@ -58,7 +58,7 @@ namespace Autofac.Core
         /// registrations from another external registry.
         /// </summary>
         /// <remarks>This property is used when walking up the scope tree looking for
-        /// registrations for a new customised scope.</remarks>
+        /// registrations for a new customized scope.</remarks>
         bool HasLocalComponents { get; }
 
         /// <summary>
@@ -84,6 +84,5 @@ namespace Autofac.Core
         /// <param name="service">The service for which registrations are sought.</param>
         /// <returns>Registrations supporting <paramref name="service"/>.</returns>
         IEnumerable<IComponentRegistration> RegistrationsFor(Service service);
-
     }
 }

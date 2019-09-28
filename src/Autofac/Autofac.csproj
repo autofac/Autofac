@@ -5,7 +5,7 @@
     <VersionPrefix>5.0.0</VersionPrefix>
     <TargetFrameworks>netstandard2.0;netstandard1.1;net45</TargetFrameworks>
     <LangVersion>latest</LangVersion>
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <NoWarn>$(NoWarn);CS1591;IDE0008</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Autofac</AssemblyName>

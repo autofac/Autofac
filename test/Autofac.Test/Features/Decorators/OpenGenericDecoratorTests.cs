@@ -869,7 +869,6 @@ namespace Autofac.Test.Features.Decorators
         {
             public void Handle(CreateLocation command)
             {
-
             }
 
             public void Handle(ModifyLocation command)
