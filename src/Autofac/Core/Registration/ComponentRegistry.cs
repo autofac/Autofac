@@ -68,6 +68,9 @@ namespace Autofac.Core.Registration
         /// </summary>
         private readonly ConcurrentDictionary<Service, ServiceRegistrationInfo> _serviceInfo = new ConcurrentDictionary<Service, ServiceRegistrationInfo>();
 
+        private readonly ConcurrentDictionary<IServiceWithType, IReadOnlyList<IComponentRegistration>> _decorators
+            = new ConcurrentDictionary<IServiceWithType, IReadOnlyList<IComponentRegistration>>();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentRegistry"/> class.
         /// </summary>
@@ -250,6 +253,18 @@ namespace Autofac.Core.Registration
                 info = GetInitializedServiceInfo(service);
                 return info.Implementations.ToArray();
             }
+        }
+
+        /// <inheritdoc />
+        public IReadOnlyList<IComponentRegistration> DecoratorsFor(IServiceWithType service)
+        {
+            if (service == null) throw new ArgumentNullException(nameof(service));
+
+            return _decorators.GetOrAdd(service, s =>
+                RegistrationsFor(new DecoratorService(s.ServiceType))
+                    .Where(r => !r.IsAdapterForIndividualComponent)
+                    .OrderBy(r => r.GetRegistrationOrder())
+                    .ToArray());
         }
 
         /// <summary>
