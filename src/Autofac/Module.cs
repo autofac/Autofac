@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using Autofac.Core;
@@ -146,6 +147,7 @@ namespace Autofac
         /// change the target assembly, this property can only be used by modules that inherit directly from
         /// <see cref="Module"/>.
         /// </summary>
+        [SuppressMessage("Design", "CA1065:Do not raise exceptions in unexpected locations", Justification = "Prevent breaking change")]
         protected virtual Assembly ThisAssembly
         {
             get
