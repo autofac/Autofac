@@ -90,7 +90,7 @@ namespace Autofac.Util
                 if ((specialConstraints & GenericParameterAttributes.DefaultConstructorConstraint)
                     != GenericParameterAttributes.None)
                 {
-                    if (!parameterTypeInfo.IsValueType && parameterTypeInfo.DeclaredConstructors.All(c => c.GetParameters().Count() != 0))
+                    if (!parameterTypeInfo.IsValueType && parameterTypeInfo.DeclaredConstructors.All(c => c.GetParameters().Any()))
                     {
                         return false;
                     }
@@ -187,7 +187,7 @@ namespace Autofac.Util
                 baseType.GenericTypeArguments.Length == constraint.GenericTypeArguments.Length)
             {
                 allGenericParametersMatch = true;
-                for (int i = 0; i < baseType.GenericTypeArguments.Length; i++)
+                for (var i = 0; i < baseType.GenericTypeArguments.Length; i++)
                 {
                     var paramArg = baseType.GenericTypeArguments[i];
                     var constraintArg = constraint.GenericTypeArguments[i];

@@ -205,6 +205,8 @@ namespace Autofac.Core.Registration
 
         protected virtual void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource = false)
         {
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+
             foreach (var service in registration.Services)
             {
                 var info = GetServiceInfo(service);
