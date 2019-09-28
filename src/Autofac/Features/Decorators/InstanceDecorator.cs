@@ -42,7 +42,7 @@ namespace Autofac.Features.Decorators
         {
             var instanceType = instance.GetType();
 
-            if (registration.Services.OfType<DecoratorService>().Any()
+            if (service is DecoratorService
                 || !(service is IServiceWithType serviceWithType)
                 || registration is ExternalComponentRegistration) return instance;
 
