@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Autofac.Core;
 using Xunit;
 
@@ -16,10 +15,24 @@ namespace Autofac.Test.Features.Decorators
         {
         }
 
-        public class Foo { }
-        public class Bar : IBar { }
-        public interface IBar { }
-        public class BarDecorator : IBar { public BarDecorator(IBar bar) { } }
+        public class Foo
+        {
+        }
+
+        public class Bar : IBar
+        {
+        }
+
+        public interface IBar
+        {
+        }
+
+        public class BarDecorator : IBar
+        {
+            public BarDecorator(IBar bar)
+            {
+            }
+        }
 
         [Fact]
         public void DecoratorWorksOnAdapter()
