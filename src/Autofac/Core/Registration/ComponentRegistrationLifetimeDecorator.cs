@@ -60,6 +60,8 @@ namespace Autofac.Core.Registration
 
         public IComponentRegistration Target => _inner.IsAdapting() ? _inner.Target : this;
 
+        public bool IsAdapterForIndividualComponent => _inner.IsAdapterForIndividualComponent;
+
         public event EventHandler<PreparingEventArgs> Preparing
         {
             add => _inner.Preparing += value;

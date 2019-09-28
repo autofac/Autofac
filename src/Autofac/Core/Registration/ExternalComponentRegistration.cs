@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
+// Copyright © 2019 Autofac Contributors
 // https://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -24,31 +24,18 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
-namespace Autofac.Core.Resolving
+namespace Autofac.Core.Registration
 {
     /// <summary>
-    /// An <see cref="IResolveOperation"/> is a component context that sequences and monitors the multiple
-    /// activations that go into producing a single requested object graph.
+    ///  A wrapper component registration created only to distinguish it from other adapted registrations.
     /// </summary>
-    public interface IResolveOperation
+    internal class ExternalComponentRegistration : ComponentRegistration
     {
-        /// <summary>
-        /// Get or create and share an instance of the requested service in the <paramref name="currentOperationScope"/>.
-        /// </summary>
-        /// <param name="currentOperationScope">The scope in the hierarchy in which the operation will begin.</param>
-        /// <param name="request">The resolve request.</param>
-        /// <returns>The component instance.</returns>
-        object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest request);
-
-        /// <summary>
-        /// Raised when the entire operation is complete.
-        /// </summary>
-        event EventHandler<ResolveOperationEndingEventArgs> CurrentOperationEnding;
-
-        /// <summary>
-        /// Raised when an instance is looked up within the operation.
-        /// </summary>
-        event EventHandler<InstanceLookupBeginningEventArgs> InstanceLookupBeginning;
+        public ExternalComponentRegistration(Guid id, IInstanceActivator activator, IComponentLifetime lifetime, InstanceSharing sharing, InstanceOwnership ownership, IEnumerable<Service> services, IDictionary<string, object> metadata, IComponentRegistration target, bool isAdapterForIndividualComponent)
+            : base(id, activator, lifetime, sharing, ownership, services, metadata, target, isAdapterForIndividualComponent)
+        {
+        }
     }
 }

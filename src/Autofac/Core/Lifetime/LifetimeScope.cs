@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -259,27 +258,17 @@ namespace Autofac.Core.Lifetime
             return registryBuilder;
         }
 
-        /// <summary>
-        /// Resolve an instance of the provided registration within the context.
-        /// </summary>
-        /// <param name="registration">The registration.</param>
-        /// <param name="parameters">Parameters for the instance.</param>
-        /// <returns>
-        /// The component instance.
-        /// </returns>
-        /// <exception cref="Autofac.Core.Registration.ComponentNotRegisteredException"/>
-        /// <exception cref="DependencyResolutionException"/>
-        public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        /// <inheritdoc />
+        public object ResolveComponent(ResolveRequest request)
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+            if (request == null) throw new ArgumentNullException(nameof(request));
 
             CheckNotDisposed();
 
             var operation = new ResolveOperation(this);
             var handler = ResolveOperationBeginning;
             handler?.Invoke(this, new ResolveOperationBeginningEventArgs(operation));
-            return operation.Execute(registration, parameters);
+            return operation.Execute(request);
         }
 
         /// <summary>

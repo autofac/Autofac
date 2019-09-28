@@ -40,19 +40,20 @@ namespace Autofac.Core.Resolving
     {
         private readonly IResolveOperation _context;
         private readonly ISharingLifetimeScope _activationScope;
+        private readonly Service _service;
         private object _newInstance;
         private bool _executed;
         private const string ActivatorChainExceptionData = "ActivatorChain";
 
         public InstanceLookup(
-            IComponentRegistration registration,
             IResolveOperation context,
             ISharingLifetimeScope mostNestedVisibleScope,
-            IEnumerable<Parameter> parameters)
+            ResolveRequest request)
         {
-            Parameters = parameters;
-            ComponentRegistration = registration;
             _context = context;
+            _service = request.Service;
+            ComponentRegistration = request.Registration;
+            Parameters = request.Parameters;
 
             try
             {
@@ -61,13 +62,13 @@ namespace Autofac.Core.Resolving
             catch (DependencyResolutionException ex)
             {
                 var services = new StringBuilder();
-                foreach (var s in registration.Services)
+                foreach (var s in ComponentRegistration.Services)
                 {
                     services.Append("- ");
                     services.AppendLine(s.Description);
                 }
 
-                var message = string.Format(CultureInfo.CurrentCulture, ComponentActivationResources.UnableToLocateLifetimeScope, registration.Activator.LimitType, services);
+                var message = string.Format(CultureInfo.CurrentCulture, ComponentActivationResources.UnableToLocateLifetimeScope, ComponentRegistration.Activator.LimitType, services);
                 throw new DependencyResolutionException(message, ex);
             }
         }
@@ -121,6 +122,7 @@ namespace Autofac.Core.Resolving
                 decoratorTarget = _newInstance = ComponentRegistration.Activator.ActivateInstance(this, resolveParameters);
 
                 _newInstance = InstanceDecorator.TryDecorateRegistration(
+                    _service,
                     ComponentRegistration,
                     _newInstance,
                     _activationScope,
@@ -182,9 +184,9 @@ namespace Autofac.Core.Resolving
 
         public IComponentRegistry ComponentRegistry => _activationScope.ComponentRegistry;
 
-        public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        public object ResolveComponent(ResolveRequest request)
         {
-            return _context.GetOrCreateInstance(_activationScope, registration, parameters);
+            return _context.GetOrCreateInstance(_activationScope, request);
         }
 
         public IComponentRegistration ComponentRegistration { get; }

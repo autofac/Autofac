@@ -134,7 +134,8 @@ namespace Autofac.Builder
                 builder.RegistrationData,
                 builder.ActivatorData.Activator,
                 builder.RegistrationData.Services.ToArray(),
-                builder.RegistrationStyle.Target);
+                builder.RegistrationStyle.Target,
+                builder.RegistrationStyle.IsAdapterForIndividualComponent);
         }
 
         /// <summary>
@@ -162,6 +163,7 @@ namespace Autofac.Builder
         /// <param name="activator">Activator.</param>
         /// <param name="services">Services provided by the registration.</param>
         /// <param name="target">Optional; target registration.</param>
+        /// <param name="isAdapterForIndividualComponent">Optional; whether the registration is a 1:1 adapters on top of another component.</param>
         /// <returns>An IComponentRegistration.</returns>
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="activator" /> or <paramref name="data" /> is <see langword="null" />.
@@ -171,7 +173,8 @@ namespace Autofac.Builder
             RegistrationData data,
             IInstanceActivator activator,
             Service[] services,
-            IComponentRegistration target)
+            IComponentRegistration target,
+            bool isAdapterForIndividualComponent = false)
         {
             if (activator == null) throw new ArgumentNullException(nameof(activator));
             if (data == null) throw new ArgumentNullException(nameof(data));
@@ -216,7 +219,8 @@ namespace Autofac.Builder
                     data.Ownership,
                     services,
                     data.Metadata,
-                    target);
+                    target,
+                    isAdapterForIndividualComponent);
             }
 
             foreach (var p in data.PreparingHandlers)

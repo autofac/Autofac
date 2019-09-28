@@ -123,28 +123,6 @@ namespace Autofac.Core.Registration
             return _registeredServicesTracker.RegistrationsFor(service);
         }
 
-        /// <inheritdoc />
-        public IEnumerable<IComponentRegistration> DecoratorsFor(IComponentRegistration registration)
-        {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-
-            return _decorators.GetOrAdd(registration, r =>
-            {
-                var result = new List<IComponentRegistration>();
-
-                foreach (var service in r.Services)
-                {
-                    if (service is DecoratorService || !(service is IServiceWithType swt)) continue;
-
-                    var decoratorService = new DecoratorService(swt.ServiceType);
-                    var decoratorRegistrations = _registeredServicesTracker.RegistrationsFor(decoratorService);
-                    result.AddRange(decoratorRegistrations);
-                }
-
-                return result.OrderBy(d => d.GetRegistrationOrder()).ToArray();
-            });
-        }
-
         /// <summary>
         /// Gets the registration sources that are used by the registry.
         /// </summary>

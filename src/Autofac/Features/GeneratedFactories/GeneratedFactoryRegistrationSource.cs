@@ -56,12 +56,12 @@ namespace Autofac.Features.GeneratedFactories
             return registrationAccessor(resultTypeService)
                 .Select(r =>
                 {
-                    var factory = new FactoryGenerator(ts.ServiceType, r, ParameterMapping.Adaptive);
+                    var factory = new FactoryGenerator(ts.ServiceType, resultTypeService, r, ParameterMapping.Adaptive);
                     var rb = RegistrationBuilder.ForDelegate(ts.ServiceType, factory.GenerateFactory)
                         .InstancePerLifetimeScope()
                         .ExternallyOwned()
                         .As(service)
-                        .Targeting(r)
+                        .Targeting(r, IsAdapterForIndividualComponents)
                         .InheritRegistrationOrderFrom(r);
 
                     return rb.CreateRegistration();
