@@ -24,6 +24,8 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using Autofac.Benchmarks.Decorators;
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Running;
 using Xunit;
 
@@ -31,46 +33,57 @@ namespace Autofac.Benchmarks
 {
     public class Harness
     {
-        [Fact]
-        public void ChildScopeResolve() => BenchmarkRunner.Run<ChildScopeResolveBenchmark>();
+        private static readonly IConfig Config = new CustomConfig();
+
+        private class CustomConfig : ManualConfig
+        {
+            public CustomConfig()
+            {
+                Add(DefaultConfig.Instance);
+                Add(MemoryDiagnoser.Default);
+            }
+        }
 
         [Fact]
-        public void Concurrency() => BenchmarkRunner.Run<ConcurrencyBenchmark>();
+        public void ChildScopeResolve() => BenchmarkRunner.Run<ChildScopeResolveBenchmark>(Config);
 
         [Fact]
-        public void Decorator_Keyed_Generic() => BenchmarkRunner.Run<KeyedGenericBenchmark>();
+        public void Concurrency() => BenchmarkRunner.Run<ConcurrencyBenchmark>(Config);
 
         [Fact]
-        public void Decorator_Keyed_Nested() => BenchmarkRunner.Run<KeyedNestedBenchmark>();
+        public void Decorator_Keyed_Generic() => BenchmarkRunner.Run<KeyedGenericBenchmark>(Config);
 
         [Fact]
-        public void Decorator_Keyed_Simple() => BenchmarkRunner.Run<KeyedSimpleBenchmark>();
+        public void Decorator_Keyed_Nested() => BenchmarkRunner.Run<KeyedNestedBenchmark>(Config);
 
         [Fact]
-        public void Decorator_Keyless_Generic() => BenchmarkRunner.Run<KeylessGenericBenchmark>();
+        public void Decorator_Keyed_Simple() => BenchmarkRunner.Run<KeyedSimpleBenchmark>(Config);
 
         [Fact]
-        public void Decorator_Keyless_Nested() => BenchmarkRunner.Run<KeylessNestedBenchmark>();
+        public void Decorator_Keyless_Generic() => BenchmarkRunner.Run<KeylessGenericBenchmark>(Config);
 
         [Fact]
-        public void Decorator_Keyless_Nested_Lambda() => BenchmarkRunner.Run<KeylessNestedLambdaBenchmark>();
+        public void Decorator_Keyless_Nested() => BenchmarkRunner.Run<KeylessNestedBenchmark>(Config);
 
         [Fact]
-        public void Decorator_Keyless_Simple() => BenchmarkRunner.Run<KeylessSimpleBenchmark>();
+        public void Decorator_Keyless_Nested_Lambda() => BenchmarkRunner.Run<KeylessNestedLambdaBenchmark>(Config);
 
         [Fact]
-        public void Decorator_Keyless_Simple_Lambda() => BenchmarkRunner.Run<KeylessSimpleLambdaBenchmark>();
+        public void Decorator_Keyless_Simple() => BenchmarkRunner.Run<KeylessSimpleBenchmark>(Config);
 
         [Fact]
-        public void DeepGraphResolve() => BenchmarkRunner.Run<DeepGraphResolveBenchmark>();
+        public void Decorator_Keyless_Simple_Lambda() => BenchmarkRunner.Run<KeylessSimpleLambdaBenchmark>(Config);
 
         [Fact]
-        public void EnumerableResolve() => BenchmarkRunner.Run<EnumerableResolveBenchmark>();
+        public void DeepGraphResolve() => BenchmarkRunner.Run<DeepGraphResolveBenchmark>(Config);
 
         [Fact]
-        public void PropertyInjection() => BenchmarkRunner.Run<PropertyInjectionBenchmark>();
+        public void EnumerableResolve() => BenchmarkRunner.Run<EnumerableResolveBenchmark>(Config);
 
         [Fact]
-        public void RootContainerResolve() => BenchmarkRunner.Run<RootContainerResolveBenchmark>();
+        public void PropertyInjection() => BenchmarkRunner.Run<PropertyInjectionBenchmark>(Config);
+
+        [Fact]
+        public void RootContainerResolve() => BenchmarkRunner.Run<RootContainerResolveBenchmark>(Config);
     }
 }
