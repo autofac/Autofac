@@ -5,7 +5,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
-
+using Autofac.Builder;
+using Autofac.Features.Decorators;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
@@ -29,6 +30,9 @@ namespace Autofac.Core.Registration
         /// All registrations.
         /// </summary>
         private readonly List<IComponentRegistration> _registrations = new List<IComponentRegistration>();
+
+        private readonly ConcurrentDictionary<IServiceWithType, IReadOnlyList<IComponentRegistration>> _decorators
+            = new ConcurrentDictionary<IServiceWithType, IReadOnlyList<IComponentRegistration>>();
 
         /// <summary>
         /// Protects instance variables from concurrent access.
@@ -198,6 +202,18 @@ namespace Autofac.Core.Registration
                 info = GetInitializedServiceInfo(service);
                 return info.Implementations.ToArray();
             }
+        }
+
+        /// <inheritdoc />
+        public IReadOnlyList<IComponentRegistration> DecoratorsFor(IServiceWithType service)
+        {
+            if (service == null) throw new ArgumentNullException(nameof(service));
+
+            return _decorators.GetOrAdd(service, s =>
+                RegistrationsFor(new DecoratorService(s.ServiceType))
+                    .Where(r => !r.IsAdapterForIndividualComponent)
+                    .OrderBy(r => r.GetRegistrationOrder())
+                    .ToArray());
         }
 
         private ServiceRegistrationInfo GetInitializedServiceInfo(Service service)

@@ -23,12 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using Autofac.Builder;
-using Autofac.Features.Decorators;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
@@ -46,9 +41,6 @@ namespace Autofac.Core.Registration
     internal class ComponentRegistry : Disposable, IComponentRegistry
     {
         private readonly IRegisteredServicesTracker _registeredServicesTracker;
-
-        private readonly ConcurrentDictionary<IServiceWithType, IReadOnlyList<IComponentRegistration>> _decorators
-            = new ConcurrentDictionary<IServiceWithType, IReadOnlyList<IComponentRegistration>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentRegistry"/> class.
@@ -117,15 +109,7 @@ namespace Autofac.Core.Registration
 
         /// <inheritdoc />
         public IReadOnlyList<IComponentRegistration> DecoratorsFor(IServiceWithType service)
-        {
-            if (service == null) throw new ArgumentNullException(nameof(service));
-
-            return _decorators.GetOrAdd(service, s =>
-                RegistrationsFor(new DecoratorService(s.ServiceType))
-                    .Where(r => !r.IsAdapterForIndividualComponent)
-                    .OrderBy(r => r.GetRegistrationOrder())
-                    .ToArray());
-        }
+            => _registeredServicesTracker.DecoratorsFor(service);
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
