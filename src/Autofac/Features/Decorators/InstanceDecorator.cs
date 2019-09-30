@@ -51,9 +51,11 @@ namespace Autofac.Features.Decorators
 
             var instanceType = instance.GetType();
             var decoratorContext = DecoratorContext.Create(instanceType, serviceType, instance);
+            var decoratorCount = decoratorRegistrations.Count;
 
-            foreach (var decoratorRegistration in decoratorRegistrations)
+            for (var index = 0; index < decoratorCount; index++)
             {
+                var decoratorRegistration = decoratorRegistrations[index];
                 var decoratorService = decoratorRegistration.Services.OfType<DecoratorService>().First();
                 if (!decoratorService.Condition(decoratorContext)) continue;
 
@@ -70,7 +72,8 @@ namespace Autofac.Features.Decorators
                 var resolveRequest = new ResolveRequest(decoratorService, decoratorRegistration, invokeParameters);
                 instance = context.ResolveComponent(resolveRequest);
 
-                decoratorContext = decoratorContext.UpdateContext(instance);
+                if (index < decoratorCount - 1)
+                    decoratorContext = decoratorContext.UpdateContext(instance);
             }
 
             return instance;
