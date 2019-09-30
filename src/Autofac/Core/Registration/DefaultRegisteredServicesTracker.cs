@@ -39,24 +39,29 @@ namespace Autofac.Core.Registration
         /// </summary>
         private readonly object _synchRoot = new object();
 
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected override void Dispose(bool disposing)
+        /// <inheritdoc />
+        public IEnumerable<IComponentRegistration> Registrations
         {
-            foreach (var registration in _registrations)
-                registration.Dispose();
-
-            base.Dispose(disposing);
+            get
+            {
+                lock (_synchRoot)
+                    return _registrations.ToArray();
+            }
         }
 
-        /// <summary>
-        /// Adds a registration to the list of registered services.
-        /// </summary>
-        /// <param name="registration">The registration to add.</param>
-        /// <param name="preserveDefaults">Indicates whehter the defaults should be preserved.</param>
-        /// <param name="originatedFromSource">Indicates whether this is an explicitly added registration or that it has been added by a different source.</param>
+        /// <inheritdoc />
+        public IEnumerable<IRegistrationSource> Sources
+        {
+            get
+            {
+                lock (_synchRoot)
+                {
+                    return _dynamicRegistrationSources.ToArray();
+                }
+            }
+        }
+
+        /// <inheritdoc />
         public virtual void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource = false)
         {
             foreach (var service in registration.Services)
@@ -66,13 +71,10 @@ namespace Autofac.Core.Registration
             }
 
             _registrations.Add(registration);
-            UpdateInitialisedAdapters(registration);
+            UpdateInitializedAdapters(registration);
         }
 
-        /// <summary>
-        /// Add a registration source that will provide registrations on-the-fly.
-        /// </summary>
-        /// <param name="source">The source to register.</param>
+        /// <inheritdoc />
         public void AddRegistrationSource(IRegistrationSource source)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
@@ -85,12 +87,7 @@ namespace Autofac.Core.Registration
             }
         }
 
-        /// <summary>
-        /// Attempts to find a default registration for the specified service.
-        /// </summary>
-        /// <param name="service">The service to look up.</param>
-        /// <param name="registration">The default registration for the service.</param>
-        /// <returns>True if a registration exists.</returns>
+        /// <inheritdoc />
         public bool TryGetRegistration(Service service, out IComponentRegistration registration)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
@@ -106,23 +103,7 @@ namespace Autofac.Core.Registration
             }
         }
 
-        /// <summary>
-        /// Gets the registered components.
-        /// </summary>
-        public IEnumerable<IComponentRegistration> Registrations
-        {
-            get
-            {
-                lock (_synchRoot)
-                    return _registrations.ToArray();
-            }
-        }
-
-        /// <summary>
-        /// Determines whether the specified service is registered.
-        /// </summary>
-        /// <param name="service">The service to test.</param>
-        /// <returns>True if the service is registered.</returns>
+        /// <inheritdoc />
         public bool IsRegistered(Service service)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
@@ -137,21 +118,47 @@ namespace Autofac.Core.Registration
             }
         }
 
-        /// <summary>
-        /// Gets the registration sources that are used by the registry.
-        /// </summary>
-        public IEnumerable<IRegistrationSource> Sources
+        /// <inheritdoc />
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service)
         {
-            get
+            if (service == null) throw new ArgumentNullException(nameof(service));
+
+            var info = GetInitializedServiceInfoOrDefault(service);
+            if (info != null)
+                return info.Implementations.ToArray();
+
+            lock (_synchRoot)
             {
-                lock (_synchRoot)
-                {
-                    return _dynamicRegistrationSources.ToArray();
-                }
+                info = GetInitializedServiceInfo(service);
+                return info.Implementations.ToArray();
             }
         }
 
-        private void UpdateInitialisedAdapters(IComponentRegistration registration)
+        /// <inheritdoc />
+        public IReadOnlyList<IComponentRegistration> DecoratorsFor(IServiceWithType service)
+        {
+            if (service == null) throw new ArgumentNullException(nameof(service));
+
+            return _decorators.GetOrAdd(service, s =>
+                RegistrationsFor(new DecoratorService(s.ServiceType))
+                    .Where(r => !r.IsAdapterForIndividualComponent)
+                    .OrderBy(r => r.GetRegistrationOrder())
+                    .ToArray());
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected override void Dispose(bool disposing)
+        {
+            foreach (var registration in _registrations)
+                registration.Dispose();
+
+            base.Dispose(disposing);
+        }
+
+        private void UpdateInitializedAdapters(IComponentRegistration registration)
         {
             var adapterServices = new List<Service>();
             foreach (var serviceInfo in _serviceInfo)
@@ -180,40 +187,6 @@ namespace Autofac.Core.Registration
             var adapters = adaptationSandbox.GetAdapters();
             foreach (var adapter in adapters)
                 AddRegistration(adapter, true, true);
-        }
-
-        /// <summary>
-        /// Selects from the available registrations after ensuring that any
-        /// dynamic registration sources that may provide <paramref name="service"/>
-        /// have been invoked.
-        /// </summary>
-        /// <param name="service">The service for which registrations are sought.</param>
-        /// <returns>Registrations supporting <paramref name="service"/>.</returns>
-        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service)
-        {
-            if (service == null) throw new ArgumentNullException(nameof(service));
-
-            var info = GetInitializedServiceInfoOrDefault(service);
-            if (info != null)
-                return info.Implementations.ToArray();
-
-            lock (_synchRoot)
-            {
-                info = GetInitializedServiceInfo(service);
-                return info.Implementations.ToArray();
-            }
-        }
-
-        /// <inheritdoc />
-        public IReadOnlyList<IComponentRegistration> DecoratorsFor(IServiceWithType service)
-        {
-            if (service == null) throw new ArgumentNullException(nameof(service));
-
-            return _decorators.GetOrAdd(service, s =>
-                RegistrationsFor(new DecoratorService(s.ServiceType))
-                    .Where(r => !r.IsAdapterForIndividualComponent)
-                    .OrderBy(r => r.GetRegistrationOrder())
-                    .ToArray());
         }
 
         private ServiceRegistrationInfo GetInitializedServiceInfo(Service service)
