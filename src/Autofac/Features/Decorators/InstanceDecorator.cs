@@ -25,7 +25,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Registration;
 
@@ -40,23 +39,17 @@ namespace Autofac.Features.Decorators
             IComponentContext context,
             IEnumerable<Parameter> parameters)
         {
-            var instanceType = instance.GetType();
-
-            if (registration.Services.OfType<DecoratorService>().Any()
+            if (service is DecoratorService
                 || !(service is IServiceWithType serviceWithType)
                 || registration is ExternalComponentRegistration) return instance;
 
-            var decoratorRegistrations = context.ComponentRegistry
-                .RegistrationsFor(new DecoratorService(serviceWithType.ServiceType))
-                .Where(r => !r.IsAdapterForIndividualComponent)
-                .OrderBy(d => d.GetRegistrationOrder())
-                .ToArray();
-
-            if (decoratorRegistrations.Length == 0) return instance;
+            var decoratorRegistrations = context.ComponentRegistry.DecoratorsFor(serviceWithType);
+            if (decoratorRegistrations.Count == 0) return instance;
 
             var serviceType = serviceWithType.ServiceType;
             var resolveParameters = parameters as Parameter[] ?? parameters.ToArray();
 
+            var instanceType = instance.GetType();
             var decoratorContext = DecoratorContext.Create(instanceType, serviceType, instance);
 
             foreach (var decoratorRegistration in decoratorRegistrations)

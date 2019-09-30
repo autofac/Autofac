@@ -670,6 +670,8 @@ namespace Autofac
             PropertiesAutowired<TLimit, TActivatorData, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration, PropertyWiringOptions wiringFlags = PropertyWiringOptions.None)
         {
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+
             var preserveSetValues = (int)(wiringFlags & PropertyWiringOptions.PreserveSetValues) != 0;
             var allowCircularDependencies = (int)(wiringFlags & PropertyWiringOptions.AllowCircularDependencies) != 0;
 
@@ -1389,7 +1391,7 @@ namespace Autofac
 
                 if (instance == null)
                 {
-                    throw new DependencyResolutionException(String.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.DecoratorRequiresInstanceParameter, typeof(TService).Name));
+                    throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.DecoratorRequiresInstanceParameter, typeof(TService).Name));
                 }
 
                 return decorator(c, p, instance);

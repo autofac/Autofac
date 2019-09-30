@@ -41,6 +41,9 @@ namespace Autofac.Core.Registration
     internal class ComponentRegistry : Disposable, IComponentRegistry
     {
         private readonly IRegisteredServicesTracker _registeredServicesTracker;
+        
+        private readonly ConcurrentDictionary<IServiceWithType, IReadOnlyList<IComponentRegistration>> _decorators
+            = new ConcurrentDictionary<IServiceWithType, IReadOnlyList<IComponentRegistration>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentRegistry"/> class.
@@ -106,6 +109,18 @@ namespace Autofac.Core.Registration
         /// <returns>Registrations supporting <paramref name="service"/>.</returns>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service)
             => _registeredServicesTracker.RegistrationsFor(service);
+
+        /// <inheritdoc />
+        public IReadOnlyList<IComponentRegistration> DecoratorsFor(IServiceWithType service)
+        {
+            if (service == null) throw new ArgumentNullException(nameof(service));
+
+            return _decorators.GetOrAdd(service, s =>
+                RegistrationsFor(new DecoratorService(s.ServiceType))
+                    .Where(r => !r.IsAdapterForIndividualComponent)
+                    .OrderBy(r => r.GetRegistrationOrder())
+                    .ToArray());
+        }
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.

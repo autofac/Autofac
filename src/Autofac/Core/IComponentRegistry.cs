@@ -84,5 +84,12 @@ namespace Autofac.Core
         /// <param name="service">The service for which registrations are sought.</param>
         /// <returns>Registrations supporting <paramref name="service"/>.</returns>
         IEnumerable<IComponentRegistration> RegistrationsFor(Service service);
+
+        /// <summary>
+        /// Selects all available decorator registrations that can be applied to the specified service.
+        /// </summary>
+        /// <param name="service">The service for which decorator registrations are sought.</param>
+        /// <returns>Decorator registrations applicable to <paramref name="service"/>.</returns>
+        IReadOnlyList<IComponentRegistration> DecoratorsFor(IServiceWithType service);
     }
 }
