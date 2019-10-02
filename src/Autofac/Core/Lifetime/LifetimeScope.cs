@@ -28,7 +28,6 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Autofac.Builder;
 using Autofac.Core.Registration;
@@ -236,9 +235,11 @@ namespace Autofac.Core.Lifetime
         {
             var builder = new ContainerBuilder(new FallbackDictionary<string, object>(ComponentRegistry.Properties));
 
-            foreach (var source in ComponentRegistry.Sources
-                .Where(src => src.IsAdapterForIndividualComponents))
-                builder.RegisterSource(source);
+            foreach (var source in ComponentRegistry.Sources)
+            {
+                if (source.IsAdapterForIndividualComponents)
+                    builder.RegisterSource(source);
+            }
 
             // Issue #272: Only the most nested parent registry with HasLocalComponents is registered as an external source
             // It provides all non-adapting registrations from itself and from it's parent registries
