@@ -85,5 +85,8 @@ namespace Autofac.Benchmarks
 
         [Fact]
         public void RootContainerResolve() => BenchmarkRunner.Run<RootContainerResolveBenchmark>(Config);
+
+        [Fact]
+        public void OpenGeneric() => BenchmarkRunner.Run<OpenGenericBenchmark>(Config);
     }
 }
