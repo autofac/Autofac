@@ -49,6 +49,7 @@ namespace Autofac.Core.Lifetime
         /// </summary>
         private readonly object _synchRoot = new object();
         private readonly ConcurrentDictionary<Guid, object> _sharedInstances = new ConcurrentDictionary<Guid, object>();
+        private object _anonymousTag;
 
         internal static Guid SelfRegistrationId { get; } = Guid.NewGuid();
 
@@ -59,10 +60,8 @@ namespace Autofac.Core.Lifetime
         /// </summary>
         public static readonly object RootTag = "root";
 
-        private static object MakeAnonymousTag()
-        {
-            return new object();
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private object MakeAnonymousTag() => _anonymousTag = new object();
 
         private LifetimeScope()
         {
@@ -135,6 +134,8 @@ namespace Autofac.Core.Lifetime
 
         private void CheckTagIsUnique(object tag)
         {
+            if (ReferenceEquals(tag, _anonymousTag)) return;
+
             ISharingLifetimeScope parentScope = this;
             while (parentScope != RootLifetimeScope)
             {
