@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -85,28 +86,28 @@ namespace Autofac.Features.Collections
             var serviceType = swt.ServiceType;
             Type elementType = null;
             Type limitType = null;
-            Func<IEnumerable<object>, object> generator = null;
+            Func<int, IList> factory = null;
 
             if (serviceType.IsGenericTypeDefinedBy(typeof(IEnumerable<>)))
             {
                 elementType = serviceType.GetTypeInfo().GenericTypeArguments.First();
                 limitType = elementType.MakeArrayType();
-                generator = BuildGenerator(elementType, nameof(Enumerable.ToArray));
+                factory = GenerateArrayFactory(elementType);
             }
             else if (serviceType.IsArray)
             {
                 elementType = serviceType.GetElementType();
                 limitType = serviceType;
-                generator = BuildGenerator(elementType, nameof(Enumerable.ToArray));
+                factory = GenerateArrayFactory(elementType);
             }
             else if (serviceType.IsGenericListOrCollectionInterfaceType())
             {
                 elementType = serviceType.GetTypeInfo().GenericTypeArguments.First();
                 limitType = typeof(List<>).MakeGenericType(elementType);
-                generator = BuildGenerator(elementType, nameof(Enumerable.ToList));
+                factory = GenerateListFactory(elementType);
             }
 
-            if (elementType == null || limitType == null || generator == null)
+            if (elementType == null || factory == null)
                 return Enumerable.Empty<IComponentRegistration>();
 
             var elementTypeService = swt.ChangeType(elementType);
@@ -115,10 +116,26 @@ namespace Autofac.Features.Collections
                 limitType,
                 (c, p) =>
                 {
-                    var elements = c.ComponentRegistry.RegistrationsFor(elementTypeService).OrderBy(cr => cr.GetRegistrationOrder());
-                    var items = elements.Select(cr => c.ResolveComponent(new ResolveRequest(elementTypeService, cr, p)));
+                    var itemRegistrations = c.ComponentRegistry
+                        .RegistrationsFor(elementTypeService)
+                        .OrderBy(cr => cr.GetRegistrationOrder())
+                        .ToArray();
 
-                    return generator(items);
+                    var output = factory(itemRegistrations.Length);
+                    var isFixedSize = output.IsFixedSize;
+
+                    for (var i = 0; i < itemRegistrations.Length; i++)
+                    {
+                        var itemRegistration = itemRegistrations[i];
+                        var resolveRequest = new ResolveRequest(elementTypeService, itemRegistration, p);
+                        var component = c.ResolveComponent(resolveRequest);
+                        if (isFixedSize)
+                            output[i] = component;
+                        else
+                            output.Add(component);
+                    }
+
+                    return output;
                 });
 
             var registration = new ComponentRegistration(
@@ -136,27 +153,22 @@ namespace Autofac.Features.Collections
         public bool IsAdapterForIndividualComponents => false;
 
         public override string ToString()
+            => CollectionRegistrationSourceResources.CollectionRegistrationSourceDescription;
+
+        private static Func<int, IList> GenerateListFactory(Type elementType)
         {
-            return CollectionRegistrationSourceResources.CollectionRegistrationSourceDescription;
+            var parameter = Expression.Parameter(typeof(int));
+            var genericType = typeof(List<>).MakeGenericType(elementType);
+            var constructor = genericType.GetMatchingConstructor(new[] { typeof(int) });
+            var newList = Expression.New(constructor, parameter);
+            return Expression.Lambda<Func<int, IList>>(newList, parameter).Compile();
         }
 
-        private static Func<IEnumerable<object>, object> BuildGenerator(Type elementType, string methodName)
+        private static Func<int, IList> GenerateArrayFactory(Type elementType)
         {
-            var ofTypeMethod = typeof(Enumerable)
-                .GetTypeInfo()
-                .GetDeclaredMethod(nameof(Enumerable.OfType))
-                .MakeGenericMethod(elementType);
-
-            var enumerableMethod = typeof(Enumerable)
-                .GetTypeInfo()
-                .GetDeclaredMethod(methodName)
-                .MakeGenericMethod(elementType);
-
-            var items = Expression.Parameter(typeof(IEnumerable<object>), "items");
-            var ofType = Expression.Call(ofTypeMethod, items);
-            var toEnumerable = Expression.Call(enumerableMethod, ofType);
-            var lambda = Expression.Lambda<Func<IEnumerable<object>, object>>(toEnumerable, items).Compile();
-            return lambda;
+            var parameter = Expression.Parameter(typeof(int));
+            var newArray = Expression.NewArrayBounds(elementType, parameter);
+            return Expression.Lambda<Func<int, IList>>(newArray, parameter).Compile();
         }
     }
 }
