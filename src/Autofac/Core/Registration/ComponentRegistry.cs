@@ -318,7 +318,7 @@ namespace Autofac.Core.Registration
             {
                 lock (_synchRoot)
                 {
-                    return _dynamicRegistrationSources.ToArray();
+                    return _dynamicRegistrationSources;
                 }
             }
         }
