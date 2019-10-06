@@ -23,9 +23,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Linq;
 using Autofac.Benchmarks.Decorators;
-using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Running;
 using Xunit;
 
@@ -33,60 +32,60 @@ namespace Autofac.Benchmarks
 {
     public class Harness
     {
-        private static readonly IConfig Config = new CustomConfig();
+        [Fact]
+        public void ChildScopeResolve() => RunBenchmark<ChildScopeResolveBenchmark>();
 
-        private class CustomConfig : ManualConfig
+        [Fact]
+        public void Concurrency() => RunBenchmark<ConcurrencyBenchmark>();
+
+        [Fact]
+        public void Decorator_Keyed_Generic() => RunBenchmark<KeyedGenericBenchmark>();
+
+        [Fact]
+        public void Decorator_Keyed_Nested() => RunBenchmark<KeyedNestedBenchmark>();
+
+        [Fact]
+        public void Decorator_Keyed_Simple() => RunBenchmark<KeyedSimpleBenchmark>();
+
+        [Fact]
+        public void Decorator_Keyless_Generic() => RunBenchmark<KeylessGenericBenchmark>();
+
+        [Fact]
+        public void Decorator_Keyless_Nested() => RunBenchmark<KeylessNestedBenchmark>();
+
+        [Fact]
+        public void Decorator_Keyless_Nested_Lambda() => RunBenchmark<KeylessNestedLambdaBenchmark>();
+
+        [Fact]
+        public void Decorator_Keyless_Simple() => RunBenchmark<KeylessSimpleBenchmark>();
+
+        [Fact]
+        public void Decorator_Keyless_Simple_Lambda() => RunBenchmark<KeylessSimpleLambdaBenchmark>();
+
+        [Fact]
+        public void DeepGraphResolve() => RunBenchmark<DeepGraphResolveBenchmark>();
+
+        [Fact]
+        public void EnumerableResolve() => RunBenchmark<EnumerableResolveBenchmark>();
+
+        [Fact]
+        public void PropertyInjection() => RunBenchmark<PropertyInjectionBenchmark>();
+
+        [Fact]
+        public void RootContainerResolve() => RunBenchmark<RootContainerResolveBenchmark>();
+
+        [Fact]
+        public void OpenGeneric() => RunBenchmark<OpenGenericBenchmark>();
+
+        /// <remarks>
+        /// This method is used to enforce that benchmark types are added to <see cref="Benchmarks.All"/>
+        /// so that they can be used directly from the command line in <see cref="Program.Main"/> as well.
+        /// </remarks>
+        private static void RunBenchmark<TBenchmark>()
         {
-            public CustomConfig()
-            {
-                Add(DefaultConfig.Instance);
-                Add(MemoryDiagnoser.Default);
-            }
+            var targetType = typeof(TBenchmark);
+            var benchmarkType = Benchmarks.All.Single(type => type == targetType);
+            BenchmarkRunner.Run(benchmarkType, new BenchmarkConfig());
         }
-
-        [Fact]
-        public void ChildScopeResolve() => BenchmarkRunner.Run<ChildScopeResolveBenchmark>(Config);
-
-        [Fact]
-        public void Concurrency() => BenchmarkRunner.Run<ConcurrencyBenchmark>(Config);
-
-        [Fact]
-        public void Decorator_Keyed_Generic() => BenchmarkRunner.Run<KeyedGenericBenchmark>(Config);
-
-        [Fact]
-        public void Decorator_Keyed_Nested() => BenchmarkRunner.Run<KeyedNestedBenchmark>(Config);
-
-        [Fact]
-        public void Decorator_Keyed_Simple() => BenchmarkRunner.Run<KeyedSimpleBenchmark>(Config);
-
-        [Fact]
-        public void Decorator_Keyless_Generic() => BenchmarkRunner.Run<KeylessGenericBenchmark>(Config);
-
-        [Fact]
-        public void Decorator_Keyless_Nested() => BenchmarkRunner.Run<KeylessNestedBenchmark>(Config);
-
-        [Fact]
-        public void Decorator_Keyless_Nested_Lambda() => BenchmarkRunner.Run<KeylessNestedLambdaBenchmark>(Config);
-
-        [Fact]
-        public void Decorator_Keyless_Simple() => BenchmarkRunner.Run<KeylessSimpleBenchmark>(Config);
-
-        [Fact]
-        public void Decorator_Keyless_Simple_Lambda() => BenchmarkRunner.Run<KeylessSimpleLambdaBenchmark>(Config);
-
-        [Fact]
-        public void DeepGraphResolve() => BenchmarkRunner.Run<DeepGraphResolveBenchmark>(Config);
-
-        [Fact]
-        public void EnumerableResolve() => BenchmarkRunner.Run<EnumerableResolveBenchmark>(Config);
-
-        [Fact]
-        public void PropertyInjection() => BenchmarkRunner.Run<PropertyInjectionBenchmark>(Config);
-
-        [Fact]
-        public void RootContainerResolve() => BenchmarkRunner.Run<RootContainerResolveBenchmark>(Config);
-
-        [Fact]
-        public void OpenGeneric() => BenchmarkRunner.Run<OpenGenericBenchmark>(Config);
     }
 }
