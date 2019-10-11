@@ -35,6 +35,11 @@
     <Product>Autofac</Product>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="2.9.4">
       <PrivateAssets>All</PrivateAssets>
