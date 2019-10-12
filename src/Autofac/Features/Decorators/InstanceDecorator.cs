@@ -25,7 +25,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Registration;
 
@@ -40,36 +39,41 @@ namespace Autofac.Features.Decorators
             IComponentContext context,
             IEnumerable<Parameter> parameters)
         {
-            var instanceType = instance.GetType();
-
-            if (registration.Services.OfType<DecoratorService>().Any()
+            if (service is DecoratorService
                 || !(service is IServiceWithType serviceWithType)
                 || registration is ExternalComponentRegistration) return instance;
 
-            var decoratorRegistrations = context.ComponentRegistry
-                .RegistrationsFor(new DecoratorService(serviceWithType.ServiceType))
-                .Where(r => !r.IsAdapterForIndividualComponent)
-                .OrderBy(d => d.GetRegistrationOrder())
-                .ToArray();
-
-            if (decoratorRegistrations.Length == 0) return instance;
+            var decoratorRegistrations = context.ComponentRegistry.DecoratorsFor(serviceWithType);
+            if (decoratorRegistrations.Count == 0) return instance;
 
             var serviceType = serviceWithType.ServiceType;
             var resolveParameters = parameters as Parameter[] ?? parameters.ToArray();
 
+            var instanceType = instance.GetType();
             var decoratorContext = DecoratorContext.Create(instanceType, serviceType, instance);
+            var decoratorCount = decoratorRegistrations.Count;
 
-            foreach (var decoratorRegistration in decoratorRegistrations)
+            for (var index = 0; index < decoratorCount; index++)
             {
+                var decoratorRegistration = decoratorRegistrations[index];
                 var decoratorService = decoratorRegistration.Services.OfType<DecoratorService>().First();
                 if (!decoratorService.Condition(decoratorContext)) continue;
 
                 var serviceParameter = new TypedParameter(serviceType, instance);
                 var contextParameter = new TypedParameter(typeof(IDecoratorContext), decoratorContext);
-                var invokeParameters = resolveParameters.Concat(new Parameter[] { serviceParameter, contextParameter });
-                instance = context.ResolveComponent(new ResolveRequest(decoratorService, decoratorRegistration, invokeParameters));
 
-                decoratorContext = decoratorContext.UpdateContext(instance);
+                var invokeParameters = new Parameter[resolveParameters.Length + 2];
+                for (var i = 0; i < resolveParameters.Length; i++)
+                    invokeParameters[i] = resolveParameters[i];
+
+                invokeParameters[invokeParameters.Length - 2] = serviceParameter;
+                invokeParameters[invokeParameters.Length - 1] = contextParameter;
+
+                var resolveRequest = new ResolveRequest(decoratorService, decoratorRegistration, invokeParameters);
+                instance = context.ResolveComponent(resolveRequest);
+
+                if (index < decoratorCount - 1)
+                    decoratorContext = decoratorContext.UpdateContext(instance);
             }
 
             return instance;

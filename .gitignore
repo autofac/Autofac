@@ -3,6 +3,7 @@
 
 # Project specific files
 artifacts/
+BenchmarkDotNet.Artifacts/
 
 # User-specific files
 *.suo

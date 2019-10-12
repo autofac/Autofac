@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac.Core.Lifetime;
 
 namespace Autofac.Core.Registration
@@ -43,6 +44,7 @@ namespace Autofac.Core.Registration
             _restrictedRootScopeLifetime = new MatchingScopeLifetime(scopeTag);
         }
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Tracked by component registry")]
         protected override void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource = false)
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));

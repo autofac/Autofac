@@ -178,6 +178,7 @@ namespace Autofac.Builder
         {
             if (activator == null) throw new ArgumentNullException(nameof(activator));
             if (data == null) throw new ArgumentNullException(nameof(data));
+            if (services == null) throw new ArgumentNullException(nameof(services));
 
             var limitType = activator.LimitType;
             if (limitType != typeof(object))
