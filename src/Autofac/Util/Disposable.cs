@@ -26,13 +26,18 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Autofac.Util
 {
     /// <summary>
     /// Base class for disposable objects.
     /// </summary>
+#if NETCOREAPP3_0
+    public class Disposable : IDisposable, IAsyncDisposable
+#else
     public class Disposable : IDisposable
+#endif
     {
         private const int DisposedFlag = 1;
         private int _isDisposed;
@@ -70,5 +75,37 @@ namespace Autofac.Util
                 return _isDisposed == DisposedFlag;
             }
         }
+
+#if NETCOREAPP3_0
+
+        [SuppressMessage(
+            "Usage",
+            "CA1816:Dispose methods should call SuppressFinalize",
+            Justification = "DisposeAsync should also call SuppressFinalize (see various .NET internal implementations).")]
+        public ValueTask DisposeAsync()
+        {
+            // Still need to check if we've already disposed; can't do both.
+            var wasDisposed = Interlocked.Exchange(ref _isDisposed, DisposedFlag);
+            if (wasDisposed != DisposedFlag)
+            {
+                GC.SuppressFinalize(this);
+
+                // Always true, but means we get the similar syntax as Dispose,
+                // and separates the two overloads.
+                return DisposeAsync(true);
+            }
+
+            return default(ValueTask);
+        }
+
+        protected virtual ValueTask DisposeAsync(bool disposing)
+        {
+            // Default implementation does a synchronous dispose.
+            Dispose(disposing);
+
+            return default;
+        }
+
+#endif
     }
 }
