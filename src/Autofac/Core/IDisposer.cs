@@ -31,7 +31,11 @@ namespace Autofac.Core
     /// Provided on an object that will dispose of other objects when it is
     /// itself disposed.
     /// </summary>
+#if NETCOREAPP3_0
+    public interface IDisposer : IDisposable, IAsyncDisposable
+#else
     public interface IDisposer : IDisposable
+#endif
     {
         /// <summary>
         /// Adds an object to the disposer. When the disposer is
@@ -39,5 +43,18 @@ namespace Autofac.Core
         /// </summary>
         /// <param name="instance">The instance.</param>
         void AddInstanceForDisposal(IDisposable instance);
+#if  NETCOREAPP3_0
+        /// <summary>
+        /// Adds an object to the disposer, where that object implements IAsyncDisposable. When the disposer is
+        /// disposed, so will the object be.
+        /// You should most likely implement IDisposable as well, and call <see cref="AddInstanceForDisposal(IDisposable)"/> instead of this method.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <remarks>
+        /// If the provided object only implements IAsyncDisposable, and the <see cref="IDisposer"/> is disposed of using a synchronous Dispose call,
+        /// that call will throw an exception when it attempts to dispose of the provided instance.
+        /// </remarks>
+        void AddInstanceForAsyncDisposal(IAsyncDisposable instance);
+#endif
     }
 }

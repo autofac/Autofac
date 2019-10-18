@@ -3,15 +3,18 @@ using System.Threading.Tasks;
 
 namespace Autofac.Test.Util
 {
-    public class DisposeTracker : IDisposable
+#if NETCOREAPP3_0
+    public class AsyncOnlyDisposeTracker : IAsyncDisposable
     {
         public event EventHandler<EventArgs> Disposing;
 
-        public bool IsDisposed { get; set; }
+        public bool IsAsyncDisposed { get; set; }
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
-            this.IsDisposed = true;
+            await Task.Delay(1);
+
+            IsAsyncDisposed = true;
 
             if (this.Disposing != null)
             {
@@ -19,4 +22,5 @@ namespace Autofac.Test.Util
             }
         }
     }
+#endif
 }

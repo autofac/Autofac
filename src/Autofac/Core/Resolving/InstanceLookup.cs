@@ -144,7 +144,15 @@ namespace Autofac.Core.Resolving
                 // instance once the instance has been activated - assuming that it will be
                 // done during the lifetime scope's Disposer executing.
                 if (decoratorTarget is IDisposable instanceAsDisposable)
+                {
                     _activationScope.Disposer.AddInstanceForDisposal(instanceAsDisposable);
+                }
+#if NETCOREAPP3_0
+                else if (decoratorTarget is IAsyncDisposable asyncDisposableInstance)
+                {
+                    _activationScope.Disposer.AddInstanceForAsyncDisposal(asyncDisposableInstance);
+                }
+#endif
             }
 
             ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance);
