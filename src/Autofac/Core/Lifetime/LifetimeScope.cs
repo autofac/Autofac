@@ -29,6 +29,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Autofac.Builder;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
@@ -356,6 +357,30 @@ namespace Autofac.Core.Lifetime
 
             base.Dispose(disposing);
         }
+
+#if NETCOREAPP3_0
+        protected override async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                var handler = CurrentScopeEnding;
+
+                try
+                {
+                    handler?.Invoke(this, new LifetimeScopeEndingEventArgs(this));
+                }
+                finally
+                {
+                    await Disposer.DisposeAsync();
+                }
+
+                // ReSharper disable once InconsistentlySynchronizedField
+                _sharedInstances.Clear();
+            }
+
+            // Don't call the base (which would just call the normal Dispose).
+        }
+#endif
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void CheckNotDisposed()

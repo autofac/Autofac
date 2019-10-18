@@ -69,7 +69,11 @@ namespace Autofac
     /// <seealso cref="IRegistrationBuilder{TLimit,TActivatorData,TRegistrationStyle}.InstancePerLifetimeScope"/>
     /// <seealso cref="InstanceSharing"/>
     /// <seealso cref="IComponentLifetime"/>
+#if NETCOREAPP3_0
+    public interface ILifetimeScope : IComponentContext, IDisposable, IAsyncDisposable
+#else
     public interface ILifetimeScope : IComponentContext, IDisposable
+#endif
     {
         /// <summary>
         /// Begin a new nested scope. Component instances created via the new scope
