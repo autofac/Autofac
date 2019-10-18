@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
@@ -177,6 +178,22 @@ namespace Autofac.Core
 
             base.Dispose(disposing);
         }
+
+#if NETCOREAPP3_0
+        protected override async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                await _rootLifetimeScope.DisposeAsync();
+
+                // Registries are not likely to have async tasks to dispose of,
+                // so we will leave it as a straight dispose.
+                ComponentRegistry.Dispose();
+            }
+
+            // Do not call the base, otherwise the standard Dispose will fire.
+        }
+#endif
 
         /// <summary>
         /// Gets the service object of the specified type.
