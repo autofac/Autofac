@@ -33,7 +33,7 @@ namespace Autofac.Util
     /// <summary>
     /// Base class for disposable objects.
     /// </summary>
-#if NETCOREAPP3_0
+#if ASYNC_DISPOSE_AVAILABLE
     public class Disposable : IDisposable, IAsyncDisposable
 #else
     public class Disposable : IDisposable
@@ -76,7 +76,7 @@ namespace Autofac.Util
             }
         }
 
-#if NETCOREAPP3_0
+#if ASYNC_DISPOSE_AVAILABLE
 
         [SuppressMessage(
             "Usage",

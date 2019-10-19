@@ -39,6 +39,10 @@
     <DefineConstants>$(DefineConstants);PARTIAL_TRUST</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.0'  ">
+    <DefineConstants>ASYNC_DISPOSE_AVAILABLE;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>

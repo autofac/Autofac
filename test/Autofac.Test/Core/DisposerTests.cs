@@ -58,7 +58,7 @@ namespace Autofac.Test.Core
             });
         }
 
-#if NETCOREAPP3_0
+#if ASYNC_DISPOSE_AVAILABLE
         [Fact]
         public void DisposerDisposesOfObjectsAsyncIfIAsyncDisposableDeclared()
         {
