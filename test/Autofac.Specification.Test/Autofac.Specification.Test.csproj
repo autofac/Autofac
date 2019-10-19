@@ -19,6 +19,10 @@
     <None Remove="TestResults\**" />
   </ItemGroup>
 
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.0'  ">
+    <DefineConstants>ASYNC_DISPOSE_AVAILABLE;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0" />
     <PackageReference Include="xunit" Version="2.4.1" />

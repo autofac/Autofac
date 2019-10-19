@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Autofac.Test.Util
 {
-#if NETCOREAPP3_0
+#if ASYNC_DISPOSE_AVAILABLE
     public class AsyncOnlyDisposeTracker : IAsyncDisposable
     {
         public event EventHandler<EventArgs> Disposing;

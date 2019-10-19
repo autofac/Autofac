@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>Autofac is an IoC container for Microsoft .NET. It manages the dependencies between classes so that applications stay easy to change as they grow in size and complexity.</Description>
     <VersionPrefix>5.0.0</VersionPrefix>
-    <TargetFrameworks>netcoreapp3.0;netstandard2.0;netstandard1.1;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1;netstandard2.0;netstandard1.1;net45</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <NoWarn>$(NoWarn);CS1591;IDE0008</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -35,6 +35,10 @@
     <Product>Autofac</Product>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or  '$(TargetFramework)' == 'netstandard2.1'  ">
+    <DefineConstants>ASYNC_DISPOSE_AVAILABLE;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="2.9.4">
       <PrivateAssets>All</PrivateAssets>
@@ -52,6 +56,10 @@
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.1' ">
     <PackageReference Include="System.ComponentModel" Version="4.0.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.1.0-preview1.19504.10" />
   </ItemGroup>
 
   <ItemGroup>

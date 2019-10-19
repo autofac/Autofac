@@ -31,7 +31,7 @@ namespace Autofac.Core
     /// Provided on an object that will dispose of other objects when it is
     /// itself disposed.
     /// </summary>
-#if NETCOREAPP3_0
+#if ASYNC_DISPOSE_AVAILABLE
     public interface IDisposer : IDisposable, IAsyncDisposable
 #else
     public interface IDisposer : IDisposable
@@ -43,7 +43,7 @@ namespace Autofac.Core
         /// </summary>
         /// <param name="instance">The instance.</param>
         void AddInstanceForDisposal(IDisposable instance);
-#if  NETCOREAPP3_0
+#if ASYNC_DISPOSE_AVAILABLE
         /// <summary>
         /// Adds an object to the disposer, where that object implements IAsyncDisposable. When the disposer is
         /// disposed, so will the object be.

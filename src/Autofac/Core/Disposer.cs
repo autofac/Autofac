@@ -90,7 +90,7 @@ namespace Autofac.Core
             base.Dispose(disposing);
         }
 
-#if NETCOREAPP3_0
+#if ASYNC_DISPOSE_AVAILABLE
         protected override async ValueTask DisposeAsync(bool disposing)
         {
             if (disposing)

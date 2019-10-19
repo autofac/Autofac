@@ -69,7 +69,7 @@ namespace Autofac
     /// <seealso cref="IRegistrationBuilder{TLimit,TActivatorData,TRegistrationStyle}.InstancePerLifetimeScope"/>
     /// <seealso cref="InstanceSharing"/>
     /// <seealso cref="IComponentLifetime"/>
-#if NETCOREAPP3_0
+#if ASYNC_DISPOSE_AVAILABLE
     public interface ILifetimeScope : IComponentContext, IDisposable, IAsyncDisposable
 #else
     public interface ILifetimeScope : IComponentContext, IDisposable
