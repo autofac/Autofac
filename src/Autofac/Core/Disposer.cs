@@ -43,7 +43,7 @@ namespace Autofac.Core
         private Stack<object> _items = new Stack<object>();
 
         // Need to use a semaphore instead of a simple object to lock on, because
-        // we need to synchronoise an awaitable block.
+        // we need to synchronise an awaitable block.
         private SemaphoreSlim _synchRoot = new SemaphoreSlim(1, 1);
 
         /// <summary>
@@ -61,14 +61,16 @@ namespace Autofac.Core
                     {
                         var item = _items.Pop();
 
-                        // If we are in synchronous dispose, and an object doesn't implement
+                        // If we are in synchronous dispose, and an object implements IDisposable,
+                        // then use it.
                         if (item is IDisposable disposable)
                         {
                             disposable.Dispose();
                         }
                         else
                         {
-                            // Type only implements IAsyncDisposable, which is not valid if there is a synchronous dispose being done.
+                            // Type only implements IAsyncDisposable, which is not valid if there
+                            // is a synchronous dispose being done.
                             throw new InvalidOperationException(string.Format(
                                 DisposerResources.Culture,
                                 DisposerResources.TypeOnlyImplementsIAsyncDisposable,
