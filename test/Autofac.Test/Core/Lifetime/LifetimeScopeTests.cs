@@ -102,7 +102,6 @@ namespace Autofac.Test.Core.Lifetime
             }
         }
 
-#if ASYNC_DISPOSE_AVAILABLE
         [Fact]
         public async ValueTask AsyncDisposeLifetimeScopeDisposesRegistrationsAsync()
         {
@@ -163,7 +162,6 @@ namespace Autofac.Test.Core.Lifetime
             Assert.False(asyncTracker.IsAsyncDisposed);
             Assert.True(asyncTracker.IsSyncDisposed);
         }
-#endif
 
         internal class DependsOnRegisteredInstance
         {

@@ -358,7 +358,6 @@ namespace Autofac.Core.Lifetime
             base.Dispose(disposing);
         }
 
-#if ASYNC_DISPOSE_AVAILABLE
         protected override async ValueTask DisposeAsync(bool disposing)
         {
             if (disposing)
@@ -380,7 +379,6 @@ namespace Autofac.Core.Lifetime
 
             // Don't call the base (which would just call the normal Dispose).
         }
-#endif
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void CheckNotDisposed()

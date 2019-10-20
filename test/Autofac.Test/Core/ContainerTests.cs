@@ -179,7 +179,6 @@ namespace Autofac.Test.Core
             }
         }
 
-#if ASYNC_DISPOSE_AVAILABLE
         [Fact]
         public async ValueTask AsyncContainerDisposeTriggersAsyncServiceDispose()
         {
@@ -199,7 +198,6 @@ namespace Autofac.Test.Core
             Assert.False(tracker.IsSyncDisposed);
             Assert.True(tracker.IsAsyncDisposed);
         }
-#endif
 
         private class ReplaceInstanceModule : Module
         {

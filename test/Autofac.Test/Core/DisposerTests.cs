@@ -58,7 +58,6 @@ namespace Autofac.Test.Core
             });
         }
 
-#if ASYNC_DISPOSE_AVAILABLE
         [Fact]
         public void DisposerDisposesOfObjectsAsyncIfIAsyncDisposableDeclared()
         {
@@ -170,6 +169,5 @@ namespace Autofac.Test.Core
                 o3 => Assert.Same(syncInstance3, o3),
                 o4 => Assert.Same(asyncInstance1, o4));
         }
-#endif
     }
 }

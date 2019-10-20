@@ -92,7 +92,6 @@ namespace Autofac.Core
             base.Dispose(disposing);
         }
 
-#if ASYNC_DISPOSE_AVAILABLE
         protected override async ValueTask DisposeAsync(bool disposing)
         {
             if (disposing)
@@ -148,7 +147,6 @@ namespace Autofac.Core
         {
             AddInternal(instance);
         }
-#endif
 
         /// <summary>
         /// Adds an object to the disposer. When the disposer is

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 
 namespace Autofac.Test.Util
 {
-#if ASYNC_DISPOSE_AVAILABLE
     public class AsyncOnlyDisposeTracker : IAsyncDisposable
     {
         public event EventHandler<EventArgs> Disposing;
@@ -22,5 +21,4 @@ namespace Autofac.Test.Util
             }
         }
     }
-#endif
 }
