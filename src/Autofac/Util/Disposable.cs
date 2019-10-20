@@ -33,11 +33,7 @@ namespace Autofac.Util
     /// <summary>
     /// Base class for disposable objects.
     /// </summary>
-#if ASYNC_DISPOSE_AVAILABLE
     public class Disposable : IDisposable, IAsyncDisposable
-#else
-    public class Disposable : IDisposable
-#endif
     {
         private const int DisposedFlag = 1;
         private int _isDisposed;
@@ -76,8 +72,6 @@ namespace Autofac.Util
             }
         }
 
-#if ASYNC_DISPOSE_AVAILABLE
-
         [SuppressMessage(
             "Usage",
             "CA1816:Dispose methods should call SuppressFinalize",
@@ -105,7 +99,5 @@ namespace Autofac.Util
 
             return default;
         }
-
-#endif
     }
 }

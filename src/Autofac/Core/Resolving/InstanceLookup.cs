@@ -147,12 +147,10 @@ namespace Autofac.Core.Resolving
                 {
                     _activationScope.Disposer.AddInstanceForDisposal(instanceAsDisposable);
                 }
-#if ASYNC_DISPOSE_AVAILABLE
                 else if (decoratorTarget is IAsyncDisposable asyncDisposableInstance)
                 {
                     _activationScope.Disposer.AddInstanceForAsyncDisposal(asyncDisposableInstance);
                 }
-#endif
             }
 
             ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance);

@@ -179,7 +179,6 @@ namespace Autofac.Core
             base.Dispose(disposing);
         }
 
-#if ASYNC_DISPOSE_AVAILABLE
         protected override async ValueTask DisposeAsync(bool disposing)
         {
             if (disposing)
@@ -193,7 +192,6 @@ namespace Autofac.Core
 
             // Do not call the base, otherwise the standard Dispose will fire.
         }
-#endif
 
         /// <summary>
         /// Gets the service object of the specified type.
