@@ -24,9 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-#if !NETSTANDARD1_1
 using System.Runtime.Serialization;
-#endif
 
 namespace Autofac.Core
 {
@@ -36,17 +34,13 @@ namespace Autofac.Core
     /// been made during the operation. For example, 'on activated' handlers may have already been
     /// fired, or 'single instance' components partially constructed.
     /// </summary>
-#if !NETSTANDARD1_1
     [Serializable]
-#endif
     public class DependencyResolutionException : Exception
     {
-#if !NETSTANDARD1_1
         protected DependencyResolutionException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
-#endif
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DependencyResolutionException" /> class.
