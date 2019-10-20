@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using Autofac.Core;
 using Autofac.Test.Util;
 using Xunit;
@@ -59,7 +59,7 @@ namespace Autofac.Test.Core
         }
 
         [Fact]
-        public void DisposerDisposesOfObjectsAsyncIfIAsyncDisposableDeclared()
+        public async ValueTask DisposerDisposesOfObjectsAsyncIfIAsyncDisposableDeclared()
         {
             var instance = new AsyncDisposeTracker();
 
@@ -74,21 +74,21 @@ namespace Autofac.Test.Core
             Assert.False(instance.IsAsyncDisposed);
 
             // Now we wait.
-            result.GetAwaiter().GetResult();
+            await result;
 
             Assert.False(instance.IsSyncDisposed);
             Assert.True(instance.IsAsyncDisposed);
         }
 
         [Fact]
-        public void DisposerDisposesOfObjectsSyncIfIDisposableOnly()
+        public async ValueTask DisposerDisposesOfObjectsSyncIfIDisposableOnly()
         {
             var instance = new DisposeTracker();
 
             var disposer = new Disposer();
             disposer.AddInstanceForDisposal(instance);
             Assert.False(instance.IsDisposed);
-            disposer.DisposeAsync().GetAwaiter().GetResult();
+            await disposer.DisposeAsync();
             Assert.True(instance.IsDisposed);
         }
 
@@ -107,7 +107,7 @@ namespace Autofac.Test.Core
         }
 
         [Fact]
-        public void CannotAddObjectsToDisposerAfterAsyncDispose()
+        public async ValueTask CannotAddObjectsToDisposerAfterAsyncDispose()
         {
             var instance = new AsyncDisposeTracker();
 
@@ -115,7 +115,7 @@ namespace Autofac.Test.Core
             disposer.AddInstanceForDisposal(instance);
             Assert.False(instance.IsSyncDisposed);
             Assert.False(instance.IsAsyncDisposed);
-            disposer.DisposeAsync().GetAwaiter().GetResult();
+            await disposer.DisposeAsync();
             Assert.False(instance.IsSyncDisposed);
             Assert.True(instance.IsAsyncDisposed);
 
@@ -140,7 +140,7 @@ namespace Autofac.Test.Core
         }
 
         [Fact]
-        public void DisposerAsyncDisposesContainedInstances_InReverseOfOrderAdded()
+        public async ValueTask DisposerAsyncDisposesContainedInstances_InReverseOfOrderAdded()
         {
             var disposeOrder = new List<object>();
 
@@ -160,7 +160,7 @@ namespace Autofac.Test.Core
             disposer.AddInstanceForDisposal(syncInstance4);
             disposer.AddInstanceForAsyncDisposal(asyncOnlyInstance2);
 
-            disposer.DisposeAsync().GetAwaiter().GetResult();
+            await disposer.DisposeAsync();
 
             Assert.Collection(
                 disposeOrder,
