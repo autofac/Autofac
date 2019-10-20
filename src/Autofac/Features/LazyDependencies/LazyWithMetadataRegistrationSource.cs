@@ -53,15 +53,10 @@ namespace Autofac.Features.LazyDependencies
                 throw new ArgumentNullException(nameof(registrationAccessor));
 
             var swt = service as IServiceWithType;
-#if NET45
-            var lazyType = GetLazyType(swt);
-            if (swt == null || lazyType == null || !swt.ServiceType.IsGenericTypeDefinedBy(lazyType))
-                return Enumerable.Empty<IComponentRegistration>();
-#else
+
             var lazyType = typeof(Lazy<,>);
             if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(lazyType))
                 return Enumerable.Empty<IComponentRegistration>();
-#endif
 
             var genericTypeArguments = swt.ServiceType.GetTypeInfo().GenericTypeArguments.ToArray();
             var valueType = genericTypeArguments[0];
@@ -104,16 +99,5 @@ namespace Autofac.Features.LazyDependencies
 
             return rb.CreateRegistration();
         }
-
-#if NET45
-        private static Type GetLazyType(IServiceWithType serviceWithType)
-        {
-            return serviceWithType != null
-                   && serviceWithType.ServiceType.GetTypeInfo().IsGenericType
-                   && serviceWithType.ServiceType.GetGenericTypeDefinition().FullName == "System.Lazy`2"
-                       ? serviceWithType.ServiceType.GetGenericTypeDefinition()
-                       : null;
-        }
-#endif
     }
 }

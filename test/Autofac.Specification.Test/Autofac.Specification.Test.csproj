@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0;net472</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;net461</TargetFrameworks>
     <NoWarn>$(NoWarn);CS1591;SA1602;SA1611</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <CodeAnalysisRuleSet>../../build/Analyzers.ruleset</CodeAnalysisRuleSet>
@@ -14,6 +14,10 @@
     <ProjectReference Include="..\Autofac.Test.Scenarios.ScannedAssembly\Autofac.Test.Scenarios.ScannedAssembly.csproj" />
   </ItemGroup>
 
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <Reference Include="System.ComponentModel.Composition" />
+  </ItemGroup>
+  
   <ItemGroup>
     <Compile Remove="TestResults\**" />
     <EmbeddedResource Remove="TestResults\**" />
