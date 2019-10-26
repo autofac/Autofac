@@ -39,7 +39,7 @@ namespace Autofac.Util
 
         private static readonly ConcurrentDictionary<Type, bool> IsGenericListOrCollectionInterfaceTypeCache = new ConcurrentDictionary<Type, bool>();
 
-        private static readonly ConcurrentDictionary<Tuple<Type, Type>, bool> IsGenericTypeDefinedByCache = new ConcurrentDictionary<Tuple<Type, Type>, bool>();
+        private static readonly ConcurrentDictionary<(Type, Type), bool> IsGenericTypeDefinedByCache = new ConcurrentDictionary<(Type, Type), bool>();
 
         public static Type FunctionReturnType(this Type type)
         {
@@ -148,7 +148,7 @@ namespace Autofac.Util
         public static bool IsGenericTypeDefinedBy(this Type @this, Type openGeneric)
         {
             return IsGenericTypeDefinedByCache.GetOrAdd(
-                Tuple.Create(@this, openGeneric),
+                (@this, openGeneric),
                 key => !key.Item1.GetTypeInfo().ContainsGenericParameters
                     && key.Item1.GetTypeInfo().IsGenericType
                     && key.Item1.GetGenericTypeDefinition() == key.Item2);
