@@ -37,6 +37,23 @@ namespace Autofac
         /// <summary>
         /// Add a registration source to the container.
         /// </summary>
+        /// <param name="builder">The builder to register the registration source via.</param>
+        /// <param name="registrationSource">The registration source to add.</param>
+        /// <returns>
+        /// The <see cref="ISourceRegistrar"/> to allow additional chained registration source registrations.
+        /// </returns>
+        public static ISourceRegistrar RegisterSource(this ContainerBuilder builder, IRegistrationSource registrationSource)
+        {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (registrationSource == null) throw new ArgumentNullException(nameof(registrationSource));
+
+            var registrar = new SourceRegistrar(builder);
+            return registrar.RegisterSource(registrationSource);
+        }
+
+        /// <summary>
+        /// Add a registration source to the container.
+        /// </summary>
         /// <param name="builder">The builder to register the registration source with.</param>
         /// <typeparam name="TRegistrationSource">The registration source to add.</typeparam>
         /// <exception cref="ArgumentNullException">
@@ -50,8 +67,7 @@ namespace Autofac
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
 
-            var registrar = new SourceRegistrar(builder);
-            return registrar.RegisterSource<TRegistrationSource>();
+            return builder.RegisterSource(new TRegistrationSource());
         }
 
         /// <summary>
