@@ -20,17 +20,17 @@ namespace Autofac.Core {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ServiceResources {
+    internal class DisposerResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ServiceResources() {
+        internal DisposerResources() {
         }
         
         /// <summary>
@@ -40,7 +40,7 @@ namespace Autofac.Core {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.ServiceResources", typeof(ServiceResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.DisposerResources", typeof(DisposerResources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,20 +62,20 @@ namespace Autofac.Core {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Subclasses of Autofac.Service must override Object.Equals().
+        ///   Looks up a localized string similar to The Disposer object has already been Disposed, so no items can be added to it..
         /// </summary>
-        internal static string MustOverrideEquals {
+        internal static string CannotAddToDisposedDisposer {
             get {
-                return ResourceManager.GetString("MustOverrideEquals", resourceCulture);
+                return ResourceManager.GetString("CannotAddToDisposedDisposer", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Subclasses of Autofac.Service must override Object.GetHashCode().
+        ///   Looks up a localized string similar to A synchronous Dispose has been attempted, but the tracked object of type &apos;{0}&apos; only implements IAsyncDisposable..
         /// </summary>
-        internal static string MustOverrideGetHashCode {
+        internal static string TypeOnlyImplementsIAsyncDisposable {
             get {
-                return ResourceManager.GetString("MustOverrideGetHashCode", resourceCulture);
+                return ResourceManager.GetString("TypeOnlyImplementsIAsyncDisposable", resourceCulture);
             }
         }
     }
