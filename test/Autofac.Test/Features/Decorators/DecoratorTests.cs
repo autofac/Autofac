@@ -15,6 +15,40 @@ namespace Autofac.Test.Features.Decorators
         {
         }
 
+        private interface IAutoWiredService
+        {
+            bool NestedServiceIsNotNull();
+        }
+
+        private class NestedService
+        {
+        }
+
+        private class AutoWiredService : IAutoWiredService
+        {
+            public NestedService NestedService { get; set; }
+
+            public bool NestedServiceIsNotNull()
+            {
+                return NestedService != null;
+            }
+        }
+
+        private class AutoWiredServiceDecorator : IAutoWiredService
+        {
+            private readonly IAutoWiredService _original;
+
+            public AutoWiredServiceDecorator(IAutoWiredService original)
+            {
+                _original = original;
+            }
+
+            public bool NestedServiceIsNotNull()
+            {
+                return _original.NestedServiceIsNotNull();
+            }
+        }
+
         public class Foo
         {
         }
@@ -147,6 +181,36 @@ namespace Autofac.Test.Features.Decorators
 
             Assert.NotNull(registration);
             Assert.Equal(typeof(ImplementorA), registration.Target.Activator.LimitType);
+        }
+
+        [Fact]
+        public void DecorateReflectionActivatorWithPropertyInjection()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<NestedService>();
+            builder.RegisterType<AutoWiredService>().As<IAutoWiredService>().PropertiesAutowired();
+            builder.RegisterDecorator<AutoWiredServiceDecorator, IAutoWiredService>();
+
+            var container = builder.Build();
+
+            var service = container.Resolve<IAutoWiredService>();
+
+            Assert.True(service.NestedServiceIsNotNull());
+        }
+
+        [Fact]
+        public void DecorateProvidedInstanceActivatorWithPropertyInjection()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<NestedService>();
+            builder.RegisterInstance<IAutoWiredService>(new AutoWiredService()).PropertiesAutowired();
+            builder.RegisterDecorator<AutoWiredServiceDecorator, IAutoWiredService>();
+
+            var container = builder.Build();
+
+            var service = container.Resolve<IAutoWiredService>();
+
+            Assert.True(service.NestedServiceIsNotNull());
         }
 
         private abstract class Decorator : IDecoratedService

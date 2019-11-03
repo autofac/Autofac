@@ -121,6 +121,8 @@ namespace Autofac.Core.Resolving
             {
                 decoratorTarget = _newInstance = ComponentRegistration.Activator.ActivateInstance(this, resolveParameters);
 
+                ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance);
+
                 _newInstance = InstanceDecorator.TryDecorateRegistration(
                     _service,
                     ComponentRegistration,
@@ -153,7 +155,8 @@ namespace Autofac.Core.Resolving
                 }
             }
 
-            ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance);
+            if (_newInstance != decoratorTarget)
+                ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance);
 
             return _newInstance;
         }
