@@ -38,8 +38,6 @@ namespace Autofac.Test.Features.Decorators
         {
             private readonly IAutoWiredService _original;
 
-            public NestedService NestedService { get; set; }
-
             public AutoWiredServiceDecorator(IAutoWiredService original)
             {
                 _original = original;
