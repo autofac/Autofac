@@ -49,7 +49,7 @@ namespace Autofac.Features.OpenGenerics
                 var definitionService = (IServiceWithType)swt.ChangeType(swt.ServiceType.GetGenericTypeDefinition());
                 var serviceGenericArguments = swt.ServiceType.GetTypeInfo().GenericTypeArguments;
 
-                if (configuredOpenGenericServices.Cast<IServiceWithType>().Any(s => s.Equals(definitionService)))
+                if (serviceGenericArguments.Any() && configuredOpenGenericServices.Cast<IServiceWithType>().Any(s => s.Equals(definitionService)))
                 {
                     var implementorGenericArguments = TryMapImplementationGenericArguments(
                         openGenericImplementationType, swt.ServiceType, definitionService.ServiceType, serviceGenericArguments);
