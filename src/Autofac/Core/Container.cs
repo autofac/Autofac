@@ -91,10 +91,10 @@ namespace Autofac.Core
         /// Component instances created via the new scope
         /// will be disposed along with it.
         /// </summary>
-        /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
+        /// <param name="configurationAction">Action on a <see cref="LifetimeScopeBuilder"/>
         /// that adds component registrations visible only in the new scope.</param>
         /// <returns>A new lifetime scope.</returns>
-        public ILifetimeScope BeginLifetimeScope(Action<ContainerBuilder> configurationAction)
+        public ILifetimeScope BeginLifetimeScope(Action<LifetimeScopeBuilder> configurationAction)
         {
             return _rootLifetimeScope.BeginLifetimeScope(configurationAction);
         }
@@ -105,10 +105,10 @@ namespace Autofac.Core
         /// will be disposed along with it.
         /// </summary>
         /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
-        /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
+        /// <param name="configurationAction">Action on a <see cref="LifetimeScopeBuilder"/>
         /// that adds component registrations visible only in the new scope.</param>
         /// <returns>A new lifetime scope.</returns>
-        public ILifetimeScope BeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction)
+        public ILifetimeScope BeginLifetimeScope(object tag, Action<LifetimeScopeBuilder> configurationAction)
         {
             return _rootLifetimeScope.BeginLifetimeScope(tag, configurationAction);
         }

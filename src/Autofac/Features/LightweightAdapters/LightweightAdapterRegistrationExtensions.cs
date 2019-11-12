@@ -34,7 +34,7 @@ namespace Autofac.Features.LightweightAdapters
     {
         public static IRegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
             RegisterAdapter<TFrom, TTo>(
-                ContainerBuilder builder,
+                LifetimeScopeBuilder builder,
                 Func<IComponentContext, IEnumerable<Parameter>, TFrom, TTo> adapter)
         {
             return RegisterAdapter(builder, adapter, new TypedService(typeof(TFrom)), new TypedService(typeof(TTo)));
@@ -42,7 +42,7 @@ namespace Autofac.Features.LightweightAdapters
 
         public static IRegistrationBuilder<TService, LightweightAdapterActivatorData, DynamicRegistrationStyle>
             RegisterDecorator<TService>(
-                ContainerBuilder builder,
+                LifetimeScopeBuilder builder,
                 Func<IComponentContext, IEnumerable<Parameter>, TService, TService> decorator,
                 object fromKey,
                 object toKey)
@@ -59,7 +59,7 @@ namespace Autofac.Features.LightweightAdapters
 
         private static IRegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
             RegisterAdapter<TFrom, TTo>(
-                ContainerBuilder builder,
+                LifetimeScopeBuilder builder,
                 Func<IComponentContext, IEnumerable<Parameter>, TFrom, TTo> adapter,
                 Service fromService,
                 Service toService)

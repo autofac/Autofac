@@ -30,12 +30,6 @@ using System.Globalization;
 using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Features.Collections;
-using Autofac.Features.GeneratedFactories;
-using Autofac.Features.Indexed;
-using Autofac.Features.LazyDependencies;
-using Autofac.Features.Metadata;
-using Autofac.Features.OwnedInstances;
 
 namespace Autofac
 {
@@ -60,11 +54,8 @@ namespace Autofac
     /// via extension methods in <see cref="RegistrationExtensions"/>.</remarks>
     /// <seealso cref="IContainer"/>
     /// <see cref="RegistrationExtensions"/>
-    public class ContainerBuilder
+    public class ContainerBuilder : LifetimeScopeBuilder
     {
-        private readonly IList<DeferredCallback> _configurationCallbacks = new List<DeferredCallback>();
-        private bool _wasBuilt;
-
         private const string BuildCallbackPropertyKey = "__BuildCallbackKey";
 
         /// <summary>
@@ -80,36 +71,12 @@ namespace Autofac
         /// </summary>
         /// <param name="properties">The properties used during component registration.</param>
         internal ContainerBuilder(IDictionary<string, object> properties)
+            : base(properties)
         {
-            Properties = properties;
-
             if (!Properties.ContainsKey(BuildCallbackPropertyKey))
             {
                 Properties.Add(BuildCallbackPropertyKey, new List<Action<IContainer>>());
             }
-        }
-
-        /// <summary>
-        /// Gets the set of properties used during component registration.
-        /// </summary>
-        /// <value>
-        /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
-        /// context across registrations.
-        /// </value>
-        public IDictionary<string, object> Properties { get; }
-
-        /// <summary>
-        /// Register a callback that will be invoked when the container is configured.
-        /// </summary>
-        /// <remarks>This is primarily for extending the builder syntax.</remarks>
-        /// <param name="configurationCallback">Callback to execute.</param>
-        public virtual DeferredCallback RegisterCallback(Action<IComponentRegistry> configurationCallback)
-        {
-            if (configurationCallback == null) throw new ArgumentNullException(nameof(configurationCallback));
-
-            var c = new DeferredCallback(configurationCallback);
-            _configurationCallbacks.Add(c);
-            return c;
         }
 
         /// <summary>
@@ -207,50 +174,6 @@ namespace Autofac
         public void Update(IComponentRegistry componentRegistry)
         {
             this.UpdateRegistry(componentRegistry);
-        }
-
-        /// <summary>
-        /// Configure an existing registry with the component registrations
-        /// that have been made. Primarily useful in dynamically adding registrations
-        /// to a child lifetime scope.
-        /// </summary>
-        /// <remarks>
-        /// Update can only be called once per <see cref="ContainerBuilder"/>
-        /// - this prevents ownership issues for provided instances.
-        /// </remarks>
-        /// <param name="componentRegistry">An existing registry to make the registrations in.</param>
-        internal void UpdateRegistry(IComponentRegistry componentRegistry)
-        {
-            if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
-            Build(componentRegistry, true);
-        }
-
-        private void Build(IComponentRegistry componentRegistry, bool excludeDefaultModules)
-        {
-            if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
-
-            if (_wasBuilt)
-                throw new InvalidOperationException(ContainerBuilderResources.BuildCanOnlyBeCalledOnce);
-
-            _wasBuilt = true;
-
-            if (!excludeDefaultModules)
-                RegisterDefaultAdapters(componentRegistry);
-
-            foreach (var callback in _configurationCallbacks)
-                callback.Callback(componentRegistry);
-        }
-
-        private void RegisterDefaultAdapters(IComponentRegistry componentRegistry)
-        {
-            this.RegisterGeneric(typeof(KeyedServiceIndex<,>)).As(typeof(IIndex<,>)).InstancePerLifetimeScope();
-            componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
-            componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
-            componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
-            componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
-            componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
-            componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());
-            componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
         }
 
         private List<Action<IContainer>> GetBuildCallbacks()

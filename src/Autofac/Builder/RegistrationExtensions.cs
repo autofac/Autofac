@@ -49,7 +49,7 @@ namespace Autofac.Builder
         /// <remarks>Factory delegates are provided automatically in Autofac 2,
         /// and this method is generally not required.</remarks>
         public static IRegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
-            RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType)
+            RegisterGeneratedFactory(this LifetimeScopeBuilder builder, Type delegateType)
         {
             if (delegateType == null) throw new ArgumentNullException(nameof(delegateType));
 
@@ -69,7 +69,7 @@ namespace Autofac.Builder
         /// <remarks>Factory delegates are provided automatically in Autofac 2, and
         /// this method is generally not required.</remarks>
         public static IRegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
-            RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType, Service service)
+            RegisterGeneratedFactory(this LifetimeScopeBuilder builder, Type delegateType, Service service)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
 
@@ -86,7 +86,7 @@ namespace Autofac.Builder
         /// <remarks>Factory delegates are provided automatically in Autofac 2,
         /// and this method is generally not required.</remarks>
         public static IRegistrationBuilder<TDelegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
-            RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder, Service service)
+            RegisterGeneratedFactory<TDelegate>(this LifetimeScopeBuilder builder, Service service)
             where TDelegate : class
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
@@ -103,7 +103,7 @@ namespace Autofac.Builder
         /// <remarks>Factory delegates are provided automatically in Autofac 2,
         /// and this method is generally not required.</remarks>
         public static IRegistrationBuilder<TDelegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
-            RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder)
+            RegisterGeneratedFactory<TDelegate>(this LifetimeScopeBuilder builder)
             where TDelegate : class
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));

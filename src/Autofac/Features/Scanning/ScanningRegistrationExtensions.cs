@@ -36,7 +36,7 @@ namespace Autofac.Features.Scanning
     internal static class ScanningRegistrationExtensions
     {
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
-            RegisterAssemblyTypes(ContainerBuilder builder, params Assembly[] assemblies)
+            RegisterAssemblyTypes(LifetimeScopeBuilder builder, params Assembly[] assemblies)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (assemblies == null) throw new ArgumentNullException(nameof(assemblies));
@@ -52,7 +52,7 @@ namespace Autofac.Features.Scanning
         }
 
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
-            RegisterTypes(ContainerBuilder builder, params Type[] types)
+            RegisterTypes(LifetimeScopeBuilder builder, params Type[] types)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (types == null) throw new ArgumentNullException(nameof(types));

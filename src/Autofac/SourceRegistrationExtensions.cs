@@ -45,7 +45,7 @@ namespace Autofac
         /// <returns>
         /// The <see cref="ISourceRegistrar"/> to allow additional chained registration source registrations.
         /// </returns>
-        public static ISourceRegistrar RegisterSource<TRegistrationSource>(this ContainerBuilder builder)
+        public static ISourceRegistrar RegisterSource<TRegistrationSource>(this LifetimeScopeBuilder builder)
             where TRegistrationSource : IRegistrationSource, new()
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));

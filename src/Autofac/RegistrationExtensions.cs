@@ -44,7 +44,7 @@ using Autofac.Util;
 namespace Autofac
 {
     /// <summary>
-    /// Adds registration syntax to the <see cref="ContainerBuilder"/> type.
+    /// Adds registration syntax to the <see cref="LifetimeScopeBuilder"/> type.
     /// </summary>
     [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
     public static class RegistrationExtensions
@@ -54,7 +54,7 @@ namespace Autofac
         /// </summary>
         /// <param name="builder">The builder to register the component with.</param>
         /// <param name="registration">The component to add.</param>
-        public static void RegisterComponent(this ContainerBuilder builder, IComponentRegistration registration)
+        public static void RegisterComponent(this LifetimeScopeBuilder builder, IComponentRegistration registration)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (registration == null) throw new ArgumentNullException(nameof(registration));
@@ -67,7 +67,7 @@ namespace Autofac
         /// </summary>
         /// <param name="builder">The builder to register the registration source via.</param>
         /// <param name="registrationSource">The registration source to add.</param>
-        public static void RegisterSource(this ContainerBuilder builder, IRegistrationSource registrationSource)
+        public static void RegisterSource(this LifetimeScopeBuilder builder, IRegistrationSource registrationSource)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (registrationSource == null) throw new ArgumentNullException(nameof(registrationSource));
@@ -85,7 +85,7 @@ namespace Autofac
         /// <remarks>If no services are explicitly specified for the instance, the
         /// static type <typeparamref name="T"/> will be used as the default service (i.e. *not* <c>instance.GetType()</c>).</remarks>
         public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>
-            RegisterInstance<T>(this ContainerBuilder builder, T instance)
+            RegisterInstance<T>(this LifetimeScopeBuilder builder, T instance)
             where T : class
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
@@ -123,7 +123,7 @@ namespace Autofac
         /// <param name="builder">Container builder.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TImplementer, ConcreteReflectionActivatorData, SingleRegistrationStyle>
-            RegisterType<TImplementer>(this ContainerBuilder builder)
+            RegisterType<TImplementer>(this LifetimeScopeBuilder builder)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
 
@@ -141,7 +141,7 @@ namespace Autofac
         /// <param name="builder">Container builder.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>
-            RegisterType(this ContainerBuilder builder, Type implementationType)
+            RegisterType(this LifetimeScopeBuilder builder, Type implementationType)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
@@ -162,7 +162,7 @@ namespace Autofac
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>
             Register<T>(
-                this ContainerBuilder builder,
+                this LifetimeScopeBuilder builder,
                 Func<IComponentContext, T> @delegate)
         {
             if (@delegate == null) throw new ArgumentNullException(nameof(@delegate));
@@ -179,7 +179,7 @@ namespace Autofac
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>
             Register<T>(
-                this ContainerBuilder builder,
+                this LifetimeScopeBuilder builder,
                 Func<IComponentContext, IEnumerable<Parameter>, T> @delegate)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
@@ -200,7 +200,7 @@ namespace Autofac
         /// <param name="implementer">The open generic implementation type.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
-            RegisterGeneric(this ContainerBuilder builder, Type implementer)
+            RegisterGeneric(this LifetimeScopeBuilder builder, Type implementer)
         {
             return OpenGenericRegistrationExtensions.RegisterGeneric(builder, implementer);
         }
@@ -247,7 +247,7 @@ namespace Autofac
         /// <param name="assemblies">The assemblies from which to register types.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
-            RegisterAssemblyTypes(this ContainerBuilder builder, params Assembly[] assemblies)
+            RegisterAssemblyTypes(this LifetimeScopeBuilder builder, params Assembly[] assemblies)
         {
             return ScanningRegistrationExtensions.RegisterAssemblyTypes(builder, assemblies);
         }
@@ -259,7 +259,7 @@ namespace Autofac
         /// <param name="types">The types to register.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
-            RegisterTypes(this ContainerBuilder builder, params Type[] types)
+            RegisterTypes(this LifetimeScopeBuilder builder, params Type[] types)
         {
             return ScanningRegistrationExtensions.RegisterTypes(builder, types);
         }
@@ -1170,7 +1170,7 @@ namespace Autofac
         /// service <typeparamref name="TTo"/>, given the context and parameters.</param>
         public static IRegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
             RegisterAdapter<TFrom, TTo>(
-                this ContainerBuilder builder,
+                this LifetimeScopeBuilder builder,
                 Func<IComponentContext, IEnumerable<Parameter>, TFrom, TTo> adapter)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
@@ -1192,7 +1192,7 @@ namespace Autofac
         /// service <typeparamref name="TTo"/>, given the context.</param>
         public static IRegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
             RegisterAdapter<TFrom, TTo>(
-                this ContainerBuilder builder,
+                this LifetimeScopeBuilder builder,
                 Func<IComponentContext, TFrom, TTo> adapter)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
@@ -1214,7 +1214,7 @@ namespace Autofac
         /// service <typeparamref name="TTo"/>.</param>
         public static IRegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
             RegisterAdapter<TFrom, TTo>(
-                this ContainerBuilder builder,
+                this LifetimeScopeBuilder builder,
                 Func<TFrom, TTo> adapter)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
@@ -1235,7 +1235,7 @@ namespace Autofac
         /// of type <paramref name="decoratedServiceType"/>, which will be set to the instance being decorated.</param>
         public static IRegistrationBuilder<object, OpenGenericDecoratorActivatorData, DynamicRegistrationStyle>
             RegisterGenericDecorator(
-                this ContainerBuilder builder,
+                this LifetimeScopeBuilder builder,
                 Type decoratorType,
                 Type decoratedServiceType,
                 object fromKey,
@@ -1261,7 +1261,7 @@ namespace Autofac
         /// <param name="toKey">Service key or name given to the decorated components.</param>
         public static IRegistrationBuilder<TService, LightweightAdapterActivatorData, DynamicRegistrationStyle>
             RegisterDecorator<TService>(
-                this ContainerBuilder builder,
+                this LifetimeScopeBuilder builder,
                 Func<IComponentContext, IEnumerable<Parameter>, TService, TService> decorator,
                 object fromKey,
                 object toKey = null)
@@ -1285,7 +1285,7 @@ namespace Autofac
         /// <param name="toKey">Service key or name given to the decorated components.</param>
         public static IRegistrationBuilder<TService, LightweightAdapterActivatorData, DynamicRegistrationStyle>
             RegisterDecorator<TService>(
-                this ContainerBuilder builder,
+                this LifetimeScopeBuilder builder,
                 Func<IComponentContext, TService, TService> decorator,
                 object fromKey,
                 object toKey = null)
@@ -1309,7 +1309,7 @@ namespace Autofac
         /// <param name="toKey">Service key or name given to the decorated components.</param>
         public static IRegistrationBuilder<TService, LightweightAdapterActivatorData, DynamicRegistrationStyle>
             RegisterDecorator<TService>(
-                this ContainerBuilder builder,
+                this LifetimeScopeBuilder builder,
                 Func<TService, TService> decorator,
                 object fromKey,
                 object toKey = null)
@@ -1330,7 +1330,7 @@ namespace Autofac
         /// <param name="builder">Container builder.</param>
         /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/>
         /// instance determines if the decorator should be applied.</param>
-        public static void RegisterDecorator<TDecorator, TService>(this ContainerBuilder builder, Func<IDecoratorContext, bool> condition = null)
+        public static void RegisterDecorator<TDecorator, TService>(this LifetimeScopeBuilder builder, Func<IDecoratorContext, bool> condition = null)
             where TDecorator : TService
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
@@ -1349,7 +1349,7 @@ namespace Autofac
         /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/>
         /// instance determines if the decorator should be applied.</param>
         public static void RegisterDecorator(
-            this ContainerBuilder builder,
+            this LifetimeScopeBuilder builder,
             Type decoratorType,
             Type serviceType,
             Func<IDecoratorContext, bool> condition = null)
@@ -1372,7 +1372,7 @@ namespace Autofac
         /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/>
         /// instance determines if the decorator should be applied.</param>
         public static void RegisterDecorator<TService>(
-            this ContainerBuilder builder,
+            this LifetimeScopeBuilder builder,
             Func<IComponentContext, IEnumerable<Parameter>, TService, TService> decorator,
             Func<IDecoratorContext, bool> condition = null)
         {
@@ -1408,7 +1408,7 @@ namespace Autofac
         /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/>
         /// instance determines if the decorator should be applied.</param>
         public static void RegisterGenericDecorator(
-            this ContainerBuilder builder,
+            this LifetimeScopeBuilder builder,
             Type decoratorType,
             Type serviceType,
             Func<IDecoratorContext, bool> condition = null)
@@ -1532,7 +1532,7 @@ namespace Autofac
         /// <exception cref="System.NotSupportedException">
         /// Thrown if <paramref name="registration" /> has no reference to the original callback
         /// with which it was associated (e.g., it wasn't made with a standard registration method
-        /// as part of a <see cref="ContainerBuilder"/>).
+        /// as part of a <see cref="LifetimeScopeBuilder"/>).
         /// </exception>
         public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
             OnlyIf<TLimit, TActivatorData, TStyle>(
@@ -1588,7 +1588,7 @@ namespace Autofac
         /// <exception cref="System.NotSupportedException">
         /// Thrown if <paramref name="registration" /> has no reference to the original callback
         /// with which it was associated (e.g., it wasn't made with a standard registration method
-        /// as part of a <see cref="ContainerBuilder"/>).
+        /// as part of a <see cref="LifetimeScopeBuilder"/>).
         /// </exception>
         public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
             IfNotRegistered<TLimit, TActivatorData, TStyle>(

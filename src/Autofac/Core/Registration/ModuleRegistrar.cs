@@ -29,26 +29,26 @@ namespace Autofac.Core.Registration
 {
     /// <summary>
     /// Basic implementation of the <see cref="IModuleRegistrar"/>
-    /// interface allowing registration of modules into a <see cref="ContainerBuilder"/>
+    /// interface allowing registration of modules into a <see cref="LifetimeScopeBuilder"/>
     /// in a fluent format.
     /// </summary>
     internal class ModuleRegistrar : IModuleRegistrar
     {
         /// <summary>
-        /// The <see cref="ContainerBuilder"/> into which registrations will be made.
+        /// The <see cref="LifetimeScopeBuilder"/> into which registrations will be made.
         /// </summary>
-        private readonly ContainerBuilder _builder;
+        private readonly LifetimeScopeBuilder _builder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModuleRegistrar"/> class.
         /// </summary>
         /// <param name="builder">
-        /// The <see cref="ContainerBuilder"/> into which registrations will be made.
+        /// The <see cref="LifetimeScopeBuilder"/> into which registrations will be made.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="builder" /> is <see langword="null" />.
         /// </exception>
-        public ModuleRegistrar(ContainerBuilder builder)
+        public ModuleRegistrar(LifetimeScopeBuilder builder)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
 

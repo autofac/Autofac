@@ -96,10 +96,10 @@ namespace Autofac
         /// registered in the root scope, i.e., SingleInstance() components will live as long
         /// as the root scope.
         /// </remarks>
-        /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
+        /// <param name="configurationAction">Action on a <see cref="LifetimeScopeBuilder"/>
         /// that adds component registrations visible only in the new scope.</param>
         /// <returns>A new lifetime scope.</returns>
-        ILifetimeScope BeginLifetimeScope(Action<ContainerBuilder> configurationAction);
+        ILifetimeScope BeginLifetimeScope(Action<LifetimeScopeBuilder> configurationAction);
 
         /// <summary>
         /// Begin a new nested scope, with additional components available to it.
@@ -112,10 +112,10 @@ namespace Autofac
         /// as the root scope.
         /// </remarks>
         /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
-        /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
+        /// <param name="configurationAction">Action on a <see cref="LifetimeScopeBuilder"/>
         /// that adds component registrations visible only in the new scope.</param>
         /// <returns>A new lifetime scope.</returns>
-        ILifetimeScope BeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction);
+        ILifetimeScope BeginLifetimeScope(object tag, Action<LifetimeScopeBuilder> configurationAction);
 
         /// <summary>
         /// Gets the disposer associated with this <see cref="ILifetimeScope"/>.

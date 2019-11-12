@@ -48,7 +48,7 @@ namespace Autofac
         /// The <see cref="IModuleRegistrar"/> to allow
         /// additional chained module registrations.
         /// </returns>
-        public static IModuleRegistrar RegisterAssemblyModules(this ContainerBuilder builder, params Assembly[] assemblies)
+        public static IModuleRegistrar RegisterAssemblyModules(this LifetimeScopeBuilder builder, params Assembly[] assemblies)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
 
@@ -88,7 +88,7 @@ namespace Autofac
         /// The <see cref="IModuleRegistrar"/> to allow
         /// additional chained module registrations.
         /// </returns>
-        public static IModuleRegistrar RegisterAssemblyModules<TModule>(this ContainerBuilder builder, params Assembly[] assemblies)
+        public static IModuleRegistrar RegisterAssemblyModules<TModule>(this LifetimeScopeBuilder builder, params Assembly[] assemblies)
             where TModule : IModule
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
@@ -131,7 +131,7 @@ namespace Autofac
         /// The <see cref="IModuleRegistrar"/> to allow
         /// additional chained module registrations.
         /// </returns>
-        public static IModuleRegistrar RegisterAssemblyModules(this ContainerBuilder builder, Type moduleType, params Assembly[] assemblies)
+        public static IModuleRegistrar RegisterAssemblyModules(this LifetimeScopeBuilder builder, Type moduleType, params Assembly[] assemblies)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (moduleType == null) throw new ArgumentNullException(nameof(moduleType));
@@ -187,7 +187,7 @@ namespace Autofac
         /// The <see cref="IModuleRegistrar"/> to allow
         /// additional chained module registrations.
         /// </returns>
-        public static IModuleRegistrar RegisterModule<TModule>(this ContainerBuilder builder)
+        public static IModuleRegistrar RegisterModule<TModule>(this LifetimeScopeBuilder builder)
             where TModule : IModule, new()
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
@@ -228,7 +228,7 @@ namespace Autofac
         /// The <see cref="IModuleRegistrar"/> to allow
         /// additional chained module registrations.
         /// </returns>
-        public static IModuleRegistrar RegisterModule(this ContainerBuilder builder, IModule module)
+        public static IModuleRegistrar RegisterModule(this LifetimeScopeBuilder builder, IModule module)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (module == null) throw new ArgumentNullException(nameof(module));

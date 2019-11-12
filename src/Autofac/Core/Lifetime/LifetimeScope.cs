@@ -53,7 +53,7 @@ namespace Autofac.Core.Lifetime
 
         internal static Guid SelfRegistrationId { get; } = Guid.NewGuid();
 
-        private static readonly Action<ContainerBuilder> NoConfiguration = b => { };
+        private static readonly Action<LifetimeScopeBuilder> NoConfiguration = b => { };
 
         /// <summary>
         /// The tag applied to root scopes when no other tag is specified.
@@ -161,7 +161,7 @@ namespace Autofac.Core.Lifetime
         /// Component instances created via the new scope
         /// will be disposed along with it.
         /// </summary>
-        /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
+        /// <param name="configurationAction">Action on a <see cref="LifetimeScopeBuilder"/>
         /// that adds component registrations visible only in the new scope.</param>
         /// <returns>A new lifetime scope.</returns>
         /// <example>
@@ -175,7 +175,7 @@ namespace Autofac.Core.Lifetime
         /// }
         /// </code>
         /// </example>
-        public ILifetimeScope BeginLifetimeScope(Action<ContainerBuilder> configurationAction)
+        public ILifetimeScope BeginLifetimeScope(Action<LifetimeScopeBuilder> configurationAction)
         {
             return BeginLifetimeScope(MakeAnonymousTag(), configurationAction);
         }
@@ -186,7 +186,7 @@ namespace Autofac.Core.Lifetime
         /// will be disposed along with it.
         /// </summary>
         /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
-        /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
+        /// <param name="configurationAction">Action on a <see cref="LifetimeScopeBuilder"/>
         /// that adds component registrations visible only in the new scope.</param>
         /// <returns>A new lifetime scope.</returns>
         /// <example>
@@ -200,7 +200,7 @@ namespace Autofac.Core.Lifetime
         /// }
         /// </code>
         /// </example>
-        public ILifetimeScope BeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction)
+        public ILifetimeScope BeginLifetimeScope(object tag, Action<LifetimeScopeBuilder> configurationAction)
         {
             if (configurationAction == null) throw new ArgumentNullException(nameof(configurationAction));
 
@@ -226,15 +226,15 @@ namespace Autofac.Core.Lifetime
         /// Creates and setup the registry for a child scope.
         /// </summary>
         /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
-        /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
+        /// <param name="configurationAction">Action on a <see cref="LifetimeScopeBuilder"/>
         /// that adds component registrations visible only in the child scope.</param>
         /// <returns>Registry to use for a child scope.</returns>
         /// <remarks>It is the responsibility of the caller to make sure that the registry is properly
         /// disposed of. This is generally done by adding the registry to the <see cref="Disposer"/>
         /// property of the child scope.</remarks>
-        private ScopeRestrictedRegistry CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction)
+        private ScopeRestrictedRegistry CreateScopeRestrictedRegistry(object tag, Action<LifetimeScopeBuilder> configurationAction)
         {
-            var builder = new ContainerBuilder(new FallbackDictionary<string, object>(ComponentRegistry.Properties));
+            var builder = new LifetimeScopeBuilder(new FallbackDictionary<string, object>(ComponentRegistry.Properties));
 
             foreach (var source in ComponentRegistry.Sources)
             {
