@@ -57,7 +57,7 @@ namespace Autofac.Features.Metadata
             var registrationCreator = CreateMetaRegistrationMethod.MakeGenericMethod(valueType);
 
             return registrationAccessor(valueService)
-                .Select(v => registrationCreator.Invoke(null, new object[] { service, valueService, v }))
+                .Select(v => registrationCreator.Invoke(this, new object[] { service, valueService, v }))
                 .Cast<IComponentRegistration>();
         }
 
@@ -68,14 +68,14 @@ namespace Autofac.Features.Metadata
             return MetaRegistrationSourceResources.MetaRegistrationSourceDescription;
         }
 
-        private static IComponentRegistration CreateMetaRegistration<T>(Service providedService, Service valueService, IComponentRegistration valueRegistration)
+        private IComponentRegistration CreateMetaRegistration<T>(Service providedService, Service valueService, IComponentRegistration valueRegistration)
         {
             var rb = RegistrationBuilder
                 .ForDelegate((c, p) => new Meta<T>(
                     (T)c.ResolveComponent(new ResolveRequest(valueService, valueRegistration, p)),
                     valueRegistration.Target.Metadata))
                 .As(providedService)
-                .Targeting(valueRegistration)
+                .Targeting(valueRegistration, IsAdapterForIndividualComponents)
                 .InheritRegistrationOrderFrom(valueRegistration);
 
             return rb.CreateRegistration();

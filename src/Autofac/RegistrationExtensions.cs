@@ -669,6 +669,8 @@ namespace Autofac
             PropertiesAutowired<TLimit, TActivatorData, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration, PropertyWiringOptions wiringFlags = PropertyWiringOptions.None)
         {
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+
             var preserveSetValues = (int)(wiringFlags & PropertyWiringOptions.PreserveSetValues) != 0;
             var allowCircularDependencies = (int)(wiringFlags & PropertyWiringOptions.AllowCircularDependencies) != 0;
 
@@ -927,6 +929,7 @@ namespace Autofac
         /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set target for.</param>
         /// <param name="target">The target.</param>
+        /// <param name="isAdapterForIndividualComponent">Optional; whether the registration is a 1:1 adapter on top of another component.</param>
         /// <returns>
         /// Registration builder allowing the registration to be configured.
         /// </returns>
@@ -936,13 +939,15 @@ namespace Autofac
         public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             Targeting<TLimit, TActivatorData, TSingleRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
-                IComponentRegistration target)
+                IComponentRegistration target,
+                bool isAdapterForIndividualComponent)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
             if (target == null) throw new ArgumentNullException(nameof(target));
 
             registration.RegistrationStyle.Target = target.Target;
+            registration.RegistrationStyle.IsAdapterForIndividualComponent = isAdapterForIndividualComponent;
             return registration;
         }
 
@@ -1385,7 +1390,7 @@ namespace Autofac
 
                 if (instance == null)
                 {
-                    throw new DependencyResolutionException(String.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.DecoratorRequiresInstanceParameter, typeof(TService).Name));
+                    throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.DecoratorRequiresInstanceParameter, typeof(TService).Name));
                 }
 
                 return decorator(c, p, instance);

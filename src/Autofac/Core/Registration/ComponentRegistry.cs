@@ -68,8 +68,8 @@ namespace Autofac.Core.Registration
         /// </summary>
         private readonly ConcurrentDictionary<Service, ServiceRegistrationInfo> _serviceInfo = new ConcurrentDictionary<Service, ServiceRegistrationInfo>();
 
-        private readonly ConcurrentDictionary<IComponentRegistration, IEnumerable<IComponentRegistration>> _decorators
-            = new ConcurrentDictionary<IComponentRegistration, IEnumerable<IComponentRegistration>>();
+        private readonly ConcurrentDictionary<IServiceWithType, IReadOnlyList<IComponentRegistration>> _decorators
+            = new ConcurrentDictionary<IServiceWithType, IReadOnlyList<IComponentRegistration>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentRegistry"/> class.
@@ -208,6 +208,8 @@ namespace Autofac.Core.Registration
 
         protected virtual void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource = false)
         {
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+
             foreach (var service in registration.Services)
             {
                 var info = GetServiceInfo(service);
@@ -254,25 +256,15 @@ namespace Autofac.Core.Registration
         }
 
         /// <inheritdoc />
-        public IEnumerable<IComponentRegistration> DecoratorsFor(IComponentRegistration registration)
+        public IReadOnlyList<IComponentRegistration> DecoratorsFor(IServiceWithType service)
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (service == null) throw new ArgumentNullException(nameof(service));
 
-            return _decorators.GetOrAdd(registration, r =>
-            {
-                var result = new List<IComponentRegistration>();
-
-                foreach (var service in r.Services)
-                {
-                    if (service is DecoratorService || !(service is IServiceWithType swt)) continue;
-
-                    var decoratorService = new DecoratorService(swt.ServiceType);
-                    var decoratorRegistrations = RegistrationsFor(decoratorService);
-                    result.AddRange(decoratorRegistrations);
-                }
-
-                return result.OrderBy(d => d.GetRegistrationOrder()).ToArray();
-            });
+            return _decorators.GetOrAdd(service, s =>
+                RegistrationsFor(new DecoratorService(s.ServiceType))
+                    .Where(r => !r.IsAdapterForIndividualComponent)
+                    .OrderBy(r => r.GetRegistrationOrder())
+                    .ToArray());
         }
 
         /// <summary>
@@ -326,7 +318,7 @@ namespace Autofac.Core.Registration
             {
                 lock (_synchRoot)
                 {
-                    return _dynamicRegistrationSources.ToArray();
+                    return _dynamicRegistrationSources;
                 }
             }
         }

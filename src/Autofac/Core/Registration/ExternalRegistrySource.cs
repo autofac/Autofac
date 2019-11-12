@@ -26,7 +26,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
 
@@ -47,11 +46,7 @@ namespace Autofac.Core.Registration
         /// </summary>
         /// <param name="registry">Component registry to pull registrations from.</param>
         public ExternalRegistrySource(IComponentRegistry registry)
-        {
-            if (registry == null) throw new ArgumentNullException(nameof(registry));
-
-            _registry = registry;
-        }
+            => _registry = registry ?? throw new ArgumentNullException(nameof(registry));
 
         /// <summary>
         /// Retrieve registrations for an unregistered service, to be used
@@ -68,25 +63,24 @@ namespace Autofac.Core.Registration
 
             // Issue #272: Taking from the registry the following registrations:
             //   - non-adapting own registrations: wrap them with ExternalComponentRegistration
-            return _registry.RegistrationsFor(service)
-                .Where(r => r is ExternalComponentRegistration || !r.IsAdapting())
-                .Select(r =>
-
-                    // equivalent to following registration builder
-                    //    RegistrationBuilder.ForDelegate(r.Activator.LimitType, (c, p) => c.ResolveComponent(r, p))
-                    //        .Targeting(r)
-                    //        .As(service)
-                    //        .ExternallyOwned()
-                    //        .CreateRegistration()
-                    new ExternalComponentRegistration(
+            foreach (var registration in _registry.RegistrationsFor(service))
+            {
+                if (registration is ExternalComponentRegistration || !registration.IsAdapting())
+                {
+                    yield return new ExternalComponentRegistration(
                         Guid.NewGuid(),
-                        new DelegateActivator(r.Activator.LimitType, (c, p) => c.ResolveComponent(new ResolveRequest(service, r, p))),
+                        #pragma warning disable CA2000 // Dispose objects before losing scope
+                        new DelegateActivator(registration.Activator.LimitType, (c, p) => c.ResolveComponent(new ResolveRequest(service, registration, p))),
+                        #pragma warning restore CA2000 // Dispose objects before losing scope
                         new CurrentScopeLifetime(),
                         InstanceSharing.None,
                         InstanceOwnership.ExternallyOwned,
                         new[] { service },
-                        r.Metadata,
-                        r));
+                        registration.Metadata,
+                        registration,
+                        false);
+                }
+            }
         }
 
         /// <summary>
@@ -95,16 +89,5 @@ namespace Autofac.Core.Registration
         /// logical scope, we must return false to avoid duplicating them.
         /// </summary>
         public bool IsAdapterForIndividualComponents => false;
-
-        /// <summary>
-        ///  ComponentRegistration subtyped only to distinguish it from other adapted registrations.
-        /// </summary>
-        private class ExternalComponentRegistration : ComponentRegistration
-        {
-            public ExternalComponentRegistration(Guid id, IInstanceActivator activator, IComponentLifetime lifetime, InstanceSharing sharing, InstanceOwnership ownership, IEnumerable<Service> services, IDictionary<string, object> metadata, IComponentRegistration target)
-                : base(id, activator, lifetime, sharing, ownership, services, metadata, target)
-            {
-            }
-        }
     }
 }

@@ -110,6 +110,13 @@ namespace Autofac.Core.Activators.Reflection
                     continue;
                 }
 
+                // SetMethod will be non-null if CanWrite is true.
+                // Don't want to inject onto static properties.
+                if (property.SetMethod.IsStatic)
+                {
+                    continue;
+                }
+
                 var propertyType = property.PropertyType;
 
                 if (propertyType.GetTypeInfo().IsValueType && !propertyType.GetTypeInfo().IsEnum)

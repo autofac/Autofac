@@ -40,6 +40,7 @@ namespace Autofac.Core.Resolving
     {
         private readonly IResolveOperation _context;
         private readonly ISharingLifetimeScope _activationScope;
+        private readonly Service _service;
         private object _newInstance;
         private bool _executed;
         private const string ActivatorChainExceptionData = "ActivatorChain";
@@ -49,9 +50,10 @@ namespace Autofac.Core.Resolving
             ISharingLifetimeScope mostNestedVisibleScope,
             ResolveRequest request)
         {
-            Parameters = request.Parameters;
-            ComponentRegistration = request.Registration;
             _context = context;
+            _service = request.Service;
+            ComponentRegistration = request.Registration;
+            Parameters = request.Parameters;
 
             try
             {
@@ -119,7 +121,10 @@ namespace Autofac.Core.Resolving
             {
                 decoratorTarget = _newInstance = ComponentRegistration.Activator.ActivateInstance(this, resolveParameters);
 
+                ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance);
+
                 _newInstance = InstanceDecorator.TryDecorateRegistration(
+                    _service,
                     ComponentRegistration,
                     _newInstance,
                     _activationScope,
@@ -141,10 +146,17 @@ namespace Autofac.Core.Resolving
                 // instance once the instance has been activated - assuming that it will be
                 // done during the lifetime scope's Disposer executing.
                 if (decoratorTarget is IDisposable instanceAsDisposable)
+                {
                     _activationScope.Disposer.AddInstanceForDisposal(instanceAsDisposable);
+                }
+                else if (decoratorTarget is IAsyncDisposable asyncDisposableInstance)
+                {
+                    _activationScope.Disposer.AddInstanceForAsyncDisposal(asyncDisposableInstance);
+                }
             }
 
-            ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance);
+            if (_newInstance != decoratorTarget)
+                ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance);
 
             return _newInstance;
         }

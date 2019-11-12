@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace Autofac.Core
@@ -16,16 +15,13 @@ namespace Autofac.Core
         /// that provides default selection criteria.
         /// </summary>
         /// <param name="preserveSetValues">Determines if values should be preserved or not.</param>
-        public DefaultPropertySelector(bool preserveSetValues)
-        {
-            this.PreserveSetValues = preserveSetValues;
-        }
+        public DefaultPropertySelector(bool preserveSetValues) => PreserveSetValues = preserveSetValues;
 
         /// <summary>
-        /// Gets or sets a value indicating whether the value should be set if the value is already
+        /// Gets a value indicating whether the value should be set if the value is already
         /// set (ie non-null).
         /// </summary>
-        public bool PreserveSetValues { get; protected set; }
+        public bool PreserveSetValues { get; }
 
         /// <summary>
         /// Gets an instance of DefaultPropertySelector that will cause values to be overwritten.
@@ -47,12 +43,14 @@ namespace Autofac.Core
         [SuppressMessage("CA1031", "CA1031", Justification = "Issue #799: If getting the property value throws an exception then assume it's set and skip it.")]
         public virtual bool InjectProperty(PropertyInfo propertyInfo, object instance)
         {
+            if (propertyInfo == null) return false;
+
             if (!propertyInfo.CanWrite || propertyInfo.SetMethod?.IsPublic != true)
             {
                 return false;
             }
 
-            if (this.PreserveSetValues && propertyInfo.CanRead)
+            if (PreserveSetValues && propertyInfo.CanRead)
             {
                 try
                 {

@@ -107,9 +107,9 @@ namespace Autofac.Core.Registration
             return Registry.RegistrationsFor(service);
         }
 
-        public IEnumerable<IComponentRegistration> DecoratorsFor(IComponentRegistration registration)
+        public IReadOnlyList<IComponentRegistration> DecoratorsFor(IServiceWithType service)
         {
-            return Registry.DecoratorsFor(registration);
+            return Registry.DecoratorsFor(service);
         }
 
         public event EventHandler<ComponentRegisteredEventArgs> Registered
