@@ -11,7 +11,7 @@ namespace Autofac.Test
 {
     public class ModuleTests
     {
-        internal class ObjectModule : Module
+        internal class ObjectModule : ContainerModule
         {
             protected override void Load(ContainerBuilder builder)
             {
@@ -33,7 +33,7 @@ namespace Autofac.Test
             Assert.Throws<ArgumentNullException>(() => new ObjectModule().Configure(null));
         }
 
-        internal class AttachingModule : Module
+        internal class AttachingModule : ContainerModule
         {
             public IList<IComponentRegistration> Registrations { get; set; } = new List<IComponentRegistration>();
 
@@ -124,7 +124,7 @@ namespace Autofac.Test
             }
         }
 
-        internal class ModuleExposingThisAssembly : Module
+        internal class ModuleExposingThisAssembly : ContainerModule
         {
             public Assembly ModuleThisAssembly
             {
@@ -153,7 +153,7 @@ namespace Autofac.Test
             Assert.Throws<InvalidOperationException>(() => { var unused = module.ModuleThisAssembly; });
         }
 
-        internal class PropertySetModule : Module
+        internal class PropertySetModule : ContainerModule
         {
             protected override void Load(ContainerBuilder builder)
             {

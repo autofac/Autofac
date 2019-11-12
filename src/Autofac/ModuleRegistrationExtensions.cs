@@ -59,6 +59,26 @@ namespace Autofac
         /// <summary>
         /// Registers modules found in an assembly.
         /// </summary>
+        /// <param name="builder">The builder to register the modules with.</param>
+        /// <param name="assemblies">The assemblies from which to register modules.</param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="builder"/> is <see langword="null"/>.
+        /// </exception>
+        /// <returns>
+        /// The <see cref="IModuleRegistrar"/> to allow
+        /// additional chained module registrations.
+        /// </returns>
+        public static IModuleRegistrar RegisterAssemblyModules(this ContainerBuilder builder, params Assembly[] assemblies)
+        {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+
+            var registrar = new ModuleRegistrar(builder);
+            return registrar.RegisterAssemblyModules<IModule>(assemblies);
+        }
+
+        /// <summary>
+        /// Registers modules found in an assembly.
+        /// </summary>
         /// <param name="registrar">The module registrar that will make the registrations into the container.</param>
         /// <param name="assemblies">The assemblies from which to register modules.</param>
         /// <exception cref="ArgumentNullException">
@@ -89,6 +109,28 @@ namespace Autofac
         /// additional chained module registrations.
         /// </returns>
         public static IModuleRegistrar RegisterAssemblyModules<TModule>(this LifetimeScopeBuilder builder, params Assembly[] assemblies)
+            where TModule : IModule
+        {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+
+            var registrar = new ModuleRegistrar(builder);
+            return registrar.RegisterAssemblyModules(typeof(TModule), assemblies);
+        }
+
+        /// <summary>
+        /// Registers modules found in an assembly.
+        /// </summary>
+        /// <param name="builder">The builder to register the modules with.</param>
+        /// <param name="assemblies">The assemblies from which to register modules.</param>
+        /// <typeparam name="TModule">The type of the module to add.</typeparam>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="builder"/> is <see langword="null"/>.
+        /// </exception>
+        /// <returns>
+        /// The <see cref="IModuleRegistrar"/> to allow
+        /// additional chained module registrations.
+        /// </returns>
+        public static IModuleRegistrar RegisterAssemblyModules<TModule>(this ContainerBuilder builder, params Assembly[] assemblies)
             where TModule : IModule
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
@@ -199,6 +241,27 @@ namespace Autofac
         /// <summary>
         /// Add a module to the container.
         /// </summary>
+        /// <param name="builder">The builder to register the module with.</param>
+        /// <typeparam name="TModule">The module to add.</typeparam>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="builder"/> is <see langword="null"/>.
+        /// </exception>
+        /// <returns>
+        /// The <see cref="IModuleRegistrar"/> to allow
+        /// additional chained module registrations.
+        /// </returns>
+        public static IModuleRegistrar RegisterModule<TModule>(this ContainerBuilder builder)
+            where TModule : IModule, new()
+        {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+
+            var registrar = new ModuleRegistrar(builder);
+            return registrar.RegisterModule<TModule>();
+        }
+
+        /// <summary>
+        /// Add a module to the container.
+        /// </summary>
         /// <param name="registrar">The module registrar that will make the registration into the container.</param>
         /// <typeparam name="TModule">The module to add.</typeparam>
         /// <exception cref="ArgumentNullException">
@@ -217,7 +280,7 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Add a module to the container.
+        /// Add a module to the lifetime scope.
         /// </summary>
         /// <param name="builder">The builder to register the module with.</param>
         /// <param name="module">The module to add.</param>
@@ -229,6 +292,27 @@ namespace Autofac
         /// additional chained module registrations.
         /// </returns>
         public static IModuleRegistrar RegisterModule(this LifetimeScopeBuilder builder, IModule module)
+        {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (module == null) throw new ArgumentNullException(nameof(module));
+
+            var registrar = new ModuleRegistrar(builder);
+            return registrar.RegisterModule(module);
+        }
+
+        /// <summary>
+        /// Add a module to the container.
+        /// </summary>
+        /// <param name="builder">The builder to register the module with.</param>
+        /// <param name="module">The module to add.</param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="builder"/> or <paramref name="module"/> is <see langword="null"/>.
+        /// </exception>
+        /// <returns>
+        /// The <see cref="IModuleRegistrar"/> to allow
+        /// additional chained module registrations.
+        /// </returns>
+        public static IModuleRegistrar RegisterModule(this ContainerBuilder builder, IModule module)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (module == null) throw new ArgumentNullException(nameof(module));

@@ -33,8 +33,8 @@ namespace Autofac
 {
     /// <summary>
     /// Base class for user-defined modules. Modules can add a set of related components
-    /// to a container (<see cref="Module.Load"/>) or attach cross-cutting functionality
-    /// to other components (<see cref="Module.AttachToComponentRegistration"/>.
+    /// to a container (<see cref="Module{TLifetimeScopeBuilder}.Load"/>) or attach cross-cutting functionality
+    /// to other components (<see cref="Module{TLifetimeScopeBuilder}.AttachToComponentRegistration"/>.
     /// Modules are given special support in the XML configuration feature - see
     /// http://code.google.com/p/autofac/wiki/StructuringWithModules.
     /// </summary>
@@ -67,7 +67,8 @@ namespace Autofac
     /// var customers = container.Resolve&lt;IRepository&lt;Customer&gt;&gt;();
     /// </code>
     /// </example>
-    public abstract class Module : IModule
+    public abstract class Module<TLifetimeScopeBuilder> : IModule
+        where TLifetimeScopeBuilder : LifetimeScopeBuilder
     {
         /// <summary>
         /// Apply the module to the component registry.
@@ -77,10 +78,11 @@ namespace Autofac
         {
             if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
 
-            var moduleBuilder = new ContainerBuilder(componentRegistry.Properties);
+            TLifetimeScopeBuilder moduleBuilder = CreateModuleBuilder(componentRegistry);
 
             Load(moduleBuilder);
             moduleBuilder.UpdateRegistry(componentRegistry);
+
             AttachToRegistrations(componentRegistry);
             AttachToSources(componentRegistry);
         }
@@ -93,9 +95,11 @@ namespace Autofac
         /// </remarks>
         /// <param name="builder">The builder through which components can be
         /// registered.</param>
-        protected virtual void Load(ContainerBuilder builder)
+        protected virtual void Load(TLifetimeScopeBuilder builder)
         {
         }
+
+        protected abstract TLifetimeScopeBuilder CreateModuleBuilder(IComponentRegistry componentRegistry);
 
         /// <summary>
         /// Override to attach module-specific functionality to a

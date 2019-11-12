@@ -61,7 +61,7 @@ namespace Autofac.Specification.Test
             Assert.Throws<InvalidOperationException>(() => target.Build());
         }
 
-        public class BuildCallbackModule : Module
+        public class BuildCallbackModule : ContainerModule
         {
             public int Called { get; private set; }
 

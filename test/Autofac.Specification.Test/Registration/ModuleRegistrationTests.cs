@@ -101,7 +101,7 @@ namespace Autofac.Specification.Test.Registration
             Assert.True(container.IsRegistered<object>());
         }
 
-        private class Module1 : Module
+        private class Module1 : ContainerModule
         {
             protected override void Load(ContainerBuilder builder)
             {
@@ -109,7 +109,7 @@ namespace Autofac.Specification.Test.Registration
             }
         }
 
-        private class Module2 : Module
+        private class Module2 : ContainerModule
         {
             protected override void Load(ContainerBuilder builder)
             {
@@ -117,7 +117,7 @@ namespace Autofac.Specification.Test.Registration
             }
         }
 
-        internal class ObjectModule : Module
+        internal class ObjectModule : ContainerModule
         {
             public bool ConfigureCalled { get; private set; }
 

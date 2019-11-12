@@ -33,7 +33,7 @@ namespace Autofac.Test.Core.Registration
             Assert.Throws<ArgumentNullException>(() => registrar.RegisterModule(null));
         }
 
-        private class ModuleA : Module
+        private class ModuleA : ContainerModule
         {
             protected override void Load(ContainerBuilder builder)
             {
@@ -41,7 +41,7 @@ namespace Autofac.Test.Core.Registration
             }
         }
 
-        private class ModuleB : Module
+        private class ModuleB : ContainerModule
         {
             protected override void Load(ContainerBuilder builder)
             {

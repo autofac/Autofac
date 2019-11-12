@@ -86,7 +86,7 @@ namespace Autofac.Test.Features.Collections
             public bool IsAdapterForIndividualComponents => false;
         }
 
-        private class ImplementorModule : Module
+        private class ImplementorModule : ContainerModule
         {
             protected override void Load(ContainerBuilder builder)
             {

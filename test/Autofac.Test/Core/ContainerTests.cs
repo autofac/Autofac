@@ -199,7 +199,7 @@ namespace Autofac.Test.Core
             Assert.True(tracker.IsAsyncDisposed);
         }
 
-        private class ReplaceInstanceModule : Module
+        private class ReplaceInstanceModule : ContainerModule
         {
             protected override void AttachToComponentRegistration(IComponentRegistry componentRegistry, IComponentRegistration registration)
             {
