@@ -44,7 +44,7 @@ namespace Autofac.Features.OpenGenerics
             out Service[] constructedServices)
         {
             var swt = service as IServiceWithType;
-            if (swt != null && swt.ServiceType.GetTypeInfo().IsGenericType)
+            if (swt != null && swt.ServiceType.GetTypeInfo().IsGenericType && !swt.ServiceType.IsGenericTypeDefinition)
             {
                 var definitionService = (IServiceWithType)swt.ChangeType(swt.ServiceType.GetGenericTypeDefinition());
                 var serviceGenericArguments = swt.ServiceType.GetTypeInfo().GenericTypeArguments;
