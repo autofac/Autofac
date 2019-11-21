@@ -341,6 +341,17 @@ namespace Autofac.Test.Features.OpenGenerics
             var instance = container.Resolve<INested<ISimpleInterface>>();
         }
 
+        [Fact]
+        public void CheckGenericTypeIsRegisteredWhenNotSpecifyParameterType()
+        {
+            // Issue #1040: IsRegistered throws IndexOutOfRangeException for open generic type
+            var cb = new ContainerBuilder();
+            cb.RegisterGeneric(typeof(C<>));
+            var container = cb.Build();
+
+            Assert.False(container.IsRegistered(typeof(C<>)));
+        }
+
         private class CNestedSimpleInterface : INested<ISimpleInterface>
         {
         }

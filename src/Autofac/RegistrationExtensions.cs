@@ -63,19 +63,6 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Add a registration source to the container.
-        /// </summary>
-        /// <param name="builder">The builder to register the registration source via.</param>
-        /// <param name="registrationSource">The registration source to add.</param>
-        public static void RegisterSource(this ContainerBuilder builder, IRegistrationSource registrationSource)
-        {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (registrationSource == null) throw new ArgumentNullException(nameof(registrationSource));
-
-            builder.RegisterCallback(cr => cr.AddRegistrationSource(registrationSource));
-        }
-
-        /// <summary>
         /// Register an instance as a component.
         /// </summary>
         /// <typeparam name="T">The type of the instance.</typeparam>
