@@ -802,21 +802,19 @@ namespace Autofac
         /// <typeparam name="TReflectionActivatorData">Activator data type.</typeparam>
         /// <typeparam name="TStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set parameter on.</param>
-        /// <param name="parameterSelector">A predicate selecting the parameter to set.</param>
-        /// <param name="valueProvider">The provider that will generate the parameter value.</param>
+        /// <param name="resolveParameter">A predicate selecting the parameter to set and
+        ///     the provider that will generate the parameter value.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
             WithParameter<TLimit, TReflectionActivatorData, TStyle>(
                 this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
-                Func<ParameterInfo, IComponentContext, bool> parameterSelector,
-                Func<ParameterInfo, IComponentContext, object> valueProvider)
+                Func<ParameterInfo, IComponentContext, (bool, Func<object>)> resolveParameter)
             where TReflectionActivatorData : ReflectionActivatorData
         {
-            if (parameterSelector == null) throw new ArgumentNullException(nameof(parameterSelector));
-            if (valueProvider == null) throw new ArgumentNullException(nameof(valueProvider));
+            if (resolveParameter == null) throw new ArgumentNullException(nameof(resolveParameter));
 
             return registration.WithParameter(
-                new ResolvedParameter(parameterSelector, valueProvider));
+                new ResolvedParameter(resolveParameter));
         }
 
         /// <summary>

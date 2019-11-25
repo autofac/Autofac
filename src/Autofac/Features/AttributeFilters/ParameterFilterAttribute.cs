@@ -61,7 +61,8 @@ namespace Autofac.Features.AttributeFilters
         /// </summary>
         /// <param name="parameter">The specific parameter being resolved that is marked with this attribute.</param>
         /// <param name="context">The component context under which the parameter is being resolved.</param>
-        /// <returns>The instance of the object that should be used for the parameter value.</returns>
-        public abstract object ResolveParameter(ParameterInfo parameter, IComponentContext context);
+        /// <param name="value">The instance of the object that should be used for the parameter value.</param>
+        /// <returns>true if a value can be supplied; otherwise, false.</returns>
+        public abstract bool TryResolveParameter(ParameterInfo parameter, IComponentContext context, out object value);
     }
 }

@@ -34,21 +34,16 @@ namespace Autofac.Core
     /// </summary>
     public class ResolvedParameter : Parameter
     {
-        private readonly Func<ParameterInfo, IComponentContext, bool> _predicate;
-        private readonly Func<ParameterInfo, IComponentContext, object> _valueAccessor;
+        private readonly Func<ParameterInfo, IComponentContext, (bool canResolve, Func<object> valueAccessor)> _resolveParameter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ResolvedParameter"/> class.
         /// </summary>
-        /// <param name="predicate">A predicate that determines which parameters on a constructor will be supplied by this instance.</param>
-        /// <param name="valueAccessor">A function that supplies the parameter value given the context.</param>
-        public ResolvedParameter(Func<ParameterInfo, IComponentContext, bool> predicate, Func<ParameterInfo, IComponentContext, object> valueAccessor)
+        /// <param name="resolveParameter">A predicate that determines which parameters on a constructor will be supplied
+        ///     by this instance and a function that supplies the parameter value given the context.</param>
+        public ResolvedParameter(Func<ParameterInfo, IComponentContext, (bool canResolve, Func<object> valueAccessor)> resolveParameter)
         {
-            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
-            if (valueAccessor == null) throw new ArgumentNullException(nameof(valueAccessor));
-
-            _predicate = predicate;
-            _valueAccessor = valueAccessor;
+            _resolveParameter = resolveParameter;
         }
 
         /// <summary>
@@ -59,15 +54,17 @@ namespace Autofac.Core
         /// <param name="valueProvider">If the result is true, the valueProvider parameter will
         /// be set to a function that will lazily retrieve the parameter value. If the result is false,
         /// will be set to null.</param>
-        /// <returns>True if a value can be supplied; otherwise, false.</returns>
+        /// <returns>true if a value can be supplied; otherwise, false.</returns>
         public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<object> valueProvider)
         {
             if (pi == null) throw new ArgumentNullException(nameof(pi));
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            if (_predicate(pi, context))
+            (bool canResolve, Func<object> valueAccessor) = _resolveParameter(pi, context);
+
+            if (canResolve)
             {
-                valueProvider = () => _valueAccessor(pi, context);
+                valueProvider = valueAccessor;
                 return true;
             }
 
@@ -106,8 +103,8 @@ namespace Autofac.Core
 
             var ks = new KeyedService(serviceKey, typeof(TService));
             return new ResolvedParameter(
-                (pi, c) => pi.ParameterType == typeof(TService) && c.IsRegisteredService(ks),
-                (pi, c) => c.ResolveService(ks));
+                (pi, c) => (pi.ParameterType == typeof(TService) && c.IsRegisteredService(ks),
+                () => c.ResolveService(ks)));
         }
     }
 }

@@ -80,8 +80,9 @@ namespace Autofac.Features.OpenGenerics
         private static Parameter[] AddDecoratedComponentParameter(Service service, Type decoratedParameterType, IComponentRegistration decoratedComponent, IList<Parameter> configuredParameters)
         {
             var parameter = new ResolvedParameter(
-                (pi, c) => pi.ParameterType == decoratedParameterType,
-                (pi, c) => c.ResolveComponent(new ResolveRequest(service, decoratedComponent, Enumerable.Empty<Parameter>())));
+                (pi, c) => (
+                pi.ParameterType == decoratedParameterType,
+                () => c.ResolveComponent(new ResolveRequest(service, decoratedComponent, Enumerable.Empty<Parameter>()))));
 
             var resultArray = new Parameter[configuredParameters.Count + 1];
             resultArray[0] = parameter;

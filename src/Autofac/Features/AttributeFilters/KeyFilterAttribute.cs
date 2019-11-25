@@ -121,20 +121,19 @@ namespace Autofac.Features.AttributeFilters
         /// </summary>
         /// <param name="parameter">The specific parameter being resolved that is marked with this attribute.</param>
         /// <param name="context">The component context under which the parameter is being resolved.</param>
+        /// <param name="value">The instance of the object that should be used for the parameter value.</param>
         /// <returns>
-        /// The instance of the object that should be used for the parameter value.
+        /// true if a value can be supplied; otherwise, false.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="parameter" /> or <paramref name="context" /> is <see langword="null" />.
         /// </exception>
-        public override object ResolveParameter(ParameterInfo parameter, IComponentContext context)
+        public override bool TryResolveParameter(ParameterInfo parameter, IComponentContext context, out object value)
         {
             if (parameter == null) throw new ArgumentNullException(nameof(parameter));
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            object value;
-            context.TryResolveKeyed(Key, parameter.ParameterType, out value);
-            return value;
+            return context.TryResolveKeyed(Key, parameter.ParameterType, out value);
         }
     }
 }

@@ -142,13 +142,14 @@ namespace Autofac.Features.AttributeFilters
         /// </summary>
         /// <param name="parameter">The specific parameter being resolved that is marked with this attribute.</param>
         /// <param name="context">The component context under which the parameter is being resolved.</param>
+        /// <param name="value">The instance of the object that should be used for the parameter value.</param>
         /// <returns>
-        /// The instance of the object that should be used for the parameter value.
+        /// true if a value can be supplied; otherwise, false.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="parameter" /> or <paramref name="context" /> is <see langword="null" />.
         /// </exception>
-        public override object ResolveParameter(ParameterInfo parameter, IComponentContext context)
+        public override bool TryResolveParameter(ParameterInfo parameter, IComponentContext context, out object value)
         {
             if (parameter == null) throw new ArgumentNullException(nameof(parameter));
             if (context == null) throw new ArgumentNullException(nameof(context));
@@ -160,9 +161,11 @@ namespace Autofac.Features.AttributeFilters
             var elementType = GetElementType(parameter.ParameterType);
             var hasMany = elementType != parameter.ParameterType;
 
-            return hasMany
+            value = hasMany
                 ? FilterAllMethod.MakeGenericMethod(elementType).Invoke(null, new[] { context, Key, Value })
                 : FilterOneMethod.MakeGenericMethod(elementType).Invoke(null, new[] { context, Key, Value });
+
+            return true;
         }
 
         private static Type GetElementType(Type type)

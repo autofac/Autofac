@@ -66,11 +66,15 @@ namespace Autofac.Features.AttributeFilters
             if (builder == null) throw new ArgumentNullException(nameof(builder));
 
             return builder.WithParameter(
-                (p, c) => p.GetCustomAttributes<ParameterFilterAttribute>(true).Any(),
                 (p, c) =>
                 {
+                    if (!p.GetCustomAttributes<ParameterFilterAttribute>(true).Any())
+                        return (false, null);
+
                     var filter = p.GetCustomAttributes<ParameterFilterAttribute>(true).First();
-                    return filter.ResolveParameter(p, c);
+                    bool canResolve = filter.TryResolveParameter(p, c, out object value);
+
+                    return (canResolve, () => value);
                 });
         }
     }
