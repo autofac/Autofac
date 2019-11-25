@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac.Core;
 using Autofac.Features.AttributeFilters;
 using Autofac.Features.Metadata;
 using Autofac.Features.OwnedInstances;
@@ -79,6 +80,9 @@ namespace Autofac.Test.Features.AttributeFilters
 
             builder.RegisterType<ToolWindowAdapter>()
                 .Keyed<IAdapter>("Other");
+
+            builder.RegisterType<ConsoleLogger>()
+                .Keyed<ILogger>("Solution");
 
             builder.RegisterType<SolutionExplorerKeyed>()
                 .WithAttributeFiltering();
@@ -309,6 +313,32 @@ namespace Autofac.Test.Features.AttributeFilters
             Assert.Equal(2, adapterActivationCount);
         }
 
+        [Fact]
+        public void RequiredParameterWithKeyFilterCanNotBeResolvedWhenNotRegister()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<RequiredParameterWithKeyFilter>()
+              .WithAttributeFiltering()
+              .As<RequiredParameterWithKeyFilter>();
+
+            Assert.Throws<DependencyResolutionException>(() => builder.Build().Resolve<RequiredParameterWithKeyFilter>());
+        }
+
+        [Fact]
+        public void OptionalParameterWithKeyFilterCanBeResolvedBySpecifiedDefaultValue()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<OptionalParameterWithKeyFilter>()
+              .WithAttributeFiltering()
+              .As<OptionalParameterWithKeyFilter>();
+
+            var instance = builder.Build().Resolve<OptionalParameterWithKeyFilter>();
+
+            Assert.Equal(15, instance.Parameter);
+        }
+
         public interface ILogger
         {
         }
@@ -453,6 +483,26 @@ namespace Autofac.Test.Features.AttributeFilters
 
         public class EmptyMetadata
         {
+        }
+
+        public class RequiredParameterWithKeyFilter
+        {
+            public int Parameter { get; set; }
+
+            public RequiredParameterWithKeyFilter([KeyFilter(0)] int parameter)
+            {
+                Parameter = parameter;
+            }
+        }
+
+        public class OptionalParameterWithKeyFilter
+        {
+            public int Parameter { get; set; }
+
+            public OptionalParameterWithKeyFilter([KeyFilter(0)] int parameter = 15)
+            {
+                Parameter = parameter;
+            }
         }
     }
 }
