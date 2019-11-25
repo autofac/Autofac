@@ -78,11 +78,9 @@ namespace Autofac.Test
 
             builder.RegisterType<Parameterised>()
                 .WithParameter(
-                    (pi, c) => pi.Name == "a",
-                    (pi, c) => a)
+                    (pi, c) => (pi.Name == "a", () => a))
                 .WithParameter(
-                    (pi, c) => pi.Name == "b",
-                    (pi, c) => b);
+                    (pi, c) => (pi.Name == "b", () => b));
 
             var container = builder.Build();
             var result = container.Resolve<Parameterised>();

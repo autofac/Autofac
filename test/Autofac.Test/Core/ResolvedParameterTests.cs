@@ -17,8 +17,8 @@ namespace Autofac.Test.Core
                 .UsingConstructor(typeof(char), typeof(int))
                 .WithParameter(new TypedParameter(typeof(int), 5))
                 .WithParameter(new ResolvedParameter(
-                    (pi, ctx) => pi.ParameterType == typeof(char),
-                    (pi, ctx) => ctx.ResolveNamed<char>("character")));
+                    (pi, ctx) => (pi.ParameterType == typeof(char), () => ctx.ResolveNamed<char>("character"))));
+
             var c = cb.Build();
             var s = c.Resolve<string>();
             Assert.Equal("aaaaa", s);
@@ -50,9 +50,9 @@ namespace Autofac.Test.Core
             builder.RegisterGeneric(typeof(ConcreteSomething<>));
 
             var decoratedSomethingArgument = new ResolvedParameter(
-                (pi, c) => pi.Name == "decorated",
-                (pi, c) => c.Resolve(typeof(ConcreteSomething<>).MakeGenericType(
-                                pi.ParameterType.GetGenericArguments())));
+                (pi, c) => (
+                pi.Name == "decorated",
+                () => c.Resolve(typeof(ConcreteSomething<>).MakeGenericType(pi.ParameterType.GetGenericArguments()))));
 
             builder.RegisterGeneric(typeof(SomethingDecorator<>))
                 .As(typeof(ISomething<>))
