@@ -26,6 +26,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Autofac.Core;
 
 namespace Autofac.Features.AttributeFilters
 {
@@ -135,6 +136,19 @@ namespace Autofac.Features.AttributeFilters
             object value;
             context.TryResolveKeyed(Key, parameter.ParameterType, out value);
             return value;
+        }
+
+        /// <summary>
+        /// Checks a constructor parameter can be resolved based on keyed service requirements.
+        /// </summary>
+        /// <param name="parameter">The specific parameter being resolved that is marked with this attribute.</param>
+        /// <param name="context">The component context under which the parameter is being resolved.</param>
+        /// <returns>true if parameter can be resolved; otherwise, false.</returns>
+        public override bool CanResolveParameter(ParameterInfo parameter, IComponentContext context)
+        {
+            if (parameter == null) throw new ArgumentNullException(nameof(parameter));
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            return context.ComponentRegistry.IsRegistered(new KeyedService(Key, parameter.ParameterType));
         }
     }
 }
