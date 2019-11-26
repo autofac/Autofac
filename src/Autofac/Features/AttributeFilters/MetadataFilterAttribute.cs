@@ -105,9 +105,7 @@ namespace Autofac.Features.AttributeFilters
 
         private static readonly MethodInfo FilterAllMethod = typeof(MetadataFilterAttribute).GetTypeInfo().GetDeclaredMethod(nameof(FilterAll));
 
-        private static readonly MethodInfo CanResolveOneMethod = typeof(MetadataFilterAttribute).GetTypeInfo().GetDeclaredMethod(nameof(CanResolveOne));
-
-        private static readonly MethodInfo CanResolveAllMethod = typeof(MetadataFilterAttribute).GetTypeInfo().GetDeclaredMethod(nameof(CanResolveAll));
+        private static readonly MethodInfo CanResolveMethod = typeof(MetadataFilterAttribute).GetTypeInfo().GetDeclaredMethod(nameof(CanResolve));
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MetadataFilterAttribute"/> class.
@@ -185,13 +183,8 @@ namespace Autofac.Features.AttributeFilters
             // the other relationship types like Lazy<T>, Func<T>, etc. If we need to add that,
             // this is the place to do it.
             var elementType = GetElementType(parameter.ParameterType);
-            var hasMany = elementType != parameter.ParameterType;
 
-            object value = hasMany
-                ? CanResolveAllMethod.MakeGenericMethod(elementType).Invoke(null, new[] { context, Key, Value })
-                : CanResolveOneMethod.MakeGenericMethod(elementType).Invoke(null, new[] { context, Key, Value });
-
-            return (bool)value;
+            return (bool)CanResolveMethod.MakeGenericMethod(elementType).Invoke(null, new[] { context, Key, Value });
         }
 
         private static Type GetElementType(Type type)
@@ -217,14 +210,7 @@ namespace Autofac.Features.AttributeFilters
                 .ToArray();
         }
 
-        private static bool CanResolveOne<T>(IComponentContext context, string metadataKey, object metadataValue)
-        {
-            // Using Lazy<T> to ensure components that aren't actually used won't get activated.
-            return context.Resolve<IEnumerable<Meta<Lazy<T>>>>()
-                .Any(m => m.Metadata.ContainsKey(metadataKey) && metadataValue.Equals(m.Metadata[metadataKey]));
-        }
-
-        private static bool CanResolveAll<T>(IComponentContext context, string metadataKey, object metadataValue)
+        private static bool CanResolve<T>(IComponentContext context, string metadataKey, object metadataValue)
         {
             // Using Lazy<T> to ensure components that aren't actually used won't get activated.
             return context.Resolve<IEnumerable<Meta<Lazy<T>>>>()
