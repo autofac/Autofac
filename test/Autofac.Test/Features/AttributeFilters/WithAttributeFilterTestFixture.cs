@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac.Core;
 using Autofac.Features.AttributeFilters;
 using Autofac.Features.Metadata;
 using Autofac.Features.OwnedInstances;
@@ -79,6 +80,9 @@ namespace Autofac.Test.Features.AttributeFilters
 
             builder.RegisterType<ToolWindowAdapter>()
                 .Keyed<IAdapter>("Other");
+
+            builder.RegisterType<ConsoleLogger>()
+                .Keyed<ILogger>("Solution");
 
             builder.RegisterType<SolutionExplorerKeyed>()
                 .WithAttributeFiltering();
@@ -266,6 +270,10 @@ namespace Autofac.Test.Features.AttributeFilters
                 .WithMetadata<AdapterMetadata>(m => m.For(am => am.Target, "Other"))
                 .As<IAdapter>();
 
+            builder.RegisterType<ConsoleLogger>()
+                .WithMetadata("LoggerName", "Solution")
+                .As<ILogger>();
+
             builder.RegisterType<SolutionExplorerMetadata>().WithAttributeFiltering();
 
             var container = builder.Build();
@@ -298,6 +306,10 @@ namespace Autofac.Test.Features.AttributeFilters
                 .WithMetadata<AdapterMetadata>(m => m.For(am => am.Target, "Other"))
                 .As<IAdapter>()
                 .OnActivating(h => adapterActivationCount++);
+
+            builder.RegisterType<ConsoleLogger>()
+                .WithMetadata("LoggerName", "Solution")
+                .As<ILogger>();
 
             builder.RegisterType<SolutionExplorerMetadata>()
                 .WithAttributeFiltering();
