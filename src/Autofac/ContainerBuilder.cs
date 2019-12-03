@@ -63,9 +63,9 @@ namespace Autofac
     public class ContainerBuilder
     {
         private readonly IList<DeferredCallback> _configurationCallbacks = new List<DeferredCallback>();
-        private bool _wasBuilt;
+        private BuildCallbackService _buildCallbacks;
 
-        private const string BuildCallbackPropertyKey = "__BuildCallbackKey";
+        private bool _wasBuilt;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContainerBuilder"/> class.
@@ -82,11 +82,6 @@ namespace Autofac
         internal ContainerBuilder(IDictionary<string, object> properties)
         {
             Properties = properties;
-
-            if (!Properties.ContainsKey(BuildCallbackPropertyKey))
-            {
-                Properties.Add(BuildCallbackPropertyKey, new List<Action<IContainer>>());
-            }
         }
 
         /// <summary>
@@ -113,16 +108,28 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Register a callback that will be invoked when the container is built.
+        /// Register a callback that will be invoked when the container (or lifetime scope) is built.
         /// </summary>
         /// <param name="buildCallback">Callback to execute.</param>
         /// <returns>The <see cref="ContainerBuilder"/> instance to continue registration calls.</returns>
-        public ContainerBuilder RegisterBuildCallback(Action<IContainer> buildCallback)
+        /// <remarks>
+        /// The argument to the registered build callback will be an instance of the derived <see cref="IContainer" /> if this
+        /// builder is being used to build a fresh container, or an <see cref="ILifetimeScope" /> if it's being used to
+        /// create custom registrations for a new lifetime scope.
+        /// </remarks>
+        public ContainerBuilder RegisterBuildCallback(Action<ILifetimeScope> buildCallback)
         {
             if (buildCallback == null) throw new ArgumentNullException(nameof(buildCallback));
 
-            var buildCallbacks = GetBuildCallbacks();
-            buildCallbacks.Add(buildCallback);
+            if (_buildCallbacks == null)
+            {
+                _buildCallbacks = new BuildCallbackService();
+
+                // Register the service.
+                this.RegisterInstance(_buildCallbacks);
+            }
+
+            _buildCallbacks.AddCallback(buildCallback);
 
             return this;
         }
@@ -148,9 +155,8 @@ namespace Autofac
             if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
                 StartableManager.StartStartableComponents(result);
 
-            var buildCallbacks = GetBuildCallbacks();
-            foreach (var buildCallback in buildCallbacks)
-                buildCallback(result);
+            // Run any build callbacks.
+            BuildCallbackManager.RunBuildCallbacks(result);
 
             return result;
         }
@@ -251,11 +257,6 @@ namespace Autofac
             componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
             componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());
             componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
-        }
-
-        private List<Action<IContainer>> GetBuildCallbacks()
-        {
-            return (List<Action<IContainer>>)Properties[BuildCallbackPropertyKey];
         }
     }
 }

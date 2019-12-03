@@ -217,6 +217,9 @@ namespace Autofac.Core.Lifetime
                 StartableManager.StartStartableComponents(scope);
             }
 
+            // Run any build callbacks.
+            BuildCallbackManager.RunBuildCallbacks(scope);
+
             RaiseBeginning(scope);
 
             return scope;
