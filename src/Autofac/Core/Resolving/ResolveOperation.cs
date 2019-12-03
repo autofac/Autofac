@@ -108,8 +108,6 @@ namespace Autofac.Core.Resolving
         /// <exception cref="ArgumentNullException"/>
         public object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
-            if (_ended) throw new ObjectDisposedException(ResolveOperationResources.TemporaryContextDisposed, innerException: null);
-
             ++_callDepth;
 
             if (_activationStack.Count > 0) CircularDependencyDetector.CheckForCircularDependency(registration, _activationStack, _callDepth);

@@ -78,14 +78,5 @@ namespace Autofac.Core.Resolving {
                 return ResourceManager.GetString("MaxDepthExceeded", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This resolve operation has already ended. When registering components using lambdas, the IComponentContext &apos;c&apos; parameter to the lambda cannot be stored. Instead, either resolve IComponentContext again from &apos;c&apos;, or resolve a Func&lt;&gt; based factory to create subsequent components from..
-        /// </summary>
-        internal static string TemporaryContextDisposed {
-            get {
-                return ResourceManager.GetString("TemporaryContextDisposed", resourceCulture);
-            }
-        }
     }
 }
