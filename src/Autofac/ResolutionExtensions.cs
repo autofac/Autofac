@@ -916,7 +916,8 @@ namespace Autofac
         /// True if a component providing the service is available.
         /// </returns>
         /// <exception cref="DependencyResolutionException"/>
-        public static bool TryResolve<T>(this IComponentContext context, [NotNullWhen(returnValue: true)] out T instance)
+        public static bool TryResolve<T>(this IComponentContext context, [NotNullWhen(returnValue: true)] out T? instance)
+            where T : class
         {
             if (context == null)
             {
@@ -937,7 +938,7 @@ namespace Autofac
                 // To avoid declaring struct and class overloads of the generic methods, I'm
                 // going to have to 'bang' the returning default.
                 // https://github.com/dotnet/roslyn/issues/30953
-                instance = default!;
+                instance = default;
 
                 return false;
             }
