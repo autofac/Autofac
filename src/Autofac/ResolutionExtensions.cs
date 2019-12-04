@@ -935,9 +935,6 @@ namespace Autofac
             }
             else
             {
-                // To avoid declaring struct and class overloads of the generic methods, I'm
-                // going to have to 'bang' the returning default.
-                // https://github.com/dotnet/roslyn/issues/30953
                 instance = default;
 
                 return false;
