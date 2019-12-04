@@ -143,7 +143,8 @@ namespace Autofac.Specification.Test
             var called = 0;
 
             var builder = new ContainerBuilder();
-            builder.Build().BeginLifetimeScope(cfg => {
+            builder.Build().BeginLifetimeScope(cfg =>
+            {
                 cfg.RegisterBuildCallback(scope => called++);
                 cfg.RegisterModule(module);
             });
