@@ -121,6 +121,38 @@ namespace Autofac.Specification.Test
         }
 
         [Fact]
+        public void BuildCallbacksInvokedWhenModuleAndNormalRegistered()
+        {
+            var module = new BuildCallbackModule();
+            var called = 0;
+
+            var builder = new ContainerBuilder();
+            builder.RegisterBuildCallback(scope => called++);
+            builder.RegisterModule(module);
+
+            builder.Build();
+
+            Assert.Equal(2, module.Called);
+            Assert.Equal(1, called);
+        }
+
+        [Fact]
+        public void BuildCallbacksInvokedInScopeWhenModuleAndNormalRegistered()
+        {
+            var module = new BuildCallbackModule();
+            var called = 0;
+
+            var builder = new ContainerBuilder();
+            builder.Build().BeginLifetimeScope(cfg => {
+                cfg.RegisterBuildCallback(scope => called++);
+                cfg.RegisterModule(module);
+            });
+
+            Assert.Equal(2, module.Called);
+            Assert.Equal(1, called);
+        }
+
+        [Fact]
         public void CtorCreatesDefaultPropertyBag()
         {
             var builder = new ContainerBuilder();
