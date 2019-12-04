@@ -61,7 +61,7 @@ namespace Autofac.Builder {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This set of build callbacks have already run..
+        ///   Looks up a localized string similar to This set of build callbacks has already run..
         /// </summary>
         internal static string BuildCallbacksAlreadyRun {
             get {
