@@ -49,9 +49,9 @@ namespace Autofac.Core
         /// </summary>
         /// <param name="properties">The properties used during component registration.</param>
         [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Tracked by component registry")]
-        internal Container(IDictionary<string, object> properties = null)
+        internal Container(IDictionary<string, object?>? properties = null)
         {
-            ComponentRegistry = new ComponentRegistry(properties ?? new Dictionary<string, object>());
+            ComponentRegistry = new ComponentRegistry(properties ?? new Dictionary<string, object?>());
 
             ComponentRegistry.Register(new ComponentRegistration(
                 LifetimeScope.SelfRegistrationId,
@@ -60,7 +60,7 @@ namespace Autofac.Core
                 InstanceSharing.Shared,
                 InstanceOwnership.ExternallyOwned,
                 new Service[] { new TypedService(typeof(ILifetimeScope)), new TypedService(typeof(IComponentContext)) },
-                new Dictionary<string, object>()));
+                new Dictionary<string, object?>()));
 
             _rootLifetimeScope = new LifetimeScope(ComponentRegistry);
         }

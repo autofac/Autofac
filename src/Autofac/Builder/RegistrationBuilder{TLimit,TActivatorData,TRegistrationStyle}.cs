@@ -34,6 +34,7 @@ using Autofac.Core.Lifetime;
 namespace Autofac.Builder
 {
     internal class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> : IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>, IHideObjectMembers
+        where TLimit : notnull
     {
         public RegistrationBuilder(Service defaultService, TActivatorData activatorData, TRegistrationStyle style)
         {
@@ -416,7 +417,7 @@ namespace Autofac.Builder
         /// <param name="key">Key by which the data can be located.</param>
         /// <param name="value">The data value.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(string key, object value)
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(string key, object? value)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
 
@@ -430,7 +431,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="properties">The extended properties to associate with the component.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(IEnumerable<KeyValuePair<string, object>> properties)
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(IEnumerable<KeyValuePair<string, object?>> properties)
         {
             if (properties == null) throw new ArgumentNullException(nameof(properties));
 

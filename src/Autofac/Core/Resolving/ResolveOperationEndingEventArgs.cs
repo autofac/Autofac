@@ -37,7 +37,7 @@ namespace Autofac.Core.Resolving
         /// </summary>
         /// <param name="resolveOperation">The resolve operation that is ending.</param>
         /// <param name="exception">If included, the exception causing the operation to end; otherwise, null.</param>
-        public ResolveOperationEndingEventArgs(IResolveOperation resolveOperation, Exception exception = null)
+        public ResolveOperationEndingEventArgs(IResolveOperation resolveOperation, Exception? exception = null)
         {
             ResolveOperation = resolveOperation;
             Exception = exception;
@@ -46,7 +46,7 @@ namespace Autofac.Core.Resolving
         /// <summary>
         /// Gets the exception causing the operation to end, or null.
         /// </summary>
-        public Exception Exception { get; }
+        public Exception? Exception { get; }
 
         /// <summary>
         /// Gets the resolve operation that is ending.

@@ -38,7 +38,7 @@ namespace Autofac.Features.Metadata
         /// </summary>
         /// <param name="value">The value described by the instance.</param>
         /// <param name="metadata">The metadata describing the value.</param>
-        public Meta(T value, IDictionary<string, object> metadata)
+        public Meta(T value, IDictionary<string, object?> metadata)
         {
             Value = value;
             Metadata = metadata;
@@ -52,6 +52,6 @@ namespace Autofac.Features.Metadata
         /// <summary>
         /// Gets the metadata describing the value.
         /// </summary>
-        public IDictionary<string, object> Metadata { get; }
+        public IDictionary<string, object?> Metadata { get; }
     }
 }

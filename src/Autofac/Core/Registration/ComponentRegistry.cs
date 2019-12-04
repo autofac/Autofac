@@ -27,6 +27,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -75,7 +76,7 @@ namespace Autofac.Core.Registration
         /// Initializes a new instance of the <see cref="ComponentRegistry"/> class.
         /// </summary>
         public ComponentRegistry()
-            : this(new Dictionary<string, object>())
+            : this(new Dictionary<string, object?>())
         {
         }
 
@@ -83,7 +84,7 @@ namespace Autofac.Core.Registration
         /// Initializes a new instance of the <see cref="ComponentRegistry"/> class.
         /// </summary>
         /// <param name="properties">The properties used during component registration.</param>
-        internal ComponentRegistry(IDictionary<string, object> properties)
+        internal ComponentRegistry(IDictionary<string, object?> properties)
         {
             Properties = properties;
         }
@@ -95,7 +96,7 @@ namespace Autofac.Core.Registration
         /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
         /// context across registrations.
         /// </value>
-        public IDictionary<string, object> Properties { get; }
+        public IDictionary<string, object?> Properties { get; }
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
@@ -115,7 +116,7 @@ namespace Autofac.Core.Registration
         /// <param name="service">The service to look up.</param>
         /// <param name="registration">The default registration for the service.</param>
         /// <returns>True if a registration exists.</returns>
-        public bool TryGetRegistration(Service service, out IComponentRegistration registration)
+        public bool TryGetRegistration(Service service, [NotNullWhen(returnValue: true)] out IComponentRegistration? registration)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
@@ -335,7 +336,7 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
         /// </summary>
-        public event EventHandler<RegistrationSourceAddedEventArgs> RegistrationSourceAdded;
+        public event EventHandler<RegistrationSourceAddedEventArgs>? RegistrationSourceAdded;
 
         private ServiceRegistrationInfo GetInitializedServiceInfo(Service service)
         {
@@ -384,7 +385,7 @@ namespace Autofac.Core.Registration
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ServiceRegistrationInfo GetInitializedServiceInfoOrDefault(Service service)
+        private ServiceRegistrationInfo? GetInitializedServiceInfoOrDefault(Service service)
         {
             if (_serviceInfo.TryGetValue(service, out var existing) && existing.IsInitialized)
                 return existing;
@@ -393,10 +394,10 @@ namespace Autofac.Core.Registration
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private EventHandler<ComponentRegisteredEventArgs> GetRegistered()
+        private EventHandler<ComponentRegisteredEventArgs>? GetRegistered()
         {
             if (Properties.TryGetValue(MetadataKeys.RegisteredPropertyKey, out var registered))
-                return (EventHandler<ComponentRegisteredEventArgs>)registered;
+                return (EventHandler<ComponentRegisteredEventArgs>?)registered;
 
             return null;
         }

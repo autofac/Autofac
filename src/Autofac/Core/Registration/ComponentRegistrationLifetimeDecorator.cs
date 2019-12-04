@@ -56,7 +56,7 @@ namespace Autofac.Core.Registration
 
         public IEnumerable<Service> Services => _inner.Services;
 
-        public IDictionary<string, object> Metadata => _inner.Metadata;
+        public IDictionary<string, object?> Metadata => _inner.Metadata;
 
         public IComponentRegistration Target => _inner.IsAdapting() ? _inner.Target : this;
 

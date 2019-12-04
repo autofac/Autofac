@@ -38,7 +38,7 @@ namespace Autofac.Core.Registration
     {
         private readonly IComponentLifetime _restrictedRootScopeLifetime;
 
-        internal ScopeRestrictedRegistry(object scopeTag, IDictionary<string, object> properties)
+        internal ScopeRestrictedRegistry(object scopeTag, IDictionary<string, object?> properties)
             : base(properties)
         {
             _restrictedRootScopeLifetime = new MatchingScopeLifetime(scopeTag);

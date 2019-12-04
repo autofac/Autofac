@@ -56,7 +56,7 @@ namespace Autofac.Builder
 
             _defaultService = defaultService;
 
-            Metadata = new Dictionary<string, object>
+            Metadata = new Dictionary<string, object?>
             {
                 { MetadataKeys.RegistrationOrderMetadataKey, SequenceGenerator.GetNextUniqueSequence() },
             };
@@ -133,7 +133,7 @@ namespace Autofac.Builder
         /// <summary>
         /// Gets the extended properties assigned to the component.
         /// </summary>
-        public IDictionary<string, object> Metadata { get; }
+        public IDictionary<string, object?> Metadata { get; }
 
         /// <summary>
         /// Gets or sets the callback used to register this component.
@@ -142,7 +142,7 @@ namespace Autofac.Builder
         /// A <see cref="Builder.DeferredCallback"/> that contains the delegate
         /// used to register this component with an <see cref="IComponentRegistry"/>.
         /// </value>
-        public DeferredCallback DeferredCallback { get; set; }
+        public DeferredCallback? DeferredCallback { get; set; }
 
         /// <summary>
         /// Gets the handlers for the Preparing event.

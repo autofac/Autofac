@@ -51,8 +51,7 @@ namespace Autofac.Builder
                 }
 
                 var request = new ResolveRequest(CallbackServiceType, srv, Enumerable.Empty<Parameter>());
-                var component = scope.ResolveComponent(request) as BuildCallbackService;
-
+                var component = (BuildCallbackService)scope.ResolveComponent(request);
                 srv.Metadata[BuildCallbacksExecutedKey] = true;
 
                 // Run the callbacks for the relevant scope.

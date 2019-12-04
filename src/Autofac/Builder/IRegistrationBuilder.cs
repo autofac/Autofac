@@ -259,14 +259,14 @@ namespace Autofac.Builder
         /// <param name="key">Key by which the data can be located.</param>
         /// <param name="value">The data value.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(string key, object value);
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(string key, object? value);
 
         /// <summary>
         /// Associates data with the component.
         /// </summary>
         /// <param name="properties">The extended properties to associate with the component.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(IEnumerable<KeyValuePair<string, object>> properties);
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(IEnumerable<KeyValuePair<string, object?>> properties);
 
         /// <summary>
         /// Associates data with the component.

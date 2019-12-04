@@ -34,7 +34,9 @@ namespace Autofac.Builder
     /// </summary>
     internal class BuildCallbackService
     {
-        private List<Action<ILifetimeScope>> _callbacks = new List<Action<ILifetimeScope>>();
+        private List<Action<ILifetimeScope>>? Callbacks { get; set; } = new List<Action<ILifetimeScope>>();
+
+        private bool HasRun => Callbacks == null;
 
         /// <summary>
         /// Add a callback to the set that will get executed.
@@ -44,21 +46,23 @@ namespace Autofac.Builder
         {
             if (callback == null) throw new ArgumentNullException(nameof(callback));
 
-            _callbacks.Add(callback);
+            if (Callbacks == null) throw new InvalidOperationException(BuildCallbackServiceResources.BuildCallbacksAlreadyRun);
+
+            Callbacks.Add(callback);
         }
 
         public void Execute(ILifetimeScope scope)
         {
             if (scope == null) throw new ArgumentNullException(nameof(scope));
 
-            if (_callbacks == null)
+            if (HasRun)
             {
                 throw new InvalidOperationException(BuildCallbackServiceResources.BuildCallbacksAlreadyRun);
             }
 
             try
             {
-                foreach (var callback in _callbacks)
+                foreach (var callback in Callbacks!)
                 {
                     callback(scope);
                 }
@@ -68,7 +72,7 @@ namespace Autofac.Builder
                 // Clear the reference to the callbacks to release any held scopes (and function as a do-not-run flag)
                 // This object will be a singleton instance in the container/scope, so the initial function scopes that
                 // define the callbacks could be holding onto closure resources. We want the GC to take that back.
-                _callbacks = null;
+                Callbacks = null;
             }
         }
     }

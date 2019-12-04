@@ -78,7 +78,9 @@ namespace Autofac.Core
                         }
                     }
 
-                    _items = null;
+                    // Explicitly clear to null, which is slightly cheating the compiler,
+                    // but I know this method will never enter again (because it derives from the Disposable, which prevents it).
+                    _items = null!;
                 }
                 finally
                 {
@@ -122,7 +124,9 @@ namespace Autofac.Core
                         }
                     }
 
-                    _items = null;
+                    // Explicitly clear to null, which is slightly cheating the compiler,
+                    // but I know this method will never enter again (because it derives from the Disposable, which prevents it).
+                    _items = null!;
                 }
                 finally
                 {

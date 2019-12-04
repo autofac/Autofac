@@ -42,7 +42,7 @@ namespace Autofac.Core.Activators.Reflection
         private readonly Type _implementationType;
         private readonly Parameter[] _configuredProperties;
         private readonly Parameter[] _defaultParameters;
-        private ConstructorInfo[] _availableConstructors;
+        private ConstructorInfo[]? _availableConstructors;
         private readonly object _availableConstructorsLock = new object();
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace Autofac.Core.Activators.Reflection
             if (_availableConstructors.Length == 0)
                 throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, ReflectionActivatorResources.NoConstructorsAvailable, _implementationType, ConstructorFinder));
 
-            var validBindings = GetValidConstructorBindings(context, parameters);
+            var validBindings = GetValidConstructorBindings(_availableConstructors, context, parameters);
 
             var selectedBinding = ConstructorSelector.SelectConstructorBinding(validBindings, parameters);
 
@@ -128,17 +128,17 @@ namespace Autofac.Core.Activators.Reflection
             return instance;
         }
 
-        private ConstructorParameterBinding[] GetValidConstructorBindings(IComponentContext context, IEnumerable<Parameter> parameters)
+        private ConstructorParameterBinding[] GetValidConstructorBindings(ConstructorInfo[] availableConstructors, IComponentContext context, IEnumerable<Parameter> parameters)
         {
             // Most often, there will be no `parameters` and/or no `_defaultParameters`; in both of those cases we can avoid allocating.
             var prioritisedParameters = parameters.Any() ?
                 (_defaultParameters.Length == 0 ? parameters : parameters.Concat(_defaultParameters)) :
                 _defaultParameters;
 
-            var constructorBindings = new ConstructorParameterBinding[_availableConstructors.Length];
-            for (var i = 0; i < _availableConstructors.Length; ++i)
+            var constructorBindings = new ConstructorParameterBinding[availableConstructors.Length];
+            for (var i = 0; i < availableConstructors.Length; ++i)
             {
-                constructorBindings[i] = new ConstructorParameterBinding(_availableConstructors[i], prioritisedParameters, context);
+                constructorBindings[i] = new ConstructorParameterBinding(availableConstructors[i], prioritisedParameters, context);
             }
 
             // Copy-on-write; 99% of components will have a single constructor that can be instantiated.
@@ -196,9 +196,9 @@ namespace Autofac.Core.Activators.Reflection
                 foreach (var actualProperty in actualProperties)
                 {
                     var setter = actualProperty.SetMethod;
-                    Func<object> vp;
+
                     if (setter != null &&
-                        configuredProperty.CanSupplyValue(setter.GetParameters().First(), context, out vp))
+                        configuredProperty.CanSupplyValue(setter.GetParameters().First(), context, out var vp))
                     {
                         actualProperties.Remove(actualProperty);
                         actualProperty.SetValue(instance, vp(), null);
