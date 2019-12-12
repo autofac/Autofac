@@ -59,6 +59,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Builder\BuildCallbackServiceResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BuildCallbackServiceResources.resx</DependentUpon>
+    </Compile>
     <Compile Update="Builder\RegistrationBuilderResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -267,6 +272,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Builder\BuildCallbackServiceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BuildCallbackServiceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Builder\RegistrationBuilderResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RegistrationBuilderResources.Designer.cs</LastGenOutput>
