@@ -155,7 +155,8 @@ namespace Autofac.Builder
         /// </summary>
         /// <typeparam name="TService">Service type.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService>();
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService>()
+            where TService : notnull;
 
         /// <summary>
         /// Configure the services that the component will provide. The generic parameter(s) to As()
@@ -164,7 +165,9 @@ namespace Autofac.Builder
         /// <typeparam name="TService1">Service type.</typeparam>
         /// <typeparam name="TService2">Service type.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService1, TService2>();
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService1, TService2>()
+            where TService1 : notnull
+            where TService2 : notnull;
 
         /// <summary>
         /// Configure the services that the component will provide. The generic parameter(s) to As()
@@ -174,7 +177,10 @@ namespace Autofac.Builder
         /// <typeparam name="TService2">Service type.</typeparam>
         /// <typeparam name="TService3">Service type.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService1, TService2, TService3>();
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService1, TService2, TService3>()
+            where TService1 : notnull
+            where TService2 : notnull
+            where TService3 : notnull;
 
         /// <summary>
         /// Configure the services that the component will provide.
@@ -204,7 +210,8 @@ namespace Autofac.Builder
         /// <param name="serviceName">Named service to associate with the component.</param>
         /// <typeparam name="TService">The service type provided by the component.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Named<TService>(string serviceName);
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Named<TService>(string serviceName)
+            where TService : notnull;
 
         /// <summary>
         /// Provide a key that can be used to retrieve the component.
@@ -220,7 +227,8 @@ namespace Autofac.Builder
         /// <param name="serviceKey">Key to associate with the component.</param>
         /// <typeparam name="TService">The service type provided by the component.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Keyed<TService>(object serviceKey);
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Keyed<TService>(object serviceKey)
+            where TService : notnull;
 
         /// <summary>
         /// Add a handler for the Preparing event. This event allows manipulating of the parameters

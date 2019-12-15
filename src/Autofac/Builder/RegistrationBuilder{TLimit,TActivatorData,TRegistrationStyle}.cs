@@ -206,6 +206,7 @@ namespace Autofac.Builder
         /// <typeparam name="TService">Service type.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService>()
+            where TService : notnull
         {
             return As(new TypedService(typeof(TService)));
         }
@@ -218,6 +219,8 @@ namespace Autofac.Builder
         /// <typeparam name="TService2">Service type.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService1, TService2>()
+            where TService1 : notnull
+            where TService2 : notnull
         {
             return As(new TypedService(typeof(TService1)), new TypedService(typeof(TService2)));
         }
@@ -231,6 +234,9 @@ namespace Autofac.Builder
         /// <typeparam name="TService3">Service type.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService1, TService2, TService3>()
+            where TService1 : notnull
+            where TService2 : notnull
+            where TService3 : notnull
         {
             return As(new TypedService(typeof(TService1)), new TypedService(typeof(TService2)), new TypedService(typeof(TService3)));
         }
@@ -319,6 +325,7 @@ namespace Autofac.Builder
         /// <typeparam name="TService">The service type provided by the component.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Named<TService>(string serviceName)
+            where TService : notnull
         {
             return Named(serviceName, typeof(TService));
         }
@@ -344,6 +351,7 @@ namespace Autofac.Builder
         /// <typeparam name="TService">The service type provided by the component.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Keyed<TService>(object serviceKey)
+            where TService : notnull
         {
             return Keyed(serviceKey, typeof(TService));
         }
