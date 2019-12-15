@@ -191,5 +191,37 @@ namespace Autofac.Specification.Test
                        .RegisterBuildCallback(BuildCallback);
             }
         }
+
+        private class NestingModule : Module
+        {
+            public bool OuterBuildCallback { get; set; }
+
+            public bool InnerBuildCallback { get; set; }
+
+            protected override void Load(ContainerBuilder containerBuilder)
+            {
+                containerBuilder.RegisterBuildCallback(container =>
+                {
+                    OuterBuildCallback = true;
+                    var appScope = container.BeginLifetimeScope(nestedBuilder =>
+                    {
+                        nestedBuilder.RegisterBuildCallback((c) => {
+                            InnerBuildCallback = true;
+                        });
+                    });
+                });
+            }
+        }
+
+        [Fact]
+        public void CheckLifetimeScopeBuilderNestedInsideModule()
+        {
+            var builder = new ContainerBuilder();
+            var mod = new NestingModule();
+            builder.RegisterModule(mod);
+            builder.Build();
+            Assert.True(mod.OuterBuildCallback);
+            Assert.True(mod.InnerBuildCallback);
+        }
     }
 }
