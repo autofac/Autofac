@@ -34,7 +34,7 @@ namespace Autofac.Test.Compilation
             return this;
         }
 
-        public AutofacCompile AssertWarningEndsWith(string expectedWarning)
+        public AutofacCompile AssertWarningContainsKeywords(params string[] expectedKeyWords)
         {
             var messages = GetMessages();
             var warnings = messages.Where(x => x.Severity == DiagnosticSeverity.Warning).Select(x => x.GetMessage()).ToList();
@@ -43,7 +43,10 @@ namespace Autofac.Test.Compilation
 
             var firstWarning = warnings.First();
 
-            Assert.EndsWith(expectedWarning, firstWarning);
+            foreach (var expected in expectedKeyWords)
+            {
+                Assert.Contains(expected, firstWarning);
+            }
 
             return this;
         }

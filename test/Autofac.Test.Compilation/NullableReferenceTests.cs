@@ -3,20 +3,6 @@
 
 namespace Autofac.Test.Compilation
 {
-    public class SimpleReferenceType
-    {
-    }
-
-    public class BaseClass
-    {
-
-    }
-
-    public class DerivedClass : BaseClass
-    {
-
-    }
-
     public class NullableReferenceTests
     {
         [Fact]
@@ -29,14 +15,12 @@ namespace Autofac.Test.Compilation
                 
                    containerBuilder.Register<SimpleReferenceType?>(c => new SimpleReferenceType());
                 ")
-                .AssertWarningEndsWith("Nullability of type argument 'Autofac.Test.Compilation.SimpleReferenceType?' doesn't match 'notnull' constraint.");
+                .AssertWarningContainsKeywords("Autofac.Test.Compilation.SimpleReferenceType?", "notnull");
         }
 
         [Fact]
         public void NullableTypeNotAllowedForAsMethod()
         {
-            var containerBuilder = new ContainerBuilder();
-
             new AutofacCompile()
                 .Body(
                 @"
@@ -44,7 +28,7 @@ namespace Autofac.Test.Compilation
                 
                    containerBuilder.Register(c => new DerivedClass()).As<BaseClass?>();
                 ")
-                .AssertWarningEndsWith("Nullability of type argument 'Autofac.Test.Compilation.BaseClass?' doesn't match 'notnull' constraint.");
+                .AssertWarningContainsKeywords("Autofac.Test.Compilation.BaseClass?", "notnull");
         }
 
         [Fact]
@@ -57,7 +41,7 @@ namespace Autofac.Test.Compilation
                 
                    containerBuilder.Register(c => new DerivedClass()).Named<BaseClass?>(""name"");
                 ")
-                .AssertWarningEndsWith("Nullability of type argument 'Autofac.Test.Compilation.BaseClass?' doesn't match 'notnull' constraint.");
+                .AssertWarningContainsKeywords("Autofac.Test.Compilation.BaseClass?", "notnull");
         }
 
         [Fact]
@@ -70,7 +54,7 @@ namespace Autofac.Test.Compilation
                 
                    containerBuilder.Register(c => new DerivedClass()).Keyed<BaseClass?>(""name"");
                 ")
-                .AssertWarningEndsWith("Nullability of type argument 'Autofac.Test.Compilation.BaseClass?' doesn't match 'notnull' constraint.");
+                .AssertWarningContainsKeywords("Autofac.Test.Compilation.BaseClass?", "notnull");
         }
 
         [Fact]
@@ -83,7 +67,7 @@ namespace Autofac.Test.Compilation
                 
                    containerBuilder.Register<int?>(c => 1);
                 ")
-                .AssertWarningEndsWith("Nullability of type argument 'int?' doesn't match 'notnull' constraint.");
+                .AssertWarningContainsKeywords("int?", "notnull");
         }
 
         [Fact]
@@ -97,6 +81,23 @@ namespace Autofac.Test.Compilation
                    containerBuilder.Register(c => new SimpleReferenceType());
                 ")
                 .AssertNoWarnings();
+        }
+
+        [Fact]
+        public void TryResolveGeneratesNullWarning()
+        {
+            new AutofacCompile()
+                .Body(
+                @"
+                    var containerBuilder = new ContainerBuilder();
+
+                    var container = containerBuilder.Build();
+
+                    container.TryResolve<SimpleReferenceType>(out var simpleType);
+
+                    simpleType.ToString();
+                ")
+                .AssertWarningContainsKeywords("null");
         }
     }
 }
