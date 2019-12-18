@@ -196,6 +196,7 @@ namespace Autofac
         /// <typeparam name="TService">The service to test for the registration of.</typeparam>
         /// <returns>True if the service is registered.</returns>
         public static bool IsRegistered<TService>(this IComponentContext context)
+            where TService : notnull
         {
             return IsRegistered(context, typeof(TService));
         }
@@ -240,6 +241,7 @@ namespace Autofac
         /// <typeparam name="TService">Type type of the service to test for the registration of.</typeparam>
         /// <returns>True if the service is registered.</returns>
         public static bool IsRegisteredWithKey<TService>(this IComponentContext context, object serviceKey)
+            where TService : notnull
         {
             return IsRegisteredWithKey(context, serviceKey, typeof(TService));
         }
@@ -264,6 +266,7 @@ namespace Autofac
         /// <typeparam name="TService">Type type of the service to test for the registration of.</typeparam>
         /// <returns>True if the service is registered.</returns>
         public static bool IsRegisteredWithName<TService>(this IComponentContext context, string serviceName)
+            where TService : notnull
         {
             return IsRegisteredWithKey<TService>(context, serviceName);
         }
@@ -289,6 +292,7 @@ namespace Autofac
         /// <exception cref="ComponentNotRegisteredException" />
         /// <exception cref="DependencyResolutionException" />
         public static TService Resolve<TService>(this IComponentContext context)
+            where TService : notnull
         {
             return Resolve<TService>(context, NoParameters);
         }
@@ -305,6 +309,7 @@ namespace Autofac
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
         public static TService Resolve<TService>(this IComponentContext context, IEnumerable<Parameter> parameters)
+            where TService : notnull
         {
             return (TService)Resolve(context, typeof(TService), parameters);
         }
@@ -321,6 +326,7 @@ namespace Autofac
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
         public static TService Resolve<TService>(this IComponentContext context, params Parameter[] parameters)
+            where TService : notnull
         {
             return context.Resolve<TService>((IEnumerable<Parameter>)parameters);
         }
@@ -384,6 +390,7 @@ namespace Autofac
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
         public static TService ResolveKeyed<TService>(this IComponentContext context, object serviceKey)
+            where TService : notnull
         {
             return ResolveKeyed<TService>(context, serviceKey, NoParameters);
         }
@@ -401,6 +408,7 @@ namespace Autofac
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
         public static TService ResolveKeyed<TService>(this IComponentContext context, object serviceKey, IEnumerable<Parameter> parameters)
+            where TService : notnull
         {
             return (TService)ResolveService(context, new KeyedService(serviceKey, typeof(TService)), parameters);
         }
@@ -418,6 +426,7 @@ namespace Autofac
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
         public static TService ResolveKeyed<TService>(this IComponentContext context, object serviceKey, params Parameter[] parameters)
+            where TService : notnull
         {
             return context.ResolveKeyed<TService>(serviceKey, (IEnumerable<Parameter>)parameters);
         }
@@ -484,6 +493,7 @@ namespace Autofac
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
         public static TService ResolveNamed<TService>(this IComponentContext context, string serviceName)
+            where TService : notnull
         {
             return ResolveNamed<TService>(context, serviceName, NoParameters);
         }
@@ -501,6 +511,7 @@ namespace Autofac
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
         public static TService ResolveNamed<TService>(this IComponentContext context, string serviceName, IEnumerable<Parameter> parameters)
+            where TService : notnull
         {
             return (TService)ResolveService(context, new KeyedService(serviceName, typeof(TService)), parameters);
         }
@@ -518,6 +529,7 @@ namespace Autofac
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
         public static TService ResolveNamed<TService>(this IComponentContext context, string serviceName, params Parameter[] parameters)
+            where TService : notnull
         {
             return context.ResolveNamed<TService>(serviceName, (IEnumerable<Parameter>)parameters);
         }
