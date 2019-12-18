@@ -36,6 +36,7 @@ namespace Autofac.Features.LightweightAdapters
             RegisterAdapter<TFrom, TTo>(
                 ContainerBuilder builder,
                 Func<IComponentContext, IEnumerable<Parameter>, TFrom, TTo> adapter)
+            where TTo : notnull
         {
             return RegisterAdapter(builder, adapter, new TypedService(typeof(TFrom)), new TypedService(typeof(TTo)));
         }
@@ -45,12 +46,13 @@ namespace Autofac.Features.LightweightAdapters
                 ContainerBuilder builder,
                 Func<IComponentContext, IEnumerable<Parameter>, TService, TService> decorator,
                 object fromKey,
-                object toKey)
+                object? toKey)
+            where TService : notnull
         {
             return RegisterAdapter(builder, decorator, ServiceWithKey<TService>(fromKey), ServiceWithKey<TService>(toKey));
         }
 
-        private static Service ServiceWithKey<TService>(object key)
+        private static Service ServiceWithKey<TService>(object? key)
         {
             if (key == null)
                 return new TypedService(typeof(TService));
@@ -63,6 +65,7 @@ namespace Autofac.Features.LightweightAdapters
                 Func<IComponentContext, IEnumerable<Parameter>, TFrom, TTo> adapter,
                 Service fromService,
                 Service toService)
+            where TTo : notnull
         {
             var rb = new RegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>(
                 toService,

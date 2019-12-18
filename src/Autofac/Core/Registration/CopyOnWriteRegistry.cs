@@ -42,13 +42,13 @@ namespace Autofac.Core.Registration
     {
         private readonly IComponentRegistry _readRegistry;
         private readonly Func<IComponentRegistry> _createWriteRegistry;
-        private IComponentRegistry _writeRegistry;
+        private IComponentRegistry? _writeRegistry;
 
         public CopyOnWriteRegistry(IComponentRegistry readRegistry, Func<IComponentRegistry> createWriteRegistry)
         {
             _readRegistry = readRegistry ?? throw new ArgumentNullException(nameof(readRegistry));
             _createWriteRegistry = createWriteRegistry ?? throw new ArgumentNullException(nameof(createWriteRegistry));
-            Properties = new FallbackDictionary<string, object>(readRegistry.Properties);
+            Properties = new FallbackDictionary<string, object?>(readRegistry.Properties);
         }
 
         private IComponentRegistry Registry => _writeRegistry ?? _readRegistry;
@@ -62,7 +62,7 @@ namespace Autofac.Core.Registration
         /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
         /// context across registrations.
         /// </value>
-        public IDictionary<string, object> Properties { get; set; }
+        public IDictionary<string, object?> Properties { get; set; }
 
         public void Dispose()
         {
@@ -80,7 +80,7 @@ namespace Autofac.Core.Registration
             }
         }
 
-        public bool TryGetRegistration(Service service, out IComponentRegistration registration)
+        public bool TryGetRegistration(Service service, [NotNullWhen(returnValue: true)] out IComponentRegistration? registration)
         {
             return Registry.TryGetRegistration(service, out registration);
         }

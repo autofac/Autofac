@@ -63,7 +63,7 @@ namespace Autofac
     public class ContainerBuilder
     {
         private readonly IList<DeferredCallback> _configurationCallbacks = new List<DeferredCallback>();
-        private BuildCallbackService _buildCallbacks;
+        private BuildCallbackService? _buildCallbacks;
 
         private bool _wasBuilt;
 
@@ -71,7 +71,7 @@ namespace Autofac
         /// Initializes a new instance of the <see cref="ContainerBuilder"/> class.
         /// </summary>
         public ContainerBuilder()
-            : this(new Dictionary<string, object>())
+            : this(new Dictionary<string, object?>())
         {
         }
 
@@ -79,7 +79,7 @@ namespace Autofac
         /// Initializes a new instance of the <see cref="ContainerBuilder"/> class.
         /// </summary>
         /// <param name="properties">The properties used during component registration.</param>
-        internal ContainerBuilder(IDictionary<string, object> properties)
+        internal ContainerBuilder(IDictionary<string, object?> properties)
         {
             Properties = properties;
         }
@@ -91,7 +91,7 @@ namespace Autofac
         /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
         /// context across registrations.
         /// </value>
-        public IDictionary<string, object> Properties { get; }
+        public IDictionary<string, object?> Properties { get; }
 
         /// <summary>
         /// Register a callback that will be invoked when the container is configured.

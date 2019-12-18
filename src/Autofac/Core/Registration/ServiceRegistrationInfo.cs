@@ -51,21 +51,21 @@ namespace Autofac.Core.Registration
         ///  List of service implementations coming from sources. Sources have priority over preserve-default implementations.
         ///  Implementations from sources are enumerated in preserve-default order, so the most default implementation comes first.
         /// </summary>
-        private List<IComponentRegistration> _sourceImplementations = null;
+        private List<IComponentRegistration>? _sourceImplementations = null;
 
         /// <summary>
         ///  List of explicit service implementations specified with the PreserveExistingDefaults option.
         ///  Enumerated in preserve-defaults order, so the most default implementation comes first.
         /// </summary>
-        private List<IComponentRegistration> _preserveDefaultImplementations = null;
+        private List<IComponentRegistration>? _preserveDefaultImplementations = null;
 
         [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the compponent registration is responsible for disposal.")]
-        private IComponentRegistration _defaultImplementation;
+        private IComponentRegistration? _defaultImplementation;
 
         /// <summary>
         /// Used for bookkeeping so that the same source is not queried twice (may be null).
         /// </summary>
-        private Queue<IRegistrationSource> _sourcesToQuery;
+        private Queue<IRegistrationSource>? _sourcesToQuery;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceRegistrationInfo"/> class.
@@ -168,7 +168,7 @@ namespace Autofac.Core.Registration
             _defaultImplementation = null;
         }
 
-        public bool TryGetRegistration(out IComponentRegistration registration)
+        public bool TryGetRegistration([NotNullWhen(returnValue: true)] out IComponentRegistration? registration)
         {
             RequiresInitialization();
 
@@ -183,14 +183,19 @@ namespace Autofac.Core.Registration
         public void Include(IRegistrationSource source)
         {
             if (IsInitialized)
+            {
                 BeginInitialization(new[] { source });
+            }
             else if (IsInitializing)
-                _sourcesToQuery.Enqueue(source);
+            {
+                // _sourcesToQuery can only be non-null here due to the initialization flow.
+                _sourcesToQuery!.Enqueue(source);
+            }
         }
 
         public bool IsInitializing => !IsInitialized && _sourcesToQuery != null;
 
-        public bool HasSourcesToQuery => IsInitializing && _sourcesToQuery.Count != 0;
+        public bool HasSourcesToQuery => IsInitializing && _sourcesToQuery!.Count != 0;
 
         public void BeginInitialization(IEnumerable<IRegistrationSource> sources)
         {
@@ -216,7 +221,8 @@ namespace Autofac.Core.Registration
         {
             EnforceDuringInitialization();
 
-            return _sourcesToQuery.Dequeue();
+            // _sourcesToQuery always non-null during initialization
+            return _sourcesToQuery!.Dequeue();
         }
 
         public void CompleteInitialization()

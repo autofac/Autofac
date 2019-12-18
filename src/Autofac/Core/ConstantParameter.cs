@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace Autofac.Core
@@ -38,7 +39,7 @@ namespace Autofac.Core
         /// <summary>
         /// Gets the value of the parameter.
         /// </summary>
-        public object Value { get; }
+        public object? Value { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConstantParameter"/> class.
@@ -49,7 +50,7 @@ namespace Autofac.Core
         /// <param name="predicate">
         /// A predicate used to locate the parameter that should be populated by the constant.
         /// </param>
-        protected ConstantParameter(object value, Predicate<ParameterInfo> predicate)
+        protected ConstantParameter(object? value, Predicate<ParameterInfo> predicate)
         {
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
@@ -66,7 +67,7 @@ namespace Autofac.Core
         /// be set to a function that will lazily retrieve the parameter value. If the result is false,
         /// will be set to null.</param>
         /// <returns>True if a value can be supplied; otherwise, false.</returns>
-        public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<object> valueProvider)
+        public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, [NotNullWhen(returnValue: true)] out Func<object?>? valueProvider)
         {
             if (pi == null) throw new ArgumentNullException(nameof(pi));
             if (context == null) throw new ArgumentNullException(nameof(context));

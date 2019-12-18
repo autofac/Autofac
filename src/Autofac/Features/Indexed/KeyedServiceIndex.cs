@@ -29,6 +29,7 @@ using Autofac.Core;
 namespace Autofac.Features.Indexed
 {
     internal class KeyedServiceIndex<TKey, TValue> : IIndex<TKey, TValue>
+        where TKey : notnull
     {
         private readonly IComponentContext _context;
 
@@ -43,14 +44,13 @@ namespace Autofac.Features.Indexed
 
         public bool TryGetValue(TKey key, out TValue value)
         {
-            object result;
-            if (_context.TryResolveService(GetService(key), out result))
+            if (_context.TryResolveService(GetService(key), out var result))
             {
                 value = (TValue)result;
                 return true;
             }
 
-            value = default(TValue);
+            value = default!;
             return false;
         }
 
