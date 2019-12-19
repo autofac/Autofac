@@ -68,8 +68,9 @@ namespace Autofac.Core.Lifetime
         /// <param name="componentRegistry">Components used in the scope.</param>
         /// <param name="parent">Parent scope.</param>
         protected LifetimeScope(IComponentRegistry componentRegistry, LifetimeScope parent, object tag)
-            : this(parent)
+            : base(parent)
         {
+            _sharedInstances[SelfRegistrationId] = this;
             ComponentRegistry = componentRegistry ?? throw new ArgumentNullException(nameof(componentRegistry));
             Tag = tag ?? throw new ArgumentNullException(nameof(tag));
             ParentLifetimeScope = parent ?? throw new ArgumentNullException(nameof(parent));

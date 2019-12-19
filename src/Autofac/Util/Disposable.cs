@@ -37,7 +37,7 @@ namespace Autofac.Util
     {
         private const int DisposedFlag = 1;
         private int _isDisposed;
-        private Disposable _parentDisposable;
+        private Disposable? _parentDisposable;
 
         public Disposable()
         {
