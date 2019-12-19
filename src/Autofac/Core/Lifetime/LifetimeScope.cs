@@ -68,8 +68,10 @@ namespace Autofac.Core.Lifetime
         /// <param name="componentRegistry">Components used in the scope.</param>
         /// <param name="parent">Parent scope.</param>
         protected LifetimeScope(IComponentRegistry componentRegistry, LifetimeScope parent, object tag)
-            : this(componentRegistry, tag)
+            : this(parent)
         {
+            ComponentRegistry = componentRegistry ?? throw new ArgumentNullException(nameof(componentRegistry));
+            Tag = tag ?? throw new ArgumentNullException(nameof(tag));
             ParentLifetimeScope = parent ?? throw new ArgumentNullException(nameof(parent));
             RootLifetimeScope = ParentLifetimeScope.RootLifetimeScope;
         }
@@ -384,7 +386,7 @@ namespace Autofac.Core.Lifetime
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void CheckNotDisposed()
         {
-            if (IsDisposed)
+            if (IsTreeDisposed())
                 throw new ObjectDisposedException(LifetimeScopeResources.ScopeIsDisposed, innerException: null);
         }
 

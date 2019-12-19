@@ -146,6 +146,62 @@ namespace Autofac.Specification.Test.Lifetime
             Assert.True(rootInstance.IsDisposed);
         }
 
+        [Fact]
+        public void DisposalOfContainerPreventsResolveInLifetimeScope()
+        {
+            var containerBuilder = new ContainerBuilder();
+            containerBuilder.Register(c => 1);
+
+            var container = containerBuilder.Build();
+
+            var scope = container.BeginLifetimeScope();
+
+            container.Dispose();
+
+            Assert.Throws<ObjectDisposedException>(() =>
+            {
+                scope.Resolve<int>();
+            });
+        }
+
+        [Fact]
+        public void DisposalOfParentScopePreventsResolveInNestedScope()
+        {
+            var containerBuilder = new ContainerBuilder();
+            containerBuilder.Register(c => 1);
+
+            var container = containerBuilder.Build();
+
+            var outerScope = container.BeginLifetimeScope();
+            var innerScope = outerScope.BeginLifetimeScope();
+
+            outerScope.Dispose();
+
+            Assert.Throws<ObjectDisposedException>(() =>
+            {
+                innerScope.Resolve<int>();
+            });
+        }
+
+        [Fact]
+        public void DisposalOfContainerPreventsResolveInNestedScope()
+        {
+            var containerBuilder = new ContainerBuilder();
+            containerBuilder.Register(c => 1);
+
+            var container = containerBuilder.Build();
+
+            var outerScope = container.BeginLifetimeScope();
+            var innerScope = outerScope.BeginLifetimeScope();
+
+            container.Dispose();
+
+            Assert.Throws<ObjectDisposedException>(() =>
+            {
+                innerScope.Resolve<int>();
+            });
+        }
+
         private class A : DisposeTracker
         {
         }
