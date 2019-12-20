@@ -50,6 +50,7 @@ namespace Autofac.Core.Lifetime
         private readonly object _synchRoot = new object();
         private readonly ConcurrentDictionary<Guid, object> _sharedInstances = new ConcurrentDictionary<Guid, object>();
         private object? _anonymousTag;
+        private LifetimeScope? parentScope;
 
         internal static Guid SelfRegistrationId { get; } = Guid.NewGuid();
 
@@ -68,13 +69,12 @@ namespace Autofac.Core.Lifetime
         /// <param name="componentRegistry">Components used in the scope.</param>
         /// <param name="parent">Parent scope.</param>
         protected LifetimeScope(IComponentRegistry componentRegistry, LifetimeScope parent, object tag)
-            : base(parent)
         {
             _sharedInstances[SelfRegistrationId] = this;
             ComponentRegistry = componentRegistry ?? throw new ArgumentNullException(nameof(componentRegistry));
             Tag = tag ?? throw new ArgumentNullException(nameof(tag));
-            ParentLifetimeScope = parent ?? throw new ArgumentNullException(nameof(parent));
-            RootLifetimeScope = ParentLifetimeScope.RootLifetimeScope;
+            parentScope = parent ?? throw new ArgumentNullException(nameof(parent));
+            RootLifetimeScope = parentScope.RootLifetimeScope;
         }
 
         /// <summary>
@@ -284,7 +284,7 @@ namespace Autofac.Core.Lifetime
         /// <summary>
         /// Gets the parent of this node of the hierarchy, or null.
         /// </summary>
-        public ISharingLifetimeScope? ParentLifetimeScope { get; }
+        public ISharingLifetimeScope? ParentLifetimeScope => parentScope;
 
         /// <summary>
         /// Gets the root of the sharing hierarchy.
@@ -357,6 +357,7 @@ namespace Autofac.Core.Lifetime
 
                 // ReSharper disable once InconsistentlySynchronizedField
                 _sharedInstances.Clear();
+                parentScope = null;
             }
 
             base.Dispose(disposing);
@@ -379,6 +380,7 @@ namespace Autofac.Core.Lifetime
 
                 // ReSharper disable once InconsistentlySynchronizedField
                 _sharedInstances.Clear();
+                parentScope = null;
             }
 
             // Don't call the base (which would just call the normal Dispose).
@@ -389,6 +391,16 @@ namespace Autofac.Core.Lifetime
         {
             if (IsTreeDisposed())
                 throw new ObjectDisposedException(LifetimeScopeResources.ScopeIsDisposed, innerException: null);
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this or any of the parent disposables have been disposed.
+        /// </summary>
+        /// <returns>true if this instance of any of the parent instances have been disposed.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool IsTreeDisposed()
+        {
+            return IsDisposed || (parentScope is object && parentScope.IsTreeDisposed());
         }
 
         /// <summary>

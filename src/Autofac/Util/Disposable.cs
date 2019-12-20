@@ -37,16 +37,6 @@ namespace Autofac.Util
     {
         private const int DisposedFlag = 1;
         private int _isDisposed;
-        private Disposable? _parentDisposable;
-
-        public Disposable()
-        {
-        }
-
-        public Disposable(Disposable parentDisposable)
-        {
-            _parentDisposable = parentDisposable;
-        }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -80,16 +70,6 @@ namespace Autofac.Util
                 Interlocked.MemoryBarrier();
                 return _isDisposed == DisposedFlag;
             }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether this or any of the parent disposables have been disposed.
-        /// </summary>
-        /// <returns>true if this instance of any of the parent instances have been disposed.</returns>
-        protected bool IsTreeDisposed()
-        {
-            Interlocked.MemoryBarrier();
-            return _isDisposed == DisposedFlag || (_parentDisposable != null && _parentDisposable.IsTreeDisposed());
         }
 
         [SuppressMessage(
