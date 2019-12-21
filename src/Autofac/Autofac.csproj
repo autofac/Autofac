@@ -43,7 +43,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\build\icon.png" Pack="true" PackagePath="\"/>
+    <None Include="..\..\build\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,7 +53,7 @@
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-62925-02" Condition="Exists('$(MSBuildThisFileDirectory)../../.git')">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" Condition="Exists('$(MSBuildThisFileDirectory)../../.git')">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.113">
@@ -62,7 +62,7 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'net461' ">
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.1.0-preview1.19504.10" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
