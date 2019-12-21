@@ -70,7 +70,7 @@ namespace Autofac
         /// </summary>
         /// <param name="type">The exact type to match.</param>
         /// <param name="value">The parameter value.</param>
-        public TypedParameter(Type type, object value)
+        public TypedParameter(Type type, object? value)
             : base(value, pi => pi.ParameterType == type)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));

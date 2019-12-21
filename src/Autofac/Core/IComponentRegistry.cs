@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Autofac.Core
 {
@@ -40,7 +41,7 @@ namespace Autofac.Core
         /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
         /// context across registrations.
         /// </value>
-        IDictionary<string, object> Properties { get; }
+        IDictionary<string, object?> Properties { get; }
 
         /// <summary>
         /// Gets the set of registered components.
@@ -67,7 +68,7 @@ namespace Autofac.Core
         /// <param name="service">The service to look up.</param>
         /// <param name="registration">The default registration for the service.</param>
         /// <returns>True if a registration exists.</returns>
-        bool TryGetRegistration(Service service, out IComponentRegistration registration);
+        bool TryGetRegistration(Service service, [NotNullWhen(returnValue: true)] out IComponentRegistration registration);
 
         /// <summary>
         /// Determines whether the specified service is registered.

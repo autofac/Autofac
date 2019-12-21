@@ -105,6 +105,8 @@ namespace Autofac.Features.AttributeFilters
 
         private static readonly MethodInfo FilterAllMethod = typeof(MetadataFilterAttribute).GetTypeInfo().GetDeclaredMethod(nameof(FilterAll));
 
+        private static readonly MethodInfo CanResolveMethod = typeof(MetadataFilterAttribute).GetTypeInfo().GetDeclaredMethod(nameof(CanResolve));
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MetadataFilterAttribute"/> class.
         /// </summary>
@@ -165,6 +167,26 @@ namespace Autofac.Features.AttributeFilters
                 : FilterOneMethod.MakeGenericMethod(elementType).Invoke(null, new[] { context, Key, Value });
         }
 
+        /// <summary>
+        /// Checks a constructor parameter can be resolved based on metadata requirements.
+        /// </summary>
+        /// <param name="parameter">The specific parameter being resolved that is marked with this attribute.</param>
+        /// <param name="context">The component context under which the parameter is being resolved.</param>
+        /// <returns>true if parameter can be resolved; otherwise, false.</returns>
+        public override bool CanResolveParameter(ParameterInfo parameter, IComponentContext context)
+        {
+            if (parameter == null) throw new ArgumentNullException(nameof(parameter));
+            if (context == null) throw new ArgumentNullException(nameof(context));
+
+            // GetElementType currently is the effective equivalent of "Determine if the type
+            // is in IEnumerable and if it is, get the type being enumerated." This doesn't support
+            // the other relationship types like Lazy<T>, Func<T>, etc. If we need to add that,
+            // this is the place to do it.
+            var elementType = GetElementType(parameter.ParameterType);
+
+            return (bool)CanResolveMethod.MakeGenericMethod(elementType).Invoke(null, new[] { context, Key, Value });
+        }
+
         private static Type GetElementType(Type type)
         {
             return type.IsGenericEnumerableInterfaceType() ? type.GetTypeInfo().GenericTypeArguments[0] : type;
@@ -186,6 +208,13 @@ namespace Autofac.Features.AttributeFilters
                 .Where(m => m.Metadata.ContainsKey(metadataKey) && metadataValue.Equals(m.Metadata[metadataKey]))
                 .Select(m => m.Value.Value)
                 .ToArray();
+        }
+
+        private static bool CanResolve<T>(IComponentContext context, string metadataKey, object metadataValue)
+        {
+            // Using Lazy<T> to ensure components that aren't actually used won't get activated.
+            return context.Resolve<IEnumerable<Meta<Lazy<T>>>>()
+                .Any(m => m.Metadata.ContainsKey(metadataKey) && metadataValue.Equals(m.Metadata[metadataKey]));
         }
     }
 }

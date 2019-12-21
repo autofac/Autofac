@@ -180,10 +180,12 @@ namespace Autofac.Features.Scanning
                 var impl = rb.ActivatorData.ImplementationType;
                 var applied = mapped.Where(s =>
                     {
-                        var c = s as IServiceWithType;
-                        return
-                            (c == null && s != null) || // s is not an IServiceWithType
-                            c.ServiceType.GetTypeInfo().IsAssignableFrom(impl.GetTypeInfo());
+                        if (s is IServiceWithType c)
+                        {
+                            return c.ServiceType.GetTypeInfo().IsAssignableFrom(impl.GetTypeInfo());
+                        }
+
+                        return s != null;
                     });
                 rb.As(applied.ToArray());
             });

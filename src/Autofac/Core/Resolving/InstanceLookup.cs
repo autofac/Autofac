@@ -41,7 +41,7 @@ namespace Autofac.Core.Resolving
         private readonly IResolveOperation _context;
         private readonly ISharingLifetimeScope _activationScope;
         private readonly Service _service;
-        private object _newInstance;
+        private object? _newInstance;
         private bool _executed;
         private const string ActivatorChainExceptionData = "ActivatorChain";
 
@@ -80,7 +80,7 @@ namespace Autofac.Core.Resolving
 
             _executed = true;
 
-            object decoratorTarget = null;
+            object? decoratorTarget = null;
             object instance = ComponentRegistration.Sharing == InstanceSharing.None
                 ? Activate(Parameters, out decoratorTarget)
                 : _activationScope.GetOrCreateAndShare(ComponentRegistration.Id, () => Activate(Parameters, out decoratorTarget));
@@ -93,7 +93,7 @@ namespace Autofac.Core.Resolving
             return instance;
         }
 
-        private void StartStartableComponent(object instance)
+        private void StartStartableComponent(object? instance)
         {
             if (instance is IStartable startable
                 && ComponentRegistration.Services.Any(s => (s is TypedService typed) && typed.ServiceType == typeof(IStartable))
@@ -121,6 +121,8 @@ namespace Autofac.Core.Resolving
             {
                 decoratorTarget = _newInstance = ComponentRegistration.Activator.ActivateInstance(this, resolveParameters);
 
+                ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance);
+
                 _newInstance = InstanceDecorator.TryDecorateRegistration(
                     _service,
                     ComponentRegistration,
@@ -144,10 +146,17 @@ namespace Autofac.Core.Resolving
                 // instance once the instance has been activated - assuming that it will be
                 // done during the lifetime scope's Disposer executing.
                 if (decoratorTarget is IDisposable instanceAsDisposable)
+                {
                     _activationScope.Disposer.AddInstanceForDisposal(instanceAsDisposable);
+                }
+                else if (decoratorTarget is IAsyncDisposable asyncDisposableInstance)
+                {
+                    _activationScope.Disposer.AddInstanceForAsyncDisposal(asyncDisposableInstance);
+                }
             }
 
-            ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance);
+            if (_newInstance != decoratorTarget)
+                ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance);
 
             return _newInstance;
         }
@@ -176,7 +185,9 @@ namespace Autofac.Core.Resolving
             var beginningHandler = CompletionBeginning;
             beginningHandler?.Invoke(this, new InstanceLookupCompletionBeginningEventArgs(this));
 
-            ComponentRegistration.RaiseActivated(this, Parameters, _newInstance);
+            // _newInstance will definitely have been instantiated by the time
+            // this is called.
+            ComponentRegistration.RaiseActivated(this, Parameters, _newInstance!);
 
             var endingHandler = CompletionEnding;
             endingHandler?.Invoke(this, new InstanceLookupCompletionEndingEventArgs(this));
@@ -195,10 +206,10 @@ namespace Autofac.Core.Resolving
 
         public IEnumerable<Parameter> Parameters { get; }
 
-        public event EventHandler<InstanceLookupEndingEventArgs> InstanceLookupEnding;
+        public event EventHandler<InstanceLookupEndingEventArgs>? InstanceLookupEnding;
 
-        public event EventHandler<InstanceLookupCompletionBeginningEventArgs> CompletionBeginning;
+        public event EventHandler<InstanceLookupCompletionBeginningEventArgs>? CompletionBeginning;
 
-        public event EventHandler<InstanceLookupCompletionEndingEventArgs> CompletionEnding;
+        public event EventHandler<InstanceLookupCompletionEndingEventArgs>? CompletionEnding;
     }
 }

@@ -152,7 +152,6 @@ namespace Autofac.Specification.Test.Features
             Assert.IsType<ImplementorA>(decoratedService.Decorated);
         }
 
-#if NETCOREAPP2_1
         [Fact]
         public void CanResolveDecoratorWithLazyWithMetadata()
         {
@@ -168,7 +167,6 @@ namespace Autofac.Specification.Test.Features
             Assert.IsType<ImplementorA>(decoratedService.Decorated);
             Assert.Equal(123, meta.Metadata.A);
         }
-#endif
 
         [Fact]
         public void CanResolveDecoratorWithOwned()

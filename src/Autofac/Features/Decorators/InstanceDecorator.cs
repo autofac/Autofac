@@ -51,18 +51,29 @@ namespace Autofac.Features.Decorators
 
             var instanceType = instance.GetType();
             var decoratorContext = DecoratorContext.Create(instanceType, serviceType, instance);
+            var decoratorCount = decoratorRegistrations.Count;
 
-            foreach (var decoratorRegistration in decoratorRegistrations)
+            for (var index = 0; index < decoratorCount; index++)
             {
+                var decoratorRegistration = decoratorRegistrations[index];
                 var decoratorService = decoratorRegistration.Services.OfType<DecoratorService>().First();
                 if (!decoratorService.Condition(decoratorContext)) continue;
 
                 var serviceParameter = new TypedParameter(serviceType, instance);
                 var contextParameter = new TypedParameter(typeof(IDecoratorContext), decoratorContext);
-                var invokeParameters = resolveParameters.Concat(new Parameter[] { serviceParameter, contextParameter });
-                instance = context.ResolveComponent(new ResolveRequest(decoratorService, decoratorRegistration, invokeParameters));
 
-                decoratorContext = decoratorContext.UpdateContext(instance);
+                var invokeParameters = new Parameter[resolveParameters.Length + 2];
+                for (var i = 0; i < resolveParameters.Length; i++)
+                    invokeParameters[i] = resolveParameters[i];
+
+                invokeParameters[invokeParameters.Length - 2] = serviceParameter;
+                invokeParameters[invokeParameters.Length - 1] = contextParameter;
+
+                var resolveRequest = new ResolveRequest(decoratorService, decoratorRegistration, invokeParameters);
+                instance = context.ResolveComponent(resolveRequest);
+
+                if (index < decoratorCount - 1)
+                    decoratorContext = decoratorContext.UpdateContext(instance);
             }
 
             return instance;

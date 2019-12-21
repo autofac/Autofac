@@ -37,7 +37,10 @@ namespace Autofac.Core.Resolving
     internal class ResolveOperation : IComponentContext, IResolveOperation
     {
         private readonly Stack<InstanceLookup> _activationStack = new Stack<InstanceLookup>();
-        private List<InstanceLookup> _successfulActivations;
+
+        // _successfulActivations can never be null, but the roslyn compiler doesn't look deeper than
+        // the initial constructor methods yet.
+        private List<InstanceLookup> _successfulActivations = default!;
         private readonly ISharingLifetimeScope _mostNestedLifetimeScope;
         private int _callDepth;
         private bool _ended;
@@ -50,6 +53,8 @@ namespace Autofac.Core.Resolving
         public ResolveOperation(ISharingLifetimeScope mostNestedLifetimeScope)
         {
             _mostNestedLifetimeScope = mostNestedLifetimeScope;
+
+            // Initialise _successfulActivations.
             ResetSuccessfulActivations();
         }
 
@@ -137,9 +142,9 @@ namespace Autofac.Core.Resolving
             }
         }
 
-        public event EventHandler<ResolveOperationEndingEventArgs> CurrentOperationEnding;
+        public event EventHandler<ResolveOperationEndingEventArgs>? CurrentOperationEnding;
 
-        public event EventHandler<InstanceLookupBeginningEventArgs> InstanceLookupBeginning;
+        public event EventHandler<InstanceLookupBeginningEventArgs>? InstanceLookupBeginning;
 
         private void CompleteActivations()
         {
@@ -163,7 +168,7 @@ namespace Autofac.Core.Resolving
         /// </summary>
         public IComponentRegistry ComponentRegistry => _mostNestedLifetimeScope.ComponentRegistry;
 
-        private void End(Exception exception = null)
+        private void End(Exception? exception = null)
         {
             if (_ended) return;
 

@@ -166,6 +166,20 @@ namespace Autofac.Core
             base.Dispose(disposing);
         }
 
+        protected override async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                await _rootLifetimeScope.DisposeAsync();
+
+                // Registries are not likely to have async tasks to dispose of,
+                // so we will leave it as a straight dispose.
+                ComponentRegistry.Dispose();
+            }
+
+            // Do not call the base, otherwise the standard Dispose will fire.
+        }
+
         /// <summary>
         /// Gets the service object of the specified type.
         /// </summary>

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Autofac.Core;
 using Autofac.Core.Registration;
 using Autofac.Test.Scenarios.Parameterisation;
+using Autofac.Test.Util;
 using Xunit;
 
 namespace Autofac.Test.Core
@@ -178,6 +180,26 @@ namespace Autofac.Test.Core
             {
                 container.Resolve<ReplaceableComponent>();
             }
+        }
+
+        [Fact]
+        public async ValueTask AsyncContainerDisposeTriggersAsyncServiceDispose()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(c => new AsyncDisposeTracker()).SingleInstance();
+
+            AsyncDisposeTracker tracker;
+
+            await using (var container = builder.Build())
+            {
+                tracker = container.Resolve<AsyncDisposeTracker>();
+
+                Assert.False(tracker.IsSyncDisposed);
+                Assert.False(tracker.IsAsyncDisposed);
+            }
+
+            Assert.False(tracker.IsSyncDisposed);
+            Assert.True(tracker.IsAsyncDisposed);
         }
 
         private class ReplaceInstanceModule : Module

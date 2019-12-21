@@ -59,8 +59,8 @@ namespace Autofac.Features.OpenGenerics
             if (service == null) throw new ArgumentNullException(nameof(service));
             if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
 
-            Type constructedImplementationType;
-            Service[] services;
+            Type? constructedImplementationType;
+            Service[]? services;
             if (OpenGenericServiceBinder.TryBindServiceType(service, _registrationData.Services, _activatorData.ImplementationType, out constructedImplementationType, out services))
             {
                 var swt = (IServiceWithType)service;

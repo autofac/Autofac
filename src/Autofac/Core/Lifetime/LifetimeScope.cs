@@ -28,8 +28,8 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Autofac.Builder;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
@@ -49,6 +49,7 @@ namespace Autofac.Core.Lifetime
         /// </summary>
         private readonly object _synchRoot = new object();
         private readonly ConcurrentDictionary<Guid, object> _sharedInstances = new ConcurrentDictionary<Guid, object>();
+        private object? _anonymousTag;
 
         internal static Guid SelfRegistrationId { get; } = Guid.NewGuid();
 
@@ -57,15 +58,8 @@ namespace Autofac.Core.Lifetime
         /// </summary>
         public static readonly object RootTag = "root";
 
-        private static object MakeAnonymousTag()
-        {
-            return new object();
-        }
-
-        private LifetimeScope()
-        {
-            _sharedInstances[SelfRegistrationId] = this;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private object MakeAnonymousTag() => _anonymousTag = new object();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LifetimeScope"/> class.
@@ -86,8 +80,8 @@ namespace Autofac.Core.Lifetime
         /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
         /// <param name="componentRegistry">Components used in the scope.</param>
         public LifetimeScope(IComponentRegistry componentRegistry, object tag)
-            : this()
         {
+            _sharedInstances[SelfRegistrationId] = this;
             ComponentRegistry = componentRegistry ?? throw new ArgumentNullException(nameof(componentRegistry));
             Tag = tag ?? throw new ArgumentNullException(nameof(tag));
             RootLifetimeScope = this;
@@ -130,16 +124,20 @@ namespace Autofac.Core.Lifetime
 
         private void CheckTagIsUnique(object tag)
         {
+            if (ReferenceEquals(tag, _anonymousTag)) return;
+
             ISharingLifetimeScope parentScope = this;
             while (parentScope != RootLifetimeScope)
             {
+                // In the scope where we are searching for parents, then the parent scope will not be null.
                 if (parentScope.Tag.Equals(tag))
                 {
                     throw new InvalidOperationException(
                         string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.DuplicateTagDetected, tag));
                 }
 
-                parentScope = parentScope.ParentLifetimeScope;
+                // In the scope of searching for tags, the ParentLifetimeScope will always be set.
+                parentScope = parentScope.ParentLifetimeScope!;
             }
         }
 
@@ -211,6 +209,9 @@ namespace Autofac.Core.Lifetime
                 StartableManager.StartStartableComponents(localsBuilder.Properties, scope);
             }
 
+            // Run any build callbacks.
+            BuildCallbackManager.RunBuildCallbacks(scope);
+
             RaiseBeginning(scope);
 
             return scope;
@@ -231,25 +232,30 @@ namespace Autofac.Core.Lifetime
             var restrictedRootScopeLifetime = new MatchingScopeLifetime(tag);
             var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
 
-            var fallbackProperties = new FallbackDictionary<string, object>(ComponentRegistry.Properties);
+            var fallbackProperties = new FallbackDictionary<string, object?>(ComponentRegistry.Properties);
             var registryBuilder = new ComponentRegistryBuilder(tracker, fallbackProperties);
 
             var builder = new ContainerBuilder(fallbackProperties, registryBuilder);
 
-            foreach (var source in ComponentRegistry.Sources
-                .Where(src => src.IsAdapterForIndividualComponents))
-                builder.RegisterSource(source);
+            foreach (var source in ComponentRegistry.Sources)
+            {
+                if (source.IsAdapterForIndividualComponents)
+                    builder.RegisterSource(source);
+            }
 
             // Issue #272: Only the most nested parent registry with HasLocalComponents is registered as an external source
             // It provides all non-adapting registrations from itself and from it's parent registries
-            var parent = Traverse.Across<ISharingLifetimeScope>(this, s => s.ParentLifetimeScope)
-                .Where(s => s.ComponentRegistry.HasLocalComponents)
-                .Select(s => new ExternalRegistrySource(s.ComponentRegistry))
-                .FirstOrDefault();
-
-            if (parent != null)
+            ISharingLifetimeScope? parent = this;
+            while (parent != null)
             {
-                builder.RegisterSource(parent);
+                if (parent.ComponentRegistry.HasLocalComponents)
+                {
+                    var externalSource = new ExternalRegistrySource(parent.ComponentRegistry);
+                    builder.RegisterSource(externalSource);
+                    break;
+                }
+
+                parent = parent.ParentLifetimeScope;
             }
 
             configurationAction(builder);
@@ -274,7 +280,7 @@ namespace Autofac.Core.Lifetime
         /// <summary>
         /// Gets the parent of this node of the hierarchy, or null.
         /// </summary>
-        public ISharingLifetimeScope ParentLifetimeScope { get; }
+        public ISharingLifetimeScope? ParentLifetimeScope { get; }
 
         /// <summary>
         /// Gets the root of the sharing hierarchy.
@@ -352,6 +358,28 @@ namespace Autofac.Core.Lifetime
             base.Dispose(disposing);
         }
 
+        protected override async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                var handler = CurrentScopeEnding;
+
+                try
+                {
+                    handler?.Invoke(this, new LifetimeScopeEndingEventArgs(this));
+                }
+                finally
+                {
+                    await Disposer.DisposeAsync();
+                }
+
+                // ReSharper disable once InconsistentlySynchronizedField
+                _sharedInstances.Clear();
+            }
+
+            // Don't call the base (which would just call the normal Dispose).
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void CheckNotDisposed()
         {
@@ -368,7 +396,7 @@ namespace Autofac.Core.Lifetime
         /// A service object of type <paramref name="serviceType"/>.-or- null if there is
         /// no service object of type <paramref name="serviceType"/>.
         /// </returns>
-        public object GetService(Type serviceType)
+        public object? GetService(Type serviceType)
         {
             if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
 
@@ -378,16 +406,16 @@ namespace Autofac.Core.Lifetime
         /// <summary>
         /// Fired when a new scope based on the current scope is beginning.
         /// </summary>
-        public event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning;
+        public event EventHandler<LifetimeScopeBeginningEventArgs>? ChildLifetimeScopeBeginning;
 
         /// <summary>
         /// Fired when this scope is ending.
         /// </summary>
-        public event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding;
+        public event EventHandler<LifetimeScopeEndingEventArgs>? CurrentScopeEnding;
 
         /// <summary>
         /// Fired when a resolve operation is beginning in this scope.
         /// </summary>
-        public event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning;
+        public event EventHandler<ResolveOperationBeginningEventArgs>? ResolveOperationBeginning;
     }
 }

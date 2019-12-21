@@ -47,7 +47,7 @@ namespace Autofac.Core.Registration
         /// </summary>
         /// <param name="registeredServicesTracker">The tracker for the registered services.</param>
         /// <param name="properties">The properties used during component registration.</param>
-        internal ComponentRegistry(IRegisteredServicesTracker registeredServicesTracker, IDictionary<string, object> properties)
+        internal ComponentRegistry(IRegisteredServicesTracker registeredServicesTracker, IDictionary<string, object?> properties)
         {
             Properties = properties;
             _registeredServicesTracker = registeredServicesTracker;
@@ -60,7 +60,7 @@ namespace Autofac.Core.Registration
         /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
         /// context across registrations.
         /// </value>
-        public IDictionary<string, object> Properties { get; }
+        public IDictionary<string, object?> Properties { get; }
 
         /// <summary>
         /// Gets the registered components.

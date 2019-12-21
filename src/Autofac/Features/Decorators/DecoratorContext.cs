@@ -45,22 +45,23 @@ namespace Autofac.Features.Decorators
         /// <inheritdoc />
         public object CurrentInstance { get; private set; }
 
-        private DecoratorContext()
+        private DecoratorContext(
+            Type implementationType,
+            Type serviceType,
+            object currentInstance,
+            IReadOnlyList<Type>? appliedDecoratorTypes = null,
+            IReadOnlyList<object>? appliedDecorators = null)
         {
+            ImplementationType = implementationType;
+            ServiceType = serviceType;
+            CurrentInstance = currentInstance;
+            AppliedDecoratorTypes = appliedDecoratorTypes ?? new List<Type>(0);
+            AppliedDecorators = appliedDecorators ?? new List<object>(0);
         }
 
         internal static DecoratorContext Create(Type implementationType, Type serviceType, object implementationInstance)
         {
-            var context = new DecoratorContext
-            {
-                ImplementationType = implementationType,
-                ServiceType = serviceType,
-                AppliedDecorators = new List<object>(0),
-                AppliedDecoratorTypes = new List<Type>(0),
-                CurrentInstance = implementationInstance
-            };
-
-            return context;
+            return new DecoratorContext(implementationType, serviceType, implementationInstance);
         }
 
         internal DecoratorContext UpdateContext(object decoratorInstance)
@@ -73,16 +74,7 @@ namespace Autofac.Features.Decorators
             appliedDecoratorTypes.AddRange(AppliedDecoratorTypes);
             appliedDecoratorTypes.Add(decoratorInstance.GetType());
 
-            var context = new DecoratorContext
-            {
-                ImplementationType = ImplementationType,
-                ServiceType = ServiceType,
-                AppliedDecorators = appliedDecorators,
-                AppliedDecoratorTypes = appliedDecoratorTypes,
-                CurrentInstance = decoratorInstance
-            };
-
-            return context;
+            return new DecoratorContext(ImplementationType, ServiceType, decoratorInstance, appliedDecoratorTypes, appliedDecorators);
         }
     }
 }

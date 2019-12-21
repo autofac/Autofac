@@ -56,6 +56,7 @@ namespace Autofac.Builder
         /// <param name="delegate">Delegate to register.</param>
         /// <returns>A registration builder.</returns>
         public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> ForDelegate<T>(Func<IComponentContext, IEnumerable<Parameter>, T> @delegate)
+            where T : notnull
         {
             return new RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>(
                 new TypedService(typeof(T)),
@@ -83,6 +84,7 @@ namespace Autofac.Builder
         /// <typeparam name="TImplementer">Implementation type to register.</typeparam>
         /// <returns>A registration builder.</returns>
         public static IRegistrationBuilder<TImplementer, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType<TImplementer>()
+            where TImplementer : notnull
         {
             return new RegistrationBuilder<TImplementer, ConcreteReflectionActivatorData, SingleRegistrationStyle>(
                 new TypedService(typeof(TImplementer)),
@@ -173,7 +175,7 @@ namespace Autofac.Builder
             RegistrationData data,
             IInstanceActivator activator,
             Service[] services,
-            IComponentRegistration target,
+            IComponentRegistration? target,
             bool isAdapterForIndividualComponent = false)
         {
             if (activator == null) throw new ArgumentNullException(nameof(activator));

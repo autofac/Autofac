@@ -112,6 +112,7 @@ namespace Autofac
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TImplementer, ConcreteReflectionActivatorData, SingleRegistrationStyle>
             RegisterType<TImplementer>(this ContainerBuilder builder)
+            where TImplementer : notnull
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
 
@@ -152,6 +153,7 @@ namespace Autofac
             Register<T>(
                 this ContainerBuilder builder,
                 Func<IComponentContext, T> @delegate)
+            where T : notnull
         {
             if (@delegate == null) throw new ArgumentNullException(nameof(@delegate));
 
@@ -169,6 +171,7 @@ namespace Autofac
             Register<T>(
                 this ContainerBuilder builder,
                 Func<IComponentContext, IEnumerable<Parameter>, T> @delegate)
+            where T : notnull
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (@delegate == null) throw new ArgumentNullException(nameof(@delegate));
@@ -409,7 +412,7 @@ namespace Autofac
         public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
             WithMetadata<TLimit, TScanningActivatorData, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
-                Func<Type, IEnumerable<KeyValuePair<string, object>>> metadataMapping)
+                Func<Type, IEnumerable<KeyValuePair<string, object?>>> metadataMapping)
             where TScanningActivatorData : ScanningActivatorData
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
@@ -445,7 +448,7 @@ namespace Autofac
                 if (attrs.Length != 1)
                     throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.MultipleMetadataAttributesSameType, typeof(TAttribute), t));
                 var attr = attrs[0];
-                return metadataProperties.Select(p => new KeyValuePair<string, object>(p.Name, p.GetValue(attr, null)));
+                return metadataProperties.Select(p => new KeyValuePair<string, object?>(p.Name, p.GetValue(attr, null)));
             });
         }
 
@@ -469,7 +472,7 @@ namespace Autofac
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 
             return registration.WithMetadata(t =>
-                new[] { new KeyValuePair<string, object>(metadataKey, metadataValueMapping(t)) });
+                new[] { new KeyValuePair<string, object?>(metadataKey, metadataValueMapping(t)) });
         }
 
         /// <summary>
@@ -810,7 +813,7 @@ namespace Autofac
             WithParameter<TLimit, TReflectionActivatorData, TStyle>(
                 this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
                 Func<ParameterInfo, IComponentContext, bool> parameterSelector,
-                Func<ParameterInfo, IComponentContext, object> valueProvider)
+                Func<ParameterInfo, IComponentContext, object?> valueProvider)
             where TReflectionActivatorData : ReflectionActivatorData
         {
             if (parameterSelector == null) throw new ArgumentNullException(nameof(parameterSelector));
@@ -1095,6 +1098,7 @@ namespace Autofac
             Except<T>(
                 this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> registration,
                 Action<IRegistrationBuilder<T, ConcreteReflectionActivatorData, SingleRegistrationStyle>> customizedRegistration)
+            where T : notnull
         {
             var result = registration.Except<T>();
 
@@ -1160,6 +1164,8 @@ namespace Autofac
             RegisterAdapter<TFrom, TTo>(
                 this ContainerBuilder builder,
                 Func<IComponentContext, IEnumerable<Parameter>, TFrom, TTo> adapter)
+            where TFrom : notnull
+            where TTo : notnull
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (adapter == null) throw new ArgumentNullException(nameof(adapter));
@@ -1182,6 +1188,8 @@ namespace Autofac
             RegisterAdapter<TFrom, TTo>(
                 this ContainerBuilder builder,
                 Func<IComponentContext, TFrom, TTo> adapter)
+            where TFrom : notnull
+            where TTo : notnull
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (adapter == null) throw new ArgumentNullException(nameof(adapter));
@@ -1204,6 +1212,8 @@ namespace Autofac
             RegisterAdapter<TFrom, TTo>(
                 this ContainerBuilder builder,
                 Func<TFrom, TTo> adapter)
+            where TFrom : notnull
+            where TTo : notnull
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (adapter == null) throw new ArgumentNullException(nameof(adapter));
@@ -1227,7 +1237,7 @@ namespace Autofac
                 Type decoratorType,
                 Type decoratedServiceType,
                 object fromKey,
-                object toKey = null)
+                object? toKey = null)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (decoratorType == null) throw new ArgumentNullException(nameof(decoratorType));
@@ -1252,7 +1262,8 @@ namespace Autofac
                 this ContainerBuilder builder,
                 Func<IComponentContext, IEnumerable<Parameter>, TService, TService> decorator,
                 object fromKey,
-                object toKey = null)
+                object? toKey = null)
+            where TService : notnull
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (decorator == null) throw new ArgumentNullException(nameof(decorator));
@@ -1276,7 +1287,8 @@ namespace Autofac
                 this ContainerBuilder builder,
                 Func<IComponentContext, TService, TService> decorator,
                 object fromKey,
-                object toKey = null)
+                object? toKey = null)
+            where TService : notnull
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (decorator == null) throw new ArgumentNullException(nameof(decorator));
@@ -1300,7 +1312,8 @@ namespace Autofac
                 this ContainerBuilder builder,
                 Func<TService, TService> decorator,
                 object fromKey,
-                object toKey = null)
+                object? toKey = null)
+            where TService : notnull
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (decorator == null) throw new ArgumentNullException(nameof(decorator));
@@ -1318,8 +1331,8 @@ namespace Autofac
         /// <param name="builder">Container builder.</param>
         /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/>
         /// instance determines if the decorator should be applied.</param>
-        public static void RegisterDecorator<TDecorator, TService>(this ContainerBuilder builder, Func<IDecoratorContext, bool> condition = null)
-            where TDecorator : TService
+        public static void RegisterDecorator<TDecorator, TService>(this ContainerBuilder builder, Func<IDecoratorContext, bool>? condition = null)
+            where TDecorator : notnull, TService
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
 
@@ -1340,7 +1353,7 @@ namespace Autofac
             this ContainerBuilder builder,
             Type decoratorType,
             Type serviceType,
-            Func<IDecoratorContext, bool> condition = null)
+            Func<IDecoratorContext, bool>? condition = null)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (decoratorType == null) throw new ArgumentNullException(nameof(decoratorType));
@@ -1362,7 +1375,8 @@ namespace Autofac
         public static void RegisterDecorator<TService>(
             this ContainerBuilder builder,
             Func<IComponentContext, IEnumerable<Parameter>, TService, TService> decorator,
-            Func<IDecoratorContext, bool> condition = null)
+            Func<IDecoratorContext, bool>? condition = null)
+            where TService : class
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (decorator == null) throw new ArgumentNullException(nameof(decorator));
@@ -1371,7 +1385,7 @@ namespace Autofac
 
             builder.Register((c, p) =>
             {
-                var instance = (TService)p
+                TService? instance = (TService?)p
                     .OfType<TypedParameter>()
                     .FirstOrDefault(tp => tp.Type == typeof(TService))
                     ?.Value;
@@ -1399,7 +1413,7 @@ namespace Autofac
             this ContainerBuilder builder,
             Type decoratorType,
             Type serviceType,
-            Func<IDecoratorContext, bool> condition = null)
+            Func<IDecoratorContext, bool>? condition = null)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (decoratorType == null) throw new ArgumentNullException(nameof(decoratorType));
