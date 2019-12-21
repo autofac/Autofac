@@ -33,7 +33,7 @@ namespace Autofac.Benchmarks
         public int ResolvesPerTask { get; set; }
 
         [Benchmark]
-        public void MultipleResolvesOnMultipleTasks()
+        public async Task MultipleResolvesOnMultipleTasks()
         {
             var tasks = new List<Task>(ResolveTaskCount);
 
@@ -57,7 +57,7 @@ namespace Autofac.Benchmarks
                 tasks.Add(task);
             }
 
-            Task.WhenAll(tasks).Wait();
+            await Task.WhenAll(tasks);
         }
 
         internal class A

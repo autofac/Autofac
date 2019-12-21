@@ -31,7 +31,7 @@ namespace Autofac.Benchmarks
         public int RepeatCount { get; set; }
 
         [Benchmark]
-        public void MultipleResolvesOnMultipleTasks()
+        public async Task MultipleResolvesOnMultipleTasks()
         {
             var tasks = new List<Task>(ConcurrentRequests);
 
@@ -67,7 +67,7 @@ namespace Autofac.Benchmarks
                 tasks.Add(task);
             }
 
-            Task.WhenAll(tasks).Wait();
+            await Task.WhenAll(tasks);
         }
 
         internal class MockGlobalSingleton
