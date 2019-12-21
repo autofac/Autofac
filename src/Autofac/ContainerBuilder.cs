@@ -99,12 +99,6 @@ namespace Autofac
         internal ContainerBuilder(IDictionary<string, object?> properties, IComponentRegistryBuilder componentRegistryBuilder)
         {
             Properties = properties;
-
-            if (!Properties.ContainsKey(BuildCallbackPropertyKey))
-            {
-                Properties.Add(BuildCallbackPropertyKey, new List<Action<IContainer>>());
-            }
-
             ComponentRegistryBuilder = componentRegistryBuilder;
         }
 

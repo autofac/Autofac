@@ -203,8 +203,9 @@ namespace Autofac.Core.Lifetime
             var scope = new LifetimeScope(localsBuilder.Build(), this, tag);
             scope.Disposer.AddInstanceForDisposal(localsBuilder);
 
-            if (localsBuilder.Properties.TryGetValue(MetadataKeys.ContainerBuildOptions, out var options) &&
-                !((ContainerBuildOptions)options).HasFlag(ContainerBuildOptions.IgnoreStartableComponents))
+            if (localsBuilder.Properties.TryGetValue(MetadataKeys.ContainerBuildOptions, out var options)
+                && options != null
+                && !((ContainerBuildOptions)options).HasFlag(ContainerBuildOptions.IgnoreStartableComponents))
             {
                 StartableManager.StartStartableComponents(localsBuilder.Properties, scope);
             }

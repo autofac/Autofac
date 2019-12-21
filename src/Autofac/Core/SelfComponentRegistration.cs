@@ -20,7 +20,7 @@ namespace Autofac.Core
                 InstanceSharing.Shared,
                 InstanceOwnership.ExternallyOwned,
                 new Service[] { new TypedService(typeof(ILifetimeScope)), new TypedService(typeof(IComponentContext)) },
-                new Dictionary<string, object>())
+                new Dictionary<string, object?>())
         {
         }
     }

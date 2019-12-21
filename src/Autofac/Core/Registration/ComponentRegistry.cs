@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
@@ -87,7 +88,7 @@ namespace Autofac.Core.Registration
         /// <param name="service">The service to look up.</param>
         /// <param name="registration">The default registration for the service.</param>
         /// <returns>True if a registration exists.</returns>
-        public bool TryGetRegistration(Service service, out IComponentRegistration registration)
+        public bool TryGetRegistration(Service service, [NotNullWhen(returnValue: true)] out IComponentRegistration? registration)
             => _registeredServicesTracker.TryGetRegistration(service, out registration);
 
         /// <summary>

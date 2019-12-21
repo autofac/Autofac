@@ -1,4 +1,6 @@
-﻿using Autofac.Core;
+﻿using System;
+using System.Threading.Tasks;
+using Autofac.Core;
 using Autofac.Test.Scenarios.RegistrationSources;
 using Autofac.Test.Util;
 using Xunit;

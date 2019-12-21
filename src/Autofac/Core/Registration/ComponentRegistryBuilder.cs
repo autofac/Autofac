@@ -22,7 +22,7 @@ namespace Autofac.Core.Registration
         /// </summary>
         /// <param name="registeredServicesTracker">The tracker for the registered services.</param>
         /// <param name="properties">The properties used during component registration.</param>
-        internal ComponentRegistryBuilder(IRegisteredServicesTracker registeredServicesTracker, IDictionary<string, object> properties)
+        internal ComponentRegistryBuilder(IRegisteredServicesTracker registeredServicesTracker, IDictionary<string, object?> properties)
         {
             Properties = properties;
             _registeredServicesTracker = registeredServicesTracker;
@@ -46,7 +46,7 @@ namespace Autofac.Core.Registration
         /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
         /// context across registrations.
         /// </value>
-        public IDictionary<string, object> Properties { get; }
+        public IDictionary<string, object?> Properties { get; }
 
         /// <summary>
         /// Create a new <see cref="IComponentRegistry" /> with all the component registrations that have been made.
@@ -147,19 +147,19 @@ namespace Autofac.Core.Registration
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private EventHandler<ComponentRegisteredEventArgs> GetRegistered()
+        private EventHandler<ComponentRegisteredEventArgs>? GetRegistered()
         {
             if (Properties.TryGetValue(MetadataKeys.RegisteredPropertyKey, out var registered))
-                return (EventHandler<ComponentRegisteredEventArgs>)registered;
+                return (EventHandler<ComponentRegisteredEventArgs>?)registered;
 
             return null;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private EventHandler<RegistrationSourceAddedEventArgs> GetRegistrationSourceAdded()
+        private EventHandler<RegistrationSourceAddedEventArgs>? GetRegistrationSourceAdded()
         {
             if (Properties.TryGetValue(MetadataKeys.RegistrationSourceAddedPropertyKey, out var registrationSourceAdded))
-                return (EventHandler<RegistrationSourceAddedEventArgs>)registrationSourceAdded;
+                return (EventHandler<RegistrationSourceAddedEventArgs>?)registrationSourceAdded;
 
             return null;
         }

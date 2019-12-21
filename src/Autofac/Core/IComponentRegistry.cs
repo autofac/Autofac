@@ -68,7 +68,7 @@ namespace Autofac.Core
         /// <param name="service">The service to look up.</param>
         /// <param name="registration">The default registration for the service.</param>
         /// <returns>True if a registration exists.</returns>
-        bool TryGetRegistration(Service service, [NotNullWhen(returnValue: true)] out IComponentRegistration registration);
+        bool TryGetRegistration(Service service, [NotNullWhen(returnValue: true)] out IComponentRegistration? registration);
 
         /// <summary>
         /// Determines whether the specified service is registered.

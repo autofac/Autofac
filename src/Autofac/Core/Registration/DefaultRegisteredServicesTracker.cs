@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -88,7 +89,7 @@ namespace Autofac.Core.Registration
         }
 
         /// <inheritdoc />
-        public bool TryGetRegistration(Service service, out IComponentRegistration registration)
+        public bool TryGetRegistration(Service service, [NotNullWhen(returnValue: true)] out IComponentRegistration? registration)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
@@ -236,7 +237,7 @@ namespace Autofac.Core.Registration
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ServiceRegistrationInfo GetInitializedServiceInfoOrDefault(Service service)
+        private ServiceRegistrationInfo? GetInitializedServiceInfoOrDefault(Service service)
         {
             if (_serviceInfo.TryGetValue(service, out var existing) && existing.IsInitialized)
                 return existing;

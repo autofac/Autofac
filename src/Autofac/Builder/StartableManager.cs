@@ -14,7 +14,7 @@ namespace Autofac.Builder
         /// <param name="componentContext">
         /// The <see cref="IComponentContext"/> in which startable services should execute.
         /// </param>
-        internal static void StartStartableComponents(IDictionary<string, object> properties, IComponentContext componentContext)
+        internal static void StartStartableComponents(IDictionary<string, object?> properties, IComponentContext componentContext)
         {
             var componentRegistry = componentContext.ComponentRegistry;
             try

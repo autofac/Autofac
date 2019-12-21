@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Autofac.Core.Registration
 {
@@ -28,7 +29,7 @@ namespace Autofac.Core.Registration
         /// <param name="service">The service to look up.</param>
         /// <param name="registration">The default registration for the service.</param>
         /// <returns>True if a registration exists.</returns>
-        bool TryGetRegistration(Service service, out IComponentRegistration registration);
+        bool TryGetRegistration(Service service, [NotNullWhen(returnValue: true)] out IComponentRegistration? registration);
 
         /// <summary>
         /// Gets the registered components.

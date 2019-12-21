@@ -46,7 +46,7 @@ namespace Autofac.Core.Registration
         /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
         /// context across registrations.
         /// </value>
-        IDictionary<string, object> Properties { get; }
+        IDictionary<string, object?> Properties { get; }
 
         /// <summary>
         /// Register a component.

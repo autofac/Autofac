@@ -9,7 +9,7 @@ namespace Autofac.Builder
     public class DeferredCallback
     {
         // _callback set to default! to get around initialisation detection problem in rosyln.
-        private Action<IComponentRegistry> _callback = default!;
+        private Action<IComponentRegistryBuilder> _callback = default!;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeferredCallback"/> class.
