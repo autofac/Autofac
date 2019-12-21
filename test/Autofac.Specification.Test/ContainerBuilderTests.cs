@@ -205,9 +205,7 @@ namespace Autofac.Specification.Test
                     OuterBuildCallback = true;
                     var appScope = container.BeginLifetimeScope(nestedBuilder =>
                     {
-                        nestedBuilder.RegisterBuildCallback((c) => {
-                            InnerBuildCallback = true;
-                        });
+                        nestedBuilder.RegisterBuildCallback(c => InnerBuildCallback = true);
                     });
                 });
             }
