@@ -39,6 +39,9 @@ namespace Autofac.Benchmarks
         public void Concurrency() => RunBenchmark<ConcurrencyBenchmark>();
 
         [Fact]
+        public void ConcurrencyNestedScopes() => RunBenchmark<ConcurrencyNestedScopeBenchmark>();
+
+        [Fact]
         public void Decorator_Keyed_Generic() => RunBenchmark<KeyedGenericBenchmark>();
 
         [Fact]

@@ -9,6 +9,7 @@ namespace Autofac.Benchmarks
         {
             typeof(ChildScopeResolveBenchmark),
             typeof(ConcurrencyBenchmark),
+            typeof(ConcurrencyNestedScopeBenchmark),
             typeof(KeyedGenericBenchmark),
             typeof(KeyedNestedBenchmark),
             typeof(KeyedSimpleBenchmark),
