@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Autofac.Builder;
@@ -72,7 +70,6 @@ namespace Autofac.Core.Registration
             }
 
             _registrations.Add(registration);
-            UpdateInitializedAdapters(registration);
         }
 
         /// <inheritdoc />
@@ -157,37 +154,6 @@ namespace Autofac.Core.Registration
                 registration.Dispose();
 
             base.Dispose(disposing);
-        }
-
-        private void UpdateInitializedAdapters(IComponentRegistration registration)
-        {
-            var adapterServices = new List<Service>();
-            foreach (var serviceInfo in _serviceInfo)
-            {
-                if (serviceInfo.Value.ShouldRecalculateAdaptersOn(registration))
-                {
-                    adapterServices.Add(serviceInfo.Key);
-                }
-            }
-
-            if (adapterServices.Count == 0)
-                return;
-
-            Debug.WriteLine(
-                string.Format(
-                    CultureInfo.InvariantCulture,
-                    "[Autofac] Component '{0}' provides services that have already been adapted. Consider refactoring to ContainerBuilder.Build() rather than Update().",
-                    registration));
-
-            var adaptationSandbox = new AdaptationSandbox(
-                _dynamicRegistrationSources.Where(rs => rs.IsAdapterForIndividualComponents),
-                registration,
-                adapterServices);
-
-            // Adapter registrations come from sources, so they are added with originatedFromSource: true
-            var adapters = adaptationSandbox.GetAdapters();
-            foreach (var adapter in adapters)
-                AddRegistration(adapter, true, true);
         }
 
         private ServiceRegistrationInfo GetInitializedServiceInfo(Service service)

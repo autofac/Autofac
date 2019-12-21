@@ -71,10 +71,7 @@ namespace Autofac.Core.Registration
         /// Initializes a new instance of the <see cref="ServiceRegistrationInfo"/> class.
         /// </summary>
         /// <param name="service">The tracked service.</param>
-        public ServiceRegistrationInfo(Service service)
-        {
-            _service = service;
-        }
+        public ServiceRegistrationInfo(Service service) => _service = service;
 
         /// <summary>
         /// Gets a value indicating whether the first time a service is requested, initialization (e.g. reading from sources)
@@ -232,26 +229,6 @@ namespace Autofac.Core.Registration
             // began it.
             IsInitialized = true;
             _sourcesToQuery = null;
-        }
-
-        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "registration")]
-        public bool ShouldRecalculateAdaptersOn(IComponentRegistration registration)
-        {
-            // The best optimisation we could make here is to track which services
-            // have been queried by and adapter - i.e. instead of giving the
-            // adapter the ComponentRegistry.RegistrationsFor method, add some
-            // logic that performs the query then marks the service info as
-            // an adapted on. Then only when registration supports services that
-            // have been adapted do we need to do any querying at all.
-            //
-            // Once the optimization is in place, REMOVE THE SUPPRESSMESSAGE ATTRIBUTE
-            // as, ostensibly, the actual registration will be used at that time.
-
-            // IMPROVEMENT - We only need to check service registration infos that:
-            // - Have already been initialized
-            // - Were created via a registration source (because we might be adding an equivalent explicit registration such as Func<T>)
-            // - Don't contain any registrations (because a registration source was added when no adaptee was present)
-            return IsInitialized && (_sourceImplementations != null || !Any);
         }
     }
 }
