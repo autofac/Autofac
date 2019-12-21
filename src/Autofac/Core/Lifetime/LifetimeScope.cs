@@ -53,8 +53,6 @@ namespace Autofac.Core.Lifetime
 
         internal static Guid SelfRegistrationId { get; } = Guid.NewGuid();
 
-        private static readonly Action<ContainerBuilder> NoConfiguration = b => { };
-
         /// <summary>
         /// The tag applied to root scopes when no other tag is specified.
         /// </summary>
@@ -117,12 +115,9 @@ namespace Autofac.Core.Lifetime
         public ILifetimeScope BeginLifetimeScope(object tag)
         {
             CheckNotDisposed();
-
             CheckTagIsUnique(tag);
 
-            var registry = new CopyOnWriteRegistry(ComponentRegistry, () => CreateScopeRestrictedRegistry(tag, NoConfiguration));
-            var scope = new LifetimeScope(registry, this, tag);
-            scope.Disposer.AddInstanceForDisposal(registry);
+            var scope = new LifetimeScope(ComponentRegistry, this, tag);
             RaiseBeginning(scope);
             return scope;
         }
@@ -204,14 +199,15 @@ namespace Autofac.Core.Lifetime
             CheckNotDisposed();
             CheckTagIsUnique(tag);
 
-            var locals = CreateScopeRestrictedRegistry(tag, configurationAction);
-            var scope = new LifetimeScope(locals, this, tag);
-            scope.Disposer.AddInstanceForDisposal(locals);
+            var localsBuilder = CreateScopeRestrictedRegistry(tag, configurationAction);
+            var scope = new LifetimeScope(localsBuilder.Build(), this, tag);
+            scope.Disposer.AddInstanceForDisposal(localsBuilder);
 
-            if (locals.Properties.TryGetValue(MetadataKeys.ContainerBuildOptions, out var options) &&
-                !((ContainerBuildOptions)options!).HasFlag(ContainerBuildOptions.IgnoreStartableComponents))
+            if (localsBuilder.Properties.TryGetValue(MetadataKeys.ContainerBuildOptions, out var options)
+                && options != null
+                && !((ContainerBuildOptions)options).HasFlag(ContainerBuildOptions.IgnoreStartableComponents))
             {
-                StartableManager.StartStartableComponents(scope);
+                StartableManager.StartStartableComponents(localsBuilder.Properties, scope);
             }
 
             // Run any build callbacks.
@@ -232,9 +228,15 @@ namespace Autofac.Core.Lifetime
         /// <remarks>It is the responsibility of the caller to make sure that the registry is properly
         /// disposed of. This is generally done by adding the registry to the <see cref="Disposer"/>
         /// property of the child scope.</remarks>
-        private ScopeRestrictedRegistry CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction)
+        private IComponentRegistryBuilder CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction)
         {
-            var builder = new ContainerBuilder(new FallbackDictionary<string, object?>(ComponentRegistry.Properties));
+            var restrictedRootScopeLifetime = new MatchingScopeLifetime(tag);
+            var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
+
+            var fallbackProperties = new FallbackDictionary<string, object?>(ComponentRegistry.Properties);
+            var registryBuilder = new ComponentRegistryBuilder(tracker, fallbackProperties);
+
+            var builder = new ContainerBuilder(fallbackProperties, registryBuilder);
 
             foreach (var source in ComponentRegistry.Sources)
             {
@@ -259,9 +261,8 @@ namespace Autofac.Core.Lifetime
 
             configurationAction(builder);
 
-            var locals = new ScopeRestrictedRegistry(tag, builder.Properties);
-            builder.UpdateRegistry(locals);
-            return locals;
+            builder.UpdateRegistry(registryBuilder);
+            return registryBuilder;
         }
 
         /// <inheritdoc />

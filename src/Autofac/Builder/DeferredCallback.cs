@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using Autofac.Core;
+using Autofac.Core.Registration;
 
 namespace Autofac.Builder
 {
@@ -11,19 +9,19 @@ namespace Autofac.Builder
     public class DeferredCallback
     {
         // _callback set to default! to get around initialisation detection problem in rosyln.
-        private Action<IComponentRegistry> _callback = default!;
+        private Action<IComponentRegistryBuilder> _callback = default!;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeferredCallback"/> class.
         /// </summary>
         /// <param name="callback">
         /// An <see cref="Action{T}"/> that executes a registration action
-        /// against an <see cref="IComponentRegistry"/>.
+        /// against an <see cref="IComponentRegistryBuilder"/>.
         /// </param>
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="callback" /> is <see langword="null" />.
         /// </exception>
-        public DeferredCallback(Action<IComponentRegistry> callback)
+        public DeferredCallback(Action<IComponentRegistryBuilder> callback)
         {
             if (callback == null)
             {
@@ -39,12 +37,12 @@ namespace Autofac.Builder
         /// </summary>
         /// <value>
         /// An <see cref="Action{T}"/> that executes a registration action
-        /// against an <see cref="IComponentRegistry"/>.
+        /// against an <see cref="IComponentRegistryBuilder"/>.
         /// </value>
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="value" /> is <see langword="null" />.
         /// </exception>
-        public Action<IComponentRegistry> Callback
+        public Action<IComponentRegistryBuilder> Callback
         {
             get
             {

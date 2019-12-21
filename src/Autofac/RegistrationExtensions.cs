@@ -35,6 +35,7 @@ using Autofac.Core;
 using Autofac.Core.Activators.ProvidedInstance;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
+using Autofac.Core.Registration;
 using Autofac.Features.Decorators;
 using Autofac.Features.LightweightAdapters;
 using Autofac.Features.OpenGenerics;
@@ -1537,7 +1538,7 @@ namespace Autofac
         /// </exception>
         public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>
             OnlyIf<TLimit, TActivatorData, TStyle>(
-                this IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration, Predicate<IComponentRegistry> predicate)
+                this IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration, Predicate<IComponentRegistryBuilder> predicate)
         {
             if (registration == null)
             {
@@ -1556,7 +1557,7 @@ namespace Autofac
             }
 
             var original = c.Callback;
-            Action<IComponentRegistry> updated = registry =>
+            Action<IComponentRegistryBuilder> updated = registry =>
             {
                 if (predicate(registry))
                 {

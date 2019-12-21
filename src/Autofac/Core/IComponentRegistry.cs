@@ -44,6 +44,25 @@ namespace Autofac.Core
         IDictionary<string, object?> Properties { get; }
 
         /// <summary>
+        /// Gets the set of registered components.
+        /// </summary>
+        IEnumerable<IComponentRegistration> Registrations { get; }
+
+        /// <summary>
+        /// Gets the registration sources that are used by the registry.
+        /// </summary>
+        IEnumerable<IRegistrationSource> Sources { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the registry contains its own components.
+        /// True if the registry contains its own components; false if it is forwarding
+        /// registrations from another external registry.
+        /// </summary>
+        /// <remarks>This property is used when walking up the scope tree looking for
+        /// registrations for a new customized scope.</remarks>
+        bool HasLocalComponents { get; }
+
+        /// <summary>
         /// Attempts to find a default registration for the specified service.
         /// </summary>
         /// <param name="service">The service to look up.</param>
@@ -57,25 +76,6 @@ namespace Autofac.Core
         /// <param name="service">The service to test.</param>
         /// <returns>True if the service is registered.</returns>
         bool IsRegistered(Service service);
-
-        /// <summary>
-        /// Register a component.
-        /// </summary>
-        /// <param name="registration">The component registration.</param>
-        void Register(IComponentRegistration registration);
-
-        /// <summary>
-        /// Register a component.
-        /// </summary>
-        /// <param name="registration">The component registration.</param>
-        /// <param name="preserveDefaults">If true, existing defaults for the services provided by the
-        /// component will not be changed.</param>
-        void Register(IComponentRegistration registration, bool preserveDefaults);
-
-        /// <summary>
-        /// Gets the set of registered components.
-        /// </summary>
-        IEnumerable<IComponentRegistration> Registrations { get; }
 
         /// <summary>
         /// Selects from the available registrations after ensuring that any
@@ -92,36 +92,5 @@ namespace Autofac.Core
         /// <param name="service">The service for which decorator registrations are sought.</param>
         /// <returns>Decorator registrations applicable to <paramref name="service"/>.</returns>
         IReadOnlyList<IComponentRegistration> DecoratorsFor(IServiceWithType service);
-
-        /// <summary>
-        /// Fired whenever a component is registered - either explicitly or via a
-        /// <see cref="IRegistrationSource"/>.
-        /// </summary>
-        event EventHandler<ComponentRegisteredEventArgs> Registered;
-
-        /// <summary>
-        /// Add a registration source that will provide registrations on-the-fly.
-        /// </summary>
-        /// <param name="source">The source to register.</param>
-        void AddRegistrationSource(IRegistrationSource source);
-
-        /// <summary>
-        /// Gets the registration sources that are used by the registry.
-        /// </summary>
-        IEnumerable<IRegistrationSource> Sources { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether the registry contains its own components.
-        /// True if the registry contains its own components; false if it is forwarding
-        /// registrations from another external registry.
-        /// </summary>
-        /// <remarks>This property is used when walking up the scope tree looking for
-        /// registrations for a new customised scope.</remarks>
-        bool HasLocalComponents { get; }
-
-        /// <summary>
-        /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
-        /// </summary>
-        event EventHandler<RegistrationSourceAddedEventArgs> RegistrationSourceAdded;
     }
 }

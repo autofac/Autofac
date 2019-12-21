@@ -165,45 +165,6 @@ namespace Autofac.Specification.Test.Features
             Assert.Equal(expectedStartCount, StartableDependency.Count);
         }
 
-        [Fact]
-        public void Startable_WhenTheContainerIsUpdated_ExistingStartableComponentsAreNotRestarted()
-        {
-            var startable1 = new Startable();
-            var startable2 = new Startable();
-
-            var builder1 = new ContainerBuilder();
-            builder1.RegisterInstance(startable1).As<IStartable>();
-            var container = builder1.Build();
-
-            Assert.Equal(1, startable1.StartCount);
-
-            var builder2 = new ContainerBuilder();
-            builder2.RegisterInstance(startable2).As<IStartable>();
-#pragma warning disable CS0618
-            builder2.Update(container);
-#pragma warning restore CS0618
-
-            Assert.Equal(1, startable1.StartCount);
-            Assert.Equal(1, startable2.StartCount);
-        }
-
-        [Fact]
-        public void Startable_WhenTheContainerIsUpdated_NewStartableComponentsAreStarted()
-        {
-            // Issue #454: ContainerBuilder.Update() doesn't activate startable components.
-            var container = new ContainerBuilder().Build();
-
-            var startable = new Startable();
-
-            var builder = new ContainerBuilder();
-            builder.RegisterInstance(startable).As<IStartable>();
-#pragma warning disable CS0618
-            builder.Update(container);
-#pragma warning restore CS0618
-
-            Assert.Equal(1, startable.StartCount);
-        }
-
         private class ComponentTakesStartableDependency : IStartable
         {
             public ComponentTakesStartableDependency(StartableTakesDependency dependency, bool expectStarted)

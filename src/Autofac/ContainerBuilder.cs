@@ -25,11 +25,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Registration;
 using Autofac.Features.Collections;
 using Autofac.Features.GeneratedFactories;
 using Autofac.Features.Indexed;
@@ -80,9 +78,34 @@ namespace Autofac
         /// </summary>
         /// <param name="properties">The properties used during component registration.</param>
         internal ContainerBuilder(IDictionary<string, object?> properties)
+            : this(properties, new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), properties))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContainerBuilder"/> class.
+        /// </summary>
+        /// <param name="componentRegistryBuilder">The builder to use for building the underlying <see cref="IComponentRegistry" />.</param>
+        internal ContainerBuilder(IComponentRegistryBuilder componentRegistryBuilder)
+            : this(new Dictionary<string, object?>(), componentRegistryBuilder)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContainerBuilder"/> class.
+        /// </summary>
+        /// <param name="properties">The properties used during component registration.</param>
+        /// <param name="componentRegistryBuilder">The builder to use for building the underlying <see cref="IComponentRegistry" />.</param>
+        internal ContainerBuilder(IDictionary<string, object?> properties, IComponentRegistryBuilder componentRegistryBuilder)
         {
             Properties = properties;
+            ComponentRegistryBuilder = componentRegistryBuilder;
         }
+
+        /// <summary>
+        /// Gets the builder to use for building the underlying <see cref="IComponentRegistry" />.
+        /// </summary>
+        public IComponentRegistryBuilder ComponentRegistryBuilder { get; }
 
         /// <summary>
         /// Gets the set of properties used during component registration.
@@ -98,7 +121,7 @@ namespace Autofac
         /// </summary>
         /// <remarks>This is primarily for extending the builder syntax.</remarks>
         /// <param name="configurationCallback">Callback to execute.</param>
-        public virtual DeferredCallback RegisterCallback(Action<IComponentRegistry> configurationCallback)
+        public DeferredCallback RegisterCallback(Action<IComponentRegistryBuilder> configurationCallback)
         {
             if (configurationCallback == null) throw new ArgumentNullException(nameof(configurationCallback));
 
@@ -148,71 +171,24 @@ namespace Autofac
         /// <returns>A new container with the configured component registrations.</returns>
         public IContainer Build(ContainerBuildOptions options = ContainerBuildOptions.None)
         {
-            var result = new Container(Properties);
-            result.ComponentRegistry.Properties[MetadataKeys.ContainerBuildOptions] = options;
-            Build(result.ComponentRegistry, (options & ContainerBuildOptions.ExcludeDefaultModules) != ContainerBuildOptions.None);
+            Properties[MetadataKeys.ContainerBuildOptions] = options;
 
+            #pragma warning disable CA2000 // Dispose objects before losing scope
+            ComponentRegistryBuilder.Register(new SelfComponentRegistration());
+            #pragma warning restore CA2000 // Dispose objects before losing scope
+
+            Build(ComponentRegistryBuilder, (options & ContainerBuildOptions.ExcludeDefaultModules) != ContainerBuildOptions.None);
+
+            var componentRegistry = ComponentRegistryBuilder.Build();
+
+            var result = new Container(componentRegistry);
             if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
-                StartableManager.StartStartableComponents(result);
+                StartableManager.StartStartableComponents(Properties, result);
 
             // Run any build callbacks.
             BuildCallbackManager.RunBuildCallbacks(result);
 
             return result;
-        }
-
-        /// <summary>
-        /// Configure an existing container with the component registrations
-        /// that have been made.
-        /// </summary>
-        /// <remarks>
-        /// Update can only be called once per <see cref="ContainerBuilder"/>
-        /// - this prevents ownership issues for provided instances.
-        /// </remarks>
-        /// <param name="container">An existing container to make the registrations in.</param>
-        [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "You can't update any arbitrary context, only containers.")]
-        [Obsolete("Containers should generally be considered immutable. Register all of your dependencies before building/resolving. If you need to change the contents of a container, you technically should rebuild the container. This method may be removed in a future major release.")]
-        public void Update(IContainer container)
-        {
-            Update(container, ContainerBuildOptions.None);
-        }
-
-        /// <summary>
-        /// Configure an existing container with the component registrations
-        /// that have been made and allows additional build options to be specified.
-        /// </summary>
-        /// <remarks>
-        /// Update can only be called once per <see cref="ContainerBuilder"/>
-        /// - this prevents ownership issues for provided instances.
-        /// </remarks>
-        /// <param name="container">An existing container to make the registrations in.</param>
-        /// <param name="options">Options that influence the way the container is updated.</param>
-        [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "You can't update any arbitrary context, only containers.")]
-        [Obsolete("Containers should generally be considered immutable. Register all of your dependencies before building/resolving. If you need to change the contents of a container, you technically should rebuild the container. This method may be removed in a future major release.")]
-        public void Update(IContainer container, ContainerBuildOptions options)
-        {
-            // Issue #462: The ContainerBuildOptions parameter is added here as an overload
-            // rather than an optional parameter to avoid method binding issues. In version
-            // 4.0 or later we should refactor this to be an optional parameter.
-            if (container == null) throw new ArgumentNullException(nameof(container));
-            Update(container.ComponentRegistry);
-            if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
-                StartableManager.StartStartableComponents(container);
-        }
-
-        /// <summary>
-        /// Configure an existing registry with the component registrations
-        /// that have been made.
-        /// </summary>
-        /// <remarks>
-        /// Update can only be called once per <see cref="ContainerBuilder"/>
-        /// - this prevents ownership issues for provided instances.
-        /// </remarks>
-        /// <param name="componentRegistry">An existing registry to make the registrations in.</param>
-        [Obsolete("Containers should generally be considered immutable. Register all of your dependencies before building/resolving. If you need to change the contents of a container, you technically should rebuild the container. This method may be removed in a future major release.")]
-        public void Update(IComponentRegistry componentRegistry)
-        {
-            this.UpdateRegistry(componentRegistry);
         }
 
         /// <summary>
@@ -225,13 +201,13 @@ namespace Autofac
         /// - this prevents ownership issues for provided instances.
         /// </remarks>
         /// <param name="componentRegistry">An existing registry to make the registrations in.</param>
-        internal void UpdateRegistry(IComponentRegistry componentRegistry)
+        internal void UpdateRegistry(IComponentRegistryBuilder componentRegistry)
         {
             if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
             Build(componentRegistry, true);
         }
 
-        private void Build(IComponentRegistry componentRegistry, bool excludeDefaultModules)
+        private void Build(IComponentRegistryBuilder componentRegistry, bool excludeDefaultModules)
         {
             if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
 
@@ -247,7 +223,7 @@ namespace Autofac
                 callback.Callback(componentRegistry);
         }
 
-        private void RegisterDefaultAdapters(IComponentRegistry componentRegistry)
+        private void RegisterDefaultAdapters(IComponentRegistryBuilder componentRegistry)
         {
             this.RegisterGeneric(typeof(KeyedServiceIndex<,>)).As(typeof(IIndex<,>)).InstancePerLifetimeScope();
             componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
