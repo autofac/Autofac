@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+
 using Xunit;
 
 namespace Autofac.Test

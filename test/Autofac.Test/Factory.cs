@@ -95,9 +95,25 @@ namespace Autofac.Test
             };
         }
 
-        public static readonly IContainer EmptyContainer = new Container();
+        public static IComponentRegistryBuilder CreateEmptyComponentRegistryBuilder()
+        {
+            return new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+        }
 
-        public static readonly IComponentContext EmptyContext = new Container();
+        public static IComponentRegistry CreateEmptyComponentRegistry()
+        {
+            return CreateEmptyComponentRegistryBuilder().Build();
+        }
+
+        public static IContainer CreateEmptyContainer()
+        {
+            return new ContainerBuilder().Build();
+        }
+
+        public static IComponentContext CreateEmptyContext()
+        {
+            return CreateEmptyContainer();
+        }
 
         public static readonly IEnumerable<Parameter> NoParameters = Enumerable.Empty<Parameter>();
 

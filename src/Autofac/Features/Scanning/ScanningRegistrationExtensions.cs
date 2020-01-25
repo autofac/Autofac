@@ -29,6 +29,7 @@ using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Registration;
 using Autofac.Util;
 
 namespace Autofac.Features.Scanning
@@ -67,12 +68,12 @@ namespace Autofac.Features.Scanning
             return rb;
         }
 
-        private static void ScanAssemblies(IEnumerable<Assembly> assemblies, IComponentRegistry cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
+        private static void ScanAssemblies(IEnumerable<Assembly> assemblies, IComponentRegistryBuilder cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
         {
             ScanTypes(assemblies.SelectMany(a => a.GetLoadableTypes()), cr, rb);
         }
 
-        private static void ScanTypes(IEnumerable<Type> types, IComponentRegistry cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
+        private static void ScanTypes(IEnumerable<Type> types, IComponentRegistryBuilder cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
         {
             rb.ActivatorData.Filters.Add(t =>
                 rb.RegistrationData.Services.OfType<IServiceWithType>().All(swt =>
@@ -179,10 +180,12 @@ namespace Autofac.Features.Scanning
                 var impl = rb.ActivatorData.ImplementationType;
                 var applied = mapped.Where(s =>
                     {
-                        var c = s as IServiceWithType;
-                        return
-                            (c == null && s != null) || // s is not an IServiceWithType
-                            c.ServiceType.GetTypeInfo().IsAssignableFrom(impl.GetTypeInfo());
+                        if (s is IServiceWithType c)
+                        {
+                            return c.ServiceType.GetTypeInfo().IsAssignableFrom(impl.GetTypeInfo());
+                        }
+
+                        return s != null;
                     });
                 rb.As(applied.ToArray());
             });

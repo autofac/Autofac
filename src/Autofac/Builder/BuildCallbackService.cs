@@ -58,7 +58,7 @@ namespace Autofac.Builder
 
             try
             {
-                foreach (var callback in _callbacks)
+                foreach (var callback in _callbacks!)
                 {
                     callback(scope);
                 }
@@ -68,7 +68,7 @@ namespace Autofac.Builder
                 // Clear the reference to the callbacks to release any held scopes (and function as a do-not-run flag)
                 // This object will be a singleton instance in the container/scope, so the initial function scopes that
                 // define the callbacks could be holding onto closure resources. We want the GC to take that back.
-                _callbacks = null;
+                _callbacks = null!;
             }
         }
     }

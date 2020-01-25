@@ -10,7 +10,6 @@
 
 namespace Autofac.Core.Lifetime {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -20,7 +19,7 @@ namespace Autofac.Core.Lifetime {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class LifetimeScopeResources {
@@ -40,7 +39,7 @@ namespace Autofac.Core.Lifetime {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Lifetime.LifetimeScopeResources", typeof(LifetimeScopeResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Lifetime.LifetimeScopeResources", typeof(LifetimeScopeResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -71,7 +70,7 @@ namespace Autofac.Core.Lifetime {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Instances cannot be resolved and nested lifetimes cannot be created from this LifetimeScope as it has already been disposed..
+        ///   Looks up a localized string similar to Instances cannot be resolved and nested lifetimes cannot be created from this LifetimeScope as it (or one of its parent scopes) has already been disposed..
         /// </summary>
         internal static string ScopeIsDisposed {
             get {

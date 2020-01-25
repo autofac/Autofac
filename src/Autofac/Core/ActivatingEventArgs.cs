@@ -33,6 +33,7 @@ namespace Autofac.Core
     /// is shared with any other or any members are invoked on it.
     /// </summary>
     public class ActivatingEventArgs<T> : EventArgs, IActivatingEventArgs<T>
+        where T : notnull
     {
         private T _instance;
 

@@ -38,7 +38,7 @@ namespace Autofac.Core.Registration
     [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The target registration, if provided, is disposed elsewhere.")]
     public class ComponentRegistration : Disposable, IComponentRegistration
     {
-        private readonly IComponentRegistration _target;
+        private readonly IComponentRegistration? _target;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentRegistration"/> class.
@@ -57,7 +57,7 @@ namespace Autofac.Core.Registration
             InstanceSharing sharing,
             InstanceOwnership ownership,
             IEnumerable<Service> services,
-            IDictionary<string, object> metadata)
+            IDictionary<string, object?> metadata)
         {
             if (activator == null) throw new ArgumentNullException(nameof(activator));
             if (lifetime == null) throw new ArgumentNullException(nameof(lifetime));
@@ -93,7 +93,7 @@ namespace Autofac.Core.Registration
             InstanceSharing sharing,
             InstanceOwnership ownership,
             IEnumerable<Service> services,
-            IDictionary<string, object> metadata,
+            IDictionary<string, object?> metadata,
             IComponentRegistration target,
             bool isAdapterForIndividualComponents)
             : this(id, activator, lifetime, sharing, ownership, services, metadata)
@@ -144,7 +144,7 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// Gets additional data associated with the component.
         /// </summary>
-        public IDictionary<string, object> Metadata { get; }
+        public IDictionary<string, object?> Metadata { get; }
 
         /// <inheritdoc />
         public bool IsAdapterForIndividualComponent { get; }
@@ -153,7 +153,7 @@ namespace Autofac.Core.Registration
         /// Fired when a new instance is required, prior to activation.
         /// Can be used to provide Autofac with additional parameters, used during activation.
         /// </summary>
-        public event EventHandler<PreparingEventArgs> Preparing;
+        public event EventHandler<PreparingEventArgs>? Preparing;
 
         /// <summary>
         /// Called by the container when an instance is required.
@@ -175,7 +175,7 @@ namespace Autofac.Core.Registration
         /// wrapped or switched at this time by setting the Instance property in
         /// the provided event arguments.
         /// </summary>
-        public event EventHandler<ActivatingEventArgs<object>> Activating;
+        public event EventHandler<ActivatingEventArgs<object>>? Activating;
 
         /// <summary>
         /// Called by the container once an instance has been constructed.
@@ -196,7 +196,7 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// Fired when the activation process for a new instance is complete.
         /// </summary>
-        public event EventHandler<ActivatedEventArgs<object>> Activated;
+        public event EventHandler<ActivatedEventArgs<object>>? Activated;
 
         /// <summary>
         /// Called by the container once an instance has been fully constructed, including
