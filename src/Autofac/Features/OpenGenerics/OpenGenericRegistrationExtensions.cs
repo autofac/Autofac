@@ -54,7 +54,7 @@ namespace Autofac.Features.OpenGenerics
         }
 
         public static IRegistrationBuilder<object, OpenGenericDecoratorActivatorData, DynamicRegistrationStyle>
-            RegisterGenericDecorator(ContainerBuilder builder, Type decoratorType, Type decoratedServiceType, object fromKey, object toKey)
+            RegisterGenericDecorator(ContainerBuilder builder, Type decoratorType, Type decoratedServiceType, object fromKey, object? toKey)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (decoratorType == null) throw new ArgumentNullException(nameof(decoratorType));
@@ -71,7 +71,7 @@ namespace Autofac.Features.OpenGenerics
             return rb;
         }
 
-        private static IServiceWithType GetServiceWithKey(Type serviceType, object key)
+        private static IServiceWithType GetServiceWithKey(Type serviceType, object? key)
         {
             if (key == null)
                 return new TypedService(serviceType);

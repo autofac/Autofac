@@ -38,7 +38,7 @@ namespace Autofac.Features.Metadata
     {
         private static readonly MethodInfo GetMetadataValueMethod = typeof(MetadataViewProvider).GetTypeInfo().GetDeclaredMethod("GetMetadataValue");
 
-        public static Func<IDictionary<string, object>, TMetadata> GetMetadataViewProvider<TMetadata>()
+        public static Func<IDictionary<string, object?>, TMetadata> GetMetadataViewProvider<TMetadata>()
         {
             if (typeof(TMetadata) == typeof(IDictionary<string, object>))
                 return m => (TMetadata)m;
@@ -58,8 +58,8 @@ namespace Autofac.Features.Metadata
 
             if (dictionaryConstructor != null)
             {
-                var providerArg = Expression.Parameter(typeof(IDictionary<string, object>), "metadata");
-                return Expression.Lambda<Func<IDictionary<string, object>, TMetadata>>(
+                var providerArg = Expression.Parameter(typeof(IDictionary<string, object?>), "metadata");
+                return Expression.Lambda<Func<IDictionary<string, object?>, TMetadata>>(
                         Expression.New(dictionaryConstructor, providerArg),
                         providerArg)
                     .Compile();
@@ -90,7 +90,7 @@ namespace Autofac.Features.Metadata
 
                 blockExprs.Add(resultVar);
 
-                return Expression.Lambda<Func<IDictionary<string, object>, TMetadata>>(
+                return Expression.Lambda<Func<IDictionary<string, object?>, TMetadata>>(
                         Expression.Block(new[] { resultVar }, blockExprs), providerArg)
                     .Compile();
             }

@@ -28,6 +28,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using Autofac.Core;
+using Autofac.Core.Registration;
 
 namespace Autofac
 {
@@ -73,7 +74,7 @@ namespace Autofac
         /// Apply the module to the component registry.
         /// </summary>
         /// <param name="componentRegistry">Component registry to apply configuration to.</param>
-        public void Configure(IComponentRegistry componentRegistry)
+        public void Configure(IComponentRegistryBuilder componentRegistry)
         {
             if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
 
@@ -106,7 +107,7 @@ namespace Autofac
         /// <param name="componentRegistry">The component registry.</param>
         /// <param name="registration">The registration to attach functionality to.</param>
         protected virtual void AttachToComponentRegistration(
-            IComponentRegistry componentRegistry,
+            IComponentRegistryBuilder componentRegistry,
             IComponentRegistration registration)
         {
         }
@@ -119,25 +120,21 @@ namespace Autofac
         /// <param name="componentRegistry">The component registry into which the source was added.</param>
         /// <param name="registrationSource">The registration source.</param>
         protected virtual void AttachToRegistrationSource(
-            IComponentRegistry componentRegistry,
+            IComponentRegistryBuilder componentRegistry,
             IRegistrationSource registrationSource)
         {
         }
 
-        private void AttachToRegistrations(IComponentRegistry componentRegistry)
+        private void AttachToRegistrations(IComponentRegistryBuilder componentRegistry)
         {
             if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
-            foreach (var registration in componentRegistry.Registrations)
-                AttachToComponentRegistration(componentRegistry, registration);
             componentRegistry.Registered +=
-                (sender, e) => AttachToComponentRegistration(e.ComponentRegistry, e.ComponentRegistration);
+                (sender, e) => AttachToComponentRegistration(e.ComponentRegistryBuilder, e.ComponentRegistration);
         }
 
-        private void AttachToSources(IComponentRegistry componentRegistry)
+        private void AttachToSources(IComponentRegistryBuilder componentRegistry)
         {
             if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
-            foreach (var source in componentRegistry.Sources)
-                AttachToRegistrationSource(componentRegistry, source);
             componentRegistry.RegistrationSourceAdded +=
                 (sender, e) => AttachToRegistrationSource(e.ComponentRegistry, e.RegistrationSource);
         }

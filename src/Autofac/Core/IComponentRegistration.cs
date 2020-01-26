@@ -68,7 +68,7 @@ namespace Autofac.Core
         /// <summary>
         /// Gets additional data associated with the component.
         /// </summary>
-        IDictionary<string, object> Metadata { get; }
+        IDictionary<string, object?> Metadata { get; }
 
         /// <summary>
         /// Gets the component registration upon which this registration is based.

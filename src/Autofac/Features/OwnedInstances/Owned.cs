@@ -89,7 +89,7 @@ namespace Autofac.Features.OwnedInstances
     [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "False positive - the lifetime does get disposed.")]
     public class Owned<T> : Disposable
     {
-        private IDisposable _lifetime;
+        private IDisposable? _lifetime;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Owned{T}"/> class.
@@ -120,7 +120,7 @@ namespace Autofac.Features.OwnedInstances
                 var lt = Interlocked.Exchange(ref _lifetime, null);
                 if (lt != null)
                 {
-                    Value = default(T);
+                    Value = default!;
                     lt.Dispose();
                 }
             }

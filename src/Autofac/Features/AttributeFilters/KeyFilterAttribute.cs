@@ -128,13 +128,12 @@ namespace Autofac.Features.AttributeFilters
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="parameter" /> or <paramref name="context" /> is <see langword="null" />.
         /// </exception>
-        public override object ResolveParameter(ParameterInfo parameter, IComponentContext context)
+        public override object? ResolveParameter(ParameterInfo parameter, IComponentContext context)
         {
             if (parameter == null) throw new ArgumentNullException(nameof(parameter));
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            object value;
-            context.TryResolveKeyed(Key, parameter.ParameterType, out value);
+            context.TryResolveKeyed(Key, parameter.ParameterType, out var value);
             return value;
         }
 

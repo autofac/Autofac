@@ -36,5 +36,7 @@ namespace Autofac.Builder
         internal const string ContainerBuildOptions = "__ContainerBuildOptions";
 
         internal const string RegisteredPropertyKey = "__RegisteredKey";
+
+        internal const string RegistrationSourceAddedPropertyKey = "__RegistrationSourceAddedKey";
     }
 }

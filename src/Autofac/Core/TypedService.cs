@@ -62,7 +62,7 @@ namespace Autofac.Core
         /// <returns>
         /// true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
         /// </returns>
-        public bool Equals(TypedService other)
+        public bool Equals(TypedService? other)
         {
             if (other == null)
                 return false;

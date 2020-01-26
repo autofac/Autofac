@@ -16,7 +16,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var target = Factory.CreateReflectionActivator(typeof(DependsByCtor));
             var ex = Assert.Throws<DependencyResolutionException>(
-                () => target.ActivateInstance(Factory.EmptyContext, Factory.NoParameters));
+                () => target.ActivateInstance(Factory.CreateEmptyContext(), Factory.NoParameters));
 
             // I.e. the type of the missing dependency.
             Assert.Contains(nameof(DependsByProp), ex.Message);
@@ -49,7 +49,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         public void ActivateInstance_ReturnsInstanceOfTargetType()
         {
             var target = Factory.CreateReflectionActivator(typeof(object));
-            var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
+            var instance = target.ActivateInstance(Factory.CreateEmptyContainer(), Factory.NoParameters);
 
             Assert.NotNull(instance);
             Assert.IsType<object>(instance);
@@ -80,7 +80,7 @@ namespace Autofac.Test.Core.Activators.Reflection
 
             var target = Factory.CreateReflectionActivator(typeof(ThreeConstructors), parameters);
 
-            var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
+            var instance = target.ActivateInstance(Factory.CreateEmptyContainer(), Factory.NoParameters);
 
             Assert.NotNull(instance);
             Assert.IsType<ThreeConstructors>(instance);
@@ -95,7 +95,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var activator = Factory.CreateReflectionActivator(typeof(WithGenericCtor<string>));
             var parameters = new Parameter[] { new NamedParameter("t", "Hello") };
-            var instance = activator.ActivateInstance(new Container(), parameters);
+            var instance = activator.ActivateInstance(Factory.CreateEmptyContainer(), parameters);
             Assert.IsType<WithGenericCtor<string>>(instance);
         }
 
@@ -164,7 +164,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var target = Factory.CreateReflectionActivator(typeof(InternalDefaultConstructor));
             var dx = Assert.Throws<DependencyResolutionException>(() =>
-                target.ActivateInstance(new Container(), Factory.NoParameters));
+                target.ActivateInstance(Factory.CreateEmptyContainer(), Factory.NoParameters));
 
             Assert.Contains(typeof(DefaultConstructorFinder).Name, dx.Message);
         }
@@ -174,7 +174,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var setters = new Parameter[] { new NamedPropertyParameter("P", 1) };
             var activator = Factory.CreateReflectionActivator(typeof(PrivateSetProperty), Factory.NoParameters, setters);
-            var instance = activator.ActivateInstance(new Container(), Factory.NoParameters);
+            var instance = activator.ActivateInstance(Factory.CreateEmptyContainer(), Factory.NoParameters);
             Assert.IsType<PrivateSetProperty>(instance);
         }
 
@@ -219,7 +219,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var target = Factory.CreateReflectionActivator(typeof(NoPublicConstructor));
             var dx = Assert.Throws<NoConstructorsFoundException>(
-                () => target.ActivateInstance(new Container(), Factory.NoParameters));
+                () => target.ActivateInstance(Factory.CreateEmptyContainer(), Factory.NoParameters));
 
             Assert.Contains(typeof(NoPublicConstructor).FullName, dx.Message);
             Assert.Equal(typeof(NoPublicConstructor), dx.OffendingType);
@@ -267,7 +267,7 @@ namespace Autofac.Test.Core.Activators.Reflection
 
             var target = Factory.CreateReflectionActivator(typeof(AcceptsIntParameter), parameters);
 
-            var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
+            var instance = target.ActivateInstance(Factory.CreateEmptyContainer(), Factory.NoParameters);
 
             Assert.NotNull(instance);
             Assert.IsType<AcceptsIntParameter>(instance);
@@ -285,7 +285,7 @@ namespace Autofac.Test.Core.Activators.Reflection
 
             var target = Factory.CreateReflectionActivator(typeof(AcceptsIntParameter), parameters);
 
-            var instance = target.ActivateInstance(new Container(), Factory.NoParameters);
+            var instance = target.ActivateInstance(Factory.CreateEmptyContainer(), Factory.NoParameters);
 
             Assert.NotNull(instance);
             Assert.IsType<AcceptsIntParameter>(instance);

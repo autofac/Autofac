@@ -79,7 +79,7 @@ namespace Autofac.Core.Lifetime
                 throw new ArgumentNullException(nameof(mostNestedVisibleScope));
             }
 
-            var next = mostNestedVisibleScope;
+            ISharingLifetimeScope? next = mostNestedVisibleScope;
             while (next != null)
             {
                 if (this._tagsToMatch.Contains(next.Tag))

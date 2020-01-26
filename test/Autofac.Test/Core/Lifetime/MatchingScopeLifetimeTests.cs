@@ -10,7 +10,7 @@ namespace Autofac.Test.Core.Lifetime
         [Fact]
         public void WhenNoMatchingScopeIsPresent_TheExceptionMessageIncludesTheTag()
         {
-            var container = new Container();
+            var container = Factory.CreateEmptyContainer();
             const string tag = "abcdefg";
             var msl = new MatchingScopeLifetime(tag);
             var rootScope = (ISharingLifetimeScope)container.Resolve<ILifetimeScope>();
@@ -22,7 +22,7 @@ namespace Autofac.Test.Core.Lifetime
         [Fact]
         public void WhenNoMatchingScopeIsPresent_TheExceptionMessageIncludesTheTags()
         {
-            var container = new Container();
+            var container = Factory.CreateEmptyContainer();
             const string tag1 = "abc";
             const string tag2 = "def";
             var msl = new MatchingScopeLifetime(tag1, tag2);
@@ -46,7 +46,7 @@ namespace Autofac.Test.Core.Lifetime
         {
             const string tag = "Tag";
             var msl = new MatchingScopeLifetime(tag);
-            var container = new Container();
+            var container = Factory.CreateEmptyContainer();
             var lifetimeScope = (ISharingLifetimeScope)container.BeginLifetimeScope(tag);
 
             Assert.Equal(lifetimeScope, msl.FindScope(lifetimeScope));
@@ -59,7 +59,7 @@ namespace Autofac.Test.Core.Lifetime
             const string tag2 = "Tag2";
 
             var msl = new MatchingScopeLifetime(tag1, tag2);
-            var container = new Container();
+            var container = Factory.CreateEmptyContainer();
 
             var tag1Scope = (ISharingLifetimeScope)container.BeginLifetimeScope(tag1);
             Assert.Equal(tag1Scope, msl.FindScope(tag1Scope));
