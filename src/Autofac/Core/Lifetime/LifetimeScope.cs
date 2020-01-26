@@ -318,6 +318,41 @@ namespace Autofac.Core.Lifetime
         }
 
         /// <summary>
+        /// Try to create an instance with a GUID key.
+        /// </summary>
+        /// <param name="id">Key.</param>
+        /// <param name="creator">Creation function.</param>
+        /// <returns>An instance.</returns>
+        public object Create(Guid id, Func<object> creator)
+        {
+            if (creator == null) throw new ArgumentNullException(nameof(creator));
+
+            lock (_synchRoot)
+            {
+                if (_sharedInstances.TryGetValue(id, out var result)) return result;
+
+                result = creator();
+                if (_sharedInstances.ContainsKey(id))
+                    throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
+
+                _sharedInstances.TryAdd(id, result);
+
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Try to retrieve an instance based on a GUID key.
+        /// </summary>
+        /// <param name="id">Key to look up.</param>
+        /// <returns>An instance.</returns>
+        public object Get(Guid id)
+        {
+            _sharedInstances.TryGetValue(id, out var result);
+            return result;
+        }
+
+        /// <summary>
         /// Gets the disposer associated with this container. Instances can be associated
         /// with it manually if required.
         /// </summary>

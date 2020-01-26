@@ -40,6 +40,7 @@ namespace Autofac.Core.Resolving
     {
         private readonly IResolveOperation _context;
         private readonly ISharingLifetimeScope _activationScope;
+        private readonly IComponentRegistration _decoratorTargetComponent;
         private readonly Service _service;
         private object _newInstance;
         private bool _executed;
@@ -52,6 +53,7 @@ namespace Autofac.Core.Resolving
         {
             _context = context;
             _service = request.Service;
+            _decoratorTargetComponent = request.DecoratorTarget;
             ComponentRegistration = request.Registration;
             Parameters = request.Parameters;
 
@@ -81,16 +83,40 @@ namespace Autofac.Core.Resolving
             _executed = true;
 
             object decoratorTarget = null;
-            object instance = ComponentRegistration.Sharing == InstanceSharing.None
-                ? Activate(Parameters, out decoratorTarget)
-                : _activationScope.GetOrCreateAndShare(ComponentRegistration.Id, () => Activate(Parameters, out decoratorTarget));
+
+            var sharing = _decoratorTargetComponent != null
+                ? _decoratorTargetComponent.Sharing
+                : ComponentRegistration.Sharing;
+
+            var resolveParameters = Parameters as Parameter[] ?? Parameters.ToArray();
+
+            _newInstance = _activationScope.Get(ComponentRegistration.Id);
+
+            if (_newInstance == null)
+            {
+                _newInstance = sharing == InstanceSharing.Shared
+                    ? _activationScope.Create(ComponentRegistration.Id, () => CreateInstance(Parameters))
+                    : CreateInstance(Parameters);
+            }
+
+            decoratorTarget = _newInstance;
+
+            _newInstance = InstanceDecorator.TryDecorateRegistration(
+                _service,
+                ComponentRegistration,
+                _newInstance,
+                _activationScope,
+                resolveParameters);
+
+            if (_newInstance != decoratorTarget)
+                ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance);
 
             var handler = InstanceLookupEnding;
             handler?.Invoke(this, new InstanceLookupEndingEventArgs(this, NewInstanceActivated));
 
             StartStartableComponent(decoratorTarget);
 
-            return instance;
+            return _newInstance;
         }
 
         private void StartStartableComponent(object instance)
@@ -111,7 +137,7 @@ namespace Autofac.Core.Resolving
         private bool NewInstanceActivated => _newInstance != null;
 
         [SuppressMessage("CA1031", "CA1031", Justification = "General exception gets rethrown in a PropagateActivationException.")]
-        private object Activate(IEnumerable<Parameter> parameters, out object decoratorTarget)
+        private object CreateInstance(IEnumerable<Parameter> parameters)
         {
             ComponentRegistration.RaisePreparing(this, ref parameters);
 
@@ -119,16 +145,9 @@ namespace Autofac.Core.Resolving
 
             try
             {
-                decoratorTarget = _newInstance = ComponentRegistration.Activator.ActivateInstance(this, resolveParameters);
+                _newInstance = ComponentRegistration.Activator.ActivateInstance(this, resolveParameters);
 
                 ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance);
-
-                _newInstance = InstanceDecorator.TryDecorateRegistration(
-                    _service,
-                    ComponentRegistration,
-                    _newInstance,
-                    _activationScope,
-                    resolveParameters);
             }
             catch (ObjectDisposedException)
             {
@@ -145,18 +164,15 @@ namespace Autofac.Core.Resolving
                 // important. The ProvidedInstanceActivator will NOT dispose of the provided
                 // instance once the instance has been activated - assuming that it will be
                 // done during the lifetime scope's Disposer executing.
-                if (decoratorTarget is IDisposable instanceAsDisposable)
+                if (_newInstance is IDisposable instanceAsDisposable)
                 {
                     _activationScope.Disposer.AddInstanceForDisposal(instanceAsDisposable);
                 }
-                else if (decoratorTarget is IAsyncDisposable asyncDisposableInstance)
+                else if (_newInstance is IAsyncDisposable asyncDisposableInstance)
                 {
                     _activationScope.Disposer.AddInstanceForAsyncDisposal(asyncDisposableInstance);
                 }
             }
-
-            if (_newInstance != decoratorTarget)
-                ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance);
 
             return _newInstance;
         }

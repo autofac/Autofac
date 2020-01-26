@@ -50,5 +50,20 @@ namespace Autofac.Core
         /// <param name="creator">Creation function.</param>
         /// <returns>An instance.</returns>
         object GetOrCreateAndShare(Guid id, Func<object> creator);
+
+        /// <summary>
+        /// Try to retrieve an instance based on a GUID key.
+        /// </summary>
+        /// <param name="id">Key to look up.</param>
+        /// <returns>An instance.</returns>
+        object Get(Guid id);
+
+        /// <summary>
+        /// Try to create an instance with a GUID key.
+        /// </summary>
+        /// <param name="id">Key.</param>
+        /// <param name="creator">Creation function.</param>
+        /// <returns>An instance.</returns>
+        object Create(Guid id, Func<object> creator);
     }
 }
