@@ -179,6 +179,26 @@ namespace Autofac.Specification.Test.Features
         }
 
         [Fact]
+        public void PropertiesAutowiredDoesNotSetStaticSetter()
+        {
+            var val = "Value";
+
+            // Clear it out before the test runs
+            HasStaticSetter.Val = null;
+
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(val);
+            builder.RegisterType<HasStaticSetter>().PropertiesAutowired();
+
+            var container = builder.Build();
+
+            var instance = container.Resolve<HasStaticSetter>();
+
+            Assert.NotNull(instance);
+            Assert.Null(HasStaticSetter.Val);
+        }
+
+        [Fact]
         public void PropertiesAutowiredOverwritesSetProperties()
         {
             var val = "Value";

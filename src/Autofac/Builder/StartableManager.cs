@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Autofac.Core;
@@ -10,36 +10,41 @@ namespace Autofac.Builder
         /// <summary>
         /// Executes the startable and auto-activate components in a context.
         /// </summary>
+        /// <param name="properties">The set of properties used during component registration.</param>
         /// <param name="componentContext">
-        /// The <see cref="IComponentContext"/> in which startables should execute.
+        /// The <see cref="IComponentContext"/> in which startable services should execute.
         /// </param>
-        internal static void StartStartableComponents(IComponentContext componentContext)
+        internal static void StartStartableComponents(IDictionary<string, object?> properties, IComponentContext componentContext)
         {
             var componentRegistry = componentContext.ComponentRegistry;
             try
             {
-                componentRegistry.Properties[MetadataKeys.StartOnActivatePropertyKey] = true;
+                properties[MetadataKeys.StartOnActivatePropertyKey] = true;
 
                 // We track which registrations have already been auto-activated by adding
                 // a metadata value. If the value is present, we won't re-activate. This helps
                 // in the container update situation.
-                foreach (var startable in componentRegistry.RegistrationsFor(new TypedService(typeof(IStartable))).Where(r => !r.Metadata.ContainsKey(MetadataKeys.AutoActivated)))
+                var startableService = new TypedService(typeof(IStartable));
+                foreach (var registration in componentRegistry.RegistrationsFor(startableService).Where(r => !r.Metadata.ContainsKey(MetadataKeys.AutoActivated)))
                 {
                     try
                     {
-                        componentContext.ResolveComponent(startable, Enumerable.Empty<Parameter>());
+                        var request = new ResolveRequest(startableService, registration, Enumerable.Empty<Parameter>());
+                        componentContext.ResolveComponent(request);
                     }
                     finally
                     {
-                        startable.Metadata[MetadataKeys.AutoActivated] = true;
+                        registration.Metadata[MetadataKeys.AutoActivated] = true;
                     }
                 }
 
-                foreach (var registration in componentRegistry.RegistrationsFor(new AutoActivateService()).Where(r => !r.Metadata.ContainsKey(MetadataKeys.AutoActivated)))
+                var autoActivateService = new AutoActivateService();
+                foreach (var registration in componentRegistry.RegistrationsFor(autoActivateService).Where(r => !r.Metadata.ContainsKey(MetadataKeys.AutoActivated)))
                 {
                     try
                     {
-                        componentContext.ResolveComponent(registration, Enumerable.Empty<Parameter>());
+                        var request = new ResolveRequest(autoActivateService, registration, Enumerable.Empty<Parameter>());
+                        componentContext.ResolveComponent(request);
                     }
                     catch (DependencyResolutionException ex)
                     {
@@ -53,7 +58,7 @@ namespace Autofac.Builder
             }
             finally
             {
-                componentRegistry.Properties.Remove(MetadataKeys.StartOnActivatePropertyKey);
+                properties.Remove(MetadataKeys.StartOnActivatePropertyKey);
             }
         }
     }

@@ -68,12 +68,18 @@ namespace Autofac.Core
         /// <summary>
         /// Gets additional data associated with the component.
         /// </summary>
-        IDictionary<string, object> Metadata { get; }
+        IDictionary<string, object?> Metadata { get; }
 
         /// <summary>
         /// Gets the component registration upon which this registration is based.
         /// </summary>
         IComponentRegistration Target { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the registration is a 1:1 adapter on top
+        /// of another component (e.g., Meta, Func, or Owned).
+        /// </summary>
+        bool IsAdapterForIndividualComponent { get; }
 
         /// <summary>
         /// Fired when a new instance is required, prior to activation.

@@ -26,7 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Autofac.Core.Activators.Delegate;
+using System.Threading.Tasks;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
@@ -45,20 +45,10 @@ namespace Autofac.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="Container"/> class.
         /// </summary>
-        /// <param name="properties">The properties used during component registration.</param>
-        internal Container(IDictionary<string, object> properties = null)
+        /// <param name="componentRegistry">The registry of components.</param>
+        internal Container(IComponentRegistry componentRegistry)
         {
-            ComponentRegistry = new ComponentRegistry(properties ?? new Dictionary<string, object>());
-
-            ComponentRegistry.Register(new ComponentRegistration(
-                LifetimeScope.SelfRegistrationId,
-                new DelegateActivator(typeof(LifetimeScope), (c, p) => { throw new InvalidOperationException(ContainerResources.SelfRegistrationCannotBeActivated); }),
-                new CurrentScopeLifetime(),
-                InstanceSharing.Shared,
-                InstanceOwnership.ExternallyOwned,
-                new Service[] { new TypedService(typeof(ILifetimeScope)), new TypedService(typeof(IComponentContext)) },
-                new Dictionary<string, object>()));
-
+            ComponentRegistry = componentRegistry;
             _rootLifetimeScope = new LifetimeScope(ComponentRegistry);
         }
 
@@ -155,19 +145,10 @@ namespace Autofac.Core
         /// </summary>
         public IComponentRegistry ComponentRegistry { get; }
 
-        /// <summary>
-        /// Resolve an instance of the provided registration within the context.
-        /// </summary>
-        /// <param name="registration">The registration.</param>
-        /// <param name="parameters">Parameters for the instance.</param>
-        /// <returns>
-        /// The component instance.
-        /// </returns>
-        /// <exception cref="ComponentNotRegisteredException"/>
-        /// <exception cref="DependencyResolutionException"/>
-        public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        /// <inheritdoc />
+        public object ResolveComponent(ResolveRequest request)
         {
-            return _rootLifetimeScope.ResolveComponent(registration, parameters);
+            return _rootLifetimeScope.ResolveComponent(request);
         }
 
         /// <summary>
@@ -183,6 +164,20 @@ namespace Autofac.Core
             }
 
             base.Dispose(disposing);
+        }
+
+        protected override async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                await _rootLifetimeScope.DisposeAsync();
+
+                // Registries are not likely to have async tasks to dispose of,
+                // so we will leave it as a straight dispose.
+                ComponentRegistry.Dispose();
+            }
+
+            // Do not call the base, otherwise the standard Dispose will fire.
         }
 
         /// <summary>

@@ -71,9 +71,9 @@ namespace Autofac.Core
         /// <returns>
         /// true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
         /// </returns>
-        public bool Equals(KeyedService other)
+        public bool Equals(KeyedService? other)
         {
-            if (other == null)
+            if (other is null)
                 return false;
 
             return ServiceKey.Equals(other.ServiceKey) && ServiceType == other.ServiceType;
@@ -86,8 +86,7 @@ namespace Autofac.Core
         /// <returns>
         /// true if the specified <see cref="System.Object"/> is equal to the current <see cref="System.Object"/>; otherwise, false.
         /// </returns>
-        /// <exception cref="System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as KeyedService);
         }

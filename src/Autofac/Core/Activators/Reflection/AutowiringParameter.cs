@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -46,15 +47,15 @@ namespace Autofac.Core.Activators.Reflection
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="pi" /> or <paramref name="context" /> is <see langword="null" />.
         /// </exception>
-        public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<object> valueProvider)
+        public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, [NotNullWhen(returnValue: true)] out Func<object?>? valueProvider)
         {
             if (pi == null) throw new ArgumentNullException(nameof(pi));
             if (context == null) throw new ArgumentNullException(nameof(context));
 
-            IComponentRegistration registration;
-            if (context.ComponentRegistry.TryGetRegistration(new TypedService(pi.ParameterType), out registration))
+            var service = new TypedService(pi.ParameterType);
+            if (context.ComponentRegistry.TryGetRegistration(service, out var registration))
             {
-                valueProvider = () => context.ResolveComponent(registration, Enumerable.Empty<Parameter>());
+                valueProvider = () => context.ResolveComponent(new ResolveRequest(service, registration, Enumerable.Empty<Parameter>()));
                 return true;
             }
 

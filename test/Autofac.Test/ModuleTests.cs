@@ -22,9 +22,11 @@ namespace Autofac.Test
         [Fact]
         public void LoadsRegistrations()
         {
-            var cr = new ComponentRegistry();
-            new ObjectModule().Configure(cr);
-            Assert.True(cr.IsRegistered(new TypedService(typeof(object))));
+            IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
+            new ObjectModule().Configure(builder);
+            var registry = builder.Build();
+
+            Assert.True(registry.IsRegistered(new TypedService(typeof(object))));
         }
 
         [Fact]
@@ -37,7 +39,7 @@ namespace Autofac.Test
         {
             public IList<IComponentRegistration> Registrations { get; set; } = new List<IComponentRegistration>();
 
-            protected override void AttachToComponentRegistration(IComponentRegistry componentRegistry, IComponentRegistration registration)
+            protected override void AttachToComponentRegistration(IComponentRegistryBuilder componentRegistry, IComponentRegistration registration)
             {
                 base.AttachToComponentRegistration(componentRegistry, registration);
                 Registrations.Add(registration);
@@ -108,18 +110,36 @@ namespace Autofac.Test
             using (var container = builder.Build())
             {
                 Assert.NotNull(container.ComponentRegistry.Properties[MetadataKeys.RegisteredPropertyKey]);
-                using (var outerScope = container.BeginLifetimeScope(c => c.RegisterType(typeof(int))))
+                using (container.BeginLifetimeScope(c =>
                 {
-                    Assert.Equal(
-                        container.ComponentRegistry.Properties[MetadataKeys.RegisteredPropertyKey],
-                        outerScope.ComponentRegistry.Properties[MetadataKeys.RegisteredPropertyKey]);
-                    outerScope.ComponentRegistry.Registered += (s, e) => { };
-                    using (var innerScope = outerScope.BeginLifetimeScope())
+                    c.RegisterCallback(outerBuilder =>
                     {
+                        Assert.Equal(
+                            container.ComponentRegistry.Properties[MetadataKeys.RegisteredPropertyKey],
+                            outerBuilder.Properties[MetadataKeys.RegisteredPropertyKey]);
+
+                        outerBuilder.Registered += (s, e) => { };
+
                         Assert.NotEqual(
                             container.ComponentRegistry.Properties[MetadataKeys.RegisteredPropertyKey],
-                            innerScope.ComponentRegistry.Properties[MetadataKeys.RegisteredPropertyKey]);
-                    }
+                            outerBuilder.Properties[MetadataKeys.RegisteredPropertyKey]);
+                    });
+                    c.RegisterCallback(outerBuilder =>
+                    {
+                        Assert.Equal(
+                            container.ComponentRegistry.Properties[MetadataKeys.RegistrationSourceAddedPropertyKey],
+                            outerBuilder.Properties[MetadataKeys.RegistrationSourceAddedPropertyKey]);
+
+                        outerBuilder.RegistrationSourceAdded += (s, e) => { };
+
+                        Assert.NotEqual(
+                            container.ComponentRegistry.Properties[MetadataKeys.RegisteredPropertyKey],
+                            outerBuilder.Properties[MetadataKeys.RegisteredPropertyKey]);
+                    });
+
+                    c.RegisterType(typeof(int));
+                }))
+                {
                 }
             }
         }
@@ -182,7 +202,7 @@ namespace Autofac.Test
             builder.RegisterModule<PropertySetModule>();
 
             var container = builder.Build();
-            Assert.Equal(2, builder.Properties["count"]);
+            Assert.Equal(2, container.ComponentRegistry.Properties["count"]);
             Assert.Equal("value", builder.Properties["prop"]);
         }
     }

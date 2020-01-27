@@ -64,6 +64,8 @@ namespace Autofac.Test
 
             public IComponentRegistration Target { get; }
 
+            public bool IsAdapterForIndividualComponent { get; }
+
             public event EventHandler<PreparingEventArgs> Preparing = (sender, args) => { };
 
             public void RaisePreparing(IComponentContext context, ref IEnumerable<Parameter> parameters)

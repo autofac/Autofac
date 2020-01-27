@@ -26,14 +26,14 @@ namespace Autofac.Benchmarks
             _container = builder.Build();
         }
 
-        [Params(10 /*, 100, 1_000 */)]
+        [Params(100 /*, 100, 1_000 */)]
         public int ResolveTaskCount { get; set; }
 
-        [Params(10 /*, 1_000, 10_000 */)]
+        [Params(100 /*, 1_000, 10_000 */)]
         public int ResolvesPerTask { get; set; }
 
         [Benchmark]
-        public void MultipleResolvesOnMultipleTasks()
+        public async Task MultipleResolvesOnMultipleTasks()
         {
             var tasks = new List<Task>(ResolveTaskCount);
 
@@ -57,7 +57,7 @@ namespace Autofac.Benchmarks
                 tasks.Add(task);
             }
 
-            Task.WhenAll(tasks);
+            await Task.WhenAll(tasks);
         }
 
         internal class A

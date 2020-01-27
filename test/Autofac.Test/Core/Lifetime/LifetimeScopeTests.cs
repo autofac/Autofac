@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Linq;
+using System.Threading.Tasks;
 using Autofac.Core;
-using Autofac.Core.Registration;
 using Autofac.Test.Scenarios.RegistrationSources;
+using Autofac.Test.Util;
 using Xunit;
 
 namespace Autofac.Test.Core.Lifetime
@@ -14,44 +14,15 @@ namespace Autofac.Test.Core.Lifetime
         {
             const string parentInstance = "p";
             const string childInstance = "c";
-            var parent = new Container();
-            parent.ComponentRegistry.AddRegistrationSource(new ObjectRegistrationSource(parentInstance));
-            var child = parent.BeginLifetimeScope(builder =>
-                    builder.RegisterSource(new ObjectRegistrationSource(childInstance)));
+
+            var builder = new ContainerBuilder();
+            builder.ComponentRegistryBuilder.AddRegistrationSource(new ObjectRegistrationSource(parentInstance));
+
+            var parent = builder.Build();
+            var child = parent.BeginLifetimeScope(lifetimeScopeBuilder =>
+                    lifetimeScopeBuilder.RegisterSource(new ObjectRegistrationSource(childInstance)));
             var fromChild = child.Resolve<object>();
             Assert.Same(childInstance, fromChild);
-        }
-
-        [Fact]
-        public void CanRegisterInstanceUsingUpdateInsideChildLifetimeScope()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<UpdatesRegistryWithInstance>();
-            builder.RegisterType<DependsOnRegisteredInstance>();
-            var container = builder.Build();
-
-            var scope = container.BeginLifetimeScope();
-            var updatesRegistry = scope.Resolve<UpdatesRegistryWithInstance>();
-            updatesRegistry.UpdateRegistry(new object());
-            var instance1 = scope.Resolve<DependsOnRegisteredInstance>();
-
-            scope = container.BeginLifetimeScope();
-            updatesRegistry = scope.Resolve<UpdatesRegistryWithInstance>();
-            updatesRegistry.UpdateRegistry(new object());
-            var instance2 = scope.Resolve<DependsOnRegisteredInstance>();
-
-            Assert.NotSame(instance1, instance2);
-        }
-
-        [Fact]
-        public void LifetimeScopeCreatedWithAdditionalRegistrationsUsesScopeRestrictedRegistry()
-        {
-            var rootScope = new ContainerBuilder().Build();
-
-            var nestedScope = rootScope.BeginLifetimeScope(cb =>
-                cb.RegisterType<object>().SingleInstance());
-
-            Assert.IsType<ScopeRestrictedRegistry>(nestedScope.ComponentRegistry);
         }
 
         [Fact]
@@ -71,8 +42,7 @@ namespace Autofac.Test.Core.Lifetime
             var builder = new ContainerBuilder();
             var container = builder.Build();
             var nestedRegistration = Mocks.GetComponentRegistration();
-            var child = container.BeginLifetimeScope();
-            child.ComponentRegistry.Register(nestedRegistration);
+            var child = container.BeginLifetimeScope(x => x.ComponentRegistryBuilder.Register(nestedRegistration));
             child.Dispose();
             Assert.True(nestedRegistration.IsDisposed);
         }
@@ -100,6 +70,67 @@ namespace Autofac.Test.Core.Lifetime
             }
         }
 
+        [Fact]
+        public async ValueTask AsyncDisposeLifetimeScopeDisposesRegistrationsAsync()
+        {
+            var cb = new ContainerBuilder();
+
+            cb.RegisterType<DisposeTracker>().InstancePerLifetimeScope().AsSelf();
+            cb.RegisterType<AsyncDisposeTracker>().InstancePerLifetimeScope().AsSelf();
+            cb.RegisterType<AsyncOnlyDisposeTracker>().InstancePerLifetimeScope().AsSelf();
+
+            var container = cb.Build();
+
+            DisposeTracker tracker;
+            AsyncDisposeTracker asyncTracker;
+            AsyncOnlyDisposeTracker asyncOnlyTracker;
+
+            await using (var scope = container.BeginLifetimeScope())
+            {
+                tracker = scope.Resolve<DisposeTracker>();
+                asyncTracker = scope.Resolve<AsyncDisposeTracker>();
+                asyncOnlyTracker = scope.Resolve<AsyncOnlyDisposeTracker>();
+
+                Assert.False(tracker.IsDisposed);
+                Assert.False(asyncTracker.IsSyncDisposed);
+                Assert.False(asyncTracker.IsAsyncDisposed);
+                Assert.False(asyncOnlyTracker.IsAsyncDisposed);
+            }
+
+            Assert.True(tracker.IsDisposed);
+            Assert.True(asyncTracker.IsAsyncDisposed);
+            Assert.True(asyncOnlyTracker.IsAsyncDisposed);
+            Assert.False(asyncTracker.IsSyncDisposed);
+        }
+
+        [Fact]
+        public void DisposeLifetimeScopeDisposesRegistrationsThatAreAsyncAndSyncDispose()
+        {
+            var cb = new ContainerBuilder();
+
+            cb.RegisterType<DisposeTracker>().InstancePerLifetimeScope().AsSelf();
+            cb.RegisterType<AsyncDisposeTracker>().InstancePerLifetimeScope().AsSelf();
+
+            var container = cb.Build();
+
+            DisposeTracker tracker;
+            AsyncDisposeTracker asyncTracker;
+
+            using (var scope = container.BeginLifetimeScope())
+            {
+                tracker = scope.Resolve<DisposeTracker>();
+                asyncTracker = scope.Resolve<AsyncDisposeTracker>();
+
+                Assert.False(tracker.IsDisposed);
+                Assert.False(asyncTracker.IsSyncDisposed);
+                Assert.False(asyncTracker.IsAsyncDisposed);
+            }
+
+            Assert.True(tracker.IsDisposed);
+            Assert.False(asyncTracker.IsAsyncDisposed);
+            Assert.True(asyncTracker.IsSyncDisposed);
+        }
+
         internal class DependsOnRegisteredInstance
         {
             public DependsOnRegisteredInstance(object instance)
@@ -116,23 +147,6 @@ namespace Autofac.Test.Core.Lifetime
 
         public class Person
         {
-        }
-
-        internal class UpdatesRegistryWithInstance
-        {
-            private readonly IComponentContext _registerContext;
-
-            public UpdatesRegistryWithInstance(IComponentContext registerContext)
-            {
-                this._registerContext = registerContext;
-            }
-
-            internal void UpdateRegistry(object instance)
-            {
-                var builder = new ContainerBuilder();
-                builder.RegisterInstance(instance);
-                builder.UpdateRegistry(this._registerContext.ComponentRegistry);
-            }
         }
     }
 }

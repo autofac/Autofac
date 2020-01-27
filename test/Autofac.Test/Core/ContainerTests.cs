@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Autofac.Core;
+using Autofac.Core.Registration;
 using Autofac.Test.Scenarios.Parameterisation;
+using Autofac.Test.Util;
 using Xunit;
 
 namespace Autofac.Test.Core
@@ -16,8 +19,10 @@ namespace Autofac.Test.Core
                 new Service[] { new KeyedService(name, typeof(string)) },
                 Factory.CreateReflectionActivator(typeof(object)));
 
-            var c = new Container();
-            c.ComponentRegistry.Register(r);
+            var builder = Factory.CreateEmptyComponentRegistryBuilder();
+            builder.Register(r);
+
+            var c = new ContainerBuilder(builder).Build();
 
             object o;
 
@@ -114,7 +119,7 @@ namespace Autofac.Test.Core
         [Fact]
         public void ContainerProvidesILifetimeScopeAndIContext()
         {
-            var container = new Container();
+            var container = Factory.CreateEmptyContainer();
             Assert.True(container.IsRegistered<ILifetimeScope>());
             Assert.True(container.IsRegistered<IComponentContext>());
         }
@@ -122,7 +127,7 @@ namespace Autofac.Test.Core
         [Fact]
         public void ResolvingLifetimeScopeProvidesCurrentScope()
         {
-            var c = new Container();
+            var c = Factory.CreateEmptyContainer();
             var l = c.BeginLifetimeScope();
             Assert.Same(l, l.Resolve<ILifetimeScope>());
         }
@@ -130,7 +135,7 @@ namespace Autofac.Test.Core
         [Fact]
         public void ResolvingComponentContextProvidesCurrentScope()
         {
-            var c = new Container();
+            var c = Factory.CreateEmptyContainer();
             var l = c.BeginLifetimeScope();
             Assert.Same(l, l.Resolve<IComponentContext>());
         }
@@ -177,9 +182,29 @@ namespace Autofac.Test.Core
             }
         }
 
+        [Fact]
+        public async ValueTask AsyncContainerDisposeTriggersAsyncServiceDispose()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(c => new AsyncDisposeTracker()).SingleInstance();
+
+            AsyncDisposeTracker tracker;
+
+            await using (var container = builder.Build())
+            {
+                tracker = container.Resolve<AsyncDisposeTracker>();
+
+                Assert.False(tracker.IsSyncDisposed);
+                Assert.False(tracker.IsAsyncDisposed);
+            }
+
+            Assert.False(tracker.IsSyncDisposed);
+            Assert.True(tracker.IsAsyncDisposed);
+        }
+
         private class ReplaceInstanceModule : Module
         {
-            protected override void AttachToComponentRegistration(IComponentRegistry componentRegistry, IComponentRegistration registration)
+            protected override void AttachToComponentRegistration(IComponentRegistryBuilder componentRegistry, IComponentRegistration registration)
             {
                 registration.Activating += (o, args) =>
                 {

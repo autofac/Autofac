@@ -56,6 +56,7 @@ namespace Autofac.Builder
         /// <param name="delegate">Delegate to register.</param>
         /// <returns>A registration builder.</returns>
         public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> ForDelegate<T>(Func<IComponentContext, IEnumerable<Parameter>, T> @delegate)
+            where T : notnull
         {
             return new RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>(
                 new TypedService(typeof(T)),
@@ -83,6 +84,7 @@ namespace Autofac.Builder
         /// <typeparam name="TImplementer">Implementation type to register.</typeparam>
         /// <returns>A registration builder.</returns>
         public static IRegistrationBuilder<TImplementer, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType<TImplementer>()
+            where TImplementer : notnull
         {
             return new RegistrationBuilder<TImplementer, ConcreteReflectionActivatorData, SingleRegistrationStyle>(
                 new TypedService(typeof(TImplementer)),
@@ -134,7 +136,8 @@ namespace Autofac.Builder
                 builder.RegistrationData,
                 builder.ActivatorData.Activator,
                 builder.RegistrationData.Services.ToArray(),
-                builder.RegistrationStyle.Target);
+                builder.RegistrationStyle.Target,
+                builder.RegistrationStyle.IsAdapterForIndividualComponent);
         }
 
         /// <summary>
@@ -162,6 +165,7 @@ namespace Autofac.Builder
         /// <param name="activator">Activator.</param>
         /// <param name="services">Services provided by the registration.</param>
         /// <param name="target">Optional; target registration.</param>
+        /// <param name="isAdapterForIndividualComponent">Optional; whether the registration is a 1:1 adapters on top of another component.</param>
         /// <returns>An IComponentRegistration.</returns>
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="activator" /> or <paramref name="data" /> is <see langword="null" />.
@@ -171,10 +175,12 @@ namespace Autofac.Builder
             RegistrationData data,
             IInstanceActivator activator,
             Service[] services,
-            IComponentRegistration target)
+            IComponentRegistration? target,
+            bool isAdapterForIndividualComponent = false)
         {
             if (activator == null) throw new ArgumentNullException(nameof(activator));
             if (data == null) throw new ArgumentNullException(nameof(data));
+            if (services == null) throw new ArgumentNullException(nameof(services));
 
             var limitType = activator.LimitType;
             if (limitType != typeof(object))
@@ -216,7 +222,8 @@ namespace Autofac.Builder
                     data.Ownership,
                     services,
                     data.Metadata,
-                    target);
+                    target,
+                    isAdapterForIndividualComponent);
             }
 
             foreach (var p in data.PreparingHandlers)
@@ -239,7 +246,7 @@ namespace Autofac.Builder
         /// <param name="cr">Component registry to make registration in.</param>
         /// <param name="builder">Registration builder with data for new registration.</param>
         public static void RegisterSingleComponent<TLimit, TActivatorData, TSingleRegistrationStyle>(
-            IComponentRegistry cr,
+            IComponentRegistryBuilder cr,
             IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> builder)
             where TSingleRegistrationStyle : SingleRegistrationStyle
             where TActivatorData : IConcreteActivatorData

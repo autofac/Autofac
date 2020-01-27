@@ -25,12 +25,11 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Autofac.Builder;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
@@ -50,25 +49,18 @@ namespace Autofac.Core.Lifetime
         /// </summary>
         private readonly object _synchRoot = new object();
         private readonly ConcurrentDictionary<Guid, object> _sharedInstances = new ConcurrentDictionary<Guid, object>();
+        private object? _anonymousTag;
+        private LifetimeScope? parentScope;
 
         internal static Guid SelfRegistrationId { get; } = Guid.NewGuid();
-
-        private static readonly Action<ContainerBuilder> NoConfiguration = b => { };
 
         /// <summary>
         /// The tag applied to root scopes when no other tag is specified.
         /// </summary>
         public static readonly object RootTag = "root";
 
-        private static object MakeAnonymousTag()
-        {
-            return new object();
-        }
-
-        private LifetimeScope()
-        {
-            _sharedInstances[SelfRegistrationId] = this;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private object MakeAnonymousTag() => _anonymousTag = new object();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LifetimeScope"/> class.
@@ -79,8 +71,8 @@ namespace Autofac.Core.Lifetime
         protected LifetimeScope(IComponentRegistry componentRegistry, LifetimeScope parent, object tag)
             : this(componentRegistry, tag)
         {
-            ParentLifetimeScope = parent ?? throw new ArgumentNullException(nameof(parent));
-            RootLifetimeScope = ParentLifetimeScope.RootLifetimeScope;
+            parentScope = parent ?? throw new ArgumentNullException(nameof(parent));
+            RootLifetimeScope = parentScope.RootLifetimeScope;
         }
 
         /// <summary>
@@ -89,8 +81,8 @@ namespace Autofac.Core.Lifetime
         /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
         /// <param name="componentRegistry">Components used in the scope.</param>
         public LifetimeScope(IComponentRegistry componentRegistry, object tag)
-            : this()
         {
+            _sharedInstances[SelfRegistrationId] = this;
             ComponentRegistry = componentRegistry ?? throw new ArgumentNullException(nameof(componentRegistry));
             Tag = tag ?? throw new ArgumentNullException(nameof(tag));
             RootLifetimeScope = this;
@@ -124,28 +116,29 @@ namespace Autofac.Core.Lifetime
         public ILifetimeScope BeginLifetimeScope(object tag)
         {
             CheckNotDisposed();
-
             CheckTagIsUnique(tag);
 
-            var registry = new CopyOnWriteRegistry(ComponentRegistry, () => CreateScopeRestrictedRegistry(tag, NoConfiguration));
-            var scope = new LifetimeScope(registry, this, tag);
-            scope.Disposer.AddInstanceForDisposal(registry);
+            var scope = new LifetimeScope(ComponentRegistry, this, tag);
             RaiseBeginning(scope);
             return scope;
         }
 
         private void CheckTagIsUnique(object tag)
         {
+            if (ReferenceEquals(tag, _anonymousTag)) return;
+
             ISharingLifetimeScope parentScope = this;
             while (parentScope != RootLifetimeScope)
             {
+                // In the scope where we are searching for parents, then the parent scope will not be null.
                 if (parentScope.Tag.Equals(tag))
                 {
                     throw new InvalidOperationException(
                         string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.DuplicateTagDetected, tag));
                 }
 
-                parentScope = parentScope.ParentLifetimeScope;
+                // In the scope of searching for tags, the ParentLifetimeScope will always be set.
+                parentScope = parentScope.ParentLifetimeScope!;
             }
         }
 
@@ -207,15 +200,19 @@ namespace Autofac.Core.Lifetime
             CheckNotDisposed();
             CheckTagIsUnique(tag);
 
-            var locals = CreateScopeRestrictedRegistry(tag, configurationAction);
-            var scope = new LifetimeScope(locals, this, tag);
-            scope.Disposer.AddInstanceForDisposal(locals);
+            var localsBuilder = CreateScopeRestrictedRegistry(tag, configurationAction);
+            var scope = new LifetimeScope(localsBuilder.Build(), this, tag);
+            scope.Disposer.AddInstanceForDisposal(localsBuilder);
 
-            if (locals.Properties.TryGetValue(MetadataKeys.ContainerBuildOptions, out var options) &&
-                !((ContainerBuildOptions)options).HasFlag(ContainerBuildOptions.IgnoreStartableComponents))
+            if (localsBuilder.Properties.TryGetValue(MetadataKeys.ContainerBuildOptions, out var options)
+                && options != null
+                && !((ContainerBuildOptions)options).HasFlag(ContainerBuildOptions.IgnoreStartableComponents))
             {
-                StartableManager.StartStartableComponents(scope);
+                StartableManager.StartStartableComponents(localsBuilder.Properties, scope);
             }
+
+            // Run any build callbacks.
+            BuildCallbackManager.RunBuildCallbacks(scope);
 
             RaiseBeginning(scope);
 
@@ -232,60 +229,60 @@ namespace Autofac.Core.Lifetime
         /// <remarks>It is the responsibility of the caller to make sure that the registry is properly
         /// disposed of. This is generally done by adding the registry to the <see cref="Disposer"/>
         /// property of the child scope.</remarks>
-        private ScopeRestrictedRegistry CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction)
+        private IComponentRegistryBuilder CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction)
         {
-            var builder = new ContainerBuilder(new FallbackDictionary<string, object>(ComponentRegistry.Properties));
+            var restrictedRootScopeLifetime = new MatchingScopeLifetime(tag);
+            var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
 
-            foreach (var source in ComponentRegistry.Sources
-                .Where(src => src.IsAdapterForIndividualComponents))
-                builder.RegisterSource(source);
+            var fallbackProperties = new FallbackDictionary<string, object?>(ComponentRegistry.Properties);
+            var registryBuilder = new ComponentRegistryBuilder(tracker, fallbackProperties);
+
+            var builder = new ContainerBuilder(fallbackProperties, registryBuilder);
+
+            foreach (var source in ComponentRegistry.Sources)
+            {
+                if (source.IsAdapterForIndividualComponents)
+                    builder.RegisterSource(source);
+            }
 
             // Issue #272: Only the most nested parent registry with HasLocalComponents is registered as an external source
             // It provides all non-adapting registrations from itself and from it's parent registries
-            var parent = Traverse.Across<ISharingLifetimeScope>(this, s => s.ParentLifetimeScope)
-                .Where(s => s.ComponentRegistry.HasLocalComponents)
-                .Select(s => new ExternalRegistrySource(s.ComponentRegistry))
-                .FirstOrDefault();
-
-            if (parent != null)
+            ISharingLifetimeScope? parent = this;
+            while (parent != null)
             {
-                builder.RegisterSource(parent);
+                if (parent.ComponentRegistry.HasLocalComponents)
+                {
+                    var externalSource = new ExternalRegistrySource(parent.ComponentRegistry);
+                    builder.RegisterSource(externalSource);
+                    break;
+                }
+
+                parent = parent.ParentLifetimeScope;
             }
 
             configurationAction(builder);
 
-            var locals = new ScopeRestrictedRegistry(tag, builder.Properties);
-            builder.UpdateRegistry(locals);
-            return locals;
+            builder.UpdateRegistry(registryBuilder);
+            return registryBuilder;
         }
 
-        /// <summary>
-        /// Resolve an instance of the provided registration within the context.
-        /// </summary>
-        /// <param name="registration">The registration.</param>
-        /// <param name="parameters">Parameters for the instance.</param>
-        /// <returns>
-        /// The component instance.
-        /// </returns>
-        /// <exception cref="Autofac.Core.Registration.ComponentNotRegisteredException"/>
-        /// <exception cref="DependencyResolutionException"/>
-        public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        /// <inheritdoc />
+        public object ResolveComponent(ResolveRequest request)
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+            if (request == null) throw new ArgumentNullException(nameof(request));
 
             CheckNotDisposed();
 
             var operation = new ResolveOperation(this);
             var handler = ResolveOperationBeginning;
             handler?.Invoke(this, new ResolveOperationBeginningEventArgs(operation));
-            return operation.Execute(registration, parameters);
+            return operation.Execute(request);
         }
 
         /// <summary>
         /// Gets the parent of this node of the hierarchy, or null.
         /// </summary>
-        public ISharingLifetimeScope ParentLifetimeScope { get; }
+        public ISharingLifetimeScope? ParentLifetimeScope => parentScope;
 
         /// <summary>
         /// Gets the root of the sharing hierarchy.
@@ -358,16 +355,50 @@ namespace Autofac.Core.Lifetime
 
                 // ReSharper disable once InconsistentlySynchronizedField
                 _sharedInstances.Clear();
+                parentScope = null;
             }
 
             base.Dispose(disposing);
         }
 
+        protected override async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                var handler = CurrentScopeEnding;
+
+                try
+                {
+                    handler?.Invoke(this, new LifetimeScopeEndingEventArgs(this));
+                }
+                finally
+                {
+                    await Disposer.DisposeAsync();
+                }
+
+                // ReSharper disable once InconsistentlySynchronizedField
+                _sharedInstances.Clear();
+                parentScope = null;
+            }
+
+            // Don't call the base (which would just call the normal Dispose).
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void CheckNotDisposed()
         {
-            if (IsDisposed)
+            if (IsTreeDisposed())
                 throw new ObjectDisposedException(LifetimeScopeResources.ScopeIsDisposed, innerException: null);
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this or any of the parent disposables have been disposed.
+        /// </summary>
+        /// <returns>true if this instance of any of the parent instances have been disposed.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool IsTreeDisposed()
+        {
+            return IsDisposed || (parentScope is object && parentScope.IsTreeDisposed());
         }
 
         /// <summary>
@@ -379,7 +410,7 @@ namespace Autofac.Core.Lifetime
         /// A service object of type <paramref name="serviceType"/>.-or- null if there is
         /// no service object of type <paramref name="serviceType"/>.
         /// </returns>
-        public object GetService(Type serviceType)
+        public object? GetService(Type serviceType)
         {
             if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
 
@@ -389,16 +420,16 @@ namespace Autofac.Core.Lifetime
         /// <summary>
         /// Fired when a new scope based on the current scope is beginning.
         /// </summary>
-        public event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning;
+        public event EventHandler<LifetimeScopeBeginningEventArgs>? ChildLifetimeScopeBeginning;
 
         /// <summary>
         /// Fired when this scope is ending.
         /// </summary>
-        public event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding;
+        public event EventHandler<LifetimeScopeEndingEventArgs>? CurrentScopeEnding;
 
         /// <summary>
         /// Fired when a resolve operation is beginning in this scope.
         /// </summary>
-        public event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning;
+        public event EventHandler<ResolveOperationBeginningEventArgs>? ResolveOperationBeginning;
     }
 }

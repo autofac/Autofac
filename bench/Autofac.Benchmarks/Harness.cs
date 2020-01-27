@@ -23,6 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Linq;
 using Autofac.Benchmarks.Decorators;
 using BenchmarkDotNet.Running;
 using Xunit;
@@ -32,45 +33,62 @@ namespace Autofac.Benchmarks
     public class Harness
     {
         [Fact]
-        public void ChildScopeResolve() => BenchmarkRunner.Run<ChildScopeResolveBenchmark>();
+        public void ChildScopeResolve() => RunBenchmark<ChildScopeResolveBenchmark>();
 
         [Fact]
-        public void Concurrency() => BenchmarkRunner.Run<ConcurrencyBenchmark>();
+        public void Concurrency() => RunBenchmark<ConcurrencyBenchmark>();
 
         [Fact]
-        public void Decorator_Keyed_Generic() => BenchmarkRunner.Run<KeyedGenericBenchmark>();
+        public void ConcurrencyNestedScopes() => RunBenchmark<ConcurrencyNestedScopeBenchmark>();
 
         [Fact]
-        public void Decorator_Keyed_Nested() => BenchmarkRunner.Run<KeyedNestedBenchmark>();
+        public void Decorator_Keyed_Generic() => RunBenchmark<KeyedGenericBenchmark>();
 
         [Fact]
-        public void Decorator_Keyed_Simple() => BenchmarkRunner.Run<KeyedSimpleBenchmark>();
+        public void Decorator_Keyed_Nested() => RunBenchmark<KeyedNestedBenchmark>();
 
         [Fact]
-        public void Decorator_Keyless_Generic() => BenchmarkRunner.Run<KeylessGenericBenchmark>();
+        public void Decorator_Keyed_Simple() => RunBenchmark<KeyedSimpleBenchmark>();
 
         [Fact]
-        public void Decorator_Keyless_Nested() => BenchmarkRunner.Run<KeylessNestedBenchmark>();
+        public void Decorator_Keyless_Generic() => RunBenchmark<KeylessGenericBenchmark>();
 
         [Fact]
-        public void Decorator_Keyless_Nested_Lambda() => BenchmarkRunner.Run<KeylessNestedLambdaBenchmark>();
+        public void Decorator_Keyless_Nested() => RunBenchmark<KeylessNestedBenchmark>();
 
         [Fact]
-        public void Decorator_Keyless_Simple() => BenchmarkRunner.Run<KeylessSimpleBenchmark>();
+        public void Decorator_Keyless_Nested_Lambda() => RunBenchmark<KeylessNestedLambdaBenchmark>();
 
         [Fact]
-        public void Decorator_Keyless_Simple_Lambda() => BenchmarkRunner.Run<KeylessSimpleLambdaBenchmark>();
+        public void Decorator_Keyless_Simple() => RunBenchmark<KeylessSimpleBenchmark>();
 
         [Fact]
-        public void DeepGraphResolve() => BenchmarkRunner.Run<DeepGraphResolveBenchmark>();
+        public void Decorator_Keyless_Simple_Lambda() => RunBenchmark<KeylessSimpleLambdaBenchmark>();
 
         [Fact]
-        public void EnumerableResolve() => BenchmarkRunner.Run<EnumerableResolveBenchmark>();
+        public void DeepGraphResolve() => RunBenchmark<DeepGraphResolveBenchmark>();
 
         [Fact]
-        public void PropertyInjection() => BenchmarkRunner.Run<PropertyInjectionBenchmark>();
+        public void EnumerableResolve() => RunBenchmark<EnumerableResolveBenchmark>();
 
         [Fact]
-        public void RootContainerResolve() => BenchmarkRunner.Run<RootContainerResolveBenchmark>();
+        public void PropertyInjection() => RunBenchmark<PropertyInjectionBenchmark>();
+
+        [Fact]
+        public void RootContainerResolve() => RunBenchmark<RootContainerResolveBenchmark>();
+
+        [Fact]
+        public void OpenGeneric() => RunBenchmark<OpenGenericBenchmark>();
+
+        /// <remarks>
+        /// This method is used to enforce that benchmark types are added to <see cref="Benchmarks.All"/>
+        /// so that they can be used directly from the command line in <see cref="Program.Main"/> as well.
+        /// </remarks>
+        private static void RunBenchmark<TBenchmark>()
+        {
+            var targetType = typeof(TBenchmark);
+            var benchmarkType = Benchmarks.All.Single(type => type == targetType);
+            BenchmarkRunner.Run(benchmarkType, new BenchmarkConfig());
+        }
     }
 }

@@ -121,7 +121,7 @@
     <value>The tag '{0}' has already been assigned to a parent lifetime scope. If you are using Owned&lt;T&gt; this indicates you may have a circular dependency chain.</value>
   </data>
   <data name="ScopeIsDisposed" xml:space="preserve">
-    <value>Instances cannot be resolved and nested lifetimes cannot be created from this LifetimeScope as it has already been disposed.</value>
+    <value>Instances cannot be resolved and nested lifetimes cannot be created from this LifetimeScope as it (or one of its parent scopes) has already been disposed.</value>
   </data>
   <data name="SelfConstructingDependencyDetected" xml:space="preserve">
     <value>The constructor of type '{0}' attempted to create another instance of itself. This is not permitted because the service is configured to only allowed a single instance per lifetime scope.</value>

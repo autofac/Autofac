@@ -25,7 +25,6 @@
 
 using System;
 using Autofac.Core;
-using Autofac.Features.Collections;
 using Autofac.Features.GeneratedFactories;
 using Autofac.Util;
 
@@ -72,6 +71,8 @@ namespace Autofac.Builder
         public static IRegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
             RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType, Service service)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+
             return GeneratedFactoryRegistrationExtensions.RegisterGeneratedFactory<Delegate>(builder, delegateType, service);
         }
 
@@ -88,6 +89,8 @@ namespace Autofac.Builder
             RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder, Service service)
             where TDelegate : class
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+
             return GeneratedFactoryRegistrationExtensions.RegisterGeneratedFactory<TDelegate>(builder, typeof(TDelegate), service);
         }
 

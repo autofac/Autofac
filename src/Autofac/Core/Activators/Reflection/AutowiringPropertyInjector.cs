@@ -36,8 +36,8 @@ namespace Autofac.Core.Activators.Reflection
     {
         public const string InstanceTypeNamedParameter = "Autofac.AutowiringPropertyInjector.InstanceType";
 
-        private static readonly ConcurrentDictionary<PropertyInfo, Action<object, object>> PropertySetters =
-            new ConcurrentDictionary<PropertyInfo, Action<object, object>>();
+        private static readonly ConcurrentDictionary<PropertyInfo, Action<object, object?>> PropertySetters =
+            new ConcurrentDictionary<PropertyInfo, Action<object, object?>>();
 
         private static readonly ConcurrentDictionary<Type, PropertyInfo[]> InjectableProperties =
             new ConcurrentDictionary<Type, PropertyInfo[]>();
@@ -82,12 +82,12 @@ namespace Autofac.Core.Activators.Reflection
                 }
 
                 var setParameter = property.SetMethod.GetParameters()[0];
-                var valueProvider = (Func<object>)null;
+                var valueProvider = (Func<object?>?)null;
                 var parameter = resolveParameters.FirstOrDefault(p => p.CanSupplyValue(setParameter, context, out valueProvider));
                 if (parameter != null)
                 {
                     var setter = PropertySetters.GetOrAdd(property, MakeFastPropertySetter);
-                    setter(instance, valueProvider());
+                    setter(instance, valueProvider!());
                     continue;
                 }
 
@@ -106,6 +106,13 @@ namespace Autofac.Core.Activators.Reflection
             foreach (var property in instanceType.GetRuntimeProperties())
             {
                 if (!property.CanWrite)
+                {
+                    continue;
+                }
+
+                // SetMethod will be non-null if CanWrite is true.
+                // Don't want to inject onto static properties.
+                if (property.SetMethod.IsStatic)
                 {
                     continue;
                 }
@@ -136,7 +143,7 @@ namespace Autofac.Core.Activators.Reflection
             }
         }
 
-        private static Action<object, object> MakeFastPropertySetter(PropertyInfo propertyInfo)
+        private static Action<object, object?> MakeFastPropertySetter(PropertyInfo propertyInfo)
         {
             var setMethod = propertyInfo.SetMethod;
             var typeInput = setMethod.DeclaringType;
@@ -148,7 +155,7 @@ namespace Autofac.Core.Activators.Reflection
             var callPropertySetterClosedGenericMethod = CallPropertySetterOpenGenericMethod.MakeGenericMethod(typeInput, parameterType);
             var callPropertySetterDelegate = callPropertySetterClosedGenericMethod.CreateDelegate(typeof(Action<object, object>), propertySetterAsAction);
 
-            return (Action<object, object>)callPropertySetterDelegate;
+            return (Action<object, object?>)callPropertySetterDelegate;
         }
 
         private static void CallPropertySetter<TDeclaringType, TValue>(

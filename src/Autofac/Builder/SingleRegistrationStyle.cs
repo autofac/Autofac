@@ -54,6 +54,12 @@ namespace Autofac.Builder
         /// <summary>
         /// Gets or sets the component upon which this registration is based.
         /// </summary>
-        public IComponentRegistration Target { get; set; }
+        public IComponentRegistration? Target { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the registration is a 1:1 adapters on top
+        /// of another component (e.g., Meta, Func, or Owned).
+        /// </summary>
+        public bool IsAdapterForIndividualComponent { get; set; }
     }
 }

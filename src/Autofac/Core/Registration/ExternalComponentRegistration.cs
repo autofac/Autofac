@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
+// Copyright © 2019 Autofac Contributors
 // https://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -25,34 +25,17 @@
 
 using System;
 using System.Collections.Generic;
-using Autofac.Core.Lifetime;
 
 namespace Autofac.Core.Registration
 {
     /// <summary>
-    /// Switches components with a RootScopeLifetime (singletons) with
-    /// decorators exposing MatchingScopeLifetime targeting the specified scope.
+    ///  A wrapper component registration created only to distinguish it from other adapted registrations.
     /// </summary>
-    internal class ScopeRestrictedRegistry : ComponentRegistry
+    internal class ExternalComponentRegistration : ComponentRegistration
     {
-        private readonly IComponentLifetime _restrictedRootScopeLifetime;
-
-        internal ScopeRestrictedRegistry(object scopeTag, IDictionary<string, object> properties)
-            : base(properties)
+        public ExternalComponentRegistration(Guid id, IInstanceActivator activator, IComponentLifetime lifetime, InstanceSharing sharing, InstanceOwnership ownership, IEnumerable<Service> services, IDictionary<string, object?> metadata, IComponentRegistration target, bool isAdapterForIndividualComponent)
+            : base(id, activator, lifetime, sharing, ownership, services, metadata, target, isAdapterForIndividualComponent)
         {
-            _restrictedRootScopeLifetime = new MatchingScopeLifetime(scopeTag);
-        }
-
-        protected override void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource = false)
-        {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-
-            var toRegister = registration;
-
-            if (registration.Lifetime is RootScopeLifetime)
-                toRegister = new ComponentRegistrationLifetimeDecorator(registration, _restrictedRootScopeLifetime);
-
-            base.AddRegistration(toRegister, preserveDefaults, originatedFromSource);
         }
     }
 }
