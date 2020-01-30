@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac.Features.ResolveAnything;
 using Xunit;
 
 namespace Autofac.Test.Concurrency
@@ -130,6 +131,20 @@ namespace Autofac.Test.Concurrency
             Assert.Equal(1, activationCount);
             Assert.Empty(exceptions);
             Assert.Single(results.Distinct());
+        }
+
+        [Fact]
+        public void WhenTwoThreadsResolvesNotAlreadyRegisteredType_DoesNotThrow()
+        {
+            for (int i = 0; i < 10000; i++)
+            {
+                var builder = new ContainerBuilder();
+                builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+                var container = builder.Build();
+                Parallel.Invoke(
+                    () => container.Resolve<A>(),
+                    () => container.Resolve<A>());
+            }
         }
 
         private static void ResolveObjectInstanceLoop()

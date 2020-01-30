@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using Autofac.Builder;
 using Autofac.Features.Decorators;
 using Autofac.Util;
@@ -36,15 +37,22 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// Protects instance variables from concurrent access.
         /// </summary>
-        private readonly object _synchRoot = new object();
+        private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
         /// <inheritdoc />
         public IEnumerable<IComponentRegistration> Registrations
         {
             get
             {
-                lock (_synchRoot)
+                _lock.EnterWriteLock();
+                try
+                {
                     return _registrations.ToArray();
+                }
+                finally
+                {
+                    _lock.ExitWriteLock();
+                }
             }
         }
 
@@ -53,9 +61,14 @@ namespace Autofac.Core.Registration
         {
             get
             {
-                lock (_synchRoot)
+                _lock.EnterWriteLock();
+                try
                 {
                     return _dynamicRegistrationSources.ToArray();
+                }
+                finally
+                {
+                    _lock.ExitWriteLock();
                 }
             }
         }
@@ -77,11 +90,16 @@ namespace Autofac.Core.Registration
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
-            lock (_synchRoot)
+            _lock.EnterWriteLock();
+            try
             {
                 _dynamicRegistrationSources.Insert(0, source);
                 foreach (var serviceRegistrationInfo in _serviceInfo)
                     serviceRegistrationInfo.Value.Include(source);
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
             }
         }
 
@@ -90,14 +108,27 @@ namespace Autofac.Core.Registration
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
-            var info = GetInitializedServiceInfoOrDefault(service);
-            if (info != null && info.TryGetRegistration(out registration))
-                return true;
-
-            lock (_synchRoot)
+            _lock.EnterUpgradeableReadLock();
+            try
             {
-                info = GetInitializedServiceInfo(service);
-                return info.TryGetRegistration(out registration);
+                var info = GetInitializedServiceInfoOrDefault(service);
+                if (info != null && info.TryGetRegistration(out registration))
+                    return true;
+
+                _lock.EnterWriteLock();
+                try
+                {
+                    info = GetInitializedServiceInfo(service);
+                    return info.TryGetRegistration(out registration);
+                }
+                finally
+                {
+                    _lock.ExitWriteLock();
+                }
+            }
+            finally
+            {
+                _lock.ExitUpgradeableReadLock();
             }
         }
 
@@ -106,13 +137,26 @@ namespace Autofac.Core.Registration
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
-            var info = GetInitializedServiceInfoOrDefault(service);
-            if (info != null && info.IsRegistered)
-                return true;
-
-            lock (_synchRoot)
+            _lock.EnterUpgradeableReadLock();
+            try
             {
-                return GetInitializedServiceInfo(service).IsRegistered;
+                var info = GetInitializedServiceInfoOrDefault(service);
+                if (info != null && info.IsRegistered)
+                    return true;
+
+                _lock.EnterWriteLock();
+                try
+                {
+                    return GetInitializedServiceInfo(service).IsRegistered;
+                }
+                finally
+                {
+                    _lock.ExitWriteLock();
+                }
+            }
+            finally
+            {
+                _lock.ExitUpgradeableReadLock();
             }
         }
 
@@ -121,14 +165,27 @@ namespace Autofac.Core.Registration
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
-            var info = GetInitializedServiceInfoOrDefault(service);
-            if (info != null)
-                return info.Implementations.ToArray();
-
-            lock (_synchRoot)
+            _lock.EnterUpgradeableReadLock();
+            try
             {
-                info = GetInitializedServiceInfo(service);
-                return info.Implementations.ToArray();
+                var info = GetInitializedServiceInfoOrDefault(service);
+                if (info != null)
+                    return info.Implementations.ToArray();
+
+                _lock.EnterWriteLock();
+                try
+                {
+                    info = GetInitializedServiceInfo(service);
+                    return info.Implementations.ToArray();
+                }
+                finally
+                {
+                    _lock.ExitWriteLock();
+                }
+            }
+            finally
+            {
+                _lock.ExitUpgradeableReadLock();
             }
         }
 
@@ -153,6 +210,7 @@ namespace Autofac.Core.Registration
             foreach (var registration in _registrations)
                 registration.Dispose();
 
+            _lock.Dispose();
             base.Dispose(disposing);
         }
 
