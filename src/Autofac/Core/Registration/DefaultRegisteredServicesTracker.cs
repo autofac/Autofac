@@ -44,14 +44,14 @@ namespace Autofac.Core.Registration
         {
             get
             {
-                _lock.EnterWriteLock();
+                _lock.EnterReadLock();
                 try
                 {
                     return _registrations.ToArray();
                 }
                 finally
                 {
-                    _lock.ExitWriteLock();
+                    _lock.ExitReadLock();
                 }
             }
         }
@@ -61,14 +61,14 @@ namespace Autofac.Core.Registration
         {
             get
             {
-                _lock.EnterWriteLock();
+                _lock.EnterReadLock();
                 try
                 {
                     return _dynamicRegistrationSources.ToArray();
                 }
                 finally
                 {
-                    _lock.ExitWriteLock();
+                    _lock.ExitReadLock();
                 }
             }
         }
