@@ -134,7 +134,7 @@ namespace Autofac.Test.Concurrency
         }
 
         [Fact]
-        public void WhenTwoThreadsResolvesNotAlreadyRegisteredType_DoesNotThrow()
+        public void WhenSeveralThreadsResolveNotAlreadyRegisteredType_DoesNotThrow()
         {
             for (int i = 0; i < 10000; i++)
             {
@@ -142,6 +142,12 @@ namespace Autofac.Test.Concurrency
                 builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
                 var container = builder.Build();
                 Parallel.Invoke(
+                    () => container.Resolve<A>(),
+                    () => container.Resolve<A>(),
+                    () => container.Resolve<A>(),
+                    () => container.Resolve<A>(),
+                    () => container.Resolve<A>(),
+                    () => container.Resolve<A>(),
                     () => container.Resolve<A>(),
                     () => container.Resolve<A>());
             }
