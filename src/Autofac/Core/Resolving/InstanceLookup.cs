@@ -90,12 +90,10 @@ namespace Autofac.Core.Resolving
 
             var resolveParameters = Parameters as Parameter[] ?? Parameters.ToArray();
 
-            _newInstance = _activationScope.Get(ComponentRegistration.Id);
-
-            if (_newInstance == null)
+            if (!_activationScope.TryGetSharedInstance(ComponentRegistration.Id, out _newInstance))
             {
                 _newInstance = sharing == InstanceSharing.Shared
-                    ? _activationScope.Create(ComponentRegistration.Id, () => CreateInstance(Parameters))
+                    ? _activationScope.CreateSharedInstance(ComponentRegistration.Id, () => CreateInstance(Parameters))
                     : CreateInstance(Parameters);
             }
 

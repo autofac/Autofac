@@ -290,39 +290,12 @@ namespace Autofac.Core.Lifetime
         public ISharingLifetimeScope RootLifetimeScope { get; }
 
         /// <summary>
-        /// Try to retrieve an instance based on a GUID key. If the instance
-        /// does not exist, invoke <paramref name="creator"/> to create it.
-        /// </summary>
-        /// <param name="id">Key to look up.</param>
-        /// <param name="creator">Creation function.</param>
-        /// <returns>An instance.</returns>
-        public object GetOrCreateAndShare(Guid id, Func<object> creator)
-        {
-            if (creator == null) throw new ArgumentNullException(nameof(creator));
-
-            if (_sharedInstances.TryGetValue(id, out var result)) return result;
-
-            lock (_synchRoot)
-            {
-                if (_sharedInstances.TryGetValue(id, out result)) return result;
-
-                result = creator();
-                if (_sharedInstances.ContainsKey(id))
-                    throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
-
-                _sharedInstances.TryAdd(id, result);
-            }
-
-            return result;
-        }
-
-        /// <summary>
         /// Try to create an instance with a GUID key.
         /// </summary>
         /// <param name="id">Key.</param>
         /// <param name="creator">Creation function.</param>
         /// <returns>An instance.</returns>
-        public object Create(Guid id, Func<object> creator)
+        public object CreateSharedInstance(Guid id, Func<object> creator)
         {
             if (creator == null) throw new ArgumentNullException(nameof(creator));
 
@@ -344,11 +317,11 @@ namespace Autofac.Core.Lifetime
         /// Try to retrieve an instance based on a GUID key.
         /// </summary>
         /// <param name="id">Key to look up.</param>
-        /// <returns>An instance.</returns>
-        public object Get(Guid id)
+        /// <param name="value">The instance that has the specified key.</param>
+        /// <returns>true if the key was found; otherwise, false.</returns>
+        public bool TryGetSharedInstance(Guid id, out object value)
         {
-            _sharedInstances.TryGetValue(id, out var result);
-            return result;
+            return _sharedInstances.TryGetValue(id, out value);
         }
 
         /// <summary>
