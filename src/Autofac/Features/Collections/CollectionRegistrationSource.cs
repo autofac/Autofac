@@ -84,9 +84,9 @@ namespace Autofac.Features.Collections
                 return Enumerable.Empty<IComponentRegistration>();
 
             var serviceType = swt.ServiceType;
-            Type elementType = null;
-            Type limitType = null;
-            Func<int, IList> factory = null;
+            Type? elementType = null;
+            Type? limitType = null;
+            Func<int, IList>? factory = null;
 
             if (serviceType.IsGenericTypeDefinedBy(typeof(IEnumerable<>)))
             {
@@ -107,7 +107,7 @@ namespace Autofac.Features.Collections
                 factory = GenerateListFactory(elementType);
             }
 
-            if (elementType == null || factory == null)
+            if (elementType == null || factory == null || limitType == null)
                 return Enumerable.Empty<IComponentRegistration>();
 
             var elementTypeService = swt.ChangeType(elementType);
@@ -145,7 +145,7 @@ namespace Autofac.Features.Collections
                 InstanceSharing.None,
                 InstanceOwnership.ExternallyOwned,
                 new[] { service },
-                new Dictionary<string, object>());
+                new Dictionary<string, object?>());
 
             return new IComponentRegistration[] { registration };
         }

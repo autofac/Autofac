@@ -40,7 +40,7 @@ namespace Autofac.Core
         /// <summary>
         /// Gets the parent of this node of the hierarchy, or null.
         /// </summary>
-        ISharingLifetimeScope ParentLifetimeScope { get; }
+        ISharingLifetimeScope? ParentLifetimeScope { get; }
 
         /// <summary>
         /// Try to retrieve an instance based on a GUID key. If the instance

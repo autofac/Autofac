@@ -39,14 +39,14 @@ namespace Autofac.Core.Activators.Reflection
     public class ConstructorParameterBinding
     {
         private readonly ConstructorInfo _ci;
-        private readonly Func<object>[] _valueRetrievers;
+        private readonly Func<object?>[] _valueRetrievers;
 
-        private static readonly ConcurrentDictionary<ConstructorInfo, Func<object[], object>> ConstructorInvokers = new ConcurrentDictionary<ConstructorInfo, Func<object[], object>>();
+        private static readonly ConcurrentDictionary<ConstructorInfo, Func<object?[], object>> ConstructorInvokers = new ConcurrentDictionary<ConstructorInfo, Func<object?[], object>>();
 
         // We really need to report all non-bindable parameters, howevers some refactoring
         // will be necessary before this is possible. Adding this now to ease the
         // pain of working with the preview builds.
-        private readonly ParameterInfo _firstNonBindableParameter;
+        private readonly ParameterInfo? _firstNonBindableParameter;
 
         /// <summary>
         /// Gets the constructor on the target type. The actual constructor used
@@ -77,7 +77,7 @@ namespace Autofac.Core.Activators.Reflection
             CanInstantiate = true;
             _ci = ci;
             var parameters = ci.GetParameters();
-            _valueRetrievers = new Func<object>[parameters.Length];
+            _valueRetrievers = new Func<object?>[parameters.Length];
 
             for (int i = 0; i < parameters.Length; ++i)
             {
@@ -85,8 +85,7 @@ namespace Autofac.Core.Activators.Reflection
                 bool foundValue = false;
                 foreach (var param in availableParameters)
                 {
-                    Func<object> valueRetriever;
-                    if (param.CanSupplyValue(pi, context, out valueRetriever))
+                    if (param.CanSupplyValue(pi, context, out var valueRetriever))
                     {
                         _valueRetrievers[i] = valueRetriever;
                         foundValue = true;
@@ -113,11 +112,11 @@ namespace Autofac.Core.Activators.Reflection
             if (!CanInstantiate)
                 throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.CannotInstantitate, this.Description));
 
-            var values = new object[_valueRetrievers.Length];
+            var values = new object?[_valueRetrievers.Length];
             for (var i = 0; i < _valueRetrievers.Length; ++i)
                 values[i] = _valueRetrievers[i]();
 
-            Func<object[], object> constructorInvoker;
+            Func<object?[], object> constructorInvoker;
             if (!ConstructorInvokers.TryGetValue(TargetConstructor, out constructorInvoker))
             {
                 constructorInvoker = GetConstructorInvoker(TargetConstructor);
@@ -152,7 +151,7 @@ namespace Autofac.Core.Activators.Reflection
             return Description;
         }
 
-        private static Func<object[], object> GetConstructorInvoker(ConstructorInfo constructorInfo)
+        private static Func<object?[], object> GetConstructorInvoker(ConstructorInfo constructorInfo)
         {
             var paramsInfo = constructorInfo.GetParameters();
 
@@ -179,7 +178,7 @@ namespace Autofac.Core.Activators.Reflection
             }
 
             var newExpression = Expression.New(constructorInfo, argumentsExpression);
-            var lambdaExpression = Expression.Lambda<Func<object[], object>>(newExpression, parametersExpression);
+            var lambdaExpression = Expression.Lambda<Func<object?[], object>>(newExpression, parametersExpression);
 
             return lambdaExpression.Compile();
         }

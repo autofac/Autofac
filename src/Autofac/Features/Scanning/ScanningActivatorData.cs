@@ -26,7 +26,7 @@
 using System;
 using System.Collections.Generic;
 using Autofac.Builder;
-using Autofac.Core;
+using Autofac.Core.Registration;
 
 namespace Autofac.Features.Scanning
 {
@@ -57,6 +57,6 @@ namespace Autofac.Features.Scanning
         /// <summary>
         /// Gets the actions to be called once the scanning operation is complete.
         /// </summary>
-        public ICollection<Action<IComponentRegistry>> PostScanningCallbacks { get; } = new List<Action<IComponentRegistry>>();
+        public ICollection<Action<IComponentRegistryBuilder>> PostScanningCallbacks { get; } = new List<Action<IComponentRegistryBuilder>>();
     }
 }

@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -40,11 +41,11 @@ namespace Autofac.Features.OpenGenerics
             Service service,
             IEnumerable<Service> configuredOpenGenericServices,
             Type openGenericImplementationType,
-            out Type constructedImplementationType,
-            out Service[] constructedServices)
+            [NotNullWhen(returnValue: true)] out Type? constructedImplementationType,
+            [NotNullWhen(returnValue: true)] out Service[]? constructedServices)
         {
             var swt = service as IServiceWithType;
-            if (swt != null && swt.ServiceType.GetTypeInfo().IsGenericType)
+            if (swt != null && swt.ServiceType.GetTypeInfo().IsGenericType && !swt.ServiceType.IsGenericTypeDefinition)
             {
                 var definitionService = (IServiceWithType)swt.ChangeType(swt.ServiceType.GetGenericTypeDefinition());
                 var serviceGenericArguments = swt.ServiceType.GetTypeInfo().GenericTypeArguments;

@@ -1,5 +1,4 @@
-﻿using System;
-using Autofac.Core;
+﻿using Autofac.Core;
 using Autofac.Core.Activators.ProvidedInstance;
 using Autofac.Core.Registration;
 using Autofac.Test.Scenarios.Parameterisation;
@@ -12,7 +11,7 @@ namespace Autofac.Test
         [Fact]
         public void ResolvingUnregisteredService_ProvidesDescriptionInException()
         {
-            var target = new Container();
+            var target = Factory.CreateEmptyContainer();
             var ex = Assert.Throws<ComponentNotRegisteredException>(() => target.Resolve<object>());
             Assert.Contains("System.Object", ex.Message);
         }
@@ -24,9 +23,9 @@ namespace Autofac.Test
                 new[] { new TypedService(typeof(object)), new TypedService(typeof(string)) },
                 Factory.CreateProvidedInstanceActivator("Hello"));
 
-            var target = new Container();
-
-            target.ComponentRegistry.Register(registration);
+            var builder = Factory.CreateEmptyComponentRegistryBuilder();
+            builder.Register(registration);
+            var target = new ContainerBuilder(builder).Build();
 
             Assert.True(target.IsRegistered<object>());
             Assert.True(target.IsRegistered<string>());
@@ -35,10 +34,12 @@ namespace Autofac.Test
         [Fact]
         public void WhenServiceIsRegistered_ResolveOptionalReturnsAnInstance()
         {
-            var target = new Container();
-            target.ComponentRegistry.Register(Factory.CreateSingletonRegistration(
+            var builder = Factory.CreateEmptyComponentRegistryBuilder();
+            builder.Register(Factory.CreateSingletonRegistration(
                 new[] { new TypedService(typeof(string)) },
                 new ProvidedInstanceActivator("Hello")));
+
+            var target = new ContainerBuilder(builder).Build();
 
             var inst = target.ResolveOptional<string>();
 
@@ -48,7 +49,7 @@ namespace Autofac.Test
         [Fact]
         public void WhenServiceNotRegistered_ResolveOptionalReturnsNull()
         {
-            var target = new Container();
+            var target = Factory.CreateEmptyContainer();
             var inst = target.ResolveOptional<string>();
             Assert.Null(inst);
         }

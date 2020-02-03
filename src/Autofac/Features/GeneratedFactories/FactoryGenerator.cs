@@ -42,8 +42,10 @@ namespace Autofac.Features.GeneratedFactories
     {
         private readonly Func<IComponentContext, IEnumerable<Parameter>, Delegate> _generator;
 
+        // The explicit '!' default is ok because the code is never executed, it's just used by
+        // the expression tree.
         private static readonly ConstructorInfo RequestConstructor
-            = ReflectionExtensions.GetConstructor(() => new ResolveRequest(default, default, default));
+            = ReflectionExtensions.GetConstructor(() => new ResolveRequest(default!, default!, default!));
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FactoryGenerator"/> class.
@@ -69,8 +71,9 @@ namespace Autofac.Features.GeneratedFactories
                     };
 
                     // c.Resolve(...)
+                    // default! here is for reflection only
                     return Expression.Call(
-                        ReflectionExtensions.GetMethod<IComponentContext>(cc => cc.ResolveService(default, default)),
+                        ReflectionExtensions.GetMethod<IComponentContext>(cc => cc.ResolveService(default!, default!)),
                         resolveParams);
                 },
                 delegateType,
@@ -102,10 +105,11 @@ namespace Autofac.Features.GeneratedFactories
                         Expression.NewArrayInit(typeof(Parameter), resolveParameterArray));
 
                     // c.Resolve(...)
+                    // default! for reflection only
                     return Expression.Call(
                         activatorContextParam,
                         ReflectionExtensions.GetMethod<IComponentContext>(cc => cc.ResolveComponent(
-                            new ResolveRequest(default, default, default(Parameter[])))),
+                            new ResolveRequest(default!, default!, default(Parameter[])!))),
                         newExpression);
                 },
                 delegateType,
@@ -140,7 +144,7 @@ namespace Autofac.Features.GeneratedFactories
                 .Select(pi => Expression.Parameter(pi.ParameterType, pi.Name))
                 .ToList();
 
-            Expression resolveCast = null;
+            Expression? resolveCast = null;
             if (DelegateTypeIsFunc(delegateType) && pm == ParameterMapping.ByType)
             {
                 // Issue #269:

@@ -23,6 +23,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using Autofac.Core.Registration;
+
 namespace Autofac.Core
 {
     /// <summary>
@@ -35,6 +37,6 @@ namespace Autofac.Core
         /// Apply the module to the component registry.
         /// </summary>
         /// <param name="componentRegistry">Component registry to apply configuration to.</param>
-        void Configure(IComponentRegistry componentRegistry);
+        void Configure(IComponentRegistryBuilder componentRegistry);
     }
 }

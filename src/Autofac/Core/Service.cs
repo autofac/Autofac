@@ -56,7 +56,7 @@ namespace Autofac.Core
         /// <param name="left">The left operand.</param>
         /// <param name="right">The right operand.</param>
         /// <returns>The result of the operator.</returns>
-        public static bool operator ==(Service left, Service right)
+        public static bool operator ==(Service? left, Service? right)
         {
             return Equals(left, right);
         }
@@ -67,7 +67,7 @@ namespace Autofac.Core
         /// <param name="left">The left operand.</param>
         /// <param name="right">The right operand.</param>
         /// <returns>The result of the operator.</returns>
-        public static bool operator !=(Service left, Service right)
+        public static bool operator !=(Service? left, Service? right)
         {
             return !(left == right);
         }

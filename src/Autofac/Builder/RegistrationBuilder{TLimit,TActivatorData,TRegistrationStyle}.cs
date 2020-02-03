@@ -34,6 +34,7 @@ using Autofac.Core.Lifetime;
 namespace Autofac.Builder
 {
     internal class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> : IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>, IHideObjectMembers
+        where TLimit : notnull
     {
         public RegistrationBuilder(Service defaultService, TActivatorData activatorData, TRegistrationStyle style)
         {
@@ -205,6 +206,7 @@ namespace Autofac.Builder
         /// <typeparam name="TService">Service type.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService>()
+            where TService : notnull
         {
             return As(new TypedService(typeof(TService)));
         }
@@ -217,6 +219,8 @@ namespace Autofac.Builder
         /// <typeparam name="TService2">Service type.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService1, TService2>()
+            where TService1 : notnull
+            where TService2 : notnull
         {
             return As(new TypedService(typeof(TService1)), new TypedService(typeof(TService2)));
         }
@@ -230,6 +234,9 @@ namespace Autofac.Builder
         /// <typeparam name="TService3">Service type.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService1, TService2, TService3>()
+            where TService1 : notnull
+            where TService2 : notnull
+            where TService3 : notnull
         {
             return As(new TypedService(typeof(TService1)), new TypedService(typeof(TService2)), new TypedService(typeof(TService3)));
         }
@@ -318,6 +325,7 @@ namespace Autofac.Builder
         /// <typeparam name="TService">The service type provided by the component.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Named<TService>(string serviceName)
+            where TService : notnull
         {
             return Named(serviceName, typeof(TService));
         }
@@ -343,6 +351,7 @@ namespace Autofac.Builder
         /// <typeparam name="TService">The service type provided by the component.</typeparam>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Keyed<TService>(object serviceKey)
+            where TService : notnull
         {
             return Keyed(serviceKey, typeof(TService));
         }
@@ -416,7 +425,7 @@ namespace Autofac.Builder
         /// <param name="key">Key by which the data can be located.</param>
         /// <param name="value">The data value.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(string key, object value)
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(string key, object? value)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
 
@@ -430,7 +439,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="properties">The extended properties to associate with the component.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(IEnumerable<KeyValuePair<string, object>> properties)
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata(IEnumerable<KeyValuePair<string, object?>> properties)
         {
             if (properties == null) throw new ArgumentNullException(nameof(properties));
 

@@ -35,7 +35,7 @@ namespace Autofac.Builder
     /// </summary>
     public class ReflectionActivatorData
     {
-        private Type _implementer;
+        private Type _implementer = default!;
         private IConstructorFinder _constructorFinder;
         private IConstructorSelector _constructorSelector;
 
