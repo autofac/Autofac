@@ -104,7 +104,7 @@ namespace Autofac.Test.Features.Decorators
             Assert.NotSame(serviceInstance, decoratedServiceInstance);
         }
 
-        [Fact(Skip = "Issue #963")]
+        [Fact]
         public void DecoratedInstancePerLifetimeScopeRegistrationCanIncludeOtherServices()
         {
             var builder = new ContainerBuilder();
@@ -128,10 +128,10 @@ namespace Autofac.Test.Features.Decorators
             var decoratedServiceInstance = container.Resolve<IDecoratedService>();
             Assert.IsType<DecoratorA>(decoratedServiceInstance);
 
-            Assert.Same(serviceInstance, decoratedServiceInstance);
+            Assert.Same(serviceInstance, decoratedServiceInstance.Decorated);
         }
 
-        [Fact(Skip = "Issue #963")]
+        [Fact]
         public void DecoratedSingleInstanceRegistrationCanIncludeOtherServices()
         {
             var builder = new ContainerBuilder();
@@ -149,8 +149,13 @@ namespace Autofac.Test.Features.Decorators
             Assert.NotNull(decoratedServiceRegistration);
             Assert.Same(serviceRegistration, decoratedServiceRegistration);
 
-            Assert.IsType<ImplementorA>(container.Resolve<IService>());
-            Assert.IsType<DecoratorA>(container.Resolve<IDecoratedService>());
+            var serviceInstance = container.Resolve<IService>();
+            Assert.IsType<ImplementorA>(serviceInstance);
+
+            var decoratedServiceInstance = container.Resolve<IDecoratedService>();
+            Assert.IsType<DecoratorA>(decoratedServiceInstance);
+
+            Assert.Same(serviceInstance, decoratedServiceInstance.Decorated);
         }
 
         [Fact]
