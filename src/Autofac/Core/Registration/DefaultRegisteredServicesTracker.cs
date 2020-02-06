@@ -205,7 +205,8 @@ namespace Autofac.Core.Registration
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ServiceRegistrationInfo? GetInitializedServiceInfoOrDefault(Service service)
         {
-            if (_serviceInfo.TryGetValue(service, out var existing) && existing.IsInitialized)
+            // Issue #1073: Check if any implementations are available in addition to being initialized to avoid coarse grain locking.
+            if (_serviceInfo.TryGetValue(service, out var existing) && existing.IsInitialized && existing.Implementations.Any())
                 return existing;
 
             return null;
