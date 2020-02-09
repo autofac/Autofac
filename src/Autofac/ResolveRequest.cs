@@ -40,7 +40,7 @@ namespace Autofac
 
         /// <summary>
         /// Gets the component registration for the decorator target if configured.
-        /// </summary>2
+        /// </summary>
         public IComponentRegistration? DecoratorTarget { get; }
     }
 }
