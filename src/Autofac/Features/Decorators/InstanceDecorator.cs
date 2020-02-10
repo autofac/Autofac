@@ -69,7 +69,7 @@ namespace Autofac.Features.Decorators
                 invokeParameters[invokeParameters.Length - 2] = serviceParameter;
                 invokeParameters[invokeParameters.Length - 1] = contextParameter;
 
-                var resolveRequest = new ResolveRequest(decoratorService, decoratorRegistration, invokeParameters);
+                var resolveRequest = new ResolveRequest(decoratorService, decoratorRegistration, invokeParameters, registration);
                 instance = context.ResolveComponent(resolveRequest);
 
                 if (index < decoratorCount - 1)

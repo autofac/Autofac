@@ -14,11 +14,13 @@ namespace Autofac
         /// <param name="service">The service being resolved.</param>
         /// <param name="registration">The component registration for the service.</param>
         /// <param name="parameters">The parameters used when resolving the service.</param>
-        public ResolveRequest(Service service, IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        /// <param name="decoratorTarget">The target component to be decorated.</param>
+        public ResolveRequest(Service service, IComponentRegistration registration, IEnumerable<Parameter> parameters, IComponentRegistration? decoratorTarget = null)
         {
             Service = service;
             Registration = registration;
             Parameters = parameters;
+            DecoratorTarget = decoratorTarget;
         }
 
         /// <summary>
@@ -35,5 +37,10 @@ namespace Autofac
         /// Gets the parameters used when resolving the service.
         /// </summary>
         public IEnumerable<Parameter> Parameters { get; }
+
+        /// <summary>
+        /// Gets the component registration for the decorator target if configured.
+        /// </summary>
+        public IComponentRegistration? DecoratorTarget { get; }
     }
 }
