@@ -68,6 +68,11 @@ namespace Autofac.Core.Registration
         private Queue<IRegistrationSource>? _sourcesToQuery;
 
         /// <summary>
+        /// The combined list of registered implementations. The value will be calculated lazily by <see cref="InitializeComponentRegistrations" />.
+        /// </summary>
+        private Lazy<IList<IComponentRegistration>>? _registeredImplementations = null;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ServiceRegistrationInfo"/> class.
         /// </summary>
         /// <param name="service">The tracked service.</param>
@@ -92,18 +97,8 @@ namespace Autofac.Core.Registration
             get
             {
                 RequiresInitialization();
-                var resultingCollection = Enumerable.Reverse(_defaultImplementations);
-                if (_sourceImplementations != null)
-                {
-                    resultingCollection = resultingCollection.Concat(_sourceImplementations);
-                }
 
-                if (_preserveDefaultImplementations != null)
-                {
-                    resultingCollection = resultingCollection.Concat(_preserveDefaultImplementations);
-                }
-
-                return resultingCollection;
+                return _registeredImplementations!.Value;
             }
         }
 
@@ -163,6 +158,9 @@ namespace Autofac.Core.Registration
             }
 
             _defaultImplementation = null;
+
+            if (IsInitialized)
+                _registeredImplementations = new Lazy<IList<IComponentRegistration>>(() => InitializeComponentRegistrations());
         }
 
         public bool TryGetRegistration([NotNullWhen(returnValue: true)] out IComponentRegistration? registration)
@@ -197,6 +195,7 @@ namespace Autofac.Core.Registration
         public void BeginInitialization(IEnumerable<IRegistrationSource> sources)
         {
             IsInitialized = false;
+            _registeredImplementations = new Lazy<IList<IComponentRegistration>>(() => InitializeComponentRegistrations());
             _sourcesToQuery = new Queue<IRegistrationSource>(sources);
         }
 
@@ -229,6 +228,22 @@ namespace Autofac.Core.Registration
             // began it.
             IsInitialized = true;
             _sourcesToQuery = null;
+        }
+
+        private IList<IComponentRegistration> InitializeComponentRegistrations()
+        {
+            var resultingCollection = Enumerable.Reverse(_defaultImplementations);
+            if (_sourceImplementations != null)
+            {
+                resultingCollection = resultingCollection.Concat(_sourceImplementations);
+            }
+
+            if (_preserveDefaultImplementations != null)
+            {
+                resultingCollection = resultingCollection.Concat(_preserveDefaultImplementations);
+            }
+
+            return resultingCollection.ToList();
         }
     }
 }
