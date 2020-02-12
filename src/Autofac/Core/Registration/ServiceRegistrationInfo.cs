@@ -51,13 +51,13 @@ namespace Autofac.Core.Registration
         ///  List of service implementations coming from sources. Sources have priority over preserve-default implementations.
         ///  Implementations from sources are enumerated in preserve-default order, so the most default implementation comes first.
         /// </summary>
-        private List<IComponentRegistration>? _sourceImplementations = null;
+        private List<IComponentRegistration>? _sourceImplementations;
 
         /// <summary>
         ///  List of explicit service implementations specified with the PreserveExistingDefaults option.
         ///  Enumerated in preserve-defaults order, so the most default implementation comes first.
         /// </summary>
-        private List<IComponentRegistration>? _preserveDefaultImplementations = null;
+        private List<IComponentRegistration>? _preserveDefaultImplementations;
 
         [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the compponent registration is responsible for disposal.")]
         private IComponentRegistration? _defaultImplementation;
@@ -70,7 +70,7 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// The combined list of registered implementations. The value will be calculated lazily by <see cref="InitializeComponentRegistrations" />.
         /// </summary>
-        private Lazy<IList<IComponentRegistration>>? _registeredImplementations = null;
+        private Lazy<IList<IComponentRegistration>>? _registeredImplementations;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceRegistrationInfo"/> class.
@@ -160,17 +160,16 @@ namespace Autofac.Core.Registration
             _defaultImplementation = null;
 
             if (IsInitialized)
-                _registeredImplementations = new Lazy<IList<IComponentRegistration>>(() => InitializeComponentRegistrations());
+                _registeredImplementations = new Lazy<IList<IComponentRegistration>>(InitializeComponentRegistrations);
         }
 
         public bool TryGetRegistration([NotNullWhen(returnValue: true)] out IComponentRegistration? registration)
         {
             RequiresInitialization();
 
-            registration = _defaultImplementation ?? (_defaultImplementation =
-                _defaultImplementations.LastOrDefault() ??
-                _sourceImplementations?.First() ??
-                _preserveDefaultImplementations?.First());
+            registration = _defaultImplementation ??= _defaultImplementations.LastOrDefault() ??
+                                                      _sourceImplementations?.First() ??
+                                                      _preserveDefaultImplementations?.First();
 
             return registration != null;
         }
@@ -195,7 +194,7 @@ namespace Autofac.Core.Registration
         public void BeginInitialization(IEnumerable<IRegistrationSource> sources)
         {
             IsInitialized = false;
-            _registeredImplementations = new Lazy<IList<IComponentRegistration>>(() => InitializeComponentRegistrations());
+            _registeredImplementations = new Lazy<IList<IComponentRegistration>>(InitializeComponentRegistrations);
             _sourcesToQuery = new Queue<IRegistrationSource>(sources);
         }
 
