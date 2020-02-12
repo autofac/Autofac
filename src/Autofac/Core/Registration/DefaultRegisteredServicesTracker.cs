@@ -37,10 +37,9 @@ namespace Autofac.Core.Registration
         /// Gets the set of properties used during component registration.
         /// </summary>
         /// <value>
-        /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
-        /// context across registrations.
+        /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share context across registrations.
         /// </value>
-        private readonly IDictionary<string, object?> _properties;
+        private readonly IDictionary<string, object?> _properties = new Dictionary<string, object?>();
 
         /// <summary>
         /// Protects instance variables from concurrent access.
@@ -48,28 +47,14 @@ namespace Autofac.Core.Registration
         private readonly object _synchRoot = new object();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultRegisteredServicesTracker" /> class.
-        /// </summary>
-        public DefaultRegisteredServicesTracker()
-        {
-            _properties = new Dictionary<string, object?>();
-        }
-
-        /// <summary>
         /// Fired whenever a component is registered - either explicitly or via a
         /// <see cref="IRegistrationSource"/>.
         /// </summary>
         public event EventHandler<IComponentRegistration> Registered
         {
-            add
-            {
-                _properties[MetadataKeys.InternalRegisteredPropertyKey] = GetRegistered() + value;
-            }
+            add => _properties[MetadataKeys.InternalRegisteredPropertyKey] = GetRegistered() + value;
 
-            remove
-            {
-                _properties[MetadataKeys.InternalRegisteredPropertyKey] = GetRegistered() - value;
-            }
+            remove => _properties[MetadataKeys.InternalRegisteredPropertyKey] = GetRegistered() - value;
         }
 
         /// <summary>
@@ -77,15 +62,9 @@ namespace Autofac.Core.Registration
         /// </summary>
         public event EventHandler<IRegistrationSource> RegistrationSourceAdded
         {
-            add
-            {
-                _properties[MetadataKeys.InternalRegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() + value;
-            }
+            add => _properties[MetadataKeys.InternalRegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() + value;
 
-            remove
-            {
-                _properties[MetadataKeys.InternalRegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() - value;
-            }
+            remove => _properties[MetadataKeys.InternalRegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() - value;
         }
 
         /// <inheritdoc />
@@ -245,21 +224,15 @@ namespace Autofac.Core.Registration
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private EventHandler<IComponentRegistration>? GetRegistered()
-        {
-            if (_properties.TryGetValue(MetadataKeys.InternalRegisteredPropertyKey, out var registered))
-                return (EventHandler<IComponentRegistration>?)registered;
-
-            return null;
-        }
+        private EventHandler<IComponentRegistration>? GetRegistered() =>
+            _properties.TryGetValue(MetadataKeys.InternalRegisteredPropertyKey, out var registered)
+                ? (EventHandler<IComponentRegistration>?)registered
+                : null;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private EventHandler<IRegistrationSource>? GetRegistrationSourceAdded()
-        {
-            if (_properties.TryGetValue(MetadataKeys.InternalRegistrationSourceAddedPropertyKey, out var registrationSourceAdded))
-                return (EventHandler<IRegistrationSource>?)registrationSourceAdded;
-
-            return null;
-        }
+        private EventHandler<IRegistrationSource>? GetRegistrationSourceAdded() =>
+            _properties.TryGetValue(MetadataKeys.InternalRegistrationSourceAddedPropertyKey, out var registrationSourceAdded)
+                ? (EventHandler<IRegistrationSource>?)registrationSourceAdded
+                : null;
     }
 }

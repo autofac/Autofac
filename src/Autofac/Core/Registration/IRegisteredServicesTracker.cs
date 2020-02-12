@@ -32,8 +32,7 @@ namespace Autofac.Core.Registration
         bool TryGetRegistration(Service service, [NotNullWhen(returnValue: true)] out IComponentRegistration? registration);
 
         /// <summary>
-        /// Fired whenever a component is registered - either explicitly or via a
-        /// <see cref="IRegistrationSource"/>.
+        /// Fired whenever a component is registered - either explicitly or via an <see cref="IRegistrationSource"/>.
         /// </summary>
         event EventHandler<IComponentRegistration> Registered;
 
