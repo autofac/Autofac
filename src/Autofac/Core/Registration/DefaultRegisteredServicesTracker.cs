@@ -144,13 +144,9 @@ namespace Autofac.Core.Registration
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
-            var info = GetInitializedServiceInfoOrDefault(service);
-            if (info != null && info.TryGetRegistration(out registration))
-                return true;
-
             lock (_synchRoot)
             {
-                info = GetInitializedServiceInfo(service);
+                var info = GetInitializedServiceInfo(service);
                 return info.TryGetRegistration(out registration);
             }
         }
@@ -159,10 +155,6 @@ namespace Autofac.Core.Registration
         public bool IsRegistered(Service service)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
-
-            var info = GetInitializedServiceInfoOrDefault(service);
-            if (info != null && info.IsRegistered)
-                return true;
 
             lock (_synchRoot)
             {
@@ -175,13 +167,9 @@ namespace Autofac.Core.Registration
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
-            var info = GetInitializedServiceInfoOrDefault(service);
-            if (info != null)
-                return info.Implementations.ToArray();
-
             lock (_synchRoot)
             {
-                info = GetInitializedServiceInfo(service);
+                var info = GetInitializedServiceInfo(service);
                 return info.Implementations.ToArray();
             }
         }
@@ -222,7 +210,7 @@ namespace Autofac.Core.Registration
             while (info.HasSourcesToQuery)
             {
                 var next = info.DequeueNextSource();
-                foreach (var provided in next.RegistrationsFor(service, s => RegistrationsFor(s)))
+                foreach (var provided in next.RegistrationsFor(service, RegistrationsFor))
                 {
                     // This ensures that multiple services provided by the same
                     // component share a single component (we don't re-query for them)
@@ -254,16 +242,6 @@ namespace Autofac.Core.Registration
             var info = new ServiceRegistrationInfo(service);
             _serviceInfo.TryAdd(service, info);
             return info;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ServiceRegistrationInfo? GetInitializedServiceInfoOrDefault(Service service)
-        {
-            // Issue #1073: Check if any implementations are available in addition to being initialized to avoid coarse grain locking.
-            if (_serviceInfo.TryGetValue(service, out var existing) && existing.IsInitialized && existing.Implementations.Any())
-                return existing;
-
-            return null;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
