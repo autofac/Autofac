@@ -26,6 +26,22 @@ namespace Autofac.Core.Registration
         {
             Properties = properties;
             _registeredServicesTracker = registeredServicesTracker;
+            _registeredServicesTracker.Registered += OnRegistered;
+            _registeredServicesTracker.RegistrationSourceAdded += OnRegistrationSourceAdded;
+        }
+
+        private void OnRegistered(object sender, IComponentRegistration e)
+        {
+            var handler = GetRegistered();
+
+            handler?.Invoke(this, new ComponentRegisteredEventArgs(this, e));
+        }
+
+        private void OnRegistrationSourceAdded(object sender, IRegistrationSource e)
+        {
+            var handler = GetRegistrationSourceAdded();
+
+            handler?.Invoke(this, new RegistrationSourceAddedEventArgs(this, e));
         }
 
         /// <summary>
@@ -34,6 +50,8 @@ namespace Autofac.Core.Registration
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
+            _registeredServicesTracker.Registered -= OnRegistered;
+            _registeredServicesTracker.RegistrationSourceAdded -= OnRegistrationSourceAdded;
             _registeredServicesTracker.Dispose();
 
             base.Dispose(disposing);
@@ -76,7 +94,6 @@ namespace Autofac.Core.Registration
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 
             _registeredServicesTracker.AddRegistration(registration, false);
-            GetRegistered()?.Invoke(this, new ComponentRegisteredEventArgs(this, registration));
         }
 
         /// <summary>
@@ -90,7 +107,6 @@ namespace Autofac.Core.Registration
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 
             _registeredServicesTracker.AddRegistration(registration, preserveDefaults);
-            GetRegistered()?.Invoke(this, new ComponentRegisteredEventArgs(this, registration));
         }
 
         /// <summary>
@@ -122,7 +138,6 @@ namespace Autofac.Core.Registration
         public void AddRegistrationSource(IRegistrationSource source)
         {
             _registeredServicesTracker.AddRegistrationSource(source);
-            GetRegistrationSourceAdded()?.Invoke(this, new RegistrationSourceAddedEventArgs(this, source));
         }
 
         /// <summary>

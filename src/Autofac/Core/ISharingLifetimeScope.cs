@@ -43,19 +43,19 @@ namespace Autofac.Core
         ISharingLifetimeScope? ParentLifetimeScope { get; }
 
         /// <summary>
-        /// Try to retrieve an instance based on a GUID key.
+        /// Try to retrieve a shared instance based on a GUID key.
         /// </summary>
         /// <param name="id">Key to look up.</param>
         /// <param name="value">The instance that has the specified key.</param>
-        /// <returns>true if the key was found; otherwise, false.</returns>
+        /// <returns><c>true</c> if the key was found; otherwise, <c>false</c>.</returns>
         bool TryGetSharedInstance(Guid id, out object value);
 
         /// <summary>
-        /// Try to create an instance with a GUID key.
+        /// Creates a shared instance with a GUID key.
         /// </summary>
         /// <param name="id">Key.</param>
-        /// <param name="creator">Creation function.</param>
-        /// <returns>An instance.</returns>
+        /// <param name="creator">A function that will create the instance when called.</param>
+        /// <returns>The shared instance.</returns>
         object CreateSharedInstance(Guid id, Func<object> creator);
     }
 }

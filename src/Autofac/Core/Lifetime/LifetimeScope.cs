@@ -289,12 +289,7 @@ namespace Autofac.Core.Lifetime
         /// </summary>
         public ISharingLifetimeScope RootLifetimeScope { get; }
 
-        /// <summary>
-        /// Try to create an instance with a GUID key.
-        /// </summary>
-        /// <param name="id">Key.</param>
-        /// <param name="creator">Creation function.</param>
-        /// <returns>An instance.</returns>
+        /// <inheritdoc />
         public object CreateSharedInstance(Guid id, Func<object> creator)
         {
             if (creator == null) throw new ArgumentNullException(nameof(creator));
@@ -313,16 +308,8 @@ namespace Autofac.Core.Lifetime
             }
         }
 
-        /// <summary>
-        /// Try to retrieve an instance based on a GUID key.
-        /// </summary>
-        /// <param name="id">Key to look up.</param>
-        /// <param name="value">The instance that has the specified key.</param>
-        /// <returns>true if the key was found; otherwise, false.</returns>
-        public bool TryGetSharedInstance(Guid id, out object value)
-        {
-            return _sharedInstances.TryGetValue(id, out value);
-        }
+        /// <inheritdoc />
+        public bool TryGetSharedInstance(Guid id, out object value) => _sharedInstances.TryGetValue(id, out value);
 
         /// <summary>
         /// Gets the disposer associated with this container. Instances can be associated
