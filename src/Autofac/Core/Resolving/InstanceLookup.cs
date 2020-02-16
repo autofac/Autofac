@@ -82,39 +82,35 @@ namespace Autofac.Core.Resolving
 
             _executed = true;
 
-            object? decoratorTarget = null;
-
-            var sharing = _decoratorTargetComponent != null
-                ? _decoratorTargetComponent.Sharing
-                : ComponentRegistration.Sharing;
+            var sharing = _decoratorTargetComponent?.Sharing ?? ComponentRegistration.Sharing;
 
             var resolveParameters = Parameters as Parameter[] ?? Parameters.ToArray();
 
-            if (!_activationScope.TryGetSharedInstance(ComponentRegistration.Id, out _newInstance))
+            if (!_activationScope.TryGetSharedInstance(ComponentRegistration.Id, out var instance))
             {
-                _newInstance = sharing == InstanceSharing.Shared
+                instance = sharing == InstanceSharing.Shared
                     ? _activationScope.CreateSharedInstance(ComponentRegistration.Id, () => CreateInstance(Parameters))
                     : CreateInstance(Parameters);
             }
 
-            decoratorTarget = _newInstance;
+            var decoratorTarget = instance;
 
-            _newInstance = InstanceDecorator.TryDecorateRegistration(
+            instance = InstanceDecorator.TryDecorateRegistration(
                 _service,
                 ComponentRegistration,
-                _newInstance,
+                instance,
                 _activationScope,
                 resolveParameters);
 
-            if (_newInstance != decoratorTarget)
-                ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance);
+            if (instance != decoratorTarget)
+                ComponentRegistration.RaiseActivating(this, resolveParameters, ref instance);
 
             var handler = InstanceLookupEnding;
             handler?.Invoke(this, new InstanceLookupEndingEventArgs(this, NewInstanceActivated));
 
             StartStartableComponent(decoratorTarget);
 
-            return _newInstance;
+            return instance;
         }
 
         private void StartStartableComponent(object instance)

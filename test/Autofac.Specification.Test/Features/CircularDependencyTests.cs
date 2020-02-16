@@ -158,6 +158,72 @@ namespace Autofac.Specification.Test.Features
             Assert.Same(dbp, dbp.Dep.Dep);
         }
 
+        [Fact]
+        public void CircularDependenciesHandledWhenAllDependenciesPropertyInjected()
+        {
+            // Issue #1085 - StackOverflowException thrown with circular property dependencies.
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<CircularDependencyB>()
+                .As<ICircularDependencyB>()
+                .InstancePerLifetimeScope()
+                .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
+
+            builder.RegisterType<CircularDependencyA>()
+                .As<ICircularDependencyA>()
+                .InstancePerLifetimeScope()
+                .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
+
+            builder.RegisterType<CircularDependencyHost>()
+                .As<ICircularDependencyHost>()
+                .InstancePerLifetimeScope()
+                .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
+
+            var container = builder.Build();
+
+            var host = container.Resolve<ICircularDependencyHost>();
+
+            Assert.NotNull(host.DependencyA);
+            Assert.NotNull(host.DependencyB);
+
+            Assert.Same(host.DependencyA, host.DependencyB.DependencyA);
+            Assert.Same(host.DependencyB, host.DependencyA.DependencyB);
+        }
+
+        private interface ICircularDependencyA
+        {
+            ICircularDependencyB DependencyB { get; }
+        }
+
+        private interface ICircularDependencyB
+        {
+            ICircularDependencyA DependencyA { get; }
+        }
+
+        private interface ICircularDependencyHost
+        {
+            public ICircularDependencyB DependencyB { get; }
+
+            public ICircularDependencyA DependencyA { get; }
+        }
+
+        private class CircularDependencyA : ICircularDependencyA
+        {
+            public ICircularDependencyB DependencyB { get; set; }
+        }
+
+        private class CircularDependencyB : ICircularDependencyB
+        {
+            public ICircularDependencyA DependencyA { get; set; }
+        }
+
+        private class CircularDependencyHost : ICircularDependencyHost
+        {
+            public ICircularDependencyB DependencyB { get; set; }
+
+            public ICircularDependencyA DependencyA { get; set; }
+        }
+
         private static IPlugin SafeResolvePlugin(string pluginName, IComponentContext core)
         {
             try
