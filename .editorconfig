@@ -6,23 +6,52 @@
 root = true
 
 [*]
-end_of_line = CRLF
-
-[*.{config,cs,xml}]
 indent_style = space
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+; .NET Code - match defaults for VS
+[*.{cs,csx,vb,vbx}]
 indent_size = 4
-trim_trailing_whitespace = true
+charset = utf-8-bom
 
-[*.{proj,props,sln,targets}]
+; .NET project files and MSBuild - match defaults for VS
+[*.{csproj,nuspec,proj,projitems,props,shproj,targets,vbproj,vcxproj,vcxproj.filters,vsixmanifest,vsct}]
+indent_size = 2
+
+; .NET solution files - match defaults for VS
+[*.sln]
 indent_style = tab
-trim_trailing_whitespace = true
 
-[*.{kproj,csproj,json,ps1,psd1,psm1,resx,rst}]
-indent_style = space
+; Config - match XML and default nuget.config template
+[*.config]
 indent_size = 2
-trim_trailing_whitespace = true
 
-[NuGet.Config]
-indent_style = space
+; Resources - match defaults for VS
+[*.resx]
 indent_size = 2
-trim_trailing_whitespace = true
+
+; Static analysis rulesets - match defaults for VS
+[*.ruleset]
+indent_size = 2
+
+; HTML, XML - match defaults for VS
+[*.{cshtml,html,xml}]
+indent_size = 4
+
+; JavaScript and JS mixes - match eslint settings; JSON also matches .NET Core templates
+[*.{js,json,ts,vue}]
+indent_size = 2
+
+; Markdown - match markdownlint settings
+[*.{md,markdown}]
+indent_size = 2
+
+; PowerShell - match defaults for New-ModuleManifest and PSScriptAnalyzer Invoke-Formatter
+[*.{ps1,psd1,psm1}]
+indent_size = 4
+charset = utf-8-bom
+
+; ReStructuredText - standard indentation format from examples
+[*.rst]
+indent_size = 2

@@ -14,6 +14,17 @@ namespace Autofac
         /// <param name="service">The service being resolved.</param>
         /// <param name="registration">The component registration for the service.</param>
         /// <param name="parameters">The parameters used when resolving the service.</param>
+        public ResolveRequest(Service service, IComponentRegistration registration, IEnumerable<Parameter> parameters)
+            : this(service, registration, parameters, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResolveRequest"/> class.
+        /// </summary>
+        /// <param name="service">The service being resolved.</param>
+        /// <param name="registration">The component registration for the service.</param>
+        /// <param name="parameters">The parameters used when resolving the service.</param>
         /// <param name="decoratorTarget">The target component to be decorated.</param>
         public ResolveRequest(Service service, IComponentRegistration registration, IEnumerable<Parameter> parameters, IComponentRegistration? decoratorTarget = null)
         {

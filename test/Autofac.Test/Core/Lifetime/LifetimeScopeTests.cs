@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Autofac.Core;
+using Autofac.Core.Activators.Delegate;
+using Autofac.Core.Lifetime;
+using Autofac.Core.Registration;
+using Autofac.Features.Decorators;
 using Autofac.Test.Scenarios.RegistrationSources;
 using Autofac.Test.Util;
 using Xunit;
@@ -129,6 +134,64 @@ namespace Autofac.Test.Core.Lifetime
             Assert.True(tracker.IsDisposed);
             Assert.False(asyncTracker.IsAsyncDisposed);
             Assert.True(asyncTracker.IsSyncDisposed);
+        }
+
+        [Fact]
+        public void RegistrationSourcesAreIsolatedToLifetimeScopes()
+        {
+            // Issue #1071 - Custom registration source implementations need to account for DecoratorService.
+            var container = new ContainerBuilder().Build();
+
+            var scope1RegisteredInstance = new Test();
+            var scope2RegisteredInstance = new Test();
+
+            using var scope1 = container.BeginLifetimeScope(builder => builder.RegisterSource(new SimplifiedRegistrationSource(scope1RegisteredInstance)));
+            var scope1ResolvedInstance = scope1.Resolve<ITest>();
+            Assert.Same(scope1RegisteredInstance, scope1ResolvedInstance);
+
+            using var scope2 = scope1.BeginLifetimeScope(builder => builder.RegisterSource(new SimplifiedRegistrationSource(scope2RegisteredInstance)));
+            var scope2ResolvedInstance = scope2.Resolve<ITest>();
+            Assert.Same(scope2RegisteredInstance, scope2ResolvedInstance);
+        }
+
+        private interface ITest
+        {
+        }
+
+        private class Test : ITest
+        {
+        }
+
+        private class SimplifiedRegistrationSource : IRegistrationSource
+        {
+            private readonly ITest _instance;
+
+            public bool IsAdapterForIndividualComponents { get; } = false;
+
+            public SimplifiedRegistrationSource(ITest instance) => _instance = instance;
+
+            public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+            {
+                // Important that DecoratorService is not included here.
+                if (!(service is IServiceWithType serviceWithType) || service is DecoratorService) yield break;
+
+                if (IsTestType(serviceWithType.ServiceType))
+                {
+                    yield return CreateRegistration(service, serviceWithType.ServiceType, (c, p) => _instance);
+                }
+            }
+
+            private static bool IsTestType(Type serviceType) => typeof(ITest).IsAssignableFrom(serviceType);
+
+            private static ComponentRegistration CreateRegistration(Service service, Type serviceType, Func<IComponentContext, IEnumerable<Parameter>, object> factory) =>
+                new ComponentRegistration(
+                    Guid.NewGuid(),
+                    new DelegateActivator(serviceType, factory),
+                    new CurrentScopeLifetime(),
+                    InstanceSharing.None,
+                    InstanceOwnership.OwnedByLifetimeScope,
+                    new[] { service },
+                    new Dictionary<string, object>());
         }
 
         internal class DependsOnRegisteredInstance
