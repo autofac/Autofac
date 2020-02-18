@@ -53,8 +53,7 @@ namespace Autofac.Test
                 x.Registered += (sender, args) =>
                 {
                     args.ComponentRegistration.Activating += (o, eventArgs) => activatedInstances.Add(eventArgs.Instance);
-                }
-            );
+                });
 
             builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));
             builder.RegisterType<Controller>().PropertiesAutowired();
