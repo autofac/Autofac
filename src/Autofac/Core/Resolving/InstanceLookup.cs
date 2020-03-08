@@ -130,7 +130,7 @@ namespace Autofac.Core.Resolving
         [SuppressMessage("CA1031", "CA1031", Justification = "General exception gets rethrown in a PropagateActivationException.")]
         private object CreateInstance(IEnumerable<Parameter> parameters)
         {
-            ComponentRegistration.RaisePreparing(this, ref parameters);
+            ComponentRegistration.RaisePreparing(this, ref parameters, _service);
 
             var resolveParameters = parameters as Parameter[] ?? parameters.ToArray();
 
@@ -138,7 +138,7 @@ namespace Autofac.Core.Resolving
             {
                 _newInstance = ComponentRegistration.Activator.ActivateInstance(this, resolveParameters);
 
-                ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance);
+                ComponentRegistration.RaiseActivating(this, resolveParameters, ref _newInstance, _service);
             }
             catch (ObjectDisposedException)
             {
@@ -192,7 +192,7 @@ namespace Autofac.Core.Resolving
             var beginningHandler = CompletionBeginning;
             beginningHandler?.Invoke(this, new InstanceLookupCompletionBeginningEventArgs(this));
 
-            ComponentRegistration.RaiseActivated(this, Parameters, _newInstance!);
+            ComponentRegistration.RaiseActivated(this, Parameters, _newInstance!, _service);
 
             var endingHandler = CompletionEnding;
             endingHandler?.Invoke(this, new InstanceLookupCompletionEndingEventArgs(this));

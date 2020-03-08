@@ -1,4 +1,4 @@
-// This software is part of the Autofac IoC container
+﻿// This software is part of the Autofac IoC container
 // Copyright © 2011 Autofac Contributors
 // https://autofac.org
 //
@@ -92,9 +92,10 @@ namespace Autofac.Core
         /// </summary>
         /// <param name="context">The context in which the instance will be activated.</param>
         /// <param name="parameters">Parameters for activation. These may be modified by the event handler.</param>
+        /// <param name="service">The service being resolved.</param>
         [SuppressMessage("Microsoft.Design", "CA1045:DoNotPassTypesByReference", MessageId = "1#", Justification = "The method may change the backing store of the parameter collection.")]
         [SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate", Justification = "This is the method that would raise the event.")]
-        void RaisePreparing(IComponentContext context, ref IEnumerable<Parameter> parameters);
+        void RaisePreparing(IComponentContext context, ref IEnumerable<Parameter> parameters, Service service);
 
         /// <summary>
         /// Fired when a new instance is being activated. The instance can be
@@ -109,10 +110,11 @@ namespace Autofac.Core
         /// <param name="context">The context in which the instance was activated.</param>
         /// <param name="parameters">The parameters supplied to the activator.</param>
         /// <param name="instance">The instance.</param>
+        /// <param name="service">The service being resolved.</param>
         [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
         [SuppressMessage("Microsoft.Design", "CA1045:DoNotPassTypesByReference", MessageId = "2#", Justification = "The method may change the object as part of activation.")]
         [SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate", Justification = "This is the method that would raise the event.")]
-        void RaiseActivating(IComponentContext context, IEnumerable<Parameter> parameters, ref object instance);
+        void RaiseActivating(IComponentContext context, IEnumerable<Parameter> parameters, ref object instance, Service service);
 
         /// <summary>
         /// Fired when the activation process for a new instance is complete.
@@ -126,7 +128,8 @@ namespace Autofac.Core
         /// <param name="context">The context in which the instance was activated.</param>
         /// <param name="parameters">The parameters supplied to the activator.</param>
         /// <param name="instance">The instance.</param>
+        /// <param name="service">The service being resolved.</param>
         [SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate", Justification = "This is the method that would raise the event.")]
-        void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, object instance);
+        void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, object instance, Service service);
     }
 }

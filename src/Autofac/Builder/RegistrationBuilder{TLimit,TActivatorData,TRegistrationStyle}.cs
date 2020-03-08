@@ -393,7 +393,7 @@ namespace Autofac.Builder
 
             RegistrationData.ActivatingHandlers.Add((s, e) =>
             {
-                var args = new ActivatingEventArgs<TLimit>(e.Context, e.Component, e.Parameters, (TLimit)e.Instance);
+                var args = new ActivatingEventArgs<TLimit>(e.Context, e.Component, e.Parameters, (TLimit)e.Instance, e.Service);
                 handler(args);
                 e.Instance = args.Instance;
             });
@@ -410,7 +410,7 @@ namespace Autofac.Builder
             if (handler == null) throw new ArgumentNullException(nameof(handler));
 
             RegistrationData.ActivatedHandlers.Add(
-                (s, e) => handler(new ActivatedEventArgs<TLimit>(e.Context, e.Component, e.Parameters, (TLimit)e.Instance)));
+                (s, e) => handler(new ActivatedEventArgs<TLimit>(e.Context, e.Component, e.Parameters, (TLimit)e.Instance, e.Service)));
             return this;
         }
 

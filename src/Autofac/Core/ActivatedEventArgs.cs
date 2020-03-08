@@ -40,18 +40,31 @@ namespace Autofac.Core
         /// <param name="component">The component.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="instance">The instance.</param>
-        public ActivatedEventArgs(IComponentContext context, IComponentRegistration component, IEnumerable<Parameter> parameters, T instance)
+        /// <param name="service">The service being resolved.</param>
+        public ActivatedEventArgs(
+            IComponentContext context,
+            IComponentRegistration component,
+            IEnumerable<Parameter> parameters,
+            T instance,
+            Service service)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
             if (component == null) throw new ArgumentNullException(nameof(component));
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
             if (instance == null) throw new ArgumentNullException(nameof(instance));
+            if (service == null) throw new ArgumentNullException(nameof(service));
 
             Context = context;
             Component = component;
             Parameters = parameters;
             Instance = instance;
+            Service = service;
         }
+
+        /// <summary>
+        /// Gets the service being resolved.
+        /// </summary>
+        public Service Service { get; }
 
         /// <summary>
         /// Gets the context in which the activation occurred.

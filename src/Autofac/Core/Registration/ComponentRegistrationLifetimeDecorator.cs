@@ -68,9 +68,9 @@ namespace Autofac.Core.Registration
             remove => _inner.Preparing -= value;
         }
 
-        public void RaisePreparing(IComponentContext context, ref IEnumerable<Parameter> parameters)
+        public void RaisePreparing(IComponentContext context, ref IEnumerable<Parameter> parameters, Service service)
         {
-            _inner.RaisePreparing(context, ref parameters);
+            _inner.RaisePreparing(context, ref parameters, service);
         }
 
         public event EventHandler<ActivatingEventArgs<object>> Activating
@@ -79,9 +79,9 @@ namespace Autofac.Core.Registration
             remove => _inner.Activating -= value;
         }
 
-        public void RaiseActivating(IComponentContext context, IEnumerable<Parameter> parameters, ref object instance)
+        public void RaiseActivating(IComponentContext context, IEnumerable<Parameter> parameters, ref object instance, Service service)
         {
-            _inner.RaiseActivating(context, parameters, ref instance);
+            _inner.RaiseActivating(context, parameters, ref instance, service);
         }
 
         public event EventHandler<ActivatedEventArgs<object>> Activated
@@ -90,9 +90,9 @@ namespace Autofac.Core.Registration
             remove => _inner.Activated -= value;
         }
 
-        public void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, object instance)
+        public void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, object instance, Service service)
         {
-            _inner.RaiseActivated(context, parameters, instance);
+            _inner.RaiseActivated(context, parameters, instance, service);
         }
 
         protected override void Dispose(bool disposing)
