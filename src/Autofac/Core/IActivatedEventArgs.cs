@@ -35,6 +35,11 @@ namespace Autofac.Core
     public interface IActivatedEventArgs<out T>
     {
         /// <summary>
+        /// Gets the service being resolved.
+        /// </summary>
+        Service Service { get; }
+
+        /// <summary>
         /// Gets the context in which the activation occurred.
         /// </summary>
         IComponentContext Context { get; }

@@ -160,12 +160,13 @@ namespace Autofac.Core.Registration
         /// </summary>
         /// <param name="context">The context in which the instance will be activated.</param>
         /// <param name="parameters">Parameters for activation.</param>
-        public void RaisePreparing(IComponentContext context, ref IEnumerable<Parameter> parameters)
+        /// <param name="service">The service being resolved.</param>
+        public void RaisePreparing(IComponentContext context, ref IEnumerable<Parameter> parameters, Service service)
         {
             var handler = Preparing;
             if (handler == null) return;
 
-            var args = new PreparingEventArgs(context, this, parameters);
+            var args = new PreparingEventArgs(context, this, parameters, service);
             handler(this, args);
             parameters = args.Parameters;
         }
@@ -183,12 +184,13 @@ namespace Autofac.Core.Registration
         /// <param name="context">The context in which the instance was activated.</param>
         /// <param name="parameters">The parameters supplied to the activator.</param>
         /// <param name="instance">The instance.</param>
-        public void RaiseActivating(IComponentContext context, IEnumerable<Parameter> parameters, ref object instance)
+        /// <param name="service">The service being resolved.</param>
+        public void RaiseActivating(IComponentContext context, IEnumerable<Parameter> parameters, ref object instance, Service service)
         {
             var handler = Activating;
             if (handler == null) return;
 
-            var args = new ActivatingEventArgs<object>(context, this, parameters, instance);
+            var args = new ActivatingEventArgs<object>(context, this, parameters, instance, service);
             handler(this, args);
             instance = args.Instance;
         }
@@ -205,10 +207,11 @@ namespace Autofac.Core.Registration
         /// <param name="context">The context in which the instance was activated.</param>
         /// <param name="parameters">The parameters supplied to the activator.</param>
         /// <param name="instance">The instance.</param>
-        public void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, object instance)
+        /// <param name="service">The service being resolved.</param>
+        public void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, object instance, Service service)
         {
             var handler = Activated;
-            handler?.Invoke(this, new ActivatedEventArgs<object>(context, this, parameters, instance));
+            handler?.Invoke(this, new ActivatedEventArgs<object>(context, this, parameters, instance, service));
         }
 
         /// <summary>
