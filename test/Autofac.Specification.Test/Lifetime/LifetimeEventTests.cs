@@ -433,7 +433,31 @@ namespace Autofac.Specification.Test.Lifetime
             container.Dispose();
             Assert.False(dt.IsDisposed);
         }
-
+        
+        [Fact]
+        public void EventRaisedFromComponentRegistrationCanGetServiceBeingResolved()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<MethodInjection>()
+                .OnPreparing((e) =>
+                {
+                    var service = e.Service as IServiceWithType;
+                    Assert.Equal(typeof(MethodInjection), service.ServiceType);
+                })
+                .OnActivating((e) =>
+                {
+                    var service = e.Service as IServiceWithType;
+                    Assert.Equal(typeof(MethodInjection), service.ServiceType);
+                })
+                .OnActivated((e) =>
+                {
+                    var service = e.Service as IServiceWithType;
+                    Assert.Equal(typeof(MethodInjection), service.ServiceType);
+                });
+                
+            builder.Build().Resolve<MethodInjection>()
+        }
+        
         [Fact]
         public void OnReleaseForSingletonStillFiresIfNotResolved()
         {
@@ -503,6 +527,26 @@ namespace Autofac.Specification.Test.Lifetime
 
         private interface IReleasingService
         {
+        public void EventRaisedFromComponentRegistrationCanGetServiceBeingResolved()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<MethodInjection>()
+                .OnPreparing((e) =>
+                {
+                    var service = e.Service as IServiceWithType;
+                    Assert.Equal(typeof(MethodInjection), service.ServiceType);
+                })
+                .OnActivating((e) =>
+                {
+                    var service = e.Service as IServiceWithType;
+                    Assert.Equal(typeof(MethodInjection), service.ServiceType);
+                })
+                .OnActivated((e) =>
+                {
+                    var service = e.Service as IServiceWithType;
+                    Assert.Equal(typeof(MethodInjection), service.ServiceType);
+                });
+            builder.Build().Resolve<MethodInjection>();
         }
 
         private class MethodInjection
