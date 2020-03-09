@@ -1,4 +1,5 @@
-﻿using Autofac.Features.OwnedInstances;
+﻿using System.Threading.Tasks;
+using Autofac.Features.OwnedInstances;
 using Autofac.Test.Util;
 using Xunit;
 
@@ -13,6 +14,25 @@ namespace Autofac.Test.Features.OwnedInstances
             var owned = new Owned<string>("unused", lifetime);
             owned.Dispose();
             Assert.True(lifetime.IsDisposed);
+        }
+
+        [Fact]
+        public async Task DisposingOwnedAsynchronously_CallsDisposeOnLifetimeTokenIfAsyncDisposableNotDeclared()
+        {
+            var lifetime = new DisposeTracker();
+            var owned = new Owned<string>("unused", lifetime);
+            await owned.DisposeAsync();
+            Assert.True(lifetime.IsDisposed);
+        }
+
+        [Fact]
+        public async Task DisposingOwnedAsynchronously_CallsDisposeAsyncOnLifetimeTokenIfAsyncDisposableDeclared()
+        {
+            var lifetime = new AsyncDisposeTracker();
+            var owned = new Owned<string>("unused", lifetime);
+            await owned.DisposeAsync();
+            Assert.True(lifetime.IsAsyncDisposed);
+            Assert.False(lifetime.IsSyncDisposed);
         }
 
         [Fact]
