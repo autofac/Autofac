@@ -68,19 +68,19 @@ namespace Autofac.Test
 
             public event EventHandler<PreparingEventArgs> Preparing = (sender, args) => { };
 
-            public void RaisePreparing(IComponentContext context, ref IEnumerable<Parameter> parameters, Service service)
+            public void RaisePreparing(IComponentContext context, Service service, ref IEnumerable<Parameter> parameters)
             {
             }
 
             public event EventHandler<ActivatingEventArgs<object>> Activating = (sender, args) => { };
 
-            public void RaiseActivating(IComponentContext context, IEnumerable<Parameter> parameters, ref object instance, Service service)
+            public void RaiseActivating(IComponentContext context, IEnumerable<Parameter> parameters, Service service, ref object instance)
             {
             }
 
             public event EventHandler<ActivatedEventArgs<object>> Activated = (sender, args) => { };
 
-            public void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, object instance, Service service)
+            public void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, Service service, object instance)
             {
             }
         }
