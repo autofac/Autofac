@@ -82,7 +82,7 @@ namespace Autofac.Features.ResolveAnything
             {
                 var parameterTypes = constructor.GetParameters()
                     .Select(p => p.ParameterType)
-                    .ToArray();
+                    .ToList();
 
                 var isTypeParameterInConstructor = typeParameters
                     .Where(t => parameterTypes.Contains(t))
