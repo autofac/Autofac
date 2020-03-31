@@ -209,6 +209,15 @@ namespace Autofac.Test.Features.ResolveAnything
         }
 
         [Fact]
+        public void ConstructableGenericTypeWithGenericTypeArgumentNotMatchingFilterCannotBeResolved()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource(t => t.Name.StartsWith("Generic")));
+            var container = cb.Build();
+            Assert.False(container.IsRegistered<GenericType<AbstractType>>());
+        }
+
+        [Fact]
         public void ConstructableOpenGenericsWithGenericTypeArgumentNotMatchingFilterCanBeResolved()
         {
             var cb = new ContainerBuilder();
@@ -259,6 +268,16 @@ namespace Autofac.Test.Features.ResolveAnything
 
         public abstract class AbstractType
         {
+        }
+
+        public class GenericType<T>
+        {
+            private T _genericParameterInstance;
+
+            public GenericType(T genericParameterInstance)
+            {
+                _genericParameterInstance = genericParameterInstance;
+            }
         }
 
         public class NotRegisteredType
