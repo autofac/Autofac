@@ -58,6 +58,39 @@ namespace Autofac.Features.ResolveAnything
         }
 
         /// <summary>
+        /// Takes a generic type in <paramref name="typeInfo"/> and checks to see if it has any abstract type parameters that have not been registered.
+        /// If so, the method checks to see if the generic type has any constructors that can be used without depending on the abstract types.
+        /// </summary>
+        /// <param name="typeInfo">The <see cref="System.Reflection.TypeInfo"/> of the generic type to inspect.</param>
+        /// <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
+        /// <returns>Returns true if <paramref name="typeInfo"/> has a constructor that does not depend on a unregistered abstract type.</returns>
+        private bool IsGenericTypeAValidRegistration(TypeInfo typeInfo, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+        {
+            var typeParameters = typeInfo.GenericTypeArguments
+                    .Where(t => t.IsAbstract &&
+                        !registrationAccessor(new TypedService(t)).Any());
+
+            var isValidConstructorFound = false;
+            foreach (var constructor in typeInfo.GetConstructors())
+            {
+                var parameterTypes = constructor.GetParameters()
+                    .Select(p => p.ParameterType);
+
+                var isTypeParameterInConstructor = typeParameters
+                    .Where(t => parameterTypes.Contains(t))
+                    .Any();
+
+                if (!isTypeParameterInConstructor)
+                {
+                    isValidConstructorFound = true;
+                    break;
+                }
+            }
+
+            return isValidConstructorFound;
+        }
+
+        /// <summary>
         /// Retrieve registrations for an unregistered service, to be used
         /// by the container.
         /// </summary>
@@ -91,35 +124,17 @@ namespace Autofac.Features.ResolveAnything
                 return Enumerable.Empty<IComponentRegistration>();
             }
 
-            // Check to resolve issue #925
+            // Check to see if the generic type can return a valid registration.
             if (typeInfo.IsGenericType)
             {
+                // Since Lazy<> has a default constructor, make sure that ACTNARS doesn't
+                // override the default registration source.
                 if (typeInfo.GetGenericTypeDefinition() == typeof(Lazy<>))
                 {
                     return Enumerable.Empty<IComponentRegistration>();
                 }
 
-                var typeParameters = typeInfo.GenericTypeArguments
-                    .Where(t => t.IsAbstract &&
-                        !registrationAccessor(new TypedService(t)).Any());
-
-                bool isValidConstructorFound = false;
-                foreach (var constructor in typeInfo.GetConstructors())
-                {
-                    var parameterTypes = constructor.GetParameters()
-                        .Select(p => p.ParameterType);
-
-                    var isTypeParameterInConstructor = typeParameters
-                        .Where(t => parameterTypes.Contains(t))
-                        .Any();
-
-                    if (!isTypeParameterInConstructor)
-                    {
-                        isValidConstructorFound = true;
-                        break;
-                    }
-                }
-
+                bool isValidConstructorFound = IsGenericTypeAValidRegistration(typeInfo, registrationAccessor);
                 if (!isValidConstructorFound)
                 {
                     return Enumerable.Empty<IComponentRegistration>();
