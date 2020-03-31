@@ -63,7 +63,7 @@ namespace Autofac.Features.ResolveAnything
         /// </summary>
         /// <param name="typeInfo">The <see cref="System.Reflection.TypeInfo"/> of the generic type to inspect.</param>
         /// <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
-        /// <returns>Returns true if <paramref name="typeInfo"/> has a constructor that does not depend on a unregistered abstract type.</returns>
+        /// <returns>Returns true if <paramref name="typeInfo"/> has a constructor that does not depend on an unregistered abstract type.</returns>
         private bool IsGenericTypeAValidRegistration(TypeInfo typeInfo, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             var typeParameters = typeInfo.GenericTypeArguments
