@@ -91,13 +91,14 @@ namespace Autofac.Features.ResolveAnything
                 return Enumerable.Empty<IComponentRegistration>();
             }
 
-            if (typeInfo.IsGenericType && typeInfo.GetGenericTypeDefinition() == typeof(Lazy<>))
-            {
-                return Enumerable.Empty<IComponentRegistration>();
-            }
-
+            // Check to resolve issue #925
             if (typeInfo.IsGenericType)
             {
+                if (typeInfo.GetGenericTypeDefinition() == typeof(Lazy<>))
+                {
+                    return Enumerable.Empty<IComponentRegistration>();
+                }
+
                 var typeParameters = typeInfo.GenericTypeArguments
                     .Where(t => t.IsAbstract &&
                         !registrationAccessor(new TypedService(t)).Any());
