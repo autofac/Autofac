@@ -70,6 +70,13 @@ namespace Autofac.Features.ResolveAnything
                     .Where(t => t.IsAbstract &&
                         !registrationAccessor(new TypedService(t)).Any());
 
+            // If there are not any abstract type parameters, just return true.
+            if (!typeParameters.Any())
+            {
+                return true;
+            }
+
+            // Otherwise check constructors.
             var isValidConstructorFound = false;
             foreach (var constructor in typeInfo.GetConstructors())
             {
