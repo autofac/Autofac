@@ -91,6 +91,11 @@ namespace Autofac.Features.ResolveAnything
                 return Enumerable.Empty<IComponentRegistration>();
             }
 
+            if (typeInfo.IsGenericType && typeInfo.GetGenericTypeDefinition() == typeof(Lazy<>))
+            {
+                return Enumerable.Empty<IComponentRegistration>();
+            }
+
             if (typeInfo.IsGenericType)
             {
                 var typeParameters = typeInfo.GenericTypeArguments
