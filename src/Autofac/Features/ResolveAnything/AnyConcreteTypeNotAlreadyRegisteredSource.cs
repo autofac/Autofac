@@ -93,13 +93,30 @@ namespace Autofac.Features.ResolveAnything
 
             if (typeInfo.IsGenericType)
             {
-                foreach (var typeParameter in typeInfo.GenericTypeArguments)
+                var typeParameters = typeInfo.GenericTypeArguments
+                    .Where(t => t.IsAbstract &&
+                        !registrationAccessor(new TypedService(t)).Any());
+
+                bool isValidConstructorFound = false;
+                foreach (var constructor in typeInfo.GetConstructors())
                 {
-                    // Issue #855: If the generic type argument doesn't match the filter don't look for a registration.
-                    if (_predicate(typeParameter) && !registrationAccessor(new TypedService(typeParameter)).Any())
+                    var parameterTypes = constructor.GetParameters()
+                        .Select(p => p.ParameterType);
+
+                    var isTypeParameterInConstructor = typeParameters
+                        .Where(t => parameterTypes.Contains(t))
+                        .Any();
+
+                    if (!isTypeParameterInConstructor)
                     {
-                        return Enumerable.Empty<IComponentRegistration>();
+                        isValidConstructorFound = true;
+                        break;
                     }
+                }
+
+                if (!isValidConstructorFound)
+                {
+                    return Enumerable.Empty<IComponentRegistration>();
                 }
             }
 
