@@ -198,7 +198,7 @@ namespace Autofac.Test.Features.ResolveAnything
             Assert.NotNull(container.Resolve<Progress<Exception>>());
         }
 
-        [Fact(Skip = "Issue #925")]
+        [Fact]
         public void ConstructableOpenGenericsWithUnresolvableTypeParametersCanBeResolved()
         {
             var container = CreateResolveAnythingContainer();
