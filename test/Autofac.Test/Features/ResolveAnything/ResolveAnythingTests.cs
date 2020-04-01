@@ -152,7 +152,6 @@ namespace Autofac.Test.Features.ResolveAnything
         [InlineData(typeof(Owned<IInterfaceType>))]
         [InlineData(typeof(Meta<IInterfaceType>))]
         [InlineData(typeof(Lazy<IInterfaceType>))]
-        [InlineData(typeof(Tuple<IInterfaceType>))]
         public void IgnoredTypesFromTheRegistrationSourceAreNotProvidedToOtherSources(Type serviceType)
         {
             // Issue #495: Meta<T> not correctly handled with ACTNARS.
