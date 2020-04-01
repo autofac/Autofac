@@ -256,16 +256,6 @@ namespace Autofac.Test.Features.ResolveAnything
             return cb.Build();
         }
 
-        public class GenericType<T>
-        {
-            private T _genericParameterInstance;
-
-            public GenericType(T genericParameterInstance)
-            {
-                _genericParameterInstance = genericParameterInstance;
-            }
-        }
-
         public abstract class AbstractType
         {
         }
