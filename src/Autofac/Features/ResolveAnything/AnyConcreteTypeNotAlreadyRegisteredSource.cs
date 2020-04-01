@@ -132,10 +132,7 @@ namespace Autofac.Features.ResolveAnything
         {
             var genericType = type.GetGenericTypeDefinition();
 
-            return genericType != typeof(IEnumerable<>) &&
-                   genericType != typeof(IList<>) &&
-                   genericType != typeof(ICollection<>) &&
-                   genericType != typeof(Lazy<>) &&
+            return genericType != typeof(Lazy<>) &&
                    !IsInsideAutofac(genericType);
         }
 
