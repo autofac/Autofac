@@ -197,7 +197,7 @@ namespace Autofac.Test.Features.ResolveAnything
             Assert.NotNull(container.Resolve<Progress<Exception>>());
         }
 
-        [Fact(Skip = "Issue #925")]
+        [Fact]
         public void ConstructableOpenGenericsWithUnresolvableTypeParametersCanBeResolved()
         {
             var container = CreateResolveAnythingContainer();
@@ -254,6 +254,16 @@ namespace Autofac.Test.Features.ResolveAnything
             var cb = new ContainerBuilder();
             cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
             return cb.Build();
+        }
+
+        public class GenericType<T>
+        {
+            private T _genericParameterInstance;
+
+            public GenericType(T genericParameterInstance)
+            {
+                _genericParameterInstance = genericParameterInstance;
+            }
         }
 
         public abstract class AbstractType
