@@ -29,6 +29,8 @@ using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Features.Metadata;
+using Autofac.Features.OwnedInstances;
 
 namespace Autofac.Features.ResolveAnything
 {
@@ -84,23 +86,15 @@ namespace Autofac.Features.ResolveAnything
                 typeInfo.IsSubclassOf(typeof(Delegate)) ||
                 typeInfo.IsAbstract ||
                 typeInfo.IsGenericTypeDefinition ||
-
                 !_predicate(ts.ServiceType) ||
                 registrationAccessor(service).Any())
             {
                 return Enumerable.Empty<IComponentRegistration>();
             }
 
-            if (typeInfo.IsGenericType)
+            if (typeInfo.IsGenericType && !ShouldRegisterGenericService(typeInfo))
             {
-                foreach (var typeParameter in typeInfo.GenericTypeArguments)
-                {
-                    // Issue #855: If the generic type argument doesn't match the filter don't look for a registration.
-                    if (_predicate(typeParameter) && !registrationAccessor(new TypedService(typeParameter)).Any())
-                    {
-                        return Enumerable.Empty<IComponentRegistration>();
-                    }
-                }
+                return Enumerable.Empty<IComponentRegistration>();
             }
 
             var builder = RegistrationBuilder.ForType(ts.ServiceType);
@@ -132,6 +126,19 @@ namespace Autofac.Features.ResolveAnything
         public override string ToString()
         {
             return AnyConcreteTypeNotAlreadyRegisteredSourceResources.AnyConcreteTypeNotAlreadyRegisteredSourceDescription;
+        }
+
+        private bool ShouldRegisterGenericService(TypeInfo type)
+        {
+            var genericType = type.GetGenericTypeDefinition();
+
+            return genericType != typeof(Lazy<>) &&
+                   !IsInsideAutofac(genericType);
+        }
+
+        private static bool IsInsideAutofac(Type type)
+        {
+            return typeof(IRegistrationSource).Assembly == type.Assembly;
         }
     }
 }

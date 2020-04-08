@@ -152,7 +152,6 @@ namespace Autofac.Test.Features.ResolveAnything
         [InlineData(typeof(Owned<IInterfaceType>))]
         [InlineData(typeof(Meta<IInterfaceType>))]
         [InlineData(typeof(Lazy<IInterfaceType>))]
-        [InlineData(typeof(Tuple<IInterfaceType>))]
         public void IgnoredTypesFromTheRegistrationSourceAreNotProvidedToOtherSources(Type serviceType)
         {
             // Issue #495: Meta<T> not correctly handled with ACTNARS.
@@ -198,7 +197,7 @@ namespace Autofac.Test.Features.ResolveAnything
             Assert.NotNull(container.Resolve<Progress<Exception>>());
         }
 
-        [Fact(Skip = "Issue #925")]
+        [Fact]
         public void ConstructableOpenGenericsWithUnresolvableTypeParametersCanBeResolved()
         {
             var container = CreateResolveAnythingContainer();
