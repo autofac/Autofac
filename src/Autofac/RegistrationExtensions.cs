@@ -1465,13 +1465,11 @@ namespace Autofac
             // .OnActivating() handler may call .ReplaceInstance() and we'll
             // have closed over the wrong thing.
             registration.ExternallyOwned();
-
             registration.RegistrationData.ActivatingHandlers.Add((s, e) =>
             {
                 var ra = new ReleaseAction<TLimit>(releaseAction, () => (TLimit)e.Instance);
                 e.Context.Resolve<ILifetimeScope>().Disposer.AddInstanceForDisposal(ra);
             });
-
             return registration;
         }
 
