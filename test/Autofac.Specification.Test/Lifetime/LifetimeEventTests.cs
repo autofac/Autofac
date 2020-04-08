@@ -161,7 +161,7 @@ namespace Autofac.Specification.Test.Lifetime
             var instance = new ReleasingClass();
 
             builder.RegisterInstance(instance)
-                   .OnRelease(s => s.Dispose());
+                   .OnRelease(s => s.Release());
 
             using (var container = builder.Build())
             {
@@ -170,16 +170,16 @@ namespace Autofac.Specification.Test.Lifetime
                 }
             }
 
-            Assert.True(instance.Disposed);
+            Assert.True(instance.Released);
         }
 
-        private class ReleasingClass : IDisposable
+        private class ReleasingClass
         {
-            public bool Disposed { get; set; }
+            public bool Released { get; set; }
 
-            public void Dispose()
+            public void Release()
             {
-                Disposed = true;
+                Released = true;
             }
         }
 
