@@ -153,6 +153,36 @@ namespace Autofac.Specification.Test.Lifetime
             Assert.False(dt.IsDisposed);
         }
 
+        [Fact]
+        public void OnReleaseForSingletonStillFiresIfNotResolved()
+        {
+            var builder = new ContainerBuilder();
+
+            var instance = new ReleasingClass();
+
+            builder.RegisterInstance(instance)
+                   .OnRelease(s => s.Dispose());
+
+            using (var container = builder.Build())
+            {
+                using (var scope = container.BeginLifetimeScope())
+                {
+                }
+            }
+
+            Assert.True(instance.Disposed);
+        }
+
+        private class ReleasingClass : IDisposable
+        {
+            public bool Disposed { get; set; }
+
+            public void Dispose()
+            {
+                Disposed = true;
+            }
+        }
+
         private class MethodInjection
         {
             public int Param { get; private set; }
