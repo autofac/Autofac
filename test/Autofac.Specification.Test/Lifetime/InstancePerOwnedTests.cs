@@ -1,5 +1,4 @@
-﻿using System;
-using Autofac.Core;
+﻿using Autofac.Core;
 using Autofac.Features.OwnedInstances;
 using Xunit;
 
@@ -63,6 +62,73 @@ namespace Autofac.Specification.Test.Lifetime
             Assert.Same(owned.Value.LifetimeScope.Tag, owned.Value.DependentService.LifetimeScope.Tag);
         }
 
+        [Fact]
+        public void InstancePerOwnedWithoutKeysResolvesForOwnedServicesWithKeys()
+        {
+            var builder = new ContainerBuilder();
+            const string serviceKeyA = "A";
+            const string serviceKeyB = "B";
+            builder.RegisterType<Service>().AsSelf().InstancePerOwned<IRoot>();
+            builder.RegisterType<RootA>().Keyed<IRoot>(serviceKeyA);
+            builder.RegisterType<RootB>().Keyed<IRoot>(serviceKeyB);
+            var container = builder.Build();
+
+            var ownedRoot = container.ResolveKeyed<Owned<IRoot>>(serviceKeyA);
+            Assert.NotNull(ownedRoot.Value.Dependency);
+
+            ownedRoot = container.ResolveKeyed<Owned<IRoot>>(serviceKeyB);
+            Assert.NotNull(ownedRoot.Value.Dependency);
+        }
+
+        [Fact]
+        public void InstancePerOwnedWithMultipleKeysResolvesForOwnedServicesWithMatchingKeys()
+        {
+            var builder = new ContainerBuilder();
+            const string serviceKeyA = "A";
+            const string serviceKeyB = "B";
+            builder.RegisterType<Service>().AsSelf().InstancePerOwned<IRoot>(serviceKeyA, serviceKeyB);
+            builder.RegisterType<RootA>().Keyed<IRoot>(serviceKeyA);
+            builder.RegisterType<RootB>().Keyed<IRoot>(serviceKeyB);
+            var container = builder.Build();
+
+            var ownedRoot = container.ResolveKeyed<Owned<IRoot>>(serviceKeyA);
+            Assert.NotNull(ownedRoot.Value.Dependency);
+
+            ownedRoot = container.ResolveKeyed<Owned<IRoot>>(serviceKeyB);
+            Assert.NotNull(ownedRoot.Value.Dependency);
+        }
+
+        [Fact]
+        public void InstancePerOwnedThrowsWhenKeyMissingForOwnedServiceWithKey()
+        {
+            var builder = new ContainerBuilder();
+            const string serviceKeyA = "A";
+            const string serviceKeyB = "B";
+            builder.RegisterType<Service>().AsSelf().InstancePerOwned<IRoot>(serviceKeyA);
+            builder.RegisterType<RootA>().Keyed<IRoot>(serviceKeyA);
+            builder.RegisterType<RootB>().Keyed<IRoot>(serviceKeyB);
+            var container = builder.Build();
+
+            var ownedRoot = container.ResolveKeyed<Owned<IRoot>>(serviceKeyA);
+            Assert.NotNull(ownedRoot.Value.Dependency);
+
+            void Resolve() => container.ResolveKeyed<Owned<IRoot>>(serviceKeyB);
+            Assert.Throws<DependencyResolutionException>(Resolve);
+        }
+
+        [Fact]
+        public void InstancePerOwnedWithKeyThrowsWhenOwnedServiceHasNoKey()
+        {
+            var builder = new ContainerBuilder();
+            const string serviceKey = "A";
+            builder.RegisterType<Service>().AsSelf().InstancePerOwned<IRoot>(serviceKey);
+            builder.RegisterType<RootA>().As<IRoot>();
+            var container = builder.Build();
+
+            void Resolve() => container.Resolve<Owned<IRoot>>();
+            Assert.Throws<DependencyResolutionException>(Resolve);
+        }
+
         private class MessageHandler
         {
             public MessageHandler(ILifetimeScope lifetimeScope, ServiceForHandler service)
@@ -84,6 +150,35 @@ namespace Autofac.Specification.Test.Lifetime
             }
 
             public ILifetimeScope LifetimeScope { get; set; }
+        }
+
+        public class Service
+        {
+        }
+
+        public interface IRoot
+        {
+            Service Dependency { get; }
+        }
+
+        public class RootA : IRoot
+        {
+            public RootA(Service dependency)
+            {
+                Dependency = dependency;
+            }
+
+            public Service Dependency { get; }
+        }
+
+        public class RootB : IRoot
+        {
+            public RootB(Service dependency)
+            {
+                Dependency = dependency;
+            }
+
+            public Service Dependency { get; }
         }
     }
 }

@@ -144,6 +144,18 @@ namespace Autofac.Builder
         /// share the parent's instance. If no appropriate owned instance scope can be found in the
         /// hierarchy an <see cref="DependencyResolutionException"/> is thrown.
         /// </summary>
+        /// <typeparam name="TService">The service type provided by the component.</typeparam>
+        /// <param name="serviceKeys">Keys to associate with the component.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerOwned<TService>(params object[] serviceKeys);
+
+        /// <summary>
+        /// Configure the component so that every dependent component or call to Resolve()
+        /// within a ILifetimeScope created by an owned instance gets the same, shared instance.
+        /// Dependent components in lifetime scopes that are children of the owned instance scope will
+        /// share the parent's instance. If no appropriate owned instance scope can be found in the
+        /// hierarchy an <see cref="DependencyResolutionException"/> is thrown.
+        /// </summary>
         /// <param name="serviceKey">Key to associate with the component.</param>
         /// <param name="serviceType">The service type provided by the component.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>

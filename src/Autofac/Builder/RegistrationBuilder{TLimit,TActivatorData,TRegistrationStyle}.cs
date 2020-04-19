@@ -30,6 +30,7 @@ using System.Linq;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
+using Autofac.Features.OwnedInstances;
 
 namespace Autofac.Builder
 {
@@ -166,7 +167,8 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerOwned(Type serviceType)
         {
-            return InstancePerMatchingLifetimeScope(new TypedService(serviceType));
+            var key = new InstancePerOwnedKey(new TypedService(serviceType));
+            return InstancePerMatchingLifetimeScope(key);
         }
 
         /// <summary>
@@ -182,6 +184,16 @@ namespace Autofac.Builder
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerOwned<TService>(object serviceKey)
         {
             return InstancePerOwned(serviceKey, typeof(TService));
+        }
+
+        /// <inheritdoc />
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerOwned<TService>(params object[] serviceKeys)
+        {
+            var keyedServices = serviceKeys
+                .Select(k => new KeyedService(k, typeof(TService)))
+                .Cast<object>()
+                .ToArray();
+            return InstancePerMatchingLifetimeScope(keyedServices);
         }
 
         /// <summary>
