@@ -1,4 +1,4 @@
-﻿namespace Autofac.Test.Scenarios.GenericContraints
+﻿namespace Autofac.Test.Scenarios.Graph1.GenericContraints
 {
     public class Required : IB<ClassWithParameterlessButNotPublicConstructor>
     {
