@@ -749,6 +749,92 @@ namespace Autofac.Specification.Test.Features
         }
 
         [Fact]
+        public void ResolvesDecoratedServiceWhenTargetHasOnActivatingHandlerOnType()
+        {
+            var activatingInstances = new List<object>();
+
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>()
+                .OnActivating(args => activatingInstances.Add(args.Instance));
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var instance = container.Resolve<IDecoratedService>();
+
+            Assert.IsType<DecoratorA>(instance);
+            Assert.IsType<ImplementorA>(instance.Decorated);
+
+            Assert.Single(activatingInstances);
+            Assert.IsType<ImplementorA>(activatingInstances[0]);
+        }
+
+        [Fact]
+        public void ResolvesDecoratedServiceWhenTargetHasOnActivatingHandlerOnInterface()
+        {
+            var activatingInstances = new List<object>();
+
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<ImplementorA>().AsSelf();
+            builder.Register<IDecoratedService>(c => c.Resolve<ImplementorA>())
+                .OnActivating(args => activatingInstances.Add(args.Instance));
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var instance = container.Resolve<IDecoratedService>();
+
+            Assert.IsType<DecoratorA>(instance);
+            Assert.IsType<ImplementorA>(instance.Decorated);
+
+            Assert.Single(activatingInstances);
+            Assert.IsType<ImplementorA>(activatingInstances[0]);
+        }
+
+        [Fact]
+        public void ResolvesDecoratedServiceWhenTargetHasOnActivatedHandlerOnType()
+        {
+            var activatedInstances = new List<object>();
+
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>()
+                .OnActivated(args => activatedInstances.Add(args.Instance));
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var instance = container.Resolve<IDecoratedService>();
+
+            Assert.IsType<DecoratorA>(instance);
+            Assert.IsType<ImplementorA>(instance.Decorated);
+
+            Assert.Single(activatedInstances);
+            Assert.IsType<ImplementorA>(activatedInstances[0]);
+        }
+
+        [Fact]
+        public void ResolvesDecoratedServiceWhenTargetHasOnActivatedHandlerOnInterface()
+        {
+            var activatedInstances = new List<object>();
+
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<ImplementorA>().AsSelf();
+            builder.Register<IDecoratedService>(c => c.Resolve<ImplementorA>())
+                .OnActivated(args => activatedInstances.Add(args.Instance));
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var instance = container.Resolve<IDecoratedService>();
+
+            Assert.IsType<DecoratorA>(instance);
+            Assert.IsType<ImplementorA>(instance.Decorated);
+
+            Assert.Single(activatedInstances);
+            Assert.IsType<ImplementorA>(activatedInstances[0]);
+        }
+
+        [Fact]
         public void StartableTypesCanBeDecorated()
         {
             var builder = new ContainerBuilder();
