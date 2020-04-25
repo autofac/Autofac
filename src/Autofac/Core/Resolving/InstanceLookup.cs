@@ -102,9 +102,6 @@ namespace Autofac.Core.Resolving
                 _activationScope,
                 resolveParameters);
 
-            if (instance != decoratorTarget)
-                ComponentRegistration.RaiseActivating(this, resolveParameters, ref instance);
-
             var handler = InstanceLookupEnding;
             handler?.Invoke(this, new InstanceLookupEndingEventArgs(this, NewInstanceActivated));
 
