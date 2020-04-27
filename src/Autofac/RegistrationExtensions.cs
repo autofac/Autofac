@@ -101,12 +101,14 @@ namespace Autofac
 
                 if (rb.RegistrationData.ActivatedHandlers.Any() || rb.RegistrationData.ActivatingHandlers.Any())
                 {
+                    var autoStartService = rb.RegistrationData.Services.First();
+
                     // https://github.com/autofac/Autofac/issues/1102
                     // Single instance registrations with activation handlers need to be auto-activated,
                     // so that other behaviour (such as OnRelease) that expects 'normal' object lifetime behaviour works as expected.
                     var activationRegistration = new RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>(
                         new AutoActivateService(),
-                        new SimpleActivatorData(new DelegateActivator(typeof(T), (c, p) => c.Resolve<T>())),
+                        new SimpleActivatorData(new DelegateActivator(typeof(T), (c, p) => c.ResolveService(autoStartService))),
                         new SingleRegistrationStyle());
 
                     RegistrationBuilder.RegisterSingleComponent(cr, activationRegistration);
