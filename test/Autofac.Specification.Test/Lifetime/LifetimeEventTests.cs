@@ -454,6 +454,27 @@ namespace Autofac.Specification.Test.Lifetime
             Assert.True(instance.Released);
         }
 
+        [Fact]
+        public void OnReleaseForSingletonAsInterfaceStillFiresIfNotResolved()
+        {
+            var builder = new ContainerBuilder();
+
+            var instance = new ReleasingClass();
+
+            builder.RegisterInstance(instance)
+                   .As<IReleasingService>()
+                   .OnRelease(s => s.Release());
+
+            using (var container = builder.Build())
+            {
+                using (var scope = container.BeginLifetimeScope())
+                {
+                }
+            }
+
+            Assert.True(instance.Released);
+        }
+
         private interface IService
         {
         }
@@ -470,7 +491,7 @@ namespace Autofac.Specification.Test.Lifetime
         {
         }
 
-        private class ReleasingClass
+        private class ReleasingClass : IReleasingService
         {
             public bool Released { get; set; }
 
@@ -478,6 +499,10 @@ namespace Autofac.Specification.Test.Lifetime
             {
                 Released = true;
             }
+        }
+
+        private interface IReleasingService
+        {
         }
 
         private class MethodInjection

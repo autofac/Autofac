@@ -1,4 +1,5 @@
 ﻿using System;
+using Autofac.Test.Scenarios.Graph1.GenericContraints;
 using Xunit;
 
 namespace Autofac.Specification.Test.Registration
@@ -25,6 +26,19 @@ namespace Autofac.Specification.Test.Registration
             builder.RegisterGeneric(typeof(SelfComponent<>)).AsSelf();
             var context = builder.Build();
             context.Resolve<SelfComponent<object>>();
+        }
+
+        [Fact]
+        public void ResolveWithMultipleCandidatesLimitedByGenericConstraintsShouldSucceed()
+        {
+            var containerBuilder = new ContainerBuilder();
+            containerBuilder.RegisterType<A>().As<IA>();
+            containerBuilder.RegisterGeneric(typeof(Unrelated<>)).As(typeof(IB<>));
+            containerBuilder.RegisterType<Required>().As<IB<ClassWithParameterlessButNotPublicConstructor>>();
+
+            var container = containerBuilder.Build();
+            var resolved = container.Resolve<IA>();
+            Assert.NotNull(resolved);
         }
 
         private class SelfComponent<T> : IImplementedInterface<T>

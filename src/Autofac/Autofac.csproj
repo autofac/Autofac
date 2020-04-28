@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>Autofac is an IoC container for Microsoft .NET. It manages the dependencies between classes so that applications stay easy to change as they grow in size and complexity.</Description>
-    <VersionPrefix>5.1.2</VersionPrefix>
+    <VersionPrefix>5.1.4</VersionPrefix>
     <TargetFrameworks>netstandard2.1;netstandard2.0;net461</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
