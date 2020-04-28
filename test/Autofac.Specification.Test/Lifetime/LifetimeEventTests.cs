@@ -88,7 +88,7 @@ namespace Autofac.Specification.Test.Lifetime
         }
 
         [Fact]
-        public void PreparingRaisedForEachResolve()
+        public void PreparingRaisedForEachResolveInstancePerDependency()
         {
             var preparingRaised = 0;
             var cb = new ContainerBuilder();
@@ -98,6 +98,152 @@ namespace Autofac.Specification.Test.Lifetime
             Assert.Equal(1, preparingRaised);
             container.Resolve<object>();
             Assert.Equal(2, preparingRaised);
+        }
+
+        [Fact]
+        public void PreparingRaisedOnceSingleInstance()
+        {
+            var preparingRaised = 0;
+            var cb = new ContainerBuilder();
+            cb.RegisterType<object>()
+                .SingleInstance()
+                .OnPreparing(e => preparingRaised++);
+            var container = cb.Build();
+            container.Resolve<object>();
+            Assert.Equal(1, preparingRaised);
+            container.Resolve<object>();
+            Assert.Equal(1, preparingRaised);
+        }
+
+        [Fact]
+        public void PreparingRaisedForFirstResolveInEachLifetimeScope()
+        {
+            var preparingRaised = 0;
+            var cb = new ContainerBuilder();
+            cb.RegisterType<object>()
+                .InstancePerLifetimeScope()
+                .OnPreparing(e => preparingRaised++);
+            var container = cb.Build();
+            container.Resolve<object>();
+            Assert.Equal(1, preparingRaised);
+            container.Resolve<object>();
+            Assert.Equal(1, preparingRaised);
+            using (var innerScope = container.BeginLifetimeScope())
+            {
+                innerScope.Resolve<object>();
+                Assert.Equal(2, preparingRaised);
+                innerScope.Resolve<object>();
+                Assert.Equal(2, preparingRaised);
+            }
+
+            container.Resolve<object>();
+            Assert.Equal(2, preparingRaised);
+        }
+
+        [Fact]
+        public void ActivatingRaisedForEachResolveInstancePerDependency()
+        {
+            var activatingRaised = 0;
+            var cb = new ContainerBuilder();
+            cb.RegisterType<object>().OnActivating(e => activatingRaised++);
+            var container = cb.Build();
+            container.Resolve<object>();
+            Assert.Equal(1, activatingRaised);
+            container.Resolve<object>();
+            Assert.Equal(2, activatingRaised);
+        }
+
+        [Fact]
+        public void ActivatingRaisedOnceSingleInstance()
+        {
+            var activatingRaised = 0;
+            var cb = new ContainerBuilder();
+            cb.RegisterType<object>()
+                .SingleInstance()
+                .OnActivating(e => activatingRaised++);
+            var container = cb.Build();
+            container.Resolve<object>();
+            Assert.Equal(1, activatingRaised);
+            container.Resolve<object>();
+            Assert.Equal(1, activatingRaised);
+        }
+
+        [Fact]
+        public void ActivatingRaisedForFirstResolveInEachLifetimeScope()
+        {
+            var activatingRaised = 0;
+            var cb = new ContainerBuilder();
+            cb.RegisterType<object>()
+                .InstancePerLifetimeScope()
+                .OnActivating(e => activatingRaised++);
+            var container = cb.Build();
+            container.Resolve<object>();
+            Assert.Equal(1, activatingRaised);
+            container.Resolve<object>();
+            Assert.Equal(1, activatingRaised);
+            using (var innerScope = container.BeginLifetimeScope())
+            {
+                innerScope.Resolve<object>();
+                Assert.Equal(2, activatingRaised);
+                innerScope.Resolve<object>();
+                Assert.Equal(2, activatingRaised);
+            }
+
+            container.Resolve<object>();
+            Assert.Equal(2, activatingRaised);
+        }
+
+        [Fact]
+        public void ActivatedRaisedForEachResolveInstancePerDependency()
+        {
+            var activatedRaised = 0;
+            var cb = new ContainerBuilder();
+            cb.RegisterType<object>().OnActivated(e => activatedRaised++);
+            var container = cb.Build();
+            container.Resolve<object>();
+            Assert.Equal(1, activatedRaised);
+            container.Resolve<object>();
+            Assert.Equal(2, activatedRaised);
+        }
+
+        [Fact]
+        public void ActivatedRaisedOnceSingleInstance()
+        {
+            var activatedRaised = 0;
+            var cb = new ContainerBuilder();
+            cb.RegisterType<object>()
+                .SingleInstance()
+                .OnActivated(e => activatedRaised++);
+            var container = cb.Build();
+            container.Resolve<object>();
+            Assert.Equal(1, activatedRaised);
+            container.Resolve<object>();
+            Assert.Equal(1, activatedRaised);
+        }
+
+        [Fact]
+        public void ActivatedRaisedForFirstResolveInEachLifetimeScope()
+        {
+            var activatedRaised = 0;
+            var cb = new ContainerBuilder();
+            cb.RegisterType<object>()
+                .InstancePerLifetimeScope()
+                .OnActivated(e => activatedRaised++);
+            var container = cb.Build();
+            container.Resolve<object>();
+            Assert.Equal(1, activatedRaised);
+            container.Resolve<object>();
+            Assert.Equal(1, activatedRaised);
+            using (var innerScope = container.BeginLifetimeScope())
+            {
+                innerScope.Resolve<object>();
+                Assert.Equal(2, activatedRaised);
+                innerScope.Resolve<object>();
+                Assert.Equal(2, activatedRaised);
+            }
+
+            container.Resolve<object>();
+            Assert.Equal(2, activatedRaised);
         }
 
         [Fact]
