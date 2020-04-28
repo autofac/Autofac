@@ -74,6 +74,30 @@ namespace Autofac.Specification.Test.Lifetime
         }
 
         [Fact]
+        public void MultilpeOnActivatingEventsCanPassReplacementOnward()
+        {
+            var builder = new ContainerBuilder();
+
+            var activatingInstances = new List<object>();
+
+            builder.RegisterType<AService>()
+                .OnActivating(e =>
+                {
+                    activatingInstances.Add(e.Instance);
+                    e.ReplaceInstance(new AServiceChild());
+                })
+                .OnActivating(e => activatingInstances.Add(e.Instance));
+
+            var container = builder.Build();
+            var result = container.Resolve<AService>();
+
+            Assert.IsType<AServiceChild>(result);
+            Assert.Equal(2, activatingInstances.Count);
+            Assert.IsType<AService>(activatingInstances[0]);
+            Assert.IsType<AServiceChild>(activatingInstances[1]);
+        }
+
+        [Fact]
         public void ChainedOnActivatedEventsAreInvokedWithinASingleResolveOperation()
         {
             var builder = new ContainerBuilder();
@@ -435,6 +459,10 @@ namespace Autofac.Specification.Test.Lifetime
         }
 
         private class AService : IService
+        {
+        }
+
+        private class AServiceChild : AService
         {
         }
 
