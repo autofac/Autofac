@@ -9,17 +9,33 @@ namespace Autofac.Benchmarks.Decorators
         protected IContainer Container { get; set; }
 
         [Benchmark]
-        public virtual void EnumerableResolve()
+        [Arguments(1)]
+        [Arguments(2)]
+        [Arguments(3)]
+        public virtual void ResolveEnumerableT(int repetitions)
         {
-            var item = this.Container.Resolve<IEnumerable<TCommandHandler>>();
-            GC.KeepAlive(item);
+            var iteration = 1;
+            object item = null;
+            while(iteration++ < repetitions)
+            {
+                item = this.Container.Resolve<IEnumerable<TCommandHandler>>();
+                GC.KeepAlive(item);
+            }
         }
 
         [Benchmark]
-        public virtual void SingleResolve()
+        [Arguments(1)]
+        [Arguments(2)]
+        [Arguments(3)]
+        public virtual void ResolveT(int repetitions)
         {
-            var item = this.Container.Resolve<TCommandHandler>();
-            GC.KeepAlive(item);
+            var iteration = 1;
+            object item = null;
+            while (iteration++ < repetitions)
+            {
+                item = this.Container.Resolve<TCommandHandler>();
+                GC.KeepAlive(item);
+            }
         }
     }
 }
