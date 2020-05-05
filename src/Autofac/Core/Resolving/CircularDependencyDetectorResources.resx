@@ -121,6 +121,6 @@
     <value>Circular component dependency detected: {0}.</value>
   </data>
   <data name="MaxDepthExceeded" xml:space="preserve">
-    <value>Probable circular dependency between factory-scoped components. Chain includes '{0}'</value>
+    <value>The call stack depth has reached {0}. This exceeded the threshold value {1} (you can set up it with WithMaxResolveStackDepth method). Usually, this means probable circular dependency between factory-scoped components. Chain includes '{2}'</value>
   </data>
 </root>

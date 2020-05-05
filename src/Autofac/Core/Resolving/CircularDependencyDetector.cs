@@ -34,10 +34,12 @@ namespace Autofac.Core.Resolving
     internal class CircularDependencyDetector
     {
         /// <summary>
-        /// Catch circular dependencies that are triggered by post-resolve processing (e.g. 'OnActivated').
+        /// Gets or sets the value that helps catch circular dependencies that are triggered by post-resolve processing (e.g. 'OnActivated').
         /// </summary>
         [SuppressMessage("SA1306", "SA1306", Justification = "Changed const to static on temporary basis until we can solve circular dependencies without a limit.")]
-        private static int MaxResolveDepth = 50;
+        internal static int MaxResolveDepth { get; set; } = DefaultMaxResolveDepth;
+
+        internal const int DefaultMaxResolveDepth = 50;
 
         private static string CreateDependencyGraphTo(IComponentRegistration registration, Stack<InstanceLookup> activationStack)
         {
@@ -60,7 +62,7 @@ namespace Autofac.Core.Resolving
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 
             if (callDepth > MaxResolveDepth)
-                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, CircularDependencyDetectorResources.MaxDepthExceeded, registration));
+                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, CircularDependencyDetectorResources.MaxDepthExceeded, callDepth, MaxResolveDepth, registration));
 
             // Checks for circular dependency
             foreach (var a in activationStack)

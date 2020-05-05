@@ -71,7 +71,7 @@ namespace Autofac.Core.Resolving {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Probable circular dependency between factory-scoped components. Chain includes &apos;{0}&apos;.
+        ///   Looks up a localized string similar to The call stack depth has reached {0}. This exceeded the threshold value {1} (you can set up it with WithMaxResolveStackDepth method). Usually, this means probable circular dependency between factory-scoped components. Chain includes &apos;{2}&apos;.
         /// </summary>
         internal static string MaxDepthExceeded {
             get {
