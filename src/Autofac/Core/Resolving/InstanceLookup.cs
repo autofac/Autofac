@@ -30,6 +30,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using Autofac.Builder;
+using Autofac.Core.Lifetime;
 using Autofac.Features.Decorators;
 
 namespace Autofac.Core.Resolving
@@ -86,10 +87,14 @@ namespace Autofac.Core.Resolving
 
             var resolveParameters = Parameters as Parameter[] ?? Parameters.ToArray();
 
-            if (!_activationScope.TryGetSharedInstance(ComponentRegistration.Id, out var instance))
+            var instanceKey = _decoratorTargetComponent != null ?
+                new SharedInstanceKey(new[] { ComponentRegistration.Id, _decoratorTargetComponent.Id }) :
+                new SharedInstanceKey(ComponentRegistration.Id);
+
+            if (!_activationScope.TryGetSharedInstance(instanceKey, out var instance))
             {
                 instance = sharing == InstanceSharing.Shared
-                    ? _activationScope.CreateSharedInstance(ComponentRegistration.Id, () => CreateInstance(Parameters))
+                    ? _activationScope.CreateSharedInstance(instanceKey, () => CreateInstance(Parameters))
                     : CreateInstance(Parameters);
             }
 

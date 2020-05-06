@@ -24,10 +24,13 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Autofac.Builder;
@@ -48,7 +51,7 @@ namespace Autofac.Core.Lifetime
         /// Protects shared instances from concurrent access. Other members and the base class are threadsafe.
         /// </summary>
         private readonly object _synchRoot = new object();
-        private readonly ConcurrentDictionary<Guid, object> _sharedInstances = new ConcurrentDictionary<Guid, object>();
+        private readonly ConcurrentDictionary<SharedInstanceKey, object> _sharedInstances = new ConcurrentDictionary<SharedInstanceKey, object>();
         private object? _anonymousTag;
         private LifetimeScope? parentScope;
 
@@ -82,7 +85,7 @@ namespace Autofac.Core.Lifetime
         /// <param name="componentRegistry">Components used in the scope.</param>
         public LifetimeScope(IComponentRegistry componentRegistry, object tag)
         {
-            _sharedInstances[SelfRegistrationId] = this;
+            _sharedInstances[new SharedInstanceKey(new[] { SelfRegistrationId })] = this;
             ComponentRegistry = componentRegistry ?? throw new ArgumentNullException(nameof(componentRegistry));
             Tag = tag ?? throw new ArgumentNullException(nameof(tag));
             RootLifetimeScope = this;
@@ -292,24 +295,33 @@ namespace Autofac.Core.Lifetime
         /// <inheritdoc />
         public object CreateSharedInstance(Guid id, Func<object> creator)
         {
+            var key = new SharedInstanceKey(id);
+            return CreateSharedInstance(key, creator);
+        }
+
+        public object CreateSharedInstance(SharedInstanceKey instanceKey, Func<object> creator)
+        {
             if (creator == null) throw new ArgumentNullException(nameof(creator));
 
             lock (_synchRoot)
             {
-                if (_sharedInstances.TryGetValue(id, out var result)) return result;
+                if (_sharedInstances.TryGetValue(instanceKey, out var result)) return result;
 
                 result = creator();
-                if (_sharedInstances.ContainsKey(id))
+                if (_sharedInstances.ContainsKey(instanceKey))
                     throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
 
-                _sharedInstances.TryAdd(id, result);
+                _sharedInstances.TryAdd(instanceKey, result);
 
                 return result;
             }
         }
 
         /// <inheritdoc />
-        public bool TryGetSharedInstance(Guid id, out object value) => _sharedInstances.TryGetValue(id, out value);
+        public bool TryGetSharedInstance(Guid id, out object value) => TryGetSharedInstance(new SharedInstanceKey(id), out value);
+
+        /// <inheritdoc />
+        public bool TryGetSharedInstance(SharedInstanceKey instanceKey, out object value) => _sharedInstances.TryGetValue(instanceKey, out value);
 
         /// <summary>
         /// Gets the disposer associated with this container. Instances can be associated
