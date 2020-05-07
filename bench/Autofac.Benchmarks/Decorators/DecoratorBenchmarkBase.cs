@@ -8,18 +8,30 @@ namespace Autofac.Benchmarks.Decorators
     {
         protected IContainer Container { get; set; }
 
+        [Benchmark(Baseline =true)]
+        public virtual void Baseline()
+        {
+            using (var scope = Container.BeginLifetimeScope())
+            {
+                //NO-OP for baseline measurement
+            }
+        }
+
         [Benchmark]
         [Arguments(1)]
         [Arguments(2)]
         [Arguments(3)]
         public virtual void ResolveEnumerableT(int repetitions)
         {
-            var iteration = 1;
-            object item = null;
-            while(iteration++ < repetitions)
+            using (var scope = Container.BeginLifetimeScope())
             {
-                item = this.Container.Resolve<IEnumerable<TCommandHandler>>();
-                GC.KeepAlive(item);
+                var iteration = 0;
+                object item = null;
+                while (iteration++ < repetitions)
+                {
+                    item = scope.Resolve<IEnumerable<TCommandHandler>>();
+                    GC.KeepAlive(item);
+                }
             }
         }
 
@@ -29,12 +41,15 @@ namespace Autofac.Benchmarks.Decorators
         [Arguments(3)]
         public virtual void ResolveT(int repetitions)
         {
-            var iteration = 1;
-            object item = null;
-            while (iteration++ < repetitions)
+            using (var scope = Container.BeginLifetimeScope())
             {
-                item = this.Container.Resolve<TCommandHandler>();
-                GC.KeepAlive(item);
+                var iteration = 0;
+                object item = null;
+                while (iteration++ < repetitions)
+                {
+                    item = scope.Resolve<TCommandHandler>();
+                    GC.KeepAlive(item);
+                }
             }
         }
     }

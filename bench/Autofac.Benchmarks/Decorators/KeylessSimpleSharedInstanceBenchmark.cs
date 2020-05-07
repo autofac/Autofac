@@ -16,10 +16,10 @@ namespace Autofac.Benchmarks.Decorators
             var builder = new ContainerBuilder();
             builder.RegisterType<CommandHandlerOne>()
                 .As<ICommandHandler>()
-                .SingleInstance();
+                .InstancePerLifetimeScope();
             builder.RegisterType<CommandHandlerTwo>()
                 .As<ICommandHandler>()
-                .SingleInstance();
+                .InstancePerLifetimeScope();
             builder.RegisterDecorator<CommandHandlerDecoratorOne, ICommandHandler>();
             this.Container = builder.Build();
         }
