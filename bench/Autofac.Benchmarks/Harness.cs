@@ -1,4 +1,4 @@
-// This software is part of the Autofac IoC container
+﻿// This software is part of the Autofac IoC container
 // Copyright © 2011 Autofac Contributors
 // https://autofac.org
 //
@@ -57,13 +57,25 @@ namespace Autofac.Benchmarks
         public void Decorator_Keyless_Nested() => RunBenchmark<KeylessNestedBenchmark>();
 
         [Fact]
+        public void Decorator_Keyless_Nested_Shared_Instance() => RunBenchmark<KeylessNestedSharedInstanceBenchmark>();
+
+        [Fact]
         public void Decorator_Keyless_Nested_Lambda() => RunBenchmark<KeylessNestedLambdaBenchmark>();
+
+        [Fact]
+        public void Decorator_Keyless_Nested_Lambda_Shared_Instance() => RunBenchmark<KeylessNestedSharedInstanceLambdaBenchmark>();
 
         [Fact]
         public void Decorator_Keyless_Simple() => RunBenchmark<KeylessSimpleBenchmark>();
 
         [Fact]
+        public void Decorator_Keyless_Simple_Shared_Instance() => RunBenchmark<KeylessSimpleSharedInstanceBenchmark>();
+
+        [Fact]
         public void Decorator_Keyless_Simple_Lambda() => RunBenchmark<KeylessSimpleLambdaBenchmark>();
+
+        [Fact]
+        public void Decorator_Keyless_Simple_Lambda_Shared_Instance() => RunBenchmark<KeylessSimpleSharedInstanceLambdaBenchmark>();
 
         [Fact]
         public void DeepGraphResolve() => RunBenchmark<DeepGraphResolveBenchmark>();

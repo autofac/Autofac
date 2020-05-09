@@ -209,6 +209,341 @@ namespace Autofac.Specification.Test.Features
         }
 
         [Fact]
+        public void CanResolveMultipleDecoratedServicesWithMultipleDecorators()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+            builder.RegisterType<ImplementorB>().As<IDecoratedService>();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            builder.RegisterDecorator<DecoratorB, IDecoratedService>();
+            var container = builder.Build();
+
+            var services = container.Resolve<IEnumerable<IDecoratedService>>();
+
+            Assert.Collection(
+                services,
+                s =>
+                {
+                    Assert.IsType<DecoratorB>(s);
+                    Assert.IsType<DecoratorA>(s.Decorated);
+                    Assert.IsType<ImplementorA>(s.Decorated.Decorated);
+                },
+                s =>
+                {
+                    Assert.IsType<DecoratorB>(s);
+                    Assert.IsType<DecoratorA>(s.Decorated);
+                    Assert.IsType<ImplementorB>(s.Decorated.Decorated);
+                });
+        }
+
+        [Fact(Skip = "Issue 1113")]
+        public void CanResolveMultipleDecoratedServicesSingleInstance()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>().SingleInstance();
+            builder.RegisterType<ImplementorB>().As<IDecoratedService>();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var services = container.Resolve<IEnumerable<IDecoratedService>>().ToArray();
+
+            Assert.Collection(
+                services,
+                s =>
+                {
+                    Assert.IsType<DecoratorA>(s);
+                    Assert.IsType<ImplementorA>(s.Decorated);
+                },
+                s =>
+                {
+                    Assert.IsType<DecoratorA>(s);
+                    Assert.IsType<ImplementorB>(s.Decorated);
+                });
+
+            var services2 = container.Resolve<IEnumerable<IDecoratedService>>().ToArray();
+            Assert.Collection(
+                services2,
+                s =>
+                {
+                    Assert.IsType<DecoratorA>(s);
+                    Assert.IsType<ImplementorA>(s.Decorated);
+                    Assert.Same(services[0], s); // single instance
+                },
+                s =>
+                {
+                    Assert.IsType<DecoratorA>(s);
+                    Assert.IsType<ImplementorB>(s.Decorated);
+                    Assert.NotSame(services[1], s); // instance per dependency
+                });
+        }
+
+        [Fact(Skip = "Issue 1113")]
+        public void CanResolveMultipleDecoratedServicesWithMultipleDecoratorsSingleInstance()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>().SingleInstance();
+            builder.RegisterType<ImplementorB>().As<IDecoratedService>();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            builder.RegisterDecorator<DecoratorB, IDecoratedService>();
+            var container = builder.Build();
+
+            var services = container.Resolve<IEnumerable<IDecoratedService>>().ToArray();
+
+            Assert.Collection(
+                services,
+                s =>
+                {
+                    Assert.IsType<DecoratorB>(s);
+                    Assert.IsType<DecoratorA>(s.Decorated);
+                    Assert.IsType<ImplementorA>(s.Decorated.Decorated);
+                },
+                s =>
+                {
+                    Assert.IsType<DecoratorB>(s);
+                    Assert.IsType<DecoratorA>(s.Decorated);
+                    Assert.IsType<ImplementorB>(s.Decorated.Decorated);
+                });
+
+            var services2 = container.Resolve<IEnumerable<IDecoratedService>>().ToArray();
+            Assert.Collection(
+                services2,
+                s =>
+                {
+                    Assert.IsType<DecoratorB>(s);
+                    Assert.IsType<DecoratorA>(s.Decorated);
+                    Assert.IsType<ImplementorA>(s.Decorated.Decorated);
+                    Assert.Same(services[0], s); // single instance
+                },
+                s =>
+                {
+                    Assert.IsType<DecoratorB>(s);
+                    Assert.IsType<DecoratorA>(s.Decorated);
+                    Assert.IsType<ImplementorB>(s.Decorated.Decorated);
+                    Assert.NotSame(services[1], s); // instance per dependency
+                });
+        }
+
+        [Fact(Skip ="Issue 1113")]
+        public void CanResolveMultipleDecoratedServicesInstancePerLifetimeScope()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+            builder.RegisterType<ImplementorB>().As<IDecoratedService>().InstancePerLifetimeScope();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            IDecoratedService[] innerServices;
+
+            using (var innerScope = container.BeginLifetimeScope())
+            {
+                innerServices = innerScope.Resolve<IEnumerable<IDecoratedService>>().ToArray();
+                Assert.Collection(
+                    innerServices,
+                    s =>
+                    {
+                        Assert.IsType<DecoratorA>(s);
+                        Assert.IsType<ImplementorA>(s.Decorated);
+                    },
+                    s =>
+                    {
+                        Assert.IsType<DecoratorA>(s);
+                        Assert.IsType<ImplementorB>(s.Decorated);
+                    });
+            }
+
+            var outerServices = container.Resolve<IEnumerable<IDecoratedService>>().ToArray();
+            Assert.Collection(
+                outerServices,
+                s =>
+                {
+                    Assert.IsType<DecoratorA>(s);
+                    Assert.IsType<ImplementorA>(s.Decorated);
+                    Assert.NotSame(innerServices[0], s); // instance per dependency
+                },
+                s =>
+                {
+                    Assert.IsType<DecoratorA>(s);
+                    Assert.IsType<ImplementorB>(s.Decorated);
+                    Assert.NotSame(innerServices[1], s); // instance per lifetime scope
+                });
+
+            var outerServices2 = container.Resolve<IEnumerable<IDecoratedService>>().ToArray();
+            Assert.Collection(
+                outerServices2,
+                s =>
+                {
+                    Assert.IsType<DecoratorA>(s);
+                    Assert.IsType<ImplementorA>(s.Decorated);
+                    Assert.NotSame(outerServices[0], s); // instance per dependency
+                },
+                s =>
+                {
+                    Assert.IsType<DecoratorA>(s);
+                    Assert.IsType<ImplementorB>(s.Decorated);
+                    Assert.Same(outerServices[1], s); // instance per lifetime scope
+                });
+        }
+
+        [Fact(Skip = "Issue 1113")]
+        public void CanResolveMultipleDecoratedServicesWithMultipleDecoratorsInstancePerLifetimeScope()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+            builder.RegisterType<ImplementorB>().As<IDecoratedService>().InstancePerLifetimeScope();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            builder.RegisterDecorator<DecoratorB, IDecoratedService>();
+            var container = builder.Build();
+
+            IDecoratedService[] innerServices;
+
+            using (var innerScope = container.BeginLifetimeScope())
+            {
+                innerServices = innerScope.Resolve<IEnumerable<IDecoratedService>>().ToArray();
+                Assert.Collection(
+                    innerServices,
+                    s =>
+                    {
+                        Assert.IsType<DecoratorB>(s);
+                        Assert.IsType<DecoratorA>(s.Decorated);
+                        Assert.IsType<ImplementorA>(s.Decorated.Decorated);
+                    },
+                    s =>
+                    {
+                        Assert.IsType<DecoratorB>(s);
+                        Assert.IsType<DecoratorA>(s.Decorated);
+                        Assert.IsType<ImplementorB>(s.Decorated.Decorated);
+                    });
+            }
+
+            var outerServices = container.Resolve<IEnumerable<IDecoratedService>>().ToArray();
+            Assert.Collection(
+                outerServices,
+                s =>
+                {
+                    Assert.IsType<DecoratorB>(s);
+                    Assert.IsType<DecoratorA>(s.Decorated);
+                    Assert.IsType<ImplementorA>(s.Decorated.Decorated);
+                    Assert.NotSame(innerServices[0], s); // instance per dependency
+                },
+                s =>
+                {
+                    Assert.IsType<DecoratorB>(s);
+                    Assert.IsType<DecoratorA>(s.Decorated);
+                    Assert.IsType<ImplementorB>(s.Decorated.Decorated);
+                    Assert.NotSame(innerServices[1], s); // instance per lifetime scope
+                });
+
+            var outerServices2 = container.Resolve<IEnumerable<IDecoratedService>>().ToArray();
+            Assert.Collection(
+                outerServices2,
+                s =>
+                {
+                    Assert.IsType<DecoratorB>(s);
+                    Assert.IsType<DecoratorA>(s.Decorated);
+                    Assert.IsType<ImplementorA>(s.Decorated.Decorated);
+                    Assert.NotSame(outerServices[0], s); // instance per dependency
+                },
+                s =>
+                {
+                    Assert.IsType<DecoratorB>(s);
+                    Assert.IsType<DecoratorA>(s.Decorated);
+                    Assert.IsType<ImplementorB>(s.Decorated.Decorated);
+                    Assert.Same(outerServices[1], s); // instance per lifetime scope
+                });
+        }
+
+        [Fact]
+        public void CanResolveMultipleDecoratedServicesThenLatestService()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+            builder.RegisterType<ImplementorB>().As<IDecoratedService>();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var services = container.Resolve<IEnumerable<IDecoratedService>>();
+
+            Assert.Collection(
+                services,
+                s =>
+                {
+                    Assert.IsType<DecoratorA>(s);
+                    Assert.IsType<ImplementorA>(s.Decorated);
+                },
+                s =>
+                {
+                    Assert.IsType<DecoratorA>(s);
+                    Assert.IsType<ImplementorB>(s.Decorated);
+                });
+
+            var service = container.Resolve<IDecoratedService>();
+            Assert.IsType<DecoratorA>(service);
+            Assert.IsType<ImplementorB>(service.Decorated);
+        }
+
+        [Fact]
+        public void CanResolveMultipleDecoratedServicesWithMultipleDecoratorsThenLatestService()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+            builder.RegisterType<ImplementorB>().As<IDecoratedService>();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            builder.RegisterDecorator<DecoratorB, IDecoratedService>();
+            var container = builder.Build();
+
+            var services = container.Resolve<IEnumerable<IDecoratedService>>();
+
+            Assert.Collection(
+                services,
+                s =>
+                {
+                    Assert.IsType<DecoratorB>(s);
+                    Assert.IsType<DecoratorA>(s.Decorated);
+                    Assert.IsType<ImplementorA>(s.Decorated.Decorated);
+                },
+                s =>
+                {
+                    Assert.IsType<DecoratorB>(s);
+                    Assert.IsType<DecoratorA>(s.Decorated);
+                    Assert.IsType<ImplementorB>(s.Decorated.Decorated);
+                });
+
+            var service = container.Resolve<IDecoratedService>();
+            Assert.IsType<DecoratorB>(service);
+            Assert.IsType<DecoratorA>(service.Decorated);
+            Assert.IsType<ImplementorB>(service.Decorated.Decorated);
+        }
+
+        [Fact(Skip = "Issue 1113")]
+        public void CanResolveMultipleDecoratedServicesThenLatestServiceWithSingleInstance()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>().SingleInstance();
+            builder.RegisterType<ImplementorB>().As<IDecoratedService>().SingleInstance();
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var services = container.Resolve<IEnumerable<IDecoratedService>>();
+
+            Assert.Collection(
+                services,
+                s =>
+                {
+                    Assert.IsType<DecoratorA>(s);
+                    Assert.IsType<ImplementorA>(s.Decorated);
+                },
+                s =>
+                {
+                    Assert.IsType<DecoratorA>(s);
+                    Assert.IsType<ImplementorB>(s.Decorated);
+                });
+
+            var service = container.Resolve<IDecoratedService>();
+            Assert.IsType<DecoratorA>(service);
+            Assert.IsType<ImplementorB>(service.Decorated);
+        }
+
+        [Fact]
         public void DecoratedRegistrationCanIncludeImplementationType()
         {
             var builder = new ContainerBuilder();
@@ -262,6 +597,9 @@ namespace Autofac.Specification.Test.Features
                 decorator = (DisposableDecorator)instance;
                 decorated = (DisposableImplementor)instance.Decorated;
             }
+
+            var instance2 = container.Resolve<IDecoratedService>();
+            Assert.NotSame(decorator, instance2);
 
             Assert.Equal(1, decorator.DisposeCallCount);
             Assert.Equal(1, decorated.DisposeCallCount);
