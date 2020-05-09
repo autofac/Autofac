@@ -73,7 +73,7 @@ namespace Autofac.Core
         /// possible secondary qualifying GUID key.
         /// </summary>
         /// <param name="primaryId">Key.</param>
-        /// <param name="qualifyingId">Secondary key to look up.</param>
+        /// <param name="qualifyingId">Secondary key.</param>
         /// <param name="creator">A function that will create the instance when called.</param>
         /// <returns>The shared instance.</returns>
         object CreateSharedInstance(Guid primaryId, Guid? qualifyingId, Func<object> creator);
