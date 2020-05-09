@@ -86,10 +86,10 @@ namespace Autofac.Core.Resolving
 
             var resolveParameters = Parameters as Parameter[] ?? Parameters.ToArray();
 
-            if (!_activationScope.TryGetSharedInstance(ComponentRegistration.Id, out var instance))
+            if (!_activationScope.TryGetSharedInstance(ComponentRegistration.Id, _decoratorTargetComponent?.Id, out var instance))
             {
                 instance = sharing == InstanceSharing.Shared
-                    ? _activationScope.CreateSharedInstance(ComponentRegistration.Id, () => CreateInstance(Parameters))
+                    ? _activationScope.CreateSharedInstance(ComponentRegistration.Id, _decoratorTargetComponent?.Id, () => CreateInstance(Parameters))
                     : CreateInstance(Parameters);
             }
 

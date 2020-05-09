@@ -236,7 +236,7 @@ namespace Autofac.Specification.Test.Features
                 });
         }
 
-        [Fact(Skip = "Issue 1113")]
+        [Fact]
         public void CanResolveMultipleDecoratedServicesSingleInstance()
         {
             var builder = new ContainerBuilder();
@@ -277,7 +277,7 @@ namespace Autofac.Specification.Test.Features
                 });
         }
 
-        [Fact(Skip = "Issue 1113")]
+        [Fact]
         public void CanResolveMultipleDecoratedServicesWithMultipleDecoratorsSingleInstance()
         {
             var builder = new ContainerBuilder();
@@ -323,7 +323,7 @@ namespace Autofac.Specification.Test.Features
                 });
         }
 
-        [Fact(Skip ="Issue 1113")]
+        [Fact]
         public void CanResolveMultipleDecoratedServicesInstancePerLifetimeScope()
         {
             var builder = new ContainerBuilder();
@@ -384,7 +384,7 @@ namespace Autofac.Specification.Test.Features
                 });
         }
 
-        [Fact(Skip = "Issue 1113")]
+        [Fact]
         public void CanResolveMultipleDecoratedServicesWithMultipleDecoratorsInstancePerLifetimeScope()
         {
             var builder = new ContainerBuilder();
@@ -514,7 +514,7 @@ namespace Autofac.Specification.Test.Features
             Assert.IsType<ImplementorB>(service.Decorated.Decorated);
         }
 
-        [Fact(Skip = "Issue 1113")]
+        [Fact]
         public void CanResolveMultipleDecoratedServicesThenLatestServiceWithSingleInstance()
         {
             var builder = new ContainerBuilder();
