@@ -55,8 +55,11 @@ namespace Autofac.Core
         /// possible secondary qualifying GUID key.
         /// </summary>
         /// <param name="primaryId">Key to look up.</param>
-        /// <param name="qualifyingId">Secondary key to look up.</param>
-        /// <param name="value">The instance that has the specified key.</param>
+        /// <param name="qualifyingId">
+        /// Secondary key to look up, to better identify an instance that wraps around another instance
+        /// or is otherwise "namespaced" by it.
+        /// </param>
+        /// <param name="value">The instance that has the specified keys.</param>
         /// <returns><c>true</c> if the key was found; otherwise, <c>false</c>.</returns>
         bool TryGetSharedInstance(Guid primaryId, Guid? qualifyingId, out object value);
 
@@ -73,7 +76,10 @@ namespace Autofac.Core
         /// possible secondary qualifying GUID key.
         /// </summary>
         /// <param name="primaryId">Key.</param>
-        /// <param name="qualifyingId">Secondary key.</param>
+        /// <param name="qualifyingId">
+        /// Secondary key, to better identify an instance that wraps around another instance
+        /// or is otherwise "namespaced" by it.
+        /// </param>
         /// <param name="creator">A function that will create the instance when called.</param>
         /// <returns>The shared instance.</returns>
         object CreateSharedInstance(Guid primaryId, Guid? qualifyingId, Func<object> creator);
