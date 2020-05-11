@@ -1,4 +1,5 @@
-version: 5.1.4.{build}
+version_prefix: '5.2.0'
+version: '{version_prefix}.{build}'
 
 configuration: Release
 
@@ -16,6 +17,11 @@ nuget:
 clone_depth: 1
 
 test: off
+
+dotnet_csproj:
+  patch: true
+  file: 'src\**\*.csproj'
+  version_prefix: '{version_prefix}'
 
 build_script:
 - ps: .\build.ps1
