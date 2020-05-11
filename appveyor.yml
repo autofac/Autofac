@@ -1,5 +1,4 @@
-version_prefix: '5.2.0'
-version: '{version_prefix}.{build}'
+version: '5.2.0'
 
 configuration: Release
 
@@ -21,7 +20,7 @@ test: off
 dotnet_csproj:
   patch: true
   file: 'src\**\*.csproj'
-  version_prefix: '{version_prefix}'
+  version_prefix: '{version}'
 
 build_script:
 - ps: .\build.ps1
