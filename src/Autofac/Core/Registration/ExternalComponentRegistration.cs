@@ -33,7 +33,16 @@ namespace Autofac.Core.Registration
     /// </summary>
     internal class ExternalComponentRegistration : ComponentRegistration
     {
-        public ExternalComponentRegistration(Guid id, IInstanceActivator activator, IComponentLifetime lifetime, InstanceSharing sharing, InstanceOwnership ownership, IEnumerable<Service> services, IDictionary<string, object?> metadata, IComponentRegistration target, bool isAdapterForIndividualComponent)
+        public ExternalComponentRegistration(
+            Guid id,
+            IInstanceActivator activator,
+            IComponentLifetime lifetime,
+            InstanceSharing sharing,
+            InstanceOwnership ownership,
+            IEnumerable<Service> services,
+            IDictionary<string, object?> metadata,
+            IComponentRegistration target,
+            bool isAdapterForIndividualComponent)
             : base(id, activator, lifetime, sharing, ownership, services, metadata, target, isAdapterForIndividualComponent)
         {
         }

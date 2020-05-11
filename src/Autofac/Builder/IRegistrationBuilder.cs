@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Autofac.Core;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Builder
 {
@@ -40,6 +41,12 @@ namespace Autofac.Builder
     public interface IRegistrationBuilder<out TLimit, out TActivatorData, out TRegistrationStyle>
     {
         /// <summary>
+        /// Gets the registration data.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        RegistrationData RegistrationData { get; }
+
+        /// <summary>
         /// Gets the activator data.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -51,11 +58,8 @@ namespace Autofac.Builder
         [EditorBrowsable(EditorBrowsableState.Never)]
         TRegistrationStyle RegistrationStyle { get; }
 
-        /// <summary>
-        /// Gets the registration data.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        RegistrationData RegistrationData { get; }
+        IResolvePipelineBuilder ResolvePipeline { get; }
 
         /// <summary>
         /// Configure the component so that instances are never disposed by the container.

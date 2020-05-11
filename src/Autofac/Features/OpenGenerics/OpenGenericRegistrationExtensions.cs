@@ -48,7 +48,7 @@ namespace Autofac.Features.OpenGenerics
                 new DynamicRegistrationStyle());
 
             rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => cr.AddRegistrationSource(
-                new OpenGenericRegistrationSource(rb.RegistrationData, rb.ActivatorData)));
+                new OpenGenericRegistrationSource(rb.RegistrationData, rb.ResolvePipeline.Clone(), rb.ActivatorData)));
 
             return rb;
         }
@@ -66,7 +66,7 @@ namespace Autofac.Features.OpenGenerics
                 new DynamicRegistrationStyle());
 
             rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => cr.AddRegistrationSource(
-                new OpenGenericDecoratorRegistrationSource(rb.RegistrationData, rb.ActivatorData)));
+                new OpenGenericDecoratorRegistrationSource(rb.RegistrationData, rb.ResolvePipeline.Clone(), rb.ActivatorData)));
 
             return rb;
         }

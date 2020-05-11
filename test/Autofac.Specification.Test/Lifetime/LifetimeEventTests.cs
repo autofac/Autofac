@@ -74,7 +74,7 @@ namespace Autofac.Specification.Test.Lifetime
         }
 
         [Fact]
-        public void MultilpeOnActivatingEventsCanPassReplacementOnward()
+        public void MultipleOnActivatingEventsCanPassReplacementOnward()
         {
             var builder = new ContainerBuilder();
 
@@ -276,14 +276,12 @@ namespace Autofac.Specification.Test.Lifetime
         public void ActivatingOnlyRaisedForAttachedRegistrations()
         {
             var activatingRaised = new List<IComponentRegistration>();
-            var activatingInstances = new List<IService>();
             var cb = new ContainerBuilder();
             cb.RegisterType<AService>()
                 .As<IService>()
                 .OnActivating(e =>
                 {
                     activatingRaised.Add(e.Component);
-                    activatingInstances.Add(e.Instance);
                 });
             cb.RegisterType<BService>()
                 .As<IService>();
@@ -291,8 +289,6 @@ namespace Autofac.Specification.Test.Lifetime
             container.Resolve<IEnumerable<IService>>();
             Assert.Single(activatingRaised);
             Assert.Equal(typeof(AService), activatingRaised[0].Activator.LimitType);
-            Assert.Single(activatingInstances);
-            Assert.IsType<AService>(activatingInstances[0]);
         }
 
         [Fact]

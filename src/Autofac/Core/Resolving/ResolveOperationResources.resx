@@ -123,6 +123,9 @@
   <data name="MaxDepthExceeded" xml:space="preserve">
     <value>Probable circular dependency between factory-scoped components. Chain includes '{0}'</value>
   </data>
+  <data name="PipelineCompletedWithNoInstance" xml:space="preserve">
+    <value>Resolve pipeline completed with a null value for the resolved instance.</value>
+  </data>
   <data name="TemporaryContextDisposed" xml:space="preserve">
     <value>This resolve operation has already ended. When registering components using lambdas, the IComponentContext 'c' parameter to the lambda cannot be stored. Instead, either resolve IComponentContext again from 'c', or resolve a Func&lt;&gt; based factory to create subsequent components from.</value>
   </data>

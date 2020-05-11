@@ -23,29 +23,35 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
-namespace Autofac.Core.Resolving
+namespace Autofac.Core
 {
-    /// <summary>
-    /// Fired when instance lookup is complete.
-    /// </summary>
-    public class InstanceLookupBeginningEventArgs : EventArgs
+    public interface IComponentRegistryServices
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="InstanceLookupBeginningEventArgs"/> class.
+        /// Selects from the available registrations after ensuring that any
+        /// dynamic registration sources that may provide <paramref name="service"/>
+        /// have been invoked.
         /// </summary>
-        /// <param name="instanceLookup">The instance lookup that is ending.</param>
-        public InstanceLookupBeginningEventArgs(IInstanceLookup instanceLookup)
-        {
-            if (instanceLookup == null) throw new ArgumentNullException(nameof(instanceLookup));
-
-            InstanceLookup = instanceLookup;
-        }
+        /// <param name="service">The service for which registrations are sought.</param>
+        /// <returns>Registrations supporting <paramref name="service"/>.</returns>
+        IEnumerable<IComponentRegistration> RegistrationsFor(Service service);
 
         /// <summary>
-        /// Gets the instance lookup operation that is beginning.
+        /// Attempts to find a default registration for the specified service.
         /// </summary>
-        public IInstanceLookup InstanceLookup { get; }
+        /// <param name="service">The service to look up.</param>
+        /// <param name="registration">The default registration for the service.</param>
+        /// <returns>True if a registration exists.</returns>
+        bool TryGetRegistration(Service service, [NotNullWhen(returnValue: true)] out IComponentRegistration? registration);
+
+        /// <summary>
+        /// Determines whether the specified service is registered.
+        /// </summary>
+        /// <param name="service">The service to test.</param>
+        /// <returns>True if the service is registered.</returns>
+        bool IsRegistered(Service service);
     }
 }

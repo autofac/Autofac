@@ -229,7 +229,9 @@ namespace Autofac.Test.Core.Registration
             IComponentRegistration def;
             registry.TryGetRegistration(new TypedService(typeof(object)), out def);
 
-            var result = def.Activator.ActivateInstance(new ContainerBuilder().Build(), Enumerable.Empty<Parameter>());
+            var invoker = def.Activator.GetPipelineInvoker(registry);
+
+            var result = invoker(new ContainerBuilder().Build(), Enumerable.Empty<Parameter>());
 
             Assert.Equal(result, second);
         }

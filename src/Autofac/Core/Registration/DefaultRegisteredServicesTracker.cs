@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Autofac.Builder;
+using Autofac.Core.Pipeline;
 using Autofac.Features.Decorators;
 using Autofac.Util;
 
@@ -15,10 +17,13 @@ namespace Autofac.Core.Registration
     /// </summary>
     internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredServicesTracker
     {
+        private readonly Func<Service, IEnumerable<IComponentRegistration>> _registrationAccessor;
+        private readonly Func<IServiceWithType, IReadOnlyList<IComponentRegistration>> _decoratorRegistrationsAccessor;
+
         /// <summary>
         /// Keeps track of the status of registered services.
         /// </summary>
-        private readonly ConcurrentDictionary<Service, ServiceRegistrationInfo> _serviceInfo = new ConcurrentDictionary<Service, ServiceRegistrationInfo>();
+        private readonly Dictionary<Service, ServiceRegistrationInfo> _serviceInfo = new Dictionary<Service, ServiceRegistrationInfo>();
 
         /// <summary>
         /// External registration sources.
@@ -45,6 +50,12 @@ namespace Autofac.Core.Registration
         /// Protects instance variables from concurrent access.
         /// </summary>
         private readonly object _synchRoot = new object();
+
+        public DefaultRegisteredServicesTracker()
+        {
+            _registrationAccessor = RegistrationsFor;
+            _decoratorRegistrationsAccessor = InternalDecoratorRegistrationsFor;
+        }
 
         /// <summary>
         /// Fired whenever a component is registered - either explicitly or via a
@@ -73,7 +84,7 @@ namespace Autofac.Core.Registration
             get
             {
                 lock (_synchRoot)
-                    return _registrations.ToArray();
+                    return _registrations.ToList();
             }
         }
 
@@ -84,7 +95,7 @@ namespace Autofac.Core.Registration
             {
                 lock (_synchRoot)
                 {
-                    return _dynamicRegistrationSources.ToArray();
+                    return _dynamicRegistrationSources.ToList();
                 }
             }
         }
@@ -100,6 +111,11 @@ namespace Autofac.Core.Registration
 
             _registrations.Add(registration);
             GetRegistered()?.Invoke(this, registration);
+
+            if (originatedFromSource)
+            {
+                registration.BuildResolvePipeline(this);
+            }
         }
 
         /// <inheritdoc />
@@ -149,7 +165,7 @@ namespace Autofac.Core.Registration
             lock (_synchRoot)
             {
                 var info = GetInitializedServiceInfo(service);
-                return info.Implementations.ToArray();
+                return info.Implementations.ToList();
             }
         }
 
@@ -158,11 +174,15 @@ namespace Autofac.Core.Registration
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
-            return _decorators.GetOrAdd(service, s =>
-                RegistrationsFor(new DecoratorService(s.ServiceType))
+            return _decorators.GetOrAdd(service, _decoratorRegistrationsAccessor);
+        }
+
+        private IReadOnlyList<IComponentRegistration> InternalDecoratorRegistrationsFor(IServiceWithType service)
+        {
+            return RegistrationsFor(new DecoratorService(service.ServiceType))
                     .Where(r => !r.IsAdapterForIndividualComponent)
                     .OrderBy(r => r.GetRegistrationOrder())
-                    .ToArray());
+                    .ToList();
         }
 
         /// <summary>
@@ -189,7 +209,7 @@ namespace Autofac.Core.Registration
             while (info.HasSourcesToQuery)
             {
                 var next = info.DequeueNextSource();
-                foreach (var provided in next.RegistrationsFor(service, RegistrationsFor))
+                foreach (var provided in next.RegistrationsFor(service, _registrationAccessor))
                 {
                     // This ensures that multiple services provided by the same
                     // component share a single component (we don't re-query for them)
@@ -199,7 +219,7 @@ namespace Autofac.Core.Registration
                         if (additionalInfo.IsInitialized || additionalInfo == info) continue;
 
                         if (!additionalInfo.IsInitializing)
-                            additionalInfo.BeginInitialization(_dynamicRegistrationSources.Where(src => src != next));
+                            additionalInfo.BeginInitialization(ExcludeSource(_dynamicRegistrationSources, next));
                         else
                             additionalInfo.SkipSource(next);
                     }
@@ -213,13 +233,25 @@ namespace Autofac.Core.Registration
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static IEnumerable<IRegistrationSource> ExcludeSource(IEnumerable<IRegistrationSource> sources, IRegistrationSource exclude)
+        {
+            foreach (var item in sources)
+            {
+                if (item != exclude)
+                {
+                    yield return item;
+                }
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ServiceRegistrationInfo GetServiceInfo(Service service)
         {
             if (_serviceInfo.TryGetValue(service, out var existing))
                 return existing;
 
             var info = new ServiceRegistrationInfo(service);
-            _serviceInfo.TryAdd(service, info);
+            _serviceInfo.Add(service, info);
             return info;
         }
 

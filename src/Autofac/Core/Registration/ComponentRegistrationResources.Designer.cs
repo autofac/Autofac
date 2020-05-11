@@ -10,7 +10,6 @@
 
 namespace Autofac.Core.Registration {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -20,7 +19,7 @@ namespace Autofac.Core.Registration {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class ComponentRegistrationResources {
@@ -40,7 +39,7 @@ namespace Autofac.Core.Registration {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Registration.ComponentRegistrationResources", typeof(ComponentRegistrationResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Registration.ComponentRegistrationResources", typeof(ComponentRegistrationResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,7 +61,25 @@ namespace Autofac.Core.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Activator = {0}, Services = [{1}], Lifetime = {2}, Sharing = {3}, Ownership = {4}.
+        ///   Looks up a localized string similar to Component pipeline has not yet been built..
+        /// </summary>
+        internal static string ComponentPipelineHasNotBeenBuilt {
+            get {
+                return ResourceManager.GetString("ComponentPipelineHasNotBeenBuilt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not Built.
+        /// </summary>
+        internal static string PipelineNotBuilt {
+            get {
+                return ResourceManager.GetString("PipelineNotBuilt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Activator = {0}, Services = [{1}], Lifetime = {2}, Sharing = {3}, Ownership = {4}, Pipeline = {5}.
         /// </summary>
         internal static string ToStringFormat {
             get {

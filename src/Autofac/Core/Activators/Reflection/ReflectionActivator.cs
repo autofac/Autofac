@@ -30,6 +30,8 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Autofac.Core.Resolving;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Activators.Reflection
 {
@@ -43,7 +45,6 @@ namespace Autofac.Core.Activators.Reflection
         private readonly Parameter[] _configuredProperties;
         private readonly Parameter[] _defaultParameters;
         private ConstructorInfo[]? _availableConstructors;
-        private readonly object _availableConstructorsLock = new object();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReflectionActivator"/> class.
@@ -83,6 +84,28 @@ namespace Autofac.Core.Activators.Reflection
         /// </summary>
         public IConstructorSelector ConstructorSelector { get; }
 
+        /// <inheritdoc/>
+        public void ConfigurePipeline(IComponentRegistryServices componentRegistryServices, IResolvePipelineBuilder pipelineBuilder)
+        {
+            if (componentRegistryServices is null) throw new ArgumentNullException(nameof(componentRegistryServices));
+            if (pipelineBuilder is null) throw new ArgumentNullException(nameof(pipelineBuilder));
+
+            // Locate the possible constructors at container build time.
+            _availableConstructors = ConstructorFinder.FindConstructors(_implementationType);
+
+            if (_availableConstructors.Length == 0)
+            {
+                throw new NoConstructorsFoundException(_implementationType, string.Format(CultureInfo.CurrentCulture, ReflectionActivatorResources.NoConstructorsAvailable, _implementationType, ConstructorFinder));
+            }
+
+            pipelineBuilder.Use(this.ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
+            {
+                ctxt.Instance = ActivateInstance(ctxt, ctxt.Parameters);
+
+                next(ctxt);
+            });
+        }
+
         /// <summary>
         /// Activate an instance in the provided context.
         /// </summary>
@@ -93,31 +116,14 @@ namespace Autofac.Core.Activators.Reflection
         /// The context parameter here should probably be ILifetimeScope in order to reveal Disposer,
         /// but will wait until implementing a concrete use case to make the decision.
         /// </remarks>
-        public object ActivateInstance(IComponentContext context, IEnumerable<Parameter> parameters)
+        private object ActivateInstance(IComponentContext context, IEnumerable<Parameter> parameters)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
             CheckNotDisposed();
 
-            // Lazy instantiate available constructor list so the constructor
-            // finder can be changed during AsSelf() registration. AsSelf() creates
-            // a temporary activator just long enough to get the LimitType.
-            if (_availableConstructors == null)
-            {
-                lock (_availableConstructorsLock)
-                {
-                    if (_availableConstructors == null)
-                    {
-                        _availableConstructors = ConstructorFinder.FindConstructors(_implementationType);
-                    }
-                }
-            }
-
-            if (_availableConstructors.Length == 0)
-                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, ReflectionActivatorResources.NoConstructorsAvailable, _implementationType, ConstructorFinder));
-
-            var validBindings = GetValidConstructorBindings(_availableConstructors, context, parameters);
+            var validBindings = GetValidConstructorBindings(_availableConstructors!, context, parameters);
 
             var selectedBinding = ConstructorSelector.SelectConstructorBinding(validBindings, parameters);
 

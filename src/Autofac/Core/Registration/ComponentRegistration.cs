@@ -28,6 +28,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using Autofac.Core.Resolving.Middleware;
+using Autofac.Core.Resolving.Pipeline;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
@@ -39,6 +41,42 @@ namespace Autofac.Core.Registration
     public class ComponentRegistration : Disposable, IComponentRegistration
     {
         private readonly IComponentRegistration? _target;
+        private readonly IResolvePipelineBuilder _lateBuildPipeline;
+        private IResolvePipeline? _builtComponentPipeline;
+
+        private static readonly IResolveMiddleware[] _defaultStages = new IResolveMiddleware[]
+        {
+            CircularDependencyDetectorMiddleware.Default,
+            ScopeSelectionMiddleware.Instance,
+            DecoratorMiddleware.Instance,
+            SharingMiddleware.Instance,
+        };
+
+        public ComponentRegistration(
+           Guid id,
+           IInstanceActivator activator,
+           IComponentLifetime lifetime,
+           InstanceSharing sharing,
+           InstanceOwnership ownership,
+           IEnumerable<Service> services,
+           IDictionary<string, object?> metadata,
+           IComponentRegistration target,
+           bool isAdapterForIndividualComponents)
+            : this(id, activator, lifetime, sharing, ownership, new ResolvePipelineBuilder(), services, metadata, target, isAdapterForIndividualComponents)
+        {
+        }
+
+        public ComponentRegistration(
+           Guid id,
+           IInstanceActivator activator,
+           IComponentLifetime lifetime,
+           InstanceSharing sharing,
+           InstanceOwnership ownership,
+           IEnumerable<Service> services,
+           IDictionary<string, object?> metadata)
+            : this(id, activator, lifetime, sharing, ownership, new ResolvePipelineBuilder(), services, metadata)
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentRegistration"/> class.
@@ -48,6 +86,7 @@ namespace Autofac.Core.Registration
         /// <param name="lifetime">Determines how the component will be associated with its lifetime.</param>
         /// <param name="sharing">Whether the component is shared within its lifetime scope.</param>
         /// <param name="ownership">Whether the component instances are disposed at the end of their lifetimes.</param>
+        /// <param name="pipelineBuilder">The resolve pipeline builder for the registration.</param>
         /// <param name="services">Services the component provides.</param>
         /// <param name="metadata">Data associated with the component.</param>
         public ComponentRegistration(
@@ -56,6 +95,7 @@ namespace Autofac.Core.Registration
             IComponentLifetime lifetime,
             InstanceSharing sharing,
             InstanceOwnership ownership,
+            IResolvePipelineBuilder pipelineBuilder,
             IEnumerable<Service> services,
             IDictionary<string, object?> metadata)
         {
@@ -69,6 +109,9 @@ namespace Autofac.Core.Registration
             Lifetime = lifetime;
             Sharing = sharing;
             Ownership = ownership;
+
+            _lateBuildPipeline = pipelineBuilder;
+
             Services = Enforce.ArgumentElementNotNull(services, nameof(services));
             Metadata = metadata;
             IsAdapterForIndividualComponent = false;
@@ -82,6 +125,7 @@ namespace Autofac.Core.Registration
         /// <param name="lifetime">Determines how the component will be associated with its lifetime.</param>
         /// <param name="sharing">Whether the component is shared within its lifetime scope.</param>
         /// <param name="ownership">Whether the component instances are disposed at the end of their lifetimes.</param>
+        /// <param name="pipelineBuilder">The resolve pipeline builder for the registration.</param>
         /// <param name="services">Services the component provides.</param>
         /// <param name="metadata">Data associated with the component.</param>
         /// <param name="target">The component registration upon which this registration is based.</param>
@@ -92,14 +136,14 @@ namespace Autofac.Core.Registration
             IComponentLifetime lifetime,
             InstanceSharing sharing,
             InstanceOwnership ownership,
+            IResolvePipelineBuilder pipelineBuilder,
             IEnumerable<Service> services,
             IDictionary<string, object?> metadata,
             IComponentRegistration target,
             bool isAdapterForIndividualComponents)
-            : this(id, activator, lifetime, sharing, ownership, services, metadata)
+            : this(id, activator, lifetime, sharing, ownership, pipelineBuilder, services, metadata)
         {
             if (target == null) throw new ArgumentNullException(nameof(target));
-
             _target = target;
             IsAdapterForIndividualComponent = isAdapterForIndividualComponents;
         }
@@ -116,9 +160,6 @@ namespace Autofac.Core.Registration
         /// </summary>
         public Guid Id { get; }
 
-        /// <summary>
-        /// Gets or sets the activator used to create instances.
-        /// </summary>
         public IInstanceActivator Activator { get; set; }
 
         /// <summary>
@@ -147,71 +188,65 @@ namespace Autofac.Core.Registration
         public IDictionary<string, object?> Metadata { get; }
 
         /// <inheritdoc />
+        public event EventHandler<IResolvePipelineBuilder>? PipelineBuilding;
+
+        /// <inheritdoc />
+        public IResolvePipeline ResolvePipeline
+        {
+            get => _builtComponentPipeline ?? throw new InvalidOperationException(ComponentRegistrationResources.ComponentPipelineHasNotBeenBuilt);
+            protected set => _builtComponentPipeline = value;
+        }
+
+        /// <inheritdoc />
         public bool IsAdapterForIndividualComponent { get; }
 
-        /// <summary>
-        /// Fired when a new instance is required, prior to activation.
-        /// Can be used to provide Autofac with additional parameters, used during activation.
-        /// </summary>
-        public event EventHandler<PreparingEventArgs>? Preparing;
-
-        /// <summary>
-        /// Called by the container when an instance is required.
-        /// </summary>
-        /// <param name="context">The context in which the instance will be activated.</param>
-        /// <param name="service">The service being resolved.</param>
-        /// <param name="parameters">Parameters for activation.</param>
-        public void RaisePreparing(IComponentContext context, Service service, ref IEnumerable<Parameter> parameters)
+        /// <inheritdoc />
+        public void BuildResolvePipeline(IComponentRegistryServices registryServices)
         {
-            var handler = Preparing;
-            if (handler == null) return;
+            if (_builtComponentPipeline is object)
+            {
+                // Nothing to do.
+                return;
+            }
 
-            var args = new PreparingEventArgs(context, this, parameters, service);
-            handler(this, args);
-            parameters = args.Parameters;
+            if (PipelineBuilding is object)
+            {
+                PipelineBuilding.Invoke(this, _lateBuildPipeline);
+            }
+
+            _lateBuildPipeline.UseRange(_defaultStages);
+
+            if (HasStartableService())
+            {
+                _lateBuildPipeline.Use(StartableMiddleware.Instance);
+            }
+
+            if (Ownership == InstanceOwnership.OwnedByLifetimeScope)
+            {
+                // Add the disposal tracking stage.
+                _lateBuildPipeline.Use(DisposalTrackingMiddleware.Instance);
+            }
+
+            // Add activator error propagation (want it to run outer-most in the Activator phase).
+            _lateBuildPipeline.Use(ActivatorErrorHandlingMiddleware.Instance, MiddlewareInsertionMode.StartOfPhase);
+
+            // Allow the activator to configure the pipeline.
+            Activator.ConfigurePipeline(registryServices, _lateBuildPipeline);
+
+            ResolvePipeline = _lateBuildPipeline.Build();
         }
 
-        /// <summary>
-        /// Fired when a new instance is being activated. The instance can be
-        /// wrapped or switched at this time by setting the Instance property in
-        /// the provided event arguments.
-        /// </summary>
-        public event EventHandler<ActivatingEventArgs<object>>? Activating;
-
-        /// <summary>
-        /// Called by the container once an instance has been constructed.
-        /// </summary>
-        /// <param name="context">The context in which the instance was activated.</param>
-        /// <param name="parameters">The parameters supplied to the activator.</param>
-        /// <param name="service">The service being resolved.</param>
-        /// <param name="instance">The instance.</param>
-        public void RaiseActivating(IComponentContext context, IEnumerable<Parameter> parameters, Service service, ref object instance)
+        private bool HasStartableService()
         {
-            var handler = Activating;
-            if (handler == null) return;
+            foreach (var service in Services)
+            {
+                if ((service is TypedService typed) && typed.ServiceType == typeof(IStartable))
+                {
+                    return true;
+                }
+            }
 
-            var args = new ActivatingEventArgs<object>(context, this, parameters, instance, service);
-            handler(this, args);
-            instance = args.Instance;
-        }
-
-        /// <summary>
-        /// Fired when the activation process for a new instance is complete.
-        /// </summary>
-        public event EventHandler<ActivatedEventArgs<object>>? Activated;
-
-        /// <summary>
-        /// Called by the container once an instance has been fully constructed, including
-        /// any requested objects that depend on the instance.
-        /// </summary>
-        /// <param name="context">The context in which the instance was activated.</param>
-        /// <param name="parameters">The parameters supplied to the activator.</param>
-        /// <param name="service">The service being resolved.</param>
-        /// <param name="instance">The instance.</param>
-        public void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, Service service, object instance)
-        {
-            var handler = Activated;
-            handler?.Invoke(this, new ActivatedEventArgs<object>(context, this, parameters, instance, service));
+            return false;
         }
 
         /// <summary>
@@ -220,7 +255,7 @@ namespace Autofac.Core.Registration
         /// <returns>A description of the component.</returns>
         public override string ToString()
         {
-            // Activator = {0}, Services = [{1}], Lifetime = {2}, Sharing = {3}, Ownership = {4}
+            // Activator = {0}, Services = [{1}], Lifetime = {2}, Sharing = {3}, Ownership = {4}, Pipeline = {5}
             return string.Format(
                 CultureInfo.CurrentCulture,
                 ComponentRegistrationResources.ToStringFormat,
@@ -228,7 +263,8 @@ namespace Autofac.Core.Registration
                 Services.Select(s => s.Description).JoinWith(", "),
                 Lifetime,
                 Sharing,
-                Ownership);
+                Ownership,
+                _builtComponentPipeline is null ? ComponentRegistrationResources.PipelineNotBuilt : _builtComponentPipeline.ToString());
         }
 
         /// <summary>
@@ -239,6 +275,7 @@ namespace Autofac.Core.Registration
         {
             if (disposing)
                 Activator.Dispose();
+
             base.Dispose(disposing);
         }
     }

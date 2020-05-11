@@ -30,16 +30,23 @@ using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Core.Pipeline;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Features.OpenGenerics
 {
+    /// <summary>
+    /// TODO: Replace this with a service pipeline source.
+    /// </summary>
     internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
     {
         private readonly RegistrationData _registrationData;
         private readonly OpenGenericDecoratorActivatorData _activatorData;
+        private readonly IResolvePipelineBuilder _existingPipeline;
 
         public OpenGenericDecoratorRegistrationSource(
             RegistrationData registrationData,
+            IResolvePipelineBuilder existingPipelineBuilder,
             OpenGenericDecoratorActivatorData activatorData)
         {
             if (registrationData == null) throw new ArgumentNullException(nameof(registrationData));
@@ -52,6 +59,7 @@ namespace Autofac.Features.OpenGenerics
 
             _registrationData = registrationData;
             _activatorData = activatorData;
+            _existingPipeline = existingPipelineBuilder;
         }
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
@@ -71,6 +79,7 @@ namespace Autofac.Features.OpenGenerics
                             Guid.NewGuid(),
                             _registrationData,
                             new ReflectionActivator(constructedImplementationType, _activatorData.ConstructorFinder, _activatorData.ConstructorSelector, AddDecoratedComponentParameter(fromService, swt.ServiceType, cr, _activatorData.ConfiguredParameters), _activatorData.ConfiguredProperties),
+                            _existingPipeline,
                             services));
             }
 

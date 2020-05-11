@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Core.Diagnostics;
+using Autofac.Core.Resolving;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Test
 {
@@ -21,6 +24,11 @@ namespace Autofac.Test
         public static MockComponentRegistration GetComponentRegistration()
         {
             return new MockComponentRegistration();
+        }
+
+        public static MockPipelineOperation GetPipelineOperation(ISharingLifetimeScope scope)
+        {
+            return new MockPipelineOperation(scope);
         }
 
         internal class MockConstructorFinder : IConstructorFinder
@@ -66,22 +74,52 @@ namespace Autofac.Test
 
             public bool IsAdapterForIndividualComponent { get; }
 
-            public event EventHandler<PreparingEventArgs> Preparing = (sender, args) => { };
+            public event EventHandler<IResolvePipelineBuilder> PipelineBuilding;
 
-            public void RaisePreparing(IComponentContext context, Service service, ref IEnumerable<Parameter> parameters)
+            public IResolvePipeline ResolvePipeline { get; } = new ResolvePipelineBuilder().Build();
+
+            public void BuildResolvePipeline(IComponentRegistryServices registryServices)
             {
             }
+        }
 
-            public event EventHandler<ActivatingEventArgs<object>> Activating = (sender, args) => { };
-
-            public void RaiseActivating(IComponentContext context, IEnumerable<Parameter> parameters, Service service, ref object instance)
+        public class MockPipelineOperation : IPipelineResolveOperation
+        {
+            public MockPipelineOperation(ISharingLifetimeScope scope)
             {
+                CurrentScope = scope;
             }
 
-            public event EventHandler<ActivatedEventArgs<object>> Activated = (sender, args) => { };
+            public ISharingLifetimeScope CurrentScope { get; }
 
-            public void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, Service service, object instance)
+            public IComponentRegistry ComponentRegistry => CurrentScope.ComponentRegistry;
+
+            public IResolveRequestContext ActiveRequestContext => throw new NotImplementedException();
+
+            public IEnumerable<IResolveRequestContext> InProgressRequests => throw new NotImplementedException();
+
+            Stack<IResolveRequestContext> IPipelineResolveOperation.RequestStack => throw new NotImplementedException();
+
+            public int RequestDepth => throw new NotImplementedException();
+
+            public ITracingIdentifer TracingId => this;
+
+            public bool IsTopLevelOperation => true;
+
+            public ResolveRequest InitiatingRequest { get; set; }
+
+            public event EventHandler<ResolveOperationEndingEventArgs> CurrentOperationEnding;
+
+            public event EventHandler<ResolveRequestBeginningEventArgs> ResolveRequestBeginning;
+
+            public object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest request)
             {
+                return currentOperationScope.ResolveComponent(request);
+            }
+
+            public object ResolveComponent(ResolveRequest request)
+            {
+                return CurrentScope.ResolveComponent(request);
             }
         }
     }

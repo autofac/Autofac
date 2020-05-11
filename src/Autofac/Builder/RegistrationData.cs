@@ -28,6 +28,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
+using Autofac.Core.Pipeline;
+using Autofac.Core.Registration;
 using Autofac.Util;
 
 namespace Autofac.Builder
@@ -145,21 +147,6 @@ namespace Autofac.Builder
         public DeferredCallback? DeferredCallback { get; set; }
 
         /// <summary>
-        /// Gets the handlers for the Preparing event.
-        /// </summary>
-        public ICollection<EventHandler<PreparingEventArgs>> PreparingHandlers { get; } = new List<EventHandler<PreparingEventArgs>>();
-
-        /// <summary>
-        /// Gets the handlers for the Activating event.
-        /// </summary>
-        public ICollection<EventHandler<ActivatingEventArgs<object>>> ActivatingHandlers { get; } = new List<EventHandler<ActivatingEventArgs<object>>>();
-
-        /// <summary>
-        /// Gets the handlers for the Activated event.
-        /// </summary>
-        public ICollection<EventHandler<ActivatedEventArgs<object>>> ActivatedHandlers { get; } = new List<EventHandler<ActivatedEventArgs<object>>>();
-
-        /// <summary>
         /// Copies the contents of another RegistrationData object into this one.
         /// </summary>
         /// <param name="that">The data to copy.</param>
@@ -182,9 +169,6 @@ namespace Autofac.Builder
 
             AddAll(_services, that._services);
             AddAll(Metadata, that.Metadata.Where(m => m.Key != MetadataKeys.RegistrationOrderMetadataKey));
-            AddAll(PreparingHandlers, that.PreparingHandlers);
-            AddAll(ActivatingHandlers, that.ActivatingHandlers);
-            AddAll(ActivatedHandlers, that.ActivatedHandlers);
         }
 
         private static void AddAll<T>(ICollection<T> to, IEnumerable<T> from)

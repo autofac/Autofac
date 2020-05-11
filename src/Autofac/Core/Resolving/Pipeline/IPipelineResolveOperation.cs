@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
+// Copyright © 2020 Autofac Contributors
 // https://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -23,44 +23,51 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
 using System.Collections.Generic;
+using Autofac.Core.Diagnostics;
+using Autofac.Core.Resolving.Middleware;
 
-namespace Autofac.Core.Resolving
+namespace Autofac.Core.Resolving.Pipeline
 {
-    /// <summary>
-    /// Represents the process of finding a component during a resolve operation.
-    /// </summary>
-    public interface IInstanceLookup
+    public interface IPipelineResolveOperation : IResolveOperation, IComponentContext, ITracingIdentifer
     {
         /// <summary>
-        /// Gets the component for which an instance is to be looked up.
+        /// Gets the active resolve request.
         /// </summary>
-        IComponentRegistration ComponentRegistration { get; }
+        IResolveRequestContext? ActiveRequestContext { get; }
 
         /// <summary>
-        /// Gets the scope in which the instance will be looked up.
+        /// Gets the set of all in-progress requests on the request stack.
         /// </summary>
-        ILifetimeScope ActivationScope { get; }
+        IEnumerable<IResolveRequestContext> InProgressRequests { get; }
 
         /// <summary>
-        /// Gets the parameters provided for new instance creation.
+        /// Gets the tracing identifier for the operation.
         /// </summary>
-        IEnumerable<Parameter> Parameters { get; }
+        ITracingIdentifer TracingId { get; }
 
         /// <summary>
-        /// Raised when the lookup phase of the operation is ending.
+        /// Gets the current request depth.
         /// </summary>
-        event EventHandler<InstanceLookupEndingEventArgs> InstanceLookupEnding;
+        int RequestDepth { get; }
 
         /// <summary>
-        /// Raised when the completion phase of an instance lookup operation begins.
+        /// Gets a value indicating whether this operation is a top-level operation (as opposed to one initiated from inside an existing operation).
         /// </summary>
-        event EventHandler<InstanceLookupCompletionBeginningEventArgs> CompletionBeginning;
+        bool IsTopLevelOperation { get; }
 
         /// <summary>
-        /// Raised when the completion phase of an instance lookup operation ends.
+        /// Gets the <see cref="ResolveRequest"/> that initiated the operation. Other nested requests may have been issued as a result of this one.
         /// </summary>
-        event EventHandler<InstanceLookupCompletionEndingEventArgs> CompletionEnding;
+        ResolveRequest? InitiatingRequest { get; }
+
+        /// <summary>
+        /// Gets the modifiable active request stack.
+        /// </summary>
+        /// <remarks>
+        /// Don't want this exposed to the outside world, but we do want it available in the <see cref="CircularDependencyDetectorMiddleware"/>,
+        /// hence it's internal.
+        /// </remarks>
+        internal Stack<IResolveRequestContext> RequestStack { get; }
     }
 }

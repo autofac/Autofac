@@ -30,7 +30,9 @@ using System.Linq;
 using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
+using Autofac.Core.Pipeline;
 using Autofac.Core.Registration;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Builder
 {
@@ -135,6 +137,7 @@ namespace Autofac.Builder
                 builder.RegistrationStyle.Id,
                 builder.RegistrationData,
                 builder.ActivatorData.Activator,
+                builder.ResolvePipeline,
                 builder.RegistrationData.Services.ToArray(),
                 builder.RegistrationStyle.Target,
                 builder.RegistrationStyle.IsAdapterForIndividualComponent);
@@ -146,15 +149,17 @@ namespace Autofac.Builder
         /// <param name="id">Id of the registration.</param>
         /// <param name="data">Registration data.</param>
         /// <param name="activator">Activator.</param>
+        /// <param name="pipelineBuilder">The component registration's resolve pipeline builder.</param>
         /// <param name="services">Services provided by the registration.</param>
         /// <returns>An IComponentRegistration.</returns>
         public static IComponentRegistration CreateRegistration(
             Guid id,
             RegistrationData data,
             IInstanceActivator activator,
+            IResolvePipelineBuilder pipelineBuilder,
             Service[] services)
         {
-            return CreateRegistration(id, data, activator, services, null);
+            return CreateRegistration(id, data, activator, pipelineBuilder, services, null);
         }
 
         /// <summary>
@@ -163,6 +168,7 @@ namespace Autofac.Builder
         /// <param name="id">Id of the registration.</param>
         /// <param name="data">Registration data.</param>
         /// <param name="activator">Activator.</param>
+        /// <param name="pipelineBuilder">The component registration's resolve pipeline builder.</param>
         /// <param name="services">Services provided by the registration.</param>
         /// <param name="target">Optional; target registration.</param>
         /// <param name="isAdapterForIndividualComponent">Optional; whether the registration is a 1:1 adapters on top of another component.</param>
@@ -174,12 +180,14 @@ namespace Autofac.Builder
             Guid id,
             RegistrationData data,
             IInstanceActivator activator,
+            IResolvePipelineBuilder pipelineBuilder,
             Service[] services,
             IComponentRegistration? target,
             bool isAdapterForIndividualComponent = false)
         {
             if (activator == null) throw new ArgumentNullException(nameof(activator));
             if (data == null) throw new ArgumentNullException(nameof(data));
+            if (pipelineBuilder is null) throw new ArgumentNullException(nameof(pipelineBuilder));
             if (services == null) throw new ArgumentNullException(nameof(services));
 
             var limitType = activator.LimitType;
@@ -200,7 +208,12 @@ namespace Autofac.Builder
                 }
             }
 
+            // The pipeline builder fed into the registration is a copy, so that the original builder cannot be edited after the registration has been created,
+            // and the original does not contain any auto-added items.
+            var clonedPipelineBuilder = pipelineBuilder.Clone();
+
             IComponentRegistration registration;
+
             if (target == null)
             {
                 registration = new ComponentRegistration(
@@ -209,6 +222,7 @@ namespace Autofac.Builder
                     data.Lifetime,
                     data.Sharing,
                     data.Ownership,
+                    clonedPipelineBuilder,
                     services,
                     data.Metadata);
             }
@@ -220,20 +234,12 @@ namespace Autofac.Builder
                     data.Lifetime,
                     data.Sharing,
                     data.Ownership,
+                    clonedPipelineBuilder,
                     services,
                     data.Metadata,
                     target,
                     isAdapterForIndividualComponent);
             }
-
-            foreach (var p in data.PreparingHandlers)
-                registration.Preparing += p;
-
-            foreach (var ac in data.ActivatingHandlers)
-                registration.Activating += ac;
-
-            foreach (var ad in data.ActivatedHandlers)
-                registration.Activated += ad;
 
             return registration;
         }

@@ -30,6 +30,8 @@ using System.Linq;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
+using Autofac.Core.Resolving;
+using Autofac.Core.Resolving.Pipeline;
 using Autofac.Features.OwnedInstances;
 
 namespace Autofac.Builder
@@ -46,6 +48,7 @@ namespace Autofac.Builder
             ActivatorData = activatorData;
             RegistrationStyle = style;
             RegistrationData = new RegistrationData(defaultService);
+            ResolvePipeline = new ResolvePipelineBuilder();
         }
 
         /// <summary>
@@ -65,6 +68,9 @@ namespace Autofac.Builder
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public RegistrationData RegistrationData { get; }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public IResolvePipelineBuilder ResolvePipeline { get; }
 
         /// <summary>
         /// Configure the component so that instances are never disposed by the container.
@@ -378,7 +384,18 @@ namespace Autofac.Builder
         {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
 
-            RegistrationData.PreparingHandlers.Add((s, e) => handler(e));
+            ResolvePipeline.Use(nameof(OnPreparing), PipelinePhase.ParameterSelection, (ctxt, next) =>
+            {
+                var args = new PreparingEventArgs(ctxt, ctxt.Registration, ctxt.Parameters);
+
+                handler(args);
+
+                ctxt.ChangeParameters(args.Parameters);
+
+                // Go down the pipeline now.
+                next(ctxt);
+            });
+
             return this;
         }
 
@@ -391,12 +408,18 @@ namespace Autofac.Builder
         {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
 
-            RegistrationData.ActivatingHandlers.Add((s, e) =>
+            // Activation events have to run at the start of the phase, to make sure
+            // that the event handlers run in the same order as they were added to the registration.
+            ResolvePipeline.Use(nameof(OnActivating), PipelinePhase.Activation, MiddlewareInsertionMode.StartOfPhase, (ctxt, next) =>
             {
-                var args = new ActivatingEventArgs<TLimit>(e.Context, e.Component, e.Parameters, (TLimit)e.Instance, e.Service);
+                next(ctxt);
+
+                var args = new ActivatingEventArgs<TLimit>(ctxt, ctxt.Registration, ctxt.Parameters, (TLimit)ctxt.Instance!);
+
                 handler(args);
-                e.Instance = args.Instance;
+                ctxt.Instance = args.Instance;
             });
+
             return this;
         }
 
@@ -409,8 +432,32 @@ namespace Autofac.Builder
         {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
 
-            RegistrationData.ActivatedHandlers.Add(
-                (s, e) => handler(new ActivatedEventArgs<TLimit>(e.Context, e.Component, e.Parameters, (TLimit)e.Instance, e.Service)));
+            // Need to insert OnActivated at the start of the phase, to ensure we attach to RequestCompleting in the same order
+            // as calls to OnActivated.
+            ResolvePipeline.Use(nameof(OnActivated), PipelinePhase.Activation, MiddlewareInsertionMode.StartOfPhase, (ctxt, next) =>
+            {
+                // Go down the pipeline first.
+                next(ctxt);
+
+                if (!ctxt.NewInstanceActivated)
+                {
+                    return;
+                }
+
+                // Make sure we use the instance at this point, before it is replaced by any decorators.
+                var newInstance = (TLimit)ctxt.Instance!;
+
+                // In order to behave in the same manner as the original activation handler,
+                // we need to attach to the RequestCompleting event so these run at the end after everything else.
+                ctxt.RequestCompleting += (sender, evArgs) =>
+                {
+                    var ctxt = evArgs.RequestContext;
+                    var args = new ActivatedEventArgs<TLimit>(ctxt, ctxt.Registration, ctxt.Parameters, newInstance);
+
+                    handler(args);
+                };
+            });
+
             return this;
         }
 
@@ -423,10 +470,30 @@ namespace Autofac.Builder
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> PropertiesAutowired(IPropertySelector propertySelector, bool allowCircularDependencies)
         {
-            if (allowCircularDependencies)
-                RegistrationData.ActivatedHandlers.Add((s, e) => AutowiringPropertyInjector.InjectProperties(e.Context, e.Instance, propertySelector, e.Parameters));
-            else
-                RegistrationData.ActivatingHandlers.Add((s, e) => AutowiringPropertyInjector.InjectProperties(e.Context, e.Instance, propertySelector, e.Parameters));
+            ResolvePipeline.Use(nameof(PropertiesAutowired), PipelinePhase.Activation, (ctxt, next) =>
+            {
+                // Continue down the pipeline.
+                next(ctxt);
+
+                if (!ctxt.NewInstanceActivated)
+                {
+                    return;
+                }
+
+                if (allowCircularDependencies)
+                {
+                    // If we are allowing circular deps, then we need to run when all requests have completed (similar to Activated).
+                    ctxt.RequestCompleting += (o, args) =>
+                    {
+                        var evCtxt = args.RequestContext;
+                        AutowiringPropertyInjector.InjectProperties(evCtxt, evCtxt.Instance!, propertySelector, evCtxt.Parameters);
+                    };
+                }
+                else
+                {
+                    AutowiringPropertyInjector.InjectProperties(ctxt, ctxt.Instance!, propertySelector, ctxt.Parameters);
+                }
+            });
 
             return this;
         }

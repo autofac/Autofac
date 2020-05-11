@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
+// Copyright © 2020 Autofac Contributors
 // https://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -24,35 +24,41 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using Autofac.Core.Resolving.Pipeline;
 
-namespace Autofac.Core.Resolving
+namespace Autofac.Core.Resolving.Middleware
 {
     /// <summary>
-    /// Fired when an instance is looked up.
+    /// Wraps pipeline delegates from the Use* methods in <see cref="IResolvePipelineBuilder" />.
     /// </summary>
-    public class InstanceLookupEndingEventArgs : EventArgs
+    internal class DelegateMiddleware : IResolveMiddleware
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InstanceLookupEndingEventArgs"/> class.
-        /// </summary>
-        /// <param name="instanceLookup">The instance lookup that is ending.</param>
-        /// <param name="newInstanceActivated">True if a new instance was created as part of the operation.</param>
-        public InstanceLookupEndingEventArgs(IInstanceLookup instanceLookup, bool newInstanceActivated)
-        {
-            if (instanceLookup == null) throw new ArgumentNullException(nameof(instanceLookup));
+        private readonly string _name;
+        private readonly Action<IResolveRequestContext, Action<IResolveRequestContext>> _callback;
 
-            InstanceLookup = instanceLookup;
-            NewInstanceActivated = newInstanceActivated;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DelegateMiddleware"/> class.
+        /// </summary>
+        /// <param name="description">The middleware description.</param>
+        /// <param name="phase">The pipeline phase.</param>
+        /// <param name="callback">The callback to execute.</param>
+        public DelegateMiddleware(string description, PipelinePhase phase, Action<IResolveRequestContext, Action<IResolveRequestContext>> callback)
+        {
+            _name = description;
+            Phase = phase;
+            _callback = callback;
         }
 
-        /// <summary>
-        /// Gets a value indicating whether a new instance was created as part of the operation.
-        /// </summary>
-        public bool NewInstanceActivated { get; }
+        /// <inheritdoc />
+        public PipelinePhase Phase { get; }
 
-        /// <summary>
-        /// Gets the instance lookup operation that is ending.
-        /// </summary>
-        public IInstanceLookup InstanceLookup { get; }
+        /// <inheritdoc />
+        public void Execute(IResolveRequestContext context, Action<IResolveRequestContext> next)
+        {
+            _callback(context, next);
+        }
+
+        /// <inheritdoc />
+        public override string ToString() => _name;
     }
 }

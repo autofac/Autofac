@@ -21,14 +21,17 @@ namespace Autofac.Test.Component.Activation
         }
 
         [Fact]
-        public void ActivateInstance_ReturnsResultOfInvokingSuppliedDelegate()
+        public void Pipeline_ReturnsResultOfInvokingSuppliedDelegate()
         {
             var instance = new object();
 
             var target =
                 new DelegateActivator(typeof(object), (c, p) => instance);
 
-            Assert.Same(instance, target.ActivateInstance(new ContainerBuilder().Build(), Enumerable.Empty<Parameter>()));
+            var container = Factory.CreateEmptyContainer();
+            var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+
+            Assert.Same(instance, invoker(container, Factory.NoParameters));
         }
 
         [Fact]
@@ -36,8 +39,11 @@ namespace Autofac.Test.Component.Activation
         {
             var target = new DelegateActivator(typeof(string), (c, p) => null);
 
+            var container = Factory.CreateEmptyContainer();
+            var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+
             var ex = Assert.Throws<DependencyResolutionException>(
-                () => target.ActivateInstance(new ContainerBuilder().Build(), Enumerable.Empty<Parameter>()));
+                () => invoker(container, Factory.NoParameters));
 
             Assert.Contains(typeof(string).ToString(), ex.Message);
         }

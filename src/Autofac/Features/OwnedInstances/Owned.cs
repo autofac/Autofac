@@ -143,7 +143,7 @@ namespace Autofac.Features.OwnedInstances
                     Value = default!;
                     if (lt is IAsyncDisposable asyncDisposable)
                     {
-                        await asyncDisposable.DisposeAsync();
+                        await asyncDisposable.DisposeAsync().ConfigureAwait(false);
                     }
                     else
                     {

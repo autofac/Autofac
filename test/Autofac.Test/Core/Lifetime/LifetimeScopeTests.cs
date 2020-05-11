@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
+using Autofac.Core.Pipeline;
 using Autofac.Core.Registration;
 using Autofac.Features.Decorators;
 using Autofac.Test.Scenarios.RegistrationSources;

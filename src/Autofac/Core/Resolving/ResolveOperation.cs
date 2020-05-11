@@ -26,6 +26,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Autofac.Core.Diagnostics;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Resolving
 {
@@ -33,16 +35,11 @@ namespace Autofac.Core.Resolving
     /// A <see cref="ResolveOperation"/> is a component context that sequences and monitors the multiple
     /// activations that go into producing a single requested object graph.
     /// </summary>
-    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the most nested lifetime scope is responsible for disposal.")]
-    internal class ResolveOperation : IComponentContext, IResolveOperation
+    internal sealed class ResolveOperation : IPipelineResolveOperation
     {
-        private readonly Stack<InstanceLookup> _activationStack = new Stack<InstanceLookup>();
-
-        // _successfulActivations can never be null, but the roslyn compiler doesn't look deeper than
-        // the initial constructor methods yet.
-        private List<InstanceLookup> _successfulActivations = default!;
-        private readonly ISharingLifetimeScope _mostNestedLifetimeScope;
-        private int _callDepth;
+        private readonly Stack<IResolveRequestContext> _requestStack;
+        private readonly IResolvePipelineTracer? _pipelineTracer;
+        private List<ResolveRequestContext> _successfulRequests;
         private bool _ended;
 
         /// <summary>
@@ -51,17 +48,70 @@ namespace Autofac.Core.Resolving
         /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
         /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
         public ResolveOperation(ISharingLifetimeScope mostNestedLifetimeScope)
+            : this(mostNestedLifetimeScope, null)
         {
-            _mostNestedLifetimeScope = mostNestedLifetimeScope;
-
-            // Initialise _successfulActivations.
-            ResetSuccessfulActivations();
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResolveOperation"/> class.
+        /// </summary>
+        /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
+        /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
+        /// <param name="pipelineTracer">A pipeline tracer for the operation.</param>
+        public ResolveOperation(ISharingLifetimeScope mostNestedLifetimeScope, IResolvePipelineTracer? pipelineTracer)
+        {
+            CurrentScope = mostNestedLifetimeScope;
+            TracingId = this;
+            IsTopLevelOperation = true;
+            _pipelineTracer = pipelineTracer;
+
+            _requestStack = new Stack<IResolveRequestContext>();
+            _successfulRequests = new List<ResolveRequestContext>();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResolveOperation"/> class.
+        /// </summary>
+        /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
+        /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
+        /// <param name="pipelineTracer">An optional pipeline tracer.</param>
+        /// <param name="parentOperation">A parent resolve operation, used to maintain tracing between related operations.</param>
+        public ResolveOperation(ISharingLifetimeScope mostNestedLifetimeScope, IResolvePipelineTracer? pipelineTracer, IPipelineResolveOperation parentOperation)
+        {
+            CurrentScope = mostNestedLifetimeScope;
+            TracingId = parentOperation.TracingId;
+            _pipelineTracer = pipelineTracer;
+
+            _requestStack = new Stack<IResolveRequestContext>();
+            _successfulRequests = new List<ResolveRequestContext>();
+        }
+
+        public IResolveRequestContext? ActiveRequestContext { get; set; }
+
+        public ISharingLifetimeScope CurrentScope { get; set;  }
+
+        public IComponentRegistry ComponentRegistry => CurrentScope.ComponentRegistry;
+
+        public IEnumerable<IResolveRequestContext> InProgressRequests => _requestStack;
+
+        public ResolveRequest? InitiatingRequest { get; private set; }
+
+        public int RequestDepth { get; private set; }
+
+        Stack<IResolveRequestContext> IPipelineResolveOperation.RequestStack => _requestStack;
+
+        public ITracingIdentifer TracingId { get; }
+
+        public bool IsTopLevelOperation { get; }
+
+        public event EventHandler<ResolveOperationEndingEventArgs>? CurrentOperationEnding;
+
+        public event EventHandler<ResolveRequestBeginningEventArgs>? ResolveRequestBeginning;
 
         /// <inheritdoc />
         public object ResolveComponent(ResolveRequest request)
         {
-            return GetOrCreateInstance(_mostNestedLifetimeScope, request);
+            return GetOrCreateInstance(CurrentScope, request);
         }
 
         /// <summary>
@@ -75,24 +125,39 @@ namespace Autofac.Core.Resolving
 
             try
             {
+                InitiatingRequest = request;
+
+                _pipelineTracer?.OperationStart(this, request);
+
                 result = ResolveComponent(request);
             }
-            catch (ObjectDisposedException)
+            catch (ObjectDisposedException disposeException)
             {
+                _pipelineTracer?.OperationFailure(this, disposeException);
+
                 throw;
             }
             catch (DependencyResolutionException dependencyResolutionException)
             {
+                _pipelineTracer?.OperationFailure(this, dependencyResolutionException);
                 End(dependencyResolutionException);
                 throw;
             }
             catch (Exception exception)
             {
                 End(exception);
+                _pipelineTracer?.OperationFailure(this, exception);
                 throw new DependencyResolutionException(ResolveOperationResources.ExceptionDuringResolve, exception);
+            }
+            finally
+            {
+                ResetSuccessfulRequests();
             }
 
             End();
+
+            _pipelineTracer?.OperationSuccess(this, result);
+
             return result;
         }
 
@@ -108,49 +173,68 @@ namespace Autofac.Core.Resolving
         {
             if (_ended) throw new ObjectDisposedException(ResolveOperationResources.TemporaryContextDisposed, innerException: null);
 
-            ++_callDepth;
+            // Resolve pipeline from the registration.
+            var registrationPipeline = request.Registration.ResolvePipeline;
 
-            if (_activationStack.Count > 0)
-                CircularDependencyDetector.CheckForCircularDependency(request.Registration, _activationStack, _callDepth);
+            // Create a new request context.
+            var requestContext = new ResolveRequestContext(this, request, currentOperationScope, _pipelineTracer);
 
-            var activation = new InstanceLookup(this, currentOperationScope, request);
+            // Raise our request-beginning event.
+            var handler = ResolveRequestBeginning;
+            handler?.Invoke(this, new ResolveRequestBeginningEventArgs(requestContext));
 
-            _activationStack.Push(activation);
+            RequestDepth++;
 
-            var handler = InstanceLookupBeginning;
-            handler?.Invoke(this, new InstanceLookupBeginningEventArgs(activation));
+            // Track the last active request and scope in the call stack.
+            var lastActiveRequest = ActiveRequestContext;
+            var lastScope = CurrentScope;
+
+            ActiveRequestContext = requestContext;
+            CurrentScope = currentOperationScope;
 
             try
             {
-                var instance = activation.Execute();
-                _successfulActivations.Add(activation);
+                _pipelineTracer?.RequestStart(this, requestContext);
 
-                return instance;
+                // Invoke the pipeline.
+                registrationPipeline.Invoke(requestContext);
+
+                if (requestContext.Instance == null)
+                {
+                    // No exception, but was null; this shouldn't happen.
+                    throw new DependencyResolutionException(ResolveOperationResources.PipelineCompletedWithNoInstance);
+                }
+
+                _successfulRequests.Add(requestContext);
+                _pipelineTracer?.RequestSuccess(this, requestContext);
+            }
+            catch (Exception ex)
+            {
+                _pipelineTracer?.RequestFailure(this, requestContext, ex);
+                throw;
             }
             finally
             {
-                // Issue #929: Allow the activation stack to be popped even if the activation failed.
-                // This allows try/catch to happen in lambda registrations without corrupting the stack.
-                _activationStack.Pop();
+                ActiveRequestContext = lastActiveRequest;
+                CurrentScope = lastScope;
 
-                if (_activationStack.Count == 0)
+                // Raise the appropriate completion events.
+                if (_requestStack.Count == 0)
                 {
-                    CompleteActivations();
+                    CompleteRequests();
                 }
 
-                --_callDepth;
+                RequestDepth--;
             }
+
+            return requestContext.Instance;
         }
 
-        public event EventHandler<ResolveOperationEndingEventArgs>? CurrentOperationEnding;
-
-        public event EventHandler<InstanceLookupBeginningEventArgs>? InstanceLookupBeginning;
-
-        private void CompleteActivations()
+        private void CompleteRequests()
         {
-            List<InstanceLookup> completed = _successfulActivations;
+            var completed = _successfulRequests;
             int count = completed.Count;
-            ResetSuccessfulActivations();
+            ResetSuccessfulRequests();
 
             for (int i = 0; i < count; i++)
             {
@@ -158,15 +242,10 @@ namespace Autofac.Core.Resolving
             }
         }
 
-        private void ResetSuccessfulActivations()
+        private void ResetSuccessfulRequests()
         {
-            _successfulActivations = new List<InstanceLookup>();
+            _successfulRequests = new List<ResolveRequestContext>();
         }
-
-        /// <summary>
-        /// Gets the services associated with the components that provide them.
-        /// </summary>
-        public IComponentRegistry ComponentRegistry => _mostNestedLifetimeScope.ComponentRegistry;
 
         private void End(Exception? exception = null)
         {
