@@ -49,6 +49,7 @@ namespace Autofac.Core.Lifetime
         /// </summary>
         private readonly object _synchRoot = new object();
         private readonly ConcurrentDictionary<Guid, object> _sharedInstances = new ConcurrentDictionary<Guid, object>();
+        private readonly ConcurrentDictionary<(Guid, Guid), object> _sharedQualifiedInstances = new ConcurrentDictionary<(Guid, Guid), object>();
         private object? _anonymousTag;
         private LifetimeScope? parentScope;
 
@@ -293,7 +294,6 @@ namespace Autofac.Core.Lifetime
         public object CreateSharedInstance(Guid id, Func<object> creator)
         {
             if (creator == null) throw new ArgumentNullException(nameof(creator));
-
             lock (_synchRoot)
             {
                 if (_sharedInstances.TryGetValue(id, out var result)) return result;
@@ -308,8 +308,41 @@ namespace Autofac.Core.Lifetime
             }
         }
 
+        /// <inheritdoc/>
+        public object CreateSharedInstance(Guid primaryId, Guid? qualifyingId, Func<object> creator)
+        {
+            if (creator == null) throw new ArgumentNullException(nameof(creator));
+            if (qualifyingId == null)
+            {
+                return CreateSharedInstance(primaryId, creator);
+            }
+
+            lock (_synchRoot)
+            {
+                var instanceKey = (primaryId, qualifyingId.Value);
+
+                if (_sharedQualifiedInstances.TryGetValue(instanceKey, out var result)) return result;
+
+                result = creator();
+                if (_sharedQualifiedInstances.ContainsKey(instanceKey))
+                    throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
+
+                _sharedQualifiedInstances.TryAdd(instanceKey, result);
+
+                return result;
+            }
+        }
+
         /// <inheritdoc />
         public bool TryGetSharedInstance(Guid id, out object value) => _sharedInstances.TryGetValue(id, out value);
+
+        /// <inheritdoc/>
+        public bool TryGetSharedInstance(Guid primaryId, Guid? qualifyingId, out object value)
+        {
+            return qualifyingId == null
+                ? TryGetSharedInstance(primaryId, out value)
+                : _sharedQualifiedInstances.TryGetValue((primaryId, qualifyingId.Value), out value);
+        }
 
         /// <summary>
         /// Gets the disposer associated with this container. Instances can be associated
