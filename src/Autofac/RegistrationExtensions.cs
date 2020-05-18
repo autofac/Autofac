@@ -907,7 +907,7 @@ namespace Autofac
             if (propertyInfo == null)
                 throw new ArgumentOutOfRangeException(nameof(propertyExpression), RegistrationExtensionsResources.ExpressionDoesNotReferToProperty);
 
-            return registration.WithProperty(new NamedPropertyParameter(propertyInfo.Name, propertyValue));
+            return registration.WithProperty(new NamedPropertyParameter(propertyInfo.Name, propertyValue!));
         }
 
         /// <summary>
