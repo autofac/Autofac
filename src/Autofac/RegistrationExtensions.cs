@@ -902,12 +902,13 @@ namespace Autofac
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
             if (propertyExpression == null) throw new ArgumentNullException(nameof(propertyExpression));
+            if (propertyValue == null) throw new ArgumentNullException(nameof(propertyValue));
 
             var propertyInfo = (propertyExpression.Body as MemberExpression)?.Member as PropertyInfo;
             if (propertyInfo == null)
                 throw new ArgumentOutOfRangeException(nameof(propertyExpression), RegistrationExtensionsResources.ExpressionDoesNotReferToProperty);
 
-            return registration.WithProperty(new NamedPropertyParameter(propertyInfo.Name, propertyValue!));
+            return registration.WithProperty(new NamedPropertyParameter(propertyInfo.Name, propertyValue));
         }
 
         /// <summary>

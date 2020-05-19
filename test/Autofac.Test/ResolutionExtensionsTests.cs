@@ -118,20 +118,8 @@ namespace Autofac.Test
             const string a = "Hello";
             var builder = new ContainerBuilder();
 
-            try
-            {
-                builder.RegisterType<WithProps>()
-                    .WithProperty(x => x._field, a);
-                Assert.True(false);
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                // correct
-            }
-            catch (Exception e)
-            {
-                Assert.True(false, e.Message);
-            }
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                builder.RegisterType<WithProps>().WithProperty(x => x._field, a));
         }
     }
 }
