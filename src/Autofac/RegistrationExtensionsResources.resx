@@ -120,6 +120,9 @@
   <data name="DecoratorRequiresInstanceParameter" xml:space="preserve">
     <value>A decorator for '{0}' was not provided with an instance parameter.</value>
   </data>
+  <data name="ExpressionDoesNotReferToProperty" xml:space="preserve">
+    <value>Expression does not refer to a property.</value>
+  </data>
   <data name="InstanceRegistrationsAreSingleInstanceOnly" xml:space="preserve">
     <value>The instance  registration '{0}' can support SingleInstance() sharing only.</value>
   </data>
@@ -134,8 +137,5 @@
   </data>
   <data name="OnlyIfRequiresCallbackContainer" xml:space="preserve">
     <value>You can only attach a registration predicate to a registration that has a callback container attached (e.g., one that was made with a standard ContainerBuilder extension method).</value>
-  </data>
-  <data name="ExpressionDoesNotReferToProperty" xml:space="preserve">
-    <value>Expression does not refer to a property</value>
   </data>
 </root>
