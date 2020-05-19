@@ -1,7 +1,9 @@
-﻿using Autofac.Core;
+﻿using System;
+using Autofac.Core;
 using Autofac.Core.Activators.ProvidedInstance;
 using Autofac.Core.Registration;
 using Autofac.Test.Scenarios.Parameterisation;
+using Autofac.Test.Scenarios.WithProperty;
 using Xunit;
 
 namespace Autofac.Test
@@ -90,6 +92,34 @@ namespace Autofac.Test
 
             Assert.Equal(a, result.A);
             Assert.Equal(b, result.B);
+        }
+
+        [Fact]
+        public void RegisterPropertyWithExpression()
+        {
+            const string a = "Hello";
+            const bool b = true;
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<WithProps>()
+                .WithProperty(x => x.A, a)
+                .WithProperty(x => x.B, b);
+
+            var container = builder.Build();
+            var result = container.Resolve<WithProps>();
+
+            Assert.Equal(a, result.A);
+            Assert.Equal(b, result.B);
+        }
+
+        [Fact]
+        public void RegisterPropertyWithExpressionFieldExceptions()
+        {
+            const string a = "Hello";
+            var builder = new ContainerBuilder();
+
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                builder.RegisterType<WithProps>().WithProperty(x => x._field, a));
         }
     }
 }
