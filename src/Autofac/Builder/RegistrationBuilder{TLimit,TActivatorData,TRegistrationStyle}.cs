@@ -386,7 +386,7 @@ namespace Autofac.Builder
 
             ResolvePipeline.Use(nameof(OnPreparing), PipelinePhase.ParameterSelection, (ctxt, next) =>
             {
-                var args = new PreparingEventArgs(ctxt, ctxt.Registration, ctxt.Parameters);
+                var args = new PreparingEventArgs(ctxt, ctxt.Service, ctxt.Registration, ctxt.Parameters);
 
                 handler(args);
 
@@ -414,7 +414,7 @@ namespace Autofac.Builder
             {
                 next(ctxt);
 
-                var args = new ActivatingEventArgs<TLimit>(ctxt, ctxt.Registration, ctxt.Parameters, (TLimit)ctxt.Instance!);
+                var args = new ActivatingEventArgs<TLimit>(ctxt, ctxt.Service, ctxt.Registration, ctxt.Parameters, (TLimit)ctxt.Instance!);
 
                 handler(args);
                 ctxt.Instance = args.Instance;
@@ -452,7 +452,7 @@ namespace Autofac.Builder
                 ctxt.RequestCompleting += (sender, evArgs) =>
                 {
                     var ctxt = evArgs.RequestContext;
-                    var args = new ActivatedEventArgs<TLimit>(ctxt, ctxt.Registration, ctxt.Parameters, newInstance);
+                    var args = new ActivatedEventArgs<TLimit>(ctxt, ctxt.Service, ctxt.Registration, ctxt.Parameters, newInstance);
 
                     handler(args);
                 };

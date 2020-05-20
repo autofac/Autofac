@@ -43,10 +43,10 @@ namespace Autofac.Core
         /// <param name="service">The service being resolved.</param>
         public ActivatedEventArgs(
             IComponentContext context,
+            Service service,
             IComponentRegistration component,
             IEnumerable<Parameter> parameters,
-            T instance,
-            Service service)
+            T instance)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
             if (component == null) throw new ArgumentNullException(nameof(component));
