@@ -35,14 +35,20 @@ namespace Autofac.Core.Resolving.Pipeline
     /// Provides the functionality to construct a resolve pipeline.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// The pipeline builder is built as a doubly-linked list; each node in that list is a
     /// <see cref="MiddlewareDeclaration"/>, that holds the middleware instance, and the reference to the next and previous nodes.
+    /// </para>
     ///
+    /// <para>
     /// When you call one of the Use* methods, we find the appropriate node in the linked list based on the phase of the new middleware
     /// and insert it into the list.
+    /// </para>
     ///
+    /// <para>
     /// When you build a pipeline, we walk back through that set of middleware and generate the concrete call chain so that when you execute the pipeline,
     /// we don't iterate over any nodes, but just invoke the built set of methods.
+    /// </para>
     /// </remarks>
     internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IResolveMiddleware>
     {
