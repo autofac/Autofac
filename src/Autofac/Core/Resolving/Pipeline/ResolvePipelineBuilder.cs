@@ -72,7 +72,7 @@ namespace Autofac.Core.Resolving.Pipeline
 
         public IResolvePipelineBuilder Use(PipelinePhase phase, Action<IResolveRequestContext, Action<IResolveRequestContext>> callback)
         {
-            Use(phase, MiddlewareInsertionMode.StartOfPhase, callback);
+            Use(phase, MiddlewareInsertionMode.EndOfPhase, callback);
 
             return this;
         }
