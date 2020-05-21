@@ -108,12 +108,6 @@ namespace Autofac.Core.Resolving
 
         public event EventHandler<ResolveRequestBeginningEventArgs>? ResolveRequestBeginning;
 
-        /// <inheritdoc />
-        public object ResolveComponent(ResolveRequest request)
-        {
-            return GetOrCreateInstance(CurrentScope, request);
-        }
-
         /// <summary>
         /// Execute the complete resolve operation.
         /// </summary>
@@ -129,7 +123,7 @@ namespace Autofac.Core.Resolving
 
                 _pipelineTracer?.OperationStart(this, request);
 
-                result = ResolveComponent(request);
+                result = GetOrCreateInstance(CurrentScope, request);
             }
             catch (ObjectDisposedException disposeException)
             {

@@ -29,7 +29,7 @@ using Autofac.Core.Resolving.Middleware;
 
 namespace Autofac.Core.Resolving.Pipeline
 {
-    public interface IPipelineResolveOperation : IResolveOperation, IComponentContext, ITracingIdentifer
+    public interface IPipelineResolveOperation : IResolveOperation, ITracingIdentifer
     {
         /// <summary>
         /// Gets the active resolve request.
