@@ -83,19 +83,19 @@ namespace Autofac.Core.Registration
         }
 
         /// <inheritdoc />
-        public virtual void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource = false)
+        public virtual void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromDynamicSource = false)
         {
             foreach (var service in registration.Services)
             {
                 var info = GetServiceInfo(service);
-                info.AddImplementation(registration, preserveDefaults, originatedFromSource);
+                info.AddImplementation(registration, preserveDefaults, originatedFromDynamicSource);
             }
 
             _registrations.Add(registration);
             var handler = Registered;
             handler?.Invoke(this, registration);
 
-            if (originatedFromSource)
+            if (originatedFromDynamicSource)
             {
                 registration.BuildResolvePipeline(this);
             }

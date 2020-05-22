@@ -13,8 +13,8 @@ namespace Autofac.Core.Registration
         /// </summary>
         /// <param name="registration">The registration to add.</param>
         /// <param name="preserveDefaults">Indicates whether the defaults should be preserved.</param>
-        /// <param name="originatedFromSource">Indicates whether this is an explicitly added registration or that it has been added by a different source.</param>
-        void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource = false);
+        /// <param name="originatedFromDynamicSource">Indicates whether this is an explicitly added registration or that it has been added by a dynamic registration source.</param>
+        void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromDynamicSource = false);
 
         /// <summary>
         /// Add a registration source that will provide registrations on-the-fly.
