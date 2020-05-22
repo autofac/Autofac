@@ -39,14 +39,6 @@ namespace Autofac.Core.Registration
             = new ConcurrentDictionary<IServiceWithType, IReadOnlyList<IComponentRegistration>>();
 
         /// <summary>
-        /// Gets the set of properties used during component registration.
-        /// </summary>
-        /// <value>
-        /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share context across registrations.
-        /// </value>
-        private readonly IDictionary<string, object?> _properties = new Dictionary<string, object?>();
-
-        /// <summary>
         /// Protects instance variables from concurrent access.
         /// </summary>
         private readonly object _synchRoot = new object();
@@ -61,22 +53,12 @@ namespace Autofac.Core.Registration
         /// Fired whenever a component is registered - either explicitly or via a
         /// <see cref="IRegistrationSource"/>.
         /// </summary>
-        public event EventHandler<IComponentRegistration> Registered
-        {
-            add => _properties[MetadataKeys.InternalRegisteredPropertyKey] = GetRegistered() + value;
-
-            remove => _properties[MetadataKeys.InternalRegisteredPropertyKey] = GetRegistered() - value;
-        }
+        public event EventHandler<IComponentRegistration>? Registered;
 
         /// <summary>
         /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
         /// </summary>
-        public event EventHandler<IRegistrationSource> RegistrationSourceAdded
-        {
-            add => _properties[MetadataKeys.InternalRegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() + value;
-
-            remove => _properties[MetadataKeys.InternalRegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() - value;
-        }
+        public event EventHandler<IRegistrationSource>? RegistrationSourceAdded;
 
         /// <inheritdoc />
         public IEnumerable<IComponentRegistration> Registrations
@@ -110,7 +92,8 @@ namespace Autofac.Core.Registration
             }
 
             _registrations.Add(registration);
-            GetRegistered()?.Invoke(this, registration);
+            var handler = Registered;
+            handler?.Invoke(this, registration);
 
             if (originatedFromSource)
             {
@@ -129,7 +112,7 @@ namespace Autofac.Core.Registration
                 foreach (var serviceRegistrationInfo in _serviceInfo)
                     serviceRegistrationInfo.Value.Include(source);
 
-                var handler = GetRegistrationSourceAdded();
+                var handler = RegistrationSourceAdded;
                 handler?.Invoke(this, source);
             }
         }
@@ -254,17 +237,5 @@ namespace Autofac.Core.Registration
             _serviceInfo.Add(service, info);
             return info;
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private EventHandler<IComponentRegistration>? GetRegistered() =>
-            _properties.TryGetValue(MetadataKeys.InternalRegisteredPropertyKey, out var registered)
-                ? (EventHandler<IComponentRegistration>?)registered
-                : null;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private EventHandler<IRegistrationSource>? GetRegistrationSourceAdded() =>
-            _properties.TryGetValue(MetadataKeys.InternalRegistrationSourceAddedPropertyKey, out var registrationSourceAdded)
-                ? (EventHandler<IRegistrationSource>?)registrationSourceAdded
-                : null;
     }
 }
