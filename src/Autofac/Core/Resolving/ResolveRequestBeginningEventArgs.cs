@@ -37,7 +37,7 @@ namespace Autofac.Core.Resolving
         /// Initializes a new instance of the <see cref="ResolveRequestBeginningEventArgs"/> class.
         /// </summary>
         /// <param name="requestContext">The resolve request context that is starting.</param>
-        public ResolveRequestBeginningEventArgs(IResolveRequestContext requestContext)
+        public ResolveRequestBeginningEventArgs(ResolveRequestContextBase requestContext)
         {
             RequestContext = requestContext ?? throw new ArgumentNullException(nameof(requestContext));
         }
@@ -45,6 +45,6 @@ namespace Autofac.Core.Resolving
         /// <summary>
         /// Gets the resolve request that is beginning.
         /// </summary>
-        public IResolveRequestContext RequestContext { get; }
+        public ResolveRequestContextBase RequestContext { get; }
     }
 }

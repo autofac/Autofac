@@ -35,33 +35,57 @@ namespace Autofac.Core.Resolving.Pipeline
     /// Defines the context object for a single resolve request. Provides access to the in-flight status of the operation,
     /// and ways to manipulate the contents.
     /// </summary>
-    public interface IResolveRequestContext : IComponentContext
+    public abstract class ResolveRequestContextBase : IComponentContext
     {
+        private readonly ResolveRequest _resolveRequest;
+        private object? _instance;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResolveRequestContextBase"/> class.
+        /// </summary>
+        /// <param name="owningOperation">The owning resolve operation.</param>
+        /// <param name="request">The initiating resolve request.</param>
+        /// <param name="scope">The lifetime scope.</param>
+        /// <param name="tracer">An optional tracer.</param>
+        internal ResolveRequestContextBase(
+            ResolveOperationBase owningOperation,
+            ResolveRequest request,
+            ISharingLifetimeScope scope,
+            IResolvePipelineTracer? tracer)
+        {
+            Operation = owningOperation;
+            ActivationScope = scope;
+            Parameters = request.Parameters;
+            PhaseReached = PipelinePhase.RequestStart;
+            Tracer = tracer;
+            _resolveRequest = request;
+        }
+
         /// <summary>
         /// Gets a reference to the owning resolve operation (which might emcompass multiple nested requests).
         /// </summary>
-        IPipelineResolveOperation Operation { get; }
+        public ResolveOperationBase Operation { get; }
 
         /// <summary>
         /// Gets the lifetime scope that will be used for the activation of any components later in the pipeline.
         /// Avoid resolving instances directly from this scope; they will not be traced as part of the same operation.
         /// </summary>
-        ISharingLifetimeScope ActivationScope { get; }
+        public ISharingLifetimeScope ActivationScope { get; private set; }
 
         /// <summary>
         /// Gets the component registration that is being resolved in the current request.
         /// </summary>
-        IComponentRegistration Registration { get; }
+        public IComponentRegistration Registration => _resolveRequest.Registration;
 
         /// <summary>
         /// Gets the service that is being resolved in the current request.
         /// </summary>
-        Service Service { get; }
+        public Service Service => _resolveRequest.Service;
 
         /// <summary>
         /// Gets the target registration for decorator requests.
         /// </summary>
-        IComponentRegistration? DecoratorTarget { get; }
+        public IComponentRegistration? DecoratorTarget => _resolveRequest.DecoratorTarget;
 
         /// <summary>
         /// Gets or sets the instance that will be returned as the result of the resolve request.
@@ -70,56 +94,72 @@ namespace Autofac.Core.Resolving.Pipeline
         /// whether the object here was a newly activated instance, or a shared instance previously activated.
         /// </summary>
         [DisallowNull]
-        object? Instance { get; set; }
+        public object? Instance
+        {
+            get => _instance;
+            set => _instance = value ?? throw new ArgumentNullException(nameof(value));
+        }
 
         /// <summary>
         /// Gets a value indicating whether the resolved <see cref="Instance"/> is a new instance of a component has been activated during this request,
         /// or an existing shared instance that has been retrieved.
         /// </summary>
-        bool NewInstanceActivated { get; }
+        public bool NewInstanceActivated => Instance is object && PhaseReached == PipelinePhase.Activation;
 
         /// <summary>
         /// Gets the active <see cref="IResolvePipelineTracer"/> for the request.
         /// </summary>
-        IResolvePipelineTracer? Tracer { get; }
+        public IResolvePipelineTracer? Tracer { get; }
 
         /// <summary>
         /// Gets the current resolve parameters. These can be changed using the <see cref="ChangeParameters(IEnumerable{Parameter})"/> method.
         /// </summary>
-        IEnumerable<Parameter> Parameters { get; }
+        public IEnumerable<Parameter> Parameters { get; private set; }
 
         /// <summary>
         /// Gets the phase of the pipeline reached by this request.
         /// </summary>
-        public PipelinePhase PhaseReached { get; }
+        public PipelinePhase PhaseReached { get; internal set; }
 
         /// <summary>
         /// Gets or sets an optional pipeline to invoke at the end of the current request's pipeline.
         /// </summary>
-        IResolvePipeline? Continuation { get; set; }
+        public IResolvePipeline? Continuation { get; set; }
+
+        /// <inheritdoc />
+        public IComponentRegistry ComponentRegistry => ActivationScope.ComponentRegistry;
 
         /// <summary>
         /// Provides an event that will fire when the current request completes.
         /// Requests will only be considered 'complete' when the overall <see cref="IResolveOperation"/> is completing.
         /// </summary>
-        event EventHandler<ResolveRequestCompletingEventArgs>? RequestCompleting;
+        public event EventHandler<ResolveRequestCompletingEventArgs>? RequestCompleting;
 
         /// <summary>
         /// Use this method to change the <see cref="ISharingLifetimeScope"/> that is used in this request. Changing this scope will
         /// also change the <see cref="IComponentRegistry"/> available in this context.
         /// </summary>
         /// <param name="newScope">The new lifetime scope.</param>
-        void ChangeScope(ISharingLifetimeScope newScope);
+        public void ChangeScope(ISharingLifetimeScope newScope)
+        {
+            ActivationScope = newScope ?? throw new ArgumentNullException(nameof(newScope));
+        }
 
         /// <summary>
         /// Change the set of parameters being used in the processing of this request.
         /// </summary>
         /// <param name="newParameters">The new set of parameters.</param>
-        void ChangeParameters(IEnumerable<Parameter> newParameters);
+        public void ChangeParameters(IEnumerable<Parameter> newParameters)
+        {
+            Parameters = newParameters ?? throw new ArgumentNullException(nameof(newParameters));
+        }
+
+        /// <inheritdoc />
+        public abstract object ResolveComponent(ResolveRequest request);
 
         /// <summary>
         /// Resolve an instance of the provided registration within the context, but isolated inside a new
-        /// <see cref="IPipelineResolveOperation"/>.
+        /// <see cref="ResolveOperationBase"/>.
         /// This method should only be used instead of <see cref="IComponentContext.ResolveComponent(ResolveRequest)"/>
         /// if you need to resolve a component with a completely separate operation and circular dependency verification stack.
         /// </summary>
@@ -129,12 +169,15 @@ namespace Autofac.Core.Resolving.Pipeline
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        object ResolveComponentWithNewOperation(ResolveRequest request);
+        public abstract object ResolveComponentWithNewOperation(ResolveRequest request);
 
         /// <summary>
-        /// Set the phase of the pipeline we are in. Only used internally in <see cref="ResolvePipelineBuilder"/>; should not be used elsewhere.
+        /// Complete the request, raising any appropriate events.
         /// </summary>
-        /// <param name="phase">The pipeline phase.</param>
-        internal void SetPhase(PipelinePhase phase);
+        protected void CompleteRequest()
+        {
+            var handler = RequestCompleting;
+            handler?.Invoke(this, new ResolveRequestCompletingEventArgs(this));
+        }
     }
 }

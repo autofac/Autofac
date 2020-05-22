@@ -49,7 +49,7 @@ namespace Autofac.Core.Resolving.Middleware
 
         public PipelinePhase Phase => PipelinePhase.RequestStart;
 
-        public void Execute(IResolveRequestContext context, Action<IResolveRequestContext> next)
+        public void Execute(ResolveRequestContextBase context, Action<ResolveRequestContextBase> next)
         {
             var activationDepth = context.Operation.RequestDepth;
 
@@ -94,7 +94,7 @@ namespace Autofac.Core.Resolving.Middleware
 
         public override string ToString() => nameof(CircularDependencyDetectorMiddleware);
 
-        private static string CreateDependencyGraphTo(IComponentRegistration registration, IEnumerable<IResolveRequestContext> requestStack)
+        private static string CreateDependencyGraphTo(IComponentRegistration registration, IEnumerable<ResolveRequestContextBase> requestStack)
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
             if (requestStack == null) throw new ArgumentNullException(nameof(requestStack));

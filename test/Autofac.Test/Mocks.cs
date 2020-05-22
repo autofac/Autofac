@@ -26,11 +26,6 @@ namespace Autofac.Test
             return new MockComponentRegistration();
         }
 
-        public static MockPipelineOperation GetPipelineOperation(ISharingLifetimeScope scope)
-        {
-            return new MockPipelineOperation(scope);
-        }
-
         internal class MockConstructorFinder : IConstructorFinder
         {
             public ConstructorInfo[] FindConstructors(Type targetType)
@@ -80,46 +75,7 @@ namespace Autofac.Test
 
             public void BuildResolvePipeline(IComponentRegistryServices registryServices)
             {
-            }
-        }
-
-        public class MockPipelineOperation : IPipelineResolveOperation
-        {
-            public MockPipelineOperation(ISharingLifetimeScope scope)
-            {
-                CurrentScope = scope;
-            }
-
-            public ISharingLifetimeScope CurrentScope { get; }
-
-            public IComponentRegistry ComponentRegistry => CurrentScope.ComponentRegistry;
-
-            public IResolveRequestContext ActiveRequestContext => throw new NotImplementedException();
-
-            public IEnumerable<IResolveRequestContext> InProgressRequests => throw new NotImplementedException();
-
-            Stack<IResolveRequestContext> IPipelineResolveOperation.RequestStack => throw new NotImplementedException();
-
-            public int RequestDepth => throw new NotImplementedException();
-
-            public ITracingIdentifer TracingId => this;
-
-            public bool IsTopLevelOperation => true;
-
-            public ResolveRequest InitiatingRequest { get; set; }
-
-            public event EventHandler<ResolveOperationEndingEventArgs> CurrentOperationEnding;
-
-            public event EventHandler<ResolveRequestBeginningEventArgs> ResolveRequestBeginning;
-
-            public object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest request)
-            {
-                return currentOperationScope.ResolveComponent(request);
-            }
-
-            public object ResolveComponent(ResolveRequest request)
-            {
-                return CurrentScope.ResolveComponent(request);
+                PipelineBuilding?.Invoke(this, new ResolvePipelineBuilder());
             }
         }
     }

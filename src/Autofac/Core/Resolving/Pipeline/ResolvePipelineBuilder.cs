@@ -55,7 +55,7 @@ namespace Autofac.Core.Resolving.Pipeline
         /// <summary>
         /// Termination action for the end of pipelines, that will execute the specified continuation (if there is one).
         /// </summary>
-        private static readonly Action<IResolveRequestContext> _terminateAction = ctxt => ctxt.Continuation?.Invoke(ctxt);
+        private static readonly Action<ResolveRequestContextBase> _terminateAction = ctxt => ctxt.Continuation?.Invoke(ctxt);
 
         private const string AnonymousName = "unnamed";
 
@@ -76,28 +76,28 @@ namespace Autofac.Core.Resolving.Pipeline
             return this;
         }
 
-        public IResolvePipelineBuilder Use(PipelinePhase phase, Action<IResolveRequestContext, Action<IResolveRequestContext>> callback)
+        public IResolvePipelineBuilder Use(PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
         {
             Use(phase, MiddlewareInsertionMode.EndOfPhase, callback);
 
             return this;
         }
 
-        public IResolvePipelineBuilder Use(PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<IResolveRequestContext, Action<IResolveRequestContext>> callback)
+        public IResolvePipelineBuilder Use(PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
         {
             Use(AnonymousName, phase, insertionMode, callback);
 
             return this;
         }
 
-        public IResolvePipelineBuilder Use(string name, PipelinePhase phase, Action<IResolveRequestContext, Action<IResolveRequestContext>> callback)
+        public IResolvePipelineBuilder Use(string name, PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
         {
             Use(new DelegateMiddleware(name, phase, callback), MiddlewareInsertionMode.EndOfPhase);
 
             return this;
         }
 
-        public IResolvePipelineBuilder Use(string name, PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<IResolveRequestContext, Action<IResolveRequestContext>> callback)
+        public IResolvePipelineBuilder Use(string name, PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
         {
             Use(new DelegateMiddleware(name, phase, callback), insertionMode);
 
@@ -262,16 +262,16 @@ namespace Autofac.Core.Resolving.Pipeline
         {
             // When we build, we go through the set and construct a single call stack, starting from the end.
             var current = lastDecl;
-            Action<IResolveRequestContext>? currentInvoke = _terminateAction;
+            Action<ResolveRequestContextBase>? currentInvoke = _terminateAction;
 
-            Action<IResolveRequestContext> Chain(Action<IResolveRequestContext> next, IResolveMiddleware stage)
+            Action<ResolveRequestContextBase> Chain(Action<ResolveRequestContextBase> next, IResolveMiddleware stage)
             {
                 return (ctxt) =>
                 {
                     // Optimise the path depending on whether a tracer is attached.
                     if (ctxt.Tracer is null)
                     {
-                        ctxt.SetPhase(stage.Phase);
+                        ctxt.PhaseReached = stage.Phase;
                         stage.Execute(ctxt, next);
                     }
                     else
@@ -280,7 +280,7 @@ namespace Autofac.Core.Resolving.Pipeline
                         var succeeded = false;
                         try
                         {
-                            ctxt.SetPhase(stage.Phase);
+                            ctxt.PhaseReached = stage.Phase;
                             stage.Execute(ctxt, next);
                             succeeded = true;
                         }

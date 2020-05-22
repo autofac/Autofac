@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Autofac.Core;
 using Autofac.Core.Diagnostics;
+using Autofac.Core.Lifetime;
 using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Middleware;
 using Autofac.Core.Resolving.Pipeline;
@@ -365,42 +369,99 @@ namespace Autofac.Test.Core.Pipeline
                 el => Assert.Equal("6", el.ToString()));
         }
 
-        private class MockPipelineRequestContext : IResolveRequestContext
+        private class MockPipelineRequestContext : ResolveRequestContextBase
         {
-            public event EventHandler<ResolveRequestCompletingEventArgs> RequestCompleting;
+            public MockPipelineRequestContext()
+                : base(
+                      new ResolveOperation(new MockLifetimeScope()),
+                      new ResolveRequest(new TypedService(typeof(int)), Mocks.GetComponentRegistration(), Enumerable.Empty<Parameter>()),
+                      new MockLifetimeScope(),
+                      null)
+            {
+            }
 
-            public IPipelineResolveOperation Operation => throw new NotImplementedException();
-
-            public ISharingLifetimeScope ActivationScope => throw new NotImplementedException();
-
-            public IComponentRegistration Registration => throw new NotImplementedException();
-
-            public Service Service => throw new NotImplementedException();
-
-            public IComponentRegistration DecoratorTarget => throw new NotImplementedException();
-
-            public object Instance { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-            public bool NewInstanceActivated => throw new NotImplementedException();
-
-            public IResolvePipelineTracer Tracer { get; set; }
-
-            public IEnumerable<Parameter> Parameters => throw new NotImplementedException();
-
-            public PipelinePhase PhaseReached { get; set; }
-
-            public IComponentRegistry ComponentRegistry => throw new NotImplementedException();
-
-            public IResolvePipeline Continuation { get; set; }
-
-            void IResolveRequestContext.SetPhase(PipelinePhase phase) => PhaseReached = phase;
-
-            public void ChangeParameters(IEnumerable<Parameter> newParameters)
+            public override object ResolveComponent(ResolveRequest request)
             {
                 throw new NotImplementedException();
             }
 
-            public void ChangeScope(ISharingLifetimeScope newScope)
+            public override object ResolveComponentWithNewOperation(ResolveRequest request)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        private class MockLifetimeScope : ISharingLifetimeScope
+        {
+            public ISharingLifetimeScope RootLifetimeScope => throw new NotImplementedException();
+
+            public ISharingLifetimeScope ParentLifetimeScope => throw new NotImplementedException();
+
+            public IDisposer Disposer => throw new NotImplementedException();
+
+            public object Tag => throw new NotImplementedException();
+
+            public IComponentRegistry ComponentRegistry => throw new NotImplementedException();
+
+            public event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning
+            {
+                add { }
+                remove { }
+            }
+
+            public event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding
+            {
+                add { }
+                remove { }
+            }
+
+            public event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning
+            {
+                add { }
+                remove { }
+            }
+
+            public void AttachTrace(IResolvePipelineTracer tracer)
+            {
+                throw new NotImplementedException();
+            }
+
+            public ILifetimeScope BeginLifetimeScope()
+            {
+                throw new NotImplementedException();
+            }
+
+            public ILifetimeScope BeginLifetimeScope(object tag)
+            {
+                throw new NotImplementedException();
+            }
+
+            public ILifetimeScope BeginLifetimeScope(Action<ContainerBuilder> configurationAction)
+            {
+                throw new NotImplementedException();
+            }
+
+            public ILifetimeScope BeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction)
+            {
+                throw new NotImplementedException();
+            }
+
+            public object CreateSharedInstance(Guid id, Func<object> creator)
+            {
+                throw new NotImplementedException();
+            }
+
+            public object CreateSharedInstance(Guid primaryId, Guid? qualifyingId, Func<object> creator)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Dispose()
+            {
+                throw new NotImplementedException();
+            }
+
+            public ValueTask DisposeAsync()
             {
                 throw new NotImplementedException();
             }
@@ -410,7 +471,12 @@ namespace Autofac.Test.Core.Pipeline
                 throw new NotImplementedException();
             }
 
-            public object ResolveComponentWithNewOperation(ResolveRequest request)
+            public bool TryGetSharedInstance(Guid id, out object value)
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool TryGetSharedInstance(Guid primaryId, Guid? qualifyingId, out object value)
             {
                 throw new NotImplementedException();
             }

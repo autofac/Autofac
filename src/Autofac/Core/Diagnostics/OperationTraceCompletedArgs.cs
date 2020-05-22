@@ -4,13 +4,13 @@ namespace Autofac.Core.Diagnostics
 {
     public sealed class OperationTraceCompletedArgs
     {
-        public OperationTraceCompletedArgs(IPipelineResolveOperation operation, string traceContent)
+        public OperationTraceCompletedArgs(ResolveOperationBase operation, string traceContent)
         {
             Operation = operation;
             TraceContent = traceContent;
         }
 
-        public IPipelineResolveOperation Operation { get; }
+        public ResolveOperationBase Operation { get; }
 
         public string TraceContent { get; }
     }

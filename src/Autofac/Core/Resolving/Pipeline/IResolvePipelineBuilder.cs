@@ -53,11 +53,11 @@ namespace Autofac.Core.Resolving.Pipeline
         /// <param name="phase">The phase of the pipeline the middleware should run at.</param>
         /// <param name="callback">
         /// A callback invoked to run your middleware.
-        /// This callback takes a <see cref="IResolveRequestContext"/>, containing the context for the resolve request, plus
+        /// This callback takes a <see cref="ResolveRequestContextBase"/>, containing the context for the resolve request, plus
         /// a callback to invoke to continue the pipeline.
         /// </param>
         /// <returns>The same builder instance.</returns>
-        IResolvePipelineBuilder Use(PipelinePhase phase, Action<IResolveRequestContext, Action<IResolveRequestContext>> callback);
+        IResolvePipelineBuilder Use(PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback);
 
         /// <summary>
         /// Use a middleware callback in a resolve pipeline.
@@ -66,11 +66,11 @@ namespace Autofac.Core.Resolving.Pipeline
         /// <param name="phase">The phase of the pipeline the middleware should run at.</param>
         /// <param name="callback">
         /// A callback invoked to run your middleware.
-        /// This callback takes a <see cref="IResolveRequestContext"/>, containing the context for the resolve request, plus
+        /// This callback takes a <see cref="ResolveRequestContextBase"/>, containing the context for the resolve request, plus
         /// a callback to invoke to continue the pipeline.
         /// </param>
         /// <returns>The same builder instance.</returns>
-        IResolvePipelineBuilder Use(string name, PipelinePhase phase, Action<IResolveRequestContext, Action<IResolveRequestContext>> callback);
+        IResolvePipelineBuilder Use(string name, PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback);
 
         /// <summary>
         /// Use a middleware callback in a resolve pipeline.
@@ -79,11 +79,11 @@ namespace Autofac.Core.Resolving.Pipeline
         /// <param name="insertionMode">The insertion mode specifying whether to add at the start or end of the phase.</param>
         /// <param name="callback">
         /// A callback invoked to run your middleware.
-        /// This callback takes a <see cref="IResolveRequestContext"/>, containing the context for the resolve request, plus
+        /// This callback takes a <see cref="ResolveRequestContextBase"/>, containing the context for the resolve request, plus
         /// a callback to invoke to continue the pipeline.
         /// </param>
         /// <returns>The same builder instance.</returns>
-        IResolvePipelineBuilder Use(PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<IResolveRequestContext, Action<IResolveRequestContext>> callback);
+        IResolvePipelineBuilder Use(PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback);
 
         /// <summary>
         /// Use a middleware callback in a resolve pipeline.
@@ -93,11 +93,11 @@ namespace Autofac.Core.Resolving.Pipeline
         /// <param name="insertionMode">The insertion mode specifying whether to add at the start or end of the phase.</param>
         /// <param name="callback">
         /// A callback invoked to run your middleware.
-        /// This callback takes a <see cref="IResolveRequestContext"/>, containing the context for the resolve request, plus
+        /// This callback takes a <see cref="ResolveRequestContextBase"/>, containing the context for the resolve request, plus
         /// a callback to invoke to continue the pipeline.
         /// </param>
         /// <returns>The same builder instance.</returns>
-        IResolvePipelineBuilder Use(string name, PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<IResolveRequestContext, Action<IResolveRequestContext>> callback);
+        IResolvePipelineBuilder Use(string name, PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback);
 
         /// <summary>
         /// Use a set of multiple, ordered middleware instances in a resolve pipeline.

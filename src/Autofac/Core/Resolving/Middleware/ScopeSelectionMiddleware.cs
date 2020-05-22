@@ -44,7 +44,7 @@ namespace Autofac.Core.Resolving.Middleware
 
         public PipelinePhase Phase => PipelinePhase.ScopeSelection;
 
-        public void Execute(IResolveRequestContext context, Action<IResolveRequestContext> next)
+        public void Execute(ResolveRequestContextBase context, Action<ResolveRequestContextBase> next)
         {
             try
             {

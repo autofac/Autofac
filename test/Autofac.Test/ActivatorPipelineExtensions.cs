@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Autofac.Core;
+using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Test
@@ -43,7 +44,7 @@ namespace Autofac.Test
                 var lifetimeScope = scope.Resolve<ILifetimeScope>() as ISharingLifetimeScope;
 
                 var request = new ResolveRequestContext(
-                    Mocks.GetPipelineOperation(lifetimeScope),
+                    new ResolveOperation(lifetimeScope),
                     new ResolveRequest(new TypedService(typeof(T)), Mocks.GetComponentRegistration(), parameters),
                     lifetimeScope,
                     null);

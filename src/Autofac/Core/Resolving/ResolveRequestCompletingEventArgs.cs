@@ -37,7 +37,7 @@ namespace Autofac.Core.Resolving
         /// Initializes a new instance of the <see cref="ResolveRequestCompletingEventArgs"/> class.
         /// </summary>
         /// <param name="requestContext">The resolve request context that is completing.</param>
-        public ResolveRequestCompletingEventArgs(IResolveRequestContext requestContext)
+        public ResolveRequestCompletingEventArgs(ResolveRequestContextBase requestContext)
         {
             if (requestContext is null) throw new ArgumentNullException(nameof(requestContext));
 
@@ -47,6 +47,6 @@ namespace Autofac.Core.Resolving
         /// <summary>
         /// Gets the instance lookup operation that is beginning.
         /// </summary>
-        public IResolveRequestContext RequestContext { get; }
+        public ResolveRequestContextBase RequestContext { get; }
     }
 }

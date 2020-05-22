@@ -50,7 +50,7 @@ namespace Autofac.Core.Resolving.Middleware
         public PipelinePhase Phase => PipelinePhase.Decoration;
 
         /// <inheritdoc />
-        public void Execute(IResolveRequestContext context, Action<IResolveRequestContext> next)
+        public void Execute(ResolveRequestContextBase context, Action<ResolveRequestContextBase> next)
         {
             // Proceed down the pipeline.
             next(context);
@@ -65,7 +65,7 @@ namespace Autofac.Core.Resolving.Middleware
         /// <inheritdoc />
         public override string ToString() => nameof(DecoratorMiddleware);
 
-        private static bool TryDecorateRegistration(IResolveRequestContext context, [NotNullWhen(true)] out object? instance)
+        private static bool TryDecorateRegistration(ResolveRequestContextBase context, [NotNullWhen(true)] out object? instance)
         {
             var service = context.Service;
 
